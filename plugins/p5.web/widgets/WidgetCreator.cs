@@ -48,7 +48,7 @@ namespace p5.web.widgets
             string type = splits.Length == 2 ? "container" : splits[1];
 
             // Creating widget of specified type
-            CreateWidget (context, e.Args, type);
+            e.Args.Value = CreateWidget (context, e.Args, type);
         }
 
         /// <summary>
@@ -94,11 +94,14 @@ namespace p5.web.widgets
         /*
          * Helper method for creating widgets
          */
-        private void CreateWidget (
+        private string CreateWidget (
             ApplicationContext context, 
             Node args, 
             string type)
         {
+            // Return value (becomes ID of control)
+            string retVal = null;
+
             // Sanity check, only one of [parent], [before] or [after] can be supplied
             // And [position] can only be supplied if [parent] is supplied
             if (args ["parent"] != null) {
@@ -128,7 +131,12 @@ namespace p5.web.widgets
                 // Creating a unique ID for widget BEFORE we create Widget, since we need it to create our Widget Events 
                 // before we create widget itself, since [oninit] might depend upon widget events, and oninit 
                 // is raised during creation process, before it returns.
-                createNode.Value = Container.CreateUniqueId ();
+                retVal = Container.CreateUniqueId ();
+                createNode.Value = retVal;
+            } else {
+
+                // Making sure we return retVal regardless of whether or not 'auto-ID' was chosen
+                retVal = createNode.Get<string> (context);
             }
 
             // ORDER COUNTS!! Read above comments!
@@ -157,6 +165,9 @@ namespace p5.web.widgets
                 idxOnInit.Insert (0, new Node ("_event", idxOnInit.Parent.Get<Widget> (context).ID));
                 context.RaiseLambda ("eval", idxOnInit.Clone ());
             }
+
+            // Making sure we return ID of control
+            return retVal;
         }
 
         /*

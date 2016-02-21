@@ -3,20 +3,6 @@
  * Editor for [controls] types of pages
  */
 
-
-/*
- * Including CodeMirror for both [content] editor
- */
-sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
-  _editor
-    editor_surface
-      mode:hyperlisp
-      theme:the-matrix-reduced
-      autofocus:true
-      fullscreen:true
-      height:484px
-
-
 /*
  * Loading page from database
  */
@@ -25,50 +11,366 @@ select-data:x:/*/*/p5.page/"={0}"
 
 
 /*
- * Setting the content of editor_surface to the [controls] from database
+ * Setting the content of WYSIWYG surface to the [controls] from database,
+ * converting to lambda from Hyperlisp first
  */
-set:x:/../*/create-widget/*/widgets/*/literal/=editor_surface/*/innerValue?value
-  src:x:/../*/select-data/*/*/controls?value
+lisp2lambda:x:/../*/select-data/*/*/controls?value
+
+/*
+ * Then adding [onclick] event handlers for each widget, to
+ * allow widget to be selected by clicking it in design surface
+ */
+add:x:/../*/lisp2lambda/**(/literal|/container|/void)
+  src
+    onclick
+      sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+
+/*
+ * Before finally adding widget to [create-widget] invocation below
+ */
+add:x:/../*/create-widget/*/widgets/*/container/=wysiwyg-editor-surface/*/widgets
+  src:x:/../*/lisp2lambda/*
 
 
 /*
- * Making sure editor is loaded underneath the correct widget according to 
- * caller's specifications
+ * Adding widget types to 'WYSIWYG add control toolbar'
  */
-set:x:/../*/create-widget/*/parent?value
-  src:x:/../*/_parent-widget?value
+_widgets
+  label
+  span
+  div
+  p
+  strong
+  em
+  blockquote
+  pre
+  br
+  cite
+  code
+  small
+  hr
+  a
+  _
+  h1
+  h2
+  h3
+  h4
+  h5
+  h6
+  header
+  address
+  article
+  footer
+  nav
+  section
+  list
+  _
+  video
+  audio
+  check
+  radio
+  select
+  text
+  password
+  color
+  email
+  search
+  textarea
+for-each:x:/-/*
+  _widget
+    button
+      class:btn btn-default
+      innerValue
+      onclick
+        get-widget-property:x:/../*/_event?value
+          innerValue
+        sys42.wysiwyg-controls.add-control:x:/../*/get-widget-property/*/*?value
+  if:x:/..for-each/*/_dp/#?name
+    =:_
+    add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-controls-toolbar/*/widgets
+      src
+        br
+  else
+    set:x:/..for-each/*/_widget/*/*/innerValue?value
+      src:&lt;{0} /&gt;
+        :x:/..for-each/*/_dp/#?name
+    add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-controls-toolbar/*/widgets
+      src:x:/..for-each/*/_widget/*
 
 
 /*
- * Creating our widget to display our editor surface
+ * Forward evaluate the expressions in [create-widget], before
+ * creating WYSIWYG widget
  */
-create-widget
-  parent
+eval-x:x:/+/*
+create-widget:wysiwyg-editor
+  parent:x:/../*/_parent-widget?value
   class:col-xs-12
   widgets
-    literal:editor_surface
-      element:textarea
-      innerValue
 
+    /*
+     * Toolbar for adding widgets to surface
+     */
+    container:wysiwyg-controls-toolbar
+      class:prepend-bottom
+      widgets
+
+    /*
+     * Properties for chosen widget
+     */
+    container:wysiwyg-controls-properties
+      class:prepend-bottom
+      visible:false
+
+    /*
+     * Actual WYSIWYG design surface
+     */
+    container:wysiwyg-editor-surface
+      style:"min-height:400px;background-color:rgba(0,255,0,.1);border-radius:5px;"
+      widgets
+
+
+  /*
+   * Lambda events for Editor Surface
+   */
+  events
+
+
+    /*
+     * "Sink" event required by main editor to retrieve data
+     * from specialized editor during saving process
+     */
+    sys42.get-page-editor-data
+      sys42.get-widget:wysiwyg-editor-surface
+      set:x:/../*/sys42.get-widget/**/_selected
+      set:x:@"/../*/sys42.get-widget/**/style/""=background-color:rgba(0,255,0,.5);box-shadow: 5px 5px 5px #888888;"""
+      set:x:/../*/sys42.get-widget/**/onclick
+      insert-before:x:/../0
+        src:controls
+      lambda2lisp:x:/../*/sys42.get-widget/*/*/widgets/*
+      set:x:/../0?value
+        src:x:/../*/lambda2lisp?value
+      insert-before:x:/../0
+        src
+          type:controls
+
+    /*
+     * Invoked when a generic control is added to the page
+     */
+    sys42.wysiwyg-controls.add-control
 
       /*
-       * Lambda events for Editor Surface
+       * Finding widget type name by stripping away HTML formatting parts from innerValue
        */
-      events
+      split:x:/../*/_arg?value
+        =:&lt;
+        =:" /&gt;"
 
+      /*
+       * Retrieves insertion position, which might differ according to whether or
+       * not a widget is selected on page or not
+       */
+      sys42.wysiwyg-controls.get-insertion-position
 
-        /*
-         * "Sink" event required by main editor to retrieve data
-         * from specialized editor during saving process
-         */
-        sys42.get-page-editor-data
-          insert-before:x:/../0
-            src
-              type:controls
-          get-widget-property:editor_surface
-            innerValue
-          insert-before:x:/../0
-            src:controls
-          set:x:/../0?value
-            src:x:/../*/get-widget-property/*/*?value
+      /*
+       * Retrieving default properties, which differs from widget type
+       */
+      sys42.wysiwyg-controls.get-default-properties:x:/../*/split/0?name
+
+      /*
+       * Adding 'insertion position' to create-widget Active Event invocation
+       */
+      add:x:/../*/_create-widget
+        src:x:/../*/sys42.wysiwyg-controls.get-insertion-position/*
+
+      /*
+       * Adding default properties
+       */
+      add:x:/../*/_create-widget
+        src:x:/../*/sys42.wysiwyg-controls.get-default-properties/*
+
+      /*
+       * Checking if an explicit [element] was given, and if not, choose
+       * the name of the widget type. Otherwise, use the explicit [element]
+       * declaration
+       */
+      if:x:/../*/sys42.wysiwyg-controls.get-default-properties/*/element
+        not
+        add:x:/../*/_create-widget
+          src:"element:{0}"
+            :x:/../*/split/0?name
+
+      /*
+       * Adding [onclick] event handler, such that user can select widget
+       * in WYSIWYG screen by clicking it
+       */
+      add:x:/../*/_create-widget
+        src
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+
+      /*
+       * Checking widget creation Active Event, which might be
+       * [create-widget] (container)
+       * [create-literal-widget] (innerValue type of widget)
+       * [create-void-widget] (widget with neither [widgets] nor [innerValue])
+       */
+      if:x:/../*/sys42.wysiwyg-controls.get-default-properties/*/widgets
+        set:x:/../*/_create-widget?name
+          src:create-container-widget
+      else-if:x:/../*/sys42.wysiwyg-controls.get-default-properties/*/innerValue
+        set:x:/../*/_create-widget?name
+          src:create-literal-widget
+      else
+        set:x:/../*/_create-widget?name
+          src:create-void-widget
+
+      /*
+       * At this point, Active Event invocation below, should have been adequately built
+       * for correctly inserting our widget into surface
+       */
+      _create-widget
+      sys42.wysiwyg-controls.select-widget:x:/-?value
+
+    /*
+     * Returns the position where to insert a new control
+     */
+    sys42.wysiwyg-controls.get-insertion-position
+      return
+        parent:wysiwyg-editor-surface
+
+    /*
+     * Returns default properties for specific type of control,
+     * takes type of control as [_arg]
+     */
+    sys42.wysiwyg-controls.get-default-properties
+      switch:x:/../*/_arg?value
+        case:label
+        case:span
+        case:p
+        case:strong
+        case:em
+        case:blockquote
+        case:pre
+        case:cite
+        case:code
+        case:small
+        case:a
+        case:h1
+        case:h2
+        case:h3
+        case:h4
+        case:h5
+        case:h6
+        case:h5
+        case:h5
+        case:h5
+        case:h5
+        case:h5
+        case:h5
+        case:h5
+        case:h5
+          return
+            innerValue:Foo bar
+        case:div
+        case:header
+        case:address
+        case:article
+        case:footer
+        case:nav
+        case:section
+        case:div
+          return
+            widgets
+        case:br
+        case:hr
+          return
+        case:list
+          return
+            element:ul
+            widgets
+              li
+                innerValue:Item 1
+              li
+                innerValue:Item 2
+        case:video
+          return
+            element:video
+            src:"http://some-url.com/video.ogg"
+            controls
+            innerValue:Upgrade your browser
+        case:audio
+          return
+            element:audio
+            src:"http://some-url.com/video.ogg"
+            controls
+            innerValue:Upgrade your browser
+        case:check
+          return
+            element:input
+            type:checkbox
+            checked
+        case:radio
+          return
+            element:input
+            type:radio
+        case:select
+          return
+            element:select
+            widgets
+              option
+                has-id:false
+                value:foo1
+                innerValue:Foo 1
+              option
+                has-id:false
+                value:foo2
+                innerValue:Foo 2
+        case:text
+          return
+            element:input
+            type:text
+        case:password
+          return
+            element:input
+            type:password
+        case:color
+          return
+            element:input
+            type:color
+        case:email
+          return
+            element:input
+            type:email
+        case:search
+          return
+            element:input
+            type:search
+        case:textarea
+          return
+            element:textarea
+            innerValue:Foo bar!
+
+    /*
+     * Selects the given widget on page
+     */
+    sys42.wysiwyg-controls.select-widget
+      find-widget
+        _selected:true
+
+      /*
+       * Unselecting previously selected widget, if it exists
+       */
+      if:x:/../*/find-widget/*
+        delete-widget-property:x:/../*/find-widget/*?value
+          _selected
+          style
+
+      /*
+       * Making sure selected widget is visible
+       */
+      set-widget-property:x:/../*/_arg?value
+        _selected:true
+        style:"background-color:rgba(0,255,0,.5);box-shadow: 5px 5px 5px #888888;"
+          
 

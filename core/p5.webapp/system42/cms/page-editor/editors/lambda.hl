@@ -5,7 +5,7 @@
 
 
 /*
- * Including CodeMirror for both [content] editor
+ * Including CodeMirror for [lambda] editor
  */
 sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
   _editor
@@ -71,6 +71,3 @@ create-widget
             src:lambda
           set:x:/../0?value
             src:x:/../*/get-widget-property/*/*?value
-
-
-

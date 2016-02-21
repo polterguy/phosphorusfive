@@ -62,6 +62,7 @@
         var el = window.p5.$(event.currentTarget);
         el.raise("on" + event.type);
         event.preventDefault();
+        event.stopPropagation();
     };
 
 

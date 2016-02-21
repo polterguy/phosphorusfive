@@ -15,12 +15,7 @@ else
 insert-before:x:/../0
   src
     role:root
-    controls:@"/*
- * Default [controls] type of page
- * Edit this page to meet your own needs
- */
-container:foo
-  parent:content
+    controls:@"container:foo
   class:col-xs-12
   widgets
     literal:bar

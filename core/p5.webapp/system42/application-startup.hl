@@ -12,7 +12,7 @@ create-event:sys42.execute-lisp-file
 
   // Adding everything as arguments to file evaluation that we're given ourselves as arguments
   add:x:/+
-    src:x:/../*(!/load-file!/add!/eval!/_arg!/!/insert-before)
+    src:x:/../*(!/load-file!/add!/eval!/_arg!/!/insert-before!/set)
 
   // Executing results of [load-file], now possibly with arguments inside of eval
   eval:x:/-2/*
