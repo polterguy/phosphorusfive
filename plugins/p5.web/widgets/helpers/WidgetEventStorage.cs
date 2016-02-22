@@ -70,12 +70,25 @@ namespace p5.web.widgets.helpers
          */
         internal void ChangeKey1 (ApplicationContext context, string oldKey, string newKey)
         {
+            // First copying the old dictionary item into new dictionary item, before we delete the old dictionary item
             _events [newKey] = _events [oldKey];
             _events.Remove (oldKey);
+
+            // Then looping through all [_event] references inside of what are probably our Ajax Events, and
+            // updating the [_event] node's value to the new ID of element.
+            // This might not ALWAYS succeed, though it is good enough for all practical concerns!
+            // If it does not succeed, due to for instance the ID of your widget being referenced by some other
+            // node in your events, you'll either have to manually change your Ajax Events, or refresh the page ...
+            // Sorry ...!!
+            // If it does not work, you've probably written what's defined as "bad Hyperlisp" anyway ...!
+
+            // Looping through all Ajax Events on widget
             foreach (var idxChildNode in _events[newKey]) {
-                foreach (var idxChilcChildNode in idxChildNode.Children) {
-                    if (idxChilcChildNode.Name == "_event" && idxChilcChildNode.Get<string> (context) ==oldKey)
-                        idxChilcChildNode.Value = newKey;
+
+                // Looping through all children nodes of Ajax Events that matches the "oldKey" and the name of [_event]
+                // updating the values of these nodes to the new ID
+                foreach (var idxChilcChildNode in idxChildNode.Children.Where (ix => ix.Name == "_event" && ix.Get<string> (context) == oldKey)) {
+                    idxChilcChildNode.Value = newKey;
                 }
             }
         }

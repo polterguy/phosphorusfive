@@ -166,9 +166,9 @@ namespace p5.ajax.widgets
                 // to allow for retrieving the element on the client side
                 if (IsTrackingViewState) {
                     if (value != base.ID) {
-                        _oldId = base.ID;
+                        if (_oldId == null)
+                            _oldId = base.ID;
                         _attributes.ChangeAttribute ("id", value);
-                        ReRender ();
                     }
                 }
                 base.ID = value;
@@ -420,12 +420,12 @@ namespace p5.ajax.widgets
                         } else if (RenderMode == RenderingMode.ReRenderChildren) {
 
                             // Re-rendering all children controls, but also renders changes to widget ...
-                            _attributes.RegisterChanges ((Page as IAjaxPage).Manager, ClientID);
+                            _attributes.RegisterChanges ((Page as IAjaxPage).Manager, _oldId ?? ClientID);
                             RenderChildrenWidgetsAsJson (writer);
                         } else {
 
                             // Only pass changes back to client as json
-                            _attributes.RegisterChanges ((Page as IAjaxPage).Manager, ClientID);
+                            _attributes.RegisterChanges ((Page as IAjaxPage).Manager, _oldId ?? ClientID);
                             RenderChildren (writer);
                         }
                     } else {
@@ -439,7 +439,7 @@ namespace p5.ajax.widgets
                     if (IsPhosphorusRequest && RenderMode == RenderingMode.RenderInvisible && !ancestorReRendering) {
 
                         // Re-rendering widget's invisible markup
-                        (Page as IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "outerHTML", GetWidgetInvisibleHtml ());
+                        (Page as IAjaxPage).Manager.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetInvisibleHtml ());
                     } else if (!IsPhosphorusRequest || ancestorReRendering) {
 
                         // Rendering invisible markup

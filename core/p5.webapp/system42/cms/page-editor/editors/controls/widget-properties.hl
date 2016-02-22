@@ -41,6 +41,32 @@ create-widget
   widgets
 
     /*
+     * Widget's ID
+     */
+    container
+      class:col-md-3 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              element:div
+              innerValue:ID
+              class:input-group-addon
+            void:widget-property-id
+              element:input
+              type:text
+              class:form-control
+              placeholder:ID ...
+              value
+              onchange
+                get-widget-property:x:/../*/_event?value
+                  value
+                eval-x:x:/+/*
+                sys42.wysiwyg-controls.change-selected-widgets-property:id
+                  _new-value:x:/../*/get-widget-property/*/*?value
+
+    /*
      * Widget's element
      */
     container
@@ -64,28 +90,6 @@ create-widget
                   value
                 eval-x:x:/+/*
                 sys42.wysiwyg-controls.change-selected-widgets-property:element
-                  _new-value:x:/../*/get-widget-property/*/*?value
-    container
-      class:col-md-3 form-group
-      widgets
-        container
-          class:input-group
-          widgets
-            literal
-              element:div
-              innerValue:ID
-              class:input-group-addon
-            void:widget-property-id
-              element:input
-              type:text
-              class:form-control
-              placeholder:ID ...
-              value
-              onchange
-                get-widget-property:x:/../*/_event?value
-                  value
-                eval-x:x:/+/*
-                sys42.wysiwyg-controls.change-selected-widgets-property:id
                   _new-value:x:/../*/get-widget-property/*/*?value
 
   events
