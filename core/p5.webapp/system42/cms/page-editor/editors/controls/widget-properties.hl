@@ -30,9 +30,10 @@ set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-id/*/va
 
 
 /*
- * Then iterating all dynamically inserted properties of specific widget
+ * Then iterating all dynamically inserted properties of specific widget,
+ * except [innerValue], which requires special handling, as a textarea HTML element
  */
-for-each:x:/../*/sys42.get-widget/*/*(!/element)
+for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
   _control
     container
       class:col-md-3 form-group
@@ -40,10 +41,24 @@ for-each:x:/../*/sys42.get-widget/*/*(!/element)
         container
           class:input-group
           widgets
-            literal
+            a
+              href:#
               element:div
               innerValue:{element-name}
               class:input-group-addon
+              onclick
+                _element-name:{element-name}
+                eval-x:x:/+/*|/+/*/*/_eventWidget
+                sys42.confirm-window
+                  _header:Confirm deletion of property
+                  _body:Please confirm that you wish to <strong>remove the <em>'{0}'</em> attribute</strong> from widget! This might have consequence for the rendering of your widget!
+                    :x:/../*/_element-name?value
+                  _onok
+                    _eventWidget:x:/../*/_event?value
+                    sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
+                    get-parent-widget:x:/../*/_eventWidget?value
+                    get-parent-widget:x:/-/*?value
+                    delete-widget:x:/-/*?value
             void
               element:input
               type:text
@@ -60,6 +75,51 @@ for-each:x:/../*/sys42.get-widget/*/*(!/element)
     src:x:/..for-each/*/_dp/#?name
   set:x:/..for-each/*/_control/*/*/*/*/*/*/value?value
     src:x:/..for-each/*/_dp/#?value
+  add:x:/../*/create-widget/*/widgets
+    src:x:/..for-each/*/_control/*
+
+
+/*
+ * Then [innerValue], which requires special handling, as a textarea HTML element
+ */
+for-each:x:/../*/sys42.get-widget/*/*/innerValue
+  _control
+    container
+      class:col-md-6 form-group
+      style:"clear:both;"
+      widgets
+        a
+          href:#
+          innerValue:innerValue ...
+          onclick
+            if
+              fetch:x:/0/0/0?value
+                get-widget-property:wywiwyg-control-innerValue
+                  style
+              ~:"display:none;"
+              set-widget-property:wywiwyg-control-innerValue
+                style:"display:inherit;"
+              send-javascript:@"$('#wywiwyg-control-innerValue').focus().select();"
+            else
+              set-widget-property:wywiwyg-control-innerValue
+                style:"display:none;"
+        textarea:wywiwyg-control-innerValue
+          class:form-control
+          placeholder:New value ...
+          style:"display:none;"
+          rows:5
+          innerValue
+          onchange
+            get-widget-property:x:/../*/_event?value
+              value
+            eval-x:x:/+/*
+            sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
+              _new-value:x:/../*/get-widget-property/*/*?value
+  set:x:/..for-each/**/={element-name}?value
+    src:x:/..for-each/*/_dp/#?name
+  html-encode:x:/..for-each/*/_dp/#?value
+  set:x:/..for-each/*/_control/*/*/*/textarea/*/innerValue?value
+    src:x:/..for-each/*/html-encode?value
   add:x:/../*/create-widget/*/widgets
     src:x:/..for-each/*/_control/*
 
@@ -102,6 +162,16 @@ create-widget
                 if:x:/../*/get-widget-property/*/*?value
                   =:
                   sys42.info-window:You cannot have an empty id property of your element! Please supply an id value for your element!
+                    _error:true
+                    _time:more
+                  set-widget-property:x:/../*/_event?value
+                    class:error form-control
+                  send-javascript:@"$('#widget-property-id').focus().select();"
+                  return
+                if
+                  fetch:x:/0/0?value
+                    widget-exist:x:/../*/get-widget-property/*/*?value
+                  sys42.info-window:Another widget with the same id exists from before on page, please provide a unique id
                     _error:true
                     _time:more
                   set-widget-property:x:/../*/_event?value
@@ -160,12 +230,28 @@ create-widget
     sys42.wysiwyg-controls.change-selected-widgets-property
       get-widget-property:wysiwyg-select-control
         value
-      add:x:/+
-        src:@"{0}:""{1}"""
-          :x:/../*/_arg?value
-          :x:/../*/_new-value?value
-      set-widget-property:x:/../*/get-widget-property/*/*?value
-      sys42.wysiwyg-controls.databind-select-control
+      if:x:/../*/_new-value?value
+
+        /*
+         * User provided a new value for property of widget
+         */
+        add:x:/+
+          src:@"{0}:@""{1}"""
+            :x:/../*/_arg?value
+            :x:/../*/_new-value?value
+        set-widget-property:x:/../*/get-widget-property/*/*?value
+        sys42.wysiwyg-controls.databind-select-control
+      else
+
+        /*
+         * User did NOT provide a new value for property of widget.
+         * But rather wanted to remove property entirely
+         */
+        add:x:/+
+          src:{0}
+            :x:/../*/_arg?value
+        delete-widget-property:x:/../*/get-widget-property/*/*?value
+        sys42.wysiwyg-controls.databind-select-control
 
 
 

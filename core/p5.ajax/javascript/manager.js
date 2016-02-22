@@ -90,6 +90,9 @@
     window.p5._getChange = function(old, val) {
         if (val !== null) {
             if (typeof val === "object") {
+                if (old.indexOf("\n") != -1 && old.indexOf("\r\n") == -1) {
+                    old = old.replace ("\n", "\r\n");
+                }
                 if (val.length === 2) {
                     return old.substring(0, val[0]) + val[1]; // Removing from 'number' and concatenating 'string'
                 } else {
