@@ -66,6 +66,35 @@ namespace p5.web.widgets.helpers
         }
 
         /*
+         * Changes the key1 parts of dictionary
+         */
+        internal void ChangeKey1 (ApplicationContext context, string oldKey, string newKey)
+        {
+            _events [newKey] = _events [oldKey];
+            _events.Remove (oldKey);
+            foreach (var idxChildNode in _events[newKey]) {
+                foreach (var idxChilcChildNode in idxChildNode.Children) {
+                    if (idxChilcChildNode.Name == "_event" && idxChilcChildNode.Get<string> (context) ==oldKey)
+                        idxChilcChildNode.Value = newKey;
+                }
+            }
+        }
+
+        /*
+         * Changes the key2 parts of dictionary
+         */
+        internal void ChangeKey2 (string oldKey, string newKey)
+        {
+            foreach (var idxKey1 in _events.Keys) {
+                foreach (var idxKey2 in _events[idxKey1]) {
+                    if (idxKey2.Name == oldKey) {
+                        idxKey2.Name = newKey;
+                    }
+                }
+            }
+        }
+
+        /*
          * Removes Dictionary items from dictionary matching both key1 and key2
          */
         internal void Remove (string key1, string key2)
