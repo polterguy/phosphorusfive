@@ -353,6 +353,7 @@
     <None Include="system42\tests\for-each.hl" />
     <None Include="system42\tests\iterators.hl" />
     <None Include="system42\cms\page-editor\editors\controls\widget-properties.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\add-attribute.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

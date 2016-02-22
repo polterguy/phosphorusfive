@@ -1,0 +1,172 @@
+/*
+ * Allows the user to add one attribute to currently selected widget
+ * in WYSIWYG design surface
+ */
+
+
+/*
+ * Creating textbox input widget, to retrieve attribute name
+ * from user
+ */
+create-void-widget:wysiwyg-control-add-attribute
+  element:input
+  after:wysiwyg-button-add-attribute
+  type:text
+  class:form-control
+  placeholder:Attribute name ...
+  onkeypress:"return p5.keyPressAddAttribute(event);"
+  onkeyup:"return p5.keyUpAddAttribute(event);"
+  _ondestroy
+    delete-widget:wysiwyg-control-add-attribute
+  _onchange
+
+    /*
+     * Retrieving new attribute name
+     */
+    get-widget-property:x:/../*/_event?value
+      value
+
+    /*
+     * Finding selected widget
+     */
+    find-widget
+      _selected:true
+
+    /*
+     * Retrieving element name of selected widget, since it is
+     * a part of the invocation arguments to check if attribute name
+     * is legal or not
+     */
+    get-widget-property:x:/-/*?value
+      element
+
+    /*
+     * Forward evaluating expressions inside [src] node of [add] below, 
+     * before adding [_element] with element name as value to check if
+     * attribute name is legal or not
+     */
+    eval-x:x:/+/*/*
+    add:x:/+
+      src:"{0}:{1}"
+        :_element
+        :x:/../*/get-widget-property/[1,2]/*/*?value
+
+    /*
+     * Checking status of suggested attribute name, returns either
+     * "true", "dubious" or "false"
+     */
+    sys42.wysiwyg-controls.is-legal-attribute-name:x:/../*/get-widget-property/[0,1]/*/*?value
+    if:x:/-?value.bool
+      =:bool:true
+
+      /*
+       * This is a legal attribute name for widget. Finding selected
+       * widget, adding attribute, and re-evaluating the 'show properties' 
+       * Hyperlisp file
+       */
+      add:x:/+
+        src:x:/../*/get-widget-property/[0,1]/*/*?value
+      set-widget-property:x:/../*/find-widget/*?value
+      set:x:/+2/*/_widget?value
+        src:x:/../*/find-widget/*?value
+      eval-x:x:/+/*
+      sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+        _widget
+        _initial-focus:x:/../*/get-widget-property/[0,1]/*/*?value
+      delete-widget:wysiwyg-control-add-attribute
+      sys42.info-window:Please provide a value, if any, for your attribute!
+
+    else-if:x:/-2?value
+      =:dubious
+
+      /*
+       * This is a legal attribute name, but not standard, warning
+       * user, and if he confirms, we still add the attribute. But
+       * first we destroy the textbox ...
+       */
+      delete-widget:wysiwyg-control-add-attribute
+
+      /*
+       * Then we forward evaluates (most) expressions inside of confirm window
+       */
+      eval-x:x:/+/**(/src|/set-widget-property|/_initial-focus|/_body)
+      sys42.confirm-window
+        _header:Please confirm attribute name!
+        _body:@"<p>It seems you've suggested an attribute name <strong>'{0}'</strong>, which is not standard HTML for the <strong>'{1}'</strong> element.
+Are you sure you with to add this attribute to widget?</p>
+<p>Adding non-standard attributes into your HTML markup is normally not OK to do!</p>"
+          :x:/../*/get-widget-property/[0,1]/*/*?value
+          :x:/../*/get-widget-property/[1,2]/*/*?value
+        _onok
+          add:x:/+
+            src:x:/../*/get-widget-property/[0,1]/*/*?value
+          set-widget-property:x:/../*/find-widget/*?value
+          set:x:/+2/*/_widget?value
+            src:x:/../*/find-widget/*?value
+          eval-x:x:/+/*
+          sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+            _widget
+            _initial-focus:x:/../*/get-widget-property/[0,1]/*/*?value
+          sys42.info-window:Please provide a value, if any, for your attribute!
+    else
+
+      /*
+       * This is ABSOLUTELY NOT a legal attribute name, and
+       * can be values such as "id", "element", etc ...
+       */
+      sys42.info-window:@"That attribute name is under no circumstances allowed to add to your widget!!"
+        _error:true
+        _time:more
+      set-widget-property:x:/../*/_event?value
+        class:form-control error
+      send-javascript:@"$('#wysiwyg-control-add-attribute').focus().select();"
+
+  events
+
+    /*
+     * Determines if an attribute name is legal or not, returns [true], 
+     * [dubious] or [false] to caller
+     */
+    sys42.wysiwyg-controls.is-legal-attribute-name
+      if
+        fetch:x:/0/0?value
+          index-of:x:/../*/_arg?value
+            what:_
+        =:int:0
+
+        /*
+         * Everything starting with an "_" is OK, since they're "hidden attributes" anyway!
+         */
+        return:true
+      switch:x:/../*/_arg?value
+        case:src
+        case:class
+          return:true
+        case:id
+        case:element
+          return:false
+        default
+          return:dubious
+
+
+/*
+ * Giving textbox initial focus
+ */
+send-javascript:@"$('#wysiwyg-control-add-attribute').focus();"
+
+
+/*
+ * Including JavaScript to help handle carriage return key in textbox
+ */
+include-javascript:@"p5.keyPressAddAttribute = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('wysiwyg-control-add-attribute').raise('_onchange');
+    return false;
+  }
+}
+p5.keyUpAddAttribute = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('wysiwyg-control-add-attribute').raise('_ondestroy');
+    return false;
+  }
+}"

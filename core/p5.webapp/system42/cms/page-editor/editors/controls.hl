@@ -157,14 +157,17 @@ add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-control
                     src:selected
                 eval:x:/./*/_option
 
+        /*
+         * Delete widget button
+         */
         button:wysiwyg-button-delete
-          class:btn btn-default glyphicon glyphicon-remove
+          class:btn btn-default glyphicon glyphicon-trash
           title:Delete currently selected widget
           disabled
           onclick
             sys42.confirm-window
               _header:Confirm deletion!
-              _body:Are you sure you wish to delete currently selected widget from form?
+              _body:Are you sure you wish to <strong>delete currently selected widget</strong> from form? This action cannot be undone!
               _onok
                 find-widget
                   _selected:true
@@ -174,6 +177,16 @@ add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-control
                 sys42.wysiwyg-controls.databind-select-control
                 set-widget-property:wysiwyg-controls-properties
                   visible:false
+
+        /*
+         * Add attribute to widget button
+         */
+        button:wysiwyg-button-add-attribute
+          class:btn btn-default glyphicon glyphicon-plus
+          title:Add attribute to widget
+          disabled
+          onclick
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute.hl
 
 
 /*
@@ -234,7 +247,7 @@ create-widget:wysiwyg-editor
        * In addition to removing the selected widget's [style] properties
        */
       set:x:/../*/sys42.get-widget/**/_selected
-      set:x:@"/../*/sys42.get-widget/**/style/""=background-color:rgba(0,255,0,.5);box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"""
+      set:x:@"/../*/sys42.get-widget/**/style/""=box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"""
 
       /*
        * Removing all 'select by clicking' event handlers, only relevant
@@ -487,6 +500,14 @@ create-widget:wysiwyg-editor
       set-widget-property:wysiwyg-controls-properties
         visible:false
 
+      /*
+       * Hiding buttons that should only be visible while widget is selected
+       */
+      set-widget-property:wysiwyg-button-delete
+        disabled
+      set-widget-property:wysiwyg-button-add-attribute
+        disabled
+
     /*
      * Selects the given widget on page
      */
@@ -514,26 +535,35 @@ create-widget:wysiwyg-editor
          */
         set-widget-property:x:/../*/_arg?value
           _selected:true
-          style:"background-color:rgba(0,255,0,.5);box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"
-        delete-widget-property:wysiwyg-button-delete
-          disabled
+          style:"box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"
 
         /*
          * Showing widget's properties widget
          */
         sys42.wysiwyg-controls.show-selected-widgets-properties:x:/../*/_arg?value
+
+        /*
+         * Showing buttons that should only be visible while widget is selected
+         */
+        delete-widget-property:wysiwyg-button-delete
+          disabled
+        delete-widget-property:wysiwyg-button-add-attribute
+          disabled
       else
 
         /*
-         * The widget that was already selected was UN-selected
-         */
-        set-widget-property:wysiwyg-button-delete
-          disabled
-
-        /*
+         * The widget that was already selected was UN-selected.
          * Hiding widget's properties widget
          */
         sys42.wysiwyg-controls.hide-selected-widgets-properties
+
+        /*
+         * Hiding buttons that should only be visible while widget is selected
+         */
+        set-widget-property:wysiwyg-button-delete
+          disabled
+        set-widget-property:wysiwyg-button-add-attribute
+          disabled
 
     /*
      * Shows the widget's properties widget, allowing user to

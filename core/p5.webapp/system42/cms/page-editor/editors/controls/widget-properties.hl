@@ -1,5 +1,5 @@
 /*
- * Shows the propeties for a single selected widget
+ * Shows the properties for a single selected widget
  */
 
 
@@ -15,7 +15,7 @@ sys42.get-widget:x:/../*/_widget?value
  * WYSIWYG surface from the widget's definition
  */
 set:x:@"/../*/sys42.get-widget/*/*(/_selected|/style/""={0}""|/onclick)"
-  :"background-color:rgba(0,255,0,.5);box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"
+  :"box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"
 
 
 /*
@@ -46,13 +46,33 @@ for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
               element:div
               innerValue:{element-name}
               class:input-group-addon
+              style:"color:#337ab7;"
               onclick
                 _element-name:{element-name}
-                eval-x:x:/+/*|/+/*/*/_eventWidget
+                eval-x:x:/+/*|/+/**/_eventWidget
                 sys42.confirm-window
                   _header:Confirm deletion of property
-                  _body:Please confirm that you wish to <strong>remove the <em>'{0}'</em> attribute</strong> from widget! This might have consequence for the rendering of your widget!
+                  _body:@"<p>Please confirm that you wish to <strong>remove the <em>'{0}'</em> attribute</strong> from widget! 
+This might have consequence for the rendering of your widget!</p>
+<p>Alternatively, you can choose to 'nullify' its value, meaning the attribute
+will still be kept around, but have a 'null value'. This can be useful for [controls] properties of [video]
+HTML elements for instance, that don't require a value, but need the property.</p>
+<p>If you do not want to do either, please close the window at the top right corner with the 'X'.</p>"
                     :x:/../*/_element-name?value
+                  _extra-buttons
+                    button
+                      class:btn btn-default
+                      innerValue:Nullify value
+                      title:Only 'nullify' value of property, but do not remove property
+                      onclick
+                        _eventWidget:x:/../*/_event?value
+                        sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
+                          _new-value
+                        send-javascript:@"$('#confirm-window').modal('toggle');"
+                        find-widget
+                          _element-name:{element-name}
+                        set-widget-property:x:/-/*?value
+                          value
                   _onok
                     _eventWidget:x:/../*/_event?value
                     sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
@@ -64,6 +84,7 @@ for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
               type:text
               class:form-control
               placeholder:New value ...
+              _element-name:{element-name}
               value
               onchange
                 get-widget-property:x:/../*/_event?value
@@ -77,7 +98,6 @@ for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
     src:x:/..for-each/*/_dp/#?value
   add:x:/../*/create-widget/*/widgets
     src:x:/..for-each/*/_control/*
-
 
 /*
  * Then [innerValue], which requires special handling, as a textarea HTML element
@@ -100,15 +120,23 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
               set-widget-property:wywiwyg-control-innerValue
                 style:"display:inherit;"
               send-javascript:@"$('#wywiwyg-control-innerValue').focus().select();"
+              set-session-value:sys42.wysiwyg-controls.innerValue-attribute-visible
+                src:bool:true
             else
               set-widget-property:wywiwyg-control-innerValue
                 style:"display:none;"
+              set-session-value:sys42.wysiwyg-controls.innerValue-attribute-visible
         textarea:wywiwyg-control-innerValue
           class:form-control
           placeholder:New value ...
           style:"display:none;"
           rows:5
           innerValue
+          oninit
+            get-session-value:sys42.wysiwyg-controls.innerValue-attribute-visible
+            if:x:/-/*?value.bool
+              set-widget-property:x:/../*/_event?value
+                style:"display:inherit;"
           onchange
             get-widget-property:x:/../*/_event?value
               value
@@ -241,6 +269,15 @@ create-widget
             :x:/../*/_new-value?value
         set-widget-property:x:/../*/get-widget-property/*/*?value
         sys42.wysiwyg-controls.databind-select-control
+      else-if:x:/../*/_new-value
+
+        /*
+         * User provided a 'null value'
+         */
+        add:x:/+
+          src:{0}
+            :x:/../*/_arg?value
+        set-widget-property:x:/../*/get-widget-property/*/*?value
       else
 
         /*
@@ -253,7 +290,12 @@ create-widget
         delete-widget-property:x:/../*/get-widget-property/*/*?value
         sys42.wysiwyg-controls.databind-select-control
 
+/*
+ * If caller requested that initial focus be set, we do so
+ */
+if:x:/../*/_initial-focus?value
+  find-widget
+    _element-name:x:/../*/_initial-focus?value
+  send-javascript:@"$('#{0}').focus().select();"
+    :x:/..if/*/find-widget/*?value
 
-
-
-_sys42.show-code-window:x:/..
