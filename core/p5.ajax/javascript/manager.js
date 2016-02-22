@@ -89,15 +89,32 @@
      */
     window.p5._getChange = function(old, val) {
         if (val !== null) {
-            if (typeof val === "object") {
-                if (old.indexOf("\n") != -1 && old.indexOf("\r\n") == -1) {
-                    old = old.replace ("\n", "\r\n");
+
+            /*
+             * Helper method to calculate offset in substring, due to
+             * missing \r in CR/LF sequence of values
+             */
+            var getOffset = function (oldVal) {
+                var crOffset = 0;
+                if (oldVal.indexOf("\n") != -1 && oldVal.indexOf("\r") == -1) {
+                    var curIdx = 0;
+                    while (true) {
+                        curIdx = oldVal.indexOf ("\n", curIdx);
+                        if (curIdx == -1 || curIdx > val[0]) {
+                            break;
+                        }
+                        crOffset += 1;
+                        curIdx += 1;
+                    }
                 }
+                return crOffset;
+            };
+            if (typeof val === "object") {
                 if (val.length === 2) {
-                    return old.substring(0, val[0]) + val[1]; // Removing from 'number' and concatenating 'string'
+                    return old.substring(0, val[0] - getOffset (old)) + val[1]; // Removing from 'number' and concatenating 'string'
                 } else {
                     if (typeof val[0] === "number") {
-                        return old.substring(0, val[0]); // Removing from 'number'
+                        return old.substring(0, val[0] - getOffset (old)); // Removing from 'number'
                     } else {
                         return old + val[0]; // Only concatenating to existing value
                     }

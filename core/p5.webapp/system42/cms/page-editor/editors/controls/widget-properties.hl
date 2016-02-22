@@ -86,6 +86,7 @@ HTML elements for instance, that don't require a value, but need the property.</
               placeholder:New value ...
               _element-name:{element-name}
               value
+              onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
               onchange
                 get-widget-property:x:/../*/_event?value
                   value
@@ -299,3 +300,9 @@ if:x:/../*/_initial-focus?value
   send-javascript:@"$('#{0}').focus().select();"
     :x:/..if/*/find-widget/*?value
 
+include-javascript:@"p5.keyPressChangeAttributeValue = function(e) {
+  if(e.keyCode == 13) {
+    e.target.previousSibling.focus();
+    return false;
+  }
+}"

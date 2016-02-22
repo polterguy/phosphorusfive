@@ -128,25 +128,83 @@ Are you sure you with to add this attribute to widget?</p>
      * [dubious] or [false] to caller
      */
     sys42.wysiwyg-controls.is-legal-attribute-name
+
+      /*
+       * First we check if attribute is an "invisible" attribute,
+       * at which case basically "everything goes" ...!!
+       * In addition to checking if this is a "custom data-*" attribute,
+       * at which case everything's also quite fine!
+       */
       if
         fetch:x:/0/0?value
           index-of:x:/../*/_arg?value
             what:_
         =:int:0
+        or
+          fetch:x:/0/0?value
+            index-of:x:/../*/_arg?value
+              what:data-
+          =:int:0
 
         /*
          * Everything starting with an "_" is OK, since they're "hidden attributes" anyway!
+         * And, everything starting with "data-" is OK according to the HTML5 specs!
          */
         return:true
+
+      /*
+       * Then we check that attribute only contains small letters, and no special
+       * characters, or integer numbers, etc
+       */
+      match:x:/../*/_arg?value
+        what:regex:"/^[a-zA-Z][\\w:.-]+$/"
+      if:x:/-/0/0?name
+        !=:x:/../*/_arg?value
+        return:false
+
+      /*
+       * Checking "generic" attributes, that are legal for 
+       * all HTML elements
+       */
       switch:x:/../*/_arg?value
-        case:src
-        case:class
-          return:true
         case:id
         case:element
+        case:visible
+        case:invisible-element
+        case:has-id
+        case:render-type
+
+          /*
+           * Under no curcumstances we allow the user to add 
+           * these attributes to his widget!!
+           */
           return:false
+        case:class
+        case:dir
+        case:lang
+        case:style
+        case:title
+
+          /*
+           * These are common attributes, legal for
+           * all HTML elements
+           */
+          return:true
         default
-          return:dubious
+
+          /*
+           * Here we must check the type of HTML element, 
+           * before determining if attribute is legal or not ...
+           */
+          switch:x:/../*/_element?value
+            case:video
+            case:audio
+              switch:x:/../*/_arg?value
+                case:controls
+                case:src
+                  return:true
+            default
+              return:dubious
 
 
 /*
