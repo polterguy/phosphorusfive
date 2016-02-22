@@ -113,8 +113,10 @@ namespace p5.web.widgets
                     case "id":
                         var oldID = idxWidget.ID;
                         idxWidget.ID = valueNode.GetExValue<string> (context);
-                        Manager.WidgetAjaxEventStorage.ChangeKey1 (context, oldID, idxWidget.ID);
-                        Manager.WidgetLambdaEventStorage.ChangeKey2 (oldID, idxWidget.ID);
+                        if (oldID != idxWidget.ID) {
+                            Manager.WidgetAjaxEventStorage.ChangeKey1 (context, oldID, idxWidget.ID);
+                            Manager.WidgetLambdaEventStorage.ChangeKey2 (oldID, idxWidget.ID);
+                        }
                         break;
                     default:
                         idxWidget [valueNode.Name.StartsWith ("\\") ? valueNode.Name.Substring(1) : valueNode.Name] = valueNode.GetExValue<string> (context);

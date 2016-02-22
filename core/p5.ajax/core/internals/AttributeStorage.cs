@@ -175,7 +175,11 @@ namespace p5.ajax.core.internals
 
             var vals = viewStateObject as string[][];
             foreach (var idx in vals) {
-                _viewStatePersisted.Add (new Attribute (idx [0], idx [1]));
+
+                // Skipping "id" attribute, which might end up in our list, when ever a 
+                // widget has changed its ID
+                if (idx [0] != "id")
+                    _viewStatePersisted.Add (new Attribute (idx [0], idx [1]));
             }
         }
 

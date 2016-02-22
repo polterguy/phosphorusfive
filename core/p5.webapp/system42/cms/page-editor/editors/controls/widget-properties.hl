@@ -19,12 +19,49 @@ set:x:@"/../*/sys42.get-widget/*/*(/_selected|/style/""={0}""|/onclick)"
 
 
 /*
- * Setting initial values for widget's properties
+ * Setting initial values for widget's properties, first starting
+ * out with the 'static properties', such as [element] and [id], which
+ * all widgets have
  */
 set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-element/*/value?value
   src:x:/../*/sys42.get-widget/*/*/element?value
 set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-id/*/value?value
   src:x:/../*/_widget?value
+
+
+/*
+ * Then iterating all dynamically inserted properties of specific widget
+ */
+for-each:x:/../*/sys42.get-widget/*/*(!/element)
+  _control
+    container
+      class:col-md-3 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              element:div
+              innerValue:{element-name}
+              class:input-group-addon
+            void
+              element:input
+              type:text
+              class:form-control
+              placeholder:New value ...
+              value
+              onchange
+                get-widget-property:x:/../*/_event?value
+                  value
+                eval-x:x:/+/*
+                sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
+                  _new-value:x:/../*/get-widget-property/*/*?value
+  set:x:/..for-each/**/={element-name}?value
+    src:x:/..for-each/*/_dp/#?name
+  set:x:/..for-each/*/_control/*/*/*/*/*/*/value?value
+    src:x:/..for-each/*/_dp/#?value
+  add:x:/../*/create-widget/*/widgets
+    src:x:/..for-each/*/_control/*
 
 
 /*
@@ -51,17 +88,28 @@ create-widget
           widgets
             literal
               element:div
-              innerValue:ID
+              innerValue:id
               class:input-group-addon
             void:widget-property-id
               element:input
               type:text
               class:form-control
-              placeholder:ID ...
+              placeholder:id ...
               value
               onchange
                 get-widget-property:x:/../*/_event?value
                   value
+                if:x:/../*/get-widget-property/*/*?value
+                  =:
+                  sys42.info-window:You cannot have an empty id property of your element! Please supply an id value for your element!
+                    _error:true
+                    _time:more
+                  set-widget-property:x:/../*/_event?value
+                    class:error form-control
+                  send-javascript:@"$('#widget-property-id').focus().select();"
+                  return
+                set-widget-property:x:/../*/_event?value
+                  class:form-control
                 eval-x:x:/+/*
                 sys42.wysiwyg-controls.change-selected-widgets-property:id
                   _new-value:x:/../*/get-widget-property/*/*?value
@@ -77,17 +125,28 @@ create-widget
           widgets
             literal
               element:div
-              innerValue:Element
+              innerValue:element
               class:input-group-addon
             void:widget-property-element
               element:input
               type:text
               class:form-control
-              placeholder:Element ...
+              placeholder:element ...
               value
               onchange
                 get-widget-property:x:/../*/_event?value
                   value
+                if:x:/../*/get-widget-property/*/*?value
+                  =:
+                  sys42.info-window:You cannot have an empty [element] property of your element! Please supply an [element] value for your element!
+                    _error:true
+                    _time:more
+                  set-widget-property:x:/../*/_event?value
+                    class:error form-control
+                  send-javascript:@"$('#widget-property-element').focus().select();"
+                  return
+                set-widget-property:x:/../*/_event?value
+                  class:form-control
                 eval-x:x:/+/*
                 sys42.wysiwyg-controls.change-selected-widgets-property:element
                   _new-value:x:/../*/get-widget-property/*/*?value

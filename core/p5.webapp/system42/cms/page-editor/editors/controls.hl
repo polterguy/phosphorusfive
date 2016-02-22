@@ -205,6 +205,9 @@ create-widget:wysiwyg-editor
      */
     container:wysiwyg-editor-surface
       style:"min-height:400px;background-color:rgba(0,255,0,.1);border-radius:5px;"
+      onclick
+        sys42.wysiwyg-controls.unselect-widget
+        sys42.wysiwyg-controls.databind-select-control
       widgets
 
 
