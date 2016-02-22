@@ -110,6 +110,9 @@ namespace p5.web.widgets
                         idxWidget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.GetExValue<string> (context));
                         idxWidget.ReRender ();
                         break;
+                    case "id":
+                        idxWidget.ID = valueNode.GetExValue<string> (context);
+                        break;
                     default:
                         idxWidget [valueNode.Name.StartsWith ("\\") ? valueNode.Name.Substring(1) : valueNode.Name] = valueNode.GetExValue<string> (context);
                         break;
@@ -172,8 +175,7 @@ namespace p5.web.widgets
                     // First listing "static properties"
                     if (!widget.Visible)
                         curNode.Add ("visible", false);
-                    if ((widget is Container && widget.Element != "div") || (widget is Literal && widget.Element != "p"))
-                        curNode.Add ("element", widget.Element);
+                    curNode.Add ("element", widget.Element);
                     if (!widget.HasID)
                         curNode.Add ("has-id", false);
 

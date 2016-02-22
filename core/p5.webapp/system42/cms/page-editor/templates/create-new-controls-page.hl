@@ -15,10 +15,8 @@ else
 insert-before:x:/../0
   src
     role:root
-    controls:@"container:foo
-  class:col-xs-12
-  widgets
-    literal:bar
-      innerValue:Howdy Controls World!"
+    controls:@"literal:foo
+  element:p
+  innerValue:Howdy Controls World!"
 
 

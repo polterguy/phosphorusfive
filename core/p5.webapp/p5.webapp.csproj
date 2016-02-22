@@ -352,6 +352,7 @@
     <None Include="system42\tests\expressions.hl" />
     <None Include="system42\tests\for-each.hl" />
     <None Include="system42\tests\iterators.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\widget-properties.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -379,5 +380,6 @@
     <Folder Include="users\root\documents\public\" />
     <Folder Include="users\root\temp\" />
     <Folder Include="system42\tests\" />
+    <Folder Include="system42\cms\page-editor\editors\controls\" />
   </ItemGroup>
 </Project>

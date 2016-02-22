@@ -28,6 +28,8 @@ create-protected-event:sys42.get-widget
         equals:x
       and:x:/./-/*?count
         equals:int:8
+      and:x:/../*/_keep-empty-ids?value.bool
+        !=:bool:true
       set:x:/../0/-?value
 
     // Fetching properties
@@ -54,20 +56,36 @@ create-protected-event:sys42.get-widget
       set:x:/../0/-/*/_onclick/*/_exe?value
         src:node:"_executed-code"
 
-    // Looping through all children, recursively invoking self
-    get-children-widgets:x:/../*/list-widgets/0?value
-    if:x:/-/*/*
+    /*
+     * Making sure all [container] widgets have the [widgets] child,
+     * even if they're not supposed to fetch their children
+     */
+    if:x:/../*/list-widgets/0?name
+      =:container
       add:x:/../0/-
         src
           widgets
-    for-each:x:/-2/*/*?value
-      set:x:/+?value
-        src:x:/..for-each/*/_dp?value
-      sys42.get-widget
-      add:x:/+/*/src
-        src:x:/..for-each/*/sys42.get-widget/*
-      add:x:/../0/-/*/widgets
-        src
+
+    // Looping through all children, recursively invoking self, but only if we should
+    if:x:/../*/_no-children?value.bool
+      !=:bool:true
+
+      /*
+       * Looping through all children widgets recursively
+       */
+      get-children-widgets:x:/../*/list-widgets/0?value
+      for-each:x:/-/*/*?value
+        set:x:/..for-each/*/sys42.get-widget?value
+          src:x:/..for-each/*/_dp?value
+        if:x:/../*/_keep-empty-ids?value
+          add:x:/..for-each/*/sys42.get-widget
+            src
+              _keep-empty-ids:bool:true
+        sys42.get-widget
+        add:x:/+/*/src
+          src:x:/..for-each/*/sys42.get-widget/*
+        add:x:/../0/-/*/widgets
+          src
 
     // Widget lambda events, at last
     list-widget-lambda-events:x:/../*/list-widgets/0?value

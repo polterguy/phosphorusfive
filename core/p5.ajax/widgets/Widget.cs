@@ -153,6 +153,29 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
+        ///     Overridden to make it possible to change an element's ID during execution of page life cycle
+        /// </summary>
+        /// <value>The new ID</value>
+        private string _oldId;
+        public override string ID {
+            get {
+                return base.ID;
+            }
+            set {
+                // Storing old ID of element, since this is the stuff that'll be rendered over the wire
+                // to allow for retrieving the element on the client side
+                if (IsTrackingViewState) {
+                    if (value != base.ID) {
+                        _oldId = base.ID;
+                        _attributes.ChangeAttribute ("id", value);
+                        ReRender ();
+                    }
+                }
+                base.ID = value;
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets an attribute value for your widget
         /// </summary>
         /// <param name="name">Name of attribute to retrieve or set value of</param>
@@ -393,7 +416,7 @@ namespace p5.ajax.widgets
                         if (RenderMode == RenderingMode.ReRender) {
 
                             // Re-rendering entire widget
-                            (Page as IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "outerHTML", GetWidgetHtml ());
+                            (Page as IAjaxPage).Manager.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetHtml ());
                         } else if (RenderMode == RenderingMode.ReRenderChildren) {
 
                             // Re-rendering all children controls, but also renders changes to widget ...

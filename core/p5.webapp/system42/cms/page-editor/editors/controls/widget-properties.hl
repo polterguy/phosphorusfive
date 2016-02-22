@@ -1,0 +1,110 @@
+/*
+ * Shows the propeties for a single selected widget
+ */
+
+
+/*
+ * Fetching widget,without its children widgets
+ */
+sys42.get-widget:x:/../*/_widget?value
+  _no-children:true
+
+
+/*
+ * Removing the parts that makes the widget selected in the 
+ * WYSIWYG surface from the widget's definition
+ */
+set:x:@"/../*/sys42.get-widget/*/*(/_selected|/style/""={0}""|/onclick)"
+  :"background-color:rgba(0,255,0,.5);box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"
+
+
+/*
+ * Setting initial values for widget's properties
+ */
+set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-element/*/value?value
+  src:x:/../*/sys42.get-widget/*/*/element?value
+set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-id/*/value?value
+  src:x:/../*/_widget?value
+
+
+/*
+ * Creating properties edit widget, but first making sure
+ * container to stuff properties into is visible, and deleting
+ * any previously properties widgets
+ */
+clear-widget:wysiwyg-controls-properties
+set-widget-property:wysiwyg-controls-properties
+  visible:true
+create-widget
+  parent:wysiwyg-controls-properties
+  class:clearfix
+  widgets
+
+    /*
+     * Widget's element
+     */
+    container
+      class:col-md-3 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              element:div
+              innerValue:Element
+              class:input-group-addon
+            void:widget-property-element
+              element:input
+              type:text
+              class:form-control
+              placeholder:Element ...
+              value
+              onchange
+                get-widget-property:x:/../*/_event?value
+                  value
+                eval-x:x:/+/*
+                sys42.wysiwyg-controls.change-selected-widgets-property:element
+                  _new-value:x:/../*/get-widget-property/*/*?value
+    container
+      class:col-md-3 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              element:div
+              innerValue:ID
+              class:input-group-addon
+            void:widget-property-id
+              element:input
+              type:text
+              class:form-control
+              placeholder:ID ...
+              value
+              onchange
+                get-widget-property:x:/../*/_event?value
+                  value
+                eval-x:x:/+/*
+                sys42.wysiwyg-controls.change-selected-widgets-property:id
+                  _new-value:x:/../*/get-widget-property/*/*?value
+
+  events
+
+    /*
+     * Changes the given property [_arg] of the currently selected widget
+     * to [_new-value]
+     */
+    sys42.wysiwyg-controls.change-selected-widgets-property
+      get-widget-property:wysiwyg-select-control
+        value
+      add:x:/+
+        src:@"{0}:""{1}"""
+          :x:/../*/_arg?value
+          :x:/../*/_new-value?value
+      set-widget-property:x:/../*/get-widget-property/*/*?value
+      sys42.wysiwyg-controls.databind-select-control
+
+
+
+
+_sys42.show-code-window:x:/..
