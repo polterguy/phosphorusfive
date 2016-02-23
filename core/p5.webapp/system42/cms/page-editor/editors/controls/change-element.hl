@@ -70,7 +70,7 @@ create-widget:wysiwyg-controls-element-window
                     text:@"<p>The [element] property of your widget, defines which HTML element your
 widget is being rendered with. This often has consequences for how your widget looks like, such as text color, background color,
 etc, depending upon which CSS stylesheet file(s) you include on your page.
-The [element] property can be any of these listed legal HTML element values.</p>"
+The [element] property can be any of the legal HTML element values.</p>"
                     button
                       class:btn btn-default
                       innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Suggest element"

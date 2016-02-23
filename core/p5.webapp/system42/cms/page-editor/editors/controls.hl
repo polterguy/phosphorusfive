@@ -120,7 +120,7 @@ create-widget:wysiwyg-editor
                     eval:x:/./*/_option
 
     container:wysiwyg-add-btn-group
-      class:prepend-bottom col-md-5 col-xs-12 btn-group
+      class:prepend-bottom col-md-6 col-xs-12 btn-group
       widgets
 
         /*
@@ -128,7 +128,7 @@ create-widget:wysiwyg-editor
          */
         button:wysiwyg-controls-add-container
           class:btn btn-default
-          style:"width:33.33%;"
+          style:"width:25%;"
           innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
           title:Adds a [container] widget to your page
           onclick
@@ -142,7 +142,7 @@ create-widget:wysiwyg-editor
          */
         button:wysiwyg-controls-add-literal
           class:btn btn-default
-          style:"width:33.33%;"
+          style:"width:25%;"
           innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal"
           title:Adds a [literal] widget to your page
           onclick
@@ -156,7 +156,7 @@ create-widget:wysiwyg-editor
          */
         button:wysiwyg-controls-add-void
           class:btn btn-default
-          style:"width:33.33%;"
+          style:"width:25%;"
           innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void"
           title:Adds a [void] widget to your page
           onclick
@@ -164,6 +164,33 @@ create-widget:wysiwyg-editor
             sys42.info-window:@"Please change widget's id and element to what you wish"
               _time:more
             send-javascript:@"$('#widget-property-id').focus().select();"
+
+        /*
+         * Help button for 'Adding widgets to form'
+         */
+        button:wysiwyg-controls-help-add-widget
+          class:btn btn-default
+          style:"width:25%;"
+          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
+          title:Explains to you how adding widgets to your form works!
+          onclick
+            sys42.confirm-window
+              _header:Help for adding widgets
+              _body:@"<p>A widget is (most often) a visible element on your screen. It can be a paragraph of text, a container for other
+widgets or an input element, such as a textbox or a dropdown list. For those acquinted with HTML, a widget is often represented as a 
+single HTML element</p>
+<p>There are three basic types of widgets in Phosphorus Five</p>
+<ul>
+  <li><strong>container</strong> - Contains children widgets through its <em>[widgets]</em> properties</li>
+  <li><strong>literal</strong> - Contains an <em>[innerValue]</em> property, which can be static text, or HTML</li>
+  <li><strong>void</strong> - Contains neither children nor inner text, used for &lt;br&gt;, &lt;hr&gt;, &lt;input&gt;, etc</li>
+</ul>
+<p>Any HTML elements can be rendered with the above three widgets. Each widget declares its HTML element through the <em>[element]</em>
+property. In theory, you can render any widget with any widget type, but rendering a textarea HTML element, with the void or container widget
+for instance, would be meaningless. Textarea HTML elements, should normally use the [literal] widget for instance.</p>
+<p>Any widget that contains purely text, should be rendered using the [literal] widget. While any widget that has children
+widgets of itself, should be rendered using the [container] widget. Form input elements, &lt;br&gt; and &lt;hr&gt; elements, etc,
+that does not have any content, should be rendered with the [void] widget.</p>"
 
     container:wysiwyg-manipulate-selected-widget
       class:prepend-bottom col-xs-12 btn-group

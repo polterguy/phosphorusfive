@@ -41,12 +41,28 @@ for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
         container
           class:input-group
           widgets
-            a
-              href:#
-              element:div
+            span
               innerValue:{element-name}
               class:input-group-addon
-              style:"color:#337ab7;"
+            void
+              element:input
+              type:text
+              class:form-control
+              placeholder:New value ...
+              _element-name:{element-name}
+              value
+              onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
+              onchange
+                get-widget-property:x:/../*/_event?value
+                  value
+                eval-x:x:/+/*
+                sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
+                  _new-value:x:/../*/get-widget-property/*/*?value
+            a
+              href:#
+              class:input-group-addon input-group-addon-force-float
+              innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+              title:Removes the attribute from widget
               onclick
                 _element-name:{element-name}
                 eval-x:x:/+/*|/+/**/_eventWidget
@@ -79,25 +95,11 @@ HTML elements for instance, that don't require a value, but need the property.</
                     get-parent-widget:x:/../*/_eventWidget?value
                     get-parent-widget:x:/-/*?value
                     delete-widget:x:/-/*?value
-            void
-              element:input
-              type:text
-              class:form-control
-              placeholder:New value ...
-              _element-name:{element-name}
-              value
-              onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
-              onchange
-                get-widget-property:x:/../*/_event?value
-                  value
-                eval-x:x:/+/*
-                sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
-                  _new-value:x:/../*/get-widget-property/*/*?value
   set:x:/..for-each/**/={element-name}?value
     src:x:/..for-each/*/_dp/#?name
   set:x:/..for-each/*/_control/*/*/*/*/*/*/value?value
     src:x:/..for-each/*/_dp/#?value
-  add:x:/../*/create-widget/*/widgets
+  add:x:/../*/create-widget/*/widgets/*/container/=wysiwyg-controls-attribute-wrapper/*/widgets
     src:x:/..for-each/*/_control/*
 
 /*
@@ -425,109 +427,6 @@ create-widget
                  */
                 sys42.wysiwyg-controls.is-legal-html-element
                   switch:x:/../*/_arg?value
-                    case:address
-                    case:article
-                    case:footer
-                    case:header
-                    case:blockquote
-                    case:h1
-                    case:h2
-                    case:h3
-                    case:h4
-                    case:h5
-                    case:h6
-                    case:hgroup
-                    case:nav
-                    case:section
-                    case:dd
-                    case:div
-                    case:dl
-                    case:dt
-                    case:figcaption
-                    case:figure
-                    case:hr
-                    case:li
-                    case:main
-                    case:ol
-                    case:p
-                    case:pre
-                    case:ul
-                    case:abbr
-                    case:b
-                    case:bdi
-                    case:bdo
-                    case:br
-                    case:cite
-                    case:code
-                    case:data
-                    case:dfn
-                    case:em
-                    case:i
-                    case:kbd
-                    case:mark
-                    case:q
-                    case:rp
-                    case:rt
-                    case:rtc
-                    case:ruby
-                    case:s
-                    case:samp
-                    case:small
-                    case:span
-                    case:strong
-                    case:sub
-                    case:sup
-                    case:time
-                    case:u
-                    case:var
-                    case:wbr
-                    case:area
-                    case:audio
-                    case:map
-                    case:track
-                    case:video
-                    case:embed
-                    case:param
-                    case:source
-                    case:canvas
-                    case:noscript
-                    case:script
-                    case:del
-                    case:ins
-                    case:caption
-                    case:col
-                    case:colgroup
-                    case:table
-                    case:tbody
-                    case:td
-                    case:tfoot
-                    case:th
-                    case:thead
-                    case:tr
-                    case:button
-                    case:datalist
-                    case:fieldset
-                    case:form
-                    case:input
-                    case:keygen
-                    case:label
-                    case:legend
-                    case:meter
-                    case:optgroup
-                    case:option
-                    case:output
-                    case:progress
-                    case:select
-                    case:details
-                    case:dialog
-                    case:menu
-                    case:menuitem
-                    case:summary
-                    case:content
-                    case:element
-                    case:shadow
-                    case:template
-                      return:bool:true
                     case:object
                     case:embed
                       sys42.confirm-window
@@ -545,6 +444,10 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                             _error:true
                       return:bool:true
                     default
+                      load-file:/system42/cms/page-editor/editors/controls/legal-elements.hl
+                      if:x:@"/-/*/*/""{0}"""
+                        :x:/../*/_arg?value
+                        return:bool:true
                       return:bool:false
 
                 /*
@@ -583,14 +486,20 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
             /*
              * Help button for [element] property of widget
              */
-            literal
-              element:a
+            a
               href:#
-              innerValue:foo
               class:input-group-addon input-group-addon-force-float
               innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+              title:Help me with the [element] property please ...
               onclick
                 sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/change-element.hl
+
+    /*
+     * Wraps all attributes (except [element] and [id]) of widget
+     */
+    container:wysiwyg-controls-attribute-wrapper
+      style:"clear:both;"
+      widgets
 
   events
 

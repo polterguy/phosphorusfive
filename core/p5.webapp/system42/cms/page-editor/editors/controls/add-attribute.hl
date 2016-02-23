@@ -17,6 +17,9 @@ create-void-widget:wysiwyg-control-add-attribute
   placeholder:Attribute name ...
   onkeypress:"return p5.keyPressAddAttribute(event);"
   onkeyup:"return p5.keyUpAddAttribute(event);"
+  onblur
+    raise-widget-ajax-event:wysiwyg-control-add-attribute
+      _ondestroy
   _ondestroy
     delete-widget:wysiwyg-control-add-attribute
   _onchange
