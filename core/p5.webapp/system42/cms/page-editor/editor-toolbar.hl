@@ -99,7 +99,7 @@ create-widget
      * Page Name
      */
     container
-      class:col-md-4 form-group
+      class:col-md-3 form-group
       widgets
         container
           class:input-group
@@ -140,7 +140,7 @@ create-widget
      * Page Template
      */
     container
-      class:col-md-2 form-group
+      class:col-md-3 form-group
       widgets
         container
           class:input-group

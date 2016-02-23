@@ -24,7 +24,10 @@ add:x:/../*/lisp2lambda/**(/literal|/container|/void)
   src
     onclick
       sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
-      sys42.wysiwyg-controls.databind-select-control
+      if:x:/-?value
+        sys42.wysiwyg-controls.databind-select-control:x:/../*/_event?value
+      else
+        sys42.wysiwyg-controls.databind-select-control:_default
 
 /*
  * Before finally adding widget to [create-widget] invocation below
@@ -35,79 +38,28 @@ if:x:/../*/lisp2lambda/*(/container|/literal|/void)
 
 
 /*
- * Adding widget types to 'WYSIWYG add control toolbar'
+ * Forward evaluate the expressions in [create-widget], before
+ * creating WYSIWYG widget
  */
-_widgets
-  label
-  span
-  div
-  p
-  strong
-  em
-  blockquote
-  pre
-  br
-  cite
-  code
-  small
-  hr
-  a
-  _
-  h1
-  h2
-  h3
-  h4
-  h5
-  h6
-  header
-  address
-  article
-  footer
-  nav
-  section
-  list
-  _
-  video
-  audio
-  check
-  radio
-  select
-  text
-  password
-  color
-  email
-  search
-  textarea
-for-each:x:/-/*
-  _widget
-    button
-      class:btn btn-default
-      innerValue
-      onclick
-        get-widget-property:x:/../*/_event?value
-          innerValue
-        sys42.wysiwyg-controls.add-control:x:/../*/get-widget-property/*/*?value
-  if:x:/..for-each/*/_dp/#?name
-    =:_
-    add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-controls-toolbar/*/widgets
-      src
-        br
-  else
-    set:x:/..for-each/*/_widget/*/*/innerValue?value
-      src:x:/..for-each/*/_dp/#?name
-    add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-controls-toolbar/*/widgets
-      src:x:/..for-each/*/_widget/*
+eval-x:x:/+/*
+create-widget:wysiwyg-editor
+  parent:x:/../*/_parent-widget?value
+  class:col-xs-12
+  widgets
 
-
-/*
- * Adding delete, copy, paste buttons, etc to 'WYSIWYG control toolbar'
- */
-add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-controls-toolbar/*/widgets
-  src
-    container
-      class:form-inline prepend-top
+    /*
+     * Toolbar for adding widgets to surface
+     */
+    container:wysiwyg-controls-toolbar
+      class:prepend-bottom form-inline
       widgets
+
+        /*
+         * Select widget in page dropdown list
+         */
         select:wysiwyg-select-control
+          class:form-control
+          title:Choose any of the widgets on your page from here
           oninit
             sys42.wysiwyg-controls.databind-select-control
           onchange
@@ -118,15 +70,20 @@ add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-control
               sys42.wysiwyg-controls.unselect-widget
             else
               sys42.wysiwyg-controls.select-widget:x:/../*/get-widget-property/*/*?value
-          class:form-control col-xs-6 prepend-right
           widgets
           events
 
             /*
              * Raised whenever the 'select widget' dropdown list 
-             * needs to be re-databound
+             * needs to be re-databound. If [_arg] is given, it
+             * simply selects that as a value, otherwise it re-creates
+             * entire select dropdown list
              */
             sys42.wysiwyg-controls.databind-select-control
+              if:x:/../*/_arg?value
+                set-widget-property:wysiwyg-select-control
+                  value:x:/../*/_arg?value
+                return
               clear-widget:wysiwyg-select-control
               create-literal-widget
                 parent:wysiwyg-select-control
@@ -158,12 +115,52 @@ add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-control
                 eval:x:/./*/_option
 
         /*
+         * Add [container] widget to surface button
+         */
+        button
+          class:btn btn-default prepend-left
+          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
+          title:Adds a [container] widget to your page
+          onclick
+            sys42.wysiwyg-controls.add-control:div
+            sys42.info-window:@"Please change widget's id and element to what you wish"
+              _time:more
+            send-javascript:@"$('#widget-property-id').focus().select();"
+
+        /*
+         * Add [literal] widget to surface button
+         */
+        button
+          class:btn btn-default
+          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal"
+          title:Adds a [literal] widget to your page
+          onclick
+            sys42.wysiwyg-controls.add-control:span
+            sys42.info-window:@"Please change widget's id and element to what you wish"
+              _time:more
+            send-javascript:@"$('#widget-property-id').focus().select();"
+
+        /*
+         * Add [void] widget to surface button
+         */
+        button
+          class:btn btn-default
+          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void"
+          title:Adds a [void] widget to your page
+          onclick
+            sys42.wysiwyg-controls.add-control:br
+            sys42.info-window:@"Please change widget's id and element to what you wish"
+              _time:more
+            send-javascript:@"$('#widget-property-id').focus().select();"
+
+        /*
          * Delete widget button
          */
         button:wysiwyg-button-delete
-          class:btn btn-default glyphicon glyphicon-trash
+          class:btn btn-default prepend-left
           title:Delete currently selected widget
-          disabled
+          innerValue:@"<span class=""glyphicon glyphicon-trash""></span> delete widget"
+          style:"display:none;"
           onclick
             sys42.confirm-window
               _header:Confirm deletion!
@@ -173,7 +170,7 @@ add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-control
                   _selected:true
                 delete-widget:x:/../*/find-widget/*?value
                 set-widget-property:wysiwyg-button-delete
-                  disabled
+                  style:"display:none;"
                 sys42.wysiwyg-controls.databind-select-control
                 set-widget-property:wysiwyg-controls-properties
                   visible:false
@@ -182,29 +179,12 @@ add:x:/../*/create-widget/=wysiwyg-editor/*/widgets/*/container/=wysiwyg-control
          * Add attribute to widget button
          */
         button:wysiwyg-button-add-attribute
-          class:btn btn-default glyphicon glyphicon-plus
+          class:btn btn-default
           title:Add attribute to widget
-          disabled
+          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> add attribute"
+          style:"display:none;"
           onclick
             sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute.hl
-
-
-/*
- * Forward evaluate the expressions in [create-widget], before
- * creating WYSIWYG widget
- */
-eval-x:x:/+/*
-create-widget:wysiwyg-editor
-  parent:x:/../*/_parent-widget?value
-  class:col-xs-12
-  widgets
-
-    /*
-     * Toolbar for adding widgets to surface
-     */
-    container:wysiwyg-controls-toolbar
-      class:prepend-bottom
-      widgets
 
     /*
      * Properties for chosen widget
@@ -220,7 +200,7 @@ create-widget:wysiwyg-editor
       style:"min-height:400px;background-color:rgba(0,255,0,.1);border-radius:5px;"
       onclick
         sys42.wysiwyg-controls.unselect-widget
-        sys42.wysiwyg-controls.databind-select-control
+        sys42.wysiwyg-controls.databind-select-control:_default
       widgets
 
 
@@ -277,21 +257,32 @@ create-widget:wysiwyg-editor
     sys42.wysiwyg-controls.add-control
 
       /*
-       * Retrieves insertion position, which might differ according to whether or
-       * not a widget is selected on page or not
-       */
-      sys42.wysiwyg-controls.get-insertion-position
-
-      /*
        * Retrieving default properties, which differs from widget type
        */
       sys42.wysiwyg-controls.get-default-properties:x:/../*/_arg?value
 
       /*
-       * Adding 'insertion position' to create-widget Active Event invocation
+       * Adding 'insertion position' to create-widget Active Event invocation.
+       * Notice that this might be overridden by explicitly supplying a [_parent]
+       * argument to invocation
        */
-      add:x:/../*/_create-widget
-        src:x:/../*/sys42.wysiwyg-controls.get-insertion-position/*
+      if:x:/../*/_parent
+
+        /*
+         * Using explicitly given [_parent] as parent for widget
+         */
+        add:x:/../*/_create-widget
+          src:@"parent:{0}"
+            :x:/../*/_parent?value
+      else
+
+        /*
+         * Retrieves insertion position, which might differ according to whether or
+         * not a widget is selected on page or not
+         */
+        sys42.wysiwyg-controls.get-insertion-position
+        add:x:/../*/_create-widget
+          src:x:/..else/*/sys42.wysiwyg-controls.get-insertion-position/*
 
       /*
        * Adding default properties
@@ -497,9 +488,9 @@ create-widget:wysiwyg-editor
        * Hiding buttons that should only be visible while widget is selected
        */
       set-widget-property:wysiwyg-button-delete
-        disabled
+        style:"display:none;"
       set-widget-property:wysiwyg-button-add-attribute
-        disabled
+        style:"display:none;"
 
     /*
      * Selects the given widget on page
@@ -539,9 +530,10 @@ create-widget:wysiwyg-editor
          * Showing buttons that should only be visible while widget is selected
          */
         delete-widget-property:wysiwyg-button-delete
-          disabled
+          style
         delete-widget-property:wysiwyg-button-add-attribute
-          disabled
+          style
+        return:bool:true
       else
 
         /*
@@ -554,9 +546,10 @@ create-widget:wysiwyg-editor
          * Hiding buttons that should only be visible while widget is selected
          */
         set-widget-property:wysiwyg-button-delete
-          disabled
+          style:"display:none;"
         set-widget-property:wysiwyg-button-add-attribute
-          disabled
+          style:"display:none;"
+        return:bool:false
 
     /*
      * Shows the widget's properties widget, allowing user to

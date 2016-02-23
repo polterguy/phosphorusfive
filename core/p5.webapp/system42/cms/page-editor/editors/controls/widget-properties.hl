@@ -115,19 +115,19 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
           onclick
             if
               fetch:x:/0/0/0?value
-                get-widget-property:wywiwyg-control-innerValue
+                get-widget-property:wysiwyg-control-innerValue
                   style
               ~:"display:none;"
-              set-widget-property:wywiwyg-control-innerValue
+              set-widget-property:wysiwyg-control-innerValue
                 style:"display:inherit;"
-              send-javascript:@"$('#wywiwyg-control-innerValue').focus().select();"
+              send-javascript:@"$('#wysiwyg-control-innerValue').focus().select();"
               set-session-value:sys42.wysiwyg-controls.innerValue-attribute-visible
                 src:bool:true
             else
-              set-widget-property:wywiwyg-control-innerValue
+              set-widget-property:wysiwyg-control-innerValue
                 style:"display:none;"
               set-session-value:sys42.wysiwyg-controls.innerValue-attribute-visible
-        textarea:wywiwyg-control-innerValue
+        textarea:wysiwyg-control-innerValue
           class:form-control
           placeholder:New value ...
           style:"display:none;"
@@ -158,31 +158,151 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
 for-each:x:/../*/sys42.get-widget/*/*/widgets
   _control
     container
-      class:col-md-6 form-group
+      class:col-xs-12 form-group
       style:"clear:both;"
       widgets
         a
           href:#
-          innerValue:widgets ...
+          innerValue:Children widgets ...
           onclick
-            if
-              fetch:x:/0/0/0?value
-                get-widget-property:wywiwyg-control-widgets
-                  style
-              ~:"display:none;"
-              set-widget-property:wywiwyg-control-widgets
-                style:"display:inherit;"
+            get-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
+            if:x:/-/*?value.bool
+              not
               set-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
                 src:bool:true
+              sys42.wysiwyg-controls.create-widgets-for-selected
             else
-              set-widget-property:wywiwyg-control-widgets
-                style:"display:none;"
               set-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
-        container:wywiwyg-control-widgets
-          style:"display:none;"
-          widgets
-            literal
-              innerValue:foo bar!!
+              clear-widget:wysiwyg-control-widgets
+        container:wysiwyg-control-widgets
+          oninit
+            get-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
+            if:x:/-/*?value.bool
+              sys42.wysiwyg-controls.create-widgets-for-selected
+          events
+
+            /*
+             * Creates the list of widgets [container] widget has
+             */
+            sys42.wysiwyg-controls.create-widgets-for-selected
+
+              /*
+               * Creating the 'add [container] widget to selected widget' button
+               */
+              create-literal-widget
+                parent:wysiwyg-control-widgets
+                element:button
+                class:btn btn-default
+                innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
+                onclick
+                  find-widget
+                    _selected:true
+                  eval-x:x:/+/*
+                  sys42.wysiwyg-controls.add-control:div
+                    _parent:x:/../*/find-widget/*?value
+                  sys42.info-window:@"Please change widget's id and element to what you wish"
+                    _time:more
+                  send-javascript:@"$('#widget-property-id').focus().select();"
+
+              /*
+               * Creating the 'add [literal] widget to selected widget' button
+               */
+              create-literal-widget
+                parent:wysiwyg-control-widgets
+                element:button
+                class:btn btn-default
+                innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal"
+                onclick
+                  find-widget
+                    _selected:true
+                  eval-x:x:/+/*
+                  sys42.wysiwyg-controls.add-control:span
+                    _parent:x:/../*/find-widget/*?value
+                  sys42.info-window:@"Please change widget's id and element to what you wish"
+                    _time:more
+                  send-javascript:@"$('#widget-property-id').focus().select();"
+
+              /*
+               * Creating the 'add [void] widget to selected widget' button
+               */
+              create-literal-widget
+                parent:wysiwyg-control-widgets
+                element:button
+                class:btn btn-default
+                innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void"
+                onclick
+                  find-widget
+                    _selected:true
+                  eval-x:x:/+/*
+                  sys42.wysiwyg-controls.add-control:br
+                    _parent:x:/../*/find-widget/*?value
+                  sys42.info-window:@"Please change widget's id and element to what you wish"
+                    _time:more
+                  send-javascript:@"$('#widget-property-id').focus().select();"
+
+              /*
+               * Creating the 'clear selected widget' button
+               */
+              create-literal-widget
+                parent:wysiwyg-control-widgets
+                element:a
+                class:btn btn-default
+                href:#
+                innerValue:@"<span class=""glyphicon glyphicon-trash""></span> clear widget"
+                onclick
+                  sys42.confirm-window
+                    _header:Confirm clearing!
+                    _body:@"<p>Are you sure you wish to completely <strong>clear widget's children widgets</strong>?</p>
+<p>This will delete all widgets that are children of the currently selected widget! This action cannot be undone!</p>"
+                    _onok
+                      find-widget
+                        _selected:true
+                      get-children-widgets:x:/-/*?value
+                      clear-widget:x:/../*/find-widget/*?value
+                      sys42.wysiwyg-controls.databind-select-control
+                      sys42.info-window:@"{0} widgets successfully delete from '{1}'"
+                        :x:/../*/get-children-widgets/*/*?count
+                        :x:/../*/find-widget/*?value
+                        _time:more
+                      clear-widget:wysiwyg-control-widgets
+                      sys42.wysiwyg-controls.create-widgets-for-selected
+
+              /*
+               * Finding selected widget, and retrieving its children widgets
+               */
+              find-widget
+                _selected:true
+              get-children-widgets:x:/-/*?value
+
+              /*
+               * Making sure widget's list of children starts on new line
+               */
+              if:x:/-/*/*?count
+                >:int:0
+                create-void-widget
+                  parent:wysiwyg-control-widgets
+                  element:br
+
+              /*
+               * Looping through all children widget, creating a button ([a] type of button)
+               * for each widget, allowing user to select any of these widgets by clicking the
+               * button
+               */
+              for-each:x:/../*/get-children-widgets/*/*
+                _widget
+                  create-literal-widget
+                    parent:wysiwyg-control-widgets
+                    element:a
+                    class:btn btn-default prepend-top
+                    href:#
+                    innerValue:{0} - {1}
+                      :x:/..for-each/*/_dp/#?name
+                      :x:/..for-each/*/_dp/#?value
+                    onclick
+                      sys42.wysiwyg-controls.select-widget:x:/..for-each/*/_dp/#?value
+                      sys42.wysiwyg-controls.databind-select-control:x:/..for-each/*/_dp/#?value
+                eval-x:x:/-/*/*/innerValue|/-/*/*/onclick/*
+                eval:x:/-2
   add:x:/../*/create-widget/*/widgets
     src:x:/..for-each/*/_control/*
 
@@ -308,6 +428,7 @@ create-widget
                     case:article
                     case:footer
                     case:header
+                    case:blockquote
                     case:h1
                     case:h2
                     case:h3

@@ -29,7 +29,7 @@ create-widget:page-editor
      * The "Create new page ..." drop down select list
      */
     container
-      class:col-md-4 col-xs-12 form-group
+      class:col-md-3 col-xs-12 form-group
       widgets
         container
           class:input-group
@@ -139,7 +139,7 @@ then change its access role accordingly!"
      * The edit existing page select drop down list
      */
     container
-      class:col-md-8 col-xs-12 form-group
+      class:col-md-9 col-xs-12 form-group
       widgets
         container
           class:input-group
