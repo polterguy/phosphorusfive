@@ -17,16 +17,13 @@ create-widget:template-root
      * Our main bootstrap navbar menu, stuck to the top, by default
      */
     container
-      has-id:false
       element:nav
       class:navbar navbar-default navbar-fixed-top navbar-inverse
       widgets
         container
-          has-id:false
           class:container-fluid
           widgets
             container
-              has-id:false
               class:navbar-header
               widgets
 
@@ -52,7 +49,7 @@ create-widget:template-root
                   title:X-Ray Inspector
                   accesskey:Q
                   _on-x-ray
-                    get-http-param:_x-ray-clicked
+                    get-http-param:x-ray-clicked
                     add:x:/+
                       src:x:/./-/*
                     sys42.execute-lisp-file:/system42/apps/x-ray-inspector/launch.hl
@@ -77,7 +74,7 @@ $('body').click( function(e) {
   }
   p5.$('x-ray').raise('_on-x-ray', {
     onbefore: function (pars,evt){
-      pars.push(['_x-ray-clicked', path]);
+      pars.push(['x-ray-clicked', path]);
     }
   });
   $('body').off('click');
@@ -88,8 +85,7 @@ $('body').click( function(e) {
             /*
              * Main menu items wrapper
              */
-            container
-              has-id:false
+            container:navbar-main
               class:collapse navbar-collapse
               widgets
 
@@ -137,10 +133,66 @@ $('body').click( function(e) {
                         // Verifying user has access to currently iterated [p5.page] object
                         if
                           sys42.verify-access:x:/..for-each/*/_dp/#/*/role?value
-                          set:x:/..for-each/*/_create-item/*/*/innerValue?value
+
+                          // Creating menu item, settings properties first
+                          set:x:/..for-each/*/_create-item/*/create-literal-widget/*/innerValue?value
                             src:@"<a href=""{0}"">{1}</a>"
                               :x:/..for-each/*/_dp/#?value
                               :x:/..for-each/*/_dp/#/*/name?value
+
+                          // Checking if this is a nested menu item
+                          split:x:/..for-each/*/_dp/#?value
+                            =:/
+                          if:x:/./*/split/*?count
+                            >:int:1
+
+                            // This was a "nested" item, checking if parent item(s) for current item is already created
+                            // We do support nested menu items, although if user creates a page with more than two levels
+                            // of nesting, we warn during creation of page that it is "not a good idea!"
+                            set:x:/././*/split/0/-
+                            _cur
+                            _last:main-menu
+                            for-each:x:/././*/split/*?name
+                              set:x:/././*/_cur?value
+                                src:{0}{1}
+                                  :x:/././././*/_cur?value
+                                  :x:/..for-each/*/_dp?value
+                              if
+                                fetch:x:/0/0?value
+                                  widget-exist:{0}-menu-item
+                                    :x:/..for-each/./*/_cur?value
+                                not
+
+                                // Root item for current nested item is not created, creating it
+                                eval-x:x:/+|/+/**
+                                create-container-widget:{0}-menu-wrp
+                                  :x:/..for-each/./*/_cur?value
+                                  parent:x:/..for-each/./*/_last?value
+                                  element:li
+                                  class:dropdown
+                                  widgets
+                                    literal
+                                      element:a
+                                      href:#
+                                      class:dropdown-toggle
+                                      data-toggle:dropdown
+                                      role:button
+                                      aria-haspopup:true
+                                      aria-expanded:false
+                                      innerValue:@"{0} <span class=""caret""></span>"
+                                        :x:/..for-each/*/_dp?value
+                                    container:{0}-menu-item
+                                      :x:/..for-each/./*/_cur?value
+                                      element:ul
+                                      class:dropdown-menu
+
+                              // Updating [parent] for current item to be root item for group
+                              set:x:/..for-each/..for-each/*/_create-item/*/*/parent?value
+                                src:{0}-menu-item
+                                  :x:/..for-each/./*/_cur?value
+                              set:x:/..for-each/./*/_last?value
+                                src:{0}-menu-item
+                                  :x:/..for-each/./*/_cur?value
                           eval:x:/..for-each/*/_create-item
                           
                       /*
@@ -197,7 +249,7 @@ p5.loginUsernameKeyUp = function(e) {
                                    * Creates the window encapsulating the login window
                                    */
                                   create-widget:login-wrapper
-                                    class:form-inline col-md-5 col-md-push-1 col-xs-3 flash-from-left
+                                    class:form-inline col-md-4 col-md-push-1 col-xs-3 flash-from-left
                                     parent:header-wrapper
                                     widgets
                                       container:login-controls

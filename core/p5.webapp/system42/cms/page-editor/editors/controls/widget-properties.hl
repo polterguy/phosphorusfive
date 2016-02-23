@@ -152,6 +152,32 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
   add:x:/../*/create-widget/*/widgets
     src:x:/..for-each/*/_control/*
 
+
+/*
+ * Then 'Select parent widget button', unless it is wysiwyg main surface
+ */
+if
+  fetch:x:/0/0?value
+    get-parent-widget:x:/../*/_widget?value
+  !=:wysiwyg-editor-surface
+  eval-x:x:/+/*/*/*/*/**/_widget
+  add:x:/../*/create-widget/*/widgets
+    src
+      container
+        class:col-xs-12 form-group
+        style:"clear:both;"
+        widgets
+          button
+            class:btn btn-default
+            style:"clear:both;"
+            innerValue:@"<span class=""glyphicon glyphicon-arrow-up""></span> Parent"
+            onclick
+              _widget:x:/../*/_widget?value
+              get-parent-widget:x:/../*/_widget?value
+              sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0?value
+              sys42.wysiwyg-controls.databind-select-control:x:/../*/get-parent-widget/0?value
+
+
 /*
  * Then [widgets], which also requires special handling
  */
@@ -194,6 +220,7 @@ for-each:x:/../*/sys42.get-widget/*/*/widgets
                 element:button
                 class:btn btn-default
                 innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
+                title:Adds a [container] child widget to your currently selected widget
                 onclick
                   find-widget
                     _selected:true
@@ -212,6 +239,7 @@ for-each:x:/../*/sys42.get-widget/*/*/widgets
                 element:button
                 class:btn btn-default
                 innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal"
+                title:Adds a [literal] child widget to your currently selected widget
                 onclick
                   find-widget
                     _selected:true
@@ -230,6 +258,7 @@ for-each:x:/../*/sys42.get-widget/*/*/widgets
                 element:button
                 class:btn btn-default
                 innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void"
+                title:Adds a [void] child widget to your currently selected widget
                 onclick
                   find-widget
                     _selected:true
@@ -246,9 +275,9 @@ for-each:x:/../*/sys42.get-widget/*/*/widgets
               create-literal-widget
                 parent:wysiwyg-control-widgets
                 element:a
-                class:btn btn-default
+                class:btn btn-default prepend-left
                 href:#
-                innerValue:@"<span class=""glyphicon glyphicon-trash""></span> clear widget"
+                innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Clear widget"
                 onclick
                   sys42.confirm-window
                     _header:Confirm clearing!
@@ -317,7 +346,6 @@ set-widget-property:wysiwyg-controls-properties
   visible:true
 create-widget
   parent:wysiwyg-controls-properties
-  class:clearfix
   widgets
 
     /*
@@ -389,34 +417,7 @@ create-widget
               value
               onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
               onchange
-                get-widget-property:x:/../*/_event?value
-                  value
-                sys42.wysiwyg-controls.is-legal-html-element:x:/../*/get-widget-property/*/*?value
-                if:x:/-?value
-                  !=:bool:true
-                  sys42.info-window:Under no circumstances I can allow you to change the HTML tag to render as such!
-                    _time:more
-                    _error:true
-                  set-widget-property:x:/../*/_event?value
-                    class:form-control error
-                  send-javascript:@"$('#widget-property-element').select().focus();"
-                  return
-                set-widget-property:x:/../*/_event?value
-                  class:form-control
-                if:x:/../*/get-widget-property/*/*?value
-                  =:
-                  sys42.info-window:You cannot have an empty [element] property of your element! Please supply an [element] value for your element!
-                    _error:true
-                    _time:more
-                  set-widget-property:x:/../*/_event?value
-                    class:error form-control
-                  send-javascript:@"$('#widget-property-element').focus().select();"
-                  return
-                set-widget-property:x:/../*/_event?value
-                  class:form-control
-                eval-x:x:/+/*
-                sys42.wysiwyg-controls.change-selected-widgets-property:element
-                  _new-value:x:/../*/get-widget-property/*/*?value
+                sys42.wysiwyg-controls.change-selected-widgets-element
               events
 
                 /*
@@ -528,9 +529,10 @@ create-widget
                     case:template
                       return:bool:true
                     case:object
+                    case:embed
                       sys42.confirm-window
                         _header:Confirm usage!
-                        _body:@"<img src=""/media/images/dangerous-shit.jpg"" style=""float:right;"" /><p>Seriously? Are you <strong>really going to use the &lt;object&gt; element ...?</strong></p>
+                        _body:@"<img src=""/media/images/dangerous-shit.jpg"" style=""float:right;"" /><p>Seriously? Are you <strong>really going to use the &lt;object&gt; or &lt;embed&gt; element ...?</strong></p>
 <blockquote><em>""The &lt;object&gt; element leads to ActiveX, ActiveX leads to Silverlight, Silverlight leads to the dark side!!""</em></blockquote>
 <p>Do <strong>NOT USE THE OBJECT ELEMENT</strong>! It facilitates for virus and other malware being installed on your
 user's computers! I will allow it, but only if I can get to do some serious whining and crying first!</p>
@@ -544,6 +546,51 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                       return:bool:true
                     default
                       return:bool:false
+
+                /*
+                 * Changes the HTML element of widget, according to textbox' value
+                 */
+                sys42.wysiwyg-controls.change-selected-widgets-element
+                  get-widget-property:widget-property-element
+                    value
+                  sys42.wysiwyg-controls.is-legal-html-element:x:/../*/get-widget-property/*/*?value
+                  if:x:/-?value
+                    !=:bool:true
+                    sys42.info-window:Under no circumstances I can allow you to change the HTML tag to render as such!
+                      _time:more
+                      _error:true
+                    set-widget-property:widget-property-element
+                      class:form-control error
+                    send-javascript:@"$('#widget-property-element').select().focus();"
+                    return
+                  set-widget-property:widget-property-element
+                    class:form-control
+                  if:x:/../*/get-widget-property/*/*?value
+                    =:
+                    sys42.info-window:You cannot have an empty [element] property of your element! Please supply an [element] value for your element!
+                      _error:true
+                      _time:more
+                    set-widget-property:widget-property-element
+                      class:error form-control
+                    send-javascript:@"$('#widget-property-element').focus().select();"
+                    return
+                  set-widget-property:widget-property-element
+                    class:form-control
+                  eval-x:x:/+/*
+                  sys42.wysiwyg-controls.change-selected-widgets-property:element
+                    _new-value:x:/../*/get-widget-property/*/*?value
+
+            /*
+             * Help button for [element] property of widget
+             */
+            literal
+              element:a
+              href:#
+              innerValue:foo
+              class:input-group-addon input-group-addon-force-float
+              innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+              onclick
+                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/change-element.hl
 
   events
 

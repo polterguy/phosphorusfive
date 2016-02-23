@@ -20,7 +20,7 @@ sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
 /*
  * Finding first widget from DOM element that user clicked
  */
-split:x:/../*/_x-ray-clicked?value
+split:x:/../*/x-ray-clicked?value
   =:|
 _past-content:bool:false
 while:x:/../*/split/*?count
@@ -99,5 +99,11 @@ create-widget:x-ray-inspector
         literal:view_x_rays
           element:textarea
           innerValue
+    button
+      class:btn btn-default
+      innerValue:Close
+      style:"z-index:2000;margin-right:5%;float:right;"
+      onclick
+        reload-location
 
 

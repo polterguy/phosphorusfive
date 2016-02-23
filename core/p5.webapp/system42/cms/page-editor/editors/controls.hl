@@ -44,81 +44,91 @@ if:x:/../*/lisp2lambda/*(/container|/literal|/void)
 eval-x:x:/+/*
 create-widget:wysiwyg-editor
   parent:x:/../*/_parent-widget?value
-  class:col-xs-12
   widgets
 
     /*
-     * Toolbar for adding widgets to surface
+     * Toolbar for manipulating WYSIWYG widget surface
      */
-    container:wysiwyg-controls-toolbar
-      class:prepend-bottom form-inline
+    container
+      class:prepend-bottom col-md-3 col-xs-12 form-group
       widgets
-
-        /*
-         * Select widget in page dropdown list
-         */
-        select:wysiwyg-select-control
-          class:form-control
-          title:Choose any of the widgets on your page from here
-          oninit
-            sys42.wysiwyg-controls.databind-select-control
-          onchange
-            get-widget-property:wysiwyg-select-control
-              value
-            if:x:/../*/get-widget-property/*/*?value
-              =:_default
-              sys42.wysiwyg-controls.unselect-widget
-            else
-              sys42.wysiwyg-controls.select-widget:x:/../*/get-widget-property/*/*?value
+        container
+          class:input-group
           widgets
-          events
 
             /*
-             * Raised whenever the 'select widget' dropdown list 
-             * needs to be re-databound. If [_arg] is given, it
-             * simply selects that as a value, otherwise it re-creates
-             * entire select dropdown list
+             * Select widget in page dropdown list
              */
-            sys42.wysiwyg-controls.databind-select-control
-              if:x:/../*/_arg?value
-                set-widget-property:wysiwyg-select-control
-                  value:x:/../*/_arg?value
-                return
-              clear-widget:wysiwyg-select-control
-              create-literal-widget
-                parent:wysiwyg-select-control
-                element:option
-                innerValue:Choose widget ...
-                value:_default
-              find-widget
-                _selected:true
-              sys42.get-widget:wysiwyg-editor-surface
-                _keep-empty-ids:true
-              for-each:x:/../*/sys42.get-widget/*/**(/container|/literal|/void)
-                _option
+            literal
+              class:input-group-addon
+              innerValue:Select
+            select:wysiwyg-select-control
+              class:form-control
+              title:Choose any of the widgets on your page from here
+              oninit
+                sys42.wysiwyg-controls.databind-select-control
+              onchange
+                get-widget-property:wysiwyg-select-control
+                  value
+                if:x:/../*/get-widget-property/*/*?value
+                  =:_default
+                  sys42.wysiwyg-controls.unselect-widget
+                else
+                  sys42.wysiwyg-controls.select-widget:x:/../*/get-widget-property/*/*?value
+              widgets
+              events
+
+                /*
+                 * Raised whenever the 'select widget' dropdown list 
+                 * needs to be re-databound. If [_arg] is given, it
+                 * simply selects that as a value, otherwise it re-creates
+                 * entire select dropdown list
+                 */
+                sys42.wysiwyg-controls.databind-select-control
+                  if:x:/../*/_arg?value
+                    set-widget-property:wysiwyg-select-control
+                      value:x:/../*/_arg?value
+                    return
+                  clear-widget:wysiwyg-select-control
                   create-literal-widget
-                    element:option
                     parent:wysiwyg-select-control
-                    innerValue
-                    value
-                set:x:/..for-each/*/_option/*/*/innerValue?value
-                  src:{0} - {1} - {2}
-                    :x:/..for-each/*/_dp/#?name
-                    :x:/..for-each/*/_dp/#/*/element?value
-                    :x:/..for-each/*/_dp/#?value
-                set:x:/..for-each/*/_option/*/*/value?value
-                  src:x:/..for-each/*/_dp/#?value
-                if:x:/../*/find-widget/*?value
-                  =:x:/..for-each/*/_dp/#?value
-                  add:x:/..for-each/*/_option/*
-                    src:selected
-                eval:x:/./*/_option
+                    element:option
+                    innerValue:Widget ...
+                    value:_default
+                  find-widget
+                    _selected:true
+                  sys42.get-widget:wysiwyg-editor-surface
+                    _keep-empty-ids:true
+                  for-each:x:/../*/sys42.get-widget/*/**(/container|/literal|/void)
+                    _option
+                      create-literal-widget
+                        element:option
+                        parent:wysiwyg-select-control
+                        innerValue
+                        value
+                    set:x:/..for-each/*/_option/*/*/innerValue?value
+                      src:{0} - {1} - {2}
+                        :x:/..for-each/*/_dp/#?name
+                        :x:/..for-each/*/_dp/#/*/element?value
+                        :x:/..for-each/*/_dp/#?value
+                    set:x:/..for-each/*/_option/*/*/value?value
+                      src:x:/..for-each/*/_dp/#?value
+                    if:x:/../*/find-widget/*?value
+                      =:x:/..for-each/*/_dp/#?value
+                      add:x:/..for-each/*/_option/*
+                        src:selected
+                    eval:x:/./*/_option
+
+    container:wysiwyg-add-btn-group
+      class:prepend-bottom col-md-5 col-xs-12 btn-group
+      widgets
 
         /*
          * Add [container] widget to surface button
          */
-        button
-          class:btn btn-default prepend-left
+        button:wysiwyg-controls-add-container
+          class:btn btn-default
+          style:"width:33.33%;"
           innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
           title:Adds a [container] widget to your page
           onclick
@@ -130,8 +140,9 @@ create-widget:wysiwyg-editor
         /*
          * Add [literal] widget to surface button
          */
-        button
+        button:wysiwyg-controls-add-literal
           class:btn btn-default
+          style:"width:33.33%;"
           innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal"
           title:Adds a [literal] widget to your page
           onclick
@@ -143,8 +154,9 @@ create-widget:wysiwyg-editor
         /*
          * Add [void] widget to surface button
          */
-        button
+        button:wysiwyg-controls-add-void
           class:btn btn-default
+          style:"width:33.33%;"
           innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void"
           title:Adds a [void] widget to your page
           onclick
@@ -153,14 +165,18 @@ create-widget:wysiwyg-editor
               _time:more
             send-javascript:@"$('#widget-property-id').focus().select();"
 
+    container:wysiwyg-manipulate-selected-widget
+      class:prepend-bottom col-xs-12 btn-group
+      style:"display:none;"
+      widgets
+
         /*
          * Delete widget button
          */
         button:wysiwyg-button-delete
-          class:btn btn-default prepend-left
+          class:btn btn-default
           title:Delete currently selected widget
-          innerValue:@"<span class=""glyphicon glyphicon-trash""></span> delete widget"
-          style:"display:none;"
+          innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Delete widget"
           onclick
             sys42.confirm-window
               _header:Confirm deletion!
@@ -169,7 +185,7 @@ create-widget:wysiwyg-editor
                 find-widget
                   _selected:true
                 delete-widget:x:/../*/find-widget/*?value
-                set-widget-property:wysiwyg-button-delete
+                set-widget-property:wysiwyg-manipulate-selected-widget
                   style:"display:none;"
                 sys42.wysiwyg-controls.databind-select-control
                 set-widget-property:wysiwyg-controls-properties
@@ -181,8 +197,7 @@ create-widget:wysiwyg-editor
         button:wysiwyg-button-add-attribute
           class:btn btn-default
           title:Add attribute to widget
-          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> add attribute"
-          style:"display:none;"
+          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Add attribute"
           onclick
             sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute.hl
 
@@ -190,14 +205,15 @@ create-widget:wysiwyg-editor
      * Properties for chosen widget
      */
     container:wysiwyg-controls-properties
-      class:form row
+      class:row col-xs-12
       visible:false
 
     /*
      * Actual WYSIWYG design surface
      */
     container:wysiwyg-editor-surface
-      style:"min-height:400px;background-color:rgba(0,255,0,.1);border-radius:5px;"
+      class:col-xs-12
+      style:"min-height:400px;border-radius:5px;clear:both;border:dashed 1px rgba(0,0,0,.1);"
       onclick
         sys42.wysiwyg-controls.unselect-widget
         sys42.wysiwyg-controls.databind-select-control:_default
@@ -361,111 +377,14 @@ create-widget:wysiwyg-editor
      */
     sys42.wysiwyg-controls.get-default-properties
       switch:x:/../*/_arg?value
-        case:label
         case:span
-        case:p
-        case:strong
-        case:em
-        case:blockquote
-        case:pre
-        case:cite
-        case:code
-        case:small
-        case:a
-        case:h1
-        case:h2
-        case:h3
-        case:h4
-        case:h5
-        case:h6
-        case:h5
-        case:h5
-        case:h5
-        case:h5
-        case:h5
-        case:h5
-        case:h5
-        case:h5
           return
             innerValue:Foo bar
-        case:div
-        case:header
-        case:address
-        case:article
-        case:footer
-        case:nav
-        case:section
         case:div
           return
             widgets
         case:br
-        case:hr
           return
-        case:list
-          return
-            element:ul
-            widgets
-              li
-                innerValue:Item 1
-              li
-                innerValue:Item 2
-        case:video
-          return
-            element:video
-            src:"http://some-url.com/video.ogg"
-            controls
-            innerValue:Upgrade your browser
-        case:audio
-          return
-            element:audio
-            src:"http://some-url.com/video.ogg"
-            controls
-            innerValue:Upgrade your browser
-        case:check
-          return
-            element:input
-            type:checkbox
-            checked
-        case:radio
-          return
-            element:input
-            type:radio
-        case:select
-          return
-            element:select
-            widgets
-              option
-                has-id:false
-                value:foo1
-                innerValue:Foo 1
-              option
-                has-id:false
-                value:foo2
-                innerValue:Foo 2
-        case:text
-          return
-            element:input
-            type:text
-        case:password
-          return
-            element:input
-            type:password
-        case:color
-          return
-            element:input
-            type:color
-        case:email
-          return
-            element:input
-            type:email
-        case:search
-          return
-            element:input
-            type:search
-        case:textarea
-          return
-            element:textarea
-            innerValue:Foo bar!
 
     /*
      * Unselects any selected widgets on page
@@ -487,9 +406,7 @@ create-widget:wysiwyg-editor
       /*
        * Hiding buttons that should only be visible while widget is selected
        */
-      set-widget-property:wysiwyg-button-delete
-        style:"display:none;"
-      set-widget-property:wysiwyg-button-add-attribute
+      set-widget-property:wysiwyg-manipulate-selected-widget
         style:"display:none;"
 
     /*
@@ -529,9 +446,7 @@ create-widget:wysiwyg-editor
         /*
          * Showing buttons that should only be visible while widget is selected
          */
-        delete-widget-property:wysiwyg-button-delete
-          style
-        delete-widget-property:wysiwyg-button-add-attribute
+        delete-widget-property:wysiwyg-manipulate-selected-widget
           style
         return:bool:true
       else
@@ -545,9 +460,7 @@ create-widget:wysiwyg-editor
         /*
          * Hiding buttons that should only be visible while widget is selected
          */
-        set-widget-property:wysiwyg-button-delete
-          style:"display:none;"
-        set-widget-property:wysiwyg-button-add-attribute
+        set-widget-property:wysiwyg-manipulate-selected-widget
           style:"display:none;"
         return:bool:false
 

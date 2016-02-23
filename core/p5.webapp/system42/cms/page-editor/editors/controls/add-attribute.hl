@@ -9,10 +9,11 @@
  * from user
  */
 create-void-widget:wysiwyg-control-add-attribute
-  element:input
   after:wysiwyg-button-add-attribute
+  element:input
   type:text
   class:form-control
+  style:"float:left;width:150px;border-radius:0px 4px 4px 0px;border-left:none;"
   placeholder:Attribute name ...
   onkeypress:"return p5.keyPressAddAttribute(event);"
   onkeyup:"return p5.keyUpAddAttribute(event);"

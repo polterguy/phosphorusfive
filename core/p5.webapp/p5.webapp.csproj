@@ -354,6 +354,8 @@
     <None Include="system42\tests\iterators.hl" />
     <None Include="system42\cms\page-editor\editors\controls\widget-properties.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-attribute.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\change-element.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\legal-elements.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

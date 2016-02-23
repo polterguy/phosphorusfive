@@ -195,6 +195,11 @@ body {
     text-align:left;
 }
 
+.input-group-addon-force-float {
+    min-width:auto;
+    text-align:left;
+}
+
 .error {
     background-color:rgba(255,0,0,.1);
 }
