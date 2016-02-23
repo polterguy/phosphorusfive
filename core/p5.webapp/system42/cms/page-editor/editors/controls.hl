@@ -352,18 +352,11 @@ create-widget:wysiwyg-editor
         _selected:true
 
       /*
-       * Returning selected widget as parent for insertion, if
-       * selected widget is of type [container]. Else if any widget
-       * is selected, returning that as [after] argument. Else
-       * if no widgets are selected, returning main surface as
-       * parent
+       * As a general rule, if any widget is currently selected, we insert
+       * the new widget after the currently selected widget. Otherwise, 
+       * we append the widget into the main design surface
        */
-      if:x:/../*/find-widget/*?name
-        =:container
-        eval-x:x:/+/*
-        return
-          parent:x:/../*/find-widget/*?value
-      else-if:x:/../*/find-widget/*
+      if:x:/../*/find-widget/*
         eval-x:x:/+/*
         return
           after:x:/../*/find-widget/*?value

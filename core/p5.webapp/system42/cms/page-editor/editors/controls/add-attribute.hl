@@ -92,9 +92,11 @@ create-void-widget:wysiwyg-control-add-attribute
       eval-x:x:/+/**(/src|/set-widget-property|/_initial-focus|/_body)
       sys42.confirm-window
         _header:Please confirm attribute name!
-        _body:@"<p>It seems you've suggested an attribute name <strong>'{0}'</strong>, which is not standard HTML for the <strong>'{1}'</strong> element.
-Are you sure you with to add this attribute to widget?</p>
-<p>Adding non-standard attributes into your HTML markup is normally not OK to do!</p>"
+        _body:@"<img src=""/media/images/dangerous-shit.jpg"" style=""float:right;"" />
+<p>It seems you've suggested an attribute named <strong>'{0}'</strong>, which is not standard HTML for the <strong>'{1}'</strong> element.
+Are you sure you wish to add this attribute to your widget?</p>
+<p>Adding non-standard attributes into your HTML markup is normally not an OK thing to do!</p>
+<p>Non-standard HTML5 attributes, can lead to some really obscure and weird bugs when your page is rendered on different devices, with different browsers!</p>"
           :x:/../*/get-widget-property/[0,1]/*/*?value
           :x:/../*/get-widget-property/[1,2]/*/*?value
         _onok

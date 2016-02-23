@@ -152,6 +152,40 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
   add:x:/../*/create-widget/*/widgets
     src:x:/..for-each/*/_control/*
 
+/*
+ * Then [widgets], which also requires special handling
+ */
+for-each:x:/../*/sys42.get-widget/*/*/widgets
+  _control
+    container
+      class:col-md-6 form-group
+      style:"clear:both;"
+      widgets
+        a
+          href:#
+          innerValue:widgets ...
+          onclick
+            if
+              fetch:x:/0/0/0?value
+                get-widget-property:wywiwyg-control-widgets
+                  style
+              ~:"display:none;"
+              set-widget-property:wywiwyg-control-widgets
+                style:"display:inherit;"
+              set-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
+                src:bool:true
+            else
+              set-widget-property:wywiwyg-control-widgets
+                style:"display:none;"
+              set-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
+        container:wywiwyg-control-widgets
+          style:"display:none;"
+          widgets
+            literal
+              innerValue:foo bar!!
+  add:x:/../*/create-widget/*/widgets
+    src:x:/..for-each/*/_control/*
+
 
 /*
  * Creating properties edit widget, but first making sure
@@ -185,6 +219,7 @@ create-widget
               class:form-control
               placeholder:id ...
               value
+              onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
               onchange
                 get-widget-property:x:/../*/_event?value
                   value
@@ -232,9 +267,22 @@ create-widget
               class:form-control
               placeholder:element ...
               value
+              onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
               onchange
                 get-widget-property:x:/../*/_event?value
                   value
+                sys42.wysiwyg-controls.is-legal-html-element:x:/../*/get-widget-property/*/*?value
+                if:x:/-?value
+                  !=:bool:true
+                  sys42.info-window:Under no circumstances I can allow you to change the HTML tag to render as such!
+                    _time:more
+                    _error:true
+                  set-widget-property:x:/../*/_event?value
+                    class:form-control error
+                  send-javascript:@"$('#widget-property-element').select().focus();"
+                  return
+                set-widget-property:x:/../*/_event?value
+                  class:form-control
                 if:x:/../*/get-widget-property/*/*?value
                   =:
                   sys42.info-window:You cannot have an empty [element] property of your element! Please supply an [element] value for your element!
@@ -249,6 +297,132 @@ create-widget
                 eval-x:x:/+/*
                 sys42.wysiwyg-controls.change-selected-widgets-property:element
                   _new-value:x:/../*/get-widget-property/*/*?value
+              events
+
+                /*
+                 * Returns true if [_arg] is a legal HTML element name
+                 */
+                sys42.wysiwyg-controls.is-legal-html-element
+                  switch:x:/../*/_arg?value
+                    case:address
+                    case:article
+                    case:footer
+                    case:header
+                    case:h1
+                    case:h2
+                    case:h3
+                    case:h4
+                    case:h5
+                    case:h6
+                    case:hgroup
+                    case:nav
+                    case:section
+                    case:dd
+                    case:div
+                    case:dl
+                    case:dt
+                    case:figcaption
+                    case:figure
+                    case:hr
+                    case:li
+                    case:main
+                    case:ol
+                    case:p
+                    case:pre
+                    case:ul
+                    case:abbr
+                    case:b
+                    case:bdi
+                    case:bdo
+                    case:br
+                    case:cite
+                    case:code
+                    case:data
+                    case:dfn
+                    case:em
+                    case:i
+                    case:kbd
+                    case:mark
+                    case:q
+                    case:rp
+                    case:rt
+                    case:rtc
+                    case:ruby
+                    case:s
+                    case:samp
+                    case:small
+                    case:span
+                    case:strong
+                    case:sub
+                    case:sup
+                    case:time
+                    case:u
+                    case:var
+                    case:wbr
+                    case:area
+                    case:audio
+                    case:map
+                    case:track
+                    case:video
+                    case:embed
+                    case:param
+                    case:source
+                    case:canvas
+                    case:noscript
+                    case:script
+                    case:del
+                    case:ins
+                    case:caption
+                    case:col
+                    case:colgroup
+                    case:table
+                    case:tbody
+                    case:td
+                    case:tfoot
+                    case:th
+                    case:thead
+                    case:tr
+                    case:button
+                    case:datalist
+                    case:fieldset
+                    case:form
+                    case:input
+                    case:keygen
+                    case:label
+                    case:legend
+                    case:meter
+                    case:optgroup
+                    case:option
+                    case:output
+                    case:progress
+                    case:select
+                    case:details
+                    case:dialog
+                    case:menu
+                    case:menuitem
+                    case:summary
+                    case:content
+                    case:element
+                    case:shadow
+                    case:template
+                      return:bool:true
+                    case:object
+                      sys42.confirm-window
+                        _header:Confirm usage!
+                        _body:@"<img src=""/media/images/dangerous-shit.jpg"" style=""float:right;"" /><p>Seriously? Are you <strong>really going to use the &lt;object&gt; element ...?</strong></p>
+<blockquote><em>""The &lt;object&gt; element leads to ActiveX, ActiveX leads to Silverlight, Silverlight leads to the dark side!!""</em></blockquote>
+<p>Do <strong>NOT USE THE OBJECT ELEMENT</strong>! It facilitates for virus and other malware being installed on your
+user's computers! I will allow it, but only if I can get to do some serious whining and crying first!</p>
+<p>I cannot possibly emphasize this strongly enough; &lt;object&gt; is seriously outdatet! Your apps <strong>will not work on iPhones, iPads,
+Androids, probably not on Linux and Mac OS X</strong>, or any other modern computing platforms! In addition your users risks having viruses and other crapware installed!</p>
+<p>Not even Microsoft suggests using the &lt;object&gt; element anymore ...!!</p>"
+                        _onok
+                          sys42.info-window:@"Please change your element back to something that's not considered a CRAPWARE HTML ELEMENT!"
+                            _time:more
+                            _error:true
+                      return:bool:true
+                    default
+                      return:bool:false
 
   events
 
@@ -302,7 +476,7 @@ if:x:/../*/_initial-focus?value
 
 include-javascript:@"p5.keyPressChangeAttributeValue = function(e) {
   if(e.keyCode == 13) {
-    e.target.previousSibling.focus();
+    $('#wysiwyg-button-add-attribute').focus();
     return false;
   }
 }"
