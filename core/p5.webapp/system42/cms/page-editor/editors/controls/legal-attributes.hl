@@ -10,6 +10,9 @@
 /*
  * First the attributes
  */
+_header:Global attributes
+  _description:@"Global attributes may be specified on all HTML elements, even those not specified in the standard. That means that any non-standard elements must still permit these attributes, even though using those elements means that the document is no longer HTML5-compliant. For example, HTML5-compliant browsers hide content marked as &lt;foo hidden&gt;...&lt;foo&gt;, even though &lt;foo&gt; is not a valid HTML element."
+
 accesskey:@"Provides a hint for generating a keyboard shortcut for the current element. This attribute consists of a space-separated list of characters. The browser should use the first one that exists on the computer keyboard layout."
 
 class:@"Is a space-separated list of the classes of the element. Classes allows CSS and JavaScript to select and access specific elements via the class selectors or functions like the method Document.getElementsByClassName()."
@@ -20,15 +23,9 @@ contextmenu:@"Is the id of an &lt;menu&gt; to use as the contextual menu for thi
 
 dir:@"Is an enumerated attribute indicating the directionality of the element's text. It can have the following values: ltr, rtl or auto."
 
-draggable:@"Is an enumerated attribute indicating whether the element can be dragged, using the Drag and Drop API. It can have the following values: true or false"
-
-dropzone:@"Is an enumerated attribute indicating what types of content can be dropped on an element, using the Drag and Drop API. It can have the following values:copy, move or link"
-
 hidden:@"Is a Boolean attribute indicates that the element is not yet, or is no longer, relevant. For example, it can be used to hide elements of the page that can't be used until the login process has been completed. The browser won't render such elements. This attribute must not be used to hide content that could legitimately be shown."
 
 lang:@"Participates in defining the language of the element, the language that non-editable elements are written in or the language that editable elements should be written in. The tag contains one single entry value in the format defines in the Tags for Identifying Languages (BCP47) IETF document. xml:lang has priority over it."
-
-spellcheck:@"Is an enumerated attribute defines whether the element may be checked for spelling errors. It may have the following values: true or false"
 
 style:@"Contains CSS styling declarations to be applied to the element. Note that it is recommended for styles to be defined in a separate file or files. This attribute and the &lt;style&gt; element have mainly the purpose of allowing for quick styling, for example for testing purposes."
 
@@ -38,78 +35,174 @@ tabindex:@"Is an integer attribute indicates if the element can take input focus
 
 title:@"Contains a text representing advisory information related to the element it belongs to. Such information can typically, but not necessarily, be presented to the user as a tooltip."
 
-translate:@"Is an enumerated attribute that is used to specify whether an element's attribute values and the values of its Text node children are to be translated when the page is localized, or whether to leave them unchanged. It can have the following values: * empty string and ""yes"", which indicates that the element will be translated.
- - * ""no"", which indicates that the element will not be translated."
-
 
 
 
 /*
  * Then the DOM events
  */
-onabort
-onautocomplete
-onautocompleteerror
-onblur
-oncancel
-oncanplay
-oncanplaythrough
-onchange
-onclick
-onclose
-oncontextmenu
-oncuechange
-ondblclick
-ondrag
-ondragend
-ondragenter
-ondragexit
-ondragleave
-ondragover
-ondragstart
-ondrop
-ondurationchange
-onemptied
-onended
-onerror
-onfocus
-oninput
-oninvalid
-onkeydown
-onkeypress
-onkeyup
-onload
-onloadeddata
-onloadedmetadata
-onloadstart
-onmousedown
-onmouseenter
-onmouseleave
-onmousemove
-onmouseout
-onmouseover
-onmouseup
-onmousewheel
-onpause
-onplay
-onplaying
-onprogress
-onratechange
-onreset
-onresize
-onscroll
-onscroll
-onseeking
-onselect
-onshow
-onsort
-onstalled
-onsubmit
-onsuspend
-ontimeupdate
-ontoggle
-onvolumechange
-onwaiting
+_header:Global DOM events
+  _decription:@"The event handler attributes"
+
+onclick:@"The event occurs when the user clicks on an element"
+
+oncontextmenu:@"The event occurs when the user right-clicks on an element to open a context menu"
+
+ondblclick:@"The event occurs when the user double-clicks on an element"
+
+onmousedown:@"The event occurs when the user presses a mouse button over an element"
+
+onmouseenter:@"The event occurs when the pointer is moved onto an element"
+
+onmouseleave:@"The event occurs when the pointer is moved out of an element"
+
+onmousemove:@"The event occurs when the pointer is moving while it is over an element"
+
+onmouseover:@"The event occurs when the pointer is moved onto an element, or onto one of its children"
+
+onmouseout:@"The event occurs when a user moves the mouse pointer out of an element, or out of one of its children"
+
+onmouseup:@"The event occurs when a user releases a mouse button over an element"
+
+
+
+_header:Keyboard events
+  _description:@"These are keyboard events, and only relevant for HTML elements that can somehow trap keyboard events, such as an &lt;input&gt; element, or a &lt;textarea&gt;."
+
+onkeydown:@"The event occurs when the user is pressing a key, but before the key is released"
+
+onkeypress:@"The event occurs when the user presses a key, after the keystroke has been registered"
+
+onkeyup:@"The event occurs when the user releases a key"
+
+
+
+
+_header:Form events
+  _description:@"These are only for form elements, such as &lt;input&gt; and &lt;textarea&gt;."
+
+onblur:@"The event occurs when an element loses focus"
+
+onchange:@"The event occurs when the content of a form element, the selection, or the checked state have changed"
+
+onfocus:@"The event occurs when an element gets focus"
+
+onfocusin:@"The event occurs when an element is about to get focus"
+
+onfocusout:@"The event occurs when an element is about to lose focus"
+
+oninput:@"The event occurs when an element gets user input"
+
+oninvalid:@"The event occurs when an element is invalid"
+
+onreset:@"The event occurs when a form is reset"
+
+onsearch:@"The event occurs when the user writes something in a search field, only for &lt;input='search'&gt;"
+
+onselect:@"The event occurs after the user selects some text, only for &lt;input&gt; and &lt;textarea&gt;"
+
+onsubmit:@"The event occurs when a form is submitted"
+
+ondrag:@"The event occurs when an element is being dragged"
+
+ondragend:@"The event occurs when the user has finished dragging an element"
+
+ondragenter:@"The event occurs when the dragged element enters the drop target"
+
+ondragleave:@"The event occurs when the dragged element leaves the drop target"
+
+ondragover:@"The event occurs when the dragged element is over the drop target"
+
+ondragstart:@"The event occurs when the user starts to drag an element"
+
+ondrop:@"The event occurs when the dragged element is dropped on the drop target"
+
+
+
+
+_header:Clipboard events
+  _description:@"Events that are associated with the clipboard somehow"
+
+oncopy:@"The event occurs when the user copies the content of an element"
+
+oncut:@"The event occurs when the user cuts the content of an element"
+
+onpaste:@"The event occurs when the user pastes some content in an element"
+
+
+
+_header:Print events
+  _description:@"Events associated with printing somehow"
+
+onafterprint:@"The event occurs when a page has started printing, or if the print dialogue box has been closed"
+
+onbeforeprint:@"The event occurs when a page is about to be printed	"
+
+
+
+_header:Media events
+  _description:@"Events that are associated with media, such as sound and video"
+
+onabort:@"The event occurs when the loading of a media is aborted"
+
+oncanplay:@"The event occurs when the browser can start playing the media because of having buffered enough to be able to begin playing"
+
+oncanplaythrough:@"The event occurs when the browser can play through the media without stopping for buffering"
+
+ondurationchange:@"The event occurs when the duration of the media is changed"
+
+onemptied:@"The event occurs when something bad happens and the media file is suddenly unavailable"
+
+onended:@"The event occurs when the media has reach the end"
+
+onerror:@"The event occurs when an error occurred during the loading of a media file"
+
+onloadeddata:@"The event occurs when media data is loaded"
+
+onloadedmetadata:@"The event occurs when meta data are loaded"
+
+onloadstart:@"The event occurs when the browser starts looking for the specified media"
+
+onpause:@"The event occurs when the media is paused either by the user or programmatically"
+
+onplay:@"The event occurs when the media has been started or is no longer paused"
+
+onplaying:@"The event occurs when the media is playing after having been paused or stopped for buffering"
+
+onprogress:@"The event occurs when the browser is in the process of downloading the media data"
+
+onratechange:@"The event occurs when the playing speed of the media is changed"
+
+onseeked:@"The event occurs when the user is finished moving skipping to a new position in the media"
+
+onseeking:@"The event occurs when the user starts skipping to a new position in the media"
+
+onstalled:@"The event occurs when the browser is trying to get media data, but data is not available"
+
+onsuspend:@"The event occurs when the browser is intentionally not getting media data"
+
+ontimeupdate:@"The event occurs when the playing position has changed"
+
+onvolumechange:@"The event occurs when the volume of the media has changed"
+
+onwaiting:@"The event occurs when the media has paused but is expected to resume"
+
+
+
+
+
+_header:Touch events
+  _decription:@"Events only relevant for touch screen displays"
+
+ontouchcancel:@"The event occurs when the touch is interrupted"
+
+ontouchend:@"The event occurs when a finger is removed from a touch screen"
+
+ontouchmove:@"The event occurs when a finger is dragged across the screen"
+
+ontouchstart:@"The event occurs when a finger is placed on a touch screen"
+
+
 
 
 

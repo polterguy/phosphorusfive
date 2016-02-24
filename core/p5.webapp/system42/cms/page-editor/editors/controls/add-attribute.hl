@@ -185,32 +185,20 @@ Are you sure you wish to add this attribute to your widget?</p>
            * these attributes to his widget!!
            */
           return:false
-        case:class
-        case:dir
-        case:lang
-        case:style
-        case:title
-
-          /*
-           * These are common attributes, legal for
-           * all HTML elements
-           */
-          return:true
         default
 
           /*
-           * Here we must check the type of HTML element, 
-           * before determining if attribute is legal or not ...
+           * Loading list of legal attribute names, and checking name up
+           * against it
            */
-          switch:x:/../*/_element?value
-            case:video
-            case:audio
-              switch:x:/../*/_arg?value
-                case:controls
-                case:src
-                  return:true
-            default
-              return:dubious
+          load-file:/system42/cms/page-editor/editors/controls/legal-attributes.hl
+          if:x:@"/-/*/*/""{0}"""
+            :x:/../*/_arg?value
+            and:x:/../*/_arg?value
+              !=:_header
+            return:true
+          else
+            return:dubious
 
 
 /*

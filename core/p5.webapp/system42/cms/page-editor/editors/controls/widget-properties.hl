@@ -36,7 +36,7 @@ set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-id/*/va
 for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
   _control
     container
-      class:col-md-6 form-group
+      class:col-md-4 form-group
       widgets
         container
           class:input-group
@@ -488,7 +488,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
             /*
              * Help button for [element] property of widget
              */
-            a
+            a:wysiwyg-controls-element-help
               href:#
               class:input-group-addon input-group-addon-force-float
               innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
@@ -555,7 +555,7 @@ if:x:/../*/_initial-focus?value
 
 include-javascript:@"p5.keyPressChangeAttributeValue = function(e) {
   if(e.keyCode == 13) {
-    $('#wysiwyg-button-add-attribute').focus();
+    $('#wysiwyg-controls-element-help').focus();
     return false;
   }
 }"

@@ -15,8 +15,6 @@ else
 insert-before:x:/../0
   src
     role:root
-    controls:@"literal:foo
-  element:p
-  innerValue:Howdy Controls World!"
+    controls:@""
 
 

@@ -91,66 +91,82 @@ to what HTML [element] you choose to render your widget with.</p>"
                       oninit
                         load-file:/system42/cms/page-editor/editors/controls/legal-attributes.hl
                         for-each:x:/../*/load-file/*/*
-                          set:x:/..for-each/*/create-widget/**/={element-name}?value
-                            src:x:/..for-each/*/_dp/#?name
-                          set:x:/..for-each/**/innerValue/={element-description}?value
-                            src:x:/..for-each/*/_dp/#?value
-                          create-widget
-                            parent:wysiwyg-window-list-of-attributes
-                            element:tr
-                            style:"cursor:pointer;"
-                            _element:{element-name}
-                            onclick
+                          html-encode:x:/./*/_dp/#?value
+                          if:x:/..for-each/*/_dp/#?name
+                            =:_header
 
-                              /*
-                               * Figuring out which attribute user clicked
-                               */
-                              get-widget-property:x:/../*/_event?value
-                                _element
-
-                              /*
-                               * Finding selected widget
-                               */
-                              find-widget
-                                _selected:true
-
-                              /*
-                               * Adding that attribute to currently selected widget
-                               */
-                              add:x:/+
-                                src:x:/../*/get-widget-property/*/*?value
-                              set-widget-property:x:/../*/find-widget/*?value
-                              set:x:/+2/*/_widget?value
-                                src:x:/../*/find-widget/*?value
-                              eval-x:x:/+/*
-                              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
-                                _widget
-                                _initial-focus:x:/../*/get-widget-property/[0,1]/*/*?value
-                              sys42.info-window:Please provide a value, if any, for your attribute!
-                              _sys42.show-code-window:x:/..
-                            
-                              /*
-                               * Making sure we close modal window
-                               */
-                              send-javascript:@"$('#wysiwyg-controls-attributes-window').modal('toggle');"
-                            widgets
-                              td
-                                widgets
-                                  strong
-                                    innerValue:{element-name}
-                              td
-                                widgets
-                                  small
-                                    innerValue:{element-description}
-                      widgets
-                        thead
-                          widgets
-                            tr
+                            /*
+                             * New section of element type
+                             */
+                            set:x:/+2/**/={element-header}?value
+                              src:x:/..for-each/*/_dp/#?value
+                            set:x:/+/**/={element-description}?value
+                              src:x:/..for-each/*/_dp/#/*?value
+                            create-widget
+                              parent:wysiwyg-window-list-of-attributes
+                              element:tr
+                              style:"background-color:transparent !important;"
                               widgets
-                                th
-                                  innerValue:Element
-                                th
-                                  innerValue:Description
+                                td
+                                  colspan:2
+                                  widgets
+                                    h3
+                                      innerValue:{element-header}
+                                    p
+                                      innerValue:{element-description}
+                          else
+                            set:x:/..else/*/create-widget/**/={element-name}?value
+                              src:x:/..for-each/*/_dp/#?name
+                            set:x:/..else/*/create-widget/**/innerValue/={element-description}?value
+                              src:x:/..for-each/*/_dp/#?value
+                            create-widget
+                              parent:wysiwyg-window-list-of-attributes
+                              element:tr
+                              style:"cursor:pointer;"
+                              _element:{element-name}
+                              onclick
+
+                                /*
+                                 * Figuring out which attribute user clicked
+                                 */
+                                get-widget-property:x:/../*/_event?value
+                                  _element
+
+                                /*
+                                 * Finding selected widget
+                                 */
+                                find-widget
+                                  _selected:true
+
+                                /*
+                                 * Adding that attribute to currently selected widget
+                                 */
+                                add:x:/+
+                                  src:x:/../*/get-widget-property/*/*?value
+                                set-widget-property:x:/../*/find-widget/*?value
+                                set:x:/+2/*/_widget?value
+                                  src:x:/../*/find-widget/*?value
+                                eval-x:x:/+/*
+                                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                                  _widget
+                                  _initial-focus:x:/../*/get-widget-property/[0,1]/*/*?value
+                                sys42.info-window:Please provide a value, if any, for your attribute!
+                                _sys42.show-code-window:x:/..
+
+                                /*
+                                 * Making sure we close modal window
+                                 */
+                                send-javascript:@"$('#wysiwyg-controls-attributes-window').modal('toggle');"
+                              widgets
+                                td
+                                  widgets
+                                    strong
+                                      innerValue:{element-name}
+                                td
+                                  widgets
+                                    small
+                                      innerValue:{element-description}
+                      widgets
                         
 
             /*

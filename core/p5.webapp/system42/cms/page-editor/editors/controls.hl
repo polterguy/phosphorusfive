@@ -171,7 +171,7 @@ create-widget:wysiwyg-editor
         button:wysiwyg-controls-help-add-widget
           class:btn btn-default
           style:"width:25%;"
-          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
+          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Widget help"
           title:Explains how adding widgets to your page works!
           onclick
             sys42.confirm-window
@@ -194,6 +194,45 @@ that does not have any content, should be rendered with the [void] widget.</p>
 <p>After you have added a widget to your page, you should add <em>""attributes""</em> to your widget.</p>
 <p>Click on either the [container], [literal] or [void] buttons to add a widget to your page!</p>"
 
+
+    /*
+     * Wrapper for "general help" button
+     */
+    container
+      class:prepend-bottom col-md-3 col-xs-12
+      widgets
+
+        /*
+         * Add [container] widget to surface button
+         */
+        button
+          class:btn btn-default
+          style:"width:100%;"
+          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> General help"
+          title:Shows a general help dialog for the [controls] type of page ...
+          onclick
+            sys42.confirm-window
+              _header:Help for [controls] pages
+              _body:@"<img src=""/media/images/general-help-1.png"" style=""float:right;""/>
+<p>A [controls] type of page, allows you to declaratively create a complex web application or HTML page,
+where you tie together any HTML elements you wish.</p>
+<p>By combining [container], [literal] and [void] widgets together, you can create rich web forms and applications, that allows
+you to gather user input from your users, and have your users interact with your page.</p>
+<p>A controls type of page, allows you to have 100% control over your rendered HTML, while also tying together
+complex server-side functionality, to store data in your database, or dynamically show data from your database, etc.</p>
+<p>At the bottom is your <em>""WYSIWYG design surface""</em>, surrounded by a dashed border. This shows you a visual representation of how your page currently
+is. When you create a [controls] page, it has no widgets. Add widgets to it <strong>by clicking the [+literal] 
+widget</strong> button.</p>
+<p>Then change the attributes of your widget. For instance, try to click <strong>the <em>""innerValue ...""</em> link, and change the 
+text</strong> of your widget to anything you wish.</p>
+<p>Then click <em>""Add attribute""</em>, and add up an attribute called <em>""class""</em>. Set its value to <em>""bg-success""</em>.
+Then change its element to <em>""strong""</em>.</p>
+<p>You should now have something resembling the screenshot above in your design surface.</p>
+<p>Click <em>""Save""</em> at the bottom of this page, for then to click <em>""Preview""</em> to see your results so far ...</p>"
+
+    /*
+     * Wrapper for manipulating selected widget
+     */
     container:wysiwyg-manipulate-selected-widget
       class:prepend-bottom col-xs-12 btn-group
       style:"display:none;"
