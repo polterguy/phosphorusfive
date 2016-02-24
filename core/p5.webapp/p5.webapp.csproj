@@ -358,6 +358,9 @@
     <None Include="system42\cms\page-editor\editors\controls\legal-elements.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-attribute-guide.hl" />
     <None Include="system42\cms\page-editor\editors\controls\legal-attributes.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\help-file1.txt" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\help-file2.txt" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\help-file3.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -386,5 +389,6 @@
     <Folder Include="users\root\temp\" />
     <Folder Include="system42\tests\" />
     <Folder Include="system42\cms\page-editor\editors\controls\" />
+    <Folder Include="system42\cms\page-editor\editors\controls\help-files\" />
   </ItemGroup>
 </Project>

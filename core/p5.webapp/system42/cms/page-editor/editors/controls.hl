@@ -211,24 +211,45 @@ that does not have any content, should be rendered with the [void] widget.</p>
           innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> General help"
           title:Shows a general help dialog for the [controls] type of page ...
           onclick
+            get-session-value:sys42.wysiwyg-controls.help-index
+            if:x:/-/*?value
+              list-files:/system42/cms/page-editor/editors/controls/help-files/
+              load-file:x:/..if/*/list-files/{0}?name
+                :x:/../*/get-session-value/*?value
+              set:x:/../*/sys42.confirm-window/*/_body?value
+                innerValue:x:/..if/*/load-file/*?value
             sys42.confirm-window
               _header:Help for [controls] pages
-              _body:@"<img src=""/media/images/general-help-1.png"" style=""float:right;""/>
-<p>A [controls] type of page, allows you to declaratively create a complex web application or HTML page,
-where you tie together any HTML elements you wish.</p>
-<p>By combining [container], [literal] and [void] widgets together, you can create rich web forms and applications, that allows
-you to gather user input from your users, and have your users interact with your page.</p>
-<p>A controls type of page, allows you to have 100% control over your rendered HTML, while also tying together
-complex server-side functionality, to store data in your database, or dynamically show data from your database, etc.</p>
-<p>At the bottom is your <em>""WYSIWYG design surface""</em>, surrounded by a dashed border. This shows you a visual representation of how your page currently
-is. When you create a [controls] page, it has no widgets. Add widgets to it <strong>by clicking the [+literal] 
-widget</strong> button.</p>
-<p>Then change the attributes of your widget. For instance, try to click <strong>the <em>""innerValue ...""</em> link, and change the 
-text</strong> of your widget to anything you wish.</p>
-<p>Then click <em>""Add attribute""</em>, and add up an attribute called <em>""class""</em>. Set its value to <em>""bg-success""</em>.
-Then change its element to <em>""strong""</em>.</p>
-<p>You should now have something resembling the screenshot above in your design surface.</p>
-<p>Click <em>""Save""</em> at the bottom of this page, for then to click <em>""Preview""</em> to see your results so far ...</p>"
+              _body:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;""/>
+<blockquote>Feel free to tap into my bigger brain, to help ease the starting process of Phosphorus Five.
+Start out by accessing the first help file at the bottom, by clicking the <em>""Next""</em> button.
+You can close this dialog, and come back to it, where you left off. This particular help file, is about how
+to get started using <em>""controls""</em> page types, that allows you to visually create rich web applications,
+without any needs for any prior development experience.</blockquote>"
+              _extra-buttons
+                button
+                  class:btn btn-default
+                  innerValue:@"Next <span class=""glyphicon glyphicon-menu-right""></span>"
+                  onclick
+                    get-session-value:sys42.wysiwyg-controls.help-index
+                    if:x:/-/*?value
+                      set:x:/../*/get-session-value/*?value
+                        +:x:/../*/get-session-value/*?value
+                          _:1
+                    else
+                      set:x:/../*/get-session-value/*?value
+                        src:int:1
+                    list-files:/system42/cms/page-editor/editors/controls/help-files/
+                    if:x:/../*/get-session-value/*?value
+                      >=:x:/../*/list-files/*?count
+                      set:x:/../*/get-session-value/*?value
+                        src:int:0
+                    load-file:x:/../*/list-files/{0}?name
+                      :x:/../*/get-session-value/*?value
+                    set-widget-property:confirm-window-body
+                      innerValue:x:/../*/load-file/*?value
+                    set-session-value:sys42.wysiwyg-controls.help-index
+                      src:x:/../*/get-session-value/*?value
 
     /*
      * Wrapper for manipulating selected widget

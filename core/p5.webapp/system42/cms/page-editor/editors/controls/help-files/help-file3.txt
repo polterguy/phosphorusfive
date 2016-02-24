@@ -1,0 +1,27 @@
+
+
+<p>Then add up another widget, this time choose the <strong>[container]</strong> widget.</p>
+
+<p>This time you do not see the <em>"innerValue"</em> property, but rather a <em>"widgets"</em> property. Click
+the [widgets] link, and <strong>add up a [literal] widget as a child</strong> to your [container] widget. Change the literal widget's
+<em>"innerValue"</em> to the text below;</p>
+
+<pre>The quick brown fox,
+jumped over the fence!</pre>
+
+<p>Most HTML elements ignores any carriage returns in their values. If you change the widget's element to <em>"pre"</em>, it will respect
+your carriage returns though. <strong>Do that!</strong></p>
+
+<p>The <em>"pre"</em> element, is useful for showing preformatted text.</p>
+
+<h4>Selecting widgets</h4>
+
+<p>You can select your widgets, either by clicking directly on them in your design surface, or by selecting them in the <em>"Select"</em> dropdown list.
+Select your first [literal] widget by clicking it, and notice how the currently selected element is always shown in your design surface.</p>
+
+<p>Then select your [container] widget with the dropdown list.</p>
+
+<p>If you go back and forth between your widgets, you will see how they differ in properties and attributes. A [container] widget
+has a <strong>[widgets]</strong> property, while your [literal] widget has an <strong>[innerValue]</strong> property.</p>
+
+<p>If you click on an empty place, in your design surface, you unselect any previously selected widgets.</p>

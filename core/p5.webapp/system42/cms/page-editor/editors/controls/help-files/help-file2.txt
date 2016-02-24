@@ -1,0 +1,30 @@
+
+
+
+
+<img src="/media/images/general-help-1.png" style="float:right;"/>
+
+<p>A [controls] type of page, allows you to create a complex web application, or HTML page,
+where you tie together any HTML elements you wish.</p>
+
+<p>By combining <strong>[container]</strong>, <strong>[literal]</strong> and <strong>[void]</strong> widgets together, you can create rich web forms and applications, that allows
+you to gather user input from your users, and have your users interact with your page.</p>
+
+<p>A controls type of page, allows you to have 100% control over your rendered HTML, while at the same time tie together
+complex server-side functionality, to store data in your database, or dynamically show data from your database, etc.</p>
+
+<h4>Do this!</h4>
+
+<p>At the bottom of your screen, is your <em>"WYSIWYG design surface"</em>, surrounded by a dashed border. This shows you a visual representation of how your page currently
+is. When you create a [controls] page, it has no widgets. Add a widget to it <strong>by clicking the [+literal] 
+widget</strong> button.</p>
+
+<p>Then change the attributes of your widget, by <strong>clicking the <em>"innerValue ..."</em> link, and change the 
+text</strong> of your widget to anything you wish.</p>
+
+<p>Then click <em>"Add attribute"</em>, and add up an attribute called <em>"class"</em>. Set its value to <em>"bg-success"</em>.
+Afterwards change its element to <em>"strong"</em>.</p>
+
+<p>You should now have something resembling the screenshot above in your design surface.</p>
+
+<p>Click <em>"Save"</em> at the bottom of this page, for then to click <em>"Preview"</em> to see your results so far ...</p>
