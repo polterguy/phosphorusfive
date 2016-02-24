@@ -95,13 +95,9 @@ oninput:@"The event occurs when an element gets user input"
 
 oninvalid:@"The event occurs when an element is invalid"
 
-onreset:@"The event occurs when a form is reset"
-
 onsearch:@"The event occurs when the user writes something in a search field, only for &lt;input='search'&gt;"
 
 onselect:@"The event occurs after the user selects some text, only for &lt;input&gt; and &lt;textarea&gt;"
-
-onsubmit:@"The event occurs when a form is submitted"
 
 ondrag:@"The event occurs when an element is being dragged"
 
@@ -128,15 +124,6 @@ oncopy:@"The event occurs when the user copies the content of an element"
 oncut:@"The event occurs when the user cuts the content of an element"
 
 onpaste:@"The event occurs when the user pastes some content in an element"
-
-
-
-_header:Print events
-  _description:@"Events associated with printing somehow"
-
-onafterprint:@"The event occurs when a page has started printing, or if the print dialogue box has been closed"
-
-onbeforeprint:@"The event occurs when a page is about to be printed	"
 
 
 

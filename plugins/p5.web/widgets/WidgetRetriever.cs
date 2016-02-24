@@ -195,10 +195,14 @@ namespace p5.web.widgets
                         match = false;
                         break;
                     } else {
-                        if (!like && widget [idxNode.Name] != idxNode.GetExValue<string> (context, null)) {
+                        var value = idxNode.GetExValue<string> (context, null);
+                        if (value == null && widget.HasAttribute (idxNode.Name)) {
+
+                            // Match, since caller just looked for existence of attribute
+                        } else if (!like && widget [idxNode.Name] != value) {
                             match = false;
                             break;
-                        } else if (like && !widget [idxNode.Name].Contains (idxNode.GetExValue<string> (context, null))) {
+                        } else if (like && !widget [idxNode.Name].Contains (value)) {
                             match = false;
                             break;
                         }

@@ -1,0 +1,16 @@
+
+
+
+<p>When you have selected a [contaier] widget, you can see a list of all of its children widgets as down arrow buttons in the 
+<em>"children widgets"</em> part of your designer. By clicking these buttons, you can select that specific widget as 
+a <em>"shortcut"</em>.</p>
+
+<p>If you have selected a widget, which is a child of another widget (and not a "root" widget on your page), then you
+can select its parent widget by clicking the up arrow button button.</p>
+
+<p>This allows you to easily navigate back and forth, between children widgets and its parent widget, without having
+to attempting to clicking at the exact correct place on your surface, or finding it in the select dropdown list.</p>
+
+<p>You can nest as many [container] widgets inside of each other as you wish, to create any number of nested levels of [container] widgets.
+You can also type in any arbitrary HTML as the values of <em>"innerValue"</em> of your [literal] widgets.</p>
+

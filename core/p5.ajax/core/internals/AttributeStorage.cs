@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Web.UI;
 using p5.ajax.widgets;
@@ -102,9 +103,14 @@ namespace p5.ajax.core.internals
         public IEnumerable<string> Keys {
             get {
                 Dictionary<string, bool> _alreadySen = new Dictionary<string, bool> ();
-                foreach (var idx in this._dynamicallyAddedThisRequest) {
-                    yield return idx.Name;
+                foreach (var idx in _dynamicallyRemovedThisRequest) {
                     _alreadySen [idx.Name] = true;
+                }
+                foreach (var idx in this._dynamicallyAddedThisRequest) {
+                    if (!_alreadySen.ContainsKey (idx.Name)) {
+                        yield return idx.Name;
+                        _alreadySen [idx.Name] = true;
+                    }
                 }
                 foreach (var idx in this._formDataThisRequest) {
                     if (!_alreadySen.ContainsKey (idx.Name)) {
@@ -288,7 +294,7 @@ namespace p5.ajax.core.internals
                 if (value == null) {
                     writer.Write (@"{0}", name);
                 } else {
-                    writer.Write (@"{0}=""{1}""", name, value.Replace ("\"", "\\\""));
+                    writer.Write (@"{0}=""{1}""", name, value.Replace ("\"", "&quot;"));
                 }
             }
         }
@@ -308,13 +314,20 @@ namespace p5.ajax.core.internals
             // Adding up our changes
             foreach (var idx in _dynamicallyAddedThisRequest) {
 
+                // Checking if this is an invisible attribute, at which case it 
+                // is never rendered to client
+                if (idx.Name.IndexOf ("_") == 0)
+                    continue;
+
+                var value = idx.Value?.Replace ("\"", "&quot;");
+
                 // Finding old value, if any
                 var oldAtr = FindAttribute (_originalValue, idx.Name);
                 if (oldAtr != null) {
                     if (oldAtr.Value != idx.Value)
-                        manager.RegisterWidgetChanges (id, idx.Name, idx.Value, oldAtr.Value);
+                        manager.RegisterWidgetChanges (id, idx.Name, value, oldAtr.Value);
                 } else {
-                    manager.RegisterWidgetChanges (id, idx.Name, idx.Value);
+                    manager.RegisterWidgetChanges (id, idx.Name, value);
                 }
             }
         }

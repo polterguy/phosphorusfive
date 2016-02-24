@@ -81,6 +81,7 @@ namespace p5.web.widgets
 
                         // Setting Widget's Ajax event to whatever we were given
                         Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = idxEventNameNode.Clone();
+                        idxWidget [idxEventNameNode.Name] = "common_event_handler";
                     }
                 }
             }

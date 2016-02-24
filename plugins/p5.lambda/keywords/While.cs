@@ -48,10 +48,11 @@ namespace p5.lambda.keywords
                 e.Args.AddRange (oldWhile.Clone ().Children);
 
                 // Checking if we got a [return] invocation during evaluation
-                if (e.Args.Root.FirstChild != null && e.Args.Root.FirstChild.Name == "_return") {
-                    return;
-                } else if (e.Args.Root.FirstChild != null && e.Args.Root.FirstChild.Name == "_break") {
+                var rootChildName = e.Args.Root.FirstChild?.Name;
+                if (rootChildName == "_break") {
                     e.Args.Root.FirstChild.UnTie ();
+                    return;
+                } else if (rootChildName == "_return") {
                     return;
                 }
 

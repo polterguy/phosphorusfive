@@ -212,6 +212,9 @@ namespace p5.web.widgets
             if (value == null && !widget.HasAttribute (propertyName))
                 return;
 
+            if ((propertyName.StartsWith ("on") || propertyName.StartsWith ("_on")) && widget [propertyName] == "common_event_handler")
+                return; // Skipping these guys
+
             node.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = value == null ? 
                 widget [propertyName] : 
                 value;

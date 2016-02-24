@@ -17,6 +17,25 @@ lisp2lambda:x:/../*/select-data/*/*/controls?value
 
 
 /*
+ * Changing any existing [onXXX] event handlers to [_onXXX] to
+ * make sure they don't mess up design surface with weird events occuring
+ * as the user navigates his page
+ */
+for-each:x:/../*/lisp2lambda/**(/literal/*/~on|/container/*/~on|/void/*/~on)
+  if
+    fetch:x:/0/0?value
+      index-of:x:/..for-each/*/_dp/#?name
+        what:on
+    =:int:0
+
+    /*
+     * This is an event handler, renaming it temporarily for design surface
+     */
+    set:x:/..for-each/*/_dp/#?name
+      src:_{0}
+        :x:/..for-each/*/_dp/#?name
+
+/*
  * Then adding [onclick] event handlers for each widget, to
  * allow widget to be selected by clicking it in design surface
  */
@@ -349,6 +368,25 @@ without any needs for any prior development experience.</blockquote>"
        * while designing widget
        */
       set:x:/../*/sys42.get-widget/**/onclick
+
+      /*
+       * Making sure we rename all [_onXXX] event handlers, to their actual name, before
+       * returning editor data to caller
+       */
+      for-each:x:/../*/sys42.get-widget/**(/container/*/~_on|/literal/*/~_on|/void/*/~_on)
+        if
+          fetch:x:/0/0?value
+            index-of:x:/..for-each/*/_dp/#?name
+              what:_on
+          =:int:0
+
+          /*
+           * This is a "hidden" event handler, renaming it back to its actual value
+           */
+          set:x:/..for-each/*/_dp/#?name
+            replace:x:/..for-each/*/_dp/#?name
+              what:_on
+              with:on
 
       /*
        * Returning [controls] to caller

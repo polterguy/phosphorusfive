@@ -31,6 +31,24 @@ create-void-widget:wysiwyg-control-add-attribute
       value
 
     /*
+     * Checking if it is an event handler, at which case we rename the attribute,
+     * adding two underscored (_) before its name, to hide it from the WYSIWYG design surface,
+     * and make sure it doesn't mess up the interacting with the surface in any ways
+     */
+    if
+      fetch:x:/0/0?value
+        index-of:x:/../*/get-widget-property/*/*?value
+          what:on
+      =:int:0
+
+      /*
+       * This is an event handler, renaming it, adding one "_" before its name
+       */
+      set:x:/../*/get-widget-property/*/*?value
+        src:_{0}
+          :x:/../*/get-widget-property/*/*?value
+
+    /*
      * Finding selected widget
      */
     find-widget

@@ -66,6 +66,8 @@ break
         :x:/../0?value
         :x:/..for-each/*/_dp/#?node.string
     break
+    set:x:/./-?value
+      src:error
   if:x:/../0?value
     !=:@"foo1:bar1"
     throw:@"Assert error, expected [foo1:bar1], got [{0}]!"

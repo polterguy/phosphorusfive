@@ -2,26 +2,56 @@
  * Shows the properties for a single selected widget
  */
 
-
 /*
  * Fetching widget,without its children widgets
  */
 sys42.get-widget:x:/../*/_widget?value
   _no-children:true
 
-
 /*
- * Removing the parts that makes the widget selected in the 
- * WYSIWYG surface from the widget's definition
+ * Sorting widget's properties, first stuffing event handlers last, then alphabetically
  */
-set:x:@"/../*/sys42.get-widget/*/*(/_selected|/style/""={0}""|/onclick)"
-  :"box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"
+sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/element!/_selected!/style!/onclick)
+  if
+    fetch:x:/0/0?value
+      index-of:x:/../*/_rhs/#?name
+        what:_on
+    =:int:0
+    and
+      fetch:x:/0/0
+        index-of:x:/../*/_lhs/#?name
+          what:_on
+      not
 
+    // [_lhs] is event handler, but not [_rhs]
+    return:int:-1
+  if
+    fetch:x:/0/0?value
+      index-of:x:/../*/_lhs/#?name
+        what:_on
+    =:int:0
+    and
+      fetch:x:/0/0
+        index-of:x:/../*/_rhs/#?name
+          what:_on
+      not
+
+    // [_rhs] is event handler, but not [_lhs]
+    return:int:1
+
+  // Otherwise we sort by name
+  if:x:/../*/_lhs/#?name
+    >:x:/../*/_rhs/#?name
+    return:1
+  if:x:/../*/_lhs/#?name
+    <:x:/../*/_rhs/#?name
+    return:-1
+  return:0
 
 /*
  * Setting initial values for widget's properties, first starting
  * out with the 'static properties', such as [element] and [id], which
- * all widgets have
+ * all widgets must have
  */
 set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-element/*/value?value
   src:x:/../*/sys42.get-widget/*/*/element?value
@@ -31,9 +61,9 @@ set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-id/*/va
 
 /*
  * Then iterating all dynamically inserted properties of specific widget,
- * except [innerValue], which requires special handling, as a textarea HTML element
+ * except [innerValue], [element] and [widgets], which requires special handling
  */
-for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
+for-each:x:/../*/sort/*
   _control
     container
       class:col-md-4 form-group
@@ -53,11 +83,48 @@ for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
               value
               onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
               onchange
-                get-widget-property:x:/../*/_event?value
-                  value
-                eval-x:x:/+/*
-                sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
-                  _new-value:x:/../*/get-widget-property/*/*?value
+                if
+                  fetch:x:/0/0/0?value
+                    get-widget-property:x:/../*/_event?value
+                      element
+                  =:input
+
+                  /*
+                   * This is a simple value type of attribute, might be an event,
+                   * but if it is, it's a JavaScript client-side event
+                   */
+                  get-widget-property:x:/../*/_event?value
+                    value
+                  eval-x:x:/+/*
+                  sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
+                    _new-value:x:/..if/*/get-widget-property/*/*?value
+                else
+
+                  /*
+                   * This is a Hyperlisp Ajax event handler attribute. Making sure
+                   * we convert the value to lambda in a try/catch block, to trap any
+                   * misformatted Hyperlisp syntactic errors
+                   */
+                  try
+                    get-widget-property:x:/../*/_event?value
+                      value
+                      _element-name
+                    lisp2lambda:x:/-/*/0?value
+                    set-widget-property:x:/../*/_event?value
+                      class:form-control
+                    find-widget
+                      _selected
+                    add:x:/+2
+                      src:x:/..try/*/get-widget-property/*/*/_element-name?value
+                    add:x:/+/*
+                      src:x:/..try/*/lisp2lambda/*
+                    set-widget-ajax-event:x:/..try/*/find-widget/*?value
+                  catch
+                    sys42.info-window:@"Oops, syntax error in Hyperlisp. Probably malformatted child node collections. Please correct! Value was NOT saved!"
+                      _error:true
+                      _time:more
+                    set-widget-property:x:/../*/_event?value
+                      class:form-control error
             a
               href:#
               class:input-group-addon input-group-addon-force-float
@@ -65,10 +132,128 @@ for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
               title:Removes the attribute from widget
               onclick
                 _element-name:{element-name}
+                if
+                  fetch:x:/0/0?value
+                    index-of:x:/../*/_element-name?value
+                      what:_on
+                  =:int:0
+
+                  /*
+                   * This is an invisible event handler, showing user a special dialog box, 
+                   * allowing user to convert between JavaScript event handlers, and Ajax Hyperlisp
+                   * event handlers. First checking if this is JavaScript or Ajax Hyperlisp event handler.
+                   */
+                  find-widget
+                    _selected
+                  add:x:/+
+                    src:{element-name}
+                  get-widget-property:x:/-2/*?value
+                  if:x:/-/*/*?value
+
+                    /*
+                     * This is JavaScript event handler, allowing user to convert to Hyperlisp Ajax event handler
+                     */
+                    replace:x:/../*/_element-name?value
+                      what:_
+                    eval-x:x:/+/*
+                    sys42.confirm-window
+                      _header:Confirm deletion of property
+                      _body:@"<p>Please confirm that you wish to <strong>delete the <em>'{0}'</em> event</strong> from widget!</p>
+<p>Alternatively, you can choose to convert the existing JavaScript event handler to an Ajax Hyperlisp event handler.</p>
+<p>If you do not want to do either, please close the window at the top right corner with the 'X'.</p>"
+                        :x:/..if/*/replace?value
+                      _extra-buttons
+                        button
+                          class:btn btn-default
+                          innerValue:Convert to Hyperlisp
+                          title:Convert existing JavaScript event handler to an Ajax Hyperlisp server-side event handler
+                          onclick
+                            _element-name:{element-name}
+                            find-widget
+                              _selected
+                            add:x:/+
+                              src:x:/../*/_element-name?value
+                            delete-widget-property:x:/../*/find-widget/*?value
+                            add:x:/+2
+                              src:x:/../*/_element-name?value
+                            add:x:/+/*
+                              src:foo
+                            set-widget-ajax-event:x:/../*/find-widget/*?value
+                            send-javascript:@"$('#confirm-window').modal('toggle');"
+                            set:x:/+/*?value
+                              src:x:/../*/find-widget/*?value
+                            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                              _widget
+                      _onok
+
+                        /*
+                         * Simply delete existing JavaScript event handler
+                         */
+                        _element-name:{element-name}
+                        find-widget
+                          _selected
+                        add:x:/+
+                          src:x:/../*/_element-name?value
+                        delete-widget-property:x:/../*/find-widget/*?value
+                        set:x:/+/*?value
+                          src:x:/../*/find-widget/*?value
+                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                          _widget
+                  else
+
+                    /*
+                     * This is a Hyperlisp Ajax event handler, allowing user to convert to a JavaScript event handler
+                     */
+                    replace:x:/../*/_element-name?value
+                      what:_
+                    eval-x:x:/+/*
+                    sys42.confirm-window
+                      _header:Confirm deletion of property
+                      _body:@"<p>Please confirm that you wish to <strong>delete the <em>'{0}'</em> event</strong> from widget!</p>
+<p>Alternatively, you can choose to convert the existing Hyperlisp Ajax server-side event handler to a JavaScript event handler.</p>
+<p>If you do not want to do either, please close the window at the top right corner with the 'X'.</p>"
+                        :x:/..else/*/replace?value
+                      _extra-buttons
+                        button
+                          class:btn btn-default
+                          innerValue:Convert to JavaScript
+                          title:Convert existing Hyperlisp server-side Ajav event handler to a JavaScript event handler
+                          onclick
+                            _element-name:{element-name}
+                            find-widget
+                              _selected
+                            add:x:/+
+                              src:x:/../*/_element-name?value
+                            set-widget-ajax-event:x:/-2/*?value
+                            add:x:/+
+                              src:"{0}:"
+                                :x:/../*/_element-name?value
+                            set-widget-property:x:/../*/find-widget/*?value
+                            send-javascript:@"$('#confirm-window').modal('toggle');"
+                            set:x:/+/*?value
+                              src:x:/../*/find-widget/*?value
+                            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                              _widget
+                      _onok
+
+                        /*
+                         * Simply delete Hyperlisp Ajax event
+                         */
+                        _element-name:{element-name}
+                        find-widget
+                          _selected
+                        add:x:/+
+                          src:x:/../*/_element-name?value
+                        set-widget-ajax-event:x:/-2/*?value
+                        set:x:/+/*?value
+                          src:x:/../*/find-widget/*?value
+                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                          _widget
+                  return
                 eval-x:x:/+/*|/+/**/_eventWidget
                 sys42.confirm-window
                   _header:Confirm deletion of property
-                  _body:@"<p>Please confirm that you wish to <strong>remove the <em>'{0}'</em> attribute</strong> from widget! 
+                  _body:@"<p>Please confirm that you wish to <strong>delete the <em>'{0}'</em> attribute</strong> from widget! 
 This might have consequence for the rendering of your widget!</p>
 <p>Alternatively, you can choose to 'nullify' its value, meaning the attribute
 will still be kept around, but have a 'null value'. This can be useful for [controls] properties of [video]
@@ -81,7 +266,6 @@ HTML elements for instance, that don't require a value, but need the property.</
                       innerValue:Nullify value
                       title:Only 'nullify' value of property, but do not remove property
                       onclick
-                        _eventWidget:x:/../*/_event?value
                         sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
                           _new-value
                         send-javascript:@"$('#confirm-window').modal('toggle');"
@@ -95,10 +279,73 @@ HTML elements for instance, that don't require a value, but need the property.</
                     get-parent-widget:x:/../*/_eventWidget?value
                     get-parent-widget:x:/-/*?value
                     delete-widget:x:/-/*?value
-  set:x:/..for-each/**/={element-name}?value
+
+  set:x:/..for-each/*/_control/**/={element-name}?value
     src:x:/..for-each/*/_dp/#?name
   set:x:/..for-each/*/_control/*/*/*/*/*/*/value?value
     src:x:/..for-each/*/_dp/#?value
+
+  /*
+   * Checking if this is an "invisible rendered" event handler
+   */
+  if
+    fetch:x:/0/0?value
+      index-of:x:/..for-each/*/_dp/#?name
+        what:_on
+    =:int:0
+
+    /*
+     * Checking if this is a JavaScript event handler or a Hyperlisp event handler.
+     * JavaScript event handlers have a "value", while Hyperlisp event handlers
+     * have children nodes.
+     */
+    if:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*/value?value
+      not
+
+      /*
+       * This should be handled as a Hyperlisp Ajax event handler
+       */
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*(/element|/type|/onkeypress)
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*/value?name
+        src:innerValue
+      add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
+        src:"rows:1"
+      add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
+        src
+          onfocus
+            get-parent-widget:x:/../*/_event?value
+            get-parent-widget:x:/-/*?value
+            set-widget-property:x:/-/*?value
+              class:col-md-12
+            set-widget-property:x:/../*/_event?value
+              rows:10
+          onblur
+            get-parent-widget:x:/../*/_event?value
+            get-parent-widget:x:/-/*?value
+            set-widget-property:x:/-/*?value
+              class:col-md-4
+            set-widget-property:x:/../*/_event?value
+              rows:1
+      lambda2lisp:x:/..for-each/*/_dp/#/*
+      if:x:/-?value
+        !=:@""""""
+        set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*/innerValue?value
+          src:x:/././-?value
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void?name
+        src:textarea
+
+    /*
+     * This is an invisibly rendered event handler, making sure we render the label
+     * with the REAL event handler name, before we add the attribute control to properties
+     */
+    set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
+      replace:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
+        what:_on
+        with:on
+
+  /*
+   * Adding properties wrapper to [create-widget]
+   */
   add:x:/../*/create-widget/*/widgets/*/container/=wysiwyg-controls-attribute-wrapper/*/widgets
     src:x:/..for-each/*/_control/*
 
@@ -158,11 +405,10 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
 /*
  * Then 'Select parent widget button', unless it is wysiwyg main surface
  */
-if
-  fetch:x:/0/0?value
-    get-parent-widget:x:/../*/_widget?value
+get-parent-widget:x:/../*/_widget?value
+if:x:/-/*?value
   !=:wysiwyg-editor-surface
-  eval-x:x:/+/*/*/*/*/**/_widget
+  eval-x:x:/+/*/*/*/*/**(/_widget|/innerValue)
   add:x:/../*/create-widget/*/widgets
     src
       container
@@ -172,7 +418,8 @@ if
           button
             class:btn btn-default
             style:"clear:both;"
-            innerValue:@"<span class=""glyphicon glyphicon-arrow-up""></span> Parent"
+            innerValue:@"<span class=""glyphicon glyphicon-arrow-up""></span> {0}"
+              :x:/../*/get-parent-widget/*?value
             onclick
               _widget:x:/../*/_widget?value
               get-parent-widget:x:/../*/_widget?value
@@ -326,7 +573,7 @@ for-each:x:/../*/sys42.get-widget/*/*/widgets
                     element:a
                     class:btn btn-default prepend-top
                     href:#
-                    innerValue:{0} - {1}
+                    innerValue:innerValue:@"<span class=""glyphicon glyphicon-arrow-down""></span> {0} - {1}"
                       :x:/..for-each/*/_dp/#?name
                       :x:/..for-each/*/_dp/#?value
                     onclick
@@ -517,10 +764,10 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
         /*
          * User provided a new value for property of widget
          */
-        add:x:/+
-          src:@"{0}:@""{1}"""
-            :x:/../*/_arg?value
-            :x:/../*/_new-value?value
+        add:x:/+2
+          src:x:/../*/_arg?value
+        set:x:/+/0?value
+          src:x:/../*/_new-value?value
         set-widget-property:x:/../*/get-widget-property/*/*?value
         sys42.wysiwyg-controls.databind-select-control
       else-if:x:/../*/_new-value
