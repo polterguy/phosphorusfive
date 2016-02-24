@@ -1,0 +1,118 @@
+/*
+ * Contains a list of all legal HTML attributes, 
+ * according to HTML element type. This list is taken from;
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes
+ * And licensed as Commons Create Share-Alike
+ */
+
+
+
+/*
+ * First the attributes
+ */
+accesskey:@"Provides a hint for generating a keyboard shortcut for the current element. This attribute consists of a space-separated list of characters. The browser should use the first one that exists on the computer keyboard layout."
+
+class:@"Is a space-separated list of the classes of the element. Classes allows CSS and JavaScript to select and access specific elements via the class selectors or functions like the method Document.getElementsByClassName()."
+
+contenteditable:@"Is an enumerated attribute indicating if the element should be editable by the user. If so, the browser modifies its widget to allow editing. The attribute must take one of the following values: true or false."
+
+contextmenu:@"Is the id of an &lt;menu&gt; to use as the contextual menu for this element."
+
+dir:@"Is an enumerated attribute indicating the directionality of the element's text. It can have the following values: ltr, rtl or auto."
+
+draggable:@"Is an enumerated attribute indicating whether the element can be dragged, using the Drag and Drop API. It can have the following values: true or false"
+
+dropzone:@"Is an enumerated attribute indicating what types of content can be dropped on an element, using the Drag and Drop API. It can have the following values:copy, move or link"
+
+hidden:@"Is a Boolean attribute indicates that the element is not yet, or is no longer, relevant. For example, it can be used to hide elements of the page that can't be used until the login process has been completed. The browser won't render such elements. This attribute must not be used to hide content that could legitimately be shown."
+
+lang:@"Participates in defining the language of the element, the language that non-editable elements are written in or the language that editable elements should be written in. The tag contains one single entry value in the format defines in the Tags for Identifying Languages (BCP47) IETF document. xml:lang has priority over it."
+
+spellcheck:@"Is an enumerated attribute defines whether the element may be checked for spelling errors. It may have the following values: true or false"
+
+style:@"Contains CSS styling declarations to be applied to the element. Note that it is recommended for styles to be defined in a separate file or files. This attribute and the &lt;style&gt; element have mainly the purpose of allowing for quick styling, for example for testing purposes."
+
+tabindex:@"Is an integer attribute indicates if the element can take input focus (is focusable), if it should participate to sequential keyboard navigation, and if so, at what position. It can takes several values: * a negative value means that the element should be focusable, but should not be reachable via sequential keyboard navigation;
+- * 0 means that the element should be focusable and reachable via sequential keyboard navigation, but its relative order is defined by the platform convention;
+- * a positive value which means should be focusable and reachable via sequential keyboard navigation; its relative order is defined by the value of the attribute: the sequential follow the increasing number of the tabindex. If several elements share the same tabindex, their relative order follows their relative position in the document)."
+
+title:@"Contains a text representing advisory information related to the element it belongs to. Such information can typically, but not necessarily, be presented to the user as a tooltip."
+
+translate:@"Is an enumerated attribute that is used to specify whether an element's attribute values and the values of its Text node children are to be translated when the page is localized, or whether to leave them unchanged. It can have the following values: * empty string and ""yes"", which indicates that the element will be translated.
+ - * ""no"", which indicates that the element will not be translated."
+
+
+
+
+/*
+ * Then the DOM events
+ */
+onabort
+onautocomplete
+onautocompleteerror
+onblur
+oncancel
+oncanplay
+oncanplaythrough
+onchange
+onclick
+onclose
+oncontextmenu
+oncuechange
+ondblclick
+ondrag
+ondragend
+ondragenter
+ondragexit
+ondragleave
+ondragover
+ondragstart
+ondrop
+ondurationchange
+onemptied
+onended
+onerror
+onfocus
+oninput
+oninvalid
+onkeydown
+onkeypress
+onkeyup
+onload
+onloadeddata
+onloadedmetadata
+onloadstart
+onmousedown
+onmouseenter
+onmouseleave
+onmousemove
+onmouseout
+onmouseover
+onmouseup
+onmousewheel
+onpause
+onplay
+onplaying
+onprogress
+onratechange
+onreset
+onresize
+onscroll
+onscroll
+onseeking
+onselect
+onshow
+onsort
+onstalled
+onsubmit
+onsuspend
+ontimeupdate
+ontoggle
+onvolumechange
+onwaiting
+
+
+
+
+
+

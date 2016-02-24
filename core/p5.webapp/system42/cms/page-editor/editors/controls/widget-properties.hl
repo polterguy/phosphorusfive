@@ -36,7 +36,7 @@ set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-id/*/va
 for-each:x:/../*/sys42.get-widget/*/*(!/element!/innerValue!/widgets)
   _control
     container
-      class:col-md-3 form-group
+      class:col-md-6 form-group
       widgets
         container
           class:input-group
@@ -447,6 +447,8 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                       load-file:/system42/cms/page-editor/editors/controls/legal-elements.hl
                       if:x:@"/-/*/*/""{0}"""
                         :x:/../*/_arg?value
+                        and:x:/../*/_arg?value
+                          !=:_header
                         return:bool:true
                       return:bool:false
 

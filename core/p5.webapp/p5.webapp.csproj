@@ -356,6 +356,8 @@
     <None Include="system42\cms\page-editor\editors\controls\add-attribute.hl" />
     <None Include="system42\cms\page-editor\editors\controls\change-element.hl" />
     <None Include="system42\cms\page-editor\editors\controls\legal-elements.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\add-attribute-guide.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\legal-attributes.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

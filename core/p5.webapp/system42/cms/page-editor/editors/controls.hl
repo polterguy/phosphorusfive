@@ -172,25 +172,27 @@ create-widget:wysiwyg-editor
           class:btn btn-default
           style:"width:25%;"
           innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
-          title:Explains to you how adding widgets to your form works!
+          title:Explains how adding widgets to your page works!
           onclick
             sys42.confirm-window
               _header:Help for adding widgets
               _body:@"<p>A widget is (most often) a visible element on your screen. It can be a paragraph of text, a container for other
-widgets or an input element, such as a textbox or a dropdown list. For those acquinted with HTML, a widget is often represented as a 
+widgets, or an input element, such as a textbox or a dropdown list. For those acquinted with HTML, a widget is often represented as a 
 single HTML element</p>
 <p>There are three basic types of widgets in Phosphorus Five</p>
 <ul>
-  <li><strong>container</strong> - Contains children widgets through its <em>[widgets]</em> properties</li>
+  <li><strong>container</strong> - Contains children widgets through its <em>[widgets]</em> child node</li>
   <li><strong>literal</strong> - Contains an <em>[innerValue]</em> property, which can be static text, or HTML</li>
-  <li><strong>void</strong> - Contains neither children nor inner text, used for &lt;br&gt;, &lt;hr&gt;, &lt;input&gt;, etc</li>
+  <li><strong>void</strong> - Contains neither children, nor inner text, used for &lt;br&gt;, &lt;hr&gt;, &lt;input&gt;, etc</li>
 </ul>
 <p>Any HTML elements can be rendered with the above three widgets. Each widget declares its HTML element through the <em>[element]</em>
-property. In theory, you can render any widget with any widget type, but rendering a textarea HTML element, with the void or container widget
+property. In theory, you can render any HTML element with any widget type, but rendering a textarea HTML element, with the void or container widget
 for instance, would be meaningless. Textarea HTML elements, should normally use the [literal] widget for instance.</p>
 <p>Any widget that contains purely text, should be rendered using the [literal] widget. While any widget that has children
-widgets of itself, should be rendered using the [container] widget. Form input elements, &lt;br&gt; and &lt;hr&gt; elements, etc,
-that does not have any content, should be rendered with the [void] widget.</p>"
+widgets of itself, should be rendered using the [container] widget. Form &lt;input&gt; elements, &lt;br&gt; and &lt;hr&gt; elements, etc,
+that does not have any content, should be rendered with the [void] widget.</p>
+<p>After you have added a widget to your page, you should add <em>""attributes""</em> to your widget.</p>
+<p>Click on either the [container], [literal] or [void] buttons to add a widget to your page!</p>"
 
     container:wysiwyg-manipulate-selected-widget
       class:prepend-bottom col-xs-12 btn-group
@@ -227,6 +229,16 @@ that does not have any content, should be rendered with the [void] widget.</p>"
           innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Add attribute"
           onclick
             sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute.hl
+
+        /*
+         * Help with 'Add attribute to widget' button
+         */
+        button:wysiwyg-button-add-attribute-help
+          class:btn btn-default
+          title:Help me with adding attributes to my widget please ...
+          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+          onclick
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute-guide.hl
 
     /*
      * Properties for chosen widget
