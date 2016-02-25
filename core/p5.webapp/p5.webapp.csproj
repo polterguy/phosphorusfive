@@ -143,6 +143,9 @@
     <Content Include="system42\editors\codemirror\theme\the-matrix-reduced-secondary.css" />
     <Content Include="system42\apps\users\media\users.css" />
     <Content Include="users\root\documents\private\web.config" />
+    <Content Include="media\images\dangerous-shit.jpg" />
+    <Content Include="media\images\general-help-1.png" />
+    <Content Include="media\images\marvin-headshot-transparent.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -363,6 +366,7 @@
     <None Include="system42\cms\page-editor\editors\controls\help-files\help-file3.txt" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\help-file4.txt" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\help-file5.txt" />
+    <None Include="system42\cms\page-editor\editors\controls\id-help.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

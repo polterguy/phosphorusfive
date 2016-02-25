@@ -145,44 +145,119 @@ create-widget:wysiwyg-editor
         /*
          * Add [container] widget to surface button
          */
-        button:wysiwyg-controls-add-container
-          class:btn btn-default
+        container:wysiwyg-controls-add-container-wrp
+          class:btn-group
           style:"width:25%;"
-          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
-          title:Adds a [container] widget to your page
-          onclick
-            sys42.wysiwyg-controls.add-control:div
-            sys42.info-window:@"Please change widget's id and element to what you wish"
-              _time:more
-            send-javascript:@"$('#widget-property-id').focus().select();"
+          widgets
+            button
+              class:btn btn-default dropdown-toggle
+              data-toggle:dropdown
+              style:"width:100%;"
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
+            ul
+              class:dropdown-menu
+              widgets
+                li
+                  widgets
+                    a:wysiwyg-controls-add-container-before
+                      href:#
+                      innerValue:before
+                      title:Adds a [container] widget to your page, at the beginning, or before the currently selected widget
+                      onclick
+                        sys42.wysiwyg-controls.add-control:div
+                          _before:true
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                li
+                  widgets
+                    a:wysiwyg-controls-add-container-after
+                      href:#
+                      innerValue:after
+                      title:Appends a [container] widget to your page, or after the currently selected widget
+                      onclick
+                        sys42.wysiwyg-controls.add-control:div
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
 
         /*
          * Add [literal] widget to surface button
          */
-        button:wysiwyg-controls-add-literal
-          class:btn btn-default
+        container:wysiwyg-controls-add-literal-wrp
+          class:btn-group
           style:"width:25%;"
-          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal"
-          title:Adds a [literal] widget to your page
-          onclick
-            sys42.wysiwyg-controls.add-control:span
-            sys42.info-window:@"Please change widget's id and element to what you wish"
-              _time:more
-            send-javascript:@"$('#widget-property-id').focus().select();"
+          widgets
+            button
+              class:btn btn-default dropdown-toggle
+              data-toggle:dropdown
+              style:"width:100%;"
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal"
+            ul
+              class:dropdown-menu
+              widgets
+                li
+                  widgets
+                    a:wysiwyg-controls-add-literal-before
+                      href:#
+                      innerValue:before
+                      title:Adds a [literal] widget to your page, at the beginning, or before the currently selected widget
+                      onclick
+                        sys42.wysiwyg-controls.add-control:span
+                          _before:true
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
+                li
+                  widgets
+                    a:wysiwyg-controls-add-literal-after
+                      href:#
+                      innerValue:after
+                      title:Appends a [literal] widget to your page, or after the currently selected widget
+                      onclick
+                        sys42.wysiwyg-controls.add-control:span
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
 
         /*
          * Add [void] widget to surface button
          */
-        button:wysiwyg-controls-add-void
-          class:btn btn-default
+        container:wysiwyg-controls-add-void-wrp
+          class:btn-group
           style:"width:25%;"
-          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void"
-          title:Adds a [void] widget to your page
-          onclick
-            sys42.wysiwyg-controls.add-control:br
-            sys42.info-window:@"Please change widget's id and element to what you wish"
-              _time:more
-            send-javascript:@"$('#widget-property-id').focus().select();"
+          widgets
+            button
+              class:btn btn-default dropdown-toggle
+              data-toggle:dropdown
+              style:"width:100%;"
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void"
+            ul
+              class:dropdown-menu
+              widgets
+                li
+                  widgets
+                    a:wysiwyg-controls-add-void-before
+                      href:#
+                      innerValue:before
+                      title:Adds a [void] widget to your page, at the beginning, or before the currently selected widget
+                      onclick
+                        sys42.wysiwyg-controls.add-control:br
+                          _before:true
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
+                li
+                  widgets
+                    a:wysiwyg-controls-add-void-after
+                      href:#
+                      innerValue:after
+                      title:Appends a [void] widget to your page, or after the currently selected widget
+                      onclick
+                        sys42.wysiwyg-controls.add-control:br
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
 
         /*
          * Help button for 'Adding widgets to form'
@@ -195,7 +270,8 @@ create-widget:wysiwyg-editor
           onclick
             sys42.confirm-window
               _header:Help for adding widgets
-              _body:@"<p>A widget is (most often) a visible element on your screen. It can be a paragraph of text, a container for other
+              _body:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;""/>
+<p>A widget is (most often) a visible element on your screen. It can be a paragraph of text, a container for other
 widgets, or an input element, such as a textbox or a dropdown list. For those acquinted with HTML, a widget is often represented as a 
 single HTML element</p>
 <p>There are three basic types of widgets in Phosphorus Five</p>
@@ -433,6 +509,8 @@ without any needs for any prior development experience.</blockquote>"
          * Retrieves insertion position, which might differ according to whether or
          * not a widget is selected on page or not
          */
+        add:x:/+
+          src:x:/../*/_before
         sys42.wysiwyg-controls.get-insertion-position
         add:x:/../*/_create-widget
           src:x:/..else/*/sys42.wysiwyg-controls.get-insertion-position/*
@@ -497,14 +575,24 @@ without any needs for any prior development experience.</blockquote>"
 
       /*
        * As a general rule, if any widget is currently selected, we insert
-       * the new widget after the currently selected widget. Otherwise, 
-       * we append the widget into the main design surface
+       * the new widget after the currently selected widget, unless [_before]
+       * is given. Otherwise, we append the widget into the main design surface
        */
       if:x:/../*/find-widget/*
-        eval-x:x:/+/*
-        return
-          after:x:/../*/find-widget/*?value
+        if:x:/../*/_before?value.bool
+          // [_before] was supplied
+          eval-x:x:/+/*
+          return
+            before:x:/../*/find-widget/*?value
+        else
+          // No [_before], this is an after operation
+          eval-x:x:/+/*
+          return
+            after:x:/../*/find-widget/*?value
       else
+        if:x:/../*/_before?value.bool
+          add:x:/./+
+            src:"position:0"
         return
           parent:wysiwyg-editor-surface
 

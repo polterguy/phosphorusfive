@@ -601,7 +601,7 @@ create-widget
      * Widget's ID
      */
     container
-      class:col-md-3 form-group
+      class:col-md-4 form-group
       widgets
         container
           class:input-group
@@ -645,11 +645,22 @@ create-widget
                 sys42.wysiwyg-controls.change-selected-widgets-property:id
                   _new-value:x:/../*/get-widget-property/*/*?value
 
+            /*
+             * Help button for [id] property of widget
+             */
+            a:wysiwyg-controls-id-help
+              href:#
+              class:input-group-addon input-group-addon-force-float
+              innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+              title:Help me with the [id] property please ...
+              onclick
+                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/id-help.hl
+
     /*
      * Widget's element
      */
     container
-      class:col-md-3 form-group
+      class:col-md-4 form-group
       widgets
         container
           class:input-group

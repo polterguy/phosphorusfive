@@ -15,8 +15,10 @@ if
   load-file
 
   // setting the [header] and [content] of our page object from our database
-  add:x:/-/*/*/create-widget/*/widgets/**/={content}/./.
-    src:x:/../*/_args/*/controls?value
+  if:x:/../*/_args/*/controls?value
+    !=:
+    add:x:/./-/*/*/create-widget/*/widgets/**/={content}/./.
+      src:x:/../*/_args/*/controls?value
   set:x:/-2/*/*/create-widget/*/widgets/**/={header}?value
     src:x:/../*/_args/*/name?value
   set:x:/-3/*/*/create-widget/*/widgets/**/={content}/.

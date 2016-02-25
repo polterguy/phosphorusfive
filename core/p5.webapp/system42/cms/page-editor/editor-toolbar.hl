@@ -283,7 +283,7 @@ Among other things, your page becomes inacessible on tablets and phones!"
              */
             literal:preview-button
               element:button
-              innerValue:Preview
+              innerValue:View page
               class:btn btn-default
               onclick
                 sys42.get-currently-edited-page
