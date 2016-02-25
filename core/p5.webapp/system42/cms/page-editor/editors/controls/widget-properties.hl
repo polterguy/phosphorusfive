@@ -74,6 +74,8 @@ for-each:x:/../*/sort/*
             span
               innerValue:{element-name}
               class:input-group-addon
+              style:"background-color:rgba(0,128,0,.3);"
+              title:This is a dynamic attribute, and can be removed or nullified by clicking the 'X'
             void
               element:input
               type:text
@@ -308,6 +310,10 @@ HTML elements for instance, that don't require a value, but need the property.</
       set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*(/element|/type|/onkeypress)
       set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*/value?name
         src:innerValue
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/style?value
+        src:"background-color:rgba(0,128,128,0.2);"
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/title?value
+        src:"This is an Active Event, you can switch between JavaScript Active Event handlers and Hyperlisp Active Event handlers, or remove the event handler, by clicking the 'X'"
       add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
         src:"rows:1"
       add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
@@ -462,61 +468,16 @@ for-each:x:/../*/sys42.get-widget/*/*/widgets
             sys42.wysiwyg-controls.create-widgets-for-selected
 
               /*
-               * Creating the 'add [container] widget to selected widget' button
+               * Changing visibility for "create inside of widget" buttons
                */
-              create-literal-widget
-                parent:wysiwyg-control-widgets
-                element:button
-                class:btn btn-default
-                innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
-                title:Adds a [container] child widget to your currently selected widget
-                onclick
-                  find-widget
-                    _selected:true
-                  eval-x:x:/+/*
-                  sys42.wysiwyg-controls.add-control:div
-                    _parent:x:/../*/find-widget/*?value
-                  sys42.info-window:@"Please change widget's id and element to what you wish"
-                    _time:more
-                  send-javascript:@"$('#widget-property-id').focus().select();"
-
-              /*
-               * Creating the 'add [literal] widget to selected widget' button
-               */
-              create-literal-widget
-                parent:wysiwyg-control-widgets
-                element:button
-                class:btn btn-default
-                innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal"
-                title:Adds a [literal] child widget to your currently selected widget
-                onclick
-                  find-widget
-                    _selected:true
-                  eval-x:x:/+/*
-                  sys42.wysiwyg-controls.add-control:span
-                    _parent:x:/../*/find-widget/*?value
-                  sys42.info-window:@"Please change widget's id and element to what you wish"
-                    _time:more
-                  send-javascript:@"$('#widget-property-id').focus().select();"
-
-              /*
-               * Creating the 'add [void] widget to selected widget' button
-               */
-              create-literal-widget
-                parent:wysiwyg-control-widgets
-                element:button
-                class:btn btn-default
-                innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void"
-                title:Adds a [void] child widget to your currently selected widget
-                onclick
-                  find-widget
-                    _selected:true
-                  eval-x:x:/+/*
-                  sys42.wysiwyg-controls.add-control:br
-                    _parent:x:/../*/find-widget/*?value
-                  sys42.info-window:@"Please change widget's id and element to what you wish"
-                    _time:more
-                  send-javascript:@"$('#widget-property-id').focus().select();"
+              set-widget-property:wysiwyg-controls-add-container-to-container
+                style
+              set-widget-property:wysiwyg-controls-add-literal-to-container
+                style
+              set-widget-property:wysiwyg-controls-add-void-to-container
+                style
+              set-widget-property:wysiwyg-controls-paste-to-container
+                style
 
               /*
                * Creating the 'clear selected widget' button
@@ -524,7 +485,7 @@ for-each:x:/../*/sys42.get-widget/*/*/widgets
               create-literal-widget
                 parent:wysiwyg-control-widgets
                 element:a
-                class:btn btn-default prepend-left
+                class:btn btn-default
                 href:#
                 innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Clear widget"
                 onclick
@@ -610,6 +571,8 @@ create-widget
               element:div
               innerValue:id
               class:input-group-addon
+              style:"background-color:rgba(128,100,0,.3);"
+              title:This property cannot be removed!
             void:widget-property-id
               element:input
               type:text
@@ -669,6 +632,8 @@ create-widget
               element:div
               innerValue:element
               class:input-group-addon
+              style:"background-color:rgba(128,100,0,.3);"
+              title:This property cannot be removed!
             void:widget-property-element
               element:input
               type:text

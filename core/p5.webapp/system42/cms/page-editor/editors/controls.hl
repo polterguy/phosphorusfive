@@ -153,7 +153,7 @@ create-widget:wysiwyg-editor
               class:btn btn-default dropdown-toggle
               data-toggle:dropdown
               style:"width:100%;"
-              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -180,6 +180,22 @@ create-widget:wysiwyg-editor
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
                         send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                li:wysiwyg-controls-add-container-to-container
+                  style:"display:none;"
+                  widgets
+                    a:wysiwyg-controls-add-container-inside
+                      href:#
+                      innerValue:inside
+                      title:Appends a [container] widget to your currently selected widget
+                      onclick
+                        find-widget
+                          _selected:true
+                        eval-x:x:/+/*
+                        sys42.wysiwyg-controls.add-control:div
+                          _parent:x:/../*/find-widget/*?value
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#widget-property-id').focus().select();"
 
         /*
          * Add [literal] widget to surface button
@@ -192,7 +208,7 @@ create-widget:wysiwyg-editor
               class:btn btn-default dropdown-toggle
               data-toggle:dropdown
               style:"width:100%;"
-              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal"
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -219,6 +235,22 @@ create-widget:wysiwyg-editor
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
                         send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
+                li:wysiwyg-controls-add-literal-to-container
+                  style:"display:none;"
+                  widgets
+                    a:wysiwyg-controls-add-literal-inside
+                      href:#
+                      innerValue:inside
+                      title:Appends a [literal] widget to your currently selected widget
+                      onclick
+                        find-widget
+                          _selected:true
+                        eval-x:x:/+/*
+                        sys42.wysiwyg-controls.add-control:span
+                          _parent:x:/../*/find-widget/*?value
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#widget-property-id').focus().select();"
 
         /*
          * Add [void] widget to surface button
@@ -231,7 +263,7 @@ create-widget:wysiwyg-editor
               class:btn btn-default dropdown-toggle
               data-toggle:dropdown
               style:"width:100%;"
-              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void"
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -258,6 +290,22 @@ create-widget:wysiwyg-editor
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
                         send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
+                li:wysiwyg-controls-add-void-to-container
+                  style:"display:none;"
+                  widgets
+                    a:wysiwyg-controls-add-void-inside
+                      href:#
+                      innerValue:inside
+                      title:Appends a [void] widget to your currently selected widget
+                      onclick
+                        find-widget
+                          _selected:true
+                        eval-x:x:/+/*
+                        sys42.wysiwyg-controls.add-control:br
+                          _parent:x:/../*/find-widget/*?value
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#widget-property-id').focus().select();"
 
         /*
          * Add paste widget to surface button
@@ -287,7 +335,60 @@ create-widget:wysiwyg-editor
               /*
                * Then setting the id of all children widgets of widget to empty
                */
-              set:x:/../*/get-session-value/*/*/**(/container|/literal|/void)?value
+              for-each:x:/../*/get-session-value/*/*/**(/container|/literal|/void)
+                set:x:/+?value
+                  src:x:/..for-each/*/_dp/#
+                _node
+
+                /*
+                 * Checking if we should remove value, by looping ancestors, 
+                 * until we see [create-x-widget] node name, and see if
+                 * we only saw [container], [widgets], [void] and [literal] ancestor 
+                 * node names. If we did, then value of node should be removed, since
+                 * it was an ID for a widget. Otherwise, it was a [container/void/literal]
+                 * widget node, inside of an event handler (probably), or some other place
+                 * where we should NOT remove the ID of the widget!
+                 * [_remove-value] is used to signal whether or not we should remove
+                 * value of [container/void/literal] node ...
+                 */
+                _remove-value:bool:true
+                while:x:/..for-each/*/_node/#?name
+                  !~:create-
+                  if:x:/..for-each/*/_node/#?name
+                    !=:container
+                    and:x:/..for-each/*/_node/#?name
+                      !=:void
+                    and:x:/..for-each/*/_node/#?name
+                      !=:literal
+                    and:x:/..for-each/*/_node/#?name
+                      !=:widgets
+
+                    /*
+                     * We should NOT remove value of widget, since it was not
+                     * a direct descendant widget beneath clipboard widget!
+                     */
+                    set:x:/..while/-?value
+                      src:bool:false
+
+                    /*
+                     * Breaking [while], no need to continue, since
+                     * we now know we should NOT remove ID of widget node
+                     */
+                    break
+
+                  /*
+                   * Settings while condition's [_node] value to parent node of
+                   * currently iterated ([while] iterated) node
+                   */
+                  set:x:/..for-each/*/_node?value
+                    src:x:/..for-each/*/_node/#/.
+
+                /*
+                 * Checking if we should remove ID of [literal/container/void] node,
+                 * and if so, we remove it
+                 */
+                if:x:/..for-each/*/_remove-value?value
+                  set:x:/..for-each/*/_dp/#?value
 
               /*
                * Adding "create position" to widget create invocation
@@ -346,7 +447,7 @@ create-widget:wysiwyg-editor
                     set-widget-property:wysiwyg-controls-paste-wrp
                       class:x:/./-1?value
 
-              innerValue:@"<span class=""glyphicon glyphicon-paste""></span> paste"
+              innerValue:@"<span class=""glyphicon glyphicon-paste""></span> paste <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -378,6 +479,28 @@ create-widget:wysiwyg-editor
                       href:#
                       innerValue:after
                       title:Appends the widget from your clipboard to your page, or after the currently selected widget
+                      onclick
+
+                        /*
+                         * Figuring out where to insert widget
+                         */
+                        sys42.wysiwyg-controls.get-insertion-position
+
+                        /*
+                         * Invoking Active Event responsible for performing paste operation
+                         */
+                        add:x:/+/*
+                          src:x:/./-/*
+                        sys42.wysiwyg-controls.paste-widget
+                          _position
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
+                li:wysiwyg-controls-paste-to-container
+                  style:"display:none;"
+                  widgets
+                    a:wysiwyg-controls-paste-inside
+                      href:#
+                      innerValue:inside
+                      title:Appends the widget from your clipboard inside of your currently selected widget
                       onclick
 
                         /*
@@ -525,6 +648,7 @@ without any needs for any prior development experience.</blockquote>"
          */
         button:wysiwyg-button-add-attribute-help
           class:btn btn-default
+          style:"border-left:dashed 1px rgba(0,0,0,.2);"
           title:Help me with adding attributes to my widget please ...
           innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
           onclick
@@ -769,6 +893,22 @@ without any needs for any prior development experience.</blockquote>"
      * Unselects any selected widgets on page
      */
     sys42.wysiwyg-controls.unselect-widget
+
+      /*
+       * Changing visibility for "create inside of widget" buttons
+       */
+      set-widget-property:wysiwyg-controls-add-container-to-container
+        style:"display:none;"
+      set-widget-property:wysiwyg-controls-add-literal-to-container
+        style:"display:none;"
+      set-widget-property:wysiwyg-controls-add-void-to-container
+        style:"display:none;"
+      set-widget-property:wysiwyg-controls-paste-to-container
+        style:"display:none;"
+
+      /*
+       * Finding selected widget
+       */
       find-widget
         _selected:true
 
@@ -818,6 +958,41 @@ without any needs for any prior development experience.</blockquote>"
           style:"box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"
 
         /*
+         * Changing visibility for "create inside of widget" buttons
+         */
+        if
+          fetch:x:/0/0?name
+            list-widgets:x:/../*/_arg?value
+          =:container
+          set-widget-property:wysiwyg-controls-add-container-to-container
+            style
+          set-widget-property:wysiwyg-controls-add-literal-to-container
+            style
+          set-widget-property:wysiwyg-controls-add-void-to-container
+            style
+          if
+            fetch:x:/0/0/0
+              get-session-value:sys42.wysiwyg-controls.clipboard-widget
+            set-widget-property:wysiwyg-controls-paste-to-container
+              style
+          else
+            set-widget-property:wysiwyg-controls-paste-to-container
+              style:"display:none;"
+        else
+
+          /*
+           * Changing visibility for "create inside of widget" buttons
+           */
+          set-widget-property:wysiwyg-controls-add-container-to-container
+            style:"display:none;"
+          set-widget-property:wysiwyg-controls-add-literal-to-container
+            style:"display:none;"
+          set-widget-property:wysiwyg-controls-add-void-to-container
+            style:"display:none;"
+          set-widget-property:wysiwyg-controls-paste-to-container
+            style:"display:none;"
+
+        /*
          * Showing widget's properties widget
          */
         sys42.wysiwyg-controls.show-selected-widgets-properties:x:/../*/_arg?value
@@ -835,6 +1010,18 @@ without any needs for any prior development experience.</blockquote>"
          * Hiding widget's properties widget
          */
         sys42.wysiwyg-controls.hide-selected-widgets-properties
+
+        /*
+         * Changing visibility for "create inside of widget" buttons
+         */
+        set-widget-property:wysiwyg-controls-add-container-to-container
+          style:"display:none;"
+        set-widget-property:wysiwyg-controls-add-literal-to-container
+          style:"display:none;"
+        set-widget-property:wysiwyg-controls-add-void-to-container
+          style:"display:none;"
+        set-widget-property:wysiwyg-controls-paste-to-container
+          style:"display:none;"
 
         /*
          * Hiding buttons that should only be visible while widget is selected
