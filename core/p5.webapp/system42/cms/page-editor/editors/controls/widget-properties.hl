@@ -75,7 +75,7 @@ for-each:x:/../*/sort/*
               innerValue:{element-name}
               class:input-group-addon
               style:"background-color:rgba(0,128,128,0.2);"
-              title:This is a dynamic attribute, and can be removed or nullified by clicking the 'X'
+              title:This is a dynamic attribute, and can be removed, or nullified, by clicking the 'X'
             void
               element:input
               type:text
@@ -424,7 +424,7 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
 get-parent-widget:x:/../*/_widget?value
 if:x:/-/*?value
   !=:wysiwyg-editor-surface
-  eval-x:x:/+/*/*/*/*/**(/_widget|/innerValue)
+  eval-x:x:/+/*/*/*/*/**(/_widget|/innerValue|/onmouseover|/onmouseout|/onclick)
   add:x:/../*/create-widget/*/widgets
     src
       container
@@ -436,7 +436,13 @@ if:x:/-/*?value
             style:"clear:both;"
             innerValue:@"<span class=""glyphicon glyphicon-arrow-up""></span> {0}"
               :x:/../*/get-parent-widget/*?value
-            onclick
+            onmouseover:@"$('#{0}').addClass('highlight');"
+              :x:/../*/get-parent-widget/*?value
+            onmouseout:@"$('#{0}').removeClass('highlight');"
+              :x:/../*/get-parent-widget/*?value
+            onclick:@"$('#{0}').removeClass('highlight');p5.$(event.currentTarget).raise('_onclick');return false;"
+              :x:/../*/get-parent-widget/*?value
+            _onclick
               _widget:x:/../*/_widget?value
               get-parent-widget:x:/../*/_widget?value
               sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0?value
@@ -547,10 +553,16 @@ for-each:x:/../*/sys42.get-widget/*/*/widgets
                     innerValue:innerValue:@"<span class=""glyphicon glyphicon-arrow-down""></span> {0} - {1}"
                       :x:/..for-each/*/_dp/#?name
                       :x:/..for-each/*/_dp/#?value
-                    onclick
+                    onmouseover:@"$('#{0}').addClass('highlight');"
+                      :x:/..for-each/*/_dp/#?value
+                    onmouseout:@"$('#{0}').removeClass('highlight');"
+                      :x:/..for-each/*/_dp/#?value
+                    onclick:@"$('#{0}').removeClass('highlight');p5.$(event.currentTarget).raise('_onclick');return false;"
+                      :x:/..for-each/*/_dp/#?value
+                    _onclick
                       sys42.wysiwyg-controls.select-widget:x:/..for-each/*/_dp/#?value
                       sys42.wysiwyg-controls.databind-select-control:x:/..for-each/*/_dp/#?value
-                eval-x:x:/-/*/*/innerValue|/-/*/*/onclick/*
+                eval-x:x:/-/*/*/innerValue|/-/*/*/_onclick/*|/-/*/*/onmouseover|/-/*/*/onmouseout|/-/*/*/onclick
                 eval:x:/-2
   add:x:/../*/create-widget/*/widgets
     src:x:/..for-each/*/_control/*

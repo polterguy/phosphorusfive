@@ -670,7 +670,9 @@ without any needs for any prior development experience.</blockquote>"
               src:x:/../*/sys42.get-widget/*
             set-session-value:sys42.wysiwyg-controls.clipboard-widget
               src
-            sys42.info-window:A copy of widget was put into the clipboard
+            sys42.info-window:@"A copy of the widget was put into the clipboard. If you wish to 'cut' the widget, 
+you can simply delete it now. A complete version of the widget still exists on your 'widget clipboard'."
+              _time:more
             sys42.wysiwyg-controls.toggle-paste-button
 
     /*
