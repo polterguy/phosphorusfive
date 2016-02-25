@@ -147,7 +147,7 @@ create-widget:wysiwyg-editor
          */
         container:wysiwyg-controls-add-container-wrp
           class:btn-group
-          style:"width:25%;"
+          style:"width:20%;"
           widgets
             button
               class:btn btn-default dropdown-toggle
@@ -186,7 +186,7 @@ create-widget:wysiwyg-editor
          */
         container:wysiwyg-controls-add-literal-wrp
           class:btn-group
-          style:"width:25%;"
+          style:"width:20%;"
           widgets
             button
               class:btn btn-default dropdown-toggle
@@ -225,7 +225,7 @@ create-widget:wysiwyg-editor
          */
         container:wysiwyg-controls-add-void-wrp
           class:btn-group
-          style:"width:25%;"
+          style:"width:20%;"
           widgets
             button
               class:btn btn-default dropdown-toggle
@@ -260,12 +260,147 @@ create-widget:wysiwyg-editor
                         send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
 
         /*
+         * Add paste widget to surface button
+         */
+        container:wysiwyg-controls-paste
+          class:btn-group
+          style:"width:20%;"
+          events
+
+            /*
+             * Pastes a widget to surface. Needs [_position] arguments, being e.g. [before], [after], [parent]
+             * and [position] to know where to paste widget
+             */
+            sys42.wysiwyg-controls.paste-widget
+
+              /*
+               * Retrieving widget from "clipboard", and changing the [literal], [void], [container]
+               * parts of session value to [create-xxx-widget], in addition to removing the widget's
+               * id
+               */
+              get-session-value:sys42.wysiwyg-controls.clipboard-widget
+              set:x:/../*/get-session-value/*/*?name
+                src:create-{0}-widget
+                  :x:/../*/get-session-value/*/*?name
+              set:x:/../*/get-session-value/*/*?value
+
+              /*
+               * Then setting the id of all children widgets of widget to empty
+               */
+              set:x:/../*/get-session-value/*/*/**(/container|/literal|/void)?value
+
+              /*
+               * Adding "create position" to widget create invocation
+               */
+              add:x:/../*/get-session-value/*/*
+                src:x:/../*/_position/*
+
+              /*
+               * Making sure widget becomes "selectable" in wysiwyg surface by clicking
+               */
+              add:x:/../*/get-session-value/*/*
+                src
+                  onclick
+                    sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+                    sys42.wysiwyg-controls.databind-select-control
+
+              /*
+               * Actually creating widget, before selecting widget, and rebinding select dropdown list
+               */
+              set:x:/+
+                src:x:/../*/get-session-value/*/*
+              _create-widget
+              sys42.wysiwyg-controls.select-widget:x:/-?value
+              sys42.wysiwyg-controls.databind-select-control
+
+              /*
+               * Toggling button's dropdown state, and showing user some information
+               */
+              sys42.info-window:@"Please change widget's id and element to what you wish"
+                _time:more
+
+          widgets
+            button:wysiwyg-controls-paste-wrp
+              class:btn btn-default dropdown-toggle
+              data-toggle:dropdown
+              style:"width:100%;"
+              oninit
+                sys42.wysiwyg-controls.toggle-paste-button
+              events
+                sys42.wysiwyg-controls.toggle-paste-button
+                  get-session-value:sys42.wysiwyg-controls.clipboard-widget
+                  if:x:/-/*/*
+                    not
+                    get-widget-property:wysiwyg-controls-paste-wrp
+                      class
+                    set:x:/-/*/*?value
+                      src:{0} disabled
+                        :x:/././-/*/*?value
+                    set-widget-property:wysiwyg-controls-paste-wrp
+                      class:x:/./-2/*/*?value
+                  else
+                    get-widget-property:wysiwyg-controls-paste-wrp
+                      class
+                    replace:x:/-/*/*?value
+                      what:" disabled"
+                    set-widget-property:wysiwyg-controls-paste-wrp
+                      class:x:/./-1?value
+
+              innerValue:@"<span class=""glyphicon glyphicon-paste""></span> paste"
+            ul
+              class:dropdown-menu
+              widgets
+                li
+                  widgets
+                    a:wysiwyg-controls-paste-before
+                      href:#
+                      innerValue:before
+                      title:Paste the widget from your clipboard, at the beginning, or before the currently selected widget
+                      onclick
+
+                        /*
+                         * Figuring out where to insert widget
+                         */
+                        sys42.wysiwyg-controls.get-insertion-position
+                          _before:true
+
+                        /*
+                         * Invoking Active Event responsible for performing paste operation
+                         */
+                        add:x:/+/*
+                          src:x:/./-/*
+                        sys42.wysiwyg-controls.paste-widget
+                          _position
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
+                li
+                  widgets
+                    a:wysiwyg-controls-paste-after
+                      href:#
+                      innerValue:after
+                      title:Appends the widget from your clipboard to your page, or after the currently selected widget
+                      onclick
+
+                        /*
+                         * Figuring out where to insert widget
+                         */
+                        sys42.wysiwyg-controls.get-insertion-position
+
+                        /*
+                         * Invoking Active Event responsible for performing paste operation
+                         */
+                        add:x:/+/*
+                          src:x:/./-/*
+                        sys42.wysiwyg-controls.paste-widget
+                          _position
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
+
+        /*
          * Help button for 'Adding widgets to form'
          */
         button:wysiwyg-controls-help-add-widget
           class:btn btn-default
-          style:"width:25%;"
-          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Widget help"
+          style:"width:20%;"
+          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
           title:Explains how adding widgets to your page works!
           onclick
             sys42.confirm-window
@@ -394,6 +529,25 @@ without any needs for any prior development experience.</blockquote>"
           innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
           onclick
             sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute-guide.hl
+
+        /*
+         * Copy widget
+         */
+        button:wysiwyg-button-copy-widget
+          class:btn btn-default
+          title:Copies widget such that you can paste in a copy another place
+          innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy widget"
+          onclick
+            find-widget
+              _selected
+            sys42.get-widget:x:/../*/find-widget/*?value
+            set:x:/-/*/*(/_selected|/onclick|/style)
+            add:x:/+/*
+              src:x:/../*/sys42.get-widget/*
+            set-session-value:sys42.wysiwyg-controls.clipboard-widget
+              src
+            sys42.info-window:A copy of widget was put into the clipboard
+            sys42.wysiwyg-controls.toggle-paste-button
 
     /*
      * Properties for chosen widget
