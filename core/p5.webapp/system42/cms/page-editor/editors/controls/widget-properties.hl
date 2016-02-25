@@ -74,7 +74,7 @@ for-each:x:/../*/sort/*
             span
               innerValue:{element-name}
               class:input-group-addon
-              style:"background-color:rgba(0,128,0,.3);"
+              style:"background-color:rgba(0,128,128,0.2);"
               title:This is a dynamic attribute, and can be removed or nullified by clicking the 'X'
             void
               element:input
@@ -179,7 +179,8 @@ for-each:x:/../*/sort/*
                             add:x:/+2
                               src:x:/../*/_element-name?value
                             add:x:/+/*
-                              src:foo
+                              src
+                                sys42.info-window:TODO; Implement some intelligent Hyperlisp here ...!!
                             set-widget-ajax-event:x:/../*/find-widget/*?value
                             send-javascript:@"$('#confirm-window').modal('toggle');"
                             set:x:/+/*?value
@@ -311,7 +312,7 @@ HTML elements for instance, that don't require a value, but need the property.</
       set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*/value?name
         src:innerValue
       set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/style?value
-        src:"background-color:rgba(0,128,128,0.2);"
+        src:"background-color:rgba(0,128,0,.3);"
       set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/title?value
         src:"This is an Active Event, you can switch between JavaScript Active Event handlers and Hyperlisp Active Event handlers, or remove the event handler, by clicking the 'X'"
       add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
@@ -340,6 +341,15 @@ HTML elements for instance, that don't require a value, but need the property.</
       set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void?name
         src:textarea
 
+    else
+
+      /*
+       * This is a JavaScript event handler, signaling that fact to caller
+       */
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/title?value
+        src:"This is a JavaScript event handler, you can switch between JavaScript event handlers and Hyperlisp Active Event handlers, or remove the event handler, by clicking the 'X'"
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/style?value
+        src:"background-color:rgba(0,128,0,.3);"
     /*
      * This is an invisibly rendered event handler, making sure we render the label
      * with the REAL event handler name, before we add the attribute control to properties

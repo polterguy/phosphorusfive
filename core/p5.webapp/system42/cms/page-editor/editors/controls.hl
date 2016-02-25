@@ -310,7 +310,7 @@ create-widget:wysiwyg-editor
         /*
          * Add paste widget to surface button
          */
-        container:wysiwyg-controls-paste
+        container:wysiwyg-controls-paste-wrp
           class:btn-group
           style:"width:20%;"
           events
@@ -421,7 +421,7 @@ create-widget:wysiwyg-editor
                 _time:more
 
           widgets
-            button:wysiwyg-controls-paste-wrp
+            button:wysiwyg-controls-paste-btn
               class:btn btn-default dropdown-toggle
               data-toggle:dropdown
               style:"width:100%;"
@@ -432,19 +432,19 @@ create-widget:wysiwyg-editor
                   get-session-value:sys42.wysiwyg-controls.clipboard-widget
                   if:x:/-/*/*
                     not
-                    get-widget-property:wysiwyg-controls-paste-wrp
+                    get-widget-property:wysiwyg-controls-paste-btn
                       class
                     set:x:/-/*/*?value
                       src:{0} disabled
                         :x:/././-/*/*?value
-                    set-widget-property:wysiwyg-controls-paste-wrp
+                    set-widget-property:wysiwyg-controls-paste-btn
                       class:x:/./-2/*/*?value
                   else
-                    get-widget-property:wysiwyg-controls-paste-wrp
+                    get-widget-property:wysiwyg-controls-paste-btn
                       class
                     replace:x:/-/*/*?value
                       what:" disabled"
-                    set-widget-property:wysiwyg-controls-paste-wrp
+                    set-widget-property:wysiwyg-controls-paste-btn
                       class:x:/./-1?value
 
               innerValue:@"<span class=""glyphicon glyphicon-paste""></span> paste <span class=""caret""></span>"
