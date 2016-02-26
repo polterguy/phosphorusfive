@@ -35,6 +35,10 @@ for-each:x:/../*/lisp2lambda/**(/literal/*/~on|/container/*/~on|/void/*/~on)
       src:_{0}
         :x:/..for-each/*/_dp/#?name
 
+    /*
+     * Checking if this is a user control, and if so, apply a
+     */
+
 /*
  * Then adding [onclick] event handlers for each widget, to
  * allow widget to be selected by clicking it in design surface
@@ -125,11 +129,21 @@ create-widget:wysiwyg-editor
                         parent:wysiwyg-select-control
                         innerValue
                         value
-                    set:x:/..for-each/*/_option/*/*/innerValue?value
-                      src:{0} - {1} - {2}
-                        :x:/..for-each/*/_dp/#?name
-                        :x:/..for-each/*/_dp/#/*/element?value
-                        :x:/..for-each/*/_dp/#?value
+                    if:x:/..for-each/*/_dp/#/*/_oninit
+                      /*
+                       * Probably a usercontrol
+                       */
+                      set:x:/..for-each/*/_option/*/*/innerValue?value
+                        src:{0} - {1} - {2}
+                          :usercontrol
+                          :x:/..for-each/*/_dp/#/*/element?value
+                          :x:/..for-each/*/_dp/#?value
+                    else
+                      set:x:/..for-each/*/_option/*/*/innerValue?value
+                        src:{0} - {1} - {2}
+                          :x:/..for-each/*/_dp/#?name
+                          :x:/..for-each/*/_dp/#/*/element?value
+                          :x:/..for-each/*/_dp/#?value
                     set:x:/..for-each/*/_option/*/*/value?value
                       src:x:/..for-each/*/_dp/#?value
                     if:x:/../*/find-widget/*?value
@@ -180,6 +194,22 @@ create-widget:wysiwyg-editor
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
                         send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                li:wysiwyg-controls-add-container-to-container
+                  style:"display:none;"
+                  widgets
+                    a:wysiwyg-controls-add-container-inside
+                      href:#
+                      innerValue:inside
+                      title:Appends a [container] widget to your currently selected widget
+                      onclick
+                        find-widget
+                          _selected:true
+                        eval-x:x:/+/*
+                        sys42.wysiwyg-controls.add-control:div
+                          _parent:x:/../*/find-widget/*?value
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');$('#widget-property-id').focus().select();"
                 li
                   widgets
                     a:wysiwyg-controls-add-usercontrol-before
@@ -199,22 +229,6 @@ create-widget:wysiwyg-editor
                       onclick
                         sys42.wysiwyg-controls.add-control:_usercontrol
                         send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
-                li:wysiwyg-controls-add-container-to-container
-                  style:"display:none;"
-                  widgets
-                    a:wysiwyg-controls-add-container-inside
-                      href:#
-                      innerValue:inside
-                      title:Appends a [container] widget to your currently selected widget
-                      onclick
-                        find-widget
-                          _selected:true
-                        eval-x:x:/+/*
-                        sys42.wysiwyg-controls.add-control:div
-                          _parent:x:/../*/find-widget/*?value
-                        sys42.info-window:@"Please change widget's id and element to what you wish"
-                          _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();"
 
         /*
          * Add [literal] widget to surface button
@@ -269,7 +283,7 @@ create-widget:wysiwyg-editor
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();"
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
 
         /*
          * Add [void] widget to surface button
@@ -324,7 +338,7 @@ create-widget:wysiwyg-editor
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();"
+                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
 
         /*
          * Add paste widget to surface button
