@@ -185,7 +185,7 @@ namespace p5.lambda
 
                 // Checking if we're supposed to return from evaluation
                 var rootChildName = exe.Root.FirstChild?.Name;
-                if (rootChildName == "_return" || rootChildName == "_break")
+                if (rootChildName == "_return" || rootChildName == "_break" || rootChildName == "_continue")
                     return; // Breaking evaluation of any further code
 
                 // Prioritizing "NextSibling", in case this node created new nodes, while having

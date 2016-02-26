@@ -84,27 +84,19 @@ create-widget:wysiwyg-controls-usercontrol-window
                       innerValue:@"Select the usercontrol you wish to include on your page ..."
                     literal:wysiwyg-controls-usercontrol-help
                       visible:false
-                      innerValue:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" /><p>Usercontrols gives you the possibility of inserting existing [controls] pages,
-as reusable objects, into other [controls] pages. This allows you to incrementally build functionality, the same way you would with LEGO. 
-Please select which existing page you would like to use below.</p>
-<p>Notice that a usercontrol won't render correctly in the design surface. If you wish to view how it will look like, you'll have to 
-click <em>""View""</em> to see your page, after saving it.</p>
-<p>If you wish, you can modify your usercontrol's <strong>[oninit]</strong> event handler after creating it, to modify its behavior,
-and which page to load, etc. But this requires some Hyperlisp knowledge.</p>
+                      innerValue:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" />
+<p>Usercontrols gives you the possibility of inserting existing [controls] pages,
+as reusable objects, into other [controls] pages. This allows you to incrementally build functionality, the same way you would with LEGO.</p>
+<p>In such a regard, a usercontrol is simply another [controls] page. If you wish to have your page recognised as a reusable usercontrol, 
+your page must start with the name <strong>""Usercontrol -&nbsp;""</strong>. Otherwise, it won't be recognised as a reusable usercontrol.</p>
 <p>When adding a usercontrol, a wrapper [container] control is created. The actual usercontrol [controls] page, will be rendered inside
 of this [container] control. Please take care when adding usercontrols, such that you do not create recursive dependencies in any ways. 
-Meaning, usercontrols that are referencing the page you are creating, for instance. Neither directly, nor indirectly. You can however
-add the same page as a usercontrol, multiple times, without problems, to the same page, as long as none of your controls have <em>""static ids""</em>. 
-Meaning, they must all use the automatically assigned ID.</p>
+Meaning, usercontrols that are referencing the page you are creating. Neither directly, nor indirectly.</p>
+<p>You can however add up the same usercontrol, multiple times, without problems, to the same page, <strong>as long as none of your controls 
+inside your usercontrol have <em>""static ids""</em></strong>. Meaning, they must all use the automatically assigned id.</p>
 <p>A usercontrol will also render to the client with the attribute <strong>""data-usercontrol='true'""</strong>, which allows you to easily access
-usercontrols from client-side JavaScript and CSS. If you remove this attribute from your wrapper widget, you will no longer be able to
-see your usercontrol at all in the design surface, but it will still function 100% correctly, and be possible to select from the Widget 
-select dropdown list.</p>
-<p>You can also add widgets to a usercontrol, but by default, everything you add to a usercontrol, will be rendered at the beginning of it. A
-usercontrol in general terms, behaves exactly like any other container widget in those regards. You can also change its CSS class, or add any
-other properties to it you wish. If you modify the usercontrol's creation script,
-in the [oninit] event handler, you can change this behavior, and have your added controls intermingled with the usercontrol's content, 
-any ways you see fit. But this yet again, requires some Hyperlisp knowledge.</p>"
+your usercontrols from client-side JavaScript and CSS.</p>
+<p>Please select the usercontrol you wish to include on your page from the list below ...</p>"
                     table:wysiwyg-window-list-of-usercontrols
                       class:prepend-top table table-hover
                       oninit
@@ -115,6 +107,12 @@ any ways you see fit. But this yet again, requires some Hyperlisp knowledge.</p>
                           :x:/../*/get-widget-property/*/*?value
                         _sys42.show-code-window:x:/..
                         for-each:x:/../*/select-data/*
+                          if
+                            fetch:x:/0/0?value
+                              index-of:x:/..for-each/*/_dp/#/*/name?value
+                                what:"Usercontrol - "
+                            !=:int:0
+                            continue
                           eval-x:x:/+/**(/href|/innerValue|/_page-id)
                           create-widget
                             parent:wysiwyg-window-list-of-usercontrols

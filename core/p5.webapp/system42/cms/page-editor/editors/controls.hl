@@ -94,14 +94,18 @@ create-widget:wysiwyg-editor
      */
     text:@"<style type=""text/css"">
 *[data-usercontrol] {
-	min-height:20px;
-	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='120px'><text x='0' y='15' fill='rgba(128,0,0,.05)' font-size='20'>Usercontrol</text></svg>"");
-	background-color:rgba(0,255,0,.02);
+	min-height:20px !important;
+	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='120px'><text x='0' y='15' fill='rgba(128,0,0,.05)' font-size='20'>Usercontrol</text></svg>"") !important;
+	background-color:rgba(0,255,0,.02) !important;
 }
 *[data-selected] {
-	min-height:20px;
-	box-shadow: 5px 5px 5px #888888;
-	border:dashed 1px black;
+	min-height:20px !important;
+	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='120px'><text x='0' y='15' fill='rgba(128,0,0,.05)' font-size='20'>Selected</text></svg>"") !important;
+	background-color:rgba(255,255,0,.5) !important;
+	box-shadow: 12px 12px 5px #888888 !important;
+	border:dashed 1px rgba(0,0,0,.5) !important;
+	z-index:200 !important;
+	position:relative !important;
 }
 #wysiwyg-editor-surface {
 	min-height:400px;

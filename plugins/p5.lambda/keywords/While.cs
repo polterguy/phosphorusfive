@@ -54,7 +54,8 @@ namespace p5.lambda.keywords
                     return;
                 } else if (rootChildName == "_return") {
                     return;
-                }
+                } else if (rootChildName == "_continue")
+                    e.Args.Root.FirstChild.UnTie ();
 
                 // Checking if we're overflowing maximum number of iterations, unless [_unchecked] was true
                 if (!uncheck && iterations++ > 10000)
