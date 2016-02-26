@@ -180,6 +180,25 @@ create-widget:wysiwyg-editor
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
                         send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                li
+                  widgets
+                    a:wysiwyg-controls-add-usercontrol-before
+                      href:#
+                      innerValue:Usercontrol before
+                      title:Adds a [usercontrol] widget to your page, at the beginning, or before the currently selected widget
+                      onclick
+                        sys42.wysiwyg-controls.add-control:_usercontrol
+                          _before:true
+                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                li
+                  widgets
+                    a:wysiwyg-controls-add-usercontrol-after
+                      href:#
+                      innerValue:Usercontrol after
+                      title:Appends a [usercontrol] widget to your page, or after the currently selected widget
+                      onclick
+                        sys42.wysiwyg-controls.add-control:_usercontrol
+                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
                 li:wysiwyg-controls-add-container-to-container
                   style:"display:none;"
                   widgets
@@ -671,7 +690,7 @@ without any needs for any prior development experience.</blockquote>"
          */
         button:wysiwyg-button-copy-widget
           class:btn btn-default
-          title:Copies widget such that you can paste in a copy another place
+          title:Copies widget to clipboard, such that you can paste in a copy another place, either on same page, or in another page
           innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy widget"
           onclick
             find-widget
@@ -820,6 +839,8 @@ you can simply delete it now. A complete version of the widget still exists on y
        */
       if:x:/../*/sys42.wysiwyg-controls.get-default-properties/*/element
         not
+        and:x:/../*/_arg?value
+          !=:_usercontrol
         add:x:/../*/_create-widget
           src:"element:{0}"
             :x:/../*/_arg?value
@@ -828,11 +849,13 @@ you can simply delete it now. A complete version of the widget still exists on y
        * Adding [onclick] event handler, such that user can select widget
        * in WYSIWYG screen by clicking it
        */
-      add:x:/../*/_create-widget
-        src
-          onclick
-            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
-            sys42.wysiwyg-controls.databind-select-control
+      if:x:/../*/_arg?value
+        !=:_usercontrol
+        add:x:/../*/_create-widget
+          src
+            onclick
+              sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+              sys42.wysiwyg-controls.databind-select-control
 
       /*
        * Checking widget creation Active Event, which might be
@@ -846,9 +869,22 @@ you can simply delete it now. A complete version of the widget still exists on y
       else-if:x:/../*/sys42.wysiwyg-controls.get-default-properties/*/innerValue
         set:x:/../*/_create-widget?name
           src:create-literal-widget
-      else
+      else-if:x:/../*/_arg?value
+        !=:_usercontrol
         set:x:/../*/_create-widget?name
           src:create-void-widget
+      else
+
+        /*
+         * Usercontrol type of widget, invoking creational event, and RETURNING
+         */
+        add:x:/+2/*
+          src:x:/../*/_create-widget
+        set:x:/+/*/*?name
+          src:create-widget
+        sys42.wysiwyg-controls.create-user-control
+          _create-widget
+        return
 
       /*
        * At this point, Active Event invocation below, should have been adequately built
@@ -857,6 +893,20 @@ you can simply delete it now. A complete version of the widget still exists on y
       _create-widget
       sys42.wysiwyg-controls.select-widget:x:/-?value
       sys42.wysiwyg-controls.databind-select-control
+
+    /*
+     * Creates a user control type of widget, by asking user which existing predefined
+     * [controls] he would like to include as his [usercontrol]
+     */
+    sys42.wysiwyg-controls.create-user-control
+
+      /*
+       * Asking user for which [controls] he wish to include, by creating a modal
+       * window, looping through all existing [controls] in database
+       */
+      add:x:/+
+        src:x:/../*/_create-widget
+      sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-usercontrol.hl
 
     /*
      * Returns the position where to insert a new control

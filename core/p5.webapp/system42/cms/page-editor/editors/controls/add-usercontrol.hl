@@ -1,0 +1,153 @@
+/*
+ * Shows the modal dialog that allows user to
+ * select an existing [controls] page, and use
+ * as a "User control"
+ */
+
+
+/*
+ * Making sure we delete any previously created (but non-visible)
+ * modal HTML element dialogues
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:wysiwyg-controls-usercontrol-window
+  delete-widget:wysiwyg-controls-usercontrol-window
+
+
+/*
+ * Making sure dialogues becomes initially visible, and that we give initial
+ * focus to "Close" button
+ */
+send-javascript:@"$('#wysiwyg-controls-usercontrol-window').modal('toggle');
+$('#wysiwyg-controls-usercontrol-window').on('shown.bs.modal', function () {
+    $('#wysiwyg-controls-usercontrol-window-ok').focus();
+})"
+
+/*
+ * Making sure we pass in our creational statement into "Select" button
+ * for page
+ */
+set:x:/../*/create-widget/**/_create-widget
+  src:x:/../*/_create-widget
+
+/*
+ * Creating actual modal Widget
+ */
+create-widget:wysiwyg-controls-usercontrol-window
+  class:modal fade
+  widgets
+    container
+      class:modal-dialog
+      role:document
+      widgets
+        container
+          class:modal-content
+          widgets
+
+            /*
+             * Header of dialog
+             */
+            container
+              class:modal-header
+              widgets
+
+                // Close button
+                literal
+                  element:button
+                  class:close
+                  data-dismiss:modal
+                  aria-label:Close
+                  innerValue:&times;
+
+                // Header of our modal window
+                text:@"<h4>Please choose an existing [controls] page</h4>"
+
+            /*
+             * Body of dialog
+             */
+            container
+              class:modal-body
+              widgets
+
+                // Actual literal widget containing body of dialogue
+                container:wysiwyg-controls-usercontrol-window-body
+                  element:div
+                  widgets
+                    text:@"<p>Usercontrols gives you the possibility of inserting existing [controls] types of pages,
+as reusable objects, into other types of [controls] pages. Please select which existing page you would like to use ...</p>"
+                    table:wysiwyg-window-list-of-usercontrols
+                      class:prepend-top table table-hover
+                      oninit
+                        select-data:x:/*/*/p5.page/*/type/=controls/.
+                        get-widget-property:page-url
+                          value
+                        set:x:@"/../*/select-data/*/""={0}"""
+                          :x:/../*/get-widget-property/*/*?value
+                        _sys42.show-code-window:x:/..
+                        for-each:x:/../*/select-data/*
+                          eval-x:x:/+/**(/href|/innerValue|/_page-id)
+                          create-widget
+                            parent:wysiwyg-window-list-of-usercontrols
+                            element:tr
+                            widgets
+                              td
+                                widgets
+                                  a
+                                    target:_blank
+                                    href:x:/..for-each/*/_dp/#?value
+                                    innerValue:x:/..for-each/*/_dp/#/*/name?value
+                                    title:Click to preview, realise page will be included *WITHOUT* its CMS template though, as a Usercontrol
+                              td
+                                widgets
+                                  button
+                                    class:btn btn-default
+                                    style:"width:100%;"
+                                    innerValue:@"<span class=""glyphicon glyphicon-ok""></span>"
+                                    title:Click to select page as Usercontrol
+                                    onclick
+                                      _create-widget
+                                      _page-id:x:/..for-each/*/_dp/#?value
+                                      eval-x:x:/+/*/*/*/select-data/*//
+                                      add:x:/../*/_create-widget/*
+                                        src
+                                          _oninit
+                                            select-data:x:@"/*/*/p5.page/""={0}""/*/controls?value.node"
+                                              :x:/../*/_page-id?value
+                                            set:x:/-/*?name
+                                              rel-src:create-{0}-widget
+                                                :x:?name
+                                            add:x:/../*/select-data/*
+                                              src:"parent:{0}"
+                                                :x:/../*/_event?value
+                                            eval:x:/../*/select-data
+                                      add:x:/../*/_create-widget
+                                        src
+                                          set:x:/..?value
+                                            src:x:/../*/create-widget?value
+                                      eval:x:/../*/_create-widget
+                                      sys42.wysiwyg-controls.select-widget:x:/-?value
+                                      sys42.wysiwyg-controls.databind-select-control
+                                      send-javascript:@"$('#wysiwyg-controls-usercontrol-window').modal('toggle');"
+                                      sys42.info-window:@"Please change widget's id and element to what you wish"
+                                        _time:more
+                                      send-javascript:@"$('#widget-property-id').focus().select();"
+                      widgets
+                        thead
+                          innerValue:@"<tr><th>Page name</th><th style=""width:100px;"">Select</th></tr>"
+                        
+
+            /*
+             * Footer of dialog (contains OK and Cancel buttons)
+             */
+            container
+              class:modal-footer
+              widgets
+                literal:wysiwyg-controls-usercontrol-window-ok
+                  element:button
+                  class:btn btn-default
+                  innerValue:Close
+                  onclick
+
+                    // Hiding dialog
+                    send-javascript:@"$('#wysiwyg-controls-usercontrol-window').modal('toggle');"

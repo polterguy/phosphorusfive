@@ -367,6 +367,7 @@
     <None Include="system42\cms\page-editor\editors\controls\help-files\help-file4.txt" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\help-file5.txt" />
     <None Include="system42\cms\page-editor\editors\controls\id-help.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\add-usercontrol.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

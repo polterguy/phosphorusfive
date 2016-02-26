@@ -70,10 +70,24 @@ namespace p5.web.widgets
         [ActiveEvent (Name = "p5.web.widgets.text", Protection = EventProtection.NativeClosed)]
         public void p5_web_controls_text (ApplicationContext context, ActiveEventArgs e)
         {
+            // Creating widget as persistent control
+            var parent = e.Args.GetChildValue<Container> ("_parent", context);
+            var position = e.Args.GetChildValue ("position", context, -1);
+            var after = e.Args.GetChildValue <Control>("after", context, null);
+            var before = e.Args.GetChildValue <Control>("before", context, null);
+
+            // If before != null, or after != null, we use them, in that priority to figure out positioning
+            if (before != null) {
+                parent = before.Parent as Container;
+                position = parent.Controls.IndexOf (before);
+            } else if (after != null) {
+                parent = after.Parent as Container;
+                position = parent.Controls.IndexOf (after) + 1;
+            }
+
             var ctrl = new LiteralControl ();
             ctrl.Text = e.Args.Get<string> (context);
-            var parent = e.Args.GetChildValue<Container> ("_parent", context);
-            parent.Controls.Add (ctrl);
+            parent.Controls.AddAt (position, ctrl);
         }
 
         /*

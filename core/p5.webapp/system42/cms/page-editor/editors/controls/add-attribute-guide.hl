@@ -131,6 +131,14 @@ to what HTML [element] you choose to render your widget with.</p>"
                                  */
                                 get-widget-property:x:/../*/_event?value
                                   _element
+                                if
+                                  fetch:x:/0/0?value
+                                    index-of:x:/../*/get-widget-property/*/*?value
+                                      what:on
+                                  =:int:0
+                                  set:x:/../*/get-widget-property/*/*?value
+                                    src:_{0}
+                                      :x:/../*/get-widget-property/*/*?value
 
                                 /*
                                  * Finding selected widget

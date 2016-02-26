@@ -49,9 +49,13 @@ namespace p5.data
                             // Dependent upon type of expression, we either return a bunch of nodes, flat, with
                             // name being "", and value being matched value, or we append node itself back
                             // to caller. This allows us to select using expressions which are not of type 'node'
-                            e.Args.Add (idxMatch.TypeOfMatch != Match.MatchType.node ? 
-                                new Node ("", idxMatch.Value) : 
-                                idxMatch.Node.Clone ());
+                            if (match.Convert == "node") {
+                                e.Args.AddRange ((idxMatch.Value as Node).Clone ().Children);
+                            } else {
+                                e.Args.Add (idxMatch.TypeOfMatch != Match.MatchType.node ? 
+                                    new Node ("", idxMatch.Value) : 
+                                    idxMatch.Node.Clone ());
+                            }
                         }
 
                         // Removing argument
