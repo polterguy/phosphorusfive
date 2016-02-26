@@ -68,6 +68,13 @@ eval-x:x:/+/*
 create-widget:wysiwyg-editor
   parent:x:/../*/_parent-widget?value
   widgets
+    text:@"<style type=""text/css"">
+*[data-usercontrol] {
+	min-height:40px;
+	background-color:rgba(0,255,0,.05);
+	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='420px'><text x='0' y='15' fill='rgba(128,0,0,.2)' font-size='20'>Usercontrol will not render like this in final result</text></svg>"");
+}
+</style>"
 
     /*
      * Toolbar for manipulating WYSIWYG widget surface
@@ -129,7 +136,7 @@ create-widget:wysiwyg-editor
                         parent:wysiwyg-select-control
                         innerValue
                         value
-                    if:x:/..for-each/*/_dp/#/*/_oninit
+                    if:x:/..for-each/*/_dp/#/*/data-usercontrol?value.bool
                       /*
                        * Probably a usercontrol
                        */
@@ -863,13 +870,11 @@ you can simply delete it now. A complete version of the widget still exists on y
        * Adding [onclick] event handler, such that user can select widget
        * in WYSIWYG screen by clicking it
        */
-      if:x:/../*/_arg?value
-        !=:_usercontrol
-        add:x:/../*/_create-widget
-          src
-            onclick
-              sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
-              sys42.wysiwyg-controls.databind-select-control
+      add:x:/../*/_create-widget
+        src
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            sys42.wysiwyg-controls.databind-select-control
 
       /*
        * Checking widget creation Active Event, which might be

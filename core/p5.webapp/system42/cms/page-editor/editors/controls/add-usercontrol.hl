@@ -52,13 +52,19 @@ create-widget:wysiwyg-controls-usercontrol-window
               class:modal-header
               widgets
 
-                // Close button
-                literal
-                  element:button
+                /*
+                 * Help button
+                 */
+                button
                   class:close
-                  data-dismiss:modal
-                  aria-label:Close
-                  innerValue:&times;
+                  innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+                  onclick
+                    set-widget-property:x:/../*/_event?value
+                      visible:false
+                    set-widget-property:wysiwyg-controls-usercontrol-help
+                      visible:true
+                    set-widget-property:wysiwyg-controls-usercontrol-main-text
+                      visible:false
 
                 // Header of our modal window
                 text:@"<h4>Please choose an existing [controls] page</h4>"
@@ -74,16 +80,31 @@ create-widget:wysiwyg-controls-usercontrol-window
                 container:wysiwyg-controls-usercontrol-window-body
                   element:div
                   widgets
-                    text:@"<p>Usercontrols gives you the possibility of inserting existing [controls] pages,
-as reusable objects, into other [controls] pages. Please select which existing page you would like to use.</p>
-<p>Please notice that a usercontrol won't render in the design surface. If you wish to view how it will look like, you'll have to 
+                    literal:wysiwyg-controls-usercontrol-main-text
+                      innerValue:@"Select the usercontrol you wish to include on your page ..."
+                    literal:wysiwyg-controls-usercontrol-help
+                      visible:false
+                      innerValue:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" /><p>Usercontrols gives you the possibility of inserting existing [controls] pages,
+as reusable objects, into other [controls] pages. This allows you to incrementally build functionality, the same way you would with LEGO. 
+Please select which existing page you would like to use below.</p>
+<p>Notice that a usercontrol won't render correctly in the design surface. If you wish to view how it will look like, you'll have to 
 click <em>""View""</em> to see your page, after saving it.</p>
 <p>If you wish, you can modify your usercontrol's <strong>[oninit]</strong> event handler after creating it, to modify its behavior,
 and which page to load, etc. But this requires some Hyperlisp knowledge.</p>
 <p>When adding a usercontrol, a wrapper [container] control is created. The actual usercontrol [controls] page, will be rendered inside
 of this [container] control. Please take care when adding usercontrols, such that you do not create recursive dependencies in any ways. 
-Meaning, usercontrols that references the page you are creating, for instance. Neither directly, nor indirectly. You can however
-add the same page as a usercontrol, multiple times, without problems, to the same page.</p>"
+Meaning, usercontrols that are referencing the page you are creating, for instance. Neither directly, nor indirectly. You can however
+add the same page as a usercontrol, multiple times, without problems, to the same page, as long as none of your controls have <em>""static ids""</em>. 
+Meaning, they must all use the automatically assigned ID.</p>
+<p>A usercontrol will also render to the client with the attribute <strong>""data-usercontrol='true'""</strong>, which allows you to easily access
+usercontrols from client-side JavaScript and CSS. If you remove this attribute from your wrapper widget, you will no longer be able to
+see your usercontrol at all in the design surface, but it will still function 100% correctly, and be possible to select from the Widget 
+select dropdown list.</p>
+<p>You can also add widgets to a usercontrol, but by default, everything you add to a usercontrol, will be rendered at the beginning of it. A
+usercontrol in general terms, behaves exactly like any other container widget in those regards. You can also change its CSS class, or add any
+other properties to it you wish. If you modify the usercontrol's creation script,
+in the [oninit] event handler, you can change this behavior, and have your added controls intermingled with the usercontrol's content, 
+any ways you see fit. But this yet again, requires some Hyperlisp knowledge.</p>"
                     table:wysiwyg-window-list-of-usercontrols
                       class:prepend-top table table-hover
                       oninit
@@ -133,6 +154,8 @@ add the same page as a usercontrol, multiple times, without problems, to the sam
                                         src
                                           set:x:/..?value
                                             src:x:/../*/create-widget?value
+                                      add:x:/../*/_create-widget/*
+                                        src:"data-usercontrol:true"
                                       eval:x:/../*/_create-widget
                                       sys42.wysiwyg-controls.select-widget:x:/-?value
                                       sys42.wysiwyg-controls.databind-select-control
