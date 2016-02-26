@@ -15,7 +15,6 @@ select-data:x:/*/*/p5.page/"={0}"
  */
 lisp2lambda:x:/../*/select-data/*/*/controls?value
 
-
 /*
  * Changing any existing [onXXX] event handlers to [_onXXX] to
  * make sure they don't mess up design surface with weird events occuring
@@ -29,21 +28,40 @@ for-each:x:/../*/lisp2lambda/**(/literal/*/~on|/container/*/~on|/void/*/~on)
     =:int:0
 
     /*
-     * This is an event handler, renaming it temporarily for design surface
+     * Checking if this is a user control, and if so, making sure we keep
+     * the [oninit] event to allow rendering its content on WYSIWYG surface
      */
-    set:x:/..for-each/*/_dp/#?name
-      src:_{0}
-        :x:/..for-each/*/_dp/#?name
+    if:x:/..for-each/*/_dp/#?name
+      =:oninit
+      and:x:/..for-each/*/_dp/#/./*/data-usercontrol?value.bool
 
-    /*
-     * Checking if this is a user control, and if so, apply a
-     */
+      /*
+       * This is [oninit] for usercontrol, leaving it as it is. But making sure every
+       * single event handler, of every single child widget, created as a consequence of 
+       * the [oninit] being evaluated, is removed, except for any "nested" usercontrols
+       */
+      insert-before:x:/..for-each/*/_dp/#/*/eval
+        src
+          _design-time-remover
+          set:x:/../*/select-data/**(/~container/*/~on|/~literal/*/~on|/~void/*/~on)!(/./*/data-usercontrol/./*/oninit)
+
+
+    else
+
+      /*
+       * This is an event handler, and it is not a usercontrol,
+       * renaming event handler temporarily for design surface
+       */
+      set:x:/..for-each/*/_dp/#?name
+        src:_{0}
+          :x:/..for-each/*/_dp/#?name
 
 /*
  * Then adding [onclick] event handlers for each widget, to
- * allow widget to be selected by clicking it in design surface
+ * allow widget to be selected by clicking it in design surface, except all
+ * while widgets of all usercontrols
  */
-add:x:/../*/lisp2lambda/**(/literal|/container|/void)
+add:x:/../*/lisp2lambda/**(/literal|/container|/void)(!/*/data-usercontrol/./*/widgets/**)
   src
     onclick
       sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
@@ -68,11 +86,28 @@ eval-x:x:/+/*
 create-widget:wysiwyg-editor
   parent:x:/../*/_parent-widget?value
   widgets
+
+    /*
+     * Including some custom inline stylesheet, to make controls "pop out" when
+     * selected, in addition to some extra styles to show usercontrols, in addition
+     * to giving WYSIWYG design surface some styles, to make it visible
+     */
     text:@"<style type=""text/css"">
 *[data-usercontrol] {
-	min-height:40px;
-	background-color:rgba(0,255,0,.05);
-	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='420px'><text x='0' y='15' fill='rgba(128,0,0,.2)' font-size='20'>Usercontrol will not render like this in final result</text></svg>"");
+	min-height:20px;
+	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='120px'><text x='0' y='15' fill='rgba(128,0,0,.05)' font-size='20'>Usercontrol</text></svg>"");
+	background-color:rgba(0,255,0,.02);
+}
+*[data-selected] {
+	min-height:20px;
+	box-shadow: 5px 5px 5px #888888;
+	border:dashed 1px black;
+}
+#wysiwyg-editor-surface {
+	min-height:400px;
+	border-radius:5px;
+	clear:both;
+	border:dashed 1px rgba(0,0,0,.1);
 }
 </style>"
 
@@ -126,17 +161,23 @@ create-widget:wysiwyg-editor
                     innerValue:Widget ...
                     value:_default
                   find-widget
-                    _selected:true
+                    data-selected:true
                   sys42.get-widget:wysiwyg-editor-surface
                     _keep-empty-ids:true
-                  for-each:x:/../*/sys42.get-widget/*/**(/container|/literal|/void)
+
+                  /*
+                   * Looping through all widgets, avoiding all widgets inside of usercontrols
+                   */
+                  for-each:x:/../*/sys42.get-widget/*/**(/container|/literal|/void)(!/*/data-usercontrol/./*/widgets/**)
                     _option
                       create-literal-widget
                         element:option
                         parent:wysiwyg-select-control
                         innerValue
                         value
+                    
                     if:x:/..for-each/*/_dp/#/*/data-usercontrol?value.bool
+
                       /*
                        * Probably a usercontrol
                        */
@@ -210,7 +251,7 @@ create-widget:wysiwyg-editor
                       title:Appends a [container] widget to your currently selected widget
                       onclick
                         find-widget
-                          _selected:true
+                          data-selected:true
                         eval-x:x:/+/*
                         sys42.wysiwyg-controls.add-control:div
                           _parent:x:/../*/find-widget/*?value
@@ -284,7 +325,7 @@ create-widget:wysiwyg-editor
                       title:Appends a [literal] widget to your currently selected widget
                       onclick
                         find-widget
-                          _selected:true
+                          data-selected:true
                         eval-x:x:/+/*
                         sys42.wysiwyg-controls.add-control:span
                           _parent:x:/../*/find-widget/*?value
@@ -339,7 +380,7 @@ create-widget:wysiwyg-editor
                       title:Appends a [void] widget to your currently selected widget
                       onclick
                         find-widget
-                          _selected:true
+                          data-selected:true
                         eval-x:x:/+/*
                         sys42.wysiwyg-controls.add-control:br
                           _parent:x:/../*/find-widget/*?value
@@ -665,7 +706,7 @@ without any needs for any prior development experience.</blockquote>"
               _body:Are you sure you wish to <strong>delete currently selected widget</strong> from form? This action cannot be undone!
               _onok
                 find-widget
-                  _selected:true
+                  data-selected:true
                 delete-widget:x:/../*/find-widget/*?value
                 set-widget-property:wysiwyg-manipulate-selected-widget
                   style:"display:none;"
@@ -715,9 +756,9 @@ without any needs for any prior development experience.</blockquote>"
           innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy widget"
           onclick
             find-widget
-              _selected
+              data-selected
             sys42.get-widget:x:/../*/find-widget/*?value
-            set:x:/-/*/*(/_selected|/onclick|/style)
+            set:x:/-/*/*(/data-selected|/onclick|/data-usercontrol/./*/widgets)
             add:x:/+/*
               src:x:/../*/sys42.get-widget/*
             set-session-value:sys42.wysiwyg-controls.clipboard-widget
@@ -739,7 +780,6 @@ you can simply delete it now. A complete version of the widget still exists on y
      */
     container:wysiwyg-editor-surface
       class:col-xs-12
-      style:"min-height:400px;border-radius:5px;clear:both;border:dashed 1px rgba(0,0,0,.1);"
       onclick
         sys42.wysiwyg-controls.unselect-widget
         sys42.wysiwyg-controls.databind-select-control:_default
@@ -764,12 +804,19 @@ you can simply delete it now. A complete version of the widget still exists on y
       sys42.get-widget:wysiwyg-editor-surface
 
       /*
-       * Making sure we remove the [_selected] attribute, 
+       * Making sure we remove the [data-selected] attribute, 
        * which is used to track the currently selected widget in surface.
        * In addition to removing the selected widget's [style] properties
        */
-      set:x:/../*/sys42.get-widget/**/_selected
-      set:x:@"/../*/sys42.get-widget/**/style/""=box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"""
+      set:x:/../*/sys42.get-widget/**/data-selected
+
+      /*
+       * Making sure we remove all child widgets from usercontrols, in addition to
+       * our "design time additions", that makes sure no event handlers INSIDE of
+       * usercontrol is being mapped up
+       */
+      set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/widgets/*
+      set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/oninit/*(/_design-time-remover|/_design-time-remover/+)
 
       /*
        * Removing all 'select by clicking' event handlers, only relevant
@@ -932,7 +979,7 @@ you can simply delete it now. A complete version of the widget still exists on y
      */
     sys42.wysiwyg-controls.get-insertion-position
       find-widget
-        _selected:true
+        data-selected:true
 
       /*
        * As a general rule, if any widget is currently selected, we insert
@@ -993,21 +1040,16 @@ you can simply delete it now. A complete version of the widget still exists on y
        * Finding selected widget
        */
       find-widget
-        _selected:true
+        data-selected:true
 
       /*
        * Unselecting previously selected widget, if it exists
        */
       if:x:/../*/find-widget/*
         delete-widget-property:x:/../*/find-widget/*?value
-          _selected
-          style
+          data-selected
       set-widget-property:wysiwyg-controls-properties
         visible:false
-
-      /*
-       * Hiding buttons that should only be visible while widget is selected
-       */
       set-widget-property:wysiwyg-manipulate-selected-widget
         style:"display:none;"
 
@@ -1016,15 +1058,14 @@ you can simply delete it now. A complete version of the widget still exists on y
      */
     sys42.wysiwyg-controls.select-widget
       find-widget
-        _selected:true
+        data-selected:true
 
       /*
        * Unselecting previously selected widget, if it exists
        */
       if:x:/../*/find-widget/*
         delete-widget-property:x:/../*/find-widget/*?value
-          _selected
-          style
+          data-selected
 
       /*
        * Making sure selected widget is visible, but only if the clicked
@@ -1037,8 +1078,7 @@ you can simply delete it now. A complete version of the widget still exists on y
          * Another widget was selected
          */
         set-widget-property:x:/../*/_arg?value
-          _selected:true
-          style:"box-shadow: 5px 5px 5px #888888;border:dashed 1px black;"
+          data-selected:true
 
         /*
          * Changing visibility for "create inside of widget" buttons
@@ -1047,6 +1087,11 @@ you can simply delete it now. A complete version of the widget still exists on y
           fetch:x:/0/0?name
             list-widgets:x:/../*/_arg?value
           =:container
+          and
+            fetch:x:/0/0/0?value
+              get-widget-property:x:/../*/_arg?value
+                data-usercontrol
+            not
           set-widget-property:wysiwyg-controls-add-container-to-container
             style
           set-widget-property:wysiwyg-controls-add-literal-to-container

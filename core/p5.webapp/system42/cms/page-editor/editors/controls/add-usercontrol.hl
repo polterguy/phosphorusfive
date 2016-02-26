@@ -140,7 +140,7 @@ any ways you see fit. But this yet again, requires some Hyperlisp knowledge.</p>
                                       eval-x:x:/+/*/*/*/select-data/*//
                                       add:x:/../*/_create-widget/*
                                         src
-                                          _oninit
+                                          oninit
                                             select-data:x:@"/*/*/p5.page/""={0}""/*/controls?value.node"
                                               :x:/../*/_page-id?value
                                             set:x:/-/*?name
@@ -149,6 +149,8 @@ any ways you see fit. But this yet again, requires some Hyperlisp knowledge.</p>
                                             add:x:/../*/select-data/*
                                               src:"parent:{0}"
                                                 :x:/../*/_event?value
+                                            _design-time-remover
+                                            set:x:/../*/select-data/**(/~container/*/~on|/~literal/*/~on|/~void/*/~on)!(/./*/data-usercontrol/./*/oninit)
                                             eval:x:/../*/select-data
                                       add:x:/../*/_create-widget
                                         src

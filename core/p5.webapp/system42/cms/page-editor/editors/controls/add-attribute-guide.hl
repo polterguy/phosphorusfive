@@ -144,7 +144,7 @@ to what HTML [element] you choose to render your widget with.</p>"
                                  * Finding selected widget
                                  */
                                 find-widget
-                                  _selected:true
+                                  data-selected:true
 
                                 /*
                                  * Adding that attribute to currently selected widget

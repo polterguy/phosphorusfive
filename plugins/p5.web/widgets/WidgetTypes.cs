@@ -163,8 +163,13 @@ namespace p5.web.widgets
                     case "before":
                     case "after":
                     case "has-name":
-                    case "oninit":
                         // Skipping these buggers, since they're handled elsewhere
+                        break;
+                    case "oninit":
+
+                        // Adding lambda event to lambda event storage
+                        var clone = idxArg.Clone ();
+                        Manager.WidgetAjaxEventStorage [widget.ID, "oninit"] = clone;
                         break;
                     default:
 

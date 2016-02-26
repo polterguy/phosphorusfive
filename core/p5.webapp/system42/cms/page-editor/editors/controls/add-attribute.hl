@@ -52,7 +52,7 @@ create-void-widget:wysiwyg-control-add-attribute
      * Finding selected widget
      */
     find-widget
-      _selected:true
+      data-selected:true
 
     /*
      * Retrieving element name of selected widget, since it is
