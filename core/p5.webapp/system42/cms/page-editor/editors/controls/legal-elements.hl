@@ -39,6 +39,8 @@ section:@"The HTML <section> element represents a generic section of a document,
 _header:Text content
   _description:@"Use HTML text content elements to organize blocks or sections of content placed between the opening &lt;body&gt; and closing &lt;/body&gt; tags. Important for accessibility and SEO, these elements identify the purpose or structure of that content."
 
+blockquote:@"The HTML Blockquote Element (<blockquote>) indicates that the enclosed text is a longer quotation. This element is intended for quotations that require paragraph breaks; for short quotations use the <q> element."
+
 dd:@"The HTML <dd> element (HTML Description Element) indicates the description of a term in a description list (<dl>) element. This element can occur only as a child element of a description list and it must follow a <dt> element."
 
 div:@"The HTML <div> element (or HTML Document Division Element) is the generic container for flow content, which does not inherently represent anything. It can be used to group elements for styling purposes (using the class or id attributes), or because they share attribute values, such as lang. It should be used only when no other semantic element (such as <article> or <nav>) is appropriate."

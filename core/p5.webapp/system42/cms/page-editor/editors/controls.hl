@@ -633,6 +633,18 @@ without any needs for any prior development experience.</blockquote>"
                 set-widget-property:wysiwyg-controls-properties
                   visible:false
 
+                /*
+                 * Changing visibility for "create inside of widget" buttons
+                 */
+                set-widget-property:wysiwyg-controls-add-container-to-container
+                  style:"display:none;"
+                set-widget-property:wysiwyg-controls-add-literal-to-container
+                  style:"display:none;"
+                set-widget-property:wysiwyg-controls-add-void-to-container
+                  style:"display:none;"
+                set-widget-property:wysiwyg-controls-paste-to-container
+                  style:"display:none;"
+
         /*
          * Add attribute to widget button
          */
