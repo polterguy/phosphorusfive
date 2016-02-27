@@ -294,7 +294,10 @@ namespace p5.ajax.core.internals
                 if (value == null) {
                     writer.Write (@"{0}", name);
                 } else {
-                    writer.Write (@"{0}=""{1}""", name, value.Replace ("\"", "&quot;"));
+                    value = idx.Name != "outerHTML" && idx.Name != "innerValue" ? 
+                        value.Replace ("\"", "&quot;") : 
+                        value;
+                    writer.Write (@"{0}=""{1}""", name, value);
                 }
             }
         }
@@ -319,7 +322,9 @@ namespace p5.ajax.core.internals
                 if (idx.Name.IndexOf ("_") == 0)
                     continue;
 
-                var value = idx.Value?.Replace ("\"", "&quot;");
+                var value = idx.Name != "outerHTML" && idx.Name != "innerValue" ? 
+                    idx.Value?.Replace ("\"", "&quot;") : 
+                    idx.Value;
 
                 // Finding old value, if any
                 var oldAtr = FindAttribute (_originalValue, idx.Name);

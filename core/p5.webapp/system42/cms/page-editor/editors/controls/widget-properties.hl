@@ -365,6 +365,38 @@ HTML elements for instance, that don't require a value, but need the property.</
   add:x:/../*/create-widget/*/widgets/*/container/=wysiwyg-controls-attribute-wrapper/*/widgets
     src:x:/..for-each/*/_control/*
 
+
+/*
+ * Then 'Select parent widget button', unless it is wysiwyg main surface
+ */
+get-parent-widget:x:/../*/_widget?value
+if:x:/-/*?value
+  !=:wysiwyg-editor-surface
+  eval-x:x:/+/*/*/*/*/**(/_widget|/innerValue|/onmouseover|/onmouseout|/onclick)
+  add:x:/../*/create-widget/*/widgets
+    src
+      container
+        class:col-xs-12 form-group
+        style:"clear:both;"
+        widgets
+          button
+            class:btn btn-default
+            style:"clear:both;"
+            innerValue:@"<span class=""glyphicon glyphicon-arrow-up""></span> {0}"
+              :x:/../*/get-parent-widget/*?value
+            onmouseover:@"$('#{0}').addClass('highlight');"
+              :x:/../*/get-parent-widget/*?value
+            onmouseout:@"$('#{0}').removeClass('highlight');"
+              :x:/../*/get-parent-widget/*?value
+            onclick:@"$('#{0}').removeClass('highlight');p5.$(event.currentTarget).raise('_onclick');return false;"
+              :x:/../*/get-parent-widget/*?value
+            _onclick
+              _widget:x:/../*/_widget?value
+              get-parent-widget:x:/../*/_widget?value
+              sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0?value
+              sys42.wysiwyg-controls.databind-select-control:x:/../*/get-parent-widget/0?value
+
+
 /*
  * Then [innerValue], which requires special handling, as a textarea HTML element
  */
@@ -419,37 +451,6 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
 
 
 /*
- * Then 'Select parent widget button', unless it is wysiwyg main surface
- */
-get-parent-widget:x:/../*/_widget?value
-if:x:/-/*?value
-  !=:wysiwyg-editor-surface
-  eval-x:x:/+/*/*/*/*/**(/_widget|/innerValue|/onmouseover|/onmouseout|/onclick)
-  add:x:/../*/create-widget/*/widgets
-    src
-      container
-        class:col-xs-12 form-group
-        style:"clear:both;"
-        widgets
-          button
-            class:btn btn-default
-            style:"clear:both;"
-            innerValue:@"<span class=""glyphicon glyphicon-arrow-up""></span> {0}"
-              :x:/../*/get-parent-widget/*?value
-            onmouseover:@"$('#{0}').addClass('highlight');"
-              :x:/../*/get-parent-widget/*?value
-            onmouseout:@"$('#{0}').removeClass('highlight');"
-              :x:/../*/get-parent-widget/*?value
-            onclick:@"$('#{0}').removeClass('highlight');p5.$(event.currentTarget).raise('_onclick');return false;"
-              :x:/../*/get-parent-widget/*?value
-            _onclick
-              _widget:x:/../*/_widget?value
-              get-parent-widget:x:/../*/_widget?value
-              sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0?value
-              sys42.wysiwyg-controls.databind-select-control:x:/../*/get-parent-widget/0?value
-
-
-/*
  * Then [widgets], which also requires special handling
  */
 if:x:/../*/sys42.get-widget/*/*/data-usercontrol
@@ -460,9 +461,10 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
         class:col-xs-12 form-group
         style:"clear:both;"
         widgets
-          a
+          a:wysiwyg-controls-set-widgets-visible
             href:#
-            innerValue:Children widgets ...
+            class:btn btn-default prepend-bottom
+            innerValue:@"Children widgets ... <span class=""glyphicon glyphicon-triangle-bottom""></span>"
             onclick
               get-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
               if:x:/-/*?value.bool
@@ -470,14 +472,23 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
                 set-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
                   src:bool:true
                 sys42.wysiwyg-controls.create-widgets-for-selected
+                set-widget-property:wysiwyg-controls-set-widgets-visible
+                  class:btn btn-default prepend-bottom active
+                  innerValue:@"Children widgets ... <span class=""glyphicon glyphicon-triangle-top""></span>"
               else
                 set-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
                 clear-widget:wysiwyg-control-widgets
+                set-widget-property:wysiwyg-controls-set-widgets-visible
+                  class:btn btn-default prepend-bottom
+                  innerValue:@"Children widgets ... <span class=""glyphicon glyphicon-triangle-bottom""></span>"
           container:wysiwyg-control-widgets
             oninit
               get-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
               if:x:/-/*?value.bool
                 sys42.wysiwyg-controls.create-widgets-for-selected
+                set-widget-property:wysiwyg-controls-set-widgets-visible
+                  class:btn btn-default prepend-bottom active
+                  innerValue:@"Children widgets ... <span class=""glyphicon glyphicon-triangle-top""></span>"
             events
 
               /*
