@@ -74,6 +74,7 @@ boolean-constant-comparison
   if:x:/../*/_result?value
     !=:*
     throw:@"Assert error, [while] misbehaved!"
+
 /*
  * Tests that [while] behaves as expected when break'ed
  */
@@ -91,4 +92,48 @@ break
       src:x:/../*/_input/0
   if:x:/../*/_output/*?count
     !=:int:1
+    throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when break'ed in a nested [while]
+ */
+nested-break
+  _input
+    foo1
+    foo2
+    foo3
+  _output
+  while:x:/../*/_input/0
+    add:x:/../*/_output
+      src:x:/../*/_input/0
+    while:x:/../*/_input/0
+      add:x:/../*/_output
+        src:x:/../*/_input/0
+      break
+      add:x:/../*/_output
+        src:x:/../*/_input/0
+    set:x:/../*/_input/0
+  if:x:/../*/_output/*?count
+    !=:int:6
+    throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when continue'd
+ */
+continue
+  _input
+    foo1
+    foo2
+    foo3
+  _output
+  while:x:/../*/_input/0
+    if:x:/../*/_input/0?name
+      =:foo2
+      set:x:/../*/_input/0
+      continue
+    add:x:/../*/_output
+      src:x:/../*/_input/0
+    set:x:/../*/_input/0
+  if:x:/../*/_output/*?count
+    !=:int:2
     throw:@"Assert error, [while] misbehaved!"

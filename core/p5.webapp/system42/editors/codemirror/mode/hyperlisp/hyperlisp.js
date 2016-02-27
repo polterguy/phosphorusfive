@@ -237,6 +237,9 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'default':
         case 'find-widget':
         case 'find-widget-like':
+        case 'find-first-ancestor-widget':
+        case 'find-first-ancestor-widget-like':
+        case 'find-first-descendant-widget':
           state.indent += 2;
           return this.styles.keyword;
 
@@ -352,6 +355,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'return':
         case 'new-guid':
         case 'break':
+        case 'continue':
         case 'url-encode':
         case 'url-decode':
           return this.styles.keyword;

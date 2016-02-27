@@ -92,15 +92,89 @@ namespace p5.web.widgets
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Retrieving widget from where to start search, defaulting to "cnt"
-                var rootCtrl = FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Manager.AjaxPage);
+                var parentControl = FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Manager.AjaxPage);
 
                 // Retrieving all controls having properties matching whatever arguments supplied
-                foreach (var idxWidget in FindWidgetsBy (e.Args, rootCtrl, context, e.Name == "find-widget-like")) {
+                foreach (var idxWidget in FindWidgetsBy (e.Args, parentControl, context, e.Name == "find-widget-like")) {
 
                     // Adding type of widget as name, and ID as value
                     e.Args.Add (GetTypeName (idxWidget), idxWidget.ID);
                 }
             }
+        }
+
+        /// <summary>
+        ///     Finds first ancestor widget matching given to criteria
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "find-first-ancestor-widget", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "find-first-ancestor-widget-like", Protection = EventProtection.LambdaClosed)]
+        public void find_first_ancestor_widget (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
+
+                // Sanity check
+                if (e.Args.Children.Count (ix => ix.Name != "") == 0)
+                    throw new LambdaException ("No criteria submitted to [find-ancestor-widget]", e.Args, context);
+
+                // Retrieving widget from where to start search, defaulting to "cnt"
+                var startCtrl = FindControl<Control> (XUtil.Single<string> (context, e.Args, true), Manager.AjaxPage);
+
+                // Sanity check
+                if (startCtrl == null)
+                    throw new LambdaException ("Start control not found for [find-ancestor-widget]", e.Args, context);
+
+                bool like = e.Name == "find-first-ancestor-widget-like";
+
+                // Looping upwards in ancestor hierarchy, til either startCtrl is null, or given attribute(s) are found on a widget,
+                // with the (alternatively) supplied value
+                startCtrl = startCtrl.Parent;
+                while (startCtrl != null) {
+                    Widget curIdxWidget = startCtrl as Widget;
+                    if (curIdxWidget != null) {
+                        bool found = true;
+                        foreach (var idxChildNode in e.Args.Children) {
+                            if (!curIdxWidget.HasAttribute (idxChildNode.Name)) {
+                                found = false;
+                                break;
+                            }
+                            if (idxChildNode.Value == null) {
+
+                                // Do nothing, this is a match
+                            } else {
+                                if (curIdxWidget [idxChildNode.Name] != null) {
+                                    if (like) {
+                                        if (!curIdxWidget [idxChildNode.Name].Contains (idxChildNode.GetExValue<string> (context, null))) {
+                                            found = false;
+                                            break;
+                                        }
+                                    } else {
+                                        if (curIdxWidget [idxChildNode.Name] != idxChildNode.GetExValue<string> (context, null)) {
+                                            found = false;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    found = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (found) {
+
+                            // We found our first matching ancestor widget!
+                            e.Args.Value = curIdxWidget.ID;
+                            return;
+                        }
+                    }
+                    startCtrl = startCtrl.Parent;
+                }
+            }
+
+            // We didn't find any widgets matching criteria
+            e.Args.Value = null;
         }
 
         /// <summary>

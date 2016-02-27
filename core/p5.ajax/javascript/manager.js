@@ -469,6 +469,7 @@
             if (window.p5._chain.length === 1) {
                 window.p5._next();
             }
+            return this;
         },
 
 
