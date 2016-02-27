@@ -15,7 +15,7 @@ _header:Global attributes
 
 accesskey:@"Provides a hint for generating a keyboard shortcut for the current element. This attribute consists of a space-separated list of characters. The browser should use the first one that exists on the computer keyboard layout."
 
-class:@"Is a space-separated list of the classes of the element. Classes allows CSS and JavaScript to select and access specific elements via the class selectors or functions like the method Document.getElementsByClassName()."
+class:@"Is a space-separated list of the classes of the element. Classes allows CSS and JavaScript to select and access specific elements via the class selectors, or functions like the method Document.getElementsByClassName()."
 
 contenteditable:@"Is an enumerated attribute indicating if the element should be editable by the user. If so, the browser modifies its widget to allow editing. The attribute must take one of the following values: true or false."
 

@@ -1893,7 +1893,7 @@ sure you wish to do this? This action cannot be undone afterwards!""
                                          * doesn't become evaluated by the outer most (first) [databind],
                                          * but rather exclusively by the second (inner) [databind]
                                          */
-                                        \{@eval}:x:/../*/_x-create-insert-item
+                                        \{@eval}:x:/..if/*/_x-create-insert-item
 
                                 /*
                                  * At this point, [append-data] below should contain one record for 
@@ -1907,13 +1907,13 @@ sure you wish to do this? This action cannot be undone afterwards!""
                                  */
                                 eval-x:x:/+
                                 sys42.info-window:{0} items successfully imported as '{1}'
-                                  :x:/..if/*/append-data/[1,2]/*?count
+                                  :x:/..if/*/append-data/*?count
                                   :x:/../*/split/[2,3]/0/-2?name
 
                               else
 
                                 /*
-                                 * File container no items, alerting user
+                                 * File didn't contain any items, alerting user
                                  */
                                 eval-x:x:/+
                                 sys42.info-window:There were no items in file, but successfully created '{1}' object type declaration
