@@ -105,7 +105,6 @@ your usercontrols from client-side JavaScript and CSS.</p>
                           value
                         set:x:@"/../*/select-data/*/""={0}"""
                           :x:/../*/get-widget-property/*/*?value
-                        _sys42.show-code-window:x:/..
                         for-each:x:/../*/select-data/*
                           if
                             fetch:x:/0/0?value

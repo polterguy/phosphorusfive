@@ -123,27 +123,36 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                             insert-before:x:
                               src:x:/../*/select-data/*
                         eval:x:/../*/lisp2lambda/**/data-usercontrol/=true/./*/oninit
-                        sys42.show-code-window:x:/../*(/eval/**/~sys42.forms.action.|/lisp2lambda/**/~on(!/oninit/./*/data-usercontrol/./oninit)/**/~sys42.forms.action.)?name
-                        for-each:x:/../*(/eval/**/~sys42.forms.action.|/lisp2lambda/**/~on(!/oninit/./*/data-usercontrol/./oninit)/**/~sys42.forms.action.)
+                        find-widget
+                          data-selected
+                        list-widget-lambda-events:x:/-/*?value
+                        for-each:x:/../*(/eval/**/~sys42.forms.action.|/lisp2lambda/**/~on(!/oninit/./*/data-usercontrol/./oninit)/**/~sys42.forms.action.)/$
 
                           if:x:/..for-each/*/_dp/#/.?name
                             =:events
+                            or
+                              fetch:x:/0/0?value
+                                index-of:x:/..for-each/*/_dp/#?name
+                                  what:sys42.forms.action.
+                              !=:int:0
+                            or:x:@"/../*/list-widget-lambda-events/*/*/""{0}"""
+                              :x:/..for-each/*/_dp/#?name
                             continue
 
-                          set:x:/..for-each/**/create-widget/**/={element-name}?value
+                          set:x:/..for-each/**/create-widget/**/={active-event-name}?value
                             src:x:/..for-each/*/_dp/#?name
                           create-widget
                             parent:wysiwyg-window-list-of-events
                             element:tr
                             style:"cursor:pointer;"
-                            _element:{element-name}
+                            _active-event-namd:{active-event-name}
                             onclick
 
                               /*
                                * Figuring out which active event publisher user selected
                                */
                               get-widget-property:x:/../*/_event?value
-                                _element
+                                _active-event-namd
 
                               /*
                                * Setting that element as the value of widget's
@@ -162,21 +171,25 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                                     innerValue:"&nbsp;"
                                     class:glyphicon glyphicon-flash
                                   strong
-                                    innerValue:{element-name}
+                                    innerValue:{active-event-name}
                         load-file:/system42/cms/page-editor/editors/controls/standard-actions.hl
+                        for-each:x:/-/*/*
+                          if:x:/../*/list-widget-lambda-events/*/*/{0}
+                            :x:/..for-each/*/_dp/#?name
+                            set:x:/..for-each/*/_dp/#
                         databind:x:/../*/create-widget/*/widgets
                           src:x:/../*/load-file/*/*
                           template
                             tr
                               style:"cursor:pointer;"
-                              {_element}:x:?name
+                              {_active-event-namd}:x:?name
                               onclick
 
                                 /*
                                  * Figuring out which active event publisher user selected
                                  */
                                 get-widget-property:x:/../*/_event?value
-                                  _element
+                                  _active-event-namd
 
                                 /*
                                  * Setting that element as the value of widget's
@@ -232,7 +245,7 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                       not
 
                       /*
-                       * Not a valid Active Event name! Informing user, and settings 
+                       * Not a valid Active Event name, informing user, and setting
                        * focus to name textbox
                        */
                       send-javascript:"$('#wysiwyg-window-new-event-name').focus().select();"
@@ -251,6 +264,16 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                      */
                     find-widget
                       data-selected
+                    list-widget-lambda-events:x:/-/*?value
+                    if:x:/-/*/*/{0}
+                      :x:/../*/get-widget-property/*/*?value
+                      send-javascript:"$('#wysiwyg-window-new-event-name').focus().select();"
+                      set-widget-property:wysiwyg-window-new-event-name
+                        class:form-control prepend-bottom error
+                      set-widget-property:wysiwyg-controls-new-event-label
+                        innerValue:Action is already handled in form!
+                      return
+
                     set:x:/+/*?name
                       src:x:/../*/get-widget-property/*/*?value
                     set-widget-lambda-event:x:/../*/find-widget/*?value

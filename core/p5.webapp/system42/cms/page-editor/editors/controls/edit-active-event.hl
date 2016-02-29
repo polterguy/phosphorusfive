@@ -12,7 +12,6 @@ add:x:/+
   src:x:/../*/_event-name?value
 get-widget-lambda-event:x:/../*/find-widget/[0,1]/*?value
 
-
 /*
  * Checking if Active Event is already edited, and if so, simply destroy its editor,
  * and returning immediately, to provide "toggle edit event functionality"
@@ -31,8 +30,6 @@ if:x:/-/*
 lambda2lisp:x:/../*/get-widget-lambda-event/*/*/*
 set:x:/../*/create-widget/**/literal/*/element/=textarea/./*/value?value
   src:x:/../*/lambda2lisp?value
-set:x:/../*/create-widget/**/h4/*/innerValue?value
-  src:x:/../*/_event-name?value
 
 
 /*
@@ -47,89 +44,95 @@ set:x:/../*/create-widget/*/_event-name-editor?value
  * Creating widget to show Active Event content, making sure we pass in
  * event name to nodes needing it
  */
-set:x:/+/**/_event-name?value
+set:x:/+2/**/_event-name?value
   src:x:/../*/_event-name?value
+eval-x:/+/*/after
 create-widget
-  parent:wysiwyg-controls-events
-  style:"position:relative;"
+  after:x:/../*/_after?value
   _event-name-editor
+  element:tr
+  style:"background-color:Transparent !important;"
   widgets
-    h4
-      innerValue
-    h3
-      innerValue:" "
-      class:glyphicon glyphicon-remove-circle text-right
-      style:"position:absolute;right:0;top:-20px;cursor:pointer;"
-      role:button
-      onclick
-        find-widget
-          _event-name
-        raise-widget-ajax-event:x:/-/*?value
-          onclick
-    literal
-      element:textarea
-      class:form-control
-      rows:10
-      placeholder:Event content ...
-      value
-      oninit
-
-        /*
-         * Making sure textarea is replaced by a Hyperlisp CodeMirror instance
-         */
-        find-first-ancestor-widget:x:/../*/_event?value
-          _event-name-editor
-        find-widget:x:/-/*?value
-          element:button
-        set:x:/../**/Alt-S?value
-          src:@"function(cm) {{p5.$('{0}').raise('onclick');}}"
-            :x:/../*/find-widget/*?value
-        set:x:/+/*/*?name
-          src:x:/../*/_event?value
-        sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
-          _editor
-            execute_input
-              mode:hyperlisp
-              theme:the-matrix-reduced
-              autofocus:true
-              fullscreen:false
-              keys
-                Alt-S
-    container
-      class:text-right
+    td
       widgets
-        button
-          class:btn btn-default
-          innerValue:Save
-          title:Alt+S
-          onclick
+        literal
+          element:textarea
+          class:form-control
+          rows:10
+          placeholder:Event content ...
+          value
+          oninit
+
+            /*
+             * Making sure textarea is replaced by a Hyperlisp CodeMirror instance
+             */
+            set:x:/+/*/*?name
+              src:x:/../*/_event?value
+            sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+              _editor
+                execute_input
+                  mode:hyperlisp
+                  theme:the-matrix-reduced
+                  autofocus:true
+                  fullscreen:false
+                  raise-update:true
+                  height:400px
+
+          _onupdate
 
             /*
              * Retrieving new Hyperlisp content from CodeMirror textarea
              */
+            get-widget-property:x:/../*/_event?value
+              value
             find-first-ancestor-widget:x:/../*/_event?value
               _event-name-editor
-            find-widget:x:/-/*?value
-              element:textarea
             get-widget-property:x:/-/*?value
-              value
+              _event-name-editor
 
             /*
              * Retrieving selected widget in WYSIWYG surface, Active Event name, and changing lambda
              * event for currently selected widget
              */
-            lisp2lambda:x:/-/*/*?value
+            lisp2lambda:x:/../*/get-widget-property/[0,1]/*/*?value
             find-widget
               data-selected
-            get-widget-property:x:/../*/find-first-ancestor-widget/*?value
-              _event-name-editor
-            add:x:/+2
-              src:x:/./-/*/*?value
-            add:x:/+/*
+            add:x:/../*/set-widget-lambda-event
+              src:x:/../*/get-widget-property/[1,2]/*/*?value
+            add:x:/../*/set-widget-lambda-event/*
               src:x:/../*/lisp2lambda/*
-            set-widget-lambda-event:x:/-4/*?value
-            sys42.info-window:@"Active Event subscriber was updated. Please make sure you also save your page to have your changes take effect!"
-              _time:more
+            set-widget-lambda-event:x:/../*/find-widget/*?value
+
+        /*
+         * Delete Action Subscriber button
+         */
+        container
+          style:"text-align:right;"
+          widgets
+            button
+              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Delete subscriber"
+              onclick
+                set:x:/+/**/_event-button?value
+                  src:x:/../*/_event?value
+                sys42.confirm-window
+                  _header:Confirm action!
+                  _body:Are you sure you wish to delete this Action Subscriber?
+                  _onok
+                    _event-button
+                    find-first-ancestor-widget:x:/../*/_event-button?value
+                      _event-name-editor
+                    get-widget-property:x:/-/*?value
+                      _event-name-editor
+                    find-widget
+                      data-selected
+                    add:x:/+
+                      src:x:/../*/get-widget-property/*/*?value
+                    set-widget-lambda-event:x:/../*/find-widget/[0,1]/*?value
+                    delete-widget:x:/../*/find-first-ancestor-widget/*?value
+                    find-widget
+                      _event-name:x:/../*/get-widget-property/*/*?value
+                    delete-widget:x:/-/*?value
 
 /*
  * Returning success to indicate event was set into "edit mode"

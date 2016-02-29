@@ -91,7 +91,8 @@ namespace p5.web.widgets
                     } else {
 
                         // Setting Widget's Ajax event to whatever we were given
-                        Manager.WidgetLambdaEventStorage[idxEventNameNode.Name, idxWidget.ID] = idxEventNameNode.Clone();
+                        var clone = idxEventNameNode.Clone();
+                        Manager.WidgetLambdaEventStorage[idxEventNameNode.Name, idxWidget.ID] = clone;
                     }
                 }
             }
@@ -136,11 +137,16 @@ namespace p5.web.widgets
             // Looping through each lambda event handler for given event
             // Notice, since lambda events might end up creating new lambda events, the "ToList" operation below
             // is necessary!
+            Node retVal = new Node();
             foreach (var idxLambda in Manager.WidgetLambdaEventStorage [e.Name].ToList ()) {
 
                 // Raising Active Event
-                XUtil.RaiseEvent (context, e.Args, idxLambda.Clone (), e.Name);
+                var clone = idxLambda.Clone ();
+                clone.Insert (0, new Node ("_event", clone.Name));
+                XUtil.RaiseEvent (context, e.Args, clone, e.Name);
+                retVal.AddRange (e.Args.Children);
             }
+            e.Args.AddRange (retVal.Children);
         }
 
         #endregion

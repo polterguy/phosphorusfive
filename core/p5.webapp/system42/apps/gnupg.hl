@@ -284,7 +284,6 @@ create-widget:search-wrp
                         element:th
                         innerValue:Get key
           sys42.info-window:@"Search finished, see results below"
-          _sys42.show-code-window:x:/..
     literal
       element:span
       class:glyphicon glyphicon-search form-control-feedback

@@ -816,6 +816,11 @@ you can simply delete it now. A complete version of the widget still exists on y
       set:x:/../*/sys42.get-widget/**/data-selected
 
       /*
+       * Making sure we remove all automatically assigned [name] attributes from form controls
+       */
+      set:x:/../*/sys42.get-widget/**(/void/*/element/=input/./*/name|/literal/*/element/=textarea/./*/name|/container/*/element/=select/./*/name)
+
+      /*
        * Making sure we remove all child widgets from usercontrols, in addition to
        * our "design time additions", that makes sure no event handlers INSIDE of
        * usercontrol is being mapped up

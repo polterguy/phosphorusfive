@@ -8,6 +8,8 @@
 sys42.get-widget:x:/../*/_widget?value
   _no-children:true
 
+set:x:/../*/sys42.get-widget/**(/void/*/element/=input/./*/name|/literal/*/element/=textarea/./*/name|/container/*/element/=select/./*/name)
+
 /*
  * Sorting widget's properties, first stuffing event handlers last, then alphabetically
  */
@@ -843,7 +845,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
               find-widget
                 data-selected
               list-widget-lambda-events:x:/../*/find-widget/*?value
-              databind:x:/../*/create-widget/*/widgets/*/container/*/widgets
+              databind:x:/../*/create-widget/*/widgets/*/container/*/widgets/*/tbody/*/widgets
                 src:x:/../*/list-widget-lambda-events/*/*
                 template
                   tr
@@ -852,10 +854,12 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                     onclick
                       get-widget-property:x:/../*/_event?value
                         _event-name
-                      set:x:/+/*?value
+                      set:x:/../*/sys42.execute-lisp-file/*/_event-name?value
                         src:x:/../*/get-widget-property/*/*?value
+                      eval-x:x:/+/*/_after
                       sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/edit-active-event.hl
                         _event-name
+                        _after:x:/../*/_event?value
                       if:x:/-?value
                         set-widget-property:x:/../*/_event?value
                           class:warning
@@ -889,6 +893,8 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                     element:table
                     class:table table-hover
                     widgets
+                      tbody
+                        widgets
 
   events
 

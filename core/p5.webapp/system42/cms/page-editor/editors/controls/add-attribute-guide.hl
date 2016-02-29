@@ -159,7 +159,6 @@ to what HTML [element] you choose to render your widget with.</p>"
                                   _widget
                                   _initial-focus:x:/../*/get-widget-property/[0,1]/*/*?value
                                 sys42.info-window:Please provide a value, if any, for your attribute!
-                                _sys42.show-code-window:x:/..
 
                                 /*
                                  * Making sure we close modal window

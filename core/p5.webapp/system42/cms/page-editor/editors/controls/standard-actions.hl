@@ -4,4 +4,5 @@
 
 sys42.forms.action.serialize-form:@"Raised when form for some reasons is serialized"
 sys42.forms.action.validate-form:@"Raised when form for some reasons needs to be validated"
+sys42.forms.action.clear-form:@"Raised when form for some reasons needs to be cleared, meaning all input elements and such should be reset to their 'empty values'"
 
