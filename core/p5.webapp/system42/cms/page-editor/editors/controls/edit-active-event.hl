@@ -1,0 +1,137 @@
+/*
+ * Shows the widgets that allows user to edit an Active Event subscriber
+ */
+
+
+/*
+ * Finding selected widget, and retrieving the specified lambda event from it
+ */
+find-widget
+  data-selected
+add:x:/+
+  src:x:/../*/_event-name?value
+get-widget-lambda-event:x:/../*/find-widget/[0,1]/*?value
+
+
+/*
+ * Checking if Active Event is already edited, and if so, simply destroy its editor,
+ * and returning immediately, to provide "toggle edit event functionality"
+ */
+find-widget:wysiwyg-controls-events
+  _event-name-editor:x:/../*/_event-name?value
+if:x:/-/*
+  delete-widget:x:/./-/*?value
+  return:bool:false
+
+
+/*
+ * Converting Active Event to lisp, and then making sure the textarea below show its code
+ * as its value, in addition to having label showing name of Active Event being edited
+ */
+lambda2lisp:x:/../*/get-widget-lambda-event/*/*/*
+set:x:/../*/create-widget/**/literal/*/element/=textarea/./*/value?value
+  src:x:/../*/lambda2lisp?value
+set:x:/../*/create-widget/**/h4/*/innerValue?value
+  src:x:/../*/_event-name?value
+
+
+/*
+ * Making sure we supply the Active Event name to the widget, such that 
+ * we know which event is being edited
+ */
+set:x:/../*/create-widget/*/_event-name-editor?value
+  src:x:/../*/_event-name?value
+
+
+/*
+ * Creating widget to show Active Event content, making sure we pass in
+ * event name to nodes needing it
+ */
+set:x:/+/**/_event-name?value
+  src:x:/../*/_event-name?value
+create-widget
+  parent:wysiwyg-controls-events
+  style:"position:relative;"
+  _event-name-editor
+  widgets
+    h4
+      innerValue
+    h3
+      innerValue:" "
+      class:glyphicon glyphicon-remove-circle text-right
+      style:"position:absolute;right:0;top:-20px;cursor:pointer;"
+      role:button
+      onclick
+        find-widget
+          _event-name
+        raise-widget-ajax-event:x:/-/*?value
+          onclick
+    literal
+      element:textarea
+      class:form-control
+      rows:10
+      placeholder:Event content ...
+      value
+      oninit
+
+        /*
+         * Making sure textarea is replaced by a Hyperlisp CodeMirror instance
+         */
+        find-first-ancestor-widget:x:/../*/_event?value
+          _event-name-editor
+        find-widget:x:/-/*?value
+          element:button
+        set:x:/../**/Alt-S?value
+          src:@"function(cm) {{p5.$('{0}').raise('onclick');}}"
+            :x:/../*/find-widget/*?value
+        set:x:/+/*/*?name
+          src:x:/../*/_event?value
+        sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+          _editor
+            execute_input
+              mode:hyperlisp
+              theme:the-matrix-reduced
+              autofocus:true
+              fullscreen:false
+              keys
+                Alt-S
+    container
+      class:text-right
+      widgets
+        button
+          class:btn btn-default
+          innerValue:Save
+          title:Alt+S
+          onclick
+
+            /*
+             * Retrieving new Hyperlisp content from CodeMirror textarea
+             */
+            find-first-ancestor-widget:x:/../*/_event?value
+              _event-name-editor
+            find-widget:x:/-/*?value
+              element:textarea
+            get-widget-property:x:/-/*?value
+              value
+
+            /*
+             * Retrieving selected widget in WYSIWYG surface, Active Event name, and changing lambda
+             * event for currently selected widget
+             */
+            lisp2lambda:x:/-/*/*?value
+            find-widget
+              data-selected
+            get-widget-property:x:/../*/find-first-ancestor-widget/*?value
+              _event-name-editor
+            add:x:/+2
+              src:x:/./-/*/*?value
+            add:x:/+/*
+              src:x:/../*/lisp2lambda/*
+            set-widget-lambda-event:x:/-4/*?value
+            sys42.info-window:@"Active Event subscriber was updated. Please make sure you also save your page to have your changes take effect!"
+              _time:more
+
+/*
+ * Returning success to indicate event was set into "edit mode"
+ */
+return:bool:true

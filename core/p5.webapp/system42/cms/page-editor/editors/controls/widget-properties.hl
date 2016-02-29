@@ -464,7 +464,8 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
           a:wysiwyg-controls-set-widgets-visible
             href:#
             class:btn btn-default prepend-bottom
-            innerValue:@"Children widgets ... <span class=""glyphicon glyphicon-triangle-bottom""></span>"
+            style:"width:250px;text-align:left;"
+            innerValue:@"Children widgets ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
             onclick
               get-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
               if:x:/-/*?value.bool
@@ -474,13 +475,18 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
                 sys42.wysiwyg-controls.create-widgets-for-selected
                 set-widget-property:wysiwyg-controls-set-widgets-visible
                   class:btn btn-default prepend-bottom active
-                  innerValue:@"Children widgets ... <span class=""glyphicon glyphicon-triangle-top""></span>"
+                  innerValue:@"Children widgets ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
               else
                 set-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
                 clear-widget:wysiwyg-control-widgets
                 set-widget-property:wysiwyg-controls-set-widgets-visible
                   class:btn btn-default prepend-bottom
-                  innerValue:@"Children widgets ... <span class=""glyphicon glyphicon-triangle-bottom""></span>"
+                  innerValue:@"Children widgets ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
+
+          /*
+           * Wraps the widgets that allows user to manipulate childre widget collection, such as
+           * "Delete widget" and all "children widget selectors"
+           */
           container:wysiwyg-control-widgets
             oninit
               get-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
@@ -488,7 +494,7 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
                 sys42.wysiwyg-controls.create-widgets-for-selected
                 set-widget-property:wysiwyg-controls-set-widgets-visible
                   class:btn btn-default prepend-bottom active
-                  innerValue:@"Children widgets ... <span class=""glyphicon glyphicon-triangle-top""></span>"
+                  innerValue:@"Children widgets ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
             events
 
               /*
@@ -760,6 +766,164 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
     container:wysiwyg-controls-attribute-wrapper
       style:"clear:both;"
       widgets
+
+    /*
+     * Wraps the widgets that allows user to manipulate childre widget collection, such as
+     * "Delete widget" and all "children widget selectors"
+     */
+    container:wysiwyg-widget-events
+      class:col-xs-12 prepend-bottom
+      widgets
+
+        /*
+         * Button that toggles visibility of currently selected widget's Active Events
+         */
+        button:wysiwyg-controls-set-events-visible
+          class:btn btn-default
+          style:"width:250px;text-align:left;"
+          innerValue:@"Widget event subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
+          onclick
+            get-session-value:sys42.wysiwyg-controls.widgets-events-visible
+            if:x:/-/*?value.bool
+              not
+              set-session-value:sys42.wysiwyg-controls.widgets-events-visible
+                src:bool:true
+              sys42.wysiwyg-controls.create-events-for-selected
+              set-widget-property:wysiwyg-controls-set-events-visible
+                class:btn btn-default active
+                innerValue:@"Widget event subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
+            else
+              set-session-value:sys42.wysiwyg-controls.widgets-events-visible
+              clear-widget:wysiwyg-controls-events
+              set-widget-property:wysiwyg-controls-set-events-visible
+                class:btn btn-default
+                innerValue:@"Widget event subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
+          oninit
+            get-session-value:sys42.wysiwyg-controls.widgets-events-visible
+            if:x:/-/*?value.bool
+              sys42.wysiwyg-controls.create-events-for-selected
+              set-widget-property:wysiwyg-controls-set-events-visible
+                class:btn btn-default active
+                innerValue:@"Widget event subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
+
+        /*
+         * Wraps all Active Event handlers (subscribers) for currently selected widget
+         */
+        container:wysiwyg-controls-events
+          events
+
+            /*
+             * Creates the list of Active Event subscribers for currently selected widget
+             */
+            sys42.wysiwyg-controls.create-events-for-selected
+
+              /*
+               * Clearing any previously created lambda event lists
+               */
+              clear-widget:wysiwyg-controls-events
+
+              /*
+               * Finding selected widget, and retrieving its list of lambda events
+               */
+              find-widget
+                data-selected
+              list-widget-lambda-events:x:/../*/find-widget/*?value
+              databind:x:/../*/create-widget/*/widgets/*/container/*/widgets
+                src:x:/../*/list-widget-lambda-events/*/*
+                template
+                  tr
+                    style:"cursor:pointer;"
+                    {_event-name}:x:?name
+                    onclick
+                      get-widget-property:x:/../*/_event?value
+                        _event-name
+                      set:x:/+/*?value
+                        src:x:/../*/get-widget-property/*/*?value
+                      sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/edit-active-event.hl
+                        _event-name
+                      if:x:/-?value
+                        set-widget-property:x:/../*/_event?value
+                          class:warning
+                      else
+                        delete-widget-property:x:/../*/_event?value
+                          class
+                    widgets
+                      td
+                        {innerValue}:@"<span class=""glyphicon glyphicon-flash""></span> <strong>{0}</strong>"
+                          :x:?name
+
+              /*
+               * Creating our list of lambda events, in addition to the button that allows
+               * user to create new Active Event subscriber
+               */
+              create-widget
+                parent:wysiwyg-controls-events
+                class:prepend-top
+                widgets
+
+                  /*
+                   * Create new Active Event subscriber for currently selected widget
+                   */
+                  button
+                    class:btn btn-default prepend-bottom
+                    style:"width:250px;text-align:left;"
+                    innerValue:@"New Event Subscriber ... <span style=""float:right;"" class=""glyphicon glyphicon-plus""></span>"
+                    onclick
+                      sys42.wizard-window
+                        _header:Name your Active Event subscriber
+                        _body:@"<p>An Active Event subscriber, is a subscriber to an <em>""action""</em>. Actions can be triggered
+from any other parts of your system, and when they are, whatever you choose to have your subscriber(s) do, will be done.</p>
+<p>Your Active Event subscriber should be named <strong>""sys42.forms.action.<em>xxxxx</em>""</strong> 
+where <em>'xxxxx'</em> is the custom name of your subscriber, in order to have Phosphorus Five recognize it as an <em>""action""</em>.
+Your custom name part must be at least 5 characters long</p>
+<p>The <em>'xxxxx'</em> parts, must be only small letters, optionally having your words separated by a hyphen '-', and it should tell something 
+semantically about what your subscriber does. Optionally, to group similar subscribers together, you can add up aditional periods 
+'.', in the parts where you name your subscriber.</p>
+<p>An example of a good subscriber name is <strong>""sys42.forms.action.customer.save-to-database""</strong>. An example of a bad
+subscriber name is <strong class=""error"">""sys42.forms.action.do-stuff""</strong>.</p>
+<p>You can create an Active Event Subscriber to hook into Active Events published by other modules and/or controls, or to expose your own
+subscribers to other controls and/or modules, that are consuming your controls.</p>
+<p>When you have created your event subscriber, it will show up in a list below, from where you can edit its content.</p>"
+                        _widgets
+                          text:active-event-name
+                            label:Name
+                            value:sys42.forms.action.
+                            placeholder:Name for subscriber ...
+                            mandatory:true
+                        _onok
+
+                          /*
+                           * Checking name of Active Event, to make sure it's at least somewhere inside
+                           * of "sanity land"
+                           */
+                          match:x:/../*/active-event-name?value
+                            what:regex:/^sys42\.forms\.action\.[a-z0-9.-]{5}/
+                          if:x:/../*/match/*/*?name
+                            not
+
+                            /*
+                             * Not a valid Active Event name! Informing user, and settings 
+                             * focus to name textbox
+                             */
+                            send-javascript:"$('#active-event-name').focus().select();"
+                            return:Sorry, that's not a valid subscriber name!
+
+                          /*
+                           * Associating our Active Event with the currently selected widget
+                           */
+                          find-widget
+                            data-selected
+                          set:x:/+/*?name
+                            src:x:/../*/active-event-name?value
+                          set-widget-lambda-event:x:/../*/find-widget/*?value
+                            _active-event-name
+                              sys42.info-window:Implement some intelligent action here ...
+                          sys42.wysiwyg-controls.create-events-for-selected
+                          return:bool:true
+                  container
+                    element:table
+                    class:table table-hover
+                    widgets
 
   events
 

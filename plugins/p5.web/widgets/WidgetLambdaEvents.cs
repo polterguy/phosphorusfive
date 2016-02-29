@@ -79,7 +79,7 @@ namespace p5.web.widgets
                     // Verifying Active Event is not protected
                     if (!CanOverrideEventInLambda (context, idxEventNameNode.Name))
                         throw new LambdaSecurityException(
-                            string.Format ("You cannot override Active Event '{0}' since it is protected", e.Args.Name),
+                            string.Format ("You cannot override Active Event '{0}' since it is protected", idxEventNameNode.Name),
                             e.Args,
                             context);
 

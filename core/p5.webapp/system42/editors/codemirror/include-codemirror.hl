@@ -4,7 +4,9 @@
  */
 
 
-// Making sure necessary JavaScript files are included
+/*
+ * Making sure necessary JavaScript files are included
+ */
 include-javascript-file
   /system42/editors/codemirror/lib/codemirror.js
   /system42/editors/codemirror/addon/selection/active-line.js
@@ -12,23 +14,31 @@ include-javascript-file
   /system42/editors/codemirror/addon/display/fullscreen.js
 
 
-// Making sure language mode file is included
+/*
+ * Making sure language mode file is included
+ */
 include-javascript-file:"/system42/editors/codemirror/mode/{0}/{0}.js"
   :x:/../*/_editor/*/*/mode?value
 
 
-// Making sure necessary Stylesheet files are included
+/*
+ * Making sure necessary Stylesheet files are included
+ */
 include-stylesheet-file
   /system42/editors/codemirror/lib/codemirror.css
   /system42/editors/codemirror/addon/display/fullscreen.css
 
 
-// Making sure theme is included
+/*
+ * Making sure theme is included
+ */
 include-stylesheet-file:"/system42/editors/codemirror/theme/{0}.css"
   :x:/../*/_editor/*/*/theme?value
 
 
-// Making sure fullscreen is toggled if it should be allowed
+/*
+ * Making sure fullscreen is toggled if it should be allowed
+ */
 if:x:/../*/_editor/*/*/fullscreen?value.bool
   set:x:/../*/send-javascript/4?value
     src:@",""Alt-F"": function(cm) {cm.setOption('fullScreen', !cm.getOption('fullScreen'));}"
@@ -37,6 +47,9 @@ else
     src:""
 
 
+/*
+ * Makins sure we trap any custom keyboard shortcuts
+ */
 _keys:
 if:x:/../*/_editor/*/*/keys/*
   for-each:x:/../*/_editor/*/*/keys/*
@@ -72,7 +85,11 @@ send-javascript:@"window.{0} = CodeMirror.fromTextArea(document.getElementById('
   }}
 }});
 window.{0}.on('change',function (cMirror) {{
-  p5.$('{0}').el.value = cMirror.getValue();
+  var wdg = p5.$('{0}');
+  wdg.el.value = cMirror.getValue();
+  if (wdg.el.onchange !== null) {{
+    wdg.raise('onchange');
+  }}
 }});"
   :x:/../*/_editor/*?name
   :x:/../*/_editor/*/*/mode?value

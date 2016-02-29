@@ -113,18 +113,18 @@ namespace p5.web.widgets
         public void find_first_ancestor_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
+            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Sanity check
                 if (e.Args.Children.Count (ix => ix.Name != "") == 0)
-                    throw new LambdaException ("No criteria submitted to [find-ancestor-widget]", e.Args, context);
+                    throw new LambdaException ("No criteria submitted to [find-first-ancestor-widget]", e.Args, context);
 
                 // Retrieving widget from where to start search, defaulting to "cnt"
                 var startCtrl = FindControl<Control> (XUtil.Single<string> (context, e.Args, true), Manager.AjaxPage);
 
                 // Sanity check
                 if (startCtrl == null)
-                    throw new LambdaException ("Start control not found for [find-ancestor-widget]", e.Args, context);
+                    throw new LambdaException ("Start control not found for [find-first-ancestor-widget]", e.Args, context);
 
                 bool like = e.Name == "find-first-ancestor-widget-like";
 
@@ -165,7 +165,7 @@ namespace p5.web.widgets
                         if (found) {
 
                             // We found our first matching ancestor widget!
-                            e.Args.Value = curIdxWidget.ID;
+                            e.Args.Add (GetTypeName (curIdxWidget), curIdxWidget.ID);
                             return;
                         }
                     }
@@ -265,7 +265,14 @@ namespace p5.web.widgets
                 // if attribute "contains" value of criteria
                 bool match = true;
                 foreach (var idxNode in args.Children) {
-                    if (!widget.HasAttribute (idxNode.Name)) {
+                    if (idxNode.Name == "element") {
+                        var value = idxNode.GetExValue<string> (context, null);
+                        if (like) {
+                            match = widget.Element.Contains (value);
+                        } else {
+                            match = widget.Element == value;
+                        }
+                    } else if (!widget.HasAttribute (idxNode.Name)) {
                         match = false;
                         break;
                     } else {
