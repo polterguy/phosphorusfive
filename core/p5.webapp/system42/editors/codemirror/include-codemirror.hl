@@ -87,9 +87,6 @@ send-javascript:@"window.{0} = CodeMirror.fromTextArea(document.getElementById('
 window.{0}.on('change',function (cMirror) {{
   var wdg = p5.$('{0}');
   wdg.el.value = cMirror.getValue();
-  if (wdg.el.onchange !== null) {{
-    wdg.raise('onchange');
-  }}
 }});"
   :x:/../*/_editor/*?name
   :x:/../*/_editor/*/*/mode?value
@@ -98,6 +95,16 @@ window.{0}.on('change',function (cMirror) {{
   :
   :
 
+
+if:x:/../*/_editor/*/*/raise-update?value.bool
+  send-javascript:@"
+window.{0}.on('blur',function (cMirror) {{
+  var wdg = p5.$('{0}');
+  wdg.el.value = cMirror.getValue();
+  wdg.raise('_onupdate');
+}});
+"
+    :x:/../*/_editor/*?name
 
 /*
  * Setting initial height of editor, if we're given explicit height

@@ -97,6 +97,7 @@ create-widget:wysiwyg-editor
 	min-height:20px !important;
 	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='120px'><text x='0' y='15' fill='rgba(128,0,0,.05)' font-size='20'>Usercontrol</text></svg>"") !important;
 	background-color:rgba(0,255,0,.02) !important;
+	overflow:auto;
 }
 *[data-selected] {
 	min-height:20px !important;

@@ -369,6 +369,8 @@
     <None Include="system42\cms\page-editor\editors\controls\id-help.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-usercontrol.hl" />
     <None Include="system42\cms\page-editor\editors\controls\edit-active-event.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\create-active-event.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\standard-actions.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

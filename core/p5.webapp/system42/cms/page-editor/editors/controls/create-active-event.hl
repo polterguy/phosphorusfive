@@ -1,0 +1,264 @@
+/*
+ * Shows the widgets that allows user to create a new Active Event subscriber
+ */
+
+
+/*
+ * Making sure we delete any previously created (but non-visible)
+ * modal HTML active event dialogues
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:wysiwyg-controls-event-window
+  delete-widget:wysiwyg-controls-event-window
+
+
+/*
+ * Including JavaScript to help handle carriage return key in textbox of dialogue
+ */
+include-javascript:@"
+p5.keyPressNewActiveEvent = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('wysiwyg-controls-event-window-ok').raise('onclick');
+    return false;
+  }
+}"
+
+/*
+ * Making sure dialogues becomes initially visible, and that we give initial
+ * focus to "OK" button
+ */
+send-javascript:@"$('#wysiwyg-controls-event-window').modal('toggle');"
+
+
+/*
+ * Creating actual modal Widget
+ */
+create-widget:wysiwyg-controls-event-window
+  class:modal fade
+  widgets
+    container
+      class:modal-dialog
+      role:document
+      widgets
+        container
+          class:modal-content
+          widgets
+
+            /*
+             * Header of dialog
+             */
+            container
+              class:modal-header
+              widgets
+
+                // Close button
+                literal
+                  element:button
+                  class:close
+                  data-dismiss:modal
+                  aria-label:Close
+                  innerValue:&times;
+
+                // Header of our modal window
+                text:@"<h4>Name your action subscriber</h4>"
+
+            /*
+             * Body of dialog
+             */
+            container
+              class:modal-body
+              widgets
+
+                // Actual literal widget containing body of dialogue
+                container:wysiwyg-controls-event-window-body
+                  element:div
+                  widgets
+                    text:@"<p>An Active Event subscriber, is a subscriber to an <em>""action""</em>. Actions can be triggered
+from any other parts of your system, and when they are, whatever you choose to have your subscriber(s) do, will be done.</p>
+<p>Your Active Event subscriber should be named <strong>""sys42.forms.action.<em>xxxxx</em>""</strong> 
+where <em>'xxxxx'</em> is the custom name of your subscriber, in order to have Phosphorus Five recognize it as an <em>""action""</em>.
+Your custom name part must be at least 5 characters long</p>
+<p>The <em>'xxxxx'</em> parts, must be only small letters, optionally having your words separated by a hyphen '-', and it should tell something 
+semantically about what your subscriber does. Optionally, to group similar subscribers together, you can add up aditional periods 
+'.', in the parts where you name your subscriber.</p>
+<p>An example of a good subscriber name is <strong>""sys42.forms.action.customer.save-to-database""</strong>. An example of a bad
+subscriber name is <strong class=""error"">""sys42.forms.action.do-stuff""</strong>.</p>
+<p>You can create an Active Event Subscriber to hook into Active Events published by other modules and/or controls, or to expose your own
+subscribers to other controls and/or modules, that are consuming your controls.</p>
+<p>When you have created your event subscriber, it will show up as a property of your widget, from where you can edit its content.</p>"
+                    label:wysiwyg-controls-new-event-label
+                      innerValue:Action subscriber name
+                      for:wysiwyg-window-new-event-name
+                    input:wysiwyg-window-new-event-name
+                      class:form-control prepend-bottom
+                      placeholder:Action subscriber name ...
+                      value:sys42.forms.action.
+                      onkeypress:@"return p5.keyPressNewActiveEvent(event);"
+                      oninit
+                        send-javascript:@"setTimeout (function(){$('#wysiwyg-window-new-event-name').select().focus();},500);"
+                    button:wysiwyg-controls-suggest-event-name
+                      class:btn btn-default
+                      innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Suggest name"
+                      onclick
+                        if
+                          fetch:x:/0/0/0?value
+                            get-widget-property:wysiwyg-window-list-of-events
+                              visible
+                          not
+                          set-widget-property:wysiwyg-window-list-of-events
+                            visible:true
+                        else
+                          set-widget-property:wysiwyg-window-list-of-events
+                            visible:false
+                    table:wysiwyg-window-list-of-events
+                      visible:false
+                      class:prepend-top table table-hover
+                      oninit
+                        sys42.get-page-editor-data
+                        lisp2lambda:x:/-/*/controls?value
+                        set:x:/../*/lisp2lambda/**/data-usercontrol/=true/./*/oninit/*(/set|/add|/eval)
+                        add:x:/../*/lisp2lambda/**/data-usercontrol/=true/./*/oninit
+                          src
+                            insert-before:x:
+                              src:x:/../*/select-data/*
+                        eval:x:/../*/lisp2lambda/**/data-usercontrol/=true/./*/oninit
+                        sys42.show-code-window:x:/../*(/eval/**/~sys42.forms.action.|/lisp2lambda/**/~on(!/oninit/./*/data-usercontrol/./oninit)/**/~sys42.forms.action.)?name
+                        for-each:x:/../*(/eval/**/~sys42.forms.action.|/lisp2lambda/**/~on(!/oninit/./*/data-usercontrol/./oninit)/**/~sys42.forms.action.)
+
+                          if:x:/..for-each/*/_dp/#/.?name
+                            =:events
+                            continue
+
+                          set:x:/..for-each/**/create-widget/**/={element-name}?value
+                            src:x:/..for-each/*/_dp/#?name
+                          create-widget
+                            parent:wysiwyg-window-list-of-events
+                            element:tr
+                            style:"cursor:pointer;"
+                            _element:{element-name}
+                            onclick
+
+                              /*
+                               * Figuring out which active event publisher user selected
+                               */
+                              get-widget-property:x:/../*/_event?value
+                                _element
+
+                              /*
+                               * Setting that element as the value of widget's
+                               * [element] declaration, and initiating change element's
+                               * active event
+                               */
+                              set-widget-property:wysiwyg-window-new-event-name
+                                value:x:/../*/get-widget-property/*/*?value
+                              raise-widget-ajax-event:wysiwyg-controls-suggest-event-name
+                                onclick
+                              send-javascript:@"$('#wysiwyg-window-new-event-name').select().focus();"
+                            widgets
+                              td
+                                widgets
+                                  span
+                                    innerValue:"&nbsp;"
+                                    class:glyphicon glyphicon-flash
+                                  strong
+                                    innerValue:{element-name}
+                        load-file:/system42/cms/page-editor/editors/controls/standard-actions.hl
+                        databind:x:/../*/create-widget/*/widgets
+                          src:x:/../*/load-file/*/*
+                          template
+                            tr
+                              style:"cursor:pointer;"
+                              {_element}:x:?name
+                              onclick
+
+                                /*
+                                 * Figuring out which active event publisher user selected
+                                 */
+                                get-widget-property:x:/../*/_event?value
+                                  _element
+
+                                /*
+                                 * Setting that element as the value of widget's
+                                 * [element] declaration, and initiating change element's
+                                 * active event
+                                 */
+                                set-widget-property:wysiwyg-window-new-event-name
+                                  value:x:/../*/get-widget-property/*/*?value
+                                raise-widget-ajax-event:wysiwyg-controls-suggest-event-name
+                                  onclick
+                                send-javascript:@"$('#wysiwyg-window-new-event-name').select().focus();"
+                              widgets
+                                td
+                                  widgets
+                                    span
+                                      innerValue:"&nbsp;"
+                                      class:glyphicon glyphicon-flash
+                                    strong
+                                      {innerValue}:x:?name
+                                      {title}:x:?value
+                        create-widget
+                          parent:wysiwyg-window-list-of-events
+                          element:tr
+                          style:"background-color:Transparent !important;"
+                          widgets
+                            td
+                              innerValue:@"<h4>Standard actions</h4>"
+                      widgets
+                        literal
+                          innerValue:@"<thead><tr><th><h4>Actions published by page</h4></th></tr></thead>"
+                        
+
+            /*
+             * Footer of dialog (contains OK and Cancel buttons)
+             */
+            container
+              class:modal-footer
+              widgets
+                button:wysiwyg-controls-event-window-ok
+                  class:btn btn-default
+                  innerValue:Add Action Subscriber
+                  onclick
+
+                    /*
+                     * Checking name of Active Event, to make sure it's at least somewhere inside
+                     * of "sanity land"
+                     */
+                    get-widget-property:wysiwyg-window-new-event-name
+                      value
+                    match:x:/../*/get-widget-property/*/*?value
+                      what:regex:/^sys42\.forms\.action\.[a-z0-9.-]{5}/
+                    if:x:/../*/match/*/*?name
+                      not
+
+                      /*
+                       * Not a valid Active Event name! Informing user, and settings 
+                       * focus to name textbox
+                       */
+                      send-javascript:"$('#wysiwyg-window-new-event-name').focus().select();"
+                      set-widget-property:wysiwyg-window-new-event-name
+                        class:form-control prepend-bottom error
+                      set-widget-property:wysiwyg-controls-new-event-label
+                        innerValue:Not a valid action subscriber name!
+                      return
+                    set-widget-property:wysiwyg-window-new-event-name
+                      class:form-control prepend-bottom
+                    set-widget-property:wysiwyg-controls-new-event-label
+                      innerValue:Action subscriber name
+
+                    /*
+                     * Associating our Active Event with the currently selected widget
+                     */
+                    find-widget
+                      data-selected
+                    set:x:/+/*?name
+                      src:x:/../*/get-widget-property/*/*?value
+                    set-widget-lambda-event:x:/../*/find-widget/*?value
+                      _active-event-name
+                        sys42.info-window:Implement some intelligent action here ...
+                    sys42.wysiwyg-controls.create-events-for-selected
+
+                    /*
+                     * Hiding dialog
+                     */
+                    send-javascript:@"$('#wysiwyg-controls-event-window').modal('toggle');"

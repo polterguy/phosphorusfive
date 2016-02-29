@@ -1,0 +1,7 @@
+/*
+ * Contains a list of all "standard actions" in system
+ */
+
+sys42.forms.action.serialize-form:@"Raised when form for some reasons is serialized"
+sys42.forms.action.validate-form:@"Raised when form for some reasons needs to be validated"
+

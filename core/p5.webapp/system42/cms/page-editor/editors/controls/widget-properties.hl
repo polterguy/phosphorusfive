@@ -323,16 +323,31 @@ HTML elements for instance, that don't require a value, but need the property.</
             get-parent-widget:x:/../*/_event?value
             get-parent-widget:x:/-/*?value
             set-widget-property:x:/-/*?value
-              class:col-md-12
-            set-widget-property:x:/../*/_event?value
-              rows:10
-          onblur
+              class:prepend-bottom col-xs-12
+              style:"clear:both;width:100%;"
+            set:x:/+/*/*?name
+              src:x:/../*/_event?value
+            sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+              _editor
+                _name
+                  mode:hyperlisp
+                  theme:the-matrix-reduced
+                  autofocus:true
+                  fullscreen:false
+                  raise-update:true
+                  height:350px
+          _onupdate
             get-parent-widget:x:/../*/_event?value
             get-parent-widget:x:/-/*?value
             set-widget-property:x:/-/*?value
-              class:col-md-4
+              class:col-md-4 prepend-bottom
+              style
             set-widget-property:x:/../*/_event?value
               rows:1
+            send-javascript:@"window.{0}.toTextArea();"
+              :x:/../*/_event?value
+            raise-widget-ajax-event:x:/../*/_event?value
+              onchange
       lambda2lisp:x:/..for-each/*/_dp/#/*
       if:x:/-?value
         !=:@""""""
@@ -869,57 +884,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                     style:"width:250px;text-align:left;"
                     innerValue:@"New Event Subscriber ... <span style=""float:right;"" class=""glyphicon glyphicon-plus""></span>"
                     onclick
-                      sys42.wizard-window
-                        _header:Name your Active Event subscriber
-                        _body:@"<p>An Active Event subscriber, is a subscriber to an <em>""action""</em>. Actions can be triggered
-from any other parts of your system, and when they are, whatever you choose to have your subscriber(s) do, will be done.</p>
-<p>Your Active Event subscriber should be named <strong>""sys42.forms.action.<em>xxxxx</em>""</strong> 
-where <em>'xxxxx'</em> is the custom name of your subscriber, in order to have Phosphorus Five recognize it as an <em>""action""</em>.
-Your custom name part must be at least 5 characters long</p>
-<p>The <em>'xxxxx'</em> parts, must be only small letters, optionally having your words separated by a hyphen '-', and it should tell something 
-semantically about what your subscriber does. Optionally, to group similar subscribers together, you can add up aditional periods 
-'.', in the parts where you name your subscriber.</p>
-<p>An example of a good subscriber name is <strong>""sys42.forms.action.customer.save-to-database""</strong>. An example of a bad
-subscriber name is <strong class=""error"">""sys42.forms.action.do-stuff""</strong>.</p>
-<p>You can create an Active Event Subscriber to hook into Active Events published by other modules and/or controls, or to expose your own
-subscribers to other controls and/or modules, that are consuming your controls.</p>
-<p>When you have created your event subscriber, it will show up in a list below, from where you can edit its content.</p>"
-                        _widgets
-                          text:active-event-name
-                            label:Name
-                            value:sys42.forms.action.
-                            placeholder:Name for subscriber ...
-                            mandatory:true
-                        _onok
-
-                          /*
-                           * Checking name of Active Event, to make sure it's at least somewhere inside
-                           * of "sanity land"
-                           */
-                          match:x:/../*/active-event-name?value
-                            what:regex:/^sys42\.forms\.action\.[a-z0-9.-]{5}/
-                          if:x:/../*/match/*/*?name
-                            not
-
-                            /*
-                             * Not a valid Active Event name! Informing user, and settings 
-                             * focus to name textbox
-                             */
-                            send-javascript:"$('#active-event-name').focus().select();"
-                            return:Sorry, that's not a valid subscriber name!
-
-                          /*
-                           * Associating our Active Event with the currently selected widget
-                           */
-                          find-widget
-                            data-selected
-                          set:x:/+/*?name
-                            src:x:/../*/active-event-name?value
-                          set-widget-lambda-event:x:/../*/find-widget/*?value
-                            _active-event-name
-                              sys42.info-window:Implement some intelligent action here ...
-                          sys42.wysiwyg-controls.create-events-for-selected
-                          return:bool:true
+                      sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-active-event.hl
                   container
                     element:table
                     class:table table-hover
