@@ -52,7 +52,9 @@ create-widget:wysiwyg-controls-event-window
               class:modal-header
               widgets
 
-                // Close button
+                /*
+                 * Close button
+                 */
                 literal
                   element:button
                   class:close
@@ -60,7 +62,28 @@ create-widget:wysiwyg-controls-event-window
                   aria-label:Close
                   innerValue:&times;
 
-                // Header of our modal window
+                /*
+                 * Help button
+                 */
+                literal
+                  element:a
+                  href:#
+                  style:"position:absolute;right:40px;"
+                  innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+                  onclick
+                    get-widget-property:wysiwyg-controls-add-event-description
+                      visible
+                    if:x:/-/*/*?value
+                      =:bool:true
+                      set-widget-property:wysiwyg-controls-add-event-description
+                        visible:false
+                    else
+                      set-widget-property:wysiwyg-controls-add-event-description
+                        visible:true
+
+                /*
+                 * Header of our modal window
+                 */
                 text:@"<h4>Name your action subscriber</h4>"
 
             /*
@@ -74,11 +97,17 @@ create-widget:wysiwyg-controls-event-window
                 container:wysiwyg-controls-event-window-body
                   element:div
                   widgets
-                    text:@"<p>An Active Event subscriber, is a subscriber to an <em>""action""</em>. Actions can be triggered
-from any other parts of your system, and when they are, whatever you choose to have your subscriber(s) do, will be done.</p>
+                    literal
+                      innerValue:@"Please provide a name for your Action Subscriber ..."
+                    literal:wysiwyg-controls-add-event-description
+                      element:div
+                      visible:false
+                      innerValue:@"<p>An Active Event subscriber, is a subscriber to an <em>""action""</em>. Actions can be triggered
+from any other parts of your system, and when they are, whatever you choose to have your subscriber(s) do, will be done. An action is
+almost like a method or a function in those regards, except that you can handle an action multiple times, in unrelated parts of your system.</p>
 <p>Your Active Event subscriber should be named <strong>""sys42.forms.action.<em>xxxxx</em>""</strong> 
 where <em>'xxxxx'</em> is the custom name of your subscriber, in order to have Phosphorus Five recognize it as an <em>""action""</em>.
-Your custom name part must be at least 5 characters long</p>
+Your custom name part must be <strong>at least 5 characters long</strong>.</p>
 <p>The <em>'xxxxx'</em> parts, must be only small letters, optionally having your words separated by a hyphen '-', and it should tell something 
 semantically about what your subscriber does. Optionally, to group similar subscribers together, you can add up aditional periods 
 '.', in the parts where you name your subscriber.</p>
@@ -97,22 +126,7 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                       onkeypress:@"return p5.keyPressNewActiveEvent(event);"
                       oninit
                         send-javascript:@"setTimeout (function(){$('#wysiwyg-window-new-event-name').select().focus();},500);"
-                    button:wysiwyg-controls-suggest-event-name
-                      class:btn btn-default
-                      innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Suggest name"
-                      onclick
-                        if
-                          fetch:x:/0/0/0?value
-                            get-widget-property:wysiwyg-window-list-of-events
-                              visible
-                          not
-                          set-widget-property:wysiwyg-window-list-of-events
-                            visible:true
-                        else
-                          set-widget-property:wysiwyg-window-list-of-events
-                            visible:false
                     table:wysiwyg-window-list-of-events
-                      visible:false
                       class:prepend-top table table-hover
                       oninit
                         sys42.get-page-editor-data
@@ -161,9 +175,8 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                                */
                               set-widget-property:wysiwyg-window-new-event-name
                                 value:x:/../*/get-widget-property/*/*?value
-                              raise-widget-ajax-event:wysiwyg-controls-suggest-event-name
+                              raise-widget-ajax-event:wysiwyg-controls-event-window-ok
                                 onclick
-                              send-javascript:@"$('#wysiwyg-window-new-event-name').select().focus();"
                             widgets
                               td
                                 widgets
@@ -172,51 +185,6 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                                     class:glyphicon glyphicon-flash
                                   strong
                                     innerValue:{active-event-name}
-                        load-file:/system42/cms/page-editor/editors/controls/standard-actions.hl
-                        for-each:x:/-/*/*
-                          if:x:/../*/list-widget-lambda-events/*/*/{0}
-                            :x:/..for-each/*/_dp/#?name
-                            set:x:/..for-each/*/_dp/#
-                        databind:x:/../*/create-widget/*/widgets
-                          src:x:/../*/load-file/*/*
-                          template
-                            tr
-                              style:"cursor:pointer;"
-                              {_active-event-namd}:x:?name
-                              onclick
-
-                                /*
-                                 * Figuring out which active event publisher user selected
-                                 */
-                                get-widget-property:x:/../*/_event?value
-                                  _active-event-namd
-
-                                /*
-                                 * Setting that element as the value of widget's
-                                 * [element] declaration, and initiating change element's
-                                 * active event
-                                 */
-                                set-widget-property:wysiwyg-window-new-event-name
-                                  value:x:/../*/get-widget-property/*/*?value
-                                raise-widget-ajax-event:wysiwyg-controls-suggest-event-name
-                                  onclick
-                                send-javascript:@"$('#wysiwyg-window-new-event-name').select().focus();"
-                              widgets
-                                td
-                                  widgets
-                                    span
-                                      innerValue:"&nbsp;"
-                                      class:glyphicon glyphicon-flash
-                                    strong
-                                      {innerValue}:x:?name
-                                      {title}:x:?value
-                        create-widget
-                          parent:wysiwyg-window-list-of-events
-                          element:tr
-                          style:"background-color:Transparent !important;"
-                          widgets
-                            td
-                              innerValue:@"<h4>Standard actions</h4>"
                       widgets
                         literal
                           innerValue:@"<thead><tr><th><h4>Actions published by page</h4></th></tr></thead>"
@@ -279,7 +247,7 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                     set-widget-lambda-event:x:/../*/find-widget/*?value
                       _active-event-name
                         sys42.info-window:Implement some intelligent action here ...
-                    sys42.wysiwyg-controls.create-events-for-selected
+                    sys42.wysiwyg-controls.create-events-for-selected:x:/../*/get-widget-property/*/*?value
 
                     /*
                      * Hiding dialog

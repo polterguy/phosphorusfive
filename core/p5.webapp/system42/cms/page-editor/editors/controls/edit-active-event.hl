@@ -109,6 +109,41 @@ create-widget
         container
           style:"text-align:right;"
           widgets
+
+            /*
+             * Opens up a wizard for user to create his Action Subscriber
+             */
+            button
+              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Wizard"
+              onclick
+                find-first-ancestor-widget:x:/../*/_event?value
+                  element:td
+                find-widget:x:/-/*?value
+                  element:textarea
+                set:x:/../*/sys42.execute-lisp-file/**/_code-mirror?value
+                  src:x:/./-/*?value
+                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-hyperlisp-wizard.hl
+                  _code-mirror
+                  _onok
+                    _code-mirror
+                    get-widget-property:x:/-?value
+                      value
+                    lisp2lambda:x:/-/*/*?value
+                    set:x:/-/*//
+                    add:x:/../*/lisp2lambda
+                      lisp2lambda:x:/../*/_code?value
+                    lambda2lisp:x:/../*/lisp2lambda/*
+                    set-widget-property:x:/../*/_code-mirror?value
+                      value:x:/../*/lambda2lisp?value
+                    raise-widget-ajax-event:x:/../*/_code-mirror?value
+                      _onupdate
+                    send-javascript:@"window.{0}.getDoc().setValue(p5.$('{0}').el.value);"
+                      :x:/../*/_code-mirror?value
+
+            /*
+             * Deletes subscriber
+             */
             button
               class:btn btn-default
               innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Delete subscriber"
@@ -117,7 +152,7 @@ create-widget
                   src:x:/../*/_event?value
                 sys42.confirm-window
                   _header:Confirm action!
-                  _body:Are you sure you wish to delete this Action Subscriber?
+                  _body:<p>Are you sure you wish to delete this Action Subscriber? This will <strong>delete all code associated with action</strong>!</p>
                   _onok
                     _event-button
                     find-first-ancestor-widget:x:/../*/_event-button?value

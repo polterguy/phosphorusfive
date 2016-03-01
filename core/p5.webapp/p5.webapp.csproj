@@ -370,7 +370,7 @@
     <None Include="system42\cms\page-editor\editors\controls\add-usercontrol.hl" />
     <None Include="system42\cms\page-editor\editors\controls\edit-active-event.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-active-event.hl" />
-    <None Include="system42\cms\page-editor\editors\controls\standard-actions.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\create-hyperlisp-wizard.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

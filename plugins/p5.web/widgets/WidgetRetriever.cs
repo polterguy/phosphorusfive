@@ -136,29 +136,41 @@ namespace p5.web.widgets
                     if (curIdxWidget != null) {
                         bool found = true;
                         foreach (var idxChildNode in e.Args.Children) {
-                            if (!curIdxWidget.HasAttribute (idxChildNode.Name)) {
-                                found = false;
-                                break;
-                            }
-                            if (idxChildNode.Value == null) {
-
-                                // Do nothing, this is a match
-                            } else {
-                                if (curIdxWidget [idxChildNode.Name] != null) {
-                                    if (like) {
-                                        if (!curIdxWidget [idxChildNode.Name].Contains (idxChildNode.GetExValue<string> (context, null))) {
-                                            found = false;
-                                            break;
-                                        }
-                                    } else {
-                                        if (curIdxWidget [idxChildNode.Name] != idxChildNode.GetExValue<string> (context, null)) {
-                                            found = false;
-                                            break;
-                                        }
+                            if (idxChildNode.Name == "element") {
+                                if (like) {
+                                    if (!curIdxWidget.Element.Contains (idxChildNode.GetExValue<string> (context))) {
+                                        found = false;
+                                        break;
                                     }
-                                } else {
+                                } else if (curIdxWidget.Element != idxChildNode.GetExValue<string> (context)) {
                                     found = false;
                                     break;
+                                }
+                            } else {
+                                if (!curIdxWidget.HasAttribute (idxChildNode.Name)) {
+                                    found = false;
+                                    break;
+                                }
+                                if (idxChildNode.Value == null) {
+
+                                    // Do nothing, this is a match
+                                } else {
+                                    if (curIdxWidget [idxChildNode.Name] != null) {
+                                        if (like) {
+                                            if (!curIdxWidget [idxChildNode.Name].Contains (idxChildNode.GetExValue<string> (context, null))) {
+                                                found = false;
+                                                break;
+                                            }
+                                        } else {
+                                            if (curIdxWidget [idxChildNode.Name] != idxChildNode.GetExValue<string> (context, null)) {
+                                                found = false;
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        found = false;
+                                        break;
+                                    }
                                 }
                             }
                         }

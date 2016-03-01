@@ -19,9 +19,17 @@ if
     !=:
     add:x:/./-/*/*/create-widget/*/widgets/**/={content}/./.
       src:x:/../*/_args/*/controls?value
-  set:x:/-2/*/*/create-widget/*/widgets/**/={header}?value
-    src:x:/../*/_args/*/name?value
-  set:x:/-3/*/*/create-widget/*/widgets/**/={content}/.
+  if:x:/../*/_args/*/name?value
+    =:
+
+    /*
+     * Header is empty, removing entire H1 element!
+     */
+    set:x:/./-2/*/*/create-widget/*/widgets/**/={header}/.
+  else
+    set:x:/./-3/*/*/create-widget/*/widgets/**/={header}?value
+      src:x:/../*/_args/*/name?value
+  set:x:/-4/*/*/create-widget/*/widgets/**/={content}/.
   eval:x:/./*/load-file/*
 
 else

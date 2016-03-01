@@ -132,8 +132,8 @@ for-each:x:/../*/sort/*
             a
               href:#
               class:input-group-addon input-group-addon-force-float
-              innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
-              title:Removes the attribute from widget
+              innerValue:@"<span class=""glyphicon glyphicon-trash""></span>"
+              title:Deletes the attribute from widget
               onclick
                 _element-name:{element-name}
                 if
@@ -336,18 +336,21 @@ HTML elements for instance, that don't require a value, but need the property.</
                   theme:the-matrix-reduced
                   autofocus:true
                   fullscreen:false
-                  raise-update:true
                   height:350px
-          _onupdate
-            get-parent-widget:x:/../*/_event?value
-            get-parent-widget:x:/-/*?value
+                  raise-update:true
+            find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+              innerValue:glyphicon-remove
             set-widget-property:x:/-/*?value
-              class:col-md-4 prepend-bottom
-              style
-            set-widget-property:x:/../*/_event?value
-              rows:1
-            send-javascript:@"window.{0}.toTextArea();"
-              :x:/../*/_event?value
+              visible:true
+            find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+              innerValue:glyphicon-trash
+            set-widget-property:x:/-/*?value
+              visible:false
+            find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+              innerValue:glyphicon-flash
+            set-widget-property:x:/-/*?value
+              visible:true
+          _onupdate
             raise-widget-ajax-event:x:/../*/_event?value
               onchange
       lambda2lisp:x:/..for-each/*/_dp/#/*
@@ -357,16 +360,90 @@ HTML elements for instance, that don't require a value, but need the property.</
           src:x:/././-?value
       set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void?name
         src:textarea
+      eval-x:x:/+/**/_event-name
+      add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets
+        src
+          a
+            href:#
+            visible:false
+            class:input-group-addon input-group-addon-force-float
+            innerValue:@"<span class=""glyphicon glyphicon-flash""></span>"
+            title:Shows the Hyperlisp helper ...
+            onclick
+              find-first-ancestor-widget:x:/../*/_event?value
+                element:div
+              find-widget:x:/-/*?value
+                element:textarea
+              set:x:/../*/sys42.execute-lisp-file/**/_code-mirror?value
+                src:x:/./-/*?value
+              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-hyperlisp-wizard.hl
+                _code-mirror
+                _onok
+                  _code-mirror
+                  get-widget-property:x:/-?value
+                    value
+                  lisp2lambda:x:/-/*/*?value
+                  set:x:/-/*//
+                  add:x:/../*/lisp2lambda
+                    lisp2lambda:x:/../*/_code?value
+                  lambda2lisp:x:/../*/lisp2lambda/*
+                  set-widget-property:x:/../*/_code-mirror?value
+                    value:x:/../*/lambda2lisp?value
+                  raise-widget-ajax-event:x:/../*/_code-mirror?value
+                    _onupdate
+                  send-javascript:@"window.{0}.getDoc().setValue(p5.$('{0}').el.value);"
+                    :x:/../*/_code-mirror?value
+          a
+            href:#
+            visible:false
+            class:input-group-addon input-group-addon-force-float
+            innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+            title:Closes the Hyperlisp window
+            onclick
+              get-parent-widget:x:/../*/_event?value
+              get-parent-widget:x:/-/*?value
+              set-widget-property:x:/-/*?value
+                class:col-md-4 prepend-bottom
+                style
+              find-widget:x:/-2/*?value
+                element:textarea
+              set-widget-property:x:/-/*?value
+                rows:1
+              find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+                innerValue:glyphicon-trash
+              set-widget-property:x:/-/*?value
+                visible:true
+              find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+                innerValue:glyphicon-flash
+              set-widget-property:x:/-/*?value
+                visible:false
+              send-javascript:@"window.{0}.toTextArea();"
+                :x:/../*/find-widget/*?value
+              set-widget-property:x:/../*/_event?value
+                visible:false
 
     else
 
       /*
        * This is a JavaScript event handler, signaling that fact to caller
        */
+      add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
+        src
+          onfocus
+            get-parent-widget:x:/../*/_event?value
+            get-parent-widget:x:/-/*?value
+            set-widget-property:x:/-/*?value
+              class:prepend-bottom col-xs-12
+          onblur
+            get-parent-widget:x:/../*/_event?value
+            get-parent-widget:x:/-/*?value
+            set-widget-property:x:/-/*?value
+              class:prepend-bottom col-xs-4
       set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/title?value
         src:"This is a JavaScript event handler, you can switch between JavaScript event handlers and Hyperlisp Active Event handlers, or remove the event handler, by clicking the 'X'"
       set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/style?value
         src:"background-color:rgba(0,128,0,.3);"
+
     /*
      * This is an invisibly rendered event handler, making sure we render the label
      * with the REAL event handler name, before we add the attribute control to properties
@@ -375,6 +452,13 @@ HTML elements for instance, that don't require a value, but need the property.</
       replace:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
         what:_on
         with:on
+
+    /*
+     * Making sure we add the "flash" icon to property
+     */
+    set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
+      src:@"<span class=""glyphicon glyphicon-exclamation-sign""></span> {0}"
+        :x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
 
   /*
    * Adding properties wrapper to [create-widget]
@@ -886,7 +970,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                   button
                     class:btn btn-default prepend-bottom
                     style:"width:250px;text-align:left;"
-                    innerValue:@"New Event Subscriber ... <span style=""float:right;"" class=""glyphicon glyphicon-plus""></span>"
+                    innerValue:@"New Action Subscriber ... <span style=""float:right;"" class=""glyphicon glyphicon-plus""></span>"
                     onclick
                       sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-active-event.hl
                   container
@@ -895,6 +979,15 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                     widgets
                       tbody
                         widgets
+
+              /*
+               * Making sure recently created Active Event becomes "active", if there is one
+               */
+              if:x:/../*/_arg?value
+                find-widget:wysiwyg-controls-events
+                  _event-name:x:/../*/_arg?value
+                raise-widget-ajax-event:x:/-/*?value
+                  onclick
 
   events
 

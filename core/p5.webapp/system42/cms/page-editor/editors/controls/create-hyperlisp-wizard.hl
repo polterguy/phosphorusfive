@@ -1,0 +1,275 @@
+/*
+ * Allows the user to add Hyperlisp to an Active Event handler (Action subscriber),
+ * or an Ajax Hyperlisp event handler
+ */
+
+/*
+ * Making sure we delete any previously created (but non-visible)
+ * modal HTML active event dialogues
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:wysiwyg-controls-hyperlisp-window
+  delete-widget:wysiwyg-controls-hyperlisp-window
+
+
+/*
+ * Making sure we pass in the [_code-mirror] value to anything needing access to it
+ */
+set:x:/../*/create-widget/**/_code-mirror/={code-mirror}?value
+  src:x:/../*/_code-mirror?value
+
+
+/*
+ * Making sure we pass in the [_onok] lambda to [_custom-action], which will
+ * be evaluated when user is finished creating his action. Which probably
+ * will set the given CodeMirror instance's value to the code created
+ */
+add:x:/../**/_custom-action
+  src:x:/../*/_onok/*
+
+
+/*
+ * Including JavaScript to help handle carriage return key in textbox of dialogue
+ */
+include-javascript:@"
+p5.keyPressNewHyperlisp = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('wysiwyg-controls-hyperlisp-window-ok').raise('onclick');
+    return false;
+  }
+}"
+
+/*
+ * Making sure we give initial focus to "Close" button
+ */
+send-javascript:@"setTimeout (function(){$('#wysiwyg-controls-hyperlisp-window-close').select().focus();},500);"
+
+/*
+ * Making sure dialogues becomes initially visible, and that we give initial
+ * focus to "OK" button
+ */
+send-javascript:@"$('#wysiwyg-controls-hyperlisp-window').modal('toggle');"
+
+
+/*
+ * Creating actual modal Widget
+ */
+create-widget:wysiwyg-controls-hyperlisp-window
+  class:modal fade
+  widgets
+    container
+      class:modal-dialog
+      role:document
+      widgets
+        container
+          class:modal-content
+          widgets
+
+            /*
+             * Header of dialog
+             */
+            container
+              class:modal-header
+              widgets
+
+                /*
+                 * Close button
+                 */
+                literal
+                  element:button
+                  class:close
+                  data-dismiss:modal
+                  aria-label:Close
+                  innerValue:&times;
+
+                /*
+                 * Help button
+                 */
+                literal
+                  element:a
+                  href:#
+                  style:"position:absolute;right:40px;"
+                  innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+                  onclick
+                    get-widget-property:wysiwyg-controls-add-hyperlisp-description
+                      visible
+                    if:x:/-/*/*?value
+                      =:bool:true
+                      set-widget-property:wysiwyg-controls-add-hyperlisp-description
+                        visible:false
+                    else
+                      set-widget-property:wysiwyg-controls-add-hyperlisp-description
+                        visible:true
+
+                /*
+                 * Header of our modal window
+                 */
+                text:@"<h4>Choose an action to publish</h4>"
+
+            /*
+             * Body of dialog
+             */
+            container
+              class:modal-body
+              widgets
+
+                // Actual literal widget containing body of dialogue
+                container:wysiwyg-controls-hyperlisp-window-body
+                  element:div
+                  widgets
+
+                    /*
+                     * Short information label
+                     */
+                    literal
+                      innerValue:@"Please choose which Action you wish to publish ..."
+
+                    /*
+                     * Longer description
+                     */
+                    literal:wysiwyg-controls-add-hyperlisp-description
+                      element:div
+                      visible:false
+                      innerValue:@"<p>From here you can publish actions, which means that all action subscribers subscribing to your action, will
+be notified of that your action was published.</p>
+<p>This allows you to invoke functionality in other parts of your system, from events on buttons, in addition to chaining subscribers together,
+such that one subscriber can publish an action, that other parts of the system are subscribing to.</p>"
+
+                    /*
+                     * Table that lists all actions subscribed to by page
+                     */
+                    table:wysiwyg-window-list-of-hyperlisps
+                      class:prepend-top table table-hover
+                      oninit
+
+                        /*
+                         * This one will contain the id of our CodeMirror instance
+                         */
+                        _code-mirror:{code-mirror}
+
+                        /*
+                         * Retrieving Hyperlisp from CodeMirror instance, and converting to lambda,
+                         * since we need it to filter away events already handled in code
+                         */
+                        get-widget-property:x:/../*/_code-mirror?value
+                          value
+                        lisp2lambda:x:/-/*/*?value
+
+                        /*
+                         * Getting page data, and turning it into lambda, 
+                         * such that we can retrieve all events page is listening to
+                         */
+                        sys42.get-page-editor-data
+                        lisp2lambda:x:/-/*/controls?value
+
+                        /*
+                         * Manipulating [oninit] of all usercontrols, such that we can invoke it, and
+                         * have the dynamically created controls returned to us. Basically, removing the parts
+                         * that actually creates the controls, and adds them to the page, while keeping the
+                         * parts that selects them from database. Then making sure [oninit] returns the
+                         * controls to us, after evalution of [oninit] as a lambda object.
+                         */
+                        set:x:/../*/lisp2lambda/[1,2]/**/data-usercontrol/=true/./*/oninit/*(/set|/add|/eval)
+                        add:x:/../*/lisp2lambda/[1,2]/**/data-usercontrol/=true/./*/oninit
+                          src
+                            insert-before:x:
+                              src:x:/../*/select-data/*
+
+                        /*
+                         * Evaluating all [oninit] in page's usercontrols, as lambda objects, returning all controls
+                         * dynamically loaded as a consequence of invoking [oninit]
+                         */
+                        eval:x:/../*/lisp2lambda/[1,2]/**/data-usercontrol/=true/./*/oninit
+
+                        /*
+                         * Looping through all distinct (unique) Active Events subscribed to by page, either directly on controls in page,
+                         * or indirectly inside of usercontrols. Meaning, all event handlers inside if [events] 
+                         * containing the string of "sys42.forms.action."
+                         * Then we create one row (tr) for each Active Event we find
+                         */
+                        for-each:x:/../*(/eval/**/events/*/~sys42.forms.action.|/lisp2lambda/[1,2]/**(/container|/literal|/void)/*/events/*/~sys42.forms.action.)/$
+
+                          /*
+                           * Then making sure currently iterated event STARTS with "sys42.forms.action.", to eliminate 
+                           * events that are "commented out" (etc) by adding an "_" before event invocation, etc.
+                           * In addition, we filter away all Active Events already handled in Hyperlisp of CodeMirror instance
+                           */
+                          if
+                            fetch:x:/0/0?value
+                              index-of:x:/..for-each/*/_dp/#?name
+                                what:sys42.forms.action.
+                            !=:int:0
+                            or:x:/../*/lisp2lambda/[0,1]/*/{0}
+                              :x:/..for-each/*/_dp/#?name
+                            continue
+
+                          /*
+                           * Making sure current row has both the innerValue in its td HTML element of the currently
+                           * iterated Active Event, in addition to an invisible property (_active-event-name) with
+                           * that name, such that we can query the active event by retrieving this property's value from row
+                           */
+                          set:x:/..for-each/**/create-widget/**/={active-event-name}?value
+                            src:x:/..for-each/*/_dp/#?name
+
+                          /*
+                           * Creating a table row (tr element), wrapping currently iterated Active Event
+                           */
+                          create-widget
+                            parent:wysiwyg-window-list-of-hyperlisps
+                            element:tr
+                            style:"cursor:pointer;"
+                            _active-event-name:{active-event-name}
+                            onclick
+
+                              /*
+                               * Figuring out which active event publisher user selected
+                               */
+                              get-widget-property:x:/../*/_event?value
+                                _active-event-name
+                              set:x:/+/*/_code?value
+                                src:x:/./-/*/*?value
+
+                              /*
+                               * This next node, should contain a callback [eval] object to handle code created by
+                               * code creator. The code created by creator, can be found in [_code]'s value,
+                               * which means that any consumers of this file, should provide a [_custom-action] as 
+                               * an [_onok] lambda object, where they should expect [_code] to contain the lambda
+                               * created by this wizard.
+                               */
+                              _custom-action
+                                _code
+                              eval:x:/-
+
+                              /*
+                               * Closing modal dialog
+                               */
+                              send-javascript:@"$('#wysiwyg-controls-hyperlisp-window').modal('toggle');"
+                            widgets
+                              td
+                                widgets
+                                  span
+                                    innerValue:"&nbsp;"
+                                    class:glyphicon glyphicon-flash
+                                  strong
+                                    innerValue:{active-event-name}
+                      widgets
+                        literal
+                          innerValue:@"<thead><tr><th><h4>Actions subscribed to by page</h4></th></tr></thead>"
+                        
+
+            /*
+             * Footer of dialog (contains 'Close' button)
+             */
+            container
+              class:modal-footer
+              widgets
+                button:wysiwyg-controls-hyperlisp-window-close
+                  class:btn btn-default
+                  innerValue:Close
+                  onclick
+
+                    /*
+                     * Hiding dialog
+                     */
+                    send-javascript:@"$('#wysiwyg-controls-hyperlisp-window').modal('toggle');"
