@@ -371,6 +371,7 @@
     <None Include="system42\cms\page-editor\editors\controls\edit-active-event.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-active-event.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-hyperlisp-wizard.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\helpers\process-controls-event-handlers.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -400,5 +401,6 @@
     <Folder Include="system42\tests\" />
     <Folder Include="system42\cms\page-editor\editors\controls\" />
     <Folder Include="system42\cms\page-editor\editors\controls\help-files\" />
+    <Folder Include="system42\cms\page-editor\editors\controls\helpers\" />
   </ItemGroup>
 </Project>

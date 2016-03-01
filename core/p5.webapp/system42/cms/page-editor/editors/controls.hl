@@ -2,59 +2,34 @@
  * Editor for [controls] types of pages
  */
 
+
 /*
- * Loading page from database
+ * Loading page from database from [_id] supplied by main page editor
  */
 select-data:x:/*/*/p5.page/"={0}"
   :x:/../*/_id?value
 
 
 /*
- * Setting the content of WYSIWYG surface to the [controls] from database,
- * converting to lambda from Hyperlisp first
+ * Converting [controls]' value from Hyperlisp to lambda
  */
 lisp2lambda:x:/../*/select-data/*/*/controls?value
 
+
 /*
- * Changing any existing [onXXX] event handlers to [_onXXX] to
+ * Changing any existing [onXXX] event handlers to [_onXXX], which hides them, to
  * make sure they don't mess up design surface with weird events occuring
- * as the user navigates his page
+ * as the user navigates his page. Basically, eliminates the functionality of
+ * all Ajax and/or JavaScript DOM events on page content.
+ * Later, when page is saved back to database, this process is reversed, and all
+ * [_onXXX] nodes beneath [literal], [container] and [void] are being transformed
+ * back to [onXXX] again
  */
-for-each:x:/../*/lisp2lambda/**(/literal/*/~on|/container/*/~on|/void/*/~on)
-  if
-    fetch:x:/0/0?value
-      index-of:x:/..for-each/*/_dp/#?name
-        what:on
-    =:int:0
+set:x:/+/*/_node?value
+  src:x:/../*/lisp2lambda
+sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/process-controls-event-handlers.hl
+  _node
 
-    /*
-     * Checking if this is a user control, and if so, making sure we keep
-     * the [oninit] event to allow rendering its content on WYSIWYG surface
-     */
-    if:x:/..for-each/*/_dp/#?name
-      =:oninit
-      and:x:/..for-each/*/_dp/#/./*/data-usercontrol?value.bool
-
-      /*
-       * This is [oninit] for usercontrol, leaving it as it is. But making sure every
-       * single event handler, of every single child widget, created as a consequence of 
-       * the [oninit] being evaluated, is removed, except for any "nested" usercontrols
-       */
-      insert-before:x:/..for-each/*/_dp/#/*/eval
-        src
-          _design-time-remover
-          set:x:/../*/select-data/**(/~container/*/~on|/~literal/*/~on|/~void/*/~on)!(/./*/data-usercontrol/./*/oninit)
-
-
-    else
-
-      /*
-       * This is an event handler, and it is not a usercontrol,
-       * renaming event handler temporarily for design surface
-       */
-      set:x:/..for-each/*/_dp/#?name
-        src:_{0}
-          :x:/..for-each/*/_dp/#?name
 
 /*
  * Then adding [onclick] event handlers for each widget, to
@@ -94,13 +69,17 @@ create-widget:wysiwyg-editor
      */
     text:@"<style type=""text/css"">
 *[data-usercontrol] {
-	min-height:20px !important;
 	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='120px'><text x='0' y='15' fill='rgba(128,0,0,.05)' font-size='20'>Usercontrol</text></svg>"") !important;
 	background-color:rgba(0,255,0,.02) !important;
-	overflow:auto;
+}
+*[data-usercontrol] * {
+	opacity:0.8;
+}
+*[data-usercontrol] > [data-usercontrol] {
+	background-image:none !important;
+	background-color:Transparent !important;
 }
 *[data-selected] {
-	min-height:20px !important;
 	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='120px'><text x='0' y='15' fill='rgba(128,0,0,.05)' font-size='20'>Selected</text></svg>"") !important;
 	background-color:rgba(255,255,0,.5) !important;
 	box-shadow: 12px 12px 5px #888888 !important;
@@ -826,7 +805,7 @@ you can simply delete it now. A complete version of the widget still exists on y
        * usercontrol is being mapped up
        */
       set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/widgets/*
-      set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/oninit/*(/_design-time-remover|/_design-time-remover/+)
+      set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/oninit/*(/_design-time-remover|/_design-time-remover/+1|/_design-time-remover/+2|/_design-time-remover/+3)
 
       /*
        * Removing all 'select by clicking' event handlers, only relevant
