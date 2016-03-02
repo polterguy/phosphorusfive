@@ -371,7 +371,7 @@
     <None Include="system42\cms\page-editor\editors\controls\edit-active-event.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-active-event.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-hyperlisp-wizard.hl" />
-    <None Include="system42\cms\page-editor\editors\controls\helpers\process-controls-event-handlers.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\helpers\process-widgets-event-handlers.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

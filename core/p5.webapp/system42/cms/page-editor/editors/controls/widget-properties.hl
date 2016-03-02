@@ -495,7 +495,7 @@ if:x:/-/*?value
               _widget:x:/../*/_widget?value
               get-parent-widget:x:/../*/_widget?value
               sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0?value
-              sys42.wysiwyg-controls.databind-select-control:x:/../*/get-parent-widget/0?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/get-parent-widget/0?value
 
 
 /*
@@ -608,6 +608,8 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
                  */
                 set-widget-property:wysiwyg-controls-add-container-to-container
                   style
+                set-widget-property:wysiwyg-controls-add-usercontrol-to-container
+                  style
                 set-widget-property:wysiwyg-controls-add-literal-to-container
                   style
                 set-widget-property:wysiwyg-controls-add-void-to-container
@@ -634,7 +636,7 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
                           data-selected:true
                         get-children-widgets:x:/-/*?value
                         clear-widget:x:/../*/find-widget/*?value
-                        sys42.wysiwyg-controls.databind-select-control
+                        sys42.wysiwyg-controls.databind-select-widget-dropdown
                         sys42.info-window:@"{0} widgets successfully delete from '{1}'"
                           :x:/../*/get-children-widgets/*/*?count
                           :x:/../*/find-widget/*?value
@@ -681,7 +683,7 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
                         :x:/..for-each/*/_dp/#?value
                       _onclick
                         sys42.wysiwyg-controls.select-widget:x:/..for-each/*/_dp/#?value
-                        sys42.wysiwyg-controls.databind-select-control:x:/..for-each/*/_dp/#?value
+                        sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/..for-each/*/_dp/#?value
                   eval-x:x:/-/*/*/innerValue|/-/*/*/_onclick/*|/-/*/*/onmouseover|/-/*/*/onmouseout|/-/*/*/onclick
                   eval:x:/-2
     add:x:/../*/create-widget/*/widgets
@@ -1008,7 +1010,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
         set:x:/+/0?value
           src:x:/../*/_new-value?value
         set-widget-property:x:/../*/get-widget-property/*/*?value
-        sys42.wysiwyg-controls.databind-select-control
+        sys42.wysiwyg-controls.databind-select-widget-dropdown
       else-if:x:/../*/_new-value
 
         /*
@@ -1028,7 +1030,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
           src:{0}
             :x:/../*/_arg?value
         delete-widget-property:x:/../*/get-widget-property/*/*?value
-        sys42.wysiwyg-controls.databind-select-control
+        sys42.wysiwyg-controls.databind-select-widget-dropdown
 
 /*
  * If caller requested that initial focus be set, we do so

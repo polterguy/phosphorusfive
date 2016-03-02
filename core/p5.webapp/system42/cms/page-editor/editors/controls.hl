@@ -1,5 +1,7 @@
+
 /*
- * Editor for [controls] types of pages
+ * Editor for [controls] types of pages. Allows to visually edit
+ * a page, adding widgets to it, in a WYSIWYG design time environment
  */
 
 
@@ -27,26 +29,46 @@ lisp2lambda:x:/../*/select-data/*/*/controls?value
  */
 set:x:/+/*/_node?value
   src:x:/../*/lisp2lambda
-sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/process-controls-event-handlers.hl
+sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/process-widgets-event-handlers.hl
   _node
 
 
 /*
  * Then adding [onclick] event handlers for each widget, to
  * allow widget to be selected by clicking it in design surface, except all
- * while widgets of all usercontrols
+ * widgets that are children of usercontrols
  */
-add:x:/../*/lisp2lambda/**(/literal|/container|/void)(!/*/data-usercontrol/./*/widgets/**)
+add:x:/../*/lisp2lambda/**(/literal|/container|/void)(!/*/data-usercontrol/=true/./*/widgets/**)
   src
     onclick
+
+      /*
+       * Invoking Active Event that selects widget in design surface. If this
+       * Active Event returns true, it means a widget was selected, otherwise
+       * it was the previously selected widget that was clicked, making the widget
+       * become "unselected", resulting in no widgets being selected.
+       */
       sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
       if:x:/-?value
-        sys42.wysiwyg-controls.databind-select-control:x:/../*/_event?value
+
+        /*
+         * Widget was selected. Making sure we set the [select] dropdown
+         * box that allows selecting widgets, to the widget that was just selected
+         */
+        sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
       else
-        sys42.wysiwyg-controls.databind-select-control:_default
+
+        /*
+         * Widget was "unselected", making sure our "select widget" dropdown blox
+         * is set to "no selection".
+         */
+        sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
 
 /*
- * Before finally adding widget to [create-widget] invocation below
+ * Adding widgets to [create-widget] invocation below, within the wysiwyg-editor-surface
+ * widget, which is our WYSIWYG "design surface". Making sure page actually contains
+ * any controls first though
  */
 if:x:/../*/lisp2lambda/*(/container|/literal|/void)
   add:x:/../*/create-widget/*/widgets/*/container/=wysiwyg-editor-surface/*/widgets
@@ -54,23 +76,32 @@ if:x:/../*/lisp2lambda/*(/container|/literal|/void)
 
 
 /*
- * Forward evaluate the expressions in [create-widget], before
- * creating WYSIWYG widget
+ * Forward evaluate the [parent] expression in [create-widget], before
+ * creating WYSIWYG design surface widget
  */
-eval-x:x:/+/*
+eval-x:x:/+/*/parent
+
+
+
+
+
+/*
+ * This creates our WYSIWYG design surface widget, in addition to other helper widgets,
+ * such as toolbars for editing currently selected widget, etc
+ */
 create-widget:wysiwyg-editor
   parent:x:/../*/_parent-widget?value
   widgets
 
+
     /*
-     * Including some custom inline stylesheet, to make controls "pop out" when
+     * Including some custom inline stylesheet, to make widgets "pop out" when
      * selected, in addition to some extra styles to show usercontrols, in addition
-     * to giving WYSIWYG design surface some styles, to make it visible
+     * to giving WYSIWYG design surface some styles, to make it more easily seen
      */
     text:@"<style type=""text/css"">
 *[data-usercontrol] {
-	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='120px'><text x='0' y='15' fill='rgba(128,0,0,.05)' font-size='20'>Usercontrol</text></svg>"") !important;
-	background-color:rgba(0,255,0,.02) !important;
+	background-color:rgba(0,255,0,.1) !important;
 }
 *[data-usercontrol] * {
 	opacity:0.8;
@@ -80,7 +111,6 @@ create-widget:wysiwyg-editor
 	background-color:Transparent !important;
 }
 *[data-selected] {
-	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='120px'><text x='0' y='15' fill='rgba(128,0,0,.05)' font-size='20'>Selected</text></svg>"") !important;
 	background-color:rgba(255,255,0,.5) !important;
 	box-shadow: 12px 12px 5px #888888 !important;
 	border:dashed 1px rgba(0,0,0,.5) !important;
@@ -88,41 +118,78 @@ create-widget:wysiwyg-editor
 	position:relative !important;
 }
 #wysiwyg-editor-surface {
-	min-height:400px;
-	border-radius:5px;
+	min-height:436px;
 	clear:both;
-	border:dashed 1px rgba(0,0,0,.1);
+	border:dashed 1px rgba(0,0,0,.5);
+	background-color:rgba(0,0,0,.03);
+	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100%' width='100%'><text x='10%' y='57%' fill='rgba(128,0,0,.05)' font-size='124' font-family='Verdana'>Design surface</text></svg>"") !important;
+}
+#wysiwyg-editor-surface,
+#wysiwyg-editor-surface *{
+	cursor:pointer !important;
 }
 </style>"
 
+
     /*
-     * Toolbar for manipulating WYSIWYG widget surface
+     * Toolbar for manipulating WYSIWYG widget surface. Contains stuff such as
+     * buttons to add widgets to surface, dropdown list to select a specific widget, 
+     * paste widget from clipboard, help button, etc
      */
     container
       class:prepend-bottom col-md-3 col-xs-12 form-group
       widgets
+
+
+
+
+
+        /*
+         * Allows user to select a widget from a dropdown select list
+         */
         container
           class:input-group
           widgets
-
-            /*
-             * Select widget in page dropdown list
-             */
             literal
               class:input-group-addon
               innerValue:Select
+
+            /*
+             * Select widget in page dropdown list. Allows user to select a named widget in surface,
+             * to manipulate its properties
+             */
             select:wysiwyg-select-control
               class:form-control
               title:Choose any of the widgets on your page from here
               oninit
-                sys42.wysiwyg-controls.databind-select-control
+
+                /*
+                 * Creates widget's children [option] widgets
+                 */
+                sys42.wysiwyg-controls.databind-select-widget-dropdown
               onchange
+
+                /*
+                 * Retrieves selected value from [select] dropdown list,
+                 * and selects specified widget, unless value of [select] is
+                 * "_default", at which point we "unselect" any previously selected widgets
+                 */
                 get-widget-property:wysiwyg-select-control
                   value
                 if:x:/../*/get-widget-property/*/*?value
                   =:_default
+
+                  /*
+                   * Widget was "unselected", meaning the first [option] item of [select]
+                   * was selected by user, entirely "unselecting" any previously selected widgets
+                   */
                   sys42.wysiwyg-controls.unselect-widget
                 else
+
+                  /*
+                   * Some widget was selected, making sure WYSIWYG design surface is notified,
+                   * in addition to creating associated toolbars and such
+                   */
                   sys42.wysiwyg-controls.select-widget:x:/../*/get-widget-property/*/*?value
               widgets
               events
@@ -133,68 +200,149 @@ create-widget:wysiwyg-editor
                  * simply selects that as a value, otherwise it re-creates
                  * entire select dropdown list
                  */
-                sys42.wysiwyg-controls.databind-select-control
+                sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+                  /*
+                   * Checking if we're given a widget id to select, and if so, simply
+                   * setting that [option] element to "selected" through [select] widget's
+                   * [value] property, before returning
+                   */
                   if:x:/../*/_arg?value
                     set-widget-property:wysiwyg-select-control
                       value:x:/../*/_arg?value
                     return
+
+                  /*
+                   * "Hard case", needs to rebuild widget's children collection entirely.
+                   * First deleting all children widgets of [select] (all [option] HTML widgets),
+                   * before creating on [option] item for each widget on page, in addition to
+                   * the initial "Choose widget ..." [option] widget.
+                   */
                   clear-widget:wysiwyg-select-control
+
+                  /*
+                   * Creating initial "unselect widget" item, that allows user to "unselect" widgets
+                   */
                   create-literal-widget
                     parent:wysiwyg-select-control
                     element:option
                     innerValue:Widget ...
                     value:_default
-                  find-widget
-                    data-selected:true
-                  sys42.get-widget:wysiwyg-editor-surface
-                    _keep-empty-ids:true
 
                   /*
-                   * Looping through all widgets, avoiding all widgets inside of usercontrols
+                   * Need to find currently selected widget, if any, such that we can make sure that
+                   * the [option] widget representing that widget becomes initially selected
                    */
-                  for-each:x:/../*/sys42.get-widget/*/**(/container|/literal|/void)(!/*/data-usercontrol/./*/widgets/**)
+                  find-widget
+                    data-selected:true
+
+                  /*
+                   * Then retrieving entire widget hierarchy for WYSIWYG design time surface,
+                   * and its widgets. Making sure we keep "empty ids", or ids that have been
+                   * automatically created by the framework. Otherwise values such as "xfed6797"
+                   * would be removed by the [sys42.get-widget] Active Event internals.
+                   * Also we're making sure of that the invocation gets to know that we want to have
+                   * a "flat hierarchy", which means that we only want a "linear list" of the widgets,
+                   * and not its hierarchical structure, since otherwise it becomes more difficult to
+                   * add up items as [option] children widgets in the order they appear.
+                   */
+                  sys42.get-widget:wysiwyg-editor-surface
+                    _keep-empty-ids:true
+                    _flatten:true
+
+                  /*
+                   * Now deleting the first widget, since it'll be the "wysiwyg-editor-surface"
+                   * parent widget, which should NOT (of course) be selectable in any ways
+                   */
+                  set:x:/../*/sys42.get-widget/0
+
+                  /*
+                   * Looping through all widgets creating an [option] widget for each widget,
+                   * such that user can select widgets by choosing them in the "Select widget" 
+                   * dropdown list
+                   */
+                  for-each:x:/../*/sys42.get-widget/*
                     _option
                       create-literal-widget
                         element:option
                         parent:wysiwyg-select-control
                         innerValue
                         value
-                    
+
+                    /*
+                     * Checking if this is a usercontrol widget, which is specially
+                     * handled, to make it appear as a usercontrol in dropdown list
+                     */
                     if:x:/..for-each/*/_dp/#/*/data-usercontrol?value.bool
 
                       /*
-                       * Probably a usercontrol
+                       * This is a usercontrol
                        */
                       set:x:/..for-each/*/_option/*/*/innerValue?value
-                        src:{0} - {1} - {2}
-                          :usercontrol
+                        src:usercontrol - {0} - {1}
                           :x:/..for-each/*/_dp/#/*/element?value
                           :x:/..for-each/*/_dp/#?value
                     else
+
+                      /*
+                       * This was not a usercontrol, making sure we add both widget type, HTML element,
+                       * and id of widget as a part of the innerValue (friendly text, displayed to user)
+                       * of the [option] item
+                       */
                       set:x:/..for-each/*/_option/*/*/innerValue?value
                         src:{0} - {1} - {2}
                           :x:/..for-each/*/_dp/#?name
                           :x:/..for-each/*/_dp/#/*/element?value
                           :x:/..for-each/*/_dp/#?value
+
+                    /*
+                     * Setting the value of [option] item to the id of widget
+                     */
                     set:x:/..for-each/*/_option/*/*/value?value
                       src:x:/..for-each/*/_dp/#?value
+
+                    /*
+                     * Checking if this is our currently selected widget, and if so,
+                     * adding the [selected] attribute to [option] item
+                     */
                     if:x:/../*/find-widget/*?value
                       =:x:/..for-each/*/_dp/#?value
                       add:x:/..for-each/*/_option/*
                         src:selected
+
+                    /*
+                     * Now we have an eval object, that will create our [option] item
+                     * correctly, hence simply invoking [_option] as a lambda object, which
+                     * will create our [option] item for dropdown list
+                     */
                     eval:x:/./*/_option
 
+
+
+
+
+
+    /*
+     * Wrapper around all "Add widget" buttons, in addition to "Paste widget" button to
+     * WYSIWYG design surface
+     */
     container:wysiwyg-add-btn-group
       class:prepend-bottom col-md-6 col-xs-12 btn-group
       widgets
 
+
+
         /*
-         * Add [container] widget to surface button
+         * Adds a [container] widget to surface button(s)
          */
         container:wysiwyg-controls-add-container-wrp
           class:btn-group
           style:"width:20%;"
           widgets
+
+            /*
+             * Dropdown toggle button for "Add container" button(s)
+             */
             button
               class:btn btn-default dropdown-toggle
               data-toggle:dropdown
@@ -207,7 +355,7 @@ create-widget:wysiwyg-editor
                   widgets
                     a:wysiwyg-controls-add-container-before
                       href:#
-                      innerValue:before
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> before"
                       title:Adds a [container] widget to your page, at the beginning, or before the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:div
@@ -219,7 +367,7 @@ create-widget:wysiwyg-editor
                   widgets
                     a:wysiwyg-controls-add-container-after
                       href:#
-                      innerValue:after
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> after"
                       title:Appends a [container] widget to your page, or after the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:div
@@ -231,8 +379,8 @@ create-widget:wysiwyg-editor
                   widgets
                     a:wysiwyg-controls-add-container-inside
                       href:#
-                      innerValue:inside
-                      title:Appends a [container] widget to your currently selected widget
+                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> inside"
+                      title:Appends a [container] widget inside your currently selected widget
                       onclick
                         find-widget
                           data-selected:true
@@ -246,7 +394,7 @@ create-widget:wysiwyg-editor
                   widgets
                     a:wysiwyg-controls-add-usercontrol-before
                       href:#
-                      innerValue:Usercontrol before
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> usercontrol before"
                       title:Adds a [usercontrol] widget to your page, at the beginning, or before the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:_usercontrol
@@ -256,11 +404,27 @@ create-widget:wysiwyg-editor
                   widgets
                     a:wysiwyg-controls-add-usercontrol-after
                       href:#
-                      innerValue:Usercontrol after
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> usercontrol after"
                       title:Appends a [usercontrol] widget to your page, or after the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:_usercontrol
                         send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                li:wysiwyg-controls-add-usercontrol-to-container
+                  style:"display:none;"
+                  widgets
+                    a:wysiwyg-controls-add-usercontrol-inside
+                      href:#
+                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> usercontrol inside"
+                      title:Appends a [usercontrol] widget inside your currently selected widget
+                      onclick
+                        find-widget
+                          data-selected:true
+                        eval-x:x:/+/*
+                        sys42.wysiwyg-controls.add-control:_usercontrol
+                          _parent:x:/../*/find-widget/*?value
+                        sys42.info-window:@"Please change widget's id and element to what you wish"
+                          _time:more
+                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');$('#widget-property-id').focus().select();"
 
         /*
          * Add [literal] widget to surface button
@@ -373,7 +537,7 @@ create-widget:wysiwyg-editor
                         send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
 
         /*
-         * Add paste widget to surface button
+         * Paste widget to surface button
          */
         container:wysiwyg-controls-paste-wrp
           class:btn-group
@@ -468,7 +632,7 @@ create-widget:wysiwyg-editor
                 src
                   onclick
                     sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
-                    sys42.wysiwyg-controls.databind-select-control
+                    sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
 
               /*
                * Actually creating widget, before selecting widget, and rebinding select dropdown list
@@ -477,7 +641,7 @@ create-widget:wysiwyg-editor
                 src:x:/../*/get-session-value/*/*
               _create-widget
               sys42.wysiwyg-controls.select-widget:x:/-?value
-              sys42.wysiwyg-controls.databind-select-control
+              sys42.wysiwyg-controls.databind-select-widget-dropdown
 
               /*
                * Toggling button's dropdown state, and showing user some information
@@ -670,10 +834,21 @@ without any needs for any prior development experience.</blockquote>"
                       src:x:/../*/get-session-value/*?value
 
     /*
+     * Actual WYSIWYG design surface
+     */
+    container:wysiwyg-editor-surface
+      class:row
+      onclick
+        sys42.wysiwyg-controls.unselect-widget
+        sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+      widgets
+
+
+    /*
      * Wrapper for manipulating selected widget
      */
     container:wysiwyg-manipulate-selected-widget
-      class:prepend-bottom col-xs-12 btn-group
+      class:prepend-bottom prepend-top col-xs-12 btn-group
       style:"display:none;"
       widgets
 
@@ -694,7 +869,7 @@ without any needs for any prior development experience.</blockquote>"
                 delete-widget:x:/../*/find-widget/*?value
                 set-widget-property:wysiwyg-manipulate-selected-widget
                   style:"display:none;"
-                sys42.wysiwyg-controls.databind-select-control
+                sys42.wysiwyg-controls.databind-select-widget-dropdown
                 set-widget-property:wysiwyg-controls-properties
                   visible:false
 
@@ -702,6 +877,8 @@ without any needs for any prior development experience.</blockquote>"
                  * Changing visibility for "create inside of widget" buttons
                  */
                 set-widget-property:wysiwyg-controls-add-container-to-container
+                  style:"display:none;"
+                set-widget-property:wysiwyg-controls-add-usercontrol-to-container
                   style:"display:none;"
                 set-widget-property:wysiwyg-controls-add-literal-to-container
                   style:"display:none;"
@@ -758,17 +935,6 @@ you can simply delete it now. A complete version of the widget still exists on y
     container:wysiwyg-controls-properties
       class:row col-xs-12
       visible:false
-
-    /*
-     * Actual WYSIWYG design surface
-     */
-    container:wysiwyg-editor-surface
-      class:col-xs-12
-      onclick
-        sys42.wysiwyg-controls.unselect-widget
-        sys42.wysiwyg-controls.databind-select-control:_default
-      widgets
-
 
   /*
    * Lambda events for Editor Surface
@@ -849,7 +1015,7 @@ you can simply delete it now. A complete version of the widget still exists on y
           type:controls
 
     /*
-     * Invoked when a generic control is added to the page
+     * Invoked when a widget is added to the page
      */
     sys42.wysiwyg-controls.add-control
 
@@ -857,6 +1023,7 @@ you can simply delete it now. A complete version of the widget still exists on y
        * Retrieving default properties, which differs from widget type
        */
       sys42.wysiwyg-controls.get-default-properties:x:/../*/_arg?value
+
 
       /*
        * Adding 'insertion position' to create-widget Active Event invocation.
@@ -910,7 +1077,7 @@ you can simply delete it now. A complete version of the widget still exists on y
         src
           onclick
             sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
-            sys42.wysiwyg-controls.databind-select-control
+            sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
 
       /*
        * Checking widget creation Active Event, which might be
@@ -947,7 +1114,7 @@ you can simply delete it now. A complete version of the widget still exists on y
        */
       _create-widget
       sys42.wysiwyg-controls.select-widget:x:/-?value
-      sys42.wysiwyg-controls.databind-select-control
+      sys42.wysiwyg-controls.databind-select-widget-dropdown
 
     /*
      * Creates a user control type of widget, by asking user which existing predefined
@@ -1018,6 +1185,8 @@ you can simply delete it now. A complete version of the widget still exists on y
        */
       set-widget-property:wysiwyg-controls-add-container-to-container
         style:"display:none;"
+      set-widget-property:wysiwyg-controls-add-usercontrol-to-container
+        style:"display:none;"
       set-widget-property:wysiwyg-controls-add-literal-to-container
         style:"display:none;"
       set-widget-property:wysiwyg-controls-add-void-to-container
@@ -1083,6 +1252,8 @@ you can simply delete it now. A complete version of the widget still exists on y
             not
           set-widget-property:wysiwyg-controls-add-container-to-container
             style
+          set-widget-property:wysiwyg-controls-add-usercontrol-to-container
+            style
           set-widget-property:wysiwyg-controls-add-literal-to-container
             style
           set-widget-property:wysiwyg-controls-add-void-to-container
@@ -1101,6 +1272,8 @@ you can simply delete it now. A complete version of the widget still exists on y
            * Changing visibility for "create inside of widget" buttons
            */
           set-widget-property:wysiwyg-controls-add-container-to-container
+            style:"display:none;"
+          set-widget-property:wysiwyg-controls-add-usercontrol-to-container
             style:"display:none;"
           set-widget-property:wysiwyg-controls-add-literal-to-container
             style:"display:none;"
@@ -1132,6 +1305,8 @@ you can simply delete it now. A complete version of the widget still exists on y
          * Changing visibility for "create inside of widget" buttons
          */
         set-widget-property:wysiwyg-controls-add-container-to-container
+          style:"display:none;"
+        set-widget-property:wysiwyg-controls-add-usercontrol-to-container
           style:"display:none;"
         set-widget-property:wysiwyg-controls-add-literal-to-container
           style:"display:none;"

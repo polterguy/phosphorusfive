@@ -66,9 +66,16 @@ create-protected-event:sys42.get-widget
         src
           widgets
 
-    // Looping through all children, recursively invoking self, but only if we should
+    /*
+     * Looping through all children, recursively invoking self, but only if we should,
+     * and this is not a [data-usercontrol] ==> true type of widget
+     */
     if:x:/../*/_no-children?value.bool
       !=:bool:true
+      and:x:/../0/-/*/data-usercontrol/=true
+        not
+        or:x:/../*/_flatten/=true
+          not
 
       /*
        * Looping through all children widgets recursively
@@ -78,14 +85,26 @@ create-protected-event:sys42.get-widget
         set:x:/..for-each/*/sys42.get-widget?value
           src:x:/..for-each/*/_dp?value
         if:x:/../*/_keep-empty-ids?value
+          eval-x:x:/+/*/*
           add:x:/..for-each/*/sys42.get-widget
             src
-              _keep-empty-ids:bool:true
+              _keep-empty-ids:x:/../*/_keep-empty-ids?value
+        if:x:/../*/_flatten?value
+          eval-x:x:/+/*/*
+          add:x:/..for-each/*/sys42.get-widget
+            src
+              _flatten:x:/../*/_flatten?value
         sys42.get-widget
-        add:x:/+/*/src
-          src:x:/..for-each/*/sys42.get-widget/*
-        add:x:/../0/-/*/widgets
-          src
+        if:x:/../*/_flatten?value.bool
+          add:x:/+/*/src
+            src:x:/..for-each/*/sys42.get-widget/*
+          add:x:/..
+            src
+        else
+          add:x:/+/*/src
+            src:x:/..for-each/*/sys42.get-widget/*
+          add:x:/../0/-/*/widgets
+            src
 
     // Widget lambda events, at last
     list-widget-lambda-events:x:/../*/list-widgets/0?value
