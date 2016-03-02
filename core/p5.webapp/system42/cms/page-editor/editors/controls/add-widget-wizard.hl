@@ -1,0 +1,7 @@
+/*
+ * Allows the user to add one widget to surface, by following a wizard,
+ * that will help build "rich and complex widgets"
+ */
+
+
+sys42.show-code-window:x:/..
