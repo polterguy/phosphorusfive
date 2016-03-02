@@ -1,7 +1,213 @@
 /*
  * Allows the user to add one widget to surface, by following a wizard,
- * that will help build "rich and complex widgets"
+ * that will help him or her, build a "rich and complex widget"
  */
 
 
-sys42.show-code-window:x:/..
+/*
+ * Loading file that contains our templates
+ */
+load-file:/system42/cms/page-editor/editors/controls/helpers/wizard-template-widgets.hl
+
+
+/*
+ * Checks to see if a [container] widget is currently selected, and if so,
+ * enabling "Inside" buttons
+ */
+find-widget
+  data-selected
+get-widget-property:x:/-/*?value
+  data-usercontrol
+if:x:/-2/*?name
+  =:container
+  and:x:/./-/*/*?value
+    not
+  set:x:@"/../*/databind/**/class/""=btn btn-default disabled""?value"
+    src:btn btn-default
+
+
+/*
+ * Databinds table widgets with content from file
+ */
+databind:x:/../*/create-widget/**/table/=wysiwyg-window-list-of-widget-wizard-elements/*/widgets
+  src:x:/../*/load-file/*/*
+  template
+    tr
+      widgets
+        td
+          {innerValue}:"<strong>{0}</strong>"
+            :x:?value
+        td
+          {innerValue}:x:/*/_description?value
+
+        /*
+         * "Insert before" button
+         */
+        td
+          widgets
+            button
+              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span>"
+              title:Adds the widget at the beginning of your page, or before the currently selected widget
+              onclick
+
+                /*
+                 * The next node, will have its value, databound towards the actual code, of
+                 * the currently iterated wizard template widget
+                 */
+                {_code}:x:/*/_code/*?node.string
+                sys42.wysiwyg-controls.get-insertion-position
+                  _before:true
+                lisp2lambda:x:/../*/_code?value
+                add:x:/-/*
+                  src:x:/../*/sys42.wysiwyg-controls.get-insertion-position/*
+                eval:x:/../*/lisp2lambda
+                  add:x:/..
+                    src
+                      sys42.wysiwyg-controls.select-widget:x:/../*/~create-?value
+                send-javascript:@"$('#wysiwyg-controls-widget-wizard-window').modal('toggle');"
+                sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+        /*
+         * "Insert after" button
+         */
+        td
+          widgets
+            button
+              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span>"
+              title:Adds the widget at the end of your page, or after the currently selected widget
+              onclick
+
+                /*
+                 * The next node, will have its value, databound towards the actual code, of
+                 * the currently iterated wizard template widget
+                 */
+                {_code}:x:/*/_code/*?node.string
+                sys42.wysiwyg-controls.get-insertion-position
+                lisp2lambda:x:/../*/_code?value
+                add:x:/-/*
+                  src:x:/../*/sys42.wysiwyg-controls.get-insertion-position/*
+                eval:x:/../*/lisp2lambda
+                  add:x:/..
+                    src
+                      sys42.wysiwyg-controls.select-widget:x:/../*/~create-?value
+                send-javascript:@"$('#wysiwyg-controls-widget-wizard-window').modal('toggle');"
+                sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+        /*
+         * "Insert inside" button. Only enabled if a [container] widget is selected in
+         * the WYSIWYG design surface
+         */
+        td
+          widgets
+            button
+              class:btn btn-default disabled
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span>"
+              title:Adds the widget inside of your currently selected [container] widget
+              onclick
+
+                /*
+                 * The next node, will have its value, databound towards the actual code, of
+                 * the currently iterated wizard template widget
+                 */
+                {_code}:x:/*/_code/*?node.string
+                find-widget
+                  data-selected
+                lisp2lambda:x:/../*/_code?value
+                eval-x:x:/+/*/*
+                add:x:/-2/*
+                  src
+                    parent:x:/../*/find-widget/*?value
+                eval:x:/../*/lisp2lambda
+                  add:x:/..
+                    src
+                      sys42.wysiwyg-controls.select-widget:x:/../*/~create-?value
+                send-javascript:@"$('#wysiwyg-controls-widget-wizard-window').modal('toggle');"
+                sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+
+/*
+ * Making sure we delete any previously created (but non-visible)
+ * modal HTML widget wizard dialogues
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:wysiwyg-controls-widget-wizard-window
+  delete-widget:wysiwyg-controls-widget-wizard-window
+
+
+/*
+ * Making sure dialogues becomes initially visible, and that we give initial
+ * focus to "OK" button
+ */
+send-javascript:@"$('#wysiwyg-controls-widget-wizard-window').modal('toggle');
+$('#wysiwyg-controls-widget-wizard-window').on('shown.bs.modal', function () {
+  $('#wysiwyg-controls-widget-wizard-window-close').focus();
+})"
+
+
+/*
+ * Creating a modal dialog that asks user which template he wish to use
+ */
+create-widget:wysiwyg-controls-widget-wizard-window
+  class:modal fade
+  widgets
+    container
+      class:modal-dialog
+      role:document
+      widgets
+        container
+          class:modal-content
+          widgets
+
+            /*
+             * Header of dialog
+             */
+            container
+              class:modal-header
+              widgets
+
+                // Close button
+                literal
+                  element:button
+                  class:close
+                  data-dismiss:modal
+                  aria-label:Close
+                  innerValue:&times;
+
+                // Header of our modal window
+                text:@"<h4>Select a pre-fabricated widget</h4>"
+
+            /*
+             * Body of dialog
+             */
+            container
+              class:modal-body
+              widgets
+
+                // Actual literal widget containing body of dialogue
+                container:wysiwyg-controls-widget-wizard-window-body
+                  element:div
+                  widgets
+                    text:@"<p>Please choose a template widget from the list below to insert into page.</p>"
+                    table:wysiwyg-window-list-of-widget-wizard-elements
+                      class:prepend-top table table-hover
+                      widgets
+                        text:@"<thead><tr><th style=""width:150px;"">Name</th><th>Description</th><th>Before</th><th>After</th><th>Inside</th></tr></thead>"
+                        
+
+            /*
+             * Footer of dialog (contains Close button)
+             */
+            container
+              class:modal-footer
+              widgets
+                literal:wysiwyg-controls-widget-wizard-window-close
+                  element:button
+                  class:btn btn-default
+                  innerValue:Close
+                  onclick
+
+                    // Hiding dialog
+                    send-javascript:@"$('#wysiwyg-controls-widget-wizard-window').modal('toggle');"

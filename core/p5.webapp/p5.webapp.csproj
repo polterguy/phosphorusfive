@@ -373,6 +373,7 @@
     <None Include="system42\cms\page-editor\editors\controls\create-hyperlisp-wizard.hl" />
     <None Include="system42\cms\page-editor\editors\controls\helpers\process-widgets-event-handlers.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-widget-wizard.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\helpers\wizard-template-widgets.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

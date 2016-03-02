@@ -1,0 +1,25 @@
+/*
+ * Contains all template widgets, meaning widgets that you can 
+ * add to your page, that is pre-created and contains some sort of logic
+ */
+
+
+/*
+ * A bootstrap CSS button wizard template widget
+ */
+_wizard-item:Button
+  _description:Creates a default button, with bootstrap CSS classes wired up, and an [onclick] event handler
+  _code
+    create-literal-widget
+      element:button
+      class:btn btn-default
+      innerValue:Foo bar
+      _onclick
+        sys42.info-window:Implement something intelligent here
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
