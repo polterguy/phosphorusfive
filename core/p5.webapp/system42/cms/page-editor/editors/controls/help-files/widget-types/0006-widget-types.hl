@@ -1,0 +1,64 @@
+
+/*
+ * First help page
+ */
+
+name:Widget types - The container widget 2/2
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Widget types - The container widget 2/2
+
+  create-literal-widget
+    element:p
+    innerValue:@"When you have done the previous steps, you need to add an <em>""onclick""</em> event handler, to both of your
+buttons. Make sure your first button is selected in the WYSIWYG design surface. Then click <em>""Add attribute""</em>, and name
+your attribute <em>""onclick""</em>. Type in the following code into the onclick event handler of your first button."
+
+  create-literal-widget
+    element:pre
+    innerValue:@"sys42.info-window:First button was clicked!"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Then choose the second button in your design surface, add up an onclick attribute, and give it the value of."
+
+  create-literal-widget
+    element:pre
+    innerValue:@"sys42.info-window:Second button was clicked!"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Save your page, view it, and try clicking your newly created buttons. If you wish, you can give your buttons
+some unique <em>""innerValue""</em>, to be able to separate them on your page."
+
+  create-literal-widget
+    element:p
+    innerValue:@"If we had created these two buttons, simply as <em>""innerValue""</em> of another [literal] widget,
+it would have been difficult to map up our onclick event handlers, invoking functionality on the server-side, as the user
+clicked our buttons."
+
+  create-literal-widget
+    element:p
+    innerValue:@"<strong>Rule of thumb</strong>; Everytime you need your children widgets to have rich functionality, you should
+use a [container] widget, and add up children widgets to it. While everytime you do not need your child widget to
+for instance invoke functionality on the server-side, you can simply use the <em>""innerValue""</em> property of a
+[literal] widget, to create <em>""static inner HTML""</em>."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/widget-types/0007-widget-types.hl
+      text:"</p>"

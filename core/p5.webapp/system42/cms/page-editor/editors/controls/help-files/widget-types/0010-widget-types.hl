@@ -1,0 +1,61 @@
+
+/*
+ * First help page
+ */
+
+name:Widget types - Which widget to use where?
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Widget types - Which widget to use where?
+
+  create-literal-widget
+    element:p
+    innerValue:@"In the beginning, it might seem confusing which widget to use for which HTML element, but after a while this comes
+intuitively. However, below is a list of which widget you would <strong>*probably*</strong> want to use, with some of the most
+common HTML elements, and why you should normally choose this widget."
+
+  create-container-widget
+    element:ul
+    widgets
+      li
+        innerValue:@"<strong>input</strong> - Always use the <code>[void]</code> widget. This is because <em>""input""</em> HTML elements,
+cannot legally have any values inside of them, and hence both the [container] and [literal] widgets, will render <em>""illegal HTML""</em>
+on your page."
+      li
+        innerValue:@"<strong>textarea</strong> - Always use the <code>[literal]</code> widget, and make sure you escape any angle brackets in its value, 
+by using the <em>""html-encode""</em> Active Event."
+      li
+        innerValue:@"<strong>select, ul, ol, etc</strong> - Mostly, you would want to use the <code>[container]</code> widget here, such that you can
+dynamically change its <em>""option""</em>/<em>""li""</em> HTML children widgets. However, with these HTML elements, you can also
+use a [literal] widget, if you know what you're doing, and your children widgets doesn't require event handlers, etc."
+      li
+        innerValue:@"<strong>div</strong> - Most of the times, your <em>""div""</em> HTML elements will be wrapping other widgets,
+having rich functionality of themselves. If this is the case, you should use the <code>[container]</code> widget. But you can also
+legally use the [literal] widget here. It is more a question of taste one might say, and depends upon your special case."
+      li
+        innerValue:@"<strong>span</strong> - Most of the times, your <em>""span""</em> HTML elements will <strong>*not*</strong>
+be wrapping other widgets, but rather have only inline text. If this is the case, you should use the <code>[literal]</code> widget. 
+But you can also legally use the [container] widget here. However, until you understand the difference, use [literal] widgets here."
+      li
+        innerValue:@"<strong>p, h1, h2, strong, em, etc</strong> - Most of the times, these HTML elements will <strong>*not*</strong>
+be wrapping other widgets, but rather have only inline text. If this is the case, you should use the <code>[literal]</code> widget. 
+But you can also legally use the [container] widget here. However, until you understand the difference, use [literal] widgets here."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:&lt;&lt; Back to index
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/index.hl
+      text:"</p>"

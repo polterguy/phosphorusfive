@@ -5,6 +5,55 @@
 
 
 /*
+ * Show info-window action
+ */
+_action
+  name:sys42.action.show-info-window
+  code-template
+    sys42.info-window:{message}
+  arguments
+    message:The message to display to user
+  prerequisites:@"<p>This action will show a message to user, not requiring any action on user's behalf.
+This action should only be called once upon each request.</p>"
+
+
+/*
+ * Serialize form action
+ */
+_action
+  name:sys42.action.serialize-form-by-ancestor-element
+  code-template
+    find-first-ancestor-widget:x:/../*/_event?value
+      element:{element}
+    if:x:/-/*?count
+      =:int:0
+      throw:No ancestor elements of spcified type found
+    get-widget-values:x:/-2/*?value
+    for-each:x:/-/*
+      get-widget-property:x:/./*/_dp/#?name
+        data-field
+      if:x:/-/*/*?value
+        set:x:/..for-each/*/_dp/#
+          src:@"{0}:@""{1}"""
+            :x:/..for-each/*/get-widget-property/*/*?value
+            :x:/..for-each/*/_dp/#/*?value
+    _data
+    add:x:/-
+      src:x:/./-3/*
+  arguments
+    element:Parent element to look for
+  prerequisites:@"<p>This action will retrieve the first parent element of given [element] type, and
+then retrieve all input values from that element, and stuff into a [_data] segment. This allows you
+to chain this action together with other actions that needs a [_data] segment in your code.</p>
+<p>If no ancestor element of specified [element] type is found, or no child widgets with input values are found,
+it will throw an exception.</p>
+<p>To structure your data, it is wise to use this action in combination with a <em>""data-field""</em> attribute
+for your widgets, which is used to determine that data field's name of your textboxes, textareas, and so on.
+Adding a <code>data-field attribute to your input widgets</code>, will give your data a structure, and make it easier to
+separate the type of data gathered.</p>"
+
+
+/*
  * Saves [_data] to database action
  */
 _action
@@ -21,17 +70,5 @@ _action
 that will be saved into your database. Everything in any nodes in your hierarchy, within a node named [_data], will be saved to
 the database. If your action does not meet these prerequisties somehow, it will raise an exception!</p>
 <p>In addition, this action requires that you supply a static <em>""name""</em> argument, which becomes the database typename (table name'ish)
-for your inserted records.</p>"
-
-
-/*
- * Show info-window action
- */
-_action
-  name:sys42.action.show-info-window
-  code-template
-    sys42.info-window:{message}
-  arguments
-    message:The message to display to user
-  prerequisites:@"<p>This action will show a message to user, not requiring any action on user's behalf.
-This action should only be called once upon each request.</p>"
+for your inserted records.</p>
+<p>This action can be chained with the <em>""sys42.action.serialize-form-by-ancestor-element""</em> action, to save form values into your database.</p>"

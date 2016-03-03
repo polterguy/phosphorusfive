@@ -383,6 +383,21 @@
     <None Include="system42\cms\page-editor\editors\controls\help-files\your-first-widget\0008-your-first-widget.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\your-first-widget\0009-your-first-widget.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\your-first-widget\0010-your-first-widget.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0002-widget-types.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\widget-types\0003-widget-types.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\widget-types\0004-widget-types.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\widget-types\0005-widget-types.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\widget-types\0006-widget-types.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\widget-types\0007-widget-types.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\widget-types\0008-widget-types.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\widget-types\0009-widget-types.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\widget-types\0010-widget-types.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0003-composite-widgets.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0004-composite-widgets.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0005-composite-widgets.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0006-composite-widgets.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0007-composite-widgets.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0008-composite-widgets.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -414,5 +429,7 @@
     <Folder Include="system42\cms\page-editor\editors\controls\help-files\" />
     <Folder Include="system42\cms\page-editor\editors\controls\helpers\" />
     <Folder Include="system42\cms\page-editor\editors\controls\help-files\your-first-widget\" />
+    <Folder Include="system42\cms\page-editor\editors\controls\help-files\widget-types\" />
+    <Folder Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\" />
   </ItemGroup>
 </Project>

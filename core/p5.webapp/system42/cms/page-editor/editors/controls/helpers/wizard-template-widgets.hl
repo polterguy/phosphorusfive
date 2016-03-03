@@ -25,6 +25,26 @@ _wizard-item:Button
           sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
 
 
+/*
+ * A bootstrap CSS textbox wizard template widget
+ */
+_wizard-item:Textbox
+  _description:Creates a default textbox, with bootstrap CSS classes wired up
+  _code
+    create-literal-widget
+      element:input
+      type:text
+      class:form-control
+      title:Type some text into me please
+      placeholder:Input please ...
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
 
 /*
  * A div panel-type of wizard template widget

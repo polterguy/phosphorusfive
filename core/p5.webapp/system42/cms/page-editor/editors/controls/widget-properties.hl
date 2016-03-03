@@ -10,12 +10,11 @@ sys42.get-widget:x:/../*/_widget?value
 
 set:x:/../*/sys42.get-widget/**(/void/*/element/=input/./*/name|/literal/*/element/=textarea/./*/name|/container/*/element/=select/./*/name)
 set:x:/../*/sys42.get-widget/**(/void/*/events|/literal/*/events|/container/*/events)
-set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol
 
 /*
  * Sorting widget's properties, first stuffing event handlers last, then alphabetically
  */
-sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/element!/data-selected!/onclick!/oninit/./*/data-selected/./*/oninit)
+sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/element!/data-selected!/data-usercontrol!/onclick!/name!/oninit/./*/data-selected/./*/oninit)
   if
     fetch:x:/0/0?value
       index-of:x:/../*/_rhs/#?name
@@ -482,7 +481,7 @@ if:x:/-/*?value
         class:col-xs-12 form-group
         style:"clear:both;"
         widgets
-          button
+          button:wysiwyg-controls-get-parent-widget
             class:btn btn-default
             style:"clear:both;"
             innerValue:@"<span class=""glyphicon glyphicon-arrow-up""></span> {0}"
@@ -971,7 +970,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                   /*
                    * Create new Active Event subscriber for currently selected widget
                    */
-                  button
+                  button:wysiwyg-controls-new-action-subscriber
                     class:btn btn-default prepend-bottom
                     style:"width:250px;text-align:left;"
                     innerValue:@"New Action Subscriber ... <span style=""float:right;"" class=""glyphicon glyphicon-plus""></span>"

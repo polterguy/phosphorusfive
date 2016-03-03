@@ -57,7 +57,7 @@ Lord Marvin</p>"
                   class:btn btn-default
                   innerValue:Back one step
                   onclick
-                    sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/0002-your-first-widget.hl
+                    sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/your-first-widget/0002-your-first-widget.hl
                     send-javascript:@"$('#confirm-window').modal('toggle');"
                     sys42.info-window:@"Please read this step slightly more carefully!"
                       _error:true
@@ -70,7 +70,7 @@ Lord Marvin</p>"
                     if:x:/-/*/*?count
                       =:int:0
                       // No widgets in design surface, explaining this to user!
-                      sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/0002-your-first-widget.hl
+                      sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/your-first-widget/0002-your-first-widget.hl
                       sys42.info-window:@"You have no usercontrol in your WYSIWYG design surface! <strong>Read this step more carefully</strong>!"
                         _error:true
                         _time:more

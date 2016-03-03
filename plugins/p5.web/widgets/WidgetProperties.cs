@@ -52,23 +52,23 @@ namespace p5.web.widgets
                         // Checking if this is a generic attribute, or a specific property
                         switch (nameNode.Name) {
                         case "visible":
-                            CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.Visible && idxWidget.AreAncestorsVisible ());
+                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.Visible && idxWidget.AreAncestorsVisible ());
                             break;
                         case "invisible-element":
-                            CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.InvisibleElement);
+                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.InvisibleElement);
                             break;
                         case "element":
-                            CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.Element);
+                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.Element);
                             break;
                         case "has-id":
-                            CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.HasID);
+                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.HasID);
                             break;
                         case "render-type":
-                            CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.RenderType.ToString ());
+                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.RenderType.ToString ());
                             break;
                         default:
                             if (!string.IsNullOrEmpty (nameNode.Name))
-                                CreatePropertyReturn (e.Args, nameNode, idxWidget);
+                                CreatePropertyReturn (e.Args, nameNode.Name, idxWidget);
                             break;
                         }
                     }
@@ -196,16 +196,62 @@ namespace p5.web.widgets
             }
         }
 
+        /// <summary>
+        ///     Recursively retrieves all form input elements' values from given widget
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "get-widget-values", Protection = EventProtection.LambdaClosed)]
+        public void get_widget_values (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+
+                // Looping through all widget IDs given by caller
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-values")) {
+
+                    // Serialize currently iterated widgets, and all descendants of given widget, adding [value] of
+                    // all widgets that are of type [textarea], [input] and [select]
+                    if (idxWidget.Visible && idxWidget.AreAncestorsVisible ())
+                        SerializeWidgetValuesRecursively (context, e.Args, idxWidget);
+                }
+            }
+        }
+
         #endregion
 
         #region [ -- Private helper methods -- ]
 
         /*
+         * Recursively retrieves all values from form element widget descendants from given widget
+         */
+        private static void SerializeWidgetValuesRecursively (ApplicationContext context, Node args, Widget widget)
+        {
+            // Checking if we even have a widget
+            if (widget == null)
+                return;
+
+            // Checking if this is a "value type of widget", and if so, returning its value back to caller
+            switch (widget.Element) {
+            case "input":
+            case "select":
+            case "textarea":
+                CreatePropertyReturn (args, "value", widget);
+                break;
+            }
+
+            // Looping through all children widgets, recursively
+            foreach (Control idxCtrl in widget.Controls) {
+                SerializeWidgetValuesRecursively (context, args, idxCtrl as Widget);
+            }
+        }
+
+        /*
          * Helper for [get-widget-property], creates a return value for one property
          */
-        private static void CreatePropertyReturn (Node node, Node nameNode, Widget widget, object value = null)
+        private static void CreatePropertyReturn (Node node, string name, Widget widget, object value = null)
         {
-            var propertyName = nameNode.Name.StartsWith ("\\") ? nameNode.Name.Substring (1) : nameNode.Name;
+            var propertyName = name.StartsWith ("\\") ? name.Substring (1) : name;
             // Checking if widget has the attribute, if it doesn't, we don't even add any return nodes at all, to make it possible
             // to separate widgets which has the property, but no value, (such as the selected property on checkboxes for instance),
             // and widgets that does not have the property at all
@@ -215,7 +261,7 @@ namespace p5.web.widgets
             if ((propertyName.StartsWith ("on") || propertyName.StartsWith ("_on")) && widget [propertyName] == "common_event_handler")
                 return; // Skipping these guys
 
-            node.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = value == null ? 
+            node.FindOrCreate (widget.ID).Add (name).LastChild.Value = value == null ? 
                 widget [propertyName] : 
                 value;
         }

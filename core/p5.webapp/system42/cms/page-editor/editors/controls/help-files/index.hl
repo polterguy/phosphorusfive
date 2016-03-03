@@ -20,7 +20,7 @@ controls
 any programming skills. If this is your first visit, it would be wise of you to follow the tutorial(s) given here. Below is a list
 of all the help files you can access from within my brain. The smartest thing, is probably to read the help files sequentially though,
 and start with the first page, and reading my brain as if it was a book, from beginning to end. You can always come back to this page,
-by clicking the <em>""index""</em> link at the top left corner of this dialog."
+by clicking the <em>""Home""</em> link at the bottom right corner of the help files."
   create-container-widget:wysiwyg-controls-help-file-index-list
     element:ul
     oninit

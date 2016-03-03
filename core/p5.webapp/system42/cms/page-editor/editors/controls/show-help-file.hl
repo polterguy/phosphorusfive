@@ -40,7 +40,7 @@ create-widget:wysiwyg-controls-help
       href:#
       style:"position:absolute;bottom:5px;right:5px;"
       class:btn btn-default
-      innerValue:@"<span class=""glyphicon glyphicon-home""></span> Index"
+      innerValue:@"<span class=""glyphicon glyphicon-home""></span> Home"
       onclick
         sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/index.hl
     container:wysiwyg-controls-content

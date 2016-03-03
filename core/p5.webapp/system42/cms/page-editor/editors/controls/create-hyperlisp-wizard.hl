@@ -188,7 +188,16 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                          * containing the string of "sys42.forms.action."
                          * Then we create one row (tr) for each Active Event we find
                          */
+                        _had-controls:bool:false
                         for-each:x:/../*(/eval/**/events/*/~sys42.forms.action.|/lisp2lambda/[1,2]/**(/container|/literal|/void)/*/events/*/~sys42.forms.action.)/$
+
+                          /*
+                           * Making sure we store the fact that there were actually some actions found here on page,
+                           * since otherwise the "Actions subscribed to by page" widget, will be physically removed
+                           * from our table widget
+                           */
+                          set:x:/./-?value
+                            src:bool:true
 
                           /*
                            * Then making sure currently iterated event STARTS with "sys42.forms.action.", to eliminate 
@@ -255,6 +264,16 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                                     innerValue:{active-event-name}
 
                         /*
+                         * Checking if page actually exposed any actions, and if not, we remove the
+                         * "Actions subscribed to by page" header of table widget
+                         */
+                        if:x:/../*/_had-controls?value
+                          not
+                          clear-widget:wysiwyg-window-list-of-hyperlisps
+                          set:x:/../*/create-literal-widget/*/innerValue?value
+                            src:@"<thead><tr><th><h4>Global actions</h4></th></tr></thead>"
+
+                        /*
                          * Then adding up all "global actions", but before we loop through all actions,
                          * we create a "header" for table
                          */
@@ -279,7 +298,7 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                            * Forward evaluating the settings for action from global-actions.hl file into
                            * code needing it later
                            */
-                          eval-x:x:/./*/create-widget/**(/_action-name|/strong/*/innerValue|/_body)
+                          eval-x:x:/./*/create-widget/**(/_action-name|/strong/*/innerValue|/_body|/_header)
                           add:x:/./*/create-widget/**/_template
                             src:x:/..for-each/*/_dp/#/*/code-template/*
                           add:x:/./*/create-widget/**/_arguments
@@ -314,7 +333,7 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                                * "static arguments"
                                */
                               sys42.wizard-window
-                                _header:Confirm action, and supply arguments to action
+                                _header:x:/..for-each/*/_dp/#/*/name?value
                                 _body:x:/..for-each/*/_dp/#/*/prerequisites?value
                                 _onok
                                   _action-name:x:/..for-each/*/_dp/#/*/name?value

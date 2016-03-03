@@ -1,0 +1,96 @@
+
+/*
+ * First help page
+ */
+
+name:Widget types - The literal widget 2/2
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Widget types - The literal widget 2/2
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Let's try to create a [literal] widget, and setting its <em>innerValue</em> to some rich HTML. Make sure you start
+out with a new page, by choosing a "
+      a
+        href:#
+        innerValue:new page
+        title:Show me where to click please
+        class:btn btn-default
+        onclick
+          if
+            sys42.wysiwyg-controls.blink-control:create-new-page
+            not
+            sys42.info-window:Please make sure you have your button selected in the WYSIWYG design surface!
+              _error:true
+              _time:more
+      text:@" first. Make sure you choose a [controls] type of page. This will close the help dialog for you, but you can just
+open it up again, when your page is created.</p>"
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Then add a [literal] control to your page, by clicking the [+literal] button, and choose for instance <em>""after""</em>.
+Show me where I "
+      a
+        href:#
+        innerValue:should click
+        title:Show me where to click please
+        class:btn btn-default
+        onclick
+          send-javascript:@"$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');}}, 2000);"
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-literal-after
+      text:@" please.</p>"
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Add a <em>""class""</em> attribute to your widget, and give your new class attribute the value of 
+<em>""bg-success""</em>. Show me where I "
+      a
+        href:#
+        innerValue:should click
+        title:Show me where to click please
+        class:btn btn-default
+        onclick
+          sys42.wysiwyg-controls.blink-control:wysiwyg-button-add-attribute
+      text:@" please.</p>"
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Then make sure your literal widget is given the following <em>""innerValue""</em>.</p>
+<pre>Hello &lt;strong&gt;boss!&lt;/strong&gt; you are cool!</pre><p>Show me where I "
+      a
+        href:#
+        innerValue:should do this
+        title:Show me where to click please
+        class:btn btn-default
+        onclick
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-innerValue-btn
+      text:@" please. If you save your page, and click <em>""View page""</em>, you can see your current result.
+As you can clearly see, adding rich HTML inside of the <em>""innerValue""</em> of your [literal] widgets, is no problem. The
+<strong>&lt;strong&gt; HTML element</strong> above, can also have its own set of <em>""class""</em> attributes, and any other
+attributes you wish for it to have. But these attributes must be added as a part of your HTML, through the <em>""innerValue""</em>
+of your outer &lt;span&gt; widget.</p>"
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/widget-types/0005-widget-types.hl
+      text:"</p>"
+

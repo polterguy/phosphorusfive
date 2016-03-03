@@ -505,7 +505,7 @@ create-widget:wysiwyg-editor
                 /*
                  * Add [literal] *after* button
                  */
-                li
+                li:wysiwyg-controls-add-literal-after
                   widgets
                     a
                       href:#

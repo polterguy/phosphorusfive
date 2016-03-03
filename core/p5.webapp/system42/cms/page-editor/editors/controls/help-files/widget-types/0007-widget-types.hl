@@ -1,0 +1,88 @@
+
+/*
+ * First help page
+ */
+
+name:Widget types - The void widget 1/3
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Widget types - The void widget 1/3
+
+  create-literal-widget
+    element:p
+    innerValue:@"The [void] widget however, has neither any <em>""innerValue""</em>, nor any <em>""children widgets""</em>. There are 
+many HTML elements, that cannot, or should not, have anything inside of themselves. Some <strong>examples includes ""br"", ""hr"" and 
+""input"" HTML elements</strong>."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Make sure you have your <strong>first button</strong> selected in your WYSIWYG design surface. Then add a [void]
+widget, and make sure you choose <strong>after</strong> as you add it to your page. This will create a default [void] widget for you, 
+which is by default rendered with the &lt;br&gt; HTML element. The &lt;br&gt; HTML element, happens to be the HTML version of a 
+<em>""carriage return""</em>. If you paid attention as you did this step, you would see that your buttons now have a carriage 
+return between them, making them pop up on different <em>""lines""</em> in your HTML."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Change the element property of your void widget to <em>""hr""</em>, which is a <em>""horizontal ruler""</em>, 
+save your page, and view it. A horizontal ruler is not supposed to have any content at all. It is simply a <em>""signaling""</em> 
+HTML element, signaling that you wish to create a, (duuh), <em>""horizontal ruler""</em> to separate your elements.
+Make sure you have your [void] widget selected in your WYSIWYG design surface. If it was unselected, then
+the easiest way to actually select it, is by selecting it from the <em>""Select widget""</em> dropdown list."
+
+  create-literal-widget
+    element:p
+    innerValue:@"If you scroll down, to view your [void] widget's properties, you will notice that it has neither any 
+<em>""innerValue""</em>, nor any <em>""Children widgets""</em> properties. If you however click the <em>""parent widget""</em>
+button, at the bottom of your page, you will select the parent [container] widget, which will have different properties, the
+most important being a <em>""list of children widgets""</em> property. If you do not see this list, make sure you expand it."
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Click "
+      a
+        href:#
+        innerValue:this button
+        class:btn btn-default
+        onclick
+          if
+            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-get-parent-widget
+            not
+            sys42.info-window:Please make sure you have your [void] widget selected in the WYSIWYG design surface!
+              _error:true
+              _time:more
+      text:@" first. Then click "
+      a
+        href:#
+        innerValue:this button
+        class:btn btn-default
+        onclick
+          if
+            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-set-widgets-visible
+            not
+            sys42.info-window:Please make sure you have your [container] selected in the WYSIWYG design surface!
+              _error:true
+              _time:more
+      text:@" afterwards, if your list of children widgets are not visible. The <span class=""glyphicon glyphicon-arrow-down""></span>
+and the <span class=""glyphicon glyphicon-arrow-up""></span> buttons, allows you to easily navigate your parent and children widgets, 
+and select them.</p>"
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/widget-types/0008-widget-types.hl
+      text:"</p>"

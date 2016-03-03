@@ -1,0 +1,71 @@
+
+/*
+ * First help page
+ */
+
+name:Widgets - Creating your first usercontrol
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Widgets - Creating your first usercontrol
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Make sure you start out with an empty [controls] page. Then click the "
+      a
+        href:#
+        innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Wizard"
+        title:Show me where to click please
+        class:btn btn-default
+        onclick
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-help-add-widget
+      text:@" button, and choose the <em>""Textbox""</em> wizard widget from the modal window that appears.
+You can choose either before or after, which doesn't matter. Then click the wizard button again, and choose the 
+<em>""Button""</em> wizard widget, but make sure you insert it <strong>*after*</strong> the previously created textbox.
+When you have done this, make sure you name your usercontrol <em>""Usercontrol - My First""</em>, before you click save.</p>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Already at this point, you can now create a new [controls] page, and consume your usercontrol, as a reusable object. However, 
+since your usercontrol doesn't really do anything intelligent, let's first add some functionality to it, before we do that."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Make sure you have your button selected in your WYSIWYG surface, and edit its <em>""onclick""</em> event handler.
+When codeview has expanded for your event handler, first remove any existing code, then click the lightning icon - 
+<span class=""glyphicon glyphicon-flash""></span> - to the right of it. Choose the <em>""sys42.action.serialize-form-by-ancestor-element""</em> from the
+modal window, and type in <em>""div""</em> in the next modal window as the value for <em>""element""</em> property of your
+action."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Then type in at the bottom of your codeview the following code. Make sure you do not add any spaces in front of add!"
+
+  create-literal-widget
+    element:pre
+    innerValue:@"add:x:/+
+  src:x:/../*/_data
+sys42.forms.action.get-foo-bar-value"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Now you can click save for your usercontrol page again."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/composite-widgets/0006-composite-widgets.hl
+      text:"</p>"
