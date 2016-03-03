@@ -379,6 +379,8 @@
     <None Include="system42\cms\page-editor\editors\controls\help-files\0006-your-first-widget.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\0007-your-first-widget.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\0008-your-first-widget.hl" />
+    <None Include="system42\startup\misc-events\sys42.action.save-data-to-database.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\helpers\global-actions.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

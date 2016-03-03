@@ -221,7 +221,7 @@ namespace p5.lambda.events
                 } else {
 
                     // We have filter(s), checking to see if Active Event name matches at least one of our filters
-                    if (filter.Any (ix => idx.IndexOf (ix) != -1)) {
+                    if (filter.Any (ix => idx.Contains (ix))) {
                         node.Add (new Node (eventTypeName, idx));
                     }
                 }

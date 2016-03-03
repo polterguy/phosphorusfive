@@ -133,11 +133,11 @@ create-widget:wysiwyg-controls-hyperlisp-window
                       visible:false
                       innerValue:@"<p>From here you can publish actions, which means that all action subscribers subscribing to your action, will
 be notified of that your action was published.</p>
-<p>This allows you to invoke functionality in other parts of your system, from events on buttons, in addition to chaining subscribers together,
-such that one subscriber can publish an action, that other parts of the system are subscribing to.</p>"
+<p>This allows you to invoke functionality in other parts of your system, from events on buttons, and other interactive widgets, in addition 
+to allowing you to chain subscribers together, such that one subscriber can publish an action, that other parts of the system are subscribing to.</p>"
 
                     /*
-                     * Table that lists all actions subscribed to by page
+                     * Table that lists all actions subscribed to by page, or general active events that are also actions, somehow
                      */
                     table:wysiwyg-window-list-of-hyperlisps
                       class:prepend-top table table-hover
@@ -253,6 +253,97 @@ such that one subscriber can publish an action, that other parts of the system a
                                     class:glyphicon glyphicon-flash
                                   strong
                                     innerValue:{active-event-name}
+
+                        /*
+                         * Then adding up all "global actions", but before we loop through all actions,
+                         * we create a "header" for table
+                         */
+                        create-literal-widget
+                          parent:wysiwyg-window-list-of-hyperlisps
+                          element:tr
+                          style:"background-color:Transparent !important;"
+                          innerValue:@"<td><h4>Global actions</h4></td>"
+
+                        /*
+                         * Loading up file containing template actions
+                         */
+                        load-file:/system42/cms/page-editor/editors/controls/helpers/global-actions.hl
+
+                        /*
+                         * Looping through all template actions from file, creating one HTML table row (tr)
+                         * for each action
+                         */
+                        for-each:x:/../*/load-file/*/*
+
+                          /*
+                           * Forward evaluating the settings for action from global-actions.hl file into
+                           * code needing it later
+                           */
+                          eval-x:x:/./*/create-widget/**(/_action-name|/strong/*/innerValue|/_body)
+                          add:x:/./*/create-widget/**/_template
+                            src:x:/..for-each/*/_dp/#/*/code-template/*
+                          add:x:/./*/create-widget/**/_arguments
+                            src:x:/..for-each/*/_dp/#/*/arguments/*
+
+                          /*
+                           * Creating our table row (tr) widget for currently iterated global action
+                           */
+                          create-widget
+                            parent:wysiwyg-window-list-of-hyperlisps
+                            element:tr
+                            style:"cursor:pointer;"
+                            onclick
+                              _arguments
+
+                              /*
+                               * Databinding [_widgets] (arguments) node to [sys42.wizard-window]
+                               */
+                              databind:x:/+/*/_widgets
+                                src:x:/../*/_arguments/*
+                                template
+                                  {text}:x:?name
+                                    {label}:x:?name
+                                    {title}:x:?value
+                                    {placeholder}:{0} ...
+                                      :x:?value
+                                    mandatory:true
+
+                              /*
+                               * Showing wizard window, with prerequisites as body, 
+                               * and potentially asking user to provide values to
+                               * "static arguments"
+                               */
+                              sys42.wizard-window
+                                _header:Confirm action, and supply arguments to action
+                                _body:x:/..for-each/*/_dp/#/*/prerequisites?value
+                                _onok
+                                  _action-name:x:/..for-each/*/_dp/#/*/name?value
+                                  _template
+                                  _arguments
+                                  for-each:x:/../*/_arguments/*
+                                    set:x:/../*/_template/**/={0}{1}{2}?value
+                                      :{
+                                      :x:/..for-each/*/_dp/#?name
+                                      :}
+                                      src:x:/../*/{0}?value
+                                        :x:/..for-each/*/_dp/#?name
+                                  lambda2lisp:x:/../*/_template/*
+                                  set:x:/+/*/_code?value
+                                    src:x:/./-?value
+                                  _custom-action
+                                    _code
+                                  eval:x:/-
+                                  return:bool:true
+                                _widgets
+                              send-javascript:@"$('#wysiwyg-controls-hyperlisp-window').modal('toggle');"
+                            widgets
+                              td
+                                widgets
+                                  span
+                                    innerValue:"&nbsp;"
+                                    class:glyphicon glyphicon-flash
+                                  strong
+                                    innerValue:x:/..for-each/*/_dp/#/*/name?value
                       widgets
                         literal
                           innerValue:@"<thead><tr><th><h4>Actions subscribed to by page</h4></th></tr></thead>"

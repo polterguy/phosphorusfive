@@ -1,0 +1,21 @@
+
+/*
+ * Contains all global actions, with associated code
+ */
+
+
+_action
+  name:sys42.action.save-data-to-database
+  code-template
+    if:x:/../**/_data/*
+      not
+      throw:No [_data] given to [sys42.action.save-data-to-database]
+    sys42.action.save-data-to-database:x:/../**/_data/*
+      _name:{name}
+  arguments
+    name:Typename to save into database as
+  prerequisites:@"<p>This action requires that your current node hierarchy contains a [_data] node, with children, being the values
+that will be saved into your database. Everything in any nodes in your hierarchy, within a node named [_data], will be saved to
+the database. If your action does not meet these prerequisties somehow, it will raise an exception!</p>
+<p>In addition, this action requires that you supply a static <em>""name""</em> argument, which becomes the database typename (table name'ish)
+for your inserted records.</p>"
