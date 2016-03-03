@@ -9,6 +9,8 @@ sys42.get-widget:x:/../*/_widget?value
   _no-children:true
 
 set:x:/../*/sys42.get-widget/**(/void/*/element/=input/./*/name|/literal/*/element/=textarea/./*/name|/container/*/element/=select/./*/name)
+set:x:/../*/sys42.get-widget/**(/void/*/events|/literal/*/events|/container/*/events)
+set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol
 
 /*
  * Sorting widget's properties, first stuffing event handlers last, then alphabetically

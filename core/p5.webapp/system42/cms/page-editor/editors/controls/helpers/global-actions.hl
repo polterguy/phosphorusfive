@@ -4,6 +4,9 @@
  */
 
 
+/*
+ * Saves [_data] to database action
+ */
 _action
   name:sys42.action.save-data-to-database
   code-template
@@ -19,3 +22,16 @@ that will be saved into your database. Everything in any nodes in your hierarchy
 the database. If your action does not meet these prerequisties somehow, it will raise an exception!</p>
 <p>In addition, this action requires that you supply a static <em>""name""</em> argument, which becomes the database typename (table name'ish)
 for your inserted records.</p>"
+
+
+/*
+ * Show info-window action
+ */
+_action
+  name:sys42.action.show-info-window
+  code-template
+    sys42.info-window:{message}
+  arguments
+    message:The message to display to user
+  prerequisites:@"<p>This action will show a message to user, not requiring any action on user's behalf.
+This action should only be called once upon each request.</p>"

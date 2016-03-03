@@ -46,7 +46,7 @@ action, and then emptying the email/name textboxes as a consequence of this acti
 publishers to <em>""function invocations""</em>. However, this comparison isn't really justified, since you can have multiple
 listeners to the same action. You can also modify actions during runtime, retrieve them, and sculpt them, in a much more dynamic
 manner than you can with functions and/or methods. The technical name for actions inside of the framework is <em>""Active Events""</em>,
-but in the outer layers, often a action subscriber/publisher naming convention will be used."
+but in the outer layers, often a action subscriber/publisher naming convention is used."
 
   create-container-widget
     element:div

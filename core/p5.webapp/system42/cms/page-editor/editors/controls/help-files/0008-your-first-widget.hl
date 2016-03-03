@@ -3,7 +3,7 @@
  * First help page
  */
 
-name:Your first widget - Creating an Action Subscriber
+name:Your first widget - Creating an Action Subscriber 1/2
 
 controls
   create-literal-widget
@@ -12,13 +12,14 @@ controls
     style:"float:right;"
   create-literal-widget
     element:h3
-    innerValue:Your first widget - Creating an Action Subscriber
+    innerValue:Your first widget - Creating an Action Subscriber 1/2
 
   create-literal-widget
     element:p
-    innerValue:@"An <em>""Action Subscriber""</em> is a piece of code, that you can hook into existing parts of your system,
+    innerValue:@"An <em>""Action Subscriber""</em> is a piece of code, that you can use hook into existing parts of your system,
 to have executed as a consequence of something happening somewhere else in your system. For a software developer, this 
-basically replaces <em>""interfaces""</em>."
+basically replaces <em>""interfaces""</em>. Action subscribers can be chained, by raising another action, as a consequence of
+one action occurring."
 
   create-literal-widget
     element:p
@@ -63,3 +64,16 @@ your action subscriber is given."
     element:p
     innerValue:@"The <em>""sys42.show-code-window:x:/..""</em> Active Event invocation, is a useful tool as you are creating your
 apps, such that you can see what actually goes on, behind the hoods of your Phosphorus Five system."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/0009-your-first-widget.hl
+      text:"</p>"

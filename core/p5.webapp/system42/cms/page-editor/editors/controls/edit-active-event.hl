@@ -113,7 +113,7 @@ create-widget
             /*
              * Opens up a wizard for user to create his Action Subscriber
              */
-            button
+            button:wysiwyg-controls-create-hyperlisp-wizard
               class:btn btn-default
               innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Wizard"
               onclick
