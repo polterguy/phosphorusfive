@@ -52,7 +52,7 @@ namespace p5.web.widgets
                         // Checking if this is a generic attribute, or a specific property
                         switch (nameNode.Name) {
                         case "visible":
-                            CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.Visible);
+                            CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.Visible && idxWidget.AreAncestorsVisible ());
                             break;
                         case "invisible-element":
                             CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.InvisibleElement);

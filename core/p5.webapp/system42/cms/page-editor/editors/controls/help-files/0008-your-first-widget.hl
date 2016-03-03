@@ -1,0 +1,65 @@
+
+/*
+ * First help page
+ */
+
+name:Your first widget - Creating an Action Subscriber
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Your first widget - Creating an Action Subscriber
+
+  create-literal-widget
+    element:p
+    innerValue:@"An <em>""Action Subscriber""</em> is a piece of code, that you can hook into existing parts of your system,
+to have executed as a consequence of something happening somewhere else in your system. For a software developer, this 
+basically replaces <em>""interfaces""</em>."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Make sure you have your email/name usercontrol selected in the WYSIWYG design surface. Then make sure your
+action subscribers for your usercontrol is visible by clicking the <em>""Widget Action Subscribers ...""</em> button."
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Show me what I "
+      a
+        href:#
+        innerValue:should click
+        class:btn btn-default
+        onclick
+          if
+            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-set-events-visible
+            not
+            sys42.info-window:Please make sure you have your usercontrol selected in the WYSIWYG design surface!
+              _error:true
+              _time:more
+      text:@" please.</p>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Then click the <em>""New Action Subscriber ...""</em> button. From this view, you can see all actions published
+by page and/or usercontrols inside of page. Choose the <em>""sys42.forms.action.email-name-submitted""</em> action from this list. 
+Already now, you can save your page, and supply a (valid) email, and a name, and click the <em>""Submit""</em> button. Of course, 
+this doesn't do anything intelligent though, hence we'll need to modify our action subscriber, to make it do something intelligent.
+But you should have seen a small popup window, giving you some feedback, as you clicked <em>""Submit""</em>."
+
+  create-literal-widget
+    element:p
+    innerValue:@"If you modify your subscriber, and add up the following code, you will actually be able to see what data
+your action subscriber is given."
+
+  create-literal-widget
+    element:pre
+    innerValue:@"sys42.show-code-window:x:/.."
+
+  create-literal-widget
+    element:p
+    innerValue:@"The <em>""sys42.show-code-window:x:/..""</em> Active Event invocation, is a useful tool as you are creating your
+apps, such that you can see what actually goes on, behind the hoods of your Phosphorus Five system."

@@ -507,7 +507,7 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
       class:col-md-6 form-group
       style:"clear:both;"
       widgets
-        a
+        a:wysiwyg-controls-innerValue-btn
           href:#
           innerValue:innerValue ...
           onclick
@@ -884,7 +884,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
         button:wysiwyg-controls-set-events-visible
           class:btn btn-default
           style:"width:250px;text-align:left;"
-          innerValue:@"Widget event subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
+          innerValue:@"Widget Action Subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
           onclick
             get-session-value:sys42.wysiwyg-controls.widgets-events-visible
             if:x:/-/*?value.bool
@@ -894,20 +894,20 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
               sys42.wysiwyg-controls.create-events-for-selected
               set-widget-property:wysiwyg-controls-set-events-visible
                 class:btn btn-default active
-                innerValue:@"Widget event subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
+                innerValue:@"Widget Action Subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
             else
               set-session-value:sys42.wysiwyg-controls.widgets-events-visible
               clear-widget:wysiwyg-controls-events
               set-widget-property:wysiwyg-controls-set-events-visible
                 class:btn btn-default
-                innerValue:@"Widget event subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
+                innerValue:@"Widget Action Subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
           oninit
             get-session-value:sys42.wysiwyg-controls.widgets-events-visible
             if:x:/-/*?value.bool
               sys42.wysiwyg-controls.create-events-for-selected
               set-widget-property:wysiwyg-controls-set-events-visible
                 class:btn btn-default active
-                innerValue:@"Widget event subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
+                innerValue:@"Widget Action Subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
 
         /*
          * Wraps all Active Event handlers (subscribers) for currently selected widget

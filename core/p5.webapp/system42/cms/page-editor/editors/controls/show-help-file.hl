@@ -1,0 +1,128 @@
+/*
+ * Allows the user to read the help file(s) for [controls] types of pages
+ */
+
+
+
+/*
+ * Checking if help widget already exists, and if so, we delete existing one, and
+ * do not create a new one, to provide "toggle functionality"
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:wysiwyg-controls-help
+  delete-widget:wysiwyg-controls-help
+  set-widget-property:wysiwyg-controls-help-button
+    class:btn btn-default
+  return
+
+
+
+
+/*
+ * Making help button "toggle"
+ */
+set-widget-property:wysiwyg-controls-help-button
+  class:btn btn-default active
+
+
+
+
+/*
+ * Creates the "Help files" widget
+ */
+create-widget:wysiwyg-controls-help
+  before:wysiwyg-editor-surface
+  class:rounded-corners bg-success row prepend-top prepend-bottom air-padding
+  style:"clear:both;min-height:500px;position:relative;"
+  widgets
+    a:wysiwyg-controls-help-back-to-index
+      href:#
+      style:"position:absolute;bottom:5px;right:5px;"
+      class:btn btn-default
+      innerValue:@"<span class=""glyphicon glyphicon-home""></span> Index"
+      onclick
+        sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/index.hl
+    container:wysiwyg-controls-content
+      oninit
+
+        /*
+         * Retrieving "currently viewed" help file from session
+         */
+        get-session-value:sys42.wysiwyg-controls.help-index
+        if:x:/-/*?value
+          not
+
+          /*
+           * Initial displaying of help during session, making sure we load "index.hl" help page,
+           * and storing currently viewed page in session
+           */
+          set-session-value:sys42.wysiwyg-controls.help-index
+            src:/system42/cms/page-editor/editors/controls/help-files/index.hl
+          sys42.wysiwyg-controls.show-help-page:x:/-/*?value
+          return
+
+        /*
+         * Opening up currently viewed help page
+         */
+        sys42.wysiwyg-controls.show-help-page:x:/../*/get-session-value/*?value
+
+      events
+
+        /*
+         * Blinks a specified control [_arg] for 5 seconds on screen
+         */
+        sys42.wysiwyg-controls.blink-control
+          widget-exist:x:/../*/_arg?value
+          if:x:/-/*?value
+            not
+            or
+              fetch:x:/0/0/0?value
+                get-widget-property:x:/../*/_arg?value
+                  visible
+              =:bool:false
+            return:bool:false
+          send-javascript:@"$('#{0}').toggleClass('blink-shadow');
+setTimeout(function(){{$('#{0}').toggleClass('blink-shadow');}}, 3000);
+var offset = $('#{0}').offset();
+$('html, body').animate({{
+    scrollTop: offset.top - 250,
+    scrollLeft: offset.left
+}});"
+            :x:/../*/_arg?value
+          return:bool:true
+
+        /*
+         * Opens up a specified help page, specified through [_arg], being
+         * either an integer, or the name (filename in string format) of a specific help page
+         */
+        sys42.wysiwyg-controls.show-help-page
+
+          /*
+           * Making sure "back to index" button is enabled
+           */
+          set-widget-property:wysiwyg-controls-help-back-to-index
+            style:"position:absolute;bottom:5px;right:5px;"
+
+          /*
+           * Clearing widget for any previously loaded help files
+           */
+          clear-widget:wysiwyg-controls-content
+
+          /*
+           * Loading help file, making sure all [create-xxx-widget] nodes
+           * have correct parent, and then evaluating the [controls] part
+           * from help file, as a lambda object in itself
+           */
+          load-file:x:/../*/_arg?value
+          add:x:/-/*/*/controls/*/~create-
+            src:"parent:wysiwyg-controls-content"
+          eval:x:/../*/load-file/*/*/controls
+
+          /*
+           * Making sure we save which file user is currently viewing, such that
+           * if user closes and re-opens help files, it'll remember where he was.
+           */
+          set-session-value:sys42.wysiwyg-controls.help-index
+            src:x:/../*/_arg?value
+    

@@ -101,7 +101,7 @@ create-widget
     container
       class:col-md-3 form-group
       widgets
-        container
+        container:page-editor-name-textbox
           class:input-group
           widgets
             literal
@@ -121,7 +121,7 @@ create-widget
     container
       class:col-md-3 form-group
       widgets
-        container
+        container:page-editor-url-textbox
           class:input-group
           widgets
             literal
@@ -142,7 +142,7 @@ create-widget
     container
       class:col-md-3 form-group
       widgets
-        container
+        container:page-editor-template-dropdown
           class:input-group
           widgets
             literal
@@ -162,7 +162,7 @@ create-widget
     container
       class:col-md-3 form-group
       widgets
-        container
+        container:page-editor-access-role-dropdown
           class:input-group
           widgets
             literal

@@ -1,0 +1,74 @@
+
+/*
+ * First help page
+ */
+
+name:Your first widget - The id property
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Your first widget - The id property
+
+  create-literal-widget
+    element:p
+    innerValue:@"The id property, if supplied, must be a page unique string-value for your widget. The id is used, to retrieve values,
+and manipulate properties of your widget, both on the server-side and the client-side. On the client-side, you can use JavaScript
+to manipulate your widget through your id. On the server-side, you can either type in Hyperlisp yourself, or use one of the many 
+built-in wizards that helps you create logic."
+
+  create-literal-widget
+    element:p
+    innerValue:@"However, <strong>supplying an id is optional</strong>, and if you do not, an automatic id will be created. Notice though,
+that you cannot assume that an automatic id will stay the same. If you click the question mark next to the id textbox, you will open
+up a modal window, further explaining the id property for you."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Make sure your email/name usercontrol is selected in the WYSIWYG design area, and <strong>change its id to 
+<em>""email-input""</em></strong>."
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Then add a pre-fabricated <em>""wizard widget""</em> to your page, by clicking the "
+      a
+        href:#"
+        class:btn btn-default
+        innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Wizard"
+        onclick
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-help-add-widget
+      text:@" button in the toolbar at the top of your page. <strong>Make sure you select the <em>""Button""</em> type of wizard widget</strong>, 
+and also make sure you choose to insert your button <strong>*before*</strong> your currently selected widget (which should be your 
+email/name usercontrol).</p>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Then <strong>edit your <em>""onclick""</em> event handler</strong>, and replace all code in it with the code below."
+
+  create-literal-widget
+    element:pre
+    innerValue:@"set-widget-property:email-input
+  visible:false"
+
+  create-literal-widget
+    element:p
+    innerValue:@"You can now click <em>""Save""</em> at the bottom of your screen, and then choose <em>""View page""</em> to see your
+results. Try clicking the button you just created."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/0005-your-first-widget.hl
+      text:"</p>"

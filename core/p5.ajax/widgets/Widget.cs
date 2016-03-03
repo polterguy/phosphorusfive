@@ -534,7 +534,7 @@ namespace p5.ajax.widgets
             return string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", InvisibleElement, ClientID);
         }
 
-        private bool AreAncestorsVisible ()
+        public bool AreAncestorsVisible ()
         {
             // If this control and all of its ancestors are visible, then return true, else false
             var idx = Parent;

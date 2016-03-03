@@ -99,7 +99,7 @@ body {
 }
 
 .air-padding {
-    padding:15px;
+    padding:15px 15px 5px 15px;
 }
 
 .bold {
@@ -159,13 +159,13 @@ body {
  */
 @keyframes animate-blink {
     0% {
-        background:rgba(255,255,0,0);
+        background:rgba(255,255,0,0) !important;
     }
     20% {
-        background:rgba(255,255,0,1);
+        background:rgba(255,255,0,1) !important;
     }
     100% {
-        background:rgba(255,255,0,0);
+        background:rgba(255,255,0,0) !important;
     }
 }
 
@@ -173,6 +173,40 @@ body {
     background:inherit;
     animation-name: animate-blink;
     animation-duration: .3s;
+}
+
+
+/*
+ * Blink-shadow CSS class animations
+ */
+@keyframes animate-blink-shadow {
+    0% {
+        box-shadow:0 0 20px rgba(0,255,0,0);
+        transform:scale(1);
+        background-color:rgba(200,255,200,1);
+    }
+    20% {
+        box-shadow:0 0 20px rgba(0,255,0,1);
+        transform:scale(2);
+    }
+    40% {
+        box-shadow:0 0 20px rgba(255,255,0,1);
+        transform:scale(1);
+    }
+    80% {
+        background-color:rgba(255,255,0,1);
+    }
+    100% {
+        box-shadow:0 0 20px rgba(0,255,0,0);
+        background-color:rgba(200,255,200,0);
+    }
+}
+
+.blink-shadow {
+    position:relative !important;
+    z-index:200;
+    animation-name: animate-blink-shadow;
+    animation-duration: 2s !important;
 }
 
 @keyframes animate-flash-from-left {

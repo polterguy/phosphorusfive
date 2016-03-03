@@ -75,22 +75,12 @@ if:x:/../*/lisp2lambda/*(/container|/literal|/void)
     src:x:/../*/lisp2lambda/*
 
 
-/*
- * Forward evaluate the [parent] expression in [create-widget], before
- * creating WYSIWYG design surface widget
- */
-eval-x:x:/+/*/parent
-
-
-
 
 
 /*
- * This creates our WYSIWYG design surface widget, in addition to other helper widgets,
- * such as toolbars for editing currently selected widget, etc
+ * Including some custom inline CSS on page
  */
-create-widget:wysiwyg-editor
-  parent:x:/../*/_parent-widget?value
+create-container-widget
   widgets
 
 
@@ -129,6 +119,26 @@ create-widget:wysiwyg-editor
 	cursor:pointer !important;
 }
 </style>"
+
+
+
+
+/*
+ * Forward evaluate the [parent] expression in [create-widget], before
+ * creating WYSIWYG design surface widget
+ */
+eval-x:x:/+/*/parent
+
+
+
+
+/*
+ * This creates our WYSIWYG design surface widget, in addition to other helper widgets,
+ * such as toolbars for editing currently selected widget, etc
+ */
+create-widget:wysiwyg-editor
+  parent:x:/../*/_parent-widget?value
+  widgets
 
 
     /*
@@ -423,7 +433,7 @@ create-widget:wysiwyg-editor
                 /*
                  * Add [usercontrol] *after* button
                  */
-                li
+                li:wysiwyg-controls-add-usercontrol-after
                   widgets
                     a
                       href:#
@@ -877,60 +887,22 @@ create-widget:wysiwyg-editor
 
 
     /*
-     * Wrapper for "general help" button
+     * Wrapper for "Help button"
      */
-    container
+    container:wysiwyg-controls-help-btn-wrp
       class:prepend-bottom col-md-3 col-xs-12
       widgets
 
         /*
-         * Add [container] widget to surface button
+         * "Help button"
          */
-        button
+        button:wysiwyg-controls-help-button
           class:btn btn-default
           style:"width:100%;"
-          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> General help"
-          title:Shows a general help dialog for the [controls] type of page ...
+          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
+          title:Shows the help dialog for [controls] types of pages ...
           onclick
-            get-session-value:sys42.wysiwyg-controls.help-index
-            if:x:/-/*?value
-              list-files:/system42/cms/page-editor/editors/controls/help-files/
-              load-file:x:/..if/*/list-files/{0}?name
-                :x:/../*/get-session-value/*?value
-              set:x:/../*/sys42.confirm-window/*/_body?value
-                innerValue:x:/..if/*/load-file/*?value
-            sys42.confirm-window
-              _header:Help for [controls] pages
-              _body:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;""/>
-<blockquote>Feel free to tap into my bigger brain, to help ease the starting process of Phosphorus Five.
-Start out by accessing the first help file at the bottom, by clicking the <em>""Next""</em> button.
-You can close this dialog, and come back to it, where you left off. This particular help file, is about how
-to get started using <em>""controls""</em> page types, that allows you to visually create rich web applications,
-without any needs for any prior development experience.</blockquote>"
-              _extra-buttons
-                button
-                  class:btn btn-default
-                  innerValue:@"Next <span class=""glyphicon glyphicon-menu-right""></span>"
-                  onclick
-                    get-session-value:sys42.wysiwyg-controls.help-index
-                    if:x:/-/*?value
-                      set:x:/../*/get-session-value/*?value
-                        +:x:/../*/get-session-value/*?value
-                          _:1
-                    else
-                      set:x:/../*/get-session-value/*?value
-                        src:int:1
-                    list-files:/system42/cms/page-editor/editors/controls/help-files/
-                    if:x:/../*/get-session-value/*?value
-                      >=:x:/../*/list-files/*?count
-                      set:x:/../*/get-session-value/*?value
-                        src:int:0
-                    load-file:x:/../*/list-files/{0}?name
-                      :x:/../*/get-session-value/*?value
-                    set-widget-property:confirm-window-body
-                      innerValue:x:/../*/load-file/*?value
-                    set-session-value:sys42.wysiwyg-controls.help-index
-                      src:x:/../*/get-session-value/*?value
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
 
     /*
      * Actual WYSIWYG design surface
@@ -948,7 +920,7 @@ without any needs for any prior development experience.</blockquote>"
      */
     container:wysiwyg-manipulate-selected-widget
       class:prepend-bottom prepend-top col-xs-12 btn-group
-      style:"display:none;"
+      visible:false
       widgets
 
         /*
@@ -967,7 +939,7 @@ without any needs for any prior development experience.</blockquote>"
                   data-selected:true
                 delete-widget:x:/../*/find-widget/*?value
                 set-widget-property:wysiwyg-manipulate-selected-widget
-                  style:"display:none;"
+                  visible:false
                 sys42.wysiwyg-controls.databind-select-widget-dropdown
                 set-widget-property:wysiwyg-controls-properties
                   visible:false
@@ -1311,7 +1283,7 @@ you can simply delete it now. A complete version of the widget still exists on y
       set-widget-property:wysiwyg-controls-properties
         visible:false
       set-widget-property:wysiwyg-manipulate-selected-widget
-        style:"display:none;"
+        visible:false
 
     /*
      * Selects the given widget on page
@@ -1392,8 +1364,8 @@ you can simply delete it now. A complete version of the widget still exists on y
         /*
          * Showing buttons that should only be visible while widget is selected
          */
-        delete-widget-property:wysiwyg-manipulate-selected-widget
-          style
+        set-widget-property:wysiwyg-manipulate-selected-widget
+          visible:true
         return:bool:true
       else
 
@@ -1421,7 +1393,7 @@ you can simply delete it now. A complete version of the widget still exists on y
          * Hiding buttons that should only be visible while widget is selected
          */
         set-widget-property:wysiwyg-manipulate-selected-widget
-          style:"display:none;"
+          visible:false
         return:bool:false
 
     /*

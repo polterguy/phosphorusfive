@@ -1,0 +1,76 @@
+
+/*
+ * First help page
+ */
+
+name:Your first widget - Modifying properties
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Your first widget - Modifying properties
+
+  create-literal-widget
+    element:p
+    innerValue:@"All properties of your widget can be modified after creation, Phosphorus Five is 100% flexible in those regards.
+This is what makes Phosphorus Five a <em>""Rich Web User Interface Application Framework""</em>, because it allows you to build
+almost any types of traditional applications you wish to build. (not speaking about graphic intensive apps, such as games and 3D rendering
+that is though)"
+
+  create-literal-widget
+    element:p
+    innerValue:@"The most important property of a [literal] widget, is the <em>""innerValue""</em>. The button you just added in the
+previous step, was a <strong>[literal] widget</strong>, and hence has an <em>""innerValue""</em>. Make sure you have the button selected
+in your WYSIWYG design surface, such that it is yellow. Then go to the bottom of your page, and click the <em>""innerValue""</em>
+button, to see the value of your button."
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Show me what I "
+      a
+        href:#
+        innerValue:should click
+        class:btn btn-default
+        onclick
+          if
+            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-innerValue-btn
+            not
+            sys42.info-window:Please make sure you have your button selected in the WYSIWYG design surface!
+              _error:true
+              _time:more
+      text:@" please.</p>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"The <em>""innerValue""</em> button, allows you to toggle the visibility of your widget's innerValue property. If you click
+it again, the innerValue property of your widget will be hidden. Modify the innerValue of your button to <em>""Style email form""</em>. Then
+edit the <em>""onclick""</em> event handler of your button to have the following content."
+
+  create-literal-widget
+    element:pre
+    innerValue:@"set-widget-property:email-input
+  class:col-xs-6 bg-success rounded-corners"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Save your page, and click <em>""View page""</em> again, and click the button again. Of course, the intelligent course
+of action, would be to have your email/name usercontrol contain these classes initially, and not force the user to click some button,
+to be able to see your form."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/0006-your-first-widget.hl
+      text:"</p>"

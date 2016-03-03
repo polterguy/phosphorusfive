@@ -190,7 +190,9 @@ create-widget:wysiwyg-controls-widget-wizard-window
                 container:wysiwyg-controls-widget-wizard-window-body
                   element:div
                   widgets
-                    text:@"<p>Please choose a template widget from the list below to insert into page.</p>"
+                    text:@"<p>Please choose a template widget from the list below to insert into page.</p>
+<p>You can also insert a [usercontrol], which is a pre-fabricated control, with functionality, by closing this
+window, and choosing the [+container] button to the left of the wizard button.</p>"
                     table:wysiwyg-window-list-of-widget-wizard-elements
                       class:prepend-top table table-hover
                       widgets

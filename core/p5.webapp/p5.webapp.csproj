@@ -361,11 +361,6 @@
     <None Include="system42\cms\page-editor\editors\controls\legal-elements.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-attribute-guide.hl" />
     <None Include="system42\cms\page-editor\editors\controls\legal-attributes.hl" />
-    <None Include="system42\cms\page-editor\editors\controls\help-files\help-file1.txt" />
-    <None Include="system42\cms\page-editor\editors\controls\help-files\help-file2.txt" />
-    <None Include="system42\cms\page-editor\editors\controls\help-files\help-file3.txt" />
-    <None Include="system42\cms\page-editor\editors\controls\help-files\help-file4.txt" />
-    <None Include="system42\cms\page-editor\editors\controls\help-files\help-file5.txt" />
     <None Include="system42\cms\page-editor\editors\controls\id-help.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-usercontrol.hl" />
     <None Include="system42\cms\page-editor\editors\controls\edit-active-event.hl" />
@@ -374,6 +369,16 @@
     <None Include="system42\cms\page-editor\editors\controls\helpers\process-widgets-event-handlers.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-widget-wizard.hl" />
     <None Include="system42\cms\page-editor\editors\controls\helpers\wizard-template-widgets.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\show-help-file.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\index.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0001-welcome.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0002-your-first-widget.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0003-your-first-widget.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0004-your-first-widget.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0005-your-first-widget.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0006-your-first-widget.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0007-your-first-widget.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0008-your-first-widget.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
