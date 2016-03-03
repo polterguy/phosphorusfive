@@ -99,5 +99,5 @@ Five follows the HTML5 standard strictly!"
         innerValue:next &gt;&gt;
         class:btn btn-primary
         onclick
-          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/0004-your-first-widget.hl
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/your-first-widget/0004-your-first-widget.hl
       text:"</p>"

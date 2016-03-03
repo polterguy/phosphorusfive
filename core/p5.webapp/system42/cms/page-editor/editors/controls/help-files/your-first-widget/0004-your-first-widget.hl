@@ -70,5 +70,5 @@ results. Try clicking the button you just created."
         innerValue:next &gt;&gt;
         class:btn btn-primary
         onclick
-          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/0005-your-first-widget.hl
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/your-first-widget/0005-your-first-widget.hl
       text:"</p>"

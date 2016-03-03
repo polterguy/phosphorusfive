@@ -71,5 +71,5 @@ for styling and CSS. But you can change the underlaying framework easily, by mod
         innerValue:next &gt;&gt;
         class:btn btn-primary
         onclick
-          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/0007-your-first-widget.hl
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/your-first-widget/0007-your-first-widget.hl
       text:"</p>"

@@ -3,7 +3,7 @@
  * First help page
  */
 
-name:Getting started with Phosphorus Five
+name:Your first widget - Getting started
 
 controls
   create-literal-widget
@@ -12,7 +12,7 @@ controls
     style:"float:right;"
   create-literal-widget
     element:h3
-    innerValue:Getting started with Phosphorus Five
+    innerValue:Your first widget - Getting started
 
   create-literal-widget
     element:p
@@ -83,6 +83,6 @@ contains a menu, and some other design elements, such as a bunch of CSS files, J
         innerValue:next &gt;&gt;
         class:btn btn-primary
         onclick
-          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/0002-your-first-widget.hl
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/your-first-widget/0002-your-first-widget.hl
       text:"</p>"
 
