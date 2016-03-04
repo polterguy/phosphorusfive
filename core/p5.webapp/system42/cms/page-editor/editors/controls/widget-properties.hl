@@ -812,7 +812,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
                             _error:true
                       return:bool:true
                     default
-                      load-file:/system42/cms/page-editor/editors/controls/legal-elements.hl
+                      load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
                       if:x:@"/-/*/*/""{0}"""
                         :x:/../*/_arg?value
                         and:x:/../*/_arg?value

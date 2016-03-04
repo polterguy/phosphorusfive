@@ -209,7 +209,7 @@ Are you sure you wish to add this attribute to your widget?</p>
            * Loading list of legal attribute names, and checking name up
            * against it
            */
-          load-file:/system42/cms/page-editor/editors/controls/legal-attributes.hl
+          load-file:/system42/cms/page-editor/editors/controls/helpers/legal-attributes.hl
           if:x:@"/-/*/*/""{0}"""
             :x:/../*/_arg?value
             and:x:/../*/_arg?value

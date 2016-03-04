@@ -96,7 +96,7 @@ element.</p>
                       visible:false
                       class:prepend-top table table-hover
                       oninit
-                        load-file:/system42/cms/page-editor/editors/controls/legal-elements.hl
+                        load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
                         for-each:x:/../*/load-file/*/*
                           html-encode:x:/./*/_dp/#?value
                           if:x:/..for-each/*/_dp/#?name

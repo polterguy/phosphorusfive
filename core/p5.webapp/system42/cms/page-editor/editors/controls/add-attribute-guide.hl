@@ -89,7 +89,7 @@ to what HTML [element] you choose to render your widget with.</p>"
                       visible:false
                       class:prepend-top table table-hover
                       oninit
-                        load-file:/system42/cms/page-editor/editors/controls/legal-attributes.hl
+                        load-file:/system42/cms/page-editor/editors/controls/helpers/legal-attributes.hl
                         for-each:x:/../*/load-file/*/*
                           html-encode:x:/./*/_dp/#?value
                           if:x:/..for-each/*/_dp/#?name

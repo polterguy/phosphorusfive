@@ -18,12 +18,15 @@ controls
     element:p
     innerValue:@"Now that our email/name usercontrol has an initial sane styling, we can change the logic of our button to
 do something else. First change the <em>""innerValue""</em> property of your button to <em>""Clear Form""</em>. Then expand the
-<em>""onclick""</em> event handler, such that it enters <em>""code mode""</em>. Then click the <em>""lightning""</em> icon - 
-<span class=""glyphicon glyphicon-flash""></span> - to the right of your code view for your onclick event handler."
+<em>""onclick""</em> event handler, such that it enters <em>""code mode""</em>. Delete all existing code, then click the 
+<em>""lightning""</em> icon - <span class=""glyphicon glyphicon-flash""></span> - to the right of your codeview for your 
+onclick event handler."
 
   create-literal-widget
     element:p
-    innerValue:@"You will then be shown a list of <em>""Actions""</em> that your form directly, or indirectly, is subscribing to.
+    innerValue:@"You will then be shown a list of <em>""Actions""</em> that your page directly, or indirectly, is subscribing to.
+In addition you'll see some <em>""Global actions""</em>. Ignore the global actions for now, and focus on the 
+<em>""Actions subscribed to by page""</em> parts.
 The actions you are currently looking at, are actions that the email/name usercontrol is subscribing to. Actions can be used to
 allow your widgets to communicate with each other."
 

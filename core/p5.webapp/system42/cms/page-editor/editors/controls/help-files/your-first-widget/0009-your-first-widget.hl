@@ -46,25 +46,20 @@ This will automatically add the code necessary to save your email form into your
     innerValue:@"Afterwards, add up also the <em>""sys42.action.show-info-window""</em> action, and type in the text of <em>""Thank you
 for submitting your email to us""</em>. Now you can save your page, view it, and type in a valid email/name combination. In fact, you have now 
 created your first fully functional data gathering application, and you can publish this page if you wish, and have people sign up for your
-newsletters."
+newsletters. If you wish to see the data in your database, you can open up the <em>""Evaluator""</em>, inside of your <em>""root""</em>
+menu, at the top, and type in the following code."
 
   create-literal-widget
-    element:p
-    innerValue:@"A hint is that you can close the codeview, by clicking the name of your action, above the codeview widget. To close an
-ajax event handler, click the 'X' next to the codeview."
-
-  create-literal-widget
-    element:p
-    innerValue:@"Another hint, is to think of action subscribers as <em>""functions""</em>, and action publishers as <em>""function 
-invocations""</em>, for existing developers."
+    element:pre
+    innerValue:@"select-data:x:/*/*/email-data"
 
   create-literal-widget
     element:p
     innerValue:@"This concludes our first tutorial on how to create [controls] pages, to create Rich Web User Interface Applications.
 Notice, that even though we did add some code during this tutorial, our final product, didn't require us to type in as much as <strong>
 one single line of code to create our product</strong>! If you wish to dive into Hyperlisp though, feel free to check out the next page,
-which includes a fairly long youtube playlist on how to get started with Hyperlisp. Althought, technically, this is <strong>not
-a prerequisite</strong> for creating fairly advanced apps with Phosphorus Five!"
+which includes a fairly extensive youtube playlist on how to get started with Hyperlisp. Althought, technically, this is <strong>not
+a prerequisite</strong> for creating relatively rich web apps with Phosphorus Five!"
 
   create-container-widget
     element:div

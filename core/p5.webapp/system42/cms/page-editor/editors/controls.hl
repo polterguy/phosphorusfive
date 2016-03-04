@@ -896,13 +896,51 @@ create-widget:wysiwyg-editor
         /*
          * "Help button"
          */
-        button:wysiwyg-controls-help-button
-          class:btn btn-default
+        a:wysiwyg-controls-help-button
+          class:btn btn-success
+          href:#
           style:"width:100%;"
           innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
-          title:Shows the help dialog for [controls] types of pages ...
+          title:Help me! This hurts!
+          oninit
+            if
+              fetch:x:/0/0?value
+                get-session-value:sys42.wysiwyg-controls.has-blinked-help-button
+              not
+              set-widget-property:wysiwyg-controls-help-button
+                data-content:@"If you are new to Phosphorus Five, then please start here!"
+                data-placement:left
+                data-trigger:focus
+              send-javascript:@"$('#wysiwyg-controls-help-button').popover('show');
+setTimeout(function(){$('#wysiwyg-controls-help-button').popover('hide').popover('destroy');}, 5000);"
+              set-session-value:sys42.wysiwyg-controls.has-blinked-help-button
+                src:true
           onclick
             sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
+          events
+
+            /*
+             * Blinks a specified control [_arg] for 5 seconds on screen
+             */
+            sys42.wysiwyg-controls.blink-control
+              widget-exist:x:/../*/_arg?value
+              if:x:/-/*?value
+                not
+                or
+                  fetch:x:/0/0/0?value
+                    get-widget-property:x:/../*/_arg?value
+                      visible
+                  =:bool:false
+                return:bool:false
+              send-javascript:@"$('#{0}').toggleClass('blink-shadow');
+setTimeout(function(){{$('#{0}').toggleClass('blink-shadow');}}, 3000);
+var offset = $('#{0}').offset();
+$('html, body').animate({{
+    scrollTop: offset.top - 250,
+    scrollLeft: offset.left
+}});"
+                :x:/../*/_arg?value
+              return:bool:true
 
     /*
      * Actual WYSIWYG design surface
