@@ -130,6 +130,7 @@ for-each:x:/../*/sort/*
                       _time:more
                     set-widget-property:x:/../*/_event?value
                       class:form-control error
+                sys42.forms.action.refresh-view
             a
               href:#
               class:input-group-addon input-group-addon-force-float

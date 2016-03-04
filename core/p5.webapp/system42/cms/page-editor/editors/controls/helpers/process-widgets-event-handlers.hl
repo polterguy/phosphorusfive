@@ -78,12 +78,14 @@ for-each:x:/../*/_node/#/**(/~literal/*/~on|/~container/*/~on|/~void/*/~on)
           sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/process-widgets-event-handlers.hl
             _node
 
-    else
+    else-if:x:/..for-each/*/_dp/#?name
+      !=:oninit
 
       /*
-       * This is an event handler, and it is not a usercontrol,
-       * renaming event handler temporarily for design surface, which means prending
-       * an underscore (_) to its name
+       * This is an event handler, and it is not a usercontrol, and it is not an [oninit] event handler.
+       * Renaming event handler temporarily for design surface, which means prepending
+       * an underscore (_) to its name, to avoid conflicts when clicking widget in design surface,
+       * to navigate selected widgets
        */
       set:x:/..for-each/*/_dp/#?name
         src:_{0}
