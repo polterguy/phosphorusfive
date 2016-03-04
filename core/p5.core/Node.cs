@@ -502,7 +502,7 @@ namespace p5.core
             retVal = retVal.Trim (',', ' ');
             return retVal;
         }
-        
+
         /*
          * Does actual comparison of two non-null Node values
          */

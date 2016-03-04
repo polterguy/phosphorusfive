@@ -35,7 +35,7 @@ for-each:x:/../*/_node/#/**(/~literal/*/~on|/~container/*/~on|/~void/*/~on)
      */
     if:x:/..for-each/*/_dp/#?name
       =:oninit
-      and:x:/..for-each/*/_dp/#/./*/data-usercontrol?value.bool
+      and:x:/..for-each/*/_dp/#/./*/data-usercontrol
 
       /*
        * This is [oninit] for usercontrol, slightly modifying it. But making sure every
@@ -57,7 +57,7 @@ for-each:x:/../*/_node/#/**(/~literal/*/~on|/~container/*/~on|/~void/*/~on)
            * Deletes all [onXXX] event handlers, except [oninit] event handlers for usercontrols, by looping through
            * everything that's a "close match", for then to verify it's an "exact match" for an event
            */
-          for-each:x:/../*/select-data/**(/~container/*/~on(!/./*/data-usercontrol/=true/./*/oninit)|/~literal/*/~on|/~void/*/~on)
+          for-each:x:/../*/select-data/**(/~container/*/~on(!/./*/data-usercontrol/./*/oninit)|/~literal/*/~on|/~void/*/~on)
 
             /*
              * Checking that node's name starts with "on", has at least three more characters, which must be a-z. Meaning
@@ -78,11 +78,10 @@ for-each:x:/../*/_node/#/**(/~literal/*/~on|/~container/*/~on|/~void/*/~on)
           sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/process-widgets-event-handlers.hl
             _node
 
-    else-if:x:/..for-each/*/_dp/#?name
-      !=:oninit
+    else
 
       /*
-       * This is an event handler, and it is not a usercontrol, and it is not an [oninit] event handler.
+       * This is an event handler, and it is not a usercontrol.
        * Renaming event handler temporarily for design surface, which means prepending
        * an underscore (_) to its name, to avoid conflicts when clicking widget in design surface,
        * to navigate selected widgets

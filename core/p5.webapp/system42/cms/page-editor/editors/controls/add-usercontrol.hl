@@ -94,7 +94,7 @@ of this [container] control. Please take care when adding usercontrols, such tha
 Meaning, usercontrols that are referencing the page you are creating. Neither directly, nor indirectly.</p>
 <p>You can however add up the same usercontrol, multiple times, without problems, to the same page, <strong>as long as none of your controls 
 inside your usercontrol have <em>""static ids""</em></strong>. Meaning, they must all use the automatically assigned id.</p>
-<p>A usercontrol will also render to the client with the attribute <strong>""data-usercontrol='true'""</strong>, which allows you to easily access
+<p>A usercontrol will also render to the client with the attribute <strong>""data-usercontrol""</strong>, which allows you to easily access
 your usercontrols from client-side JavaScript and CSS.</p>
 <p>Please select the usercontrol you wish to include on your page from the list below ...</p>"
                     table:wysiwyg-window-list-of-usercontrols
@@ -156,7 +156,7 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                              * Deletes all [onXXX] event handlers, except [oninit] event handlers for usercontrols, by looping through
                                              * everything that's a "close match", for then to verify it's an "exact match" for an event
                                              */
-                                            for-each:x:/../*/select-data/**(/~container/*/~on(!/./*/data-usercontrol/=true/./*/oninit)|/~literal/*/~on|/~void/*/~on)
+                                            for-each:x:/../*/select-data/**(/~container/*/~on(!/./*/data-usercontrol/./*/oninit)|/~literal/*/~on|/~void/*/~on)
 
                                               /*
                                                * Checking that node's name starts with "on", has at least three more characters, which must be a-z. Meaning
@@ -182,7 +182,8 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                           set:x:/..?value
                                             src:x:/../*/create-widget?value
                                       add:x:/../*/_create-widget/*
-                                        src:"data-usercontrol:true"
+                                        src:@"data-usercontrol:@""{0}"""
+                                          :x:/../*/_create-widget/**/oninit/*/select-data/*/?value
 
                                       /*
                                        * Finding custom properties of usercontrol, which is done by evaluating
@@ -192,7 +193,7 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                        */
                                       _eval-select
                                         insert-before:x:
-                                          src:x:/../*/select-data/*/*/~_data-
+                                          src:x:/../*/select-data/*/**(/literal|/void|/container)/*/~_data-
                                       insert-before:x:/-/0
                                         src:x:/../*/_create-widget/*/create-widget/*/oninit/*/select-data
                                       eval:x:/../*/_eval-select

@@ -12,7 +12,7 @@ load-file:/system42/cms/page-editor/editors/controls/helpers/wizard-template-wid
 
 /*
  * Checks to see if a [container] widget is currently selected, and if so,
- * enabling "Inside" buttons
+ * enabling all "add widget inside" buttons
  */
 find-widget
   data-selected

@@ -131,12 +131,12 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                       oninit
                         sys42.get-page-editor-data
                         lisp2lambda:x:/-/*/controls?value
-                        set:x:/../*/lisp2lambda/**/data-usercontrol/=true/./*/oninit/*(/set|/add|/eval)
-                        add:x:/../*/lisp2lambda/**/data-usercontrol/=true/./*/oninit
+                        set:x:/../*/lisp2lambda/**/data-usercontrol/./*/oninit/*(/set|/add|/eval)
+                        add:x:/../*/lisp2lambda/**/data-usercontrol/./*/oninit
                           src
                             insert-before:x:
                               src:x:/../*/select-data/*
-                        eval:x:/../*/lisp2lambda/**/data-usercontrol/=true/./*/oninit
+                        eval:x:/../*/lisp2lambda/**/data-usercontrol/./*/oninit
                         find-widget
                           data-selected
                         list-widget-lambda-events:x:/-/*?value

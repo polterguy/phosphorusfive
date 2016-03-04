@@ -283,7 +283,7 @@ create-widget:wysiwyg-editor
                      * Checking if this is a usercontrol widget, which is specially
                      * handled, to make it appear as a usercontrol in dropdown list
                      */
-                    if:x:/..for-each/*/_dp/#/*/data-usercontrol?value.bool
+                    if:x:/..for-each/*/_dp/#/*/data-usercontrol
 
                       /*
                        * This is a usercontrol

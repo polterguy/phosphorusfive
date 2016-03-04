@@ -134,19 +134,43 @@ namespace p5.web.widgets
         [ActiveEvent (Name = "", Protection = EventProtection.NativeOpen)]
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
-            // Looping through each lambda event handler for given event
             // Notice, since lambda events might end up creating new lambda events, the "ToList" operation below
             // is necessary!
-            Node retVal = new Node();
-            foreach (var idxLambda in Manager.WidgetLambdaEventStorage [e.Name].ToList ()) {
+            // But first, we check to see if there are any lambda objects for given Active Event
+            var list = Manager.WidgetLambdaEventStorage [e.Name].ToList ();
+            if (list.Count > 0) {
 
-                // Raising Active Event
-                var clone = idxLambda.Clone ();
-                clone.Insert (0, new Node ("_event", clone.Name));
-                XUtil.RaiseEvent (context, e.Args, clone, e.Name);
-                retVal.AddRange (e.Args.Children);
+                // Used to store return values to return to caller after all invocations have been evaluated
+                Node retVal = new Node ();
+
+                // Looping through each lambda event handler for given event
+                foreach (var idxLambda in list) {
+
+                    // Creating a clone of currently iterated lambda object for Active Event, and inserting [_event] to allow
+                    // event to know the ID the widget the lambda event exists within
+                    var idxLambdaClone = idxLambda.Clone ();
+                    idxLambdaClone.Insert (0, new Node ("_event", idxLambdaClone.Name));
+
+                    // Creating a clone of args, such that we can make sure each invocation have the same set of parameters
+                    var argsClone = e.Args.Clone ();
+                    XUtil.RaiseEvent (context, e.Args, idxLambdaClone, e.Name);
+
+                    // Moving stuff returned from invocation into retVal, which holds return values from all invocations
+                    retVal.AddRange (e.Args.Children);
+
+                    // Then making sure we return the (last) value returned by invocation, if any
+                    if (e.Args.Value != null)
+                        retVal.Value = e.Args.Value;
+
+                    // Then resetting e.Args back to what it was, to make sure next invocation, if any, gets the same set of arguments
+                    e.Args.Value = argsClone.Value;
+                    e.Args.AddRange (argsClone.Children);
+                }
+
+                // Returning all return values, from all invocations to caller
+                e.Args.Clear ().AddRange (retVal.Children);
+                e.Args.Value = retVal.Value;
             }
-            e.Args.AddRange (retVal.Children);
         }
 
         #endregion

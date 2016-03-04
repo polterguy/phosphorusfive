@@ -130,7 +130,11 @@ for-each:x:/../*/sort/*
                       _time:more
                     set-widget-property:x:/../*/_event?value
                       class:form-control error
-                sys42.forms.action.refresh-view
+
+                    /*
+                     * Making sure we return, to avoid refreshing view below
+                     */
+                    return
             a
               href:#
               class:input-group-addon input-group-addon-force-float
@@ -557,7 +561,7 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
  * Then [widgets], which also requires special handling. But notice, we *ignore*
  * all widgets of usercontrols here
  */
-if:x:/../*/sys42.get-widget/*/*/data-usercontrol/=true
+if:x:/../*/sys42.get-widget/*/*/data-usercontrol
   not
 
   /*
@@ -673,6 +677,16 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol/=true
                  * button
                  */
                 for-each:x:/../*/get-children-widgets/*/*
+
+                  /*
+                   * Making sure currently iterated widget is not a usercontrol
+                   */
+                  if
+                    fetch:x:/0/0/0?value
+                      get-widget-property:x:/..for-each/*/_dp/#?value
+                        data-usercontrol
+                    set:x:/..for-each/*/_widget/*/*/innerValue/0?value
+                      src:usercontrol
                   _widget
                     create-literal-widget
                       parent:wysiwyg-control-widgets

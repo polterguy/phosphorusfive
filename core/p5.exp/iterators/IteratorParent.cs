@@ -18,7 +18,7 @@ namespace p5.exp.iterators
     {
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            return from idxCurrent in Left.Evaluate (context) where idxCurrent.Parent != null select idxCurrent.Parent;
+            return Left.Evaluate (context).Select (ix => ix.Parent).Distinct ();
         }
     }
 }

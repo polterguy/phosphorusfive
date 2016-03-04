@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using p5.core;
 
@@ -25,18 +26,20 @@ namespace p5.exp.iterators
         /// <param name="to">end position, to</param>
         public IteratorRange (int from, int to)
         {
-            _to = from;
-            _from = to;
+            _from = from;
+            _to = to;
         }
 
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            var idxNo = 0;
-            foreach (var idxCurrent in Left.Evaluate (context)) {
-                if (idxNo++ >= _to)
+            if (_to == -1) {
+                foreach (var idxCurrent in Left.Evaluate (context).Skip (_from)) {
                     yield return idxCurrent;
-                if (_from != -1 && idxNo >= _from)
-                    yield break;
+                }
+            } else {
+                foreach (var idxCurrent in Left.Evaluate (context).Skip (_from).Take (_to - _from)) {
+                    yield return idxCurrent;
+                }
             }
         }
     }

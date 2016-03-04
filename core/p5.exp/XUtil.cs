@@ -614,6 +614,7 @@ namespace p5.exp
             // But skipping all "empty name" arguments, since they're formatting parameters
             exeLambda.AddRange (args.Children.Where (ix => ix.Name != ""));
 
+            // Applying "value argument"
             if (args.Value is Expression) {
 
                 // Evaluating node, and stuffing results into arguments
@@ -637,6 +638,11 @@ namespace p5.exp
                 exeLambda.Add ("_arg", XUtil.FormatNode (context, args));
             }
 
+            // Removing all empty nodes of args, to be sure we don't keeo garbage around
+            // Notice, we do this AFTER evaluating expressions in value! To make sure formatting parameters
+            // are kept around during evaluation!
+            args.Clear ();
+
             // Then adding actual Active Event code, to make sure lambda event is at the END of entire node structure, after arguments
             exeLambda.AddRange (lambda.Children);
 
@@ -650,7 +656,7 @@ namespace p5.exp
 
             // Making sure we return all nodes that was created during execution of event back to caller
             // in addition to value
-            args.Clear ().AddRange (exeLambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
+            args.AddRange (exeLambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
             if (exeLambda.Value != null)
                 args.Value = exeLambda.Value;
         }

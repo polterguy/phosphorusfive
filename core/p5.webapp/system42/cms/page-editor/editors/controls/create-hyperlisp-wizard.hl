@@ -170,8 +170,8 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                          * parts that selects them from database. Then making sure [oninit] returns the
                          * controls to us, after evalution of [oninit] as a lambda object.
                          */
-                        set:x:/../*/lisp2lambda/[1,2]/**/data-usercontrol/=true/./*/oninit/*(/set|/add|/eval)
-                        add:x:/../*/lisp2lambda/[1,2]/**/data-usercontrol/=true/./*/oninit
+                        set:x:/../*/lisp2lambda/[1,2]/**/data-usercontrol/./*/oninit/*(/set|/add|/eval)
+                        add:x:/../*/lisp2lambda/[1,2]/**/data-usercontrol/./*/oninit
                           src
                             insert-before:x:
                               src:x:/../*/select-data/*
@@ -180,7 +180,7 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                          * Evaluating all [oninit] in page's usercontrols, as lambda objects, returning all controls
                          * dynamically loaded as a consequence of invoking [oninit]
                          */
-                        eval:x:/../*/lisp2lambda/[1,2]/**/data-usercontrol/=true/./*/oninit
+                        eval:x:/../*/lisp2lambda/[1,2]/**/data-usercontrol/./*/oninit
 
                         /*
                          * Looping through all distinct (unique) Active Events subscribed to by page, either directly on controls in page,
