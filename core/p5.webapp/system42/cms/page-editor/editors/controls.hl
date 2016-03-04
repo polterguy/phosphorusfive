@@ -857,15 +857,17 @@ create-widget:wysiwyg-editor
                         /*
                          * Figuring out where to insert widget
                          */
-                        sys42.wysiwyg-controls.get-insertion-position
+                        find-widget
+                          data-selected:true
 
                         /*
                          * Invoking Active Event responsible for performing paste operation
                          */
-                        add:x:/+/*
-                          src:x:/./-/*
+                        set:x:/+/*/*?value
+                          src:x:/../*/find-widget/*?value
                         sys42.wysiwyg-controls.paste-widget
                           _position
+                            parent
                         send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
 
 

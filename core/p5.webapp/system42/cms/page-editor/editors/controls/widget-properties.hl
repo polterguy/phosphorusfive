@@ -553,10 +553,15 @@ for-each:x:/../*/sys42.get-widget/*/*/innerValue
 
 
 /*
- * Then [widgets], which also requires special handling
+ * Then [widgets], which also requires special handling. But notice, we *ignore*
+ * all widgets of usercontrols here
  */
-if:x:/../*/sys42.get-widget/*/*/data-usercontrol
+if:x:/../*/sys42.get-widget/*/*/data-usercontrol/=true
   not
+
+  /*
+   * This is not a usercontrol
+   */
   for-each:x:/../*/sys42.get-widget/*/*/widgets
     _control
       container

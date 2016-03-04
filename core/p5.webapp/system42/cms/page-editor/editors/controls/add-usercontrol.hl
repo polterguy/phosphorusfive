@@ -183,9 +183,37 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                             src:x:/../*/create-widget?value
                                       add:x:/../*/_create-widget/*
                                         src:"data-usercontrol:true"
+
+                                      /*
+                                       * Finding custom properties of usercontrol, which is done by evaluating
+                                       * [select-data] invocation of usercontrol, and retrieving all attributes
+                                       * that starts with [_data-], treating these as "settings" for usercontrol,
+                                       * by adding them to main usercontrol [container] wrapper, as attributes
+                                       */
+                                      _eval-select
+                                        insert-before:x:
+                                          src:x:/../*/select-data/*/*/~_data-
+                                      insert-before:x:/-/0
+                                        src:x:/../*/_create-widget/*/create-widget/*/oninit/*/select-data
+                                      eval:x:/../*/_eval-select
+                                      add:x:/../*/_create-widget/*/create-widget
+                                        src:x:/./-/*
+
+                                      /*
+                                       * Creating widget, by attaching it to WYSIWYG surface
+                                       */
                                       eval:x:/../*/_create-widget
+
+                                      /*
+                                       * Selecting widget, and re-populating select widget dropdown list
+                                       */
                                       sys42.wysiwyg-controls.select-widget:x:/-?value
                                       sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+                                      /*
+                                       * Making modal window invisible, showing some information to user, and making sure id
+                                       * property has focus
+                                       */
                                       send-javascript:@"$('#wysiwyg-controls-usercontrol-window').modal('toggle');"
                                       sys42.info-window:@"Please change widget's id and element to what you wish"
                                         _time:more
