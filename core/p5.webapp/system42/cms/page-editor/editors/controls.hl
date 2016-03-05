@@ -1016,6 +1016,156 @@ you can simply delete it now. A complete version of the widget still exists on y
             sys42.wysiwyg-controls.toggle-paste-button
 
         /*
+         * Select parent widget
+         */
+        button:wysiwyg-controls-get-parent-widget
+          class:btn btn-default
+          innerValue:@"<span class=""glyphicon glyphicon-arrow-up""></span> Parent"
+          onclick:@"$('#' + p5._currentParentWidget).removeClass('highlight');p5.$(event.currentTarget).raise('_onclick');return false;"
+          _onclick
+            find-widget
+              data-selected
+            get-parent-widget:x:/../*/find-widget/*?value
+            sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0?value
+            sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/get-parent-widget/0?value
+          onmouseover:@"$('#' + p5._currentParentWidget).addClass('highlight');"
+          onmouseout:@"$('#' + p5._currentParentWidget).removeClass('highlight');"
+          events
+
+            /*
+             * Enables and disables the "Select parent" button.
+             */
+            sys42.wysiwyg-controls.toggle-get-parent-widget
+              if:x:/../*/_arg?value
+
+                /*
+                 * Enabling button
+                 */
+                set-widget-property:wysiwyg-controls-get-parent-widget
+                  class:btn btn-default
+                send-javascript:@"p5._currentParentWidget = '{0}';"
+                  :x:/../*/_arg?value
+              else
+
+                /*
+                 * Disabling button
+                 */
+                set-widget-property:wysiwyg-controls-get-parent-widget
+                  class:btn btn-default disabled
+
+        /*
+         * Select children widgets
+         */
+        container
+          class:btn-group
+          widgets
+
+            /*
+             * Dropdown toggle button for "Select children" button(s)
+             */
+            button:wysiwyg-controls-select-children-widgets-wrp
+              class:btn btn-default dropdown-toggle
+              data-toggle:dropdown
+              innerValue:@"<span class=""glyphicon glyphicon-arrow-down""></span> Children <span class=""caret""></span>"
+            ul:wysiwyg-controls-select-children-widgets
+              class:dropdown-menu
+              widgets
+          events
+
+            /*
+             * Creates the list of widgets currently selected [container] widget has,
+             * or deletes and disables "select children widgets" button
+             */
+            sys42.wysiwyg-controls.create-widgets-for-selected
+
+              /*
+               * Clearing any previously created children widgets' selectors
+               */
+              clear-widget:wysiwyg-controls-select-children-widgets
+
+              /*
+               * Checking if a widget was given at all, which is NOT the case if selected widget
+               * is a usercontrol, at which point we should disable children selector button
+               */
+              if:x:/../*/_arg?value
+                not
+
+                /*
+                 * We are supposed to delete and disable children widgets' selectors
+                 */
+                set-widget-property:wysiwyg-controls-select-children-widgets-wrp
+                  class:btn btn-default dropdown-toggle disabled
+              else
+
+                /*
+                 * Retrieving widget's children widgets
+                 */
+                get-children-widgets:x:/../*/_arg?value
+
+                /*
+                 * Checking if widget had any children, and if not, disabling the children selector button
+                 */
+                if:x:/-/*/*?count
+                  =:int:0
+                  set-widget-property:wysiwyg-controls-select-children-widgets-wrp
+                    class:btn btn-default dropdown-toggle disabled
+                  return
+
+                /*
+                 * We are supposed to enable and create children widgets' selectors
+                 */
+                set-widget-property:wysiwyg-controls-select-children-widgets-wrp
+                  class:btn btn-default dropdown-toggle
+
+                /*
+                 * Making sure our 'Clear selected widget' button is enabled
+                 */
+                set-widget-property:wysiwyg-button-clear-widget
+                  class:btn btn-default
+
+                /*
+                 * Looping through all children widgets, creating a button ([a] type of button)
+                 * for each widget, allowing user to select any of these widgets by clicking the
+                 * button
+                 */
+                for-each:x:/..else/*/get-children-widgets/*/*
+
+                  /*
+                   * Checking if currently iterated widget is a usercontrol, and if so,
+                   * changing parts of the "innerValue" of selector to "usercontrol", 
+                   * instead of "container"
+                   */
+                  if
+                    fetch:x:/0/0/0?value
+                      get-widget-property:x:/..for-each/*/_dp/#?value
+                        data-usercontrol
+                    set:x:/..for-each/*/_widget/**/innerValue/0?value
+                      src:usercontrol
+                  _widget
+                    create-container-widget
+                      parent:wysiwyg-controls-select-children-widgets
+                      element:li
+                      widgets
+                        a
+                          href:#
+                          href:#
+                          innerValue:@"{0} - {1}"
+                            :x:/..for-each/*/_dp/#?name
+                            :x:/..for-each/*/_dp/#?value
+                          onmouseover:@"$('#{0}').addClass('highlight');"
+                            :x:/..for-each/*/_dp/#?value
+                          onmouseout:@"$('#{0}').removeClass('highlight');"
+                            :x:/..for-each/*/_dp/#?value
+                          onclick:@"$('#{0}').removeClass('highlight');p5.$(event.currentTarget).raise('_onclick');return false;"
+                            :x:/..for-each/*/_dp/#?value
+                          _onclick
+                            sys42.wysiwyg-controls.select-widget:x:/..for-each/*/_dp/#?value
+                            sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/..for-each/*/_dp/#?value
+                  eval-x:x:/-/**/innerValue|/-/**/_onclick/*|/-/**/onmouseover|/-/**/onmouseout|/-/**/onclick
+                  eval:x:/-2
+
+
+        /*
          * Clear widget
          */
         button:wysiwyg-button-clear-widget
