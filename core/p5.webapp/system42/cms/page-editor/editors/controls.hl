@@ -111,6 +111,7 @@ create-container-widget
 	min-height:436px;
 	clear:both;
 	border:dashed 1px rgba(0,0,0,.5);
+	border-radius:5px;
 	background-color:rgba(0,0,0,.03);
 	background-image:url(""data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100%' width='100%'><text x='10%' y='57%' fill='rgba(128,0,0,.05)' font-size='124' font-family='Verdana'>Design surface</text></svg>"") !important;
 }
@@ -903,7 +904,7 @@ create-widget:wysiwyg-editor
           href:#
           style:"width:100%;"
           innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
-          title:Help me! This hurts!
+          title:Help me please!
           oninit
             if
               fetch:x:/0/0?value
@@ -964,6 +965,85 @@ $('html, body').animate({{
       widgets
 
         /*
+         * Add attribute to widget button
+         */
+        button:wysiwyg-button-add-attribute
+          class:btn btn-default
+          title:Add attribute to widget
+          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Add attribute"
+          onclick
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute.hl
+
+        /*
+         * Help with 'Add attribute to widget' button
+         */
+        button:wysiwyg-button-add-attribute-help
+          class:btn btn-default
+          style:"border-left:dashed 1px rgba(0,0,0,.2);"
+          title:Help me with adding attributes to my widget please ...
+          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+          onclick
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute-guide.hl
+
+        /*
+         * Create new Active Event subscriber for currently selected widget
+         */
+        button:wysiwyg-controls-new-action-subscriber
+          class:btn btn-default
+          innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Add Subscriber"
+          onclick
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-active-event.hl
+
+        /*
+         * Copy widget
+         */
+        button:wysiwyg-button-copy-widget
+          class:btn btn-default
+          title:Copies widget to clipboard, such that you can paste in a copy another place, either on same page, or in another page
+          innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy widget"
+          onclick
+            find-widget
+              data-selected
+            sys42.get-widget:x:/../*/find-widget/*?value
+            set:x:/-/*/*(/data-selected|/onclick|/data-usercontrol/./*/widgets)
+            add:x:/+/*
+              src:x:/../*/sys42.get-widget/*
+            set-session-value:sys42.wysiwyg-controls.clipboard-widget
+              src
+            sys42.info-window:@"A copy of the widget was put into the clipboard. If you wish to 'cut' the widget, 
+you can simply delete it now. A complete version of the widget still exists on your 'widget clipboard'."
+              _time:more
+            sys42.wysiwyg-controls.toggle-paste-button
+
+        /*
+         * Clear widget
+         */
+        button:wysiwyg-button-clear-widget
+          class:btn btn-default disabled
+          title:Deletes all children widgets of widget
+          innerValue:@"<span class=""glyphicon glyphicon-remove-circle""></span> Clear widget"
+          onclick
+            sys42.show-info-window:x:/..
+            sys42.confirm-window
+              _header:Confirm clearing!
+              _body:@"<p>Are you sure you wish to completely <strong>clear widget's children widgets</strong>?</p>
+<p>This will delete all widgets that are children of the currently selected widget! This action cannot be undone!</p>"
+              _onok
+                find-widget
+                  data-selected:true
+                get-children-widgets:x:/-/*?value
+                clear-widget:x:/../*/find-widget/*?value
+                sys42.wysiwyg-controls.databind-select-widget-dropdown
+                sys42.info-window:@"{0} widgets successfully delete from '{1}'"
+                  :x:/../*/get-children-widgets/*/*?count
+                  :x:/../*/find-widget/*?value
+                  _time:more
+                clear-widget:wysiwyg-control-widgets
+                sys42.wysiwyg-controls.create-widgets-for-selected
+                set-widget-property:wysiwyg-button-clear-widget
+                  class:btn btn-default disabled
+
+        /*
          * Delete widget button
          */
         button:wysiwyg-button-delete
@@ -997,48 +1077,6 @@ $('html, body').animate({{
                   style:"display:none;"
                 set-widget-property:wysiwyg-controls-paste-to-container
                   style:"display:none;"
-
-        /*
-         * Add attribute to widget button
-         */
-        button:wysiwyg-button-add-attribute
-          class:btn btn-default
-          title:Add attribute to widget
-          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Add attribute"
-          onclick
-            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute.hl
-
-        /*
-         * Help with 'Add attribute to widget' button
-         */
-        button:wysiwyg-button-add-attribute-help
-          class:btn btn-default
-          style:"border-left:dashed 1px rgba(0,0,0,.2);"
-          title:Help me with adding attributes to my widget please ...
-          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
-          onclick
-            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute-guide.hl
-
-        /*
-         * Copy widget
-         */
-        button:wysiwyg-button-copy-widget
-          class:btn btn-default
-          title:Copies widget to clipboard, such that you can paste in a copy another place, either on same page, or in another page
-          innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy widget"
-          onclick
-            find-widget
-              data-selected
-            sys42.get-widget:x:/../*/find-widget/*?value
-            set:x:/-/*/*(/data-selected|/onclick|/data-usercontrol/./*/widgets)
-            add:x:/+/*
-              src:x:/../*/sys42.get-widget/*
-            set-session-value:sys42.wysiwyg-controls.clipboard-widget
-              src
-            sys42.info-window:@"A copy of the widget was put into the clipboard. If you wish to 'cut' the widget, 
-you can simply delete it now. A complete version of the widget still exists on your 'widget clipboard'."
-              _time:more
-            sys42.wysiwyg-controls.toggle-paste-button
 
     /*
      * Properties for chosen widget

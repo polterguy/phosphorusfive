@@ -12,6 +12,12 @@ set:x:/../*/sys42.get-widget/**(/void/*/element/=input/./*/name|/literal/*/eleme
 set:x:/../*/sys42.get-widget/**(/void/*/events|/literal/*/events|/container/*/events)
 
 /*
+ * Making sure our 'clear selected widget' button is enabled
+ */
+set-widget-property:wysiwyg-button-clear-widget
+  class:btn btn-default disabled
+
+/*
  * Sorting widget's properties, first stuffing event handlers last, then alphabetically
  */
 sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/element!/data-selected!/data-usercontrol!/onclick!/name!/oninit/./*/data-selected/./*/oninit)
@@ -483,7 +489,7 @@ if:x:/-/*?value
   add:x:/../*/create-widget/*/widgets
     src
       container
-        class:col-xs-12 form-group
+        class:col-xs-12 form-group prepend-top
         style:"clear:both;"
         widgets
           button:wysiwyg-controls-get-parent-widget
@@ -573,27 +579,6 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
         class:col-xs-12 form-group
         style:"clear:both;"
         widgets
-          a:wysiwyg-controls-set-widgets-visible
-            href:#
-            class:btn btn-default prepend-bottom
-            style:"width:250px;text-align:left;"
-            innerValue:@"Children widgets ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
-            onclick
-              get-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
-              if:x:/-/*?value.bool
-                not
-                set-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
-                  src:bool:true
-                sys42.wysiwyg-controls.create-widgets-for-selected
-                set-widget-property:wysiwyg-controls-set-widgets-visible
-                  class:btn btn-default prepend-bottom active
-                  innerValue:@"Children widgets ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
-              else
-                set-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
-                clear-widget:wysiwyg-control-widgets
-                set-widget-property:wysiwyg-controls-set-widgets-visible
-                  class:btn btn-default prepend-bottom
-                  innerValue:@"Children widgets ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
 
           /*
            * Wraps the widgets that allows user to manipulate childre widget collection, such as
@@ -601,12 +586,7 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
            */
           container:wysiwyg-control-widgets
             oninit
-              get-session-value:sys42.wysiwyg-controls.widgets-attribute-visible
-              if:x:/-/*?value.bool
-                sys42.wysiwyg-controls.create-widgets-for-selected
-                set-widget-property:wysiwyg-controls-set-widgets-visible
-                  class:btn btn-default prepend-bottom active
-                  innerValue:@"Children widgets ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
+              sys42.wysiwyg-controls.create-widgets-for-selected
             events
 
               /*
@@ -629,33 +609,6 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
                   style
 
                 /*
-                 * Creating the 'clear selected widget' button
-                 */
-                create-literal-widget
-                  parent:wysiwyg-control-widgets
-                  element:a
-                  class:btn btn-default
-                  href:#
-                  innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Clear widget"
-                  onclick
-                    sys42.confirm-window
-                      _header:Confirm clearing!
-                      _body:@"<p>Are you sure you wish to completely <strong>clear widget's children widgets</strong>?</p>
-<p>This will delete all widgets that are children of the currently selected widget! This action cannot be undone!</p>"
-                      _onok
-                        find-widget
-                          data-selected:true
-                        get-children-widgets:x:/-/*?value
-                        clear-widget:x:/../*/find-widget/*?value
-                        sys42.wysiwyg-controls.databind-select-widget-dropdown
-                        sys42.info-window:@"{0} widgets successfully delete from '{1}'"
-                          :x:/../*/get-children-widgets/*/*?count
-                          :x:/../*/find-widget/*?value
-                          _time:more
-                        clear-widget:wysiwyg-control-widgets
-                        sys42.wysiwyg-controls.create-widgets-for-selected
-
-                /*
                  * Finding selected widget, and retrieving its children widgets
                  */
                 find-widget
@@ -663,13 +616,17 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
                 get-children-widgets:x:/-/*?value
 
                 /*
-                 * Making sure widget's list of children starts on new line
+                 * Checking if widget actually has children widgets, and if so, enabling
+                 * "Clear widget" button
                  */
-                if:x:/-/*/*?count
+                if:x:/../*/get-children-widgets/*/*?count
                   >:int:0
-                  create-void-widget
-                    parent:wysiwyg-control-widgets
-                    element:br
+
+                  /*
+                   * Making sure our 'Clear selected widget' button is enabled
+                   */
+                  set-widget-property:wysiwyg-button-clear-widget
+                    class:btn btn-default
 
                 /*
                  * Looping through all children widget, creating a button ([a] type of button)
@@ -896,44 +853,15 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
      * "Delete widget" and all "children widget selectors"
      */
     container:wysiwyg-widget-events
-      class:col-xs-12 prepend-bottom
+      class:col-xs-12
       widgets
-
-        /*
-         * Button that toggles visibility of currently selected widget's Active Events
-         */
-        button:wysiwyg-controls-set-events-visible
-          class:btn btn-default
-          style:"width:250px;text-align:left;"
-          innerValue:@"Widget Action Subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
-          onclick
-            get-session-value:sys42.wysiwyg-controls.widgets-events-visible
-            if:x:/-/*?value.bool
-              not
-              set-session-value:sys42.wysiwyg-controls.widgets-events-visible
-                src:bool:true
-              sys42.wysiwyg-controls.create-events-for-selected
-              set-widget-property:wysiwyg-controls-set-events-visible
-                class:btn btn-default active
-                innerValue:@"Widget Action Subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
-            else
-              set-session-value:sys42.wysiwyg-controls.widgets-events-visible
-              clear-widget:wysiwyg-controls-events
-              set-widget-property:wysiwyg-controls-set-events-visible
-                class:btn btn-default
-                innerValue:@"Widget Action Subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-bottom""></span>"
-          oninit
-            get-session-value:sys42.wysiwyg-controls.widgets-events-visible
-            if:x:/-/*?value.bool
-              sys42.wysiwyg-controls.create-events-for-selected
-              set-widget-property:wysiwyg-controls-set-events-visible
-                class:btn btn-default active
-                innerValue:@"Widget Action Subscribers ... <span style=""float:right;"" class=""glyphicon glyphicon-triangle-top""></span>"
 
         /*
          * Wraps all Active Event handlers (subscribers) for currently selected widget
          */
         container:wysiwyg-controls-events
+          oninit
+            sys42.wysiwyg-controls.create-events-for-selected
           events
 
             /*
@@ -980,25 +908,18 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
 
               /*
                * Creating our list of lambda events, in addition to the button that allows
-               * user to create new Active Event subscriber
+               * user to create new Active Event subscriber, but first removing table if there 
+               * are no action subscribers
                */
+              if:x:/../*/create-widget/*/widgets/*/container/*/widgets/*/tbody/*/widgets/*?count
+                =:int:0
+                set:x:/../*/create-widget/*/widgets/*/container
               create-widget
                 parent:wysiwyg-controls-events
-                class:prepend-top
                 widgets
-
-                  /*
-                   * Create new Active Event subscriber for currently selected widget
-                   */
-                  button:wysiwyg-controls-new-action-subscriber
-                    class:btn btn-default prepend-bottom
-                    style:"width:250px;text-align:left;"
-                    innerValue:@"New Action Subscriber ... <span style=""float:right;"" class=""glyphicon glyphicon-plus""></span>"
-                    onclick
-                      sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-active-event.hl
                   container
                     element:table
-                    class:table table-hover
+                    class:table table-hover prepend-top
                     widgets
                       tbody
                         widgets

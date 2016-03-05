@@ -43,36 +43,11 @@ the easiest way to actually select it, is by selecting it from the <em>""Select 
 button, at the bottom of your page, you will select the parent [container] widget, which will have different properties, the
 most important being a <em>""list of children widgets""</em> property. If you do not see this list, make sure you expand it."
 
-  create-container-widget
-    element:div
-    widgets
-      text:@"<p>Click "
-      a
-        href:#
-        innerValue:this button
-        class:btn btn-default
-        onclick
-          if
-            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-get-parent-widget
-            not
-            sys42.info-window:Please make sure you have your [void] widget selected in the WYSIWYG design surface!
-              _error:true
-              _time:more
-      text:@" first. Then click "
-      a
-        href:#
-        innerValue:this button
-        class:btn btn-default
-        onclick
-          if
-            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-set-widgets-visible
-            not
-            sys42.info-window:Please make sure you have your [container] selected in the WYSIWYG design surface!
-              _error:true
-              _time:more
-      text:@" afterwards, if your list of children widgets are not visible. The <span class=""glyphicon glyphicon-arrow-down""></span>
+  create-literal-widget
+    element:p
+    innerValue:@"The <span class=""glyphicon glyphicon-arrow-down""></span>
 and the <span class=""glyphicon glyphicon-arrow-up""></span> buttons, allows you to easily navigate your parent and children widgets, 
-and select them.</p>"
+and select them."
 
   create-container-widget
     element:div
