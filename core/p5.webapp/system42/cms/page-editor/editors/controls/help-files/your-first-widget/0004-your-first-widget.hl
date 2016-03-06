@@ -41,7 +41,7 @@ up a modal window, further explaining the id property for you."
         class:btn btn-default
         innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Wizard"
         onclick
-          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-help-add-widget
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-widget
       text:@" button in the toolbar at the top of your page. <strong>Make sure you select the <em>""Button""</em> type of wizard widget</strong>, 
 and also make sure you choose to insert your button <strong>*before*</strong> your currently selected widget (which should be your 
 email/name usercontrol).</p>"

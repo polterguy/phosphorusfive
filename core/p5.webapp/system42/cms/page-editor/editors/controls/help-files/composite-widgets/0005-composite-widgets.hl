@@ -24,7 +24,7 @@ controls
         title:Show me where to click please
         class:btn btn-default
         onclick
-          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-help-add-widget
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-widget
       text:@" button, and choose the <em>""Textbox""</em> wizard widget from the modal window that appears.
 You can choose either before or after, which doesn't matter. Then click the wizard button again, and choose the 
 <em>""Button""</em> wizard widget, but make sure you insert it <strong>*after*</strong> the previously created textbox.

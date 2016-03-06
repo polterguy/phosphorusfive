@@ -47,7 +47,7 @@ possibly with child widgets of themselves, that can be injected into your page t
         title:Show me where to click please
         class:btn btn-default
         onclick
-          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-help-add-widget
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-widget
       text:@" button.</p>"
 
   create-literal-widget

@@ -17,6 +17,7 @@ set:x:/../*/sys42.get-widget/**(/void/*/events|/literal/*/events|/container/*/ev
  */
 set-widget-property:wysiwyg-button-clear-widget
   class:btn btn-default disabled
+  disabled
 
 /*
  * Sorting widget's properties, first stuffing event handlers last, then alphabetically
@@ -847,7 +848,7 @@ Androids, probably not on Linux and Mac OS X</strong>, or any other modern compu
      * to [_new-value]
      */
     sys42.wysiwyg-controls.change-selected-widgets-property
-      get-widget-property:wysiwyg-select-control
+      get-widget-property:wysiwyg-select-widget
         value
       if:x:/../*/_new-value?value
 

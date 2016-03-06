@@ -25,7 +25,7 @@ of your page now, is a toolbar for adding widgets to your page. Click "
         innerValue:here
         class:btn btn-default
         onclick
-          sys42.wysiwyg-controls.blink-control:wysiwyg-add-btn-group
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-widget-toolbar
       text:@" to see where you can find this toolbar.</p>"
 
   create-literal-widget
