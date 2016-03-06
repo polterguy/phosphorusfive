@@ -1219,10 +1219,12 @@ you can simply delete it now. A complete version of the widget still exists on y
           events
 
             /*
-             * Creates the list of widgets currently selected [container] widget has,
-             * or deletes and disables "select children widgets" button
+             * Creates the list of children widgets for currently selected [container] widget,
+             * or deletes and disables "select children widgets" button.
+             * Notice, if this event is invoked without any arguments, it will disable "select children
+             * widgets" button
              */
-            sys42.wysiwyg-controls.create-widgets-for-selected
+            sys42.wysiwyg-controls.toggle-select-children-widgets
 
               /*
                * Clearing any previously created children widgets' selectors
@@ -1242,6 +1244,14 @@ you can simply delete it now. A complete version of the widget still exists on y
                 set-widget-property:wysiwyg-controls-select-children-widgets-wrp
                   class:btn btn-default dropdown-toggle disabled
                   disabled
+
+                /*
+                 * Making sure our 'clear selected widget' button is disabled by default, 
+                 * it might get enabled later, depending upon if widget has children or not
+                 */
+                set-widget-property:wysiwyg-button-clear-widget
+                  class:btn btn-default disabled
+                  disabled
               else
 
                 /*
@@ -1250,12 +1260,21 @@ you can simply delete it now. A complete version of the widget still exists on y
                 get-children-widgets:x:/../*/_arg?value
 
                 /*
-                 * Checking if widget had any children, and if not, disabling the children selector button
+                 * Checking if widget had any children, and if not, disabling the children selector button,
+                 * in addition to disabling the "Clear widget" button, before returning early
                  */
                 if:x:/-/*/*?count
                   =:int:0
                   set-widget-property:wysiwyg-controls-select-children-widgets-wrp
                     class:btn btn-default dropdown-toggle disabled
+                    disabled
+
+                  /*
+                   * Making sure our 'clear selected widget' button is disabled by default, 
+                   * it might get enabled later, depending upon if widget has children or not
+                   */
+                  set-widget-property:wysiwyg-button-clear-widget
+                    class:btn btn-default disabled
                     disabled
                   return
 
@@ -1268,7 +1287,7 @@ you can simply delete it now. A complete version of the widget still exists on y
                   disabled
 
                 /*
-                 * Making sure our 'Clear selected widget' button is enabled
+                 * Making sure our 'Clear selected widget' button is enabled also
                  */
                 set-widget-property:wysiwyg-button-clear-widget
                   class:btn btn-default
@@ -1336,26 +1355,65 @@ you can simply delete it now. A complete version of the widget still exists on y
           title:Deletes all children widgets of widget
           innerValue:@"<span class=""glyphicon glyphicon-remove-circle""></span> Clear widget"
           onclick
-            sys42.show-info-window:x:/..
+
+            /*
+             * Asking user to confirm clearing widget of its children widgets, 
+             * before actually doing it
+             */
             sys42.confirm-window
-              _header:Confirm clearing!
-              _body:@"<p>Are you sure you wish to completely <strong>clear widget's children widgets</strong>?</p>
+              _header:Confirm deletion of children widgets!
+              _body:@"<p>Are you sure you wish to <strong>delete all children widgets</strong> of currently selected widget?</p>
 <p>This will delete all widgets that are children of the currently selected widget! This action cannot be undone!</p>"
               _onok
+
+                /*
+                 * Finding selected widget
+                 */
                 find-widget
                   data-selected:true
+
+                /*
+                 * Retrieving all children widgets from currently selected widget, such that
+                 * we can display an info window to user, informing him how many widgets was
+                 * actually deleted from surface
+                 */
                 get-children-widgets:x:/-/*?value
+
+                /*
+                 * Clearing widget's children collection
+                 */
                 clear-widget:x:/../*/find-widget/*?value
+
+                /*
+                 * Re-databinding "select widget" dropdown listbox, with no arguments,
+                 * which will trigger a "re-create child collection" logic for all "option" HTML elements,
+                 * being children of "select" HTML widget
+                 */
                 sys42.wysiwyg-controls.databind-select-widget-dropdown
-                sys42.info-window:@"{0} widgets successfully delete from '{1}'"
+
+                /*
+                 * Informing user how many widgets was actually deleted
+                 */
+                sys42.info-window:@"{0} widgets successfully deleted from container with the id of '{1}'"
                   :x:/../*/get-children-widgets/*/*?count
                   :x:/../*/find-widget/*?value
                   _time:more
-                clear-widget:wysiwyg-controls-select-children-widgets
-                sys42.wysiwyg-controls.create-widgets-for-selected
+
+                /*
+                 * Disables "select children widgets" button
+                 */
+                sys42.wysiwyg-controls.toggle-select-children-widgets
+
+                /*
+                 * Disabling the "Clear widget" button
+                 */
                 set-widget-property:wysiwyg-button-clear-widget
                   class:btn btn-default disabled
                   disabled
+
+
+
+
 
         /*
          * Delete widget button
@@ -1365,16 +1423,38 @@ you can simply delete it now. A complete version of the widget still exists on y
           title:Delete currently selected widget
           innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Delete widget"
           onclick
+
+            /*
+             * Asking user to confirm he really wants to delete currently selected widget
+             */
             sys42.confirm-window
-              _header:Confirm deletion!
-              _body:Are you sure you wish to <strong>delete currently selected widget</strong> from form? This action cannot be undone!
+              _header:Confirm deletion of selected widget!
+              _body:Are you sure you wish to <strong>delete the selected widget</strong>? This action cannot be undone!
               _onok
+
+                /*
+                 * Finding selected widget from surface, and deleting it
+                 */
                 find-widget
                   data-selected:true
                 delete-widget:x:/../*/find-widget/*?value
+
+                /*
+                 * Hiding the entire "manipulate selected widget" toolbar, since (obviously), no widgets
+                 * are now selected
+                 */
                 set-widget-property:wysiwyg-manipulate-selected-widget
                   visible:false
+
+                /*
+                 * Re-creating "select widget" dropdown box, without arguments, to make sure it
+                 * is re-created entirely
+                 */
                 sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+                /*
+                 * Hiding all "properties for selected widget", since no widgets are selected now!
+                 */
                 set-widget-property:wysiwyg-controls-properties
                   visible:false
 
@@ -1394,12 +1474,21 @@ you can simply delete it now. A complete version of the widget still exists on y
                 set-widget-property:wysiwyg-controls-add-wizard-to-container
                   style:"display:none;"
 
+
+
+
+
     /*
-     * Properties for chosen widget
+     * Properties for currently selected widget wrapper. Will display the attributes, events, and so
+     * on for currently selected widget
      */
     container:wysiwyg-controls-properties
       class:row col-xs-12
       visible:false
+
+
+
+
 
   /*
    * Lambda events for Editor Surface
@@ -1407,9 +1496,14 @@ you can simply delete it now. A complete version of the widget still exists on y
   events
 
 
+
+
+
     /*
      * "Sink" event required by main editor to retrieve data
-     * from specialized editor during saving process
+     * from specialized editor during saving process. Will be invoked by
+     * "main editor logic" whenever it needs the "data" to save to database.
+     * Also occasionally used internally, for different purposes
      */
     sys42.get-page-editor-data
 
@@ -1421,21 +1515,15 @@ you can simply delete it now. A complete version of the widget still exists on y
       /*
        * Making sure we remove the [data-selected] attribute, 
        * which is used to track the currently selected widget in surface.
-       * In addition to removing the selected widget's [style] properties
        */
-      set:x:/../*/sys42.get-widget/**/data-selected
+      set:x:/../*/sys42.get-widget/**(/container/*/data-selected|/void/*/data-selected|/literal/*/data-selected)
 
       /*
-       * Making sure we remove all automatically assigned [name] attributes from form controls
-       */
-      set:x:/../*/sys42.get-widget/**(/void/*/element/=input/./*/name|/literal/*/element/=textarea/./*/name|/container/*/element/=select/./*/name)
-
-      /*
-       * Making sure we remove all child widgets from usercontrols, in addition to
+       * Making sure we remove widgets collection from all usercontrols, in addition to
        * our "design time additions", that makes sure no event handlers INSIDE of
        * usercontrol is being mapped up
        */
-      set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/widgets/*
+      set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/widgets
       set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/oninit/*(/_design-time-remover|/_design-time-remover/+1|/_design-time-remover/+2|/_design-time-remover/+3)
 
       /*
@@ -1464,7 +1552,8 @@ you can simply delete it now. A complete version of the widget still exists on y
               with:on
 
       /*
-       * Returning [controls] to caller
+       * Returning [controls] to caller. Notice, we return it as Hyperlisp, and not as
+       * lambda, since that's what main editor logic depends upon
        */
       insert-before:x:/../0
         src:controls
@@ -1479,6 +1568,10 @@ you can simply delete it now. A complete version of the widget still exists on y
         src
           type:controls
 
+
+
+
+
     /*
      * Invoked when a widget is added to the page
      */
@@ -1488,7 +1581,6 @@ you can simply delete it now. A complete version of the widget still exists on y
        * Retrieving default properties, which differs from widget type
        */
       sys42.wysiwyg-controls.get-default-properties:x:/../*/_arg?value
-
 
       /*
        * Adding 'insertion position' to create-widget Active Event invocation.
@@ -1536,7 +1628,7 @@ you can simply delete it now. A complete version of the widget still exists on y
 
       /*
        * Adding [onclick] event handler, such that user can select widget
-       * in WYSIWYG screen by clicking it
+       * in WYSIWYG surface by clicking it
        */
       add:x:/../*/_create-widget
         src

@@ -12,14 +12,6 @@ set:x:/../*/sys42.get-widget/**(/void/*/element/=input/./*/name|/literal/*/eleme
 set:x:/../*/sys42.get-widget/**(/void/*/events|/literal/*/events|/container/*/events)
 
 /*
- * Making sure our 'clear selected widget' button is disabled by default, 
- * it might get enabled later, depending upon if widget has children or not
- */
-set-widget-property:wysiwyg-button-clear-widget
-  class:btn btn-default disabled
-  disabled
-
-/*
  * Sorting widget's properties, first stuffing event handlers last, then alphabetically
  */
 sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/element!/data-selected!/data-usercontrol!/onclick!/name!/oninit/./*/data-selected/./*/oninit)
@@ -564,7 +556,7 @@ if:x:/../*/sys42.get-widget/*/*/data-usercontrol
   /*
    * This is a usercontrol, disabling "select children" button, by invoking with no arguments
    */
-  sys42.wysiwyg-controls.create-widgets-for-selected
+  sys42.wysiwyg-controls.toggle-select-children-widgets
 else
 
   /*
@@ -572,7 +564,7 @@ else
    * or deletes all "Select children widget" buttons, passing in id of widget, which
    * will make sure it creates children widgets selectors for us
    */
-  sys42.wysiwyg-controls.create-widgets-for-selected:x:/../*/_widget?value
+  sys42.wysiwyg-controls.toggle-select-children-widgets:x:/../*/_widget?value
     
 
 

@@ -31,7 +31,7 @@ _wizard-item:Button
 _wizard-item:Textbox
   _description:Creates a default textbox, with bootstrap CSS classes wired up
   _code
-    create-literal-widget
+    create-void-widget
       element:input
       type:text
       class:form-control

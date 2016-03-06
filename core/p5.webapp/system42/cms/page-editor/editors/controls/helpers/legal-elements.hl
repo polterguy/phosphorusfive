@@ -219,9 +219,9 @@ datalist:@"The HTML Datalist Element (<datalist>) contains a set of <option> ele
 
 fieldset:@"The HTML <fieldset> element is used to group several controls as well as labels (<label>) within a web form."
 
-form:@"The HTML <form> element represents a document section that contains interactive controls to submit information to a web server."
-
 input:@"The HTML element <input> is used to create interactive controls for web-based forms in order to accept data from the user. How an <input> works varies considerably depending on the value of its type attribute."
+
+textarea:@"The HTML element <input> is used to create interactive controls for web-based forms in order to accept data from the user. How an <input> works varies considerably depending on the value of its type attribute."
 
 keygen:@"The HTML <keygen> element exists to facilitate generation of key material, and submission of the public key as part of an HTML form. This mechanism is designed for use with Web-based certificate management systems. It is expected that the <keygen> element will be used in an HTML form along with other information needed to construct a certificate request, and that the result of the process will be a signed certificate."
 
