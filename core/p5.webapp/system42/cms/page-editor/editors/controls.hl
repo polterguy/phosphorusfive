@@ -29,48 +29,19 @@ lisp2lambda:x:/../*/select-data/*/*/controls?value
  * make sure they don't mess up design surface with weird events occuring
  * as the user navigates his page. Basically, eliminates the functionality of
  * all Ajax and/or JavaScript DOM events on page content.
+ * 
  * Later, when page is saved back to database, this process is reversed, and all
  * [_onXXX] nodes beneath [literal], [container] and [void] are being transformed
  * back to [onXXX] again
+ *
+ * In addition, this logic add up an [onclick] for each widget, that is not a usercontrol,
+ * such that when user clicks widget, the widget becomes selected on page
  */
 set:x:/+/*/_node?value
   src:x:/../*/lisp2lambda
 sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/process-widgets-event-handlers.hl
   _node
-
-
-
-
-/*
- * Then adding [onclick] event handlers for each widget, to
- * allow widget to be selected by clicking it in design surface, except all
- * widgets that are children of usercontrols
- */
-add:x:/../*/lisp2lambda/**(/literal|/container|/void)(!/*/data-usercontrol/=true/./*/widgets/**)
-  src
-    onclick
-
-      /*
-       * Invoking Active Event that selects widget in design surface. If this
-       * Active Event returns true, it means a widget was selected, otherwise
-       * it was the previously selected widget that was clicked, making the widget
-       * become "unselected", resulting in no widgets being selected.
-       */
-      sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
-      if:x:/-?value
-
-        /*
-         * Widget was selected. Making sure we set the [select] dropdown
-         * box that allows selecting widgets, to the widget that was just selected
-         */
-        sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
-      else
-
-        /*
-         * Widget was "unselected", making sure our "select widget" dropdown blox
-         * is set to "no selection".
-         */
-        sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+  _children-selectable:bool:true
 
 
 
@@ -1516,7 +1487,7 @@ you can simply delete it now. A complete version of the widget still exists on y
        * Making sure we remove the [data-selected] attribute, 
        * which is used to track the currently selected widget in surface.
        */
-      set:x:/../*/sys42.get-widget/**(/container/*/data-selected|/void/*/data-selected|/literal/*/data-selected)
+      set:x:/../*/sys42.get-widget/**(/container/*/data-selected/=true|/void/*/data-selected/=true|/literal/*/data-selected/=true)
 
       /*
        * Making sure we remove widgets collection from all usercontrols, in addition to
@@ -1524,13 +1495,57 @@ you can simply delete it now. A complete version of the widget still exists on y
        * usercontrol is being mapped up
        */
       set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/widgets
-      set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/oninit/*(/_design-time-remover|/_design-time-remover/+1|/_design-time-remover/+2|/_design-time-remover/+3)
+      set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/oninit/*(/_design-time-remover|/_design-time-remover/+1|/_design-time-remover/+2)
 
       /*
        * Removing all 'select by clicking' event handlers, only relevant
-       * while designing widget
+       * while designing widget. First retrieving "near match"
        */
-      set:x:/../*/sys42.get-widget/**/onclick
+      for-each:x:/../*/sys42.get-widget/**(/container/*/onclick|/void/*/onclick|/literal/*/onclick)
+
+        /*
+         * Then making sure this is one of our design time clickers, by traversing [onclick]
+         * upwards, making sure there's only [void]/[literal]/[container]/[widgets] ancestors nodes,
+         * to prevent [onclick] nodes for dynamically created controls, created as consequence of e.g.
+         * some ajax event occurring to be removed
+         */
+        _should-remove:bool:true
+        set:x:/+?value
+          src:x:/..for-each/*/_dp/#/.
+        _while-node
+
+        /*
+         * Looping until we see [sys42.get-widget] node upwards in ancestor hierarchy 
+         * from [onclick] event handler
+         */
+        while:x:/-/#?name
+          !=:sys42.get-widget
+          switch:x:/..for-each/*/_while-node/#?name
+            case:widgets
+            case:container
+            case:literal
+            case:void
+
+              /*
+               * Continue iterating next ancestor node
+               */
+              set:x:/..for-each/*/_while-node?value
+                src:x:/..for-each/*/_while-node/#/.
+            default:
+
+              /*
+               * Stop iterating and signal that we should *not* remove this [onclick]
+               */
+              set:x:/..for-each/*/_should-remove?value
+                src:bool:false
+              break
+
+        /*
+         * Checking results of [while] iteration, and if we should remove this [onclick]
+         */
+        if:x:/..for-each/*/_should-remove?value
+          set:x:/..for-each/*/_dp/#
+
 
       /*
        * Making sure we rename all [_onXXX] event handlers, to their actual name, before

@@ -132,6 +132,7 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                     add:x:/../*/select-data/*
                                       src:"parent:{0}"
                                         :x:/../*/_event?value
+
                                     /*
                                      * This next node is here such that we can "undo" the modifications to the [oninit] event handler
                                      * of usercontrols when page is being saved
@@ -139,29 +140,14 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                     _design-time-remover
 
                                     /*
-                                     * Deletes all [onXXX] event handlers, except [oninit] event handlers for usercontrols, by looping through
-                                     * everything that's a "close match", for then to verify it's an "exact match" for an event
-                                     */
-                                    for-each:x:/../*/select-data/**(/~container/*/~on(!/./*/data-usercontrol/./*/oninit)|/~literal/*/~on|/~void/*/~on)
-
-                                      /*
-                                       * Checking that node's name starts with "on", has at least three more characters, which must be a-z. Meaning
-                                       * stuff like [data-foo] and [onX] and [onfoo3] is ignored. Which should result in removing all DOM event handlers,
-                                       * leaving the rest alone
-                                       */
-                                      if
-                                        fetch:x:/0/0/0
-                                          match:x:/..for-each/*/_dp/#?name
-                                            what:regex:/^on[a-z]{3}$/
-                                        set:x:/..for-each/*/_dp/#
-
-                                    /*
-                                     * Making sure we recursively call "self" for each nested usercontrol inside of current usercontrol
+                                     * Making sure we process usercontrol for WYSIWYG design time surface, by removing all
+                                     * ajax event handlers, such that they don't mess up design surface in any ways
                                      */
                                     set:x:/+/*/_node?value
                                       src:x:/../*/select-data
                                     sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/process-widgets-event-handlers.hl
                                       _node
+                                      _children-selectable:bool:false
                                     eval:x:/../*/select-data
                               add:x:/../*/_create-widget
                                 src

@@ -39,7 +39,7 @@ create-protected-event:sys42.get-widget
       src:x:/./-/*/*
 
     /*
-     * Checking if this was an automatically generated ID
+     * Checking if this was an automatically generated ID,
      * and if it was, we remove the automatically assigned ID
      */
     match:x:/../*/list-widgets/0?value
@@ -50,13 +50,29 @@ create-protected-event:sys42.get-widget
       set:x:/../*/_return-value/-?value
 
     /*
-     * Checking if this was an automatically generated name attribute
-     * and if it was, we remove the automatically assigned name
+     * Checking if this was an automatically generated name attribute,
+     * and if it was, we remove the "name" attribute entirely
      */
-    match:x:/../*/list-widgets/0/*/name?value
+    match:x:/../*/_return-value/-/*/name
       what:regex:/x[abcdef0-9]{7}/c
     if:x:/-/*/*?name
-      set:x:/../*/_return-value/-/*/name?value
+      set:x:/../*/_return-value/-/*/name
+
+    /*
+     * Checking if this is an "input" HTML widget, and has an "empty" value, 
+     * and if it matches those conditions, we remove the [value] node altogether.
+     */
+    if:x:/../*/_return-value/-?name
+      =:void
+      and:x:/../*/_return-value/-/*/element?value
+        =:input
+      and:x:/../*/_return-value/-/*/value?value
+        =:
+
+      /*
+       * Removing [value] entirely
+       */
+      set:x:/../*/_return-value/-/*/value
 
     /*
      * Widget ajax events
