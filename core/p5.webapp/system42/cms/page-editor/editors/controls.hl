@@ -1,7 +1,11 @@
 
 /*
  * Editor for [controls] types of pages. Allows to visually edit
- * a page, adding widgets to it, in a WYSIWYG design time environment
+ * a page, adding widgets to it, in a WYSIWYG design time environment.
+ * 
+ * The way it works, is that it is using the actual WYSIWYG Design Surface
+ * as its actual storage, for the widgets you add. Then it "reverse-engineers" the widgets
+ * in your design surface, when it should save your widget hierarchy to the database
  */
 
 
