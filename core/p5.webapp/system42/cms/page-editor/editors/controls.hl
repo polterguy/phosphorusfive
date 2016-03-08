@@ -1788,10 +1788,18 @@ you can simply delete it now. A complete version of the widget still exists on y
       set-widget-property:wysiwyg-manipulate-selected-widget
         visible:false
 
+
+
+
+
     /*
      * Selects the given widget on page
      */
     sys42.wysiwyg-controls.select-widget
+
+      /*
+       * Finding previously selected widget, such that we can "un-select" it
+       */
       find-widget
         data-selected:true
 
@@ -1873,6 +1881,10 @@ you can simply delete it now. A complete version of the widget still exists on y
          */
         set-widget-property:wysiwyg-manipulate-selected-widget
           visible:true
+
+        /*
+         * Returning true to indicate that a widget actually was selected
+         */
         return:bool:true
       else
 
@@ -1903,25 +1915,93 @@ you can simply delete it now. A complete version of the widget still exists on y
          */
         set-widget-property:wysiwyg-manipulate-selected-widget
           visible:false
+
+        /*
+         * Returning false to indicate that no widget was selected, 
+         * but that this was an "un-select" operation
+         */
         return:bool:false
+
+
+
+
 
     /*
      * Shows the widget's properties widget, allowing user to
      * edit properties of widget
      */
     sys42.wysiwyg-controls.show-selected-widgets-properties
+
+      /*
+       * Evaluates the Hyperlisp file that creates the "property view" widget
+       */
       sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+
+      /*
+       * Then "refreshing" the "manipulate selected widget" toolbar
+       */
+      find-widget:wysiwyg-editor-surface
+        data-selected
+
+      /*
+       * Enabling 'Select parent widget button', 
+       * unless parent of currently selected widget is our WYSIWYG main surface
+       */
+      get-parent-widget:x:/../*/find-widget/*?value
+      if:x:/-/*?value
+        !=:wysiwyg-editor-surface
+
+        /*
+         * Enabling "Get parent" button
+         */
+        sys42.wysiwyg-controls.toggle-get-parent-widget:x:/../*/get-parent-widget/*?value
+      else
+
+        /*
+         * Disabling "Get parent" button
+         */
+        sys42.wysiwyg-controls.toggle-get-parent-widget
+
+      /*
+       * Then enabling "select children widget's" button, and adding its children selectors,
+       * but only if currently selected widget has any children
+       */
+      get-children-widgets:x:/../*/find-widget/*?value
+      if:x:/-/*/*?count
+        >:int:0
+
+        /*
+         * Enabling "select children widgets" button
+         */
+        sys42.wysiwyg-controls.toggle-select-children-widgets:x:/../*/find-widget/*?value
+      else
+
+        /*
+         * Disabling "select children widgets" button
+         */
+        sys42.wysiwyg-controls.toggle-select-children-widgets
+
+
+
+
 
     /*
      * Hides the widget's properties widget
      */
     sys42.wysiwyg-controls.hide-selected-widgets-properties
+
+      /*
+       * Simply hides main "properties view" widget
+       */
       set-widget-property:wysiwyg-controls-properties
         visible:false
 
+
+
+
+
     /*
-     * Returns true if currently selected widget's element is a "block level" element,
-     * or an element that allows "block level elements" inside of it, such as "a", etc
+     * Returns true if currently selected widget's element aloows "block level content".
      */
     sys42.wysiwyg-controls.selected-widget-allows-block-level-content
 

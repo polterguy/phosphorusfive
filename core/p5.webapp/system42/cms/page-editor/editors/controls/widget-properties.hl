@@ -61,10 +61,24 @@ set:x:/../*/create-widget/**/void/=widget-property-element/*/value?value
 
 
 /*
- * Setting the value of our innerValue textbox to the innerValue of the widget
+ * Setting the value of our innerValue textbox to the innerValue of the widget,
+ * but if widget is not a [literal], we simply remove the [innerValue] property
+ * widget
  */
-set:x:/../*/create-widget/**/textarea/=widget-property-innerValue/*/innerValue?value
-  src:x:/../*/sys42.get-widget/*/*/innerValue?value
+if:x:/../*/sys42.get-widget/*/*/innerValue
+
+  /*
+   * Widget has [innerValue]
+   */
+  set:x:/../*/create-widget/**/textarea/=widget-property-innerValue/*/innerValue?value
+    src:x:/../*/sys42.get-widget/*/*/innerValue?value
+
+else
+
+  /*
+   * Widget does NOT have [innerValue]
+   */
+  set:x:/../*/create-widget/**/container/=widget-property-innerValue-wrp
 
 
 
@@ -548,6 +562,7 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                   innerValue:{attribute-value}
                   rows:1
                   _event-handler-name:{attribute-name}
+                  placeholder:Implement some Hyperlisp code here
                   onchange
                     raise-widget-ajax-event:x:/../*/_event?value
                       _onupdate
@@ -917,6 +932,175 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                       =:bool:true
                       send-javascript:@"window.{0}.toTextArea();"
                         :x:/../*/find-widget/*?value
+
+
+
+
+
+
+
+/*
+ * Then creating widgets for currently selected widget's lambda events,
+ * but only if there are any Action Subscribers
+ */
+if:x:/../*/sys42.get-widget/*/*/events/*?count
+  >:int:0
+
+  /*
+   * Currently selected widget has lambda events, adding a table to main widget that shows them
+   */
+  databind:x:/..if/*/_container/*/container/*/widgets
+    src:x:/../*/sys42.get-widget/*/*/events/*
+    template
+      tr
+        style:"cursor:pointer;"
+        {_active-event-name}:x:?name
+        onclick
+
+          /*
+           * Retrieving lambda event name from hidden attribute on "tr" HTML widget
+           */
+          get-widget-property:x:/../*/_event?value
+            _active-event-name
+
+          /*
+           * Finding selected widget in surface
+           */
+          find-widget:wysiwyg-editor-surface
+            data-selected
+
+          /*
+           * Passing in arguments necessary to retrieve correct lambda event from selected widget's [events] collection
+           */
+          add:x:/+
+            src:x:/../*/get-widget-property/*/*?value
+
+          /*
+           * Retrieving lambda event from widget, and converting to Hyperlisp,
+           * such that we can stuff Hyperlisp into textarea widget created below
+           */
+          get-widget-lambda-event:x:/../*/find-widget/[0,1]/*?value
+          lambda2lisp:x:/-/*/*/*
+
+          /*
+           * Then we need to create a "tr" widget, and insert into the table, after currently clicked tr widget,
+           * but before we incoke [create-widget] active event, we need to forward evaluate some of its arguments
+           */
+          eval-x:x:/+/*/after|/+/*/*/*/*/textarea/*/innerValue|/+/*/*/*/*/*/*/_event-name
+          create-widget
+            element:tr
+            style:"background-color:Transparent;"
+            after:x:/../*/_event?value
+            widgets
+              td
+                widgets
+                  textarea
+                    class:form-control
+                    rows:12
+                    placeholder:Your Hyperlisp code goes here ...
+                    innerValue:x:/../*/lambda2lisp?value
+                    _onupdate
+
+                      /*
+                       * Forward evaluated before creation of widget, contains lambda event name
+                       */
+                      _event-name:x:/../*/get-widget-property/*/*?value
+
+                      /*
+                       * Retrieving new Hyperlisp code, inside a try/catch block, to make sure Hyperlisp
+                       * syntacic errors are catched, and user is warned
+                       */
+                      try
+
+                        /*
+                         * Retrieving Hyperlisp and converting to lambda
+                         */
+                        get-widget-property:x:/../*/_event?value
+                          value
+                        lisp2lambda:x:/-/*/*?value
+
+                        /*
+                         * Retrieving currently selected widget
+                         */
+                        find-widget:wysiwyg-editor-surface
+                          data-selected
+
+                        /*
+                         * Updating widget's lambda event, but first applying arguments to invocation
+                         */
+                        add:x:/+2
+                          src:x:/../*/_event-name?value
+                        add:x:/+/*
+                          src:x:/..try/*/lisp2lambda/*
+
+                        /*
+                         * Now, finally, we're ready to update widget's lambda event
+                         */
+                        set-widget-lambda-event:x:/..try/*/find-widget/*?value
+
+                      catch
+
+                        /*
+                         * Some bug occurred, probably malformed Hyperlisp.
+                         * Informing user!
+                         */
+                        sys42.info-window:@"Oops! Syntax error in your Hyperlisp. Probably some spaces too much or too few!
+Look for syntax errors in your Hyperlisp! Code was not saved!"
+                          _error:true
+                          _time:more
+
+          /*
+           * Then making sure we set focus initially to textarea widget wrapping Hyperlisp
+           */
+          find-widget:x:/-?value
+            element:textarea
+          send-javascript:@"$('#{0}').focus().select();"
+            :x:/./-/*?value
+
+          /*
+           * Then checking if user previously have selected to edit Hyperlisp in CodeMirror mode,
+           * and if so, we launch the CodeMirror editor wrapping our textarea widget
+           */
+          get-session-value:wysiwyg-controls.code-mirror-editor-enabled
+          if:x:/-/*?value.bool
+            =:bool:true
+
+            /*
+             * User has previously chosen to edit Hyperlisp with CodeMirror, 
+             * launching CodeMirror editor, wrapping textarea.
+             * First applying arguments to loader
+             */
+            set:x:/+/*/*?name
+              src:x:/../*/find-widget/[1,2]/*?value
+
+            /*
+             * Loading up CodeMirror, wrapping the textarea
+             */
+            sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+              _editor
+                _name
+                  mode:hyperlisp
+                  theme:the-matrix-reduced
+                  autofocus:true
+                  fullscreen:false
+                  height:350px
+                  raise-update:true
+
+        widgets
+          td
+            {innerValue}:@"<strong><span class=""glyphicon glyphicon-flash""></span> {0}</strong>"
+              :x:?name
+  _container
+    container:wysiwyg-controls-action-subscribers
+      element:table
+      class:table table-hover
+      widgets
+        literal
+          element:thead
+          innerValue:@"<tr><th><h3>Action subscribers for widget</h3></th></tr>"
+  add:x:/../*/create-widget/*/widgets
+    src:x:/..if/*/_container/*
+  
 
 
 
