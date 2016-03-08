@@ -358,6 +358,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'continue':
         case 'url-encode':
         case 'url-decode':
+        case 'request-is-mobile-device':
           return this.styles.keyword;
 
         // default handling

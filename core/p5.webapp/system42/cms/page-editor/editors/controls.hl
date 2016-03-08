@@ -12,6 +12,45 @@
 
 
 /*
+ * Making sure we set session values for CodeMirror/CKEditor editing to "true",
+ * unless request comes from a mobile device,
+ * but only the first time [controls] are edited within session
+ */
+get-session-value:sys42.wysiwyg-controls.has-set-default-advanced-editor
+if:x:/-/*?value
+  not
+
+  /*
+   * First opening of [controls] pages within session, checking client type, and
+   * setting CodeMirror editing to "true" if browser is desktop, for then to set
+   * session value that will prevent this logic from being evaluated again during session
+   */
+  if
+    request-is-mobile-device
+    not
+
+    /*
+     * This is *not* a mobile device, hence we set CodeMirror and CKEditor editing to "default" for session.
+     * Both for HTML editor, Active Event (Action Subscribers) editor, and Ajax Event handler editor
+     */
+    set-session-value:sys42.wysiwyg-controls.innerValue-html-view
+      src:true
+    set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled
+      src:true
+    set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
+      src:true
+
+  /*
+   * Making sure this logic is not evaluated again during session, to not
+   * override user's preferences
+   */
+  set-session-value:sys42.wysiwyg-controls.has-set-default-advanced-editor
+    src:true
+
+
+
+
+/*
  * Loading page from database from [_id] supplied by main page editor
  */
 select-data:x:/*/*/p5.page/"={0}"

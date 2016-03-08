@@ -669,7 +669,7 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                      * Checking if CodeMirror module is enabled, and if so, we load up
                      * CodeMirror editor
                      */
-                    get-session-value:wysiwyg-controls.code-mirror-editor-enabled
+                    get-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled
                     if:x:/-/*?value.bool
                       =:bool:true
 
@@ -825,7 +825,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                      * Otherwise we enable it, and store in session whether or not
                      * CodeMirror editing is chosen
                      */
-                    get-session-value:wysiwyg-controls.code-mirror-editor-enabled
+                    get-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled
                     if:x:/-/*?value.bool
                       =:bool:true
 
@@ -842,7 +842,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                        * Making sure we remove value from session that stores the fact that CodeMirror
                        * editing is enabled
                        */
-                      set-session-value:wysiwyg-controls.code-mirror-editor-enabled
+                      set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled
                     else
 
                       /*
@@ -873,7 +873,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                        * Making sure we store in session that CodeMirror module is loaded, to allow "toggling"
                        * functionality when clicking pencil
                        */
-                      set-session-value:wysiwyg-controls.code-mirror-editor-enabled
+                      set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled
                         src:true
                 a
                   href:#
@@ -927,7 +927,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                      * Checking if CodeMirror editor is loaded, and if so, making sure
                      * we destroy it on client-side
                      */
-                    get-session-value:wysiwyg-controls.code-mirror-editor-enabled
+                    get-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled
                     if:x:/-/*?value.bool
                       =:bool:true
                       send-javascript:@"window.{0}.toTextArea();"
@@ -956,6 +956,7 @@ if:x:/../*/sys42.get-widget/*/*/events/*?count
         style:"cursor:pointer;"
         {_active-event-name}:x:?name
         _code-view-visible:false
+        title:Click to toggle Hyperlisp editor for specified Action Subscriber
         onclick
 
           /*
@@ -1113,7 +1114,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                            * Otherwise we enable it, and store in session whether or not
                            * CodeMirror editing is chosen
                            */
-                          get-session-value:wysiwyg-controls.code-mirror-editor-enabled-events
+                          get-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
                           if:x:/-/*?value.bool
                             =:bool:true
 
@@ -1131,7 +1132,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                              * Making sure we remove value from session that stores the fact that CodeMirror
                              * editing is enabled
                              */
-                            set-session-value:wysiwyg-controls.code-mirror-editor-enabled-events
+                            set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
                           else
 
                             /*
@@ -1163,7 +1164,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                              * Making sure we store in session that CodeMirror module is loaded, to allow "toggling"
                              * functionality when clicking pencil
                              */
-                            set-session-value:wysiwyg-controls.code-mirror-editor-enabled-events
+                            set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
                               src:true
 
           /*
@@ -1178,7 +1179,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
            * Then checking if user previously have selected to edit Hyperlisp in CodeMirror mode,
            * and if so, we launch the CodeMirror editor wrapping our textarea widget
            */
-          get-session-value:wysiwyg-controls.code-mirror-editor-enabled-events
+          get-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
           if:x:/-/*?value.bool
             =:bool:true
 

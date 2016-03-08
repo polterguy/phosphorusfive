@@ -59,6 +59,34 @@ namespace p5.web.ui.request
             }
         }
 
+        /// <summary>
+        ///     Returns true if the user is coming in from a mobile device
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "request-is-mobile-device", Protection = EventProtection.LambdaClosed)]
+        public static void request_is_mobile_device (ApplicationContext context, ActiveEventArgs e)
+        {
+            var userAgent = HttpContext.Current.Request.UserAgent.ToLower ();
+            if (userAgent.Contains ("blackberry") || 
+                userAgent.Contains ("iphone") || 
+                userAgent.Contains ("ppc") || 
+                userAgent.Contains ("windows ce") || 
+                userAgent.Contains ("mobile") || 
+                userAgent.Contains ("palm") || 
+                userAgent.Contains ("portable") || 
+                userAgent.Contains ("opera mobi") || 
+                userAgent.Contains ("android")) {
+
+                // This is a mobile device, probably not on .Net's list of devices
+                e.Args.Value = true;
+            } else {
+
+                // This "might" be a mobile device, checking the .Net Framework's property
+                e.Args.Value = HttpContext.Current.Request.Browser.IsMobileDevice;
+            }
+        }
+
         /*
          * Determines if current request is "text"
          */
