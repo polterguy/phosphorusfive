@@ -70,6 +70,7 @@
     <Compile Include="keywords\Switch.cs" />
     <Compile Include="keywords\Break.cs" />
     <Compile Include="keywords\Continue.cs" />
+    <Compile Include="keywords\Trim.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

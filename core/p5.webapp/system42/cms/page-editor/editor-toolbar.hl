@@ -190,7 +190,13 @@ create-widget
      * Save, Preview and Delete button wrapper
      */
     container
-      class:col-md-12 text-right prepend-bottom
+      class:col-md-12 text-right
+
+      /*
+       * Since we don't want page to "jump" up and down, as user is enabling feature
+       * in specialized editor, we provide an additional margin at the bottom of roughly "page height"
+       */
+      style:"margin-bottom:600px;"
       widgets
         container
           class:btn-group

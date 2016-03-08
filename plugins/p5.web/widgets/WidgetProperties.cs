@@ -112,10 +112,16 @@ namespace p5.web.widgets
                         break;
                     case "id":
                         var oldID = idxWidget.ID;
-                        idxWidget.ID = valueNode.GetExValue<string> (context);
-                        if (oldID != idxWidget.ID) {
-                            Manager.WidgetAjaxEventStorage.ChangeKey1 (context, oldID, idxWidget.ID);
-                            Manager.WidgetLambdaEventStorage.ChangeKey2 (oldID, idxWidget.ID);
+                        var newID = valueNode.GetExValue<string> (context);
+                        if (string.IsNullOrEmpty (newID)) {
+
+                            // Widget's new id was null or empty, creating a new random unique ID for widget
+                            newID = Container.CreateUniqueId ();
+                        }
+                        idxWidget.ID = newID;
+                        if (oldID != newID) {
+                            Manager.WidgetAjaxEventStorage.ChangeKey1 (context, oldID, newID);
+                            Manager.WidgetLambdaEventStorage.ChangeKey2 (oldID, newID);
                         }
                         break;
                     default:

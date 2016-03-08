@@ -90,14 +90,14 @@ nested-break
         :x:/../0?value
         :x:/..for-each/*/_dp/#?value
     for-each:x:/../*/_data/*/[1,]
-      set:x:/./-?value
+      set:x:/././-?value
         src:{0}{1}
           :x:/../0?value
           :x:/..for-each/*/_dp/#?value
       break
   if:x:/../0?value
-    !=:@"success"
-    throw:@"Assert error, expected [success], got [{0}]!"
+    !=:@"successcc"
+    throw:@"Assert error, expected [successcc], got [{0}]!"
       :x:/../0?value
 
 /*

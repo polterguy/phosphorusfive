@@ -26,6 +26,25 @@ _wizard-item:Button
 
 
 /*
+ * A div wrapper for HTML content
+ */
+_wizard-item:Rich Text content
+  _description:Creates a div, that allows you to add rich content to your page
+  _code
+    create-literal-widget
+      element:div
+      class:col-xs-12
+      innerValue:@"<h3>Rich content header</h3>
+<p>Some paragraph</p>"
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+/*
  * A bootstrap CSS textbox wizard template widget
  */
 _wizard-item:Textbox

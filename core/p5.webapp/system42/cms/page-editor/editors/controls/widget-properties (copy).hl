@@ -1,0 +1,920 @@
+
+/*
+ * Shows the properties for a single widget.
+ * Expects [_widget] to contains its id
+ */
+
+
+/*
+ * Fetching widget, without its children widgets
+ */
+sys42.get-widget:x:/../*/_widget?value
+  _no-children:true
+
+
+/*
+ * Skipping all lambda events for widget
+ */
+set:x:/../*/sys42.get-widget/**(/void/*/events|/literal/*/events|/container/*/events)
+
+
+/*
+ * Sorting widget's properties, making sure innerValue ends up at the beginning, 
+ * then event handlers at the end, then everything else alphabetically.
+ * Skipping [widgets], [element], [data-selected], [data-usercontrol], [onclick] and [oninit] of usercontrol widgets
+ */
+sort:x:/../*/sys42.get-widget/*/*(!/widgets!/element!/data-selected!/data-usercontrol!/onclick!/data-usercontrol/./*/oninit)
+  if:x:/../*/_rhs/#?name
+    =:innerValue
+
+    // [_rhs] is innerValue
+    return:int:1
+  if:x:/../*/_lhs/#?name
+    =:innerValue
+
+    // [_lhs] is innerValue
+    return:int:-1
+  if
+    fetch:x:/0/0?value
+      index-of:x:/../*/_rhs/#?name
+        what:_on
+    =:int:0
+    and
+      fetch:x:/0/0
+        index-of:x:/../*/_lhs/#?name
+          what:_on
+      not
+
+    // [_lhs] is event handler, but not [_rhs]
+    return:int:-1
+  if
+    fetch:x:/0/0?value
+      index-of:x:/../*/_lhs/#?name
+        what:_on
+    =:int:0
+    and
+      fetch:x:/0/0
+        index-of:x:/../*/_rhs/#?name
+          what:_on
+      not
+
+    // [_rhs] is event handler, but not [_lhs]
+    return:int:1
+
+  // Otherwise we sort by name
+  if:x:/../*/_lhs/#?name
+    >:x:/../*/_rhs/#?name
+    return:1
+  if:x:/../*/_lhs/#?name
+    <:x:/../*/_rhs/#?name
+    return:-1
+  return:0
+
+
+/*
+ * Setting initial values for widget's properties, first starting
+ * out with the 'static properties', such as [element] and [id], which
+ * all widgets must have
+ */
+set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-element/*/value?value
+  src:x:/../*/sys42.get-widget/*/*/element?value
+set:x:/../*/create-widget/*/widgets/*/container/**/void/=widget-property-id/*/value?value
+  src:x:/../*/_widget?value
+
+
+/*
+ * Then iterating all dynamically inserted properties of specific widget that were sorted above,
+ * which excludes [widget], [element], etc - See above in [sort] invocation
+ */
+for-each:x:/../*/sort/*
+  _control
+    container
+      class:col-md-4 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            span
+              innerValue:{element-name}
+              class:input-group-addon
+              style:"background-color:rgba(0,128,128,0.2);"
+              title:This is a dynamic attribute, and can be removed, or nullified, by clicking the 'X'
+            void
+              element:input
+              type:text
+              class:form-control
+              placeholder:New value ...
+              _element-name:{element-name}
+              value
+              onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
+              onchange
+                if
+                  fetch:x:/0/0/0?value
+                    get-widget-property:x:/../*/_event?value
+                      element
+                  =:input
+
+                  /*
+                   * This is a simple value type of attribute, might be an event,
+                   * but if it is, it's a JavaScript client-side event
+                   */
+                  get-widget-property:x:/../*/_event?value
+                    value
+                  eval-x:x:/+/*
+                  sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
+                    _new-value:x:/..if/*/get-widget-property/*/*?value
+                else-if
+                  fetch:x:/0/0/0?value
+                    get-widget-property:x:/../*/_event?value
+                      _isInnerValue
+                  =:true
+
+                  /*
+                   * This is [innerValue] of widget
+                   */
+                  get-widget-property:x:/../*/_event?value
+                    value
+                  set-widget-property:x:/../*/_event?value
+                    class:form-control
+                  find-widget
+                    data-selected
+                  set-widget-property:x:/..else-if/*/find-widget/*?value
+                    innerValue:x:/..else-if/*/get-widget-property/*/*?value
+                else
+
+                  /*
+                   * This is a Hyperlisp Ajax event handler attribute. Making sure
+                   * we convert the value to lambda in a try/catch block, to trap any
+                   * misformatted Hyperlisp syntactic errors
+                   */
+                  try
+                    get-widget-property:x:/../*/_event?value
+                      value
+                      _element-name
+                    lisp2lambda:x:/-/*/0?value
+                    set-widget-property:x:/../*/_event?value
+                      class:form-control
+                    find-widget
+                      data-selected
+                    add:x:/+2
+                      src:x:/..try/*/get-widget-property/*/*/_element-name?value
+                    add:x:/+/*
+                      src:x:/..try/*/lisp2lambda/*
+                    set-widget-ajax-event:x:/..try/*/find-widget/*?value
+                  catch
+                    sys42.info-window:@"Oops, syntax error in Hyperlisp. Probably malformatted child node collections. Please correct! Value was NOT saved!"
+                      _error:true
+                      _time:more
+                    set-widget-property:x:/../*/_event?value
+                      class:form-control error
+
+                    /*
+                     * Making sure we return, to avoid refreshing view below
+                     */
+                    return
+            a
+              href:#
+              class:input-group-addon input-group-addon-force-float
+              innerValue:@"<span class=""glyphicon glyphicon-trash""></span>"
+              title:Deletes the attribute from widget
+              onclick
+                _element-name:{element-name}
+                if
+                  fetch:x:/0/0?value
+                    index-of:x:/../*/_element-name?value
+                      what:_on
+                  =:int:0
+
+                  /*
+                   * This is an invisible event handler, showing user a special dialog box, 
+                   * allowing user to convert between JavaScript event handlers, and Ajax Hyperlisp
+                   * event handlers. First checking if this is JavaScript or Ajax Hyperlisp event handler.
+                   */
+                  find-widget
+                    data-selected
+                  add:x:/+
+                    src:{element-name}
+                  get-widget-property:x:/-2/*?value
+                  if:x:/-/*/*?value
+
+                    /*
+                     * This is JavaScript event handler, allowing user to convert to Hyperlisp Ajax event handler
+                     */
+                    replace:x:/../*/_element-name?value
+                      what:_
+                    eval-x:x:/+/*
+                    sys42.confirm-window
+                      _header:Confirm deletion of property
+                      _body:@"<p>Please confirm that you wish to <strong>delete the <em>'{0}'</em> event</strong> from widget!</p>
+<p>Alternatively, you can choose to convert the existing JavaScript event handler to an Ajax Hyperlisp event handler.</p>
+<p>If you do not want to do either, please close the window at the top right corner with the 'X'.</p>"
+                        :x:/..if/*/replace?value
+                      _extra-buttons
+                        button
+                          class:btn btn-default
+                          innerValue:Convert to Hyperlisp
+                          title:Convert existing JavaScript event handler to an Ajax Hyperlisp server-side event handler
+                          onclick
+                            _element-name:{element-name}
+                            find-widget
+                              data-selected
+                            add:x:/+
+                              src:x:/../*/_element-name?value
+                            delete-widget-property:x:/../*/find-widget/*?value
+                            add:x:/+2
+                              src:x:/../*/_element-name?value
+                            add:x:/+/*
+                              src
+                                sys42.info-window:TODO; Implement some intelligent Hyperlisp here ...!!
+                            set-widget-ajax-event:x:/../*/find-widget/*?value
+                            send-javascript:@"$('#confirm-window').modal('toggle');"
+                            set:x:/+/*?value
+                              src:x:/../*/find-widget/*?value
+                            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                              _widget
+                      _onok
+
+                        /*
+                         * Simply delete existing JavaScript event handler
+                         */
+                        _element-name:{element-name}
+                        find-widget
+                          data-selected
+                        add:x:/+
+                          src:x:/../*/_element-name?value
+                        delete-widget-property:x:/../*/find-widget/*?value
+                        set:x:/+/*?value
+                          src:x:/../*/find-widget/*?value
+                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                          _widget
+                  else
+
+                    /*
+                     * This is a Hyperlisp Ajax event handler, allowing user to convert to a JavaScript event handler
+                     */
+                    replace:x:/../*/_element-name?value
+                      what:_
+                    eval-x:x:/+/*
+                    sys42.confirm-window
+                      _header:Confirm deletion of property
+                      _body:@"<p>Please confirm that you wish to <strong>delete the <em>'{0}'</em> event</strong> from widget!</p>
+<p>Alternatively, you can choose to convert the existing Hyperlisp Ajax server-side event handler to a JavaScript event handler.</p>
+<p>If you do not want to do either, please close the window at the top right corner with the 'X'.</p>"
+                        :x:/..else/*/replace?value
+                      _extra-buttons
+                        button
+                          class:btn btn-default
+                          innerValue:Convert to JavaScript
+                          title:Convert existing Hyperlisp server-side Ajav event handler to a JavaScript event handler
+                          onclick
+                            _element-name:{element-name}
+                            find-widget
+                              data-selected
+                            add:x:/+
+                              src:x:/../*/_element-name?value
+                            set-widget-ajax-event:x:/-2/*?value
+                            add:x:/+
+                              src:"{0}:"
+                                :x:/../*/_element-name?value
+                            set-widget-property:x:/../*/find-widget/*?value
+                            send-javascript:@"$('#confirm-window').modal('toggle');"
+                            set:x:/+/*?value
+                              src:x:/../*/find-widget/*?value
+                            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                              _widget
+                      _onok
+
+                        /*
+                         * Simply delete Hyperlisp Ajax event
+                         */
+                        _element-name:{element-name}
+                        find-widget
+                          data-selected
+                        add:x:/+
+                          src:x:/../*/_element-name?value
+                        set-widget-ajax-event:x:/-2/*?value
+                        set:x:/+/*?value
+                          src:x:/../*/find-widget/*?value
+                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                          _widget
+                  return
+                eval-x:x:/+/*|/+/**/_eventWidget
+                sys42.confirm-window
+                  _header:Confirm deletion of property
+                  _body:@"<p>Please confirm that you wish to <strong>delete the <em>'{0}'</em> attribute</strong> from widget! 
+This might have consequence for the rendering of your widget!</p>
+<p>Alternatively, you can choose to 'nullify' its value, meaning the attribute
+will still be kept around, but have a 'null value'. This can be useful for [controls] properties of [video]
+HTML elements for instance, that don't require a value, but need the property.</p>
+<p>If you do not want to do either, please close the window at the top right corner with the 'X'.</p>"
+                    :x:/../*/_element-name?value
+                  _extra-buttons
+                    button
+                      class:btn btn-default
+                      innerValue:Nullify value
+                      title:Only 'nullify' value of property, but do not remove property
+                      onclick
+                        sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
+                          _new-value
+                        send-javascript:@"$('#confirm-window').modal('toggle');"
+                        find-widget
+                          _element-name:{element-name}
+                        set-widget-property:x:/-/*?value
+                          value
+                  _onok
+                    _eventWidget:x:/../*/_event?value
+                    sys42.wysiwyg-controls.change-selected-widgets-property:{element-name}
+                    get-parent-widget:x:/../*/_eventWidget?value
+                    get-parent-widget:x:/-/*?value
+                    delete-widget:x:/-/*?value
+
+  set:x:/..for-each/*/_control/**/={element-name}?value
+    src:x:/..for-each/*/_dp/#?name
+  set:x:/..for-each/*/_control/*/*/*/*/*/*/value?value
+    src:x:/..for-each/*/_dp/#?value
+
+
+
+  /*
+   * Checking if this is [innerValue], which has some special logic, to expand textarea
+   */
+  if:x:/..for-each/*/_dp/#?name
+    =:innerValue
+
+
+
+    set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*(/element|/type|/onkeypress)
+    set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*/value?name
+      src:innerValue
+    add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
+      src:"rows:1"
+    add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
+      src:"_isInnerValue:true"
+    add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
+      src
+        onfocus
+          get-parent-widget:x:/../*/_event?value
+          get-parent-widget:x:/-/*?value
+          set-widget-property:x:/-/*?value
+            class:prepend-bottom col-xs-12
+            style:"clear:both;width:100%;"
+          set-widget-property:x:/../*/_event?value
+            rows:12
+          send-javascript:@"$('#{0}').select();"
+            :x:/../*/_event?value
+        onblur
+          get-parent-widget:x:/../*/_event?value
+          get-parent-widget:x:/-/*?value
+          set-widget-property:x:/-/*?value
+            class:prepend-bottom col-xs-4
+          delete-widget-property:x:/-2/*?value
+            style
+          set-widget-property:x:/../*/_event?value
+            rows:1
+    set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void?name
+      src:textarea
+
+
+
+
+
+  /*
+   * Checking if this is an "invisible rendered" event handler
+   */
+  else-if
+    fetch:x:/0/0?value
+      index-of:x:/..for-each/*/_dp/#?name
+        what:_on
+    =:int:0
+
+    /*
+     * Checking if this is a JavaScript event handler or a Hyperlisp event handler.
+     * JavaScript event handlers have a "value", while Hyperlisp event handlers
+     * have children nodes.
+     */
+    if:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*/value?value
+      not
+
+      /*
+       * This should be handled as a Hyperlisp Ajax event handler
+       */
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*(/element|/type|/onkeypress)
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*/value?name
+        src:innerValue
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/style?value
+        src:"background-color:rgba(0,128,0,.3);"
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/title?value
+        src:"This is an Active Event, you can switch between JavaScript Active Event handlers and Hyperlisp Active Event handlers, or remove the event handler, by clicking the 'X'"
+      add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
+        src:"rows:1"
+      add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
+        src
+          onfocus
+            get-parent-widget:x:/../*/_event?value
+            get-parent-widget:x:/-/*?value
+            set-widget-property:x:/-/*?value
+              class:prepend-bottom col-xs-12
+              style:"clear:both;width:100%;"
+            set:x:/+/*/*?name
+              src:x:/../*/_event?value
+            sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+              _editor
+                _name
+                  mode:hyperlisp
+                  theme:the-matrix-reduced
+                  autofocus:true
+                  fullscreen:false
+                  height:350px
+                  raise-update:true
+            find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+              innerValue:glyphicon-remove
+            set-widget-property:x:/-/*?value
+              visible:true
+            find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+              innerValue:glyphicon-trash
+            set-widget-property:x:/-/*?value
+              visible:false
+            find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+              innerValue:glyphicon-flash
+            set-widget-property:x:/-/*?value
+              visible:true
+          _onupdate
+            raise-widget-ajax-event:x:/../*/_event?value
+              onchange
+      lambda2lisp:x:/..for-each/*/_dp/#/*
+      if:x:/-?value
+        !=:@""""""
+        set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void/*/innerValue?value
+          src:x:/././-?value
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void?name
+        src:textarea
+      eval-x:x:/+/**/_event-name
+      add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets
+        src
+          a
+            href:#
+            visible:false
+            class:input-group-addon input-group-addon-force-float
+            innerValue:@"<span class=""glyphicon glyphicon-flash""></span>"
+            title:Shows the Hyperlisp helper ...
+            onclick
+              find-first-ancestor-widget:x:/../*/_event?value
+                element:div
+              find-widget:x:/-/*?value
+                element:textarea
+              set:x:/../*/sys42.execute-lisp-file/**/_code-mirror?value
+                src:x:/./-/*?value
+              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-hyperlisp-wizard.hl
+                _code-mirror
+                _onok
+                  _code-mirror
+                  get-widget-property:x:/-?value
+                    value
+                  lisp2lambda:x:/-/*/*?value
+                  set:x:/-/*//
+                  add:x:/../*/lisp2lambda
+                    lisp2lambda:x:/../*/_code?value
+                  lambda2lisp:x:/../*/lisp2lambda/*
+                  set-widget-property:x:/../*/_code-mirror?value
+                    value:x:/../*/lambda2lisp?value
+                  raise-widget-ajax-event:x:/../*/_code-mirror?value
+                    _onupdate
+                  send-javascript:@"window.{0}.getDoc().setValue(p5.$('{0}').el.value);"
+                    :x:/../*/_code-mirror?value
+          a
+            href:#
+            visible:false
+            class:input-group-addon input-group-addon-force-float
+            innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+            title:Closes the Hyperlisp window
+            onclick
+              get-parent-widget:x:/../*/_event?value
+              get-parent-widget:x:/-/*?value
+              set-widget-property:x:/-/*?value
+                class:col-md-4 prepend-bottom
+                style
+              find-widget:x:/-2/*?value
+                element:textarea
+              set-widget-property:x:/-/*?value
+                rows:1
+              find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+                innerValue:glyphicon-trash
+              set-widget-property:x:/-/*?value
+                visible:true
+              find-widget-like:x:/../*/get-parent-widget/[1,2]/*?value
+                innerValue:glyphicon-flash
+              set-widget-property:x:/-/*?value
+                visible:false
+              send-javascript:@"window.{0}.toTextArea();"
+                :x:/../*/find-widget/*?value
+              set-widget-property:x:/../*/_event?value
+                visible:false
+
+    else
+
+      /*
+       * This is a JavaScript event handler, signaling that fact to caller
+       */
+      add:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/void
+        src
+          onfocus
+            get-parent-widget:x:/../*/_event?value
+            get-parent-widget:x:/-/*?value
+            set-widget-property:x:/-/*?value
+              class:prepend-bottom col-xs-12
+          onblur
+            get-parent-widget:x:/../*/_event?value
+            get-parent-widget:x:/-/*?value
+            set-widget-property:x:/-/*?value
+              class:prepend-bottom col-xs-4
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/title?value
+        src:"This is a JavaScript event handler, you can switch between JavaScript event handlers and Hyperlisp Active Event handlers, or remove the event handler, by clicking the 'X'"
+      set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/style?value
+        src:"background-color:rgba(0,128,0,.3);"
+
+    /*
+     * This is an invisibly rendered event handler, making sure we render the label
+     * with the REAL event handler name, before we add the attribute control to properties
+     */
+    set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
+      replace:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
+        what:_on
+        with:on
+
+    /*
+     * Making sure we add the "flash" icon to property
+     */
+    set:x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
+      src:@"<span class=""glyphicon glyphicon-exclamation-sign""></span> {0}"
+        :x:/..for-each/*/_control/*/container/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
+
+  /*
+   * Adding properties wrapper to [create-widget]
+   */
+  add:x:/../*/create-widget/*/widgets/*/container/=wysiwyg-controls-attribute-wrapper/*/widgets
+    src:x:/..for-each/*/_control/*
+
+
+/*
+ * Then 'Select parent widget button', unless it is wysiwyg main surface
+ */
+get-parent-widget:x:/../*/_widget?value
+if:x:/-/*?value
+  !=:wysiwyg-editor-surface
+
+  /*
+   * Enabling "Get parent" button
+   */
+  sys42.wysiwyg-controls.toggle-get-parent-widget:x:/../*/get-parent-widget/*?value
+else
+
+  /*
+   * Disabling "Get parent" button
+   */
+  sys42.wysiwyg-controls.toggle-get-parent-widget
+
+
+/*
+ * Then [widgets], which requires special handling. But notice, we *ignore*
+ * all widgets of usercontrols here
+ */
+if:x:/../*/sys42.get-widget/*/*/data-usercontrol
+  or:x:/../*/sys42.get-widget/*/*/widgets
+    not
+
+  /*
+   * This is a usercontrol, disabling "select children" button, by invoking with no arguments
+   */
+  sys42.wysiwyg-controls.toggle-select-children-widgets
+else
+
+  /*
+   * This is not a usercontrol, now invoking method that either creates,
+   * or deletes all "Select children widget" buttons, passing in id of widget, which
+   * will make sure it creates children widgets selectors for us
+   */
+  sys42.wysiwyg-controls.toggle-select-children-widgets:x:/../*/_widget?value
+    
+
+
+/*
+ * Creating properties edit widget, but first making sure
+ * container to stuff properties into is visible, and deleting
+ * any previously properties widgets
+ */
+clear-widget:wysiwyg-controls-properties
+set-widget-property:wysiwyg-controls-properties
+  visible:true
+create-widget
+  parent:wysiwyg-controls-properties
+  widgets
+
+    /*
+     * Widget's ID
+     */
+    container
+      class:col-md-4 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              element:div
+              innerValue:id
+              class:input-group-addon
+              style:"background-color:rgba(128,100,0,.3);"
+              title:This property cannot be removed!
+            void:widget-property-id
+              element:input
+              type:text
+              class:form-control
+              placeholder:id ...
+              value
+              onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
+              onchange
+                get-widget-property:x:/../*/_event?value
+                  value
+                if:x:/../*/get-widget-property/*/*?value
+                  =:
+                  sys42.info-window:You cannot have an empty id property of your element! Please supply an id value for your element!
+                    _error:true
+                    _time:more
+                  set-widget-property:x:/../*/_event?value
+                    class:error form-control
+                  send-javascript:@"$('#widget-property-id').focus().select();"
+                  return
+                if
+                  fetch:x:/0/0?value
+                    widget-exist:x:/../*/get-widget-property/*/*?value
+                  sys42.info-window:Another widget with the same id exists from before on page, please provide a unique id
+                    _error:true
+                    _time:more
+                  set-widget-property:x:/../*/_event?value
+                    class:error form-control
+                  send-javascript:@"$('#widget-property-id').focus().select();"
+                  return
+                set-widget-property:x:/../*/_event?value
+                  class:form-control
+                eval-x:x:/+/*
+                sys42.wysiwyg-controls.change-selected-widgets-property:id
+                  _new-value:x:/../*/get-widget-property/*/*?value
+
+            /*
+             * Help button for [id] property of widget
+             */
+            a:wysiwyg-controls-id-help
+              href:#
+              class:input-group-addon input-group-addon-force-float
+              innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+              title:Help me with the [id] property please ...
+              onclick
+                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/id-help.hl
+
+    /*
+     * Widget's element
+     */
+    container
+      class:col-md-4 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              element:div
+              innerValue:element
+              class:input-group-addon
+              style:"background-color:rgba(128,100,0,.3);"
+              title:This property cannot be removed!
+            void:widget-property-element
+              element:input
+              type:text
+              class:form-control
+              placeholder:element ...
+              value
+              onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
+              onchange
+                sys42.wysiwyg-controls.change-selected-widgets-element
+              events
+
+                /*
+                 * Returns true if [_arg] is a legal HTML element name
+                 */
+                	sys42.wysiwyg-controls.is-legal-html-element
+                  switch:x:/../*/_arg?value
+                    case:object
+                    case:embed
+                      sys42.confirm-window
+                        _header:Confirm usage!
+                        _body:@"<img src=""/media/images/dangerous-shit.jpg"" style=""float:right;"" /><p>Seriously? Are you <strong>really going to use the &lt;object&gt; or &lt;embed&gt; element ...?</strong></p>
+<blockquote><em>""The &lt;object&gt; element leads to ActiveX, ActiveX leads to Silverlight, Silverlight leads to the dark side!!""</em></blockquote>
+<p>Do <strong>NOT USE THE OBJECT ELEMENT</strong>! It facilitates for virus and other malware being installed on your
+user's computers! I will allow it, but only if I can get to do some serious whining and crying first!</p>
+<p>I cannot possibly emphasize this strongly enough; &lt;object&gt; is seriously outdatet! Your apps <strong>will not work on iPhones, iPads,
+Androids, probably not on Linux and Mac OS X</strong>, or any other modern computing platforms! In addition your users risks having viruses and other crapware installed!</p>
+<p>Not even Microsoft suggests using the &lt;object&gt; element anymore ...!!</p>"
+                        _onok
+                          sys42.info-window:@"Please change your element back to something that's not considered a CRAPWARE HTML ELEMENT!"
+                            _time:more
+                            _error:true
+                      return:bool:true
+                    default
+                      load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
+                      if:x:@"/-/*/*/""{0}"""
+                        :x:/../*/_arg?value
+                        and:x:/../*/_arg?value
+                          !=:_header
+                        return:bool:true
+                      return:bool:false
+
+                /*
+                 * Changes the HTML element of widget, according to textbox' value
+                 */
+                sys42.wysiwyg-controls.change-selected-widgets-element
+                  get-widget-property:widget-property-element
+                    value
+                  sys42.wysiwyg-controls.is-legal-html-element:x:/../*/get-widget-property/*/*?value
+                  if:x:/-?value
+                    !=:bool:true
+                    sys42.info-window:Under no circumstances I can allow you to change the HTML tag to render as such!
+                      _time:more
+                      _error:true
+                    set-widget-property:widget-property-element
+                      class:form-control error
+                    send-javascript:@"$('#widget-property-element').select().focus();"
+                    return
+                  set-widget-property:widget-property-element
+                    class:form-control
+                  if:x:/../*/get-widget-property/*/*?value
+                    =:
+                    sys42.info-window:You cannot have an empty [element] property of your element! Please supply an [element] value for your element!
+                      _error:true
+                      _time:more
+                    set-widget-property:widget-property-element
+                      class:error form-control
+                    send-javascript:@"$('#widget-property-element').focus().select();"
+                    return
+                  set-widget-property:widget-property-element
+                    class:form-control
+                  eval-x:x:/+/*
+                  sys42.wysiwyg-controls.change-selected-widgets-property:element
+                    _new-value:x:/../*/get-widget-property/*/*?value
+
+            /*
+             * Help button for [element] property of widget
+             */
+            a:wysiwyg-controls-element-help
+              href:#
+              class:input-group-addon input-group-addon-force-float
+              innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+              title:Help me with the [element] property please ...
+              onclick
+                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/change-element.hl
+
+    /*
+     * Wraps all attributes (except [element] and [id]) of widget
+     */
+    container:wysiwyg-controls-attribute-wrapper
+      style:"clear:both;"
+      widgets
+
+    /*
+     * Wraps the widgets that allows user to manipulate childre widget collection, such as
+     * "Delete widget" and all "children widget selectors"
+     */
+    container:wysiwyg-widget-events
+      class:col-xs-12
+      widgets
+
+        /*
+         * Wraps all Active Event handlers (subscribers) for currently selected widget
+         */
+        container:wysiwyg-controls-events
+          oninit
+            sys42.wysiwyg-controls.create-events-for-selected
+          events
+
+            /*
+             * Creates the list of Active Event subscribers for currently selected widget
+             */
+            sys42.wysiwyg-controls.create-events-for-selected
+
+              /*
+               * Clearing any previously created lambda event lists
+               */
+              clear-widget:wysiwyg-controls-events
+
+              /*
+               * Finding selected widget, and retrieving its list of lambda events
+               */
+              find-widget
+                data-selected
+              list-widget-lambda-events:x:/../*/find-widget/*?value
+              databind:x:/../*/create-widget/*/widgets/*/container/*/widgets/*/tbody/*/widgets
+                src:x:/../*/list-widget-lambda-events/*/*
+                template
+                  tr
+                    style:"cursor:pointer;"
+                    {_event-name}:x:?name
+                    onclick
+                      get-widget-property:x:/../*/_event?value
+                        _event-name
+                      set:x:/../*/sys42.execute-lisp-file/*/_event-name?value
+                        src:x:/../*/get-widget-property/*/*?value
+                      eval-x:x:/+/*/_after
+                      sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/edit-active-event.hl
+                        _event-name
+                        _after:x:/../*/_event?value
+                      if:x:/-?value
+                        set-widget-property:x:/../*/_event?value
+                          class:warning
+                      else
+                        delete-widget-property:x:/../*/_event?value
+                          class
+                    widgets
+                      td
+                        {innerValue}:@"<span class=""glyphicon glyphicon-flash""></span> <strong>{0}</strong>"
+                          :x:?name
+
+              /*
+               * Creating our list of lambda events, in addition to the button that allows
+               * user to create new Active Event subscriber, but first removing table if there 
+               * are no action subscribers
+               */
+              if:x:/../*/create-widget/*/widgets/*/container/*/widgets/*/tbody/*/widgets/*?count
+                =:int:0
+                set:x:/../*/create-widget/*/widgets/*/container
+              create-widget
+                parent:wysiwyg-controls-events
+                widgets
+                  container
+                    element:table
+                    class:table table-hover prepend-top
+                    widgets
+                      tbody
+                        widgets
+
+              /*
+               * Making sure recently created Active Event becomes "active", if there is one
+               */
+              if:x:/../*/_arg?value
+                find-widget:wysiwyg-controls-events
+                  _event-name:x:/../*/_arg?value
+                raise-widget-ajax-event:x:/-/*?value
+                  onclick
+
+  events
+
+    /*
+     * Changes the given property [_arg] of the currently selected widget
+     * to [_new-value]
+     */
+    sys42.wysiwyg-controls.change-selected-widgets-property
+      get-widget-property:wysiwyg-select-widget
+        value
+      if:x:/../*/_new-value?value
+
+        /*
+         * User provided a new value for property of widget
+         */
+        add:x:/+2
+          src:x:/../*/_arg?value
+        set:x:/+/0?value
+          src:x:/../*/_new-value?value
+        set-widget-property:x:/../*/get-widget-property/*/*?value
+        sys42.wysiwyg-controls.databind-select-widget-dropdown
+      else-if:x:/../*/_new-value
+
+        /*
+         * User provided a 'null value'
+         */
+        add:x:/+
+          src:{0}
+            :x:/../*/_arg?value
+        set-widget-property:x:/../*/get-widget-property/*/*?value
+      else
+
+        /*
+         * User did NOT provide a new value for property of widget.
+         * But rather wanted to remove property entirely
+         */
+        add:x:/+
+          src:{0}
+            :x:/../*/_arg?value
+        delete-widget-property:x:/../*/get-widget-property/*/*?value
+        sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+/*
+ * If caller requested that initial focus be set, we do so
+ */
+if:x:/../*/_initial-focus?value
+  find-widget
+    _element-name:x:/../*/_initial-focus?value
+  send-javascript:@"$('#{0}').focus().select();"
+    :x:/..if/*/find-widget/*?value
+
+include-javascript:@"p5.keyPressChangeAttributeValue = function(e) {
+  if(e.keyCode == 13) {
+    $('#wysiwyg-controls-element-help').focus();
+    return false;
+  }
+}"

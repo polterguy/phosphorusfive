@@ -232,7 +232,7 @@ create-widget:wysiwyg-editor
                    * Need to find currently selected widget, if any, such that we can make sure that
                    * the [option] widget representing that widget becomes initially selected
                    */
-                  find-widget
+                  find-widget:wysiwyg-editor-surface
                     data-selected:true
 
                   /*
@@ -1454,7 +1454,7 @@ you can simply delete it now. A complete version of the widget still exists on y
      * on for currently selected widget
      */
     container:wysiwyg-controls-properties
-      class:row col-xs-12
+      class:row
       visible:false
 
 
@@ -1910,10 +1910,7 @@ you can simply delete it now. A complete version of the widget still exists on y
      * edit properties of widget
      */
     sys42.wysiwyg-controls.show-selected-widgets-properties
-      set:x:/+/*/_widget?value
-        src:x:/../*/_arg?value
       sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
-        _widget
 
     /*
      * Hides the widget's properties widget
@@ -1921,3 +1918,35 @@ you can simply delete it now. A complete version of the widget still exists on y
     sys42.wysiwyg-controls.hide-selected-widgets-properties
       set-widget-property:wysiwyg-controls-properties
         visible:false
+
+    /*
+     * Returns true if currently selected widget's element is a "block level" element,
+     * or an element that allows "block level elements" inside of it, such as "a", etc
+     */
+    sys42.wysiwyg-controls.selected-widget-allows-block-level-content
+
+      /*
+       * First retrieving currently selected widget, for then to retrieve its [element] property
+       */
+      find-widget:wysiwyg-editor-surface
+        data-selected
+      get-widget-property:x:/-/*?value
+        element
+
+      /*
+       * Then loading "element declaration file", to check if element can legally contain "rich HTML",
+       * allowing for for instance CKEditor to be used to edit content
+       */
+      load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
+      if:x:@"/-/*/*/""{0}""/*/_html-editor-allowed/=true"
+        :x:/../*/get-widget-property/*/*?value
+
+        /*
+         * This element is legally allowed to have "rich HTML", hence return true
+         */
+        return:bool:true
+
+      /*
+       * Did not find match for element type in declaration file, returning false to caller
+       */
+      return:bool:false

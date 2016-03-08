@@ -70,14 +70,6 @@ create-widget:wysiwyg-controls-id-window
 The [id] attribute, must be unique for all widgets that are on the same page. 
 All manipulation and retrieval of a widget's values and attributes, needs to be given an id to know which widget to retrieve values from and/or set values to. If you do not set an 
 id, a unique id will be automatically assigned to it.</p>
-<p>Examples of Active Events that needs to know the id, are given below;</p>
-<ul>
-<li><strong>[get-widget-property]</strong></li>
-<li><strong>[set-widget-property]</strong></li>
-<li><strong>[set-widget-ajax-event]</strong></li>
-<li><strong>[set-widget-lambda-event]</strong></li>
-<li>etc ...</li>
-</ul>
 <p>If you choose to use the automatically created id, you can still retrieve the id of your widget in all of its Ajax Active Event
 handlers, since it is added to each Ajax Event handler as an [_event] argument node. However, more often, you will find yourself 
 creating an id for your widgets, that somehow matches what it does. For instance a <em>""name""</em> textbox for a customer input
@@ -86,7 +78,11 @@ field, should probably be given an id such as <em>""customer-name""</em>. </p>
 widget, from the event handler of another widget. Such as when you have a <em>""Save""</em> button, that should retrieve
 the values of other textboxes on your page, to retrieve the values to save.</p>
 <p>Widgets that do not need to have their values retrieved from event handlers of other widgets, do not generally speaking need
-an <em>""intelligent id""</em>, and you can safely use the automatically generated id for these circumstances.</p>"
+an <em>""intelligent id""</em>, and you can safely use the automatically generated id for these circumstances, to more easily 
+avoid name clashing of ids.</p>
+<p>PS!<br>Usercontrols that you might want to include several times on a page, <strong>should not</strong> have an explicit id,
+but rather use the generated id, since otherwise you'll end up with multiple widgets, having the same id, which is not legal in 
+Phosphorus Five.</p>"
 
             /*
              * Footer of dialog (contains OK and Cancel buttons)
