@@ -828,12 +828,12 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                       element:div
                     find-widget:x:/-/*?value
                       element:textarea
-                    set:x:/../*/sys42.execute-lisp-file/**/_code-mirror?value
+                    set:x:/../*/sys42.execute-lisp-file/**/_textarea?value
                       src:x:/./-/*?value
                     sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-hyperlisp-wizard.hl
-                      _code-mirror
+                      _textarea
                       _onok
-                        _code-mirror
+                        _textarea
                         get-widget-property:x:/-?value
                           value
                         lisp2lambda:x:/-/*/*?value
@@ -841,12 +841,12 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                         add:x:/../*/lisp2lambda
                           lisp2lambda:x:/../*/_code?value
                         lambda2lisp:x:/../*/lisp2lambda/*
-                        set-widget-property:x:/../*/_code-mirror?value
+                        set-widget-property:x:/../*/_textarea?value
                           value:x:/../*/lambda2lisp?value
-                        raise-widget-ajax-event:x:/../*/_code-mirror?value
+                        raise-widget-ajax-event:x:/../*/_textarea?value
                           _onupdate
                         send-javascript:@"window.{0}.getDoc().setValue(p5.$('{0}').el.value);"
-                          :x:/../*/_code-mirror?value
+                          :x:/../*/_textarea?value
                 a
                   href:#
                   innerValue:@"<span class=""glyphicon glyphicon-pencil""></span>"
@@ -1198,7 +1198,7 @@ or supply an 'empty' value to have an automatically generated id created"
             a:wysiwyg-controls-id-help
               href:#
               class:input-group-addon input-group-addon-force-float
-              innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+              innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span>"
               title:Help me with the [id] property please ...
               onclick
                 sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/id-help.hl
@@ -1350,7 +1350,7 @@ this choice!</strong></p>"
             a:wysiwyg-controls-element-help
               href:#
               class:input-group-addon input-group-addon-force-float
-              innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+              innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span>"
               title:Help me with the [element] property please ...
               onclick
                 sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/change-element.hl
@@ -1836,12 +1836,61 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                 _error:true
                                 _time:more
 
+
+
+
                         /*
-                         * Wrapper around "CodeMirror" toggle button
+                         * Wrapper around "CodeMirror" toggle button and "Hyperlisp wizard" button
                          */
                         container
                           class:text-right
                           widgets
+
+                            /*
+                             * "Hyperlisp wizard" button
+                             */
+                            button
+                              class:btn btn-default
+                              innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Wizard"
+                              title:Opens up the Hyperlisp Wizard to help you create logic for your Action Subscriber
+                              onclick
+
+                                /*
+                                 * Finding "textarea" widget, by first finding "tr" ancestor, and then looking
+                                 * for the first widget with the element of [textarea] beneath
+                                 */
+                                find-first-ancestor-widget:x:/../*/_event?value
+                                  element:tr
+                                find-widget:x:/-/*?value
+                                  element:textarea
+
+                                /*
+                                 * Applying arguments to "Hyperlisp Wizard Creator", before invoking it.
+                                 * Arguments are 
+                                 */
+                                set:x:/../*/sys42.execute-lisp-file/**/_textarea?value
+                                  src:x:/./-/*?value
+                                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-hyperlisp-wizard.hl
+                                  _textarea
+                                  _onok
+                                    _textarea
+                                    get-widget-property:x:/-?value
+                                      value
+                                    lisp2lambda:x:/-/*/*?value
+                                    set:x:/-/*//
+                                    add:x:/../*/lisp2lambda
+                                      lisp2lambda:x:/../*/_code?value
+                                    lambda2lisp:x:/../*/lisp2lambda/*
+                                    set-widget-property:x:/../*/_textarea?value
+                                      value:x:/../*/lambda2lisp?value
+                                    raise-widget-ajax-event:x:/../*/_textarea?value
+                                      _onupdate
+                                    send-javascript:@"window.{0}.getDoc().setValue(p5.$('{0}').el.value);"
+                                      :x:/../*/_textarea?value
+
+                            /*
+                             * "CodeMirror toggle" button
+                             */
                             button
                               class:btn btn-default
                               innerValue:@"<span class=""glyphicon glyphicon-pencil""></span> Toggle"
@@ -1950,7 +1999,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
         create-widget:wysiwyg-controls-action-subscribers
           parent:wysiwyg-controls-properties
           element:table
-          class:table table-hover
+          class:table table-hover bg-warning rounded-corners
           widgets
             literal
               element:thead

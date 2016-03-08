@@ -14,10 +14,10 @@ if
 
 
 /*
- * Making sure we pass in the [_code-mirror] value to anything needing access to it
+ * Making sure we pass in the [_textarea] value to anything needing access to it
  */
-set:x:/../*/create-widget/**/_code-mirror/={code-mirror}?value
-  src:x:/../*/_code-mirror?value
+set:x:/../*/create-widget/**/_textarea/={code-mirror}?value
+  src:x:/../*/_textarea?value
 
 
 /*
@@ -146,13 +146,13 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                         /*
                          * This one will contain the id of our CodeMirror instance
                          */
-                        _code-mirror:{code-mirror}
+                        _textarea:{code-mirror}
 
                         /*
                          * Retrieving Hyperlisp from CodeMirror instance, and converting to lambda,
                          * since we need it to filter away events already handled in code
                          */
-                        get-widget-property:x:/../*/_code-mirror?value
+                        get-widget-property:x:/../*/_textarea?value
                           value
                         lisp2lambda:x:/-/*/*?value
 

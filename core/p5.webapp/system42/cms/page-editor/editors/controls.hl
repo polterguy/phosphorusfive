@@ -95,7 +95,7 @@ sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/proce
  * any controls first though
  */
 if:x:/../*/lisp2lambda/*(/container|/literal|/void)
-  add:x:/../*/create-widget/*/widgets/*/container/=wysiwyg-editor-surface/*/widgets
+  add:x:/../*/create-widget/*/widgets/**/container/=wysiwyg-editor-surface/*/widgets
     src:x:/../*/lisp2lambda/*
 
 
@@ -1077,12 +1077,14 @@ $('html, body').animate({{
     /*
      * Actual WYSIWYG design surface
      */
-    container:wysiwyg-editor-surface
-      class:row
-      onclick
-        sys42.wysiwyg-controls.unselect-widget
-        sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+    container:wysiwyg-editor-surface-wrp
+      class:col-xs-12
       widgets
+        container:wysiwyg-editor-surface
+          onclick
+            sys42.wysiwyg-controls.unselect-widget
+            sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          widgets
 
 
 
@@ -1123,7 +1125,7 @@ $('html, body').animate({{
           class:btn btn-default
           style:"border-left:dashed 1px rgba(0,0,0,.2);"
           title:Help me with adding attributes to my widget please ...
-          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+          innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span>"
           onclick
             sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute-guide.hl
 
@@ -1497,8 +1499,8 @@ you can simply delete it now. A complete version of the widget still exists on y
      * on for currently selected widget
      */
     container:wysiwyg-controls-properties
-      class:row
       visible:false
+      class:col-xs-12
 
 
 

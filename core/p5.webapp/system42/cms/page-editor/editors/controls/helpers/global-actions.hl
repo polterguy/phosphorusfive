@@ -27,7 +27,7 @@ _action
       element:{element}
     if:x:/-/*?count
       =:int:0
-      throw:No ancestor elements of spcified type found
+      throw:No ancestor elements of specified type found
     get-widget-values:x:/-2/*?value
     for-each:x:/-/*
       get-widget-property:x:/./*/_dp/#?name

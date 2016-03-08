@@ -127,10 +127,17 @@ create-widget:page-editor
                   set-widget-property:create-new-page
                     value:_default
                   sys42.set-currently-edited-page:x:/../*/insert-data/0?value
-                  sys42.populate-select-page
-                  sys42.edit-page
-                  sys42.create-main-menu
-                  sys42.info-window:@"Page is restricted such that only the 'root' account can see it. When you're ready to publish it,
+
+                  /*
+                   * For some reasons, there seems to be a viewstate bug when creating a new [controls] page,
+                   * which shows immediately once you start adding widgets to it. Hence, for now, we refresh page.
+                   * Hence commenting out logic below, and just reloading location
+                   */
+                  reload-location
+                  _sys42.populate-select-page
+                  _sys42.edit-page
+                  _sys42.create-main-menu
+                  _sys42.info-window:@"Page is restricted such that only the 'root' account can see it. When you're ready to publish it,
 then change its access role accordingly!"
                     _time:more
 
