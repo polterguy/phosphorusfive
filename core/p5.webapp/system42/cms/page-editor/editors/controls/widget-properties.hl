@@ -642,7 +642,7 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                       rows:16
 
                     /*
-                     * Showing the "minimize" button and the "CodeMirror" button
+                     * Showing the "minimize" button, "Hyperlisp wizard" button, and the "CodeMirror" button
                      */
                     find-widget:x:/../*/get-parent-widget/[0,1]/*?value
                       _close-button
@@ -650,6 +650,11 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                       visible:true
                     find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
                       innerValue:pencil
+                    set-widget-property:x:/-/*?value
+                      visible:true
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                      innerValue:glyphicon-info-sign
+                      element:a
                     set-widget-property:x:/-/*?value
                       visible:true
 
@@ -814,6 +819,36 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                         delete-widget:x:/-/*?value
                 a
                   href:#
+                  innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span>"
+                  class:input-group-addon input-group-addon-force-float
+                  title:Open up Hyperlisp Wizard
+                  visible:false
+                  onclick
+                    find-first-ancestor-widget:x:/../*/_event?value
+                      element:div
+                    find-widget:x:/-/*?value
+                      element:textarea
+                    set:x:/../*/sys42.execute-lisp-file/**/_code-mirror?value
+                      src:x:/./-/*?value
+                    sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-hyperlisp-wizard.hl
+                      _code-mirror
+                      _onok
+                        _code-mirror
+                        get-widget-property:x:/-?value
+                          value
+                        lisp2lambda:x:/-/*/*?value
+                        set:x:/-/*//
+                        add:x:/../*/lisp2lambda
+                          lisp2lambda:x:/../*/_code?value
+                        lambda2lisp:x:/../*/lisp2lambda/*
+                        set-widget-property:x:/../*/_code-mirror?value
+                          value:x:/../*/lambda2lisp?value
+                        raise-widget-ajax-event:x:/../*/_code-mirror?value
+                          _onupdate
+                        send-javascript:@"window.{0}.getDoc().setValue(p5.$('{0}').el.value);"
+                          :x:/../*/_code-mirror?value
+                a
+                  href:#
                   innerValue:@"<span class=""glyphicon glyphicon-pencil""></span>"
                   class:input-group-addon input-group-addon-force-float
                   title:Toggle CodeMirror editor
@@ -901,12 +936,17 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                       rows:1
 
                     /*
-                     * Hiding minimize and CodeMirror buttons
+                     * Hiding "minimize" button, "Hyperlisp wizard" button and "CodeMirror toggle" button
                      */
                     set-widget-property:x:/../*/_event?value
                       visible:false
                     find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
                       innerValue:pencil
+                    set-widget-property:x:/-/*?value
+                      visible:false
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                      innerValue:glyphicon-info-sign
+                      element:a
                     set-widget-property:x:/-/*?value
                       visible:false
                       
@@ -939,285 +979,6 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
 
 
 
-/*
- * Then creating widgets for currently selected widget's lambda events,
- * but only if there are any Action Subscribers
- */
-if:x:/../*/sys42.get-widget/*/*/events/*?count
-  >:int:0
-
-  /*
-   * Currently selected widget has lambda events, adding a table to main widget that shows them
-   */
-  databind:x:/..if/*/_container/*/container/*/widgets
-    src:x:/../*/sys42.get-widget/*/*/events/*
-    template
-      tr
-        style:"cursor:pointer;"
-        {_active-event-name}:x:?name
-        _code-view-visible:false
-        title:Click to toggle Hyperlisp editor for specified Action Subscriber
-        onclick
-
-          /*
-           * Checking if "code view" for lambda event is already visible, and if so, we
-           * remove it. Otherwise, we show code view. This allows "toggle functionality" on the
-           * table row that declares the lambda event
-           */
-          get-widget-property:x:/../*/_event?value
-            _code-view-visible
-          if:x:/-/*/*?value.bool
-            =:bool:true
-
-            /*
-             * Code view is visible. Removing entire "tr" widget that wraps it, before returning early.
-             * But first we need to find the textarea widget, for then to find its parent "tr" widget.
-             * This is done by first finding the textarea widget, for the to find its parent's parent widget
-             */
-            find-widget:wysiwyg-controls-action-subscribers
-              _active-event-editor
-
-            /*
-             * Now we have the "tr" widget that raps the text editor.
-             * Deleting it, before we return early
-             */
-            delete-widget:x:/-/*?value
-
-            /*
-             * Making sure we signal to future clicks on "tr" widget that code view is NOT visible,
-             * before returning early
-             */
-            set-widget-property:x:/../*/_event?value
-              _code-view-visible:false
-
-            /*
-             * Returning early, since this was a "destroy existing code editor operation"
-             */
-            return
-
-          /*
-           * Making sure we signal to future clicks on "tr" widget that code view is already visible
-           */
-          set-widget-property:x:/../*/_event?value
-            _code-view-visible:true
-
-          /*
-           * Retrieving lambda event name from hidden attribute on "tr" HTML widget
-           */
-          get-widget-property:x:/../*/_event?value
-            _active-event-name
-
-          /*
-           * Finding selected widget in surface
-           */
-          find-widget:wysiwyg-editor-surface
-            data-selected
-
-          /*
-           * Passing in arguments necessary to retrieve correct lambda event from selected widget's [events] collection
-           */
-          add:x:/+
-            src:x:/../*/get-widget-property/[1,2]/*/*?value
-
-          /*
-           * Retrieving lambda event from widget, and converting to Hyperlisp,
-           * such that we can stuff Hyperlisp into textarea widget created below
-           */
-          get-widget-lambda-event:x:/../*/find-widget/[0,1]/*?value
-          lambda2lisp:x:/-/*/*/*
-
-          /*
-           * Then we need to create a "tr" widget, and insert into the table, after currently clicked tr widget,
-           * but before we incoke [create-widget] active event, we need to forward evaluate some of its arguments
-           */
-          eval-x:x:/+/*/after|/+/*/*/*/*/textarea/*/innerValue|/+/*/*/*/*/*/*/_event-name|/+/*/_active-event-editor
-          create-widget
-            element:tr
-            style:"background-color:Transparent;"
-            after:x:/../*/_event?value
-            _active-event-editor:x:/../*/get-widget-property/[1,2]/*/*?value
-            widgets
-              td
-                widgets
-                  textarea
-                    class:form-control
-                    rows:16
-                    placeholder:Your Hyperlisp code goes here ...
-                    innerValue:x:/../*/lambda2lisp?value
-                    onchange
-                      raise-widget-ajax-event:x:/../*/_event?value
-                        _onupdate
-                    _onupdate
-
-                      /*
-                       * Forward evaluated before creation of widget, contains lambda event name
-                       */
-                      _event-name:x:/../*/get-widget-property/[1,2]/*/*?value
-
-                      /*
-                       * Retrieving new Hyperlisp code, inside a try/catch block, to make sure Hyperlisp
-                       * syntacic errors are catched, and user is warned
-                       */
-                      try
-
-                        /*
-                         * Retrieving Hyperlisp and converting to lambda
-                         */
-                        get-widget-property:x:/../*/_event?value
-                          value
-                        lisp2lambda:x:/-/*/*?value
-
-                        /*
-                         * Retrieving currently selected widget
-                         */
-                        find-widget:wysiwyg-editor-surface
-                          data-selected
-
-                        /*
-                         * Updating widget's lambda event, but first applying arguments to invocation
-                         */
-                        add:x:/+2
-                          src:x:/../*/_event-name?value
-                        add:x:/+/*
-                          src:x:/..try/*/lisp2lambda/*
-
-                        /*
-                         * Now, finally, we're ready to update widget's lambda event
-                         */
-                        set-widget-lambda-event:x:/..try/*/find-widget/*?value
-
-                      catch
-
-                        /*
-                         * Some bug occurred, probably malformed Hyperlisp.
-                         * Informing user!
-                         */
-                        sys42.info-window:@"Oops! Syntax error in your Hyperlisp. Probably some spaces too much or too few!
-Look for syntax errors in your Hyperlisp! Code was not saved!"
-                          _error:true
-                          _time:more
-
-                  /*
-                   * Wrapper around "CodeMirror" toggle button
-                   */
-                  container
-                    class:text-right
-                    widgets
-                      button
-                        class:btn btn-default
-                        innerValue:@"<span class=""glyphicon glyphicon-pencil""></span> Toggle"
-                        title:Toggle CodeMirror view of Hyperlisp
-                        onclick
-
-                          /*
-                           * Checking if CodeMirror module is enabled, and if so, we disable it.
-                           * Otherwise we enable it, and store in session whether or not
-                           * CodeMirror editing is chosen
-                           */
-                          get-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
-                          if:x:/-/*?value.bool
-                            =:bool:true
-
-                            /*
-                             * CodeMirror editing is enabled, hence we disable it
-                             */
-                            get-parent-widget:x:/../*/_event?value
-                            get-parent-widget:x:/-/*?value
-                            find-widget:x:/-/*?value
-                              element:textarea
-                            send-javascript:@"window.{0}.toTextArea();"
-                              :x:/..if/*/find-widget/*?value
-
-                            /*
-                             * Making sure we remove value from session that stores the fact that CodeMirror
-                             * editing is enabled
-                             */
-                            set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
-                          else
-
-                            /*
-                             * CodeMirror editing is NOT enabled, hence we enable it, and store in
-                             * session that it is enabled.
-                             * Applying argument to "CodeMirror" loading file first
-                             */
-                            get-parent-widget:x:/../*/_event?value
-                            get-parent-widget:x:/-/*?value
-                            find-widget:x:/-/*?value
-                              element:textarea
-                            set:x:/+/*/*?name
-                              src:x:/..else/*/find-widget/*?value
-
-                            /*
-                             * Loading up CodeMirror, wrapping the textarea
-                             */
-                            sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
-                              _editor
-                                _name
-                                  mode:hyperlisp
-                                  theme:the-matrix-reduced
-                                  autofocus:false
-                                  fullscreen:false
-                                  height:334px
-                                  raise-update:true
-
-                            /*
-                             * Making sure we store in session that CodeMirror module is loaded, to allow "toggling"
-                             * functionality when clicking pencil
-                             */
-                            set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
-                              src:true
-
-          /*
-           * Then making sure we set focus initially to textarea widget wrapping Hyperlisp
-           */
-          find-widget:x:/-?value
-            element:textarea
-          send-javascript:@"$('#{0}').focus().select();"
-            :x:/./-/*?value
-
-          /*
-           * Then checking if user previously have selected to edit Hyperlisp in CodeMirror mode,
-           * and if so, we launch the CodeMirror editor wrapping our textarea widget
-           */
-          get-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
-          if:x:/-/*?value.bool
-            =:bool:true
-
-            /*
-             * User has previously chosen to edit Hyperlisp with CodeMirror, 
-             * launching CodeMirror editor, wrapping textarea.
-             * First applying arguments to loader
-             */
-            set:x:/+/*/*?name
-              src:x:/../*/find-widget/[1,2]/*?value
-
-            /*
-             * Loading up CodeMirror, wrapping the textarea
-             */
-            sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
-              _editor
-                _name
-                  mode:hyperlisp
-                  theme:the-matrix-reduced
-                  autofocus:true
-                  fullscreen:false
-                  height:334px
-                  raise-update:true
-
-        widgets
-          td
-            {innerValue}:@"<strong><span class=""glyphicon glyphicon-flash""></span> {0}</strong>"
-              :x:?name
-  _container
-    container:wysiwyg-controls-action-subscribers
-      element:table
-      class:table table-hover
-      widgets
-        literal
-          element:thead
-          innerValue:@"<tr><th><h3>Action subscribers for widget</h3></th></tr>"
-  add:x:/../*/create-widget/*/widgets
-    src:x:/..if/*/_container/*
   
 
 
@@ -1236,6 +997,12 @@ set-widget-property:wysiwyg-controls-properties
 create-widget
   parent:wysiwyg-controls-properties
   class:col-xs-12 rounded-corners bg-success prepend-bottom
+  oninit
+
+    /*
+     * Creating widget's lambda event list
+     */
+    sys42.wysiwyg-controls.create-events-for-selected
   widgets
 
     literal
@@ -1878,3 +1645,316 @@ CKEDITOR.instances['widget-property-innerValue'].on('change', function() {
         add:x:/+
           src:x:/../*/_arg?value
         delete-widget-property:x:/../*/find-widget/*?value
+
+
+
+
+
+    /*
+     * Creates the Active Events (Action Subscribers) for currently selected widget.
+     * Optionally takes an [_arg], to Active Event to immediately enable editing for
+     */
+    sys42.wysiwyg-controls.create-events-for-selected
+
+      /*
+       * First we delete previous table with list of lambda events, if it exists
+       */
+      if
+        fetch:x:/0/0?value
+          widget-exist:wysiwyg-controls-action-subscribers
+
+        /*
+         * There has been a table with widget's events previously created, deleting it, 
+         * such that we can re-create it
+         */
+        delete-widget:wysiwyg-controls-action-subscribers
+
+      /*
+       * Then retrieving currently selected widget, and checking if it has any lambd events, 
+       * before creating table wrapping lambda events
+       */
+      find-widget:wysiwyg-editor-surface
+        data-selected
+      sys42.get-widget:x:/-/*?value
+        _no-children:true
+
+      /*
+       * Checking if currently selected widget has lambda [events], before proceeding
+       */
+      if:x:/../*/sys42.get-widget/*/*/events/*?count
+        >:int:0
+
+        /*
+         * Currently selected widget has lambda events, adding a table to main widget that shows them
+         */
+        databind:x:/..if/*/create-widget/*/widgets/*/container/*/element/=tbody/./*/widgets
+          src:x:/../*/sys42.get-widget/*/*/events/*
+          template
+            tr
+              style:"cursor:pointer;"
+              {_active-event-name}:x:?name
+              _code-view-visible:false
+              title:Click to toggle Hyperlisp editor for specified Action Subscriber
+              onclick
+
+                /*
+                 * Checking if "code view" for lambda event is already visible, and if so, we
+                 * remove it. Otherwise, we show code view. This allows "toggle functionality" on the
+                 * table row that declares the lambda event
+                 */
+                get-widget-property:x:/../*/_event?value
+                  _code-view-visible
+                  _active-event-name
+                if:x:/-/*/0?value.bool
+                  =:bool:true
+
+                  /*
+                   * Code view is visible. Removing entire "tr" widget that wraps it, before returning early.
+                   * But first we need to find the textarea widget, for then to find its parent "tr" widget.
+                   * This is done by first finding the textarea widget, for the to find its parent's parent widget
+                   */
+                  find-widget:wysiwyg-controls-action-subscribers
+                    _active-event-editor:x:/../*/get-widget-property/*/1?value
+
+                  /*
+                   * Now we have the "tr" widget that raps the text editor.
+                   * Deleting it, before we return early
+                   */
+                  delete-widget:x:/-/*?value
+
+                  /*
+                   * Making sure we signal to future clicks on "tr" widget that code view is NOT visible,
+                   * before returning early
+                   */
+                  set-widget-property:x:/../*/_event?value
+                    _code-view-visible:false
+
+                  /*
+                   * Returning early, since this was a "destroy existing code editor operation"
+                   */
+                  return
+
+                /*
+                 * Making sure we signal to future clicks on "tr" widget that code view is already visible
+                 */
+                set-widget-property:x:/../*/_event?value
+                  _code-view-visible:true
+
+                /*
+                 * Retrieving lambda event name from hidden attribute on "tr" HTML widget
+                 */
+                get-widget-property:x:/../*/_event?value
+                  _active-event-name
+
+                /*
+                 * Finding selected widget in surface
+                 */
+                find-widget:wysiwyg-editor-surface
+                  data-selected
+
+                /*
+                 * Passing in arguments necessary to retrieve correct lambda event from selected widget's [events] collection
+                 */
+                add:x:/+
+                  src:x:/../*/get-widget-property/[1,2]/*/*?value
+
+                /*
+                 * Retrieving lambda event from widget, and converting to Hyperlisp,
+                 * such that we can stuff Hyperlisp into textarea widget created below
+                 */
+                get-widget-lambda-event:x:/../*/find-widget/[0,1]/*?value
+                lambda2lisp:x:/-/*/*/*
+
+                /*
+                 * Then we need to create a "tr" widget, and insert into the table, after currently clicked tr widget,
+                 * but before we incoke [create-widget] active event, we need to forward evaluate some of its arguments
+                 */
+                eval-x:x:/+/*/after|/+/*/*/*/*/textarea/*/innerValue|/+/*/*/*/*/*/*/_event-name|/+/*/_active-event-editor
+                create-widget
+                  element:tr
+                  style:"background-color:Transparent;"
+                  after:x:/../*/_event?value
+                  _active-event-editor:x:/../*/get-widget-property/[1,2]/*/*?value
+                  widgets
+                    td
+                      widgets
+                        textarea
+                          class:form-control
+                          rows:16
+                          placeholder:Your Hyperlisp code goes here ...
+                          innerValue:x:/../*/lambda2lisp?value
+                          onchange
+                            raise-widget-ajax-event:x:/../*/_event?value
+                              _onupdate
+                          _onupdate
+
+                            /*
+                             * Forward evaluated before creation of widget, contains lambda event name
+                             */
+                            _event-name:x:/../*/get-widget-property/[1,2]/*/*?value
+
+                            /*
+                             * Retrieving new Hyperlisp code, inside a try/catch block, to make sure Hyperlisp
+                             * syntacic errors are catched, and user is warned
+                             */
+                            try
+
+                              /*
+                               * Retrieving Hyperlisp and converting to lambda
+                               */
+                              get-widget-property:x:/../*/_event?value
+                                value
+                              lisp2lambda:x:/-/*/*?value
+
+                              /*
+                               * Retrieving currently selected widget
+                               */
+                              find-widget:wysiwyg-editor-surface
+                                data-selected
+
+                              /*
+                               * Updating widget's lambda event, but first applying arguments to invocation
+                               */
+                              add:x:/+2
+                                src:x:/../*/_event-name?value
+                              add:x:/+/*
+                                src:x:/..try/*/lisp2lambda/*
+
+                              /*
+                               * Now, finally, we're ready to update widget's lambda event
+                               */
+                              set-widget-lambda-event:x:/..try/*/find-widget/*?value
+
+                            catch
+
+                              /*
+                               * Some bug occurred, probably malformed Hyperlisp.
+                               * Informing user!
+                               */
+                              sys42.info-window:@"Oops! Syntax error in your Hyperlisp. Probably some spaces too much or too few!
+Look for syntax errors in your Hyperlisp! Code was not saved!"
+                                _error:true
+                                _time:more
+
+                        /*
+                         * Wrapper around "CodeMirror" toggle button
+                         */
+                        container
+                          class:text-right
+                          widgets
+                            button
+                              class:btn btn-default
+                              innerValue:@"<span class=""glyphicon glyphicon-pencil""></span> Toggle"
+                              title:Toggle CodeMirror view of Hyperlisp
+                              onclick
+
+                                /*
+                                 * Checking if CodeMirror module is enabled, and if so, we disable it.
+                                 * Otherwise we enable it, and store in session whether or not
+                                 * CodeMirror editing is chosen
+                                 */
+                                get-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
+                                if:x:/-/*?value.bool
+                                  =:bool:true
+
+                                  /*
+                                   * CodeMirror editing is enabled, hence we disable it
+                                   */
+                                  get-parent-widget:x:/../*/_event?value
+                                  get-parent-widget:x:/-/*?value
+                                  find-widget:x:/-/*?value
+                                    element:textarea
+                                  send-javascript:@"window.{0}.toTextArea();"
+                                    :x:/..if/*/find-widget/*?value
+
+                                  /*
+                                   * Making sure we remove value from session that stores the fact that CodeMirror
+                                   * editing is enabled
+                                   */
+                                  set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
+                                else
+
+                                  /*
+                                   * CodeMirror editing is NOT enabled, hence we enable it, and store in
+                                   * session that it is enabled.
+                                   * Applying argument to "CodeMirror" loading file first
+                                   */
+                                  get-parent-widget:x:/../*/_event?value
+                                  get-parent-widget:x:/-/*?value
+                                  find-widget:x:/-/*?value
+                                    element:textarea
+                                  set:x:/+/*/*?name
+                                    src:x:/..else/*/find-widget/*?value
+
+                                  /*
+                                   * Loading up CodeMirror, wrapping the textarea
+                                   */
+                                  sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+                                    _editor
+                                      _name
+                                        mode:hyperlisp
+                                        theme:the-matrix-reduced
+                                        autofocus:false
+                                        fullscreen:false
+                                        height:334px
+                                        raise-update:true
+
+                                  /*
+                                   * Making sure we store in session that CodeMirror module is loaded, to allow "toggling"
+                                   * functionality when clicking pencil
+                                   */
+                                  set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
+                                    src:true
+
+                /*
+                 * Then making sure we set focus initially to textarea widget wrapping Hyperlisp
+                 */
+                find-widget:x:/-?value
+                  element:textarea
+                send-javascript:@"$('#{0}').focus().select();"
+                  :x:/./-/*?value
+
+                /*
+                 * Then checking if user previously have selected to edit Hyperlisp in CodeMirror mode,
+                 * and if so, we launch the CodeMirror editor wrapping our textarea widget
+                 */
+                get-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
+                if:x:/-/*?value.bool
+                  =:bool:true
+
+                  /*
+                   * User has previously chosen to edit Hyperlisp with CodeMirror, 
+                   * launching CodeMirror editor, wrapping textarea.
+                   * First applying arguments to loader
+                   */
+                  set:x:/+/*/*?name
+                    src:x:/../*/find-widget/[1,2]/*?value
+
+                  /*
+                   * Loading up CodeMirror, wrapping the textarea
+                   */
+                  sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+                    _editor
+                      _name
+                        mode:hyperlisp
+                        theme:the-matrix-reduced
+                        autofocus:true
+                        fullscreen:false
+                        height:334px
+                        raise-update:true
+
+              widgets
+                td
+                  {innerValue}:@"<strong><span class=""glyphicon glyphicon-flash""></span> {0}</strong>"
+                    :x:?name
+        create-widget:wysiwyg-controls-action-subscribers
+          parent:wysiwyg-controls-properties
+          element:table
+          class:table table-hover
+          widgets
+            literal
+              element:thead
+              innerValue:@"<tr><th><h3>Action subscribers for widget</h3></th></tr>"
+            container
+              element:tbody
+              widgets
