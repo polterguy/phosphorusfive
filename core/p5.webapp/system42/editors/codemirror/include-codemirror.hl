@@ -42,14 +42,6 @@ if:x:/../*/_editor/*/*/theme
 
 
 
-/*
- * Making sure theme is included
- */
-include-stylesheet-file:"/system42/editors/codemirror/theme/{0}.css"
-  :x:/../*/_editor/*/*/theme?value
-
-
-
 
 
 /*
@@ -101,6 +93,16 @@ if:x:/../*/_editor/*/*/autocomplete?value.bool
     wrap:@""""
   send-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
     :x:/..if/*/join?value
+
+
+
+/*
+ * Making sure theme is included.
+ * Notice this is done AFTER including all other files, to be able to override CSS
+ * class values from plugins, etc...
+ */
+include-stylesheet-file:"/system42/editors/codemirror/theme/{0}.css"
+  :x:/../*/_editor/*/*/theme?value
 
 
 

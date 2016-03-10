@@ -1304,9 +1304,8 @@ CodeMirror.defineMIME("text/x-hyperlisp", "hyperlisp");
 
 
 
-
 /*
- * Helper for showing autocomplete keywords for Hyperlisp keywords
+ * Helper for showing autocomplete for Hyperlisp keywords
  */
 CodeMirror.registerHelper("hint", "hyperlisp", function(cm, options) {
 
@@ -1323,10 +1322,11 @@ CodeMirror.registerHelper("hint", "hyperlisp", function(cm, options) {
    * "curWord" should contain trimmed text from current line after this
    */
   var cur = cm.getCursor();
-  var end = cur.ch, start = end;
+  var end = cur.ch;
   var list = [];
   var curLine = cm.getLine(cur.line);
   var curWord = curLine.trim();
+  var start = end - curWord.length;
 
   /*
    * Then finding each word that matches from our Hyperlisp keywords list
