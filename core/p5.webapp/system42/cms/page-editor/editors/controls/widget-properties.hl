@@ -691,6 +691,7 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                         _editor
                           _name
                             mode:hyperlisp
+                            autocomplete:true
                             autofocus:true
                             fullscreen:true
                             height:334px
@@ -897,6 +898,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                         _editor
                           _name
                             mode:hyperlisp
+                            autocomplete:true
                             autofocus:false
                             fullscreen:true
                             height:334px
@@ -1940,6 +1942,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                     _editor
                                       _name
                                         mode:hyperlisp
+                                        autocomplete:true
                                         autofocus:false
                                         fullscreen:true
                                         height:334px
@@ -1983,6 +1986,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                     _editor
                       _name
                         mode:hyperlisp
+                        autocomplete:true
                         autofocus:true
                         fullscreen:true
                         height:334px

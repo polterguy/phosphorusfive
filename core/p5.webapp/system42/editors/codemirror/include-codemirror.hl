@@ -33,12 +33,14 @@ include-stylesheet-file
 
 
 /*
- * Defaulting theme to "paraiso-light", if not overridden
+ * Defaulting theme to "paraiso", if not overridden.
+ * "paraiso" is a CodeMirror theme created by Thomas Hansen, but inspired
+ * by "paraiso-light" by Jan T. Scott
  */
 if:x:/../*/_editor/*/*/theme
   not
   add:x:/../*/_editor/*
-    src:"theme:paraiso-light"
+    src:"theme:paraiso"
 
 
 
@@ -63,6 +65,19 @@ if:x:/../*/_editor/*/*/fullscreen?value.bool
    */
   include-javascript-file:/system42/editors/codemirror/addon/display/fullscreen.js
   include-stylesheet-file:/system42/editors/codemirror/addon/display/fullscreen.css
+
+  /*
+   * In case user did not provide any keyboard shortcuts of his own, we need
+   * to add the "argument node" to not break logic further down in file
+   */
+  if:x:/../*/_editor/*/*/keys
+    not
+    add:x:/../*/_editor/*
+      src:keys
+
+  /*
+   * Then adding keyboard shortcut for "fullscreen mode"
+   */
   add:x:/../*/_editor/*/*/keys
     src:@"Alt-F:function(cm) {cm.setOption('fullScreen', !cm.getOption('fullScreen'));}"
 
@@ -77,10 +92,23 @@ if:x:/../*/_editor/*/*/autocomplete?value.bool
 
   /*
    * Including AutoComplete CSS and JavaScript files, in addition to adding Ctrl+Space
-   * up as its keyboard shortcut
+   * as its keyboard shortcut
    */
   include-javascript-file:/system42/editors/codemirror/addon/hint/show-hint.js
   include-stylesheet-file:/system42/editors/codemirror/addon/hint/show-hint.css
+
+  /*
+   * In case user did not provide any keyboard shortcuts of his own, we need
+   * to add the "argument node" to not break logic further down in file
+   */
+  if:x:/../*/_editor/*/*/keys
+    not
+    add:x:/../*/_editor/*
+      src:keys
+
+  /*
+   * Then adding keyboard shortcut for "autocomplete" (Ctrl + Space)
+   */
   add:x:/../*/_editor/*/*/keys
     src:@"Ctrl-Space:'autocomplete'"
 
@@ -88,7 +116,12 @@ if:x:/../*/_editor/*/*/autocomplete?value.bool
    * Then including json object with entire Hyperlisp vocabulary to client
    */
   vocabulary
-  join:x:/-/*?value
+
+  /*
+   * Then removing all operators, since they're probably not thought of as Active Events by users
+   */
+  set:x:/..if/*/vocabulary/*(/"=-"|/"=!~"|/"=!="|/=%|/=*|/"=/"|/"=^"|/"=\\~"|/=+|/=<|/=<=|/==|/=>|/=>=)
+  join:x:/..if/*/vocabulary/*?value
     sep:,
     wrap:@""""
   send-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
@@ -118,10 +151,18 @@ if:x:/../*/_editor/*/*/autofocus
 
 
 /*
- * Making sure we trap any custom keyboard shortcuts
+ * Making sure we trap any custom keyboard shortcuts.
+ * First checking if there are any keys, which there might be, either
+ * because caller explicitly defined his own keys, or because of fullscreen or
+ * autocomplete being turned on.
  */
 _keys
 if:x:/../*/_editor/*/*/keys/*
+
+  /*
+   * Then looping through all keyboard shortcuts, and setting the [_keys] node
+   * above to the JavaScript necessary to include as settings to CodeMirror instantiation later
+   */
   for-each:x:/../*/_editor/*/*/keys/*
 
     /*
@@ -146,7 +187,9 @@ if:x:/../*/_editor/*/*/keys/*
 
 /*
  * Changing the 4th formatting parameter's value in [send-javascript] to our now
- * finished parsed keyboard shortcut logic
+ * finished parsed keyboard shortcut logic.
+ * [_keys] should now either be empty, or a valid "extraKeys" JavaScript inclusion
+ * for the settings for CodeMirror instantation
  */
 set:x:/../*/send-javascript/4?value
   src:@",
@@ -183,6 +226,11 @@ CodeMirror.keyMap.default[""Tab""] = ""indentMore"";"
   :
 
 
+/*
+ * If [raise-update] is given as setting to this file, then we make sure CodeMirror
+ * raises the [_onupdate] Ajax event when it is "blurred", to make sure textarea
+ * wrapped by CodeMirror gets notified about that the code changed
+ */
 if:x:/../*/_editor/*/*/raise-update?value.bool
   send-javascript:@"
 window.{0}.on('blur',function (cMirror) {{
@@ -193,8 +241,9 @@ window.{0}.on('blur',function (cMirror) {{
 "
     :x:/../*/_editor/*?name
 
+
 /*
- * Setting initial height of editor, if we're given explicit height
+ * Setting initial height of editor, if we're given an explicit height
  */
 if:x:/../*/_editor/*/*/height
   send-javascript:@"window.{0}.setSize('100%', '{1}');"

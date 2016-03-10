@@ -13,6 +13,7 @@ sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
       mode:hyperlisp
       autofocus:true
       fullscreen:true
+      autocomplete:true
       height:484px
       keys
         Alt-S:@"function(cm) {p5.$('save-button').raise('onclick');}"

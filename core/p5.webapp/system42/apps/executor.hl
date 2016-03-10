@@ -15,6 +15,7 @@ sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
       mode:hyperlisp
       autofocus:true
       fullscreen:true
+      autocomplete:true
       keys
         Alt-E:function() {window._execute_lambda();}
         Alt-C:function() {window.execute_output.getDoc().setValue('');}

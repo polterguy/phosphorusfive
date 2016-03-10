@@ -72,6 +72,7 @@ create-widget
               _editor
                 execute_input
                   mode:hyperlisp
+                  autocomplete:true
                   autofocus:true
                   fullscreen:false
                   raise-update:true

@@ -6,104 +6,33 @@
     Color scheme by Jan T. Sott (https://github.com/idleberg/Paraiso-CodeMirror)
     Inspired by the art of Rubens LP (http://www.rubenslp.com.br)
 
-    Slightly modified by Thomas Hansen to be more useful for Hyperlisp syntax
-
 */
 
-.cm-s-paraiso-light.CodeMirror { background: #e7e9db; color: #be9428; }
-.cm-s-paraiso-light div.CodeMirror-selected { background: #d9d6d0; }
-.cm-s-paraiso-light .CodeMirror-line::selection, .cm-s-paraiso-light .CodeMirror-line > span::selection, .cm-s-paraiso-light .CodeMirror-line > span > span::selection { background: #d9d6d0; }
-.cm-s-paraiso-light .CodeMirror-line::-moz-selection, .cm-s-paraiso-light .CodeMirror-line > span::-moz-selection, .cm-s-paraiso-light .CodeMirror-line > span > span::-moz-selection { background: #d9d6d0; }
+.cm-s-paraiso-light.CodeMirror { background: #e7e9db; color: #41323f; }
+.cm-s-paraiso-light div.CodeMirror-selected { background: #b9b6b0; }
+.cm-s-paraiso-light .CodeMirror-line::selection, .cm-s-paraiso-light .CodeMirror-line > span::selection, .cm-s-paraiso-light .CodeMirror-line > span > span::selection { background: #b9b6b0; }
+.cm-s-paraiso-light .CodeMirror-line::-moz-selection, .cm-s-paraiso-light .CodeMirror-line > span::-moz-selection, .cm-s-paraiso-light .CodeMirror-line > span > span::-moz-selection { background: #b9b6b0; }
 .cm-s-paraiso-light .CodeMirror-gutters { background: #e7e9db; border-right: 0px; }
 .cm-s-paraiso-light .CodeMirror-guttermarker { color: black; }
 .cm-s-paraiso-light .CodeMirror-guttermarker-subtle { color: #8d8687; }
-.cm-s-paraiso-light .CodeMirror-linenumber { color: #d7d9cb; }
+.cm-s-paraiso-light .CodeMirror-linenumber { color: #8d8687; }
 .cm-s-paraiso-light .CodeMirror-cursor { border-left: 1px solid #776e71; }
 
+.cm-s-paraiso-light span.cm-comment { color: #e96ba8; }
+.cm-s-paraiso-light span.cm-atom { color: #815ba4; }
+.cm-s-paraiso-light span.cm-number { color: #815ba4; }
 
-/*
- * Used for both single line comments and multiline comments in Hyperlisp
- */
-.cm-s-paraiso-light span.cm-comment { color: #b7b9ab; }
+.cm-s-paraiso-light span.cm-property, .cm-s-paraiso-light span.cm-attribute { color: #48b685; }
+.cm-s-paraiso-light span.cm-keyword { color: #ef6155; }
+.cm-s-paraiso-light span.cm-string { color: #fec418; }
 
-/*
- * Used for both single line strings and multiline strings in Hyperlisp
- */
-.cm-s-paraiso-light span.cm-string { color: #cea438; }
-
-/*
- * Used for values of nodes Hyperlisp, that are not necessarily string literals
- */
-.cm-s-paraiso-light span.cm-property, .cm-s-paraiso-light span.cm-attribute { color: #cea438; }
-
-/*
- * Used for keywords in Hyperlisp, e.g. [while] and [if]
- */
-.cm-s-paraiso-light span.cm-keyword { color: #df7175; }
-
-/*
- * Used for "variables" in Hyperlisp, e.g. [_foo]
- */
-.cm-s-paraiso-light span.cm-variable { color: #36c6ef; }
-
-/*
- * Used for Active Events in Hyperlisp, e.g. [sys42.show-code-window]
- */
+.cm-s-paraiso-light span.cm-variable { color: #48b685; }
 .cm-s-paraiso-light span.cm-variable-2 { color: #06b6ef; }
-
-/*
- * Used for type declarations in Hyperlisp, e.g. "_foo:int:54"
- */
-.cm-s-paraiso-light span.cm-def { color: #9f3135; }
-
-/*
- * Used for expressions in Hyperlisp, e.g. "/../0?value"
- */
-.cm-s-paraiso-light span.cm-number { color: #df7175; }
-
-/*
- * Used for widget creation and widget types in Hyperlisp, e.g. [a], [div], [container] and [create-widget], etc
- */
-.cm-s-paraiso-light span.cm-widget-type { color: #118f05; }
-
-/*
- * Used for widget properties in Hyperlisp, e.g. [parent], [element], [position], [before] etc
- */
-.cm-s-paraiso-light span.cm-widget-property { color: #51cf45; }
-
-/*
- * Used for widget attributes in Hyperlisp, e.g. [href], [title], [onclick] etc
- */
-.cm-s-paraiso-light span.cm-widget-attribute { color: #51cf45; }
-
-/*
- * Used for syntactic Hyperlisp errors
- */
+.cm-s-paraiso-light span.cm-def { color: #f99b15; }
+.cm-s-paraiso-light span.cm-bracket { color: #41323f; }
+.cm-s-paraiso-light span.cm-tag { color: #ef6155; }
+.cm-s-paraiso-light span.cm-link { color: #815ba4; }
 .cm-s-paraiso-light span.cm-error { background: #ef6155; color: #776e71; }
 
-/*
- * Active line
- */
 .cm-s-paraiso-light .CodeMirror-activeline-background { background: #CFD1C4; }
-
-
-
-/*
- * CodeMirror hint plugin CSS
- */
-.CodeMirror-hints {
-    border-radius:7px;
-    border: solid 1px rgba(0,0,0,.3);
-    background:#e7e9db;
-    box-shadow: 5px 5px 5px rgba(0,0,0,.5);
-}
-
-.CodeMirror-hint {
-    background-color: #e7e9db;
-    max-width: 57em;
-}
-
-li.CodeMirror-hint-active {
-    background: #a7a99b;
-    color:Black;
-}
+.cm-s-paraiso-light .CodeMirror-matchingbracket { text-decoration: underline; color: white !important; }
