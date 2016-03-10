@@ -29,6 +29,9 @@ namespace p5.lambda.keywords
                 // Retrieving separator character(s)
                 var insertBetweenNodes = e.Args.GetExChildValue ("sep", context, "");
 
+                // Retrieving wrapper character(s)
+                var wrapValue = e.Args.GetExChildValue ("wrap", context, "");
+
                 // Used as buffer
                 StringBuilder result = new StringBuilder ();
 
@@ -40,7 +43,7 @@ namespace p5.lambda.keywords
                         result.Append (insertBetweenNodes);
 
                     // Adding currently iterated result
-                    result.Append (idx);
+                    result.Append (wrapValue + idx + wrapValue);
                 }
 
                 // Returning result

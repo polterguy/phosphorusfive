@@ -64,17 +64,17 @@
 /*
  * Used for widget creation and widget types in Hyperlisp, e.g. [a], [div], [container] and [create-widget], etc
  */
-.cm-s-paraiso-light span.cm-widget-type { color: #119f05; }
+.cm-s-paraiso-light span.cm-widget-type { color: #118f05; }
 
 /*
  * Used for widget properties in Hyperlisp, e.g. [parent], [element], [position], [before] etc
  */
-.cm-s-paraiso-light span.cm-widget-property { color: #31af25; }
+.cm-s-paraiso-light span.cm-widget-property { color: #51cf45; }
 
 /*
  * Used for widget attributes in Hyperlisp, e.g. [href], [title], [onclick] etc
  */
-.cm-s-paraiso-light span.cm-widget-attribute { color: #41bf35; }
+.cm-s-paraiso-light span.cm-widget-attribute { color: #51cf45; }
 
 /*
  * Used for syntactic Hyperlisp errors

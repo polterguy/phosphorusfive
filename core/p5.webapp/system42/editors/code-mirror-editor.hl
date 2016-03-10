@@ -34,6 +34,7 @@ sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
     editor_surface
       mode
       autofocus:true
+      autocomplete:true
       fullscreen:true
       height:596px
       keys

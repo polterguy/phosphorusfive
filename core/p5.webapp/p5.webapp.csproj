@@ -146,6 +146,8 @@
     <Content Include="media\images\dangerous-shit.jpg" />
     <Content Include="media\images\general-help-1.png" />
     <Content Include="media\images\marvin-headshot-transparent.png" />
+    <Content Include="system42\editors\codemirror\addon\hint\show-hint.css" />
+    <Content Include="system42\editors\codemirror\addon\hint\show-hint.js" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

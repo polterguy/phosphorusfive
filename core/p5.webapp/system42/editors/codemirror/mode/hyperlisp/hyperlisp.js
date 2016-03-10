@@ -145,7 +145,8 @@ CodeMirror.defineMode("hyperlisp", function() {
       return {
         mode:'name',
         indent:0,
-        previousIndent:0
+        previousIndent:0,
+        noContent:true // Only true if this is first "content" of Hyperlisp, which makes sure first node starts with "no indentation"
       };
     },
 
@@ -250,6 +251,7 @@ CodeMirror.defineMode("hyperlisp", function() {
            * This is a single line string literal (hopefully, unless there's a bug in it),
            * checking for indentation bugs first
            */
+          state.noContent = false;
           stream.next();
           if (this.checkIndentation (state, pos) === true) {
             return this.styles.error;
@@ -272,6 +274,7 @@ CodeMirror.defineMode("hyperlisp", function() {
           /*
            * Then fetching next character, to check for sure, whether or not this is a multi line string literal
            */
+          state.noContent = false;
           stream.next();
           cr += stream.next();
           if (cr == '@"') {
@@ -299,6 +302,7 @@ CodeMirror.defineMode("hyperlisp", function() {
           /*
            * Switching to "value" mode, and returning "type"
            */
+          state.noContent = false;
           state.mode = 'value';
 
           /*
@@ -387,6 +391,7 @@ CodeMirror.defineMode("hyperlisp", function() {
        * "type" of name it was, which can be "Active Event type of name", "keyword", "widget type", etc.
        * This process has consequences for indentation, and might increase indentation 
        */
+      state.noContent = false;
       if (word != null && word.length > 0) {
         retVal = this.getNodeNameType (word, state);
       }
@@ -744,9 +749,9 @@ CodeMirror.defineMode("hyperlisp", function() {
 
       /*
        * Verifying that indentation is no more than at the most "one additional indentation" (2 spaces) more than
-       * previous value of indentation
+       * previous value of indentation, or if first name starts with two spaces (which is a bug)
        */
-      if (pos - state.previousIndent > 2) {
+      if (pos - state.previousIndent > 2 || (pos == 2 && state.noContent === true)) {
         state.mode = 'error';
         return true;
       }
@@ -759,6 +764,7 @@ CodeMirror.defineMode("hyperlisp", function() {
       state.previousIndent = pos;
       return false;
     },
+
 
 
 
@@ -1289,7 +1295,6 @@ CodeMirror.defineMode("hyperlisp", function() {
   };
 });
 
-
 /*
  * Helper that defines MIME type of Hyperlisp content.
  * Not entirely sure where we'd need this, but possibly some plugins
@@ -1297,4 +1302,46 @@ CodeMirror.defineMode("hyperlisp", function() {
  */
 CodeMirror.defineMIME("text/x-hyperlisp", "hyperlisp");
 
+
+
+
+/*
+ * Helper for showing autocomplete keywords for Hyperlisp keywords
+ */
+CodeMirror.registerHelper("hint", "hyperlisp", function(cm, options) {
+
+  /*
+   * Checking if there are any autocomplete keywords, and if not, returning early
+   */
+  if (CodeMirror._hyperlispKeywords == null) {
+    return;
+  }
+
+  /*
+   * Finding current line in CodeMirror editor, such that we can use its content
+   * as the basis for figuring out which keywords to show in autocomplete popup.
+   * "curWord" should contain trimmed text from current line after this
+   */
+  var cur = cm.getCursor();
+  var end = cur.ch, start = end;
+  var list = [];
+  var curLine = cm.getLine(cur.line);
+  var curWord = curLine.trim();
+
+  /*
+   * Then finding each word that matches from our Hyperlisp keywords list
+   */
+  for (var idx = 0; idx < CodeMirror._hyperlispKeywords.length; idx++) {
+    if (CodeMirror._hyperlispKeywords[idx].indexOf (curWord) != -1) {
+
+      /*
+       * This keyword contains the text from current line in editor, hence
+       * adding keyword back to caller
+       */
+      list.push(CodeMirror._hyperlispKeywords[idx]);
+    }
+  }
+  return {list: list, from: CodeMirror.Pos(cur.line, start), to: CodeMirror.Pos(cur.line, end)};
 });
+});
+
