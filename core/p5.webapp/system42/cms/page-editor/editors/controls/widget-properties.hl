@@ -1840,10 +1840,11 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
 
 
                         /*
-                         * Wrapper around "CodeMirror" toggle button and "Hyperlisp wizard" button
+                         * Wrapper around "CodeMirror" toggle button, "Hyperlisp wizard" button and "Delete subscriber" button
                          */
                         container
-                          class:text-right
+                          class:btn-group
+                          style:"float:right;"
                           widgets
 
                             /*
@@ -1954,6 +1955,77 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                    */
                                   set-session-value:sys42.wysiwyg-controls.code-mirror-editor-enabled-events
                                     src:true
+
+                            /*
+                             * Delete Action Subscriber button
+                             */
+                            button
+                              class:btn btn-default
+                              innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Delete"
+                              title:Deletes your Action Subscriber
+                              onclick
+
+                                /*
+                                 * Asking user to confirm deletion of Action Subscriber, but first forward evaluate the
+                                 * expression inside of [find-first-ancestor-widget] in the [_onok] lambda object
+                                 */
+                                eval-x:x:/+/*/_onok/*/find-first-ancestor-widget
+                                sys42.confirm-window
+                                  _header:Confirm deletion!
+                                  _body:@"This will delete your Action Subscriber. All Hyperlisp will be lost. Are you sure you wish to do this?"
+                                  _onok
+
+                                    /*
+                                     * Finding "tr" widget, for then to find name of lambda event
+                                     */
+                                    find-first-ancestor-widget:x:/../*/_event?value
+                                      element:tr
+
+                                    /*
+                                     * Then retrieving name of lambda event from "tr" widget's hidden attribute
+                                     */
+                                    get-widget-property:x:/../*/find-first-ancestor-widget/*?value
+                                      _active-event-editor
+
+                                    /*
+                                     * Then retrieving currently selected widget
+                                     */
+                                    find-widget:wysiwyg-editor-surface
+                                      data-selected
+
+                                    /*
+                                     * Applying argument to removal of lambda event, 
+                                     * which is name of lambda event, and nothing more
+                                     */
+                                    add:x:/../*/set-widget-lambda-event
+                                      src:x:/../*/get-widget-property/*/*?value
+
+                                    /*
+                                     * Then removing lambda event
+                                     */
+                                    set-widget-lambda-event:x:/../*/find-widget/[0,1]/*?value
+
+                                    /*
+                                     * And now for simplicity's sake, simply removing "tr" widgets.
+                                     * Both the "tr" widget wrapping the actual editor, in addition to
+                                     * the "tr" row wrapping the name of Action Subscriber.
+                                     * First the "tr" widget wrapping editor.
+                                     * But before we delete "editor tr widget", we need to retrieve its parent,
+                                     * and then find its Action Subscriber name "tr" widget
+                                     */
+                                    get-parent-widget:x:/../*/find-first-ancestor-widget/*?value
+                                    find-widget:x:/-/*?value
+                                      _active-event-name:x:/../*/get-widget-property/*/*?value
+
+                                    /*
+                                     * Deleting editor's "tr" widget
+                                     */
+                                    delete-widget:x:/../*/find-first-ancestor-widget/*?value
+
+                                    /*
+                                     * Deleting Action Subscriber name's "tr" widget
+                                     */
+                                    delete-widget:x:/../*/find-widget/[1,2]/*?value
 
                 /*
                  * Then making sure we set focus initially to textarea widget wrapping Hyperlisp
