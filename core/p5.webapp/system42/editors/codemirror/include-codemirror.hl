@@ -29,6 +29,15 @@ include-stylesheet-file
   /system42/editors/codemirror/addon/display/fullscreen.css
 
 
+
+/*
+ * Defaulting theme to zenburn, if not overridden
+ */
+if:x:/../*/_editor/*/*/theme
+  not
+  add:x:/../*/_editor/*
+    src:"theme:paraiso-light"
+
 /*
  * Making sure theme is included
  */

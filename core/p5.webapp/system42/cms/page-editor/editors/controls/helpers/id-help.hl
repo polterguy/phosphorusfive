@@ -44,7 +44,9 @@ create-widget:wysiwyg-controls-id-window
               class:modal-header
               widgets
 
-                // Close button
+                /*
+                 * Close dialog button
+                 */
                 literal
                   element:button
                   class:close
@@ -66,23 +68,101 @@ create-widget:wysiwyg-controls-id-window
                 container:wysiwyg-controls-id-window-body
                   element:div
                   widgets
-                    text:@"<p><img src=""/media/images/marvin-headshot.png"" style=""float:right;""/>
-The [id] attribute, must be unique for all widgets that are on the same page. 
-All manipulation and retrieval of a widget's values and attributes, needs to be given an id to know which widget to retrieve values from and/or set values to. If you do not set an 
-id, a unique id will be automatically assigned to it.</p>
-<p>If you choose to use the automatically created id, you can still retrieve the id of your widget in all of its Ajax Active Event
-handlers, since it is added to each Ajax Event handler as an [_event] argument node. However, more often, you will find yourself 
-creating an id for your widgets, that somehow matches what it does. For instance a <em>""name""</em> textbox for a customer input
-field, should probably be given an id such as <em>""customer-name""</em>. </p>
-<p>This makes it easier to retrieve the value of one
-widget, from the event handler of another widget. Such as when you have a <em>""Save""</em> button, that should retrieve
-the values of other textboxes on your page, to retrieve the values to save.</p>
-<p>Widgets that do not need to have their values retrieved from event handlers of other widgets, do not generally speaking need
-an <em>""intelligent id""</em>, and you can safely use the automatically generated id for these circumstances, to more easily 
-avoid name clashing of ids.</p>
-<p>PS!<br>Usercontrols that you might want to include several times on a page, <strong>should not</strong> have an explicit id,
-but rather use the generated id, since otherwise you'll end up with multiple widgets, having the same id, which is not legal in 
-Phosphorus Five.</p>"
+                    text:@"<p>The id attribute of widget, is a page-wide unique identifier, through which you can select, 
+manipulate and retrieve a widget's values and/or attributes.</p>
+<p>If you do not supply an <em>""explicit id""</em>, then your widget will have an automatically assigned id. This automatically assigned
+id, cannot be trusted to not change though. If you are dependent upon retrieving your widget through its id, you should give it an 
+<em>""explicit id""</em>, by changing its id, to something that creates semantical meaning for what your widget does.</p>
+<p>An example of a good id value is <em>""contact-email-address""</em>. An example of a bad id value is <em>""my-widget""</em>.</p>
+<p>Widgets inside of usercontrols <strong>should normally not have explicit ids!</strong> If you give your widgets inside of your
+usercontrols an explicit id, then the same usercontrol <strong>cannot be inserted into the same page multiple times</strong>.</p>
+<p>To see a complete list of all widgets in your page, with explicit ids, click the button below.</p>"
+                    button
+                      class:btn btn-default
+                      innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> List all ids for all widgets in page"
+                      onclick
+
+                        /*
+                         * Disabling "show ids button" first, to avoid clicking it twice
+                         */
+                        set-widget-property:x:/../*/_event?value
+                          disabled
+                          class:btn btn-default disabled
+
+                        /*
+                         * Settings wrapper "ul" to visible
+                         */
+                        set-widget-property:wysiwyg-controls-list-all-widgets-ids
+                          visible:true
+
+                        /*
+                         * Creating all children "li" widgets of wrapper, 
+                         * and removing main surface widget from list, before we
+                         * start creating our "li" widgets
+                         */
+                        sys42.get-widget:wysiwyg-editor-surface
+                          _flatten:true
+                        set:x:/-/0
+
+                        /*
+                         * Looping through remaining widgets, creating an "li" widget for each of them
+                         */
+                        for-each:x:/../*/sys42.get-widget/*
+
+                          /*
+                           * Checking if current widget has an id
+                           */
+                          if:x:/..for-each/*/_dp/#?value
+
+                            /*
+                             * Creating an "li" widget for currently iterated widget, with the possibility
+                             * of clicking the li element (anchor hyperlink) to select it on page.
+                             * Forward evaluating expression in [innerValue] and [_widget-id] first
+                             */
+                            eval-x:x:/+/*/*/*/innerValue|/+/*/*/*/*/_widget-id
+                            create-widget
+                              parent:wysiwyg-controls-list-all-widgets-ids
+                              element:li
+                              widgets
+                                a
+                                  href:#
+                                  innerValue:x:/..for-each/*/_dp/#?value
+                                  title:Click me to select widget in WYSIWYG surface
+                                  onclick
+
+                                    /*
+                                     * Will contain widget id for current widget, see above [eval-x]
+                                     */
+                                    _widget-id::x:/../*/for-each/*/_dp/#?value
+
+                                    /*
+                                     * Find currently selected widget, to check if the "li" widget just clicked now,
+                                     * is the one pointing to the currently selected widget, at which point we "flash" widget,
+                                     * instead of selecting it (which would actually de-select it if we did)
+                                     */
+                                    find-widget:wysiwyg-editor-surface
+                                      data-selected
+
+                                    /*
+                                     * Flashing widget,to make it show in page (scrolls page)
+                                     */
+                                    sys42.wysiwyg-controls.blink-control:x:/../*/_widget-id?value
+                                    if:x:/../*/find-widget/*?value
+                                      =:x:/../*/_widget-id?value
+
+                                      /*
+                                       * Widget is already selected, returning early
+                                       */
+                                      return
+
+                                    /*
+                                     * Widget was not already selected, select it in WYSIWYG surface
+                                     */
+                                    sys42.wysiwyg-controls.select-widget:x:/../*/_widget-id?value
+                    container:wysiwyg-controls-list-all-widgets-ids
+                      element:ul
+                      class:prepend-top
+                      visible:false
 
             /*
              * Footer of dialog (contains OK and Cancel buttons)

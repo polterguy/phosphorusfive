@@ -7,6 +7,14 @@
 
 
 /*
+ * Including all default stylesheets and JavaScript files for page,
+ * which means bootstrap CSS, jQuery and main.css
+ */
+sys42.include-default-stylesheet-files
+sys42.include-default-javascript-files
+
+
+/*
  * Creating our main template webpage
  */
 create-widget:template-root

@@ -48,6 +48,15 @@ body {
 }
 
 /*
+ * To ensure fullscreen mode in CodeMirror does not hide the menu,
+ * or other controls are above it, we need to add this little "hack"
+ */
+.CodeMirror-fullscreen {
+    margin-top:50px !important;
+    z-index:1031 !important;
+}
+
+/*
  * To ensure content is filling the whole screen, regardless of its height
  */
 .content-row {
@@ -186,7 +195,7 @@ body {
     }
     20% {
         box-shadow:0 0 20px rgba(0,255,0,1);
-        transform:scale(2);
+        transform:scale(1.2);
     }
     40% {
         box-shadow:0 0 20px rgba(255,255,0,1);

@@ -72,7 +72,6 @@ create-widget
               _editor
                 execute_input
                   mode:hyperlisp
-                  theme:the-matrix-reduced
                   autofocus:true
                   fullscreen:false
                   raise-update:true

@@ -13,7 +13,6 @@ sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
   _editor
     execute_input
       mode:hyperlisp
-      theme:the-matrix-reduced
       autofocus:true
       fullscreen:true
       keys
@@ -23,7 +22,6 @@ sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
   _editor
     execute_output
       mode:hyperlisp
-      theme:the-matrix-reduced-secondary
       autofocus:false
       height:"246px"
 

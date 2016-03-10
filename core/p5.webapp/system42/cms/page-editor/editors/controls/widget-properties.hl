@@ -691,9 +691,8 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                         _editor
                           _name
                             mode:hyperlisp
-                            theme:the-matrix-reduced
                             autofocus:true
-                            fullscreen:false
+                            fullscreen:true
                             height:334px
                             raise-update:true
 
@@ -898,9 +897,8 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                         _editor
                           _name
                             mode:hyperlisp
-                            theme:the-matrix-reduced
                             autofocus:false
-                            fullscreen:false
+                            fullscreen:true
                             height:334px
                             raise-update:true
 
@@ -1687,7 +1685,7 @@ CKEDITOR.instances['widget-property-innerValue'].on('change', function() {
         /*
          * Currently selected widget has lambda events, adding a table to main widget that shows them
          */
-        databind:x:/..if/*/create-widget/*/widgets/*/container/*/element/=tbody/./*/widgets
+        databind:x:/..if/*/create-widget/**/element/=tbody/./*/widgets
           src:x:/../*/sys42.get-widget/*/*/events/*
           template
             tr
@@ -1942,9 +1940,8 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                     _editor
                                       _name
                                         mode:hyperlisp
-                                        theme:the-matrix-reduced
                                         autofocus:false
-                                        fullscreen:false
+                                        fullscreen:true
                                         height:334px
                                         raise-update:true
 
@@ -1986,9 +1983,8 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                     _editor
                       _name
                         mode:hyperlisp
-                        theme:the-matrix-reduced
                         autofocus:true
-                        fullscreen:false
+                        fullscreen:true
                         height:334px
                         raise-update:true
 
@@ -1996,14 +1992,17 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                 td
                   {innerValue}:@"<strong><span class=""glyphicon glyphicon-flash""></span> {0}</strong>"
                     :x:?name
-        create-widget:wysiwyg-controls-action-subscribers
+        create-widget:wysiwyg-controls-action-subscribers-wrp
           parent:wysiwyg-controls-properties
-          element:table
-          class:table table-hover bg-warning rounded-corners
+          class:bg-warning rounded-corners air-padding prepend-bottom col-xs-12
           widgets
-            literal
-              element:thead
-              innerValue:@"<tr><th><h3>Action subscribers for widget</h3></th></tr>"
-            container
-              element:tbody
+            container:wysiwyg-controls-action-subscribers
+              element:table
+              class:table table-hover
               widgets
+                literal
+                  element:thead
+                  innerValue:@"<tr><th><h3>Action subscribers for widget</h3></th></tr>"
+                container
+                  element:tbody
+                  widgets

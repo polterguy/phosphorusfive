@@ -52,7 +52,6 @@ else
           src:"_widget-id:{0}"
             :x:/../*/_widget-id?value
       sys42.execute-lisp-file:/system42/editors/code-mirror-editor.hl
-        _theme:the-matrix-reduced
         _mode:md
       set-session-value:sys42.editor.edited-file
         src:x:/../*/_file?value
@@ -82,7 +81,6 @@ else
           src:"_widget-id:{0}"
             :x:/../*/_widget-id?value
       sys42.execute-lisp-file:/system42/editors/code-mirror-editor.hl
-        _theme:the-matrix-reduced
       set-session-value:sys42.editor.edited-file
         src:x:/../*/_file?value
       set:x:/..?value

@@ -1028,18 +1028,39 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
           innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
           title:Help files for [controls] pages
           oninit
+
+            /*
+             * If this is first loading of [controls] page during session, we "blink"
+             * help button, showing some helper tooltip, to explain to user that "this is
+             * where you should start".
+             */
             if
               fetch:x:/0/0?value
                 get-session-value:sys42.wysiwyg-controls.has-blinked-help-button
               not
+
+              /*
+               * Help button has not been previously blinked during current session,
+               * hence we "flash it" and shows the user a friendly advice next to help button
+               */
               set-widget-property:wysiwyg-controls-help-button
                 data-content:@"If you are new to Phosphorus Five, then you will probably have a smoother start, if you click here the first time ..."
                 data-placement:left
-                data-trigger:focus
-              send-javascript:@"$('#wysiwyg-controls-help-button').popover('show');
-setTimeout(function(){$('#wysiwyg-controls-help-button').popover('hide').popover('destroy');}, 7000);"
+              send-javascript:@"setTimeout (function () {
+  $('#wysiwyg-controls-help-button').popover('show');
+  setTimeout(function(){$('#wysiwyg-controls-help-button').popover('hide').popover('destroy');}, 7000)
+}, 1000);"
+
+              /*
+               * Making sure help is NOT displayed next time user loads a [controls] page during current session
+               */
               set-session-value:sys42.wysiwyg-controls.has-blinked-help-button
                 src:true
+
+              /*
+               * Blinking help button too
+               */
+              sys42.wysiwyg-controls.blink-control:wysiwyg-controls-help-button
           onclick
             sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
           events
@@ -1819,7 +1840,7 @@ you can simply delete it now. A complete version of the widget still exists on y
       /*
        * Finding selected widget
        */
-      find-widget
+      find-widget:wysiwyg-editor-surface
         data-selected:true
 
       /*
@@ -2063,7 +2084,7 @@ you can simply delete it now. A complete version of the widget still exists on y
        * allowing for for instance CKEditor to be used to edit content
        */
       load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
-      if:x:@"/-/*/*/""{0}""/*/_html-editor-allowed/=true"
+      if:x:@"/-/*/*/""{0}""/*/type/=block-level"
         :x:/../*/get-widget-property/*/*?value
 
         /*

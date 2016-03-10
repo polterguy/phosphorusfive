@@ -1,0 +1,43 @@
+/*
+ * Contains unit tests for testing Hyperlisp parser in system
+ */
+
+/*
+ * Tests that checks that "foo1" behaves correctly
+ */
+weird-spacing
+  _weird-hyperlisp:@"sdf
+  fdg
+
+       /*
+ * sdfouh sdfouh sdf
+                             */
+
+  
+  
+
+    _foo:@""sdfpih""
+      dfgouhdfg:@""iyguiyf
+      sdfg
+   sdfihsdf""
+                                  //
+                                 //
+                                //
+                               /*
+sdfougsdf*/
+                              /*
+sdfougsdf*/
+                   // sdfih dsfoih dsfoih dsf
+  /*sdfpih sdfih sdfogih dfg */
+      sdf
+
+      
+      
+      sys42.howdy
+      sdfouhg
+        oughoug
+"
+  /*
+   * The above code, although relatively weird, should legally be convertible to lambda
+   */
+  lisp2lambda:x:/-?value

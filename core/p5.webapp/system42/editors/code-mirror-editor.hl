@@ -6,8 +6,6 @@
 /*
  * Including CodeMirror for editor surface
  */
-set:x:/../*/sys42.execute-lisp-file/*/*/*/theme?value
-  src:x:/../*/_theme?value
 if:x:/../*/_mode?value
   =:hl
   set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
@@ -35,7 +33,6 @@ sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
   _editor
     editor_surface
       mode
-      theme
       autofocus:true
       fullscreen:true
       height:596px
