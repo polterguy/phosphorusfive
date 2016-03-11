@@ -1957,6 +1957,45 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                     src:true
 
                             /*
+                             * Close editing of Action Subscriber button
+                             */
+                            button
+                              class:btn btn-default
+                              innerValue:@"<span class=""glyphicon glyphicon-remove""></span> Close"
+                              title:Closes the editor window
+                              onclick
+
+                                /*
+                                 * Finding "tr" widget, such that we can remove entire "editor row"
+                                 */
+                                find-first-ancestor-widget:x:/../*/_event?value
+                                  element:tr
+
+                                /*
+                                 * Then retrieving name of lambda event from "tr" widget's hidden attribute,
+                                 * since we need this name to find the "tr" row that wraps the name of
+                                 * Action Subscriber, since we need to update the invisible attribute, that
+                                 * track whether or not "codeview" is visible or not
+                                 */
+                                get-widget-property:x:/../*/find-first-ancestor-widget/*?value
+                                  _active-event-editor
+
+                                /*
+                                 * Then updating the hidden attribute that tracks whether or not "codeview"
+                                 * is visible in the "tr" row for the Action Subscriber name
+                                 */
+                                get-parent-widget:x:/../*/find-first-ancestor-widget/*?value
+                                find-widget:x:/-/*?value
+                                  _active-event-name:x:/../*/get-widget-property/*/*?value
+                                set-widget-property:x:/-/*?value
+                                  _code-view-visible:false
+
+                                /*
+                                 * Deleting editor's "tr" widget
+                                 */
+                                delete-widget:x:/../*/find-first-ancestor-widget/*?value
+
+                            /*
                              * Delete Action Subscriber button
                              */
                             button
