@@ -31,24 +31,6 @@ create-void-widget:wysiwyg-control-add-attribute
       value
 
     /*
-     * Checking if it is an event handler, at which case we rename the attribute,
-     * adding two underscored (_) before its name, to hide it from the WYSIWYG design surface,
-     * and make sure it doesn't mess up the interacting with the surface in any ways
-     */
-    if
-      fetch:x:/0/0?value
-        index-of:x:/../*/get-widget-property/*/*?value
-          what:on
-      =:int:0
-
-      /*
-       * This is an event handler, renaming it, adding one "_" before its name
-       */
-      set:x:/../*/get-widget-property/*/*?value
-        src:_{0}
-          :x:/../*/get-widget-property/*/*?value
-
-    /*
      * Finding selected widget
      */
     find-widget
@@ -82,19 +64,38 @@ create-void-widget:wysiwyg-control-add-attribute
       =:bool:true
 
       /*
-       * This is a legal attribute name for widget. Finding selected
-       * widget, adding attribute, and re-evaluating the 'show properties' 
-       * Hyperlisp file
+       * Attribute name was legal for given widget's element type.
+       * Now checking if it is an event handler, at which case we rename the attribute,
+       * adding one underscor ("_") before its name, to hide it from the WYSIWYG design surface,
+       * and make sure it doesn't mess up the interacting with the surface in any ways
+       */
+      if
+        fetch:x:/0/0?value
+          index-of:x:/../*/get-widget-property/[0,1]/*/*?value
+            what:on
+        =:int:0
+
+        /*
+         * This is an event handler, renaming it, 
+         * by adding one underscore ("_") before its name
+         */
+        set:x:/../*/get-widget-property/[0,1]/*/*?value
+          src:_{0}
+            :x:/../*/get-widget-property/[0,1]/*/*?value
+
+      /*
+       * Everything seems to be OK now, adding attribute, 
+       * and re-evaluating the 'show properties' Hyperlisp file.
+       * But this time giving it an "initial focus property", to make
+       * sure our newly added attribute gets focus, such that user can just
+       * start typing in its value immediately
        */
       add:x:/+
         src:x:/../*/get-widget-property/[0,1]/*/*?value
       set-widget-property:x:/../*/find-widget/*?value
-      set:x:/+2/*/_widget?value
-        src:x:/../*/find-widget/*?value
       eval-x:x:/+/*
       sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
-        _widget
-        _initial-focus:x:/../*/get-widget-property/[0,1]/*/*?value
+        _initial-focus-property:x:/../*/get-widget-property/[0,1]/*/*?value
       delete-widget:wysiwyg-control-add-attribute
       sys42.info-window:Please provide a value, if any, for your attribute!
 
@@ -111,7 +112,7 @@ create-void-widget:wysiwyg-control-add-attribute
       /*
        * Then we forward evaluates (most) expressions inside of confirm window
        */
-      eval-x:x:/+/**(/src|/set-widget-property|/_initial-focus|/_body)
+      eval-x:x:/+/**(/src|/set-widget-property|/_initial-focus-property|/_body)
       sys42.confirm-window
         _header:Please confirm attribute name!
         _body:@"<img src=""/media/images/dangerous-shit.jpg"" style=""float:right;"" />
@@ -130,7 +131,7 @@ Are you sure you wish to add this attribute to your widget?</p>
           eval-x:x:/+/*
           sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
             _widget
-            _initial-focus:x:/../*/get-widget-property/[0,1]/*/*?value
+            _initial-focus-property:x:/../*/get-widget-property/[0,1]/*/*?value
           sys42.info-window:Please provide a value, if any, for your attribute!
     else
 

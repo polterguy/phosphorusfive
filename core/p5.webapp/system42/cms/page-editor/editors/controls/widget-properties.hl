@@ -164,7 +164,8 @@ sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/events!/element!/data-s
 
 /*
  * Looping through all sorted properties from above, adding them one after the other, until
- * we find our first ajax event handler [_onXXX], at which point we stop.
+ * we find our first ajax event handler [_onXXX], at which point we stop, to let our next
+ * [for-each] handle our events
  */
 for-each:x:/../*/sort/*
 
@@ -185,8 +186,17 @@ for-each:x:/../*/sort/*
   /*
    * This is not an ajax event handler, creating widget(s) that allows editing property,
    * and remove property from [sort] afterwards. First making sure widget's name, and so on,
-   * are correctly passed into [create-widget] invocation
+   * are correctly passed into [create-widget] invocation.
+   * In addition, we check to see if this is our [_initial-focus-property], at which point
+   * we add up an [oninit] that sets the focus to property during creation.
    */
+  if:x:/../*/_initial-focus-property?value
+    =:x:/..for-each/*/_dp/#?name
+    add:x:/..for-each/*/add/*/src/*/container/*/widgets/*/container/*/widgets/*/void
+      src
+        oninit
+          send-javascript:@"$('#{0}').focus().select();"
+            :x:/../*/_event?value
   set:x:/+2/**/={attribute-name}?value
     src:x:/..for-each/*/_dp/#?name
   set:x:/+/**/={attribute-value}?value
@@ -533,15 +543,32 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
     /*
      * Then passing in event handler name, and value, to [add] invocation below
      */
-    set:x:/+3/**/={attribute-name}?value
+    set:x:/+4/**/={attribute-name}?value
       src:x:/..else/*/split/1?name
-    set:x:/+2/**/={attribute-value}?value
+    set:x:/+3/**/={attribute-value}?value
       src:x:/..else/*/lambda2lisp?value
 
     /*
      * Then adding widget to [create-widget] invocation below loop.
-     * But first, forward evaluating innerValue beneath
+     * But first, forward evaluating innerValue beneath.
+     * In addition, we check to see if this is our [_initial-focus-property], at which point
+     * we add up an [oninit] that sets the focus to property during creation.
      */
+    if:x:/../*/_initial-focus-property?value
+      =:{0}
+        :x:/..for-each/*/_dp/#?name
+      add:x:/..else/*/add/*/src/*/container/*/widgets/*/container/*/widgets/*/textarea
+        src
+          oninit
+            send-javascript:@"$('#{0}').focus().select();"
+              :x:/../*/_event?value
+
+      /*
+       * Also, since this event handler was just created now, we add up some 
+       * "default Hyperlisp" to it
+       */
+      set:x:/..else/*/add/*/src/*/container/*/widgets/*/container/*/widgets/*/textarea/*/innerValue?value
+        src:@"sys42.info-window:Hello World 2.0"
     eval-x:x:/+/*/*/*/*/*/*/literal/*/innerValue
     add:x:/../*/create-widget/*/widgets
       src
