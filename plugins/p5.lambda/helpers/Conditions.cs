@@ -23,8 +23,11 @@ namespace p5.lambda.helpers
         // Used as buffer for all comparison operators and logical operators in system
         private static Node _operators;
 
-        // Used to hold the number of operators used to evaluate the condition
-        private int _noConditions = -1;
+        // Used to hold the number of operators used to evaluate the root condition
+        // This is used to calculate [offset] if condition evaluates to true, such that we
+        // do not raise conditional operator Active Events as part of the execution process
+        // of current conditional scope
+        private int _noRootConditions = -1;
 
         /*
          * Recursively run through conditions
@@ -35,7 +38,9 @@ namespace p5.lambda.helpers
             var conditions = GetConditionalEventNodes (context, args).ToList ();
 
             // Storing how many operators are part of our conditional statement, such that we can now the offset we should use later
-            _noConditions = conditions.Count;
+            // But we only store this number on the "root condition node", which means our first run-through
+            if (_noRootConditions == -1)
+                _noRootConditions = conditions.Count;
 
             // Looping through each condition
             foreach (var idx in conditions) {
@@ -108,7 +113,7 @@ namespace p5.lambda.helpers
                 return;
 
             // Storing offset temporary in args, making sure we clean up afterwards
-            args.Insert (0, new Node ("offset", _noConditions + 1 /* Remember [offset] node itself */));
+            args.Insert (0, new Node ("offset", _noRootConditions + 1 /* Remember [offset] node itself */));
             try
             {
                 // Evaluating body of conditional statement, now with offset at first non-comparison operator event

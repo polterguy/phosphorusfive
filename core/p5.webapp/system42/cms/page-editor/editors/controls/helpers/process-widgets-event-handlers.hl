@@ -51,13 +51,17 @@ for-each:x:/../*/_node/#/*
   if:x:/..for-each/*/_dp/#/*/data-usercontrol
     and:x:/..for-each/*/_dp/#?name
       =:container
+      or:x:/..for-each/*/_dp/#?name
+        =:create-container-widget
 
     /*
-     * This is a usercontrol, slightly modifying its [oninit]. But making sure every
+     * This is a usercontrol, either directly embedded on page, or indirectly through another
+     * usercontrol. Slightly modifying its [oninit], but making sure every
      * single event handler, of every single child widget, created as a consequence of 
      * the [oninit] being evaluated, is removed, except for any "nested" usercontrols' 
-     * [oninit] event, which is necessary to make sure usercontrol is being rendered in
-     * design WYSIWYG surface, the same way it will be shown on the resulting page
+     * [oninit] event handlers. This is necessary to make sure usercontrol is being rendered in
+     * design WYSIWYG surface, the same way it will be shown on the resulting page, but without
+     * its widgets' ajax events hooked up
      */
     insert-before:x:/..for-each/*/_dp/#/*/oninit/*/eval
       src
@@ -70,7 +74,9 @@ for-each:x:/../*/_node/#/*
 
         /*
          * Making sure we recursively call "self" for each nested usercontrol inside of current usercontrol,
-         * but this time, such that no children widgets of usercontrol can be selected
+         * but this time, such that no children widgets of usercontrol can be selected, such that all inner
+         * widgets of a usercontrol also have their ajax events "washed" or "processed" to avoid ajax events
+         * on widgets firing as user navigates page
          */
         set:x:/+/*/_node?value
           src:x:/../*/select-data

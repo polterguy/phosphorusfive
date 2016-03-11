@@ -6,6 +6,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using p5.core;
 
 namespace p5.exp.iterators
@@ -18,6 +19,7 @@ namespace p5.exp.iterators
     {
         internal readonly string Name;
         private bool _like;
+        private bool _regex;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamed" /> class
@@ -30,6 +32,9 @@ namespace p5.exp.iterators
                 // "Like" equality
                 Name = name.Substring (1);
                 _like = true;
+            } else if (name.StartsWith (":regex:")) {
+                _regex = true;
+                Name = name.Substring (7);
             } else if (name.StartsWith ("\\")) {
 
                 // Escaped "named operator"
@@ -43,10 +48,14 @@ namespace p5.exp.iterators
 
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            if (_like)
+            if (_regex) {
+                var ex = Utilities.Convert<Regex> (context, Name);
+                return Left.Evaluate (context).Where (idxCurrent => ex.IsMatch(idxCurrent.Name));
+            } else if (_like) {
                 return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name.Contains (Name));
-            else
+            } else {
                 return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name == Name);
+            }
         }
     }
 }

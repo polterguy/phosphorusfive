@@ -250,3 +250,20 @@ deep-comparison-not-equals
           and:x:/../*/_data/1?value
             =:ERROR
     throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+    
+    
+/*
+ * Tests that [offset] behaves as expected in branching
+ */
+offset-test
+  _foo:data
+  if:x:/../*/_foo?value
+    and:x:/../*/_foo?value
+      =:data
+      or:x:/../*/_foo?name
+    set:x:/../*/_foo?value
+      src:success
+  if:x:/../*/_foo?value
+    !=:success
+    throw:If [offset] misbehaved

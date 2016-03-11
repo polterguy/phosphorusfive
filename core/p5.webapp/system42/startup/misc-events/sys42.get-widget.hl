@@ -111,6 +111,8 @@ create-protected-event:sys42.get-widget
       !=:bool:true
       and:x:/../*/_return-value/-/*/data-usercontrol
         not
+        or:x:/../*/_no-wash-usercontrols?value.bool
+          =:bool:true
 
       /*
        * Looping through all children widgets recursively
@@ -129,7 +131,7 @@ create-protected-event:sys42.get-widget
          * Making sure recursive invocation get the arguments [_flatten] and [_keep-empty-ids]
          */
         add:x:/..for-each/*/sys42.get-widget
-          src:x:/../*(/_flatten|/_keep-empty-ids)
+          src:x:/../*(/_flatten|/_keep-empty-ids|/_no-wash-usercontrols)
 
         /*
          * Recursively invocing "self", now with arguments correctly setup

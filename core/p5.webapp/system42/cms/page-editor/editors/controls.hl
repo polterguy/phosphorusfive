@@ -1160,7 +1160,7 @@ $('html, body').animate({{
           class:btn btn-default
           innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Add Subscriber"
           onclick
-            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-active-event.hl
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-action-subscriber.hl
 
 
 
@@ -1545,8 +1545,11 @@ you can simply delete it now. A complete version of the widget still exists on y
     sys42.get-page-editor-data
 
       /*
-       * Retrieving 'raw widget' from surface
+       * Retrieving 'raw widget' from surface, making sure we pass in argument that tells invocation to 
+       * not remove usercontrols, if it exists
        */
+      add:x:/+
+        src:x:/../*/_no-wash-usercontrols
       sys42.get-widget:wysiwyg-editor-surface
 
       /*
@@ -1560,7 +1563,9 @@ you can simply delete it now. A complete version of the widget still exists on y
        * our "design time additions", that makes sure no event handlers INSIDE of
        * usercontrol is being mapped up
        */
-      set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/widgets
+      if:x:/../*/_no-wash-usercontrols?value.bool
+        !=:bool:true
+        set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/widgets
       set:x:/../*/sys42.get-widget/**/container/*/data-usercontrol/./*/oninit/*(/_design-time-remover|/_design-time-remover/+1|/_design-time-remover/+2)
 
       /*
@@ -1625,7 +1630,7 @@ you can simply delete it now. A complete version of the widget still exists on y
           =:int:0
 
           /*
-           * This is a "hidden" event handler, renaming it back to its actual value
+           * This is a "hidden" event handler, renaming it back to its original value
            */
           set:x:/..for-each/*/_dp/#?name
             replace:x:/..for-each/*/_dp/#?name
@@ -1739,7 +1744,7 @@ you can simply delete it now. A complete version of the widget still exists on y
       else
 
         /*
-         * Usercontrol type of widget, invoking creational event, and RETURNING
+         * Usercontrol type of widget, invoking creational event, and returning early
          */
         add:x:/+2/*
           src:x:/../*/_create-widget
@@ -2030,11 +2035,16 @@ you can simply delete it now. A complete version of the widget still exists on y
 
       /*
        * Then enabling "select children widget's" button, and adding its children selectors,
-       * but only if currently selected widget has any children
+       * but only if currently selected widget has any children, and it is *not* a usercontrol
        */
       get-children-widgets:x:/../*/find-widget/*?value
       if:x:/-/*/*?count
         >:int:0
+        and
+          fetch:x:/0/0/0?value
+            get-widget-property:x:/../*/find-widget/*?value
+              data-usercontrol
+          not
 
         /*
          * Enabling "select children widgets" button

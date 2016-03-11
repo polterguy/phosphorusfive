@@ -2095,9 +2095,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                       /*
                                        * No more items in "table" widget, deleting entire table wrapper
                                        */
-                                      get-parent-widget:x:/./-2/*?value
-                                      get-parent-widget:x:/-/*?value
-                                      delete-widget:x:/-/*?value
+                                      delete-widget:wysiwyg-controls-action-subscribers-wrp
                                     else
 
                                       /*
