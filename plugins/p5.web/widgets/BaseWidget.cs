@@ -52,7 +52,12 @@ namespace p5.web.widgets
                 return null;
             if (startWidget.ID == id)
                 return startWidget as T;
-            return (from Control idxChild in startWidget.Controls select FindControl<T> (id, idxChild)).FirstOrDefault (tmpRet => tmpRet != null);
+            foreach (Control idxChild in startWidget.Controls) {
+                var tmpRet = FindControl<T> (id, idxChild);
+                if (tmpRet != null)
+                    return tmpRet;
+            }
+            return null;
         }
 
         /*

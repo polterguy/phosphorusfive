@@ -234,7 +234,7 @@ namespace p5.core
             catch (System.Reflection.TargetInvocationException err)
             {
                 // Making sure we transform reflection exceptions into actual exceptions thrown
-                ExceptionDispatchInfo.Capture(err.InnerException).Throw();
+                    ExceptionDispatchInfo.Capture(err.InnerException).Throw();
                 throw; // Never reached, needed for compiler to not choke ...!!
             }
         }

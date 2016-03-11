@@ -30,6 +30,8 @@ namespace p5.types.types
             var strValue = e.Args.Value as string;
             if (strValue != null) {
                 e.Args.Value = e.Args.Get<string> (context).ToLower () == "true";
+            } else if (e.Args.Value is bool) {
+                return; // do nothing, no conversion necessary!
             } else {
                 e.Args.Value = e.Args.Value != null;
             }
