@@ -363,7 +363,6 @@
     <None Include="system42\cms\page-editor\editors\controls\change-element.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-attribute-guide.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-usercontrol.hl" />
-    <None Include="system42\cms\page-editor\editors\controls\edit-active-event.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-active-event.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-hyperlisp-wizard.hl" />
     <None Include="system42\cms\page-editor\editors\controls\helpers\process-widgets-event-handlers.hl" />

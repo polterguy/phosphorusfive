@@ -1688,13 +1688,13 @@ CKEDITOR.instances['widget-property-innerValue'].on('change', function() {
        */
       if
         fetch:x:/0/0?value
-          widget-exist:wysiwyg-controls-action-subscribers
+          widget-exist:wysiwyg-controls-action-subscribers-wrp
 
         /*
          * There has been a table with widget's events previously created, deleting it, 
          * such that we can re-create it
          */
-        delete-widget:wysiwyg-controls-action-subscribers
+        delete-widget:wysiwyg-controls-action-subscribers-wrp
 
       /*
        * Then retrieving currently selected widget, and checking if it has any lambd events, 
@@ -2084,14 +2084,31 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                       _active-event-name:x:/../*/get-widget-property/*/*?value
 
                                     /*
-                                     * Deleting editor's "tr" widget
+                                     * Then checking if table has any more widgets, and if not,
+                                     * delete entire table wrapper
                                      */
-                                    delete-widget:x:/../*/find-first-ancestor-widget/*?value
+                                    get-parent-widget:x:/../*/find-first-ancestor-widget/*?value
+                                    get-children-widgets:x:/-/*?value
+                                    if:x:/-/*/*?count
+                                      =:int:2
 
-                                    /*
-                                     * Deleting Action Subscriber name's "tr" widget
-                                     */
-                                    delete-widget:x:/../*/find-widget/[1,2]/*?value
+                                      /*
+                                       * No more items in "table" widget, deleting entire table wrapper
+                                       */
+                                      get-parent-widget:x:/./-2/*?value
+                                      get-parent-widget:x:/-/*?value
+                                      delete-widget:x:/-/*?value
+                                    else
+
+                                      /*
+                                       * Deleting editor's "tr" widget
+                                       */
+                                      delete-widget:x:/../*/find-first-ancestor-widget/*?value
+
+                                      /*
+                                       * Deleting Action Subscriber name's "tr" widget
+                                       */
+                                      delete-widget:x:/../*/find-widget/[1,2]/*?value
 
                 /*
                  * Then making sure we set focus initially to textarea widget wrapping Hyperlisp
