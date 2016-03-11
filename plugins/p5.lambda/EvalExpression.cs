@@ -25,7 +25,7 @@ namespace p5.lambda
         public static void eval_x (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving expression from main node, making sure it was in fact an expression
-            var exp = e.Args.Get<Expression> (context, null);
+            var exp = e.Args.Value as Expression;
             if (exp == null) {
 
                 // Oops...!

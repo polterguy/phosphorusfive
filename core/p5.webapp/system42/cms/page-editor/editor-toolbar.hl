@@ -1,4 +1,3 @@
-
 /*
  * Creates the toolbar for the Page editor
  */
@@ -331,11 +330,3 @@ Among other things, your page becomes inacessible on tablets and phones!"
                   sys42.populate-select-page
                   clear-widget:page-editor-surface
                   sys42.create-main-menu
-
-
-
-
-
-
-
-

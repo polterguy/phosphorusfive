@@ -296,3 +296,18 @@ false-equals-false-constant
   if:x:/../*/_foo1?value
     !=:success
     throw:If false comparison misbehaved
+/*
+ * Tests that false compared to false yields true
+ */
+false-equals-false-expressions-convert
+  _foo1:bool:false
+  _foo2:bool:false
+  if:x:/../*/_foo1?value.bool
+    =:x:/../*/_foo2?value
+    set:x:/../*/_foo1?value
+      src:success
+  if:x:/../*/_foo1?value
+    !=:success
+    throw:If false comparison misbehaved
+    
+    

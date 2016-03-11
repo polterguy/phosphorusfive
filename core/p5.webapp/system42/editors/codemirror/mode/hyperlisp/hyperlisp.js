@@ -342,7 +342,8 @@ CodeMirror.defineMode("hyperlisp", function() {
        * Not a string literal, neither multi line, nor single line. Neither is it any type of comment,
        * and it is not a node without name. Figuring out name of node, by reading until we see either
        * "end of line" or ":".
-       * But first checking for indentation bugs
+       * But first checking for indentation bugs, but only if line does not exclusively contain spaces, at which
+       * point "cr" should be null
        */
       stream.next();
       if (cr != null) {
@@ -470,10 +471,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case ':':
 
           /*
-           * Possibly "type carryover" from value tokenizer logic, also possibly second
-           * invocation in a row, don't quite yet know. If "end of line", we're epxecting a
-           * name token next time, otherwise, possibly a type declaration, or a value.
-           * One more roundtrip in "value tokenizer" is necessary before we know for sure
+           * Possible "type carry over" from value tokenizer logic, we don't know quite yet
            */
           retVal = this.styles.type;
           if (stream.peek() == null) {
@@ -501,6 +499,14 @@ CodeMirror.defineMode("hyperlisp", function() {
               state.mode = 'name';
               break;
             } else if (cr == ':') {
+
+              /*
+               * Checking for type declaration, without value, which might occur in e.g. expressions
+               */
+              if (stream.peek() == null) {
+                state.mode = 'name';
+                break;
+              }
 
               /*
                * End of "type declaration" for value of node, now checking if this particular

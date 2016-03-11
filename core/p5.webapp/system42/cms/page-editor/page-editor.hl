@@ -1,5 +1,4 @@
 
-
 /*
  * Creates our "Edit Page" Widget, which actually only contains 
  * a header, back link, and a couple of drop down lists to create 
@@ -137,8 +136,8 @@ create-widget:page-editor
                   _sys42.populate-select-page
                   _sys42.edit-page
                   _sys42.create-main-menu
-                  _sys42.info-window:@"Page is restricted such that only the 'root' account can see it. When you're ready to publish it,
-then change its access role accordingly!"
+                  _sys42.info-window:@"Page is restricted such that only the 'root' account can see it. 
+When you're ready to publish it, then change its access role accordingly!"
                     _time:more
 
 

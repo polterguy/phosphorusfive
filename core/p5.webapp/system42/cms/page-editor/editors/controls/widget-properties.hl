@@ -1,4 +1,3 @@
-
 /*
  * Shows the properties for the currently selected widget
  */
@@ -1060,7 +1059,8 @@ create-widget
               accesskey:I
               class:form-control
               placeholder:id ...
-              title:@"The id of a widget, allows you to retrieve the widget's value, and manipulate the widget, using the id. The id attribute, must be unique for each widget in your page. Shortcut; I"
+              title:@"The id of a widget, allows you to retrieve the widget's value, and manipulate the widget, using the id. 
+The id attribute, must be unique for each widget in your page. Shortcut; I"
               value
               onkeypress:@"return p5.keyPressChangeAttributeValue(event);"
               onchange

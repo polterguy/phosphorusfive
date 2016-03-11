@@ -3,7 +3,7 @@
  */
 
 /*
- * Tests that checks that "foo1" behaves correctly
+ * Tests that "weird Hyperlisp", but still valid, behaves correctly
  */
 weird-spacing
   _weird-hyperlisp:@"sdf
@@ -38,6 +38,7 @@ sdfougsdf*/
         oughoug
 "
   /*
-   * The above code, although relatively weird, should legally be convertible to lambda
+   * The above Hyperlisp code, although relatively weird, 
+  * should legally be convertible to lambda
    */
   lisp2lambda:x:/-?value

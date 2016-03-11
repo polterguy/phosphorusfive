@@ -1,4 +1,3 @@
-
 /*
  * Main entry point for the profile page
  */
@@ -124,7 +123,7 @@ will allow your peers to download your key from a keyserver."
                   _widgets
                     textarea:seed
                       mandatory:true
-                      placeholder:Supply a seed for the random number generator which is a sequence of random characters, such as e.g. '•Ω÷≈†µüı˛$%754adfgDFggDF%34' ...
+                      placeholder:@"Supply a seed for the random number generator which is a sequence of random characters, such as e.g. '•Ω÷≈†µüı˛$%754adfgDFggDF%34' ..."
                     password:password
                       label:Password
                       mandatory:true
