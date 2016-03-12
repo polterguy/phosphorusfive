@@ -229,14 +229,23 @@ CodeMirror.keyMap.default[""Tab""] = ""indentMore"";"
 /*
  * If [raise-update] is given as setting to this file, then we make sure CodeMirror
  * raises the [_onupdate] Ajax event when it is "blurred", to make sure textarea
- * wrapped by CodeMirror gets notified about that the code changed
+ * wrapped by CodeMirror gets notified about that the changed code.
+ * But only if there has been any changes to code, hence the "onchange" event handler.
+ * This way our CodeMirror instance works just like a textarea, tracking changes like
+ * if it was an [onchange] event handler on the wrapped textarea
  */
 if:x:/../*/_editor/*/*/raise-update?value.bool
   send-javascript:@"
+window.{0}.on('change', function (cMirror) {{
+  window.{0}._hasChanges = true;
+}});
 window.{0}.on('blur',function (cMirror) {{
-  var wdg = p5.$('{0}');
-  wdg.el.value = cMirror.getValue();
-  wdg.raise('_onupdate');
+  if (window.{0}._hasChanges === true) {{
+    window.{0}._hasChanges = false;
+    var wdg = p5.$('{0}');
+    wdg.el.value = cMirror.getValue();
+    wdg.raise('_onupdate');
+  }}
 }});
 "
     :x:/../*/_editor/*?name

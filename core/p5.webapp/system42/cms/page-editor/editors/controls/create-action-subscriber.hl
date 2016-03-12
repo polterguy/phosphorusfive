@@ -354,3 +354,8 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                      * Hiding dialog
                      */
                     send-javascript:@"$('#wysiwyg-controls-event-window').modal('toggle');"
+
+                    /*
+                     * Refreshing CodeMirror codeview, if it is visible
+                     */
+                    sys42.wysiwyg-controls.update-code-wiew

@@ -101,6 +101,11 @@ databind:x:/../*/create-widget/**/table/=wysiwyg-window-list-of-widget-wizard-el
         send-javascript:@"$('#wysiwyg-controls-widget-wizard-window').modal('toggle');"
 
         /*
+         * Refreshing CodeMirror codeview, if it is visible
+         */
+        sys42.wysiwyg-controls.update-code-wiew
+
+        /*
          * Re-creating the "select widget" dropdown box
          */
         sys42.wysiwyg-controls.databind-select-widget-dropdown

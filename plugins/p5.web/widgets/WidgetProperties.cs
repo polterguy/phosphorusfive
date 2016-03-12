@@ -194,7 +194,9 @@ namespace p5.web.widgets
                     foreach (var idxAtr in widget.AttributeKeys) {
 
                         // Dropping the Tag property and all events, except events that are "JavaScript declarations"
-                        if (idxAtr == "Element" || ((idxAtr.StartsWith ("on") || idxAtr.StartsWith ("_on")) && widget [idxAtr] == "common_event_handler"))
+                        if (idxAtr == "Element" || 
+                            idxAtr == "id" ||
+                            ((idxAtr.StartsWith ("on") || idxAtr.StartsWith ("_on")) && widget [idxAtr] == "common_event_handler"))
                             continue;
                         curNode.Add (idxAtr, widget [idxAtr]);
                     }

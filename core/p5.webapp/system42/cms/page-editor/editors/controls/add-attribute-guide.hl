@@ -164,6 +164,11 @@ to what HTML [element] you choose to render your widget with.</p>"
                                  * Making sure we close modal window
                                  */
                                 send-javascript:@"$('#wysiwyg-controls-attributes-window').modal('toggle');"
+
+                                /*
+                                 * Refreshing CodeMirror codeview, if it is visible
+                                 */
+                                sys42.wysiwyg-controls.update-code-wiew
                               widgets
                                 td
                                   widgets

@@ -213,7 +213,6 @@ create-widget
               title:Alt + S
               onclick
                 sys42.save-edited-page
-                  :x:/./-?value
 
 
               /*
@@ -282,6 +281,126 @@ Among other things, your page becomes inacessible on tablets and phones!"
                     set-widget-property:page-url
                       style
                       title
+
+
+            /*
+             * "Save as" button
+             */
+            literal:save-as-button
+              element:button
+              type:button
+              innerValue:Save as ...
+              class:btn btn-default
+              onclick
+
+                /*
+                 * Getting name and URL of page, 
+                 * such that we can use it as basis for new name and URL
+                 */
+                get-widget-property:page-name
+                  value
+                get-widget-property:page-url
+                  value
+
+                /*
+                 * Forward evaluating expressions inside of [_widgets] below
+                 */
+                eval-x:x:/+/*/*/*/value|/+/*/_onok/*/_old-page
+                sys42.wizard-window
+                  _header:Supply name and URL
+                  _body:Please supply a new name and URL of the page you wish to save
+                  _widgets
+                    text:new-page-name
+                      label:Name
+                      mandatory:true
+                      placeholder:Name of page ...
+                      value:{0} - copy
+                        :x:/../*/get-widget-property/[0,1]/*/*?value
+                    text:new-page-url
+                      label:URL
+                      mandatory:true
+                      placeholder:URL of page ...
+                      value:{0}-copy
+                        :x:/../*/get-widget-property/[1,2]/*/*?value
+                  _onok
+
+                    /*
+                     * Will contain the database id of old page
+                     */
+                    _old-page::x:/../*/get-widget-property/[1,2]/*/*?value
+
+                    /*
+                     * Making sure supplied name does not exist from before
+                     */
+                    select-data:x:@"/*/*/p5.page/""={0}"""
+                      :x:/../*/new-page-url?value
+                    if:x:/../*/select-data/[0,1]/*?count
+                      >:int:0
+
+                      /*
+                       * Page exists from before, alerting user, and returning 
+                       * without setting the "close modal window flag"
+                       */
+                      send-javascript:@"$('#new-page-url').focus().select();"
+
+                      /*
+                       * Returning early
+                       */
+                      return:Page already exists, please choose unique name!
+
+                    /*
+                     * Getting page data, and saving as a new object in database
+                     */
+                    sys42.get-page-editor-data
+
+                    /*
+                     * Then making sure we select old page, and replace [name] and 
+                     * [url] (which is ID of database object), in addition to new data,
+                     * before saving as new object in database
+                     */
+                    select-data:x:@"/*/*/p5.page/""={0}"""
+                      :x:/../*/_old-page?value
+
+                    /*
+                     * Changing id (URL of page) to new URL in addition to name of page
+                     */
+                    set:x:/../*/select-data/[1,2]/*?value
+                      src:x:/../*/new-page-url?value
+                    set:x:/../*/select-data/[1,2]/*/*/name?value
+                      src:x:/../*/new-page-name?value
+
+                    /*
+                     * Then removing all items from [select-data] that also exists in [sys42.get-page-editor-data]
+                     */
+                    for-each:x:/../*/select-data/[1,2]/*/*
+                      if:x:@"/../*/sys42.get-page-editor-data/*/""{0}"""
+                        :x:/..for-each/*/_dp/#?name
+                        set:x:/..for-each/*/_dp/#
+                    add:x:/../*/select-data/[1,2]/*
+                      src:x:/../*/sys42.get-page-editor-data/*
+
+                    /*
+                     * Now we can save new page to database
+                     */
+                    add:x:/../*/insert-data
+                      src:x:/../*/select-data/[1,2]/*
+                    insert-data
+
+                    /*
+                     * Then we need to "refresh editor", but first, setting "edited page" to
+                     * the page we just saved
+                     */
+                    sys42.set-currently-edited-page:x:/../*/new-page-url?value
+
+                    /*
+                     * Simple version, refreshing page location
+                     */
+                    reload-location
+
+                    /*
+                     * Returning success, to make sure dialog is closed
+                     */
+                    return:bool:true
 
 
             /*

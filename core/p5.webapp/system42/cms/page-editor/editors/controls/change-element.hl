@@ -152,6 +152,11 @@ element.</p>
                                  * Making sure we close modal window
                                  */
                                 send-javascript:@"$('#wysiwyg-controls-element-window').modal('toggle');"
+
+                                /*
+                                 * Refreshing CodeMirror codeview, if it is visible
+                                 */
+                                sys42.wysiwyg-controls.update-code-wiew
                               widgets
                                 td
                                   widgets

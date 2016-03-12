@@ -352,6 +352,11 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                                   _custom-action
                                     _code
                                   eval:x:/-
+
+                                  /*
+                                   * Refreshing CodeMirror codeview, if it is visible
+                                   */
+                                  sys42.wysiwyg-controls.update-code-wiew
                                   return:bool:true
                                 _widgets
                               send-javascript:@"$('#wysiwyg-controls-hyperlisp-window').modal('toggle');"

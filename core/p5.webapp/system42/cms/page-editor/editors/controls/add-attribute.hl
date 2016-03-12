@@ -99,6 +99,11 @@ create-void-widget:wysiwyg-control-add-attribute
       delete-widget:wysiwyg-control-add-attribute
       sys42.info-window:Please provide a value, if any, for your attribute!
 
+      /*
+       * Refreshing CodeMirror codeview, if it is visible
+       */
+      sys42.wysiwyg-controls.update-code-wiew
+
     else-if:x:/-2?value
       =:dubious
 
@@ -123,6 +128,10 @@ Are you sure you wish to add this attribute to your widget?</p>
           :x:/../*/get-widget-property/[0,1]/*/*?value
           :x:/../*/get-widget-property/[1,2]/*/*?value
         _onok
+
+          /*
+           * Even though attribute was not recognized as legal, user chose to add it anyway
+           */
           add:x:/+
             src:x:/../*/get-widget-property/[0,1]/*/*?value
           set-widget-property:x:/../*/find-widget/*?value
@@ -133,6 +142,11 @@ Are you sure you wish to add this attribute to your widget?</p>
             _widget
             _initial-focus-property:x:/../*/get-widget-property/[0,1]/*/*?value
           sys42.info-window:Please provide a value, if any, for your attribute!
+
+          /*
+           * Refreshing CodeMirror codeview, if it is visible
+           */
+          sys42.wysiwyg-controls.update-code-wiew
     else
 
       /*

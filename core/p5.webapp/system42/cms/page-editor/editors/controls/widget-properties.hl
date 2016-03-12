@@ -225,6 +225,11 @@ for-each:x:/../*/sort/*
                   eval-x:x:/+/*
                   sys42.wysiwyg-controls.change-selected-widgets-property:{attribute-name}
                     _new-value:x:/../*/get-widget-property/*/*?value
+
+                  /*
+                   * Refreshing CodeMirror codeview, if it is visible
+                   */
+                  sys42.wysiwyg-controls.update-code-wiew
               a
                 href:#
                 innerValue:@"<span class=""glyphicon glyphicon-remove-sign""></span>"
@@ -348,12 +353,17 @@ for-each:x:/../*/sort/*
                       src:_{0}
                         :x:/../*/get-widget-property/*/*/_event-handler-name?value
                     set:x:/+/*?value
-                      src:x:/..get-widget-property/*/*/value?value
+                      src:x:/../*/get-widget-property/*/*/value?value
 
                     /*
                      * Changing widget's JavaScript event
                      */
                     set-widget-property:x:/../*/find-widget/*?value
+
+                    /*
+                     * Refreshing CodeMirror codeview, if it is visible
+                     */
+                    sys42.wysiwyg-controls.update-code-wiew
 
                   onfocus
 
@@ -466,6 +476,11 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                          * Then, for simplicity, we reload properties for currently selected widget
                          */
                         sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+
+                        /*
+                         * Refreshing CodeMirror codeview, if it is visible
+                         */
+                        sys42.wysiwyg-controls.update-code-wiew
                 a
                   href:#
                   innerValue:@"<span class=""glyphicon glyphicon-trash""></span>"
@@ -524,6 +539,11 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                          * Delete main property wrapper widget
                          */
                         delete-widget:x:/-/*?value
+
+                        /*
+                         * Refreshing CodeMirror codeview, if it is visible
+                         */
+                        sys42.wysiwyg-controls.update-code-wiew
   else
 
     /*
@@ -639,6 +659,11 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                        * Changing widget's ajax event
                        */
                       set-widget-ajax-event:x:/..try/*/find-widget/*?value
+
+                      /*
+                       * Refreshing CodeMirror codeview, if it is visible
+                       */
+                      sys42.wysiwyg-controls.update-code-wiew
                     catch
 
                       /*
@@ -789,6 +814,11 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                          * Then, for simplicity, we reload properties for currently selected widget
                          */
                         sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+
+                        /*
+                         * Refreshing CodeMirror codeview, if it is visible
+                         */
+                        sys42.wysiwyg-controls.update-code-wiew
                 a
                   href:#
                   innerValue:@"<span class=""glyphicon glyphicon-trash""></span>"
@@ -843,6 +873,11 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                          * Delete main property wrapper widget
                          */
                         delete-widget:x:/-/*?value
+
+                        /*
+                         * Refreshing CodeMirror codeview, if it is visible
+                         */
+                        sys42.wysiwyg-controls.update-code-wiew
                 a
                   href:#
                   innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span>"
@@ -1148,6 +1183,11 @@ The id attribute, must be unique for each widget in your page. Shortcut; I"
                       value:x:/./-/*?value
 
                     /*
+                     * Refreshing CodeMirror codeview, if it is visible
+                     */
+                    sys42.wysiwyg-controls.update-code-wiew
+
+                    /*
                      * Returning early, to avoid evaluating logic beneath
                      */
                     return
@@ -1218,6 +1258,11 @@ or supply an 'empty' value to have an automatically generated id created"
                    * changed
                    */
                   sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+                  /*
+                   * Refreshing CodeMirror codeview, if it is visible
+                   */
+                  sys42.wysiwyg-controls.update-code-wiew
 
             /*
              * Help button for [id] property of widget
@@ -1311,6 +1356,11 @@ or supply an 'empty' value to have an automatically generated id created"
                   eval-x:x:/+/*
                   sys42.wysiwyg-controls.change-selected-widgets-property:element
                     _new-value:x:/../*/get-widget-property/*/*?value
+
+                  /*
+                   * Refreshing CodeMirror codeview, if it is visible
+                   */
+                  sys42.wysiwyg-controls.update-code-wiew
 
 
 
@@ -1423,6 +1473,11 @@ this choice!</strong></p>"
                 eval-x:x:/+/*
                 sys42.wysiwyg-controls.change-selected-widgets-property:innerValue
                   _new-value:x:/../*/get-widget-property/*/*?value
+
+                /*
+                 * Refreshing CodeMirror codeview, if it is visible
+                 */
+                sys42.wysiwyg-controls.update-code-wiew
               onfocus
 
                 /*

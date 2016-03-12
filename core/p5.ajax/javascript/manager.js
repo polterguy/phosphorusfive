@@ -89,34 +89,25 @@
      */
     window.p5._getChange = function(old, val) {
         if (val !== null) {
-
             /*
-             * Helper method to calculate offset in substring, due to
-             * missing \r in CR/LF sequence of values
+             * Making sure we normalize carriage returns in old values before calculating offset
              */
-            var getOffset = function (oldVal) {
-                var crOffset = 0;
-                if (oldVal.indexOf("\n") != -1 && oldVal.indexOf("\r") == -1) {
-                    var curIdx = 0;
-                    while (true) {
-                        curIdx = oldVal.indexOf ("\n", curIdx);
-                        if (curIdx == -1 || curIdx > val[0]) {
-                            break;
-                        }
-                        crOffset += 1;
-                        curIdx += 1;
-                    }
-                }
-                return crOffset;
+            if (old != null && old.indexOf != null && old.indexOf('\r') == -1) {
+                old = old.replace ('\n', '\r\n');
+            }
+            var decodeHtml = function (val) {
+                var txt = document.createElement ('textarea');
+                txt.innerHTML = val;
+                return txt.value;
             };
             if (typeof val === "object") {
                 if (val.length === 2) {
-                    return old.substring(0, val[0] - getOffset (old)) + val[1]; // Removing from 'number' and concatenating 'string'
+                    return old.substring(0, val[0]) + decodeHtml (val[1]); // Removing from 'number' and concatenating 'string'
                 } else {
                     if (typeof val[0] === "number") {
-                        return old.substring(0, val[0] - getOffset (old)); // Removing from 'number'
+                        return old.substring(0, val[0]); // Removing from 'number'
                     } else {
-                        return old + val[0]; // Only concatenating to existing value
+                        return old + decodeHtml (val[0]); // Only concatenating to existing value
                     }
                 }
             }
@@ -348,7 +339,14 @@
                         }
                         break;
                     case "textarea":
-                        val.push ([el.name, el.value]);
+                        /*
+                         * Making sure we "normalize" carriage returns before we push them to server
+                         */
+                        var value = el.value;
+                        if (value.indexOf('\r') == -1) {
+                            value = value.replace('\n', '\r\n');
+                        }
+                        val.push ([el.name, value]);
                         break;
                     case "select":
                         for (var i2 = 0; i2 < el.options.length; i2++) {

@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Web;
 using System.Linq;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -229,6 +230,7 @@ namespace p5.ajax.core.internals
             // Returning attributes
             var retVal = new string[atrs.Count][];
             for (var idx = 0; idx < atrs.Count; idx++) {
+
                 retVal [idx] = new string[2];
                 retVal [idx] [0] = atrs [idx].Name;
                 retVal [idx] [1] = atrs [idx].Value;
@@ -276,7 +278,7 @@ namespace p5.ajax.core.internals
             }
 
             // Removing stuff that's not actually attributes, but still persisted here for convenience,
-            // in addition to all "private attributes" (meaning server-side only attributes)
+            // in addition to all "private attributes", meaning server-side only attributes
             lst.RemoveAll (ix => ix.Name == "outerHTML" || ix.Name == "innerValue" || ix.Name == "Element" || ix.Name.StartsWith ("_"));
 
             // Rendering to html writer
@@ -294,9 +296,7 @@ namespace p5.ajax.core.internals
                 if (value == null) {
                     writer.Write (@"{0}", name);
                 } else {
-                    value = idx.Name != "outerHTML" && idx.Name != "innerValue" ? 
-                        value.Replace ("\"", "&quot;") : 
-                        value;
+                    value = HttpUtility.HtmlEncode (value);
                     writer.Write (@"{0}=""{1}""", name, value);
                 }
             }
@@ -322,9 +322,7 @@ namespace p5.ajax.core.internals
                 if (idx.Name.IndexOf ("_") == 0)
                     continue;
 
-                var value = idx.Name != "outerHTML" && idx.Name != "innerValue" ? 
-                    idx.Value?.Replace ("\"", "&quot;") : 
-                    idx.Value;
+                var value = HttpUtility.HtmlEncode (idx.Value);
 
                 // Finding old value, if any
                 var oldAtr = FindAttribute (_originalValue, idx.Name);

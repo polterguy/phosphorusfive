@@ -381,7 +381,7 @@ create-widget:wysiwyg-editor
          */
         container:wysiwyg-controls-add-wizard-wrp
           class:btn-group
-          style:"width:14%;"
+          style:"width:12.5%;"
           title:@"Opens up the 'Add Wizard Widget Wizard', that helps you add a 'Wizard Widget' to your form.
 
 A Wizard Widget is a pre-fabricated template widget, possibly with children widgets, representing commonly used widget types"
@@ -452,7 +452,7 @@ A Wizard Widget is a pre-fabricated template widget, possibly with children widg
          */
         container:wysiwyg-controls-add-usercontrol-wrp
           class:btn-group
-          style:"width:14%;"
+          style:"width:12.5%;"
           title:@"Opens up a Wizard to help you insert a usercontrol to your page. 
 
 A usercontrol is a pre-fabricated and reusable widget, that allows you to 'inject' another [controls] page, as a reusable component to your page"
@@ -527,7 +527,7 @@ A usercontrol is a pre-fabricated and reusable widget, that allows you to 'injec
          */
         container:wysiwyg-controls-add-literal-wrp
           class:btn-group
-          style:"width:14%;"
+          style:"width:12.5%;"
           title:@"Insert a 'literal' widget into your page.
 
 A literal widget, is a widget that allows you to create text or HTML content in your page"
@@ -607,7 +607,7 @@ A literal widget, is a widget that allows you to create text or HTML content in 
          */
         container:wysiwyg-controls-add-container-wrp
           class:btn-group
-          style:"width:14%;"
+          style:"width:12.5%;"
           title:@"Insert a 'container' widget into your page.
 
 A container widget is a widget that can have children widgets, and serves as a 'container' for other widgets"
@@ -688,7 +688,7 @@ A container widget is a widget that can have children widgets, and serves as a '
          */
         container:wysiwyg-controls-add-void-wrp
           class:btn-group
-          style:"width:14%;"
+          style:"width:12.5%;"
           title:@"Insert a 'void' widget into your page.
 
 A void widget, is a widget that has no content, neither in the form of HTML/text, nor in the form of children widgets. Typical uses are for inserting carriage return ('br' HTML elements) or 'input' HTML elements to your page, to collect input from your users"
@@ -769,7 +769,7 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
          */
         container:wysiwyg-controls-paste-wrp
           class:btn-group
-          style:"width:14%;"
+          style:"width:12.5%;"
           title:@"Paste the widget from your Phosphorus 'clipboard' into your page"
           widgets
 
@@ -1019,11 +1019,116 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
 
 
         /*
+         * Shows "code view" for page
+         */
+        button:wysiwyg-controls-view-code-button
+          class:btn btn-default
+          style:"width:12.5%;"
+          href:#
+          innerValue:@"<span class=""glyphicon glyphicon-pencil""></span> Code"
+          title:@"Shows code view for your page. This is a pretty advanced topic, and you should be very careful editing your page's code directly, unless you know exactly what you're doing!"
+          onclick
+
+            /*
+             * Disabling "codeview" button, to make sure it cannot be clicked twice
+             */
+            set-widget-property:wysiwyg-controls-view-code-button
+              class:btn btn-default disabled
+              disabled
+
+            /*
+             * Creating main wrapper widget, that wraps "code view", 
+             * which is the Hyperlisp your page consists of
+             */
+            create-widget:wysiwyg-controls-code-view
+              before:wysiwyg-editor-surface
+              class:prepend-bottom
+              widgets
+                literal:wysiwyg_controls_code_view_textarea
+                  element:textarea
+                  class:form-control
+                  rows:16
+                  _onupdate
+
+                    /*
+                     * Retrieving CodeMirror (textarea's) value, and changing the page-editor-data
+                     * accordingly
+                     */
+                    get-widget-property:x:/../*/_event?value
+                      value
+                    sys42.set-page-editor-data:x:/../*/get-widget-property/*/*?value
+                  oninit
+
+                    /*
+                     * Retrieving code from page, to set textarea's value
+                     */
+                    sys42.get-page-editor-data
+                      _keep-empty-ids:bool:true
+                    set-widget-property:wysiwyg_controls_code_view_textarea
+                      value:x:/../*/sys42.get-page-editor-data/*/controls?value
+
+                    /*
+                     * Loading up CodeMirror, wrapping the textarea
+                     */
+                    sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+                      _editor
+                        wysiwyg_controls_code_view_textarea
+                          mode:hyperlisp
+                          autocomplete:true
+                          autofocus:true
+                          fullscreen:true
+                          height:450px
+                          raise-update:true
+                  events
+
+                    /*
+                     * Updates the code in the codeview editor. Works as a sink for the rest of the editor
+                     */
+                    sys42.wysiwyg-controls.update-code-wiew
+
+                      /*
+                       * Retrieves the code from the WYSIWYG surface, and sets the content of the textarea,
+                       * before triggering CodeMirror module to do a refresh from textarea
+                       */
+                      sys42.get-page-editor-data
+                        _keep-empty-ids:bool:true
+                      set-widget-property:wysiwyg_controls_code_view_textarea
+                        value:x:/../*/sys42.get-page-editor-data/*/controls?value
+                      send-javascript:@"window.wysiwyg_controls_code_view_textarea.getDoc().setValue(p5.$('wysiwyg_controls_code_view_textarea').el.value);"
+
+                /*
+                 * Closes the codeview editor
+                 */
+                button:wysiwyg-controls-close-code-view
+                  style:"float:right;"
+                  class:btn btn-default prepend-bottom
+                  innerValue:@"<span class=""glyphicon glyphicon-remove""></span> Close"
+                  onclick
+
+                    /*
+                     * Enabling "codeview" button again, before deleting "codeview"
+                     */
+                    set-widget-property:wysiwyg-controls-view-code-button
+                      class:btn btn-default
+                    delete-widget-property:wysiwyg-controls-view-code-button
+                      disabled
+                    delete-widget:wysiwyg-controls-code-view
+                    
+
+
+
+
+
+
+
+
+
+        /*
          * Help button
          */
         button:wysiwyg-controls-help-button
           class:btn btn-success
-          style:"width:16%;"
+          style:"width:12.5%;"
           href:#
           innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
           title:Help files for [controls] pages
@@ -1048,7 +1153,7 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                 data-placement:left
               send-javascript:@"setTimeout (function () {
   $('#wysiwyg-controls-help-button').popover('show');
-  setTimeout(function(){$('#wysiwyg-controls-help-button').popover('hide').popover('destroy');}, 7000)
+  setTimeout(function(){$('#wysiwyg-controls-help-button').popover('hide').popover('destroy');}, 3000)
 }, 1000);"
 
               /*
@@ -1532,6 +1637,53 @@ you can simply delete it now. A complete version of the widget still exists on y
    */
   events
 
+    /*
+     * Sets the WYSIWYG wrapper control's data to the given [_arg]'s value
+     */
+    sys42.set-page-editor-data
+
+      /*
+       * Converting given [_arg] to lambda
+       */
+      lisp2lambda:x:/../*/_arg?value
+
+      /*
+       * Making sure we "wash" lambda node
+       */
+      set:x:/+/*/_node?value
+        src:x:/../*/lisp2lambda
+      sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/process-widgets-event-handlers.hl
+        _node
+        _children-selectable:bool:true
+
+      /*
+       * Changing each [literal]/[container]/[voide] node to [create-literal-widget], etc, and
+       * adding the WYSIWYG surface as [parent] argument
+       */
+      for-each:x:/../*/lisp2lambda/*
+        set:x:/./*/_dp/#?name
+          rel-src:create-{0}-widget
+            :x:?name
+        add:x:/..for-each/*/_dp/#
+          src
+            parent:wysiwyg-editor-surface
+
+      /*
+       * Clearing old widgets from surface
+       */
+      clear-widget:wysiwyg-editor-surface
+
+      /*
+       * Invoking [lisp2lambda] as [eval] object, since it now should contain only [create-xxx-widget] nodes
+       */
+      eval:x:/../*/lisp2lambda
+
+      /*
+       * Then we need to "refresh" selected widget in surface
+       */
+      sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+
 
 
 
@@ -1549,7 +1701,7 @@ you can simply delete it now. A complete version of the widget still exists on y
        * not remove usercontrols, if it exists
        */
       add:x:/+
-        src:x:/../*/_no-wash-usercontrols
+        src:x:/../*/_no-wash-usercontrols|/../*/_keep-empty-ids
       sys42.get-widget:wysiwyg-editor-surface
 
       /*
@@ -1761,6 +1913,11 @@ you can simply delete it now. A complete version of the widget still exists on y
       _create-widget
       sys42.wysiwyg-controls.select-widget:x:/-?value
       sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+      /*
+       * Refreshing CodeMirror codeview, if it is visible
+       */
+      sys42.wysiwyg-controls.update-code-wiew
 
     /*
      * Creates a user control type of widget, by asking user which existing predefined
