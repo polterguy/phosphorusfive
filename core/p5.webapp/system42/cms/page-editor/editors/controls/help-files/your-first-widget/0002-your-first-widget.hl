@@ -17,7 +17,7 @@ controls
   create-container-widget
     element:div
     widgets
-      text:@"<p>A widget is a (most often) visible element on your page. It can be a header, paragraph, input element such as textboxes
+      text:@"<p>As previously said, a widget is a (most often) visible element on your page. It can be a header, paragraph, input element such as textboxes
 and dropdown lists, or more complex widget hierarchies, such as rich [usercontrols] and pre-fabricated widget hierarchies. At the top
 of your page now, is a toolbar for adding widgets to your page. Click "
       a
@@ -30,19 +30,21 @@ of your page now, is a toolbar for adding widgets to your page. Click "
 
   create-literal-widget
     element:h4
-    innerValue:Container widgets
+    innerValue:User controls
 
   create-literal-widget
     element:p
-    innerValue:@"The <strong>[+container]</strong> button, allows you to add a container widget to your page. A container is a
-widget that can have children widgets, but no <em>""textually based""</em> content. A container can also be a <strong>[usercontrol]</strong>.
-A usercontrol, is a pre fabricated rich widget, probably with lots of children widgets of its own, solving some specific task. Such
+    innerValue:@"The <strong>[+usercontrol]</strong> button, allows you to add a user control widget to your page."
+
+  create-literal-widget
+    element:p
+    innerValue:@"A usercontrol, is a pre fabricated rich widget, probably with lots of children widgets of its own, solving some specific task. Such
 as for instance gathering emails from visitors, displaying lists of information, or allowing the user to edit information. Usercontrols
 often have lots of internal logic, which you can <em>""subscribe""</em> to, through <em>""Action Subscribers""</em>."
 
   create-literal-widget
     element:p
-    innerValue:@"Make sure you start out with an <strong>empty page</strong>, and open up the <strong>[+container]</strong> dropdown 
+    innerValue:@"Make sure you start out with an <strong>empty page</strong>, and open up the <strong>[+usercontrol]</strong> dropdown 
 button, and choose either <em>""Usercontrol before""</em>, or <em>""Usercontrol after""</em>. It doesn't matter which, as long as 
 your page is empty."
 
@@ -56,7 +58,7 @@ your page is empty."
         innerValue:here
         class:btn btn-default
         onclick
-          send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-container-wrp').toggleClass('open');}}, 2000);"
+          send-javascript:@"$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');}}, 2000);"
           sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-usercontrol-after
       text:@" to see which button you need to click. When you have done so, make sure you select the 
 <strong>Input name and email</strong> usercontrol from the modal window that appears. If you wish to read more about usercontrols, 

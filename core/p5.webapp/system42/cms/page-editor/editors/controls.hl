@@ -404,7 +404,7 @@ A Wizard Widget is a pre-fabricated template widget, possibly with children widg
                  */
                 li
                   widgets
-                    a
+                    a:wysiwyg-controls-add-wizard-btn-before
                       href:#
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> before"
                       title:Adds a [wizard] widget to your page, at the beginning, or before the currently selected widget

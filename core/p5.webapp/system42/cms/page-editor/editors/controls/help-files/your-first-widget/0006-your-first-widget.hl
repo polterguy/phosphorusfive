@@ -3,7 +3,7 @@
  * First help page
  */
 
-name:@"Your first widget - Attributes, adding ""class"" to your widgets"
+name:Your first widget - Adding some class to your widgets
 
 controls
   create-literal-widget
@@ -12,7 +12,7 @@ controls
     style:"float:right;"
   create-literal-widget
     element:h3
-    innerValue:@"Your first widget - Attributes, adding ""class"" to your widgets"
+    innerValue:Your first widget - Adding some class to your widgets
 
   create-literal-widget
     element:p

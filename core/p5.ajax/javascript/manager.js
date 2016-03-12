@@ -550,10 +550,10 @@
                 for (var idxEl in arr) {
                     if (arr.hasOwnProperty(idxEl)) {
                         el = window.p5.$(idxEl);
-                        var p5CssFiles = arr[idxEl];
-                        for (var idxAtr in p5CssFiles) {
-                            if (p5CssFiles.hasOwnProperty(idxAtr)) {
-                                el._set(idxAtr, p5CssFiles[idxAtr]);
+                        var p5Change = arr[idxEl];
+                        for (var idxAtr in p5Change) {
+                            if (p5Change.hasOwnProperty(idxAtr)) {
+                                el._set(idxAtr, p5Change[idxAtr]);
                             }
                         }
                     }

@@ -296,7 +296,6 @@ namespace p5.ajax.core.internals
                 if (value == null) {
                     writer.Write (@"{0}", name);
                 } else {
-                    value = HttpUtility.HtmlEncode (value);
                     writer.Write (@"{0}=""{1}""", name, value);
                 }
             }
@@ -322,7 +321,7 @@ namespace p5.ajax.core.internals
                 if (idx.Name.IndexOf ("_") == 0)
                     continue;
 
-                var value = HttpUtility.HtmlEncode (idx.Value);
+                var value = idx.Value;
 
                 // Finding old value, if any
                 var oldAtr = FindAttribute (_originalValue, idx.Name);

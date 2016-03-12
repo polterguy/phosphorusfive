@@ -16,8 +16,8 @@ controls
     innerValue:Help index
   create-literal-widget
     element:p
-    innerValue:@"Welcome to my brain! Here you can tap into my knowledge, and learn how to create rich web apps, without requiring
-any programming skills. If this is your first visit, it would be wise of you to follow the tutorial(s) given here. Below is a list
+    innerValue:@"Welcome to my brain! Here you can tap into my knowledge, and learn how to create rich web apps, <strong>even if you have
+never done any programming before</strong>. If this is your first visit, it would be wise of you to follow the tutorial(s) given here. Below is a list
 of all the help files you can access from within my brain. The smartest thing, is probably to read the help files sequentially though,
 and start with the first page, and reading my brain as if it was a book, from beginning to end. You can always come back to this page,
 by clicking the <em>""Home""</em> link at the bottom right corner of the help files."

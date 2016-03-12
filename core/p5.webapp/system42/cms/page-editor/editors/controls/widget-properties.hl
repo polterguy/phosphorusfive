@@ -1907,6 +1907,11 @@ CKEDITOR.instances['widget-property-innerValue'].on('change', function() {
                                */
                               set-widget-lambda-event:x:/..try/*/find-widget/*?value
 
+                              /*
+                               * Refreshing CodeMirror codeview, if it is visible
+                               */
+                              sys42.wysiwyg-controls.update-code-wiew
+
                             catch
 
                               /*

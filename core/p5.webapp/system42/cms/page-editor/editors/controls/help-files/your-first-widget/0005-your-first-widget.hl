@@ -23,10 +23,10 @@ that is though)"
 
   create-literal-widget
     element:p
-    innerValue:@"The most important property of a [literal] widget, is the <em>""innerValue""</em>. The button you just added in the
+    innerValue:@"The most important property of a [literal] widget, is its <em>""innerValue""</em>. The button you just added in the
 previous step, was a <strong>[literal] widget</strong>, and hence has an <em>""innerValue""</em>. Make sure you have the button selected
 in your WYSIWYG design surface, such that it is yellow. Then go to the bottom of your page, and click the <em>""innerValue""</em>
-button, to see the value of your button."
+textbox."
 
   create-container-widget
     element:div
@@ -38,7 +38,7 @@ button, to see the value of your button."
         class:btn btn-default
         onclick
           if
-            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-innerValue-btn
+            sys42.wysiwyg-controls.blink-control:widget-property-innerValue
             not
             sys42.info-window:Please make sure you have your button selected in the WYSIWYG design surface!
               _error:true
@@ -47,8 +47,7 @@ button, to see the value of your button."
 
   create-literal-widget
     element:p
-    innerValue:@"The <em>""innerValue""</em> button, allows you to toggle the visibility of your widget's innerValue property. If you click
-it again, the innerValue property of your widget will be hidden. Modify the innerValue of your button to <em>""Style email form""</em>. Then
+    innerValue:@"Modify the innerValue of your button to <em>""Style email form""</em>. Then
 edit the <em>""onclick""</em> event handler of your button to have the following content."
 
   create-literal-widget
@@ -60,7 +59,7 @@ edit the <em>""onclick""</em> event handler of your button to have the following
     element:p
     innerValue:@"Save your page, and click <em>""View page""</em> again, and click the button again. Of course, the intelligent course
 of action, would be to have your email/name usercontrol contain these classes initially, and not force the user to click some button,
-to be able to see your form."
+to be able to see your form. However, this illustrates a point, which is that everything is <em>""dynamic""</em> in Phosphorus Five."
 
   create-container-widget
     element:div

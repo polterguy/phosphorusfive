@@ -402,6 +402,8 @@
     <None Include="system42\cms\page-editor\editors\controls\helpers\id-help.hl" />
     <None Include="system42\cms\templates\empty.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-action-subscriber.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\0000-hello-world.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\hello-world\0001-hello-world.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -435,5 +437,6 @@
     <Folder Include="system42\cms\page-editor\editors\controls\help-files\your-first-widget\" />
     <Folder Include="system42\cms\page-editor\editors\controls\help-files\widget-types\" />
     <Folder Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\" />
+    <Folder Include="system42\cms\page-editor\editors\controls\help-files\hello-world\" />
   </ItemGroup>
 </Project>
