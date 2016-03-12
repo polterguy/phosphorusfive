@@ -21,16 +21,3 @@ to skip for now, and come back to later if you wish."
   create-literal-widget
     element:div
     innerValue:@"<iframe width=""560"" height=""315"" src=""https://www.youtube.com/embed/ZnXzo87-jUA?list=PLddTxKjU1cfZbK60-xl4MZ1QaHD0rmgr0"" frameborder=""0"" allowfullscreen></iframe>"
-
-  create-container-widget
-    element:div
-    style:"position:absolute;bottom:5px;"
-    widgets
-      text:@"<p>"
-      a
-        href:#
-        innerValue:&lt;&lt; Back to index
-        class:btn btn-primary
-        onclick
-          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/index.hl
-      text:"</p>"

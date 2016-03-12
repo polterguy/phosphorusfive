@@ -16,8 +16,9 @@ controls
 
   create-literal-widget
     element:p
-    innerValue:@"In our previous tutorial, we took created a usercontrol and a button. The button, is a [literal] type of widget, while
-the usercontrol is a [literal] type of widget. There are three distinctly different types of widgets in Phosphorus Five."
+    innerValue:@"In our previous tutorial, we created a usercontrol, and a wizard button. However, neither the usercontrol, nor our wizard widget, 
+are existing as widgets in Phosphorus, but rather special cases of other widgets.
+There are in fact only three different types of widgets in Phosphorus."
 
   create-literal-widget
     element:ul
@@ -39,13 +40,13 @@ it has elements that cannot have, or should not have, any values at all, such as
     innerValue:@"The line between when to choose which widget, is often more up to you to choose, according to what type of
 functionality you want your widget to have or not. For instance, a 'div' or a 'p' HTML element, can easily be rendered
 with both the [literal] or the [container] widget. In fact, almost all widgets can be rendered with either [literal] or
-[container], and this is more your choice, than a choice HTML forces unto you. The [void] widget though, has some very specific
+[container]. The [void] widget though, has some very specific
 use cases, and cannot be interchanged with other types of widgets, when it is called for."
 
   create-literal-widget
     element:p
-    innerValue:@"A usercontrol widget, is only a special case of a [container] widget, which is why it can be found underneath
-the add container button in the toolbar. So when do you use which widget then ...?"
+    innerValue:@"A usercontrol for instance, is a special case of a [container] widget. While the wizard widgets are
+pre-fabricated hierarchies of [literal], [void] and/or [container] widgets."
 
   create-container-widget
     element:div

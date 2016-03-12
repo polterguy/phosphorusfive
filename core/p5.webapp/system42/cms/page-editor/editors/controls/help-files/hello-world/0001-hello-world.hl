@@ -71,17 +71,4 @@ and have a message box appear.</p>"
 
   create-literal-widget
     element:p
-    innerValue:@"<strong>Congratulations!</strong> You have now successfully created your first Web App with Phosphorus Five and System 42! :D"
-
-  create-container-widget
-    element:div
-    style:"position:absolute;bottom:5px;"
-    widgets
-      text:@"<p>"
-      a
-        href:#
-        innerValue:&lt;&lt; Back to index
-        class:btn btn-primary
-        onclick
-          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/index.hl
-      text:"</p>"
+    innerValue:@"<strong>Congratulations!</strong> You have now successfully created your first Web App with Phosphorus Five and System 42!"

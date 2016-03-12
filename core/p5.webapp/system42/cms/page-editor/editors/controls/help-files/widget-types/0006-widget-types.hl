@@ -45,10 +45,10 @@ clicked our buttons."
 
   create-literal-widget
     element:p
-    innerValue:@"<strong>Rule of thumb</strong>; Everytime you need your children widgets to have rich functionality, you should
-use a [container] widget, and add up children widgets to it. While everytime you do not need your child widget to
-for instance invoke functionality on the server-side, you can simply use the <em>""innerValue""</em> property of a
-[literal] widget, to create <em>""static inner HTML""</em>."
+    innerValue:@"At this point, you can manipulate your [container] widget, which will affect your inner [literal]/button widgets.
+For instance, try to select your [container] widget in the <em>""Select""</em> dropdown box at the top left corner of this page, for then
+to add up a <em>""class""</em> attribute, and giving it the value of <em>""btn-group""</em>. Did you notice how your buttons <em>""melted""</em>
+together, and became a <em>""toolbar""</em>?"
 
   create-container-widget
     element:div

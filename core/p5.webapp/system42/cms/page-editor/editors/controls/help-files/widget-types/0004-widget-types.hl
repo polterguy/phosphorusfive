@@ -21,7 +21,7 @@ controls
 out with a new page, by choosing a "
       a
         href:#
-        innerValue:new page
+        innerValue:new controls page
         title:Show me where to click please
         class:btn btn-default
         onclick
@@ -31,8 +31,7 @@ out with a new page, by choosing a "
             sys42.info-window:Please make sure you have your button selected in the WYSIWYG design surface!
               _error:true
               _time:more
-      text:@" first. Make sure you choose a [controls] type of page. This will close the help dialog for you, but you can just
-open it up again, when your page is created.</p>"
+      text:@" first. Make sure you choose a [controls] type of page.</p>"
 
   create-container-widget
     element:div
@@ -74,12 +73,13 @@ Show me where I "
         title:Show me where to click please
         class:btn btn-default
         onclick
-          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-innerValue-btn
+          sys42.wysiwyg-controls.blink-control:widget-property-innerValue
       text:@" please. If you save your page, and click <em>""View page""</em>, you can see your current result.
 As you can clearly see, adding rich HTML inside of the <em>""innerValue""</em> of your [literal] widgets, is no problem. The
 <strong>&lt;strong&gt; HTML element</strong> above, can also have its own set of <em>""class""</em> attributes, and any other
 attributes you wish for it to have. But these attributes must be added as a part of your HTML, through the <em>""innerValue""</em>
-of your outer &lt;span&gt; widget.</p>"
+of your outer &lt;span&gt; widget. BTW, try to close the <em>""innerValue""</em> textbox, then change the element property of your 
+widget to <em>""div""</em> and click the innerValue again ... ;)</p>"
 
   create-container-widget
     element:div

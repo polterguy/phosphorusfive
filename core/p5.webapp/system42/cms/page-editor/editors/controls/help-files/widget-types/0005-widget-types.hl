@@ -32,14 +32,12 @@ widgets to its children collection</strong>."
 
   create-literal-widget
     element:p
-    innerValue:@"If you create a [container] widget, and add two children [literal] button widgets to it, you can create server-side
+    innerValue:@"If you create one [container] widget, and add two children [literal] button widgets to it, you can create server-side
 event handlers for your buttons, easily, by simply adding an <em>""onclick""</em> event handler attribute to each of your buttons."
 
   create-literal-widget
     element:p
-    innerValue:@"Make sure you start out with a <strong>new [controls] page</strong>, then add a [container] widget to your page.
-This will yet again dismiss the help dialog, so just click the help button after you have created your page, to come back to this help
-page."
+    innerValue:@"Make sure you start out with a <strong>new [controls] page</strong>."
 
   create-literal-widget
     element:p

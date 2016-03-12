@@ -23,8 +23,8 @@ another action occurring."
 
   create-literal-widget
     element:p
-    innerValue:@"Make sure you have your email/name usercontrol selected in the WYSIWYG design surface. Then make sure your
-action subscribers for your usercontrol is visible by clicking the <em>""Widget Action Subscribers ...""</em> button."
+    innerValue:@"Make sure you have your email/name usercontrol selected in the WYSIWYG design surface. Then click 
+the <em>""Add Subscriber""</em> button."
 
   create-container-widget
     element:div
@@ -36,7 +36,7 @@ action subscribers for your usercontrol is visible by clicking the <em>""Widget 
         class:btn btn-default
         onclick
           if
-            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-set-events-visible
+            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-new-action-subscriber
             not
             sys42.info-window:Please make sure you have your usercontrol selected in the WYSIWYG design surface!
               _error:true
@@ -45,7 +45,7 @@ action subscribers for your usercontrol is visible by clicking the <em>""Widget 
 
   create-literal-widget
     element:p
-    innerValue:@"Then click the <em>""New Action Subscriber ...""</em> button. From this view, you can see all actions published
+    innerValue:@"Then click the <em>""Suggest""</em> button. From this view, you can see all actions published
 by page and/or usercontrols inside of page. Choose the <em>""sys42.forms.action.email-name-submitted""</em> action from this list. 
 Already now, you can save your page, and supply a (valid) email, and a name, and click the <em>""Submit""</em> button. Of course, 
 this doesn't do anything intelligent though, hence we'll need to modify our action subscriber, to make it do something intelligent.

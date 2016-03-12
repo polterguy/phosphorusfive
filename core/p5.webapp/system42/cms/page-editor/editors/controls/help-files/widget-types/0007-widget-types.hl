@@ -32,22 +32,24 @@ return between them, making them pop up on different <em>""lines""</em> in your 
     element:p
     innerValue:@"Change the element property of your void widget to <em>""hr""</em>, which is a <em>""horizontal ruler""</em>, 
 save your page, and view it. A horizontal ruler is not supposed to have any content at all. It is simply a <em>""signaling""</em> 
-HTML element, signaling that you wish to create a, (duuh), <em>""horizontal ruler""</em> to separate your elements.
+HTML element, signaling that you wish to create a, <em>""horizontal ruler""</em> to separate your elements.
 Make sure you have your [void] widget selected in your WYSIWYG design surface. If it was unselected, then
 the easiest way to actually select it, is by selecting it from the <em>""Select widget""</em> dropdown list."
 
   create-literal-widget
     element:p
     innerValue:@"If you scroll down, to view your [void] widget's properties, you will notice that it has neither any 
-<em>""innerValue""</em>, nor any <em>""Children widgets""</em> properties. If you however click the <em>""parent widget""</em>
-button, at the bottom of your page, you will select the parent [container] widget, which will have different properties, the
-most important being a <em>""list of children widgets""</em> property. If you do not see this list, make sure you expand it."
+<em>""innerValue""</em>, nor any <em>""Children widgets""</em> properties. If you however click the 
+<span class=""btn btn-default""><span class=""glyphicon glyphicon-arrow-up""></span> Parent</span>
+button, close to the bottom of your page, you will select the parent [container] widget, which will have different properties, the
+most important being a <em>""list of children widgets""</em> property, through the 
+<span class=""btn btn-default""><span class=""glyphicon glyphicon-arrow-down""></span> Children <span class=""caret""></span></span> button."
 
   create-literal-widget
     element:p
     innerValue:@"The <span class=""glyphicon glyphicon-arrow-down""></span>
 and the <span class=""glyphicon glyphicon-arrow-up""></span> buttons, allows you to easily navigate your parent and children widgets, 
-and select them."
+in a relational manner, and select them."
 
   create-container-widget
     element:div

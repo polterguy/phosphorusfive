@@ -26,9 +26,9 @@ a wrapper around some piece of text, or HTML. Imagine you want to render the fol
   create-literal-widget
     element:p
     innerValue:@"In the above example, you can get away with creating <strong>one</strong> widget, which is the outer most 
-<em>&lt;span&gt;</em> widget. As long as the <em>strong</em> widget inside of it, does not contain some events, or needs to be
-manipulated, without the outer &lt;span&gt; widget also being manipulated, you don't need to use a [container] widget, and can get
-away with a [literal] widget, having the HTML of your span, be the <em>innerValue</em> of your [literal]."
+<em>&lt;span&gt;</em> widget. As long as the <em>strong</em> widget inside of it, does not need event handlers, or needs to be
+manipulated, without the outer &lt;span&gt; widget also being manipulated, you don't need to use a [container] widget, but can get
+away with <strong>*one*</strong> [literal] widget, having the HTML of your span, be the <em>innerValue</em> of your [literal]."
 
   create-literal-widget
     element:p
