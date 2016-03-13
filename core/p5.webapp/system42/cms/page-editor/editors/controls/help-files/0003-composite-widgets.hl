@@ -18,8 +18,8 @@ controls
     element:div
     widgets
       text:@"<p>Probably among the most power you can extract from Phosphorus Five and System 42, is found in the <em>""composite widgets""</em>
-features. These are rich and complex widgets, that you can reuse, across your [controls] pages. There exists two different types of 
-<em>""composite widgets""</em>.</p>
+features. These are rich and complex widgets, that you can reuse, across your [controls] pages, almost like LEGO or building blocks.
+There exists two different types of <em>""composite widgets""</em>.</p>
 <ul>
 	<li>Usercontrols</li>
 	<li>Wizard widgets</li>
@@ -31,23 +31,24 @@ create a usercontrol, all you need to do, is to create a normal [controls] page,
 <em>""Usercontrol - ""</em>. If you do, you will be offered to inject this page, when you click the "
       a
         href:#
-        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
+        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> usercontrol"
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
-          send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-container-wrp').toggleClass('open');}}, 2000);"
+          send-javascript:@"$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');}}, 2000);"
           sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-usercontrol-after
       text:@" buttons in your toolbar.</p>
 
-<p>Wizard widgets, are also pre-fabricated, but more difficult to create yourself. These are pre-fabricated <em>""template""</em>widgets, 
+<p>Wizard widgets, are also pre-fabricated, but slightly more complicated to create yourself. These are pre-fabricated <em>""template""</em>widgets, 
 possibly with child widgets of themselves, that can be injected into your page through the "
       a
         href:#
-        innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Wizard"
+        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Wizard"
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
-          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-widget
+          send-javascript:@"$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');}}, 2000);"
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-after
       text:@" button.</p>"
 
   create-literal-widget

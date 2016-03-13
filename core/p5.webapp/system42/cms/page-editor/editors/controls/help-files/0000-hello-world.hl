@@ -37,7 +37,7 @@ its <em>""Access Role""</em> to whatever role you wish to have access to see you
       a
         href:#
         innerValue:Click here
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           sys42.wysiwyg-controls.blink-control:page-editor-access-role-dropdown
       text:" to see where you can change a page's Access Role.</p>"
@@ -55,21 +55,21 @@ contains a menu, and some other design elements, such as a bunch of CSS files, J
       a
         href:#
         innerValue:name
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           sys42.wysiwyg-controls.blink-control:page-editor-name-textbox
       text:" of your page, or the "
       a
         href:#
         innerValue:url
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           sys42.wysiwyg-controls.blink-control:page-editor-url-textbox
       text:" of your page, or the "
       a
         href:#
         innerValue:template
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           sys42.wysiwyg-controls.blink-control:page-editor-template-dropdown
       text:" of your page.</p>"

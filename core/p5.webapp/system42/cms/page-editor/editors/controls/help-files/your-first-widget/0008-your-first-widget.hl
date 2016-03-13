@@ -33,7 +33,7 @@ the <em>""Add Subscriber""</em> button."
       a
         href:#
         innerValue:should click
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           if
             sys42.wysiwyg-controls.blink-control:wysiwyg-controls-new-action-subscriber

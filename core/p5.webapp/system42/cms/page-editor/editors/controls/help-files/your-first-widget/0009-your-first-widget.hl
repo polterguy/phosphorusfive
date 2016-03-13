@@ -26,7 +26,7 @@ at the bottom of your page, and delete all existing code from it. Then click the
       a
         href:#
         innerValue:should click
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           find-widget
             title:Opens up the Hyperlisp Wizard to help you create logic for your Action Subscriber

@@ -416,7 +416,7 @@ A Wizard Widget is a pre-fabricated template widget, possibly with children widg
                 /*
                  * Add [wizard] *after* button
                  */
-                li
+                li:wysiwyg-controls-add-wizard-after
                   widgets
                     a
                       href:#

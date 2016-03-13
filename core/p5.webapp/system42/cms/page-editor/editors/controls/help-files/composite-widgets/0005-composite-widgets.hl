@@ -20,11 +20,12 @@ controls
       text:@"<p>Make sure you start out with an empty [controls] page. Then click the "
       a
         href:#
-        innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Wizard"
+        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> wizard"
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
-          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-widget
+          send-javascript:@"$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');}}, 2000);"
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-after
       text:@" button, and choose the <em>""Textbox""</em> wizard widget from the modal window that appears.
 You can choose either before or after, which doesn't matter. Then click the wizard button again, and choose the 
 <em>""Button""</em> wizard widget, but make sure you insert it <strong>*after*</strong> the previously created textbox.

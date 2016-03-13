@@ -37,7 +37,7 @@ existing usercontrols together, in rich hierarchies.</p>
         href:#
         innerValue:Hyperlisp video series
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/your-first-widget/0010-your-first-widget.hl
       text:@" - But that's a fairly advanced concept, and brings you closer to <em>""programming""</em>, than

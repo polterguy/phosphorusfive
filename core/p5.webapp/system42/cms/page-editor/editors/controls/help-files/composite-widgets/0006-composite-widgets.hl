@@ -20,30 +20,23 @@ controls
       text:@"<p>Create a new [controls] page, and click the "
       a
         href:#
-        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container"
+        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> usercontrol"
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
-          send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-container-wrp').toggleClass('open');}}, 2000);"
+          send-javascript:@"$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');}}, 2000);"
           sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-usercontrol-after
-      text:@" button, and insert the usercontrol you created in the previous step into your page. Then make sure your "
+      text:@" button, and insert the usercontrol you created in the previous step into your page. Then click "
       a
         href:#
-        innerValue:@"Widget Action Subscribers"
+        innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Add Subscriber"
         title:Show me where to click please
-        class:btn btn-default
-        onclick
-          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-set-events-visible
-      text:@" are expanded, meaning the arrow should point <span class=""glyphicon glyphicon-triangle-top""></span>, before you click "
-      a
-        href:#
-        innerValue:@"New Action Subscriber"
-        title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           sys42.wysiwyg-controls.blink-control:wysiwyg-controls-new-action-subscriber
-      text:@" and choose the action named <em>""sys42.forms.action.get-foo-bar-value""</em>. This was the action you created in the 
-previous step, and now we are going to consume it. Replace the code in your codeview for your action with the following code.</p>"
+      text:@", then click the <em>""Suggest""</em> button, and choose the action named <em>""sys42.forms.action.get-foo-bar-value""</em>. This was the action you created in the 
+previous step, and now we are going to consume it. Expand your action's code, by clicking the row in the table at the bottom of your page, 
+and replace the code in your codeview for your action with the following code.</p>"
 
   create-literal-widget
     element:pre
@@ -52,7 +45,7 @@ previous step, and now we are going to consume it. Replace the code in your code
   create-literal-widget
     element:p
     innerValue:@"Then click save, view your page, type in some text into the input, and click your button. This should result in
-something looking like the code below."
+something looking like this."
 
   create-literal-widget
     element:pre

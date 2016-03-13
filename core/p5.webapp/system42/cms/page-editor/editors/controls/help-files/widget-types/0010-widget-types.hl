@@ -37,7 +37,8 @@ use a [literal] widget, if you know what you're doing, and your children widgets
       li
         innerValue:@"<strong>div</strong> - Most of the times, your <em>""div""</em> HTML elements will be wrapping other widgets,
 having rich functionality of themselves. If this is the case, you should use the <code>[container]</code> widget. But you can also
-legally use the [literal] widget here. It is more a question of taste one might say, and depends upon your special case."
+legally use the [literal] widget here. It is more a question of taste one might say, and depends upon your case. If you use a [literal]
+widget, than you can use the included HTML WYSIWYG editor to edit its content in its <em>""innerValue""</em> property."
       li
         innerValue:@"<strong>span</strong> - Most of the times, your <em>""span""</em> HTML elements will <strong>*not*</strong>
 be wrapping other widgets, but rather have only inline text. If this is the case, you should use the <code>[literal]</code> widget. 

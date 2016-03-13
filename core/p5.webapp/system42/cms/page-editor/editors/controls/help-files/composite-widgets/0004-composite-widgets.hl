@@ -25,9 +25,9 @@ consumes your usercontrol</strong>. Have this in mind if you edit your usercontr
     element:p
     innerValue:@"While a wizard widget, is actually just a <em>""template""</em>, that can possibly includes a 
 complete widget hierarchy, with children widgets, events, and event handlers for you, as a <em>""boiler plate""</em> starting ground.
-After you have included a wizard widget, you can modify it, its children widgets, and so on, as if you had created this
-widget hierarchy from scratch yourself. No changes to a wizard widget, will be reflected back to any future or previous usage
-of your wizard widgets."
+When you include a wizard widget, you create a <em>""copy""</em> of this <em>""template""</em>, and after you have included a wizard widget, 
+you can modify it, its children widgets, and so on, as if you had created this widget hierarchy from scratch yourself. No changes to a 
+wizard widget you insert into your page, will be reflected back to any future or previous usage of your wizard widgets."
 
   create-literal-widget
     element:p
@@ -38,12 +38,6 @@ its widget children collection, is dynamically loaded, from the [controls] page 
 So even though a usercontrol actually has children widgets, you cannot directly modify this collection yourself, in any ways.
 In the WYSIWYG design surface, a usercontrol is marked with a green background color, and it can be seen as <em>""slightly 
 transparent""</em>. Only the usercontrol wrapper widget can be selected, and none of its children."
-
-  create-literal-widget
-    element:p
-    innerValue:@"Most usercontrols requires you to add some CSS classes to it, to make it render <em>""sane""</em>. This is because
-we try to avoid, as much as possible, to dictate the rendering and layout of your page, from within the usercontrol. This makes, at
-least the pre-fabricated usercontrols, become more versatile, but require slightly more initial <em>""wiring""</em> as you consume them."
 
   create-container-widget
     element:div

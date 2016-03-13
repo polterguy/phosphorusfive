@@ -36,15 +36,39 @@ HTML element, signaling that you wish to create a, <em>""horizontal ruler""</em>
 Make sure you have your [void] widget selected in your WYSIWYG design surface. If it was unselected, then
 the easiest way to actually select it, is by selecting it from the <em>""Select widget""</em> dropdown list."
 
-  create-literal-widget
-    element:p
-    innerValue:@"If you scroll down, to view your [void] widget's properties, you will notice that it has neither any 
-<em>""innerValue""</em>, nor any <em>""Children widgets""</em> properties. If you however click the 
-<span class=""btn btn-default""><span class=""glyphicon glyphicon-arrow-up""></span> Parent</span>
-button, close to the bottom of your page, you will select the parent [container] widget, which will have different properties, the
-most important being a <em>""list of children widgets""</em> property, through the 
-<span class=""btn btn-default""><span class=""glyphicon glyphicon-arrow-down""></span> Children <span class=""caret""></span></span> button."
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>If you scroll down, to view your [void] widget's properties, you will notice that it has neither any 
+<em>""innerValue""</em>, nor any <em>""Children widgets""</em> properties. If you however click the "
 
+      a
+        href:#
+        innerValue:@"<span class=""btn btn-default btn-xs""><span class=""glyphicon glyphicon-arrow-up""></span> Parent</span>"
+        title:Show me where to click please
+        onclick
+          if
+            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-get-parent-widget
+            not
+            sys42.info-window:Please make sure you have your [void]/hr widget selected in the WYSIWYG design surface!
+              _error:true
+              _time:more
+      text:@" button, just beneath the WYSIWYG design surface, you will select the parent [container] widget, which will have different properties. The
+most important being a <em>""list of children widgets""</em> property, through the "
+
+      a
+        href:#
+        innerValue:@"<span class=""btn btn-default btn-xs""><span class=""glyphicon glyphicon-arrow-down""></span> Children <span class=""caret""></span></span>"
+        title:Show me where to click please
+        onclick
+          if
+            sys42.wysiwyg-controls.blink-control:wysiwyg-controls-select-children-widgets-wrp
+            not
+            sys42.info-window:Please make sure you have your [void]/hr widget selected in the WYSIWYG design surface!
+              _error:true
+              _time:more
+
+      text:@" button.</p>"
   create-literal-widget
     element:p
     innerValue:@"The <span class=""glyphicon glyphicon-arrow-down""></span>

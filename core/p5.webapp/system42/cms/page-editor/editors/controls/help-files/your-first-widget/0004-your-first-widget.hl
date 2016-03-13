@@ -38,7 +38,7 @@ up a modal window, further explaining the id property for you."
       text:@"<p>Then add a pre-fabricated <em>""wizard widget""</em> to your page, by clicking the "
       a
         href:#"
-        class:btn btn-default
+        class:btn btn-default btn-xs
         innerValue:@"wizard"
         onclick
           send-javascript:@"$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');}}, 2000);"

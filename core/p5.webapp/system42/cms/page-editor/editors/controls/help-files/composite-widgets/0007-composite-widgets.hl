@@ -23,7 +23,7 @@ from the "
         href:#
         innerValue:@"edit pages"
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           sys42.wysiwyg-controls.blink-control:select-page
       text:@" dropdown listbox. Make sure you select the page called <em>""Usercontrol - My First""</em>.</p>"
@@ -57,9 +57,16 @@ of all your Action Subscribers at the bottom of this page. Delete all existing c
         href:#
         innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Wizard"
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
-          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-create-hyperlisp-wizard
+          find-widget
+            title:Opens up the Hyperlisp Wizard to help you create logic for your Action Subscriber
+          if
+            sys42.wysiwyg-controls.blink-control:x:/./-/*?value
+            not
+            sys42.info-window:Please make sure you have your usercontrol selected in the WYSIWYG design surface!, and that you have opened up codeview for your Action Subscriber
+              _error:true
+              _time:more
       text:@" button. Choose the <em>""sys42.actions.save-data-to-database""</em>, and type in the name of <em>""contact""</em>
 for your <em>""name""</em> property of your action.</p>"
 

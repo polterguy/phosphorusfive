@@ -38,7 +38,7 @@ modal dialogs in Phosphorus Five can be closed with the top/right corner <strong
       a
         href:#
         innerValue:should click
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           get-widget-property:wysiwyg-controls-properties
             visible

@@ -23,7 +23,7 @@ out with a new page, by choosing a "
         href:#
         innerValue:new controls page
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           if
             sys42.wysiwyg-controls.blink-control:create-new-page
@@ -42,7 +42,7 @@ Show me where I "
         href:#
         innerValue:should click
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           send-javascript:@"$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');}}, 2000);"
           sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-literal-after
@@ -57,7 +57,7 @@ Show me where I "
         href:#
         innerValue:should click
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           sys42.wysiwyg-controls.blink-control:wysiwyg-button-add-attribute
       text:@" please.</p>"
@@ -71,7 +71,7 @@ Show me where I "
         href:#
         innerValue:should do this
         title:Show me where to click please
-        class:btn btn-default
+        class:btn btn-default btn-xs
         onclick
           sys42.wysiwyg-controls.blink-control:widget-property-innerValue
       text:@" please. If you save your page, and click <em>""View page""</em>, you can see your current result.
