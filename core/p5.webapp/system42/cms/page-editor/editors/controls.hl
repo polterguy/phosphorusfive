@@ -1135,6 +1135,13 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
           oninit
 
             /*
+             * Checking if help file is supposed to be persistently loaded
+             */
+            get-session-value:sys42.wysiwyg-controls.help-file-visible
+            if:x:/-/*?value.bool
+              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
+
+            /*
              * If this is first loading of [controls] page during session, we "blink"
              * help button, showing some helper tooltip, to explain to user that "this is
              * where you should start".

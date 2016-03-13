@@ -404,6 +404,7 @@
     <None Include="system42\cms\page-editor\editors\controls\create-action-subscriber.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\0000-hello-world.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\hello-world\0001-hello-world.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0009-composite-widgets.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

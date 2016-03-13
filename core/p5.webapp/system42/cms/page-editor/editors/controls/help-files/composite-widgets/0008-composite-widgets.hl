@@ -32,16 +32,8 @@ consumes your usercontrol, and saved input data from your application into your 
 to bad for an average sunday I'd say :)</p>
 <p>For the record, usercontrols can contain usercontrols too. This way, you can create your pages, entirely by nesting
 existing usercontrols together, in rich hierarchies.</p>
-<p>Now of course, if you wish to dive deeper into what actually goes on underneath the hood, you might want to follow my "
-      a
-        href:#
-        innerValue:Hyperlisp video series
-        title:Show me where to click please
-        class:btn btn-default btn-xs
-        onclick
-          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/your-first-widget/0010-your-first-widget.hl
-      text:@" - But that's a fairly advanced concept, and brings you closer to <em>""programming""</em>, than
-any of my tutorials so far have done.</p>"
+<p>We're not entirely finished quite yet though. We still need to create a page where we can see our list of <em>""contacts""</em>,
+in a list view. Click next for the final chapter in this tutorial series.</p>"
 
   create-container-widget
     element:div
@@ -50,8 +42,8 @@ any of my tutorials so far have done.</p>"
       text:@"<p>"
       a
         href:#
-        innerValue:&lt;&lt; Back to index
+        innerValue:next &gt;&gt;
         class:btn btn-primary
         onclick
-          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/index.hl
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/composite-widgets/0009-composite-widgets.hl
       text:"</p>"

@@ -11,10 +11,24 @@
 if
   fetch:x:/0/0?value
     widget-exist:wysiwyg-controls-help
+
+  /*
+   * Help widget is already open, closing it, and returning early.
+   * Making sure we delete the session value that indicates that help is open first though
+   */
   delete-widget:wysiwyg-controls-help
   set-widget-property:wysiwyg-controls-help-button
     class:btn btn-success
+  set-session-value:sys42.wysiwyg-controls.help-file-visible
   return
+
+
+/*
+ * Setting session value indicating that help file is open, such that we can
+ * remember it across page loads, etc
+ */
+set-session-value:sys42.wysiwyg-controls.help-file-visible
+  src:true
 
 
 

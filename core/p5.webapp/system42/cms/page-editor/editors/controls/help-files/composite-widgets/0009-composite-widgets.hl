@@ -1,0 +1,49 @@
+
+/*
+ * First help page
+ */
+
+name:Widgets - Data grids
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Widgets - Data grids
+
+  create-literal-widget
+    element:div
+    innerValue:@"<p>So far, we have created a usercontrol, that we consume in another page, where the user can type in his name,
+and his name is then stored in the Phosphorus Five database. In this final chapter, we will create a <em>""datagrid""</em> display of the data
+our users choose to enter in our original form.</p>
+<p>Create a new page, and add up the usercontrol called <em>""Paged and searchable data table""</em> to it.</p>
+<p>Make sure you change its <em>""_data-typename""</em> attribute to <em>""contact""</em>. Then change the <em>""_data-columns""</em> to 
+<em>""name""</em>. Save your page, click <em>""View page""</em>, and; VOILA!!</p>
+<p>The <em>""_data-typename""</em> is the type of data you are interested in viewing. For our purpose, this matches the type name we supplied
+when we created our <em>""save-data-to-database""</em> action in the previous page(s). While the <em>""_data-columns""</em> is which 
+<em>""columns""</em> you're interested in viewing. Although, the word <em>""columns""</em> isn't entirely correct. The correct term would 
+probably be more like <em>""nodes""</em>. However, columns is a word most database people are accustomed to.</p>
+<p>Anyway, the <em>""_data-columns""</em>
+is a comma separated list of which data you're interested in from the database object. We only have one piece of data in our sample, which is the
+<em>""name""</em> from our previously created textbox. But if you had more than one data entry here, you could supply more than one <em>""column""</em>,
+by adding each data entry with a comma (,) between them. If you add up the usercontrol again, on the page, and don't change any of its properties,
+you will see how it by default shows all the pages in your system, in a different datagrid, and how it shows one column for each of your
+comma separated value in <em>""_data-columns""</em>.</p>
+<p>Thank you for your time :) - Click <em>""Back to index""</em> to go back ...</p>"
+
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:&lt;&lt; Back to index
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/cms/page-editor/editors/controls/help-files/index.hl
+      text:"</p>"
