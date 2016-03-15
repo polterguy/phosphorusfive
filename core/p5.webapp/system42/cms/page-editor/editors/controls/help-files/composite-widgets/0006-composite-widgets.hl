@@ -20,7 +20,7 @@ controls
       text:@"<p>Create a new [controls] page, and click the "
       a
         href:#
-        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> usercontrol"
+        innerValue:@"Usercontrol"
         title:Show me where to click please
         class:btn btn-default btn-xs
         onclick
@@ -29,7 +29,7 @@ controls
       text:@" button, and insert the usercontrol you created in the previous step into your page. Then click "
       a
         href:#
-        innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Add Subscriber"
+        innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Subscribe"
         title:Show me where to click please
         class:btn btn-default btn-xs
         onclick

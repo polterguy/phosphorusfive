@@ -10,6 +10,11 @@
 
 
 
+/*
+ * Making sure "codeview" viewstate value is deleted
+ */
+set-page-value:sys42.wysiwyg-controls.codeview-visible
+
 
 /*
  * Making sure we set session values for CodeMirror/CKEditor editing to "true",
@@ -394,7 +399,7 @@ A Wizard Widget is a pre-fabricated template widget, possibly with children widg
               class:btn btn-default dropdown-toggle
               style:"width:100%;"
               data-toggle:dropdown
-              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> wizard <span class=""caret""></span>"
+              innerValue:@"Wizard <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -465,7 +470,7 @@ A usercontrol is a pre-fabricated and reusable widget, that allows you to 'injec
               class:btn btn-default dropdown-toggle
               style:"width:100%;"
               data-toggle:dropdown
-              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> usercontrol <span class=""caret""></span>"
+              innerValue:@"Usercontrol <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -477,7 +482,7 @@ A usercontrol is a pre-fabricated and reusable widget, that allows you to 'injec
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> usercontrol before"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> before"
                       title:Adds a [usercontrol] widget to your page, at the beginning, or before the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:_usercontrol
@@ -491,7 +496,7 @@ A usercontrol is a pre-fabricated and reusable widget, that allows you to 'injec
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> usercontrol after"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> after"
                       title:Appends a [usercontrol] widget to your page, or after the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:_usercontrol
@@ -540,7 +545,7 @@ A literal widget, is a widget that allows you to create text or HTML content in 
               class:btn btn-default dropdown-toggle
               style:"width:100%;"
               data-toggle:dropdown
-              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> literal <span class=""caret""></span>"
+              innerValue:@"Literal <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -559,7 +564,7 @@ A literal widget, is a widget that allows you to create text or HTML content in 
                           _before:true
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
 
                 /*
                  * Add [literal] *after* button
@@ -574,7 +579,7 @@ A literal widget, is a widget that allows you to create text or HTML content in 
                         sys42.wysiwyg-controls.add-control:span
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
 
                 /*
                  * Add [literal] *inside* button
@@ -597,7 +602,7 @@ A literal widget, is a widget that allows you to create text or HTML content in 
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
 
 
 
@@ -620,7 +625,7 @@ A container widget is a widget that can have children widgets, and serves as a '
               class:btn btn-default dropdown-toggle
               style:"width:100%;"
               data-toggle:dropdown
-              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> container <span class=""caret""></span>"
+              innerValue:@"Container <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -639,7 +644,7 @@ A container widget is a widget that can have children widgets, and serves as a '
                           _before:true
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
 
                 /*
                  * Add [container] *after* button
@@ -654,7 +659,7 @@ A container widget is a widget that can have children widgets, and serves as a '
                         sys42.wysiwyg-controls.add-control:div
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
 
                 /*
                  * Add [container] *inside* button
@@ -677,7 +682,7 @@ A container widget is a widget that can have children widgets, and serves as a '
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
 
 
 
@@ -701,7 +706,7 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
               class:btn btn-default dropdown-toggle
               style:"width:100%;"
               data-toggle:dropdown
-              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> void <span class=""caret""></span>"
+              innerValue:@"Void <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -720,7 +725,7 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                           _before:true
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
 
                 /*
                  * Add [void] *after* button
@@ -735,7 +740,7 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                         sys42.wysiwyg-controls.add-control:br
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
 
                 /*
                  * Add [void] *inside* button
@@ -758,7 +763,7 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
 
 
 
@@ -835,7 +840,8 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                           src:x:/./-/*
                         sys42.wysiwyg-controls.paste-widget
                           _position
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
+                        sys42.wysiwyg-controls.update-code-wiew
 
                 /*
                  * Paste widget *after* button
@@ -860,7 +866,8 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                           src:x:/./-/*
                         sys42.wysiwyg-controls.paste-widget
                           _position
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
+                        sys42.wysiwyg-controls.update-code-wiew
 
                 /*
                  * Paste widget *inside* button
@@ -891,7 +898,7 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                         sys42.wysiwyg-controls.paste-widget
                           _position
                             parent
-                        send-javascript:@"$('#widget-property-id').focus().select();$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-paste-wrp').toggleClass('open');"
           events
 
             /*
@@ -1026,15 +1033,25 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
           style:"width:12.5%;"
           href:#
           innerValue:@"<span class=""glyphicon glyphicon-pencil""></span> Code"
-          title:@"Shows code view for your page. This is a pretty advanced topic, and you should be very careful editing your page's code directly, unless you know exactly what you're doing!"
+          title:@"Toggles codeview for your page. This is a pretty advanced topic, and you should be very careful editing your page's code directly, unless you know exactly what you're doing!"
           onclick
 
             /*
-             * Disabling "codeview" button, to make sure it cannot be clicked twice
+             * Checking if codeview is already visible, and if so, deleting codeview widget, and returning early
              */
-            set-widget-property:wysiwyg-controls-view-code-button
-              class:btn btn-default disabled
-              disabled
+            if
+              fetch:x:/0/0?value.bool
+                get-page-value:sys42.wysiwyg-controls.codeview-visible
+              delete-widget:wysiwyg-controls-code-view
+              set-page-value:sys42.wysiwyg-controls.codeview-visible
+              return
+
+            /*
+             * Making sure we store the fact that codeview is visible, such that another click on codeview
+             * will make it disappear
+             */
+            set-page-value:sys42.wysiwyg-controls.codeview-visible
+              src:true
 
             /*
              * Creating main wrapper widget, that wraps "code view", 
@@ -1095,24 +1112,6 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                       set-widget-property:wysiwyg_controls_code_view_textarea
                         value:x:/../*/sys42.get-page-editor-data/*/controls?value
                       send-javascript:@"window.wysiwyg_controls_code_view_textarea.getDoc().setValue(p5.$('wysiwyg_controls_code_view_textarea').el.value);"
-
-                /*
-                 * Closes the codeview editor
-                 */
-                button:wysiwyg-controls-close-code-view
-                  style:"float:right;"
-                  class:btn btn-default prepend-bottom
-                  innerValue:@"<span class=""glyphicon glyphicon-remove""></span> Close"
-                  onclick
-
-                    /*
-                     * Enabling "codeview" button again, before deleting "codeview"
-                     */
-                    set-widget-property:wysiwyg-controls-view-code-button
-                      class:btn btn-default
-                    delete-widget-property:wysiwyg-controls-view-code-button
-                      disabled
-                    delete-widget:wysiwyg-controls-code-view
                     
 
 
@@ -1243,7 +1242,7 @@ $('html, body').animate({{
         button:wysiwyg-button-add-attribute
           class:btn btn-default
           title:Add attribute to widget
-          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Add attribute"
+          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Attribute"
           onclick
             sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute.hl
 
@@ -1270,7 +1269,7 @@ $('html, body').animate({{
          */
         button:wysiwyg-controls-new-action-subscriber
           class:btn btn-default
-          innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Add Subscriber"
+          innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Subscribe"
           onclick
             sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-action-subscriber.hl
 
@@ -1284,7 +1283,7 @@ $('html, body').animate({{
         button:wysiwyg-button-copy-widget
           class:btn btn-default
           title:Copies widget to clipboard, such that you can paste in a copy another place, either on same page, or in another page
-          innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy widget"
+          innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy"
           onclick
             find-widget
               data-selected
@@ -1502,7 +1501,7 @@ you can simply delete it now. A complete version of the widget still exists on y
           class:btn btn-default disabled
           disabled
           title:Deletes all children widgets of widget
-          innerValue:@"<span class=""glyphicon glyphicon-remove-circle""></span> Clear widget"
+          innerValue:@"<span class=""glyphicon glyphicon-remove-circle""></span> Clear"
           onclick
 
             /*
@@ -1570,7 +1569,7 @@ you can simply delete it now. A complete version of the widget still exists on y
         button:wysiwyg-button-delete
           class:btn btn-default
           title:Delete currently selected widget
-          innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Delete widget"
+          innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Delete"
           onclick
 
             /*
@@ -1689,6 +1688,11 @@ you can simply delete it now. A complete version of the widget still exists on y
        * Then we need to "refresh" selected widget in surface
        */
       sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+      /*
+       * Then we need to delete widget's properties and action subscribers etc
+       */
+      sys42.wysiwyg-controls.unselect-widget
 
 
 

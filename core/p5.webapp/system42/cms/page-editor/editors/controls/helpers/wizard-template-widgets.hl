@@ -16,7 +16,7 @@ _wizard-item:Button
       innerValue:Foo bar
       title:Click me to do something intelligent ...
       _onclick
-        sys42.info-window:Implement something intelligent here
+        sys42.info-window:Hello World 2.0!
       onclick
         sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
         if:x:/-?value

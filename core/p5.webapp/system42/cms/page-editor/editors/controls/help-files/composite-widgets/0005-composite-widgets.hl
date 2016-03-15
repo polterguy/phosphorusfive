@@ -20,7 +20,7 @@ controls
       text:@"<p>Make sure you start out with an empty [controls] page. Then click the "
       a
         href:#
-        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> wizard"
+        innerValue:@"Wizard"
         title:Show me where to click please
         class:btn btn-default btn-xs
         onclick

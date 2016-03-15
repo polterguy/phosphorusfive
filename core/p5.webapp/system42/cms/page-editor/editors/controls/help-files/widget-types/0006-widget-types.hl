@@ -17,7 +17,7 @@ controls
   create-literal-widget
     element:p
     innerValue:@"When you have done the previous steps, you need to add an <em>""onclick""</em> event handler, to both of your
-buttons. Make sure your first button is selected in the WYSIWYG design surface. Then click <em>""Add attribute""</em>, and name
+buttons. Make sure your first button is selected in the WYSIWYG design surface. Then click <em>""Attribute""</em>, and name
 your attribute <em>""onclick""</em>. Type in the following code into the onclick event handler of your first button."
 
   create-literal-widget

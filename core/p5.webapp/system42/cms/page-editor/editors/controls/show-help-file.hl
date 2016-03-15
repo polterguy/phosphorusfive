@@ -40,14 +40,16 @@ set-widget-property:wysiwyg-controls-help-button
   class:btn btn-success active
 
 
-
+get-parent-widget:wysiwyg-editor-surface
 
 /*
  * Creates the "Help files" widget
  */
+eval-x:x:/+/*/parent
 create-widget:wysiwyg-controls-help
-  before:wysiwyg-editor-surface
-  class:rounded-corners bg-success prepend-top prepend-bottom air-padding
+  parent:x:/../*/get-parent-widget/*?value
+  position:0
+  class:rounded-corners bg-success prepend-bottom air-padding
   style:"clear:both;min-height:500px;position:relative;"
   widgets
     a:wysiwyg-controls-help-back-to-index

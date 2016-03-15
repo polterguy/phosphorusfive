@@ -31,7 +31,7 @@ create a usercontrol, all you need to do, is to create a normal [controls] page,
 <em>""Usercontrol - ""</em>. If you do, you will be offered to inject this page, when you click the "
       a
         href:#
-        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> usercontrol"
+        innerValue:@"Usercontrol"
         title:Show me where to click please
         class:btn btn-default btn-xs
         onclick
@@ -43,7 +43,7 @@ create a usercontrol, all you need to do, is to create a normal [controls] page,
 possibly with child widgets of themselves, that can be injected into your page through the "
       a
         href:#
-        innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Wizard"
+        innerValue:@"Wizard"
         title:Show me where to click please
         class:btn btn-default btn-xs
         onclick

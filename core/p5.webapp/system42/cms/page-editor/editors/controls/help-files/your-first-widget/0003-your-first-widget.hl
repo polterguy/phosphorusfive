@@ -88,7 +88,7 @@ Lord Marvin</p>"
     innerValue:@"You can also change the element's value, to whatever HTML element you wish, by simply typing in your element name into
 the textbox next to the question mark that opens up the modal choose element window. If you type an invalid element name, Phosphorus Five will
 not accept your value. If you type in a dangerous element, such as &lt;object&gt;, you will be warned about its implications. Phosphorus
-Five follows the HTML5 standard strictly, and tries to help you avoid that you shoot your feet off!"
+Five follows the HTML5 standard strictly, and tries to help you avoiding shooting your feet off!"
 
   create-container-widget
     element:div

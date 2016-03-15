@@ -249,6 +249,7 @@ Are you sure you wish to do this?"
                         element:input
                       set-widget-property:x:/-/*?value
                         value:
+                      sys42.wysiwyg-controls.update-code-wiew
               a
                 href:#
                 innerValue:@"<span class=""glyphicon glyphicon-trash""></span>"
@@ -1057,7 +1058,7 @@ set-widget-property:wysiwyg-controls-properties
   visible:true
 create-widget
   parent:wysiwyg-controls-properties
-  class:col-xs-12 rounded-corners bg-success prepend-bottom
+  class:col-xs-12 rounded-corners bg-success
   oninit
 
     /*
@@ -1212,11 +1213,6 @@ or supply an 'empty' value to have an automatically generated id created"
                      */
                     set-widget-property:x:/../*/_event?value
                       class:error form-control
-
-                    /*
-                     * Giving focus to id textbox
-                     */
-                    send-javascript:@"$('#widget-property-id').focus().select();"
 
                     /*
                      * Returning early
@@ -2211,7 +2207,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                     :x:?name
         create-widget:wysiwyg-controls-action-subscribers-wrp
           parent:wysiwyg-controls-properties
-          class:bg-warning rounded-corners air-padding prepend-bottom col-xs-12
+          class:bg-warning rounded-corners air-padding prepend-top col-xs-12
           widgets
             container:wysiwyg-controls-action-subscribers
               element:table

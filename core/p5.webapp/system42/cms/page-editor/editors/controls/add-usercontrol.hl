@@ -184,13 +184,11 @@ your usercontrols from client-side JavaScript and CSS.</p>
                               sys42.wysiwyg-controls.databind-select-widget-dropdown
 
                               /*
-                               * Making modal window invisible, showing some information to user, and making sure id
-                               * property has focus
+                               * Making modal window invisible, showing some information to user
                                */
                               send-javascript:@"$('#wysiwyg-controls-usercontrol-window').modal('toggle');"
                               sys42.info-window:@"Please change widget's id and element to what you wish"
                                 _time:more
-                              send-javascript:@"$('#widget-property-id').focus().select();"
 
                               /*
                                * Refreshing CodeMirror codeview, if it is visible

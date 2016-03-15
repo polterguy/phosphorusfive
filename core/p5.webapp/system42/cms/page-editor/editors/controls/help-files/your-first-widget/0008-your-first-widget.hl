@@ -24,7 +24,7 @@ another action occurring."
   create-literal-widget
     element:p
     innerValue:@"Make sure you have your email/name usercontrol selected in the WYSIWYG design surface. Then click 
-the <em>""Add Subscriber""</em> button."
+the <em>""Subscribe""</em> button."
 
   create-container-widget
     element:div

@@ -17,7 +17,7 @@ controls
   create-literal-widget
     element:p
     innerValue:@"You can add any attribute you wish to your widgets. Either by following a wizard, or by simply clicking the 
-<em>""Add attribute""</em> button. <strong>Make sure you have your email/name usercontrol selected</strong>, and click the <em>""Add attribute""</em> button."
+<em>""Attribute""</em> button. <strong>Make sure you have your email/name usercontrol selected</strong>, and click the <em>""Attribute""</em> button."
 
   create-container-widget
     element:div

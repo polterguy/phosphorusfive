@@ -189,7 +189,7 @@ create-widget
      * Save, Preview and Delete button wrapper
      */
     container
-      class:col-md-12 text-right
+      class:col-md-12 text-right prepend-top
 
       /*
        * Since we don't want page to "jump" up and down, as user is enabling feature
