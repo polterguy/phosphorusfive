@@ -359,9 +359,7 @@
     <None Include="system42\tests\for-each.hl" />
     <None Include="system42\tests\iterators.hl" />
     <None Include="system42\cms\page-editor\editors\controls\widget-properties.hl" />
-    <None Include="system42\cms\page-editor\editors\controls\add-attribute.hl" />
     <None Include="system42\cms\page-editor\editors\controls\change-element.hl" />
-    <None Include="system42\cms\page-editor\editors\controls\add-attribute-guide.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-usercontrol.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-hyperlisp-wizard.hl" />
     <None Include="system42\cms\page-editor\editors\controls\helpers\process-widgets-event-handlers.hl" />
@@ -396,7 +394,6 @@
     <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0006-composite-widgets.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0007-composite-widgets.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0008-composite-widgets.hl" />
-    <None Include="system42\cms\page-editor\editors\controls\helpers\legal-attributes.hl" />
     <None Include="system42\cms\page-editor\editors\controls\helpers\legal-elements.hl" />
     <None Include="system42\startup\misc-events\sys42.get-user-control-settings.hl" />
     <None Include="system42\cms\page-editor\editors\controls\helpers\id-help.hl" />
@@ -405,6 +402,8 @@
     <None Include="system42\cms\page-editor\editors\controls\help-files\0000-hello-world.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\hello-world\0001-hello-world.hl" />
     <None Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\0009-composite-widgets.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\helpers\global-attributes.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\populate-add-attribute-event.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

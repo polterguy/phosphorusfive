@@ -266,6 +266,11 @@ Are you sure you wish to do this?"
                       get-parent-widget:x:/-/*?value
                       delete-widget:x:/-/*?value
 
+                      /*
+                       * Making sure we update codeview
+                       */
+                      sys42.wysiwyg-controls.update-code-wiew
+
   /*
    * Removing currently iterated property from [sort] above, to not confuse next [for-each], 
    * that expects only ajax/JavaScript events

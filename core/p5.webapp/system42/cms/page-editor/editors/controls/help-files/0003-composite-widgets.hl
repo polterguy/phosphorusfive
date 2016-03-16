@@ -47,7 +47,7 @@ possibly with child widgets of themselves, that can be injected into your page t
         title:Show me where to click please
         class:btn btn-default btn-xs
         onclick
-          send-javascript:@"$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');}}, 2000);"
+          send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');}}, 2000);"
           sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-after
       text:@" button.</p>"
 

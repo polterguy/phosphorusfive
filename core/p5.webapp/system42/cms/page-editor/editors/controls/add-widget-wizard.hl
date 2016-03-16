@@ -65,7 +65,7 @@ databind:x:/../*/create-widget/**/table/=wysiwyg-window-list-of-widget-wizard-el
           /*
            * Inside of currently selected widget
            */
-          find-widget
+          find-widget:wysiwyg-editor-surface
             data-selected
           eval-x:x:/+/*/*
           add:x:/../*/lisp2lambda/*

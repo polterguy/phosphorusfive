@@ -195,7 +195,7 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                            * Finding selected widget, to make sure we can "wash" away any Action Subscribers
                            * that widget is already subscribing to
                            */
-                          find-widget
+                          find-widget:wysiwyg-editor-surface
                             data-selected
                           list-widget-lambda-events:x:/-/*?value
 
@@ -313,7 +313,7 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                     /*
                      * Checking if Active Event (Action Subscriber) is already handled by widget
                      */
-                    find-widget
+                    find-widget:wysiwyg-editor-surface
                       data-selected
                     list-widget-lambda-events:x:/-/*?value
                     if:x:/-/*/*/{0}

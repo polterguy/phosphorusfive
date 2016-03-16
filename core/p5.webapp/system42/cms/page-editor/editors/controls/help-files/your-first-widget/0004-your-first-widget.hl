@@ -41,7 +41,7 @@ up a modal window, further explaining the id property for you."
         class:btn btn-default btn-xs
         innerValue:@"wizard"
         onclick
-          send-javascript:@"$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');}}, 2000);"
+          send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');}}, 2000);"
           sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-btn-before
       text:@" button in the toolbar at the top of your page. <strong>Make sure you select the <em>""Button""</em> type of wizard widget</strong>, 
 and also make sure you choose to insert your button <strong>*before*</strong> your currently selected widget (which should be your 

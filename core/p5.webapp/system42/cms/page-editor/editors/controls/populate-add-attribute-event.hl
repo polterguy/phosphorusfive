@@ -1,0 +1,141 @@
+
+/*
+ * Populates the "Add attribute" dropdown buttons for selected widget
+ */
+
+
+
+/*
+ * Emptying list of attribute buttons possibly created for previously selected widget
+ */
+clear-widget:wysiwyg-button-add-attribute-list
+clear-widget:wysiwyg-button-add-event-list
+
+
+
+/*
+ * Retrieving selected widget, since we need to figure out its element,
+ * since the legal attributes widget can have, is dependent upon which
+ * element the widget is rendered with
+ */
+find-widget:wysiwyg-editor-surface
+  data-selected
+get-widget-property:x:/-/*?value
+  element
+
+
+
+/*
+ * Loading the file that contains our "Global Attributes", according to HTML5
+ */
+load-file:/system42/cms/page-editor/editors/controls/helpers/global-attributes.hl
+
+
+
+/*
+ * Looping through each global attribute, adding a button for each 
+ * attribute to our "+ Attribute" button
+ */
+for-each:x:/../*/load-file/[0,1]/*/*(!/_header)
+
+  /*
+   * Parametrizing widget creation invocation
+   */
+  set:x:/..for-each/*/create-widget/*/widgets/*/a/*/innerValue?value
+    src:x:/..for-each/*/_dp/#?name
+  set:x:/..for-each/*/create-widget/*/widgets/*/a/*/title?value
+    src:x:/..for-each/*/_dp/#?value
+
+  /*
+   * Checking if this is an event, at which case we add it to "Create event" button dropdown list
+   */
+  if
+    fetch:x:/0/0?value
+      index-of:x:/..for-each/*/_dp/#?name
+        what:on
+    =:int:0
+
+    /*
+     * This is an event handler (starts with "onXXX"), hence adding it to "add event button" instead
+     * of "add attribute button"
+     */
+    set:x:/..for-each/*/create-widget/*/parent?value
+      src:wysiwyg-button-add-event-list
+    set:x:/..for-each/*/create-widget/**/send-javascript/0?value
+      src:wysiwyg-button-add-event-wrp
+
+  /*
+   * Creating "li" widget that wraps "add attribute" button
+   */
+  create-widget
+    parent:wysiwyg-button-add-attribute-list
+    element:li
+    widgets
+      a
+        href:#
+        innerValue
+        title
+        onclick
+
+          /*
+           * Retrieving name of attribute to add, and invoking Active Event that adds attribute
+           * to currently selected widget
+           */
+          get-widget-property:x:/../*/_event?value
+            innerValue
+          sys42.wysiwyg-controls.add-attribute-event-to-widget:x:/../*/get-widget-property/*/*?value
+
+          /*
+           * Closing popdown buttonmenu
+           */
+          send-javascript:@"$('#{0}').toggleClass('open');"
+            :wysiwyg-button-add-attribute-wrp
+
+
+/*
+ * The loading our legal elements file, which might contain special attributes
+ * for the type of HTML element widget is rendered with
+ */
+load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
+for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
+  :x:/../*/get-widget-property/[0,1]/*/*?value
+
+  /*
+   * Parametrizing widget creation invocation
+   */
+  html-encode:x:/..for-each/*/_dp/#?value
+  set:x:/..for-each/*/create-widget/*/widgets/*/a/*/innerValue?value
+    src:x:/..for-each/*/_dp/#?name
+  set:x:/..for-each/*/create-widget/*/widgets/*/a/*/title?value
+    src:x:/..for-each/*/html-encode?value
+
+  /*
+   * Creating "li" widget that wraps "add attribute" button
+   */
+  create-widget
+    parent:wysiwyg-button-add-attribute-list
+    element:li
+    widgets
+      a
+        href:#
+        innerValue
+        title
+        onclick
+
+          /*
+           * Retrieving name of attribute to add, and invoking Active Event that adds attribute
+           * to currently selected widget
+           */
+          get-widget-property:x:/../*/_event?value
+            innerValue
+          sys42.wysiwyg-controls.add-attribute-event-to-widget:x:/../*/get-widget-property/*/*?value
+
+          /*
+           * Closing popdown buttonmenu
+           */
+          send-javascript:@"$('#wysiwyg-button-add-attribute-wrp').toggleClass('open');"
+
+
+
+
+

@@ -1,0 +1,92 @@
+/*
+ * Contains a list of all legal HTML attributes, 
+ * according to HTML element type. This list is taken from;
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes
+ * And licensed as Commons Create Share-Alike
+ */
+
+
+
+/*
+ * First the attributes
+ */
+_header:Global attributes
+  _description:@"Global attributes may be specified on all HTML elements, even those not specified in the standard. That means that any non-standard elements must still permit these attributes, even though using those elements means that the document is no longer HTML5-compliant. For example, HTML5-compliant browsers hide content marked as &lt;foo hidden&gt;...&lt;foo&gt;, even though &lt;foo&gt; is not a valid HTML element."
+
+accesskey:@"Provides a hint for generating a keyboard shortcut for the current element. This attribute consists of a space-separated list of characters. The browser should use the first one that exists on the computer keyboard layout."
+
+class:@"Is a space-separated list of the classes of the element. Classes allows CSS and JavaScript to select and access specific elements via the class selectors, or functions like the method Document.getElementsByClassName()."
+
+contextmenu:@"Is the id of an &lt;menu&gt; to use as the contextual menu for this element."
+
+dir:@"Is an enumerated attribute indicating the directionality of the element's text. It can have the following values: 
+
+- ltr
+- rtl
+- auto."
+
+style:@"Contains CSS styling declarations to be applied to the element. Note that it is recommended for styles to be defined in a separate file or files. This attribute and the &lt;style&gt; element have mainly the purpose of allowing for quick styling, for example for testing purposes."
+
+tabindex:@"Is an integer attribute indicates if the element can take input focus (is focusable), if it should participate to sequential keyboard navigation, and if so, at what position. It can takes several values: a negative value means that the element should be focusable, but should not be reachable via sequential keyboard navigation;
+
+- 0 means that the element should be focusable and reachable via sequential keyboard navigation, but its relative order is defined by the platform convention
+- 1 or more, means that it should be focusable and reachable via sequential keyboard navigation; its relative order is defined by the value of the attribute: the sequential follow the increasing number of the tabindex. If several elements share the same tabindex, their relative order follows their relative position in the document"
+
+title:@"Contains a text representing advisory information related to the element it belongs to. Such information can typically, but not necessarily, be presented to the user as a tooltip."
+
+
+
+
+/*
+ * Then the DOM events
+ */
+_header:Global DOM events
+  _decription:@"The event handler attributes"
+
+onclick:@"The event occurs when the user clicks on an element"
+
+oncontextmenu:@"The event occurs when the user right-clicks on an element to open a context menu"
+
+ondblclick:@"The event occurs when the user double-clicks on an element"
+
+onmousedown:@"The event occurs when the user presses a mouse button over an element"
+
+onmouseover:@"The event occurs when the pointer is moved onto an element, or onto one of its children"
+
+onmouseout:@"The event occurs when a user moves the mouse pointer out of an element, or out of one of its children"
+
+onmouseup:@"The event occurs when a user releases a mouse button over an element"
+
+
+
+_header:Keyboard events
+  _description:@"These are keyboard events, and only relevant for HTML elements that can somehow trap keyboard events, such as an &lt;input&gt; element, or a &lt;textarea&gt;."
+
+onkeydown:@"The event occurs when the user is pressing a key, but before the key is released"
+
+onkeypress:@"The event occurs when the user presses a key, after the keystroke has been registered"
+
+onkeyup:@"The event occurs when the user releases a key"
+
+
+
+
+_header:Form events
+  _description:@"These are only for form elements, such as &lt;input&gt; and &lt;textarea&gt;."
+
+onblur:@"The event occurs when an element loses focus"
+
+onchange:@"The event occurs when the content of a form element, the selection, or the checked state have changed"
+
+onfocus:@"The event occurs when an element gets focus"
+
+
+
+
+
+
+
+
+
+
+

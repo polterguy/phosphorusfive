@@ -175,7 +175,7 @@ create-widget:wysiwyg-editor
      * paste widget from clipboard, help button, etc
      */
     container
-      class:prepend-bottom col-md-3 col-xs-12 form-group
+      class:prepend-bottom col-md-9 col-xs-12 form-group
       widgets
 
 
@@ -196,7 +196,8 @@ create-widget:wysiwyg-editor
              * Select widget in page dropdown list. Allows user to select a named widget in surface,
              * to manipulate its properties
              */
-            select:wysiwyg-select-widget
+            container:wysiwyg-select-widget
+              element:select
               class:form-control
               title:Choose any of the widgets on your page from here
               oninit
@@ -229,12 +230,6 @@ create-widget:wysiwyg-editor
                    * in addition to creating associated toolbars and such
                    */
                   sys42.wysiwyg-controls.select-widget:x:/../*/get-widget-property/*/*?value
-
-              /*
-               * Since we're using "select" as type declaration of widget, this needs to be here, even
-               * though it is empty, to signal to [create-widget] logic that this is a [container] widget
-               */
-              widgets
 
               /*
                * Custom events for "Select widget" dropdown listbox
@@ -366,11 +361,10 @@ create-widget:wysiwyg-editor
 
 
     /*
-     * Wrapper around all "Add widget/usercontrol" buttons, in addition to "Paste widget" button
-     * to WYSIWYG design surface, and [+Wizard] button to add "Wizard Widget" to surface
+     * Wrapper around "Help" button and "View code" button
      */
-    container:wysiwyg-controls-add-widget-toolbar
-      class:prepend-bottom col-md-9 col-xs-12 btn-group
+    container:wysiwyg-controls-toolbar
+      class:prepend-bottom col-md-3 col-xs-12 btn-group
       widgets
 
 
@@ -382,24 +376,241 @@ create-widget:wysiwyg-editor
 
 
         /*
-         * Add a "wizard" widget to your surface button(s)
+         * Shows "code view" for page
          */
-        container:wysiwyg-controls-add-wizard-wrp
-          class:btn-group
-          style:"width:12.5%;"
-          title:@"Opens up the 'Add Wizard Widget Wizard', that helps you add a 'Wizard Widget' to your form.
+        button:wysiwyg-controls-view-code-button
+          class:btn btn-default
+          style:"width:50%;"
+          href:#
+          innerValue:@"<span class=""glyphicon glyphicon-pencil""></span> Code"
+          title:@"Toggles codeview for your page. This is a pretty advanced topic, and you should be very careful editing your page's code directly, unless you know exactly what you're doing!"
+          onclick
 
-A Wizard Widget is a pre-fabricated template widget, possibly with children widgets, representing commonly used widget types"
+            /*
+             * Checking if codeview is already visible, and if so, deleting codeview widget, 
+             * and returning early
+             */
+            if
+              fetch:x:/0/0?value.bool
+                get-page-value:sys42.wysiwyg-controls.codeview-visible
+
+              /*
+               * Deletinv codeview widget
+               */
+              delete-widget:wysiwyg-controls-code-view
+
+              /*
+               * Removing session object that signals we're in codeview
+               */
+              set-page-value:sys42.wysiwyg-controls.codeview-visible
+
+              /*
+               * Making codeview button "un-pushed"
+               */
+              set-widget-property:x:/../*/_event?value
+                class:btn btn-default
+
+              /*
+               * Return early
+               */
+              return
+
+            /*
+             * Making sure we store the fact that codeview is visible, such that another click on codeview
+             * will make it disappear
+             */
+            set-page-value:sys42.wysiwyg-controls.codeview-visible
+              src:true
+
+            /*
+             * Making sure button becomes "active" (pushed)
+             */
+            set-widget-property:x:/../*/_event?value
+              class:btn btn-default active
+
+            /*
+             * Creating main wrapper widget, that wraps "code view", 
+             * which is the Hyperlisp your page consists of
+             */
+            create-widget:wysiwyg-controls-code-view
+              before:wysiwyg-editor-surface
+              class:prepend-bottom
+              widgets
+                literal:wysiwyg_controls_code_view_textarea
+                  element:textarea
+                  class:form-control
+                  rows:16
+                  _onupdate
+
+                    /*
+                     * Retrieving CodeMirror (textarea's) value, and changing the page-editor-data
+                     * accordingly
+                     */
+                    get-widget-property:x:/../*/_event?value
+                      value
+                    sys42.set-page-editor-data:x:/../*/get-widget-property/*/*?value
+                  oninit
+
+                    /*
+                     * Retrieving code from page, to set textarea's value
+                     */
+                    sys42.get-page-editor-data
+                      _keep-empty-ids:bool:true
+                    set-widget-property:wysiwyg_controls_code_view_textarea
+                      value:x:/../*/sys42.get-page-editor-data/*/controls?value
+
+                    /*
+                     * Loading up CodeMirror, wrapping the textarea
+                     */
+                    sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+                      _editor
+                        wysiwyg_controls_code_view_textarea
+                          mode:hyperlisp
+                          autocomplete:true
+                          autofocus:true
+                          fullscreen:true
+                          height:450px
+                          raise-update:true
+                  events
+
+                    /*
+                     * Updates the code in the codeview editor. Works as a sink for the rest of the editor
+                     */
+                    sys42.wysiwyg-controls.update-code-wiew
+
+                      /*
+                       * Retrieves the code from the WYSIWYG surface, and sets the content of the textarea,
+                       * before triggering CodeMirror module to do a refresh from textarea
+                       */
+                      sys42.get-page-editor-data
+                        _keep-empty-ids:bool:true
+                      set-widget-property:wysiwyg_controls_code_view_textarea
+                        value:x:/../*/sys42.get-page-editor-data/*/controls?value
+                      send-javascript:@"window.wysiwyg_controls_code_view_textarea.getDoc().setValue(p5.$('wysiwyg_controls_code_view_textarea').el.value);"
+                    
+
+
+
+
+
+
+
+
+
+        /*
+         * Help button
+         */
+        button:wysiwyg-controls-help-button
+          class:btn btn-success
+          style:"width:50%;"
+          href:#
+          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
+          title:Help files for [controls] pages
+          oninit
+
+            /*
+             * Checking if help file is supposed to be persistently loaded
+             */
+            get-session-value:sys42.wysiwyg-controls.help-file-visible
+            if:x:/-/*?value.bool
+              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
+
+            /*
+             * If this is first loading of [controls] page during session, we "blink"
+             * help button, showing some helper tooltip, to explain to user that "this is
+             * where you should start".
+             */
+            if
+              fetch:x:/0/0?value
+                get-session-value:sys42.wysiwyg-controls.has-blinked-help-button
+              not
+
+              /*
+               * Help button has not been previously blinked during current session,
+               * hence we "flash it" and shows the user a friendly advice next to help button
+               */
+              set-widget-property:wysiwyg-controls-help-button
+                data-content:@"If you are new to Phosphorus Five, then you will probably have a smoother start, if you click here the first time ..."
+                data-placement:left
+              send-javascript:@"setTimeout (function () {
+  $('#wysiwyg-controls-help-button').popover('show');
+  setTimeout(function(){$('#wysiwyg-controls-help-button').popover('hide').popover('destroy');}, 3000)
+}, 1000);"
+
+              /*
+               * Making sure help is NOT displayed next time user loads a [controls] page during current session
+               */
+              set-session-value:sys42.wysiwyg-controls.has-blinked-help-button
+                src:true
+
+              /*
+               * Blinking help button too
+               */
+              sys42.wysiwyg-controls.blink-control:wysiwyg-controls-help-button
+          onclick
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
+          events
+
+            /*
+             * Blinks a specified control [_arg] for 5 seconds on screen
+             */
+            sys42.wysiwyg-controls.blink-control
+              widget-exist:x:/../*/_arg?value
+              if:x:/-/*?value
+                not
+                or
+                  fetch:x:/0/0/0?value
+                    get-widget-property:x:/../*/_arg?value
+                      visible
+                  =:bool:false
+                return:bool:false
+              send-javascript:@"$('#{0}').toggleClass('blink-shadow');
+setTimeout(function(){{$('#{0}').toggleClass('blink-shadow');}}, 3000);
+var offset = $('#{0}').offset();
+$('html, body').animate({{
+    scrollTop: offset.top - 250,
+    scrollLeft: offset.left
+}});"
+                :x:/../*/_arg?value
+              return:bool:true
+
+
+
+
+
+
+
+    /*
+     * Wrapper for Toolbar
+     */
+    container:wysiwyg-manipulate-selected-widget
+      class:prepend-bottom col-xs-12 btn-group
+      widgets
+
+
+
+
+
+
+
+
+
+        /*
+         * Adds a widget to your surface button(s)
+         */
+        container:wysiwyg-controls-add-widget-wrp
+          class:btn-group
+          title:@"Adds a widget to your page"
           widgets
 
             /*
-             * Dropdown toggle button for "Add wizard" button(s)
+             * Dropdown toggle button for "Add widget" button(s)
              */
             button
               class:btn btn-default dropdown-toggle
               style:"width:100%;"
               data-toggle:dropdown
-              innerValue:@"Wizard <span class=""caret""></span>"
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Widget <span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -411,12 +622,12 @@ A Wizard Widget is a pre-fabricated template widget, possibly with children widg
                   widgets
                     a:wysiwyg-controls-add-wizard-btn-before
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> before"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Wizard"
                       title:Adds a [wizard] widget to your page, at the beginning, or before the currently selected widget
                       onclick
                         sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-widget-wizard.hl
                           _before:true
-                        send-javascript:@"$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [wizard] *after* button
@@ -425,11 +636,11 @@ A Wizard Widget is a pre-fabricated template widget, possibly with children widg
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> after"
-                      title:Appends a [void] widget to your page, or after the currently selected widget
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Wizard"
+                      title:Appends a [wizard] widget to your page, or after the currently selected widget
                       onclick
                         sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-widget-wizard.hl
-                        send-javascript:@"$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [wizard] *inside* button
@@ -442,38 +653,12 @@ A Wizard Widget is a pre-fabricated template widget, possibly with children widg
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> inside"
-                      title:Appends a [void] widget to your currently selected widget
+                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> Wizard"
+                      title:Inserts a [wizard] widget inside of your currently selected [container] widget
                       onclick
                         sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-widget-wizard.hl
                           _inside:true
-                        send-javascript:@"$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');"
-
-
-
-
-        /*
-         * Add a [usercontrol] widget to your surface button(s)
-         */
-        container:wysiwyg-controls-add-usercontrol-wrp
-          class:btn-group
-          style:"width:12.5%;"
-          title:@"Opens up a Wizard to help you insert a usercontrol to your page. 
-
-A usercontrol is a pre-fabricated and reusable widget, that allows you to 'inject' another [controls] page, as a reusable component to your page"
-          widgets
-
-            /*
-             * Dropdown toggle button for "Add usercontrol" button(s)
-             */
-            button
-              class:btn btn-default dropdown-toggle
-              style:"width:100%;"
-              data-toggle:dropdown
-              innerValue:@"Usercontrol <span class=""caret""></span>"
-            ul
-              class:dropdown-menu
-              widgets
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [usercontrol] *before* button
@@ -482,12 +667,12 @@ A usercontrol is a pre-fabricated and reusable widget, that allows you to 'injec
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> before"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Usercontrol"
                       title:Adds a [usercontrol] widget to your page, at the beginning, or before the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:_usercontrol
                           _before:true
-                        send-javascript:@"$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [usercontrol] *after* button
@@ -496,11 +681,11 @@ A usercontrol is a pre-fabricated and reusable widget, that allows you to 'injec
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> after"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Usercontrol"
                       title:Appends a [usercontrol] widget to your page, or after the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:_usercontrol
-                        send-javascript:@"$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [usercontrol] *inside* button
@@ -513,42 +698,15 @@ A usercontrol is a pre-fabricated and reusable widget, that allows you to 'injec
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> usercontrol inside"
-                      title:Appends a [usercontrol] widget inside your currently selected widget
+                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> Usercontrol"
+                      title:Inserts a [usercontrol] widget inside of your currently selected [container] widget
                       onclick
-                        find-widget
+                        find-widget:wysiwyg-editor-surface
                           data-selected:true
                         eval-x:x:/+/*
                         sys42.wysiwyg-controls.add-control:_usercontrol
                           _parent:x:/../*/find-widget/*?value
-                        send-javascript:@"$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');"
-
-
-
-
-
-        /*
-         * Add a [literal] widget to your surface button(s)
-         */
-        container:wysiwyg-controls-add-literal-wrp
-          class:btn-group
-          style:"width:12.5%;"
-          title:@"Insert a 'literal' widget into your page.
-
-A literal widget, is a widget that allows you to create text or HTML content in your page"
-          widgets
-
-            /*
-             * Dropdown toggle button for "Add literal" button(s)
-             */
-            button
-              class:btn btn-default dropdown-toggle
-              style:"width:100%;"
-              data-toggle:dropdown
-              innerValue:@"Literal <span class=""caret""></span>"
-            ul
-              class:dropdown-menu
-              widgets
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [literal] *before* button
@@ -557,14 +715,14 @@ A literal widget, is a widget that allows you to create text or HTML content in 
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> before"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Literal"
                       title:Adds a [literal] widget to your page, at the beginning, or before the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:span
                           _before:true
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [literal] *after* button
@@ -573,13 +731,13 @@ A literal widget, is a widget that allows you to create text or HTML content in 
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> after"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Literal"
                       title:Appends a [literal] widget to your page, or after the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:span
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [literal] *inside* button
@@ -592,43 +750,17 @@ A literal widget, is a widget that allows you to create text or HTML content in 
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> inside"
-                      title:Appends a [literal] widget to your currently selected widget
+                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> Literal"
+                      title:Inserts a [literal] widget inside of your currently selected [container] widget
                       onclick
-                        find-widget
+                        find-widget:wysiwyg-editor-surface
                           data-selected:true
                         eval-x:x:/+/*
                         sys42.wysiwyg-controls.add-control:span
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#wysiwyg-controls-add-literal-wrp').toggleClass('open');"
-
-
-
-
-        /*
-         * Add a [container] widget to your surface button(s)
-         */
-        container:wysiwyg-controls-add-container-wrp
-          class:btn-group
-          style:"width:12.5%;"
-          title:@"Insert a 'container' widget into your page.
-
-A container widget is a widget that can have children widgets, and serves as a 'container' for other widgets"
-          widgets
-
-            /*
-             * Dropdown toggle button for "Add container" button(s)
-             */
-            button
-              class:btn btn-default dropdown-toggle
-              style:"width:100%;"
-              data-toggle:dropdown
-              innerValue:@"Container <span class=""caret""></span>"
-            ul
-              class:dropdown-menu
-              widgets
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [container] *before* button
@@ -637,14 +769,14 @@ A container widget is a widget that can have children widgets, and serves as a '
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> before"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Container"
                       title:Adds a [container] widget to your page, at the beginning, or before the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:div
                           _before:true
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [container] *after* button
@@ -653,13 +785,13 @@ A container widget is a widget that can have children widgets, and serves as a '
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> after"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Container"
                       title:Appends a [container] widget to your page, or after the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:div
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [container] *inside* button
@@ -672,44 +804,17 @@ A container widget is a widget that can have children widgets, and serves as a '
                   widgets
                     a:wysiwyg-controls-add-container-inside
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> inside"
-                      title:Appends a [container] widget inside your currently selected widget
+                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> Container"
+                      title:Inserts a [container] widget inside of your currently selected [container] widget
                       onclick
-                        find-widget
+                        find-widget:wysiwyg-editor-surface
                           data-selected:true
                         eval-x:x:/+/*
                         sys42.wysiwyg-controls.add-control:div
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#wysiwyg-controls-add-container-wrp').toggleClass('open');"
-
-
-
-
-
-        /*
-         * Add a [void] widget to your surface button(s)
-         */
-        container:wysiwyg-controls-add-void-wrp
-          class:btn-group
-          style:"width:12.5%;"
-          title:@"Insert a 'void' widget into your page.
-
-A void widget, is a widget that has no content, neither in the form of HTML/text, nor in the form of children widgets. Typical uses are for inserting carriage return ('br' HTML elements) or 'input' HTML elements to your page, to collect input from your users"
-          widgets
-
-            /*
-             * Dropdown toggle button for "Add void" button(s)
-             */
-            button
-              class:btn btn-default dropdown-toggle
-              style:"width:100%;"
-              data-toggle:dropdown
-              innerValue:@"Void <span class=""caret""></span>"
-            ul
-              class:dropdown-menu
-              widgets
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [void] *before* button
@@ -718,14 +823,14 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> before"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Void"
                       title:Adds a [void] widget to your page, at the beginning, or before the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:br
                           _before:true
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [void] *after* button
@@ -734,13 +839,13 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> after"
+                      innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Void"
                       title:Appends a [void] widget to your page, or after the currently selected widget
                       onclick
                         sys42.wysiwyg-controls.add-control:br
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
                  * Add [void] *inside* button
@@ -753,17 +858,170 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                   widgets
                     a
                       href:#
-                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> inside"
-                      title:Appends a [void] widget to your currently selected widget
+                      innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> Void"
+                      title:Inserts a [void] widget inside of your currently selected [container] widget
                       onclick
-                        find-widget
+                        find-widget:wysiwyg-editor-surface
                           data-selected:true
                         eval-x:x:/+/*
                         sys42.wysiwyg-controls.add-control:br
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
-                        send-javascript:@"$('#wysiwyg-controls-add-void-wrp').toggleClass('open');"
+                        send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
+
+
+
+
+
+        /*
+         * Add attribute to widget button
+         */
+        container:wysiwyg-button-add-attribute-wrp
+          class:btn-group
+          title:@"Adds an attribute to your currently selected widget"
+          events
+
+            /*
+             * Adds the given [_arg] attribute to currently selected widget
+             */
+            sys42.wysiwyg-controls.add-attribute-event-to-widget
+
+              /*
+               * Retrieving currently selected widget
+               */
+              find-widget:wysiwyg-editor-surface
+                data-selected
+
+              /*
+               * Adding attribute (or event) to widget
+               */
+              if
+                fetch:x:/0/0?value
+                  index-of:x:/../*/_arg?value
+                    what:on
+                !=:int:0
+
+                /*
+                 * This is an attribute, and not an active event or a DOM event handler,
+                 * hence adding it as "simple attribute"
+                 */
+                add:x:/+
+                  src:x:/../*/_arg?value
+                set-widget-property:x:/../*/find-widget/*?value
+              else
+
+                /*
+                 * This is an event, and not an attribute,
+                 * hence adding it as "widget ajax event"
+                 */
+                add:x:/+2
+                  src:_{0}
+                    :x:/../*/_arg?value
+                add:x:/+/*
+                  src
+                    sys42.info-window:Hello World 2.0
+                set-widget-ajax-event:x:/../*/find-widget/*?value
+
+              /*
+               * Refreshing widget's properties
+               */
+              set:x:/+/*?value
+                src:x:/../*/_arg?value
+              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                _initial-focus-property
+
+          widgets
+
+            /*
+             * Dropdown toggle button for "Add attribute" button(s)
+             */
+            button:wysiwyg-button-add-attribute
+              class:btn btn-default dropdown-toggle disabled
+              disabled
+              data-toggle:dropdown
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Attribute <span class=""caret""></span>"
+            container:wysiwyg-button-add-attribute-list
+              element:ul
+              class:dropdown-menu
+              events
+
+                /*
+                 * Populates the list of "Add attribute to selected widget" dropdown button
+                 */
+                sys42.wysiwyg-controls.populate-attribute-dropdown-button
+
+                  /*
+                   * Evaluates the file that populates the "Add attribute" dropdown button list
+                   */
+                  sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/populate-add-attribute-event.hl
+
+
+
+
+        /*
+         * Add DOM event to widget button, either as Hyperlisp server-side ajax event, or JavaScript
+         * client-side DOM event
+         */
+        container:wysiwyg-button-add-event-wrp
+          class:btn-group
+          title:@"Adds an event to your currently selected widget"
+          widgets
+
+            /*
+             * Dropdown toggle button for "Add event" button(s)
+             */
+            button:wysiwyg-button-add-event
+              class:btn btn-default dropdown-toggle disabled
+              disabled
+              data-toggle:dropdown
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Event <span class=""caret""></span>"
+            container:wysiwyg-button-add-event-list
+              element:ul
+              class:dropdown-menu
+
+
+
+
+        /*
+         * Create new Active Event subscriber for currently selected widget
+         */
+        button:wysiwyg-controls-new-action-subscriber
+          class:btn btn-default disabled
+          disabled
+          innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Subscribe"
+          onclick
+
+            /*
+             * Evaluates the file that shows the user a modal window to select/create Action Subscriber
+             */
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-action-subscriber.hl
+
+
+
+
+
+        /*
+         * Copy widget
+         */
+        button:wysiwyg-button-copy-widget
+          class:btn btn-default disabled
+          disabled
+          title:Copies widget to clipboard, such that you can paste in a copy another place, either on same page, or in another page
+          innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy"
+          onclick
+            find-widget:wysiwyg-editor-surface
+              data-selected
+            sys42.get-widget:x:/../*/find-widget/*?value
+            set:x:/-/*/*(/data-selected|/onclick|/data-usercontrol/./*/widgets)
+            add:x:/+/*
+              src:x:/../*/sys42.get-widget/*
+            set-session-value:sys42.wysiwyg-controls.clipboard-widget
+              src
+            sys42.info-window:@"A copy of the widget was put into the clipboard. If you wish to 'cut' the widget, 
+you can simply delete it now. A complete version of the widget still exists on your 'widget clipboard'."
+              _time:more
+            sys42.wysiwyg-controls.toggle-paste-button
 
 
 
@@ -774,7 +1032,6 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
          */
         container:wysiwyg-controls-paste-wrp
           class:btn-group
-          style:"width:12.5%;"
           title:@"Paste the widget from your Phosphorus 'clipboard' into your page"
           widgets
 
@@ -887,7 +1144,7 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
                         /*
                          * Figuring out where to insert widget
                          */
-                        find-widget
+                        find-widget:wysiwyg-editor-surface
                           data-selected:true
 
                         /*
@@ -1021,296 +1278,16 @@ A void widget, is a widget that has no content, neither in the form of HTML/text
 
 
 
-
-
-
-
-        /*
-         * Shows "code view" for page
-         */
-        button:wysiwyg-controls-view-code-button
-          class:btn btn-default
-          style:"width:12.5%;"
-          href:#
-          innerValue:@"<span class=""glyphicon glyphicon-pencil""></span> Code"
-          title:@"Toggles codeview for your page. This is a pretty advanced topic, and you should be very careful editing your page's code directly, unless you know exactly what you're doing!"
-          onclick
-
-            /*
-             * Checking if codeview is already visible, and if so, deleting codeview widget, and returning early
-             */
-            if
-              fetch:x:/0/0?value.bool
-                get-page-value:sys42.wysiwyg-controls.codeview-visible
-              delete-widget:wysiwyg-controls-code-view
-              set-page-value:sys42.wysiwyg-controls.codeview-visible
-              return
-
-            /*
-             * Making sure we store the fact that codeview is visible, such that another click on codeview
-             * will make it disappear
-             */
-            set-page-value:sys42.wysiwyg-controls.codeview-visible
-              src:true
-
-            /*
-             * Creating main wrapper widget, that wraps "code view", 
-             * which is the Hyperlisp your page consists of
-             */
-            create-widget:wysiwyg-controls-code-view
-              before:wysiwyg-editor-surface
-              class:prepend-bottom
-              widgets
-                literal:wysiwyg_controls_code_view_textarea
-                  element:textarea
-                  class:form-control
-                  rows:16
-                  _onupdate
-
-                    /*
-                     * Retrieving CodeMirror (textarea's) value, and changing the page-editor-data
-                     * accordingly
-                     */
-                    get-widget-property:x:/../*/_event?value
-                      value
-                    sys42.set-page-editor-data:x:/../*/get-widget-property/*/*?value
-                  oninit
-
-                    /*
-                     * Retrieving code from page, to set textarea's value
-                     */
-                    sys42.get-page-editor-data
-                      _keep-empty-ids:bool:true
-                    set-widget-property:wysiwyg_controls_code_view_textarea
-                      value:x:/../*/sys42.get-page-editor-data/*/controls?value
-
-                    /*
-                     * Loading up CodeMirror, wrapping the textarea
-                     */
-                    sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
-                      _editor
-                        wysiwyg_controls_code_view_textarea
-                          mode:hyperlisp
-                          autocomplete:true
-                          autofocus:true
-                          fullscreen:true
-                          height:450px
-                          raise-update:true
-                  events
-
-                    /*
-                     * Updates the code in the codeview editor. Works as a sink for the rest of the editor
-                     */
-                    sys42.wysiwyg-controls.update-code-wiew
-
-                      /*
-                       * Retrieves the code from the WYSIWYG surface, and sets the content of the textarea,
-                       * before triggering CodeMirror module to do a refresh from textarea
-                       */
-                      sys42.get-page-editor-data
-                        _keep-empty-ids:bool:true
-                      set-widget-property:wysiwyg_controls_code_view_textarea
-                        value:x:/../*/sys42.get-page-editor-data/*/controls?value
-                      send-javascript:@"window.wysiwyg_controls_code_view_textarea.getDoc().setValue(p5.$('wysiwyg_controls_code_view_textarea').el.value);"
-                    
-
-
-
-
-
-
-
-
-
-        /*
-         * Help button
-         */
-        button:wysiwyg-controls-help-button
-          class:btn btn-success
-          style:"width:12.5%;"
-          href:#
-          innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span> Help"
-          title:Help files for [controls] pages
-          oninit
-
-            /*
-             * Checking if help file is supposed to be persistently loaded
-             */
-            get-session-value:sys42.wysiwyg-controls.help-file-visible
-            if:x:/-/*?value.bool
-              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
-
-            /*
-             * If this is first loading of [controls] page during session, we "blink"
-             * help button, showing some helper tooltip, to explain to user that "this is
-             * where you should start".
-             */
-            if
-              fetch:x:/0/0?value
-                get-session-value:sys42.wysiwyg-controls.has-blinked-help-button
-              not
-
-              /*
-               * Help button has not been previously blinked during current session,
-               * hence we "flash it" and shows the user a friendly advice next to help button
-               */
-              set-widget-property:wysiwyg-controls-help-button
-                data-content:@"If you are new to Phosphorus Five, then you will probably have a smoother start, if you click here the first time ..."
-                data-placement:left
-              send-javascript:@"setTimeout (function () {
-  $('#wysiwyg-controls-help-button').popover('show');
-  setTimeout(function(){$('#wysiwyg-controls-help-button').popover('hide').popover('destroy');}, 3000)
-}, 1000);"
-
-              /*
-               * Making sure help is NOT displayed next time user loads a [controls] page during current session
-               */
-              set-session-value:sys42.wysiwyg-controls.has-blinked-help-button
-                src:true
-
-              /*
-               * Blinking help button too
-               */
-              sys42.wysiwyg-controls.blink-control:wysiwyg-controls-help-button
-          onclick
-            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
-          events
-
-            /*
-             * Blinks a specified control [_arg] for 5 seconds on screen
-             */
-            sys42.wysiwyg-controls.blink-control
-              widget-exist:x:/../*/_arg?value
-              if:x:/-/*?value
-                not
-                or
-                  fetch:x:/0/0/0?value
-                    get-widget-property:x:/../*/_arg?value
-                      visible
-                  =:bool:false
-                return:bool:false
-              send-javascript:@"$('#{0}').toggleClass('blink-shadow');
-setTimeout(function(){{$('#{0}').toggleClass('blink-shadow');}}, 3000);
-var offset = $('#{0}').offset();
-$('html, body').animate({{
-    scrollTop: offset.top - 250,
-    scrollLeft: offset.left
-}});"
-                :x:/../*/_arg?value
-              return:bool:true
-
-
-
-
-
-
-
-
-    /*
-     * Actual WYSIWYG design surface
-     */
-    container:wysiwyg-editor-surface-wrp
-      class:col-xs-12
-      widgets
-        container:wysiwyg-editor-surface
-          onclick
-            sys42.wysiwyg-controls.unselect-widget
-            sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
-          widgets
-
-
-
-
-
-
-
-    /*
-     * Wrapper for manipulating selected widget
-     */
-    container:wysiwyg-manipulate-selected-widget
-      class:prepend-bottom prepend-top col-xs-12 btn-group
-      visible:false
-      widgets
-
-
-
-
-
-        /*
-         * Add attribute to widget button
-         */
-        button:wysiwyg-button-add-attribute
-          class:btn btn-default
-          title:Add attribute to widget
-          innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Attribute"
-          onclick
-            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute.hl
-
-
-
-
-
-        /*
-         * "Add attribute to widget wizard" button
-         */
-        button:wysiwyg-button-add-attribute-help
-          class:btn btn-default
-          style:"border-left:dashed 1px rgba(0,0,0,.2);"
-          title:Help me with adding attributes to my widget please ...
-          innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span>"
-          onclick
-            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-attribute-guide.hl
-
-
-
-
-        /*
-         * Create new Active Event subscriber for currently selected widget
-         */
-        button:wysiwyg-controls-new-action-subscriber
-          class:btn btn-default
-          innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Subscribe"
-          onclick
-            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/create-action-subscriber.hl
-
-
-
-
-
-        /*
-         * Copy widget
-         */
-        button:wysiwyg-button-copy-widget
-          class:btn btn-default
-          title:Copies widget to clipboard, such that you can paste in a copy another place, either on same page, or in another page
-          innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy"
-          onclick
-            find-widget
-              data-selected
-            sys42.get-widget:x:/../*/find-widget/*?value
-            set:x:/-/*/*(/data-selected|/onclick|/data-usercontrol/./*/widgets)
-            add:x:/+/*
-              src:x:/../*/sys42.get-widget/*
-            set-session-value:sys42.wysiwyg-controls.clipboard-widget
-              src
-            sys42.info-window:@"A copy of the widget was put into the clipboard. If you wish to 'cut' the widget, 
-you can simply delete it now. A complete version of the widget still exists on your 'widget clipboard'."
-              _time:more
-            sys42.wysiwyg-controls.toggle-paste-button
-
-
-
-
-
         /*
          * Select parent widget
          */
         button:wysiwyg-controls-get-parent-widget
-          class:btn btn-default
+          class:btn btn-default disabled
+          disabled
           innerValue:@"<span class=""glyphicon glyphicon-arrow-up""></span> Parent"
           onclick:@"$('#' + p5._currentParentWidget).removeClass('highlight');p5.$(event.currentTarget).raise('_onclick');return false;"
           _onclick
-            find-widget
+            find-widget:wysiwyg-editor-surface
               data-selected
             get-parent-widget:x:/../*/find-widget/*?value
             sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0?value
@@ -1358,7 +1335,8 @@ you can simply delete it now. A complete version of the widget still exists on y
              * Dropdown toggle button for "Select children" button(s)
              */
             button:wysiwyg-controls-select-children-widgets-wrp
-              class:btn btn-default dropdown-toggle
+              class:btn btn-default dropdown-toggle disabled
+              disabled
               data-toggle:dropdown
               innerValue:@"<span class=""glyphicon glyphicon-arrow-down""></span> Children <span class=""caret""></span>"
             ul:wysiwyg-controls-select-children-widgets
@@ -1517,7 +1495,7 @@ you can simply delete it now. A complete version of the widget still exists on y
                 /*
                  * Finding selected widget
                  */
-                find-widget
+                find-widget:wysiwyg-editor-surface
                   data-selected:true
 
                 /*
@@ -1559,6 +1537,11 @@ you can simply delete it now. A complete version of the widget still exists on y
                   class:btn btn-default disabled
                   disabled
 
+                /*
+                 * Making sure we update codeview
+                 */
+                sys42.wysiwyg-controls.update-code-wiew
+
 
 
 
@@ -1567,7 +1550,8 @@ you can simply delete it now. A complete version of the widget still exists on y
          * Delete widget button
          */
         button:wysiwyg-button-delete
-          class:btn btn-default
+          class:btn btn-default disabled
+          disabled
           title:Delete currently selected widget
           innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Delete"
           onclick
@@ -1583,7 +1567,7 @@ you can simply delete it now. A complete version of the widget still exists on y
                 /*
                  * Finding selected widget from surface, and deleting it
                  */
-                find-widget
+                find-widget:wysiwyg-editor-surface
                   data-selected:true
                 delete-widget:x:/../*/find-widget/*?value
 
@@ -1591,8 +1575,18 @@ you can simply delete it now. A complete version of the widget still exists on y
                  * Hiding the entire "manipulate selected widget" toolbar, since (obviously), no widgets
                  * are now selected
                  */
-                set-widget-property:wysiwyg-manipulate-selected-widget
-                  visible:false
+                _widgets
+                  wysiwyg-button-add-attribute
+                  wysiwyg-button-add-event
+                  wysiwyg-controls-new-action-subscriber
+                  wysiwyg-button-copy-widget
+                  wysiwyg-controls-get-parent-widget
+                  wysiwyg-controls-select-children-widgets-wrp
+                  wysiwyg-button-clear-widget
+                  wysiwyg-button-delete
+                set-widget-property:x:/-/*?name
+                  class:btn btn-default disabled
+                  disabled
 
                 /*
                  * Re-creating "select widget" dropdown box, without arguments, to make sure it
@@ -1622,6 +1616,30 @@ you can simply delete it now. A complete version of the widget still exists on y
                 set-widget-property:wysiwyg-controls-add-wizard-to-container
                   style:"display:none;"
 
+                /*
+                 * Making sure we update codeview
+                 */
+                sys42.wysiwyg-controls.update-code-wiew
+
+
+
+
+
+
+
+
+    /*
+     * Actual WYSIWYG design surface
+     */
+    container:wysiwyg-editor-surface-wrp
+      class:col-xs-12
+      widgets
+        container:wysiwyg-editor-surface
+          onclick
+            sys42.wysiwyg-controls.unselect-widget
+            sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          widgets
+
 
 
 
@@ -1632,7 +1650,7 @@ you can simply delete it now. A complete version of the widget still exists on y
      */
     container:wysiwyg-controls-properties
       visible:false
-      class:col-xs-12
+      class:col-xs-12 prepend-top
 
 
 
@@ -1948,7 +1966,11 @@ you can simply delete it now. A complete version of the widget still exists on y
      * Returns the position where to insert a new control
      */
     sys42.wysiwyg-controls.get-insertion-position
-      find-widget
+
+      /*
+       * Finding currently selected widget
+       */
+      find-widget:wysiwyg-editor-surface
         data-selected:true
 
       /*
@@ -2024,8 +2046,18 @@ you can simply delete it now. A complete version of the widget still exists on y
           data-selected
       set-widget-property:wysiwyg-controls-properties
         visible:false
-      set-widget-property:wysiwyg-manipulate-selected-widget
-        visible:false
+      _widgets
+        wysiwyg-button-add-attribute
+        wysiwyg-button-add-event
+        wysiwyg-controls-new-action-subscriber
+        wysiwyg-button-copy-widget
+        wysiwyg-controls-get-parent-widget
+        wysiwyg-controls-select-children-widgets-wrp
+        wysiwyg-button-clear-widget
+        wysiwyg-button-delete
+      set-widget-property:x:/-/*?name
+        class:btn btn-default disabled
+        disabled
 
 
 
@@ -2039,7 +2071,7 @@ you can simply delete it now. A complete version of the widget still exists on y
       /*
        * Finding previously selected widget, such that we can "un-select" it
        */
-      find-widget
+      find-widget:wysiwyg-editor-surface
         data-selected:true
 
       /*
@@ -2111,27 +2143,37 @@ you can simply delete it now. A complete version of the widget still exists on y
             style:"display:none;"
 
         /*
+         * Showing buttons that should only be visible while widget is selected
+         */
+        _widgets
+          wysiwyg-button-add-attribute
+          wysiwyg-button-add-event
+          wysiwyg-controls-new-action-subscriber
+          wysiwyg-button-copy-widget
+          wysiwyg-controls-get-parent-widget
+          wysiwyg-controls-select-children-widgets-wrp
+          wysiwyg-button-clear-widget
+          wysiwyg-button-delete
+        set-widget-property:x:/-/*?name
+          class:btn btn-default
+        delete-widget-property:x:/-2/*?name
+          disabled
+
+        /*
+         * Populating "add widget attribute" buttons
+         */
+        sys42.wysiwyg-controls.populate-attribute-dropdown-button
+
+        /*
          * Showing widget's properties widget
          */
         sys42.wysiwyg-controls.show-selected-widgets-properties:x:/../*/_arg?value
-
-        /*
-         * Showing buttons that should only be visible while widget is selected
-         */
-        set-widget-property:wysiwyg-manipulate-selected-widget
-          visible:true
 
         /*
          * Returning true to indicate that a widget actually was selected
          */
         return:bool:true
       else
-
-        /*
-         * The widget that was already selected was UN-selected.
-         * Hiding widget's properties widget
-         */
-        sys42.wysiwyg-controls.hide-selected-widgets-properties
 
         /*
          * Changing visibility for "create inside of widget" buttons
@@ -2152,8 +2194,24 @@ you can simply delete it now. A complete version of the widget still exists on y
         /*
          * Hiding buttons that should only be visible while widget is selected
          */
-        set-widget-property:wysiwyg-manipulate-selected-widget
-          visible:false
+        _widgets
+          wysiwyg-button-add-attribute
+          wysiwyg-button-add-event
+          wysiwyg-controls-new-action-subscriber
+          wysiwyg-button-copy-widget
+          wysiwyg-controls-get-parent-widget
+          wysiwyg-controls-select-children-widgets-wrp
+          wysiwyg-button-clear-widget
+          wysiwyg-button-delete
+        set-widget-property:x:/-/*?name
+          class:btn btn-default disabled
+          disabled
+
+        /*
+         * The widget that was already selected was UN-selected.
+         * Hiding widget's properties widget
+         */
+        sys42.wysiwyg-controls.hide-selected-widgets-properties
 
         /*
          * Returning false to indicate that no widget was selected, 

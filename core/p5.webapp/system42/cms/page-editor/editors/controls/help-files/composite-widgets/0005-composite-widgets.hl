@@ -24,7 +24,7 @@ controls
         title:Show me where to click please
         class:btn btn-default btn-xs
         onclick
-          send-javascript:@"$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-wizard-wrp').toggleClass('open');}}, 2000);"
+          send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');}}, 2000);"
           sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-after
       text:@" button, and choose the <em>""Textbox""</em> wizard widget from the modal window that appears.
 You can choose either before or after, which doesn't matter. Then click the wizard button again, and choose the 
