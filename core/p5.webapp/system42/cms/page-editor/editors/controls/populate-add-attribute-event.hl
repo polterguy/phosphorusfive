@@ -31,6 +31,49 @@ get-widget-property:x:/-/*?value
 load-file:/system42/cms/page-editor/editors/controls/helpers/global-attributes.hl
 
 
+/*
+ * Loading file that contains all HTML element declarations, since specific
+ * HTML elements might have additional attributes
+ */
+load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
+
+
+
+/*
+ * Retrieving widget, with all properties, and events, such that we can remove
+ * from list created by [load-file], attributes and events that are already handled by
+ * widget, before we start creating our "add attribute/event buttons"
+ */
+sys42.get-widget:x:/../*/find-widget/*?value
+  _no-children:bool:true
+
+
+/*
+ * Looping through each existing property, and removing from file-read results
+ */
+for-each:x:/../*/sys42.get-widget/*/*
+
+  /*
+   * Making sure any [_onXXX] event handlers from get-widget is renamed to correct name
+   */
+  replace:x:/..for-each/*/_dp/#?name
+    what:_on
+    with:on
+
+  /*
+   * Removing currently iterated property from global attribute file (if it exists)
+   */
+  set:x:/../*/load-file/[0,1]/*/*/{0}
+    :x:/..for-each/*/replace?value
+
+  /*
+   * Removing currently iterated property from HTML element file's element's declaration (if it exists)
+   */
+  set:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*/{1}
+    :x:/../*/get-widget-property/[0,1]/*/*?value
+    :x:/..for-each/*/replace?value
+
+
 
 /*
  * Looping through each global attribute, adding a button for each 
@@ -91,12 +134,18 @@ for-each:x:/../*/load-file/[0,1]/*/*(!/_header)
           send-javascript:@"$('#{0}').toggleClass('open');"
             :wysiwyg-button-add-attribute-wrp
 
+          /*
+           * Removing "li" widget wrapping button clicked, since attribute is
+           * now added to widget, and we no longer need this option in list
+           */
+          get-parent-widget:x:/../*/_event?value
+          delete-widget:x:/-/*?value
+
 
 /*
- * The loading our legal elements file, which might contain special attributes
+ * The adding from our our legal elements file, which might contain special attributes
  * for the type of HTML element widget is rendered with
  */
-load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
 for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
   :x:/../*/get-widget-property/[0,1]/*/*?value
 
@@ -134,6 +183,13 @@ for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
            * Closing popdown buttonmenu
            */
           send-javascript:@"$('#wysiwyg-button-add-attribute-wrp').toggleClass('open');"
+
+          /*
+           * Removing "li" widget wrapping button clicked, since attribute is
+           * now added to widget, and we no longer need this option in list
+           */
+          get-parent-widget:x:/../*/_event?value
+          delete-widget:x:/-/*?value
 
 
 
