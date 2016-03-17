@@ -157,6 +157,21 @@ load-file:/system42/cms/page-editor/editors/controls/helpers/global-attributes.h
 load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
 
 
+/*
+ * Creating "li" widgets that serves as a separater between custom attributes/events 
+ * and global attributes/events
+ */
+create-literal-widget
+  parent:wysiwyg-button-add-attribute-list
+  element:li
+  role:separator
+  class:divider
+create-literal-widget
+  parent:wysiwyg-button-add-event-list
+  element:li
+  role:separator
+  class:divider
+
 
 /*
  * Retrieving widget, with all properties, and events, such that we can remove
@@ -269,6 +284,22 @@ for-each:x:/../*/load-file/[0,1]/*/*(!/_header)
 
 
 /*
+ * Creating "li" widgets that serves as a separater between global attributes/events 
+ * and specialized attributes/events
+ */
+create-literal-widget
+  parent:wysiwyg-button-add-attribute-list
+  element:li
+  role:separator
+  class:divider
+create-literal-widget
+  parent:wysiwyg-button-add-event-list
+  element:li
+  role:separator
+  class:divider
+
+
+/*
  * Then adding remaining attributes from our our legal elements file, 
  * which might contain special attributes for the type of HTML element widget is rendered with
  */
@@ -283,6 +314,25 @@ for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
     src:x:/..for-each/*/_dp/#?name
   set:x:/..for-each/*/create-widget/*/widgets/*/a/*/title?value
     src:x:/..for-each/*/html-encode?value
+
+  /*
+   * Checking if this is an event, at which case we add it to "Create event" button dropdown list
+   */
+  if
+    fetch:x:/0/0?value
+      index-of:x:/..for-each/*/_dp/#?name
+        what:on
+    =:int:0
+
+    /*
+     * This is an event handler (starts with "onXXX"), hence adding it to "add event button" instead
+     * of "add attribute button". Making sure our JavaScript toggles the "add event" button, and not the 
+     * "add attribute" button when clicked
+     */
+    set:x:/..for-each/*/create-widget/*/parent?value
+      src:wysiwyg-button-add-event-list
+    set:x:/..for-each/*/create-widget/**/send-javascript/0?value
+      src:wysiwyg-button-add-event-wrp
 
   /*
    * Creating "li" widget that wraps "add attribute" button
@@ -308,7 +358,8 @@ for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
           /*
            * Closing popdown button menu
            */
-          send-javascript:@"$('#wysiwyg-button-add-attribute-wrp').toggleClass('open');"
+          send-javascript:@"$('#{0}').toggleClass('open');"
+            :wysiwyg-button-add-attribute-wrp
 
           /*
            * Removing "li" widget wrapping button clicked, since attribute is

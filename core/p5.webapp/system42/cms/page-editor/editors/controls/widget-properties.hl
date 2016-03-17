@@ -1335,7 +1335,7 @@ or supply an 'empty' value to have an automatically generated id created"
                      * The new element name was not legal. Warning user, setting some error CSS classes on
                      * textbox, before returning early
                      */
-                    sys42.info-window:@"I am sorry but I cannot accept that as the value for your element! Please click the question mark, if you're not sure about which element to use for your widget"
+                    sys42.info-window:@"I am sorry but I cannot accept that as the value for your element! Please click the exclamation mark, if you're not sure about which element to use for your widget"
                       _time:more
                       _error:true
                     set-widget-property:widget-property-element
@@ -1362,6 +1362,11 @@ or supply an 'empty' value to have an automatically generated id created"
                    * Refreshing CodeMirror codeview, if it is visible
                    */
                   sys42.wysiwyg-controls.update-code-wiew
+
+                  /*
+                   * Need to refresh "select widget" dropdown, since element's name changed
+                   */
+                  sys42.wysiwyg-controls.databind-select-widget-dropdown
 
 
 
@@ -1413,9 +1418,64 @@ this choice!</strong></p>"
                           !=:_header
 
                         /*
-                         * Element was found in "legal HTML5 element list", returning success to caller
+                         * Element was found in "legal HTML5 element list", now checking if element
+                         * is allowed inside of its parent element
                          */
-                        return:bool:true
+                        find-widget:wysiwyg-editor-surface
+                          data-selected:true
+                        get-parent-widget:x:/-/*?value
+                        get-widget-property:x:/-/*?value
+                          element
+
+                        /*
+                         * Looping through each [permitted-content] part of parent widget's element from "legal-elements.hl"
+                         */
+                        for-each:x:@"/..default/*/load-file/*/*/""{0}""/*/permitted-content/*"
+                          :x:/..if/*/get-widget-property/*/*?value
+
+                          /*
+                           * Checking if element is "explicitly allowed" (named as child of [permitted-content] of parent)
+                           */
+                          if:x:/..for-each/*/_dp/#?name
+                            =:element
+                            and:x:/..for-each/*/_dp/#?value
+                              =:x:/../*/_arg?value
+
+                            /*
+                             * Element is explicitly named as legal children of its current parent
+                             */
+                            return:bool:true
+
+                          /*
+                           * Now checking if parent allows "type" of element, by looping through all [type]s given
+                           * new element name contains, to see if we can find a match in parent element for specified type
+                           */
+                          for-each:x:@"/..default/*/load-file/*/*/""{0}""/*/type"
+                            :x:/../*/_arg?value
+
+                            /*
+                             * Checking if currently iterated [type] for new element's name is the same as currently iterated
+                             * [type] for parent element
+                             */
+                            if:x:/..for-each/*/_dp/#?value
+                              =:x:/..for-each/..for-each/*/_dp/#?value
+
+                              /*
+                               * Checking if element is explicitly disallowed for parent
+                               */
+                              if:x:@"/..for-each/..for-each/*/_dp/#/*/except/""={0}"""
+                                :x:/../*/_arg?value
+
+                                /*
+                                 * Element explicitly disallowed in parent element's list of legal elements
+                                 */
+                                return:bool:false
+
+                              /*
+                               * New element name for child element matches type of content parent allows, and is not
+                               * explicitly disallowed either
+                               */
+                              return:bool:true
 
                       /*
                        * Element was *NOT* found in "legal HTML5 element list", returning failure to caller

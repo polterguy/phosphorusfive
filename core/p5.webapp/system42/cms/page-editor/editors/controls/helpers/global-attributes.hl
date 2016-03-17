@@ -83,21 +83,11 @@ _header:Form events
 
 onblur:@"The event occurs when an element loses focus"
 
-onchange:@"The event occurs when the content of a form element, the selection, or the checked state have changed"
-
 onfocus:@"The event occurs when an element gets focus"
 
 onfocusin:@"The event occurs when an element is about to get focus"
 
 onfocusout:@"The event occurs when an element is about to lose focus"
-
-oninput:@"The event occurs when an element gets user input"
-
-oninvalid:@"The event occurs when an element is invalid"
-
-onsearch:@"The event occurs when the user writes something in a search field, only for &lt;input='search'&gt;"
-
-onselect:@"The event occurs after the user selects some text, only for &lt;input&gt; and &lt;textarea&gt;"
 
 ondrag:@"The event occurs when an element is being dragged"
 
@@ -127,52 +117,6 @@ onpaste:@"The event occurs when the user pastes some content in an element"
 
 
 
-_header:Media events
-  _description:@"Events that are associated with media, such as sound and video"
-
-onabort:@"The event occurs when the loading of a media is aborted"
-
-oncanplay:@"The event occurs when the browser can start playing the media because of having buffered enough to be able to begin playing"
-
-oncanplaythrough:@"The event occurs when the browser can play through the media without stopping for buffering"
-
-ondurationchange:@"The event occurs when the duration of the media is changed"
-
-onemptied:@"The event occurs when something bad happens and the media file is suddenly unavailable"
-
-onended:@"The event occurs when the media has reach the end"
-
-onerror:@"The event occurs when an error occurred during the loading of a media file"
-
-onloadeddata:@"The event occurs when media data is loaded"
-
-onloadedmetadata:@"The event occurs when meta data are loaded"
-
-onloadstart:@"The event occurs when the browser starts looking for the specified media"
-
-onpause:@"The event occurs when the media is paused either by the user or programmatically"
-
-onplay:@"The event occurs when the media has been started or is no longer paused"
-
-onplaying:@"The event occurs when the media is playing after having been paused or stopped for buffering"
-
-onprogress:@"The event occurs when the browser is in the process of downloading the media data"
-
-onratechange:@"The event occurs when the playing speed of the media is changed"
-
-onseeked:@"The event occurs when the user is finished moving skipping to a new position in the media"
-
-onseeking:@"The event occurs when the user starts skipping to a new position in the media"
-
-onstalled:@"The event occurs when the browser is trying to get media data, but data is not available"
-
-onsuspend:@"The event occurs when the browser is intentionally not getting media data"
-
-ontimeupdate:@"The event occurs when the playing position has changed"
-
-onvolumechange:@"The event occurs when the volume of the media has changed"
-
-onwaiting:@"The event occurs when the media has paused but is expected to resume"
 
 
 

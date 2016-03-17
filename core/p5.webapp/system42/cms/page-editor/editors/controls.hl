@@ -940,6 +940,11 @@ $('html, body').animate({{
                 sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
                   _initial-focus-property
 
+              /*
+               * Updating codeview, if it is visible
+               */
+              sys42.wysiwyg-controls.update-code-wiew
+
           widgets
 
             /*

@@ -34,8 +34,6 @@ address:@"The HTML <address> element supplies contact information for its neares
       except:header
       except:footer
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 article:@"The HTML <article> element represents a self-contained composition in a document, page, application, or site, which is intended to be independently distributable or reusable (e.g., in syndication). This could be a forum post, a magazine or newspaper article, a blog entry, an object, or any other independent item of content. Each <article> should be identified, typically by including a heading (<h1>-<h6> element) as a child of the <article> element."
   type:flow-content
@@ -45,9 +43,6 @@ article:@"The HTML <article> element represents a self-contained composition in 
   permitted-content
     type:flow-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
-      except:address
 
 aside:@"The HTML <aside> element represents a section of the page with content connected tangentially to the rest, which could be considered separate from that content. These sections are often represented as sidebars or inserts. They often contain the definitions on the sidebars, such as definitions from the glossary; there may also be other types of information, such as related advertisements; the biography of the author; web applications; profile information or related links on the blog."
   type:flow-content
@@ -64,11 +59,6 @@ footer:@"The HTML <footer> element represents a footer for its nearest sectionin
       except:footer
       except:header
   tag-omission:none
-  permitted-parent
-    accept:flow-content
-      except:address
-      except:header
-      except:footer
 
 header:@"The HTML <header> element represents a group of introductory or navigational aids. It may contain some heading elements but also other elements like a logo, wrapped section's header, a search form, and so on."
   type:flow-content
@@ -79,11 +69,6 @@ header:@"The HTML <header> element represents a group of introductory or navigat
       except:header
       except:footer
   tag-omission:none
-  permitted-parent
-    accept:flow-content
-      except:address
-      except:footer
-      except:header
 
 h1:@"Heading elements implement six levels of document headings, <h1> is the most important and <h6> is the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."
   type:flow-content
@@ -93,8 +78,6 @@ h1:@"Heading elements implement six levels of document headings, <h1> is the mos
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 h2:See h1 above ...
   type:flow-content
@@ -104,8 +87,6 @@ h2:See h1 above ...
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 h3:See h1 above ...
   type:flow-content
@@ -115,8 +96,6 @@ h3:See h1 above ...
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 h4:See h1 above ...
   type:flow-content
@@ -126,8 +105,6 @@ h4:See h1 above ...
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 h5:See h1 above ...
   type:flow-content
@@ -137,8 +114,6 @@ h5:See h1 above ...
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 h6:See h1 above ...
   type:flow-content
@@ -148,8 +123,6 @@ h6:See h1 above ...
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 nav:@"The HTML <nav> element (HTML Navigation Element) represents a section of a page that links to other pages or to parts within the page: a section with navigation links."
   type:flow-content
@@ -159,8 +132,6 @@ nav:@"The HTML <nav> element (HTML Navigation Element) represents a section of a
   permitted-content
     type:flow-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 section:@"The HTML <section> element represents a generic section of a document, i.e., a thematic grouping of content, typically with a heading. Each <section> should be identified, typically by including a heading (<h1>-<h6> element) as a child of the <section> element."
   type:flow-content
@@ -170,9 +141,6 @@ section:@"The HTML <section> element represents a generic section of a document,
   permitted-content
     type:flow-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
-      except:address
 
 
 
@@ -190,10 +158,6 @@ dd:@"The HTML <dd> element (HTML Description Element) indicates the description 
   permitted-content
     type:flow-content
   tag-omission:yes
-  permitted-parent
-    after:dt
-    after:dd
-    inside:dl
 
 div:@"The HTML <div> element (or HTML Document Division Element) is the generic container for flow content, which does not inherently represent anything. It can be used to group elements for styling purposes (using the class or id attributes), or because they share attribute values, such as lang. It should be used only when no other semantic element (such as <article> or <nav>) is appropriate."
   type:flow-content
@@ -202,8 +166,6 @@ div:@"The HTML <div> element (or HTML Document Division Element) is the generic 
   permitted-content
     type:flow-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 dl:@"The HTML <dl> element (or HTML Description List Element) encloses a list of pairs of terms and descriptions. Common uses for this element are to implement a glossary or to display metadata (a list of key-value pairs)."
   type:flow-content
@@ -213,8 +175,6 @@ dl:@"The HTML <dl> element (or HTML Description List Element) encloses a list of
     element:dt
     element:dd
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 dt:@"The HTML <dt> element (or HTML Definition Term Element) identifies a term in a definition list. This element can occur only as a child element of a <dl>. It is usually followed by a <dd> element; however, multiple <dt> elements in a row indicate several terms that are all defined by the immediate next <dd> element."
   permitted-content
@@ -232,18 +192,12 @@ dt:@"The HTML <dt> element (or HTML Definition Term Element) identifies a term i
       except:h5
       except:h6
   tag-omission:yes
-  permitted-parent
-    before:dt
-    before:dd
-    inside:dl
 
 figcaption:@"The HTML <figcaption> element represents a caption or a legend associated with a figure or an illustration described by the rest of the data of the <figure> element which is its immediate ancestor which means <figcaption> can be the first or last element inside a <figure> block. Also, the HTML Figcaption Element is optional; if not provided, then the parent figure element will have no caption."
   type:block-level
   permitted-content
     type:flow-content
   tag-omission:none
-  permitted-parent
-    inside:figure
 
 figure:@"The HTML <figure> element represents self-contained content, frequently with a caption (<figcaption>), and is typically referenced as a single unit. While it is related to the main flow, its position is independent of the main flow. Usually this is an image, an illustration, a diagram, a code snippet, or a schema that is referenced in the main text, but that can be moved to another page or to an appendix without affecting the main flow."
   type:flow-content
@@ -253,8 +207,6 @@ figure:@"The HTML <figure> element represents self-contained content, frequently
     type:flow-content
     element:figcaption
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 hr:@"The HTML <hr> element represents a thematic break between paragraph-level elements (for example, a change of scene in a story, or a shift of topic with a section). In previous versions of HTML, it represented a horizontal rule. It may still be displayed as a horizontal rule in visual browsers, but is now defined in semantic terms, rather than presentational terms."
   type:flow-content
@@ -262,18 +214,12 @@ hr:@"The HTML <hr> element represents a thematic break between paragraph-level e
   type:block-level
   permitted-content:none
   tag-omission:yes
-  permitted-parent
-    accept:flow-content
 
 li:@"The HTML <li> element (or HTML List Item Element) is used to represent an item in a list. It must be contained in a parent element: an ordered list (<ol>), an unordered list (<ul>), or a menu (<menu>). In menus and unordered lists, list items are usually displayed using bullet points. In ordered lists, they are usually displayed with an ascending counter on the left, such as a number or letter."
   type:block-level
   permitted-content
     type:flow-content
   tag-omission:yes
-  permitted-parent
-    inside:ul
-    inside:ol
-    inside:menu
   attributes
     value:@"This integer attribute indicates the current ordinal value of the list item as defined by the <ol> element. The only allowed value for this attribute is a number, even if the list is displayed with Roman numerals or letters. List items that follow this one continue numbering from the value set. The value attribute has no meaning for unordered lists (<ul>) or for menus (<menu>)."
 
@@ -284,13 +230,6 @@ main:@"The HTML <main> element represents the main content of  the <body> of a d
   permitted-content
     type:flow-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
-      except:article
-      except:aside
-      except:footer
-      except:header
-      except:nav
 
 ol:@"The HTML <ol> Element (or HTML Ordered List Element) represents an ordered list of items. Typically, ordered-list items are displayed with a preceding numbering, which can be of any form, like numerals, letters or Romans numerals or even simple bullets. This numbered style is not defined in the HTML description of the page, but in its associated CSS, using the list-style-type property."
   type:flow-content
@@ -299,8 +238,6 @@ ol:@"The HTML <ol> Element (or HTML Ordered List Element) represents an ordered 
   permitted-content
     element:li
   tag-omission:none
-  permitted-parent
-    accept:flow-content
   attributes
     reversed:@"This Boolean attribute specifies that the items of the item are specified in the reverse order, i.e. that the least important one is listed first."
     start:@"This integer attribute specifies the start value for numbering the individual list items. Although the ordering type of list elements might be Roman numerals, such as XXXI, or letters, the value of start is always represented as a number. To start numbering elements from the letter ""C"", use <ol start=""3"">."
@@ -319,8 +256,6 @@ p:@"The HTML <p> element (or HTML Paragraph Element) represents a paragraph of t
   permitted-content
     type:phrasing-content
   tag-omission:yes
-  permitted-parent
-    accept:flow-content
 
 pre:@"The HTML <pre> element (or HTML Preformatted Text) represents preformatted text. Text within this element is typically displayed in a non-proportional (""monospace"") font exactly as it is laid out in the file. Whitespace inside this element is displayed as typed."
   type:flow-content
@@ -329,8 +264,6 @@ pre:@"The HTML <pre> element (or HTML Preformatted Text) represents preformatted
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 ul:@"The HTML <ul> element (or HTML Unordered List Element) represents an unordered list of items, namely a collection of items that do not have a numerical ordering, and their order in the list is meaningless. Typically, unordered-list items are displayed with a bullet, which can be of several forms, like a dot, a circle or a squared. The bullet style is not defined in the HTML description of the page, but in its associated CSS, using the list-style-type property."
   type:flow-content
@@ -339,8 +272,6 @@ ul:@"The HTML <ul> element (or HTML Unordered List Element) represents an unorde
   permitted-content
     element:li
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 
 
@@ -356,8 +287,6 @@ abbr:@"The HTML <abbr> element (or HTML Abbreviation Element) represents an abbr
   type:inline
   permitted-content
     type:phrasing-content
-  permitted-parent
-    accept:phrasing-content
 
 b:@"The HTML <b> Element represents a span of text stylistically different from normal text, without conveying any special importance or relevance. It is typically used for keywords in a summary, product names in a review, or other spans of text whose typical presentation would be boldfaced. Another example of its use is to mark the lead sentence of each paragraph of an article."
   type:flow-content
@@ -367,8 +296,6 @@ b:@"The HTML <b> Element represents a span of text stylistically different from 
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 bdi:@"The HTML <bdi> Element (or Bi-Directional Isolation Element) isolates a span of text that might be formatted in a different direction from other text outside it."
   type:flow-content
@@ -376,8 +303,6 @@ bdi:@"The HTML <bdi> Element (or Bi-Directional Isolation Element) isolates a sp
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    type:phrasing-content
 
 bdo:@"The HTML <bdo> Element (or HTML bidirectional override element) is used to override the current directionality of text. It causes the directionality of the characters to be ignored in favor of the specified directionality."
   type:flow-content
@@ -387,8 +312,6 @@ bdo:@"The HTML <bdo> Element (or HTML bidirectional override element) is used to
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 br:@"The HTML element line break <br> produces a line break in text (carriage-return). It is useful for writing a poem or an address, where the division of lines is significant."
   type:flow-content
@@ -397,8 +320,6 @@ br:@"The HTML element line break <br> produces a line break in text (carriage-re
   type:inline
   permitted-content:none
   tag-omission:yes
-  permitted-parent
-    accept:phrasing-content
 
 cite:@"The HTML Citation Element (<cite>) represents a reference to a creative work. It must include the title of a work or a URL reference, which may be in an abbreviated form according to the conventions used for the addition of citation metadata."
   type:flow-content
@@ -408,8 +329,6 @@ cite:@"The HTML Citation Element (<cite>) represents a reference to a creative w
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 code:@"The HTML Code Element (<code>) represents a fragment of computer code. By default, it is displayed in the browser's default monospace font."
   type:flow-content
@@ -419,8 +338,6 @@ code:@"The HTML Code Element (<code>) represents a fragment of computer code. By
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 data:@"The HTML <data> Element links a given content with a machine-readable translation. If the content is time- or date-related, the <time> must be used."
   type:flow-content
@@ -428,8 +345,6 @@ data:@"The HTML <data> Element links a given content with a machine-readable tra
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     value:@"This attribute specifies the machine-readable translation of the content of the element."
 
@@ -442,8 +357,6 @@ dfn:@"The HTML Definition Element (<dfn>) represents the defining instance of a 
     type:phrasing-content
       except:dfn
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 em:@"The HTML element emphasis  <em> marks text that has stress emphasis. The <em> element can be nested, with each level of nesting indicating a greater degree of emphasis."
   type:flow-content
@@ -453,8 +366,6 @@ em:@"The HTML element emphasis  <em> marks text that has stress emphasis. The <e
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 i:@"The HTML <i> Element represents a range of text that is set off from the normal text for some reason, for example, technical terms, foreign language phrases, or fictional character thoughts. It is typically displayed in italic type."
   type:flow-content
@@ -464,8 +375,6 @@ i:@"The HTML <i> Element represents a range of text that is set off from the nor
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 kbd:@"The HTML Keyboard Input Element (<kbd>) represents user input and produces an inline element displayed in the browser's default monospace font."
   type:flow-content
@@ -475,8 +384,6 @@ kbd:@"The HTML Keyboard Input Element (<kbd>) represents user input and produces
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 mark:@"The HTML Mark Element (<mark>) represents highlighted text, i.e., a run of text marked for reference purpose, due to its relevance in a particular context. For example it can be used in a page showing search results to highlight every instance of the searched-for word."
   type:flow-content
@@ -485,8 +392,6 @@ mark:@"The HTML Mark Element (<mark>) represents highlighted text, i.e., a run o
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 q:@"The HTML Quote Element (<q>) indicates that the enclosed text is a short inline quotation. This element is intended for short quotations that don't require paragraph breaks; for long quotations use <blockquote> element."
   type:flow-content
@@ -496,8 +401,6 @@ q:@"The HTML Quote Element (<q>) indicates that the enclosed text is a short inl
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     cite:@"The value of this attribute is a URL that designates a source document or message for the information quoted. This attribute is intended to point to information explaining the context or the reference for the quote."
 
@@ -505,23 +408,17 @@ rp:@"The HTML <rp> element is used to provide fall-back parenthesis for browsers
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    element:ruby
 
 rt:@"The HTML <rt> Element embraces pronunciation of characters presented in a ruby annotations, which are used to describe the pronunciation of East Asian characters. This element is always used inside a <ruby> element."
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    element:ruby
 
 rtc:@"The HTML <rtc> Element embraces semantic annotations of characters presented in a ruby of <rb> elements used inside of <ruby> element. <rb> elements can have both pronunciation (<rt>) and semantic (<rtc>) annotations."
   premitted-content
     type:phrasing-content
     element:rt
   tag-omission:yes
-  permitted-parent
-    element:ruby
 
 ruby:@"The HTML <ruby> Element represents a ruby annotation. Ruby annotations are for showing pronunciation of East Asian characters."
   type:flow-content
@@ -530,16 +427,12 @@ ruby:@"The HTML <ruby> Element represents a ruby annotation. Ruby annotations ar
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    type:phrasing-content
 
 s:@"The HTML Strikethrough Element (<s>) renders text with a strikethrough, or a line through it. Use the <s> element to represent things that are no longer relevant or no longer accurate. However, <s> is not appropriate when indicating document edits; for that, use the <del> and <ins> elements, as appropriate."
   type:flow-content
   type:palpable-content
   permitted-content:transparent
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 samp:@"The HTML <samp> element is an element intended to identify sample output from a computer program. It is usually displayed in the browser's default monotype font (such as Lucida Console)."
   type:flow-content
@@ -549,8 +442,6 @@ samp:@"The HTML <samp> element is an element intended to identify sample output 
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 small:@"The HTML Small Element (<small>) makes the text font size one size smaller (for example, from large to medium, or from small to x-small) down to the browser's minimum font size.  In HTML5, this element is repurposed to represent side-comments and small print, including copyright and legal text, independent of its styled presentation."
   type:flow-content
@@ -560,9 +451,6 @@ small:@"The HTML Small Element (<small>) makes the text font size one size small
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
-    accept:flow-content
 
 span:@"The HTML <span> element is a generic inline container for phrasing content, which does not inherently represent anything. It can be used to group elements for styling purposes (using the class or id attributes), or because they share attribute values, such as lang."
   type:flow-content
@@ -572,9 +460,6 @@ span:@"The HTML <span> element is a generic inline container for phrasing conten
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
-    accept:flow-content
 
 strong:@"The HTML Strong Element (<strong>) gives text strong importance, and is typically displayed in bold."
   type:flow-content
@@ -584,9 +469,6 @@ strong:@"The HTML Strong Element (<strong>) gives text strong importance, and is
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
-    accept:flow-content
 
 sub:@"The HTML Subscript Element (<sub>) defines a span of text that should be displayed, for typographic reasons, lower, and often smaller, than the main span of text."
   type:flow-content
@@ -596,8 +478,6 @@ sub:@"The HTML Subscript Element (<sub>) defines a span of text that should be d
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 sup:@"The HTML Superscript Element (<sup>) defines a span of text that should be displayed, for typographic reasons, higher, and often smaller, than the main span of text."
   type:flow-content
@@ -607,8 +487,6 @@ sup:@"The HTML Superscript Element (<sup>) defines a span of text that should be
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 svg:@"The svg element can be used to embed an SVG fragment inside the current document (for example, an HTML document) as long as <svg> is not the root element. This SVG fragment has its own viewport and coordinate system."
   type:flow-content
@@ -624,8 +502,6 @@ time:@"Technical review completed."
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     datetime:@"This attribute indicates the time and date of the element and must be a valid date with an optional time string. If the value cannot be parsed as a date with an optional time string, the element does not have an associated time stamp."
 
@@ -637,8 +513,6 @@ u:@"The HTML Underline Element (<u>) renders text with an underline, a line unde
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 var:@"The HTML Variable Element (<var>) represents a variable in a mathematical expression or a programming context."
   type:flow-content
@@ -648,8 +522,6 @@ var:@"The HTML Variable Element (<var>) represents a variable in a mathematical 
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 wbr:@"The HTML element word break opportunity <wbr> represents a position within text where the browser may optionally break a line, though its line-breaking rules would not otherwise create a break at that location."
   type:flow-content
@@ -657,8 +529,6 @@ wbr:@"The HTML element word break opportunity <wbr> represents a position within
   type:palpable-content
   permitted-content:none
   tag-omission:yes
-  permitted-parent
-    accept:phrasing-content
 
 a:@"The HTML element wraps a hyperlink, leading to another URL."
   type:flow-content
@@ -717,9 +587,6 @@ _header:Image and multimedia
 area:@"The HTML <area> element defines a hot-spot region on an image, and optionally associates it with a hypertext link. This element is used only within a <map> element."
   pemitted-content:none
   tag-omission:yes
-  permitted-parent
-    accept:phrasing-content
-    ancestor:map
   attributes
     alt:@"A text string alternative to display on browsers that do not display images. The text should be phrased so that it presents the user with the same kind of choice as the image would offer when displayed without the alternative text. In HTML4, this attribute is required, but may be the empty string (""). In HTML5, this attribute is required only if the href attribute is used."
     coords:@"A set of values specifying the coordinates of the hot-spot region. The number and meaning of the values depend upon the value specified for the shape attribute. For a rect or rectangle shape, the coords value is two x,y pairs: left, top, right, and bottom. For a circle shape, the value is x,y,r where x,y is a pair specifying the center of the circle and r is a value for the radius. For a poly or polygon shape, the value is a set of x,y pairs for each point in the polygon: x1,y1,x2,y2,x3,y3, and so on. In HTML4, the values are numbers of pixels or percentages, if a percent sign (%) is appended; in HTML5, the values are numbers of CSS pixels."
@@ -747,9 +614,6 @@ audio:@"The HTML <audio> element is used to embed sound content in documents. It
     element:track
     element:source
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
-    accept:flow-content
   attributes
     autoplay:@"A Boolean attribute; if specified (even if the value is ""false""!), the audio will automatically begin playback as soon as it can do so, without waiting for the entire audio file to finish downloading."
     buffered:@"An attribute you can read to determine which time ranges of the media have been buffered. This attribute contains a TimeRanges object."
@@ -767,6 +631,28 @@ audio:@"The HTML <audio> element is used to embed sound content in documents. It
 The spec advises it to be set to metadata. The autoplay attribute has precedence over preload. If autoplay is specified, the browser would obviously need to start downloading the audio for playback. The browser is not forced by the specification to follow the value of this attribute; it is a mere hint."
     src:@"The URL of the audio to embed. This is subject to HTTP access controls. This is optional; you may instead use the <source> element within the audio block to specify the audio to embed."
     volume:@"The playback volume, in the range 0.0 (silent) to 1.0 (loudest)."
+    onabort:@"The event occurs when the loading of a media is aborted"
+    oncanplay:@"The event occurs when the browser can start playing the media because of having buffered enough to be able to begin playing"
+    oncanplaythrough:@"The event occurs when the browser can play through the media without stopping for buffering"
+    ondurationchange:@"The event occurs when the duration of the media is changed"
+    onemptied:@"The event occurs when something bad happens and the media file is suddenly unavailable"
+    onended:@"The event occurs when the media has reach the end"
+    onerror:@"The event occurs when an error occurred during the loading of a media file"
+    onloadeddata:@"The event occurs when media data is loaded"
+    onloadedmetadata:@"The event occurs when meta data are loaded"
+    onloadstart:@"The event occurs when the browser starts looking for the specified media"
+    onpause:@"The event occurs when the media is paused either by the user or programmatically"
+    onplay:@"The event occurs when the media has been started or is no longer paused"
+    onplaying:@"The event occurs when the media is playing after having been paused or stopped for buffering"
+    onprogress:@"The event occurs when the browser is in the process of downloading the media data"
+    onratechange:@"The event occurs when the playing speed of the media is changed"
+    onseeked:@"The event occurs when the user is finished moving skipping to a new position in the media"
+    onseeking:@"The event occurs when the user starts skipping to a new position in the media"
+    onstalled:@"The event occurs when the browser is trying to get media data, but data is not available"
+    onsuspend:@"The event occurs when the browser is intentionally not getting media data"
+    ontimeupdate:@"The event occurs when the playing position has changed"
+    onvolumechange:@"The event occurs when the volume of the media has changed"
+    onwaiting:@"The event occurs when the media has paused but is expected to resume"
 
 map:@"The HTML <map> element is used with <area> elements to define an image map (a clickable link area)."
   type:flow-content
@@ -774,8 +660,6 @@ map:@"The HTML <map> element is used with <area> elements to define an image map
   type:inline
   permitted-content:transparent
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     name:@"The name attribute gives the map a name so that it can be referenced. The attribute must be present and must have a non-empty value with no space characters. The value of the name attribute must not be a compatibility-caseless match for the value of the name attribute of another map element in the same document. If the id attribute is also specified, both attributes must have the same value."
 
@@ -783,9 +667,6 @@ map:@"The HTML <map> element is used with <area> elements to define an image map
 track:@"The HTML <track> element is used as a child of the media elements—<audio> and <video>. It lets you specify timed text tracks (or time-based data), for example to automatically handle subtitles. The tracks are formatted in WebVTT format (.vtt files) — Web Video Text Tracks."
   permitted-content:none
   tag-omission:yes
-  permitted-parent
-    element:video
-    element:audio
   attributes
     default:@"This attribute indicates that the track should be enabled unless the user's preferences indicate that another track is more appropriate. This may only be used on one track element per media element."
     kind:@"How the text track is meant to be used. If omitted the default kind is subtitles. The following keywords are allowed:
@@ -808,15 +689,11 @@ video:@"Use the  HTML <video> element to embed video content in a document. The 
     element:track
     element:source
   tag-omission:none
-  permitted-parent
-    type:phrasing-content
-    type:flow-content
   attributes
     autoplay:@"A Boolean attribute; if specified, the video automatically begins to play back as soon as it can do so without stopping to finish loading the data."
     buffered:@"An attribute you can read to determine the time ranges of the buffered media. This attribute contains a TimeRanges object."
     controls:@"If this attribute is present, the browser will offer controls to allow the user to control video playback, including volume, seeking, and pause/resume playback."
     crossorigin:@"This enumerated attribute indicates whether to use CORS to fetch the related image. CORS-enabled resources can be reused in the <canvas> element without being tainted. The allowed values are:
-
 * anonymous - Sends a  cross-origin request without a credential. In other words, it sends the Origin: HTTP header without a cookie, X.509 certificate, or performing HTTP Basic authentication. If the server does not give credentials to the origin site (by not setting the Access-Control-Allow-Origin: HTTP header), the image will be tainted, and its usage restricted
 * use-credentials - Sends a  cross-origin request with a credential. In other words, it sends the Origin: HTTP header with a cookie, a certificate, or performing HTTP Basic authentication. If the server does not give credentials to the origin site (through Access-Control-Allow-Credentials: HTTP header), the image will be tainted and its usage restricted. When not present, the resource is fetched without a CORS request (i.e. without sending the Origin: HTTP header), preventing its non-tainted used in <canvas> elements. If invalid, it is handled as if the enumerated keyword anonymous was used. See CORS settings attributes for additional information."
     height:@"The height of the video's display area, in CSS pixels."
@@ -834,13 +711,32 @@ The spec advises it to be set to metadata."
     poster:@"A URL indicating a poster frame to show until the user plays or seeks. If this attribute isn't specified, nothing is displayed until the first frame is available; then the first frame is shown as the poster frame."
     src:@"The URL of the video to embed. This is optional; you may instead use the <source> element within the video block to specify the video to embed."
     width:@"The width of the video's display area, in CSS pixels."
+    onabort:@"The event occurs when the loading of a media is aborted"
+    oncanplay:@"The event occurs when the browser can start playing the media because of having buffered enough to be able to begin playing"
+    oncanplaythrough:@"The event occurs when the browser can play through the media without stopping for buffering"
+    ondurationchange:@"The event occurs when the duration of the media is changed"
+    onemptied:@"The event occurs when something bad happens and the media file is suddenly unavailable"
+    onended:@"The event occurs when the media has reach the end"
+    onerror:@"The event occurs when an error occurred during the loading of a media file"
+    onloadeddata:@"The event occurs when media data is loaded"
+    onloadedmetadata:@"The event occurs when meta data are loaded"
+    onloadstart:@"The event occurs when the browser starts looking for the specified media"
+    onpause:@"The event occurs when the media is paused either by the user or programmatically"
+    onplay:@"The event occurs when the media has been started or is no longer paused"
+    onplaying:@"The event occurs when the media is playing after having been paused or stopped for buffering"
+    onprogress:@"The event occurs when the browser is in the process of downloading the media data"
+    onratechange:@"The event occurs when the playing speed of the media is changed"
+    onseeked:@"The event occurs when the user is finished moving skipping to a new position in the media"
+    onseeking:@"The event occurs when the user starts skipping to a new position in the media"
+    onstalled:@"The event occurs when the browser is trying to get media data, but data is not available"
+    onsuspend:@"The event occurs when the browser is intentionally not getting media data"
+    ontimeupdate:@"The event occurs when the playing position has changed"
+    onvolumechange:@"The event occurs when the volume of the media has changed"
+    onwaiting:@"The event occurs when the media has paused but is expected to resume"
 
 source:@"The HTML <source> element specifies multiple media resources for either the <picture>, the <audio> or the <video> element. It is an empty element. It is commonly used to serve the same media content in multiple formats supported by different browsers."
   permitted-content:none
   tag-omission:yes
-  permitted-parent
-    video
-    audio
   attributes
     src:@"Required for <audio> and <video>, address of the media resource. The value of this attribute is ignored when the <source> element is placed inside a <picture> element."
     type:@"The MIME-type of the resource, optionally with a codecs parameter. See RFC 4281 for information about how to specify codecs."
@@ -853,8 +749,6 @@ img:@"The HTML <img> element represents an image in the document."
   type:inline
   permitted-content:none
   tag-omission:yes
-  permitted-parent
-    accept:embedded-content
   attributes
     alt:@"This attribute defines the alternative text describing the image. Users will see this displayed if the image URL is wrong, the image is not in one of the supported formats, or if the image is not yet downloaded. Usage note: Omitting this attribute indicates that the image is a key part of the content, but no textual equivalent is available. Setting this attribute to the empty string indicates that this image is not a key part of the content; non-visual browsers may omit it from rendering."
     crossorigin:@"This enumerated attribute indicates if the fetching of the related image must be done using CORS or not. CORS-enabled images can be reused in the <canvas> element without being tainted. The allowed values are:
@@ -906,8 +800,6 @@ del:@"The HTML Deleted Text Element (<del>) represents a range of text that has 
   type:transparent-content-model
   permitted-content:transparent
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     cite:@"A URI for a resource that explains the change (for example, meeting minutes)."
     datetime:@"This attribute indicates the time and date of the change and must be a valid date with an optional time string. If the value cannot be parsed as a date with an optional time string, the element does not have an associated time stamp."
@@ -918,8 +810,6 @@ ins:@"The HTML <ins> Element (or HTML Inserted Text) HTML represents a range of 
   type:transparent-content-model
   permitted-content:transparent
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     cite:@"This attribute defines the URI of a resource that explains the change, like a link to some meeting minutes or a ticket in a troubleshooting sytem."
     datetime:@"This attribute indicates the time and date of the change and must be a valid date with an optional time string. If the value cannot be parsed as a date with an optional time string, the element does not have an associated time stamp."
@@ -937,14 +827,10 @@ caption:@"The HTML <caption> Element (or HTML Table Caption Element) represents 
   permitted-content
     type:flow-content
   tag-omission:none
-  permitted-parent
-    table
 
 col:@"The HTML Table Column Element (<col>) defines a column within a table and is used for defining common semantics on all common cells. It is generally found within a <colgroup> element."
   permitted-content:none
   tag-omission:yes
-  permitted-parent
-    colgroup
   attributes
     span:@"This attribute contains a positive integer indicating the number of consecutive columns the <col> element spans. If not present, its default value is 1."
 
@@ -952,8 +838,6 @@ colgroup:@"The HTML Table Column Group Element (<colgroup>) defines a group of c
   permitted-content
     col
   tag-omission:yes
-  permitted-parent
-    table
   attributes
     span:@"This attribute contains a positive integer indicating the number of consecutive columns the <colgroup> element spans. If not present, its default value is 1. Note: This attribute is applied on the attributes of the column group, it has no effect on the CSS styling rules associated with it or, even more, to the cells of the column's members of the group. The span attribute may not be present if there are one or more <col> elements within the <colgroup>."
 
@@ -969,22 +853,16 @@ table:@"The HTML Table Element (<table>) represents tabular data: information ex
     tbody
     tr
   tag-omission:none
-  permitted-parent
-    accept:flow-content
 
 tbody:@"The HTML Table Body Element (<tbody>) defines one or more <tr> element data-rows to be the body of its parent <table> element (as long as no <tr> elements are immediate children of that table element.)  In conjunction with a preceding <thead> and/or <tfoot> element, <tbody> provides additional semantic information for devices such as printers and displays. Of the parent table's child elements, <tbody> represents the content which, when longer than a page, will most likely differ for each page printed; while the content of <thead> and <tfoot> will be the same or similar for each page printed. For displays, <tbody> will enable separate scrolling of the <thead>, <tfoot>, and <caption> elements of the same parent <table> element.  Note that unlike the <thead>, <tfoot>, and <caption> elements however, multiple <tbody> elements are permitted (if consecutive), allowing the data-rows in long tables to be divided into different sections, each separately formatted as needed."
   permitted-content
     tr
   tag-omission:none
-  permitted-parent
-    table
 
 td:@"The Table cell HTML element (<td>) defines a cell of a table that contains data. It participates in the table model."
   permitted-content
     type:flow-content
   tag-omission:yes
-  permitted-parent
-    tr
   attributes
     colspan:@"This attribute contains a non-negative integer value that indicates for how many columns the cell extends. Its default value is 1; if its value is set to 0, it extends until the end of the <colgroup>, even if implicitly defined, that the cell belongs to. Values higher than 1000 will be considered as incorrect and will be set to the default value (1). Note: In HTML5 this attribute only accepts values greater than zero since it must not be used to overlap cells. Besides, Firefox is the only browser to support the 0 value as defined in the HTML 4.01 specification."
     headers:@"This attribute contains a list of space-separated strings, each corresponding to the id attribute of the <th> elements that apply to this element."
@@ -995,15 +873,11 @@ tfoot:@"The HTML Table Foot Element (<tfoot>) defines a set of rows summarizing 
   permitted-content
     tr
   tag-omission:yes
-  permitted-parent
-    table
 
 th:@"The HTML element table header cell <th> defines a cell as a header for a group of cells of a table. The group of cells that the header refers to is defined by the scope and headers attribute."
   permitted-content
     type:phrasing-content
   tag-omission:yes
-  permitted-parent
-    tr
   attributes
     colspan:@"This attribute contains a non-negative integer value that indicates on how many columns does the cell extend. Its default value is 1; if its value is set to 0, it does extend until the end of the <colgroup>, eventually implicitly defined, the cell belongs to. Values higher than 1000 are clipped down to 1000."
     headers:@"This attributes a list of space-separated strings, each corresponding to the id attribute of the <th> elements that applies to this element."
@@ -1020,19 +894,12 @@ thead:@"The HTML Table Head Element (<thead>) defines a set of rows defining the
   permitted-content
     tr
   tag-omission:yes
-  permitted-parent
-    table
 
 tr:@"The HTML element table row <tr> defines a row of cells in a table. Those can be a mix of <td> and <th> elements."
   permitted-content
     td
     th
   tag-omission:yes
-  permitted-parent
-    table
-    thead
-    tbody
-    tfoot
 
 
 
@@ -1054,8 +921,6 @@ button:@"The HTML <button> Element represents a clickable button."
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     autofocus:@"This Boolean attribute lets you specify that the button should have input focus when the page loads, unless the user overrides it, for example by typing in a different control. Only one form-associated element in a document can have this attribute specified."
     disabled:@"This Boolean attribute indicates that the user cannot interact with the button. If this attribute is not specified, the button inherits its setting from the containing element, for example <fieldset>; if there is no containing element with the disabled attribute set, then the button is enabled. Firefox will, unlike other browsers, by default, persist the dynamic disabled state of a <button> across page loads. Use the autocomplete attribute to control this feature."
@@ -1075,8 +940,6 @@ datalist:@"The HTML Datalist Element (<datalist>) contains a set of <option> ele
     option
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
 
 fieldset:@"The HTML <fieldset> element is used to group several controls as well as labels (<label>) within a web form."
   type:flow-content
@@ -1087,8 +950,6 @@ fieldset:@"The HTML <fieldset> element is used to group several controls as well
     legend
     type:flow-content
   tag-omission:none
-  permitted-parent
-    accept:flow-content
   attributes
     disabled:@"If this Boolean attribute is set, the form controls that are its descendants, except descendants of its first optional <legend> element, are disabled, i.e., not editable. They won't receive any browsing events, like mouse clicks or focus-related ones. Often browsers display such controls as gray."
     name:@"The name associated with the group."
@@ -1105,8 +966,6 @@ input:@"The HTML element <input> is used to create interactive controls for web-
   type:inline
   permitted-content:none
   tag-omission:yes
-  permitted-parent
-    accept:phrasing-content
   attributes
     type:@"The type of control to display. The default type is text, if this attribute is not specified. Possible values are:
 
@@ -1221,6 +1080,11 @@ If the autocomplete attribute is not specified on an input element, then the bro
     step:@"Works with the min and max attributes to limit the increments at which a numeric or date-time value can be set. It can be the string any or a positive floating point number. If this attribute is not set to any, the control accepts only values at multiples of the step value greater than the minimum."
     value:@"The initial value of the control. This attribute is optional except when the value of the type attribute is radio or checkbox. Note that when reloading the page, Gecko and IE will ignore the value specified in the HTML source, if the value was changed before the reload."
     width:@"If the value of the type attribute is image, this attribute defines the width of the image displayed for the button."
+    onsearch:@"The event occurs when the user writes something in a search field, only for &lt;input='search'&gt;"
+    onchange:@"The event occurs when the content of a form element, the selection, or the checked state have changed"
+    onselect:@"The event occurs after the user selects some text, only for &lt;input&gt; and &lt;textarea&gt;"
+    oninvalid:@"The event occurs when an element is invalid"
+    oninput:@"The event occurs when an element gets user input"
 
 textarea:@"The HTML element <input> is used to create interactive controls for web-based forms in order to accept data from the user. How an <input> works varies considerably depending on the value of its type attribute."
   type:flow-content
@@ -1235,8 +1099,6 @@ textarea:@"The HTML element <input> is used to create interactive controls for w
   type:inline
   permitted-content:character-data
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     autocomplete:@"This attribute indicates whether the value of the control can be automatically completed by the browser. Possible values are:
 
@@ -1260,6 +1122,10 @@ textarea:@"The HTML element <input> is used to create interactive controls for w
 
 * hard: The browser automatically inserts line breaks (CR+LF) so that each line has no more than the width of the control; the cols attribute must be specified
 * soft: The browser ensures that all line breaks in the value consist of a CR+LF pair, but does not insert any additional line breaks."
+    onchange:@"The event occurs when the content of a form element, the selection, or the checked state have changed"
+    onselect:@"The event occurs after the user selects some text, only for &lt;input&gt; and &lt;textarea&gt;"
+    oninvalid:@"The event occurs when an element is invalid"
+    oninput:@"The event occurs when an element gets user input"
 
 label:@"The HTML Label Element (<label>) represents a caption for an item in a user interface. It can be associated with a control either by placing the control element inside the <label> element, or by using the for attribute. Such a control is called the labeled control of the label element. One input can be associated with multiple labels."
   type:flow-content
@@ -1272,8 +1138,6 @@ label:@"The HTML Label Element (<label>) represents a caption for an item in a u
     type:phrasing-content
       except:label
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     for:@"The ID of a labelable form-related element in the same document as the label element. The first such element in the document with an ID matching the value of the for attribute is the labeled control for this label element. Note: A label element can have both a for attribute and a contained control element, as long as the for attribute points to the contained control element."
 
@@ -1281,8 +1145,6 @@ legend:@"The HTML <legend> Element (or HTML Legend Field Element) represents a c
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    fieldset
 
 meter:@"The HTML <meter> Element represents either a scalar value within a known range or a fractional value."
   type:flow-content
@@ -1294,8 +1156,6 @@ meter:@"The HTML <meter> Element represents either a scalar value within a known
     type:phrasing-content
       except:meter
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     value:@"The current numeric value. This must be between the minimum and maximum values (min attribute and max attribute) if they are specified. If unspecified or malformed, the value is 0. If specified, but not within the range given by the min attribute and max attribute, the value is equal to the nearest end of the range."
     min:@"The lower numeric bound of the measured range. This must be less than the maximum value (max attribute), if specified. If unspecified, the minimum value is 0."
@@ -1308,8 +1168,6 @@ optgroup:@"In a Web form, the HTML <optgroup> element  creates a grouping of opt
   permitted-content
     option
   tag-omission:yes
-  permitted-parent
-    select
   attributes
     disabled:@"If this Boolean attribute is set, none of the items in this option group is selectable. Often browsers grey out such control and it won't receive any browsing events, like mouse clicks or focus-related ones."
     label:@"The name of the group of options, which the browser can use when labeling the options in the user interface. This attribute is mandatory if this element is used."
@@ -1317,10 +1175,6 @@ optgroup:@"In a Web form, the HTML <optgroup> element  creates a grouping of opt
 option:@"In a Web form, the HTML <option> element is used to create a control representing an item within a <select>, an <optgroup> or a <datalist> HTML5 element."
   permitted-content:character-data
   tag-omission:yes
-  permitted-parent
-    select
-    optgroup
-    datalist
   attributes
     disabled:@"If this Boolean attribute is set, this option is not checkable. Often browsers grey out such control and it won't receive any browsing event, like mouse clicks or focus-related ones. If this attribute is not set, the element can still be disabled if one its ancestors is a disabled <optgroup> element."
     label:@"This attribute is text for the label indicating the meaning of the option. If the label attribute isn't defined, its value is that of the element text content. Usage note: the label attribute is designed to contain a short label typically used in a hierarchical menu. The value attribute describes a longer label designed to be used near a radio button, for example."
@@ -1339,8 +1193,6 @@ output:@"The HTML <output> element represents the result of a calculation or use
   permitted-content
     type:phrasing-content
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     for:@"A list of IDs of other elements, indicating that those elements contributed input values to (or otherwise affected) the calculation."
     name:@"The form element that this element is associated with (its ""form owner""). The value of the attribute must be an ID of a form element in the same document. If this attribute is not specified, the output element must be a descendant of a form element. This attribute enables you to place output elements anywhere within a document, not just as descendants of their form elements."
@@ -1355,8 +1207,6 @@ progress:@"The HTML <progress> Element is used to view the completion progress o
     type:phrasing-content
       except:progress
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     max:@"This attribute describes how much work the task indicated by the progress element requires. The max attribute, if present, must have a value greater than zero and be a valid floating point number."
     value:@"This attribute specifies how much of the task that has been completed. It must be a valid floating point number between 0 and max, or between 0 and 1 if max is omitted. If there is no value attribute, the progress bar is indeterminate; this indicates that an activity is ongoing with no indication of how long it is expected to take."
@@ -1376,8 +1226,6 @@ select:@"The HTML select (<select>) element represents a control that presents a
     option
     optgroup
   tag-omission:none
-  permitted-parent
-    accept:phrasing-content
   attributes
     autofocus:@"This attribute lets you specify that a form control should have input focus when the page loads, unless the user overrides it, for example by typing in a different control. Only one form element in a document can have the autofocus attribute, which is a Boolean."
     disabled:@"This Boolean attribute indicates that the user cannot interact with the control. If this attribute is not specified, the control inherits its setting from the containing element, for example fieldset; if there is no containing element with the disabled attribute set, then the control is enabled."
@@ -1385,6 +1233,7 @@ select:@"The HTML select (<select>) element represents a control that presents a
     name:@"The name of the control."
     required:@"A Boolean attribute indicating that an option with a non-empty string value must be selected."
     size:@"If the control is presented as a scrolled list box, this attribute represents the number of rows in the list that should be visible at one time. Browsers are not required to present a select element as a scrolled list box. The default value is 0."
+    onchange:@"The event occurs when the content of a form element, the selection, or the checked state have changed"
 
 
 
