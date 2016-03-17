@@ -1454,21 +1454,22 @@ this choice!</strong></p>"
                             break
 
                           /*
-                           * Now checking if parent allows "type" of element, by looping through all [type]s given
-                           * new element name contains, to see if we can find a match in parent element for specified type
+                           * Now checking if element is implicitly legal, or one of its types are mentioned as [permitted-content]
+                           * in its parent element 
                            */
                           for-each:x:@"/..default/*/load-file/*/*/""{0}""/*/type"
                             :x:/../*/_arg?value
 
                             /*
                              * Checking if currently iterated [type] for new element's name is the same as currently iterated
-                             * [type] for parent element
+                             * [type] in [permitted-content] for parent element
                              */
                             if:x:/..for-each/*/_dp/#?value
                               =:x:/..for-each/..for-each/*/_dp/#?value
 
                               /*
-                               * Checking if element is explicitly disallowed for parent
+                               * Checking if element is explicitly disallowed for parent, or the exists an [except] rule
+                               * for element
                                */
                               if:x:@"/..for-each/..for-each/*/_dp/#/*/except/""={0}"""
                                 :x:/../*/_arg?value
@@ -1497,7 +1498,7 @@ this choice!</strong></p>"
                             _header:Element not allowed
                             _body:@"<p><strong>Element is not allowed inside of its parent according to the HTML5 standard!</strong></p>
 <p>Your currently selected widget's parent widget's HTML element is <em>'{1}'</em>.</p>
-<p>You cannot put a <em>'{0}'</em> element inside of a <em>'{1}'</em>, since the HTML5 standard does not permit this. If you wish to see the element name(s) you
+<p>You cannot put a <em>'{0}'</em> element directly inside of a <em>'{1}'</em>, since the HTML5 standard does not permit this. If you wish to see the element name(s) you
 can legally choose for currently selected widget, then feel free to open up the element wizard, by clicking the 
 <span class=""glyphicon glyphicon-info-sign""></span> button next to the element name textbox.</p>"
                               :x:/../*/_arg?value
@@ -1508,7 +1509,7 @@ can legally choose for currently selected widget, then feel free to open up the 
 
                         /*
                          * Element is now determined to be legal inside of its parent, now we need to traverse
-                         * element's children widgets, to see if some of these children will become illegal with
+                         * element's children widgets, to see if some of its children will become illegal with
                          * the new parent element name
                          */
                         get-children-widgets:x:/..if/*/find-widget/*?value
@@ -1567,6 +1568,21 @@ can legally choose for currently selected widget, then feel free to open up the 
                                   /*
                                    * Child element is explicitly disallowed inside of the widget's element user tried to change element of
                                    */
+                                  eval-x:x:/+/*/_body
+                                  sys42.confirm-window
+                                    _header:Element not allowed
+                                    _body:@"<p><strong>Element is not allowed as parent of its children according to the HTML5 standard!</strong></p>
+<p>Your currently selected widget has one or more children elements of type <em>'{0}'</em>.</p>
+<p>You cannot have a <em>'{0}'</em> element inside of a <em>'{1}'</em> element, since the HTML5 standard does not permit this. If you wish to see the element name(s) you
+can legally choose for currently selected widget, then feel free to open up the element wizard, by clicking the 
+<span class=""glyphicon glyphicon-info-sign""></span> button next to the element name textbox.</p>
+<p>If you still want to change your element, you need to at the very least delete all <em>'{0}'</em> elements in it first, 
+or somehow change their elements to something that's legal inside of a <em>'{1}'</em> element.</p>
+<p><strong>Hint</strong>; Use either <span class=""btn btn-default btn-xs""><span class=""glyphicon glyphicon-pencil""></span> Code</span> to change its children elements at the same time you change the
+parent element, or click <span class=""btn btn-default btn-xs""><span class=""glyphicon glyphicon-remove-circle""></span> Clear</span> to delete all children widgets of currently 
+selected widget.</p>"
+                                      :x:/..for-each/..for-each/*/_dp/#?value
+                                      :x:/../*/_arg?value
                                   return:bool:false
                                 else
 
@@ -1583,6 +1599,23 @@ can legally choose for currently selected widget, then feel free to open up the 
                            */
                           if:x:/..default/*/_legal?value
                             break
+                          else
+                            eval-x:x:/+/*/_body
+                            sys42.confirm-window
+                              _header:Element not allowed
+                              _body:@"<p><strong>Element is not allowed as parent of its children according to the HTML5 standard!</strong></p>
+<p>Your currently selected widget has one or more children element(s) of type <em>'{0}'</em>.</p>
+<p>You cannot have a <em>'{0}'</em> element inside of a <em>'{1}'</em> element, since the HTML5 standard does not permit this. If you wish to see the element name(s) you
+can legally choose for currently selected widget, then feel free to open up the element wizard, by clicking the 
+<span class=""glyphicon glyphicon-info-sign""></span> button next to the element name textbox.</p>
+<p>If you still want to change your element to <em>'{1}'</em>, you need to at the very least delete all <em>'{0}'</em> elements in it first, 
+or change their elements to something that's legal inside of a <em>'{1}'</em> element.</p>
+<p><strong>Hint</strong>; Use either <span class=""btn btn-default btn-xs""><span class=""glyphicon glyphicon-pencil""></span> Code</span> to change its children elements at the same time you change the
+parent element, or click <span class=""btn btn-default btn-xs""><span class=""glyphicon glyphicon-remove-circle""></span> Clear</span> to delete all children widgets of currently 
+selected widget.</p>"
+                                :x:/..for-each/*/_dp/#?value
+                                :x:/../*/_arg?value
+                            return:bool:false
                       else
 
                         /*

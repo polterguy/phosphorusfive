@@ -1454,6 +1454,12 @@ you can simply delete it now. A complete version of the widget still exists on y
                       src:usercontrol
 
                   /*
+                   * Retrieving currently iterated children widget's HTML element
+                   */
+                  get-widget-property:x:/..for-each/*/_dp/#?value
+                    element
+
+                  /*
                    * The select specific children widget button is created such that when the user
                    * hovers over it, then the specified children widget that button represents, becomes
                    * "highlighted". Hence the "onmouseXXX" JavaScript DOM events below.
@@ -1468,8 +1474,9 @@ you can simply delete it now. A complete version of the widget still exists on y
                       a
                         href:#
                         href:#
-                        innerValue:@"{0} - {1}"
+                        innerValue:@"{0} - {1} - {2}"
                           :x:/..for-each/*/_dp/#?name
+                          :x:/..for-each/*/get-widget-property/*/*?value
                           :x:/..for-each/*/_dp/#?value
                         onmouseover:@"$('#{0}').addClass('highlight');"
                           :x:/..for-each/*/_dp/#?value

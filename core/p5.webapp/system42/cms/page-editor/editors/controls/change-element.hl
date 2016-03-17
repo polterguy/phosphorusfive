@@ -73,10 +73,8 @@ etc, depending upon which CSS stylesheet file(s) you include on your page.</p>
 <p>The [element] property, can also change the behavior of your widget, to become for instance
 an &lt;input&gt; type of element, requiring input from the user. The [element] property can be any of the legal HTML tagName values in 
 Phosphorus Five.</p>
-<p>Not all legal elements are legal everywhere though. For instance, a <em>""block-level element""</em>, which includes &lt;div&gt; and
-&lt;ul&gt; elements, can normally as a general rule, not be declared inside an <em>""inline-level element""</em>, such as &lt;span&gt; and &lt;strong&gt; elements.</p>
-<p>Some elements requires a special parent HTML element, such as &lt;li&gt; which can only exist inside of either a &lt;ul&gt; or an &lt;ol&gt;
-element.</p>
+<p>Not all legal elements are legal everywhere though. For instance, an <em>""li""</em> element, can normally as a general rule, 
+only be a child of either a <em>""ul""</em> element, a <em>""ol""</em> element or a <em>""menu""</em> element.</p>
 <p>Click the button below, to see which [element] values are legal for your current widget, at its current position.</p>"
                     button
                       class:btn btn-default
