@@ -625,7 +625,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Wizard"
                       title:Adds a [wizard] widget to your page, at the beginning, or before the currently selected widget
                       onclick
-                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-widget-wizard.hl
+                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-wizard-widget.hl
                           _before:true
                         send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
@@ -639,7 +639,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Wizard"
                       title:Appends a [wizard] widget to your page, or after the currently selected widget
                       onclick
-                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-widget-wizard.hl
+                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-wizard-widget.hl
                         send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
@@ -656,7 +656,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-resize-small""></span> Wizard"
                       title:Inserts a [wizard] widget inside of your currently selected [container] widget
                       onclick
-                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-widget-wizard.hl
+                        sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-wizard-widget.hl
                           _inside:true
                         send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
@@ -909,6 +909,14 @@ $('html, body').animate({{
                 add:x:/+
                   src:x:/../*/_arg?value
                 set-widget-property:x:/../*/find-widget/*?value
+
+                /*
+                 * Refreshing widget's properties
+                 */
+                set:x:/+/*?value
+                  src:x:/../*/_arg?value
+                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                  _initial-focus-property
               else
 
                 /*
@@ -923,13 +931,14 @@ $('html, body').animate({{
                     sys42.info-window:Hello World 2.0
                 set-widget-ajax-event:x:/../*/find-widget/*?value
 
-              /*
-               * Refreshing widget's properties
-               */
-              set:x:/+/*?value
-                src:x:/../*/_arg?value
-              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
-                _initial-focus-property
+                /*
+                 * Refreshing widget's properties
+                 */
+                set:x:/+/*?value
+                  src:_{0}
+                    :x:/../*/_arg?value
+                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/widget-properties.hl
+                  _initial-focus-property
 
           widgets
 

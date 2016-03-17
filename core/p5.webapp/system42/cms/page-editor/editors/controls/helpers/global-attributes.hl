@@ -17,20 +17,21 @@ accesskey:@"Provides a hint for generating a keyboard shortcut for the current e
 
 class:@"Is a space-separated list of the classes of the element. Classes allows CSS and JavaScript to select and access specific elements via the class selectors, or functions like the method Document.getElementsByClassName()."
 
+contenteditable:@"Is an enumerated attribute indicating if the element should be editable by the user. If so, the browser modifies its widget to allow editing. The attribute must take one of the following values: true or false."
+
 contextmenu:@"Is the id of an &lt;menu&gt; to use as the contextual menu for this element."
 
-dir:@"Is an enumerated attribute indicating the directionality of the element's text. It can have the following values: 
+dir:@"Is an enumerated attribute indicating the directionality of the element's text. It can have the following values: ltr, rtl or auto."
 
-- ltr
-- rtl
-- auto."
+hidden:@"Is a Boolean attribute indicates that the element is not yet, or is no longer, relevant. For example, it can be used to hide elements of the page that can't be used until the login process has been completed. The browser won't render such elements. This attribute must not be used to hide content that could legitimately be shown."
+
+lang:@"Participates in defining the language of the element, the language that non-editable elements are written in or the language that editable elements should be written in. The tag contains one single entry value in the format defines in the Tags for Identifying Languages (BCP47) IETF document. xml:lang has priority over it."
 
 style:@"Contains CSS styling declarations to be applied to the element. Note that it is recommended for styles to be defined in a separate file or files. This attribute and the &lt;style&gt; element have mainly the purpose of allowing for quick styling, for example for testing purposes."
 
-tabindex:@"Is an integer attribute indicates if the element can take input focus (is focusable), if it should participate to sequential keyboard navigation, and if so, at what position. It can takes several values: a negative value means that the element should be focusable, but should not be reachable via sequential keyboard navigation;
-
-- 0 means that the element should be focusable and reachable via sequential keyboard navigation, but its relative order is defined by the platform convention
-- 1 or more, means that it should be focusable and reachable via sequential keyboard navigation; its relative order is defined by the value of the attribute: the sequential follow the increasing number of the tabindex. If several elements share the same tabindex, their relative order follows their relative position in the document"
+tabindex:@"Is an integer attribute indicates if the element can take input focus (is focusable), if it should participate to sequential keyboard navigation, and if so, at what position. It can takes several values: * a negative value means that the element should be focusable, but should not be reachable via sequential keyboard navigation;
+- * 0 means that the element should be focusable and reachable via sequential keyboard navigation, but its relative order is defined by the platform convention;
+- * a positive value which means should be focusable and reachable via sequential keyboard navigation; its relative order is defined by the value of the attribute: the sequential follow the increasing number of the tabindex. If several elements share the same tabindex, their relative order follows their relative position in the document)."
 
 title:@"Contains a text representing advisory information related to the element it belongs to. Such information can typically, but not necessarily, be presented to the user as a tooltip."
 
@@ -50,6 +51,12 @@ oncontextmenu:@"The event occurs when the user right-clicks on an element to ope
 ondblclick:@"The event occurs when the user double-clicks on an element"
 
 onmousedown:@"The event occurs when the user presses a mouse button over an element"
+
+onmouseenter:@"The event occurs when the pointer is moved onto an element"
+
+onmouseleave:@"The event occurs when the pointer is moved out of an element"
+
+onmousemove:@"The event occurs when the pointer is moving while it is over an element"
 
 onmouseover:@"The event occurs when the pointer is moved onto an element, or onto one of its children"
 
@@ -80,8 +87,107 @@ onchange:@"The event occurs when the content of a form element, the selection, o
 
 onfocus:@"The event occurs when an element gets focus"
 
+onfocusin:@"The event occurs when an element is about to get focus"
+
+onfocusout:@"The event occurs when an element is about to lose focus"
+
+oninput:@"The event occurs when an element gets user input"
+
+oninvalid:@"The event occurs when an element is invalid"
+
+onsearch:@"The event occurs when the user writes something in a search field, only for &lt;input='search'&gt;"
+
+onselect:@"The event occurs after the user selects some text, only for &lt;input&gt; and &lt;textarea&gt;"
+
+ondrag:@"The event occurs when an element is being dragged"
+
+ondragend:@"The event occurs when the user has finished dragging an element"
+
+ondragenter:@"The event occurs when the dragged element enters the drop target"
+
+ondragleave:@"The event occurs when the dragged element leaves the drop target"
+
+ondragover:@"The event occurs when the dragged element is over the drop target"
+
+ondragstart:@"The event occurs when the user starts to drag an element"
+
+ondrop:@"The event occurs when the dragged element is dropped on the drop target"
 
 
+
+
+_header:Clipboard events
+  _description:@"Events that are associated with the clipboard somehow"
+
+oncopy:@"The event occurs when the user copies the content of an element"
+
+oncut:@"The event occurs when the user cuts the content of an element"
+
+onpaste:@"The event occurs when the user pastes some content in an element"
+
+
+
+_header:Media events
+  _description:@"Events that are associated with media, such as sound and video"
+
+onabort:@"The event occurs when the loading of a media is aborted"
+
+oncanplay:@"The event occurs when the browser can start playing the media because of having buffered enough to be able to begin playing"
+
+oncanplaythrough:@"The event occurs when the browser can play through the media without stopping for buffering"
+
+ondurationchange:@"The event occurs when the duration of the media is changed"
+
+onemptied:@"The event occurs when something bad happens and the media file is suddenly unavailable"
+
+onended:@"The event occurs when the media has reach the end"
+
+onerror:@"The event occurs when an error occurred during the loading of a media file"
+
+onloadeddata:@"The event occurs when media data is loaded"
+
+onloadedmetadata:@"The event occurs when meta data are loaded"
+
+onloadstart:@"The event occurs when the browser starts looking for the specified media"
+
+onpause:@"The event occurs when the media is paused either by the user or programmatically"
+
+onplay:@"The event occurs when the media has been started or is no longer paused"
+
+onplaying:@"The event occurs when the media is playing after having been paused or stopped for buffering"
+
+onprogress:@"The event occurs when the browser is in the process of downloading the media data"
+
+onratechange:@"The event occurs when the playing speed of the media is changed"
+
+onseeked:@"The event occurs when the user is finished moving skipping to a new position in the media"
+
+onseeking:@"The event occurs when the user starts skipping to a new position in the media"
+
+onstalled:@"The event occurs when the browser is trying to get media data, but data is not available"
+
+onsuspend:@"The event occurs when the browser is intentionally not getting media data"
+
+ontimeupdate:@"The event occurs when the playing position has changed"
+
+onvolumechange:@"The event occurs when the volume of the media has changed"
+
+onwaiting:@"The event occurs when the media has paused but is expected to resume"
+
+
+
+
+
+_header:Touch events
+  _decription:@"Events only relevant for touch screen displays"
+
+ontouchcancel:@"The event occurs when the touch is interrupted"
+
+ontouchend:@"The event occurs when a finger is removed from a touch screen"
+
+ontouchmove:@"The event occurs when a finger is dragged across the screen"
+
+ontouchstart:@"The event occurs when a finger is placed on a touch screen"
 
 
 
