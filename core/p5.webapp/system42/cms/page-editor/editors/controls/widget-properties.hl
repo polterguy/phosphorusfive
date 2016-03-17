@@ -1408,7 +1408,12 @@ this choice!</strong></p>"
                     default
 
                       /*
-                       * Then loading up all legal HTML5 elements (minus some special cases), and check if element
+                       * Used to track if element has a legal name, according to its children, and its parent element
+                       */
+                      _legal:bool:false
+
+                      /*
+                       * Loading up all legal HTML5 elements (minus some special cases), and check if element
                        * can be found in this list
                        */
                       load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
@@ -1431,7 +1436,7 @@ this choice!</strong></p>"
                          * Looping through each [permitted-content] part of parent widget's element from "legal-elements.hl"
                          */
                         for-each:x:@"/..default/*/load-file/*/*/""{0}""/*/permitted-content/*"
-                          :x:/..if/*/get-widget-property/*/*?value
+                          :x:/..if/*/get-widget-property/[0,1]/*/*?value
 
                           /*
                            * Checking if element is "explicitly allowed" (named as child of [permitted-content] of parent)
@@ -1444,7 +1449,9 @@ this choice!</strong></p>"
                             /*
                              * Element is explicitly named as legal children of its current parent
                              */
-                            return:bool:true
+                            set:x:/..default/*/_legal?value
+                              src:bool:true
+                            break
 
                           /*
                            * Now checking if parent allows "type" of element, by looping through all [type]s given
@@ -1469,18 +1476,134 @@ this choice!</strong></p>"
                                 /*
                                  * Element explicitly disallowed in parent element's list of legal elements
                                  */
-                                return:bool:false
+                                break
 
                               /*
                                * New element name for child element matches type of content parent allows, and is not
                                * explicitly disallowed either
                                */
-                              return:bool:true
+                              set:x:/..default/*/_legal?value
+                                src:bool:true
+                              break
+
+                        /*
+                         * Checking if parent did not allow content type of specified element,
+                         * and if not, returning failure to caller, and showing some information to user
+                         */
+                        if:x:/..default/*/_legal?value.bool
+                          =:bool:false
+                          eval-x:x:/+/*/_body
+                          sys42.confirm-window
+                            _header:Element not allowed
+                            _body:@"<p><strong>Element is not allowed inside of its parent according to the HTML5 standard!</strong></p>
+<p>Your currently selected widget's parent widget's HTML element is <em>'{1}'</em>.</p>
+<p>You cannot put a <em>'{0}'</em> element inside of a <em>'{1}'</em>, since the HTML5 standard does not permit this. If you wish to see the element name(s) you
+can legally choose for currently selected widget, then feel free to open up the element wizard, by clicking the 
+<span class=""glyphicon glyphicon-info-sign""></span> button next to the element name textbox.</p>"
+                              :x:/../*/_arg?value
+                              :x:/..if/..if/*/get-widget-property/[0,1]/*/*?value
+                            _onok
+                              send-javascript:@"$('#widget-property-element').focus().select();"
+                          return:bool:false
+
+                        /*
+                         * Element is now determined to be legal inside of its parent, now we need to traverse
+                         * element's children widgets, to see if some of these children will become illegal with
+                         * the new parent element name
+                         */
+                        get-children-widgets:x:/..if/*/find-widget/*?value
+                        get-widget-property:x:/-/*/*?value
+                          element
+
+                        /*
+                         * Now looping through each children widget's element, to see if it is legal inside the new
+                         * parent widget's element name
+                         */
+                        for-each:x:/..if/*/get-widget-property/[1,2]/*/*
+
+                          /*
+                           * If widget has children, we default return value to false
+                           */
+                          set:x:/..default/*/_legal?value
+                            src:bool:false
+
+                          /*
+                           * Looping through each [permitted-content] of parent element, which is the element we're dealing with
+                           */
+                          for-each:x:@"/..default/*/load-file/*/*/""{0}""/*/permitted-content/*"
+                            :x:/../*/_arg?value
+
+                            /*
+                             * Checking if element is explicitly named as legal parent
+                             */
+                            if:x:/..for-each/*/_dp/#?name
+                              =:element
+                              and:x:/..for-each/*/_dp/#?value
+                                =:x:/..for-each/..for-each/*/_dp/#?value
+
+                              /*
+                               * Element is explicitly mentioned as legal content
+                               */
+                              set:x:/..default/*/_legal?value
+                                src:bool:true
+                              break
+                            else-if:x:/..for-each/*/_dp/#?name
+                              =:type
+
+                              /*
+                               * Checking if currently iterated child element has a [type] declaration that
+                               * matches currently iterated [permitted-parent]
+                               */
+                              if:x:@"/..default/*/load-file/*/*/""{0}""/*/type/""={1}"""
+                                :x:/..for-each/..for-each/*/_dp/#?value
+                                :x:/..for-each/*/_dp/#?value
+
+                                /*
+                                 * Checking that no [except] rule exists
+                                 */
+                                if:x:/..for-each/*/_dp/#/*/except/={0}
+                                  :x:/..for-each/..for-each/*/_dp/#?value
+
+                                  /*
+                                   * Child element is explicitly disallowed inside of the widget's element user tried to change element of
+                                   */
+                                  return:bool:false
+                                else
+
+                                  /*
+                                   * Currently iterated child element has a [type] that is listed in [permitted-parent],
+                                   * of parent element, and no [except] rule exists
+                                   */
+                                  set:x:/..default/*/_legal?value
+                                    src:bool:true
+                                  break
+
+                          /*
+                           * Checking if [_legal] was set to true, and if so, break outer [for-each]
+                           */
+                          if:x:/..default/*/_legal?value
+                            break
+                      else
+
+                        /*
+                         * User tried to change element to something that does not exist.
+                         * Showing user some information, before returning failure to caller
+                         */
+                        eval-x:x:/+/*/_header
+                        sys42.confirm-window
+                          _header:Element <em>'{0}'</em> does not exist
+                            :x:/../*/_arg?value
+                          _body:@"<p><strong>That element does not event exist!</strong></p>
+<p>I cannot allow you to change the element of your widget to an element that does not exist according to the HTML5 standard.</p>
+<p>If you wish to see the element name(s) you can legally choose for currently selected widget, then feel free to open up the element wizard, 
+by clicking the <span class=""glyphicon glyphicon-info-sign""></span> button next to the element name textbox.</p>"
+                          _onok
+                            send-javascript:@"$('#widget-property-element').focus().select();"
 
                       /*
-                       * Element was *NOT* found in "legal HTML5 element list", returning failure to caller
+                       * Returning legality to caller
                        */
-                      return:bool:false
+                      return:x:/..default/*/_legal?value.bool
 
             /*
              * Help button for [element] property of widget
