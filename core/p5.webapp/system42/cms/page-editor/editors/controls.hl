@@ -670,7 +670,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Usercontrol"
                       title:Adds a [usercontrol] widget to your page, at the beginning, or before the currently selected widget
                       onclick
-                        sys42.wysiwyg-controls.add-control:_usercontrol
+                        sys42.wysiwyg-controls.add-control:usercontrol
                           _before:true
                         send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
@@ -684,7 +684,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Usercontrol"
                       title:Appends a [usercontrol] widget to your page, or after the currently selected widget
                       onclick
-                        sys42.wysiwyg-controls.add-control:_usercontrol
+                        sys42.wysiwyg-controls.add-control:usercontrol
                         send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
                 /*
@@ -704,7 +704,7 @@ $('html, body').animate({{
                         find-widget:wysiwyg-editor-surface
                           data-selected:true
                         eval-x:x:/+/*
-                        sys42.wysiwyg-controls.add-control:_usercontrol
+                        sys42.wysiwyg-controls.add-control:usercontrol
                           _parent:x:/../*/find-widget/*?value
                         send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
 
@@ -718,7 +718,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Literal"
                       title:Adds a [literal] widget to your page, at the beginning, or before the currently selected widget
                       onclick
-                        sys42.wysiwyg-controls.add-control:span
+                        sys42.wysiwyg-controls.add-control:literal
                           _before:true
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
@@ -734,7 +734,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Literal"
                       title:Appends a [literal] widget to your page, or after the currently selected widget
                       onclick
-                        sys42.wysiwyg-controls.add-control:span
+                        sys42.wysiwyg-controls.add-control:literal
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
                         send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
@@ -756,7 +756,7 @@ $('html, body').animate({{
                         find-widget:wysiwyg-editor-surface
                           data-selected:true
                         eval-x:x:/+/*
-                        sys42.wysiwyg-controls.add-control:span
+                        sys42.wysiwyg-controls.add-control:literal
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
@@ -772,7 +772,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Container"
                       title:Adds a [container] widget to your page, at the beginning, or before the currently selected widget
                       onclick
-                        sys42.wysiwyg-controls.add-control:div
+                        sys42.wysiwyg-controls.add-control:container
                           _before:true
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
@@ -788,7 +788,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Container"
                       title:Appends a [container] widget to your page, or after the currently selected widget
                       onclick
-                        sys42.wysiwyg-controls.add-control:div
+                        sys42.wysiwyg-controls.add-control:container
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
                         send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
@@ -810,7 +810,7 @@ $('html, body').animate({{
                         find-widget:wysiwyg-editor-surface
                           data-selected:true
                         eval-x:x:/+/*
-                        sys42.wysiwyg-controls.add-control:div
+                        sys42.wysiwyg-controls.add-control:container
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
@@ -826,7 +826,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-left""></span> Void"
                       title:Adds a [void] widget to your page, at the beginning, or before the currently selected widget
                       onclick
-                        sys42.wysiwyg-controls.add-control:br
+                        sys42.wysiwyg-controls.add-control:void
                           _before:true
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
@@ -842,7 +842,7 @@ $('html, body').animate({{
                       innerValue:@"<span class=""glyphicon glyphicon-arrow-right""></span> Void"
                       title:Appends a [void] widget to your page, or after the currently selected widget
                       onclick
-                        sys42.wysiwyg-controls.add-control:br
+                        sys42.wysiwyg-controls.add-control:void
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
                         send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');"
@@ -864,7 +864,7 @@ $('html, body').animate({{
                         find-widget:wysiwyg-editor-surface
                           data-selected:true
                         eval-x:x:/+/*
-                        sys42.wysiwyg-controls.add-control:br
+                        sys42.wysiwyg-controls.add-control:void
                           _parent:x:/../*/find-widget/*?value
                         sys42.info-window:@"Please change widget's id and element to what you wish"
                           _time:more
@@ -1694,13 +1694,35 @@ you can simply delete it now. A complete version of the widget still exists on y
 
       /*
        * Then we need to "wash" the above list, according to which parent element currently selected
-       * widget has, and according to which children elements it has, such that we do not suggest an
-       * element that for some reasons becomes "illegal" according to the HTML5 standard. We do this
-       * by first retrieving the currently selected widget, and its parent element
+       * widget has, or which widget was explicitly given as [_widget], and according to which children 
+       * elements it has, such that we do not suggest an element that for some reasons becomes "illegal" 
+       * according to the HTML5 standard. We do this by first retrieving the currently selected widget, 
+       * and its parent element, unless another widget was explicitly given as [_widget]
        */
-      find-widget:wysiwyg-editor-surface
-        data-selected:true
-      get-parent-widget:x:/-/*?value
+      _selected-widget
+      if:x:/../*/_widget?value
+
+        /*
+         * A widget to check was specified as [_widget], using that as basis for check
+         */
+        set:x:/./-?value
+          src:x:/../*/_widget?value
+      else
+
+        /*
+         * No [_widget] argument was specified, finding selected widget in surface, and using that as
+         * element
+         */
+        find-widget:wysiwyg-editor-surface
+          data-selected:true
+        set:x:/../*/_selected-widget?value
+          src:x:/./-/*?value
+
+      /*
+       * Then finding parent of widget, and retrieving its element, such that we can find all the legal
+       * children elements widget can legally have
+       */
+      get-parent-widget:x:/../*/_selected-widget?value
       get-widget-property:x:/-/*?value
         element
 
@@ -1763,7 +1785,7 @@ you can simply delete it now. A complete version of the widget still exists on y
        * currently selected widget allows as its children widgets, now we need to further
        * refine this list according to which children widgets currently selected widget has
        */
-      get-children-widgets:x:/../*/find-widget/*?value
+      get-children-widgets:x:/../*/_selected-widget?value
       get-widget-property:x:/-/*/*?value
         element
 
@@ -2069,19 +2091,6 @@ you can simply delete it now. A complete version of the widget still exists on y
         src:x:/../*/sys42.wysiwyg-controls.get-default-properties/*
 
       /*
-       * Checking if an explicit [element] was given, and if not, choose
-       * the name of the widget type. Otherwise, use the explicit [element]
-       * declaration
-       */
-      if:x:/../*/sys42.wysiwyg-controls.get-default-properties/*/element
-        not
-        and:x:/../*/_arg?value
-          !=:_usercontrol
-        add:x:/../*/_create-widget
-          src:"element:{0}"
-            :x:/../*/_arg?value
-
-      /*
        * Adding [onclick] event handler, such that user can select widget
        * in WYSIWYG surface by clicking it
        */
@@ -2107,7 +2116,7 @@ you can simply delete it now. A complete version of the widget still exists on y
         set:x:/../*/_create-widget?name
           src:create-literal-widget
       else-if:x:/../*/_arg?value
-        !=:_usercontrol
+        !=:usercontrol
         set:x:/../*/_create-widget?name
           src:create-void-widget
       else
@@ -2125,10 +2134,33 @@ you can simply delete it now. A complete version of the widget still exists on y
 
       /*
        * At this point, Active Event invocation below, should have been adequately built
-       * for correctly inserting our widget into surface
+       * for correctly inserting our widget into surface, or we should have returned early,
+       * either because of that no widgets were allowed at current position, or because we
+       * deferred creation to usercontrol logic
        */
       _create-widget
-      sys42.wysiwyg-controls.select-widget:x:/-?value
+
+      /*
+       * Now we must change widget's HTML element to something that's legal according to the position in page
+       */
+
+      /*
+       * Finding first HTML element that is legal according to position in page, and
+       * using that as "default element" for widget when created, if any.
+       * If "div" or "span" are legal, we give them priority
+       */
+      eval-x:x:/+/*
+      sys42.wysiwyg-controls.get-legal-element-names-for-selected-widget
+        _widget:x:/../*/~create-?value
+      set-widget-property:x:/../*/~create-?value
+        element:x:/../*/sys42.wysiwyg-controls.get-legal-element-names-for-selected-widget(/*/div|/*/span|/0)/[0,1]?name
+          
+
+      /*
+       * Changing the currently selected widget in WYSIWYG surface to newly created widget,
+       * and re-databinding "select widget" dropdown box
+       */
+      sys42.wysiwyg-controls.select-widget:x:/../*/~create-?value
       sys42.wysiwyg-controls.databind-select-widget-dropdown
 
       /*
@@ -2167,17 +2199,33 @@ you can simply delete it now. A complete version of the widget still exists on y
        * is given. Otherwise, we append the widget into the main design surface
        */
       if:x:/../*/find-widget/*
+
+        /*
+         * A widget is currently selected in WYSIWYG surface, checking if this
+         * is a [_before] operation, or after (which is default)
+         */
         if:x:/../*/_before?value.bool
-          // [_before] was supplied
+
+          /*
+           * [_before] was supplied
+           */
           eval-x:x:/+/*
           return
             before:x:/../*/find-widget/*?value
         else
-          // No [_before], this is an after operation
+
+          /*
+           * No [_before], this is an after operation
+           */
           eval-x:x:/+/*
           return
             after:x:/../*/find-widget/*?value
       else
+
+        /*
+         * No widget is selected in surface, now checking if this is a [_before]
+         * operation, or after (which is default)
+         */
         if:x:/../*/_before?value.bool
           add:x:/./+
             src:"position:0"
@@ -2190,10 +2238,10 @@ you can simply delete it now. A complete version of the widget still exists on y
      */
     sys42.wysiwyg-controls.get-default-properties
       switch:x:/../*/_arg?value
-        case:span
+        case:literal
           return
             innerValue:Foo bar
-        case:div
+        case:container
           return
             widgets
         case:br

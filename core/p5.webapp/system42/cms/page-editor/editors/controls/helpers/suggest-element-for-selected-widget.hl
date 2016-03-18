@@ -18,7 +18,21 @@ if
  * Making sure dialogues becomes initially visible, and that we give initial
  * focus to "OK" button
  */
-send-javascript:@"$('#wysiwyg-controls-element-window').modal('toggle');"
+send-javascript:@"$('#wysiwyg-controls-element-window').modal('toggle');
+$('#wysiwyg-controls-element-window').on('shown.bs.modal', function () {
+    $('#wysiwyg-controls-element-window-close').focus();
+})"
+
+
+/*
+ * Checking if a [_text] argument was supplied, and if so, making sure we display it at
+ * the top of our modal window's body-content
+ */
+if:x:/../*/_text
+  eval-x:x:/+/*/*
+  insert-before:x:/../*/create-widget/**/container/=wysiwyg-controls-element-window-body/*/widgets/0
+    src
+      text:x:/../*/_text?value
 
 
 /*
@@ -45,7 +59,7 @@ create-widget:wysiwyg-controls-element-window
                 /*
                  * Close button
                  */
-                literal
+                literal:wysiwyg-controls-element-window-close
                   element:button
                   class:close
                   data-dismiss:modal
@@ -96,12 +110,20 @@ create-widget:wysiwyg-controls-element-window
                           html-encode:x:/./*/_dp/#?value
 
                           /*
+                           * Creating a short description
+                           */
+                          split:x:/..for-each/*/html-encode?value
+                            =:.
+
+                          /*
                            * Parametrising [create-widget] invocation
                            */
                           set:x:/..for-each/*/create-widget/**/={element-name}?value
                             src:x:/..for-each/*/_dp/#?name
-                          set:x:/..for-each/*/create-widget/**/innerValue/={element-description}?value
+                          set:x:/..for-each/*/create-widget/**/={element-description}?value
                             src:x:/..for-each/*/html-encode?value
+                          set:x:/..for-each/*/create-widget/**/={element-short-description}?value
+                            src:x:/..for-each/*/split/0?name
 
                           /*
                            * Creating table row ("tr") widget, which once clicked, selects that element as element
@@ -144,7 +166,12 @@ create-widget:wysiwyg-controls-element-window
                                   strong
                                     innerValue:{element-name}
                               td
-                                innerValue:{element-description}
+                                title:{element-description}
+                                widgets
+                                  em
+                                    widgets
+                                      small
+                                        innerValue:{element-short-description}
                       widgets
                         thead
                           widgets

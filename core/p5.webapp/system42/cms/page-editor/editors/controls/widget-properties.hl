@@ -1332,15 +1332,19 @@ or supply an 'empty' value to have an automatically generated id created"
                     !=:bool:true
 
                     /*
-                     * The new element name was not legal. Warning user, setting some error CSS classes on
-                     * textbox, before returning early
+                     * The new element name was not legal. Showing user a list of suggested elements, and
+                     * setting some "error" CSS classes on element property textbox, before returning early
                      */
-                    sys42.info-window:@"I am sorry but I cannot accept that as the value for your element! Please click the exclamation mark, if you're not sure about which element to use for your widget"
-                      _time:more
-                      _error:true
+                    sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/suggest-element-for-selected-widget.hl
+                      _text:@"<p><strong>I am sorry, but that is not a legal element at this position in your page!</strong></p>
+<p>The reason might be either because of its parent element not accepting anything but children elements from the list below, or
+because of its children widgets not tolerating anything but parent elements from the list below.</p>
+<p>If you are persistent, and feel you must change the element to what you supplied, you can try to click the
+<span class=""btn btn-default btn-xs""><span class=""glyphicon glyphicon-pencil""></span> Code</span> button and manually
+change your element, while also changing its parent elements and/or its children elements. Alternatively, you can delete
+its children widgets, and/or change its parent widget's element property.</p>"
                     set-widget-property:widget-property-element
                       class:form-control error
-                    send-javascript:@"$('#widget-property-element').select().focus();"
                     return
 
                   /*
