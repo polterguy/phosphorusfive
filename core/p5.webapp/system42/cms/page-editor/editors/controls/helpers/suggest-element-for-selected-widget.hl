@@ -18,10 +18,7 @@ if
  * Making sure dialogues becomes initially visible, and that we give initial
  * focus to "OK" button
  */
-send-javascript:@"$('#wysiwyg-controls-element-window').modal('toggle');
-$('#wysiwyg-controls-element-window').on('shown.bs.modal', function () {
-    $('#wysiwyg-controls-element-window-ok').focus();
-})"
+send-javascript:@"$('#wysiwyg-controls-element-window').modal('toggle');"
 
 
 /*
@@ -73,219 +70,28 @@ create-widget:wysiwyg-controls-element-window
                 container:wysiwyg-controls-element-window-body
                   element:div
                   widgets
-                    text:@"<p>The [element] property of your widget, defines which HTML element your
-widget is being rendered with. This often has consequences for how your widget looks like and behaves, such as text color, background color,
-etc, depending upon which CSS stylesheet file(s) you include on your page.</p>
-<p>The [element] property, can also change the behavior of your widget, to become for instance
-an &lt;input&gt; type of element, requiring input from the user. The [element] property can be (almost) any of the legal HTML tagName values in 
-Phosphorus Five.</p>
-<p>Some element values are restricted in Phosphorus Five, such as &lt;head&gt;, &lt;form&gt;, and other tags that would not
-play well with Phosphorus Five for some reasons.</p>
-<p>Not all legal elements are legal everywhere though. For instance, an <em>""li""</em> element, can normally as a general rule, 
-only be a child of either a <em>""ul""</em> element, a <em>""ol""</em> element or a <em>""menu""</em> element.</p>
-<p>Click the button below, to see which [element] values are legal for your current widget, at its current position.</p>"
-
-                    /*
-                     * "Suggest element" button that toggles table showing suggested element names
-                     * for currently selected widget
-                     */
-                    button
-                      class:btn btn-default
-                      innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Suggest element"
-                      onclick
-
-                        /*
-                         * Checking if table of suggested elements is already visible, 
-                         * and if so, make it invisible
-                         */
-                        if
-                          fetch:x:/0/0/0?value
-                            get-widget-property:wysiwyg-window-list-of-elements-table
-                              visible
-                          not
-
-                          /*
-                           * Table is not visible, showing it
-                           */
-                          set-widget-property:wysiwyg-window-list-of-elements-table
-                            visible:true
-                        else
-
-                          /*
-                           * Table is already visible, hiding it
-                           */
-                          set-widget-property:wysiwyg-window-list-of-elements-table
-                            visible:false
+                    text:@"<p>Your currently selected widget can legally have these values as its <em>""element""</em> property.</p>"
 
                     /*
                      * Table showing suggestions for element names for currently selected widget
                      */
                     table:wysiwyg-window-list-of-elements-table
-                      visible:false
                       class:prepend-top table table-hover
                       oninit
 
                         /*
-                         * Loading file that contains definition of all (most) HTML elements in HTML5
+                         * Retrieving all legal elements for currently selected widget
                          */
-                        load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
-
-                        /*
-                         * Then we need to "wash" the above list, according to which parent element currently selected
-                         * widget has, and according to which children elements it has, such that we do not suggest an
-                         * element that for some reasons becomes "illegal" according to the HTML5 standard. We do this
-                         * by first retrieving the currently selected widget, and its parent element
-                         */
-                        find-widget:wysiwyg-editor-surface
-                          data-selected:true
-                        get-parent-widget:x:/-/*?value
-                        get-widget-property:x:/-/*?value
-                          element
-
-                        /*
-                         * Used as buffer to hold all legal elements
-                         */
-                        _legal-elements
-
-                        /*
-                         * Now we know the parent widget's element, at which point we can remove all elements from our above
-                         * list, that are not legal inside of parent widget's element
-                         */
-                        for-each:x:@"/../*/load-file/*/*/""{0}""/*/permitted-content/*"
-                          :x:/../*/get-widget-property/[0,1]/*/*?value
-
-                          /*
-                           * Checking if this is an "explicitly mentioned element"
-                           */
-                          if:x:/..for-each/*/_dp/#?name
-                            =:element
-
-                            /*
-                             * This is an explicitly mentioned element, adding it to our
-                             * list of [_legal-elements] for later processing
-                             */
-                            add:x:/../*/_legal-elements
-                              src:x:@"/../*/load-file/*/*/""{0}"""
-                                :x:/..for-each/*/_dp/#?value
-                          else-if:x:/..for-each/*/_dp/#?name
-                            =:type
-
-                            /*
-                             * This is a [type] declaration, now we must find all elements that match
-                             * this type, and add them to [_legal-elements], unless they are explicitly
-                             * denied through an [except] rule
-                             */
-                            for-each:x:/../*/load-file/*/*(!/_header)/*/type/={0}/.
-                              :x:/..for-each/..for-each/*/_dp/#?value
-
-                              /*
-                               * Checking if currently (inner loop) iterated element is explicitly denied
-                               * for currently selected element's HTML declaration
-                               */
-                              if:x:/..for-each/..for-each/*/_dp/#/*/except/={0}
-                                :x:/..for-each/*/_dp/#?name
-
-                                /*
-                                 * Element is explicitly denied
-                                 */
-                              else
-
-                                /*
-                                 * Element is not explicitly denied, and has a [type] that is allowed
-                                 */
-                                add:x:/../*/_legal-elements
-                                  src:x:/..for-each/*/_dp/#
-
-                        /*
-                         * We have now stuffed into [_legal-elements] all the elements that parent widget of
-                         * currently selected widget allows as its children widgets, now we need to further
-                         * refine this list according to which children widgets currently selected widget has
-                         */
-                        get-children-widgets:x:/../*/find-widget/*?value
-                        get-widget-property:x:/-/*/*?value
-                          element
-
-                        /*
-                         * Now looping through each element from above, which are elements of children widgets of currently selected
-                         * widget, and making sure we remove everything from [_legal-elements], that does not allow these elements
-                         * to be children widgets
-                         */
-                        for-each:x:/-/*/*?value
-
-                          /*
-                           * Then looping through all [_legal-elements] and removing everything that does not have a
-                           * [type] matching a type inside of currently iterated child element's [permitted-parent] declaration(s)
-                           */
-                          for-each:x:/../*/_legal-elements/*
-
-                            /*
-                             * First checking currently iterated child element is explicitly mentioned in currently iterated
-                             * [_legal-element]'s [permitted-content] section as an explicitly allowed element
-                             */
-                            if:x:/..for-each/*/_dp/#/*/permitted-content/*/element/={0}
-                              :x:/..for-each/..for-each/*/_dp?value
-
-                              /*
-                               * Element is explicitly allowed as child of currently iterated [_legal-elements]
-                               * No need to further iterate or check currently iterated [_legal-elements]
-                               */
-                              continue
-
-                            /*
-                             * Looping through each [type] of currently iterated [_legal-element]
-                             */
-                            _found:bool:false
-                            for-each:x:/..for-each/*/_dp/#/*/type?value
-
-                              /*
-                               * Checking if currently iterated [type] can be found in currently iterated children element's
-                               * [permitted-parent] declaration, and no [except] rule exists
-                               */
-                              if:x:/../*/load-file/*/*/{0}/*/permitted-parent/*/accept/={1}
-                                :x:/..for-each/..for-each/..for-each/*/_dp?value
-                                :x:/..for-each/*/_dp?value
-
-                                /*
-                                 * Type declaration for currently iterated [_legal-element] was found in [permitted-parent]
-                                 * for currently iterated child element, now checking if an [except] rule exists
-                                 */
-                                if:x:/../*/load-file/*/*/{0}/*/permitted-parent/*/accept/={1}/*/except/={2}
-                                  :x:/..for-each/..for-each/..for-each/*/_dp?value
-                                  :x:/..for-each/*/_dp?value
-                                  :x:/..for-each/..for-each/*/_dp/#?name
-
-                                  /*
-                                   * Except rule exists, do nothing, let [_found] stay false, and break loop
-                                   */
-                                  break
-                                else
-
-                                  /*
-                                   * No [except] rule exists, signaling success, before breaking loop
-                                   */
-                                  set:x:/..for-each/..for-each/*/_found?value
-                                    src:bool:true
-                                  break
-
-                            /*
-                             * Checking if we should keep currently iterated element, or remove it
-                             */
-                            if:x:/..for-each/*/_found?value.bool
-                              !=:bool:true
-
-                              /*
-                               * Removing currently iterated [_legal-elements]
-                               */
-                              set:x:/..for-each/*/_dp/#
+                        sys42.wysiwyg-controls.get-legal-element-names-for-selected-widget
 
                         /*
                          * Now we know which elements are legal values for currently selected widget, and
                          * can hence create our "suggest table"
                          */
-                        for-each:x:/../*/_legal-elements/*
+                        for-each:x:/-/*
 
                           /*
-                           * HTML encode value, since it might contain "<", ">" and such
+                           * HTML encode value (description of element), since it might contain "<", ">" and such
                            */
                           html-encode:x:/./*/_dp/#?value
 
