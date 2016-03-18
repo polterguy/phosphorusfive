@@ -158,8 +158,8 @@ load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
 
 
 /*
- * Creating "li" widgets that serves as a separater between custom attributes/events 
- * and global attributes/events
+ * Creating "li" widgets that serves as a separater between "add custom attributes/events" button,
+ * and "add global attributes/events" buttons
  */
 create-literal-widget
   parent:wysiwyg-button-add-attribute-list
@@ -184,7 +184,8 @@ sys42.get-widget:x:/../*/find-widget/*?value
 
 /*
  * Removing the [onclick] event handler from widget's declaration, since it's 
- * anyway the "select widget in surface" handler
+ * anyway the "select widget in surface" handler, such that it doesn't filter away
+ * the "Add onclick" event handler button for us
  */
 set:x:/../*/sys42.get-widget/*/*/onclick
 
@@ -283,20 +284,14 @@ for-each:x:/../*/load-file/[0,1]/*/*(!/_header)
           delete-widget:x:/-/*?value
 
 
+
+
 /*
- * Creating "li" widgets that serves as a separater between global attributes/events 
- * and specialized attributes/events
+ * Used to track if a separator between "global events/attributes" 
+ * and "specialized events/attributes" has been added
  */
-create-literal-widget
-  parent:wysiwyg-button-add-attribute-list
-  element:li
-  role:separator
-  class:divider
-create-literal-widget
-  parent:wysiwyg-button-add-event-list
-  element:li
-  role:separator
-  class:divider
+_has-event-separator:bool:false
+_has-attribute-separator:bool:false
 
 
 /*
@@ -325,6 +320,24 @@ for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
     =:int:0
 
     /*
+     * This is an event, making sure we add our spacer if this is our first
+     * specialized event for widget
+     */
+    if:x:/../*/_has-event-separator?value
+      =:bool:false
+      set:x:/../*/_has-event-separator?value
+        src:bool:true
+      /*
+       * Creating "li" widgets that serves as a separater between global attributes/events 
+       * and specialized attributes/events
+       */
+      create-literal-widget
+        parent:wysiwyg-button-add-event-list
+        element:li
+        role:separator
+        class:divider
+
+    /*
      * This is an event handler (starts with "onXXX"), hence adding it to "add event button" instead
      * of "add attribute button". Making sure our JavaScript toggles the "add event" button, and not the 
      * "add attribute" button when clicked
@@ -333,6 +346,25 @@ for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
       src:wysiwyg-button-add-event-list
     set:x:/..for-each/*/create-widget/**/send-javascript/0?value
       src:wysiwyg-button-add-event-wrp
+  else
+
+    /*
+     * This is not an event, hence it's a normal attribute, making sure we add our spacer if this is our first
+     * specialized attribute for widget
+     */
+    if:x:/../*/_has-attribute-separator?value
+      =:bool:false
+      set:x:/../*/_has-attribute-separator?value
+        src:bool:true
+      /*
+       * Creating "li" widgets that serves as a separater between global attributes/events 
+       * and specialized attributes/events
+       */
+      create-literal-widget
+        parent:wysiwyg-button-add-attribute-list
+        element:li
+        role:separator
+        class:divider
 
   /*
    * Creating "li" widget that wraps "add attribute" button

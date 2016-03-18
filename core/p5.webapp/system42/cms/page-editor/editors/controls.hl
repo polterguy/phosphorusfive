@@ -963,7 +963,7 @@ $('html, body').animate({{
                 /*
                  * Populates the list of "Add attribute to selected widget" dropdown button
                  */
-                sys42.wysiwyg-controls.populate-attribute-dropdown-button
+                sys42.wysiwyg-controls.populate-attribute-event-dropdown-button
 
                   /*
                    * Evaluates the file that populates the "Add attribute" dropdown button list
@@ -2183,7 +2183,7 @@ you can simply delete it now. A complete version of the widget still exists on y
         /*
          * Populating "add widget attribute" buttons
          */
-        sys42.wysiwyg-controls.populate-attribute-dropdown-button
+        sys42.wysiwyg-controls.populate-attribute-event-dropdown-button
 
         /*
          * Showing widget's properties widget

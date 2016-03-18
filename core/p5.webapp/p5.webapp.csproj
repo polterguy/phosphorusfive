@@ -359,7 +359,6 @@
     <None Include="system42\tests\for-each.hl" />
     <None Include="system42\tests\iterators.hl" />
     <None Include="system42\cms\page-editor\editors\controls\widget-properties.hl" />
-    <None Include="system42\cms\page-editor\editors\controls\change-element.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-usercontrol.hl" />
     <None Include="system42\cms\page-editor\editors\controls\create-hyperlisp-wizard.hl" />
     <None Include="system42\cms\page-editor\editors\controls\helpers\process-widgets-event-handlers.hl" />
@@ -404,6 +403,7 @@
     <None Include="system42\cms\page-editor\editors\controls\helpers\global-attributes.hl" />
     <None Include="system42\cms\page-editor\editors\controls\populate-add-attribute-event.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-wizard-widget.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\helpers\suggest-element-for-selected-widget.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

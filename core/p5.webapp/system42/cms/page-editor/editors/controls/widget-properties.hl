@@ -1368,6 +1368,11 @@ or supply an 'empty' value to have an automatically generated id created"
                    */
                   sys42.wysiwyg-controls.databind-select-widget-dropdown
 
+                  /*
+                   * Need to refresh list of possible attributes and events for widget
+                   */
+                  sys42.wysiwyg-controls.populate-attribute-event-dropdown-button
+
 
 
 
@@ -1647,7 +1652,7 @@ by clicking the <span class=""glyphicon glyphicon-info-sign""></span> button nex
               innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span>"
               title:Help me with the [element] property please ...
               onclick
-                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/change-element.hl
+                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/suggest-element-for-selected-widget.hl
 
 
 
