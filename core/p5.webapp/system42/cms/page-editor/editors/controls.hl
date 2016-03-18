@@ -1190,6 +1190,60 @@ you can simply delete it now. A complete version of the widget still exists on y
               set:x:/../*/get-session-value/*/*?value
 
               /*
+               * Checking if widget's HTML element is legal where user requested the widget to be pasted,
+               * but in order to do that, we must first find out what the parent widget of currently selected
+               * position is, which depends upon whether or not a [parent] is given, a [before] or [after] 
+               * is given
+               */
+              _paste-parent
+              if:x:/../*/_position/*/parent?value
+
+                /*
+                 * An explicit [parent]  was provided
+                 */
+                set:x:/../*/_paste-parent?value
+                  src:x:/../*/_position/*/parent?value
+
+              else
+
+                /*
+                 * Either a [before] or an [after] was supplied, finding parent
+                 * of that widget, and stuffing into [_paste-parent]
+                 */
+                get-parent-widget:x:/../*/_position/*(/before|/after)?value
+                set:x:/../*/_paste-parent?value
+                  src:x:/./-/*?value
+
+              /*
+               * Now retrieveing all legal children elements for the parent widget user tries to paste widget into,
+               * such that we can verify that widget user tries to paste, has an HTML element which is legal inside
+               * of the parent widget for the position where user tries to paste widget
+               */
+              sys42.wysiwyg-controls.get-legal-element-names-for-children:x:/../*/_paste-parent?value
+              if:x:/-/*/{0}
+                :x:/../*/get-session-value/*/*/*/element?value
+
+                /*
+                 * Clipboard widget is legally allowed according to the HTML5 standard at the position user tries
+                 * to paste it into
+                 */
+              else
+
+                /*
+                 * Clipboard widget is *not* legally allowed according to the HTML5 standard at the position user tries
+                 * to paste it into. Warning user, and returning early
+                 */
+                get-widget-property:x:/../*/_paste-parent?value
+                  element
+                sys42.info-window:@"Sorry, but your clipboard widget's HTML element '{0}'
+is not legally allowed as a child of a '{1}' element"
+                  :x:/../*/get-session-value/*/*/*/element?value
+                  :x:/./-/*/*?value
+                  _error:true
+                  _time:more
+                return
+
+              /*
                * Then setting the id of all children widgets of widget to empty.
                * First looping on all that are "probable matches", before refining
                * by iterating ancestors, checking to see if we found anything but
@@ -1681,6 +1735,90 @@ you can simply delete it now. A complete version of the widget still exists on y
    * Lambda events for Editor Surface
    */
   events
+
+
+
+
+
+    /*
+     * Returns all the legal [element] values for children of specified [_arg]
+     */
+    sys42.wysiwyg-controls.get-legal-element-names-for-children
+
+      /*
+       * Loading file that contains definition of all (most) HTML elements in HTML5
+       */
+      load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
+
+      /*
+       * Then we need to "wash" the above list, according to which element [_arg]'s parent widget has, 
+       * and then add all elements legal inside of parent widget to [_legal-elements] below.
+       * First finding parent of widget, and retrieving its element
+       */
+      get-widget-property:x:/../*/_arg?value
+        element
+
+      /*
+       * Used as buffer to hold all legal elements
+       */
+      _legal-elements
+
+      /*
+       * Now we know the parent widget's element, at which point we can remove all elements from our above
+       * list, that are not legal inside of parent widget's element
+       */
+      for-each:x:@"/../*/load-file/*/*/""{0}""/*/permitted-content/*"
+        :x:/../*/get-widget-property/[0,1]/*/*?value
+
+        /*
+         * Checking if this is an "explicitly mentioned element"
+         */
+        if:x:/..for-each/*/_dp/#?name
+          =:element
+
+          /*
+           * This is an explicitly mentioned element, adding it to our
+           * list of [_legal-elements] for later processing
+           */
+          add:x:/../*/_legal-elements
+            src:x:@"/../*/load-file/*/*/""{0}"""
+              :x:/..for-each/*/_dp/#?value
+        else-if:x:/..for-each/*/_dp/#?name
+          =:type
+
+          /*
+           * This is a [type] declaration, now we must find all elements that match
+           * this type, and add them to [_legal-elements], unless they are explicitly
+           * denied through an [except] rule
+           */
+          for-each:x:/../*/load-file/*/*/*/type/={0}/.
+            :x:/..for-each/..for-each/*/_dp/#?value
+
+            /*
+             * Checking if currently (inner loop) iterated element is explicitly denied
+             * for currently selected element's HTML declaration
+             */
+            if:x:/..for-each/..for-each/*/_dp/#/*/except/={0}
+              :x:/..for-each/*/_dp/#?name
+
+              /*
+               * Element is explicitly denied, hence we do *not* add it to [_legal-elements]
+               */
+            else
+
+              /*
+               * Element is not explicitly denied, and has a [type] that is allowed
+               */
+              add:x:/../*/_legal-elements
+                src:x:/..for-each/*/_dp/#
+
+      /*
+       * Returning all legal elements to caller.
+       * At this point, [_legal-elements] should now contain a list of all the elements that are legal
+       * to use as children elements of [_arg]'s element
+       */
+      insert-before:x:
+        src:x:/../*/_legal-elements/*
 
 
 
