@@ -1389,7 +1389,7 @@ its children widgets, and/or change its parent widget's element property.</p>"
                   /*
                    * Retrieves all legal elements for currently selected widget
                    */
-                  sys42.wysiwyg-controls.get-legal-element-names-for-selected-widget
+                  sys42.wysiwyg-controls.get-legal-element-names-for-widget
 
                   /*
                    * Checking if given [_arg] element can be found in list returned from above

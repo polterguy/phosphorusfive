@@ -96,7 +96,7 @@ create-widget:wysiwyg-controls-element-window
                         /*
                          * Retrieving all legal elements for currently selected widget
                          */
-                        sys42.wysiwyg-controls.get-legal-element-names-for-selected-widget
+                        sys42.wysiwyg-controls.get-legal-element-names-for-widget
 
                         /*
                          * Now we know which elements are legal values for currently selected widget, and

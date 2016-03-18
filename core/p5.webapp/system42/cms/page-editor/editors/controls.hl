@@ -1682,10 +1682,15 @@ you can simply delete it now. A complete version of the widget still exists on y
    */
   events
 
+
+
+
+
     /*
-     * Returns all the legal [element] values for currently selected widget
+     * Returns all the legal [element] values for specified [_widget], or currently selected widget,
+     * if no [_widget] argument is supplied
      */
-    sys42.wysiwyg-controls.get-legal-element-names-for-selected-widget
+    sys42.wysiwyg-controls.get-legal-element-names-for-widget
 
       /*
        * Loading file that contains definition of all (most) HTML elements in HTML5
@@ -1695,9 +1700,10 @@ you can simply delete it now. A complete version of the widget still exists on y
       /*
        * Then we need to "wash" the above list, according to which parent element currently selected
        * widget has, or which widget was explicitly given as [_widget], and according to which children 
-       * elements it has, such that we do not suggest an element that for some reasons becomes "illegal" 
-       * according to the HTML5 standard. We do this by first retrieving the currently selected widget, 
-       * and its parent element, unless another widget was explicitly given as [_widget]
+       * elements it has, such that we do not suggest an element that for some reasons becomes invalid 
+       * according to the HTML5 standard. We do this by first retrieving the currently selected widget 
+       * or [_widget]'s parent element, and then add all elements legal inside of parent widget to
+       * [_legal-elements] below
        */
       _selected-widget
       if:x:/../*/_widget?value
@@ -1710,8 +1716,8 @@ you can simply delete it now. A complete version of the widget still exists on y
       else
 
         /*
-         * No [_widget] argument was specified, finding selected widget in surface, and using that as
-         * element
+         * No [_widget] argument was specified, finding selected widget in surface, 
+         * and using that as widget to check
          */
         find-widget:wysiwyg-editor-surface
           data-selected:true
@@ -1720,7 +1726,7 @@ you can simply delete it now. A complete version of the widget still exists on y
 
       /*
        * Then finding parent of widget, and retrieving its element, such that we can find all the legal
-       * children elements widget can legally have
+       * children elements parent widget can legally have, and stuffing them into [_legal-elements]
        */
       get-parent-widget:x:/../*/_selected-widget?value
       get-widget-property:x:/-/*?value
@@ -1759,7 +1765,7 @@ you can simply delete it now. A complete version of the widget still exists on y
            * this type, and add them to [_legal-elements], unless they are explicitly
            * denied through an [except] rule
            */
-          for-each:x:/../*/load-file/*/*(!/_header)/*/type/={0}/.
+          for-each:x:/../*/load-file/*/*/*/type/={0}/.
             :x:/..for-each/..for-each/*/_dp/#?value
 
             /*
@@ -1770,7 +1776,7 @@ you can simply delete it now. A complete version of the widget still exists on y
               :x:/..for-each/*/_dp/#?name
 
               /*
-               * Element is explicitly denied
+               * Element is explicitly denied, hence we do *not* add it to [_legal-elements]
                */
             else
 
@@ -1782,17 +1788,20 @@ you can simply delete it now. A complete version of the widget still exists on y
 
       /*
        * We have now stuffed into [_legal-elements] all the elements that parent widget of
-       * currently selected widget allows as its children widgets, now we need to further
-       * refine this list according to which children widgets currently selected widget has
+       * currently selected widget or specified [_widget] allows as its children widgets.
+       * Now we need to further refine this list according to which children widgets currently 
+       * selected widget or [_widget] has, since some of the children widgets of [_widget] or 
+       * the currently selected widget, might not necessarily allow a parent element that's 
+       * inside of our [_legal-elements] list
        */
       get-children-widgets:x:/../*/_selected-widget?value
       get-widget-property:x:/-/*/*?value
         element
 
       /*
-       * Now looping through each element from above, which are elements of children widgets of currently selected
-       * widget, and making sure we remove everything from [_legal-elements], that does not allow these elements
-       * to be children widgets
+       * Now looping through each element from above, which are elements of children widgets 
+       * of [_widget] or currently selected widget, and making sure we remove everything from 
+       * [_legal-elements], that does not allow these elements to be children widgets
        */
       for-each:x:/-/*/*?value
 
@@ -1803,20 +1812,24 @@ you can simply delete it now. A complete version of the widget still exists on y
         for-each:x:/../*/_legal-elements/*
 
           /*
-           * First checking currently iterated child element is explicitly mentioned in currently iterated
+           * First checking if currently iterated child element is explicitly mentioned in currently iterated
            * [_legal-element]'s [permitted-content] section as an explicitly allowed element
            */
           if:x:/..for-each/*/_dp/#/*/permitted-content/*/element/={0}
             :x:/..for-each/..for-each/*/_dp?value
 
             /*
-             * Element is explicitly allowed as child of currently iterated [_legal-elements]
-             * No need to further iterate or check currently iterated [_legal-elements]
+             * Element is explicitly allowed as child of currently iterated [_legal-elements].
+             * No need to further check currently iterated [_legal-elements], hence moving
+             * on to next iteration in [_legal-elements] [for-each] loop
              */
             continue
 
           /*
-           * Looping through each [type] of currently iterated [_legal-element]
+           * Looping through each [type] of currently iterated [_legal-element], to see if we can
+           * find this type declaration in currently iterated children widget of [_widget] or 
+           * currently selected widget.
+           * [_found] below is used for signaling that currently iterated [_legal-elements] is allowed
            */
           _found:bool:false
           for-each:x:/..for-each/*/_dp/#/*/type?value
@@ -1858,15 +1871,20 @@ you can simply delete it now. A complete version of the widget still exists on y
             !=:bool:true
 
             /*
-             * Removing currently iterated [_legal-elements]
+             * Removing currently iterated [_legal-elements], since one of its children widget's element
+             * does not allow for [_widget] or currently selected widget to have currently iterated
+             * [_legal-elements] value
              */
             set:x:/..for-each/*/_dp/#
 
       /*
-       * Returning all legal elements to caller
+       * Returning all legal elements to caller.
+       * At this point, [_legal-elements] should now contain a list of all the elements that are legal
+       * to use for either [_widget] or currently selected widget, without creating non-conforming HTML5
        */
       insert-before:x:
         src:x:/../*/_legal-elements/*
+
 
 
 
@@ -2122,7 +2140,8 @@ you can simply delete it now. A complete version of the widget still exists on y
       else
 
         /*
-         * Usercontrol type of widget, invoking creational event, and returning early
+         * Usercontrol type of widget, postponing creation to after having shown
+         * the "Add usercontrol modal window", and returning early
          */
         add:x:/+2/*
           src:x:/../*/_create-widget
@@ -2150,10 +2169,10 @@ you can simply delete it now. A complete version of the widget still exists on y
        * If "div" or "span" are legal, we give them priority
        */
       eval-x:x:/+/*
-      sys42.wysiwyg-controls.get-legal-element-names-for-selected-widget
+      sys42.wysiwyg-controls.get-legal-element-names-for-widget
         _widget:x:/../*/~create-?value
       set-widget-property:x:/../*/~create-?value
-        element:x:/../*/sys42.wysiwyg-controls.get-legal-element-names-for-selected-widget(/*/div|/*/span|/0)/[0,1]?name
+        element:x:/../*/sys42.wysiwyg-controls.get-legal-element-names-for-widget(/*/div|/*/span|/0)/[0,1]?name
           
 
       /*
@@ -2168,6 +2187,10 @@ you can simply delete it now. A complete version of the widget still exists on y
        */
       sys42.wysiwyg-controls.update-code-wiew
 
+
+
+
+
     /*
      * Creates a user control type of widget, by asking user which existing predefined
      * [controls] he would like to include as his [usercontrol]
@@ -2181,6 +2204,10 @@ you can simply delete it now. A complete version of the widget still exists on y
       add:x:/+
         src:x:/../*/_create-widget
       sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-usercontrol.hl
+
+
+
+
 
     /*
      * Returns the position where to insert a new control
@@ -2232,6 +2259,10 @@ you can simply delete it now. A complete version of the widget still exists on y
         return
           parent:wysiwyg-editor-surface
 
+
+
+
+
     /*
      * Returns default properties for specific type of control,
      * takes type of control as [_arg]
@@ -2246,6 +2277,10 @@ you can simply delete it now. A complete version of the widget still exists on y
             widgets
         case:br
           return
+
+
+
+
 
     /*
      * Unselects any selected widgets on page
