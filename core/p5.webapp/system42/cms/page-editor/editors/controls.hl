@@ -513,7 +513,7 @@ create-widget:wysiwyg-editor
              */
             get-session-value:sys42.wysiwyg-controls.help-file-visible
             if:x:/-/*?value.bool
-              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
+              sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/show-help-file.hl
 
             /*
              * If this is first loading of [controls] page during session, we "blink"
@@ -548,7 +548,7 @@ create-widget:wysiwyg-editor
                */
               sys42.wysiwyg-controls.blink-control:wysiwyg-controls-help-button
           onclick
-            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/show-help-file.hl
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/show-help-file.hl
           events
 
             /*
@@ -1733,6 +1733,17 @@ is not legally allowed as a child of a '{1}' element"
 
 
     /*
+     * Bread-crumb for currently selected widget
+     */
+    container:wysiwyg-controls-bread-crumb
+      visible:false
+      class:col-xs-12 prepend-top btn-group
+
+
+
+
+
+    /*
      * Properties for currently selected widget wrapper. Will display the attributes, events, and so
      * on for currently selected widget
      */
@@ -2396,9 +2407,15 @@ is not legally allowed as a child of a '{1}' element"
          */
         get-widget-property:x:/../*/_parent?value
           element
-        sys42.info-window:@"Sorry, but a usercontrol's HTML element is by default 'div', and this 
-is not legally allowed as a child of a '{0}' element"
-          :x:/./-/*/*?value
+        eval-x:x:/+/*/_body
+        sys42.confirm-window
+          _header:@"I cannot insert a usercontrol there"
+          _body:@"<p>Sorry, but a usercontrol's HTML element is by default 'div', and this 
+is not legally allowed as a child of a '{0}' element. You might want to try to add the usercontrol at a different position in
+you page, for then to change its wrapper HTML element, before moving it to where you wish to actually have it.</p>
+<p>Alternatively, you're going to either have to add your usercontrol at a different position, or change the HTML element
+value of the widget you're trying to insert the usercontrol as a child to</p>"
+            :x:/././-2/*/*?value
           _error:true
           _time:more
         return
@@ -2535,6 +2552,8 @@ is not legally allowed as a child of a '{0}' element"
       set-widget-property:x:/-/*?name
         class:btn btn-default disabled
         disabled
+      set-widget-property:wysiwyg-controls-bread-crumb
+        visible:false
 
 
 
@@ -2760,6 +2779,52 @@ is not legally allowed as a child of a '{0}' element"
          */
         sys42.wysiwyg-controls.toggle-select-children-widgets
 
+      /*
+       * Then creating "bread crumb" for traversing easily upwards in hierarchy
+       * from currently selected widget, and upwards to its ancestor widgets
+       */
+      set-widget-property:wysiwyg-controls-bread-crumb
+        visible:true
+      clear-widget:wysiwyg-controls-bread-crumb
+      set:x:/+?value
+        src:x:/../*/find-widget/*?value
+      _cur-widget
+
+      /*
+       * Looping until [_cur-widget] becomes "wysiwyg-editor-surface", and creating a bread crumb
+       * button for each widget upwards in hierarchy
+       */
+      while:x:/../*/_cur-widget?value
+        !=:wysiwyg-editor-surface
+
+        /*
+         * Creating bread-crumb for currently iterated widget
+         */
+        get-widget-property:x:/../*/_cur-widget?value
+          element
+        set:x:/..while/*/create-literal-widget/*/innerValue?value
+          src:x:/..while/*/get-widget-property/*/*?value
+        if:x:/../*/_cur-widget?value
+          =:x:/../*/find-widget/*?value
+          add:x:/..while/*/create-literal-widget
+            src:disabled
+          set:x:/..while/*/create-literal-widget/*/class?value
+            src:btn btn-default btn-xs disabled
+        eval-x:x:/+/**/_widget
+        create-literal-widget
+          parent:wysiwyg-controls-bread-crumb
+          position:0
+          style:"min-width:70px;"
+          element:button
+          class:btn btn-default btn-xs
+          innerValue
+          onclick
+            _widget:x:/../*/_cur-widget?value
+            sys42.wysiwyg-controls.select-widget:x:/../*/_widget?value
+        get-parent-widget:x:/../*/_cur-widget?value
+        set:x:/../*/_cur-widget?value
+          src:x:/./-/*?value
+
 
 
 
@@ -2780,7 +2845,7 @@ is not legally allowed as a child of a '{0}' element"
 
 
     /*
-     * Returns true if currently selected widget's element aloows "block level content".
+     * Returns true if currently selected widget's element allows "block level content"
      */
     sys42.wysiwyg-controls.selected-widget-allows-block-level-content
 
@@ -2797,7 +2862,7 @@ is not legally allowed as a child of a '{0}' element"
        * allowing for for instance CKEditor to be used to edit content
        */
       load-file:/system42/cms/page-editor/editors/controls/helpers/legal-elements.hl
-      if:x:@"/-/*/*/""{0}""/*/type/=block-level"
+      if:x:@"/-/*/*/""{0}""/*/permitted-content/*/type/=flow-content"
         :x:/../*/get-widget-property/*/*?value
 
         /*

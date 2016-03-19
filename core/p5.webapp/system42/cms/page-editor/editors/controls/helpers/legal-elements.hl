@@ -51,6 +51,12 @@ aside:@"Represents a section of the page with content connected tangentially to 
   type:sectioning-content
   type:palpable-content
   type:block-level
+  permitted-content
+    type:flow-content
+  tag-omission:none
+  permitted-parent
+    accept:flow-content
+      except:address
 
 footer:@"Represents a footer for its nearest sectioning content or sectioning root element. A footer typically contains information about the author of the section, copyright data or links to related documents."
   type:flow-content
@@ -177,6 +183,11 @@ blockquote:@"Indicates that the enclosed text is a longer quotation. This elemen
   type:flow-content
   type:palpable-content
   type:block-level
+  permitted-content
+    type:flow-content
+  tag-omission:none
+  permitted-parent
+    accept:flow-content
 
 dd:@"Indicates the description of a term in a description list (<dl>) element. This element can occur only as a child element of a description list and it must follow a <dt> element."
   type:block-level
@@ -595,12 +606,6 @@ sup:@"Defines a span of text that should be displayed abouve main text. Used to 
   permitted-parent
     accept:phrasing-content
 
-svg:@"Used to embed an SVG fragment inside the current document. This SVG fragment has its own viewport and coordinate system."
-  type:flow-content
-  type:phrasing-content
-  type:embedded-content
-  type:palpable-content
-
 time:@"Technical review completed."
   type:flow-content
   type:phrasing-content
@@ -645,11 +650,33 @@ wbr:@"Represents a position within text where the browser may optionally break a
   permitted-parent
     accept:phrasing-content
 
-a:@"Wraps a hyperlink, leading to another URL."
+a:@"Defines a hyperlink to a location on the Web. It can also be used (in an obsolete way) to create an anchor point—a destination for hyperlinks within the content of a page, so that links aren't limited to connecting simply to the top of a page."
   type:flow-content
+  type:phrasing-content
   type:interactive-content
   type:palpable-content
   type:inline
+  permitted-content
+    type:flow-content
+      except:a
+      except:iframe
+      except:button
+      except:textarea
+      except:input
+      except:label
+      except:select
+    type:phrasing-content
+      except:a
+      except:iframe
+      except:button
+      except:textarea
+      except:input
+      except:label
+      except:select
+  tag-omission:none
+  permitted-parent
+    accept:phrasing-content
+    accept:flow-content
   attributes
     download:@"This attribute, if present, indicates that the author intends the hyperlink to be used for downloading a resource so that when the user clicks on the link they will be prompted to save it as a local file. If the attribute has a value, the value will be used as the pre-filled file name in the Save prompt that opens when the user clicks on the link (the user can change the name before actually saving the file of course). There are no restrictions on allowed values (though / and \ will be converted to underscores, preventing specific path hints), but you should consider that most file systems have limitations with regard to what punctuation is supported in file names, and browsers are likely to adjust file names accordingly."
     href:@"This was the single required attribute for anchors defining a hypertext source link, but is no longer required in HTML5. Omitting this attribute creates a placeholder link. The href attribute indicates the link target, either a URL or a URL fragment. A URL fragment is a name preceded by a hash mark (#), which specifies an internal target location (an ID) within the current document. URLs are not restricted to Web (HTTP)-based documents. URLs might use any protocol supported by the browser. For example, file, ftp, and mailto work in most user agents. Note: You can use the special fragment ""top"" to create a link back to the top of the page; for example <a href=""#top"">Return to top</a>."
@@ -664,18 +691,16 @@ a:@"Wraps a hyperlink, leading to another URL."
 * _top: In HTML4: Load the response into the full, original window, canceling all other frames. In HTML5: Load the response into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self."
     type:@"This attribute specifies the media type in the form of a MIME type for the link target. Generally, this is provided strictly as advisory information; however, in the future a browser might add a small icon for multimedia types. For example, a browser might add a small speaker icon when type is set to audio/wav. For a complete list of recognized MIME types, see http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute only if the href attribute is present."
 
-math:@"The top-level element in MathML. Every valid MathML instance must be wrapped in <math> tags. In addition you must not nest a second <math> element in another, but you can have an arbitrary number of other child elements in it."
-  type:flow-content
-  type:phrasing-content
-  type:embedded-content
-  type:palpable-content
-
 iframe:@"Represents a nested browsing context. Effectively embedding another HTML page into the current page. In HTML 4.01, a document may contain a head and a body or a head and a frame-set, but not both a body and a frame-set. However, an <iframe> can be used within a normal document body. Each browsing context has its own session history and active document. The browsing context that contains the embedded content is called the parent browsing context. The top-level browsing context (which has no parent) is typically the browser window."
   type:flow-content
   type:phrasing-content
   type:embedded-content
   type:interactive-content
   type:palpable-content
+  permitted-content:none
+  tag-omission:none
+  permitted-parent
+    accept:embedded-content
   attributes
     allowfullscreen:@"This attribute can be set to true if the frame is allowed to be placed into full screen mode by calling its Element.requestFullScreen() method. If this isn't set, the element can't be placed into full screen mode."
     height:@"Indicates the height of the frame HTML5 in CSS pixels, or HTML 4.01 in pixels or as a percentage."
@@ -1062,6 +1087,7 @@ button:@"Represents a clickable button."
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+      except:a
   attributes
     autofocus:@"This Boolean attribute lets you specify that the button should have input focus when the page loads, unless the user overrides it, for example by typing in a different control. Only one form-associated element in a document can have this attribute specified."
     disabled:@"This Boolean attribute indicates that the user cannot interact with the button. If this attribute is not specified, the button inherits its setting from the containing element, for example <fieldset>; if there is no containing element with the disabled attribute set, then the button is enabled. Firefox will, unlike other browsers, by default, persist the dynamic disabled state of a <button> across page loads. Use the autocomplete attribute to control this feature."
@@ -1248,6 +1274,7 @@ textarea:@"Used to create interactive controls for web-based forms. Used to acce
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+      except:a
   attributes
     autocomplete:@"This attribute indicates whether the value of the control can be automatically completed by the browser. Possible values are:
 
@@ -1289,6 +1316,7 @@ label:@"Represents a caption for an item in a user interface. It can be associat
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+      except:a
   attributes
     for:@"The ID of a labelable form-related element in the same document as the label element. The first such element in the document with an ID matching the value of the for attribute is the labeled control for this label element. Note: A label element can have both a for attribute and a contained control element, as long as the for attribute points to the contained control element."
 
@@ -1393,6 +1421,7 @@ select:@"Represents a control that presents a menu of options. The options withi
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+      except:a
   attributes
     autofocus:@"This attribute lets you specify that a form control should have input focus when the page loads, unless the user overrides it, for example by typing in a different control. Only one form element in a document can have the autofocus attribute, which is a Boolean."
     disabled:@"This Boolean attribute indicates that the user cannot interact with the control. If this attribute is not specified, the control inherits its setting from the containing element, for example fieldset; if there is no containing element with the disabled attribute set, then the control is enabled."
