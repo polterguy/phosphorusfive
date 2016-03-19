@@ -1685,8 +1685,7 @@ is not legally allowed as a child of a '{1}' element"
                 /*
                  * Hiding all "properties for selected widget", since no widgets are selected now!
                  */
-                set-widget-property:wysiwyg-controls-properties
-                  visible:false
+                sys42.wysiwyg-controls.hide-selected-widgets-properties
 
                 /*
                  * Changing visibility for "create inside of widget" buttons
@@ -1947,6 +1946,19 @@ is not legally allowed as a child of a '{1}' element"
                */
               add:x:/../*/_legal-elements
                 src:x:/..for-each/*/_dp/#
+
+      /*
+       * Then filtering away all elements that does not allow the widget type ([container], [literal], [void])
+       * of our [_selected-widget] from [_legal-elements] list of elements.
+       * Starting out by listing widget, which gives us its type declaration
+       */
+      list-widgets:x:/../*/_selected-widget?value
+
+      /*
+       * Then removing all elements from loaded file above that does not handle widget type
+       */
+      set:x:/../*/_legal-elements/*(!/*/widget-constraints/*/widget/={0}/./.)
+        :x:/../*/list-widgets/*?name
 
       /*
        * We have now stuffed into [_legal-elements] all the elements that parent widget of
@@ -2538,8 +2550,7 @@ value of the widget you're trying to insert the usercontrol as a child to</p>"
       if:x:/../*/find-widget/*
         delete-widget-property:x:/../*/find-widget/*?value
           data-selected
-      set-widget-property:wysiwyg-controls-properties
-        visible:false
+      sys42.wysiwyg-controls.hide-selected-widgets-properties
       _widgets
         wysiwyg-button-add-attribute
         wysiwyg-button-add-event
@@ -2838,6 +2849,12 @@ value of the widget you're trying to insert the usercontrol as a child to</p>"
        * Simply hides main "properties view" widget
        */
       set-widget-property:wysiwyg-controls-properties
+        visible:false
+
+      /*
+       * Hiding bread-crumb
+       */
+      set-widget-property:wysiwyg-controls-bread-crumb
         visible:false
 
 

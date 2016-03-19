@@ -33,6 +33,9 @@ address:@"Supplies contact information for its nearest <article> or <body> ances
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 article:@"Represents a self-contained composition in a document. Composition applies to either page, application, or site, and is intended to be independently distributable or reusable. This could be a forum post, a magazine or newspaper article, a blog entry, an object, or any other independent item of content. Each <article> should be identified, typically by including a heading (<h1>-<h6> element) as a child of the <article> element."
   type:flow-content
@@ -45,6 +48,9 @@ article:@"Represents a self-contained composition in a document. Composition app
   permitted-parent
     accept:flow-content
       except:address
+  widget-constraints
+    widget:literal
+    widget:container
 
 aside:@"Represents a section of the page with content connected tangentially to the rest. Its content could be considered separate from the rest of the content in the page. These sections are often represented as sidebars or inserts. They often contain the definitions on the sidebars, such as definitions from the glossary; there may also be other types of information, such as related advertisements; the biography of the author; web applications; profile information or related links on the blog."
   type:flow-content
@@ -57,6 +63,9 @@ aside:@"Represents a section of the page with content connected tangentially to 
   permitted-parent
     accept:flow-content
       except:address
+  widget-constraints
+    widget:literal
+    widget:container
 
 footer:@"Represents a footer for its nearest sectioning content or sectioning root element. A footer typically contains information about the author of the section, copyright data or links to related documents."
   type:flow-content
@@ -72,6 +81,9 @@ footer:@"Represents a footer for its nearest sectioning content or sectioning ro
       except:address
       except:header
       except:footer
+  widget-constraints
+    widget:literal
+    widget:container
 
 header:@"Represents a group of introductory or navigational aids. It may contain some heading elements but also other elements like a logo, wrapped section's header, a search form, and so on."
   type:flow-content
@@ -87,6 +99,9 @@ header:@"Represents a group of introductory or navigational aids. It may contain
       except:address
       except:footer
       except:header
+  widget-constraints
+    widget:literal
+    widget:container
 
 h1:@"Defines a header for your document. There are six types of header; <h1> through <h6>, where <h1> is the most significant, and <h6> the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."
   type:flow-content
@@ -98,6 +113,9 @@ h1:@"Defines a header for your document. There are six types of header; <h1> thr
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 h2:@"Defines a header for your document. There are six types of header; <h1> through <h6>, where <h1> is the most significant, and <h6> the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."
   type:flow-content
@@ -109,6 +127,9 @@ h2:@"Defines a header for your document. There are six types of header; <h1> thr
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 h3:@"Defines a header for your document. There are six types of header; <h1> through <h6>, where <h1> is the most significant, and <h6> the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."
   type:flow-content
@@ -120,6 +141,9 @@ h3:@"Defines a header for your document. There are six types of header; <h1> thr
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 h4:@"Defines a header for your document. There are six types of header; <h1> through <h6>, where <h1> is the most significant, and <h6> the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."
   type:flow-content
@@ -131,6 +155,9 @@ h4:@"Defines a header for your document. There are six types of header; <h1> thr
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 h5:@"Defines a header for your document. There are six types of header; <h1> through <h6>, where <h1> is the most significant, and <h6> the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."
   type:flow-content
@@ -142,6 +169,9 @@ h5:@"Defines a header for your document. There are six types of header; <h1> thr
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 h6:@"Defines a header for your document. There are six types of header; <h1> through <h6>, where <h1> is the most significant, and <h6> the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."
   type:flow-content
@@ -153,6 +183,9 @@ h6:@"Defines a header for your document. There are six types of header; <h1> thr
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 nav:@"Represents a section of a page that links to other pages or to parts within the page. A section with navigation links."
   type:flow-content
@@ -164,6 +197,9 @@ nav:@"Represents a section of a page that links to other pages or to parts withi
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:container
+    widget:literal
 
 section:@"Represents a generic section of a document, typically with a heading. Each <section> should be identified, typically by including a heading (<h1>-<h6> element) as a child of the <section> element."
   type:flow-content
@@ -176,8 +212,9 @@ section:@"Represents a generic section of a document, typically with a heading. 
   permitted-parent
     accept:flow-content
       except:address
-
-
+  widget-constraints
+    widget:container
+    widget:literal
 
 blockquote:@"Indicates that the enclosed text is a longer quotation. This element is intended for quotations that require paragraph breaks; for short quotations use the <q> element."
   type:flow-content
@@ -188,6 +225,9 @@ blockquote:@"Indicates that the enclosed text is a longer quotation. This elemen
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 dd:@"Indicates the description of a term in a description list (<dl>) element. This element can occur only as a child element of a description list and it must follow a <dt> element."
   type:block-level
@@ -196,6 +236,9 @@ dd:@"Indicates the description of a term in a description list (<dl>) element. T
   tag-omission:yes
   permitted-parent
     element:dl
+  widget-constraints
+    widget:literal
+    widget:container
 
 div:@"The generic container for flow content, which does not inherently represent anything. It can be used to group elements for styling purposes (using the class or id attributes), or because they share attribute values, such as lang. It should be used only when no other semantic element (such as <article> or <nav>) is appropriate."
   type:flow-content
@@ -206,6 +249,9 @@ div:@"The generic container for flow content, which does not inherently represen
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:container
+    widget:literal
 
 dl:@"Encloses a list of pairs of terms and descriptions. Common uses for this element are to implement a glossary or to display metadata (a list of key-value pairs)."
   type:flow-content
@@ -217,6 +263,9 @@ dl:@"Encloses a list of pairs of terms and descriptions. Common uses for this el
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:container
+    widget:literal
 
 dt:@"Identifies a term in a definition list. This element can occur only as a child element of a <dl>. It is usually followed by a <dd> element; however, multiple <dt> elements in a row indicate several terms that are all defined by the immediate next <dd> element."
   permitted-content
@@ -236,6 +285,9 @@ dt:@"Identifies a term in a definition list. This element can occur only as a ch
   tag-omission:yes
   permitted-parent
     element:dl
+  widget-constraints
+    widget:literal
+    widget:container
 
 figcaption:@"Represents a caption or a legend associated with a figure or an illustration. Describes the rest of the data of the <figure> element which is its immediate ancestor, which means <figcaption> can be the first or last element inside a <figure> block. Also, the HTML Figcaption Element is optional; if not provided, then the parent figure element will have no caption."
   type:block-level
@@ -244,6 +296,9 @@ figcaption:@"Represents a caption or a legend associated with a figure or an ill
   tag-omission:none
   permitted-parent
     inside:figure
+  widget-constraints
+    widget:literal
+    widget:container
 
 figure:@"Represents self-contained content. Frequently used with a caption (<figcaption>), and is typically referenced as a single unit. While it is related to the main flow, its position is independent of the main flow. Usually this is an image, an illustration, a diagram, a code snippet, or a schema that is referenced in the main text, but that can be moved to another page or to an appendix without affecting the main flow."
   type:flow-content
@@ -255,6 +310,9 @@ figure:@"Represents self-contained content. Frequently used with a caption (<fig
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 hr:@"Represents a thematic break between paragraph-level elements. In previous versions of HTML, it represented a horizontal rule. It may still be displayed as a horizontal rule in visual browsers, but is now defined in semantic terms, rather than presentational terms."
   type:flow-content
@@ -264,6 +322,8 @@ hr:@"Represents a thematic break between paragraph-level elements. In previous v
   tag-omission:yes
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:void
 
 li:@"Used to represent an item in a list. It must be contained in either an ordered list (<ol>), or an unordered list (<ul>). In unordered lists, list items are usually displayed using bullet points. In ordered lists, they are usually displayed with an ascending counter on the left, such as a number or letter."
   type:block-level
@@ -276,6 +336,9 @@ li:@"Used to represent an item in a list. It must be contained in either an orde
     element:menu
   attributes
     value:@"This integer attribute indicates the current ordinal value of the list item as defined by the <ol> element. The only allowed value for this attribute is a number, even if the list is displayed with Roman numerals or letters. List items that follow this one continue numbering from the value set. The value attribute has no meaning for unordered lists (<ul>) or for menus (<menu>)."
+  widget-constraints
+    widget:literal
+    widget:container
 
 main:@"Represents the main content of  the <body> of a document or application. The main content area consists of content that is directly related to, or expands upon the central topic of a document or the central functionality of an application. This content should be unique to the document, excluding any content that is repeated across a set of documents such as sidebars, navigation links, copyright information, site logos, and search forms (unless the document's main function is as a search form)."
   type:flow-content
@@ -291,6 +354,9 @@ main:@"Represents the main content of  the <body> of a document or application. 
       except:footer
       except:header
       except:nav
+  widget-constraints
+    widget:container
+    widget:literal
 
 ol:@"Represents an ordered list of items. Typically, ordered-list items are displayed with a preceding numbering, which can be of any form, like numerals, letters or Romans numerals or even simple bullets. This numbered style is not defined in the HTML description of the page, but in its associated CSS, using the list-style-type property."
   type:flow-content
@@ -311,6 +377,9 @@ ol:@"Represents an ordered list of items. Typically, ordered-list items are disp
 * 'i' indicates lowercase Roman numerals
 * 'I' indicates uppercase Roman numerals
 * '1' indicates numbers (default)"
+  widget-constraints
+    widget:literal
+    widget:container
 
 p:@"Represents a paragraph of text."
   type:flow-content
@@ -321,6 +390,9 @@ p:@"Represents a paragraph of text."
   tag-omission:yes
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 pre:@"Represents preformatted text. Text within this element is typically displayed in a non-proportional (""monospace"") font exactly as it is laid out in the file. Whitespace inside this element is displayed as typed."
   type:flow-content
@@ -331,6 +403,8 @@ pre:@"Represents preformatted text. Text within this element is typically displa
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
 
 ul:@"Represents an unordered list of items. A collection of items that do not have a numerical ordering, and their order in the list is meaningless. Typically, unordered-list items are displayed with a bullet, which can be of several forms, like a dot, a circle or a squared. The bullet style is not defined in the HTML description of the page, but in its associated CSS, using the list-style-type property."
   type:flow-content
@@ -341,6 +415,9 @@ ul:@"Represents an unordered list of items. A collection of items that do not ha
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:container
+    widget:literal
 
 
 
@@ -354,6 +431,9 @@ abbr:@"Represents an abbreviation, and optionally provides a full description fo
     type:phrasing-content
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 b:@"Represents a span of text stylistically different from normal text. Does not convey any special importance or relevance. It is typically used for keywords in a summary, product names in a review, or other spans of text whose typical presentation would be boldfaced. Another example of its use is to mark the lead sentence of each paragraph of an article."
   type:flow-content
@@ -365,6 +445,9 @@ b:@"Represents a span of text stylistically different from normal text. Does not
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 bdi:@"Isolates a span of text that might be formatted in a different direction."
   type:flow-content
@@ -374,6 +457,9 @@ bdi:@"Isolates a span of text that might be formatted in a different direction."
   tag-omission:none
   permitted-parent
     type:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 bdo:@"Used to override the current directionality of text. It causes the directionality of the characters to be ignored in favor of the specified directionality."
   type:flow-content
@@ -385,6 +471,9 @@ bdo:@"Used to override the current directionality of text. It causes the directi
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 br:@"Produces a line break in text (carriage-return). It is useful for writing a poem or an address, where the division of lines is significant."
   type:flow-content
@@ -395,6 +484,8 @@ br:@"Produces a line break in text (carriage-return). It is useful for writing a
   tag-omission:yes
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:void
 
 cite:@"Represents a reference to a creative work. It must include the title of a work or a URL reference, which may be in an abbreviated form according to the conventions used for the addition of citation metadata."
   type:flow-content
@@ -406,6 +497,9 @@ cite:@"Represents a reference to a creative work. It must include the title of a
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 code:@"Represents a fragment of computer code. By default, it is displayed in the browser's default monospace font."
   type:flow-content
@@ -417,6 +511,8 @@ code:@"Represents a fragment of computer code. By default, it is displayed in th
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
 
 data:@"Links a given content with a machine-readable translation. If the content is time- or date-related, the <time> must be used."
   type:flow-content
@@ -428,6 +524,9 @@ data:@"Links a given content with a machine-readable translation. If the content
     accept:phrasing-content
   attributes
     value:@"This attribute specifies the machine-readable translation of the content of the element."
+  widget-constraints
+    widget:literal
+    widget:container
 
 dfn:@"Represents the defining instance of a term."
   type:flow-content
@@ -440,6 +539,9 @@ dfn:@"Represents the defining instance of a term."
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 em:@"Marks text that has stress emphasis. The <em> element can be nested, with each level of nesting indicating a greater degree of emphasis."
   type:flow-content
@@ -451,6 +553,8 @@ em:@"Marks text that has stress emphasis. The <em> element can be nested, with e
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
 
 i:@"Represents a range of text that is set off from the normal text for some reason. For example, technical terms, foreign language phrases, or fictional character thoughts. It is typically displayed in italic type."
   type:flow-content
@@ -462,6 +566,9 @@ i:@"Represents a range of text that is set off from the normal text for some rea
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 kbd:@"Represents user input. Produces an inline element displayed in the browser's default monospace font."
   type:flow-content
@@ -473,6 +580,9 @@ kbd:@"Represents user input. Produces an inline element displayed in the browser
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 mark:@"Represents highlighted text. For instance, a run of text marked for reference purpose, due to its relevance in a particular context. For example it can be used in a page showing search results to highlight every instance of the searched-for word."
   type:flow-content
@@ -483,6 +593,8 @@ mark:@"Represents highlighted text. For instance, a run of text marked for refer
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
 
 q:@"Indicates that the enclosed text is a short inline quotation. This element is intended for short quotations that don't require paragraph breaks; for long quotations use <blockquote> element."
   type:flow-content
@@ -496,6 +608,8 @@ q:@"Indicates that the enclosed text is a short inline quotation. This element i
     accept:phrasing-content
   attributes
     cite:@"The value of this attribute is a URL that designates a source document or message for the information quoted. This attribute is intended to point to information explaining the context or the reference for the quote."
+  widget-constraints
+    widget:literal
 
 rp:@"Used to provide fall-back parenthesis for browsers non-supporting ruby annotations. Ruby annotations are for showing pronounciation of East Asian characters, like using Japanese furigana or Taiwainese bopomofo characters. The <rp> element is used in the case of lack of <ruby> element support its content has what should be displayed in order to indicate the presence of a ruby annotation, usually parentheses."
   permitted-content
@@ -503,6 +617,9 @@ rp:@"Used to provide fall-back parenthesis for browsers non-supporting ruby anno
   tag-omission:none
   permitted-parent
     element:ruby
+  widget-constraints
+    widget:literal
+    widget:container
 
 rt:@"Embraces pronunciation of characters presented in a ruby annotations. These are used to describe the pronunciation of East Asian characters. This element is always used inside a <ruby> element."
   permitted-content
@@ -510,6 +627,8 @@ rt:@"Embraces pronunciation of characters presented in a ruby annotations. These
   tag-omission:none
   permitted-parent
     element:ruby
+  widget-constraints
+    widget:literal
 
 rtc:@"Embraces semantic annotations of characters presented in a ruby of <rb> elements used inside of <ruby> element. <rb> elements can have both pronunciation (<rt>) and semantic (<rtc>) annotations."
   premitted-content
@@ -518,6 +637,8 @@ rtc:@"Embraces semantic annotations of characters presented in a ruby of <rb> el
   tag-omission:yes
   permitted-parent
     element:ruby
+  widget-constraints
+    widget:literal
 
 ruby:@"Represents a ruby annotation. Ruby annotations are for showing pronunciation of East Asian characters."
   type:flow-content
@@ -528,6 +649,9 @@ ruby:@"Represents a ruby annotation. Ruby annotations are for showing pronunciat
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 s:@"Renders text with a strikethrough, or a line through it. Use the <s> element to represent things that are no longer relevant or no longer accurate. However, <s> is not appropriate when indicating document edits; for that, use the <del> and <ins> elements, as appropriate."
   type:flow-content
@@ -536,6 +660,9 @@ s:@"Renders text with a strikethrough, or a line through it. Use the <s> element
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 samp:@"Intended to identify sample output from a computer program. It is usually displayed in the browser's default monotype font (such as Lucida Console)."
   type:flow-content
@@ -547,6 +674,9 @@ samp:@"Intended to identify sample output from a computer program. It is usually
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 small:@"Makes the text font size one size smaller. For example, from large to medium, or from small to x-small, down to the browser's minimum font size.  In HTML5, this element is repurposed to represent side-comments and small print, including copyright and legal text, independent of its styled presentation."
   type:flow-content
@@ -559,6 +689,9 @@ small:@"Makes the text font size one size smaller. For example, from large to me
   permitted-parent
     accept:phrasing-content
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 span:@"The generic inline container for phrasing content. Implies that the element's content does not inherently represent anything. It can be used to group elements for styling purposes (using the class or id attributes), or because they share attribute values, such as lang."
   type:flow-content
@@ -571,6 +704,9 @@ span:@"The generic inline container for phrasing content. Implies that the eleme
   permitted-parent
     accept:phrasing-content
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 strong:@"Gives text strong importance, and is typically displayed in bold."
   type:flow-content
@@ -583,6 +719,9 @@ strong:@"Gives text strong importance, and is typically displayed in bold."
   permitted-parent
     accept:phrasing-content
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 sub:@"Defines a span of text that should be displayed beneath main text. Used to display text, which for typographic reasons, should be rendered lower, and often smaller, than the main span of text."
   type:flow-content
@@ -594,6 +733,8 @@ sub:@"Defines a span of text that should be displayed beneath main text. Used to
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
 
 sup:@"Defines a span of text that should be displayed abouve main text. Used to display text, which for typographic reasons, should be rendered higher, and often smaller, than the main span of text."
   type:flow-content
@@ -605,6 +746,8 @@ sup:@"Defines a span of text that should be displayed abouve main text. Used to 
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
 
 time:@"Technical review completed."
   type:flow-content
@@ -618,6 +761,8 @@ time:@"Technical review completed."
     accept:phrasing-content
   attributes
     datetime:@"This attribute indicates the time and date of the element and must be a valid date with an optional time string. If the value cannot be parsed as a date with an optional time string, the element does not have an associated time stamp."
+  widget-constraints
+    widget:literal
 
 u:@"Renders text with an underline. A line under the baseline of its content."
   type:flow-content
@@ -629,6 +774,9 @@ u:@"Renders text with an underline. A line under the baseline of its content."
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 var:@"Represents a variable in a mathematical expression or a programming context."
   type:flow-content
@@ -640,6 +788,8 @@ var:@"Represents a variable in a mathematical expression or a programming contex
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
 
 wbr:@"Represents a position within text where the browser may optionally break a line. Although its line-breaking rules would not otherwise create a break at that location."
   type:flow-content
@@ -649,6 +799,8 @@ wbr:@"Represents a position within text where the browser may optionally break a
   tag-omission:yes
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:void
 
 a:@"Defines a hyperlink to a location on the Web. It can also be used (in an obsolete way) to create an anchor point—a destination for hyperlinks within the content of a page, so that links aren't limited to connecting simply to the top of a page."
   type:flow-content
@@ -690,6 +842,9 @@ a:@"Defines a hyperlink to a location on the Web. It can also be used (in an obs
 * _parent: Load the response into the HTML4 frameset parent of the current frame or HTML5 parent browsing context of the current one. If there is no parent, this option behaves the same way as _self
 * _top: In HTML4: Load the response into the full, original window, canceling all other frames. In HTML5: Load the response into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self."
     type:@"This attribute specifies the media type in the form of a MIME type for the link target. Generally, this is provided strictly as advisory information; however, in the future a browser might add a small icon for multimedia types. For example, a browser might add a small speaker icon when type is set to audio/wav. For a complete list of recognized MIME types, see http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute only if the href attribute is present."
+  widget-constraints
+    widget:literal
+    widget:container
 
 iframe:@"Represents a nested browsing context. Effectively embedding another HTML page into the current page. In HTML 4.01, a document may contain a head and a body or a head and a frame-set, but not both a body and a frame-set. However, an <iframe> can be used within a normal document body. Each browsing context has its own session history and active document. The browsing context that contains the embedded content is called the parent browsing context. The top-level browsing context (which has no parent) is typically the browser window."
   type:flow-content
@@ -743,6 +898,8 @@ area:@"Defines a hot-spot region on an image. Optionally associates the given ho
 
 Use this attribute only if the href attribute is present."
     type:@"This attribute specifies the media type in the form of a MIME type for the link target. Generally, this is provided strictly as advisory information; however, in the future a browser might add a small icon for multimedia types. For example, a browser might add a small speaker icon when type is set to audio/wav. For a complete list of recognized MIME types, see http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute only if the href attribute is present."
+  widget-constraints
+    widget:void
 
 audio:@"Used to embed sound content in documents. It may contain one or more audio sources, represented using the src attribute or the <source> element; the browser will choose the most suitable one."
   type:flow-content
@@ -795,6 +952,9 @@ The spec advises it to be set to metadata. The autoplay attribute has precedence
     ontimeupdate:@"The event occurs when the playing position has changed"
     onvolumechange:@"The event occurs when the volume of the media has changed"
     onwaiting:@"The event occurs when the media has paused but is expected to resume"
+  widget-constraints
+    widget:literal
+    widget:container
 
 map:@"Used with <area> elements to define an image map. An area is a clickable link area."
   type:flow-content
@@ -806,7 +966,9 @@ map:@"Used with <area> elements to define an image map. An area is a clickable l
     accept:phrasing-content
   attributes
     name:@"The name attribute gives the map a name so that it can be referenced. The attribute must be present and must have a non-empty value with no space characters. The value of the name attribute must not be a compatibility-caseless match for the value of the name attribute of another map element in the same document. If the id attribute is also specified, both attributes must have the same value."
-
+  widget-constraints
+    widget:literal
+    widget:container
 
 track:@"Used as a child of the media elements—<audio> and <video>. It lets you specify timed text tracks (or time-based data), for example to automatically handle subtitles. The tracks are formatted in WebVTT format (.vtt files) — Web Video Text Tracks."
   permitted-content:none
@@ -825,6 +987,8 @@ chapters - Chapter titles are intended to be used when the user is navigating th
     label:@"A user-readable title of the text track which is used by the browser when listing available text tracks."
     src:@"Address of the track (.vtt file). Must be a valid URL. This attribute must be defined."
     srclang:@"Language of the track text data. It must be a valid BCP 47 language tag. If the kind attribute is set to subtitles, then srclang must be defined."
+  widget-constraints
+    widget:void
 
 video:@"Embeds video content in a document. The video element contains one or more video sources. To specify a video source, use either the src attribute or the <source> element; the browser will choose the most suitable one."
   type:flow-content
@@ -883,6 +1047,9 @@ The spec advises it to be set to metadata."
     ontimeupdate:@"The event occurs when the playing position has changed"
     onvolumechange:@"The event occurs when the volume of the media has changed"
     onwaiting:@"The event occurs when the media has paused but is expected to resume"
+  widget-constraints
+    widget:literal
+    widget:container
 
 source:@"Specifies multiple media resources. Used for either the <audio> or the <video> element. It is an empty element. It is commonly used to serve the same media content in multiple formats supported by different browsers."
   permitted-content:none
@@ -893,6 +1060,8 @@ source:@"Specifies multiple media resources. Used for either the <audio> or the 
   attributes
     src:@"Required for <audio> and <video>, address of the media resource. The value of this attribute is ignored when the <source> element is placed inside a <picture> element."
     type:@"The MIME-type of the resource, optionally with a codecs parameter. See RFC 4281 for information about how to specify codecs."
+  widget-constraints
+    widget:void
 
 img:@"Represents an image in the document."
   type:flow-content
@@ -918,9 +1087,8 @@ img:@"Represents an image in the document."
     srcset:@"A list of one or more strings separated by commas indicating a set of possible image sources for the user agent to use. Each string is composed of: a URL to an image, optionally, whitespace followed by one of: a width descriptor, that is a positive integer directly followed by 'w'. The width descriptor is divided by the source size given in the sizes attribute to calculate the effective pixel density. a pixel density descriptor, which is a positive floating point number directly followed by 'x'. If no descriptor is specified, the source is assigned the default descriptor: 1x. It is invalid to mix width descriptors and pixel density descriptors in the same srcset attribute. Duplicate descriptors (for instance, two sources in the same srcset which are both described with '2x') are invalid, too. User agents are given discretion to choose any one of the available sources. This provides them with significant leeway to tailor their selection based on things like user preferences or bandwidth conditions."
     width:@"The intrinsic width of the image in CSS pixels."
     usemap:@"The partial URL (starting with '#') of an image map associated with the element. Usage note: You cannot use this attribute if the <img> element is a descendant of an <a> or <button> element."
-
-
-
+  widget-constraints
+    widget:void
 
 canvas:@"Used to draw graphics via scripting. For example, it can be used to draw graphs, using JavaScript, to make photo compositions or even perform animations. You may (and should) provide alternate content inside the <canvas> block. That content will be rendered both on older browsers that don't support canvas and in browsers with JavaScript disabled."
   type:flow-content
@@ -935,10 +1103,9 @@ canvas:@"Used to draw graphics via scripting. For example, it can be used to dra
   attributes
     height:@"The height of the coordinate space in CSS pixels. Defaults to 150."
     width:@"The width of the coordinate space in CSS pixels. Defaults to 300."
-
-
-
-
+  widget-constraints
+    widget:literal
+    widget:container
 
 del:@"Represents a range of text that has been deleted from a document. This element is often (but need not be) rendered with strike-through text."
   type:flow-content
@@ -951,6 +1118,9 @@ del:@"Represents a range of text that has been deleted from a document. This ele
   attributes
     cite:@"A URI for a resource that explains the change (for example, meeting minutes)."
     datetime:@"This attribute indicates the time and date of the change and must be a valid date with an optional time string. If the value cannot be parsed as a date with an optional time string, the element does not have an associated time stamp."
+  widget-constraints
+    widget:literal
+    widget:container
 
 ins:@"Represents a range of text that has been added to a document."
   type:flow-content
@@ -963,9 +1133,9 @@ ins:@"Represents a range of text that has been added to a document."
   attributes
     cite:@"This attribute defines the URI of a resource that explains the change, like a link to some meeting minutes or a ticket in a troubleshooting sytem."
     datetime:@"This attribute indicates the time and date of the change and must be a valid date with an optional time string. If the value cannot be parsed as a date with an optional time string, the element does not have an associated time stamp."
-
-
-
+  widget-constraints
+    widget:literal
+    widget:container
 
 caption:@"Represents the title of a <table>. Though it is always the first descendant of a <table>, its styling, using CSS, may place it elsewhere, relative to the table."
   permitted-content
@@ -973,6 +1143,9 @@ caption:@"Represents the title of a <table>. Though it is always the first desce
   tag-omission:none
   permitted-parent
     element:table
+  widget-constraints
+    widget:literal
+    widget:container
 
 col:@"Defines a column within a table. Is used for defining common semantics on all common cells. It is generally found within a <colgroup> element."
   permitted-content:none
@@ -981,6 +1154,9 @@ col:@"Defines a column within a table. Is used for defining common semantics on 
     element:colgroup
   attributes
     span:@"This attribute contains a positive integer indicating the number of consecutive columns the <col> element spans. If not present, its default value is 1."
+  widget-constraints
+    widget:literal
+    widget:container
 
 colgroup:@"Defines a group of columns within a table."
   permitted-content
@@ -990,6 +1166,9 @@ colgroup:@"Defines a group of columns within a table."
     element:table
   attributes
     span:@"This attribute contains a positive integer indicating the number of consecutive columns the <colgroup> element spans. If not present, its default value is 1. Note: This attribute is applied on the attributes of the column group, it has no effect on the CSS styling rules associated with it or, even more, to the cells of the column's members of the group. The span attribute may not be present if there are one or more <col> elements within the <colgroup>."
+  widget-constraints
+    widget:literal
+    widget:container
 
 table:@"Represents tabular data: information expressed via two dimensions or more."
   type:flow-content
@@ -1005,6 +1184,9 @@ table:@"Represents tabular data: information expressed via two dimensions or mor
   tag-omission:none
   permitted-parent
     accept:flow-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 tbody:@"Defines one or more <tr> element data-rows to be the body of its parent <table> element. As long as no <tr> elements are immediate children of that table element. In conjunction with a preceding <thead> and/or <tfoot> element, <tbody> provides additional semantic information for devices such as printers and displays. Of the parent table's child elements, <tbody> represents the content which, when longer than a page, will most likely differ for each page printed; while the content of <thead> and <tfoot> will be the same or similar for each page printed. For displays, <tbody> will enable separate scrolling of the <thead>, <tfoot>, and <caption> elements of the same parent <table> element.  Note that unlike the <thead>, <tfoot>, and <caption> elements however, multiple <tbody> elements are permitted (if consecutive), allowing the data-rows in long tables to be divided into different sections, each separately formatted as needed."
   permitted-content
@@ -1012,6 +1194,9 @@ tbody:@"Defines one or more <tr> element data-rows to be the body of its parent 
   tag-omission:none
   permitted-parent
     element:table
+  widget-constraints
+    widget:literal
+    widget:container
 
 td:@"Defines a cell of a table that contains data. It participates in the table model."
   permitted-content
@@ -1023,6 +1208,9 @@ td:@"Defines a cell of a table that contains data. It participates in the table 
     colspan:@"This attribute contains a non-negative integer value that indicates for how many columns the cell extends. Its default value is 1; if its value is set to 0, it extends until the end of the <colgroup>, even if implicitly defined, that the cell belongs to. Values higher than 1000 will be considered as incorrect and will be set to the default value (1). Note: In HTML5 this attribute only accepts values greater than zero since it must not be used to overlap cells. Besides, Firefox is the only browser to support the 0 value as defined in the HTML 4.01 specification."
     headers:@"This attribute contains a list of space-separated strings, each corresponding to the id attribute of the <th> elements that apply to this element."
     rowspan:@"This attribute contains a non-negative integer value that indicates for how many rows the cell extends. Its default value is 1; if its value is set to 0, it extends until the end of the table section (<thead>, <tbody>, <tfoot>, even if implicitly defined, that the cell belongs to. Values higher than 65534 are clipped down to 65534."
+  widget-constraints
+    widget:literal
+    widget:container
 
 tfoot:@"Defines a set of rows summarizing the columns of the table."
   type:block-level
@@ -1031,6 +1219,9 @@ tfoot:@"Defines a set of rows summarizing the columns of the table."
   tag-omission:yes
   permitted-parent
     element:table
+  widget-constraints
+    widget:literal
+    widget:container
 
 th:@"Defines a cell as a header for a group of cells of a table. The group of cells that the header refers to is defined by the scope and headers attribute."
   permitted-content
@@ -1049,6 +1240,9 @@ th:@"Defines a cell as a header for a group of cells of a table. The group of ce
 * rowgroup; where the header relates to all remaining cells in the row group that this element belongs to. The remaining cells are either those to the right of this element, or to its left depending of the value of the dir attribute defined on the <table> element
 * colgroup; where the header relates to all remaining cells in the column group that this element belongs to
 * auto"
+  widget-constraints
+    widget:literal
+    widget:container
 
 thead:@"Defines a set of rows defining the head of the columns of the table."
   permitted-content
@@ -1056,6 +1250,9 @@ thead:@"Defines a set of rows defining the head of the columns of the table."
   tag-omission:yes
   permitted-parent
     element:table
+  widget-constraints
+    widget:literal
+    widget:container
 
 tr:@"Defines a row of cells in a table. Those can be a mix of <td> and <th> elements."
   permitted-content
@@ -1067,10 +1264,9 @@ tr:@"Defines a row of cells in a table. Those can be a mix of <td> and <th> elem
     element:thead
     element:tbody
     element:tfoot
-
-
-
-
+  widget-constraints
+    widget:literal
+    widget:container
 
 button:@"Represents a clickable button."
   type:flow-content
@@ -1098,6 +1294,9 @@ button:@"Represents a clickable button."
 * reset: The button resets all the controls to their initial values
 * button: The button has no default behavior. It can have client-side scripts associated with the element's events, which are triggered when the events occur."
     value:@"The initial value of the button."
+  widget-constraints
+    widget:literal
+    widget:container
 
 datalist:@"Contains a set of <option> elements. Used to represent the values available for other controls."
   type:flow-content
@@ -1109,6 +1308,9 @@ datalist:@"Contains a set of <option> elements. Used to represent the values ava
   tag-omission:none
   permitted-parent
     accept:phrasing-content
+  widget-constraints
+    widget:literal
+    widget:container
 
 fieldset:@"Used to group several controls as well as labels (<label>) within a web form."
   type:flow-content
@@ -1124,6 +1326,9 @@ fieldset:@"Used to group several controls as well as labels (<label>) within a w
   attributes
     disabled:@"If this Boolean attribute is set, the form controls that are its descendants, except descendants of its first optional <legend> element, are disabled, i.e., not editable. They won't receive any browsing events, like mouse clicks or focus-related ones. Often browsers display such controls as gray."
     name:@"The name associated with the group."
+  widget-constraints
+    widget:literal
+    widget:container
 
 input:@"Used to create interactive controls for web-based forms. Often used to accept input data from the user. How an <input> works varies considerably depending on the value of its type attribute."
   type:flow-content
@@ -1258,6 +1463,8 @@ If the autocomplete attribute is not specified on an input element, then the bro
     onselect:@"The event occurs after the user selects some text, only for &lt;input&gt; and &lt;textarea&gt;"
     oninvalid:@"The event occurs when an element is invalid"
     oninput:@"The event occurs when an element gets user input"
+  widget-constraints
+    widget:void
 
 textarea:@"Used to create interactive controls for web-based forms. Used to accept input data from the user. A <textarea> can accept multiple lines of input text from the user, contrary to the <input type=""text""> element."
   type:flow-content
@@ -1302,6 +1509,8 @@ textarea:@"Used to create interactive controls for web-based forms. Used to acce
     onselect:@"The event occurs after the user selects some text, only for &lt;input&gt; and &lt;textarea&gt;"
     oninvalid:@"The event occurs when an element is invalid"
     oninput:@"The event occurs when an element gets user input"
+  widget-constraints
+    widget:literal
 
 label:@"Represents a caption for an item in a user interface. It can be associated with a control either by placing the control element inside the <label> element, or by using the for attribute. Such a control is called the labeled control of the label element. One input can be associated with multiple labels."
   type:flow-content
@@ -1319,6 +1528,9 @@ label:@"Represents a caption for an item in a user interface. It can be associat
       except:a
   attributes
     for:@"The ID of a labelable form-related element in the same document as the label element. The first such element in the document with an ID matching the value of the for attribute is the labeled control for this label element. Note: A label element can have both a for attribute and a contained control element, as long as the for attribute points to the contained control element."
+  widget-constraints
+    widget:literal
+    widget:container
 
 legend:@"Represents a caption for the content of its parent <fieldset>."
   permitted-content
@@ -1326,6 +1538,9 @@ legend:@"Represents a caption for the content of its parent <fieldset>."
   tag-omission:none
   permitted-parent
     element:fieldset
+  widget-constraints
+    widget:literal
+    widget:container
 
 meter:@"Represents either a scalar value within a known range or a fractional value."
   type:flow-content
@@ -1346,6 +1561,9 @@ meter:@"Represents either a scalar value within a known range or a fractional va
     low:@"The upper numeric bound of the low end of the measured range. This must be greater than the minimum value (min attribute), and it also must be less than the high value and maximum value (high attribute and max attribute, respectively), if any are specified. If unspecified, or if less than the minimum value, the low value is equal to the minimum value."
     high:@"The lower numeric bound of the high end of the measured range. This must be less than the maximum value (max attribute), and it also must be greater than the low value and minimum value (low attribute and min attribute, respectively), if any are specified. If unspecified, or if greater than the maximum value, the high value is equal to the maximum value."
     optimum:@"This attribute indicates the optimal numeric value. It must be within the range (as defined by the min attribute and max attribute). When used with the low attribute and high attribute, it gives an indication where along the range is considered preferable. For example, if it is between the min attribute and the low attribute, then the lower range is considered preferred."
+  widget-constraints
+    widget:literal
+    widget:container
 
 optgroup:@"Creates a grouping of options within a <select> element."
   permitted-content
@@ -1356,6 +1574,9 @@ optgroup:@"Creates a grouping of options within a <select> element."
   attributes
     disabled:@"If this Boolean attribute is set, none of the items in this option group is selectable. Often browsers grey out such control and it won't receive any browsing events, like mouse clicks or focus-related ones."
     label:@"The name of the group of options, which the browser can use when labeling the options in the user interface. This attribute is mandatory if this element is used."
+  widget-constraints
+    widget:container
+    widget:literal
 
 option:@"Used to create a control representing an item within a <select>, an <optgroup> or a <datalist> HTML5 element."
   permitted-content:character-data
@@ -1369,6 +1590,8 @@ option:@"Used to create a control representing an item within a <select>, an <op
     label:@"This attribute is text for the label indicating the meaning of the option. If the label attribute isn't defined, its value is that of the element text content. Usage note: the label attribute is designed to contain a short label typically used in a hierarchical menu. The value attribute describes a longer label designed to be used near a radio button, for example."
     selected:@"If present, this Boolean attribute indicates that the option is initially selected. If the <option> element is the descendant of a <select> element whose multiple attribute is not set, only one single <option> of this <select> element may have the selected attribute."
     value:@"The content of this attribute represents the value to be submitted with the form, should this option be selected. If this attribute is omitted, the value is taken from the text content of the option element."
+  widget-constraints
+    widget:void
 
 output:@"Represents the result of a calculation or user action."
   type:flow-content
@@ -1387,6 +1610,9 @@ output:@"Represents the result of a calculation or user action."
   attributes
     for:@"A list of IDs of other elements, indicating that those elements contributed input values to (or otherwise affected) the calculation."
     name:@"The form element that this element is associated with (its ""form owner""). The value of the attribute must be an ID of a form element in the same document. If this attribute is not specified, the output element must be a descendant of a form element. This attribute enables you to place output elements anywhere within a document, not just as descendants of their form elements."
+  widget-constraints
+    widget:literal
+    widget:container
 
 progress:@"Used to view the completion progress of a task. While the specifics of how it's displayed is left up to the browser developer, it's typically displayed as a progress bar. Javascript can be used to manipulate the value of progress bar."
   type:flow-content
@@ -1403,6 +1629,9 @@ progress:@"Used to view the completion progress of a task. While the specifics o
   attributes
     max:@"This attribute describes how much work the task indicated by the progress element requires. The max attribute, if present, must have a value greater than zero and be a valid floating point number."
     value:@"This attribute specifies how much of the task that has been completed. It must be a valid floating point number between 0 and max, or between 0 and 1 if max is omitted. If there is no value attribute, the progress bar is indeterminate; this indicates that an activity is ongoing with no indication of how long it is expected to take."
+  widget-constraints
+    widget:literal
+    widget:container
 
 select:@"Represents a control that presents a menu of options. The options within the menu are represented by <option> elements, which can be grouped by <optgroup> elements. Options can be pre-selected for the user."
   type:flow-content
@@ -1430,7 +1659,6 @@ select:@"Represents a control that presents a menu of options. The options withi
     required:@"A Boolean attribute indicating that an option with a non-empty string value must be selected."
     size:@"If the control is presented as a scrolled list box, this attribute represents the number of rows in the list that should be visible at one time. Browsers are not required to present a select element as a scrolled list box. The default value is 0."
     onchange:@"The event occurs when the content of a form element, the selection, or the checked state have changed"
-
-
-
-
+  widget-constraints
+    widget:container
+    widget:literal
