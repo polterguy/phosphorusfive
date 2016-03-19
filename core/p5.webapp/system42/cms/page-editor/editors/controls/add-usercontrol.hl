@@ -76,12 +76,22 @@ create-widget:wysiwyg-controls-usercontrol-window
               class:modal-body
               widgets
 
-                // Actual literal widget containing body of dialogue
+                /*
+                 * Widget containing body of dialogue
+                 */
                 container:wysiwyg-controls-usercontrol-window-body
                   element:div
                   widgets
+
+                    /*
+                     * Simple "body" of modal window
+                     */
                     literal:wysiwyg-controls-usercontrol-main-text
                       innerValue:@"Select the usercontrol you wish to include on your page ..."
+
+                    /*
+                     * Help or "explanation" widget, initially invisible, but possible to show through "?" button
+                     */
                     literal:wysiwyg-controls-usercontrol-help
                       visible:false
                       innerValue:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" />
@@ -97,38 +107,101 @@ inside your usercontrol have <em>""static ids""</em></strong>. Meaning, they mus
 <p>A usercontrol will also render to the client with the attribute <strong>""data-usercontrol""</strong>, which allows you to easily access
 your usercontrols from client-side JavaScript and CSS.</p>
 <p>Please select the usercontrol you wish to include on your page from the list below ...</p>"
+
+                    /*
+                     * Table containing list of usercontrols in system
+                     */
                     table:wysiwyg-window-list-of-usercontrols
                       class:prepend-top table table-hover
                       oninit
+
+                        /*
+                         * Selecting all [controls] p5.page objects from database
+                         */
                         select-data:x:/*/*/p5.page/*/type/=controls/.
+
+                        /*
+                         * Making sure we remove currently edited page, 
+                         * to try to avoid never ending recursive dependencies
+                         */
                         get-widget-property:page-url
                           value
                         set:x:@"/../*/select-data/*/""={0}"""
                           :x:/../*/get-widget-property/*/*?value
+
+                        /*
+                         * Looping through each [p5.page] object returned from [select-data] invocation above
+                         */
                         for-each:x:/../*/select-data/*
+
+                          /*
+                           * Checking if page's name starts with "Usercontrol - ", at which point it by convention,
+                           * is considered to be a reusable page, possible to use as a usercontrol
+                           */
                           if
                             fetch:x:/0/0?value
                               index-of:x:/..for-each/*/_dp/#/*/name?value
                                 what:"Usercontrol - "
                             !=:int:0
+
+                            /*
+                             * NOT a usercontrol [controls] page, continuing with next iteration
+                             */
                             continue
+
+                          /*
+                           * Creating a "tr" (table row) widget wrapping currently iterated usercontrol [controls] page.
+                           * Forward evaluating some expressions first though
+                           */
                           eval-x:x:/+/**(/href|/innerValue|/_page-id)
                           create-widget
                             parent:wysiwyg-window-list-of-usercontrols
                             element:tr
                             style:"cursor:pointer;"
                             onclick
+
+                              /*
+                               * Will contain the necessary p5.lambda to create our usercontrol after some manipulation below.
+                               * Used after parametrization process as [eval] object to create usercontrol
+                               */
                               _create-widget
+
+                              /*
+                               * Will contain the URL (p5.page object ID) for usercontrol.
+                               * Forward evaluated outside of [create-widget] invocation above
+                               */
                               _page-id:x:/..for-each/*/_dp/#?value
+
+                              /*
+                               * Forward evaluates string formatting argument to [select-data] below
+                               */
                               eval-x:x:/+/*/*/*/select-data/*//
+
+                              /*
+                               * Adds the necessary code to dynamically load usercontrol ([controls] page) from
+                               * database, and insert the results as children widgets of main widget wrapping usercontrol 
+                               */
                               add:x:/../*/_create-widget/*
                                 src
                                   oninit
+
+                                    /*
+                                     * Selects page from database
+                                     */
                                     select-data:x:@"/*/*/p5.page/""={0}""/*/controls?value.node"
                                       :x:/../*/_page-id?value
+
+                                    /*
+                                     * Changes [literal], [container], etc, to [create-literal-vidget], [create-container-widget] etc
+                                     */
                                     set:x:/-/*?name
                                       rel-src:create-{0}-widget
                                         :x:?name
+
+                                    /*
+                                     * Adds up main wrapper widget as [parent] to all [create-xxx-widget] invocations inside
+                                     *  of [select-data]
+                                     */
                                     add:x:/../*/select-data/*
                                       src:"parent:{0}"
                                         :x:/../*/_event?value
@@ -149,10 +222,21 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                       _node
                                       _children-selectable:bool:false
                                     eval:x:/../*/select-data
+
+                              /*
+                               * Making sure we return the widget's ID after widget is created inside of [_create-widget] eval object
+                               */
                               add:x:/../*/_create-widget
                                 src
                                   set:x:/..?value
                                     src:x:/../*/create-widget?value
+
+                              /*
+                               * Making sure main wrapper widget has the attribute of [data-usercontrol] associated with
+                               * it, such that we can recognize it in WYSIWYG design surface, among other things.
+                               * BTW, the ID (URL) of [controls] page wrapped as usercontrol, will be the value of
+                               * [data-usercontrol], both in design view, and in production
+                               */
                               add:x:/../*/_create-widget/*
                                 src:@"data-usercontrol:@""{0}"""
                                   :x:/../*/_create-widget/**/oninit/*/select-data/*/?value

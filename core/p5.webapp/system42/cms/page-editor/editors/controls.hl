@@ -1024,10 +1024,23 @@ $('html, body').animate({{
           title:Copies widget to clipboard, such that you can paste in a copy another place, either on same page, or in another page
           innerValue:@"<span class=""glyphicon glyphicon-copy""></span> Copy"
           onclick
+
+            /*
+             * Finds currently selected widget, and retrieves it in its entirety
+             */
             find-widget:wysiwyg-editor-surface
               data-selected
             sys42.get-widget:x:/../*/find-widget/*?value
+
+            /*
+             * Removing some of its properties, such as [data-selected], [onclick] and all [widgets] inside of usercontrols
+             */
             set:x:/-/*/*(/data-selected|/onclick|/data-usercontrol/./*/widgets)
+
+            /*
+             * Adding modified widget as a session value, which serves as our "clipboard",
+             * before giving user some feedback and toggle "Paste" button(s)
+             */
             add:x:/+/*
               src:x:/../*/sys42.get-widget/*
             set-session-value:sys42.wysiwyg-controls.clipboard-widget
@@ -1231,7 +1244,7 @@ you can simply delete it now. A complete version of the widget still exists on y
 
                 /*
                  * Clipboard widget is *not* legally allowed according to the HTML5 standard at the position user tries
-                 * to paste it into. Warning user, and returning early
+                 * to paste it into. Warning user, trying to give som "sane feedback", and returning early
                  */
                 get-widget-property:x:/../*/_paste-parent?value
                   element
@@ -1967,21 +1980,21 @@ is not legally allowed as a child of a '{1}' element"
            * Looping through each [type] of currently iterated [_legal-element], to see if we can
            * find this type declaration in currently iterated children widget of [_widget] or 
            * currently selected widget.
-           * [_found] below is used for signaling that currently iterated [_legal-elements] is allowed
+           * [_found] below is used to signal that currently iterated [_legal-elements] is allowed
            */
           _found:bool:false
-          for-each:x:/..for-each/*/_dp/#/*/type?value
+          for-each:x:/..for-each/*/_dp/#/*/permitted-content/*/type?value
 
             /*
              * Checking if currently iterated [type] can be found in currently iterated children element's
-             * [permitted-parent] declaration, and no [except] rule exists
+             * [type] declaration, and no [except] rule exists
              */
             if:x:/../*/load-file/*/*/{0}/*/permitted-parent/*/accept/={1}
               :x:/..for-each/..for-each/..for-each/*/_dp?value
               :x:/..for-each/*/_dp?value
 
               /*
-               * Type declaration for currently iterated [_legal-element] was found in [permitted-parent]
+               * Type declaration for currently iterated [_legal-element] was found in [type]
                * for currently iterated child element, now checking if an [except] rule exists
                */
               if:x:/../*/load-file/*/*/{0}/*/permitted-parent/*/accept/={1}/*/except/={2}
@@ -2334,6 +2347,61 @@ is not legally allowed as a child of a '{1}' element"
      * [controls] he would like to include as his [usercontrol]
      */
     sys42.wysiwyg-controls.create-user-control
+
+      /*
+       * Since usercontrols, by default, are wrapped inside of "div" elements, we need
+       * to verify that current position legally allows a "div" element to exist according 
+       * to the HTML5 standard.
+       * Checking if widget's HTML element ("div") is legal where user requested the widget to be pasted,
+       * but in order to do that, we must first find out what the parent widget of currently selected
+       * position is, which depends upon whether or not a [parent] is given, a [before] or [after] 
+       * is given
+       */
+      _parent
+      if:x:/../*/_create-widget/*/*/parent?value
+
+        /*
+         * An explicit [parent]  was provided
+         */
+        set:x:/../*/_parent?value
+          src:x:/../*/_create-widget/*/*/parent?value
+
+      else
+
+        /*
+         * Either a [before] or an [after] was supplied, finding parent
+         * of that widget, and stuffing into [_paste-parent]
+         */
+        get-parent-widget:x:/../*/_create-widget/*/*(/before|/after)?value
+        set:x:/../*/_parent?value
+          src:x:/./-/*?value
+
+      /*
+       * Now retrieveing all legal children elements for the parent widget user tries to paste widget into,
+       * such that we can verify that widget user tries to paste, has an HTML element which is legal inside
+       * of the parent widget for the position where user tries to paste widget
+       */
+      sys42.wysiwyg-controls.get-legal-element-names-for-children:x:/../*/_parent?value
+      if:x:/-/*/div
+
+        /*
+         * Usercontrol widget is legally allowed according to the HTML5 standard at the position user tries
+         * to paste it into
+         */
+      else
+
+        /*
+         * Usercontrol widget is *not* legally allowed according to the HTML5 standard at the position user tries
+         * to paste it into. Warning user, trying to give som "sane feedback", and returning early
+         */
+        get-widget-property:x:/../*/_parent?value
+          element
+        sys42.info-window:@"Sorry, but a usercontrol's HTML element is by default 'div', and this 
+is not legally allowed as a child of a '{0}' element"
+          :x:/./-/*/*?value
+          _error:true
+          _time:more
+        return
 
       /*
        * Asking user for which [controls] he wish to include, by creating a modal
