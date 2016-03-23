@@ -27,14 +27,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.char", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_char (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = char.Parse (strValue);
+            if (e.Args.Value is char) {
+                return;
             } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a char",
-                    e.Args, 
-                    context);
+                e.Args.Value = char.Parse (e.Args.Get<string> (context));
             }
         }
 

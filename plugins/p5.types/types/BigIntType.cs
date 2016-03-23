@@ -31,14 +31,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.bigint", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_bigint (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = BigInteger.Parse (strValue, CultureInfo.InvariantCulture);
+            if (e.Args.Value is BigInteger) {
+                return;
             } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a bigint",
-                    e.Args, 
-                    context);
+                e.Args.Value = BigInteger.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
             }
         }
 

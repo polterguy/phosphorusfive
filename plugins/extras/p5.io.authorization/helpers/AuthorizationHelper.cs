@@ -40,6 +40,11 @@ namespace p5.io.authorization.helpers
             // Extra security for non-root users
             if (context.Ticket.Role != "root") {
 
+                // Checking if this is "common folder", at which point we return immediately,
+                // since all users have access to this folder
+                if (filename.ToLower ().StartsWith ("/common/"))
+                    return; // Legal
+
                 // Verifying auth file is safe
                 if (filename.ToLower () == GetAuthFile (context).ToLower ())
                     throw new LambdaSecurityException (
@@ -88,6 +93,11 @@ namespace p5.io.authorization.helpers
 
             // Extra security for non-root users
             if (context.Ticket.Role != "root") {
+
+                // Checking if this is "common folder", at which point we return immediately,
+                // since all users have access to this folder
+                if (filename.ToLower ().StartsWith ("/common/"))
+                    return; // Legal
 
                 // Verifying file is not underneath ANOTHER user's folder, which is not legal even for root account!
                 if (filename.ToLower ().StartsWith ("/users/") && 
@@ -147,6 +157,11 @@ namespace p5.io.authorization.helpers
             // Extra security for non-root users
             if (context.Ticket.Role != "root") {
 
+                // Checking if this is "common folder", at which point we return immediately,
+                // since all users have access to this folder
+                if (foldername.ToLower ().StartsWith ("/common/"))
+                    return; // Legal
+
                 // Verifies file is underneath authorized user's folder, if it is underneath "/users/" folders
                 if (foldername.StartsWith ("/users/") && foldername.Length != 7 && 
                     foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
@@ -181,6 +196,11 @@ namespace p5.io.authorization.helpers
 
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
+
+                // Checking if this is "common folder", at which point we return immediately,
+                // since all users have access to this folder
+                if (foldername.ToLower ().StartsWith ("/common/"))
+                    return; // Legal
 
                 // Verifies nobody but root account can write to database folder
                 if (foldername.StartsWith ((ConfigurationManager.AppSettings ["database-path"].Replace ("~", "") ?? "/db/")))

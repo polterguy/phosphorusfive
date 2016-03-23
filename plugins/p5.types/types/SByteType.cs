@@ -27,14 +27,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.sbyte", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_sbyte (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = sbyte.Parse (strValue, CultureInfo.InvariantCulture);
+            if (e.Args.Value is sbyte) {
+                return;
             } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a sbyte",
-                    e.Args, 
-                    context);
+                e.Args.Value = sbyte.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
             }
         }
 

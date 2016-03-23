@@ -28,14 +28,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.uint", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_uint (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = uint.Parse (strValue, CultureInfo.InvariantCulture);
+            if (e.Args.Value is uint) {
+                return;
             } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a uint",
-                    e.Args, 
-                    context);
+                e.Args.Value = uint.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
             }
         }
 

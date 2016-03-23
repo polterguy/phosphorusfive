@@ -27,14 +27,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.time", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_time (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = TimeSpan.ParseExact (strValue, "c", CultureInfo.InvariantCulture);
+            if (e.Args.Value is TimeSpan) {
+                return;
             } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a time",
-                    e.Args, 
-                    context);
+                e.Args.Value = TimeSpan.ParseExact (e.Args.Get<string> (context), "c", CultureInfo.InvariantCulture);
             }
         }
 

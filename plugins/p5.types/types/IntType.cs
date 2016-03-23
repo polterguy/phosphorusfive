@@ -27,14 +27,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.int", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = int.Parse (strValue, CultureInfo.InvariantCulture);
+            if (e.Args.Value is int) {
+                return;
             } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to an int",
-                    e.Args, 
-                    context);
+                e.Args.Value = int.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
             }
         }
 

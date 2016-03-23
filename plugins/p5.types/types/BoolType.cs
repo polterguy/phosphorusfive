@@ -27,13 +27,13 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.bool", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_bool (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = e.Args.Get<string> (context).ToLower () == "true";
-            } else if (e.Args.Value is bool) {
-                return; // do nothing, no conversion necessary!
+            if (e.Args.Value is bool) {
+                return;
             } else {
-                e.Args.Value = e.Args.Value != null;
+                if ((e.Args.Get<string> (context) ?? "").ToLower () == "false")
+                    e.Args.Value = false;
+                else
+                    e.Args.Value = e.Args.Value != null;
             }
         }
 

@@ -1,0 +1,104 @@
+
+/*
+ * Includes the necessary JavaScript on page to allow "drag and drop uploading" of files
+ * from a desktop based client, to the server.
+ *
+ * Requires a [_widget], which will have its CSS class changed, during "drag and drop"
+ * operations. This [_widget] must be an actual widget on your page, which has a server-side
+ * Ajax event called "_onupload", which will be invoked after uploading of new files is finished.
+ * [_widget]'s value must be the ID of your widget.
+ *
+ * [_widget] must be a container widget
+ *
+ * In your [_onupdate] ajax event, you can access the file data using [get-http-param:file-data],
+ * and filename can be accessed as [get-http-param:file-name]
+ */
+
+
+/*
+ * This example relies upon jQuery, in addition to that it needs some "custom CSS"
+ * to be included.
+ */
+include-javascript-file:/media/jquery/jquery-2.1.4.min.js
+
+
+/*
+ * Creating custom CSS classes inline in HTML page, to make sure
+ * we get "dropzone CSS classes" associated with widget when files
+ * are dragged over browser area
+ */
+eval-x:x:/+/*/parent
+create-widget
+  parent:x:/../*/_widget?value
+  widgets
+    text:@"<style type=""text/css"">
+.dropover {
+    background:rgba(255,255,0,.2) url(/media/images/marvin-headshot-transparent.png) no-repeat top right;
+}
+
+.dropover-dropped {
+    background-color:rgba(128,255,0,.2);
+}</style>"
+
+
+/*
+ * Including JavaScript fo allow for dragging and 
+ * dropping files to upload them
+ */
+include-javascript:@"var dropzone = p5.$('{0}');
+dropzone.files = [];
+
+var dz = $('#{0}');
+
+dz.on('dragover', function() {{
+  dz.addClass ('dropover');
+  return false;
+}});
+
+dz.on('dragleave', function() {{
+  dz.removeClass ('dropover');
+  return false;
+}});
+
+dz.on('drop', function() {{
+  dz.toggleClass ('dropover-dropped');
+  var startPush = dropzone.files.length == 0;
+  var files = event.dataTransfer.files;
+  for(var i = 0; i < files.length; i++) {{
+    dropzone.files.push(files[i]);
+  }}
+  if(startPush) {{
+    dropzone.processNextFile();
+  }}
+  return false;
+}});
+
+dropzone.processNextFile = function () {{
+  var f = dropzone.files.splice(0,1)[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {{
+    var upln = p5.$('{0}');
+    upln.raise('_onupload', {{
+      onsuccess: function (serverReturn, evt) {{
+        if(dropzone.files.length > 0) {{
+          dropzone.processNextFile();
+        }} else {{
+          dz.removeClass ('dropover');
+          dz.removeClass ('dropover-dropped');
+        }}
+      }},
+      onbefore: function (pars, evt) {{
+        pars.push(['file-data', btoa(e.target.result)]);
+        pars.push(['file-name', f.name]);
+      }}
+    }});
+  }};
+  reader.readAsBinaryString(f);
+}};
+"
+  :x:/../*/_widget?value
+
+
+
+
+_sys42.show-code-window:x:/..

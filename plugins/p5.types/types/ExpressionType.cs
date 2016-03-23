@@ -27,7 +27,11 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.x", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_x (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Expression.Create (e.Args.Get<string> (context), context);
+            if (e.Args.Value is Expression) {
+                return;
+            } else {
+                e.Args.Value = Expression.Create (e.Args.Get<string> (context), context);
+            }
         }
 
         /// <summary>

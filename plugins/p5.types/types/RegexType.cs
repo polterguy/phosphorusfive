@@ -28,8 +28,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.regex", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_regex (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
+            if (e.Args.Value is Regex) {
+                return;
+            } else {
+                var strValue = e.Args.Get<string> (context);
 
                 // Sanity check
                 if (!strValue.StartsWith ("/"))
@@ -49,11 +51,6 @@ namespace p5.types.types
                 regexString = regexString.Substring (0, regexString.LastIndexOf ("/"));
 
                 e.Args.Value = new Regex (regexString, GetOptions (context, e.Args, options));
-            } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a regex",
-                    e.Args, 
-                    context);
             }
         }
 

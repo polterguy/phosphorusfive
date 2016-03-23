@@ -27,39 +27,17 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.blob", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_blob (ApplicationContext context, ActiveEventArgs e)
         {
-            // Checking if this is a string
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-
-                // Value is string, checking to see if we should decode from base64, or simply return raw bytes
+            if (e.Args.Value is byte[]) {
+                return;
+            } else {
                 if (e.Args.GetChildValue ("decode", context, false)) {
 
                     // Caller specified he wanted to decode value from base64
-                    e.Args.Value = Convert.FromBase64String (strValue);
+                    e.Args.Value = Convert.FromBase64String (e.Args.Get<string>(context));
                 } else {
 
                     // No decoding here, returning raw bytes through UTF8 encoding
-                    e.Args.Value = Encoding.UTF8.GetBytes (strValue);
-                }
-            } else {
-
-                // Checking if value is a Node
-                var nodeValue = e.Args.Value as Node;
-                if (nodeValue != null) {
-
-                    // Value is Node, converting to string before we convert to blob
-                    strValue = e.Args.Get<string> (context);
-                    e.Args.Value = Encoding.UTF8.GetBytes (strValue);
-                } else {
-
-                    // DateTime cannot be marshalled
-                    if (e.Args.Value is DateTime)
-                        e.Args.Value = ((DateTime)e.Args.Value).ToBinary ();
-                    else
-                        throw new LambdaException (
-                            "Don't know how to convert that to a blob",
-                            e.Args, 
-                            context);
+                    e.Args.Value = Encoding.UTF8.GetBytes (e.Args.Get<string>(context));
                 }
             }
         }

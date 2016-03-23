@@ -27,14 +27,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.float", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_float (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = float.Parse (strValue, CultureInfo.InvariantCulture);
+            if (e.Args.Value is float) {
+                return;
             } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a float",
-                    e.Args, 
-                    context);
+                e.Args.Value = float.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
             }
         }
 

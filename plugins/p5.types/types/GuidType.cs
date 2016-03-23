@@ -27,14 +27,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.guid", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_guid (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = Guid.Parse (strValue);
+            if (e.Args.Value is Guid) {
+                return;
             } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a guid",
-                    e.Args, 
-                    context);
+                e.Args.Value = Guid.Parse (e.Args.Get<string> (context));
             }
         }
 

@@ -27,6 +27,8 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.node", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
         {
+            if (e.Args.Value is Node)
+                return;
             var code = e.Args.Get<string> (context);
             var tmp = new Node ("", code);
             context.RaiseNative ("lisp2lambda", tmp);

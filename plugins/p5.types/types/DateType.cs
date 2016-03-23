@@ -58,21 +58,25 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.date", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
         {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                if (strValue.Length == 10)
-                    e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                else if (strValue.Length == 19)
-                    e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-                else if (strValue.Length == 23)
-                    e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
-                else
-                    throw new ArgumentException ("date; '" + strValue + "' is not recognized as a valid date");
+            if (e.Args.Value is DateTime) {
+                return;
             } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a date",
-                    e.Args, 
-                    context);
+                var strValue = e.Args.Get<string> (context);
+                if (strValue != null) {
+                    if (strValue.Length == 10)
+                        e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    else if (strValue.Length == 19)
+                        e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                    else if (strValue.Length == 23)
+                        e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
+                    else
+                        throw new ArgumentException ("date; '" + strValue + "' is not recognized as a valid date");
+                } else {
+                    throw new LambdaException (
+                        "Don't know how to convert that to a date",
+                        e.Args, 
+                        context);
+                }
             }
         }
 
