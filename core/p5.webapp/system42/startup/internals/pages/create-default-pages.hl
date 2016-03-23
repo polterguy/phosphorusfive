@@ -1,13 +1,10 @@
-/*
- * Creates the default pages for our CMS if no pages exists in our database
- */
 
-// Checking to see if there exists any [p5.page] objects in database from before
+/*
+ * Automatically created script by [sys42.get-pages-database-creation-script]
+ */
 select-data:x:/*/*/p5.page?count
 if:x:/-?value
   equals:int:0
-
-  // Default landing page
   insert-data
     p5.page:/
       type:lambda
@@ -103,8 +100,6 @@ else
 <blockquote><em>""""Hello, my name is Marvin, and I have just been adopted by my owner. That's why things looks a little bit odd here, since
 he still haven't told me what he wants me to do. Until then, I'll just be attending these cars, and speak to this coffee machine. Maybe
 this coffee machine would want to listen to my troubles ...""""</em></blockquote>"""
-
-
     p5.page:/root/editor
       type:lambda
       name:Pages
@@ -117,7 +112,6 @@ this coffee machine would want to listen to my troubles ...""""</em></blockquote
  */
 sys42.execute-lisp-file:/system42/cms/page-editor/page-editor.hl
 "
-
     p5.page:/root/executor
       type:lambda
       name:Evaluator
@@ -130,7 +124,6 @@ sys42.execute-lisp-file:/system42/cms/page-editor/page-editor.hl
  */
 sys42.execute-lisp-file:/system42/apps/executor.hl
 "
-
     p5.page:/root/users
       name:Users
       template:/system42/cms/templates/main.hl
@@ -141,7 +134,6 @@ sys42.execute-lisp-file:/system42/apps/executor.hl
  */
 sys42.execute-lisp-file:/system42/apps/users/edit-users.hl
 "
-
     p5.page:/superuser/files
       type:lambda
       name:Files
@@ -152,8 +144,6 @@ sys42.execute-lisp-file:/system42/apps/users/edit-users.hl
  */
 sys42.execute-lisp-file:/system42/apps/file-browser/launch.hl
 "
-
-
     p5.page:/user/profile
       name:Profile
       template:/system42/cms/templates/main.hl
@@ -164,8 +154,6 @@ sys42.execute-lisp-file:/system42/apps/file-browser/launch.hl
  */
 sys42.execute-lisp-file:/system42/apps/profile/edit-profile.hl
 "
-
-
     p5.page:/root/gnupg-database
       name:GnuPG
       template:/system42/cms/templates/main.hl
@@ -176,8 +164,6 @@ sys42.execute-lisp-file:/system42/apps/profile/edit-profile.hl
  */
 sys42.execute-lisp-file:/system42/apps/gnupg.hl
 "
-
-
     p5.page:/root/tests
       name:Tests
       template:/system42/cms/templates/main.hl
@@ -188,8 +174,6 @@ sys42.execute-lisp-file:/system42/apps/gnupg.hl
  */
 sys42.execute-lisp-file:/system42/tests/index.hl
 "
-
-
     p5.page:/examples/ajax-widgets-1
       name:Ajax Widgets 1
       template:/system42/cms/templates/main.hl
@@ -304,8 +288,6 @@ create-widget:foo
            * JavaScript event rendered to client as JavaScript
            */
           onclick:""alert('foo 2 clicked');"""
-
-
     p5.page:/examples/databind-1
       name:Databind 1
       template:/system42/cms/templates/main.hl
@@ -371,8 +353,6 @@ create-widget
   class:table table-hover
   widgets
     text:@""<thead><tr><th>Name</th><th>Phone</th><th>Street</th><th>Number</th></tr></thead>"""
-
-
     p5.page:/examples/databind-2
       name:Databind 2
       template:/system42/cms/templates/main.hl
@@ -480,8 +460,6 @@ create-widget
       widgets
         tr
           widgets"
-
-
     p5.page:/examples/cryptoxifier
       name:Cryptoxifier
       type:lambda
@@ -669,8 +647,6 @@ create-widget:crypto-wrapper
           class:form-control
           rows:10
           placeholder:Output text ..."
-
-
     p5.page:/examples/link-scraper
       name:Link scraper
       type:lambda
@@ -762,8 +738,6 @@ sys42.wizard-window
      */
     set:x:/..?value
       src:bool:true"
-
-
     p5.page:/examples/todo-app
       name:TODO app
       type:lambda
@@ -984,8 +958,6 @@ create-widget:todo-main-form
                * Simple 'static' text widget to provide headers for table HTML element
                */
               text:@""<thead><tr><th>Item</th><th style='width:100px;'>Delete</th></tr></thead>"""
-
-
     p5.page:/examples/rss-reader
       name:RSS reader
       type:lambda
@@ -1079,8 +1051,6 @@ create-widget
     p
       innerValue:<em>{0}</em>
         :x:/../*/xml2lambda/*/rss/*/channel/*/description?value"
-
-
     p5.page:/examples/address-book
       name:Address Book
       type:lambda
@@ -1432,11 +1402,8 @@ Please notice that this feature requires that you've setup your web.config with 
         widgets
           thead
             innerValue:<tr><th>Edit</th><th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th>Delete</th></tr>"
-
-
     p5.page:/examples/csv-editor
       name:CSV editor
-      type:lambda
       template:/system42/cms/templates/main.hl
       role:root
       lambda:@"/*
@@ -1913,7 +1880,7 @@ sure you wish to do this? This action cannot be undone afterwards!""
                               else
 
                                 /*
-                                 * File didn't contain any items, alerting user
+                                 * File container no items, alerting user
                                  */
                                 eval-x:x:/+
                                 sys42.info-window:There were no items in file, but successfully created '{1}' object type declaration
@@ -2698,8 +2665,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
                */
               sys42.info-window:File was successfully saved
       widgets"
-
-
+      type:lambda
     p5.page:/about
       type:html
       name:About
@@ -2723,3 +2689,703 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
 <p>PS!<br>
 I am for hire, either to develop custom modules, teach, or do other things related to Phosphorus Five and System42!<br/>
 Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to talk about such a proposal</p>"
+    p5.page:/usercontrols/input-name-and-email
+      name:Usercontrol - Input name and email
+      template:/system42/cms/templates/main.hl
+      role:root
+      type:controls
+      controls:@"container
+  element:div
+  class:form
+  data-email-harvester:true
+  oninit
+    include-javascript:@""p5.emailHarvesterKeyPressed = function(e) {
+  if(e.keyCode == 13) {
+    p5.$($('#' + e.target.id).parent().find('.btn').get(0)).raise('onclick');
+    return false;
+  }
+}""
+  widgets
+    literal
+      element:h3
+      class:prepend-bottom text-center
+      innerValue:Provide name and email
+    void
+      element:input
+      onkeypress:return p5.emailHarvesterKeyPressed(event);
+      data-name:true
+      class:form-control prepend-bottom input-lg
+      placeholder:Your name please ...
+      type:text
+    void
+      element:input
+      onkeypress:return p5.emailHarvesterKeyPressed(event);
+      type:email
+      data-email:true
+      class:form-control prepend-bottom input-lg
+      placeholder:Your email please ...
+    container
+      element:div
+      class:text-right prepend-bottom
+      widgets
+        literal
+          element:button
+          class:btn btn-primary
+          innerValue:Submit
+          onclick
+            find-first-ancestor-widget:x:/../*/_event?value
+              data-email-harvester
+            find-widget:x:/../*/find-first-ancestor-widget/*?value
+              data-name
+            find-widget:x:/../*/find-first-ancestor-widget/*?value
+              data-email
+            get-widget-property:x:/../*/find-widget/*?value
+              value
+            match:x:/../*/get-widget-property/1/0?value
+              what:regex:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+            if:x:/../*/match/*/*?name
+              not
+              set-widget-property:x:/../*/find-widget/[1,2]/*?value
+                class:form-control prepend-bottom input-lg error
+            else
+              set-widget-property:x:/../*/find-widget/[1,2]/*?value
+                class:form-control prepend-bottom input-lg
+              eval-x:x:/+/*/**
+              add:x:/+
+                src
+                  _data
+                    name:x:/../*/get-widget-property/0/*?value
+                    email:x:/../*/get-widget-property/1/*?value
+              sys42.forms.action.email-name-submitted
+  events
+    sys42.forms.action.set-focus-name
+      find-widget:x:/../*/_event?value
+        data-name
+      send-javascript:$('#{0}').focus().select();
+        :x:/../*/find-widget/*?value
+    sys42.forms.action.clear-form
+      find-widget:x:/../*/_event?value
+        data-name
+      find-widget:x:/../*/_event?value
+        data-email
+      set-widget-property:x:/../*/find-widget/*?value
+        value
+      set-widget-property:x:/../*/find-widget/[1,2]/*?value
+        class:form-control prepend-bottom input-lg
+    sys42.forms.action.validate-form
+      find-widget:x:/../*/_event?value
+        data-name
+      find-widget:x:/../*/_event?value
+        data-email
+      get-widget-property:x:/../*/find-widget/*?value
+        value
+      match:x:/../*/get-widget-property/1/0?value
+        what:regex:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+      if:x:/../*/match/*/*?name
+        not
+        set-widget-property:x:/../*/find-widget/[1,2]/*?value
+          class:form-control prepend-bottom input-lg error
+        return:bool:false
+      set-widget-property:x:/../*/find-widget/[1,2]/*?value
+        class:form-control prepend-bottom input-lg
+      if:x:/../*/_arg
+        return:x:/../*/_arg?value
+      return:bool:true
+    sys42.forms.action.serialize-form
+      find-widget:x:/../*/_event?value
+        data-name
+      find-widget:x:/../*/_event?value
+        data-email
+      get-widget-property:x:/../*/find-widget/*?value
+        value
+      eval-x:x:/+/*/*/*
+      insert-before:x:
+        src
+          _data
+            name:x:/../*/get-widget-property/0/*?value
+            email:x:/../*/get-widget-property/1/*?value"
+    p5.page:/usercontrols/data-table
+      name:Usercontrol - Data table
+      template:/system42/cms/templates/main.hl
+      role:root
+      type:controls
+      controls:@"container
+  element:table
+  _data-columns:name,type,role,template
+  _data-end:-1
+  _data-search:
+  _data-begin:0
+  class:table table-hover
+  _data-typename:p5.page
+  oninit
+    sys42.forms.action.databind-table:x:/../*/_event?value
+  widgets
+  events
+    sys42.forms.action.databind-table-previous
+      if:x:/../*/_arg
+        and:x:/../*/_arg?value
+          !=:x:/../*/_event?value
+        return:bool:false
+      sys42.get-user-control-settings:x:/../*/_event?value
+        _data-typename
+        _data-search
+        _data-columns
+        _data-begin
+        _data-end
+      if:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        =:int:-1
+        return
+      -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        _:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
+      -:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
+        _:x:/../*/\-/[0,1]?value
+      -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        _:x:/../*/\-/[0,1]?value
+      if:x:/-2?value
+        <:int:0
+        sys42.info-window:No more items
+        return
+      set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
+        _data-begin:x:/../*/\-/[1,2]?value
+        _data-end:x:/../*/\-/[2,3]?value
+      sys42.forms.action.databind-table:x:/../*/_arg?value
+      return:bool:false
+    sys42.forms.action.databind-table
+      if:x:/../*/_arg
+        and:x:/../*/_arg?value
+          !=:x:/../*/_event?value
+        return
+      find-widget:x:/../*/_event?value
+        element:tbody
+      if:x:/-/0?value
+        delete-widget:x:/./-/*?value
+      sys42.get-user-control-settings:x:/../*/_event?value
+        _data-typename
+        _data-search
+        _data-columns
+        _data-begin
+        _data-end
+      if:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        =:int:-1
+        set:x:/../*/sys42.get-user-control-settings/*/_data-end?value
+          src:
+      split:x:/../*/sys42.get-user-control-settings/*/_data-columns?value
+        =:,
+      _select-data-search
+        select-data:x:@""/*/*/""""{0}""""/*/""""=~{3}""""/./[{1},{2}]""
+          :x:/../*/sys42.get-user-control-settings/*/_data-typename?value
+          :x:/../*/sys42.get-user-control-settings/*/_data-begin?value
+          :x:/../*/sys42.get-user-control-settings/*/_data-end?value
+          :x:/../*/sys42.get-user-control-settings/*/_data-search?value
+      _select-data
+        select-data:x:@""/*/*/""""{0}""""/[{1},{2}]""
+          :x:/../*/sys42.get-user-control-settings/*/_data-typename?value
+          :x:/../*/sys42.get-user-control-settings/*/_data-begin?value
+          :x:/../*/sys42.get-user-control-settings/*/_data-end?value
+      if:x:/../*/sys42.get-user-control-settings/*/_data-search?value
+        !=:
+        set:x:/../*/select-data
+          src:x:/../*/_select-data-search/*
+      else
+        set:x:/../*/select-data
+          src:x:/../*/_select-data/*
+      select-data
+      if
+        fetch:x:/0/0?value
+          find-widget:x:/../*/_event?value
+            element:thead
+        not
+        databind:x:/..if/*/create-widget/*/widgets/*/tr/*/widgets
+          src:x:/../*/split/*
+          template
+            th
+              {innerValue}:x:?name
+        eval-x:x:/+/*/parent
+        create-widget
+          parent:x:/../*/_event?value
+          element:thead
+          widgets
+            tr
+              widgets
+      for-each:x:/../*/select-data/*
+        add:x:/../*/create-widget/*/widgets
+          src
+            tr
+              widgets
+        for-each:x:/../*/split/*?name
+          eval-x:x:/+/**
+          add:x:/../*/create-widget/*/widgets/0/-/*/widgets
+            src
+              td
+                innerValue:x:/..for-each/./*/_dp/#/*/{0}?value
+                  :x:/..for-each/*/_dp?value
+      eval-x:x:/+/*/parent
+      create-widget
+        parent:x:/../*/_event?value
+        element:tbody
+        widgets
+    sys42.forms.action.databind-table-next
+      if:x:/../*/_arg
+        and:x:/../*/_arg?value
+          !=:x:/../*/_event?value
+        return:bool:false
+      sys42.get-user-control-settings:x:/../*/_event?value
+        _data-typename
+        _data-search
+        _data-columns
+        _data-begin
+        _data-end
+      if:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        =:int:-1
+        sys42.info-window:No more items
+        return
+      -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        _:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
+      +:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
+        _:x:/../*/\-?value
+      +:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        _:x:/../*/\-?value
+      _select-data
+        select-data:x:@""/*/*/""""{0}""""?count""
+          :x:/../*/sys42.get-user-control-settings/*/_data-typename?value
+      _select-data-search
+        select-data:x:@""/*/*/""""{0}""""/*/""""=~{1}""""/.?count""
+          :x:/../*/sys42.get-user-control-settings/*/_data-typename?value
+          :x:/../*/sys42.get-user-control-settings/*/_data-search?value
+      if:x:/../*/sys42.get-user-control-settings/*/_data-search?value
+        =:
+        set:x:/../*/_select-data
+          src:x:/../*/_select-data/0
+      else
+        set:x:/../*/_select-data
+          src:x:/../*/_select-data-search/0
+      _select-data
+      if
+        -:x:/./-?value
+          _:int:1
+        <:x:/../*/\+/[0,1]?value
+        sys42.info-window:No more items
+        return
+      set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
+        _data-begin:x:/../*/\+/[0,1]?value
+        _data-end:x:/../*/\+/[1,2]?value
+      sys42.forms.action.databind-table:x:/../*/_arg?value
+      return:bool:true
+    sys42.forms.action.reset-table-paging
+      if:x:/../*/_arg
+        and:x:/../*/_arg?value
+          !=:x:/../*/_event?value
+        return
+      sys42.get-user-control-settings:x:/../*/_event?value
+        _data-typename
+        _data-search
+        _data-columns
+        _data-begin
+        _data-end
+      -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        _:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
+      set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
+        _data-begin:0
+        _data-end:x:/../*/\-?value"
+    p5.page:/usercontrols/paged-searchable-data-table
+      name:Usercontrol - Paged and searchable data table
+      template:/system42/cms/templates/main.hl
+      role:root
+      type:controls
+      controls:@"container
+  element:div
+  class:col-xs-12
+  _search-parent:true
+  widgets
+    container
+      element:div
+      class:text-right col-xs-12 form-inline
+      widgets
+        literal
+          element:button
+          innerValue:@""<span class=""""glyphicon glyphicon-triangle-left""""></span>""
+          class:btn btn-default
+          title:Click me to do something intelligent ...
+          onclick
+            get-parent-widget:x:/../*/_event?value
+            get-parent-widget:x:/-/*?value
+            find-widget:x:/-/*?value
+              data-usercontrol
+            find-widget:x:/-/*?value
+              element:table
+            sys42.forms.action.databind-table-previous:x:/-/*?value
+        void
+          element:input
+          value:
+          class:form-control search-textbox
+          onkeypress:if (event.keyCode == 13) { p5.$($(event.target).parent().find('.search-button')[0]).raise('onclick'); return false; }
+          placeholder:Search ...
+          type:search
+        literal
+          element:button
+          class:btn btn-default search-button
+          _search-button:true
+          innerValue:@""<span class=""""glyphicon glyphicon-search""""></span>""
+          onclick
+            find-first-ancestor-widget:x:/../*/_event?value
+              _search-parent
+            find-widget:x:/-/*?value
+              element:input
+            find-widget:x:/-2/*?value
+              data-usercontrol
+            get-widget-property:x:/-2/*?value
+              value
+            sys42.get-user-control-settings:x:/../*/find-widget/[1,2]/*?value
+              _data-typename
+              _data-search
+              _data-columns
+              _data-begin
+              _data-end
+            set-widget-property:x:@/-/*/_settings-widget-id?value
+              _data-search:x:/../*/get-widget-property/*/*?value
+            find-widget:x:/../*/find-widget/[1,2]/*?value
+              element:table
+            sys42.forms.action.reset-table-paging:x:/-/*?value
+            sys42.forms.action.databind-table:x:/-2/*?value
+            send-javascript:$('#{0}').parent().find('.search-textbox').focus().select();
+              :x:/../*/_event?value
+        literal
+          element:button
+          innerValue:@""<span class=""""glyphicon glyphicon-triangle-right""""></span>""
+          class:btn btn-default
+          title:Click me to do something intelligent ...
+          onclick
+            get-parent-widget:x:/../*/_event?value
+            get-parent-widget:x:/-/*?value
+            find-widget:x:/-/*?value
+              data-usercontrol
+            find-widget:x:/-/*?value
+              element:table
+            sys42.forms.action.databind-table-next:x:/-/*?value
+    container
+      element:div
+      _data-columns:name,type,role,template
+      data-usercontrol:true
+      _data-search:
+      _data-end:5
+      _data-begin:0
+      _data-typename:p5.page
+      oninit
+        select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
+          :/usercontrols/data-table
+        set:x:/-/*?name
+          rel-src:create-{0}-widget
+            :x:?name
+        add:x:/../*/select-data/*
+          src:""parent:{0}""
+            :x:/../*/_event?value
+        eval:x:/../*/select-data
+      widgets"
+    p5.page:/examples/file-sharing
+      name:File sharing example
+      template:/system42/cms/templates/main.hl
+      lambda:@"/*
+ * An example of how to create a file sharing service, that allows
+ * only registered ""superusers"" to see, upload and download files.
+ * Useful for using as an extension of your intranet, for small businesses,
+ * giving access to documents to their employees, of graded character, 
+ * that should not fall in the hands of unauthorized personal.
+ *
+ * Notice though, unless you wish to have others spy on the information shared
+ * this way, you will need to install and use SSL/TLS (https) on your server
+ * system. Otherwise, the files sent back and forth between the client and the 
+ * server becomes publicly visible for anyone able to somehow wiretap the traffic
+ * to and from your server.
+ *
+ * The system also works as a ""WikiLeaks dropbox"", which allows users to anonymously
+ * drop files, to anonymously give you access to files, without anyone being able to know
+ * who was your source. This is done by changing the ""Access Role"" of the page to 
+ * ""Nor restrictions"", at which point anonymous users will not be given til list of files
+ * available on the server, but still able to upload files to the server. If you use this
+ * feature, you should encourage your users to use ""Tor Browser"" to upload files, since
+ * it is the only way to with 100% certainty facilitate for nobody being able to extort you,
+ * to get access to your web server's log files, to see who accessed your service, and such 
+ * be able to ""guess"" who your source might be for some piece of information.
+ */
+
+
+/*
+ * Checking if user has a file to download
+ */
+get-session-value:sys42.file-sharer.download-file
+if:x:/-/*?value
+  sys42.get-content-type:x:/../*/get-session-value/*?value
+  set-http-header:Content-Type
+    :x:/./-?value
+  split:x:/../*/get-session-value/*?value
+    =:/
+  set-http-header:Content-Disposition
+    src:attachment; filename={0}
+      :x:/././-/0/-?name
+  set-session-value:sys42.file-sharer.download-file
+  echo-file:x:/../*/get-session-value/*?value
+  return
+
+
+create-widget:file-sharer
+  parent:content
+  class:col-xs-12
+  style:""min-height:500px;""
+  widgets
+    text:@""<p class=""""col-xs-9"""">Welcome to the file sharer example. This example demonstrates how you could create a file sharing service
+for your business, to allow your employees to upload and download documents of graded nature. To upload documents
+and files, simply drag and drop them from your desktop to your browser. The files uploaded this way, will be stored
+in the folder """"/common/private/"""", which means that they will not be accessible, for anyone being a 
+<em>""""guest""""</em> on your website. This means
+that if you run this example on a web server, that have exclusively allowed https, then you can safely
+share whatever files you wish, without having unaothorized personel being able to spy on what data you and your employees 
+are sharing with each other.</p>
+<p class=""""col-xs-9"""">This example also serves as a <em>""""WikiLeaks Drop Box""""</em>, which allows users to anonymously drop 
+off files to your server, without compromising their identity. This feature requires usage of Tor Browser, which the user 
+will be warned about, if he tries to access the site anonymously. If you wish to use the example as such, then simply change its 
+""""Access Role"""" to """"No restrictions"""". However, by default, any registered user can view, and download, any files dropped
+off here, but only <em>""""root""""</em> can delete files.</p>
+<p class=""""col-xs-9"""">To avoid files overwiting each other, any new files dropped here, will be prefixed with a random Guid. After revising
+the file, you might want to rename the file, and remove this prefix using e.g. the <em>""""superuser/Files""""</em> menu item
+as an administrator or superuser.</p>""
+
+    /*
+     * ""Datagrid"" containing available files on server
+     */
+    container:file-sharer-paging
+      class:col-xs-12 text-right
+      widgets
+        button
+          class:btn btn-default
+          innerValue:<
+          onclick
+            get-session-value:sys42.file-sharer.paging
+            if:x:/../*/get-session-value/*?value
+              // We have a value
+            else
+              // We do not have a value, creating ""0"" as default
+              set:x:/../*/get-session-value/*?value
+                src:0
+            if:x:/../*/get-session-value/*?value.int
+              >=:int:10
+              -:x:/../*/get-session-value/*?value.int
+                _:10
+              set-session-value:sys42.file-sharer.paging
+                src:x:/./-?value
+              sys42.file-sharer.databind-files
+            else
+              sys42.info-window:No more items ...
+        button
+          class:btn btn-default
+          innerValue:>
+          onclick
+            list-files:/common/private/
+            set:x:@""/-/*/""""/common/private/README.md""""""
+            set:x:@""/-2/*/""""/common/private/web.config""""""
+            get-session-value:sys42.file-sharer.paging
+            if:x:/../*/get-session-value/*?value
+              // We have a value
+            else
+              // We do not have a value, creating ""0"" as default
+              set:x:/../*/get-session-value/*?value
+                src:int:0
+            +:x:/../*/get-session-value/*?value.int
+              _:int:10
+            if:x:/-?value.int
+              <:x:/../*/list-files/*?count
+              +:x:/../*/get-session-value/*?value.int
+                _:int:10
+              set-session-value:sys42.file-sharer.paging
+                src:x:/./-?value
+              sys42.file-sharer.databind-files
+            else
+              sys42.info-window:No more items ...
+    container:file-sharer-files
+      element:table
+      class:table table-hover prepend-top
+      widgets
+        literal
+          element:thead
+          innerValue:@""<tr><th colspan=""""2"""">Available files</th></tr>""
+        container:file-sharer-files-tbody
+          element:tbody
+  oninit
+
+    /*
+     * Evaluates the Hyperlisp file that includes the necessary JavaScript to
+     * allow for dragging and dropping files unto surface of browser, supplying the
+     * widget ID of the widget that will have its CSS classes changed, to give user feedback,
+     * about that he can drop files in browser area to upload them.
+     */
+    sys42.execute-lisp-file:/system42/misc/drag-and-drop-upload.hl
+      _widget:file-sharer
+
+    /*
+     * Databinding our ""datagrid""
+     */
+    sys42.file-sharer.databind-files
+
+  /*
+   * This Ajax event is required by the ""drag-and-drop-upload.hl"" file, and
+   * will be invoked whenever a file has been finished uploaded to the server
+   */
+  _onupload
+  
+    /*
+     * Retrieving file name and file data, and converting file data
+     * from base64 to binary representation before saving file to
+     * ""upload folder""
+     */
+    get-http-param:file-data
+    get-http-param:file-name
+    p5.string.decode-base64:x:/../*/get-http-param/*/file-data?value
+    new-guid
+    save-file:/common/private/{0}-{1}
+      :x:/./-?value.string
+      :x:/../*/get-http-param/[1,2]/*?value
+      src:x:/../*/p5.string.decode-base64/*?value
+
+    /*
+     * Then ""re-binding"" grid of ""available files on server"", but only if user 
+     * is logged in
+     */
+    whoami
+    if:x:/-/*/role?value
+      =:guest
+      sys42.info-window:Thank you for this files, we will have an administrator look at them as soon as we can!
+      return
+    sys42.file-sharer.databind-files
+
+  events
+
+    /*
+     * Lambda event that is invoked whenever the ""datagrid"" of available files
+     * needs to be databound
+     */
+    sys42.file-sharer.databind-files
+
+      /*
+       * Checking if user belongs to the ""superuser"" role, and if not,
+       * return early, without databinding ""datagrid""
+       */
+      whoami
+      if:x:/-/*/role?value
+        =:guest
+
+        /*
+         * Warning user that he should use ""Tor Browser"" to upload files,
+         * since this might be an anonymous dropbox installation
+         */
+        sys42.confirm-window
+          _header:WARNING!
+          _body:@""<p>If you wish to anonymously drop off files here, you should not do such, unless you are
+using the <a href=""""https://www.torproject.org/projects/torbrowser.html.en"""">Tor Browser</a>, since the web master 
+of this server, theoretically might be extorted to give out his web logs, which might compromise your security.</p>""
+        set-widget-property:file-sharer-files
+          visible:false
+        set-widget-property:file-sharer-paging
+          visible:false
+        return
+
+      /*
+       * Retrieving ""paging"" information
+       */
+      get-session-value:sys42.file-sharer.paging
+      if:x:/../*/get-session-value/*?value
+        set:x:/./+?value
+          src:x:/../*/get-session-value/*?value.int
+      _page:int:0
+      +:x:/../*/_page?value
+        _:int:10
+
+      /*
+       * Listing available files on server, and removing the ""web.config"" and ""README.md"",
+       * to avoid having user delete these files, or do something other stupid.
+       * In addition, we extract only the files which matches the ""pagin no"" user currently is at
+       */
+      list-files:/common/private/
+      set:x:@""/-/*/""""/common/private/README.md""""""
+      set:x:@""/-2/*/""""/common/private/web.config""""""
+      set:x:/-3/*(!/[{0},{1}])
+        :x:/../*/_page?value
+        :x:/../*/\+?value
+
+      /*
+       * Hiding pager if there are less than 10 files in list
+       */
+      if:x:/../*/list-files/*?count
+        <:int:10
+        and:x:/../*/_page?value.int
+          <=:int:0
+        set-widget-property:file-sharer-paging
+          visible:false
+
+      /*
+       * Checking if there are any files, and if not, making table (""datagrid"") invisible,
+       * and returning early
+       */
+      if:x:/../*/list-files/*?count
+        =:int:0
+        set-widget-property:file-sharer-files
+          visible:false
+        return
+
+      /*
+       * OK, we now know we have files in directory, first emptying existing list of files,
+       * before creating ""datagrid"" of files available to user. But first, making sure ""datagrid""
+       * is visible
+       */
+      set-widget-property:file-sharer-files
+        visible:true
+      clear-widget:file-sharer-files-tbody
+
+      /*
+       * Looping through each file in [list-files], creating a ""tr"" (table row) for each available file
+       */
+      for-each:x:/../*/list-files/*
+        replace:x:/..for-each/*/_dp/#?name
+          what:/common/private/
+        eval-x:x:/+/**(/innerValue|/_filename)
+        create-widget
+          parent:file-sharer-files-tbody
+          element:tr
+          widgets
+            td
+              widgets
+                a
+                  href:#
+                  innerValue:x:/..for-each/*/replace?value
+                  onclick
+                    _filename:x:/..for-each/*/_dp/#?name
+                    set-session-value:sys42.file-sharer.download-file
+                      src:x:/../*/_filename?value
+                    reload-location
+            td
+              style:""width:100px;""
+              widgets
+                button
+                  innerValue:@""<span class=""""glyphicon glyphicon-trash""""></span>""
+                  class:btn btn-default
+                  style:""width:100%;""
+                  onclick
+                    whoami
+                    if:x:/-/*/role?value
+                      !=:root
+                      sys42.info-window:@""In your dreams! Notify admin of web server if you wish to have files deleted here!""
+                        _error:true
+                        _time:more
+                      return
+                    _filename:x:/..for-each/*/_dp/#?name
+                    eval-x:x:/+/*/_body
+                    sys42.confirm-window
+                      _header:Confirm action!
+                      _body:Are you sure you wish to delete this file <em>'{0}'</em>? This action cannot be undone!
+                        :x:/../*/_filename?value
+                      _onok
+                        _filename:x:/..for-each/*/_dp/#?name
+                        delete-file:x:/-?value
+                        sys42.file-sharer.databind-files
+
+
+"
+      type:lambda

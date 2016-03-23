@@ -408,6 +408,7 @@
     <None Include="system42\misc\drag-and-drop-upload.hl" />
     <None Include="common\private\README.md" />
     <None Include="common\public\README.md" />
+    <None Include="system42\startup\misc-events\sys42.get-pages-database-creation-script.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

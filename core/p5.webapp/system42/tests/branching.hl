@@ -311,3 +311,189 @@ false-equals-false-expressions-convert
     throw:If false comparison misbehaved
     
     
+
+/*
+ * Tests that "not" behaves correctly with an expression that should yield false
+ */
+not-failure
+  _foo:success
+  if:x:/-?value
+    =:success
+    not
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+    
+    
+
+/*
+ * Tests that "not" behaves correctly with an expression that should yield true
+ */
+not-success
+  _foo:success
+  if:x:/-?value
+    =:error
+    not
+    // Success
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+
+
+
+
+/*
+ * Tests that "not" behaves correctly when an "and" statement is "not"'ed
+ */
+not-and-failure
+  _foo:success
+  if:x:/-?value
+    =:success
+    and:x:/../0?name
+      =:_foo
+      not
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+
+
+
+
+
+/*
+ * Tests that "not" behaves correctly when an "and" statement is "not"'ed
+ */
+not-and-success
+  _foo:success
+  if:x:/-?value
+    =:success
+    and:x:/../0?name
+      =:_foo-error
+      not
+    // Success
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+
+
+
+
+
+
+/*
+ * Tests that "not" behaves correctly when given a non-existing expression value,
+ * and expression "exists" is "not"'ed
+ */
+not-exists-failure
+  _foo
+  if:x:/-?value
+    not
+    // Success
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+
+
+
+
+
+
+
+/*
+ * Tests that "not" behaves correctly when given an existing expression value,
+ * and expression "exists" is "not"'ed
+ */
+not-exists-success
+  _foo:success
+  if:x:/-?value
+    not
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+
+
+
+
+
+
+
+
+/*
+ * Tests that "not" behaves correctly when given an existing expression value,
+ * and expression "exists" is "not"'ed
+ */
+not-and-exists-failure
+  _foo
+  if:x:/-?name
+    =:_foo
+    and:x:/../0?value
+      not
+    // Success
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+
+
+
+
+
+
+
+
+
+/*
+ * Tests that "not" behaves correctly when given an existing expression value,
+ * and expression "exists" is "not"'ed
+ */
+not-and-exists-success
+  _foo:success
+  if:x:/-?name
+    =:_foo
+    and:x:/../0?value
+      not
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * Tests that "not" behaves correctly when given an existing expression value,
+ * and expression "exists" is "not"'ed
+ */
+not-and-bool-failure
+  _foo:bool:false
+  if:x:/-?name
+    =:_foo
+    and:x:/../0?value
+      not
+    // Success
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * Tests that "not" behaves correctly when given an existing expression value,
+ * and expression "exists" is "not"'ed
+ */
+not-and-bool-success
+  _foo:bool:true
+  if:x:/-?name
+    =:_foo
+    and:x:/../0?value
+      not
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
