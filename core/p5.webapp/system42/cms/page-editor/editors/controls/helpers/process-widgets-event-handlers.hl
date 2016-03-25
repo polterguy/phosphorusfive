@@ -83,14 +83,6 @@ for-each:x:/../*/_node/#/*
         sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/helpers/process-widgets-event-handlers.hl
           _node
           _children-selectable:bool:false
-  else
-
-    /*
-     * This is not a usercontrol, making sure we temporarily rename any [oninit] 
-     * event handlers in it, if there are any
-     */
-    set:x:/..for-each/*/_dp/#/*/oninit?name
-      src:_oninit
 
   /*
    * Then renaming all event handlers of currently iterated widget, except the [oninit],

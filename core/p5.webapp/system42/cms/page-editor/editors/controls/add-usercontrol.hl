@@ -245,7 +245,7 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                * Finding custom properties of usercontrol, which is done by evaluating
                                * [select-data] invocation of usercontrol, and retrieving all attributes
                                * that starts with [_data-], treating these as "settings" for usercontrol,
-                               * by adding them to main usercontrol [container] wrapper, as attributes
+                               * by adding them to main usercontrol [container] wrapper, as attributes.
                                */
                               _eval-select
                                 insert-before:x:

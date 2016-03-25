@@ -10,7 +10,9 @@
  * Including only bootstrap and jQuery, and not the "default" stylesheets,
  * besides from those
  */
-include-stylesheet-file:/media/bootstrap/css/bootstrap.min.css
+include-stylesheet-file
+  /media/bootstrap/css/bootstrap.min.css
+  /media/css/main.css
 include-javascript-file
   /media/jquery/jquery-2.1.4.min.js
   /media/jquery/jquery-ui.min.js
@@ -23,6 +25,15 @@ include-javascript-file
 create-widget:template-root
   class:container
   widgets
+
+    text:@"<style type=""text/css"">
+.info-window {
+    top:0px;
+}
+body {
+  padding-top: 20px;
+}
+</style>"
 
     /*
      * Actual dynamic content comes here, after navbar menu at top, 

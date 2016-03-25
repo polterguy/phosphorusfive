@@ -17,7 +17,7 @@ if:x:/-/*?value
    */
   sys42.get-content-type:x:/../*/get-session-value/*?value
   set-http-header:Content-Type
-    :x:/./-?value
+    src:x:/./-?value
 
   // Figuring out filename without path
   split:x:/../*/get-session-value/*?value

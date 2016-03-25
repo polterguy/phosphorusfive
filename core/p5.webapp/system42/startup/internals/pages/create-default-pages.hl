@@ -2707,7 +2707,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
 }""
   widgets
     literal
-      element:h3
+      element:h4
       class:prepend-bottom text-center
       innerValue:Provide name and email
     void
@@ -2724,6 +2724,11 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
       data-email:true
       class:form-control prepend-bottom input-lg
       placeholder:Your email please ...
+    literal
+      element:div
+      innerValue:@""<p style=""""color:rgba(128,128,128,.5)"""">By providing your email address, and clicking <em>""""Submit""""</em> below, you accept that we can contact you through email. Either to inform you about our services, or to ask you gently to provide more information.</p>
+""
+      class:col-xs-12
     container
       element:div
       class:text-right prepend-bottom
@@ -2733,30 +2738,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
           class:btn btn-primary
           innerValue:Submit
           onclick
-            find-first-ancestor-widget:x:/../*/_event?value
-              data-email-harvester
-            find-widget:x:/../*/find-first-ancestor-widget/*?value
-              data-name
-            find-widget:x:/../*/find-first-ancestor-widget/*?value
-              data-email
-            get-widget-property:x:/../*/find-widget/*?value
-              value
-            match:x:/../*/get-widget-property/1/0?value
-              what:regex:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
-            if:x:/../*/match/*/*?name
-              not
-              set-widget-property:x:/../*/find-widget/[1,2]/*?value
-                class:form-control prepend-bottom input-lg error
-            else
-              set-widget-property:x:/../*/find-widget/[1,2]/*?value
-                class:form-control prepend-bottom input-lg
-              eval-x:x:/+/*/**
-              add:x:/+
-                src
-                  _data
-                    name:x:/../*/get-widget-property/0/*?value
-                    email:x:/../*/get-widget-property/1/*?value
-              sys42.forms.action.email-name-submitted
+            sys42.forms.action.email-name-submitted
   events
     sys42.forms.action.set-focus-name
       find-widget:x:/../*/_event?value
@@ -2788,9 +2770,6 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
         return:bool:false
       set-widget-property:x:/../*/find-widget/[1,2]/*?value
         class:form-control prepend-bottom input-lg
-      if:x:/../*/_arg
-        return:x:/../*/_arg?value
-      return:bool:true
     sys42.forms.action.serialize-form
       find-widget:x:/../*/_event?value
         data-name
@@ -2811,6 +2790,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
       type:controls
       controls:@"container
   element:table
+  _dynamic:true
   _data-columns:name,type,role,template
   _data-end:-1
   _data-search:
@@ -2821,7 +2801,23 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
     sys42.forms.action.databind-table:x:/../*/_event?value
   widgets
   events
-    sys42.forms.action.databind-table-previous
+    sys42.forms.action.reset-table-paging
+      if:x:/../*/_arg
+        and:x:/../*/_arg?value
+          !=:x:/../*/_event?value
+        return
+      sys42.get-user-control-settings:x:/../*/_event?value
+        _data-typename
+        _data-search
+        _data-columns
+        _data-begin
+        _data-end
+      -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        _:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
+      set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
+        _data-begin:0
+        _data-end:x:/../*/\-?value
+    sys42.forms.action.databind-table-next
       if:x:/../*/_arg
         and:x:/../*/_arg?value
           !=:x:/../*/_event?value
@@ -2834,22 +2830,40 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
         _data-end
       if:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
         =:int:-1
+        sys42.info-window:No more items
         return
       -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
         _:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
-      -:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
-        _:x:/../*/\-/[0,1]?value
-      -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
-        _:x:/../*/\-/[0,1]?value
-      if:x:/-2?value
-        <:int:0
+      +:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
+        _:x:/../*/\-?value
+      +:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        _:x:/../*/\-?value
+      _select-data
+        select-data:x:@""/*/*/""""{0}""""?count""
+          :x:/../*/sys42.get-user-control-settings/*/_data-typename?value
+      _select-data-search
+        select-data:x:@""/*/*/""""{0}""""/*/""""=~{1}""""/.?count""
+          :x:/../*/sys42.get-user-control-settings/*/_data-typename?value
+          :x:/../*/sys42.get-user-control-settings/*/_data-search?value
+      if:x:/../*/sys42.get-user-control-settings/*/_data-search?value
+        =:
+        set:x:/../*/_select-data
+          src:x:/../*/_select-data/0
+      else
+        set:x:/../*/_select-data
+          src:x:/../*/_select-data-search/0
+      _select-data
+      if
+        -:x:/./-?value
+          _:int:1
+        <:x:/../*/\+/[0,1]?value
         sys42.info-window:No more items
         return
       set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
-        _data-begin:x:/../*/\-/[1,2]?value
-        _data-end:x:/../*/\-/[2,3]?value
+        _data-begin:x:/../*/\+/[0,1]?value
+        _data-end:x:/../*/\+/[1,2]?value
       sys42.forms.action.databind-table:x:/../*/_arg?value
-      return:bool:false
+      return:bool:true
     sys42.forms.action.databind-table
       if:x:/../*/_arg
         and:x:/../*/_arg?value
@@ -2924,7 +2938,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
         parent:x:/../*/_event?value
         element:tbody
         widgets
-    sys42.forms.action.databind-table-next
+    sys42.forms.action.databind-table-previous
       if:x:/../*/_arg
         and:x:/../*/_arg?value
           !=:x:/../*/_event?value
@@ -2937,56 +2951,22 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
         _data-end
       if:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
         =:int:-1
-        sys42.info-window:No more items
         return
       -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
         _:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
-      +:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
-        _:x:/../*/\-?value
-      +:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
-        _:x:/../*/\-?value
-      _select-data
-        select-data:x:@""/*/*/""""{0}""""?count""
-          :x:/../*/sys42.get-user-control-settings/*/_data-typename?value
-      _select-data-search
-        select-data:x:@""/*/*/""""{0}""""/*/""""=~{1}""""/.?count""
-          :x:/../*/sys42.get-user-control-settings/*/_data-typename?value
-          :x:/../*/sys42.get-user-control-settings/*/_data-search?value
-      if:x:/../*/sys42.get-user-control-settings/*/_data-search?value
-        =:
-        set:x:/../*/_select-data
-          src:x:/../*/_select-data/0
-      else
-        set:x:/../*/_select-data
-          src:x:/../*/_select-data-search/0
-      _select-data
-      if
-        -:x:/./-?value
-          _:int:1
-        <:x:/../*/\+/[0,1]?value
+      -:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
+        _:x:/../*/\-/[0,1]?value
+      -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
+        _:x:/../*/\-/[0,1]?value
+      if:x:/-2?value
+        <:int:0
         sys42.info-window:No more items
         return
       set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
-        _data-begin:x:/../*/\+/[0,1]?value
-        _data-end:x:/../*/\+/[1,2]?value
+        _data-begin:x:/../*/\-/[1,2]?value
+        _data-end:x:/../*/\-/[2,3]?value
       sys42.forms.action.databind-table:x:/../*/_arg?value
-      return:bool:true
-    sys42.forms.action.reset-table-paging
-      if:x:/../*/_arg
-        and:x:/../*/_arg?value
-          !=:x:/../*/_event?value
-        return
-      sys42.get-user-control-settings:x:/../*/_event?value
-        _data-typename
-        _data-search
-        _data-columns
-        _data-begin
-        _data-end
-      -:x:/../*/sys42.get-user-control-settings/*/_data-end?value.int
-        _:x:/../*/sys42.get-user-control-settings/*/_data-begin?value.int
-      set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
-        _data-begin:0
-        _data-end:x:/../*/\-?value"
+      return:bool:false"
     p5.page:/usercontrols/paged-searchable-data-table
       name:Usercontrol - Paged and searchable data table
       template:/system42/cms/templates/main.hl
@@ -3389,3 +3369,370 @@ of this server, theoretically might be extorted to give out his web logs, which 
 
 "
       type:lambda
+    p5.page:/examples/rater
+      name:Email Harvester - Rater
+      template:/system42/cms/templates/no-header-menu.hl
+      role:root
+      type:controls
+      controls:@"container
+  element:div
+  class:col-xs-12
+  oninit
+    set-title:Please rate your experience at Acme Coffee and Restauarnt
+  widgets
+    literal
+      element:div
+      innerValue:@""<h1>Give us feedback please</h1>
+
+<p>In order to improve our services, we need feedback from our guests, such as you. Please tell us what you think of our service in the form below.</p>
+""
+      class:"" col-sm-8 col-sm-push-2 col-xs-12""
+    container
+      element:div
+      data-name:rating
+      class:star-rating prepend-top text-center col-xs-12
+      data-value:0
+      oninit
+        include-stylesheet-file:/media/css/star-rating.css
+        get-widget-property:x:/../*/_event?value
+          data-value
+        if:x:/-/*/*?value.int
+          =:int:0
+          sys42.forms.action.clear-form
+        else
+          sys42.forms.action.star-clicked:x:/../*/get-widget-property/*/*?value
+      widgets
+        literal
+          element:a
+          href:#
+          data-value:1
+          innerValue:
+          class:star
+          onclick
+            sys42.forms.action.star-clicked:1
+        literal
+          element:a
+          href:#
+          data-value:2
+          innerValue:
+          class:star
+          onclick
+            sys42.forms.action.star-clicked:2
+        literal
+          element:a
+          href:#
+          data-value:3
+          innerValue:
+          class:star
+          onclick
+            sys42.forms.action.star-clicked:3
+        literal
+          element:a
+          href:#
+          data-value:4
+          innerValue:
+          class:star
+          onclick
+            sys42.forms.action.star-clicked:4
+        literal
+          element:a
+          href:#
+          data-value:5
+          innerValue:
+          class:star
+          onclick
+            sys42.forms.action.star-clicked:5
+      events
+        sys42.forms.action.clear-form
+          get-children-widgets:x:/../*/_event?value
+          for-each:x:/../*/get-children-widgets/*/*
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star
+        sys42.forms.action.validate-form
+          get-widget-property:x:/../*/_event?value
+            data-value
+          if:x:/-/*/*?value.int
+            =:int:0
+            return:bool:false
+        sys42.forms.action.serialize-form
+          get-widget-property:x:/../*/_event?value
+            data-name
+            data-value
+          set:x:/+2/*/*/*?name
+            src:x:/../*/get-widget-property/*/*/data-name?value
+          eval-x:x:/+/*/*/*
+          insert-before:x:
+            src
+              _data
+                data-name:x:/../*/get-widget-property/*/*/data-value?value
+        sys42.forms.action.star-clicked
+          get-children-widgets:x:/../*/_event?value
+          for-each:x:/../*/get-children-widgets/*/*/[0,{0}]
+            :x:/../*/_arg?value
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star star-checked
+          for-each:x:/../*/get-children-widgets/*/*/[{0},]
+            :x:/../*/_arg?value
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star
+          set-widget-property:x:/../*/_event?value
+            data-value:x:/../*/_arg?value
+    container
+      element:div
+      class:"" col-sm-8 col-sm-push-2 col-xs-12 prepend-top prepend-bottom""
+      widgets
+        literal
+          element:textarea
+          innerValue:
+          placeholder:Please provide feedback to us ...
+          rows:5
+          class:form-control
+          events
+            sys42.forms.action.clear-form
+              set-widget-property:x:/../*/_event?value
+                value:
+            sys42.forms.action.serialize-form
+              get-widget-property:x:/../*/_event?value
+                value
+              eval-x:x:/+/*/*/*
+              insert-before:x:/../0
+                src
+                  _data
+                    feedback:x:/../*/get-widget-property/*/*?value
+    container
+      element:div
+      class:bg-success rounded-corners prepend-top air-padding col-sm-8 col-sm-push-2 col-xs-12
+      data-usercontrol:/usercontrols/input-name-and-email
+      oninit
+        select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
+          :/usercontrols/input-name-and-email
+        set:x:/-/*?name
+          rel-src:create-{0}-widget
+            :x:?name
+        add:x:/../*/select-data/*
+          src:""parent:{0}""
+            :x:/../*/_event?value
+        eval:x:/../*/select-data
+      events
+        sys42.forms.action.email-name-submitted
+          sys42.forms.action.validate-form
+          if:x:/-?value
+            =:bool:false
+            sys42.info-window:Please fill out at least your email address, name, and rate your experience
+              _error:true
+              _time:more
+            return
+          sys42.forms.action.serialize-form
+          if:x:/../**/_data/*
+            not
+            throw:No [_data] given to [sys42.action.save-data-to-database]
+          set:x:/+/*?value
+            date-now
+          _data
+            date
+          sys42.action.save-data-to-database:x:/../**/_data/*
+            _name:customer-rating
+          if:x:/../**/_data/*/rating?value.int
+            >=:int:4
+            set-session-value:sys42.rater.just-rated
+              src:true
+            set-location:/examples/rater-result?p={0}
+              :x:/../*/sys42.action.save-data-to-database?value
+          else-if:x:/../**/_data/*/rating?value.int
+            <=:int:2
+            sys42.confirm-window
+              _header:Thank you for your feedback
+              _body:@""<p>I am deeply sorry for your experience. One of our employees will personally contact you, to see if we
+can somehow fix this.</p>
+<p>You can close this window now, we have registered your feedback</p>""
+              _onok
+          else
+            sys42.confirm-window
+              _header:Thank you for your feedback
+              _body:@""<p>Thank you for providing us with feedback. We take all of our feedback very serious, and use it 
+to constantly make sure we improve our service.</p>
+<p>You can close this window now, we have registered your feedback</p>""
+              _onok"
+    p5.page:/examples/rater-result
+      name:Email Harvester - Rating sharing page
+      template:/system42/cms/templates/no-header-menu.hl
+      role:root
+      type:controls
+      controls:@"literal
+  element:div
+  innerValue:@""<h1>Acme Coffee and Restaurant</h1>
+
+<p>I have just been at Acme Coffee and Restaurant, and I think it deserves a nice review!</p>
+""
+  class:col-xs-12 col-md-8 col-md-push-2
+container
+  element:div
+  class:col-xs-12 col-md-8 col-md-push-2 prepend-top
+  oninit
+    set-title:My review of Acme Coffee and Restaurant
+    get-session-value:sys42.rater.just-rated
+    if:x:/-/*?value
+      =:true
+      sys42.info-window:""Please tell your friends about your experience :)""
+      set-widget-property:share-button
+        visible:true
+  widgets
+    void
+      element:img
+      alt:How much I liked this service
+      src:/media/images/star-value-4.png
+      oninit
+        get-http-param:p
+        if:x:/-/*?value
+          not
+          return
+        select-data:x:@""/*/*/customer-rating/""""=:guid:{0}""""""
+          :x:/../*/get-http-param/*?value
+        set-widget-property:x:/../*/_event?value
+          src:/media/images/star-value-{0}.png
+            :x:/../*/select-data/*/*/rating?value
+    literal
+      element:blockquote
+      innerValue:Here comes user personal feedback text
+      class:prepend-top
+      oninit
+        get-http-param:p
+        if:x:/-/*?value
+          not
+          return
+        select-data:x:@""/*/*/customer-rating/""""=:guid:{0}""""""
+          :x:/../*/get-http-param/*?value
+        set-widget-property:x:/../*/_event?value
+          innerValue:@""<em>""""{0}""""</em>""
+            :x:/../*/select-data/*/*/feedback?value
+    literal
+      element:p
+      innerValue:--
+    literal
+      element:em
+      innerValue:John Doe
+      oninit
+        get-http-param:p
+        if:x:/-/*?value
+          not
+          return
+        select-data:x:@""/*/*/customer-rating/""""=:guid:{0}""""""
+          :x:/../*/get-http-param/*?value
+        set-widget-property:x:/../*/_event?value
+          innerValue:x:/../*/select-data/*/*/name?value
+container
+  element:div
+  class:col-xs-8 col-xs-push-2 col-sm-6 col-sm-push-2 prepend-top text-right
+  widgets
+    literal:share-button
+      element:a
+      title:Share on Facebook
+      innerValue:Share!
+      class:btn btn-primary
+      oninit
+        get-http-param:p
+        if:x:/-/*?value
+          not
+          return
+        select-data:x:@""/*/*/customer-rating/""""=:guid:{0}""""""
+          :x:/../*/get-http-param/*?value
+        get-location
+        url-encode:I love Acme Coffee and Restaurant
+        url-encode:x:/../*/select-data/*/*/feedback?value
+        url-encode:x:/../*/get-location?value
+        set-widget-property:x:/../*/_event?value
+          href:""http://www.facebook.com/sharer.php?s=100&title={0}&summary={1}&url={2}""
+            :x:/../*/url-encode/[0,1]?value
+            :x:/../*/url-encode/[1,2]?value
+            :x:/../*/url-encode/[2,3]?value"
+    p5.page:/change-this-1
+      name:Email Harvester - Backend
+      template:/system42/cms/templates/main.hl
+      role:root
+      type:controls
+      controls:@"container
+  element:div
+  _data-end:25
+  _data-typename:customer-rating
+  _data-columns:name,email,feedback,rating
+  data-usercontrol:/usercontrols/paged-searchable-data-table
+  _data-search:
+  _data-begin:0
+  oninit
+    select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
+      :/usercontrols/paged-searchable-data-table
+    set:x:/-/*?name
+      rel-src:create-{0}-widget
+        :x:?name
+    add:x:/../*/select-data/*
+      src:""parent:{0}""
+        :x:/../*/_event?value
+    eval:x:/../*/select-data
+  events
+    sys42.forms.action.export-data-2-csv
+      _data:@""name,email,feedback,rating
+""
+      select-data:x:/*/*/customer-rating
+      for-each:x:/-/*
+        replace:x:/..for-each/*/_dp/#/*/name?value
+          what:,
+          with:-
+        replace:x:/..for-each/*/_dp/#/*/feedback?value
+          what:,
+          with:-
+        set:x:/../*/_data?value
+          src:@""{0}{1},{2},{3},{4}
+""
+            :x:/../*/_data?value
+            :x:/..for-each/*/replace/[0,1]?value
+            :x:/..for-each/*/_dp/#/*/email?value
+            :x:/..for-each/*/replace/[1,2]?value
+            :x:/..for-each/*/_dp/#/*/rating?value
+      whoami
+      date-now
+      format-date:x:/-?value
+        format:yyyy-MM-dd
+      save-file:/users/{0}/temp/ratings-{1}.csv
+        :x:/../*/whoami/*/username?value
+        :x:/../*/format-date?value
+        src:x:/../*/_data?value
+      set-session-value:sys42.rater.download-file
+        src:/users/{0}/temp/ratings-{1}.csv
+          :x:/../*/whoami/*/username?value
+          :x:/../*/format-date?value
+      reload-location
+container
+  element:div
+  class:col-xs-12 text-right
+  widgets
+    literal
+      element:button
+      class:btn btn-primary prepend-right
+      innerValue:Export data
+      title:Click me to do something intelligent ...
+      onclick
+        sys42.forms.action.export-data-2-csv
+      oninit
+        get-session-value:sys42.rater.download-file
+        if:x:/-/*?value
+          split:x:/../*/get-session-value/*?value
+            =:/
+          set-http-header:Content-Type
+            src:text/csv
+          set-http-header:Content-Disposition
+            src:attachment; filename={0}
+              :x:/..if/*/split/0/-?name
+          set-session-value:sys42.rater.download-file
+          echo-file:x:/../*/get-session-value/*?value
+    literal
+      element:button
+      innerValue:Delete data
+      class:btn btn-primary
+      title:Click me to do something intelligent ...
+      onclick
+        sys42.confirm-window
+          _header:Confirm deletion
+          _body:Are you sure you wish to delete all rating data in your system?
+          _onok
+            delete-data:x:/*/*/customer-rating
+            sys42.forms.action.databind-table"

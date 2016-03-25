@@ -1,0 +1,21 @@
+
+
+/*
+ * Contains CSS classes necessary to hook up star rating widget
+ */
+
+.star-rating {
+}
+
+.star-rating .star {
+    background:Transparent url(../images/star-rating.png) no-repeat bottom left;
+    width:50px;
+    height:43px;
+    display:inline-block;
+    text-decoration:none;
+}
+
+.star-rating .star-checked {
+    background:Transparent url(../images/star-rating.png) no-repeat top left;
+}
+

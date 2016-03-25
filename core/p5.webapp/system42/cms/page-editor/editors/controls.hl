@@ -132,13 +132,12 @@ create-container-widget:wysiwyg-controls-css-wrapper
 *[data-selected] {
 	background-color:rgba(255,255,0,.5) !important;
 	box-shadow: 12px 12px 5px #888888 !important;
-	border:dashed 1px rgba(0,0,0,.5) !important;
 	z-index:200 !important;
 	position:relative !important;
 }
 #wysiwyg-editor-surface {
 	min-height:436px;
-	clear:both;
+	overflow:auto;
 	border:dashed 1px rgba(0,0,0,.5);
 	border-radius:5px;
 	background-color:rgba(0,0,0,.03);

@@ -149,3 +149,174 @@ _wizard-item:Dropdown list
         else
           sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
 
+
+
+
+/*
+ * A star rating widget, with 5 stars
+ */
+_wizard-item:Star Rating
+  _description:Creates a star rating widget, with 5 stars, allowing your users to rate something
+  _code
+    create-container-widget
+      class:star-rating
+      data-value:0
+      data-name:custom-name-of-rated-object
+      oninit
+
+        /*
+         * Includes stylesheet, and invokes event that sets initial value
+         */
+        include-stylesheet-file:/media/css/star-rating.css
+        get-widget-property:x:/../*/_event?value
+          data-value
+        if:x:/-/*/*?value.int
+          =:int:0
+          sys42.forms.action.clear-form
+        else
+          sys42.forms.action.star-clicked:x:/../*/get-widget-property/*/*?value
+      events
+
+        /*
+         * Event invoked when value of widget is changed, e.g. by user clicking one of the stars.
+         * Expects [_arg] to be an integer between 1 and 5
+         */
+        sys42.forms.action.star-clicked
+
+          /*
+           * Loops through children widgets from 0 to [_arg], setting their "checked value"
+           * to true, by changing CSS class to "star-checked"
+           */
+          get-children-widgets:x:/../*/_event?value
+          for-each:x:/../*/get-children-widgets/*/*/[0,{0}]
+            :x:/../*/_arg?value
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star star-checked
+
+          /*
+           * Loops through children widgets from [_arg] and out (to end, which is 5), 
+           * setting their "checked value" to false, by changing CSS class to "star"
+           */
+          for-each:x:/../*/get-children-widgets/*/*/[{0},]
+            :x:/../*/_arg?value
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star
+
+          /*
+           * Updating [data-value] attribute of main wrapper widget, which contains all stars
+           */
+          set-widget-property:x:/../*/_event?value
+            data-value:x:/../*/_arg?value
+
+        /*
+         * Serializes value of control
+         */
+        sys42.forms.action.serialize-form
+          get-widget-property:x:/../*/_event?value
+            data-name
+            data-value
+          set:x:/+2/*/*/*?name
+            src:x:/../*/get-widget-property/*/*/data-name?value
+          eval-x:x:/+/*/*/*
+          insert-before:x:
+            src
+              _data
+                data-name:x:/../*/get-widget-property/*/*/data-value?value
+
+        /*
+         * Event invoked when forms should be cleared
+         */
+        sys42.forms.action.clear-form
+
+          /*
+           * Loops through all children widgets, setting their "checked value"
+           * to false, by changing CSS class to "star"
+           */
+          get-children-widgets:x:/../*/_event?value
+          for-each:x:/../*/get-children-widgets/*/*
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star
+
+        /*
+         * Core "action" to validate form, returns true only if user actually has chosen something,
+         * or if [data-value] attribute is non-sero to be specific
+         */
+        sys42.forms.action.validate-form
+          get-widget-property:x:/../*/_event?value
+            data-value
+          if:x:/-/*/*?value.int
+            =:int:0
+            return:bool:false
+          return:bool:true
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+      widgets
+        a
+          href:#
+          class:star
+          data-value:1
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            sys42.forms.action.star-clicked:1
+        a
+          href:#
+          class:star
+          data-value:2
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            sys42.forms.action.star-clicked:2
+        a
+          href:#
+          class:star
+          data-value:3
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            sys42.forms.action.star-clicked:3
+        a
+          href:#
+          class:star
+          data-value:4
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            sys42.forms.action.star-clicked:4
+        a
+          href:#
+          class:star
+          data-value:5
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            sys42.forms.action.star-clicked:5

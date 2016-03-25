@@ -105,10 +105,13 @@ create-protected-event:sys42.get-widget
 
     /*
      * Looping through all children, recursively invoking self, but only if we should,
-     * and this is not a [data-usercontrol] type of widget
+     * and this is not a [data-usercontrol] type of widget, and it is not a [_dynamic]
+     * type of control
      */
     if:x:/../*/_no-children?value.bool
       !=:bool:true
+      and:x:/../*/_return-value/-/*/_dynamic?value.bool
+        !=:bool:true
       and:x:/../*/_return-value/-/*/data-usercontrol
         not
         or:x:/../*/_no-wash-usercontrols?value.bool

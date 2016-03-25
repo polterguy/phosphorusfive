@@ -88,11 +88,9 @@ else
 /*
  * Then sorting widget's properties, making sure ajax event handlers end up at the end, 
  * then everything else alphabetically.
- * Skipping [widgets], [innerValue], [events], [element], [data-selected], [data-usercontrol] and [onclick].
- * We also skip [oninit] since it is only existing in usercontrols, since all other [oninit] ajax events, are renamed to [_oninit],
- * during processing of widget
+ * Skipping [widgets], [innerValue], [events], [element], [data-selected], [data-usercontrol] and [onclick]
  */
-sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/events!/element!/data-selected!/data-usercontrol!/onclick!/oninit)
+sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/events!/element!/data-selected!/data-usercontrol!/onclick)
 
   /*
    * Checking if this is [innerValue]
@@ -114,11 +112,21 @@ sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/events!/element!/data-s
       index-of:x:/../*/_rhs/#?name
         what:_on
     =:int:0
+    or
+      fetch:x:/0/0?value
+        index-of:x:/../*/_rhs/#?name
+          what:on
+      =:int:0
     and
       fetch:x:/0/0
         index-of:x:/../*/_lhs/#?name
           what:_on
       not
+      or
+        fetch:x:/0/0
+          index-of:x:/../*/_lhs/#?name
+            what:on
+        not
 
     /*
      * [_lhs] is event handler, but not [_rhs], returning
@@ -130,11 +138,21 @@ sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/events!/element!/data-s
       index-of:x:/../*/_lhs/#?name
         what:_on
     =:int:0
+    or
+      fetch:x:/0/0?value
+        index-of:x:/../*/_lhs/#?name
+          what:on
+      =:int:0
     and
       fetch:x:/0/0
         index-of:x:/../*/_rhs/#?name
           what:_on
       not
+      or
+        fetch:x:/0/0
+          index-of:x:/../*/_rhs/#?name
+            what:on
+        not
 
     /*
      * [_rhs] is event handler, but not [_lhs], returning
@@ -176,6 +194,11 @@ for-each:x:/../*/sort/*
       index-of:x:/..for-each/*/_dp/#?name
         what:_on
     =:int:0
+    or
+      fetch:x:/0/0?value
+        index-of:x:/..for-each/*/_dp/#?name
+          what:on
+      =:int:0
 
     /*
      * This is an event handler, breaking loop
@@ -562,14 +585,15 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
     /*
      * Then stripping away the initial "_" from event handler name
      */
-    split:x:/..for-each/*/_dp/#?name
-      =:int:1
+    replace:x:/..for-each/*/_dp/#?name
+      what:_on
+      with:on
 
     /*
      * Then passing in event handler name, and value, to [add] invocation below
      */
     set:x:/+4/**/={attribute-name}?value
-      src:x:/..else/*/split/1?name
+      src:x:/..else/*/replace?value
     set:x:/+3/**/={attribute-value}?value
       src:x:/..else/*/lambda2lisp?value
 
@@ -655,9 +679,14 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                        * Applying arguments to active event invocation that updates widget's ajax event,
                        * making sure we prepend an underscore ("_") to event name, before applying lambda
                        */
-                      add:x:/+2
-                        src:_{0}
-                          :x:/..try/*/get-widget-property/*/*/_event-handler-name?value
+                      if:x:/..try/*/get-widget-property/*/*/_event-handler-name?value
+                        =:oninit
+                        add:x:/./+3
+                          src:x:/..try/*/get-widget-property/*/*/_event-handler-name?value
+                      else
+                        add:x:/./+2
+                          src:_{0}
+                            :x:/..try/*/get-widget-property/*/*/_event-handler-name?value
                       add:x:/+/*
                         src:x:/..try/*/lisp2lambda/*
 
