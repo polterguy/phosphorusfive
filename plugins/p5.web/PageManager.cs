@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Web;
 using System.Linq;
 using System.Web.UI;
 using System.Collections;
@@ -166,6 +167,22 @@ namespace p5.web
 
                 // Returning current URL
                 e.Args.Value = AjaxPage.Request.Url.ToString();
+            }
+        }
+
+        /// <summary>
+        ///     Returns the URL root location of your web application
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "get-base-location", Protection = EventProtection.LambdaClosed)]
+        public void get_base_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new p5.core.Utilities.ArgsRemover(e.Args)) {
+
+                // Returning web apps root URL
+                e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + AjaxPage.ResolveUrl("~/");
             }
         }
 

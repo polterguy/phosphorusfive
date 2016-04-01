@@ -10,9 +10,6 @@
 /*
  * First the attributes
  */
-_header:Global attributes
-  _description:@"Global attributes may be specified on all HTML elements, even those not specified in the standard. That means that any non-standard elements must still permit these attributes, even though using those elements means that the document is no longer HTML5-compliant. For example, HTML5-compliant browsers hide content marked as &lt;foo hidden&gt;...&lt;foo&gt;, even though &lt;foo&gt; is not a valid HTML element."
-
 accesskey:@"Provides a hint for generating a keyboard shortcut for the current element. This attribute consists of a space-separated list of characters. The browser should use the first one that exists on the computer keyboard layout."
 
 class:@"Is a space-separated list of the classes of the element. Classes allows CSS and JavaScript to select and access specific elements via the class selectors, or functions like the method Document.getElementsByClassName()."
@@ -41,14 +38,13 @@ title:@"Contains a text representing advisory information related to the element
 /*
  * Then the DOM events
  */
-_header:Global DOM events
-  _decription:@"The event handler attributes"
-
 onclick:@"The event occurs when the user clicks on an element"
 
 oncontextmenu:@"The event occurs when the user right-clicks on an element to open a context menu"
 
 ondblclick:@"The event occurs when the user double-clicks on an element"
+
+oninit:@"Invoked when widget is initialized. Never sent to client-side. Phosphorus Five specific server-side event. Useful for initializing the widget, or doing other stuff that only needs to be done when widget is first created"
 
 onmousedown:@"The event occurs when the user presses a mouse button over an element"
 
@@ -64,22 +60,11 @@ onmouseout:@"The event occurs when a user moves the mouse pointer out of an elem
 
 onmouseup:@"The event occurs when a user releases a mouse button over an element"
 
-
-
-_header:Keyboard events
-  _description:@"These are keyboard events, and only relevant for HTML elements that can somehow trap keyboard events, such as an &lt;input&gt; element, or a &lt;textarea&gt;."
-
 onkeydown:@"The event occurs when the user is pressing a key, but before the key is released"
 
 onkeypress:@"The event occurs when the user presses a key, after the keystroke has been registered"
 
 onkeyup:@"The event occurs when the user releases a key"
-
-
-
-
-_header:Form events
-  _description:@"These are only for form elements, such as &lt;input&gt; and &lt;textarea&gt;."
 
 onblur:@"The event occurs when an element loses focus"
 
@@ -103,27 +88,11 @@ ondragstart:@"The event occurs when the user starts to drag an element"
 
 ondrop:@"The event occurs when the dragged element is dropped on the drop target"
 
-
-
-
-_header:Clipboard events
-  _description:@"Events that are associated with the clipboard somehow"
-
 oncopy:@"The event occurs when the user copies the content of an element"
 
 oncut:@"The event occurs when the user cuts the content of an element"
 
 onpaste:@"The event occurs when the user pastes some content in an element"
-
-
-
-
-
-
-
-
-_header:Touch events
-  _decription:@"Events only relevant for touch screen displays"
 
 ontouchcancel:@"The event occurs when the touch is interrupted"
 

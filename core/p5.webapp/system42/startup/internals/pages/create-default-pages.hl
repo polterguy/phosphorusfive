@@ -3569,6 +3569,10 @@ container
   element:div
   class:col-xs-12 col-md-8 col-md-push-2 prepend-top
   oninit
+    get-http-param:p
+    if:x:/-/*?value
+      not
+      return
     set-title:My review of Acme Coffee and Restaurant
     get-session-value:sys42.rater.just-rated
     if:x:/-/*?value

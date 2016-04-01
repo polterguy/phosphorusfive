@@ -411,6 +411,7 @@
     <None Include="common\public\README.md" />
     <None Include="system42\startup\misc-events\sys42.get-pages-database-creation-script.hl" />
     <None Include="system42\cms\templates\no-header-menu.hl" />
+    <None Include="system42\cms\page-editor\editors\controls\add-widget.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

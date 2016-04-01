@@ -603,13 +603,21 @@ $('html, body').animate({{
           widgets
 
             /*
+             * Main "add widget" button, which leads to a wizard
+             */
+            button
+              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Widget"
+              onclick
+                sys42.execute-lisp-file:/system42/cms/page-editor/editors/controls/add-widget.hl
+
+            /*
              * Dropdown toggle button for "Add widget" button(s)
              */
             button
               class:btn btn-default dropdown-toggle
-              style:"width:100%;"
               data-toggle:dropdown
-              innerValue:@"<span class=""glyphicon glyphicon-plus""></span> Widget <span class=""caret""></span>"
+              innerValue:@"<span class=""caret""></span>"
             ul
               class:dropdown-menu
               widgets
@@ -1757,6 +1765,20 @@ is not legally allowed as a child of a '{1}' element"
    * Lambda events for Editor Surface
    */
   events
+
+
+
+
+
+    /*
+     * Returns true, simple and plain. Useful for determining if we're in design view or not.
+     * Should not exist in any pages beside this [controls] type of page, which allows for
+     * easily creating logic that should only be evaluated if we're in design view, or we're
+     * not in design view. Which is useful sometimes, where you do not logic want to be evaluated
+     * in design view, but only during runtime
+     */
+    sys42.wysiwyg-controls.is-design-view
+      return:bool:true
 
 
 
