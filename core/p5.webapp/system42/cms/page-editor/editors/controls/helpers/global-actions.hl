@@ -18,6 +18,19 @@ This action should only be called once upon each request.</p>"
 
 
 /*
+ * Validates form, and returns if not valid
+ */
+_action
+  name:sys42.action.verify-form-is-valid
+  code-template
+    sys42.forms.action.validate-form
+    if:x:/-?value
+      =:bool:false
+      return
+  prerequisites:@"<p>This action raises the [sys42.forms.action.validate-form] action, and returns from event, if form is not valid.</p>"
+
+
+/*
  * Serialize form action
  */
 _action

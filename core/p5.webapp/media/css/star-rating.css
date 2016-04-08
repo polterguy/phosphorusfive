@@ -5,6 +5,7 @@
  */
 
 .star-rating {
+    float:left;
 }
 
 .star-rating .star {

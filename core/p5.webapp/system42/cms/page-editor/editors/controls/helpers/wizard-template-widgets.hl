@@ -34,8 +34,11 @@ _wizard-item:Rich Text content
     create-literal-widget
       element:div
       class:col-xs-12
-      innerValue:@"<h3>Rich content header</h3>
-<p>Some paragraph</p>"
+      innerValue:@"<p>Some paragraph</p>
+<ul>
+<li>Some list item</li>
+<li>Another list item</li>
+</ul>"
       onclick
         sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
         if:x:/-?value
@@ -56,6 +59,7 @@ _wizard-item:Textbox
       class:form-control
       title:Type some text into me please
       placeholder:Input please ...
+      data-field:foo-bar
       onclick
         sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
         if:x:/-?value
@@ -68,13 +72,33 @@ _wizard-item:Textbox
 /*
  * A div panel-type of wizard template widget
  */
-_wizard-item:Panel
-  _description:Creates a green 'panel', with some initial width, and other display properties to make it render OK'ish
+_wizard-item:Green Panel
+  _description:Creates a green 'container panel', with some initial width, and other display properties to make it render OK'ish
   _code
     create-container-widget
       element:div
-      class:col-xs-12 bg-success rounded-corners
+      class:col-xs-12 col-md-6 bg-success rounded-corners air-padding
       style:"min-height:100px;"
+      widgets
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+
+/*
+ * A div panel-type of wizard template widget
+ */
+_wizard-item:Bordered Panel
+  _description:Creates a bordered 'container panel', with some initial width, and other display properties to make it render OK'ish
+  _code
+    create-container-widget
+      element:div
+      class:col-xs-12 rounded-corners air-padding
+      style:"min-height:100px;border:dashed 1px rgba(0,0,0,.5);"
       widgets
       onclick
         sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
@@ -161,7 +185,7 @@ _wizard-item:Star Rating
     create-container-widget
       class:star-rating
       data-value:0
-      data-name:custom-name-of-rated-object
+      data-field:foo-bar
       oninit
 
         /*
@@ -182,6 +206,25 @@ _wizard-item:Star Rating
          * Expects [_arg] to be an integer between 1 and 5
          */
         sys42.forms.action.star-clicked
+
+          /*
+           * Making sure invocation is for "current widget", and if not, returning early ...
+           */
+          if:x:/../*/_parent?value
+            !=:x:/../*/_event?value
+            return
+
+          /*
+           * Finds "hidden field" in form, such that we can update its value
+           */
+          find-widget:x:/../*/_event?value
+            element:input
+            type:hidden
+          get-widget-property:x:/../*/_event?value
+            data-field
+          set-widget-property:x:/../*/find-widget/[0,1]/*?value
+            value:x:/../*/_arg?value
+            data-field:x:/../*/get-widget-property/*/*?value
 
           /*
            * Loops through children widgets from 0 to [_arg], setting their "checked value"
@@ -213,15 +256,15 @@ _wizard-item:Star Rating
          */
         sys42.forms.action.serialize-form
           get-widget-property:x:/../*/_event?value
-            data-name
+            data-field
             data-value
           set:x:/+2/*/*/*?name
-            src:x:/../*/get-widget-property/*/*/data-name?value
+            src:x:/../*/get-widget-property/*/*/data-field?value
           eval-x:x:/+/*/*/*
           insert-before:x:
             src
               _data
-                data-name:x:/../*/get-widget-property/*/*/data-value?value
+                data-field:x:/../*/get-widget-property/*/*/data-value?value
 
         /*
          * Event invoked when forms should be cleared
@@ -267,7 +310,10 @@ _wizard-item:Star Rating
             else
               sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
           _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
             sys42.forms.action.star-clicked:1
+              _parent:x:/../*/get-parent-widget/*?value
         a
           href:#
           class:star
@@ -280,7 +326,10 @@ _wizard-item:Star Rating
             else
               sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
           _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
             sys42.forms.action.star-clicked:2
+              _parent:x:/../*/get-parent-widget/*?value
         a
           href:#
           class:star
@@ -293,7 +342,10 @@ _wizard-item:Star Rating
             else
               sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
           _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
             sys42.forms.action.star-clicked:3
+              _parent:x:/../*/get-parent-widget/*?value
         a
           href:#
           class:star
@@ -306,7 +358,10 @@ _wizard-item:Star Rating
             else
               sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
           _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
             sys42.forms.action.star-clicked:4
+              _parent:x:/../*/get-parent-widget/*?value
         a
           href:#
           class:star
@@ -319,4 +374,9 @@ _wizard-item:Star Rating
             else
               sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
           _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
             sys42.forms.action.star-clicked:5
+              _parent:x:/../*/get-parent-widget/*?value
+        input
+          type:hidden

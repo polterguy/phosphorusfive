@@ -152,6 +152,13 @@
     <Content Include="common\private\web.config" />
     <Content Include="media\images\star-rating.png" />
     <Content Include="media\css\star-rating.css" />
+    <Content Include="media\css\icu.css" />
+    <Content Include="media\images\rough_paper.jpg" />
+    <Content Include="media\images\star-value-1.png" />
+    <Content Include="media\images\star-value-2.png" />
+    <Content Include="media\images\star-value-3.png" />
+    <Content Include="media\images\star-value-4.png" />
+    <Content Include="media\images\star-value-5.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -287,6 +294,10 @@
       <Project>{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
       <Name>p5.xml</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.flickrnet\p5.flickrnet.csproj">
+      <Project>{DC2195C7-E1BA-41DA-B2B9-DAFA19ED333C}</Project>
+      <Name>p5.flickrnet</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\application-startup.hl" />
@@ -412,6 +423,8 @@
     <None Include="system42\startup\misc-events\sys42.get-pages-database-creation-script.hl" />
     <None Include="system42\cms\templates\no-header-menu.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-widget.hl" />
+    <None Include="system42\apps\icu\icu-launcher.hl" />
+    <None Include="system42\apps\icu\create-board-picture.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -449,5 +462,6 @@
     <Folder Include="common\" />
     <Folder Include="common\private\" />
     <Folder Include="common\public\" />
+    <Folder Include="system42\apps\icu\" />
   </ItemGroup>
 </Project>

@@ -2712,6 +2712,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
       innerValue:Provide name and email
     void
       element:input
+      data-field:name
       onkeypress:return p5.emailHarvesterKeyPressed(event);
       data-name:true
       class:form-control prepend-bottom input-lg
@@ -2719,6 +2720,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
       type:text
     void
       element:input
+      data-field:email
       onkeypress:return p5.emailHarvesterKeyPressed(event);
       type:email
       data-email:true
@@ -2726,7 +2728,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
       placeholder:Your email please ...
     literal
       element:div
-      innerValue:@""<p style=""""color:rgba(128,128,128,.5)"""">By providing your email address, and clicking <em>""""Submit""""</em> below, you accept that we can contact you through email. Either to inform you about our services, or to ask you gently to provide more information.</p>
+      innerValue:@""<p style=""""color:rgba(128,128,128,.5)"""">By providing your email address, and clicking <em>""""Submit""""</em> below, you accept that we can contact you through email. Either to inform you about our services, or to ask you gently to provide us with more information.</p>
 ""
       class:col-xs-12
     container
@@ -3064,6 +3066,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
     p5.page:/examples/file-sharing
       name:File sharing example
       template:/system42/cms/templates/main.hl
+      role:superuser
       lambda:@"/*
  * An example of how to create a file sharing service, that allows
  * only registered ""superusers"" to see, upload and download files.
@@ -3372,19 +3375,23 @@ of this server, theoretically might be extorted to give out his web logs, which 
     p5.page:/examples/rater
       name:Email Harvester - Rater
       template:/system42/cms/templates/no-header-menu.hl
-      role:root
       type:controls
       controls:@"container
   element:div
   class:col-xs-12
   oninit
+    get-location
+    index-of:x:/-?value
+      what:/root/editor
+    if:x:/-/0
+      return
     set-title:Please rate your experience at Acme Coffee and Restauarnt
   widgets
     literal
       element:div
-      innerValue:@""<h1>Give us feedback please</h1>
+      innerValue:@""<h1>Ken Robert sin restaurant</h1>
 
-<p>In order to improve our services, we need feedback from our guests, such as you. Please tell us what you think of our service in the form below.</p>
+<p>Velkomme til Ken Robert sin restaurant. Vi &oslash;nsker &aring; vite hva du synesom oss?</p>
 ""
       class:"" col-sm-8 col-sm-push-2 col-xs-12""
     container
@@ -3443,28 +3450,6 @@ of this server, theoretically might be extorted to give out his web logs, which 
           onclick
             sys42.forms.action.star-clicked:5
       events
-        sys42.forms.action.clear-form
-          get-children-widgets:x:/../*/_event?value
-          for-each:x:/../*/get-children-widgets/*/*
-            set-widget-property:x:/..for-each/*/_dp/#?value
-              class:star
-        sys42.forms.action.validate-form
-          get-widget-property:x:/../*/_event?value
-            data-value
-          if:x:/-/*/*?value.int
-            =:int:0
-            return:bool:false
-        sys42.forms.action.serialize-form
-          get-widget-property:x:/../*/_event?value
-            data-name
-            data-value
-          set:x:/+2/*/*/*?name
-            src:x:/../*/get-widget-property/*/*/data-name?value
-          eval-x:x:/+/*/*/*
-          insert-before:x:
-            src
-              _data
-                data-name:x:/../*/get-widget-property/*/*/data-value?value
         sys42.forms.action.star-clicked
           get-children-widgets:x:/../*/_event?value
           for-each:x:/../*/get-children-widgets/*/*/[0,{0}]
@@ -3477,6 +3462,28 @@ of this server, theoretically might be extorted to give out his web logs, which 
               class:star
           set-widget-property:x:/../*/_event?value
             data-value:x:/../*/_arg?value
+        sys42.forms.action.serialize-form
+          get-widget-property:x:/../*/_event?value
+            data-name
+            data-value
+          set:x:/+2/*/*/*?name
+            src:x:/../*/get-widget-property/*/*/data-name?value
+          eval-x:x:/+/*/*/*
+          insert-before:x:
+            src
+              _data
+                data-name:x:/../*/get-widget-property/*/*/data-value?value
+        sys42.forms.action.validate-form
+          get-widget-property:x:/../*/_event?value
+            data-value
+          if:x:/-/*/*?value.int
+            =:int:0
+            return:bool:false
+        sys42.forms.action.clear-form
+          get-children-widgets:x:/../*/_event?value
+          for-each:x:/../*/get-children-widgets/*/*
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star
     container
       element:div
       class:"" col-sm-8 col-sm-push-2 col-xs-12 prepend-top prepend-bottom""
@@ -3488,9 +3495,6 @@ of this server, theoretically might be extorted to give out his web logs, which 
           rows:5
           class:form-control
           events
-            sys42.forms.action.clear-form
-              set-widget-property:x:/../*/_event?value
-                value:
             sys42.forms.action.serialize-form
               get-widget-property:x:/../*/_event?value
                 value
@@ -3499,6 +3503,9 @@ of this server, theoretically might be extorted to give out his web logs, which 
                 src
                   _data
                     feedback:x:/../*/get-widget-property/*/*?value
+            sys42.forms.action.clear-form
+              set-widget-property:x:/../*/_event?value
+                value:
     container
       element:div
       class:bg-success rounded-corners prepend-top air-padding col-sm-8 col-sm-push-2 col-xs-12
@@ -3535,7 +3542,7 @@ of this server, theoretically might be extorted to give out his web logs, which 
           if:x:/../**/_data/*/rating?value.int
             >=:int:4
             set-session-value:sys42.rater.just-rated
-              src:true
+              src:x:/../*/sys42.action.save-data-to-database?value
             set-location:/examples/rater-result?p={0}
               :x:/../*/sys42.action.save-data-to-database?value
           else-if:x:/../**/_data/*/rating?value.int
@@ -3554,9 +3561,8 @@ to constantly make sure we improve our service.</p>
 <p>You can close this window now, we have registered your feedback</p>""
               _onok"
     p5.page:/examples/rater-result
-      name:Email Harvester - Rating sharing page
+      name:Email Harvester - Profile
       template:/system42/cms/templates/no-header-menu.hl
-      role:root
       type:controls
       controls:@"literal
   element:div
@@ -3574,16 +3580,10 @@ container
       not
       return
     set-title:My review of Acme Coffee and Restaurant
-    get-session-value:sys42.rater.just-rated
-    if:x:/-/*?value
-      =:true
-      sys42.info-window:""Please tell your friends about your experience :)""
-      set-widget-property:share-button
-        visible:true
   widgets
     void
       element:img
-      alt:How much I liked this service
+      alt:I gave these guys lots of nice stars for their service
       src:/media/images/star-value-4.png
       oninit
         get-http-param:p
@@ -3624,41 +3624,58 @@ container
           :x:/../*/get-http-param/*?value
         set-widget-property:x:/../*/_event?value
           innerValue:x:/../*/select-data/*/*/name?value
-container
+container:encourage-user-to-share
   element:div
-  class:col-xs-8 col-xs-push-2 col-sm-6 col-sm-push-2 prepend-top text-right
+  class:col-xs-8 col-xs-push-2 col-sm-6 col-sm-push-2 prepend-top text-right rounded-corners bg-success air-padding
+  oninit
+    get-http-param:p
+    if:x:/-/*?value
+      not
+      return
+    get-session-value:sys42.rater.just-rated
+    if:x:/-/*?value.string
+      !=:x:/../*/get-http-param/*?value.string
+      set-widget-property:encourage-user-to-share
+        visible:false
   widgets
-    literal:share-button
-      element:a
-      title:Share on Facebook
-      innerValue:Share!
-      class:btn btn-primary
-      oninit
-        get-http-param:p
-        if:x:/-/*?value
-          not
-          return
-        select-data:x:@""/*/*/customer-rating/""""=:guid:{0}""""""
-          :x:/../*/get-http-param/*?value
-        get-location
-        url-encode:I love Acme Coffee and Restaurant
-        url-encode:x:/../*/select-data/*/*/feedback?value
-        url-encode:x:/../*/get-location?value
-        set-widget-property:x:/../*/_event?value
-          href:""http://www.facebook.com/sharer.php?s=100&title={0}&summary={1}&url={2}""
-            :x:/../*/url-encode/[0,1]?value
-            :x:/../*/url-encode/[1,2]?value
-            :x:/../*/url-encode/[2,3]?value"
-    p5.page:/change-this-1
+    literal
+      element:p
+      class:text-left
+      innerValue:Please share your review and experience with your friends on Facebook
+    container
+      element:div
+      widgets
+        literal:share-button
+          element:a
+          title:Share on Facebook
+          innerValue:Share!
+          class:btn btn-primary prepend-top
+          oninit
+            get-http-param:p
+            if:x:/-/*?value
+              not
+              return
+            select-data:x:@""/*/*/customer-rating/""""=:guid:{0}""""""
+              :x:/../*/get-http-param/*?value
+            get-location
+            url-encode:I love Acme Coffee and Restaurant
+            url-encode:x:/../*/select-data/*/*/feedback?value
+            url-encode:x:/../*/get-location?value
+            set-widget-property:x:/../*/_event?value
+              href:""http://www.facebook.com/sharer.php?s=100&title={0}&summary={1}&url={2}""
+                :x:/../*/url-encode/[0,1]?value
+                :x:/../*/url-encode/[1,2]?value
+                :x:/../*/url-encode/[2,3]?value"
+    p5.page:/examples/backend
       name:Email Harvester - Backend
       template:/system42/cms/templates/main.hl
       role:root
       type:controls
       controls:@"container
   element:div
+  _data-columns:date,name,email,feedback,rating
   _data-end:25
   _data-typename:customer-rating
-  _data-columns:name,email,feedback,rating
   data-usercontrol:/usercontrols/paged-searchable-data-table
   _data-search:
   _data-begin:0
@@ -3674,7 +3691,7 @@ container
     eval:x:/../*/select-data
   events
     sys42.forms.action.export-data-2-csv
-      _data:@""name,email,feedback,rating
+      _data:@""date,name,email,feedback,rating
 ""
       select-data:x:/*/*/customer-rating
       for-each:x:/-/*
@@ -3684,10 +3701,13 @@ container
         replace:x:/..for-each/*/_dp/#/*/feedback?value
           what:,
           with:-
+        format-date:x:/..for-each/*/_dp/#/*/date?value
+          format:""yyyy-MM-dd:HH:mm""
         set:x:/../*/_data?value
-          src:@""{0}{1},{2},{3},{4}
+          src:@""{0}{1},{2},{3},{4},{5}
 ""
             :x:/../*/_data?value
+            :x:/..for-each/*/format-date?value
             :x:/..for-each/*/replace/[0,1]?value
             :x:/..for-each/*/_dp/#/*/email?value
             :x:/..for-each/*/replace/[1,2]?value
@@ -3740,3 +3760,689 @@ container
           _onok
             delete-data:x:/*/*/customer-rating
             sys42.forms.action.databind-table"
+    p5.page:/examples/www-survey
+      name:Web Survey Example
+      template:/system42/cms/templates/no-header-menu.hl
+      type:controls
+      controls:@"literal
+  element:h1
+  innerValue:Please complete our web survey
+  class:col-xs-12 prepend-bottom text-center
+container
+  element:div
+  class:col-xs-12 rounded-corners air-padding prepend-bottom prepend-top
+  style:""min-height:100px;border:dashed 1px rgba(0,0,0,.5);""
+  widgets
+    literal
+      element:div
+      innerValue:@""<p>We have some questions for you, which will help us improve our service. Please fill out the form below. 1 star means that you <strong><u><em>&quot;strongly disagree&quot;</em></u></strong>. 5 stars means that you <strong><u><em>&quot;strongly agree&quot;</em></u></strong>. There are 4 questions in total. Please take your time when answering, and remember, the number of stars you give as your answer translates into;</p>
+
+<ol>
+	<li>Strongly disagree</li>
+	<li>Disagree</li>
+	<li>No particular opinion</li>
+	<li>Agree</li>
+	<li>Strongly agree</li>
+</ol>
+""
+      class:""col-xs-12 prepend-bottom col-md-10 col-md-push-1 ""
+    container
+      element:div
+      class:col-xs-12 col-md-10 col-md-push-1 bg-success rounded-corners air-padding prepend-bottom
+      style:""min-height:100px;""
+      widgets
+        literal
+          element:div
+          innerValue:@""<p>How much do you agree with the following statement; <strong><u><em>&quot;Everything on Facebook is bullshit!&quot;</em></u></strong></p>
+""
+          class:col-xs-12
+        container
+          element:div
+          data-field:facebook-bullshit
+          class:star-rating
+          data-value:0
+          oninit
+            include-stylesheet-file:/media/css/star-rating.css
+            get-widget-property:x:/../*/_event?value
+              data-value
+            if:x:/-/*/*?value.int
+              =:int:0
+              sys42.forms.action.clear-form
+            else
+              sys42.forms.action.star-clicked:x:/../*/get-widget-property/*/*?value
+          widgets
+            literal
+              element:a
+              title:Strongly disagree
+              href:#
+              data-value:1
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:1
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Disagree
+              href:#
+              data-value:2
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:2
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:No particular opinion
+              href:#
+              data-value:3
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:3
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Agree
+              href:#
+              data-value:4
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:4
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Strongly agree
+              href:#
+              data-value:5
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:5
+                  _parent:x:/../*/get-parent-widget/*?value
+            void
+              element:input
+              type:hidden
+              class:star
+          events
+            sys42.forms.action.validate-form
+              get-widget-property:x:/../*/_event?value
+                data-value
+              if:x:/-/*/*?value.int
+                =:int:0
+                return:bool:false
+              return:bool:true
+            sys42.forms.action.clear-form
+              get-children-widgets:x:/../*/_event?value
+              for-each:x:/../*/get-children-widgets/*/*
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star
+            sys42.forms.action.serialize-form
+              get-widget-property:x:/../*/_event?value
+                data-field
+                data-value
+              set:x:/+2/*/*/*?name
+                src:x:/../*/get-widget-property/*/*/data-field?value
+              eval-x:x:/+/*/*/*
+              insert-before:x:
+                src
+                  _data
+                    data-field:x:/../*/get-widget-property/*/*/data-value?value
+            sys42.forms.action.star-clicked
+              if:x:/../*/_parent?value
+                !=:x:/../*/_event?value
+                return
+              find-widget:x:/../*/_event?value
+                element:input
+                type:hidden
+              get-widget-property:x:/../*/_event?value
+                data-field
+              set-widget-property:x:/../*/find-widget/[0,1]/*?value
+                value:x:/../*/_arg?value
+                data-field:x:/../*/get-widget-property/*/*?value
+              get-children-widgets:x:/../*/_event?value
+              for-each:x:/../*/get-children-widgets/*/*/[0,{0}]
+                :x:/../*/_arg?value
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star star-checked
+              for-each:x:/../*/get-children-widgets/*/*/[{0},]
+                :x:/../*/_arg?value
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star
+              set-widget-property:x:/../*/_event?value
+                data-value:x:/../*/_arg?value
+    container
+      element:div
+      class:col-xs-12 col-md-10 col-md-push-1 bg-success rounded-corners air-padding prepend-bottom
+      style:""min-height:100px;""
+      widgets
+        literal
+          element:div
+          innerValue:@""<p>How much do you agree with the following statement; <strong><u><em>&quot;Everything on Twitter is bullshit!&quot;</em></u></strong></p>
+""
+          class:col-xs-12
+        container
+          element:div
+          data-field:twitter-bullshit
+          class:star-rating
+          data-value:0
+          oninit
+            include-stylesheet-file:/media/css/star-rating.css
+            get-widget-property:x:/../*/_event?value
+              data-value
+            if:x:/-/*/*?value.int
+              =:int:0
+              sys42.forms.action.clear-form
+            else
+              sys42.forms.action.star-clicked:x:/../*/get-widget-property/*/*?value
+          widgets
+            literal
+              element:a
+              title:Strongly disagree
+              href:#
+              data-value:1
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:1
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Disagree
+              href:#
+              data-value:2
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:2
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:No particular opinion
+              href:#
+              data-value:3
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:3
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Agree
+              href:#
+              data-value:4
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:4
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Strongly agree
+              href:#
+              data-value:5
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:5
+                  _parent:x:/../*/get-parent-widget/*?value
+            void
+              element:input
+              type:hidden
+              class:star
+          events
+            sys42.forms.action.validate-form
+              get-widget-property:x:/../*/_event?value
+                data-value
+              if:x:/-/*/*?value.int
+                =:int:0
+                return:bool:false
+              return:bool:true
+            sys42.forms.action.clear-form
+              get-children-widgets:x:/../*/_event?value
+              for-each:x:/../*/get-children-widgets/*/*
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star
+            sys42.forms.action.serialize-form
+              get-widget-property:x:/../*/_event?value
+                data-field
+                data-value
+              set:x:/+2/*/*/*?name
+                src:x:/../*/get-widget-property/*/*/data-field?value
+              eval-x:x:/+/*/*/*
+              insert-before:x:
+                src
+                  _data
+                    data-field:x:/../*/get-widget-property/*/*/data-value?value
+            sys42.forms.action.star-clicked
+              if:x:/../*/_parent?value
+                !=:x:/../*/_event?value
+                return
+              find-widget:x:/../*/_event?value
+                element:input
+                type:hidden
+              get-widget-property:x:/../*/_event?value
+                data-field
+              set-widget-property:x:/../*/find-widget/[0,1]/*?value
+                value:x:/../*/_arg?value
+                data-field:x:/../*/get-widget-property/*/*?value
+              get-children-widgets:x:/../*/_event?value
+              for-each:x:/../*/get-children-widgets/*/*/[0,{0}]
+                :x:/../*/_arg?value
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star star-checked
+              for-each:x:/../*/get-children-widgets/*/*/[{0},]
+                :x:/../*/_arg?value
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star
+              set-widget-property:x:/../*/_event?value
+                data-value:x:/../*/_arg?value
+    container
+      element:div
+      class:col-xs-12 col-md-10 col-md-push-1 bg-success rounded-corners air-padding prepend-bottom
+      style:""min-height:100px;""
+      widgets
+        literal
+          element:div
+          innerValue:@""<p>How much do you agree with the following statement; <strong><u><em>&quot;Everything on the Internet is bullshit!&quot;</em></u></strong></p>
+""
+          class:col-xs-12
+        container
+          element:div
+          data-field:internet-bullshit
+          class:star-rating
+          data-value:0
+          oninit
+            include-stylesheet-file:/media/css/star-rating.css
+            get-widget-property:x:/../*/_event?value
+              data-value
+            if:x:/-/*/*?value.int
+              =:int:0
+              sys42.forms.action.clear-form
+            else
+              sys42.forms.action.star-clicked:x:/../*/get-widget-property/*/*?value
+          widgets
+            literal
+              element:a
+              title:Strongly disagree
+              href:#
+              data-value:1
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:1
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Disagree
+              href:#
+              data-value:2
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:2
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:No particular opinion
+              href:#
+              data-value:3
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:3
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Agree
+              href:#
+              data-value:4
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:4
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Strongly agree
+              href:#
+              data-value:5
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:5
+                  _parent:x:/../*/get-parent-widget/*?value
+            void
+              element:input
+              type:hidden
+              class:star
+          events
+            sys42.forms.action.validate-form
+              get-widget-property:x:/../*/_event?value
+                data-value
+              if:x:/-/*/*?value.int
+                =:int:0
+                return:bool:false
+              return:bool:true
+            sys42.forms.action.clear-form
+              get-children-widgets:x:/../*/_event?value
+              for-each:x:/../*/get-children-widgets/*/*
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star
+            sys42.forms.action.serialize-form
+              get-widget-property:x:/../*/_event?value
+                data-field
+                data-value
+              set:x:/+2/*/*/*?name
+                src:x:/../*/get-widget-property/*/*/data-field?value
+              eval-x:x:/+/*/*/*
+              insert-before:x:
+                src
+                  _data
+                    data-field:x:/../*/get-widget-property/*/*/data-value?value
+            sys42.forms.action.star-clicked
+              if:x:/../*/_parent?value
+                !=:x:/../*/_event?value
+                return
+              find-widget:x:/../*/_event?value
+                element:input
+                type:hidden
+              get-widget-property:x:/../*/_event?value
+                data-field
+              set-widget-property:x:/../*/find-widget/[0,1]/*?value
+                value:x:/../*/_arg?value
+                data-field:x:/../*/get-widget-property/*/*?value
+              get-children-widgets:x:/../*/_event?value
+              for-each:x:/../*/get-children-widgets/*/*/[0,{0}]
+                :x:/../*/_arg?value
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star star-checked
+              for-each:x:/../*/get-children-widgets/*/*/[{0},]
+                :x:/../*/_arg?value
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star
+              set-widget-property:x:/../*/_event?value
+                data-value:x:/../*/_arg?value
+    container
+      element:div
+      class:col-xs-12 col-md-10 col-md-push-1 bg-success rounded-corners air-padding prepend-bottom
+      style:""min-height:100px;""
+      widgets
+        literal
+          element:div
+          innerValue:@""<p>How much do you agree with the following statement; <strong><u><em>&quot;You can find valuable information on the internet, if you search for it, using Google and similar search engines!&quot;</em></u></strong></p>
+""
+          class:col-xs-12
+        container
+          element:div
+          data-field:search-engines-valuable
+          class:star-rating
+          data-value:0
+          oninit
+            include-stylesheet-file:/media/css/star-rating.css
+            get-widget-property:x:/../*/_event?value
+              data-value
+            if:x:/-/*/*?value.int
+              =:int:0
+              sys42.forms.action.clear-form
+            else
+              sys42.forms.action.star-clicked:x:/../*/get-widget-property/*/*?value
+          widgets
+            literal
+              element:a
+              title:Strongly disagree
+              href:#
+              data-value:1
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:1
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Disagree
+              href:#
+              data-value:2
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:2
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:No particular opinion
+              href:#
+              data-value:3
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:3
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Agree
+              href:#
+              data-value:4
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:4
+                  _parent:x:/../*/get-parent-widget/*?value
+            literal
+              element:a
+              title:Strongly agree
+              href:#
+              data-value:5
+              innerValue:&nbsp;
+              class:star
+              onclick
+                get-parent-widget:x:/../*/_event?value
+                eval-x:x:/+/*
+                sys42.forms.action.star-clicked:5
+                  _parent:x:/../*/get-parent-widget/*?value
+            void
+              element:input
+              type:hidden
+              class:star
+          events
+            sys42.forms.action.validate-form
+              get-widget-property:x:/../*/_event?value
+                data-value
+              if:x:/-/*/*?value.int
+                =:int:0
+                return:bool:false
+              return:bool:true
+            sys42.forms.action.clear-form
+              get-children-widgets:x:/../*/_event?value
+              for-each:x:/../*/get-children-widgets/*/*
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star
+            sys42.forms.action.serialize-form
+              get-widget-property:x:/../*/_event?value
+                data-field
+                data-value
+              set:x:/+2/*/*/*?name
+                src:x:/../*/get-widget-property/*/*/data-field?value
+              eval-x:x:/+/*/*/*
+              insert-before:x:
+                src
+                  _data
+                    data-field:x:/../*/get-widget-property/*/*/data-value?value
+            sys42.forms.action.star-clicked
+              if:x:/../*/_parent?value
+                !=:x:/../*/_event?value
+                return
+              find-widget:x:/../*/_event?value
+                element:input
+                type:hidden
+              get-widget-property:x:/../*/_event?value
+                data-field
+              set-widget-property:x:/../*/find-widget/[0,1]/*?value
+                value:x:/../*/_arg?value
+                data-field:x:/../*/get-widget-property/*/*?value
+              get-children-widgets:x:/../*/_event?value
+              for-each:x:/../*/get-children-widgets/*/*/[0,{0}]
+                :x:/../*/_arg?value
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star star-checked
+              for-each:x:/../*/get-children-widgets/*/*/[{0},]
+                :x:/../*/_arg?value
+                set-widget-property:x:/..for-each/*/_dp/#?value
+                  class:star
+              set-widget-property:x:/../*/_event?value
+                data-value:x:/../*/_arg?value
+    container
+      element:div
+      class:col-xs-12 col-md-6 col-md-push-3 bg-success rounded-corners air-padding prepend-bottom prepend-top
+      data-usercontrol:/usercontrols/input-name-and-email
+      oninit
+        select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
+          :/usercontrols/input-name-and-email
+        set:x:/-/*?name
+          rel-src:create-{0}-widget
+            :x:?name
+        add:x:/../*/select-data/*
+          src:""parent:{0}""
+            :x:/../*/_event?value
+        eval:x:/../*/select-data
+      events
+        sys42.forms.action.email-name-submitted
+          sys42.forms.action.validate-form
+          if:x:/-?value
+            =:bool:false
+            return
+          find-first-ancestor-widget:x:/../*/_event?value
+            element:div
+          if:x:/-/*?count
+            =:int:0
+            throw:No ancestor elements of specified type found
+          get-widget-values:x:/-2/*?value
+          for-each:x:/-/*
+            get-widget-property:x:/./*/_dp/#?name
+              data-field
+            if:x:/-/*/*?value
+              set:x:/..for-each/*/_dp/#
+                src:@""{0}:@""""{1}""""""
+                  :x:/..for-each/*/get-widget-property/*/*?value
+                  :x:/..for-each/*/_dp/#/*?value
+          _data
+          add:x:/-
+            src:x:/./-3/*
+          if:x:/../**/_data/*
+            not
+            throw:No [_data] given to [sys42.action.save-data-to-database]
+          sys42.action.save-data-to-database:x:/../**/_data/*
+            _name:www-survey
+          sys42.info-window:Thank you for providing us with data
+          sys42.forms.action.clear-form"
+    p5.page:/examples/www-survey-backend
+      name:Web Survey Backend
+      template:/system42/cms/templates/main.hl
+      role:root
+      type:controls
+      controls:@"container
+  element:div
+  _data-columns:name,email,facebook-bullshit,twitter-bullshit,internet-bullshit,search-engines-valuable
+  _data-typename:www-survey
+  data-usercontrol:/usercontrols/paged-searchable-data-table
+  _data-search:
+  _data-end:5
+  _data-begin:0
+  oninit
+    select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
+      :/usercontrols/paged-searchable-data-table
+    set:x:/-/*?name
+      rel-src:create-{0}-widget
+        :x:?name
+    add:x:/../*/select-data/*
+      src:""parent:{0}""
+        :x:/../*/_event?value
+    eval:x:/../*/select-data"
+    p5.page:/examples/icu
+      name:I-C-U
+      template:/system42/cms/templates/no-header-menu.hl
+      lambda:@"/*
+ * Default [lambda] type of page
+ * Edit this page to meet your own needs
+ */
+create-widget:icu-example
+  parent:content
+  class:col-xs-12
+  style:""margin-bottom:50px;""
+  oninit
+    sys42.execute-lisp-file:/system42/apps/icu/icu-launcher.hl
+      _keyboard-widget:icu-input
+      _language-builder:icu-builder
+  widgets
+    container:icu-output
+      class:rounded-corners paper-sheet prepend-bottom
+      style:""min-height:500px;""
+      onclick
+        get-widget-property:icu-input
+          visible
+        if:x:/-/*/*?value.bool
+          =:bool:true
+          set-widget-property:icu-input
+            visible:false
+          clear-widget:icu-builder
+          find-widget-like:icu-input
+            class:icu-active
+          if:x:/-/*?value
+            set-widget-property:x:/./-/*?value
+              class:icu-empty-cell
+        else
+          set-widget-property:icu-input
+            visible:true
+          send-javascript:@""
+$('a.icu-key').each(function() {
+  var el = $('#' + this.id);
+  el.toggleClass('icu-drop-from-sky');
+  el.one('animationend',
+    function(e) {
+      $('#' + e.target.id).removeClass('icu-drop-from-sky');
+    });
+  });""
+    container:icu-builder
+    container:icu-input
+      visible:false
+"
+      type:lambda
