@@ -283,10 +283,27 @@
     color:rgba(0,255,0,.2);
 }
 
+#icu-flickr-result {
+    overflow:auto;
+}
+
 .icu-flickr-result-item {
     float:left;
-    margin:5px;
-    height:100px;
+    margin:15px;
+    transition:box-shadow,transform;
+    transition-duration:.2s;
+}
+
+.icu-flickr-result-item:hover {
+    transition:box-shadow,transform;
+    transition-duration:.2s;
+    box-shadow:5px 5px 5px rgba(0,0,0,1);
+    transform:scale(1.5);
+}
+
+@keyframes icu-lightbox-picture-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 .icu-lightbox-picture {
@@ -298,11 +315,29 @@
     background-color:rgba(0,0,0,.7);
     z-index:5;
     text-align:center;
+    animation:icu-lightbox-picture-fade-in .5s;
 }
 
-.icu-lightbox-picture a {
+@keyframes icu-lightbox-picture-drop-down {
+    from { opacity:0; transform:scale(0) rotate(-720deg); }
+    to   { opacity:1; transform:scale(1) rotate(0deg); }
+}
+
+.icu-lightbox-picture>div {
     margin-top:25px;
+    padding:15px;
     display:inline-block;
+    margin-left:auto;
+    margin-right:auto;
+    max-width:60%;
+    overflow:visible;
     box-shadow:15px 15px 15px rgba(0,0,0,1);
+    background-color:rgba(255,255,255,.9);
+    color:Black;
+    border-radius:15px;
+    animation:icu-lightbox-picture-drop-down .5s;
 }
 
+.icu-lightbox-picture>div>img {
+    max-width:80%;
+}

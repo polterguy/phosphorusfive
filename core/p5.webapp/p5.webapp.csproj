@@ -423,8 +423,10 @@
     <None Include="system42\startup\misc-events\sys42.get-pages-database-creation-script.hl" />
     <None Include="system42\cms\templates\no-header-menu.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-widget.hl" />
-    <None Include="system42\apps\icu\icu-launcher.hl" />
-    <None Include="system42\apps\icu\create-board-picture.hl" />
+    <None Include="system42\apps\icu\launch.hl" />
+    <None Include="system42\apps\icu\board\create-board.hl" />
+    <None Include="system42\apps\icu\init\initialize.hl" />
+    <None Include="system42\apps\icu\board\create-image-key-association.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -463,5 +465,7 @@
     <Folder Include="common\private\" />
     <Folder Include="common\public\" />
     <Folder Include="system42\apps\icu\" />
+    <Folder Include="system42\apps\icu\board\" />
+    <Folder Include="system42\apps\icu\init\" />
   </ItemGroup>
 </Project>

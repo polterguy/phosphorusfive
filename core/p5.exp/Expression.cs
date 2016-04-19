@@ -66,13 +66,13 @@ namespace p5.exp
         /// <param name="context">Application Context</param>
         /// <param name="exNode">Node that contained expression, optional, necessary for 
         /// formatting operations</param>
-        public Match Evaluate (ApplicationContext context, Node evaluatedNode, Node exNode)
+        public Match Evaluate (ApplicationContext context, Node evaluatedNode, Node exNode, Node formattingNode = null)
         {
             if (evaluatedNode == null || exNode == null)
                 throw new ExpressionException ("[null]", "No actual node or expression node given to evaluate");
 
             // Building expression
-            var iteratorGroup = BuildExpression (context, evaluatedNode, exNode);
+            var iteratorGroup = BuildExpression (context, evaluatedNode, exNode, formattingNode);
 
             // Creating a Match object, and returning to caller.
             return new Match (iteratorGroup.Evaluate (context), _expressionType, context, _convertResultsType, _isReferenceExpression);
@@ -84,13 +84,14 @@ namespace p5.exp
         private IteratorGroup BuildExpression (
             ApplicationContext context, 
             Node evaluatedNode, 
-            Node exNode)
+            Node exNode,
+            Node formattingNode)
         {
             // Setting up a return value
             var retVal = new IteratorGroup ();
 
             // Checking to see if we should run formatting logic on expression before parsing iterators
-            var expression = FormatExpression (context, exNode);
+            var expression = FormatExpression (context, exNode, formattingNode);
 
             if (expression.StartsWith ("@")) {
                 expression = expression.Substring (1);
@@ -140,7 +141,7 @@ namespace p5.exp
         /*
          * Formats expression with formatting values recursively
          */
-        private string FormatExpression (ApplicationContext context, Node exNode)
+        private string FormatExpression (ApplicationContext context, Node exNode, Node formattingNode)
         {
             var retVal = Value;
             var formatNodes = (from idxNode in exNode.Children where idxNode.Name == "" select idxNode).ToList ();
@@ -150,13 +151,13 @@ namespace p5.exp
                 var val = formatNodes [idx].Value;
                 var exVal = val as Expression;
                 if (exVal != null) {
-                    var match = exVal.Evaluate (context, formatNodes [idx], formatNodes [idx]);
+                    var match = exVal.Evaluate (context, formattingNode ?? formatNodes [idx], formatNodes [idx], formattingNode);
                     val = "";
                     foreach (var idxMatch in match) {
                         val += Utilities.Convert<string> (context, idxMatch.Value);
                     }
                 } else {
-                    val = XUtil.FormatNode (context, formatNodes [idx]);
+                    val = XUtil.FormatNode (context, formatNodes [idx], formattingNode ?? formatNodes [idx]);
                 }
                 retVal = retVal.Replace ("{" + idx + "}", Utilities.Convert<string> (context, val));
             }

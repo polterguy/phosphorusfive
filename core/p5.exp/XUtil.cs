@@ -205,12 +205,13 @@ namespace p5.exp
             Node evaluatedNode,
             Node dataSource,
             bool mustHaveValue = false,
-            T defaultValue = default (T))
+            T defaultValue = default (T),
+            Node formattingNode = null)
         {
             object singleRetVal = null;
             string multipleRetVal = null;
             var firstRun = true;
-            foreach (var idx in Iterate<T> (context, evaluatedNode, dataSource, mustHaveValue)) {
+            foreach (var idx in Iterate<T> (context, evaluatedNode, dataSource, mustHaveValue, false, false, formattingNode)) {
 
                 // To make sure we never convert object to string, unless absolutely necessary
                 if (firstRun) {
@@ -276,7 +277,8 @@ namespace p5.exp
             Node dataSource,
             bool mustHaveValue = false,
             bool mustHaveChildren = false,
-            bool mustHaveValueOrChildren = false)
+            bool mustHaveValueOrChildren = false,
+            Node formattingNode = null)
         {
             // Checking if node must have a value, and running relevant assertion
             if (mustHaveValue)
@@ -296,7 +298,7 @@ namespace p5.exp
                 if (IsExpression (evaluatedNode.Value)) {
 
                     // We have an expression, creating a match object
-                    var match = (evaluatedNode.Value as Expression).Evaluate (context, dataSource, evaluatedNode);
+                    var match = (evaluatedNode.Value as Expression).Evaluate (context, dataSource, evaluatedNode, formattingNode);
 
                     // Checking type of match
                     if (match.TypeOfMatch == Match.MatchType.count) {
@@ -387,10 +389,12 @@ namespace p5.exp
                 // To support having sources which differs from evaluated lambda, such as [select-data] requires, 
                 // we pass in dataSource if dataSource differs from evaluatedNode, otherwise we pass in source node 
                 // itself as dataSource
+                // To support formatting expressions in [rel-src], we pass in dataSource as "formattingNode" if src is [rel-src]
                 return SourceSingleImplementation (
                     context,
                     srcNode, 
-                    dataSource == evaluatedNode ? srcNode : dataSource);
+                    dataSource == evaluatedNode ? srcNode : dataSource,
+                    srcNode.Name == "rel-src" ? dataSource : null);
             } else {
 
                 // Active Event invocation source, invoking Active Event, return source as result from Active Event invocation.
@@ -407,7 +411,7 @@ namespace p5.exp
                     context.RaiseLambda (srcNode.Name, srcNode);
 
                     // Returning result of Active Event invocation as source
-                    return SourceSingleImplementation (context, srcNode, srcNode);
+                    return SourceSingleImplementation (context, srcNode, srcNode, null);
                 } finally {
 
                     // Making sure we reset source node back to its original state, such that evaluation of Active Event becomes immutable
@@ -424,13 +428,14 @@ namespace p5.exp
         private static object SourceSingleImplementation (
             ApplicationContext context,
             Node evaluatedNode, 
-            Node dataSource)
+            Node dataSource,
+            Node formattingNode)
         {
             // Prioritizing value!
             if (evaluatedNode.Value != null) {
 
                 // This might be an expression, or a constant, converting value to single object, somehow
-                return Single<object> (context, evaluatedNode, dataSource);
+                return Single<object> (context, evaluatedNode, dataSource, false, null, formattingNode);
             } else {
 
                 // There is no value in [src] node, trying to create source out of [src]'s children

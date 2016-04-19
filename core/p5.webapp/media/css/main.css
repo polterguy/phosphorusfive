@@ -111,6 +111,10 @@ body {
     padding:15px 15px 5px 15px;
 }
 
+.air-padding-more {
+    padding:30px 30px 25px 30px;
+}
+
 .bold {
     font-weight:bold;
 }

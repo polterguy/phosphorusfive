@@ -1,0 +1,128 @@
+
+/*
+ * Main entry point for starting the ICU keyboard. Expects the parameter [_keyboard-widget],
+ * which must be a [container] widget, that can somehow wrap the keyboard. Optionally, supply a
+ * [_output-widget], which becomes the "sheet surface", which the keyboard "writes" its output to.
+ * 
+ * Optionally, if you wish to load a specific "board definition", supply [_board], pointing
+ * to the ID of a specific board.
+ * 
+ * Also supply a [_language-builder] if you wish to allow for user to "build language" by associating
+ * images to "keys", by allowing for uploading pictures, and/or search Flickr for images
+ */
+
+
+/*
+ * Including ICU stylesheet file
+ */
+include-stylesheet-file:/media/css/icu.css
+
+
+/*
+ * Initializing ICU
+ */
+sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
+
+
+/*
+ * Defaulting [_board] we're using to the main "root"/"home" board, unless explicitly overridden by caller
+ */
+if:x:/../*/_board
+  not
+  whoami
+  select-data:x:/*/*/icu.board/*/username/={0}/./*/name/=home/.?value
+    :x:/..if/*/whoami/*/username?value
+  insert-before:x:/../0
+    src:"_board:guid:{0}"
+      :x:/..if/*/select-data/0?value.string
+
+
+/*
+ * Verifying keyboard widget exists, and is of type [container]
+ */
+list-widgets:x:/../*/_keyboard-widget?value
+if:x:/-/*?value
+  not
+  throw:You need to at least supply a [_keyboard-widget], pointing to a [container] type of widget to the ICU keyboard
+if:x:/-2/*?name
+  !=:container
+  throw:Your [_keyboard-widget] needs to be a [container] type of widget
+
+
+/*
+ * Makes sure board widget becomes "table" HTML element, and has correct CSS classes
+ */
+set-widget-property:x:/../*/_keyboard-widget?value
+  element:table
+  class:icu-keyboard prepend-top
+
+
+/*
+ * Associates the "set board picture" callback event with given [_keyboard-widget]
+ */
+set-widget-lambda-event:x:/../*/_keyboard-widget?value
+
+
+  /*
+   * Associates an existing "key" in [_board] with given [_image], at specified [_x]/[_y]
+   */
+  sys42.icu.set-board-picture-for-square
+
+    /*
+     * Retrieving current [icu.board] definition from database
+     */
+    select-data:x:@"/*/*/icu.board/=:guid:{0}"
+      :x:/../*/_board?value
+
+    /*
+     * Moving result from [select-data] into [update-data] below
+     */
+    set:x:/../*/update-data/*/*?value
+      src:x:/../*/_board?value.guid
+    add:x:/../*/update-data/*/*
+      src:x:/../*/select-data/[0,1]/*/*
+
+    /*
+     * Adding a new [item] into [items] collection of board definition in [update-data], forward
+     * evaluating expressions inside of [add], making sure [x] and [y] are constants when [updata-data] is evaluated,
+     * and that [image] points to ID of image from [icu.image]
+     */
+    eval-x:x:/+/*/*/*
+    add:x:/../*/update-data/*/*/items
+      src
+        item
+          x:x:/../*/_x?value
+          y:x:/../*/_y?value
+          image:x:/../*/_image?value
+
+    /*
+     * Updating database board definition, now with one additional [item] in its [items] collection
+     */
+    update-data:x:@"/*/*/icu.board/=:guid:{0}"
+      :x:/../*/_board?value
+      src
+        icu.board
+
+    /*
+     * Changing image of currently edited image "key" in [_keyboard-widget], to reflect changes just done,
+     * before removing "active" CSS class, and setting correct CSS classes for "key"
+     */
+    select-data:x:@"/*/*/icu.image/""=:guid:{0}"""
+      :x:/../*/_image?value
+    find-widget
+      element:a
+      _x:x:/../*/_x?value
+      _y:x:/../*/_y?value
+    set-widget-property:x:/-/*?value
+      style:@"background:Transparent url({0}) no-repeat top left;background-size:contain;"
+        :x:/../*/select-data/[1,2]/*/*/thumb?value
+      class:icu-key icu-cell
+
+
+
+/*
+ * Building actual board, by invoking Hyperlisp file responsible for actual creation of board
+ */
+add:x:/+
+  src:x:/../*(/_board|/_keyboard-widget|/_language-builder)
+sys42.execute-lisp-file:/system42/apps/icu/board/create-board.hl

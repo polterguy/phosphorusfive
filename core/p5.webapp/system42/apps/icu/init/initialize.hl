@@ -1,0 +1,30 @@
+
+/*
+ * Initializes ICU by making sure there exists at least one "root/home board" for user,
+ * and verifies other settings for user and ICU are created
+ */
+
+
+/*
+ * Checking if there exists a "root/home board" for user, and if not, creating it with
+ * 14x3 number of keys, which is default for the system
+ */
+whoami
+select-data:x:/*/*/icu.board/*/username/={0}/./*/name/=home?count
+  :x:/../*/whoami/*/username?value
+if:x:/../*/select-data?value
+  =:int:0
+
+  /*
+   * User has no "root board" associated with profile, creating root ("home") board
+   */
+  eval-x:x:/+/*/*/username
+  insert-data
+    icu.board
+      username:x:/../*/whoami/*/username?value
+      name:home
+      size
+        width:int:14
+        height:int:3
+      items
+
