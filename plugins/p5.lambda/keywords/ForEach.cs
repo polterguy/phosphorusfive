@@ -117,7 +117,7 @@ namespace p5.lambda.keywords
             args.Insert (0, dp);
 
             context.RaiseLambda ("eval-mutable", args);
-            var rootChildName = args.Root.FirstChild?.Name;
+            var rootChildName = args.Root.FirstChild != null ? args.Root.FirstChild.Name : null;
             bool shouldStop = rootChildName == "_return" || rootChildName == "_break";
             if (rootChildName == "_break" || rootChildName == "_continue") {
                 args.Root.FirstChild.UnTie ();

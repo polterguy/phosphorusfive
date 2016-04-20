@@ -48,7 +48,7 @@ namespace p5.lambda.keywords
                 e.Args.AddRange (oldWhile.Clone ().Children);
 
                 // Checking if we got a [return] invocation during evaluation
-                var rootChildName = e.Args.Root.FirstChild?.Name;
+                var rootChildName = e.Args.Root.FirstChild != null ? e.Args.Root.FirstChild.Name : null;
                 if (rootChildName == "_break") {
                     e.Args.Root.FirstChild.UnTie ();
                     return;

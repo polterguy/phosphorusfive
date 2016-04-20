@@ -9,6 +9,8 @@
     <AssemblyName>p5.mail</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,14 +35,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Security" />
-    <Reference Include="MailKit">
-      <HintPath>..\..\..\packages\MailKit.1.2.17\lib\net45\MailKit.dll</HintPath>
-    </Reference>
     <Reference Include="BouncyCastle">
-      <HintPath>..\..\..\packages\MimeKit.1.2.20.2\lib\net45\BouncyCastle.dll</HintPath>
+      <HintPath>..\..\..\packages\MimeKit.1.2.22\lib\net45\BouncyCastle.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit">
-      <HintPath>..\..\..\packages\MimeKit.1.2.20.2\lib\net45\MimeKit.dll</HintPath>
+      <HintPath>..\..\..\packages\MimeKit.1.2.22\lib\net45\MimeKit.dll</HintPath>
+    </Reference>
+    <Reference Include="MailKit">
+      <HintPath>..\..\..\packages\MailKit.1.2.21\lib\net45\MailKit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
