@@ -1,0 +1,8 @@
+
+/*
+ * Action for image key. Types out word on sheet, and then opens up another board
+ */
+
+_action-name:Type word, open board
+_action
+  sys42.show-code-window:x:/..

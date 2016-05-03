@@ -105,12 +105,13 @@ while:x:/-?value
                     class:icu-empty-cell
                 set-widget-property:x:/../*/_event?value
                   class:icu-empty-cell icu-active
+                  style:""
 
     /*
      * Checking if current x/y position has a picture associated with it, and if so, creating this association by
      * using this image as background image for "key" (widget)
      */
-    if:x:/../*/select-data/*/*/items/*/x/={0}/./*/y/={1}/.
+    if:x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/.
       :x:/..while/..while/*/_cur-x?value.string
       :x:/../*/_cur-y?value.string
 
@@ -120,7 +121,9 @@ while:x:/-?value
        * But first we must retrieve image from database, which should be found in [icu.image]
        */
       select-data:x:@"/*/*/icu.image/""=:guid:{0}"""
-        :x:/../*/select-data/*/*/items/*/x/={0}/./*/y/={1}/./*/image?value
+        :x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/./*/image?value
+          :x:/..while/..while/*/_cur-x?value.string
+          :x:/../*/_cur-y?value.string
       if:x:/-/*?count
         >:int:0
 
@@ -133,7 +136,7 @@ while:x:/-?value
           src:icu-key icu-cell
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/style?value
           src:@"background:Transparent url({0}) no-repeat top left;background-size:contain;"
-            :x:/..if/*/select-data/*/*/thumb?value
+            :x:/..if/..if/*/select-data/*/*/thumb?value
 
     /*
      * Incrementing x position, which is condition of inner [while] loop

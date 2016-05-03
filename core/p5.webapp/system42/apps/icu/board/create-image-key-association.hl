@@ -62,7 +62,7 @@ create-widget:icu-create-board-image-key-ass
       add:x:/../*/sys42.wizard-window/*/_onok
         src:x:/../*(/~_!/_event)
       sys42.wizard-window
-        _header:Image properties
+        _header:Properties
         _widgets
           text:image-word
             label:Word
@@ -73,18 +73,36 @@ create-widget:icu-create-board-image-key-ass
             placeholder:Description ...
             innerValue:x:/../*/_description?value
         _onok
+
+          /*
+           * Parametrizing [insert-data] invocation, before inserting a new [icu.image] into database
+           */
           eval-x:x:/+2/*/*
           set:x:/+/*/*(/thumb|/medium)?value
             rel-src:x:/../*/_{0}?value
               :x:?name
-          _insert-data
+          insert-data
             icu.image
               thumb
               medium
-              title:x:/../*/image-word?value
+              word:x:/../*/image-word?value
               description:x:/../*/image-description?value
+
+          /*
+           * Deleting modal "image property" widget
+           */
           delete-widget:icu-create-board-image-key-ass
-          sys42.show-code-window:x:/..
+
+          /*
+           * Creating "action association" with key/image
+           */
+          set:x:/+/*/_image?value
+            src:x:/../*/insert-data/0?value
+          sys42.execute-lisp-file:/system42/apps/icu/board/create-image-action-association.hl
+            _board:{_board}
+            _x:{_x}
+            _y:{_y}
+            _image
           return:bool:true
 
   widgets
@@ -97,11 +115,7 @@ create-widget:icu-create-board-image-key-ass
           innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
           onclick
             delete-widget:icu-create-board-image-key-ass
-            find-widget-like:{_parent-widget}
-              class:icu-active
-            if:x:/-/*?value
-              set-widget-property:x:/./-/*?value
-                class:icu-empty-cell
+            sys42.icu.icu-create-board-image-key-ass.closed
         container
           class:form col-xs-12 col-md-5
           widgets
@@ -133,7 +147,7 @@ create-widget:icu-create-board-image-key-ass
                         send-javascript:@"$('#icu-create-board-search-box').focus().select();"
                         p5.flickrnet.search
                           text:x:/../*/get-widget-property/*/*?value
-                          per-page:50
+                          per-page:10
                         for-each:x:/../*/p5.flickrnet.search/*/result
                           html-encode:x:/..for-each/*/_dp/#/*/description?value
                           eval-x:x:/+/**(/img/*(/src|/title)|/h3/*/innerValue|/_medium|/_thumb|/_title|/_description)
