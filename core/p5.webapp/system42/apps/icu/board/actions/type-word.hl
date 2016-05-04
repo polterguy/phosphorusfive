@@ -1,0 +1,8 @@
+
+/*
+ * Action for image key. Types out word on sheet, and nothing else
+ */
+
+_action-name:Type word
+_action
+  sys42.show-code-window:x:/..

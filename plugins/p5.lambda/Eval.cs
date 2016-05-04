@@ -184,7 +184,7 @@ namespace p5.lambda
                 }
 
                 // Checking if we're supposed to return from evaluation
-                var rootChildName = exe.Root.FirstChild?.Name;
+                var rootChildName = exe.Root.FirstChild != null ? exe.Root.FirstChild.Name : null;
                 if (rootChildName == "_return" || rootChildName == "_break" || rootChildName == "_continue")
                     return; // Breaking evaluation of any further code
 

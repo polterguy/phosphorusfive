@@ -108,6 +108,13 @@ namespace p5.lambda.helpers
          */
         public void ExecuteCurrentScope (ApplicationContext context, Node args)
         {
+            // Removing any "formatting string" children nodes used as part of "simple exists" evaluation
+            var curIdx = args.FirstChild;
+            while (curIdx != null && curIdx.Name == "") {
+                curIdx.UnTie ();
+                curIdx = args.FirstChild;
+            }
+
             // Making sure there actually is something to evaluate
             if (args.Children.Count == 0)
                 return;

@@ -41,7 +41,7 @@ namespace p5.lambda.keywords
             if (value == null) {
 
                 // Finding first [case] with null value, defaulting to existing [default]
-                eval = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && ix.GetExValue<object> (context) == null) ?? eval;
+                eval = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && ix.GetExValue<object> (context, null) == null) ?? eval;
             } else {
 
                 // Special case for node comparison

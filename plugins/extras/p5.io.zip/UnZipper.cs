@@ -103,7 +103,6 @@ namespace p5.io.zip
                 IsStreamOwner = true,
                 Password = password
             }) {
-
                 // Looping through entries in zip file
                 foreach (ZipEntry idxZipEntry in zipFile) {
 

@@ -19,6 +19,13 @@ include-stylesheet-file:/media/css/icu.css
 
 
 /*
+ * Making sure we pass in [_keyboard-widget] to whomever needs it
+ */
+set:x:/../**/={_keyboard-widget}?value
+  src:x:/../*/_keyboard-widget?value
+
+
+/*
  * Initializing ICU
  */
 sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
@@ -75,6 +82,13 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
       :x:/../*/_board?value
 
     /*
+     * Deleting any existing image associations for existing [_x]/[_y] position in board
+     */
+    set:x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/.
+      :x:/../*/_x?value
+      :x:/../*/_y?value
+
+    /*
      * Moving result from [select-data] into [update-data] below
      */
     set:x:/../*/update-data/*/*?value
@@ -88,7 +102,7 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
      * and that [image] points to ID of image from [icu.image]
      */
     eval-x:x:/+/*/*/*
-    add:x:/../*/update-data/*/*/items
+    add:x:/../*/update-data/*/*/*/items
       src
         item
           x:x:/../*/_x?value
@@ -117,6 +131,18 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
       style:@"background:Transparent url({0}) no-repeat top left;background-size:contain;"
         :x:/../*/select-data/[1,2]/*/*/thumb?value
       class:icu-key icu-cell
+
+
+  /*
+   * Invoked by language builder when language builder is closed (without creating a new image association)
+   */
+  sys42.icu.icu-create-board-image-key-ass.closed
+    find-widget-like:{_keyboard-widget}
+      class:icu-active
+    if:x:/-/*?value
+      set-widget-property:x:/./-/*?value
+        class:icu-empty-cell
+
 
 
 

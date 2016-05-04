@@ -4398,7 +4398,7 @@ container
         :x:/../*/_event?value
     eval:x:/../*/select-data"
     p5.page:/examples/icu
-      name:I-C-U
+      name:ICU
       template:/system42/cms/templates/no-header-menu.hl
       lambda:@"/*
  * Default [lambda] type of page
@@ -4409,7 +4409,7 @@ create-widget:icu-example
   class:col-xs-12
   style:""margin-bottom:50px;""
   oninit
-    sys42.execute-lisp-file:/system42/apps/icu/icu-launcher.hl
+    sys42.execute-lisp-file:/system42/apps/icu/launch.hl
       _keyboard-widget:icu-input
       _language-builder:icu-builder
   widgets

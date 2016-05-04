@@ -1,0 +1,93 @@
+
+/*
+ * Responsible for creating a "key"/action association for the specified [_board], at the given
+ * [_x]/[_y] position
+ */
+
+
+/*
+ * Making sure we pass in [_image], [_board], [_x] and [_y], to whomever needs it
+ */
+set:x:/../**/={_board}?value
+  src:x:/../*/_board?value
+
+set:x:/../**/={_x}?value
+  src:x:/../*/_x?value
+
+set:x:/../**/={_y}?value
+  src:x:/../*/_y?value
+
+set:x:/../**/={_image}?value
+  src:x:/../*/_image?value
+
+
+/*
+ * Lists all files from within "actions" folder, and allows user to select specific action defined in file,
+ * by creating clickable widget for each possible action from folder
+ */
+list-files:/system42/apps/icu/board/actions/
+for-each:x:/-/*?name
+  load-file:x:/./*/_dp?value
+  _widget
+    container
+      element:li
+      widgets
+        literal
+          element:a
+          href:#
+          innerValue
+          onclick
+            _file-name:{file-name}
+            load-file:x:/-?value
+            sys42.show-code-window:x:/..
+
+  /*
+   * Setting [innerValue] of link to [_action-name] from "action plugin file"
+   */
+  set:x:/..for-each/*/_widget/*/container/*/widgets/*/literal/*/innerValue?value
+    src:x:/..for-each/*/load-file/*/*/_action-name?value
+
+  /*
+   * Making sure correct "action file" is loaded and evaluated upon clicking "action hyperlink selector"
+   */
+  set:x:/..for-each/*/_widget/**/={file-name}?value
+    src:x:/..for-each/*/_dp?value
+
+  /*
+   * Adding widget to [create-widget] event below
+   */
+  add:x:/../*/create-widget/*/widgets/*/container/*/widgets/*/container/[0,1]/*/widgets
+    src:x:/..for-each/*/_widget/*
+
+
+/*
+ * Creating widget that allows user to select "action" to associate with image, now with one widget for
+ * each possible action, dynamically created in above [for-each]
+ */
+create-widget:icu-action-association
+  class:action-lightbox
+  widgets
+    container
+      class:action-modal-window
+      widgets
+        literal
+          element:h3
+          innerValue:Action
+        container
+          element:ul
+          class:action-item-list
+          widgets
+
+
+
+
+
+
+_sys42.show-code-window:x:/..
+_set:x:/+/*/_image?value
+  src:x:/../*/insert-data/0?value
+_sys42.icu.set-board-picture-for-square
+  _board:{_board}
+  _x:{_x}
+  _y:{_y}
+  _image
