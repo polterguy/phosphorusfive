@@ -432,6 +432,7 @@
     <None Include="system42\apps\icu\board\create-image-action-association.hl" />
     <None Include="system42\apps\icu\board\actions\type-word.hl" />
     <None Include="system42\apps\icu\board\actions\type-word-open-board.hl" />
+    <None Include="system42\apps\icu\board\actions\open-board.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

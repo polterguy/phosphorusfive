@@ -1,8 +1,21 @@
 
 /*
- * Action for image key. Types out word on sheet, and nothing else
+ * Action for image key. Types out word on sheet
  */
 
+
+/*
+ * Name of action type. Will be shown when user chooses action in for instance "create-image-action-association.hl"
+ */
 _action-name:Type word
-_action
+
+
+/*
+ * Callback invoked when an action of this type is to be created. Expects;
+ * [_x]     ==> x position in board of "key" to associate with action
+ * [_y]     ==> y position in board of "key" to associate with action
+ * [_image] ==> ID from database of image to display
+ * [_board] ==> ID from database of board we're creating action for
+ */
+_action-creator:type-word.hl
   sys42.show-code-window:x:/..

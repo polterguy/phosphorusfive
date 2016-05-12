@@ -1,13 +1,13 @@
 
 /*
- * Action for image key. Types out word on sheet, and then opens up another board
+ * Action for image key. Opens up a new board
  */
 
 
 /*
  * Name of action type. Will be shown when user chooses action in for instance "create-image-action-association.hl"
  */
-_action-name:Type word, open board
+_action-name:Open board
 
 
 /*
@@ -17,5 +17,5 @@ _action-name:Type word, open board
  * [_image] ==> ID from database of image to display
  * [_board] ==> ID from database of board we're creating action for
  */
-_action-creator:type-word-open-board.hl
+_action-creator:open-board.hl
   sys42.show-code-window:x:/..
