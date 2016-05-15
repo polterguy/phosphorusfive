@@ -1,7 +1,7 @@
 
 /*
  * Responsible for creating a "key"/action association for the specified [_board], at the given
- * [_x]/[_y] position
+ * [_x]/[_y] position, with the given [_image] as key's image
  */
 
 
@@ -26,6 +26,7 @@ set:x:/../**/={_image}?value
  * by creating clickable widget for each possible action from folder
  */
 list-files:/system42/apps/icu/board/actions/
+  filter:hl
 for-each:x:/-/*?name
   load-file:x:/./*/_dp?value
   _widget
@@ -37,15 +38,41 @@ for-each:x:/-/*?name
           href:#
           innerValue
           onclick
+
+            /*
+             * will contain the specified [_x], [_y], [_image] and [_board] value supplied by caller when file 
+             * is invoked
+             */
             _x:{_x}
             _y:{_y}
             _image:{_image}
             _board:{_board}
+
+            /*
+             * Deleting widget that allows user to search for or upload image, for then to delete
+             * the widget that allows user to specify action for image/key association
+             */
+            delete-widget:icu-create-board-image-key-ass
             delete-widget:icu-action-association
+
+            /*
+             * Loads "action file", and extracts [_action-creator] as lambda object, and associates
+             * this lambda object with [onclick] of "board key" widget, by invoking [sys42.icu.set-board-picture-for-square]
+             */
             load-file:{file-name}
-            insert-before:x:/../*/load-file/*/*/_action-creator/0
+            insert-before:x:/../*/load-file/*/*/_action/0
               src:x:/../*(/~_!/_event)
-            eval:x:/../*/load-file/*/*/_action-creator
+            set:x:/+2/*(!/_action)?value
+              rel-src:x:/../*/{0}?value
+                :x:?name
+            add:x:/+/*/_action
+              src:x:/../*/load-file/*/*/_action/*
+            sys42.icu.set-board-picture-for-square
+              _x
+              _y
+              _image
+              _board
+              _action
 
   /*
    * Setting [innerValue] of link to [_action-name] from "action plugin file"
@@ -76,24 +103,19 @@ create-widget:icu-action-association
     container
       class:action-modal-window
       widgets
+        literal:icu-close-create-action
+          element:a
+          href:#
+          innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+          onclick
+            delete-widget:icu-action-association
+            sys42.icu.icu-create-board-image-key-ass.closed
         literal
           element:h3
           innerValue:Action
+        void
+          element:hr
         container
           element:ul
           class:action-item-list
           widgets
-
-
-
-
-
-
-_sys42.show-code-window:x:/..
-_set:x:/+/*/_image?value
-  src:x:/../*/insert-data/0?value
-_sys42.icu.set-board-picture-for-square
-  _board:{_board}
-  _x:{_x}
-  _y:{_y}
-  _image

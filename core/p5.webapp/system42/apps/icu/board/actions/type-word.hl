@@ -1,6 +1,6 @@
 
 /*
- * Action for image key. Types out word on sheet
+ * Action for "type word". Types out word on sheet, by appending widget with image and text to sheet's list of widgets
  */
 
 
@@ -17,5 +17,28 @@ _action-name:Type word
  * [_image] ==> ID from database of image to display
  * [_board] ==> ID from database of board we're creating action for
  */
-_action-creator:type-word.hl
-  sys42.show-code-window:x:/..
+_action:type-word.hl
+
+  /*
+   * Retrieving [_output-widget] supplied when instantiating ICU
+   */
+  sys42.icu.get-output-widget
+
+  /*
+   * Selecting [icu.image] from database that was clicked, and creating a widget from
+   * it, adding this widget to the [_output-widget] that was specified when the ICU app was launched
+   */
+  select-data:x:@"/*/*/""=:guid:{0}"""
+    :x:/../*/_image?value
+  eval-x:x:/+/**
+  create-widget
+    parent:x:/../*/sys42.icu.get-output-widget?value
+    class:icu-word
+    title:x:/../*/select-data/0/*/description?value
+    widgets
+      literal
+        element:img
+        alt:x:/../*/select-data/0/*/description?value
+        src:x:/../*/select-data/0/*/thumb?value
+      literal
+        innerValue:x:/../*/select-data/0/*/word?value

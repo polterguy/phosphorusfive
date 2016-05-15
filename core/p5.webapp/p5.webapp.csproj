@@ -22,8 +22,6 @@
     <TargetFrameworkProfile />
     <ReleaseVersion>1.0</ReleaseVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -171,7 +169,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
     <MonoDevelop>
-      <Properties VerifyCodeBehindFields="True" VerifyCodeBehindEvents="True">
+      <Properties>
         <Policies>
           <TextStylePolicy FileWidth="120" EolMarker="Windows" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
           <TextStylePolicy inheritsSet="null" scope="text/x-csharp" />
@@ -431,8 +429,10 @@
     <None Include="system42\apps\icu\board\create-image-key-association.hl" />
     <None Include="system42\apps\icu\board\create-image-action-association.hl" />
     <None Include="system42\apps\icu\board\actions\type-word.hl" />
-    <None Include="system42\apps\icu\board\actions\type-word-open-board.hl" />
     <None Include="system42\apps\icu\board\actions\open-board.hl" />
+    <None Include="system42\apps\icu\board\actions\README.md" />
+    <None Include="system42\apps\icu\board\actions\delete-word.hl" />
+    <None Include="system42\apps\icu\board\actions\empty-sheet.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

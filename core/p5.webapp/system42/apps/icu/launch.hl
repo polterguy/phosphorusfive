@@ -3,6 +3,9 @@
  * Main entry point for starting the ICU keyboard. Expects the parameter [_keyboard-widget],
  * which must be a [container] widget, that can somehow wrap the keyboard. Optionally, supply a
  * [_output-widget], which becomes the "sheet surface", which the keyboard "writes" its output to.
+ *
+ * In addition, you need to supply a [_output-widget], which is the surface container widget
+ * which you want to receive the output of the keyboard in image format.
  * 
  * Optionally, if you wish to load a specific "board definition", supply [_board], pointing
  * to the ID of a specific board.
@@ -19,10 +22,12 @@ include-stylesheet-file:/media/css/icu.css
 
 
 /*
- * Making sure we pass in [_keyboard-widget] to whomever needs it
+ * Making sure we pass in [_keyboard-widget] and [_output-widget] to whomever needs it
  */
 set:x:/../**/={_keyboard-widget}?value
   src:x:/../*/_keyboard-widget?value
+set:x:/../**/={_output-widget}?value
+  src:x:/../*/_output-widget?value
 
 
 /*
@@ -65,6 +70,20 @@ set-widget-property:x:/../*/_keyboard-widget?value
 
 
 /*
+ * Associates the "add word" callback with the [_output-widget]
+ */
+set-widget-lambda-event:x:/../*/_output-widget?value
+
+
+  /*
+   * Returns the ID of [_output-widget] supplied when instantiating ICU. Used by actions that needs the ID of 
+   * output or "paper sheet" widget
+   */
+  sys42.icu.get-output-widget
+    return:{_output-widget}
+
+
+/*
  * Associates the "set board picture" callback event with given [_keyboard-widget]
  */
 set-widget-lambda-event:x:/../*/_keyboard-widget?value
@@ -100,7 +119,10 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
      * Adding a new [item] into [items] collection of board definition in [update-data], forward
      * evaluating expressions inside of [add], making sure [x] and [y] are constants when [updata-data] is evaluated,
      * and that [image] points to ID of image from [icu.image]
+     * In addition, making sure [action] becomes specified [_action] lambda object
      */
+    add:x:/+2/*/*/*/action
+      src:x:/../*/_action/*
     eval-x:x:/+/*/*/*
     add:x:/../*/update-data/*/*/*/items
       src
@@ -108,6 +130,7 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
           x:x:/../*/_x?value
           y:x:/../*/_y?value
           image:x:/../*/_image?value
+          action
 
     /*
      * Updating database board definition, now with one additional [item] in its [items] collection
@@ -128,9 +151,14 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
       _x:x:/../*/_x?value
       _y:x:/../*/_y?value
     set-widget-property:x:/-/*?value
-      style:@"background:Transparent url({0}) no-repeat top left;background-size:contain;"
+      style:@"background-image:url({0});"
         :x:/../*/select-data/[1,2]/*/*/thumb?value
+      innerValue:x:/../*/select-data/[1,2]/*/*/word?value
       class:icu-key icu-cell
+    add:x:/+/*
+      src:x:/../*/_action/*
+    set-widget-ajax-event:x:/-3/*?value
+      onclick
 
 
   /*

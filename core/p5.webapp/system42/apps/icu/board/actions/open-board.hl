@@ -17,5 +17,5 @@ _action-name:Open board
  * [_image] ==> ID from database of image to display
  * [_board] ==> ID from database of board we're creating action for
  */
-_action-creator:open-board.hl
+_action:open-board.hl
   sys42.show-code-window:x:/..

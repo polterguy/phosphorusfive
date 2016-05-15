@@ -64,12 +64,14 @@ while:x:/-?value
       src
         container
           element:td
+          style:"width:7.1%;"
           widgets
             literal
               element:a
               href:#
               class:icu-empty-cell icu-key
               style:""
+              innerValue:&nbsp;
               _x
               _y
               _board
@@ -130,13 +132,27 @@ while:x:/-?value
         /*
          * [icu.image] referenced in [icu.board]'s [x]/[y] position actually exists.
          * Changing CSS class of currently iterated "key", and associating image with
-         * style's background property
+         * style's background property. In addition, making sure [onclick] becomes
+         * lambda object from [action] of image/key association, in addition to having
+         * [innerValue] becoming the word from [icu.image]
          */
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/class?value
           src:icu-key icu-cell
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/style?value
-          src:@"background:Transparent url({0}) no-repeat top left;background-size:contain;"
+          src:@"background:Transparent url({0}) no-repeat 0px 20px;"
             :x:/..if/..if/*/select-data/*/*/thumb?value
+        set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/innerValue?value
+          src:x:/..if/..if/*/select-data/*/*/word?value
+
+        /*
+         * Making sure [onclick] becomes lambda from [action] of item, first removing
+         * existing (default) [onclick], which is the "create new image/key/action association"
+         */
+        set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/onclick/*
+        add:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/onclick
+          src:x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/./*/action/*
+            :x:/..while/..while/*/_cur-x?value.string
+            :x:/../*/_cur-y?value.string
 
     /*
      * Incrementing x position, which is condition of inner [while] loop

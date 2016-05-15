@@ -1,7 +1,7 @@
 
 /*
  * Responsible for creating a "key"/image association for the specified [_board], at the given
- * [_x]/[_y] position
+ * [_x]/[_y] position, using the specified [_language-builder] as widget
  */
 
 
@@ -87,11 +87,6 @@ create-widget:icu-create-board-image-key-ass
               medium
               word:x:/../*/image-word?value
               description:x:/../*/image-description?value
-
-          /*
-           * Deleting modal "image property" widget
-           */
-          delete-widget:icu-create-board-image-key-ass
 
           /*
            * Creating "action association" with key/image

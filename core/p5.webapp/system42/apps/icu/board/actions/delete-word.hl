@@ -1,13 +1,13 @@
 
 /*
- * Action for image key. Types out word on sheet, and then opens up another board
+ * Action for "delete last word". Deletes the last word from sheet
  */
 
 
 /*
  * Name of action type. Will be shown when user chooses action in for instance "create-image-action-association.hl"
  */
-_action-name:Type word, open board
+_action-name:Delete word
 
 
 /*
@@ -17,5 +17,12 @@ _action-name:Type word, open board
  * [_image] ==> ID from database of image to display
  * [_board] ==> ID from database of board we're creating action for
  */
-_action-creator:type-word-open-board.hl
-  sys42.show-code-window:x:/..
+_action:delete-word.hl
+
+  /*
+   * Retrieves the [_output-widget] supplied when creating board, before listing its widget, 
+   * and deleting its last widget
+   */
+  sys42.icu.get-output-widget
+  get-children-widgets:x:/-?value
+  delete-widget:x:/-/*/0/-?value
