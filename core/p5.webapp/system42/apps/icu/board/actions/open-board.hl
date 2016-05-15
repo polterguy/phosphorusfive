@@ -16,6 +16,8 @@ _action-name:Open board
  * [_y]     ==> y position in board of "key" to associate with action
  * [_image] ==> ID from database of image to display
  * [_board] ==> ID from database of board we're creating action for
+ *
+ * Is responsible for invoking [sys42.icu.set-board-picture-for-square] itself
  */
 _action-configure
   sys42.show-code-window:x:/..
