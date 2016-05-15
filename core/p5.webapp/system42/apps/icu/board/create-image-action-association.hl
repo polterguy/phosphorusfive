@@ -60,19 +60,34 @@ for-each:x:/-/*?name
              * this lambda object with [onclick] of "board key" widget, by invoking [sys42.icu.set-board-picture-for-square]
              */
             load-file:{file-name}
-            insert-before:x:/../*/load-file/*/*/_action/0
+            insert-before:x:/../*/load-file/*/*(/_action|/_action-configure)/0
               src:x:/../*(/~_!/_event)
-            set:x:/+2/*(!/_action)?value
+            set:x:/../**/sys42.icu.set-board-picture-for-square/*(!/_action)?value
               rel-src:x:/../*/{0}?value
                 :x:?name
-            add:x:/+/*/_action
+            add:x:/../**/sys42.icu.set-board-picture-for-square/*/_action
               src:x:/../*/load-file/*/*/_action/*
-            sys42.icu.set-board-picture-for-square
-              _x
-              _y
-              _image
-              _board
-              _action
+            if:x:/../*/load-file/*/*/_action-configure
+
+              /*
+               * Action contains an [_action-configure] part. 
+               * Invoking [_action-configure] letting it do the work, instead of invoking
+               * [sys42.icu.set-board-picture-for-square] immediately with [_action]
+               */
+              eval:x:/../*/load-file/*/*/_action-configure
+            else
+
+              /*
+               * Action does not contain any [_action-configure] parts, creating action
+               * immediately
+               */
+              sys42.icu.set-board-picture-for-square
+                _x
+                _y
+                _image
+                _board
+                _action
+
 
   /*
    * Setting [innerValue] of link to [_action-name] from "action plugin file"

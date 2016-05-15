@@ -11,13 +11,13 @@ _action-name:Type word
 
 
 /*
- * Callback invoked when an action of this type is to be created. Expects;
+ * Callback invoked when an action of this type is to be evaluated. Expects;
  * [_x]     ==> x position in board of "key" to associate with action
  * [_y]     ==> y position in board of "key" to associate with action
  * [_image] ==> ID from database of image to display
  * [_board] ==> ID from database of board we're creating action for
  */
-_action:type-word.hl
+_action
 
   /*
    * Retrieving [_output-widget] supplied when instantiating ICU

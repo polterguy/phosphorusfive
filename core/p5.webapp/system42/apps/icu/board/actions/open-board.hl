@@ -11,11 +11,13 @@ _action-name:Open board
 
 
 /*
- * Callback invoked when an action of this type is to be created. Expects;
+ * Callback invoked when an action of this type is to be configured and created. Expects;
  * [_x]     ==> x position in board of "key" to associate with action
  * [_y]     ==> y position in board of "key" to associate with action
  * [_image] ==> ID from database of image to display
  * [_board] ==> ID from database of board we're creating action for
  */
-_action:open-board.hl
+_action-configure
   sys42.show-code-window:x:/..
+
+
