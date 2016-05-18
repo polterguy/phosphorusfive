@@ -104,109 +104,106 @@ create-widget:icu-create-board-image-key-ass
     container
       class:icu-create-board
       widgets
-        literal:icu-close-create-board
-          element:a
-          href:#
-          innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
-          onclick
-            delete-widget:icu-create-board-image-key-ass
-            sys42.icu.icu-create-board-image-key-ass.closed
         container
-          class:form col-xs-11
+          class:input-group
           widgets
-            container
-              class:input-group
+            void:icu-create-board-search-box
+              element:input
+              type:search
+              class:form-control input-lg
+              placeholder:Search ...
+              onkeypress:"return p5.searchIcuTextBox(event);"
+              onkeyup:"return p5.searchIcuTextBoxEsc(event);"
+              oninit
+                send-javascript:@"$('#{0}').focus();"
+                  :x:/../*/_event?value
+            span
+              class:input-group-btn
               widgets
-                void:icu-create-board-search-box
-                  element:input
-                  type:search
-                  class:form-control input-lg
-                  placeholder:Search ...
-                  onkeypress:"return p5.searchIcuTextBox(event);"
-                  oninit
-                    send-javascript:@"$('#{0}').focus();"
-                      :x:/../*/_event?value
-                span
-                  class:input-group-btn
-                  widgets
-                    button:icu-create-board-search
-                      class:btn-default btn btn-lg
-                      type:button
-                      innerValue:@"<span class=""glyphicon glyphicon-search""></span>"
-                      onclick
-                        clear-widget:icu-flickr-result
-                        set-widget-property:icu-flickr-result
-                          visible:true
-                        get-widget-property:icu-create-board-search-box
-                          value
-                        send-javascript:@"$('#icu-create-board-search-box').focus().select();"
-                        p5.flickrnet.search
-                          text:x:/../*/get-widget-property/*/*?value
-                          per-page:10
-                        for-each:x:/../*/p5.flickrnet.search/*/result
-                          html-encode:x:/..for-each/*/_dp/#/*/description?value
-                          eval-x:x:/+/**(/img/*(/src|/title)|/h3/*/innerValue|/_medium|/_thumb|/_title|/_description)
-                          create-widget
-                            parent:icu-flickr-result
-                            class:icu-flickr-result-item
-                            widgets
-                              a
-                                href:#
-                                onclick
-                                  if
-                                    fetch:x:/0/0?value
-                                      widget-exist:icu-lightbox-picture
-                                    delete-widget:icu-lightbox-picture
-                                  create-widget:icu-lightbox-picture
-                                    class:icu-lightbox-picture
-                                    onkeyup:"p5.lightboxKeyUp(event);"
+                button:icu-create-board-search
+                  class:btn-default btn btn-lg
+                  type:button
+                  innerValue:@"<span class=""glyphicon glyphicon-search""></span>"
+                  onclick
+                    clear-widget:icu-flickr-result
+                    set-widget-property:icu-flickr-result
+                      visible:true
+                    get-widget-property:icu-create-board-search-box
+                      value
+                    send-javascript:@"$('#icu-create-board-search-box').focus().select();"
+                    p5.flickrnet.search
+                      text:x:/../*/get-widget-property/*/*?value
+                      per-page:10
+                    for-each:x:/../*/p5.flickrnet.search/*/result
+                      html-encode:x:/..for-each/*/_dp/#/*/description?value
+                      eval-x:x:/+/**(/img/*(/src|/title)|/h3/*/innerValue|/_medium|/_thumb|/_title|/_description)
+                      create-widget
+                        parent:icu-flickr-result
+                        class:icu-flickr-result-item
+                        widgets
+                          a
+                            href:#
+                            onclick
+                              if
+                                fetch:x:/0/0?value
+                                  widget-exist:icu-lightbox-picture
+                                delete-widget:icu-lightbox-picture
+                              create-widget:icu-lightbox-picture
+                                class:icu-lightbox-picture
+                                onkeyup:"p5.lightboxKeyUp(event);"
+                                widgets
+                                  div:icu-lightbox-picture-modal-window
+                                    class:icu-lightbox-picture-modal-window
                                     widgets
-                                      div:icu-lightbox-picture-modal-window
-                                        class:icu-lightbox-picture-modal-window
+                                      h3
+                                        innerValue:x:/..for-each/*/_dp/#/*/title?value
+                                      img
+                                        src:x:/..for-each/*/_dp/#/*/medium?value
+                                        alt:Choose image, or click outside to close
+                                        title:x:/..for-each/*/html-encode?value
+                                      div
+                                        style:"text-align:right;"
+                                        class:prepend-top
                                         widgets
-                                          h3
-                                            innerValue:x:/..for-each/*/_dp/#/*/title?value
-                                          img
-                                            src:x:/..for-each/*/_dp/#/*/medium?value
-                                            alt:Choose image, or click outside to close
-                                            title:x:/..for-each/*/html-encode?value
-                                          div
-                                            style:"text-align:right;"
-                                            class:prepend-top
-                                            widgets
-                                              button:icu-lightbox-picture-close
-                                                class:btn btn-default
-                                                style:"width:80px;"
-                                                innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
-                                                onclick
-                                                  send-javascript:@"
+                                          button:icu-lightbox-picture-close
+                                            class:btn btn-default
+                                            style:"width:80px;"
+                                            innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+                                            onclick
+                                              send-javascript:@"
 $('#icu-lightbox-picture-modal-window').toggleClass('icu-lightbox-picture-modal-window').toggleClass('action-modal-window-fadeout').one('animationend',
   function(e) {
     $('#' + e.target.id).hide();
     $('#icu-lightbox-picture').fadeOut({duration:200});
   });"
-                                              button
-                                                class:btn btn-primary
-                                                style:"width:80px; margin-left:10px;"
-                                                innerValue:@"<span class=""glyphicon glyphicon-ok""></span>"
-                                                oninit
-                                                  send-javascript:@"$('#{0}').focus();"
-                                                    :x:/../*/_event?value
-                                                onclick
-                                                  _board:{_board}
-                                                  _x:{_x}
-                                                  _y:{_y}
-                                                  delete-widget:icu-lightbox-picture
-                                                  _medium:x:/..for-each/*/_dp/#/*/medium?value
-                                                  _thumb:x:/..for-each/*/_dp/#/*/thumb?value
-                                                  _title:x:/..for-each/*/_dp/#/*/title?value
-                                                  _description:x:/..for-each/*/_dp/#/*/description?value
-                                                  add:x:/+
-                                                    src:x:/../*(/_board|/_x|/_y|/_thumb|/_medium|/_title|/_description)
-                                                  sys42.icu.create-image
-                                widgets
-                                  img
-                                    src:x:/..for-each/*/_dp/#/*/thumb?value
+                                          button
+                                            class:btn btn-primary
+                                            style:"width:80px; margin-left:10px;"
+                                            innerValue:@"<span class=""glyphicon glyphicon-ok""></span>"
+                                            oninit
+                                              send-javascript:@"$('#{0}').focus();"
+                                                :x:/../*/_event?value
+                                            onclick
+                                              _board:{_board}
+                                              _x:{_x}
+                                              _y:{_y}
+                                              delete-widget:icu-lightbox-picture
+                                              _medium:x:/..for-each/*/_dp/#/*/medium?value
+                                              _thumb:x:/..for-each/*/_dp/#/*/thumb?value
+                                              _title:x:/..for-each/*/_dp/#/*/title?value
+                                              _description:x:/..for-each/*/_dp/#/*/description?value
+                                              add:x:/+
+                                                src:x:/../*(/_board|/_x|/_y|/_thumb|/_medium|/_title|/_description)
+                                              sys42.icu.create-image
+                            widgets
+                              img
+                                src:x:/..for-each/*/_dp/#/*/thumb?value
+                button:icu-close-create-board
+                  innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+                  class:btn-default btn btn-lg
+                  onclick
+                    delete-widget:icu-create-board-image-key-ass
+                    sys42.icu.icu-create-board-image-key-ass.closed
     container:icu-flickr-result
       class:bg-warning rounded-corners prepend-top air-padding-more flash-from-left
       visible:false
@@ -219,6 +216,12 @@ include-javascript:@"
 p5.searchIcuTextBox = function(e) {
   if(e.keyCode == 13) {
     p5.$('icu-create-board-search').raise('onclick');
+    return false;
+  }
+}
+p5.searchIcuTextBoxEsc = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('icu-close-create-board').raise('onclick');
     return false;
   }
 }

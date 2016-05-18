@@ -267,19 +267,6 @@
     overflow:auto;
 }
 
-#icu-close-create-board {
-    position:absolute;
-    top:15px;
-    right:18px;
-    font-size:14px;
-    color:#000;
-    opacity:.2;
-}
-
-#icu-close-create-board:hover {
-    opacity:.5;
-}
-
 #icu-flickr-result {
     overflow:auto;
 }
