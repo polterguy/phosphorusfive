@@ -153,13 +153,16 @@ create-widget:icu-create-board-image-key-ass
                               a
                                 href:#
                                 onclick
+                                  if
+                                    fetch:x:/0/0?value
+                                      widget-exist:icu-lightbox-picture
+                                    delete-widget:icu-lightbox-picture
                                   create-widget:icu-lightbox-picture
                                     class:icu-lightbox-picture
                                     onkeyup:"p5.lightboxKeyUp(event);"
-                                    _onesc
-                                      delete-widget:icu-lightbox-picture
                                     widgets
-                                      div
+                                      div:icu-lightbox-picture-modal-window
+                                        class:icu-lightbox-picture-modal-window
                                         widgets
                                           h3
                                             innerValue:x:/..for-each/*/_dp/#/*/title?value
@@ -171,12 +174,17 @@ create-widget:icu-create-board-image-key-ass
                                             style:"text-align:right;"
                                             class:prepend-top
                                             widgets
-                                              button
+                                              button:icu-lightbox-picture-close
                                                 class:btn btn-default
                                                 style:"width:80px;"
                                                 innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
                                                 onclick
-                                                  delete-widget:icu-lightbox-picture
+                                                  send-javascript:@"
+$('#icu-lightbox-picture-modal-window').toggleClass('icu-lightbox-picture-modal-window').toggleClass('action-modal-window-fadeout').one('animationend',
+  function(e) {
+    $('#' + e.target.id).hide();
+    $('#icu-lightbox-picture').fadeOut({duration:200});
+  });"
                                               button
                                                 class:btn btn-primary
                                                 style:"width:80px; margin-left:10px;"
@@ -219,7 +227,7 @@ p5.searchIcuTextBox = function(e) {
 }
 p5.lightboxKeyUp = function(e) {
   if(e.keyCode == 27) {
-    p5.$('icu-lightbox-picture').raise('_onesc');
+    p5.$('icu-lightbox-picture-close').raise('onclick');
     return false;
   }
 };"

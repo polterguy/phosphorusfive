@@ -110,21 +110,33 @@ for-each:x:/-/*?name
 
 /*
  * Creating widget that allows user to select "action" to associate with image, now with one widget for
- * each possible action, dynamically created in above [for-each]
+ * each possible action, dynamically created in above [for-each]. Making sure we delete any previously created
+ * widgets of same type first
  */
+if
+  fetch:x:/0/0?value
+    widget-exist:icu-action-association
+  delete-widget:icu-action-association
 create-widget:icu-action-association
   class:action-lightbox
   widgets
-    container
+    container:action-modal-window
       class:action-modal-window
       widgets
         literal:icu-close-create-action
+          class:icu-close-create-action
           element:a
           href:#
           innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+          onkeyup:"p5.actionWindowKeyUp(event);"
           onclick
-            delete-widget:icu-action-association
             sys42.icu.icu-create-board-image-key-ass.closed
+            send-javascript:@"
+$('#action-modal-window').toggleClass('action-modal-window-fadeout').one('animationend',
+  function(e) {
+    $('#' + e.target.id).hide();
+    $('#icu-action-association').fadeOut({duration:200});
+  });"
         literal
           element:h3
           innerValue:Action
@@ -134,3 +146,21 @@ create-widget:icu-action-association
           element:ul
           class:action-item-list
           widgets
+
+
+/*
+ * Making sure close buttons gets focus
+ */
+send-javascript:@"$('#icu-close-create-action').focus();"
+
+
+/*
+ * Including JavaScript necessary to trap escape in modal window
+ */
+include-javascript:@"
+p5.actionWindowKeyUp = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('icu-close-create-action').raise('onclick');
+    return false;
+  }
+};"

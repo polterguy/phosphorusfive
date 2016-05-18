@@ -16,7 +16,7 @@ if:x:/../*/select-data?value
   =:int:0
 
   /*
-   * User has no "root board" associated with profile, creating root ("home") board
+   * User has no "home board" associated with profile, creating empty "home" board
    */
   eval-x:x:/+/*/*/username
   insert-data

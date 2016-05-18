@@ -433,6 +433,7 @@
     <None Include="system42\apps\icu\board\actions\README.md" />
     <None Include="system42\apps\icu\board\actions\delete-word.hl" />
     <None Include="system42\apps\icu\board\actions\empty-sheet.hl" />
+    <None Include="system42\apps\icu\board\actions\type-word-open-board.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

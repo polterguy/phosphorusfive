@@ -258,7 +258,7 @@
     background:Transparent url(../images/rough_paper.jpg) no-repeat top left;
     background-size:cover;
     cursor:pointer;
-    padding:15px;
+    padding:35px 48px;
 }
 
 .icu-create-board {
@@ -345,6 +345,9 @@
     background-color:rgba(255,255,255,.9);
     color:Black;
     border-radius:15px;
+}
+
+.icu-lightbox-picture>div.icu-lightbox-picture-modal-window {
     animation:icu-lightbox-picture-drop-down .5s;
 }
 
@@ -368,6 +371,11 @@
     to   { opacity:1; transform:scale(1) rotate(0deg); }
 }
 
+@keyframes action-modal-window-fade-out {
+    from { opacity:0; transform:scale(1) rotate(0deg); }
+    to   { opacity:1; transform:scale(0) rotate(-720deg); }
+}
+
 .action-modal-window {
     position:relative;
     margin-left:auto;
@@ -381,12 +389,16 @@
     padding:5px 25px;
 }
 
+.action-modal-window-fadeout {
+    animation:action-modal-window-fade-out .5s;
+}
+
 .action-modal-window hr {
     color:rgba(0,0,0,.2);
     margin:0px -25px;
 }
 
-#icu-close-create-action {
+.icu-close-create-action {
     position:absolute;
     top:15px;
     right:18px;
@@ -395,7 +407,7 @@
     opacity:.2;
 }
 
-#icu-close-create-action:hover {
+.icu-close-create-action:hover {
     opacity:.5;
 }
 

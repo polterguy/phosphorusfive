@@ -1,23 +1,25 @@
 
 /*
- * Builds given [_board] on given [_keyboard-widget] widget with (optionally) [_language-builder] widget
+ * Builds given [_board] on keyboard widget, with (optionally) language builder widget
  * to allow for creating language by creating new associations between images, "keys" (in board) and words
  */
 
 
 /*
- * Clears keyboard widget, in case it has existing "keys", or other widgets
+ * Passing in keyboard widget and language builder widget arguments to other parts of file
  */
-clear-widget:x:/../*/_keyboard-widget?value
+sys42.icu.get-language-builder-widget
+sys42.icu.get-keyboard-widget
+set:x:/../**/={_keyboard-widget}?value
+  src:x:/../*/sys42.icu.get-keyboard-widget?value
+set:x:/../**/={_language-builder}?value
+  src:x:/../*/sys42.icu.get-language-builder-widget?value
 
 
 /*
- * Passing in [_keyboard-widget] and [_language-builder] arguments to other parts of file
+ * Clears keyboard widget, in case it has existing "keys", or other widgets
  */
-set:x:/../**/={_keyboard-widget}?value
-  src:x:/../*/_keyboard-widget?value
-set:x:/../**/={_language-builder}?value
-  src:x:/../*/_language-builder?value
+clear-widget:{_keyboard-widget}
 
 
 /*

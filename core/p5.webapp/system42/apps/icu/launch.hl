@@ -22,10 +22,12 @@ include-stylesheet-file:/media/css/icu.css
 
 
 /*
- * Making sure we pass in [_keyboard-widget] and [_output-widget] to whomever needs it
+ * Making sure we pass in [_keyboard-widget], [_language-builder] and [_output-widget] to whomever needs it
  */
 set:x:/../**/={_keyboard-widget}?value
   src:x:/../*/_keyboard-widget?value
+set:x:/../**/={_language-builder}?value
+  src:x:/../*/_language-builder?value
 set:x:/../**/={_output-widget}?value
   src:x:/../*/_output-widget?value
 
@@ -70,9 +72,9 @@ set-widget-property:x:/../*/_keyboard-widget?value
 
 
 /*
- * Associates the "add word" callback with the [_output-widget]
+ * Associates the "set board picture" callback event with given [_keyboard-widget]
  */
-set-widget-lambda-event:x:/../*/_output-widget?value
+set-widget-lambda-event:x:/../*/_keyboard-widget?value
 
 
   /*
@@ -83,10 +85,20 @@ set-widget-lambda-event:x:/../*/_output-widget?value
     return:{_output-widget}
 
 
-/*
- * Associates the "set board picture" callback event with given [_keyboard-widget]
- */
-set-widget-lambda-event:x:/../*/_keyboard-widget?value
+  /*
+   * Returns the ID of [_language-builder] widget supplied when instantiating ICU. Used by actions that needs the ID of 
+   * the language builder widget
+   */
+  sys42.icu.get-language-builder-widget
+    return:{_language-builder}
+
+
+  /*
+   * Returns the ID of [_keyboard-widget] widget supplied when instantiating ICU. Used by actions that needs the ID of 
+   * the keyboard widget
+   */
+  sys42.icu.get-keyboard-widget
+    return:{_keyboard-widget}
 
 
   /*
@@ -178,5 +190,5 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
  * Building actual board, by invoking Hyperlisp file responsible for actual creation of board
  */
 add:x:/+
-  src:x:/../*(/_board|/_keyboard-widget|/_language-builder)
+  src:x:/../*(/_board)
 sys42.execute-lisp-file:/system42/apps/icu/board/create-board.hl
