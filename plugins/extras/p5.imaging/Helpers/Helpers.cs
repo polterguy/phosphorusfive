@@ -3,7 +3,9 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System;
 using System.IO;
+using System.Drawing;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -23,6 +25,16 @@ namespace p5.imaging.helpers
         public static string GetBaseFolder (ApplicationContext context)
         {
             return context.RaiseNative ("p5.core.application-folder").Get<string> (context);
+        }
+
+        /// <summary>
+        ///     Returns a Color from given string representation
+        /// </summary>
+        /// <returns>The color.</returns>
+        /// <param name="color">Color.</param>
+        public static Color GetColor (string color)
+        {
+            return ColorTranslator.FromHtml (color);
         }
     }
 }

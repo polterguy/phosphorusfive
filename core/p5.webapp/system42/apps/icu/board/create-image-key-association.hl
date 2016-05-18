@@ -284,7 +284,8 @@ set-widget-ajax-event:{_language-builder}
       :x:/../*/get-http-param/[1,2]/*?value
       width:75
       height:75
-      keep-aspect-ratio:false
+      keep-aspect-ratio:true
+      background-color:White
       dest:/users/{0}/documents/public/thumb-{1}
         :x:/../*/whoami/*/username?value
         :x:/../*/get-http-param/[1,2]/*?value

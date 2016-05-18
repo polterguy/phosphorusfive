@@ -52,7 +52,8 @@ namespace p5.imaging
 
                 var rootFolder = Helpers.GetBaseFolder (context);
                 using (var sourceBmp = Image.FromFile (rootFolder + sourcePath)) {
-                    using (var destBmp = ResizeImage (sourceBmp, width, height, keepAspectRatio)) {
+                    Color bgColor = Helpers.GetColor (e.Args.GetExChildValue ("background-color", context, "White"));
+                    using (var destBmp = ResizeImage (sourceBmp, width, height, keepAspectRatio, bgColor)) {
                         destBmp.Save (rootFolder + destPath);
                     }
                 }
@@ -66,9 +67,10 @@ namespace p5.imaging
             Image srcImage, 
             int destWidth, 
             int destHeight, 
-            bool keepAspectRatio)
+            bool keepAspectRatio,
+            Color bgColor)
         {
-            var destImage = new Bitmap (destWidth, destHeight);
+            var destImage = new Bitmap (destWidth, destHeight, PixelFormat.Format32bppArgb);
 
             int newWidth = destWidth;
             int newHeight = destHeight;
@@ -86,8 +88,9 @@ namespace p5.imaging
 
                 if (keepAspectRatio) {
 
-                    // Caller wants to keep aspect ration, blitting image onto surface, making sure outside parts of image defaults to "white"
-                    graphics.Clear (Color.White);
+                    // Caller wants to keep aspect ratio, blitting image unto surface, 
+                    // making sure outside parts of image defaults to specified background color
+                    graphics.Clear (bgColor);
 
                     newWidth = Convert.ToInt32 (srcImage.PhysicalDimension.Width);
                     newHeight = Convert.ToInt32 (srcImage.PhysicalDimension.Height);
@@ -105,12 +108,11 @@ namespace p5.imaging
                     top = Convert.ToInt32((destHeight - (srcImage.PhysicalDimension.Height * ratio)) / 2);
                     left = Convert.ToInt32((destWidth - (srcImage.PhysicalDimension.Width * ratio)) / 2);
                 }
-
-                using (var wrapMode = new ImageAttributes ())
-                {
-                    wrapMode.SetWrapMode (WrapMode.TileFlipXY);
-                    graphics.DrawImage (srcImage, left, top, newWidth, newHeight);
-                }
+                graphics.DrawImage (
+                    srcImage, 
+                    new Rectangle (left, top, newWidth, newHeight), 
+                    new Rectangle (0, 0, Convert.ToInt32 (srcImage.PhysicalDimension.Width), Convert.ToInt32 (srcImage.PhysicalDimension.Height)),
+                    GraphicsUnit.Pixel);
             }
             return destImage;
         }
