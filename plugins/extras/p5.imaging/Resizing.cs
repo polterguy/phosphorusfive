@@ -50,7 +50,7 @@ namespace p5.imaging
                 context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", destPath).Add ("args", e.Args));
 
                 var rootFolder = Helpers.GetBaseFolder (context);
-                using (var sourceBmp = Bitmap.FromFile (rootFolder + sourcePath)) {
+                using (var sourceBmp = Image.FromFile (rootFolder + sourcePath)) {
                     using (var destBmp = ResizeImage (sourceBmp, width, height)) {
                         destBmp.Save (rootFolder + destPath);
                     }
@@ -66,7 +66,7 @@ namespace p5.imaging
             var destRect = new Rectangle(0, 0, width, height);
             var destImage = new Bitmap(width, height);
 
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+            destImage.SetResolution(image.PhysicalDimension.Width, image.PhysicalDimension.Height);
 
             using (var graphics = Graphics.FromImage(destImage))
             {

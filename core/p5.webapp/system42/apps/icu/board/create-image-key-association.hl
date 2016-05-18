@@ -41,15 +41,9 @@ create-widget:icu-create-board-image-key-ass
 
     /*
      * Creates an image insertion from given [_thumb], [_large], [_title] and [_description].
-     * Passes on [_x], [_y] and [_board], in addition to id of [icu.image]'s id to [sys42.icu.set-board-picture-for-square]
+     * Passes on [_x], [_y] and [_board], in addition to ID of [icu.image]'s id to [sys42.icu.set-board-picture-for-square]
      */
     sys42.icu.create-image
-
-      /*
-       * Retrieving and using "search phrase" as title ("word") for image
-       */
-      get-widget-property:icu-create-board-search-box
-        value
 
       /*
        * Forward evaluating wizard widgets properties
@@ -68,7 +62,7 @@ create-widget:icu-create-board-image-key-ass
             label:Word
             placeholder:Image word ...
             mandatory:true
-            value:x:/../*/get-widget-property/[0,1]/*/*?value
+            value:x:/../*/_title?value
           textarea:image-description
             placeholder:Description ...
             innerValue:x:/../*/_description?value
@@ -190,11 +184,14 @@ $('#icu-lightbox-picture-modal-window').toggleClass('icu-lightbox-picture-modal-
                                               delete-widget:icu-lightbox-picture
                                               _medium:x:/..for-each/*/_dp/#/*/medium?value
                                               _thumb:x:/..for-each/*/_dp/#/*/thumb?value
-                                              _title:x:/..for-each/*/_dp/#/*/title?value
                                               _description:x:/..for-each/*/_dp/#/*/description?value
-                                              add:x:/+
-                                                src:x:/../*(/_board|/_x|/_y|/_thumb|/_medium|/_title|/_description)
+                                              get-widget-property:icu-create-board-search-box
+                                                value
+                                              add:x:/+2
+                                                src:x:/../*(/_board|/_x|/_y|/_thumb|/_medium|/_description)
+                                              eval-x:x:/+/*/_title
                                               sys42.icu.create-image
+                                                _title:x:/../*/get-widget-property/*/*?value
                             widgets
                               img
                                 src:x:/..for-each/*/_dp/#/*/thumb?value
@@ -246,7 +243,7 @@ set-widget-ajax-event:{_language-builder}
   _onupload
 
     /*
-     * Retrieving filename, file content, and saving file to "private" document folder
+     * Retrieving filename, file content, and saving file to "public" document folder
      */
     get-http-param:file-data
     get-http-param:file-name
@@ -268,7 +265,7 @@ set-widget-ajax-event:{_language-builder}
         return
     whoami
     p5.string.decode-base64:x:/../*/get-http-param/*/file-data?value
-    save-file:/users/{0}/documents/private/{1}
+    save-file:/users/{0}/documents/public/{1}
       :x:/../*/whoami/*/username?value
       :x:/../*/get-http-param/[1,2]/*?value
       src:x:/../*/p5.string.decode-base64/*?value
@@ -276,6 +273,31 @@ set-widget-ajax-event:{_language-builder}
     /*
      * Now creating "thumb" of image to speed up "key" loading
      */
+    p5.imaging.resize:/users/{0}/documents/public/{1}
+      :x:/../*/whoami/*/username?value
+      :x:/../*/get-http-param/[1,2]/*?value
+      width:75
+      height:75
+      dest:/users/{0}/documents/public/thumb-{1}
+        :x:/../*/whoami/*/username?value
+        :x:/../*/get-http-param/[1,2]/*?value
+
+    /*
+     * Asking user for description and title of image
+     */
+    eval-x:x:/+/*(/_thumb|/_medium)
+    sys42.icu.create-image
+      _x:{_x}
+      _y:{_y}
+      _board:{_board}
+      _thumb:/users/{0}/documents/public/thumb-{1}
+        :x:/../*/whoami/*/username?value
+        :x:/../*/get-http-param/[1,2]/*?value
+      _medium:/users/{0}/documents/public/{1}
+        :x:/../*/whoami/*/username?value
+        :x:/../*/get-http-param/[1,2]/*?value
+      _title:Selfie
+      _description:Selfie upload
 
 sys42.execute-lisp-file:/system42/misc/drag-and-drop-upload.hl
   _widget:{_language-builder}
