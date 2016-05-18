@@ -1,3 +1,5 @@
+
+
 @keyframes animate-drop-from-top {
     0% {
         margin-top:-700px;
@@ -411,5 +413,32 @@
     text-align:center;
     color:rgb(80,80,80);
     font-size:smaller;
+}
+
+
+@keyframes animate-file-in-dropzone {
+    from   { background-color:rgba(255,255,0,0); }
+    to { background-color:rgba(255,255,0,.5); }
+}
+
+.icu-file-in-dropzone {
+    border-radius:15px;
+    animation-name:animate-file-in-dropzone;
+    animation-duration:.5s;
+    animation-iteration-count:infinite;
+    animation-direction: alternate;
+}
+
+@keyframes animate-file-uploading {
+    from   { background-color:rgba(255,255,0,0); }
+    to { background-color:rgba(255,255,0,.5); }
+}
+
+.icu-file-uploading {
+    border-radius:15px;
+    animation-name:animate-file-uploading;
+    animation-duration:.5s;
+    animation-iteration-count:infinite;
+    animation-direction: alternate;
 }
 

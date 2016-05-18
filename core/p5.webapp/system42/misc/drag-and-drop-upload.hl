@@ -25,13 +25,15 @@ include-javascript-file:/media/jquery/jquery-2.1.4.min.js
 /*
  * Creating custom CSS classes inline in HTML page, to make sure
  * we get "dropzone CSS classes" associated with widget when files
- * are dragged over browser area
+ * are dragged over browser area. But only if no [_hover-css-class] is given
  */
-eval-x:x:/+/*/parent
-create-widget
-  parent:x:/../*/_widget?value
-  widgets
-    text:@"<style type=""text/css"">
+if:x:/../*/_hover-css-class?value
+  =
+  eval-x:x:/+/*/parent
+  create-widget
+    parent:x:/../*/_widget?value
+    widgets
+      text:@"<style type=""text/css"">
 .dropover {
     background:rgba(255,255,0,.2) url(/media/images/marvin-headshot-transparent.png) no-repeat top right;
 }
@@ -39,6 +41,10 @@ create-widget
 .dropover-dropped {
     background-color:rgba(128,255,0,.2);
 }</style>"
+  insert-before:x:/../0
+    src
+      _hover-css-class:dropover
+      _dropped-css-class:dropover-dropped
 
 
 /*
@@ -51,17 +57,17 @@ dropzone.files = [];
 var dz = $('#{0}');
 
 dz.on('dragover', function() {{
-  dz.addClass ('dropover');
+  dz.addClass ('{1}');
   return false;
 }});
 
 dz.on('dragleave', function() {{
-  dz.removeClass ('dropover');
+  dz.removeClass ('{1}');
   return false;
 }});
 
 dz.on('drop', function() {{
-  dz.toggleClass ('dropover-dropped');
+  dz.toggleClass ('{2}');
   var startPush = dropzone.files.length == 0;
   var files = event.dataTransfer.files;
   for(var i = 0; i < files.length; i++) {{
@@ -83,8 +89,8 @@ dropzone.processNextFile = function () {{
         if(dropzone.files.length > 0) {{
           dropzone.processNextFile();
         }} else {{
-          dz.removeClass ('dropover');
-          dz.removeClass ('dropover-dropped');
+          dz.removeClass ('{1}');
+          dz.removeClass ('{2}');
         }}
       }},
       onbefore: function (pars, evt) {{
@@ -97,3 +103,5 @@ dropzone.processNextFile = function () {{
 }};
 "
   :x:/../*/_widget?value
+  :x:/../*/_hover-css-class?value
+  :x:/../*/_dropped-css-class?value

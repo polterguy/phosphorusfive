@@ -299,5 +299,11 @@ set-widget-ajax-event:{_language-builder}
       _title:Selfie
       _description:Selfie upload
 
+
+/*
+ * Evaluates the file that makes "search for image widget" a dropzone for images
+ */
 sys42.execute-lisp-file:/system42/misc/drag-and-drop-upload.hl
   _widget:{_language-builder}
+  _hover-css-class:icu-file-in-dropzone
+  _dropped-css-class:icu-file-uploading
