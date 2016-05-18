@@ -223,6 +223,7 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
         :x:/../*/select-data/[1,2]/*/*/thumb?value
       innerValue:x:/../*/select-data/[1,2]/*/*/word?value
       class:icu-key icu-cell
+      title:x:/../*/select-data/[1,2]/*/*/description?value
     add:x:/+/*
       src:x:/../*/_action/*
     set-widget-ajax-event:x:/-3/*?value

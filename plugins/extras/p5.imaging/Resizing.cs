@@ -37,6 +37,7 @@ namespace p5.imaging
                 int height = e.Args.GetExChildValue ("height", context, -1);
                 string sourcePath = e.Args.GetExValue<string> (context);
                 string destPath = e.Args.GetExChildValue<string> ("dest", context);
+                bool keepAspectRatio = e.Args.GetExChildValue ("keep-aspect-ratio", context, false);
 
                 // Sanity check
                 if (width == -1 || height == -1 || string.IsNullOrEmpty (sourcePath) || string.IsNullOrEmpty (destPath))
@@ -51,7 +52,7 @@ namespace p5.imaging
 
                 var rootFolder = Helpers.GetBaseFolder (context);
                 using (var sourceBmp = Image.FromFile (rootFolder + sourcePath)) {
-                    using (var destBmp = ResizeImage (sourceBmp, width, height)) {
+                    using (var destBmp = ResizeImage (sourceBmp, width, height, keepAspectRatio)) {
                         destBmp.Save (rootFolder + destPath);
                     }
                 }
@@ -61,28 +62,56 @@ namespace p5.imaging
         /*
          * Helper for above
          */
-        public static Bitmap ResizeImage (Image image, int width, int height)
+        public static Bitmap ResizeImage (
+            Image srcImage, 
+            int destWidth, 
+            int destHeight, 
+            bool keepAspectRatio)
         {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
+            var destImage = new Bitmap (destWidth, destHeight);
 
-            destImage.SetResolution(image.PhysicalDimension.Width, image.PhysicalDimension.Height);
+            int newWidth = destWidth;
+            int newHeight = destHeight;
 
-            using (var graphics = Graphics.FromImage(destImage))
+            destImage.SetResolution (srcImage.PhysicalDimension.Width, srcImage.PhysicalDimension.Height);
+
+            using (var graphics = Graphics.FromImage (destImage))
             {
                 graphics.CompositingMode = CompositingMode.SourceCopy;
                 graphics.CompositingQuality = CompositingQuality.HighQuality;
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                int top = 0, left = 0;
 
-                using (var wrapMode = new ImageAttributes())
+                if (keepAspectRatio) {
+
+                    // Caller wants to keep aspect ration, blitting image onto surface, making sure outside parts of image defaults to "white"
+                    graphics.Clear (Color.White);
+
+                    newWidth = Convert.ToInt32 (srcImage.PhysicalDimension.Width);
+                    newHeight = Convert.ToInt32 (srcImage.PhysicalDimension.Height);
+
+                    // Figure out the ratio
+                    double ratioWidth = (double) destWidth / (double) srcImage.PhysicalDimension.Width;
+                    double ratioHeight = (double) destHeight / (double) srcImage.PhysicalDimension.Height;
+                    double ratio = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+
+                    // Getting the new height and width
+                    newWidth = Convert.ToInt32(srcImage.PhysicalDimension.Width * ratio);
+                    newHeight = Convert.ToInt32(srcImage.PhysicalDimension.Height * ratio);
+
+                    // Calculate the top/left corner
+                    top = Convert.ToInt32((destHeight - (srcImage.PhysicalDimension.Height * ratio)) / 2);
+                    left = Convert.ToInt32((destWidth - (srcImage.PhysicalDimension.Width * ratio)) / 2);
+                }
+
+                using (var wrapMode = new ImageAttributes ())
                 {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width,image.Height, GraphicsUnit.Pixel, wrapMode);
+                    wrapMode.SetWrapMode (WrapMode.TileFlipXY);
+                    graphics.DrawImage (srcImage, left, top, newWidth, newHeight);
                 }
             }
-
             return destImage;
         }
     }

@@ -73,6 +73,7 @@ while:x:/-?value
               href:#
               class:icu-empty-cell icu-key
               style:""
+              title:Empty, click to associate image with key
               innerValue:&nbsp;
               _x
               _y
@@ -145,6 +146,8 @@ while:x:/-?value
             :x:/..if/..if/*/select-data/*/*/thumb?value
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/innerValue?value
           src:x:/..if/..if/*/select-data/*/*/word?value
+        set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/title?value
+          src:x:/..if/..if/*/select-data/*/*/description?value
 
         /*
          * Making sure [onclick] becomes lambda from [action] of item, first removing
