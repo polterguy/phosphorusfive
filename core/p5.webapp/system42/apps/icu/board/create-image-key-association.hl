@@ -231,3 +231,51 @@ p5.lightboxKeyUp = function(e) {
     return false;
   }
 };"
+
+
+/*
+ * Evaluates the file that allows drag and drop of files into area for associating custom files with "key",
+ * but first making suer our specifie language builder has the callback necessary for allowing uploading
+ * of files
+ */
+set-widget-ajax-event:{_language-builder}
+
+  /*
+   * Callback necessary for drag'n'drop uploading of images
+   */
+  _onupload
+
+    /*
+     * Retrieving filename, file content, and saving file to "private" document folder
+     */
+    get-http-param:file-data
+    get-http-param:file-name
+    split:x:/../*/get-http-param/[1,2]/*?value
+      =:.
+    switch:x:/../*/split/0/-?name
+      case:png
+      case:jpg
+      case:jpeg
+      case:gif
+        /*
+         * This is ok
+         */
+        _foo
+      default:
+        sys42.info-window:Only image files are allowed to upload here
+          _error:true
+          _time:more
+        return
+    whoami
+    p5.string.decode-base64:x:/../*/get-http-param/*/file-data?value
+    save-file:/users/{0}/documents/private/{1}
+      :x:/../*/whoami/*/username?value
+      :x:/../*/get-http-param/[1,2]/*?value
+      src:x:/../*/p5.string.decode-base64/*?value
+
+    /*
+     * Now creating "thumb" of image to speed up "key" loading
+     */
+
+sys42.execute-lisp-file:/system42/misc/drag-and-drop-upload.hl
+  _widget:{_language-builder}

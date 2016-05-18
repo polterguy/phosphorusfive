@@ -3,11 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CD99A0A7-F544-46D6-AC0E-547F2E17125F}</ProjectGuid>
+    <ProjectGuid>{C68B8AA9-2F95-4F6A-946F-7A4495B06145}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>p5.mongo</RootNamespace>
-    <AssemblyName>p5.mongo</AssemblyName>
-    <ReleaseVersion>1.0</ReleaseVersion>
+    <RootNamespace>p5.imaging</RootNamespace>
+    <AssemblyName>p5.imaging</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,29 +29,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="MongoDB.Bson">
-      <HintPath>..\..\..\packages\MongoDB.Bson.2.2.3\lib\net45\MongoDB.Bson.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Driver.Core">
-      <HintPath>..\..\..\packages\MongoDB.Driver.Core.2.2.3\lib\net45\MongoDB.Driver.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Driver">
-      <HintPath>..\..\..\packages\MongoDB.Driver.2.2.3\lib\net45\MongoDB.Driver.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Insert.cs" />
-    <Compile Include="Helpers\Database.cs" />
-    <Compile Include="Helpers\Filter.cs" />
-    <Compile Include="Delete.cs" />
-    <Compile Include="Helpers\ObjectIdType.cs" />
-    <Compile Include="Index.cs" />
-    <Compile Include="Find.cs" />
-    <Compile Include="Helpers\DocumentParser.cs" />
-    <Compile Include="Aggregate.cs" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="Resizing.cs" />
+    <Compile Include="Helpers\Helpers.cs" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
@@ -65,8 +48,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

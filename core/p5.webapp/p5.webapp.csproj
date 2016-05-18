@@ -298,6 +298,10 @@
       <Project>{DC2195C7-E1BA-41DA-B2B9-DAFA19ED333C}</Project>
       <Name>p5.flickrnet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.imaging\p5.imaging.csproj">
+      <Project>{C68B8AA9-2F95-4F6A-946F-7A4495B06145}</Project>
+      <Name>p5.imaging</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\application-startup.hl" />
