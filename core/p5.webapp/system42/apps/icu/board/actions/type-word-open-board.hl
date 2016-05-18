@@ -242,54 +242,15 @@ $('#icu-board-list-modal').toggleClass('action-modal-window-fadeout').one('anima
     $('#' + e.target.id).hide();
     $('#icu-board-list').fadeOut({duration:200});
   });"
-                  eval-x:x:/+/*/*/_board-name
+                  eval-x:x:/+/*/*/~sys42.icu.open-board
                   sys42.icu.set-board-picture-for-square
                     _x:{_x}
                     _y:{_y}
                     _image:{_image}
                     _board:{_board}
                     _action
-                      _board-name:x:/../*/get-widget-property/*/*?value
-                      select-data:x:/*/*/icu.board/*/name/={0}/.?value
-                        :x:/./-?value
-                      _image:{_image}
-                      eval-x:x:/+/*
-                      sys42.execute-lisp-file:/system42/apps/icu/board/create-board.hl
-                        _board:x:/../*/select-data/[0,1]/*?value
-
-                      /*
-                       * Retrieving [_output-widget] supplied when instantiating ICU
-                       */
-                      sys42.icu.get-output-widget
-
-                      /*
-                       * Making sure output widget doesn't contain more than 42 "words"
-                       */
-                      get-children-widgets:x:/-?value
-                      if:x:/-/*/*?count
-                        >=:int:36
-                        sys42.info-window:Sheet is full
-                          _error:true
-                        return
-
-                      /*
-                       * Selecting [icu.image] from database that was clicked, and creating a widget from
-                       * it, adding this widget to the [_output-widget] that was specified when the ICU app was launched
-                       */
-                      select-data:x:@"/*/*/""=:guid:{0}"""
-                        :x:/../*/_image?value
-                      eval-x:x:/+/**
-                      create-widget
-                        parent:x:/../*/sys42.icu.get-output-widget?value
-                        class:icu-word
-                        title:x:/../*/select-data/[1,2]/0/*/description?value
-                        widgets
-                          literal
-                            element:img
-                            alt:x:/../*/select-data/[1,2]/0/*/description?value
-                            src:x:/../*/select-data/[1,2]/0/*/thumb?value
-                          literal
-                            innerValue:x:/../*/select-data/[1,2]/0/*/word?value
+                      sys42.icu.open-board:x:/../*/get-widget-property/*/*?value
+                      sys42.icu.type-word:{_image}
 
 
   /*

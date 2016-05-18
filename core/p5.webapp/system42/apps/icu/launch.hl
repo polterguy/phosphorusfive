@@ -102,6 +102,62 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
 
 
   /*
+   * Types out a "word" (picture/word association) on output widget. Expects a [_image] being the
+   * ID to an [icu.image] in database as [_arg]
+   */
+  sys42.icu.type-word
+
+    /*
+     * Retrieving [_output-widget] supplied when instantiating ICU
+     */
+    sys42.icu.get-output-widget
+
+    /*
+     * Making sure output widget doesn't contain more than 42 "words"
+     */
+    get-children-widgets:x:/-?value
+    if:x:/-/*/*?count
+      >=:int:36
+      sys42.info-window:Sheet is full
+        _error:true
+      return
+
+    /*
+     * Selecting [icu.image] from database that was clicked, and creating a widget from
+     * it, adding this widget to the [_output-widget] that was specified when the ICU app was launched
+     */
+    select-data:x:@"/*/*/""=:guid:{0}"""
+      :x:/../*/_arg?value
+    eval-x:x:/+/**
+    create-widget
+      parent:x:/../*/sys42.icu.get-output-widget?value
+      class:icu-word
+      title:x:/../*/select-data/0/*/description?value
+      widgets
+        literal
+          element:img
+          alt:x:/../*/select-data/0/*/description?value
+          src:x:/../*/select-data/0/*/thumb?value
+        literal
+          innerValue:x:/../*/select-data/0/*/word?value
+
+
+  /*
+   * Opens up [icu.board] on keyboard widget supplied when instantiating ICU. Expects 
+   * to be given [name] of [icu.board] to open as [_arg]
+   */
+  sys42.icu.open-board
+    select-data:x:/*/*/icu.board/*/name/={0}/.?value
+      :x:/../*/_arg?value
+    eval-x:x:/+/*
+    sys42.execute-lisp-file:/system42/apps/icu/board/create-board.hl
+      _board:x:/../*/select-data/*?value
+    sys42.icu.get-keyboard-widget
+    send-javascript:@"$('#{0}').hide().fadeIn({{duration:400}});"
+      :x:/../*/sys42.icu.get-keyboard-widget?value
+
+
+  /*
    * Associates an existing "key" in [_board] with given [_image], at specified [_x]/[_y]
    */
   sys42.icu.set-board-picture-for-square

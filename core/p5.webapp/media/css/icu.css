@@ -262,35 +262,22 @@
 }
 
 .icu-create-board {
-    border-radius:5px;
     padding:25px;
     position:relative;
-    background-color:rgba(0,255,0,.1);
-    min-height:250px;
+    overflow:auto;
 }
 
 #icu-close-create-board {
     position:absolute;
-    top:10px;
-    right:15px;
-    font-size:2em;
-    color:rgba(0,128,0,.5);
-    transition:color;
-    transition-duration:.2s;
+    top:15px;
+    right:18px;
+    font-size:14px;
+    color:#000;
+    opacity:.2;
 }
 
 #icu-close-create-board:hover {
-    color:rgba(0,128,0,.8);
-    transition:color;
-    transition-duration:.2s;
-}
-
-#icu-upload-icon {
-    position:absolute;
-    right:45px;
-    bottom:0px;
-    font-size:100px;
-    color:rgba(0,255,0,.2);
+    opacity:.5;
 }
 
 #icu-flickr-result {

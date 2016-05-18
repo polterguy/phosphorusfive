@@ -20,35 +20,6 @@ _action-name:Type word
 _action
 
   /*
-   * Retrieving [_output-widget] supplied when instantiating ICU
+   * Invokes active event responsible for typing out word on output widget
    */
-  sys42.icu.get-output-widget
-
-  /*
-   * Making sure output widget doesn't contain more than 42 "words"
-   */
-  get-children-widgets:x:/-?value
-  if:x:/-/*/*?count
-    >=:int:36
-    sys42.info-window:Sheet is full
-      _error:true
-    return
-
-  /*
-   * Selecting [icu.image] from database that was clicked, and creating a widget from
-   * it, adding this widget to the [_output-widget] that was specified when the ICU app was launched
-   */
-  select-data:x:@"/*/*/""=:guid:{0}"""
-    :x:/../*/_image?value
-  eval-x:x:/+/**
-  create-widget
-    parent:x:/../*/sys42.icu.get-output-widget?value
-    class:icu-word
-    title:x:/../*/select-data/0/*/description?value
-    widgets
-      literal
-        element:img
-        alt:x:/../*/select-data/0/*/description?value
-        src:x:/../*/select-data/0/*/thumb?value
-      literal
-        innerValue:x:/../*/select-data/0/*/word?value
+  sys42.icu.type-word:x:/../*/_image?value

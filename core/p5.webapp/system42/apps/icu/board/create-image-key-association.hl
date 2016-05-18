@@ -112,7 +112,7 @@ create-widget:icu-create-board-image-key-ass
             delete-widget:icu-create-board-image-key-ass
             sys42.icu.icu-create-board-image-key-ass.closed
         container
-          class:form col-xs-12 col-md-5
+          class:form col-xs-11
           widgets
             container
               class:input-group
@@ -121,7 +121,7 @@ create-widget:icu-create-board-image-key-ass
                   element:input
                   type:search
                   class:form-control input-lg
-                  placeholder:...
+                  placeholder:Search ...
                   onkeypress:"return p5.searchIcuTextBox(event);"
                   oninit
                     send-javascript:@"$('#{0}').focus();"
@@ -207,9 +207,6 @@ $('#icu-lightbox-picture-modal-window').toggleClass('icu-lightbox-picture-modal-
                                 widgets
                                   img
                                     src:x:/..for-each/*/_dp/#/*/thumb?value
-        literal:icu-upload-icon
-          element:span
-          innerValue:@"<span class=""glyphicon glyphicon-share-alt""></span>"
     container:icu-flickr-result
       class:bg-warning rounded-corners prepend-top air-padding-more flash-from-left
       visible:false

@@ -242,19 +242,14 @@ $('#icu-board-list-modal').toggleClass('action-modal-window-fadeout').one('anima
     $('#' + e.target.id).hide();
     $('#icu-board-list').fadeOut({duration:200});
   });"
-                  eval-x:x:/+/*/*/_board-name
+                  eval-x:x:/+/*/*/sys42.icu.open-board
                   sys42.icu.set-board-picture-for-square
                     _x:{_x}
                     _y:{_y}
                     _image:{_image}
                     _board:{_board}
                     _action
-                      _board-name:x:/../*/get-widget-property/*/*?value
-                      select-data:x:/*/*/icu.board/*/name/={0}/.?value
-                        :x:/./-?value
-                      eval-x:x:/+/*
-                      sys42.execute-lisp-file:/system42/apps/icu/board/create-board.hl
-                        _board:x:/../*/select-data/*?value
+                      sys42.icu.open-board:x:/../*/get-widget-property/*/*?value
 
 
   /*
