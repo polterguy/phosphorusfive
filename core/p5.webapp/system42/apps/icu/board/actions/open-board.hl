@@ -22,6 +22,17 @@ _action-name:Open board
 _action-configure
 
   /*
+   * Making sure last selected board actually exists, and if not, deleting session value
+   */
+  get-session-value:sys42.icu.last-board
+  if:x:/-/*?value
+    select-data:x:/*/*/icu.board/*/name/={0}/.
+      :x:/././-/*?value
+    if:x:/-/*
+      =
+      set-session-value:sys42.icu.last-board
+
+  /*
    * Making sure we pass in arguments to who ever needs them
    */
   set:x:/../**/={_x}?value
@@ -75,6 +86,7 @@ $('#icu-board-list-modal').toggleClass('action-modal-window-fadeout').one('anima
                 class:form-control prepend-top
                 oninit
                   sys42.icu.populate-board-list
+
                 onchange
 
                   /*
@@ -102,6 +114,11 @@ $('#icu-board-list-modal').toggleClass('action-modal-window-fadeout').one('anima
                   sys42.icu.populate-board-list
 
                     /*
+                     * Retrieving last used board, using it as default board
+                     */
+                    get-session-value:sys42.icu.last-board
+
+                    /*
                      * Clearing out any previously created option items, in case
                      */
                     clear-widget:icu-select-board
@@ -122,6 +139,10 @@ $('#icu-board-list-modal').toggleClass('action-modal-window-fadeout').one('anima
                     select-data:x:/*/*/icu.board/*/username/={0}/.
                       :x:/./-/*/username?value
                     for-each:x:/-/*
+                      if:x:/../*/get-session-value/*?value
+                        =:x:/..for-each/*/_dp/#/*/name?value
+                        add:x:/..for-each/*/create-literal-widget
+                          src:selected
                       eval-x:x:/+/*
                       create-literal-widget
                         parent:icu-select-board
@@ -137,6 +158,11 @@ $('#icu-board-list-modal').toggleClass('action-modal-window-fadeout').one('anima
                 class:btn btn-default
                 innerValue:Delete
                 style:"width:100%;"
+                oninit
+                  get-session-value:sys42.icu.last-board
+                  if:x:/-/*?value
+                    delete-widget-property:x:/../*/_event?value
+                      disabled
                 onclick
                   sys42.confirm-window
                     _header:Are you sure?
@@ -233,9 +259,16 @@ Are you sure you wish to proceed?"
                 class:btn btn-primary
                 style:"width:100%;"
                 disabled
+                oninit
+                  get-session-value:sys42.icu.last-board
+                  if:x:/-/*?value
+                    delete-widget-property:x:/../*/_event?value
+                      disabled
                 onclick
                   get-widget-property:icu-select-board
                     value
+                  set-session-value:sys42.icu.last-board
+                    src:x:/../*/get-widget-property/*/*?value
                   send-javascript:@"
 $('#icu-board-list-modal').toggleClass('action-modal-window-fadeout').one('animationend',
   function(e) {

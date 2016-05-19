@@ -260,7 +260,8 @@
     background:Transparent url(../images/rough_paper.jpg) no-repeat top left;
     background-size:cover;
     cursor:pointer;
-    padding:35px 48px;
+    padding:35px 48px 0px 48px;
+    overflow:auto;
 }
 
 .icu-create-board {
