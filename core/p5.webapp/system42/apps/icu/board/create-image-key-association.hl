@@ -73,8 +73,9 @@ create-widget:icu-create-board-image-key-ass
            * making sure we HTML encode [word] and [description] to not mess up HTML in case there are angle brackets, etc in
            * text
            */
-          eval-x:x:/+4/*/*
-          set:x:/+3/*/*(/thumb|/medium)?value
+          whoami
+          eval-x:x:/../*/insert-data/*/*
+          set:x:/../*/insert-data/*/*(/thumb|/medium)?value
             rel-src:x:/../*/_{0}?value
               :x:?name
           set:x:/../*/insert-data/*/*/word?value
@@ -87,13 +88,15 @@ create-widget:icu-create-board-image-key-ass
               medium
               word:x:/../*/image-word?value
               description:x:/../*/image-description?value
+              user:x:/../*/whoami/*/username?value
+              visibility:x:/../*/_visibility?value
 
           /*
            * Creating "action association" with key/image
            */
           set:x:/+/*/_image?value
             src:x:/../*/insert-data/0?value
-          sys42.execute-lisp-file:/system42/apps/icu/board/create-image-action-association.hl
+          sys42.execute-lisp-file:/system42/apps/icu/board/create-key-action-association.hl
             _board:{_board}
             _x:{_x}
             _y:{_y}
@@ -123,7 +126,7 @@ create-widget:icu-create-board-image-key-ass
                 button:icu-create-board-search
                   class:btn-default btn btn-lg
                   type:button
-                  innerValue:@"<span class=""glyphicon glyphicon-search""></span>"
+                  innerValue:@"<span class=""glyphicon glyphicon-globe""></span>"
                   onclick
                     clear-widget:icu-flickr-result
                     set-widget-property:icu-flickr-result
@@ -159,7 +162,7 @@ create-widget:icu-create-board-image-key-ass
                                         innerValue:x:/..for-each/*/_dp/#/*/title?value
                                       img
                                         src:x:/..for-each/*/_dp/#/*/medium?value
-                                        alt:Choose image, or click outside to close
+                                        alt:Choose image, or click close
                                         title:x:/..for-each/*/html-encode?value
                                       div
                                         style:"text-align:right;"
@@ -198,6 +201,85 @@ $('#icu-lightbox-picture-modal-window').toggleClass('icu-lightbox-picture-modal-
                                               eval-x:x:/+/*/_title
                                               sys42.icu.create-image
                                                 _title:x:/../*/get-widget-property/*/*?value
+                                                _visibility:public
+                            widgets
+                              img
+                                src:x:/..for-each/*/_dp/#/*/thumb?value
+                button:icu-create-board-search-local
+                  innerValue:@"<span class=""glyphicon glyphicon-search""></span>"
+                  class:btn-default btn btn-lg
+                  onclick
+                    clear-widget:icu-flickr-result
+                    set-widget-property:icu-flickr-result
+                      visible:true
+                    get-widget-property:icu-create-board-search-box
+                      value
+                    send-javascript:@"$('#icu-create-board-search-box').focus().select();"
+                    whoami
+                    select-data:x:@"/*/*/icu.image/*((/user/""={0}""/.|/visibility/=public/.)&(/word/""={1}""/.|/description/""={1}""/.))/[0,10]"
+                      :x:/../*/whoami/*/username?value
+                      :x:/../*/get-widget-property/*/*?value
+                    for-each:x:/../*/select-data/*
+                      eval-x:x:/+/**(/img/*(/src|/title)|/h3/*/innerValue|/_image)
+                      create-widget
+                        parent:icu-flickr-result
+                        class:icu-flickr-result-item
+                        widgets
+                          a
+                            href:#
+                            onclick
+                              if
+                                fetch:x:/0/0?value
+                                  widget-exist:icu-lightbox-picture
+                                delete-widget:icu-lightbox-picture
+                              create-widget:icu-lightbox-picture
+                                class:icu-lightbox-picture
+                                onkeyup:"p5.lightboxKeyUp(event);"
+                                widgets
+                                  div:icu-lightbox-picture-modal-window
+                                    class:icu-lightbox-picture-modal-window
+                                    widgets
+                                      h3
+                                        innerValue:x:/..for-each/*/_dp/#/*/word?value
+                                      img
+                                        src:x:/..for-each/*/_dp/#/*/medium?value
+                                        alt:Choose image, or click close
+                                        title:x:/..for-each/*/_dp/*/#/*/description?value
+                                      div
+                                        style:"text-align:right;"
+                                        class:prepend-top
+                                        widgets
+                                          button:icu-lightbox-picture-close
+                                            class:btn btn-default
+                                            style:"width:80px;"
+                                            innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+                                            onclick
+                                              send-javascript:@"
+$('#icu-lightbox-picture-modal-window').toggleClass('icu-lightbox-picture-modal-window').toggleClass('action-modal-window-fadeout').one('animationend',
+  function(e) {
+    $('#' + e.target.id).hide();
+    $('#icu-lightbox-picture').fadeOut({duration:200});
+  });"
+                                          button
+                                            class:btn btn-primary
+                                            style:"width:80px; margin-left:10px;"
+                                            innerValue:@"<span class=""glyphicon glyphicon-ok""></span>"
+                                            oninit
+                                              send-javascript:@"$('#{0}').focus();"
+                                                :x:/../*/_event?value
+                                            onclick
+                                              _board:{_board}
+                                              _x:{_x}
+                                              _y:{_y}
+                                              _image:x:/..for-each/*/_dp/#?value
+                                              delete-widget:icu-lightbox-picture
+                                              set:x:/+/*/_image?value
+                                                src:x:/../*/_image?value
+                                              sys42.execute-lisp-file:/system42/apps/icu/board/create-key-action-association.hl
+                                                _board:{_board}
+                                                _x:{_x}
+                                                _y:{_y}
+                                                _image
                             widgets
                               img
                                 src:x:/..for-each/*/_dp/#/*/thumb?value
@@ -307,6 +389,7 @@ set-widget-ajax-event:{_language-builder}
       _title:x:/../*/split/0?name
       _description:{0} - description
         :x:/../*/split/0?name
+      _visibility:private
 
 
 /*

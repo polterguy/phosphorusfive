@@ -56,17 +56,12 @@ for-each:x:/-/*?name
             delete-widget:icu-action-association
 
             /*
-             * Loads "action file", and extracts [_action-creator] as lambda object, and associates
-             * this lambda object with [onclick] of "board key" widget, by invoking [sys42.icu.set-board-picture-for-square]
+             * Loads "action file", and extracts [_action] as lambda object, and invokes this as lambda, associating
+             * return value with [onclick] of "board key" widget, by invoking [sys42.icu.set-board-picture-for-square]
              */
             load-file:{file-name}
             insert-before:x:/../*/load-file/*/*(/_action|/_action-configure)/0
               src:x:/../*(/~_!/_event)
-            set:x:/../**/sys42.icu.set-board-picture-for-square/*(!/_action)?value
-              rel-src:x:/../*/{0}?value
-                :x:?name
-            add:x:/../**/sys42.icu.set-board-picture-for-square/*/_action
-              src:x:/../*/load-file/*/*/_action/*
             if:x:/../*/load-file/*/*/_action-configure
 
               /*
@@ -81,6 +76,12 @@ for-each:x:/-/*?name
                * Action does not contain any [_action-configure] parts, creating action
                * immediately
                */
+              set:x:/..else/*/sys42.icu.set-board-picture-for-square/*(!/_action)?value
+                rel-src:x:/../*/{0}?value
+                  :x:?name
+              eval:x:/../*/load-file/*/*/_action
+              add:x:/..else/*/sys42.icu.set-board-picture-for-square/*/_action
+                src:x:/..else/*/eval/*
               sys42.icu.set-board-picture-for-square
                 _x
                 _y

@@ -5,7 +5,7 @@
 
 
 /*
- * Name of action type. Will be shown when user chooses action in for instance "create-image-action-association.hl"
+ * Name of action type. Will be shown when user chooses action in for instance "create-key-action-association.hl"
  */
 _action-name:New sheet
 
@@ -19,14 +19,15 @@ _action-name:New sheet
  */
 _action
 
-  sys42.confirm-window
-    _header:Are you sure?
-    _body:@"This will delete all your existing words, and create a new sheet for you to write on. 
+  return
+    sys42.confirm-window
+      _header:Are you sure?
+      _body:@"This will delete all your existing words, and create a new sheet for you to write on. 
 This action cannot be undone. Are you sure you wish to do this?"
-    _onok
+      _onok
 
-      /*
-       * Retrieves the [_output-widget] supplied when creating board, before emptying that widget's children widgets
-       */
-      sys42.icu.get-output-widget
-      clear-widget:x:/-?value
+        /*
+         * Retrieves the [_output-widget] supplied when creating board, before emptying that widget's children widgets
+         */
+        sys42.icu.get-output-widget
+        clear-widget:x:/-?value

@@ -5,7 +5,7 @@
 
 
 /*
- * Name of action type. Will be shown when user chooses action in for instance "create-image-action-association.hl"
+ * Name of action type. Will be shown when user chooses action in for instance "create-key-action-association.hl"
  */
 _action-name:Types word, open board
 

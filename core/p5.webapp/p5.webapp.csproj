@@ -431,7 +431,6 @@
     <None Include="system42\apps\icu\board\create-board.hl" />
     <None Include="system42\apps\icu\init\initialize.hl" />
     <None Include="system42\apps\icu\board\create-image-key-association.hl" />
-    <None Include="system42\apps\icu\board\create-image-action-association.hl" />
     <None Include="system42\apps\icu\board\actions\type-word.hl" />
     <None Include="system42\apps\icu\board\actions\open-board.hl" />
     <None Include="system42\apps\icu\board\actions\README.md" />
@@ -439,6 +438,7 @@
     <None Include="system42\apps\icu\board\actions\empty-sheet.hl" />
     <None Include="system42\apps\icu\board\actions\type-word-open-board.hl" />
     <None Include="system42\apps\icu\board\actions\open-board-common\open-board-common.hl" />
+    <None Include="system42\apps\icu\board\create-key-action-association.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

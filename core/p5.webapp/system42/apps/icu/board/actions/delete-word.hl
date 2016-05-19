@@ -5,7 +5,7 @@
 
 
 /*
- * Name of action type. Will be shown when user chooses action in for instance "create-image-action-association.hl"
+ * Name of action type. Will be shown when user chooses action in for instance "create-key-action-association.hl"
  */
 _action-name:Delete word
 
@@ -19,10 +19,11 @@ _action-name:Delete word
  */
 _action
 
-  /*
-   * Retrieves the [_output-widget] supplied when creating board, before listing its widget, 
-   * and deleting its last widget
-   */
-  sys42.icu.get-output-widget
-  get-children-widgets:x:/-?value
-  delete-widget:x:/-/*/0/-?value
+  return
+    /*
+     * Retrieves the [_output-widget] supplied when creating board, before listing its widget, 
+     * and deleting its last widget
+     */
+    sys42.icu.get-output-widget
+    get-children-widgets:x:/-?value
+    delete-widget:x:/-/*/0/-?value

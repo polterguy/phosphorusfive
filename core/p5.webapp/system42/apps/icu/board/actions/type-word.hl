@@ -5,7 +5,7 @@
 
 
 /*
- * Name of action type. Will be shown when user chooses action in for instance "create-image-action-association.hl"
+ * Name of action type. Will be shown when user chooses action in for instance "create-key-action-association.hl"
  */
 _action-name:Type word
 
@@ -16,10 +16,14 @@ _action-name:Type word
  * [_y]     ==> y position in board of "key" to associate with action
  * [_image] ==> ID from database of image to display
  * [_board] ==> ID from database of board we're creating action for
+ *
+ * Expected to return action callback
  */
 _action
 
   /*
    * Invokes active event responsible for typing out word on output widget
    */
-  sys42.icu.type-word:x:/../*/_image?value
+  eval-x:x:/+/*
+  return
+    sys42.icu.type-word:x:/../*/_image?value
