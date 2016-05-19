@@ -438,6 +438,7 @@
     <None Include="system42\apps\icu\board\actions\delete-word.hl" />
     <None Include="system42\apps\icu\board\actions\empty-sheet.hl" />
     <None Include="system42\apps\icu\board\actions\type-word-open-board.hl" />
+    <None Include="system42\apps\icu\board\actions\open-board-common\open-board-common.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -479,5 +480,6 @@
     <Folder Include="system42\apps\icu\board\" />
     <Folder Include="system42\apps\icu\init\" />
     <Folder Include="system42\apps\icu\board\actions\" />
+    <Folder Include="system42\apps\icu\board\actions\open-board-common\" />
   </ItemGroup>
 </Project>
