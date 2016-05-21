@@ -130,73 +130,6 @@ create-widget:icu-create-board-image-key-ass
               class:input-group-btn
               widgets
 
-                /*
-                 * Search locally button
-                 */
-                button:icu-create-board-search-locally
-                  innerValue:@"<span class=""glyphicon glyphicon-search""></span>"
-                  class:btn-default btn btn-lg
-                  title:Searches for images in local database, your images, and shared/public images
-                  onclick
-
-                    /*
-                     * Making sure search text box gets focus back again
-                     */
-                    send-javascript:@"$('#icu-create-board-search-box').focus().select();"
-
-                    /*
-                     * Retrieves value from search textbox, and searches for images using "search-for-image.hl" file.
-                     * Supplying "search callback" to do actual search in local database
-                     */
-                    get-widget-property:icu-create-board-search-box
-                      value
-                    eval-x:x:/+/*/_query
-                    sys42.execute-lisp-file:/system42/apps/icu/board/search-for-image.hl
-                      _widget:icu-flickr-result
-                      _query:x:/../*/get-widget-property/*/*?value
-                      _start:0
-                      _end:10
-                      _on-image-selected
-
-                        /*
-                         * Simply uses the existing (local) image reference as key, applying arguments first
-                         */
-                        set:x:/+/*/_image?value
-                          src:x:/../*/_id?value
-                        sys42.execute-lisp-file:/system42/apps/icu/board/create-key-action-association.hl
-                          _board:{_board}
-                          _x:{_x}
-                          _y:{_y}
-                          _image
-                      _onsearch
-
-                        /*
-                         * Search callback for actually retrieving images. Searches local database
-                         */
-                        whoami
-                        replace:x:/../*/_query?value
-                          what:" "
-                          with:".*"
-                        select-data:x:@"/*/*/icu.image/*((/user/""={0}""/.|/visibility/=public/.)&(/word/""=:regex:/{1}/i""/.|/description/""=:regex:/{1}/i""/.))/[{2},{3}]"
-                          :x:/../*/whoami/*/username?value
-                          :x:/../*/replace?value
-                          :x:/../*/_start?value
-                          :x:/../*/_end?value
-
-                        /*
-                         * Databinding return value
-                         */
-                        databind:x:/../*/return
-                          src:x:/../*/select-data/*
-                          template
-                            image
-                              {thumb}:x:/*/thumb?value
-                              {medium}:x:/*/medium?value
-                              {title}:x:/*/word?value
-                              {description}:x:/*/description?value
-                              {id}:x:?value
-                        return
-
 
                 /*
                  * Search globally button
@@ -219,7 +152,7 @@ create-widget:icu-create-board-image-key-ass
                     get-widget-property:icu-create-board-search-box
                       value
                     eval-x:x:/+/*/_query
-                    sys42.execute-lisp-file:/system42/apps/icu/board/search-for-image.hl
+                    sys42.execute-lisp-file:/system42/apps/icu/board/image-help/search-for-image.hl
                       _widget:icu-flickr-result
                       _query:x:/../*/get-widget-property/*/*?value
                       _start:0
@@ -296,6 +229,75 @@ create-widget:icu-create-board-image-key-ass
                               {description}:x:/*/description?value
                         return
 
+
+                /*
+                 * Search locally button
+                 */
+                button:icu-create-board-search-locally
+                  innerValue:@"<span class=""glyphicon glyphicon-search""></span>"
+                  class:btn-default btn btn-lg
+                  title:Searches for images in local database, your images, and shared/public images
+                  onclick
+
+                    /*
+                     * Making sure search text box gets focus back again
+                     */
+                    send-javascript:@"$('#icu-create-board-search-box').focus().select();"
+
+                    /*
+                     * Retrieves value from search textbox, and searches for images using "search-for-image.hl" file.
+                     * Supplying "search callback" to do actual search in local database
+                     */
+                    get-widget-property:icu-create-board-search-box
+                      value
+                    eval-x:x:/+/*/_query
+                    sys42.execute-lisp-file:/system42/apps/icu/board/image-help/search-for-image.hl
+                      _widget:icu-flickr-result
+                      _query:x:/../*/get-widget-property/*/*?value
+                      _start:0
+                      _end:10
+                      _on-image-selected
+
+                        /*
+                         * Simply uses the existing (local) image reference as key, applying arguments first
+                         */
+                        set:x:/+/*/_image?value
+                          src:x:/../*/_id?value
+                        sys42.execute-lisp-file:/system42/apps/icu/board/create-key-action-association.hl
+                          _board:{_board}
+                          _x:{_x}
+                          _y:{_y}
+                          _image
+                      _onsearch
+
+                        /*
+                         * Search callback for actually retrieving images. Searches local database
+                         */
+                        whoami
+                        replace:x:/../*/_query?value
+                          what:" "
+                          with:".*"
+                        select-data:x:@"/*/*/icu.image/*((/user/""={0}""/.|/visibility/=public/.)&(/word/""=:regex:/{1}/i""/.|/description/""=:regex:/{1}/i""/.))/[{2},{3}]"
+                          :x:/../*/whoami/*/username?value
+                          :x:/../*/replace?value
+                          :x:/../*/_start?value
+                          :x:/../*/_end?value
+
+                        /*
+                         * Databinding return value
+                         */
+                        databind:x:/../*/return
+                          src:x:/../*/select-data/*
+                          template
+                            image
+                              {thumb}:x:/*/thumb?value
+                              {medium}:x:/*/medium?value
+                              {title}:x:/*/word?value
+                              {description}:x:/*/description?value
+                              {id}:x:?value
+                        return
+
+
                 /*
                  * Close search button
                  */
@@ -317,7 +319,7 @@ create-widget:icu-create-board-image-key-ass
 include-javascript:@"
 p5.searchIcuTextBox = function(e) {
   if(e.keyCode == 13) {
-    p5.$('icu-create-board-search-locally').raise('onclick');
+    p5.$('icu-create-board-search-globally').raise('onclick');
     return false;
   }
 }
