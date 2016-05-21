@@ -90,8 +90,15 @@ namespace p5.exp
             }
 
             // Looping until "end of token", which is defined as either "/|&^!()?" or "end of stream"
-            for (nextChar = _reader.Peek (); nextChar != -1 && "/|&^!()?".IndexOf ((char) nextChar) == -1; nextChar = _reader.Peek ()) {
+            bool lastEscaped = nextChar == '\\';
+            for (nextChar = _reader.Peek (); 
+                nextChar != -1 && ("/|&^!()?".IndexOf ((char) nextChar) == -1 || lastEscaped); 
+                nextChar = _reader.Peek ()) {
                 builder.Append ((char) _reader.Read ());
+                if (lastEscaped)
+                    lastEscaped = false;
+                else if (nextChar == '\\')
+                    lastEscaped = true;
             }
 
             // Returning token back to caller, making sure we trim any white space characters away,

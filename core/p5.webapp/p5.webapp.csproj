@@ -439,6 +439,7 @@
     <None Include="system42\apps\icu\board\actions\type-word-open-board.hl" />
     <None Include="system42\apps\icu\board\actions\open-board-common\open-board-common.hl" />
     <None Include="system42\apps\icu\board\create-key-action-association.hl" />
+    <None Include="system42\apps\icu\board\search-for-image.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

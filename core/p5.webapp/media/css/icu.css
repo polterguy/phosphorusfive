@@ -443,3 +443,20 @@
     animation-direction: alternate;
 }
 
+.icu-image-search-previous {
+    position:absolute;
+    top:8px;
+    left:15px;
+    font-size:25px;
+    color:rgba(0,0,0,.2);
+}
+
+.icu-image-search-next {
+    position:absolute;
+    top:8px;
+    right:15px;
+    font-size:25px;
+    color:rgba(0,0,0,.2);
+}
+
+

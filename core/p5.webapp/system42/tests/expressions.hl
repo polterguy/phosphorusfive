@@ -65,3 +65,17 @@ count
     !=:int:2
     throw:@"Assert error, expected [2], got [{0}]!"
       :x:/../0/*?count
+
+/*
+ * Tests [eval-x] expression that is formatted
+ */
+eval-x-formatted
+  _data
+    bar
+  eval-x:x:/+
+  _result:foo-{0}
+    :x:/../*/_data/0?name
+  if:x:/../*/_result?value
+    !=:foo-bar
+    throw:@"Assert error, expected [foo-bar], got [{0}]!"
+      :x:/../*/_result?value

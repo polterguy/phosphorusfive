@@ -6,15 +6,6 @@
 
 
 /*
- * Making sure any previously created "create board image" widgets are destroyed
- */
-if
-  fetch:x:/0/0?value
-    widget-exist:icu-create-board-image-key-ass
-  delete-widget:icu-create-board-image-key-ass
-
-
-/*
  * Making sure we pass in [_language-builder], [_board], [_x] and [_y], to whomever needs it
  */
 set:x:/../**/={_board}?value
@@ -31,6 +22,15 @@ set:x:/../**/={_language-builder}?value
 
 
 /*
+ * Making sure any previously created "create board image" widgets are destroyed
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:icu-create-board-image-key-ass
+  delete-widget:icu-create-board-image-key-ass
+
+
+/*
  * Creating widget which allows for associating new image with "key"
  */
 eval-x:x:/+/*/parent
@@ -40,8 +40,9 @@ create-widget:icu-create-board-image-key-ass
   events
 
     /*
-     * Creates an image insertion from given [_thumb], [_large], [_title] and [_description].
-     * Passes on [_x], [_y] and [_board], in addition to ID of [icu.image]'s id to [sys42.icu.set-board-picture-for-square]
+     * Creates an image insertion from given [_thumb], [_medium], [_title] and [_description].
+     * Passes on [_x], [_y] and [_board], in addition to ID of [icu.image]'s id to "key action" association logic.
+     * Used to create image insertions from flickr.com images, to use as "key image" associations
      */
     sys42.icu.create-image
 
@@ -70,8 +71,8 @@ create-widget:icu-create-board-image-key-ass
 
           /*
            * Parametrizing [insert-data] invocation, before inserting a new [icu.image] into database,
-           * making sure we HTML encode [word] and [description] to not mess up HTML in case there are angle brackets, etc in
-           * text
+           * making sure we HTML encode [word] and [description] to not mess up HTML in case there are 
+           * angle brackets, etc in text. Making sure image is inserted with currently logged in username as [user]
            */
           whoami
           eval-x:x:/../*/insert-data/*/*
@@ -92,7 +93,8 @@ create-widget:icu-create-board-image-key-ass
               visibility:x:/../*/_visibility?value
 
           /*
-           * Creating "action association" with key/image
+           * Creating "action association" with key/image, making sure we pass in [_image] being ID 
+           * from database to image record
            */
           set:x:/+/*/_image?value
             src:x:/../*/insert-data/0?value
@@ -101,6 +103,10 @@ create-widget:icu-create-board-image-key-ass
             _x:{_x}
             _y:{_y}
             _image
+
+          /*
+           * Making sure we close wizard dialog
+           */
           return:bool:true
 
   widgets
@@ -123,172 +129,185 @@ create-widget:icu-create-board-image-key-ass
             span
               class:input-group-btn
               widgets
-                button:icu-create-board-search
-                  class:btn-default btn btn-lg
-                  type:button
-                  innerValue:@"<span class=""glyphicon glyphicon-globe""></span>"
-                  onclick
-                    clear-widget:icu-flickr-result
-                    set-widget-property:icu-flickr-result
-                      visible:true
-                    get-widget-property:icu-create-board-search-box
-                      value
-                    send-javascript:@"$('#icu-create-board-search-box').focus().select();"
-                    p5.flickrnet.search
-                      text:x:/../*/get-widget-property/*/*?value
-                      per-page:10
-                    for-each:x:/../*/p5.flickrnet.search/*/result
-                      html-encode:x:/..for-each/*/_dp/#/*/description?value
-                      eval-x:x:/+/**(/img/*(/src|/title)|/h3/*/innerValue|/_medium|/_thumb|/_title|/_description)
-                      create-widget
-                        parent:icu-flickr-result
-                        class:icu-flickr-result-item
-                        widgets
-                          a
-                            href:#
-                            onclick
-                              if
-                                fetch:x:/0/0?value
-                                  widget-exist:icu-lightbox-picture
-                                delete-widget:icu-lightbox-picture
-                              create-widget:icu-lightbox-picture
-                                class:icu-lightbox-picture
-                                onkeyup:"p5.lightboxKeyUp(event);"
-                                widgets
-                                  div:icu-lightbox-picture-modal-window
-                                    class:icu-lightbox-picture-modal-window
-                                    widgets
-                                      h3
-                                        innerValue:x:/..for-each/*/_dp/#/*/title?value
-                                      img
-                                        src:x:/..for-each/*/_dp/#/*/medium?value
-                                        alt:Choose image, or click close
-                                        title:x:/..for-each/*/html-encode?value
-                                      div
-                                        style:"text-align:right;"
-                                        class:prepend-top
-                                        widgets
-                                          button:icu-lightbox-picture-close
-                                            class:btn btn-default
-                                            style:"width:80px;"
-                                            innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
-                                            onclick
-                                              send-javascript:@"
-$('#icu-lightbox-picture-modal-window').toggleClass('icu-lightbox-picture-modal-window').toggleClass('action-modal-window-fadeout').one('animationend',
-  function(e) {
-    $('#' + e.target.id).hide();
-    $('#icu-lightbox-picture').fadeOut({duration:200});
-  });"
-                                          button
-                                            class:btn btn-primary
-                                            style:"width:80px; margin-left:10px;"
-                                            innerValue:@"<span class=""glyphicon glyphicon-ok""></span>"
-                                            oninit
-                                              send-javascript:@"$('#{0}').focus();"
-                                                :x:/../*/_event?value
-                                            onclick
-                                              _board:{_board}
-                                              _x:{_x}
-                                              _y:{_y}
-                                              delete-widget:icu-lightbox-picture
-                                              _medium:x:/..for-each/*/_dp/#/*/medium?value
-                                              _thumb:x:/..for-each/*/_dp/#/*/thumb?value
-                                              _description:x:/..for-each/*/_dp/#/*/description?value
-                                              get-widget-property:icu-create-board-search-box
-                                                value
-                                              add:x:/+2
-                                                src:x:/../*(/_board|/_x|/_y|/_thumb|/_medium|/_description)
-                                              eval-x:x:/+/*/_title
-                                              sys42.icu.create-image
-                                                _title:x:/../*/get-widget-property/*/*?value
-                                                _visibility:public
-                            widgets
-                              img
-                                src:x:/..for-each/*/_dp/#/*/thumb?value
-                button:icu-create-board-search-local
+
+                /*
+                 * Search locally button
+                 */
+                button:icu-create-board-search-locally
                   innerValue:@"<span class=""glyphicon glyphicon-search""></span>"
                   class:btn-default btn btn-lg
+                  title:Searches for images in local database, your images, and shared/public images
                   onclick
-                    clear-widget:icu-flickr-result
-                    set-widget-property:icu-flickr-result
-                      visible:true
+
+                    /*
+                     * Making sure search text box gets focus back again
+                     */
+                    send-javascript:@"$('#icu-create-board-search-box').focus().select();"
+
+                    /*
+                     * Retrieves value from search textbox, and searches for images using "search-for-image.hl" file.
+                     * Supplying "search callback" to do actual search in local database
+                     */
                     get-widget-property:icu-create-board-search-box
                       value
+                    eval-x:x:/+/*/_query
+                    sys42.execute-lisp-file:/system42/apps/icu/board/search-for-image.hl
+                      _widget:icu-flickr-result
+                      _query:x:/../*/get-widget-property/*/*?value
+                      _start:0
+                      _end:10
+                      _on-image-selected
+
+                        /*
+                         * Simply uses the existing (local) image reference as key, applying arguments first
+                         */
+                        set:x:/+/*/_image?value
+                          src:x:/../*/_id?value
+                        sys42.execute-lisp-file:/system42/apps/icu/board/create-key-action-association.hl
+                          _board:{_board}
+                          _x:{_x}
+                          _y:{_y}
+                          _image
+                      _onsearch
+
+                        /*
+                         * Search callback for actually retrieving images. Searches local database
+                         */
+                        whoami
+                        replace:x:/../*/_query?value
+                          what:" "
+                          with:".*"
+                        select-data:x:@"/*/*/icu.image/*((/user/""={0}""/.|/visibility/=public/.)&(/word/""=:regex:/{1}/i""/.|/description/""=:regex:/{1}/i""/.))/[{2},{3}]"
+                          :x:/../*/whoami/*/username?value
+                          :x:/../*/replace?value
+                          :x:/../*/_start?value
+                          :x:/../*/_end?value
+
+                        /*
+                         * Databinding return value
+                         */
+                        databind:x:/../*/return
+                          src:x:/../*/select-data/*
+                          template
+                            image
+                              {thumb}:x:/*/thumb?value
+                              {medium}:x:/*/medium?value
+                              {title}:x:/*/word?value
+                              {description}:x:/*/description?value
+                              {id}:x:?value
+                        return
+
+
+                /*
+                 * Search globally button
+                 */
+                button:icu-create-board-search-globally
+                  innerValue:@"<span class=""glyphicon glyphicon-globe""></span>"
+                  class:btn-default btn btn-lg
+                  title:Searches for images on flickr
+                  onclick
+
+                    /*
+                     * Making sure search text box gets focus back again
+                     */
                     send-javascript:@"$('#icu-create-board-search-box').focus().select();"
-                    whoami
-                    select-data:x:@"/*/*/icu.image/*((/user/""={0}""/.|/visibility/=public/.)&(/word/""={1}""/.|/description/""={1}""/.))/[0,10]"
-                      :x:/../*/whoami/*/username?value
-                      :x:/../*/get-widget-property/*/*?value
-                    for-each:x:/../*/select-data/*
-                      eval-x:x:/+/**(/img/*(/src|/title)|/h3/*/innerValue|/_image)
-                      create-widget
-                        parent:icu-flickr-result
-                        class:icu-flickr-result-item
-                        widgets
-                          a
-                            href:#
-                            onclick
-                              if
-                                fetch:x:/0/0?value
-                                  widget-exist:icu-lightbox-picture
-                                delete-widget:icu-lightbox-picture
-                              create-widget:icu-lightbox-picture
-                                class:icu-lightbox-picture
-                                onkeyup:"p5.lightboxKeyUp(event);"
-                                widgets
-                                  div:icu-lightbox-picture-modal-window
-                                    class:icu-lightbox-picture-modal-window
-                                    widgets
-                                      h3
-                                        innerValue:x:/..for-each/*/_dp/#/*/word?value
-                                      img
-                                        src:x:/..for-each/*/_dp/#/*/medium?value
-                                        alt:Choose image, or click close
-                                        title:x:/..for-each/*/_dp/*/#/*/description?value
-                                      div
-                                        style:"text-align:right;"
-                                        class:prepend-top
-                                        widgets
-                                          button:icu-lightbox-picture-close
-                                            class:btn btn-default
-                                            style:"width:80px;"
-                                            innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
-                                            onclick
-                                              send-javascript:@"
-$('#icu-lightbox-picture-modal-window').toggleClass('icu-lightbox-picture-modal-window').toggleClass('action-modal-window-fadeout').one('animationend',
-  function(e) {
-    $('#' + e.target.id).hide();
-    $('#icu-lightbox-picture').fadeOut({duration:200});
-  });"
-                                          button
-                                            class:btn btn-primary
-                                            style:"width:80px; margin-left:10px;"
-                                            innerValue:@"<span class=""glyphicon glyphicon-ok""></span>"
-                                            oninit
-                                              send-javascript:@"$('#{0}').focus();"
-                                                :x:/../*/_event?value
-                                            onclick
-                                              _board:{_board}
-                                              _x:{_x}
-                                              _y:{_y}
-                                              _image:x:/..for-each/*/_dp/#?value
-                                              delete-widget:icu-lightbox-picture
-                                              set:x:/+/*/_image?value
-                                                src:x:/../*/_image?value
-                                              sys42.execute-lisp-file:/system42/apps/icu/board/create-key-action-association.hl
-                                                _board:{_board}
-                                                _x:{_x}
-                                                _y:{_y}
-                                                _image
-                            widgets
-                              img
-                                src:x:/..for-each/*/_dp/#/*/thumb?value
+
+                    /*
+                     * Retrieves value from search textbox, and searches for images using "search-for-image.hl" file.
+                     * Supplying "search callback" to do actual search in flickr
+                     */
+                    get-widget-property:icu-create-board-search-box
+                      value
+                    eval-x:x:/+/*/_query
+                    sys42.execute-lisp-file:/system42/apps/icu/board/search-for-image.hl
+                      _widget:icu-flickr-result
+                      _query:x:/../*/get-widget-property/*/*?value
+                      _start:0
+                      _end:10
+                      _on-image-selected
+
+                        /*
+                         * Downloading image, both thumb and medium, to local common folder, 
+                         * for then to ask user of title and description to use for insertion into local database.
+                         * Starting with "thumb"
+                         */
+                        p5.net.http-get:x:/../*/_thumb?value
+                        split:x:/../*/_thumb?value
+                          =:/
+                        save-file:/common/public/{0}
+                          :x:/../*/split/[0,1]/0/-?name
+                          src:x:/../*/p5.net.http-get/[0,1]/*/result/*/content?value
+
+                        /*
+                         * Then downloading "medium"
+                         */
+                        p5.net.http-get:x:/../*/_medium?value
+                        split:x:/../*/_medium?value
+                          =:/
+                        save-file:/common/public/{0}
+                          :x:/../*/split/[1,2]/0/-?name
+                          src:x:/../*/p5.net.http-get/[1,2]/*/result/*/content?value
+
+                        /*
+                         * Asking user for description and title of image
+                         */
+                        set:x:/../*/sys42.icu.create-image/*(/_title|/_description)?value
+                          rel-src:x:/../*/{0}?value
+                            :x:?name
+                        set:x:/../*/sys42.icu.create-image/*/_thumb?value
+                          src:/common/public/{0}
+                            :x:/../*/split/[0,1]/0/-?name
+                        set:x:/../*/sys42.icu.create-image/*/_medium?value
+                          src:/common/public/{0}
+                            :x:/../*/split/[1,2]/0/-?name
+                        sys42.icu.create-image
+                          _x:{_x}
+                          _y:{_y}
+                          _board:{_board}
+                          _thumb
+                          _medium
+                          _title
+                          _description
+                          _visibility:public
+                      _onsearch
+
+                        /*
+                         * Search callback for actually retrieving images. Searches flickr
+                         */
+                        -:x:/../*/_end?value.int
+                          _:x:/../*/_start?value.int
+                        /:x:/../*/_start?value.int
+                          _:x:/./-?value.int
+                        +:x:/-?value.int
+                          _:int:1
+                        p5.flickrnet.search
+                          text:x:/../*/_query?value
+                          per-page:x:/../*/\-?value
+                          page:x:/../*/\+?value
+
+                        /*
+                         * Databinding return value
+                         */
+                        databind:x:/../*/return
+                          src:x:/../*/p5.flickrnet.search/*
+                          template
+                            image
+                              {thumb}:x:/*/thumb?value
+                              {medium}:x:/*/medium?value
+                              {title}:x:/*/title?value
+                              {description}:x:/*/description?value
+                        return
+
+                /*
+                 * Close search button
+                 */
                 button:icu-close-create-board
                   innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
                   class:btn-default btn btn-lg
                   onclick
                     delete-widget:icu-create-board-image-key-ass
                     sys42.icu.icu-create-board-image-key-ass.closed
+
     container:icu-flickr-result
       class:bg-warning rounded-corners prepend-top air-padding-more flash-from-left
       visible:false
@@ -300,7 +319,7 @@ $('#icu-lightbox-picture-modal-window').toggleClass('icu-lightbox-picture-modal-
 include-javascript:@"
 p5.searchIcuTextBox = function(e) {
   if(e.keyCode == 13) {
-    p5.$('icu-create-board-search').raise('onclick');
+    p5.$('icu-create-board-search-locally').raise('onclick');
     return false;
   }
 }
@@ -341,11 +360,10 @@ set-widget-ajax-event:{_language-builder}
       case:png
       case:jpg
       case:jpeg
-      case:gif
         /*
          * This is ok
          */
-        _foo
+        _foo:Do nothing ...
       default:
         sys42.info-window:Only image files are allowed to upload here
           _error:true

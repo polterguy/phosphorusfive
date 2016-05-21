@@ -33,7 +33,7 @@ namespace p5.flickrnet
                     Text = e.Args.GetExChildValue<string> ("text", context), 
                     Username = e.Args.GetExChildValue<string> ("username", context), 
                     PerPage = e.Args.GetExChildValue ("per-page", context, 50), 
-                    Page = e.Args.GetExChildValue<int> ("page", context, 1), 
+                    Page = e.Args.GetExChildValue<int> ("page", context, 0), 
                     Extras = PhotoSearchExtras.Tags | PhotoSearchExtras.Description,
                     SafeSearch = (SafetyLevel)Enum.Parse (typeof (SafetyLevel), e.Args.GetExChildValue<string> ("safety-level", context, "None")),
                     SortOrder = (PhotoSearchSortOrder)Enum.Parse (typeof (PhotoSearchSortOrder), e.Args.GetExChildValue<string> ("sort-order", context, "Relevance")),
