@@ -39,6 +39,45 @@ sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
 
 
 /*
+ * Creating our "show/hide keyboard" Active Event, and associating it with the supplied [_keyboard-widget] widget
+ */
+set-widget-lambda-event:{_keyboard-widget}
+
+  /*
+   * Toggles the visibility of the keyboard for ICU
+   */
+  sys42.icu.toggle-keyboard
+    get-widget-property:{_keyboard-widget}
+      visible
+    if:x:/-/*/*?value.bool
+      =:bool:true
+
+      /*
+       * Hides the ICU keyboard, closing and clearing the [_language-builder] if open
+       */
+      set-widget-property:{_keyboard-widget}
+        visible:false
+      clear-widget:{_language-builder}
+      find-widget-like:{_keyboard-widget}
+        class:icu-active
+      if:x:/-/*?value
+        set-widget-property:x:/./-/*?value
+          class:icu-empty-cell
+    else
+
+      /*
+       * Shows the ICU keyboard
+       */
+      set-widget-property:{_keyboard-widget}
+        visible:true
+      send-javascript:@"
+$('a.icu-key').toggleClass('icu-drop-from-sky').one('animationend',
+  function(e) {
+    $('#' + e.target.id).removeClass('icu-drop-from-sky');
+  });"
+
+
+/*
  * Defaulting [_board] we're using to the main "root"/"home" board, unless explicitly overridden by caller
  */
 if:x:/../*/_board
