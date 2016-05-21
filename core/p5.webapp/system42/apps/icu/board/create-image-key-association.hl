@@ -278,12 +278,10 @@ create-widget:icu-create-board-image-key-ass
                           _:x:/../*/_start?value.int
                         /:x:/../*/_start?value.int
                           _:x:/./-?value.int
-                        +:x:/-?value.int
-                          _:int:1
                         p5.flickrnet.search
                           text:x:/../*/_query?value
                           per-page:x:/../*/\-?value
-                          page:x:/../*/\+?value
+                          page:x:/../*/\/?value
 
                         /*
                          * Databinding return value

@@ -344,3 +344,29 @@ distinct-value
     !=:success
     throw:@"Assert error, expected [success], got [{0}]!"
       :x:/././-2?value
+
+/*
+ * Test an escaped iterator
+ */
+escaped-iterator
+  _data
+    /:success
+  set:x:/-?value
+    src:x:/./-/*/\/?value
+  if:x:/-2?value
+    !=:success
+    throw:@"Assert error, expected [success], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test an iterator created as a single line string
+ */
+string-literal-iterator
+  _data
+    /xx/:success
+  set:x:/-?value
+    src:x:@"/./-/*/""/xx/""?value"
+  if:x:/-2?value
+    !=:success
+    throw:@"Assert error, expected [success], got [{0}]!"
+      :x:/././-2?value
