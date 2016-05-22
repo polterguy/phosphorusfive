@@ -11,7 +11,10 @@
  * to the ID of a specific board.
  * 
  * Also supply a [_language-builder] if you wish to allow for user to "build language" by associating
- * images to "keys", by allowing for uploading pictures, and/or search Flickr for images
+ * images to "keys", by allowing for uploading pictures, and/or search Flickr for images.
+ *
+ * [_wrapper] should also be supplied, which is wrapper for entire ICU app, or normally the parent element of
+ * [_output-widget], [_language-builder], etc
  */
 
 
@@ -30,6 +33,23 @@ set:x:/../**/={_language-builder}?value
   src:x:/../*/_language-builder?value
 set:x:/../**/={_output-widget}?value
   src:x:/../*/_output-widget?value
+set:x:/../**/={_wrapper}?value
+  src:x:/../*/_wrapper?value
+
+
+/*
+ * Making sure we hide or show text in output widget depending upon our settings
+ */
+whoami
+if
+  fetch:x:/0/0?value.bool
+    select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+      :x:/../*/whoami/*/username?value
+  set-widget-property:{_output-widget}
+    class:rounded-corners paper-sheet prepend-bottom
+else
+  set-widget-property:{_output-widget}
+    class:rounded-corners paper-sheet-no-text prepend-bottom
 
 
 /*
@@ -75,6 +95,66 @@ $('a.icu-key').toggleClass('icu-drop-from-sky').one('animationend',
   function(e) {
     $('#' + e.target.id).removeClass('icu-drop-from-sky');
   });"
+
+  /*
+   * Toggles the visibility of the settings widget for ICU
+   */
+  sys42.icu.toggle-settings
+    if
+      fetch:x:/0/0?value
+        widget-exist:icu-settings-widget
+      delete-widget:icu-settings-widget
+    else
+      create-widget:icu-settings-widget
+        parent:{_wrapper}
+        class:icu-settings-widget
+        widgets
+          button:icu-settings-show-text
+            class:btn btn-default active
+            innerValue:@"<span class=""glyphicon glyphicon-subtitles""></span> Text"
+            title:Toggles text in document and boards
+            oninit
+
+              /*
+               * Making sure we associate the correct CSS class with button, depending upon whether
+               * or not text should be shown in boards and document
+               */
+              whoami
+              if
+                fetch:x:/0/0?value.bool
+                  select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+                    :x:/../*/whoami/*/username?value
+                set-widget-property:x:/../*/_event?value
+                  class:btn btn-success active
+              else
+                set-widget-property:x:/../*/_event?value
+                  class:btn btn-default
+            onclick
+
+              /*
+               * Toggling the showing of text in document and boards
+               */
+              whoami
+              if
+                fetch:x:/0/0?value.bool
+                  select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+                    :x:/../*/whoami/*/username?value
+                update-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+                  :x:/../*/whoami/*/username?value
+                  src:bool:false
+                set-widget-property:x:/../*/_event?value
+                  class:btn btn-default
+                set-widget-property:{_output-widget}
+                  class:rounded-corners paper-sheet-no-text prepend-bottom
+              else
+                update-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+                  :x:/../*/whoami/*/username?value
+                  src:bool:true
+                set-widget-property:x:/../*/_event?value
+                  class:btn btn-success active
+                set-widget-property:{_output-widget}
+                  class:rounded-corners paper-sheet prepend-bottom
+              sys42.icu.toggle-settings
 
 
 /*
@@ -161,11 +241,11 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
     create-widget
       parent:x:/../*/sys42.icu.get-output-widget?value
       class:icu-word
-      title:x:/../*/select-data/0/*/description?value
+      title:x:/../*/select-data/0/*/word?value
       widgets
         literal
           element:img
-          alt:x:/../*/select-data/0/*/description?value
+          alt:x:/../*/select-data/0/*/word?value
           src:x:/../*/select-data/0/*/thumb?value
         literal
           innerValue:x:/../*/select-data/0/*/word?value

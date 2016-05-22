@@ -120,7 +120,7 @@ create-widget:icu-create-board-image-key-ass
               element:input
               type:search
               class:form-control input-lg
-              placeholder:Search ...
+              placeholder:Search for image ...
               onkeypress:"return p5.searchIcuTextBox(event);"
               onkeyup:"return p5.searchIcuTextBoxEsc(event);"
               oninit

@@ -28,3 +28,12 @@ if:x:/../*/select-data?value
         height:int:3
       items
 
+  /*
+   * Creating default settings
+   */
+  eval-x:x:/+/*/*/username
+  insert-data
+    icu.settings
+      username:x:/../*/whoami/*/username?value
+      show-text:bool:true
+

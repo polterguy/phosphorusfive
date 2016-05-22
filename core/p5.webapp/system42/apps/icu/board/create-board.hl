@@ -73,7 +73,7 @@ while:x:/-?value
               href:#
               class:icu-empty-cell icu-key
               style:""
-              title:Empty, click to associate image with key
+              title
               innerValue:&nbsp;
               _x
               _y
@@ -142,12 +142,12 @@ while:x:/-?value
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/class?value
           src:icu-key icu-cell
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/style?value
-          src:@"background:Transparent url({0}) no-repeat 0px 20px;"
+          src:@"background-image:url({0})"
             :x:/..if/..if/*/select-data/*/*/thumb?value
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/innerValue?value
           src:x:/..if/..if/*/select-data/*/*/word?value
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/title?value
-          src:x:/..if/..if/*/select-data/*/*/description?value
+          src:x:/..if/..if/*/select-data/*/*/word?value
 
         /*
          * Making sure [onclick] becomes lambda from [action] of item, first removing
