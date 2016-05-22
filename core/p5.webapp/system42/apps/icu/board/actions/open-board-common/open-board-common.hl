@@ -70,11 +70,15 @@ function(e) {
         void
           element:hr
         container
-          class:col-lg-8 col-xs-12
+          class:input-group prepend-top
           widgets
+            literal
+              class:input-group-addon
+              innerValue:Select
             container:icu-select-board
               element:select
-              class:form-control prepend-top
+              class:form-control input-lg
+              onkeypress:"return p5.boardWindowKeyPressSelect(event);"
               oninit
                 sys42.icu.populate-board-list
 
@@ -125,7 +129,7 @@ function(e) {
                     parent:icu-select-board
                     element:option
                     value:_default
-                    innerValue:Select existing board ...
+                    innerValue:Existing board ...
 
                   /*
                    * Looping through each board from database, adding option item for each
@@ -144,255 +148,244 @@ function(e) {
                       element:option
                       value:x:/..for-each/*/_dp/#/*/name?value
                       innerValue:x:/..for-each/*/_dp/#/*/name?value
-        container
-          class:col-lg-2 col-md-12 prepend-top
-          widgets
-            button:icu-select-board-for-picture
-              innerValue:Select
-              class:btn btn-primary
-              style:"width:100%;"
-              title:Opens up currently selected board with action
-              disabled
-              oninit
-                get-session-value:sys42.icu.last-board
-                if:x:/-/*?value
-                  delete-widget-property:x:/../*/_event?value
-                    disabled
-              onclick
-                get-widget-property:icu-select-board
-                  value
-                set-session-value:sys42.icu.last-board
-                  src:x:/../*/get-widget-property/*/*?value
-                send-javascript:@"
+            span
+              class:input-group-btn
+              widgets
+                button:icu-select-board-for-picture
+                  innerValue:@"<span class=""glyphicon glyphicon-ok""></span>"
+                  class:btn btn-default btn-lg
+                  title:Use currently selected board
+                  disabled
+                  oninit
+                    get-session-value:sys42.icu.last-board
+                    if:x:/-/*?value
+                      delete-widget-property:x:/../*/_event?value
+                        disabled
+
+                      /*
+                       * Settings focus to "select board select list"
+                       */
+                      send-javascript:@"$('#icu-select-board').focus().select();"
+                    else
+
+                      /*
+                       * Settings focus to "create new board textbox"
+                       */
+                      send-javascript:@"$('#icu-new-board-name').focus().select();"
+                  onclick
+                    get-widget-property:icu-select-board
+                      value
+                    set-session-value:sys42.icu.last-board
+                      src:x:/../*/get-widget-property/*/*?value
+                    send-javascript:@"
 $('#icu-board-list-modal').toggleClass('action-modal-window-fadeout').one('animationend',
   function(e) {
     $('#' + e.target.id).hide();
     $('#icu-board-list').fadeOut({duration:200});
   });"
-                /*
-                 * Forward evaluating board user selected in "selected callback", before
-                 * evaluating callback, and adding result of callback into [_action]
-                 */
-                eval-x:x:/+/*/_selected-board
-                _on-board-selected
-                  _x:{_x}
-                  _y:{_y}
-                  _image:{_image}
-                  _board:{_board}
-                  _selected-board:x:/../*/get-widget-property/*/*?value
-                eval:x:/-
-                add:x:/+/*/_action
-                  src:x:/./-/*
-                sys42.icu.set-board-picture-for-square
-                  _x:{_x}
-                  _y:{_y}
-                  _image:{_image}
-                  _board:{_board}
-                  _action
-        container
-          class:col-lg-2 col-md-12 prepend-top
-          widgets
-            literal:icu-delete-board
-              disabled
-              element:button
-              class:btn btn-default
-              innerValue:Delete
-              style:"width:100%;"
-              title:Deletes currently selected board
-              oninit
-                get-session-value:sys42.icu.last-board
-                if:x:/-/*?value
-                  delete-widget-property:x:/../*/_event?value
-                    disabled
-              onclick
-                sys42.confirm-window
-                  _header:Are you sure?
-                  _body:@"This will delete the board in its entirety. This action cannot be undone.
+                    /*
+                     * Forward evaluating board user selected in "selected callback", before
+                     * evaluating callback, and adding result of callback into [_action]
+                     */
+                    eval-x:x:/+/*/_selected-board
+                    _on-board-selected
+                      _x:{_x}
+                      _y:{_y}
+                      _image:{_image}
+                      _board:{_board}
+                      _selected-board:x:/../*/get-widget-property/*/*?value
+                    eval:x:/-
+                    add:x:/+/*/_action
+                      src:x:/./-/*
+                    sys42.icu.set-board-picture-for-square
+                      _x:{_x}
+                      _y:{_y}
+                      _image:{_image}
+                      _board:{_board}
+                      _action
+                button:icu-delete-board
+                  disabled
+                  class:btn btn-default btn-lg
+                  innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+                  title:Deletes currently selected board
+                  oninit
+                    get-session-value:sys42.icu.last-board
+                    if:x:/-/*?value
+                      delete-widget-property:x:/../*/_event?value
+                        disabled
+                  onclick
+                    sys42.confirm-window
+                      _header:Are you sure?
+                      _body:@"This will delete the board in its entirety. This action cannot be undone.
 Please notice, if you have existing keys that are referencing this board, then an error will occur when clicking that key.
 Are you sure you wish to proceed?"
-                  _onok
-                    get-widget-property:icu-select-board
-                      value
-                    delete-data:x:@"/*/*/icu.board/*/name/={0}/."
-                      :x:/./-/*/*?value
-                    sys42.icu.populate-board-list
-                    set-widget-property:icu-delete-board
-                      disabled
-                    set-widget-property:icu-select-board-for-picture
-                      disabled
-                    set-widget-property:icu-create-board-from-template
-                      disabled
+                      _onok
+                        get-widget-property:icu-select-board
+                          value
+                        delete-data:x:@"/*/*/icu.board/*/name/={0}/."
+                          :x:/./-/*/*?value
+                        sys42.icu.populate-board-list
+                        set-widget-property:icu-delete-board
+                          disabled
+                        set-widget-property:icu-select-board-for-picture
+                          disabled
+                        set-widget-property:icu-create-board-from-template
+                          disabled
         container
-          class:col-lg-8 col-md-12 prepend-top
+          class:input-group prepend-top
           widgets
-            container
-              class:input-group
+            literal
+              class:input-group-addon
+              innerValue:Name
+            void:icu-new-board-name
+              element:input
+              type:text
+              class:form-control input-lg
+              placeholder:New board name ...
+              autocomplete:off
+              onkeypress:"return p5.boardWindowKeyPress(event);"
+            span
+              class:input-group-btn
               widgets
-                literal
-                  class:input-group-addon
-                  innerValue:Name
-                void:icu-new-board-name
-                  element:input
-                  type:text
-                  class:form-control
-                  placeholder:New board name ...
-                  autocomplete:off
-                  onkeypress:"return p5.boardWindowKeyPress(event);"
-        container
-          class:col-lg-2 col-md-12 prepend-top
-          widgets
-            literal:icu-create-board
-              element:button
-              class:btn btn-default
-              innerValue:Create
-              style:"width:100%;"
-              title:Creates a new empty board
-              onclick
+                button:icu-create-board
+                  class:btn btn-default btn-lg
+                  innerValue:@"<span class=""glyphicon glyphicon-plus""></span>"
+                  title:Creates a new empty board, with specified name, and selects this board
+                  onclick
 
-                /*
-                 * Creates a new (empty) board from name in textbox
-                 */
-                get-widget-property:icu-new-board-name
-                  value
-                match:x:/../*/get-widget-property/*/*?value
-                  what:regex:/^[a-z0-9-]*$/
-                if:x:/-/*/*?name
+                    /*
+                     * Creates a new (empty) board from name in textbox
+                     */
+                    get-widget-property:icu-new-board-name
+                      value
+                    match:x:/../*/get-widget-property/*/*?value
+                      what:regex:/^[a-z0-9-]{5,}$/
+                    if:x:/-/*/*?name
 
-                  /*
-                   * Name of board was valid according to regular expression, creating board for
-                   * given username and name, but first checking if no existing board with that name exists
-                   */
-                  whoami
-                  select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}
-                    :x:/..if/*/whoami/*/username?value
-                    :x:/../*/get-widget-property/*/*?value
-                  if:x:/-/*?count
-                    !=:int:0
-                    sys42.info-window:Board with that name exists from before
-                      _error:true
-                      _time:more
-                    send-javascript:@"$('#icu-new-board-name').select().focus();"
-                    return
-                  eval-x:x:/+/*/*(/username|/name)
-                  insert-data
-                    icu.board
-                      username:x:/..if/*/whoami/*/username?value
-                      name:x:/../*/get-widget-property/*/*?value
-                      size
-                        width:int:14
-                        height:int:3
-                      items
+                      /*
+                       * Name of board was valid according to regular expression, creating board for
+                       * given username and name, but first checking if no existing board with that name exists
+                       */
+                      whoami
+                      select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}
+                        :x:/..if/*/whoami/*/username?value
+                        :x:/../*/get-widget-property/*/*?value
+                      if:x:/-/*?count
+                        !=:int:0
+                        sys42.info-window:Board with that name exists from before
+                          _error:true
+                          _time:more
+                        send-javascript:@"$('#icu-new-board-name').select().focus();"
+                        return
+                      eval-x:x:/+/*/*(/username|/name)
+                      insert-data
+                        icu.board
+                          username:x:/..if/*/whoami/*/username?value
+                          name:x:/../*/get-widget-property/*/*?value
+                          size
+                            width:int:14
+                            height:int:3
+                          items
 
-                  /*
-                   * "Repopulating" select dropdown widget
-                   */
-                  sys42.icu.populate-board-list
-                  set-widget-property:icu-new-board-name
-                    value:
-                  set-widget-property:icu-select-board
-                    value:x:/../*/get-widget-property/*/*?value
-                  delete-widget-property:icu-delete-board
-                    disabled
-                  delete-widget-property:icu-select-board-for-picture
-                    disabled
-                  delete-widget-property:icu-create-board-from-template
-                    disabled
-                  raise-widget-ajax-event:icu-select-board-for-picture
-                    onclick
-                else
-                  sys42.info-window:@"Illegal board name, use only a-z, 0-9 and/or '-' characters"
-                    _error:true
-                    _time:more
-                  send-javascript:@"$('#icu-new-board-name').select().focus();"
-        container
-          class:col-lg-2 col-md-12 prepend-top
-          widgets
-            literal:icu-create-board-from-template
-              element:button
-              class:btn btn-default
-              innerValue:Copy
-              disabled
-              style:"width:100%;"
-              title:Creates a new empty board, by copying the currently selected board, giving it the name supplied in textbox
-              oninit
-                get-session-value:sys42.icu.last-board
-                if:x:/-/*?value
-                  delete-widget-property:x:/../*/_event?value
-                    disabled
-              onclick
+                      /*
+                       * "Repopulating" select dropdown widget
+                       */
+                      sys42.icu.populate-board-list
+                      set-widget-property:icu-new-board-name
+                        value:
+                      set-widget-property:icu-select-board
+                        value:x:/../*/get-widget-property/*/*?value
+                      delete-widget-property:icu-delete-board
+                        disabled
+                      delete-widget-property:icu-select-board-for-picture
+                        disabled
+                      delete-widget-property:icu-create-board-from-template
+                        disabled
+                      raise-widget-ajax-event:icu-select-board-for-picture
+                        onclick
+                    else
+                      sys42.info-window:@"Illegal board name, use only a-z, 0-9 and/or '-' characters. Use at least 5 characters"
+                        _error:true
+                        _time:more
+                      send-javascript:@"$('#icu-new-board-name').select().focus();"
+                button:icu-create-board-from-template
+                  class:btn btn-default btn-lg
+                  innerValue:@"<span class=""glyphicon glyphicon-copy""></span>"
+                  disabled
+                  title:Copies currently selected board, giving it the specified name, and selects this newly created board
+                  oninit
+                    get-session-value:sys42.icu.last-board
+                    if:x:/-/*?value
+                      delete-widget-property:x:/../*/_event?value
+                        disabled
+                  onclick
 
-                /*
-                 * Creates a new board, with name from textbox, by copying currently selected board
-                 */
-                get-widget-property:icu-new-board-name
-                  value
-                match:x:/../*/get-widget-property/*/*?value
-                  what:regex:/^[a-z0-9-]*$/
-                if:x:/-/*/*?name
+                    /*
+                     * Creates a new board, with name from textbox, by copying currently selected board
+                     */
+                    get-widget-property:icu-new-board-name
+                      value
+                    match:x:/../*/get-widget-property/*/*?value
+                      what:regex:/^[a-z0-9-]{5,}$/
+                    if:x:/-/*/*?name
 
-                  /*
-                   * Name of board was valid according to regular expression, creating board for
-                   * given username and name, but first checking if no existing board with that name exists
-                   */
-                  whoami
-                  select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}
-                    :x:/..if/*/whoami/*/username?value
-                    :x:/../*/get-widget-property/*/*?value
-                  if:x:/-/*?count
-                    !=:int:0
-                    sys42.info-window:Board with that name exists from before
-                      _error:true
-                      _time:more
-                    send-javascript:@"$('#icu-new-board-name').select().focus();"
-                    return
+                      /*
+                       * Name of board was valid according to regular expression, creating board for
+                       * given username and name, but first checking if no existing board with that name exists
+                       */
+                      whoami
+                      select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}
+                        :x:/..if/*/whoami/*/username?value
+                        :x:/../*/get-widget-property/*/*?value
+                      if:x:/-/*?count
+                        !=:int:0
+                        sys42.info-window:Board with that name exists from before
+                          _error:true
+                          _time:more
+                        send-javascript:@"$('#icu-new-board-name').select().focus();"
+                        return
 
-                  /*
-                   * Selecting board from database that user has currently selected, to use as "template"
-                   */
-                  get-widget-property:icu-select-board
-                    value
-                  select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.
-                    :x:/..if/*/whoami/*/username?value
-                    :x:/..if/*/get-widget-property/*/*?value
-                  add:x:/+2/*/*/items
-                    src:x:/./-/*/*/items/*
-                  eval-x:x:/+/*/*(/username|/name)
-                  insert-data
-                    icu.board
-                      username:x:/..if/*/whoami/*/username?value
-                      name:x:/../*/get-widget-property/*/*?value
-                      size
-                        width:int:14
-                        height:int:3
-                      items
+                      /*
+                       * Selecting board from database that user has currently selected, to use as "template"
+                       */
+                      get-widget-property:icu-select-board
+                        value
+                      select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.
+                        :x:/..if/*/whoami/*/username?value
+                        :x:/..if/*/get-widget-property/*/*?value
+                      add:x:/+2/*/*/items
+                        src:x:/./-/*/*/items/*
+                      eval-x:x:/+/*/*(/username|/name)
+                      insert-data
+                        icu.board
+                          username:x:/..if/*/whoami/*/username?value
+                          name:x:/../*/get-widget-property/*/*?value
+                          size
+                            width:int:14
+                            height:int:3
+                          items
 
-                  /*
-                   * "Repopulating" select dropdown widget
-                   */
-                  sys42.icu.populate-board-list
-                  set-widget-property:icu-new-board-name
-                    value:
-                  set-widget-property:icu-select-board
-                    value:x:/../*/get-widget-property/*/*?value
-                  delete-widget-property:icu-delete-board
-                    disabled
-                  delete-widget-property:icu-select-board-for-picture
-                    disabled
-                  delete-widget-property:icu-create-board-from-template
-                    disabled
-                  raise-widget-ajax-event:icu-select-board-for-picture
-                    onclick
-                else
-                  sys42.info-window:@"Illegal board name, use only a-z, 0-9 and/or '-' characters"
-                    _error:true
-                    _time:more
-                  send-javascript:@"$('#icu-new-board-name').select().focus();"
-
-
-/*
- * Making sure close buttons gets focus
- */
-send-javascript:@"$('#icu-new-board-name').focus().select();"
+                      /*
+                       * "Repopulating" select dropdown widget
+                       */
+                      sys42.icu.populate-board-list
+                      set-widget-property:icu-new-board-name
+                        value:
+                      set-widget-property:icu-select-board
+                        value:x:/../*/get-widget-property/*/*?value
+                      delete-widget-property:icu-delete-board
+                        disabled
+                      delete-widget-property:icu-select-board-for-picture
+                        disabled
+                      delete-widget-property:icu-create-board-from-template
+                        disabled
+                      raise-widget-ajax-event:icu-select-board-for-picture
+                        onclick
+                    else
+                      sys42.info-window:@"Illegal board name, use only a-z, 0-9 and/or '-' characters. Use at least 5 characters"
+                        _error:true
+                        _time:more
+                      send-javascript:@"$('#icu-new-board-name').select().focus();"
 
 
 /*
@@ -401,6 +394,12 @@ send-javascript:@"$('#icu-new-board-name').focus().select();"
 include-javascript:@"p5.boardWindowKeyUp = function(e) {
   if(e.keyCode == 27) {
     p5.$('icu-close-board-list').raise('onclick');
+    return false;
+  }
+};
+p5.boardWindowKeyPressSelect = function(e) {
+  if(e.keyCode == 13 && !$('#icu-select-board-for-picture').is(':disabled')) {
+    p5.$('icu-select-board-for-picture').raise('onclick');
     return false;
   }
 };
