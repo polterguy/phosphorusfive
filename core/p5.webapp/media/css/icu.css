@@ -96,16 +96,18 @@
     }
 }
 
-.icu-keyboard {
+.icu-keyboard,
+.icu-keyboard-no-text {
     width:100%;
     border-spacing:5px;
     border-collapse:separate;
 }
 
-.icu-keyboard tr td a {
+.icu-keyboard tr td a,
+.icu-keyboard-no-text tr td a {
     display:block;
     padding-top:100%;
-    color:rgba(0,0,0,.1);
+    color:rgba(0,0,0,.3) !important;
     border:solid 1px rgba(0,0,0,.1);
     border-radius:5px;
     background-color:rgb(255,255,255);
@@ -121,207 +123,228 @@
     padding-right:5px;
 }
 
-.icu-keyboard tr td:nth-child(odd) a:hover {
+.icu-keyboard-no-text tr td a {
+    color:rgba(0,0,0,0) !important;
+    padding-top:-webkit-calc(100% - 23px);
+}
+
+.icu-keyboard-animation tr:nth-child(odd) td:nth-child(odd) a:hover {
     transition:box-shadow, transform;
     transition-duration:.5s;
     box-shadow:0px 0px 15px rgba(255,255,0,.8);
     transform:rotate(19deg);
 }
 
-.icu-keyboard tr td:nth-child(even) a:hover {
+.icu-keyboard-animation tr:nth-child(odd) td:nth-child(even) a:hover {
     transition:box-shadow, transform;
     transition-duration:.5s;
     box-shadow:0px 0px 15px rgba(255,255,0,.8);
     transform:rotate(-19deg);
 }
 
-.icu-keyboard tr td a.icu-empty-cell {
+.icu-keyboard-animation tr:nth-child(even) td:nth-child(odd) a:hover {
+    transition:box-shadow, transform;
+    transition-duration:.5s;
+    box-shadow:0px 0px 15px rgba(255,255,0,.8);
+    transform:rotate(-19deg);
+}
+
+.icu-keyboard-animation tr:nth-child(even) td:nth-child(even) a:hover {
+    transition:box-shadow, transform;
+    transition-duration:.5s;
+    box-shadow:0px 0px 15px rgba(255,255,0,.8);
+    transform:rotate(19deg);
+}
+
+.icu-keyboard tr td a.icu-empty-cell,
+.icu-keyboard-no-text tr td a.icu-empty-cell {
     background-image:url(/media/images/question-sign.png) !important;
     background-repeat:no-repeat;
     background-size:contain;
-    background-position:0px 12px;
+    background-position:0px center;
 }
 
-.icu-keyboard tr td a.icu-drop-from-sky {
+.icu-keyboard-animation tr td a.icu-drop-from-sky {
     animation-name:animate-drop-from-top;
     animation-duration:1s;
     opacity:0;
 }
 
-.icu-keyboard tr td a.icu-active {
+.icu-keyboard tr td a.icu-active,
+.icu-keyboard-no-text tr td a.icu-active {
     background-color:rgba(0,255,0,.2);
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(1) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(1) a {
     animation-delay:0s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(2) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(2) a {
     animation-delay:0.05s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(3) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(3) a {
     animation-delay:0.10s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(4) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(4) a {
     animation-delay:0.15s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(5) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(5) a {
     animation-delay:0.20s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(6) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(6) a {
     animation-delay:0.25s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(7) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(7) a {
     animation-delay:0.30s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(8) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(8) a {
     animation-delay:0.35s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(9) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(9) a {
     animation-delay:0.40s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(10) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(10) a {
     animation-delay:0.45s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(11) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(11) a {
     animation-delay:0.50s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(12) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(12) a {
     animation-delay:0.55s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(13) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(13) a {
     animation-delay:0.60s;
 }
 
-.icu-keyboard tr:nth-child(1) td:nth-child(14) a {
+.icu-keyboard-animation tr:nth-child(1) td:nth-child(14) a {
     animation-delay:0.65s;
 }
 
 
 
-.icu-keyboard tr:nth-child(2) td:nth-child(1) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(1) a {
     animation-delay:0.75s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(2) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(2) a {
     animation-delay:0.70s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(3) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(3) a {
     animation-delay:0.65s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(4) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(4) a {
     animation-delay:0.6s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(5) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(5) a {
     animation-delay:0.55s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(6) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(6) a {
     animation-delay:0.5s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(7) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(7) a {
     animation-delay:0.45s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(8) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(8) a {
     animation-delay:0.4s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(9) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(9) a {
     animation-delay:0.35s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(10) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(10) a {
     animation-delay:0.3s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(11) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(11) a {
     animation-delay:0.25s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(12) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(12) a {
     animation-delay:0.2s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(13) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(13) a {
     animation-delay:0.15s;
 }
 
-.icu-keyboard tr:nth-child(2) td:nth-child(14) a {
+.icu-keyboard-animation tr:nth-child(2) td:nth-child(14) a {
     animation-delay:0.10s;
 }
 
 
 
 
-.icu-keyboard tr:nth-child(3) td:nth-child(1) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(1) a {
     animation-delay:0.2s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(2) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(2) a {
     animation-delay:0.25s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(3) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(3) a {
     animation-delay:0.30s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(4) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(4) a {
     animation-delay:0.35s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(5) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(5) a {
     animation-delay:0.4s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(6) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(6) a {
     animation-delay:0.45s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(7) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(7) a {
     animation-delay:0.5s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(8) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(8) a {
     animation-delay:0.55s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(9) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(9) a {
     animation-delay:0.6s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(10) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(10) a {
     animation-delay:0.65s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(11) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(11) a {
     animation-delay:0.7s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(12) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(12) a {
     animation-delay:0.75s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(13) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(13) a {
     animation-delay:0.8s;
 }
 
-.icu-keyboard tr:nth-child(3) td:nth-child(14) a {
+.icu-keyboard-animation tr:nth-child(3) td:nth-child(14) a {
     animation-delay:0.85s;
 }
 
@@ -498,7 +521,7 @@
 .paper-sheet .icu-word {
     display:block;
     float:left;
-    width:77px;
+    width:76px;
     height:95px;
     margin-right:10px;
     margin-bottom:25px;
@@ -524,8 +547,8 @@
 .paper-sheet-no-text .icu-word {
     display:block;
     float:left;
-    width:77px;
-    height:77px;
+    width:75px;
+    height:75px;
     margin-right:10px;
     margin-bottom:25px;
     border:solid 1px rgba(0,0,0,.1);

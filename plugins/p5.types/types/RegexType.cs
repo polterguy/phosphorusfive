@@ -31,7 +31,7 @@ namespace p5.types.types
             if (e.Args.Value is Regex) {
                 return;
             } else {
-                var strValue = e.Args.Get<string> (context);
+                var strValue = XUtil.FormatNode (context, e.Args).ToString ();
 
                 // Sanity check
                 if (!strValue.StartsWith ("/"))

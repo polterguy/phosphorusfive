@@ -38,6 +38,12 @@ set:x:/../**/={_wrapper}?value
 
 
 /*
+ * Initializing ICU
+ */
+sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
+
+
+/*
  * Making sure we hide or show text in output widget depending upon our settings
  */
 whoami
@@ -47,15 +53,15 @@ if
       :x:/../*/whoami/*/username?value
   set-widget-property:{_output-widget}
     class:rounded-corners paper-sheet prepend-bottom
+  set-widget-property:{_keyboard-widget}
+    class:icu-keyboard icu-keyboard-animation prepend-top
+    element:table
 else
   set-widget-property:{_output-widget}
     class:rounded-corners paper-sheet-no-text prepend-bottom
-
-
-/*
- * Initializing ICU
- */
-sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
+  set-widget-property:{_keyboard-widget}
+    class:icu-keyboard-no-text icu-keyboard-animation prepend-top
+    element:table
 
 
 /*
@@ -142,18 +148,19 @@ $('a.icu-key').toggleClass('icu-drop-from-sky').one('animationend',
                 update-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
                   :x:/../*/whoami/*/username?value
                   src:bool:false
-                set-widget-property:x:/../*/_event?value
-                  class:btn btn-default
-                set-widget-property:{_output-widget}
-                  class:rounded-corners paper-sheet-no-text prepend-bottom
               else
                 update-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
                   :x:/../*/whoami/*/username?value
                   src:bool:true
-                set-widget-property:x:/../*/_event?value
-                  class:btn btn-success active
-                set-widget-property:{_output-widget}
-                  class:rounded-corners paper-sheet prepend-bottom
+
+              /*
+               * Toggle CSS classes that hides/shows text on widget, both on keyboard input, and
+               * on output widget
+               */
+              sys42.toggle-css-classes:{_output-widget}
+                _class:paper-sheet, paper-sheet-no-text
+              sys42.toggle-css-classes:{_keyboard-widget}
+                _class:icu-keyboard, icu-keyboard-no-text
               sys42.icu.toggle-settings
 
 
@@ -180,14 +187,6 @@ if:x:/-/*?value
 if:x:/-2/*?name
   !=:container
   throw:Your [_keyboard-widget] needs to be a [container] type of widget
-
-
-/*
- * Makes sure board widget becomes "table" HTML element, and has correct CSS classes
- */
-set-widget-property:x:/../*/_keyboard-widget?value
-  element:table
-  class:icu-keyboard prepend-top
 
 
 /*

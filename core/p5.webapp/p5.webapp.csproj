@@ -440,6 +440,9 @@
     <None Include="system42\apps\icu\board\actions\open-board-common\open-board-common.hl" />
     <None Include="system42\apps\icu\board\create-key-action-association.hl" />
     <None Include="system42\apps\icu\board\image-help\search-for-image.hl" />
+    <None Include="system42\startup\misc-events\sys42.toggle-css-classes.hl" />
+    <None Include="system42\startup\misc-events\sys42.add-css-classes.hl" />
+    <None Include="system42\startup\misc-events\sys42.remove-css-classes.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

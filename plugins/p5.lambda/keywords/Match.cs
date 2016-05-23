@@ -56,6 +56,8 @@ namespace p5.lambda.keywords
                         // Looping through all group names requested by caller to be returned
                         foreach (var idxCapture in captures) {
                             resultNode.Add (idxCapture, idxMatch.Groups [idxCapture].Value);
+                            resultNode.LastChild.Add ("start", idxMatch.Groups [idxCapture].Index);
+                            resultNode.LastChild.Add ("length", idxMatch.Groups [idxCapture].Length);
                         }
                         
                     } else {
