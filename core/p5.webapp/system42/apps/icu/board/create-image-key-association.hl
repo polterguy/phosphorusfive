@@ -36,7 +36,6 @@ if
 eval-x:x:/+/*/parent
 create-widget:icu-create-board-image-key-ass
   parent:{_language-builder}
-  class:prepend-top
   events
 
     /*
@@ -309,7 +308,7 @@ create-widget:icu-create-board-image-key-ass
                     sys42.icu.icu-create-board-image-key-ass.closed
 
     container:icu-flickr-result
-      class:bg-warning rounded-corners prepend-top air-padding-more flash-from-left
+      class:bg-warning rounded-corners air-padding-more flash-from-left
       visible:false
 
 

@@ -95,13 +95,15 @@ _set-css-classes
      */
     if:x:/../*/_add-css-to-output?value
       sys42.add-css-classes:{_output-widget}
-        _class:paper-sheet
+        _class:icu-output icu-show-text icu-animation-fade-in-word
+      sys42.remove-css-classes:{_output-widget}
+        _class:icu-remove-text
 
     /*
      * Setting default CSS classes for [_keyboard-widget], and making sure it is of HTML element type "table"
      */
     sys42.add-css-classes:{_keyboard-widget}
-      _class:icu-keyboard icu-keyboard-animation
+      _class:icu-keyboard icu-show-text icu-animation-hover-tilt icu-animation-drop-from-sky
     set-widget-property:{_keyboard-widget}
       element:table
   else
@@ -113,13 +115,15 @@ _set-css-classes
      */
     if:x:/../*/_add-css-to-output?value
       sys42.add-css-classes:{_output-widget}
-        _class:paper-sheet-no-text
+        _class:icu-output icu-hide-text
+      sys42.remove-css-classes:{_output-widget}
+        _class:icu-show-text
 
     /*
      * Setting default CSS classes for [_keyboard-widget], and making sure it is of HTML element type "table"
      */
     sys42.add-css-classes:{_keyboard-widget}
-      _class:icu-keyboard-no-text icu-keyboard-animation
+      _class:icu-keyboard icu-hide-text icu-animation-hover-tilt icu-animation-drop-from-sky
     set-widget-property:{_keyboard-widget}
       element:table
 
@@ -168,17 +172,17 @@ set:x:/../**/={_wrapper}?value
 
 
 /*
+ * Initializing ICU
+ */
+sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
+
+
+/*
  * Making sure we signal that we should create the default CSS classes for [_output-widget], if we should
  */
 add:x:/+
   src:x:/../*/_add-css-to-output
 eval:x:/../*/_set-css-classes
-
-
-/*
- * Initializing ICU
- */
-sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
 
 
 /*
@@ -243,15 +247,16 @@ set-widget-lambda-event:{_keyboard-widget}
       eval-x:x:/+/**
       create-widget
         parent:x:/../*/sys42.icu.get-output-widget?value
-        class:icu-word
+        class:icu-word icu-single-word box-shadow rounded-corners
         title:x:/../*/select-data/0/*/word?value
         widgets
-          literal
-            element:img
+          img
             alt:x:/../*/select-data/0/*/word?value
             src:x:/../*/select-data/0/*/thumb?value
-          literal
+            class:icu-image
+          span
             innerValue:x:/../*/select-data/0/*/word?value
+            class:icu-text
     else
 
       /*
@@ -397,11 +402,6 @@ set-widget-lambda-event:{_keyboard-widget}
        */
       set-widget-property:{_keyboard-widget}
         visible:true
-      send-javascript:@"
-$('a.icu-key').toggleClass('icu-drop-from-sky').one('animationend',
-  function(e) {
-    $('#' + e.target.id).removeClass('icu-drop-from-sky');
-  });"
 
 
   /*
@@ -460,9 +460,9 @@ $('a.icu-key').toggleClass('icu-drop-from-sky').one('animationend',
                * on output widget
                */
               sys42.toggle-css-classes:{_output-widget}
-                _class:paper-sheet, paper-sheet-no-text
+                _class:icu-show-text, icu-hide-text
               sys42.toggle-css-classes:{_keyboard-widget}
-                _class:icu-keyboard, icu-keyboard-no-text
+                _class:icu-show-text, icu-hide-text
               sys42.icu.toggle-settings
 
 

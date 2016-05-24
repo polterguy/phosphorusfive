@@ -6,27 +6,18 @@
 
 
 /*
- * Checking if there exists a "root/home board" for user, and if not, creating it with
- * 14x3 number of keys, which is default for the system
+ * Necessary to filter database according to user
  */
 whoami
-select-data:x:/*/*/icu.board/*/username/={0}/./*/name/=home?count
-  :x:/../*/whoami/*/username?value
-if:x:/../*/select-data?value
-  =:int:0
 
-  /*
-   * User has no "home board" associated with profile, creating empty "home" board
-   */
-  eval-x:x:/+/*/*/username
-  insert-data
-    icu.board
-      username:x:/../*/whoami/*/username?value
-      name:home
-      size
-        width:int:14
-        height:int:3
-      items
+
+/*
+ * Checking if there exists default settings for user, and if not, creating them
+ */
+select-data:x:/*/*/icu.settings/*/username/={0}/.?count
+  :x:/../*/whoami/*/username?value
+if:x:/../*/select-data/[0,1]?value
+  =:int:0
 
   /*
    * Creating default settings
@@ -36,4 +27,31 @@ if:x:/../*/select-data?value
     icu.settings
       username:x:/../*/whoami/*/username?value
       show-text:bool:true
+      width:int:14
+      height:int:3
+
+
+/*
+ * Checking if there exists a "root/home board" for user, and if not, creating a default "home" board
+ */
+select-data:x:/*/*/icu.board/*/username/={0}/./*/name/=home?count
+  :x:/../*/whoami/*/username?value
+if:x:/../*/select-data/[1,2]?value
+  =:int:0
+
+  /*
+   * User has no "home board" associated with profile, creating empty "home" board.
+   * But first retrieving settings, to figure out how big our board should be.
+   */
+  select-data:x:/*/*/icu.settings/*/username/={0}/.
+    :x:/../*/whoami/*/username?value
+  eval-x:x:/+/*/**(/username|/width|/height)
+  insert-data
+    icu.board
+      username:x:/../*/whoami/*/username?value
+      name:home
+      size
+        width:x:/..if/*/select-data/*/*/width?value
+        height:x:/..if/*/select-data/*/*/height?value
+      items
 

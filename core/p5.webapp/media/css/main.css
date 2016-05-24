@@ -123,6 +123,10 @@ body {
     border-radius:5px;
 }
 
+.box-shadow {
+    box-shadow:2px 2px 5px rgba(0,0,0,.5);
+}
+
 
 /*
  * Info feedback popdown dialog animations, and CSS class
