@@ -1,20 +1,15 @@
 
 /*
- * Main entry point for starting the ICU keyboard. Expects the parameter [_keyboard-widget],
- * which must be a [container] widget, that can somehow wrap the keyboard. Optionally, supply a
- * [_output-widget], which becomes the "sheet surface", which the keyboard "writes" its output to.
+ * Main entry point for starting the ICU app
  *
- * In addition, you need to supply a [_output-widget], which is the surface container widget
- * which you want to receive the output of the keyboard in image format.
- * 
- * Optionally, if you wish to load a specific "board definition", supply [_board], pointing
- * to the ID of a specific board.
- * 
- * Also supply a [_language-builder] if you wish to allow for user to "build language" by associating
- * images to "keys", by allowing for uploading pictures, and/or search Flickr for images.
+ * At the minimum, you need to supply a [_wrapper] argument, being the ID of a [container] widget.
+ * Optionally, you can explicitly supply a [_output-widget], which will receive the "document" typed.
+ * In addition, you can supply a [_keyboard-widget], which will be used as container for keyboard.
+ * Both [_output-widget] and [_keyboard-widget], if supplied, must be of type [container]
  *
- * [_wrapper] should also be supplied, which is wrapper for entire ICU app, or normally the parent element of
- * [_output-widget], [_language-builder], etc
+ * If no [_keyboard-widget] is supplied, a widget will be created, and appended into the supplied [_wrapper]
+ * widget. If you do not supply a [_output-widget], then to trap the document, you must handle these events yourself;
+ * 
  */
 
 
@@ -22,6 +17,141 @@
  * Including ICU stylesheet file
  */
 include-stylesheet-file:/media/css/icu.css
+
+
+/*
+ * Sanity checker, if no [_wrapper] is supplied, we throw an exception.
+ * We also throw an exception if [_wrapper] widget is not of type container.
+ */
+if:x:/../*/_wrapper?value
+  list-widgets:x:/../*/_wrapper?value
+  if:x:/-/0?name
+    !=:container
+    throw:The ICU [_wrapper] widget must be of type [container]
+else
+  throw:No [_wrapper] supplied to ICU. The ICU app, at the very least, needs a wrapper widget, which must be of type [container]
+
+
+/*
+ * Now we check if an [_output-widget] was supplied, and if not, we create one, and append it into [_wrapper].
+ * If an [_output-widget] was supplied, we verify it is either of type [container], [literal]/textarea or [void]/input
+ */
+if:x:/../*/_output-widget?value
+  list-widgets:x:/../*/_output-widget?value
+  if:x:/-/0?name
+    =:literal
+    get-widget-property:x:/./-/0?value
+      element
+    if:x:/-/*/*?value
+      !=:textarea
+      throw:The ICU [_output-widget] widget, must point to an existing widget if supplied, and widget must be able to handle input somehow
+  else-if:x:/-2/0?name
+    =:void
+    get-widget-property:x:/./-2/0?value
+      element
+    if:x:/-/*/*?value
+      !=:input
+      throw:The ICU [_output-widget] widget, must point to an existing widget if supplied, and widget must be able to handle input somehow
+  else
+
+    /*
+     * Since [_output-widget] is of type container, we signal that we should create the default CSS classes
+     */
+    add:x:/..
+      src:"_add-css-to-output:bool:true"
+else
+
+  /*
+   * No [_output-widget] was supplied, hence we create a default, being of type [container]
+   */
+  eval-x:x:/+/*
+  create-widget
+    parent:x:/../*/_wrapper?value
+  add:x:/..
+    src:"_output-widget:{0}"
+      :x:/././-?value
+
+  /*
+   * Since automatically created [_output-widget] is of type container, we signal that we should create the default CSS classes
+   */
+  add:x:/..
+    src:"_add-css-to-output:bool:true"
+
+
+/*
+ * Helps making sure we hide or show text in output widget depending upon our settings
+ */
+_set-css-classes
+  whoami
+  if
+    fetch:x:/0/0?value.bool
+      select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+        :x:/../*/whoami/*/username?value
+
+    /*
+     * Text (or words more specifically) should be shown according to settings.
+     * Now checking if we should add the default CSS class for [_output-widget], which we should, only
+     * if it is of type [container]
+     */
+    if:x:/../*/_add-css-to-output?value
+      sys42.add-css-classes:{_output-widget}
+        _class:paper-sheet
+
+    /*
+     * Setting default CSS classes for [_keyboard-widget], and making sure it is of HTML element type "table"
+     */
+    sys42.add-css-classes:{_keyboard-widget}
+      _class:icu-keyboard icu-keyboard-animation
+    set-widget-property:{_keyboard-widget}
+      element:table
+  else
+
+    /*
+     * Text (or words more specifically) should NOT be shown according to settings.
+     * Now checking if we should add the default CSS class for [_output-widget], which we should, only
+     * if it is of type [container]
+     */
+    if:x:/../*/_add-css-to-output?value
+      sys42.add-css-classes:{_output-widget}
+        _class:paper-sheet-no-text
+
+    /*
+     * Setting default CSS classes for [_keyboard-widget], and making sure it is of HTML element type "table"
+     */
+    sys42.add-css-classes:{_keyboard-widget}
+      _class:icu-keyboard-no-text icu-keyboard-animation
+    set-widget-property:{_keyboard-widget}
+      element:table
+
+
+
+
+/*
+ * Now we check if an [_keyboard-widget] was supplied, and if not, we create one, and append it into [_wrapper].
+ * If a [_keyboard-widget] was supplied, we verify it is of type [container]
+ */
+if:x:/../*/_keyboard-widget?value
+  list-widgets:x:/../*/_keyboard-widget?value
+  if:x:/-/0?name
+    !=:container
+    throw:The ICU [_keyboard-widget] widget, must point to an existing widget if supplied, and widget must be of type [container]
+else
+  eval-x:x:/+/*
+  create-widget
+    parent:x:/../*/_wrapper?value
+  add:x:/..
+    src:"_keyboard-widget:{0}"
+      :x:/././-?value
+
+
+/*
+ * If a [_language-builder] was supplied, we verify it is of type [container]
+ */
+if:x:/../*/_language-builder?value
+  list-widgets:x:/../*/_language-builder?value
+  if:x:/-/0?name
+    !=:container
+    throw:The ICU [_language-builder] widget, must point to an existing widget if supplied, and widget must be of type [container]
 
 
 /*
@@ -38,161 +168,23 @@ set:x:/../**/={_wrapper}?value
 
 
 /*
+ * Making sure we signal that we should create the default CSS classes for [_output-widget], if we should
+ */
+add:x:/+
+  src:x:/../*/_add-css-to-output
+eval:x:/../*/_set-css-classes
+
+
+/*
  * Initializing ICU
  */
 sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
 
 
 /*
- * Making sure we hide or show text in output widget depending upon our settings
- */
-whoami
-if
-  fetch:x:/0/0?value.bool
-    select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
-      :x:/../*/whoami/*/username?value
-  set-widget-property:{_output-widget}
-    class:rounded-corners paper-sheet prepend-bottom
-  set-widget-property:{_keyboard-widget}
-    class:icu-keyboard icu-keyboard-animation prepend-top
-    element:table
-else
-  set-widget-property:{_output-widget}
-    class:rounded-corners paper-sheet-no-text prepend-bottom
-  set-widget-property:{_keyboard-widget}
-    class:icu-keyboard-no-text icu-keyboard-animation prepend-top
-    element:table
-
-
-/*
  * Creating our "show/hide keyboard" Active Event, and associating it with the supplied [_keyboard-widget] widget
  */
 set-widget-lambda-event:{_keyboard-widget}
-
-  /*
-   * Toggles the visibility of the keyboard for ICU
-   */
-  sys42.icu.toggle-keyboard
-    get-widget-property:{_keyboard-widget}
-      visible
-    if:x:/-/*/*?value.bool
-      =:bool:true
-
-      /*
-       * Hides the ICU keyboard, closing and clearing the [_language-builder] if open
-       */
-      set-widget-property:{_keyboard-widget}
-        visible:false
-      clear-widget:{_language-builder}
-      find-widget-like:{_keyboard-widget}
-        class:icu-active
-      if:x:/-/*?value
-        set-widget-property:x:/./-/*?value
-          class:icu-empty-cell
-    else
-
-      /*
-       * Shows the ICU keyboard
-       */
-      set-widget-property:{_keyboard-widget}
-        visible:true
-      send-javascript:@"
-$('a.icu-key').toggleClass('icu-drop-from-sky').one('animationend',
-  function(e) {
-    $('#' + e.target.id).removeClass('icu-drop-from-sky');
-  });"
-
-  /*
-   * Toggles the visibility of the settings widget for ICU
-   */
-  sys42.icu.toggle-settings
-    if
-      fetch:x:/0/0?value
-        widget-exist:icu-settings-widget
-      delete-widget:icu-settings-widget
-    else
-      create-widget:icu-settings-widget
-        parent:{_wrapper}
-        class:icu-settings-widget
-        widgets
-          button:icu-settings-show-text
-            class:btn btn-default active
-            innerValue:@"<span class=""glyphicon glyphicon-subtitles""></span> Text"
-            title:Toggles text in document and boards
-            oninit
-
-              /*
-               * Making sure we associate the correct CSS class with button, depending upon whether
-               * or not text should be shown in boards and document
-               */
-              whoami
-              if
-                fetch:x:/0/0?value.bool
-                  select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
-                    :x:/../*/whoami/*/username?value
-                set-widget-property:x:/../*/_event?value
-                  class:btn btn-success active
-              else
-                set-widget-property:x:/../*/_event?value
-                  class:btn btn-default
-            onclick
-
-              /*
-               * Toggling the showing of text in document and boards
-               */
-              whoami
-              if
-                fetch:x:/0/0?value.bool
-                  select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
-                    :x:/../*/whoami/*/username?value
-                update-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
-                  :x:/../*/whoami/*/username?value
-                  src:bool:false
-              else
-                update-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
-                  :x:/../*/whoami/*/username?value
-                  src:bool:true
-
-              /*
-               * Toggle CSS classes that hides/shows text on widget, both on keyboard input, and
-               * on output widget
-               */
-              sys42.toggle-css-classes:{_output-widget}
-                _class:paper-sheet, paper-sheet-no-text
-              sys42.toggle-css-classes:{_keyboard-widget}
-                _class:icu-keyboard, icu-keyboard-no-text
-              sys42.icu.toggle-settings
-
-
-/*
- * Defaulting [_board] we're using to the main "root"/"home" board, unless explicitly overridden by caller
- */
-if:x:/../*/_board
-  not
-  whoami
-  select-data:x:/*/*/icu.board/*/username/={0}/./*/name/=home/.?value
-    :x:/..if/*/whoami/*/username?value
-  insert-before:x:/../0
-    src:"_board:guid:{0}"
-      :x:/..if/*/select-data/0?value.string
-
-
-/*
- * Verifying keyboard widget exists, and is of type [container]
- */
-list-widgets:x:/../*/_keyboard-widget?value
-if:x:/-/*?value
-  not
-  throw:You need to at least supply a [_keyboard-widget], pointing to a [container] type of widget to the ICU keyboard
-if:x:/-2/*?name
-  !=:container
-  throw:Your [_keyboard-widget] needs to be a [container] type of widget
-
-
-/*
- * Associates the "set board picture" callback event with given [_keyboard-widget]
- */
-set-widget-lambda-event:x:/../*/_keyboard-widget?value
 
 
   /*
@@ -232,22 +224,49 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
 
     /*
      * Selecting [icu.image] from database that was clicked, and creating a widget from
-     * it, adding this widget to the [_output-widget] that was specified when the ICU app was launched
+     * it, adding this widget to the [_output-widget] that was specified when the ICU app was launched,
+     * if widget was [container] type. Otherwise, appending word into widget as "text value"
      */
     select-data:x:@"/*/*/""=:guid:{0}"""
       :x:/../*/_arg?value
-    eval-x:x:/+/**
-    create-widget
-      parent:x:/../*/sys42.icu.get-output-widget?value
-      class:icu-word
-      title:x:/../*/select-data/0/*/word?value
-      widgets
-        literal
-          element:img
-          alt:x:/../*/select-data/0/*/word?value
-          src:x:/../*/select-data/0/*/thumb?value
-        literal
-          innerValue:x:/../*/select-data/0/*/word?value
+
+    /*
+     * Checking widget type
+     */
+    list-widgets:x:/../*/sys42.icu.get-output-widget?value
+    if:x:/-/0?name
+      =:container
+
+      /*
+       * Widget is [container] type, appending word as image into container widget
+       */
+      eval-x:x:/+/**
+      create-widget
+        parent:x:/../*/sys42.icu.get-output-widget?value
+        class:icu-word
+        title:x:/../*/select-data/0/*/word?value
+        widgets
+          literal
+            element:img
+            alt:x:/../*/select-data/0/*/word?value
+            src:x:/../*/select-data/0/*/thumb?value
+          literal
+            innerValue:x:/../*/select-data/0/*/word?value
+    else
+
+      /*
+       * Widget was NOT [container] type, retrieving widget's value, adding word prepended by space
+       * into widget's value
+       */
+      get-widget-property:x:/../*/sys42.icu.get-output-widget?value
+        value
+      set:x:/-/*/*?value
+        src:{0} {1}
+          :x:/././-/*/*?value
+          :x:/../*/select-data/0/*/word?value
+      trim:x:/..else/*/get-widget-property/*/*?value
+      set-widget-property:x:/../*/sys42.icu.get-output-widget?value
+        value:x:/./-?value
 
 
   /*
@@ -346,9 +365,118 @@ set-widget-lambda-event:x:/../*/_keyboard-widget?value
       class:icu-active
     if:x:/-/*?value
       set-widget-property:x:/./-/*?value
-        class:icu-empty-cell
+        class:icu-empty-cell icu-key
 
 
+  /*
+   * Toggles the visibility of the keyboard for ICU
+   */
+  sys42.icu.toggle-keyboard
+    get-widget-property:{_keyboard-widget}
+      visible
+    if:x:/-/*/*?value.bool
+      =:bool:true
+
+      /*
+       * Hides the ICU keyboard, closing and clearing the [_language-builder] if open
+       */
+      set-widget-property:{_keyboard-widget}
+        visible:false
+      if:{_language-builder}
+        !=
+        clear-widget:{_language-builder}
+      find-widget-like:{_keyboard-widget}
+        class:icu-active
+      if:x:/-/*?value
+        set-widget-property:x:/./-/*?value
+          class:icu-empty-cell icu-key
+    else
+
+      /*
+       * Shows the ICU keyboard
+       */
+      set-widget-property:{_keyboard-widget}
+        visible:true
+      send-javascript:@"
+$('a.icu-key').toggleClass('icu-drop-from-sky').one('animationend',
+  function(e) {
+    $('#' + e.target.id).removeClass('icu-drop-from-sky');
+  });"
+
+
+  /*
+   * Toggles the visibility of the settings widget for ICU
+   */
+  sys42.icu.toggle-settings
+    if
+      fetch:x:/0/0?value
+        widget-exist:icu-settings-widget
+      delete-widget:icu-settings-widget
+    else
+      create-widget:icu-settings-widget
+        parent:{_wrapper}
+        class:icu-settings-widget
+        widgets
+          button:icu-settings-show-text
+            class:btn btn-default active
+            innerValue:@"<span class=""glyphicon glyphicon-subtitles""></span> Show text"
+            title:Toggles text in document and boards
+            oninit
+
+              /*
+               * Making sure we associate the correct CSS class with button, depending upon whether
+               * or not text should be shown in boards and document
+               */
+              whoami
+              if
+                fetch:x:/0/0?value.bool
+                  select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+                    :x:/../*/whoami/*/username?value
+                set-widget-property:x:/../*/_event?value
+                  class:btn btn-success active
+              else
+                set-widget-property:x:/../*/_event?value
+                  class:btn btn-default
+            onclick
+
+              /*
+               * Toggling the showing of text in document and boards
+               */
+              whoami
+              if
+                fetch:x:/0/0?value.bool
+                  select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+                    :x:/../*/whoami/*/username?value
+                update-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+                  :x:/../*/whoami/*/username?value
+                  src:bool:false
+              else
+                update-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
+                  :x:/../*/whoami/*/username?value
+                  src:bool:true
+
+              /*
+               * Toggle CSS classes that hides/shows text on widget, both on keyboard input, and
+               * on output widget
+               */
+              sys42.toggle-css-classes:{_output-widget}
+                _class:paper-sheet, paper-sheet-no-text
+              sys42.toggle-css-classes:{_keyboard-widget}
+                _class:icu-keyboard, icu-keyboard-no-text
+              sys42.icu.toggle-settings
+
+
+/*
+ * Defaulting [_board] we're using to the main "root"/"home" board, unless explicitly overridden by caller
+ */
+if:x:/../*/_board
+  not
+  whoami
+  select-data:x:/*/*/icu.board/*/username/={0}/./*/name/=home/.?value
+    :x:/..if/*/whoami/*/username?value
+  insert-before:x:/../0
+    src:"_board:guid:{0}"
+      :x:/..if/*/select-data/0?value.string
 
 
 /*

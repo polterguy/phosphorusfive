@@ -8,11 +8,12 @@
 /*
  * Passing in keyboard widget and language builder widget arguments to other parts of file
  */
+_language-builder
 sys42.icu.get-language-builder-widget
 sys42.icu.get-keyboard-widget
 set:x:/../**/={_keyboard-widget}?value
   src:x:/../*/sys42.icu.get-keyboard-widget?value
-set:x:/../**/={_language-builder}?value
+set:x:/../**/={_language-builder}|/../*/_language-builder?value
   src:x:/../*/sys42.icu.get-language-builder-widget?value
 
 
@@ -107,7 +108,7 @@ while:x:/-?value
                   class:icu-active
                 if:x:/-/*?value
                   set-widget-property:x:/./-/*?value
-                    class:icu-empty-cell
+                    class:icu-empty-cell icu-key
                 set-widget-property:x:/../*/_event?value
                   class:icu-empty-cell icu-active
                   style:""
@@ -158,6 +159,14 @@ while:x:/-?value
           src:x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/./*/action/*
             :x:/..while/..while/*/_cur-x?value.string
             :x:/../*/_cur-y?value.string
+    else-if:x:/../*/_language-builder?value
+      =
+      set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/onclick/*
+      add:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/literal/*/onclick
+        src
+          sys42.info-window:No language builder widget supplied when ICU was instantiated
+            _error:true
+            _time:more
 
     /*
      * Incrementing x position, which is condition of inner [while] loop

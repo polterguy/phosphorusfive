@@ -509,7 +509,7 @@
         transform:scale(0);
     }
     80% {
-        transform:scale(1.05);
+        transform:scale(1.15);
     }
     100% {
         opacity:1;
