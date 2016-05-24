@@ -96,14 +96,14 @@ _set-css-classes
     if:x:/../*/_add-css-to-output?value
       sys42.add-css-classes:{_output-widget}
         _class:icu-output icu-show-text icu-animation-fade-in-word
-      sys42.remove-css-classes:{_output-widget}
+      sys42.delete-css-classes:{_output-widget}
         _class:icu-remove-text
 
     /*
      * Setting default CSS classes for [_keyboard-widget], and making sure it is of HTML element type "table"
      */
     sys42.add-css-classes:{_keyboard-widget}
-      _class:icu-keyboard icu-show-text icu-animation-hover-tilt icu-animation-drop-from-sky
+      _class:icu-keyboard icu-show-text icu-animation-hover-tilt icu-animation-drop-from-sky icu-animation-clicked
     set-widget-property:{_keyboard-widget}
       element:table
   else
@@ -116,14 +116,14 @@ _set-css-classes
     if:x:/../*/_add-css-to-output?value
       sys42.add-css-classes:{_output-widget}
         _class:icu-output icu-hide-text
-      sys42.remove-css-classes:{_output-widget}
+      sys42.delete-css-classes:{_output-widget}
         _class:icu-show-text
 
     /*
      * Setting default CSS classes for [_keyboard-widget], and making sure it is of HTML element type "table"
      */
     sys42.add-css-classes:{_keyboard-widget}
-      _class:icu-keyboard icu-hide-text icu-animation-hover-tilt icu-animation-drop-from-sky
+      _class:icu-keyboard icu-hide-text icu-animation-hover-tilt icu-animation-drop-from-sky icu-animation-clicked
     set-widget-property:{_keyboard-widget}
       element:table
 
@@ -346,20 +346,22 @@ set-widget-lambda-event:{_keyboard-widget}
      */
     select-data:x:@"/*/*/icu.image/""=:guid:{0}"""
       :x:/../*/_image?value
-    find-widget
-      element:a
-      _x:x:/../*/_x?value
-      _y:x:/../*/_y?value
-    set-widget-property:x:/-/*?value
-      style:@"background-image:url({0});"
-        :x:/../*/select-data/[1,2]/*/*/thumb?value
+    find-widget-like
+      class:icu-active-key
+    find-widget-like:x:/-/*?value
+      element:img
+    find-widget:x:/-2/*?value
+      element:span
+    set-widget-property:x:/-2/*?value
+      src:x:/../*/select-data/[1,2]/*/*/thumb?value
+      alt:x:/../*/select-data/[1,2]/*/*/word?value
+    set-widget-property:x:/-2/*?value
       innerValue:x:/../*/select-data/[1,2]/*/*/word?value
-      class:icu-key icu-cell
-      title:x:/../*/select-data/[1,2]/*/*/description?value
     add:x:/+/*
       src:x:/../*/_action/*
-    set-widget-ajax-event:x:/-3/*?value
+    set-widget-ajax-event:x:/../*/find-widget-like/[0,1]/*?value
       onclick
+    sys42.icu.icu-create-board-image-key-ass.closed
 
 
   /*
@@ -367,10 +369,10 @@ set-widget-lambda-event:{_keyboard-widget}
    */
   sys42.icu.icu-create-board-image-key-ass.closed
     find-widget-like:{_keyboard-widget}
-      class:icu-active
+      class:icu-active-key
     if:x:/-/*?value
-      set-widget-property:x:/./-/*?value
-        class:icu-empty-cell icu-key
+      sys42.delete-css-classes:x:/./-/*?value
+        _class:icu-active-key
 
 
   /*
@@ -391,10 +393,10 @@ set-widget-lambda-event:{_keyboard-widget}
         !=
         clear-widget:{_language-builder}
       find-widget-like:{_keyboard-widget}
-        class:icu-active
+        class:icu-active-key
       if:x:/-/*?value
-        set-widget-property:x:/./-/*?value
-          class:icu-empty-cell icu-key
+        sys42.toggle-css-classes:x:/./-/*?value
+          class:icu-active-key
     else
 
       /*

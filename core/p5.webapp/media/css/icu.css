@@ -121,6 +121,8 @@
     margin-bottom:25px;
     background-color:rgba(255,255,255,.5);
     overflow:hidden;
+    border:none 0;
+    padding:0;
 }
 .icu .icu-single-word {
     width:75px;
@@ -150,11 +152,23 @@
 /*
  * Default CSS classes for "keyboard widget"
  */
-.icu-keyboard {
+.icu .icu-keyboard {
     width:100%;
     border-spacing:0px;
     border-collapse:separate;
 }
+
+
+
+/*
+ * CSS class for currently "active" keyboard key
+ */
+.icu .icu-active-key {
+    background-color:rgba(0,200,0,.3);
+}
+
+
+
 
 
 
@@ -187,38 +201,57 @@
 }
 
 
-
 /*
  * Default animation that "tilts" an image when hovered
  */
-.icu .icu-animation-hover-tilt tr td div {
+.icu .icu-animation-hover-tilt tr td .icu-word {
     transition:box-shadow, transform;
     transition-duration:.5s;
     transform:rotate(0deg) scale(1);
 }
-.icu .icu-animation-hover-tilt tr:nth-child(odd) td:nth-child(odd) div:hover {
+.icu .icu-animation-hover-tilt tr:nth-child(odd) td:nth-child(odd) .icu-word:hover {
     transition:box-shadow, transform;
     transition-duration:.5s;
     box-shadow:0px 0px 15px rgba(255,255,0,.8);
     transform:rotate(19deg) scale(1.2);
 }
-.icu .icu-animation-hover-tilt tr:nth-child(odd) td:nth-child(even) div:hover {
+.icu .icu-animation-hover-tilt tr:nth-child(odd) td:nth-child(even) .icu-word:hover {
     transition:box-shadow, transform;
     transition-duration:.5s;
     box-shadow:0px 0px 15px rgba(255,255,0,.8);
     transform:rotate(-19deg) scale(1.2);
 }
-.icu .icu-animation-hover-tilt tr:nth-child(even) td:nth-child(odd) div:hover {
+.icu .icu-animation-hover-tilt tr:nth-child(even) td:nth-child(odd) .icu-word:hover {
     transition:box-shadow, transform;
     transition-duration:.5s;
     box-shadow:0px 0px 15px rgba(255,255,0,.8);
     transform:rotate(-19deg) scale(1.2);
 }
-.icu .icu-animation-hover-tilt tr:nth-child(even) td:nth-child(even) div:hover {
+.icu .icu-animation-hover-tilt tr:nth-child(even) td:nth-child(even) .icu-word:hover {
     transition:box-shadow, transform;
     transition-duration:.5s;
     box-shadow:0px 0px 15px rgba(255,255,0,.8);
     transform:rotate(19deg) scale(1.2);
+}
+
+
+/*
+ * Default "key focused" animation
+ */
+.icu .icu-animation-clicked tr td .icu-word {
+    transition:background-color, transform;
+    transition-duration:.3s;
+    transform:scale(1);
+}
+.icu .icu-animation-clicked tr td .icu-word:active {
+    transition:background-color, transform;
+    transition-duration:.3s;
+    transform:scale(.8);
+}
+.icu .icu-animation-clicked tr td .icu-word:focus {
+    transition:background-color, transform;
+    transition-duration:.3s;
+    background-color:rgba(0,255,0,.3);
 }
 
 
@@ -229,16 +262,21 @@
     0% {
         margin-top:-150px;
         opacity:0;
+        transform:rotate(-360deg);
     }
     100% {
-        opacity:1;
+        transform:rotate(0deg);
     }
 }
 
-.icu .icu-animation-drop-from-sky div.icu-word {
+.icu .icu-animation-drop-from-sky .icu-word {
     animation-name:icu-animate-drop-from-sky;
-    animation-duration:1s;
+    animation-duration:.5s;
 }
+
+
+
+
 
 
 

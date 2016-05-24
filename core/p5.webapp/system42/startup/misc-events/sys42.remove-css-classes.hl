@@ -7,7 +7,7 @@
  * Pass in the ID of the widget to remove class on as [_arg], and the class to remove as [_class]
  */
 
-create-protected-event:sys42.remove-css-classes
+create-protected-event:sys42.delete-css-classes
 
   /*
    * Splitting upon every given CSS class caller wants to add

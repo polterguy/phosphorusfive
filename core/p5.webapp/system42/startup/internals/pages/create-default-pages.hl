@@ -4425,7 +4425,7 @@ create-widget:icu-example
             visible:false
           clear-widget:icu-builder
           find-widget-like:icu-input
-            class:icu-active
+            class:icu-active-key
           if:x:/-/*?value
             set-widget-property:x:/./-/*?value
               class:icu-empty-cell

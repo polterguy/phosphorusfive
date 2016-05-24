@@ -71,6 +71,7 @@ while:x:/-?value
           role:button
           widgets
             container
+              element:button
               class:icu-word icu-single-word box-shadow rounded-corners
               _x
               _y
@@ -97,17 +98,12 @@ while:x:/-?value
                   _language-builder:{_language-builder}
 
                 /*
-                 * Setting currently clicked "key" (widget) as "active" (green'ish), but first
-                 * removing any "active states" for previously active widgets, if there are any previously "active" "keys"
+                 * Adds "active" CSS class for currently clicked key, but first removing
+                 * any "active" states for previously clicked buttons
                  */
-                find-widget-like:{_keyboard-widget}
-                  class:icu-active
-                if:x:/-/*?value
-                  set-widget-property:x:/./-/*?value
-                    class:icu-empty-cell icu-key
-                set-widget-property:x:/../*/_event?value
-                  class:icu-empty-cell icu-active
-                  style:""
+                sys42.icu.icu-create-board-image-key-ass.closed
+                sys42.add-css-classes:x:/../*/_event?value
+                  _class:icu-active-key
               widgets
                 img
                   alt:No key, click to associate with new image word
