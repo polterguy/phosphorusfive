@@ -58,7 +58,7 @@ if:x:/../*/_output-widget?value
      * Since [_output-widget] is of type container, we signal that we should create the default CSS classes
      */
     add:x:/..
-      src:"_add-css-to-output:bool:true"
+      src:"_output-widget-is-container:bool:true"
 else
 
   /*
@@ -75,59 +75,7 @@ else
    * Since automatically created [_output-widget] is of type container, we signal that we should create the default CSS classes
    */
   add:x:/..
-    src:"_add-css-to-output:bool:true"
-
-
-/*
- * Helps making sure we hide or show text in output widget depending upon our settings
- */
-_set-css-classes
-  whoami
-  if
-    fetch:x:/0/0?value.bool
-      select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
-        :x:/../*/whoami/*/username?value
-
-    /*
-     * Text (or words more specifically) should be shown according to settings.
-     * Now checking if we should add the default CSS class for [_output-widget], which we should, only
-     * if it is of type [container]
-     */
-    if:x:/../*/_add-css-to-output?value
-      sys42.add-css-classes:{_output-widget}
-        _class:icu-output icu-show-text icu-animation-fade-in-word
-      sys42.delete-css-classes:{_output-widget}
-        _class:icu-remove-text
-
-    /*
-     * Setting default CSS classes for [_keyboard-widget], and making sure it is of HTML element type "table"
-     */
-    sys42.add-css-classes:{_keyboard-widget}
-      _class:icu-keyboard icu-show-text icu-animation-hover-tilt icu-animation-drop-from-sky icu-animation-clicked
-    set-widget-property:{_keyboard-widget}
-      element:table
-  else
-
-    /*
-     * Text (or words more specifically) should NOT be shown according to settings.
-     * Now checking if we should add the default CSS class for [_output-widget], which we should, only
-     * if it is of type [container]
-     */
-    if:x:/../*/_add-css-to-output?value
-      sys42.add-css-classes:{_output-widget}
-        _class:icu-output icu-hide-text
-      sys42.delete-css-classes:{_output-widget}
-        _class:icu-show-text
-
-    /*
-     * Setting default CSS classes for [_keyboard-widget], and making sure it is of HTML element type "table"
-     */
-    sys42.add-css-classes:{_keyboard-widget}
-      _class:icu-keyboard icu-hide-text icu-animation-hover-tilt icu-animation-drop-from-sky icu-animation-clicked
-    set-widget-property:{_keyboard-widget}
-      element:table
-
-
+    src:"_output-widget-is-container:bool:true"
 
 
 /*
@@ -178,11 +126,88 @@ sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
 
 
 /*
- * Making sure we signal that we should create the default CSS classes for [_output-widget], if we should
+ * Helps making sure we hide or show text in output widget depending upon our settings
  */
 add:x:/+
-  src:x:/../*/_add-css-to-output
-eval:x:/../*/_set-css-classes
+  src:x:/../*/_output-widget-is-container
+eval:x:/+
+_set-css-classes
+
+  /*
+   * Adding main ouput CSS, rounded corners CSS, and shadow CSS, but only if output widget is [container]
+   */
+  if:x:/../*/_output-widget-is-container?value
+    sys42.add-css-classes:{_output-widget}
+      _class:icu-output icu-box-shadow icu-rounded-corners
+
+  /*
+   * Adding default CSS classes to keyboard widget
+   */
+  sys42.add-css-classes:{_keyboard-widget}
+    _class:icu-keyboard icu-box-shadow icu-rounded-corners
+
+  /*
+   * Selecting settings for user, such that we can figure out if user wants to display text, animations, and such
+   */
+  whoami
+  select-data:x:/*/*/icu.settings/*/username/={0}/.
+    :x:/../*/whoami/*/username?value
+
+  /*
+   * Checking if settings for animations is turned on, and if so, turn on animations
+   */
+  if:x:/../*/select-data/*/*/animations?value
+
+    /*
+     * Checking if output widget is [container], before figuring out if we should add animations or not to it
+     */
+    if:x:/../*/_output-widget-is-container?value
+      sys42.add-css-classes:{_output-widget}
+        _class:icu-animation-fade-in-word
+
+    /*
+     * Adding animations for [_keyboard-widget]
+     */
+    sys42.add-css-classes:{_keyboard-widget}
+      _class:icu-animation-hover-tilt icu-animation-drop-from-sky icu-animation-clicked 
+
+  /*
+   * Checking if settings for displaying text for words is turned on
+   */
+  if:x:/../*/select-data/*/*/show-text?value
+
+    /*
+     * Checking if output widget is [container], before adding "show text" CSS class
+     */
+    if:x:/../*/_output-widget-is-container?value
+      sys42.add-css-classes:{_output-widget}
+        _class:icu-show-text
+
+    /*
+     * Setting default CSS classes for [_keyboard-widget], and making sure it is of HTML element type "table"
+     */
+    sys42.add-css-classes:{_keyboard-widget}
+      _class:icu-show-text
+  else
+
+    /*
+     * Checking if output widget is [container], before adding "hide text" CSS class
+     */
+    if:x:/../*/_output-widget-is-container?value
+      sys42.add-css-classes:{_output-widget}
+        _class:icu-hide-text
+
+    /*
+     * Setting default CSS classes for [_keyboard-widget]
+     */
+    sys42.add-css-classes:{_keyboard-widget}
+      _class:icu-hide-text
+
+  /*
+   * Making sure [_keyboard-widget] is of HTML element type "table"
+   */
+  set-widget-property:{_keyboard-widget}
+    element:table
 
 
 /*
@@ -247,7 +272,7 @@ set-widget-lambda-event:{_keyboard-widget}
       eval-x:x:/+/**
       create-widget
         parent:x:/../*/sys42.icu.get-output-widget?value
-        class:icu-word icu-single-word box-shadow rounded-corners
+        class:icu-word
         title:x:/../*/select-data/0/*/word?value
         widgets
           img
@@ -419,8 +444,12 @@ set-widget-lambda-event:{_keyboard-widget}
         parent:{_wrapper}
         class:icu-settings-widget
         widgets
+          literal
+            element:h4
+            class:prepend-bottom
+            innerValue:@"Settings"
           button:icu-settings-show-text
-            class:btn btn-default active
+            class:btn btn-default form-control prepend-bottom
             innerValue:@"<span class=""glyphicon glyphicon-subtitles""></span> Show text"
             title:Toggles text in document and boards
             oninit
@@ -434,11 +463,8 @@ set-widget-lambda-event:{_keyboard-widget}
                 fetch:x:/0/0?value.bool
                   select-data:x:/*/*/icu.settings/*/username/={0}/./*/show-text?value
                     :x:/../*/whoami/*/username?value
-                set-widget-property:x:/../*/_event?value
-                  class:btn btn-success active
-              else
-                set-widget-property:x:/../*/_event?value
-                  class:btn btn-default
+                sys42.toggle-css-classes:x:/../*/_event?value
+                  _class:active
             onclick
 
               /*
@@ -459,12 +485,62 @@ set-widget-lambda-event:{_keyboard-widget}
 
               /*
                * Toggle CSS classes that hides/shows text on widget, both on keyboard input, and
-               * on output widget
+               * on output widget. But first checking if output widget is [container]
                */
-              sys42.toggle-css-classes:{_output-widget}
-                _class:icu-show-text, icu-hide-text
+              list-widgets:{_output-widget}
+              if:x:/-/*?name
+                =:container
+                sys42.toggle-css-classes:{_output-widget}
+                  _class:icu-show-text, icu-hide-text
               sys42.toggle-css-classes:{_keyboard-widget}
                 _class:icu-show-text, icu-hide-text
+              sys42.icu.toggle-settings
+          button:icu-settings-animations
+            class:btn btn-default form-control
+            innerValue:@"<span class=""glyphicon glyphicon-flash""></span> Animations"
+            title:Toggles animations in document and boards
+            oninit
+
+              /*
+               * Making sure we associate the correct CSS class with button, depending upon whether
+               * or not text should be shown in boards and document
+               */
+              whoami
+              if
+                fetch:x:/0/0?value.bool
+                  select-data:x:/*/*/icu.settings/*/username/={0}/./*/animations?value
+                    :x:/../*/whoami/*/username?value
+                sys42.toggle-css-classes:x:/../*/_event?value
+                  _class:active
+            onclick
+
+              /*
+               * Toggling the showing of text in document and boards
+               */
+              whoami
+              if
+                fetch:x:/0/0?value.bool
+                  select-data:x:/*/*/icu.settings/*/username/={0}/./*/animations?value
+                    :x:/../*/whoami/*/username?value
+                update-data:x:/*/*/icu.settings/*/username/={0}/./*/animations?value
+                  :x:/../*/whoami/*/username?value
+                  src:bool:false
+              else
+                update-data:x:/*/*/icu.settings/*/username/={0}/./*/animations?value
+                  :x:/../*/whoami/*/username?value
+                  src:bool:true
+
+              /*
+               * Toggle CSS classes that hides/shows text on widget, both on keyboard input, and
+               * on output widget. But first checking if output widget is [container]
+               */
+              list-widgets:{_output-widget}
+              if:x:/-/*?name
+                =:container
+                sys42.toggle-css-classes:{_output-widget}
+                  _class:icu-animation-fade-in-word
+              sys42.toggle-css-classes:{_keyboard-widget}
+                _class:icu-animation-hover-tilt icu-animation-drop-from-sky icu-animation-clicked 
               sys42.icu.toggle-settings
 
 

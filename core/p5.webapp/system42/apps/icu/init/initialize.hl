@@ -20,13 +20,14 @@ if:x:/../*/select-data/[0,1]?value
   =:int:0
 
   /*
-   * Creating default settings
+   * Creating default settings, width/height equals 14x3 for default boards created
    */
   eval-x:x:/+/*/*/username
   insert-data
     icu.settings
       username:x:/../*/whoami/*/username?value
       show-text:bool:true
+      animations:bool:true
       width:int:14
       height:int:3
 

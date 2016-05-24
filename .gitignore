@@ -205,3 +205,7 @@ core/p5.webapp/web.config
 
 #auth file
 core/p5.webapp/auth
+
+#common files
+core/p5.webapp/common/public/*
+!core/p5.webapp/common/public/README.md

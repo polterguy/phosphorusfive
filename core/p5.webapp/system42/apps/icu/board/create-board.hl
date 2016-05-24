@@ -68,11 +68,10 @@ while:x:/-?value
         container
           element:td
           style:"width:7.1%;cursor:pointer;"
-          role:button
           widgets
             container
               element:button
-              class:icu-word icu-single-word box-shadow rounded-corners
+              class:icu-word
               _x
               _y
               _board

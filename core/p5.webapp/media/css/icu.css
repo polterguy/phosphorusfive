@@ -14,6 +14,9 @@
 .icu {
     position:relative;
     margin-top:25px;
+    width:calc(100% - 30px);
+    margin-left:15px;
+    margin-right:15px;
 }
 
 
@@ -54,9 +57,10 @@
     font-size:30px;
     color:rgba(0,100,0,.5);
     text-shadow:3px 3px 5px rgba(0,0,0,.3);
-    transition:color, text-shadow, transform;
+    transition:color, text-shadow, transform, opacity;
     transition-duration:.5s;
     transform:scale(1);
+    opacity:.3;
 }
 .icu .icu-toggle-settings:hover {
     color:rgba(0,130,0,1);
@@ -64,6 +68,7 @@
     transition:color, text-shadow, transform;
     transition-duration:.5s;
     transform:scale(1.5);
+    opacity:1;
 }
 
 
@@ -89,9 +94,7 @@
     border:solid 1px rgba(0,0,0,.2);
     z-index:25;
     border-radius:5px;
-    padding:25px;
-    min-width:200px;
-    min-height:200px;
+    padding:0px 25px 25px 25px;
     animation-name:icu-animate-settings;
     animation-duration:.5s;
 }
@@ -107,6 +110,12 @@
     padding:35px 15px 10px 32px;
     overflow:auto;
     min-height:165px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 
@@ -118,17 +127,23 @@
     display:block;
     float:left;
     margin-right:10px;
-    margin-bottom:25px;
-    background-color:rgba(255,255,255,.5);
+    margin-bottom:15px;
+    background-color:rgb(254,254,254);
     overflow:hidden;
     border:none 0;
     padding:0;
-}
-.icu .icu-single-word {
     width:75px;
 }
 .icu .icu-word .icu-image {
     float:left;
+}
+.icu .icu-keyboard .icu-word {
+    width:calc(100% - 8px);
+    margin-bottom:8px;
+    margin-right:8px;
+}
+.icu .icu-keyboard .icu-word .icu-image {
+    width:100%;
 }
 .icu .icu-show-text .icu-word .icu-text {
     float:left;
@@ -154,8 +169,10 @@
  */
 .icu .icu-keyboard {
     width:100%;
+    max-width:100%;
     border-spacing:0px;
     border-collapse:separate;
+    table-layout:fixed;
 }
 
 
@@ -164,7 +181,7 @@
  * CSS class for currently "active" keyboard key
  */
 .icu .icu-active-key {
-    background-color:rgba(0,200,0,.3);
+    background-color:rgba(0,255,0,.1);
 }
 
 
@@ -243,15 +260,15 @@
     transition-duration:.3s;
     transform:scale(1);
 }
+.icu .icu-animation-clicked tr td .icu-word:focus {
+    transition:background-color, transform;
+    transition-duration:.3s;
+    background-color:rgba(0,255,0,.15);
+}
 .icu .icu-animation-clicked tr td .icu-word:active {
     transition:background-color, transform;
     transition-duration:.3s;
     transform:scale(.8);
-}
-.icu .icu-animation-clicked tr td .icu-word:focus {
-    transition:background-color, transform;
-    transition-duration:.3s;
-    background-color:rgba(0,255,0,.3);
 }
 
 
@@ -268,10 +285,24 @@
         transform:rotate(0deg);
     }
 }
-
 .icu .icu-animation-drop-from-sky .icu-word {
     animation-name:icu-animate-drop-from-sky;
     animation-duration:.5s;
+}
+
+
+
+
+
+
+/*
+ * Default shadow and rounded corners for words
+ */
+.icu .icu-box-shadow .icu-word {
+    box-shadow:2px 2px 1px rgba(0,0,0,.2);
+}
+.icu .icu-rounded-corners .icu-word {
+    border-radius:3px;
 }
 
 
@@ -286,8 +317,18 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 .icu-create-board {
-    padding:15px 0px;
+    padding:15px 0px 15px 0px;
     position:relative;
     overflow:auto;
 }
@@ -426,7 +467,7 @@
 }
 
 .icu-file-in-dropzone {
-    border-radius:15px;
+    border-radius:5px;
     animation-name:animate-file-in-dropzone;
     animation-duration:.5s;
     animation-iteration-count:infinite;
