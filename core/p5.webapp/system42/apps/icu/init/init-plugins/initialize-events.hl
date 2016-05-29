@@ -479,9 +479,9 @@ set-widget-lambda-event:{_icu-keyboard-widget}
        */
       eval-x:x:/+/*
       return
-        x:x:/../*/get-widget-property/*/*/_x?value
-        y:x:/../*/get-widget-property/*/*/_y?value
-        image:x:/../*/get-widget-property/*/*/_image?value
+        x:x:/..if/*/get-widget-property/*/*/_x?value
+        y:x:/..if/*/get-widget-property/*/*/_y?value
+        image:x:/..if/*/get-widget-property/*/*/_image?value
         id:x:/../*/find-widget-like/*?value
 
 

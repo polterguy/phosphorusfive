@@ -18,4 +18,5 @@ action-name:Type word
  *
  */
 configure-action
+  sys42.icu.get-active-key
   sys42.show-code-window:x:/..

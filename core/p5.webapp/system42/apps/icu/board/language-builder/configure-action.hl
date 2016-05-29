@@ -9,6 +9,15 @@
 
 
 /*
+ * Passing in [_image] to whomever needs it
+ */
+set:x:/../**/={_image}?value
+  src:x:/../*/_image?value
+
+
+
+
+/*
  * Iterating all actions in plugin folder, and allows user to use action
  */
 list-files:/system42/apps/icu/board/language-builder/action-plugins/
@@ -86,7 +95,13 @@ create-widget:icu-configure-action
          * Configuring 1st action in list of actions
          */
         load-file:x:/../*/get-page-value/*/*/0?value
+        eval-x:x:/+/*/_image
         eval:x:/..else/*/load-file/*/*/configure-action
+
+          /*
+           * Passing in [_image] as argument
+           */
+          _image:x:/../*/_image?value
 
           /*
            * Passing in "on finished" lambda object, configuration of action should invoke when
@@ -205,5 +220,6 @@ create-widget:icu-configure-action
                  * Configuring events selected
                  */
                 sys42.icu.configure-iterated-event
+                  _image:{_image}
 
 
