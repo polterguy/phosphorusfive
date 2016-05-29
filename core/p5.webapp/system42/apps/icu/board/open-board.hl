@@ -5,35 +5,66 @@
  */
 
 
+
+
 /*
- * Passing in keyboard widget and language builder widget arguments to other parts of file
+ * Passing in arguments to whomever needs them
  */
-_language-builder
-sys42.icu.get-language-builder-widget
 sys42.icu.get-keyboard-widget
-set:x:/../**/={_keyboard-widget}?value
+set:x:/../**/={_icu-keyboard-widget}?value
   src:x:/../*/sys42.icu.get-keyboard-widget?value
-set:x:/../**/={_language-builder}|/../*/_language-builder?value
-  src:x:/../*/sys42.icu.get-language-builder-widget?value
+
+
+
+
+/*
+ * Retrieving active board, and applying as "argument" to whomever needs it
+ */
+get-page-value:sys42.icu.active-board
+set:x:/../**/={_board}?value
+  src:x:/../*/get-page-value/*?value
+
+
 
 
 /*
  * Clears keyboard widget, in case it has existing "keys", or other widgets
  */
-clear-widget:{_keyboard-widget}
+clear-widget:{_icu-keyboard-widget}
+
+
 
 
 /*
  * Retrieving current board
  */
 select-data:x:@"/*/*/icu.board/""=:guid:{0}"""
-  :x:/../*/_board?value
+  :{_board}
+
+
 
 
 /*
- * Creates the board
+ * Figuring out percentage width of "td" HTML elements
+ */
+/:double:100
+  _:x:/../*/select-data/*/*/size/*/width?value.double
+
+
+
+
+/*
+ * Creates the board as tr/td widgets and appending into keyboard widget HTML table
+ * [_board-widget] will contain a bunch of [create-widget] invocations after [while] is finished evaluating
  */
 _board-widgets
+
+
+
+
+/*
+ * Looping in height direction, creating one "tr" HTML widget for each row
+ */
 _cur-y:int:0
 while:x:/-?value
   <:x:/../*/select-data/*/*/size/*/height?value
@@ -43,10 +74,14 @@ while:x:/-?value
    */
   add:x:/../*/_board-widgets
     src
-      create-container-widget
+      create-widget
         element:tr
-        parent:{_keyboard-widget}
+        parent:{_icu-keyboard-widget}
         widgets
+
+  /*
+   * Looping in width direction, creating on "td" HTML widget for each cell
+   */
   _cur-x:int:0
   while:x:/-?value
     <:x:/../*/select-data/*/*/size/*/width?value
@@ -60,49 +95,31 @@ while:x:/-?value
     set:x:/..while/**/_y?value
       src:x:/../*/_cur-y?value
 
-    set:x:/..while/**/_board?value
-      src:x:/../*/_board?value
+    /*
+     * Settings width of "td" HTML element, according to how many cells we have in board
+     */
+    set:x:/..while/*/add/*/src/*/container/*/style?value
+      src:"width:{0}%;"
+        :x:/../*/\/?value
 
+    /*
+     * Creating default "key" widget for each word in board
+     */
     add:x:/../*/_board-widgets/0/-/*/widgets
       src
         container
           element:td
-          style:"width:7.1%;cursor:pointer;"
+          style
           widgets
             container
               element:button
               class:icu-word
               _x
               _y
-              _board
+              _image
               onclick
+                sys42.icu.on-key-clicked:x:/../*/_event?value
 
-                /*
-                 * Retrieving board, x and y position ("key") of where insertion of image shall be done,
-                 * and which [_board] (database id) we're currently using
-                 */
-                get-widget-property:x:/../*/_event?value
-                  _x
-                  _y
-                  _board
-
-                /*
-                 * Invoking Widget lambda event responsible for creating new picture for "key".
-                 * [_language-builder] is "databound" at the beginning of file towards the ID of
-                 * widget to use for "building language"
-                 */
-                add:x:/+
-                  src:x:/../*/get-widget-property/*/*
-                sys42.execute-lisp-file:/system42/apps/icu/board/create-image-key-association.hl
-                  _language-builder:{_language-builder}
-
-                /*
-                 * Adds "active" CSS class for currently clicked key, but first removing
-                 * any "active" states for previously clicked buttons
-                 */
-                sys42.icu.icu-create-board-image-key-ass.closed
-                sys42.add-css-classes:x:/../*/_event?value
-                  _class:icu-active-key
               widgets
                 img
                   alt:No key, click to associate with new image word
@@ -114,14 +131,14 @@ while:x:/-?value
 
     /*
      * Checking if current x/y position has a picture associated with it, and if so, creating this association by
-     * using this image as background image for "key" (widget)
+     * using this image as background image for "key" (widget), which was created above
      */
     if:x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/.
       :x:/..while/..while/*/_cur-x?value.string
       :x:/../*/_cur-y?value.string
 
       /*
-       * Currently iterated x/y position has a picture associated with it.
+       * Currently iterated x/y position has an image associated with it.
        * Changing its CSS class, and using the specific [thumb] image through the [style] property of widget.
        * But first we must retrieve image from database, which should be found in [icu.image]
        */
@@ -134,35 +151,39 @@ while:x:/-?value
 
         /*
          * [icu.image] referenced in [icu.board]'s [x]/[y] position actually exists.
-         * Changing CSS class of currently iterated "key", and associating image with
-         * style's background property. In addition, making sure [onclick] becomes
-         * lambda object from [action] of image/key association, in addition to having
-         * [innerValue] becoming the word from [icu.image]
+         * Applying image source, alternate text, and text for word to image widget, in addition to adding
+         * [_image] property to button
          */
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/src?value
-          src:x:/..if/..if/*/select-data/*/*/thumb?value
+          src:x:/..if/..if/*/select-data/*/*/medium?value
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/alt?value
           src:x:/..if/..if/*/select-data/*/*/word?value
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
           src:x:/..if/..if/*/select-data/*/*/word?value
+        set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/_image?value
+          src:x:/..if/..if/*/select-data/*?value
 
         /*
-         * Making sure [onclick] becomes lambda from [action] of item, first removing
-         * existing (default) [onclick], which is the "create new image/key/action association"
+         * Making sure [onclick] becomes lambda object from [action] of [item]
          */
-        set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick/*
         add:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick
           src:x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/./*/action/*
             :x:/..while/..while/*/_cur-x?value.string
             :x:/../*/_cur-y?value.string
-    else-if:x:/../*/_language-builder?value
-      =
-      set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick/*
+
+    else
+
+      /*
+       * Currently iterated position does not have an image associated with it, hence adding 
+       * "associate with image" logic for key's [onclick] event handler
+       */
       add:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick
         src
-          sys42.info-window:No language builder widget supplied when ICU was instantiated
-            _error:true
-            _time:more
+
+          /*
+           * Invokes file responsible for configuring currently "active" key
+           */
+          sys42.execute-lisp-file:/system42/apps/icu/board/language-builder/configure-key.hl
 
     /*
      * Incrementing x position, which is condition of inner [while] loop
@@ -177,7 +198,6 @@ while:x:/-?value
   set:x:/../*/_cur-y?value
     +:x:/../*/_cur-y?value
       _:int:1
-
 
 
 

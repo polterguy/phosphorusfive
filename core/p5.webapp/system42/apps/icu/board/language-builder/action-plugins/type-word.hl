@@ -1,0 +1,21 @@
+
+/*
+ * Action that "types out word", and nothing else
+ */
+
+
+
+
+/*
+ * Name of action
+ */
+action-name:Type word
+
+
+
+
+/*
+ *
+ */
+configure-action
+  sys42.show-code-window:x:/..

@@ -805,6 +805,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'wait':
         case 'split':
         case 'join':
+        case 'to-upper':
+        case 'to-lower':
         case '+':
         case '-':
         case '/': // TODO: why doesn't this work ...?

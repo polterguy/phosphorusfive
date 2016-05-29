@@ -1,0 +1,101 @@
+
+/*
+ * Responsible for creating our settings widget
+ */
+
+
+
+
+/*
+ * Checking if settings widget is already visible, and if so, simply deleting it, and returning
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:icu-settings-widget
+
+  /*
+   * Deleting existing settings widget
+   */
+  delete-widget:icu-settings-widget
+
+  /*
+   * Returning early
+   */
+  return
+
+
+
+
+/*
+ * Loading all settings plugins from plugin folder
+ */
+list-files:/system42/apps/icu/misc/settings-plugins/
+  filter:hl
+for-each:x:/-/*?name
+
+  /*
+   * Adding file as button to input group
+   */
+  load-file:x:/..for-each/*/_dp?value
+  add:x:/../*/create-widget/*/widgets
+    src:x:/./-/*/*
+
+
+
+
+/*
+ * Passing in arguments to other parts of file that needs it
+ */
+sys42.icu.get-icu-wrapper
+set:x:/../**/={_icu-wrapper}?value
+  src:x:/../*/sys42.icu.get-icu-wrapper?value
+
+
+
+
+/*
+ * Sorts button widgets, such that they have "toggle buttons" at the top
+ */
+sort:x:/../*/create-widget/*/widgets/*(!/literal/=header)
+  if:x:/./*/_lhs/#/*/_type?value
+    =:toggle
+    return:int:-1
+  else-if:x:/./*/_rhs/#/*/_type?value
+    =:toggle
+    return:int:1
+set:x:/../*/create-widget/*/widgets/*(!/literal/=header)
+add:x:/../*/create-widget/*/widgets
+  src:x:/../*/sort/*
+
+
+
+
+/*
+ * Checking if there's both at least one "action" type and on "toggle" type in settings widgets, and
+ * if so, append an horizontal ruler between them
+ */
+if:x:/../*/create-widget/*/widgets/*/*/_type/=action
+  and:x:/../*/create-widget/*/widgets/*/*/_type/=toggle
+  insert-before:x:/../*/create-widget/*/widgets/*/*/_type/=action/./[0,1]
+    src
+      void
+        element:hr
+
+
+
+
+/*
+ * Creates our settings widget
+ */
+create-widget:icu-settings-widget
+  parent:{_icu-wrapper}
+  class:icu-settings-widget
+  widgets
+
+    /*
+     * Header for settings
+     */
+    literal:header
+      element:h4
+      class:prepend-bottom
+      innerValue:Settings

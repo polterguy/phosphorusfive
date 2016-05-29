@@ -152,13 +152,14 @@
     <Content Include="common\private\web.config" />
     <Content Include="media\images\star-rating.png" />
     <Content Include="media\css\star-rating.css" />
-    <Content Include="media\css\icu.css" />
-    <Content Include="media\images\rough_paper.jpg" />
     <Content Include="media\images\star-value-1.png" />
     <Content Include="media\images\star-value-2.png" />
     <Content Include="media\images\star-value-3.png" />
     <Content Include="media\images\star-value-4.png" />
     <Content Include="media\images\star-value-5.png" />
+    <Content Include="system42\apps\icu\media\icu.css" />
+    <Content Include="system42\apps\icu\media\images\paper-texture.jpg" />
+    <Content Include="system42\apps\icu\media\icu-language-builder.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -427,22 +428,29 @@
     <None Include="system42\startup\misc-events\sys42.get-pages-database-creation-script.hl" />
     <None Include="system42\cms\templates\no-header-menu.hl" />
     <None Include="system42\cms\page-editor\editors\controls\add-widget.hl" />
-    <None Include="system42\apps\icu\launch.hl" />
-    <None Include="system42\apps\icu\board\create-board.hl" />
-    <None Include="system42\apps\icu\init\initialize.hl" />
-    <None Include="system42\apps\icu\board\create-image-key-association.hl" />
-    <None Include="system42\apps\icu\board\actions\type-word.hl" />
-    <None Include="system42\apps\icu\board\actions\open-board.hl" />
-    <None Include="system42\apps\icu\board\actions\README.md" />
-    <None Include="system42\apps\icu\board\actions\delete-word.hl" />
-    <None Include="system42\apps\icu\board\actions\empty-sheet.hl" />
-    <None Include="system42\apps\icu\board\actions\type-word-open-board.hl" />
-    <None Include="system42\apps\icu\board\actions\open-board-common\open-board-common.hl" />
-    <None Include="system42\apps\icu\board\create-key-action-association.hl" />
-    <None Include="system42\apps\icu\board\image-help\search-for-image.hl" />
     <None Include="system42\startup\misc-events\sys42.toggle-css-classes.hl" />
     <None Include="system42\startup\misc-events\sys42.add-css-classes.hl" />
     <None Include="system42\startup\misc-events\sys42.remove-css-classes.hl" />
+    <None Include="system42\apps\icu\board\language-builder\configure-key.hl" />
+    <None Include="system42\apps\icu\icu.hl" />
+    <None Include="system42\apps\icu\init\initialize.hl" />
+    <None Include="system42\apps\icu\init\init-plugins\README.md" />
+    <None Include="system42\apps\icu\board\language-builder\search-plugins\flickr.hl" />
+    <None Include="system42\apps\icu\board\language-builder\search-plugins\README.md" />
+    <None Include="system42\apps\icu\board\language-builder\search-plugins\local-search.hl" />
+    <None Include="system42\apps\icu\misc\settings-plugins\animations.hl" />
+    <None Include="system42\apps\icu\misc\settings-plugins\show-text.hl" />
+    <None Include="system42\apps\icu\misc\settings-plugins\README.md" />
+    <None Include="system42\apps\icu\misc\settings-plugins\edit-key.hl" />
+    <None Include="system42\apps\icu\init\init-plugins\initialize-css-classes.hl" />
+    <None Include="system42\apps\icu\init\init-plugins\initialize-database.hl" />
+    <None Include="system42\apps\icu\init\init-plugins\initialize-events.hl" />
+    <None Include="system42\apps\icu\misc\show-settings.hl" />
+    <None Include="system42\apps\icu\board\open-board.hl" />
+    <None Include="system42\apps\icu\board\language-builder\configure-action.hl" />
+    <None Include="system42\apps\icu\board\language-builder\action-plugins\type-word.hl" />
+    <None Include="system42\apps\icu\board\language-builder\action-plugins\open-board.hl" />
+    <None Include="system42\apps\icu\board\language-builder\action-plugins\delete-word.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -483,8 +491,15 @@
     <Folder Include="system42\apps\icu\" />
     <Folder Include="system42\apps\icu\board\" />
     <Folder Include="system42\apps\icu\init\" />
-    <Folder Include="system42\apps\icu\board\actions\" />
-    <Folder Include="system42\apps\icu\board\actions\open-board-common\" />
-    <Folder Include="system42\apps\icu\board\image-help\" />
+    <Folder Include="system42\apps\icu\board\language-builder\" />
+    <Folder Include="system42\apps\icu\media\" />
+    <Folder Include="system42\apps\icu\media\images\" />
+    <Folder Include="system42\apps\icu\misc\" />
+    <Folder Include="system42\apps\icu\init\init-plugins\" />
+    <Folder Include="system42\apps\icu\board\language-builder\search-plugins\" />
+    <Folder Include="system42\apps\icu\misc\settings-plugins\" />
+    <Folder Include="system42\apps\icu\media\images\user-space\" />
+    <Folder Include="system42\apps\icu\media\images\user-space\common-keys\" />
+    <Folder Include="system42\apps\icu\board\language-builder\action-plugins\" />
   </ItemGroup>
 </Project>

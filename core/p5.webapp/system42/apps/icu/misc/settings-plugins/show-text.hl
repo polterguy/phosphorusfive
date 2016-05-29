@@ -1,0 +1,57 @@
+
+
+/*
+ * Show-text settings plugin button
+ */
+button
+  _type:toggle
+  class:btn btn-default form-control prepend-top
+  innerValue:@"<span class=""glyphicon glyphicon-subtitles""></span> Show text"
+  title:Toggles text in document and boards
+  oninit
+
+    /*
+     * Making sure we associate the correct CSS class with button, depending upon whether
+     * or not text should be shown in boards and document
+     */
+    if
+      sys42.icu.get-setting:show-text
+
+      /*
+       * Text should be shown for words in output widget and keyboard widget, making
+       * sure we signal this fact by changing the CSS class of the "Text button" accordingly
+       */
+      sys42.toggle-css-classes:x:/../*/_event?value
+        _class:active
+
+  onclick
+
+    /*
+     * Toggling the showing of text in document and boards
+     */
+    if
+      sys42.icu.get-setting:show-text
+
+      /*
+       * Text was "on", turning it "off"
+       */
+      sys42.icu.set-setting:show-text
+        _src:bool:false
+    else
+
+      /*
+       * Text was "off", turning it "on"
+       */
+      sys42.icu.set-setting:show-text
+        _src:bool:true
+
+    /*
+     * Re-applying settings
+     */
+    sys42.icu.on-apply-settings
+
+    /*
+     * Toggling "active" state on settings button
+     */
+    sys42.toggle-css-classes:x:/../*/_event?value
+      _class:active

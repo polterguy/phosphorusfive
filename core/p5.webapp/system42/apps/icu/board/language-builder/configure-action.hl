@@ -1,0 +1,209 @@
+
+/*
+ * Configures currently "active" key in keyboard, and allows user to
+ * choose "action" to trigger when key is clicked. Expects an [_image] parameter, being
+ * the database ID of a pre-existing [icu.image] object
+ */
+
+
+
+
+/*
+ * Iterating all actions in plugin folder, and allows user to use action
+ */
+list-files:/system42/apps/icu/board/language-builder/action-plugins/
+for-each:x:/-/*?name
+
+  /*
+   * Used as buffer for "choose action" button
+   */
+  _buffer
+    button
+      class:icu-configure-action-button box-shadow rounded-corners
+      _file
+      onclick
+        sys42.toggle-css-classes:x:/../*/_event?value
+          _class:icu-selected-action
+      widgets
+        span
+          class:glyphicon glyphicon-flash
+          innerValue:&nbsp;
+        span
+          innerValue
+
+  /*
+   * Extracting "action name" from currently iterated action plugin file, and making sure
+   * button is associated with correct image file, and "action name"
+   */
+  load-file:x:/./*/_dp?value
+  set:x:/..for-each/*/_buffer/*/*/*/span/[1,2]/*/innerValue?value
+    src:x:/./-/*/*/action-name?value
+  set:x:/..for-each/*/_buffer/*/*/_file?value
+    src:x:/..for-each/*/_dp?value
+  add:x:/../*/create-widget/*/widgets/*/*/*/container/=icu-configure-action-body/*
+    src:x:/..for-each/*/_buffer/*
+
+
+
+
+/*
+ * Creating modal window, using main wrapper as parent
+ */
+sys42.icu.get-icu-wrapper
+eval-x:x:/+/*/parent
+create-widget:icu-configure-action
+  class:icu-search-modal-bg
+  parent:x:/../*/sys42.icu.get-icu-wrapper?value
+
+  /*
+   * Helper events for configuration of actions for keys
+   */
+  events
+
+    /*
+     * Configures the first selected event from "set-page-value:sys42.icu.actions-to-configure", and
+     * removes it from the list, updates the page value, and recursively calls itself
+     */
+    sys42.icu.configure-iterated-event
+
+      /*
+       * Retrieving first action from list of page values
+       */
+      get-page-value:sys42.icu.actions-to-configure
+      if:x:/../*/get-page-value/*/*/*
+        not
+
+        /*
+         * No more actions, now we can configure key towards action.
+         * Configuring all actions towards key, and returning after having deleted modal window
+         */
+        delete-widget:icu-configure-action
+        return
+
+      else
+
+        /*
+         * Configuring 1st action in list of actions
+         */
+        load-file:x:/../*/get-page-value/*/*/0?value
+        eval:x:/..else/*/load-file/*/*/configure-action
+
+          /*
+           * Passing in "on finished" lambda object, configuration of action should invoke when
+           * configuration is done
+           */
+          _on-finished
+
+            /*
+             * Removing 1st item from list, and recursively calling self
+             */
+            set:x:/../*/get-page-value/*/*/0
+            add:x:/../*/set-page-value/*/*
+              src:x:/../*/get-page-value/*/*/*
+            set-page-value:sys42.icu.actions-to-configure
+              src
+                files
+            sys42.icu.configure-iterated-event
+
+  widgets
+    container
+      class:icu-search-modal-window rounded-corners box-shadow air-padding-more
+      widgets
+
+        /*
+         * Close "configure action" modal window button
+         */
+        literal:icu-hide-configure-action
+          element:a
+          href:#
+          innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+          class:icu-close-dialog
+          onclick
+            delete-widget:icu-configure-action
+        literal:icu-configure-action-header
+          element:h3
+          innerValue:Action ...?
+        void
+          element:hr
+
+        /*
+         * Contains all "action" widgets
+         */
+        container:icu-configure-action-body
+          widgets
+
+        /*
+         * Give some "space" for button row at the bottom of modal window
+         */
+        void
+          style:"clear:both;"
+          element:hr
+
+        /*
+         * Button row at the bottom of preview dialog, to allow user to finish configuring actions
+         */
+        container
+          class:prepend-top
+          style:"width:100%;"
+          widgets
+
+            /*
+             * Cancel configure action button
+             */
+            button:icu-configure-action-cancel
+              class:btn-default btn pull-right
+              innerValue:@"<span class=""glyphicon glyphicon-remove""></span> Cancel"
+              style:"width:100px;"
+              onclick
+
+                /*
+                 * User clicked "cancel", simply closing window
+                 */
+                delete-widget:icu-configure-action
+
+            /*
+             * OK configure image button (selects image, and creates a new [icu.word] entry in database)
+             */
+            button:icu-configure-action-ok
+              class:btn-default btn pull-right
+              innerValue:@"<span class=""glyphicon glyphicon-ok""></span> OK"
+              style:"width:100px;margin-right:10px;"
+              onclick
+
+                /*
+                 * Finding "selected actions"
+                 */
+                find-widget-like:icu-configure-action
+                  class:icu-selected-action
+                if:x:/-/*?count
+                  =:int:0
+
+                  /*
+                   * No actions were selected
+                   */
+                  sys42.info-window:You need to select at least one action for key
+                    _error:true
+                    _time:more
+                  return
+
+                /*
+                 * Retrieving all filename for currently selected actions
+                 */
+                get-widget-property:x:/../*/find-widget-like/*?value
+                  _file
+
+                /*
+                 * Putting all files into page value, and starting iteration of configuration of actions
+                 */
+                add:x:/+/*/*
+                  src:x:/../*/get-widget-property/*/*
+                set-page-value:sys42.icu.actions-to-configure
+                  src
+                    files
+
+                /*
+                 * Configuring events selected
+                 */
+                sys42.icu.configure-iterated-event
+
+

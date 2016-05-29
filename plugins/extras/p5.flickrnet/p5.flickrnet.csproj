@@ -33,6 +33,7 @@
     <Reference Include="FlickrNet">
       <HintPath>..\..\..\resources\FlickrNet.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

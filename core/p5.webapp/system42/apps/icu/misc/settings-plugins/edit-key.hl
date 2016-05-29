@@ -1,0 +1,66 @@
+
+
+/*
+ * Edit key settings plugin button
+ */
+button
+  _type:action
+  class:btn btn-primary form-control prepend-top
+  innerValue:@"<span class=""glyphicon glyphicon-wrench""></span> Edit active key"
+  title:Edits currently 'active' key
+  oninit
+
+    /*
+     * Checks to see if there's an active key, and if not, disabling button
+     */
+    sys42.icu.get-active-key
+    if:x:/-/*
+      not
+
+      /*
+       * No active key, disabling button
+       */
+      set-widget-property:x:/../*/_event?value
+        disabled
+      sys42.add-css-classes:x:/../*/_event?value
+        _class:disabled
+
+  events
+
+    /*
+     * Callback sink, invoked when a key becomes "active"
+     */
+    sys42.icu.on-key-is-active
+
+      /*
+       * Enabling settings button
+       */
+      delete-widget-property:x:/../*/_event?value
+        disabled
+      sys42.delete-css-classes:x:/../*/_event?value
+        _class:disabled
+
+    /*
+     * Callback sink, invoked when key becomes inactive (no keys are active)
+     */
+    sys42.icu.on-no-active-key
+
+      /*
+       * Disabling settings button
+       */
+      set-widget-property:x:/../*/_event?value
+        disabled
+      sys42.add-css-classes:x:/../*/_event?value
+        _class:disabled
+
+  onclick
+
+    /*
+     * Invoking file responsible for editing key
+     */
+    sys42.execute-lisp-file:/system42/apps/icu/board/language-builder/configure-key.hl
+
+    /*
+     * Hding settings to give user more "room"
+     */
+    sys42.icu.toggle-settings-widget

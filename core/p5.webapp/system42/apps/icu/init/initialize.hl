@@ -1,58 +1,403 @@
 
+
 /*
- * Initializes ICU by making sure there exists at least one "root/home board" for user,
- * and verifies other settings for user and ICU are created
+ * Initializes the ICU app
+ *
+ * Verifies arguments are sane, and possibly creates a couple of supporting widgets, such as keyboard widget,
+ * output widget, and language builder widget, unless they are explicitly supplied by caller, or signaled
+ * by caller that they should not be created.
  */
 
 
-/*
- * Necessary to filter database according to user
- */
-whoami
 
 
 /*
- * Checking if there exists default settings for user, and if not, creating them
+ * Sanity checker, if no [_icu-wrapper] is supplied, we throw an exception.
+ * We also throw an exception if [_icu-wrapper] widget is not of type container, 
+ * or is not "div" HTML element.
  */
-select-data:x:/*/*/icu.settings/*/username/={0}/.?count
-  :x:/../*/whoami/*/username?value
-if:x:/../*/select-data/[0,1]?value
-  =:int:0
+if:x:/../*/_icu-wrapper?value
 
   /*
-   * Creating default settings, width/height equals 14x3 for default boards created
+   * [_icu-wrapper] was supplied, making sure it's of type [container], and HTML element type "div"
    */
-  eval-x:x:/+/*/*/username
-  insert-data
-    icu.settings
-      username:x:/../*/whoami/*/username?value
-      show-text:bool:true
-      animations:bool:true
-      width:int:14
-      height:int:3
+  list-widgets:x:/../*/_icu-wrapper?value
+  get-widget-property:x:/-/0?value
+    element
+  if:x:/-2/0?name
+    !=:container
+    or:x:/./-/*/*?value
+      !=:div
+
+    /*
+     * Wrapper widget was not of type container/div
+     */
+    throw:The ICU [_icu-wrapper] widget must be of type [container] and have an HTML [element] of 'div'
+
+else
+
+  /*
+   * No wrapper widget was supplied. 
+   * At the very minimum, an [_icu-wrapper] widget must be supplied to ICU
+   */
+  throw:No [_icu-wrapper] supplied to ICU. The ICU app needs a wrapper widget of type [container] and HTML element 'div'
+
+
 
 
 /*
- * Checking if there exists a "root/home board" for user, and if not, creating a default "home" board
+ * Now we check if an [_icu-output-widget] was supplied, and if not, we create one, and append it into [_icu-wrapper].
+ * If an [_icu-output-widget] was supplied, we verify it is either of type;
+ *
+ *  - [container] and HTML element "div"
+ *  - [literal]   and HTML element "textarea"
+ *  - [void]      and HTML element "input"
+ *
+ * If it is not of the above configuration combination, we throw an exception.
+ *
+ * If no [_icu-output-widget] was supplied, we create a default one, of type [container], 
+ * with HTML element being "div", and append it into [_icu-wrapper]
  */
-select-data:x:/*/*/icu.board/*/username/={0}/./*/name/=home?count
-  :x:/../*/whoami/*/username?value
-if:x:/../*/select-data/[1,2]?value
-  =:int:0
+if:x:/../*/_icu-output-widget?value
 
   /*
-   * User has no "home board" associated with profile, creating empty "home" board.
-   * But first retrieving settings, to figure out how big our board should be.
+   * Output widget was supplied, retrieving its HTML element type, to verify that the combination of 
+   * widget type and HTML element is a configuration we can accept
    */
-  select-data:x:/*/*/icu.settings/*/username/={0}/.
-    :x:/../*/whoami/*/username?value
-  eval-x:x:/+/*/**(/username|/width|/height)
-  insert-data
-    icu.board
-      username:x:/../*/whoami/*/username?value
-      name:home
-      size
-        width:x:/..if/*/select-data/*/*/width?value
-        height:x:/..if/*/select-data/*/*/height?value
-      items
+  list-widgets:x:/../*/_icu-output-widget?value
+  get-widget-property:x:/-/0?value
+    element
+  if:x:/-2/0?name
+    =:literal
+    and:x:/./-/*/*?value
+      !=:textarea
 
+    /*
+     * Output widget was of type [container], but not HTML [element] "textarea"
+     */
+    throw:The ICU [_icu-output-widget] widget must be either [container]/div, [literal]/textarea or [void]/input
+
+  else-if:x:/-3/0?name
+    =:void
+    and:x:/./-2/*/*?value
+      !=:input
+
+    /*
+     * Output widget was of type [void], but not HTML [element] "input"
+     */
+    throw:The ICU [_icu-output-widget] widget must be either [container]/div, [literal]/textarea or [void]/input
+
+  else-if:x:/-4/0?name
+    =:container
+    and:x:/./-3/*/*?value
+      !=:div
+
+    /*
+     * Output widget was of type [container], but not HTML [element] "input"
+     */
+    throw:The ICU [_icu-output-widget] widget must be either [container]/div, [literal]/textarea or [void]/input
+
+  else-if:x:/-5/0?name
+    not
+
+    /*
+     * Output widget was not found
+     */
+    throw:The [_icu-output-widget] widget didn't exist
+
+  /*
+   * If we come this far, then the output widget exists, and is of a configuration we can somehow handle
+   */
+
+else
+
+  /*
+   * No [_icu-output-widget] was supplied, hence we create a default, being of type [container]
+   */
+  eval-x:x:/+/*
+  create-widget
+    parent:x:/../*/_icu-wrapper?value
+
+  /*
+   * Making sure other parts of file has access to output widget's ID
+   */
+  add:x:/..
+    src:"_icu-output-widget:{0}"
+      :x:/././-?value
+
+
+
+
+/*
+ * If an [_icu-language-builder] was supplied, we verify it is of type [container].
+ * Alternatively, if [_icu-create-language-builder] is true, we create a "default" language builder.
+ *
+ * We also include the CSS file for language builder, if language building is turned "on"
+ */
+if:x:/../*/_icu-language-builder?value
+
+  /*
+   * Language builder was supplied, verifying it's of type [container], before including CSS files
+   */
+  list-widgets:x:/../*/_icu-language-builder?value
+  if:x:/-/0?name
+    !=:container
+
+    /*
+     * Language builder was not of type [container]
+     */
+    throw:The ICU [_icu-language-builder] widget, must point to an existing [container] widget if supplied
+
+  /*
+   * Including CSS file on page for language builder
+   */
+  include-stylesheet-file:/system42/apps/icu/media/icu-language-builder.css
+
+else-if:x:/../*/_icu-create-language-builder?value.bool
+  =:bool:true
+
+  /*
+   * User wants a language builder widget automatically created
+   */
+  eval-x:x:/+/*
+  create-widget
+    parent:x:/../*/_icu-wrapper?value
+
+  /*
+   * Making sure other parts of file has access to language builder's ID
+   */
+  add:x:/..
+    src:"_icu-language-builder:{0}"
+      :x:/././-?value
+
+  /*
+   * Including CSS file on page for language builder
+   */
+  include-stylesheet-file:/system42/apps/icu/media/icu-language-builder.css
+
+
+
+
+/*
+ * Now we check if an [_icu-keyboard-widget] was supplied, and if not, we create one, and append it into [_icu-wrapper].
+ * If an [_icu-keyboard-widget] was supplied, we verify it is of type [container]
+ */
+if:x:/../*/_icu-keyboard-widget?value
+
+  /*
+   * [_icu-keyboard-widget] was supplied, verifying it's a widget we can accept
+   */
+  list-widgets:x:/../*/_icu-keyboard-widget?value
+  if:x:/-/0?name
+    !=:container
+
+    /*
+     * Keyboard widget was not of type [container]
+     */
+    throw:The ICU [_icu-keyboard-widget] widget, must point to an existing [container] widget if supplied
+
+else
+
+  /*
+   * No [_icu-keyboard-widget] was supplied, hence we create a default one, and return its ID to caller
+   */
+  eval-x:x:/+/*
+  create-widget
+    parent:x:/../*/_icu-wrapper?value
+
+  /*
+   * Making sure other parts of files has access to keyboard widget's ID
+   */
+  add:x:/..
+    src:"_icu-keyboard-widget:{0}"
+      :x:/././-?value
+
+
+
+
+/*
+ * Checking if we should add an [onclick] for [_icu-output-widget] to toggle keyboard
+ */
+if:x:/../*/_icu-click-toggles-keyboard?value.bool
+
+  /*
+   * Caller wants clicking the output widget to toggle the [_icu-keyboard-widget]
+   * Making sure we "append" our click logic into any existing code for widget, just to be sure,
+   * by retrieving existing [onclick] event handler code, and appending "toggle keyboard" functionality
+   * into at at the end of lambda object
+   */
+  get-widget-ajax-event:x:/../*/_icu-output-widget?value
+    onclick
+  add:x:/+/0
+    src:x:/./-/*/*/*
+  set-widget-ajax-event:x:/../*/_icu-output-widget?value
+    onclick
+      sys42.icu.toggle-keyboard
+
+  /*
+   * Adding pointer cursor style to [_icu-output-widget]
+   */
+  get-widget-property:x:/../*/_icu-output-widget?value
+    style
+  set-widget-property:x:/../*/_icu-output-widget?value
+    style:"cursor:pointer;{0}"
+      :x:/././-/*/*?value
+
+
+
+
+/*
+ * Checking if we should add a widget to toggle settings or not
+ */
+if:x:/../*/_icu-show-settings-widget?value.bool
+
+  /*
+   * Caller wants to have a widget created that toggles settings
+   */
+  eval-x:x:/+/*/parent
+  create-literal-widget
+    element:a
+    href:#
+    parent:x:/../*/_icu-wrapper?value
+    innerValue:@"<span class=""glyphicon glyphicon-cog""></span>"
+    class:icu-toggle-settings
+    tabindex:-1
+    onclick
+      sys42.icu.toggle-settings-widget
+
+
+
+
+/*
+ * Checking if we should add a widget to toggle keyboard or not
+ */
+if:x:/../*/_icu-show-keyboard-widget?value.bool
+
+  /*
+   * Caller wants to have a widget created that toggles keyboard
+   */
+  eval-x:x:/+/*/parent
+  create-literal-widget
+    element:a
+    href:#
+    parent:x:/../*/_icu-wrapper?value
+    innerValue:@"<span class=""glyphicon glyphicon-pencil""></span>"
+    class:icu-toggle-keyboard
+    tabindex:-1
+    onclick
+      sys42.icu.toggle-keyboard
+
+
+
+
+/*
+ * Checking if we should hide keyboard initially
+ */
+if:x:/../*/_icu-keyboard-initially-visible?value.bool
+  =:bool:false
+
+  /*
+   * Caller wants to hide keyboard initially
+   */
+  set-widget-property:x:/../*/_icu-keyboard-widget?value
+    visible
+
+
+
+
+/*
+ * Including main ICU stylesheet file
+ */
+include-stylesheet-file:/system42/apps/icu/media/icu.css
+
+
+
+
+/*
+ * Making sure keyboard widget is a "table" HTML element
+ */
+set-widget-property:x:/../*/_icu-keyboard-widget?value
+  element:table
+
+
+
+
+/*
+ * Evaluating all "init plugin files".
+ * This logic allows user to easily create "initialization plugins", that are being evaluated
+ * every time app is "initialized"
+ *
+ * Notice, we must do this before we retrieve the board beneath, since otherwise we run the risk
+ * of not having any boards at all in database
+ */
+list-files:/system42/apps/icu/init/init-plugins/
+  filter:hl
+for-each:x:/-/*?name
+
+  /*
+   * Applying arguments to file, before evaluating it
+   */
+  add:x:/+
+    src:x:/../*/~_icu
+  sys42.execute-lisp-file:x:/..for-each/*/_dp?value
+
+
+
+
+/*
+ * Making sure set the active board, either to "home" (default) or [_icu-board] if given,
+ * or alternatively to HTTP get "board" parameter, passed in as part of URL (e.g. "?board=fruit" as part of URL)
+ */
+if:x:/../*/_icu-board?value
+
+  /*
+   * Board was explicitly given as argument, which is the first thing we check
+   */
+  whoami
+  select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.?value
+    :x:/..if/*/whoami/*/username?value
+    :x:/../*/_icu-board?value
+  set-page-value:sys42.icu.active-board
+    src:x:/..if/*/select-data/*?value
+
+else
+
+  get-http-param:board
+  if:x:/-/*?value
+
+    /*
+     * HTTP param was supplied, making sure we set active board to board requested by URL
+     */
+    whoami
+    select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.?value
+      :x:/..if/*/whoami/*/username?value
+      :x:/..else/*/get-http-param/*?value
+    set-page-value:sys42.icu.active-board
+      src:x:/..if/*/select-data/*?value
+
+  else
+
+    /*
+     * Defaulting board to "home" board
+     */
+    whoami
+    select-data:x:/*/*/icu.board/*/username/={0}/./*/name/=home/.?value
+      :x:/..else/*/whoami/*/username?value
+    set-page-value:sys42.icu.active-board
+      src:x:/..else/*/select-data/*?value
+
+
+
+
+/*
+ * Applies settings finally as our last part of initialization phase
+ */
+sys42.icu.on-apply-settings
+
+
+
+
+/*
+ * Notifying any listeners that initialization is finished
+ */
+sys42.icu.initialization-finished

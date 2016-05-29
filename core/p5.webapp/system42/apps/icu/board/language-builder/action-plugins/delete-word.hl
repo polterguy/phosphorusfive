@@ -1,0 +1,21 @@
+
+/*
+ * Action that "deletes last word", and nothing else
+ */
+
+
+
+
+/*
+ * Name of action
+ */
+action-name:Delete word
+
+
+
+
+/*
+ *
+ */
+configure-action
+  sys42.show-code-window:x:/..

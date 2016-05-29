@@ -1,0 +1,21 @@
+
+/*
+ * Action that "opens new or existing board"
+ */
+
+
+
+
+/*
+ * Name of action
+ */
+action-name:Open board
+
+
+
+
+/*
+ *
+ */
+configure-action
+  sys42.show-code-window:x:/..

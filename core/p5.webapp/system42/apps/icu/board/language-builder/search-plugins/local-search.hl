@@ -1,0 +1,13 @@
+
+/*
+ * Local search plugin. Allows user to search for images locally in database to use in ICU app
+ */
+
+button
+  innerValue:@"<span class=""glyphicon glyphicon-search""></span>"
+  class:btn-default btn btn-lg
+  title:Searches for images in local database, your images, and shared/public images
+  onclick
+    get-widget-property:icu-configure-key-search-textbox
+      value
+    sys42.show-code-window:x:/..

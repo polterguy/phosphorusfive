@@ -1,0 +1,57 @@
+
+
+/*
+ * Initializes CSS classes for widgets, adding initial CSS classes for all our widgets
+ */
+
+
+
+
+/*
+ * Starting with main wrapper
+ */
+sys42.add-css-classes:x:/../*/_icu-wrapper?value
+  _class:icu
+
+
+
+
+/*
+ * We only add the default CSS classes to output widget, if it is of type [container]
+ */
+list-widgets:x:/../*/_icu-output-widget?value
+if:x:/-/*?name
+  =:container
+
+  /*
+   * Output widget is of type [container], applying default CSS classes to it
+   */
+  sys42.add-css-classes:x:/../*/_icu-output-widget?value
+    _class:icu-output box-shadow rounded-corners prepend-bottom
+
+
+
+
+/*
+ * Then keyboard widget
+ */
+sys42.add-css-classes:x:/../*/_icu-keyboard-widget?value
+  _class:icu-keyboard icu-box-shadow icu-rounded-corners
+
+
+
+
+/*
+ * Then language builder widget
+ */
+if:x:/../*/_icu-language-builder?value
+
+  /*
+   * Language builder was provided, applying CSS classes and hiding widget initially
+   */
+  sys42.add-css-classes:x:/../*/_icu-language-builder?value
+    _class:icu-language-builder box-shadow rounded-corners air-padding-more prepend-bottom
+
+  set-widget-property:x:/../*/_icu-language-builder?value
+    visible:false
+

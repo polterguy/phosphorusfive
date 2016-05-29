@@ -37,9 +37,12 @@ namespace p5.lambda.keywords
 
                 // Retrieving what to replace
                 var what = e.Args.GetExChildValue<object> ("what", context, null);
+                var notOf = e.Args.GetExChildValue<string> ("not-of", context, null);
                 var with = e.Args.GetExChildValue ("with", context, "");
-                if (what == null || (what is string && string.IsNullOrEmpty (what as string)))
-                    throw new LambdaException ("No [what] argument supplied to [replace]", e.Args, context);
+                if ((what == null && notOf == null) || (what is string && string.IsNullOrEmpty (what as string)))
+                    throw new LambdaException ("No [what] or [not-of] argument supplied to [replace]", e.Args, context);
+                if (what != null && notOf != null)
+                    throw new LambdaException ("Supply only one of [what] or [not-of] as arguments to [replace]", e.Args, context);
 
                 // Checking type of what
                 if (what is Regex) {
@@ -49,8 +52,29 @@ namespace p5.lambda.keywords
                     e.Args.Value = regex.Replace (source, with);
                 } else {
 
-                    // Simple string search
-                    e.Args.Value = source.Replace (Utilities.Convert<string> (context, what), with);
+                    // Simple string search, checking if this is a [not-of] operation, or a [what] operation
+                    if (what != null) {
+
+                        // Simple version
+                        e.Args.Value = source.Replace (Utilities.Convert<string> (context, what), with);
+                    } else {
+
+                        // Replacing everything we cannot find in [not-of] with whatever we find in [with] 
+                        // (or empty if no with is given)
+                        var retVal = new StringBuilder ();
+                        for (int idxNo = 0; idxNo < source.Length; idxNo++) {
+                            if (notOf.IndexOf (source [idxNo]) == -1) {
+
+                                // Should be replaced
+                                retVal.Append (with);
+                            } else {
+
+                                // Should not be replaced
+                                retVal.Append (source [idxNo]);
+                            }
+                        }
+                        e.Args.Value = retVal;
+                    }
                 }
             }
         }
