@@ -374,8 +374,8 @@ if:x:/../*/_icu-language-builder?value
       add:x:/../*/update-data/*/*/*/items
         src
           item
-            x:x:/../*/sys42.icu.get-active-key/*/_x?value
-            y:x:/../*/sys42.icu.get-active-key/*/_y?value
+            x:x:/../*/sys42.icu.get-active-key/*/x?value
+            y:x:/../*/sys42.icu.get-active-key/*/y?value
             image:x:/../*/_image?value
             action
 
@@ -386,6 +386,7 @@ if:x:/../*/_icu-language-builder?value
         :x:/../*/get-page-value/*?value
         src
           icu.board
+      sys42.show-code-window:x:/..
 
       /*
        * Changing image of currently edited image "key" in [_icu-keyboard-widget], to reflect changes just done,
@@ -397,16 +398,16 @@ if:x:/../*/_icu-language-builder?value
       /*
        * Updating "src" attribute and "alt" attribute of image
        */
-      find-widget:x:/../*/sys42.icu.get-active-key/*/_id?value
+      find-widget:x:/../*/sys42.icu.get-active-key/*/id?value
         element:img
       set-widget-property:x:/-/*?value
-        src:x:/../*/select-data/[1,2]/*/*/image?value
+        src:x:/../*/select-data/[1,2]/*/*/url?value
         alt:x:/../*/select-data/[1,2]/*/*/word?value
 
       /*
        * Setting "innerValue" of "span" HTML element to word from [icu.image]
        */
-      find-widget:x:/../*/sys42.icu.get-active-key/*/_id?value
+      find-widget:x:/../*/sys42.icu.get-active-key/*/id?value
         element:span
       set-widget-property:x:/-/*?value
         innerValue:x:/../*/select-data/[1,2]/*/*/word?value

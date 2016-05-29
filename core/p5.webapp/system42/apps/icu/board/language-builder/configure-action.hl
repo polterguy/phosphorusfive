@@ -87,6 +87,13 @@ create-widget:icu-configure-action
          * Configuring all actions towards key, and returning after having deleted modal window
          */
         delete-widget:icu-configure-action
+        get-session-value:sys42.icu.action-list
+        add:x:/+2/*/_action
+          src:x:/./-/*/*/*
+        eval-x:x:/+/*/_image
+        sys42.icu.configure-key-with-image-action
+          _action
+          _image:x:/../*/_image?value
         return
 
       else
@@ -94,8 +101,9 @@ create-widget:icu-configure-action
         /*
          * Configuring 1st action in list of actions
          */
+        set-session-value:sys42.icu.action-list
         load-file:x:/../*/get-page-value/*/*/0?value
-        eval-x:x:/+/*/_image
+        eval-x:x:/+/*/_image|/+/*/*/*/_image
         eval:x:/..else/*/load-file/*/*/configure-action
 
           /*
@@ -112,6 +120,14 @@ create-widget:icu-configure-action
             /*
              * Removing 1st item from list, and recursively calling self
              */
+            get-session-value:sys42.icu.action-list
+            add:x:/+2/*/*
+              src:x:/./-/*/*
+            add:x:/+/*/*
+              src:x:/../*/_action/*
+            set-session-value:sys42.icu.action-list
+              src
+                actions
             set:x:/../*/get-page-value/*/*/0
             add:x:/../*/set-page-value/*/*
               src:x:/../*/get-page-value/*/*/*
@@ -119,6 +135,7 @@ create-widget:icu-configure-action
               src
                 files
             sys42.icu.configure-iterated-event
+              _image:x:/../*/_image?value
 
   widgets
     container

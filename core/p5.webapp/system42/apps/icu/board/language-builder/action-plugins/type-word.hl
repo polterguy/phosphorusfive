@@ -18,5 +18,9 @@ action-name:Type word
  *
  */
 configure-action
-  sys42.icu.get-active-key
-  sys42.show-code-window:x:/..
+  eval-x:x:/+/*/*/*
+  add:x:/../*/_on-finished
+    src
+      _action
+        sys42.icu.type-word:x:/../*/_image?value
+  eval:x:/../*/_on-finished

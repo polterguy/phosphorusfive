@@ -155,7 +155,7 @@ while:x:/-?value
          * [_image] property to button
          */
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/src?value
-          src:x:/..if/..if/*/select-data/*/*/medium?value
+          src:x:/..if/..if/*/select-data/*/*/url?value
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/alt?value
           src:x:/..if/..if/*/select-data/*/*/word?value
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
