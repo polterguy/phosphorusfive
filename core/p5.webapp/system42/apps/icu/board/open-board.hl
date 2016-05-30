@@ -88,15 +88,18 @@ while:x:/-?value
 
     /*
      * Creating specified table cell (td) widget
+     * Setting [_x] and [_y] hidden attributes for button widget first
      */
-    set:x:/..while/**/_x?value
+    set:x:/..while/*/add/**/_x?value
       src:x:/..while/..while/*/_cur-x?value
 
-    set:x:/..while/**/_y?value
+    set:x:/..while/*/add/**/_y?value
       src:x:/../*/_cur-y?value
 
     /*
-     * Settings width of "td" HTML element, according to how many cells we have in board
+     * Settings width of "td" HTML element, according to how many cells we have in board, making
+     * sure the width of the "td" HTML element becomes a percentage, according to how many columns we
+     * have in our "table" HTML element
      */
     set:x:/..while/*/add/*/src/*/container/*/style?value
       src:"width:{0}%;"
@@ -122,7 +125,7 @@ while:x:/-?value
 
               widgets
                 img
-                  alt:No key, click to associate with new image word
+                  alt:
                   src:/media/images/question-sign.png
                   class:icu-image
                 span
@@ -140,9 +143,9 @@ while:x:/-?value
       /*
        * Currently iterated x/y position has an image associated with it.
        * Changing its CSS class, and using the specific [thumb] image through the [style] property of widget.
-       * But first we must retrieve image from database, which should be found in [icu.image]
+       * But first we must retrieve image from database, which should be found in [icu.word]
        */
-      select-data:x:@"/*/*/icu.image/""=:guid:{0}"""
+      select-data:x:@"/*/*/icu.word/""=:guid:{0}"""
         :x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/./*/image?value
           :x:/..while/..while/*/_cur-x?value.string
           :x:/../*/_cur-y?value.string
@@ -150,16 +153,32 @@ while:x:/-?value
         >:int:0
 
         /*
-         * [icu.image] referenced in [icu.board]'s [x]/[y] position actually exists.
+         * [icu.word] referenced in [icu.board]'s [x]/[y] position actually exists.
          * Applying image source, alternate text, and text for word to image widget, in addition to adding
          * [_image] property to button
          */
+
+        /*
+         * First we retrieve the first [image] from [icu.word], and applies it as [src] of HTML "img" element
+         */
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/src?value
-          src:x:/..if/..if/*/select-data/*/*/url?value
+          src:x:/..if/..if/*/select-data/*/*/images/*/image/[0,1]?value
+
+        /*
+         * Then we set the HTML "alt" property of image to the [word] from our [icu.word]
+         */
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/alt?value
           src:x:/..if/..if/*/select-data/*/*/word?value
+
+        /*
+         * Then we set the HTML "innerValue" property of our HTML "span" element to the [word] from our [icu.word]
+         */
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
           src:x:/..if/..if/*/select-data/*/*/word?value
+
+        /*
+         * Then we make sure our HTML "button" get the [icu.image] ID as a "hidden attribute" (server side) called [_image]
+         */
         set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/_image?value
           src:x:/..if/..if/*/select-data/*?value
 

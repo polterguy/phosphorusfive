@@ -224,7 +224,7 @@ set-widget-lambda-event:{_icu-output-widget}
 
   /*
    * Types out a "word" (picture/word association) on output widget. Expects an [_image] which should be the
-   * ID to an [icu.image] in database as [_arg]
+   * ID to an [icu.word] in database as [_arg]
    */
   sys42.icu.on-type-word
 
@@ -234,7 +234,7 @@ set-widget-lambda-event:{_icu-output-widget}
     sys42.icu.get-output-widget
 
     /*
-     * Selecting [icu.image] from database that was clicked, and creating a widget from
+     * Selecting [icu.word] from database that was clicked, and creating a widget from
      * it, adding this widget to the [_icu-output-widget] that was specified when the ICU app was launched,
      * if widget was [container] type. Otherwise, appending word into widget as "text value"
      */
@@ -251,8 +251,9 @@ set-widget-lambda-event:{_icu-output-widget}
 
       /*
        * Widget is [container] type, appending word as image into container widget
+       * Making sure we choose first [image] from [icu.image] to display
        */
-      eval-x:x:/+/**
+      eval-x:x:/+/*|/+/*/*(/img/*(/alt|/src)|/span/*/innerValue)
       create-widget
         parent:x:/../*/sys42.icu.get-output-widget?value
         class:icu-word
@@ -260,7 +261,7 @@ set-widget-lambda-event:{_icu-output-widget}
         widgets
           img
             alt:x:/../*/select-data/0/*/word?value
-            src:x:/../*/select-data/0/*/medium?value
+            src:x:/../*/select-data/0/*/images/*/image/[0,1]?value
             class:icu-image
           span
             innerValue:x:/../*/select-data/0/*/word?value
@@ -350,8 +351,8 @@ if:x:/../*/_icu-language-builder?value
        * Deleting any existing image associations for existing [_x]/[_y] position in board
        */
       set:x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/.
-        :x:/../*/sys42.icu.get-active-key/*/_x?value
-        :x:/../*/sys42.icu.get-active-key/*/_y?value
+        :x:/../*/sys42.icu.get-active-key/*/x?value
+        :x:/../*/sys42.icu.get-active-key/*/y?value
 
       /*
        * Moving result from [select-data] into [update-data] below, and making sure [update-data]
@@ -365,12 +366,12 @@ if:x:/../*/_icu-language-builder?value
       /*
        * Adding a new [item] into [items] collection of board definition into [update-data], forward
        * evaluating expressions inside of [add], making sure [x] and [y] are constants when [updata-data] is evaluated,
-       * and that [image] points to ID of image from [icu.image]
+       * and that [image] points to ID of image from [icu.word]
        * In addition, making sure [action] becomes specified [_action] lambda object
        */
       add:x:/+2/*/*/*/action
         src:x:/../*/_action/*
-      eval-x:x:/+/*/*/*
+      eval-x:x:/+/*/*/*(/x|/y|/image)
       add:x:/../*/update-data/*/*/*/items
         src
           item
@@ -386,13 +387,12 @@ if:x:/../*/_icu-language-builder?value
         :x:/../*/get-page-value/*?value
         src
           icu.board
-      sys42.show-code-window:x:/..
 
       /*
        * Changing image of currently edited image "key" in [_icu-keyboard-widget], to reflect changes just done,
        * before removing "active" CSS class, and setting correct CSS classes for "key"
        */
-      select-data:x:@"/*/*/icu.image/""=:guid:{0}"""
+      select-data:x:@"/*/*/icu.word/""=:guid:{0}"""
         :x:/../*/_image?value
 
       /*
@@ -401,11 +401,11 @@ if:x:/../*/_icu-language-builder?value
       find-widget:x:/../*/sys42.icu.get-active-key/*/id?value
         element:img
       set-widget-property:x:/-/*?value
-        src:x:/../*/select-data/[1,2]/*/*/url?value
+        src:x:/../*/select-data/[1,2]/*/*/images/*/image/[0,1]?value
         alt:x:/../*/select-data/[1,2]/*/*/word?value
 
       /*
-       * Setting "innerValue" of "span" HTML element to word from [icu.image]
+       * Setting "innerValue" of "span" HTML element to word from [icu.word]
        */
       find-widget:x:/../*/sys42.icu.get-active-key/*/id?value
         element:span
@@ -417,13 +417,13 @@ if:x:/../*/_icu-language-builder?value
        */
       add:x:/+/*
         src:x:/../*/_action/*
-      set-widget-ajax-event:x:/../*/find-widget-like/[0,1]/*?value
+      set-widget-ajax-event:x:/../*/sys42.icu.get-active-key/*/id?value
         onclick
 
       /*
        * Simply removes the "active" CSS classes from currently edited "key"
        */
-      sys42.delete-css-classes:x:/../*/find-widget-like/[0,1]/*?value
+      sys42.delete-css-classes:x:/../*/sys42.icu.get-active-key/*/id?value
         _class:icu-active-key
 
 
@@ -558,16 +558,18 @@ set-widget-lambda-event:{_icu-keyboard-widget}
     /*
      * Selects correct board from database
      */
-    select-data:x:/*/*/icu.board/*/name/={0}/.?value
+    whoami
+    select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.?value
+      :x:/../*/whoami/*/username?value
       :x:/../*/_arg?value
 
     /*
-     * Invokes file responsible for building board on keyboard widget, with [_board] being database ID
-     * of board to open
+     * Invokes file responsible for building board on keyboard widget, but first setting currently active board
+     * to whatever input board we were given
      */
-    eval-x:x:/+/*
+    set-page-value:sys42.icu.active-board
+      src:x:/../*/select-data/*?value
     sys42.execute-lisp-file:/system42/apps/icu/board/open-board.hl
-      _board:x:/../*/select-data/*?value
 
 
 
@@ -586,6 +588,8 @@ set-widget-lambda-event:{_icu-keyboard-widget}
       =:bool:true
 
       /*
+       * Hiding keyboard widget
+       *
        * Checking if there's an "active key" in keyboard widget, which means that user is
        * editing a key. If there are, we remove the "active" state of widget
        */
@@ -611,12 +615,26 @@ set-widget-lambda-event:{_icu-keyboard-widget}
           !=:
         set-widget-property:{_icu-language-builder}
           visible:false
-        sys42.icu.on-no-active-key
+
+      /*
+       * Raising the "on no active key" event such that listeners can know.
+       */
+      sys42.icu.on-no-active-key
+
+      /*
+       * Raising the "on keyboard was hidden" event
+       */
+      sys42.icu.on-keyboard-hidden
 
     else
 
       /*
-       * Shows the ICU keyboard
+       * Showing the keyboard widget
        */
       set-widget-property:{_icu-keyboard-widget}
         visible:true
+
+      /*
+       * Raising the "on keyboard is shown" event
+       */
+      sys42.icu.on-keyboard-shown

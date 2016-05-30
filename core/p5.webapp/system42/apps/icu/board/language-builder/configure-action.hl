@@ -2,7 +2,7 @@
 /*
  * Configures currently "active" key in keyboard, and allows user to
  * choose "action" to trigger when key is clicked. Expects an [_image] parameter, being
- * the database ID of a pre-existing [icu.image] object
+ * the database ID of a pre-existing [icu.word] object
  */
 
 
@@ -69,41 +69,93 @@ create-widget:icu-configure-action
    */
   events
 
+
+
+
     /*
-     * Configures the first selected event from "set-page-value:sys42.icu.actions-to-configure", and
+     * Configures the first selected event from session [sys42.icu.action-files-to-evaluate], and
      * removes it from the list, updates the page value, and recursively calls itself
      */
     sys42.icu.configure-iterated-event
 
       /*
-       * Retrieving first action from list of page values
+       * Retrieving actions from list of session values
        */
-      get-page-value:sys42.icu.actions-to-configure
-      if:x:/../*/get-page-value/*/*/*
+      get-session-value:sys42.icu.action-files-to-evaluate
+
+      /*
+       * Checking if there are anymore "action files" to evaluate
+       */
+      if:x:/../*/get-session-value/*/*/*
         not
 
         /*
-         * No more actions, now we can configure key towards action.
-         * Configuring all actions towards key, and returning after having deleted modal window
+         * Configuration of all actions finished!
          */
-        delete-widget:icu-configure-action
-        get-session-value:sys42.icu.action-list
+
+        /*
+         * No more action files to evaluate, now we can configure key towards action, and delete modal window widget.
+         * Retrieving entire action from session first.
+         *
+         * Session value [sys42.icu.combined-action-results] should now contain a lambda object, containing combined 
+         * results of all configured actions
+         */
+        get-session-value:sys42.icu.combined-action-results
+
+        /*
+         * Appending entire lambda object, containing results of all configured actions, into event invocation
+         * responsible for actually configuring action towards key
+         */
         add:x:/+2/*/_action
           src:x:/./-/*/*/*
+
+        /*
+         * Passing in database ID to [icu.image]
+         */
         eval-x:x:/+/*/_image
+
+        /*
+         * Invoking event responsible for actually configuring keyboard "key"
+         */
         sys42.icu.configure-key-with-image-action
           _action
           _image:x:/../*/_image?value
-        return
+
+        /*
+         * Deleting modal window widget
+         */
+        delete-widget:icu-configure-action
+
+        /*
+         * Deleting language builder widget
+         */
+        sys42.icu.get-language-builder-widget
+        set-widget-property:x:/-?value
+          visible:false
 
       else
 
         /*
-         * Configuring 1st action in list of actions
+         * Retrieves the first "action file" from session, evaluates it, with a callback for results,
+         * such that when "action configure file" is finsished evaluating, it can simply invoke the callback
+         * lambda object, which will append the results of the configured action into a session value
          */
-        set-session-value:sys42.icu.action-list
-        load-file:x:/../*/get-page-value/*/*/0?value
-        eval-x:x:/+/*/_image|/+/*/*/*/_image
+
+        /*
+         * Retrieving any previously iterated and configured actions from session
+         */
+        set-session-value:sys42.icu.combined-action-results
+
+        /*
+         * Loading first file from "list of action files to evaluate"
+         */
+        load-file:x:/../*/get-session-value/*/*/0?value
+
+        /*
+         * Forward evaluates a coupld of our expressions inside of [eval], before evaluating the
+         * [configure-action] lambda object from 1st "action configuration file" in our list of files
+         */
+        eval-x:x:/+/*/_image|/+/*/*/sys42.icu.configure-iterated-event/*/_image
         eval:x:/..else/*/load-file/*/*/configure-action
 
           /*
@@ -118,22 +170,47 @@ create-widget:icu-configure-action
           _on-finished
 
             /*
-             * Removing 1st item from list, and recursively calling self
+             * First updating our "action combined result" session value, with [_action] lambda object, 
+             * that should be passed into this event.
+             *
+             * Retrieving any previously configured actions first
              */
-            get-session-value:sys42.icu.action-list
+            get-session-value:sys42.icu.combined-action-results
+
+            /*
+             * Appending previously configured actions into session, before appending the results
+             * from currently iterated "action configuration file", and updating session value holding
+             * combined results of all "action configuration files"
+             */
             add:x:/+2/*/*
               src:x:/./-/*/*
             add:x:/+/*/*
               src:x:/../*/_action/*
-            set-session-value:sys42.icu.action-list
+            set-session-value:sys42.icu.combined-action-results
               src
                 actions
-            set:x:/../*/get-page-value/*/*/0
-            add:x:/../*/set-page-value/*/*
-              src:x:/../*/get-page-value/*/*/*
-            set-page-value:sys42.icu.actions-to-configure
+
+            /*
+             * Removing first item from "action configuration files", and recursively invoking "self"
+             */
+            set:x:/../*/get-session-value/*/*/0
+
+            /*
+             * Appending remmaining "action file configurations" into [set-session-value]
+             */
+            add:x:/../*/set-session-value/*
+              src:x:/../*/get-session-value/*/*
+
+            /*
+             * Updating session, now with one less value in "action configuration files"
+             */
+            set-session-value:sys42.icu.action-files-to-evaluate
               src
-                files
+
+            /*
+             * Recursively invoking "self" with [_image] argument, to configure any remaining actions, or finish
+             * up configuration
+             */
             sys42.icu.configure-iterated-event
               _image:x:/../*/_image?value
 
@@ -141,6 +218,9 @@ create-widget:icu-configure-action
     container
       class:icu-search-modal-window rounded-corners box-shadow air-padding-more
       widgets
+
+
+
 
         /*
          * Close "configure action" modal window button
@@ -158,11 +238,17 @@ create-widget:icu-configure-action
         void
           element:hr
 
+
+
+
         /*
          * Contains all "action" widgets
          */
         container:icu-configure-action-body
           widgets
+
+
+
 
         /*
          * Give some "space" for button row at the bottom of modal window
@@ -171,6 +257,9 @@ create-widget:icu-configure-action
           style:"clear:both;"
           element:hr
 
+
+
+
         /*
          * Button row at the bottom of preview dialog, to allow user to finish configuring actions
          */
@@ -178,6 +267,9 @@ create-widget:icu-configure-action
           class:prepend-top
           style:"width:100%;"
           widgets
+
+
+
 
             /*
              * Cancel configure action button
@@ -193,6 +285,9 @@ create-widget:icu-configure-action
                  */
                 delete-widget:icu-configure-action
 
+
+
+
             /*
              * OK configure image button (selects image, and creates a new [icu.word] entry in database)
              */
@@ -203,7 +298,7 @@ create-widget:icu-configure-action
               onclick
 
                 /*
-                 * Finding "selected actions"
+                 * Finding all of our "selected actions"
                  */
                 find-widget-like:icu-configure-action
                   class:icu-selected-action
@@ -225,11 +320,11 @@ create-widget:icu-configure-action
                   _file
 
                 /*
-                 * Putting all files into page value, and starting iteration of configuration of actions
+                 * Putting all files into session value, and starting iteration of configuration of actions
                  */
                 add:x:/+/*/*
                   src:x:/../*/get-widget-property/*/*
-                set-page-value:sys42.icu.actions-to-configure
+                set-session-value:sys42.icu.action-files-to-evaluate
                   src
                     files
 

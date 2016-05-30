@@ -71,8 +71,7 @@
 }
 .icu .icu-configure-image-img {
     display:block;
-    margin-left:auto;
-    margin-right:auto;
+    padding:0;
 }
 .icu .icu-configure-action-button {
     padding:15px 20px 15px 20px;

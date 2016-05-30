@@ -78,7 +78,12 @@ create-widget:icu-configure-key
 
     /*
      * Takes an existing image as [_arg], and starts configuring it as an image key,
-     * given a default word of [_word] and description of [_description]
+     * given a default word of [_word] and description of [_description].
+     *
+     * Will insert the given [_arg] image as [icu.word] with [word] and [description] supplied by user.
+     *
+     * Expects image supplied to already have been resized at this point, to fit the key size, with equal
+     * height and width
      */
     sys42.icu.configure-image-for-key
 
@@ -97,7 +102,7 @@ p5.configureImageKeyPress = function(e) {
   }
 }"
       sys42.icu.get-icu-wrapper
-      eval-x:x:/+/*/parent|/+/*/*/*/*/*/*(/void/=icu-configure-image-word/*/value|/literal/=icu-configure-image-description/*/innerValue|/void/=icu-configure-image-img/*(/src|/alt))
+      eval-x:x:/+/*/parent|/+/*/*/*/*/*/*(/void/=icu-configure-image-word/*/value|/literal/=icu-configure-image-description/*/innerValue|/./././*/void/=icu-configure-image-img/*(/src|/alt))
       create-widget:icu-configure-image-result
         class:icu-search-modal-bg
         parent:x:/../*/sys42.icu.get-icu-wrapper?value
@@ -127,6 +132,7 @@ p5.configureImageKeyPress = function(e) {
                * Contains all "supply word and description" widgets
                */
               container:icu-configure-image-body
+                class:col-lg-6 prepend-bottom
                 widgets
                   void:icu-configure-image-word
                     element:input
@@ -143,18 +149,19 @@ p5.configureImageKeyPress = function(e) {
                     class:form-control prepend-top prepend-bottom
                     placeholder:Description ...
                     innerValue:x:/../*/_description?value
-                    rows:4
-                  void:icu-configure-image-img
-                    element:img
-                    class:icu-configure-image-img
-                    src:x:/../*/_image?value
-                    alt:x:/../*/_word?value
+                    rows:13
+              void:icu-configure-image-img
+                element:img
+                class:icu-configure-image-img box-shadow rounded-corners col-lg-6 prepend-bottom
+                src:x:/../*/_image?value
+                alt:x:/../*/_word?value
 
               /*
                * Give some "space" for button row at the bottom of modal window
                */
               void
                 element:hr
+                style:"clear:both;"
 
               /*
                * Button row at the bottom of preview dialog, to allow user to select image
@@ -199,17 +206,18 @@ p5.configureImageKeyPress = function(e) {
                         src
 
                       /*
-                       * Creates an [icu.image] insertion, to stuff into database
+                       * Creates an [icu.word] insertion, to stuff into database
                        */
-                      eval-x:x:/+/*/*
+                      eval-x:x:/+/*/*|/+/*/*/images/*
                       insert-data
-                        icu.image
-                          title:x:/../*/get-widget-property/[0,1]/*/*?value
+                        icu.word
+                          word:x:/../*/get-widget-property/[0,1]/*/*?value
                           description:x:/../*/get-widget-property/[1,2]/*/*?value
-                          url:x:/../*/get-widget-property/[2,3]/*/*?value
+                          images
+                            image:x:/../*/get-widget-property/[2,3]/*/*?value
 
                       /*
-                       * Asks user for "action" to associate with image, passing in [ics.image] ID to file responsible
+                       * Asks user for "action" to associate with image, passing in [icu.image] ID to file responsible
                        * for configuring action
                        */
                       eval-x:x:/+/*
@@ -222,7 +230,10 @@ p5.configureImageKeyPress = function(e) {
 
     /*
      * Resizes an image to "key size", and puts it into ICU [_destination] folder.
-     * Pass in image to resize as [_arg]
+     * Pass in image to resize as [_arg].
+     *
+     * Will "crop" the image, by making sure it uses the "center parts" of image, if image is not 
+     * of equal height/width proportions
      */
     sys42.icu.resize-image-to-keys-folder
 
@@ -340,7 +351,7 @@ p5.configureImageKeyPress = function(e) {
       widgets
 
         /*
-         * Close search button
+         * Close search button. This will be the last button in button group
          */
         button:icu-configure-key-close-builder
           innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"

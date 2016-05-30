@@ -1,6 +1,6 @@
 
 /*
- * Action that "types out word", and nothing else
+ * Action that types out word
  */
 
 
@@ -15,12 +15,26 @@ action-name:Type word
 
 
 /*
+ * Lambda callback object, responsible for configuring action
  *
+ * Immediately returns, since no configration is necessary
  */
 configure-action
+
+  /*
+   * Forward evaluates expression in [sys42.icu.on-type-word]
+   */
   eval-x:x:/+/*/*/*
+
+  /*
+   * Appends [_action] to [_on-finished] lambda callback, supplied by caller
+   */
   add:x:/../*/_on-finished
     src
       _action
-        sys42.icu.type-word:x:/../*/_image?value
+        sys42.icu.on-type-word:x:/../*/_image?value
+
+  /*
+   * Evaluates[_on-finished] lambda object
+   */
   eval:x:/../*/_on-finished

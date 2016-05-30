@@ -1,6 +1,6 @@
 
 /*
- * Action that "opens new or existing board"
+ * Action that opens a new board
  */
 
 
@@ -15,7 +15,417 @@ action-name:Open board
 
 
 /*
+ * Lambda callback object, responsible for configuring action
  *
+ * Opens up list of boards, and asks user to select an existing board, or create a new,
+ * and configures action to open up that board
  */
 configure-action
-  sys42.show-code-window:x:/..
+
+  /*
+   * Making sure was pass in the specified [_on-finished] lambda object into event
+   * triggered when a new board is created, or an old board is selected
+   */
+  add:x:/../**/events/*/sys42.icu._board-was-selected
+    src:x:/../*/_on-finished
+
+  /*
+   * Displays a modal window, allowing user to select existing board, or create a new board,
+   * and use that board for action
+   */
+  sys42.icu.get-icu-wrapper
+  eval-x:x:/+/*/parent
+  create-widget:icu-configure-open-board-action
+    class:icu-search-modal-bg
+    parent:x:/../*/sys42.icu.get-icu-wrapper?value
+
+    /*
+     * Private events for configuration of opening new board action.
+     * Used as lambda callback for evaluating [_on-finished] lambda callback
+     */
+    events
+
+      /*
+       * Invoked when a board to open is either selected or created.
+       * Simply invokes [_on-finished] supplied when instantiating file
+       */
+      sys42.icu._board-was-selected
+
+        /*
+         * Adding "open board action" to return value expected by caller of file, before deleting modal window widget
+         */
+        eval-x:x:/+/*/*/*
+        add:x:/../*/_on-finished
+          src
+            _action
+              sys42.icu.open-board:x:/../*/_arg?value
+
+        /*
+         * Deleting modal window widget for selecting/creating board
+         */
+        delete-widget:icu-configure-open-board-action
+
+        /*
+         * Invoking "lambda callback" supplied by caller of file
+         */
+        eval:x:/../*/_on-finished
+
+
+
+
+    widgets
+      container
+        class:icu-search-modal-window rounded-corners box-shadow air-padding-more
+        widgets
+
+
+
+
+          /*
+           * Close "configure action" modal window button
+           */
+          literal:icu-hide-configure-open-board-action
+            element:a
+            href:#
+            innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
+            class:icu-close-dialog
+            onclick
+              delete-widget:icu-configure-open-board-action
+
+          /*
+           * Header and spacer
+           */
+          literal:icu-configure-open-board-action-header
+            element:h3
+            innerValue:Board ...?
+          void
+            element:hr
+
+
+
+
+          /*
+           * Select/choose/delete input group
+           */
+          container
+            class:input-group
+            widgets
+
+              /*
+               * Label
+               */
+              span
+                innerValue:Select
+                class:input-group-addon
+
+              /*
+               * Select existing board drop down list
+               */
+              container:icu-configure-open-board-action-select
+                element:select
+                class:form-control input-lg
+                oninit
+
+                  /*
+                   * Selects all [icu.board]s from database, and populates "select" HTML widget
+                   */
+                  whoami
+                  select-data:x:/*/*/icu.board/*/username/={0}/./*/name?value
+                    :x:/./-/*/username?value
+
+                  /*
+                   * Databinding [_create-options] to results from [select-data]
+                   */
+                  eval-x:x:/+/**/parent
+                  databind:x:/../*/_create-options
+                    src:x:/../*/select-data/*
+                    template
+                      create-literal-widget
+                        element:option
+                        parent:x:/../*/_event?value
+                        {innerValue}:x:?value
+
+                  /*
+                   * Making sure previously selected board becomes active, if there are any
+                   */
+                  get-session-value:sys42.icu.previously-selected-board
+                  if:x:/-/*/*?value
+
+                    /*
+                     * User has previously selected a board, making sure that board becomes active, and give
+                     * focus to "select" HTML widget, such that he can easily click enter to select board
+                     */
+                    set-widget-property:x:/../*/_event?value
+                      value:x:/././-/*/*?value
+
+                    /*
+                     * Giving focus to "select" HTML widget
+                     */
+                    send-javascript:@"$('#{0}').focus();"
+                      :x:/../*/_event?value
+
+                  else
+
+                    /*
+                     * Giving focus to "create new board" textbox
+                     */
+                    send-javascript:@"$('#icu-configure-open-board-action-create').focus().select();"
+
+                  /*
+                   * Will contain list of [create-literal-widget] for each [icu.board] in database belonging to user
+                   */
+                  _create-options
+
+                  /*
+                   * Evaluating [_create-options]
+                   */
+                  eval:x:/../*/_create-options
+
+              /*
+               * Button group for select dropdown listbox
+               */
+              span
+                class:input-group-btn
+                widgets
+
+                  /*
+                   * Select board button
+                   */
+                  button:icu-configure-open-board-action-ok
+                    class:btn btn-default input-lg
+                    innerValue:@"<span class=""glyphicon glyphicon-ok""></span>"
+                    title:Use currently selected board
+                    onclick
+                      sys42.show-code-window:x:/..
+
+                  /*
+                   * Delete currently selected board
+                   */
+                  button:icu-configure-open-board-action-delete
+                    class:btn btn-default input-lg
+                    innerValue:@"<span class=""glyphicon glyphicon-trash""></span>"
+                    title:Delete currently selected board
+                    onclick
+
+                      /*
+                       * Deletes currently selected board, unless it is the "home" board
+                       */
+                      get-widget-property:icu-configure-open-board-action-select
+                        value
+                      if:x:/-/*/*?value
+                        =:home
+
+                        /*
+                         * We do not allow deletion of "home" board
+                         */
+                        sys42.info-window:Sorry, the home board cannot be deleted
+                          _error:true
+                        return
+
+                      /*
+                       * Deleting currently selected board, but using a confirm window to make sure user 
+                       * really wants to delete it
+                       */
+                      sys42.confirm-window
+                        _header:Confirm deletion
+                        _body:Are you sure you wish to delete the selected board? This action cannot be undone.
+                        _onok
+
+                          /*
+                           * User confirmed deletion of board
+                           */
+                          get-widget-property:icu-configure-open-board-action-select
+                            value
+                          whoami
+                          delete-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.
+                            :x:/../*/whoami/*/username?value
+                            :x:/../*/get-widget-property/*/*?value
+
+                          /*
+                           * Deleting option widget
+                           */
+                          find-widget:icu-configure-open-board-action-select
+                            selected
+                          delete-widget:x:/-/*?value
+
+                          /*
+                           * Settings active select option to "home" board, and giving focus to "select" HTML widget
+                           */
+                          set-widget-property:icu-configure-open-board-action-select
+                            value:home
+                          send-javascript:@"$('#icu-configure-open-board-action-select').focus();"
+
+
+
+
+          /*
+           * Create new board input group
+           */
+          container
+            class:input-group prepend-top
+            widgets
+
+              /*
+               * Label
+               */
+              span
+                innerValue:Create
+                class:input-group-addon
+
+              /*
+               * Textbox for supplying new board name
+               */
+              void:icu-configure-open-board-action-create
+                class:form-control input-lg
+                placeholder:Name of new board ...
+
+              /*
+               * Button group for select dropdown listbox
+               */
+              span
+                class:input-group-btn
+                widgets
+
+                  /*
+                   * Create new empty board button
+                   */
+                  button:icu-configure-open-board-action-create-new
+                    class:btn btn-default input-lg
+                    innerValue:@"<span class=""glyphicon glyphicon-plus""></span>"
+                    title:Creates new empty board
+                    onclick
+
+                      /*
+                       * Retrieves board name from "textbox" HTML widget
+                       */
+                      get-widget-property:icu-configure-open-board-action-create
+                        value
+
+                      /*
+                       * Making sure board name is valid, meaning only a-z and 0-9 characters, in addition to hyphen "-"
+                       * No other characters are valid for name of board
+                       */
+                      match:x:/-/*/*?value
+                        what:regex:/^[a-z0-9-]{5,}$/
+                      if:x:/-/*/*?name
+
+                        /*
+                         * Board name was valid, creating new board, but first checking if board exists from before for user
+                         */
+                        whoami
+                        select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.?value
+                          :x:/./-/*/username?value
+                          :x:/../*/get-widget-property/*/*?value
+                        if:x:/-/*?count
+                          >:int:0
+
+                          /*
+                           * Oops, board with that name exists from before! ERROR!
+                           */
+                          sys42.info-window:Sorry, that board exists from before
+                            _error:true
+                            _time:more
+                          return
+
+                        sys42.icu.get-setting:default-board-width
+                        sys42.icu.get-setting:default-board-height
+                        eval-x:x:/+/**
+                        insert-data
+                          icu.board
+                            username:x:/..if/*/whoami/*/username?value
+                            name:x:/../*/get-widget-property/*/*?value
+                            size
+                              width:x:/..if/*/sys42.icu.get-setting/[0,1]?value
+                              height:x:/..if/*/sys42.icu.get-setting/[1,2]?value
+                            items
+
+                        /*
+                         * Passing in [icu.board]'s database ID, and invoking event responsible for selecting newly
+                         * created board as "action board"
+                         */
+                        sys42.icu._board-was-selected:x:/../*/get-widget-property/*/*?value
+
+                      else
+
+                        /*
+                         * Board name was NOT valid
+                         */
+                        sys42.info-window:Not a valid board name. Only a-z, 0-9 and '-' characters are allowed
+                          _error:true
+                          _time:more
+
+
+                  /*
+                   * Create new copy board button
+                   */
+                  button:icu-configure-open-board-action-create-copy
+                    class:btn btn-default input-lg
+                    innerValue:@"<span class=""glyphicon glyphicon-duplicate""></span>"
+                    title:Creates new board by copying the selected board
+                    onclick
+
+                      /*
+                       * Retrieves board name from "textbox" HTML widget
+                       */
+                      get-widget-property:icu-configure-open-board-action-create
+                        value
+
+                      /*
+                       * Making sure board name is valid, meaning only a-z and 0-9 characters, in addition to hyphen "-"
+                       * No other characters are valid for name of board
+                       */
+                      match:x:/-/*/*?value
+                        what:regex:/^[a-z0-9-]{5,}$/
+                      if:x:/-/*/*?name
+
+                        /*
+                         * Board name was valid, creating new board, but first checking if board exists from before for user
+                         */
+                        whoami
+                        select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.
+                          :x:/./-/*/username?value
+                          :x:/../*/get-widget-property/*/*?value
+                        if:x:/-/*?count
+                          >:int:0
+
+                          /*
+                           * Oops, board with that name exists from before! ERROR!
+                           */
+                          sys42.info-window:Sorry, that board exists from before
+                            _error:true
+                            _time:more
+                          return
+
+                        /*
+                         * Selecting currently selected board, and copying content into new board
+                         */
+                        get-widget-property:icu-configure-open-board-action-select
+                          value
+                        select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.
+                          :x:/..if/*/whoami/*/username?value
+                          :x:/..if/*/get-widget-property/*/*?value
+                        add:x:/..if/*/insert-data
+                          src:x:/..if/*/select-data/[1,2]/*
+
+                        /*
+                         * Changing name of board, and removing database ID
+                         */
+                        set:x:/..if/*/insert-data/*/*/name?value
+                          src:x:/../*/get-widget-property/*/*?value
+                        set:x:/..if/*/insert-data/*?value
+                        insert-data
+
+                        /*
+                         * Passing in [icu.board]'s database ID, and invoking event responsible for selecting newly
+                         * created board as "action board"
+                         */
+                        sys42.icu._board-was-selected:x:/../*/get-widget-property/*/*?value
+
+                      else
+
+                        /*
+                         * Board name was NOT valid
+                         */
+                        sys42.info-window:Not a valid board name. Only a-z, 0-9 and '-' characters are allowed
+                          _error:true
+                          _time:more

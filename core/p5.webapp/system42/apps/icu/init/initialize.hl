@@ -400,4 +400,4 @@ sys42.icu.on-apply-settings
 /*
  * Notifying any listeners that initialization is finished
  */
-sys42.icu.initialization-finished
+sys42.icu.on-initialization-finished

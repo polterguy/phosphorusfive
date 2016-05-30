@@ -1,6 +1,6 @@
 
 /*
- * Action that "deletes last word", and nothing else
+ * Action that deletes last word
  */
 
 
@@ -9,13 +9,64 @@
 /*
  * Name of action
  */
-action-name:Delete word
+action-name:Delete last word
 
 
 
 
 /*
+ * Lambda callback object, responsible for configuring action
  *
+ * Immediately returns, since no configration is necessary
  */
 configure-action
-  sys42.show-code-window:x:/..
+
+  /*
+   * Evaluates[_on-finished] lambda object immediately, since no configuration is necessary
+   */
+  eval:x:/../*/_on-finished
+    _action
+
+      /*
+       * Simply retrieves output widget, and deletes the last widget/word
+       */
+      sys42.icu.get-output-widget
+      list-widgets:x:/-?value
+
+      /*
+       * Checking type of widget, since if it is a "text widget" we need to remove last "text word"
+       */
+      if:x:/-/*?name
+        =:container
+
+        /*
+         * Simple version, removing last widget in output widget
+         */
+        get-children-widgets:x:/../*/list-widgets/*?value
+        if:x:/-/*/*?count
+          =:int:0
+          sys42.info-window:No more words in document
+            _error:true
+          return
+        delete-widget:x:/-2/*/0/-?value
+
+      else
+
+        /*
+         * Slightly harder version, output widget is a "textually based" widget, 
+         * and we need to do some string manipulation
+         */
+        get-widget-property:x:/../*/list-widgets/*?value
+          value
+        split:x:/-/*/*?value
+          =:" "
+        if:x:/-/*?count
+          =:int:0
+          sys42.info-window:No more words in document
+            _error:true
+          return
+        set:x:/-2/0/-
+        join:x:/-3/*?name
+          sep:" "
+        set-widget-property:x:/../*/list-widgets/*?value
+          value:x:/./-?value
