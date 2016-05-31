@@ -452,6 +452,7 @@
     <None Include="system42\apps\icu\board\language-builder\action-plugins\delete-word.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\board-size.hl" />
     <None Include="system42\apps\icu\board\language-builder\search-plugins\flickr\search.hl" />
+    <None Include="system42\apps\icu\media\images\user-space\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
