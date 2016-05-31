@@ -35,8 +35,8 @@ if
 /*
  * Now creating language builder widget, first making sure main language builder wrapper is shown
  */
-set-widget-property:x:/../*/sys42.icu.get-language-builder-widget?value
-  visible:true
+sys42.delete-css-classes:x:/../*/sys42.icu.get-language-builder-widget?value
+  _class:icu-hide-language-builder
 
 
 
@@ -123,8 +123,8 @@ p5.configureImageKeyPress = function(e) {
                 onclick
                   delete-widget:icu-configure-image-result
                   sys42.icu.get-language-builder-widget
-                  set-widget-property:x:/-?value
-                    visible:false
+                  sys42.add-css-classes:x:/-?value
+                    _class:icu-hide-language-builder
               literal:icu-configure-image-header
                 element:h3
                 innerValue:Word ...?
@@ -195,8 +195,8 @@ p5.configureImageKeyPress = function(e) {
                        * Making sure we hide language builder
                        */
                       sys42.icu.get-language-builder-widget
-                      set-widget-property:x:/-?value
-                        visible:false
+                      sys42.add-css-classes:x:/-?value
+                        _class:icu-hide-language-builder
 
                   /*
                    * OK configure image button (selects image, and creates a new [icu.word] entry in database)
@@ -332,6 +332,74 @@ p5.configureImageKeyPress = function(e) {
 
 
 
+    /*
+     * Invoked when a file has been uploaded to server
+     */
+    sys42.icu.file-uploaded
+
+      /*
+       * Getting filename and data
+       */
+      get-http-param:file-data
+      get-http-param:file-name
+
+      /*
+       * Making sure we get a unique filename, which will be the same for each consecutive upload of the same file
+       * over again, to allow overwriting files, while also not overwriting, unless it is the same file uploaded,
+       * and not just a different file, with the same name. This is done by adding in 15 characters of "sha256 hash"
+       * of file content. While also keeping the filename, in addition to starting the file with the currently logged
+       * in user's username
+       */
+      sha256-hash:x:/../*/get-http-param/*/file-data?value
+      to-lower:x:/-?value
+      replace:x:/-?value
+        not-of:abcdefghijklmnopqrstuvwxyz0123456789-
+      split:x:/-?value
+        =:int:15
+      
+
+      /*
+       * Saving file to user's temp directory
+       */
+      p5.string.decode-base64:x:/../*/get-http-param/*/file-data?value
+      whoami
+      save-file:/users/{0}/temp/{1}
+        :x:/./-/*/username?value
+        :x:/../*/get-http-param/[1,2]/*?value
+        src:x:/../*/p5.string.decode-base64/*?value
+
+      /*
+       * Resizing image to keys folder
+       */
+      eval-x:x:/+/*/_destination
+      sys42.icu.resize-image-to-keys-folder:/users/{0}/temp/{1}
+        :x:/../*/whoami/*/username?value
+        :x:/../*/get-http-param/[1,2]/*?value
+        _destination:/system42/apps/icu/media/images/user-space/common-keys/{0}-{1}-{2}
+          :x:/../*/whoami/*/username?value
+          :x:/../*/split/[0,1]/0?name
+          :x:/../*/get-http-param/*/file-name?value
+
+      /*
+       * Now we can configure currently active key with resized image, using file name (without extension) as 
+       * default "word" for [icu.word]
+       */
+      date-now
+      split:x:/../*/get-http-param/*/file-name?value
+        =:.
+      eval-x:x:/+/*(/_word|/_description|/_image)
+      sys42.icu.configure-image-for-key
+        _image:/system42/apps/icu/media/images/user-space/common-keys/{0}-{1}-{2}
+          :x:/../*/whoami/*/username?value
+          :x:/../*/split/[0,1]/0?name
+          :x:/../*/get-http-param/*/file-name?value
+        _word:x:/../*/split/[1,2]/0?name
+        _description:Uploaded - {0}
+          :x:/../*/date-now?value
+
+
+
+
   _on-enter
 
     /*
@@ -375,8 +443,9 @@ p5.configureImageKeyPress = function(e) {
             /*
              * Simply raising "cancel" button onclick
              */
-            raise-widget-ajax-event:icu-configure-image-cancel-preview
-              onclick
+            sys42.icu.get-language-builder-widget
+            sys42.add-css-classes:x:/-?value
+              _class:icu-hide-language-builder
 
 
 
@@ -403,4 +472,31 @@ p5.searchIcuTextBoxEsc = function(e) {
 
 /*
  * Creating "drag and drop" file uploader
+ * But only if this is the first evaluation of our file
  */
+get-widget-ajax-event:x:/../*/sys42.icu.get-language-builder-widget?value
+  _onupload
+
+/*
+ * Checking if ajax event exists from before
+ */
+if:x:/../*/get-widget-ajax-event/*/*?count
+  =:int:0
+
+  /*
+   * Nope, running initialization
+   */
+  set-widget-ajax-event:x:/../*/sys42.icu.get-language-builder-widget?value
+    _onupload
+
+      /*
+       * Just forwards the request to our uploader method on language builder widget
+       */
+      sys42.icu.file-uploaded
+
+
+  eval-x:x:/+/*
+  sys42.execute-lisp-file:/system42/misc/drag-and-drop-upload.hl
+    _widget:x:/../*/sys42.icu.get-language-builder-widget?value
+    _hover-css-class:icu-file-dragged-to-builder
+    _dropped-css-class:icu-file-dropped-to-builder

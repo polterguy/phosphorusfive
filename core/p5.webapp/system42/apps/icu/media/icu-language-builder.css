@@ -159,3 +159,38 @@
 }
 
 
+/*
+ * Drag and drop uploader
+ */
+@keyframes icu-animate-drag-and-drop {
+    0% {
+    }
+    100% {
+        background-color:rgba(255,255,128,1);
+    }
+}
+.icu .icu-file-dragged-to-builder {
+    animation-name:icu-animate-drag-and-drop;
+    animation-duration:.5s;
+    animation-iteration-count:infinite;
+    animation-direction:alternate;
+}
+@keyframes icu-animate-drag-and-dropped {
+    0% {
+        background-color:rgba(255,255,128,1);
+    }
+    100% {
+        background-color:rgba(255,128,128,1);
+    }
+}
+.icu .icu-file-dropped-to-builder {
+    animation-name:icu-animate-drag-and-dropped;
+    animation-duration:.5s;
+    animation-iteration-count:infinite;
+    animation-direction:alternate;
+}
+
+.icu .icu-hide-language-builder {
+    display:none;
+}
+

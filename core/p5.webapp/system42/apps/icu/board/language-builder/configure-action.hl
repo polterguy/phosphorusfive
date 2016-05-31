@@ -133,8 +133,8 @@ create-widget:icu-configure-action
          * Deleting language builder widget
          */
         sys42.icu.get-language-builder-widget
-        set-widget-property:x:/-?value
-          visible:false
+        sys42.add-css-classes:x:/-?value
+          _class:icu-hide-language-builder
 
       else
 
@@ -249,8 +249,8 @@ create-widget:icu-configure-action
              * Making sure we hide language builder
              */
             sys42.icu.get-language-builder-widget
-            set-widget-property:x:/-?value
-              visible:false
+            sys42.add-css-classes:x:/-?value
+              _class:icu-hide-language-builder
 
         literal:icu-configure-action-header
           element:h3

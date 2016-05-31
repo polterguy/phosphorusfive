@@ -397,11 +397,17 @@ if:x:/../*/_icu-language-builder?value
 
       /*
        * Updating "src" attribute and "alt" attribute of image
+       *
+       * Notice, the client side screws things up here for us, when concatenating values, hence
+       * we need to prepend the URL with the "base" parts for app
        */
+      get-base-location
       find-widget:x:/../*/sys42.icu.get-active-key/*/id?value
         element:img
       set-widget-property:x:/-/*?value
-        src:x:/../*/select-data/[1,2]/*/*/images/*/image/[0,1]?value
+        src:{0}{1}
+          :x:/././-2?value
+          :x:/../*/select-data/[1,2]/*/*/images/*/image/[0,1]?value
         alt:x:/../*/select-data/[1,2]/*/*/word?value
 
       /*
@@ -700,8 +706,8 @@ set-widget-lambda-event:{_icu-keyboard-widget}
         !=
         and:{_icu-language-builder}
           !=:
-        set-widget-property:{_icu-language-builder}
-          visible:false
+        sys42.add-css-classes:{_icu-language-builder}
+          _class:icu-hide-language-builder
 
       /*
        * Raising the "on no active key" event such that listeners can know.

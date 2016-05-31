@@ -73,7 +73,7 @@ namespace p5.lambda.keywords
                                 retVal.Append (source [idxNo]);
                             }
                         }
-                        e.Args.Value = retVal;
+                        e.Args.Value = retVal.ToString ();
                     }
                 }
             }

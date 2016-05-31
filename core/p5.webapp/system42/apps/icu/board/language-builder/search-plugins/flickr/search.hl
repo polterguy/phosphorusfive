@@ -31,7 +31,7 @@ get-widget-property:icu-configure-key-search-textbox
 p5.flickrnet.search
   text:x:/../*/get-widget-property/*/*?value
   page:0
-  per-page:42
+  per-page:20
 
 
 

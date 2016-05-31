@@ -52,6 +52,6 @@ if:x:/../*/_icu-language-builder?value
   sys42.add-css-classes:x:/../*/_icu-language-builder?value
     _class:icu-language-builder box-shadow rounded-corners air-padding-more prepend-bottom
 
-  set-widget-property:x:/../*/_icu-language-builder?value
-    visible:false
+  sys42.add-css-classes:x:/../*/_icu-language-builder?value
+    _class:icu-hide-language-builder
 
