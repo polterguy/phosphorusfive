@@ -122,6 +122,9 @@ p5.configureImageKeyPress = function(e) {
                 class:icu-close-dialog
                 onclick
                   delete-widget:icu-configure-image-result
+                  sys42.icu.get-language-builder-widget
+                  set-widget-property:x:/-?value
+                    visible:false
               literal:icu-configure-image-header
                 element:h3
                 innerValue:Word ...?
@@ -141,6 +144,7 @@ p5.configureImageKeyPress = function(e) {
                     placeholder:Word ...
                     value:x:/../*/_word?value
                     onkeypress:"return p5.configureImageKeyPress(event);"
+                    tabindex:1
                     oninit
                       send-javascript:@"$('#{0}').focus().select();"
                         :x:/../*/_event?value
@@ -149,6 +153,7 @@ p5.configureImageKeyPress = function(e) {
                     class:form-control prepend-top prepend-bottom
                     placeholder:Description ...
                     innerValue:x:/../*/_description?value
+                    tabindex:2
                     rows:13
               void:icu-configure-image-img
                 element:img
@@ -177,6 +182,7 @@ p5.configureImageKeyPress = function(e) {
                   button:icu-configure-image-cancel-preview
                     class:btn-default btn pull-right
                     innerValue:@"<span class=""glyphicon glyphicon-remove""></span> Cancel"
+                    tabindex:4
                     style:"width:100px;"
                     onclick
 
@@ -185,12 +191,20 @@ p5.configureImageKeyPress = function(e) {
                        */
                       delete-widget:icu-configure-image-result
 
+                      /*
+                       * Making sure we hide language builder
+                       */
+                      sys42.icu.get-language-builder-widget
+                      set-widget-property:x:/-?value
+                        visible:false
+
                   /*
                    * OK configure image button (selects image, and creates a new [icu.word] entry in database)
                    */
                   button:icu-configure-image-ok-select-image
                     class:btn-default btn pull-right
                     innerValue:@"<span class=""glyphicon glyphicon-ok""></span> OK"
+                    tabindex:3
                     style:"width:100px;margin-right:10px;"
                     onclick
 
@@ -357,9 +371,12 @@ p5.configureImageKeyPress = function(e) {
           innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
           class:btn-default btn btn-lg
           onclick
-            sys42.icu.get-language-builder-widget
-            set-widget-property:x:/-?value
-              visible:false
+
+            /*
+             * Simply raising "cancel" button onclick
+             */
+            raise-widget-ajax-event:icu-configure-image-cancel-preview
+              onclick
 
 
 

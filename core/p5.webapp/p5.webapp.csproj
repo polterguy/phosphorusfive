@@ -437,7 +437,6 @@
     <None Include="system42\apps\icu\init\init-plugins\README.md" />
     <None Include="system42\apps\icu\board\language-builder\search-plugins\flickr.hl" />
     <None Include="system42\apps\icu\board\language-builder\search-plugins\README.md" />
-    <None Include="system42\apps\icu\board\language-builder\search-plugins\local-search.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\animations.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\show-text.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\README.md" />
@@ -452,6 +451,7 @@
     <None Include="system42\apps\icu\board\language-builder\action-plugins\open-board.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\delete-word.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\board-size.hl" />
+    <None Include="system42\apps\icu\board\language-builder\search-plugins\flickr\search.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -502,5 +502,6 @@
     <Folder Include="system42\apps\icu\media\images\user-space\" />
     <Folder Include="system42\apps\icu\media\images\user-space\common-keys\" />
     <Folder Include="system42\apps\icu\board\language-builder\action-plugins\" />
+    <Folder Include="system42\apps\icu\board\language-builder\search-plugins\flickr\" />
   </ItemGroup>
 </Project>

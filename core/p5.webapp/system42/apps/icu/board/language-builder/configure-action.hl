@@ -29,6 +29,7 @@ for-each:x:/-/*?name
   _buffer
     button
       class:icu-configure-action-button box-shadow rounded-corners
+      tabindex:1
       _file
       onclick
         sys42.toggle-css-classes:x:/../*/_event?value
@@ -62,6 +63,8 @@ sys42.icu.get-icu-wrapper
 eval-x:x:/+/*/parent
 create-widget:icu-configure-action
   class:icu-search-modal-bg
+  onkeypress:"return p5.configureActionKeyPress(event);"
+  onkeyup:"return p5.configureActionKeyUp(event);"
   parent:x:/../*/sys42.icu.get-icu-wrapper?value
 
   /*
@@ -236,7 +239,19 @@ create-widget:icu-configure-action
           innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
           class:icu-close-dialog
           onclick
+
+            /*
+             * Simply deleting configuration of action widget
+             */
             delete-widget:icu-configure-action
+
+            /*
+             * Making sure we hide language builder
+             */
+            sys42.icu.get-language-builder-widget
+            set-widget-property:x:/-?value
+              visible:false
+
         literal:icu-configure-action-header
           element:h3
           innerValue:Action ...?
@@ -247,7 +262,7 @@ create-widget:icu-configure-action
 
 
         /*
-         * Contains all "action" widgets
+         * Contains all "action button" widgets
          */
         container:icu-configure-action-body
           widgets
@@ -283,12 +298,14 @@ create-widget:icu-configure-action
               class:btn-default btn pull-right
               innerValue:@"<span class=""glyphicon glyphicon-remove""></span> Cancel"
               style:"width:100px;"
+              tabindex:3
               onclick
 
                 /*
-                 * User clicked "cancel", simply closing window
+                 * User clicked "cancel", simply closing window by invoking "close widget" button's [onclick]
                  */
-                delete-widget:icu-configure-action
+                raise-widget-ajax-event:icu-hide-configure-action
+                  onclick
 
 
 
@@ -300,6 +317,7 @@ create-widget:icu-configure-action
               class:btn-default btn pull-right
               innerValue:@"<span class=""glyphicon glyphicon-ok""></span> OK"
               style:"width:100px;margin-right:10px;"
+              tabindex:2
               onclick
 
                 /*
@@ -342,3 +360,27 @@ create-widget:icu-configure-action
                   _image:{_image}
 
 
+/*
+ * Making sure we set focus to the first "action button" widget
+ */
+get-children-widgets:icu-configure-action-body
+send-javascript:@"$('#{0}').focus();"
+  :x:/./-/*/0?value
+
+/*
+ * Sends javascript necessary to trap esc and carriage return key in configure action modal window widget
+ */
+send-javascript:@"p5.configureActionKeyPress = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('icu-configure-action-ok').raise('onclick');
+    e.stopPropagation();
+    return false;
+  }
+}
+p5.configureActionKeyUp = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('icu-hide-configure-action').raise('onclick');
+    e.stopPropagation();
+    return false;
+  }
+}"

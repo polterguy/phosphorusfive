@@ -38,6 +38,7 @@ configure-action
   create-widget:icu-configure-open-board-action
     class:icu-search-modal-bg
     parent:x:/../*/sys42.icu.get-icu-wrapper?value
+    onkeyup:"return p5.configureOpenBoardKeyUp(event);"
 
     /*
      * Private events for configuration of opening new board action.
@@ -48,8 +49,17 @@ configure-action
       /*
        * Invoked when a board to open is either selected or created.
        * Simply invokes [_on-finished] supplied when instantiating file
+       *
+       * Expects [_arg] to be board name
        */
       sys42.icu._board-was-selected
+
+        /*
+         * Stores selected board in session, such that consecutive evaluations can use previously selected
+         * board for simplicity
+         */
+        set-session-value:sys42.icu.previously-selected-board
+          src:x:/../*/_arg?value
 
         /*
          * Adding "open board action" to return value expected by caller of file, before deleting modal window widget
@@ -124,6 +134,7 @@ configure-action
               container:icu-configure-open-board-action-select
                 element:select
                 class:form-control input-lg
+                onkeypress:"return p5.configureOpenBoardSelectKeyPress(event);"
                 oninit
 
                   /*
@@ -146,17 +157,27 @@ configure-action
                         {innerValue}:x:?value
 
                   /*
+                   * Will contain list of [create-literal-widget] for each [icu.board] in database belonging to user
+                   */
+                  _create-options
+
+                  /*
+                   * Evaluating [_create-options]
+                   */
+                  eval:x:/../*/_create-options
+
+                  /*
                    * Making sure previously selected board becomes active, if there are any
                    */
                   get-session-value:sys42.icu.previously-selected-board
-                  if:x:/-/*/*?value
+                  if:x:/-/*?value
 
                     /*
                      * User has previously selected a board, making sure that board becomes active, and give
                      * focus to "select" HTML widget, such that he can easily click enter to select board
                      */
                     set-widget-property:x:/../*/_event?value
-                      value:x:/././-/*/*?value
+                      value:x:/././-/*?value
 
                     /*
                      * Giving focus to "select" HTML widget
@@ -170,16 +191,6 @@ configure-action
                      * Giving focus to "create new board" textbox
                      */
                     send-javascript:@"$('#icu-configure-open-board-action-create').focus().select();"
-
-                  /*
-                   * Will contain list of [create-literal-widget] for each [icu.board] in database belonging to user
-                   */
-                  _create-options
-
-                  /*
-                   * Evaluating [_create-options]
-                   */
-                  eval:x:/../*/_create-options
 
               /*
                * Button group for select dropdown listbox
@@ -288,8 +299,11 @@ configure-action
                * Textbox for supplying new board name
                */
               void:icu-configure-open-board-action-create
+                element:input
+                type:text
                 class:form-control input-lg
                 placeholder:Name of new board ...
+                onkeypress:"return p5.configureOpenBoardTextboxKeyPress(event);"
 
               /*
                * Button group for select dropdown listbox
@@ -441,3 +455,29 @@ configure-action
                         sys42.info-window:Not a valid board name. Only a-z, 0-9 and '-' characters are allowed
                           _error:true
                           _time:more
+
+  /*
+   * Sends javascript necessary to trap carriage return in both select dropdown list and textbox.
+   * In addition we're sending javascript necessary to trap "esc" key in modal window widget
+   */
+  send-javascript:@"p5.configureOpenBoardSelectKeyPress = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('icu-configure-open-board-action-ok').raise('onclick');
+    e.stopPropagation();
+    return false;
+  }
+}
+p5.configureOpenBoardTextboxKeyPress = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('icu-configure-open-board-action-create-new').raise('onclick');
+    e.stopPropagation();
+    return false;
+  }
+}
+p5.configureOpenBoardKeyUp = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('icu-hide-configure-open-board-action').raise('onclick');
+    e.stopPropagation();
+    return false;
+  }
+}"
