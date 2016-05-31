@@ -451,6 +451,7 @@
     <None Include="system42\apps\icu\board\language-builder\action-plugins\type-word.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\open-board.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\delete-word.hl" />
+    <None Include="system42\apps\icu\misc\settings-plugins\board-size.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

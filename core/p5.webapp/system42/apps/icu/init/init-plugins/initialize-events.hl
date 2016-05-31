@@ -489,6 +489,45 @@ set-widget-lambda-event:{_icu-keyboard-widget}
 
 
   /*
+   * Returns the currently active board's width and height
+   */
+  sys42.icu.get-active-board-size
+
+    /*
+     * Retrieving currently active board size, and returning size to caller
+     */
+    sys42.icu.get-active-board
+    select-data:x:"/*/*/=:guid:{0}/*/size/*"
+      :x:/../*/sys42.icu.get-active-board?value
+    add:x:/+
+      src:x:/./-/*
+    return
+
+
+
+
+  /*
+   * Sets the currently active board's width and height.
+   * Expects [_width] and [_height]
+   */
+  sys42.icu.set-active-board-size
+
+    /*
+     * Retrieving currently active board size, and returning size to caller
+     */
+    sys42.icu.get-active-board
+    eval-x:x:/+/*/*/*
+    update-data:x:"/*/*/=:guid:{0}/*/size"
+      :x:/../*/sys42.icu.get-active-board?value
+      src
+        size
+          width:x:/../*/_width?value.int
+          height:x:/../*/_height?value.int
+
+
+
+
+  /*
    * Returns the ID of [_icu-keyboard-widget] widget supplied when instantiating ICU. Used by actions that needs 
    * the ID of the keyboard widget
    */
@@ -544,7 +583,35 @@ set-widget-lambda-event:{_icu-keyboard-widget}
      */
     sys42.add-css-classes:x:/../*/_arg?value
       _class:icu-active-key
-    sys42.icu.on-key-is-active
+    sys42.icu.on-active-key
+
+
+
+
+  /*
+   * Reloads the currently active board
+   */
+  sys42.icu.reload-current-board
+
+    /*
+     * Retrieving currently active board from page
+     */
+    get-page-value:sys42.icu.active-board
+
+    /*
+     * Verifying there's actually a current board
+     */
+    if:x:/-/*?value
+
+      /*
+       * A board is currently open, reloading it
+       */
+      sys42.execute-lisp-file:/system42/apps/icu/board/open-board.hl
+
+      /*
+       * Firing event that publishes the fact that board is reloaded
+       */
+      sys42.icu.on-board-reloaded
 
 
 
@@ -570,6 +637,26 @@ set-widget-lambda-event:{_icu-keyboard-widget}
     set-page-value:sys42.icu.active-board
       src:x:/../*/select-data/*?value
     sys42.execute-lisp-file:/system42/apps/icu/board/open-board.hl
+
+    /*
+     * Firing event that publishes the fact that a new board was opened
+     */
+    sys42.icu.on-board-opened
+
+
+
+
+  /*
+   * Returns true if keyboard widget is visible
+   */
+  sys42.icu.keyboard-is-visible
+
+    /*
+     * Checking if keyboard widget is visible, and if so, returning true
+     */
+    get-widget-property:{_icu-keyboard-widget}
+      visible
+    return:x:/-/*/*?value.bool
 
 
 

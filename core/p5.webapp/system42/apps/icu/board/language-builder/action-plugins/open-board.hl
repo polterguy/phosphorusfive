@@ -196,7 +196,19 @@ configure-action
                     innerValue:@"<span class=""glyphicon glyphicon-ok""></span>"
                     title:Use currently selected board
                     onclick
-                      sys42.show-code-window:x:/..
+
+                      /*
+                       * Uses currently selected board for action.
+                       * First figuring out which board user selected
+                       */
+                      get-widget-property:icu-configure-open-board-action-select
+                        value
+
+                      /*
+                       * Then using this board name as foundation for action
+                       */
+                      sys42.icu._board-was-selected:x:/../*/get-widget-property/*/*?value
+                      
 
                   /*
                    * Delete currently selected board
@@ -270,7 +282,7 @@ configure-action
                */
               span
                 innerValue:Create
-                class:input-group-addon
+                class:input-group-addon prepend-bottom
 
               /*
                * Textbox for supplying new board name

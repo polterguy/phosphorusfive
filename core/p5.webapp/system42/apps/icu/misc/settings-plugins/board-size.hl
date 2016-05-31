@@ -1,0 +1,244 @@
+
+
+/*
+ * Board size settings plugin button
+ */
+button
+  _type:action
+  class:btn btn-default form-control prepend-top
+  innerValue:@"<span class=""glyphicon glyphicon-th""></span> Board size"
+  title:Allows you to change the size of current active board
+  oninit
+
+    /*
+     * Checking if keyboard widget if visible, and if so, enabling button, otherwise disabling it
+     */
+    sys42.icu.keyboard-is-visible
+    if:x:/-?value
+
+      /*
+       * Keyboard is visible, enabling button
+       */
+      delete-widget-property:x:/../*/_event?value
+        disabled
+      sys42.delete-css-classes:x:/../*/_event?value
+        _class:disabled
+    else
+
+      /*
+       * Keyboard is invisible, disabling button
+       */
+      set-widget-property:x:/../*/_event?value
+        disabled
+      sys42.add-css-classes:x:/../*/_event?value
+        _class:disabled
+
+  /*
+   * Event sinks for enabling and disabling button when keyboard is hidden and/or shown
+   */
+  events
+
+    /*
+     * Sink invoked when keyboard is hidden
+     */
+    sys42.icu.on-keyboard-hidden
+
+      /*
+       * Disabling button
+       */
+      set-widget-property:x:/../*/_event?value
+        disabled
+      sys42.add-css-classes:x:/../*/_event?value
+        _class:disabled
+
+    /*
+     * Sink invoked when keyboard is shown
+     */
+    sys42.icu.on-keyboard-shown
+
+      /*
+       * Enabling button
+       */
+      delete-widget-property:x:/../*/_event?value
+        disabled
+      sys42.delete-css-classes:x:/../*/_event?value
+        _class:disabled
+
+  onclick
+
+    /*
+     * Using wizard window to retrieve new width and height for board.
+     * First retrieving current board's size
+     */
+    sys42.icu.get-active-board-size
+
+    /*
+     * Setting initial values for width and height textboxes in wizard widget
+     */
+    set:x:/../*/sys42.wizard-window/*/*/=icu-board-width/*/value?value
+      src:x:/../*/sys42.icu.get-active-board-size/*/width?value
+    set:x:x:/../*/sys42.wizard-window/*/*/=icu-board-height/*/value?value
+      src:x:/../*/sys42.icu.get-active-board-size/*/height?value
+
+    /*
+     * Making sure we hide settings widget before we display wizard window
+     */
+    sys42.icu.toggle-settings-widget
+
+    /*
+     * Passing in old height and width to [_onok] lambda object of wizard widget
+     */
+    set:x:/../*/sys42.wizard-window/**/_old-height?value
+      src:x:/../*/sys42.icu.get-active-board-size/*/height?value
+    set:x:/../*/sys42.wizard-window/**/_old-width?value
+      src:x:/../*/sys42.icu.get-active-board-size/*/width?value
+
+    /*
+     * Showing wizard window
+     */
+    sys42.wizard-window
+      _header:Supply new size
+      _body:Please supply new width and height of currently active board
+      _widgets
+        text:icu-board-width
+          label:Width
+          placeholder:New width ...
+          type:number
+          mandatory:true
+          title:New width of currently active board
+          value
+        text:icu-board-height
+          label:Height
+          placeholder:New height ...
+          type:number
+          mandatory:true
+          title:New height of currently active board
+          value
+      _onok
+        _old-width
+        _old-height
+
+        /*
+         * Checking if new size is smaller than old size, in any direction, and if so, warning user that
+         * this might possibly hide some keys for him or her
+         */
+        if:x:/../*/_old-width?value
+          >:x:/../*/icu-board-width?value.int
+          or:x:/../*/_old-height?value
+            >:x:/../*/icu-board-height?value.int
+
+          /*
+           * Used to track if existing board key is beyond new width/height of board
+           */
+          _keys-lost:bool:false
+
+          /*
+           * Now that we know that new size of board is smaller than old size, we can check if any keys are actually
+           * hidden with new board size.
+           * First retrieving active board, and selecting its items from database, that have a larger [x] or [y]
+           * value than [icu-board-widht]/[icu-board-height]
+           */
+          sys42.icu.get-active-board
+          select-data:x:"/*/*/icu.board/=:guid:{0}/*/items/*"
+            :x:/./-?value
+
+          /*
+           * Looping through each [item] from [icu.board] to check if its x/y position is beyond new width/height
+           */
+          _sys42.show-code-window:x:/..
+          _return
+          for-each:x:/..if/*/select-data/*
+            if:x:/..for-each/*/_dp/#/*/x?value.int
+              >=:x:/../*/icu-board-width?value.int
+              and:x:/..for-each/*/_dp/#/*/x?value.int
+                <:x:/../*/_old-width?value.int
+              or:x:/..for-each/*/_dp/#/*/y?value.int
+                >=:x:/../*/icu-board-height?value.int
+                and:x:/..for-each/*/_dp/#/*/y?value.int
+                  <:x:/../*/_old-height?value.int
+
+              /*
+               * Some keys will actually be lost, making sure we signal that fact to user
+               */
+              set:x:/..for-each/..if/*/_keys-lost?value
+                src:bool:true
+
+              /*
+               * No needs to loop further
+               */
+              break
+
+          /*
+           * Checking if keys are actually lost with new size
+           */
+          if:x:/..if/*/_keys-lost?value
+
+            /*
+             * Keys will actually be lost with new size of board
+             */
+            eval-x:x:/+/**(/_width|/_height)
+            sys42.confirm-window
+              _header:Warning
+              _body:@"New size is smaller than old size, and your new size will hide
+some of your keys. Are you sure you wish to do this?"
+              _onok
+
+                /*
+                 * User confirmed resizing, now going ahead and actually resize the board
+                 */
+                sys42.icu.set-active-board-size
+                  _width:x:/../*/icu-board-width?value.int
+                  _height:x:/../*/icu-board-height?value.int
+
+                /*
+                 * Reloading board since its proportions are now changed
+                 */
+                sys42.icu.reload-current-board
+
+                /*
+                 * Informing user that keys are actually still around, and can be found again, be making board bigger
+                 */
+                sys42.info-window:Keys lost can be found again by resizing board back to original size
+                  _time:more
+          else
+
+            /*
+             * Keys will not be lost with new width/height of board
+             */
+            eval-x:x:/+/*
+            sys42.icu.set-active-board-size
+              _width:x:/../*/icu-board-width?value.int
+              _height:x:/../*/icu-board-height?value.int
+
+            /*
+             * Reloading board since its proportions are now changed
+             */
+            sys42.icu.reload-current-board
+
+        else-if:x:/../*/_old-width?value
+          =:x:/../*/icu-board-width?value.int
+          and:x:/../*/_old-height?value
+            =:x:/../*/icu-board-height?value.int
+
+          /*
+           * New size is the same as old size, no needs to change size of board
+           */
+          sys42.info-window:Size was not changed
+
+        else
+
+          /*
+           * New size was larger, in at least one of the directions than old size.
+           * Updating board's size immediately, without warning user
+           */
+          eval-x:x:/+/*
+          sys42.icu.set-active-board-size
+            _width:x:/../*/icu-board-width?value.int
+            _height:x:/../*/icu-board-height?value.int
+
+          /*
+           * Reloading board
+           */
+          sys42.icu.reload-current-board
+
+        return:bool:true

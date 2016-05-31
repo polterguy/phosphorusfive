@@ -5,7 +5,7 @@
  */
 button
   _type:action
-  class:btn btn-primary form-control prepend-top
+  class:btn btn-default form-control prepend-top
   innerValue:@"<span class=""glyphicon glyphicon-wrench""></span> Edit active key"
   title:Edits currently 'active' key
   oninit
@@ -30,7 +30,7 @@ button
     /*
      * Callback sink, invoked when a key becomes "active"
      */
-    sys42.icu.on-key-is-active
+    sys42.icu.on-active-key
 
       /*
        * Enabling settings button
@@ -61,6 +61,6 @@ button
     sys42.execute-lisp-file:/system42/apps/icu/board/language-builder/configure-key.hl
 
     /*
-     * Hding settings to give user more "room"
+     * Hiding settings to give user more "room"
      */
     sys42.icu.toggle-settings-widget

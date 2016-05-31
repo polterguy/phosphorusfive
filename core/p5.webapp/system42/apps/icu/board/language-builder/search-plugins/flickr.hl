@@ -218,40 +218,41 @@ button
                           src:x:/../*/p5.net.http-get/*/*/content?value
 
                         /*
-                         * Figuring out a unique filename, with some parts of it being the "title" from Flickr,
-                         * and the rest of it being date-time, prepended with "flickr-" to understand where the
-                         * image came from later. This allows searching for files with context sensitive filenames
-                         * later, to build keys, searching locally
+                         * Creating a "sane filename" of title of image, to use as part of filename when file
+                         * is saved locally
                          */
-                        date-now
-                        replace:x:/-?value
-                          not-of:"0123456789"
-                          with:"-"
                         to-lower:x:/../*/get-page-value/*/*/*/title?value
                         replace:x:/-?value
                           not-of:"abcdefghijklmnopqrstuvwxyz0123456789"
                           with:"-"
 
                         /*
-                         * Resizing image to ICU "common-keys" folder
+                         * Resizing image to ICU "common-keys" folder, just using "flickr filename", which will
+                         * make sure, if the same file is downloaded several times, then the file is physically
+                         * overwritten on disc, which is expected behavior
                          */
                         eval-x:x:/+/*/_destination
                         sys42.icu.resize-image-to-keys-folder:/users/{0}/temp/{1}
                           :x:/../*/whoami/*/username?value
                           :x:/../*/split/0/-?name
                           _destination:/system42/apps/icu/media/images/user-space/common-keys/flickr-{0}-{1}.jpg
-                            :x:/../*/replace/[0,1]?value
-                            :x:/../*/replace/[1,2]?value
+                            :x:/../*/replace?value
+                            :x:/../*/split/0/-?name
 
                         /*
-                         * Starts configuring image to use for key, but first deleting modal flickr window
+                         * Deleting flickr result widget
                          */
                         delete-widget:icu-flickr-result
+
+                        /*
+                         * Starts configuring image to use for key, making sure [_word] defaults to [to-lower] version of
+                         * title of image.
+                         */
                         eval-x:x:/+/*
                         sys42.icu.configure-image-for-key
                           _image:/system42/apps/icu/media/images/user-space/common-keys/flickr-{0}-{1}.jpg
-                            :x:/../*/replace/[0,1]?value
-                            :x:/../*/replace/[1,2]?value
+                            :x:/../*/replace?value
+                            :x:/../*/split/0/-?name
                           _word:x:/../*/to-lower?value
                           _description::x:/../*/get-page-value/*/*/*/description?value
 

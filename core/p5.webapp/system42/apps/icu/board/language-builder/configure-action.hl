@@ -86,8 +86,8 @@ create-widget:icu-configure-action
       /*
        * Checking if there are anymore "action files" to evaluate
        */
-      if:x:/../*/get-session-value/*/*/*
-        not
+      if:x:/../*/get-session-value/*/*/*?count
+        =:int:0
 
         /*
          * Configuration of all actions finished!
@@ -106,13 +106,13 @@ create-widget:icu-configure-action
          * Appending entire lambda object, containing results of all configured actions, into event invocation
          * responsible for actually configuring action towards key
          */
-        add:x:/+2/*/_action
+        add:x:/..if/*/sys42.icu.configure-key-with-image-action/*/_action
           src:x:/./-/*/*/*
 
         /*
          * Passing in database ID to [icu.image]
          */
-        eval-x:x:/+/*/_image
+        eval-x:x:/..if/*/sys42.icu.configure-key-with-image-action/*/_image
 
         /*
          * Invoking event responsible for actually configuring keyboard "key"
@@ -144,7 +144,7 @@ create-widget:icu-configure-action
         /*
          * Retrieving any previously iterated and configured actions from session
          */
-        set-session-value:sys42.icu.combined-action-results
+        get-session-value:sys42.icu.combined-action-results
 
         /*
          * Loading first file from "list of action files to evaluate"
@@ -183,7 +183,7 @@ create-widget:icu-configure-action
              * combined results of all "action configuration files"
              */
             add:x:/+2/*/*
-              src:x:/./-/*/*
+              src:x:/./-/*/*/*
             add:x:/+/*/*
               src:x:/../*/_action/*
             set-session-value:sys42.icu.combined-action-results
@@ -191,15 +191,20 @@ create-widget:icu-configure-action
                 actions
 
             /*
+             * Then removing the first file from "list of action files to configure"
+             */
+            get-session-value:sys42.icu.action-files-to-evaluate
+
+            /*
              * Removing first item from "action configuration files", and recursively invoking "self"
              */
-            set:x:/../*/get-session-value/*/*/0
+            set:x:/../*/get-session-value/[1,2]/*/*/0
 
             /*
              * Appending remmaining "action file configurations" into [set-session-value]
              */
             add:x:/../*/set-session-value/*
-              src:x:/../*/get-session-value/*/*
+              src:x:/../*/get-session-value/[1,2]/*/*
 
             /*
              * Updating session, now with one less value in "action configuration files"
@@ -320,8 +325,10 @@ create-widget:icu-configure-action
                   _file
 
                 /*
-                 * Putting all files into session value, and starting iteration of configuration of actions
+                 * Putting all files into session value, and starting iteration of configuration of actions,
+                 * making sure we remove any previous "combined action result" from session first
                  */
+                set-session-value:sys42.icu.combined-action-results
                 add:x:/+/*/*
                   src:x:/../*/get-widget-property/*/*
                 set-session-value:sys42.icu.action-files-to-evaluate
