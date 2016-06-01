@@ -204,6 +204,7 @@ else
   eval-x:x:/+/*
   create-widget
     parent:x:/../*/_icu-wrapper?value
+    element:table
 
   /*
    * Making sure other parts of files has access to keyboard widget's ID

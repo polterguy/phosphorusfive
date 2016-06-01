@@ -102,8 +102,7 @@ set-widget-lambda-event:{_icu-wrapper}
      * Figuring out which type of widget output widget is, since we do
      * not want to apply CSS classes for textbox and/or textarea
      */
-    sys42.icu.get-output-widget
-    list-widget:x:/-?value
+    list-widgets:{_icu-output-widget}
 
     /*
      * First applying animations according to settings
@@ -122,13 +121,15 @@ set-widget-lambda-event:{_icu-wrapper}
          * Animations should be applied, output widget is [container]
          */
         sys42.add-css-classes:{_icu-output-widget}
-          _class:icu-animation-fade-in-word
+          _class:icu-animation-fade-in-word icu-animation-hover
 
       /*
        * Applying animations to keyboard widget
        */
       sys42.add-css-classes:{_icu-keyboard-widget}
         _class:icu-animation-hover icu-animation-drop-from-sky
+      sys42.delete-css-classes:{_icu-keyboard-widget}
+        _class:icu-animation-fade-in-keyboard
 
     else
 
@@ -143,7 +144,7 @@ set-widget-lambda-event:{_icu-wrapper}
          * Output widget is of type [container], deleting animations CSS classes
          */
         sys42.delete-css-classes:{_icu-output-widget}
-          _class:icu-animation-fade-in-word
+          _class:icu-animation-fade-in-word icu-animation-hover
 
       /*
        * Deleting animations from keyboard widget
@@ -222,13 +223,14 @@ set-widget-lambda-event:{_icu-output-widget}
      */
     select-data:x:@"/*/*/icu.word/""=:guid:{0}"""
       :x:/../*/_image?value
+    html-encode:x:/../*/select-data/*/*/description?value
 
     /*
      * Retrieving main icu output, and creating fullscreen modal widget, showing image
      * Prioritizing "original" version, if it exists
      */
     sys42.icu.get-icu-wrapper
-    eval-x:x:/+/*|/+/**(/alt|/src)
+    eval-x:x:/+/*|/+/**(/alt|/src|/title)
     create-widget
       parent:x:/../*/sys42.icu.get-icu-wrapper?value
       class:icu-search-modal-bg
@@ -238,7 +240,8 @@ set-widget-lambda-event:{_icu-output-widget}
         img
           class:icu-fullscreen-image
           src:x:/../*/select-data/*/*/images/*(/original|/image)/[0,1]?value
-          alt:x:/../*/select-data/*/*/description?value
+          alt:x:/../*/html-encode?value
+          title:x:/../*/html-encode?value
 
 
 

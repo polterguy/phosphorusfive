@@ -82,6 +82,10 @@ select-data:x:@"/*/*/icu.board/""=:guid:{0}"""
  * [_board-widget] will contain a bunch of [create-widget] invocations after [while] is finished evaluating
  */
 _board-widgets
+  create-widget
+    element:tbody
+    parent:{_icu-keyboard-widget}
+    widgets
 
 
 
@@ -96,11 +100,10 @@ while:x:/-?value
   /*
    * Creating specified table row (tr) widget
    */
-  add:x:/../*/_board-widgets
+  add:x:/../*/_board-widgets/*/*/widgets
     src
-      create-widget
+      container
         element:tr
-        parent:{_icu-keyboard-widget}
         widgets
 
   /*
@@ -132,7 +135,7 @@ while:x:/-?value
     /*
      * Creating default "key" widget for each word in board
      */
-    add:x:/../*/_board-widgets/0/-/*/widgets
+    add:x:/../*/_board-widgets/*/*/widgets/0/-/*/widgets
       src
         container
           element:td
@@ -185,31 +188,31 @@ while:x:/-?value
         /*
          * First we retrieve the first [image] from [icu.word], and applies it as [src] of HTML "img" element
          */
-        set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/src?value
+        set:x:/../*/_board-widgets/*/*/widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/src?value
           src:x:/..if/..if/*/select-data/*/*/images/*/image/[0,1]?value
 
         /*
          * Then we set the HTML "alt" property of image to the [word] from our [icu.word]
          */
-        set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/alt?value
+        set:x:/../*/_board-widgets/*/*/widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/img/*/alt?value
           src:x:/..if/..if/*/select-data/*/*/word?value
 
         /*
          * Then we set the HTML "innerValue" property of our HTML "span" element to the [word] from our [icu.word]
          */
-        set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
+        set:x:/../*/_board-widgets/*/*/widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/widgets/*/span/*/innerValue?value
           src:x:/..if/..if/*/select-data/*/*/word?value
 
         /*
          * Then we make sure our HTML "button" get the [icu.image] ID as a "hidden attribute" (server side) called [_image]
          */
-        set:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/_image?value
+        set:x:/../*/_board-widgets/*/*/widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/_image?value
           src:x:/..if/..if/*/select-data/*?value
 
         /*
          * Making sure [onclick] becomes lambda object from [action] of [item]
          */
-        add:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick
+        add:x:/../*/_board-widgets/*/*/widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick
           src:x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/./*/action/*
             :x:/..while/..while/*/_cur-x?value.string
             :x:/../*/_cur-y?value.string
@@ -217,7 +220,7 @@ while:x:/-?value
         /*
          * Making sure language builder is hidden by default, when an existing "key" is clicked
          */
-        add:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick
+        add:x:/../*/_board-widgets/*/*/widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick
           src
             sys42.icu.on-close-language-builder
 
@@ -227,7 +230,7 @@ while:x:/-?value
        * Currently iterated position does not have an image associated with it, hence adding 
        * "associate with image" logic for key's [onclick] event handler
        */
-      add:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick
+      add:x:/../*/_board-widgets/*/*/widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick
         src
 
           /*
