@@ -241,7 +241,7 @@ p5.configureImageKeyPress = function(e) {
   }
 }"
       sys42.icu.get-icu-wrapper
-      eval-x:x:/+/*/parent|/+/*/*/*/*/*/*(/void/=icu-configure-image-word/*/value|/literal/=icu-configure-image-description/*/innerValue|/./././*/void/=icu-configure-image-img/*(/src|/alt))
+      eval-x:x:/+/*/parent|/+/*/*/*/*/*/*(/void/=icu-configure-image-word/*/value|/literal/=icu-configure-image-description/*/innerValue|/./././*/void/=icu-configure-image-img/*(/src|/alt|/_original))
       create-widget:icu-configure-image-result
         class:icu-search-modal-bg
         parent:x:/../*/sys42.icu.get-icu-wrapper?value
@@ -301,6 +301,7 @@ p5.configureImageKeyPress = function(e) {
                 class:icu-configure-image-img box-shadow rounded-corners col-lg-6 prepend-bottom
                 src:x:/../*/_image?value
                 alt:x:/../*/_word?value
+                _original:x:/../*/_original?value
 
               /*
                * Give some "space" for button row at the bottom of modal window
@@ -357,6 +358,7 @@ p5.configureImageKeyPress = function(e) {
                         value
                       get-widget-property:icu-configure-image-img
                         src
+                        _original
 
                       /*
                        * Creates an [icu.word] insertion, to stuff into database
@@ -367,7 +369,8 @@ p5.configureImageKeyPress = function(e) {
                           word:x:/../*/get-widget-property/[0,1]/*/*?value
                           description:x:/../*/get-widget-property/[1,2]/*/*?value
                           images
-                            image:x:/../*/get-widget-property/[2,3]/*/*?value
+                            image:x:/../*/get-widget-property/[2,3]/*/0?value
+                            original:x:/../*/get-widget-property/[2,3]/*/1?value
 
                       /*
                        * Asks user for "action" to associate with image, passing in [icu.image] ID to file responsible
@@ -502,18 +505,20 @@ p5.configureImageKeyPress = function(e) {
        */
       p5.string.decode-base64:x:/../*/get-http-param/*/file-data?value
       whoami
-      save-file:/users/{0}/temp/{1}
-        :x:/./-/*/username?value
-        :x:/../*/get-http-param/[1,2]/*?value
+      save-file:/system42/apps/icu/media/images/user-space/originals/{0}-{1}-{2}
+        :x:/../*/whoami/*/username?value
+        :x:/../*/split/[0,1]/0?name
+        :x:/../*/get-http-param/*/file-name?value
         src:x:/../*/p5.string.decode-base64/*?value
 
       /*
        * Resizing image to keys folder
        */
       eval-x:x:/+/*/_destination
-      sys42.icu.resize-image-to-keys-folder:/users/{0}/temp/{1}
+      sys42.icu.resize-image-to-keys-folder:/system42/apps/icu/media/images/user-space/originals/{0}-{1}-{2}
         :x:/../*/whoami/*/username?value
-        :x:/../*/get-http-param/[1,2]/*?value
+        :x:/../*/split/[0,1]/0?name
+        :x:/../*/get-http-param/*/file-name?value
         _destination:/system42/apps/icu/media/images/user-space/common-keys/{0}-{1}-{2}
           :x:/../*/whoami/*/username?value
           :x:/../*/split/[0,1]/0?name
@@ -526,9 +531,13 @@ p5.configureImageKeyPress = function(e) {
       date-now
       split:x:/../*/get-http-param/*/file-name?value
         =:.
-      eval-x:x:/+/*(/_word|/_description|/_image)
+      eval-x:x:/+/*(/_word|/_description|/_image|/_original)
       sys42.icu.configure-image-for-key
         _image:/system42/apps/icu/media/images/user-space/common-keys/{0}-{1}-{2}
+          :x:/../*/whoami/*/username?value
+          :x:/../*/split/[0,1]/0?name
+          :x:/../*/get-http-param/*/file-name?value
+        _original:/system42/apps/icu/media/images/user-space/originals/{0}-{1}-{2}
           :x:/../*/whoami/*/username?value
           :x:/../*/split/[0,1]/0?name
           :x:/../*/get-http-param/*/file-name?value

@@ -36,6 +36,30 @@ clear-widget:{_icu-keyboard-widget}
 
 
 /*
+ * Unless this is the first time keyboard is opened, we replace the default (drop from sky) animation
+ * with our "fade in word", but only if animation setting is true
+ */
+if:x:/../*/_first-loading?value.bool
+  not
+
+  /*
+   * This is NOT the first loading of keyboard
+   */
+  sys42.icu.get-setting:animations
+  if:x:/-?value
+
+    /*
+     * Settings for animations is turned on, replacing drop down animations with fade in animations
+     */
+    sys42.delete-css-classes:{_icu-keyboard-widget}
+      _class:icu-animation-drop-from-sky
+    sys42.add-css-classes:{_icu-keyboard-widget}
+      _class:icu-animation-fade-in-keyboard
+
+
+
+
+/*
  * Retrieving current board
  */
 select-data:x:@"/*/*/icu.board/""=:guid:{0}"""
@@ -234,5 +258,3 @@ while:x:/-?value
  * for each row, containing one "td" HTML element for each "key" in row
  */
 eval:x:/../*/_board-widgets
-
-

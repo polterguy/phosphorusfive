@@ -118,7 +118,7 @@
     background-size:cover;
     padding:35px 15px 10px 32px;
     overflow:auto;
-    min-height:165px;
+    min-height:185px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -148,6 +148,9 @@
 .icu .icu-output .icu-word {
     width:125px;
     height:125px;
+}
+.icu .icu-output .icu-word:focus {
+    outline:0;
 }
 .icu .icu-output .icu-word .icu-image {
     width:100%;
@@ -193,15 +196,6 @@
 
 
 
-/*
- * CSS class for currently "active" keyboard key
- */
-.icu .icu-active-key {
-    background-color:rgba(0,255,0,.1);
-}
-
-
-
 
 
 
@@ -242,20 +236,41 @@
     transition-duration:.3s;
     transform:scale(1);
 }
-.icu .icu-animation-hover .icu-word:hover,
+.icu .icu-animation-fade-in-word .icu-word {
+    animation:icu-animate-fade-in-word .4s;
+}
 .icu .icu-animation-hover .icu-word:focus {
     transition:box-shadow, transform;
     transition-duration:.3s;
-    box-shadow:7px 7px 1px rgba(0,0,0,.3);
-    transform:scale(1.2);
+    box-shadow:3px 3px 1px rgba(0,0,0,.3);
+    transform:scale(1.1);
     z-index:5;
     position:relative;
+    outline:0;
+}
+.icu .icu-animation-hover .icu-word:hover {
+    transition:box-shadow, transform;
+    transition-duration:.3s;
+    box-shadow:3px 3px 1px rgba(0,0,0,.3);
+    transform:scale(1.1);
+    z-index:5;
+    position:relative;
+    outline:0;
 }
 .icu .icu-animation-hover .icu-word:active {
     transition:background-color, transform, box-shadow;
     transition-duration:.3s;
-    transform:scale(.8);
-    box-shadow:7px 7px 1px rgba(0,0,0,.3);
+    transform:scale(.95);
+    box-shadow:3px 3px 1px rgba(0,0,0,.3);
+}
+
+
+
+/*
+ * CSS class for currently "active" keyboard key
+ */
+.icu .icu-active-key {
+    background-color:rgba(0,255,0,.1);
 }
 
 
@@ -264,15 +279,159 @@
  */
 @keyframes icu-animate-drop-from-sky {
     0% {
-        margin-top:-150px;
+        margin-left:-1000px;
+        margin-top:-500px;
         opacity:0;
     }
     100% {
-        transform:rotate(0deg);
+        opacity:1;
     }
 }
 .icu .icu-animation-drop-from-sky .icu-word {
     animation-name:icu-animate-drop-from-sky;
+    animation-duration:.5s;
+    animation-fill-mode:forwards;
+    animation-timing-function:ease-out;
+    opacity:0;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(1) button.icu-word {
+    animation-delay:0s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(2) button.icu-word {
+    animation-delay:0.05s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(3) button.icu-word {
+    animation-delay:0.1s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(4) button.icu-word {
+    animation-delay:0.15s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(5) button.icu-word {
+    animation-delay:0.20s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(6) button.icu-word {
+    animation-delay:0.25s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(7) button.icu-word {
+    animation-delay:0.3s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(8) button.icu-word {
+    animation-delay:0.35s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(9) button.icu-word {
+    animation-delay:0.4s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(10) button.icu-word {
+    animation-delay:0.45s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(11) button.icu-word {
+    animation-delay:0.5s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(12) button.icu-word {
+    animation-delay:0.55s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(13) button.icu-word {
+    animation-delay:0.6s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(1) td:nth-child(14) button.icu-word {
+    animation-delay:0.7s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(1) button.icu-word {
+    animation-delay:0.85s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(2) button.icu-word {
+    animation-delay:0.8s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(3) button.icu-word {
+    animation-delay:0.75s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(4) button.icu-word {
+    animation-delay:0.7s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(5) button.icu-word {
+    animation-delay:0.65s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(6) button.icu-word {
+    animation-delay:0.6s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(7) button.icu-word {
+    animation-delay:0.55s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(8) button.icu-word {
+    animation-delay:0.5s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(9) button.icu-word {
+    animation-delay:0.45s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(10) button.icu-word {
+    animation-delay:0.4s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(11) button.icu-word {
+    animation-delay:0.35s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(12) button.icu-word {
+    animation-delay:0.3s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(13) button.icu-word {
+    animation-delay:0.25s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(2) td:nth-child(14) button.icu-word {
+    animation-delay:0.2s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(1) button.icu-word {
+    animation-delay:0.4s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(2) button.icu-word {
+    animation-delay:0.45s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(3) button.icu-word {
+    animation-delay:0.5s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(4) button.icu-word {
+    animation-delay:0.55s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(5) button.icu-word {
+    animation-delay:0.6s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(6) button.icu-word {
+    animation-delay:0.65s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(7) button.icu-word {
+    animation-delay:0.7s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(8) button.icu-word {
+    animation-delay:0.75s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(9) button.icu-word {
+    animation-delay:0.8s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(10) button.icu-word {
+    animation-delay:0.85s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(11) button.icu-word {
+    animation-delay:0.9s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(12) button.icu-word {
+    animation-delay:0.95s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(13) button.icu-word {
+    animation-delay:1s;
+}
+.icu .icu-animation-drop-from-sky tr:nth-child(3) td:nth-child(14) button.icu-word {
+    animation-delay:1.05s;
+}
+
+
+/*
+ * Default "fade in" animation
+ */
+@keyframes icu-animate-fade-in-keyboard {
+    0% {
+        opacity:0;
+    }
+}
+.icu .icu-animation-fade-in-keyboard .icu-word {
+    animation-name:icu-animate-fade-in-keyboard;
     animation-duration:.5s;
 }
 
@@ -285,4 +444,74 @@
 }
 .icu .icu-rounded-corners .icu-word {
     border-radius:5px;
+}
+
+
+
+
+
+/*
+ * Common helper CSS classes and animations
+ */
+@keyframes icu-animate-modal-bg {
+    0% {
+        background-color:rgba(0,0,0,0);
+    }
+    100% {
+        background-color:rgba(0,0,0,.7);
+    }
+}
+.icu .icu-search-modal-bg {
+    position:fixed;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0);
+    z-index:100;
+    animation-name:icu-animate-modal-bg;
+    animation-duration:.5s;
+    animation-fill-mode:forwards;
+}
+@keyframes icu-animate-search-modal-window {
+    0% {
+        opacity:0;
+        margin-top:-200px;
+    }
+    100% {
+        opacity:1;
+        margin-top:45px;
+    }
+}
+.icu .icu-search-modal-window {
+    margin-left:auto;
+    margin-right:auto;
+    width:50%;
+    background-color:rgb(254,254,254);
+    animation-name:icu-animate-search-modal-window;
+    animation-duration:.5s;
+    animation-fill-mode:forwards;
+    overflow:auto;
+    position:relative;
+}
+.icu .icu-close-dialog {
+    position:absolute;
+    top:15px;
+    right:15px;
+    font-size:18px;
+}
+.icu .icu-search-modal-window hr {
+    margin-left:-30px;
+    margin-right:-30px;
+}
+.icu .icu-search-modal-window h3 {
+    margin-top:0px;
+}
+.icu .icu-fullscreen-image {
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:25px;
+    max-width:80%;
+    max-height:calc(100% - 50px);
+    display:block;
 }

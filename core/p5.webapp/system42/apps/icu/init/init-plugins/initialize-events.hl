@@ -213,6 +213,37 @@ set-widget-lambda-event:{_icu-output-widget}
 
 
   /*
+   * Shows the given [_image] being the database ID to an [icu.word] in fullscreen
+   */
+  sys42.icu.show-fullscreen-image
+
+    /*
+     * Selects [icu.word] from database
+     */
+    select-data:x:@"/*/*/icu.word/""=:guid:{0}"""
+      :x:/../*/_image?value
+
+    /*
+     * Retrieving main icu output, and creating fullscreen modal widget, showing image
+     * Prioritizing "original" version, if it exists
+     */
+    sys42.icu.get-icu-wrapper
+    eval-x:x:/+/*|/+/**(/alt|/src)
+    create-widget
+      parent:x:/../*/sys42.icu.get-icu-wrapper?value
+      class:icu-search-modal-bg
+      onclick
+        delete-widget:x:/../*/_event?value
+      widgets
+        img
+          class:icu-fullscreen-image
+          src:x:/../*/select-data/*/*/images/*(/original|/image)/[0,1]?value
+          alt:x:/../*/select-data/*/*/description?value
+
+
+
+
+  /*
    * Returns the ID of [_icu-output-widget] supplied when instantiating ICU. Used by actions that needs the ID of 
    * output widget
    */
@@ -255,9 +286,23 @@ set-widget-lambda-event:{_icu-output-widget}
        */
       eval-x:x:/+/*|/+/*/*(/img/*(/alt|/src)|/span/*/innerValue)
       create-widget
+        element:button
         parent:x:/../*/sys42.icu.get-output-widget?value
         class:icu-word
         title:x:/../*/select-data/0/*/word?value
+        _image:x:/../*/select-data/0?value
+        onclick
+
+          /*
+           * Showing fullscreen modal window of current image
+           */
+          get-widget-property:x:/../*/_event?value
+            _image
+          set:x:/+/*?value
+            src:x:/../*/get-widget-property/*/*?value.guid
+          sys42.icu.show-fullscreen-image
+            _image
+
         widgets
           img
             alt:x:/../*/select-data/0/*/word?value
@@ -540,6 +585,14 @@ set-widget-lambda-event:{_icu-keyboard-widget}
      */
     sys42.icu.on-board-opened
 
+    /*
+     * Setting initial focus to first key in keyboard
+     */
+    find-widget-like:{_icu-keyboard-widget}
+      class:icu-word
+    send-javascript:@"$('#{0}').focus();"
+      :x:/./-/0?value
+
 
 
 
@@ -622,3 +675,11 @@ set-widget-lambda-event:{_icu-keyboard-widget}
        * Raising the "on keyboard is shown" event
        */
       sys42.icu.on-keyboard-shown
+
+      /*
+       * Making sure we set initial focus to first keyboard key in keyboard widget
+       */
+      find-widget-like:{_icu-keyboard-widget}
+        class:icu-word
+      send-javascript:@"$('#{0}').focus();"
+        :x:/./-/0?value

@@ -75,12 +75,6 @@ databind:x:/../*/create-widget/*/widgets/*/container/*/widgets/*/container/=icu-
           alt:x:/../*/html-encode?value
 
         /*
-         * Settings description of image
-         */
-        set-widget-property:icu-flickr-preview-description
-          {innerValue}:x:/*/description?value
-
-        /*
          * Settings header of preview dialog to title from flickr
          */
         set-widget-property:icu-flickr-result-header
@@ -167,12 +161,6 @@ create-widget:icu-flickr-result
           widgets
 
             /*
-             * Description of image
-             */
-            literal:icu-flickr-preview-description
-              class:icu-flickr-preview-description
-
-            /*
              * Actual preview image widget
              */
             literal:icu-flickr-preview-image
@@ -248,9 +236,7 @@ create-widget:icu-flickr-result
                     split:x:/../*/split/[0,1]/0/-?name
                       =:?
                     p5.net.http-get:x:/../*/get-page-value/*/*/*/medium?value
-                    whoami
-                    save-file:/users/{0}/temp/{1}
-                      :x:/../*/whoami/*/username?value
+                    save-file:/system42/apps/icu/media/images/user-space/originals/{0}
                       :x:/../*/split/[1,2]/0?name
                       src:x:/../*/p5.net.http-get/*/*/content?value
 
@@ -271,8 +257,7 @@ create-widget:icu-flickr-result
                      * overwritten on disc, which is expected behavior
                      */
                     eval-x:x:/+/*/_destination
-                    sys42.icu.resize-image-to-keys-folder:/users/{0}/temp/{1}
-                      :x:/../*/whoami/*/username?value
+                    sys42.icu.resize-image-to-keys-folder:/system42/apps/icu/media/images/user-space/originals/{0}
                       :x:/../*/split/[1,2]/0?name
                       _destination:/system42/apps/icu/media/images/user-space/common-keys/flickr-{0}-{1}
                         :x:/../*/replace/[0,1]?value
@@ -291,6 +276,8 @@ create-widget:icu-flickr-result
                     sys42.icu.configure-image-for-key
                       _image:/system42/apps/icu/media/images/user-space/common-keys/flickr-{0}-{1}
                         :x:/../*/replace/[0,1]?value
+                        :x:/../*/split/[1,2]/0?name
+                      _original:/system42/apps/icu/media/images/user-space/originals/{0}
                         :x:/../*/split/[1,2]/0?name
                       _word:x:/../*/replace/[1,2]?value
                       _description::x:/../*/get-page-value/*/*/*/description?value

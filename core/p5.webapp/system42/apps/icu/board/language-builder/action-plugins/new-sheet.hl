@@ -1,0 +1,61 @@
+
+/*
+ * Action that empties output widget
+ */
+
+
+
+
+/*
+ * Name of action
+ */
+action-name:Empty output
+
+
+
+
+/*
+ * Lambda callback object, responsible for configuring action
+ *
+ * Immediately returns, since no configration is necessary
+ */
+configure-action
+
+  /*
+   * Evaluates[_on-finished] lambda object immediately, since no configuration is necessary
+   */
+  eval:x:/../*/_on-finished
+    _action
+
+      /*
+       * Asking user to confirm action
+       */
+      sys42.confirm-window
+        _header:Are you sure ...?
+        _body:@"Are you sure you wish to empty board entirely. This action cannot be undone!"
+        _onok
+
+          /*
+           * Simply retrieves output widget, and deletes all widgets/words
+           */
+          sys42.icu.get-output-widget
+          list-widgets:x:/-?value
+
+          /*
+           * Checking type of widget, since if it is a "text widget" we need to remove text
+           */
+          if:x:/-/*?name
+            =:container
+
+            /*
+             * Removing all widgets
+             */
+            clear-widget:x:/../*/list-widgets/*?value
+
+          else
+
+            /*
+             * Removing text
+             */
+            set-widget-property:x:/../*/list-widgets/*?value
+              value:""

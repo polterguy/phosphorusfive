@@ -51,3 +51,4 @@ sys42.execute-lisp-file:/system42/apps/icu/init/initialize.hl
  * Opening active board, by invoking Hyperlisp file responsible for opening board
  */
 sys42.execute-lisp-file:/system42/apps/icu/board/open-board.hl
+  _first-loading:true

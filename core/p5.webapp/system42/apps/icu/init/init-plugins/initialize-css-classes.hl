@@ -27,7 +27,7 @@ if:x:/-/*?name
    * Output widget is of type [container], applying default CSS classes to it
    */
   sys42.add-css-classes:x:/../*/_icu-output-widget?value
-    _class:icu-output box-shadow rounded-corners prepend-bottom
+    _class:icu-output box-shadow icu-box-shadow icu-rounded-corners rounded-corners prepend-bottom icu-animation-hover icu-animation-fade-in-word
 
 
 
