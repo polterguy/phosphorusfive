@@ -1,7 +1,31 @@
 
 /*
  * Configures currently "active" key in keyboard.
+ *
+ * If you pass in [_query], then the search box will be initially filled out with that text/word,
+ * otherwise it will remember queries across multiple openings of widget
  */
+_icu-query
+if:x:/../*/_query?value
+
+  /*
+   * Explicit query given
+   */
+  set:x:/../*/_icu-query?value
+    src:x:/../*/_query?value
+else
+
+  /*
+   * Using last used query from session, of there are any
+   */
+  get-session-value:sys42.icu.last-used-language-builder-query
+  if:x:/-/*?value
+
+    /*
+     * We have a query in our session object
+     */
+    set:x:/../*/_icu-query?value
+      src:x:/..else/*/get-session-value/*?value
 
 
 
@@ -53,8 +77,19 @@ for-each:x:/-/*?name
    * Adding file as button to input group
    */
   load-file:x:/..for-each/*/_dp?value
+  add:x:/-/*/*/*/onclick
+    src
+
+      /*
+       * Storing last used query in session
+       */
+      get-widget-property:icu-configure-key-search-textbox
+        value
+      set-session-value:sys42.icu.last-used-language-builder-query
+        src:x:/./-/*/*?value
+
   insert-before:x:/../*/create-widget/*/widgets/*/span/*/widgets/0/-
-    src:x:/./-/*/*
+    src:x:/./-2/*/*
 
 
 
@@ -72,6 +107,110 @@ create-widget:icu-configure-key
    * Common events for handling images
    */
   events
+
+
+
+
+    /*
+     * Associates currently "active key" with given [_image]
+     */
+    sys42.icu.configure-key-with-image-action
+
+      /*
+       * Retrieving active key's x and y position, in addition to ID of widget that's active
+       */
+      sys42.icu.get-active-key
+
+      /*
+       * Retrieving current board
+       */
+      get-page-value:sys42.icu.active-board
+
+      /*
+       * Retrieving current [icu.board] definition from database
+       */
+      select-data:x:@"/*/*/icu.board/=:guid:{0}"
+        :x:/../*/get-page-value/*?value
+
+      /*
+       * Deleting any existing image associations for existing [_x]/[_y] position in board
+       */
+      set:x:/../*/select-data/*/*/items/*/item/*/x/={0}/./*/y/={1}/.
+        :x:/../*/sys42.icu.get-active-key/*/x?value
+        :x:/../*/sys42.icu.get-active-key/*/y?value
+
+      /*
+       * Moving result from [select-data] into [update-data] below, and making sure [update-data]
+       * updates the correct database object
+       */
+      set:x:/../*/update-data/*/*?value
+        src:x:/../*/get-page-value/*?value.guid
+      add:x:/../*/update-data/*/*
+        src:x:/../*/select-data/[0,1]/*/*
+
+      /*
+       * Adding a new [item] into [items] collection of board definition into [update-data], forward
+       * evaluating expressions inside of [add], making sure [x] and [y] are constants when [updata-data] is evaluated,
+       * and that [image] points to ID of image from [icu.word]
+       * In addition, making sure [action] becomes specified [_action] lambda object
+       */
+      add:x:/+2/*/*/*/action
+        src:x:/../*/_action/*
+      eval-x:x:/+/*/*/*(/x|/y|/image)
+      add:x:/../*/update-data/*/*/*/items
+        src
+          item
+            x:x:/../*/sys42.icu.get-active-key/*/x?value
+            y:x:/../*/sys42.icu.get-active-key/*/y?value
+            image:x:/../*/_image?value
+            action
+
+      /*
+       * Updating database board definition, now with one additional [item] in its [items] collection
+       */
+      update-data:x:@"/*/*/icu.board/=:guid:{0}"
+        :x:/../*/get-page-value/*?value
+        src
+          icu.board
+
+      /*
+       * Changing image of currently edited image "key" in [_icu-keyboard-widget], to reflect changes just done,
+       * before removing "active" CSS class, and setting correct CSS classes for "key"
+       */
+      select-data:x:@"/*/*/icu.word/""=:guid:{0}"""
+        :x:/../*/_image?value
+
+      /*
+       * Updating "src" attribute and "alt" attribute of image
+       *
+       * Notice, the client side screws things up here for us, when concatenating values, hence
+       * we need to prepend the URL with the "base" parts for app
+       */
+      get-base-location
+      find-widget:x:/../*/sys42.icu.get-active-key/*/id?value
+        element:img
+      set-widget-property:x:/-/*?value
+        src:{0}{1}
+          :x:/././-2?value
+          :x:/../*/select-data/[1,2]/*/*/images/*/image/[0,1]?value
+        alt:x:/../*/select-data/[1,2]/*/*/word?value
+
+      /*
+       * Setting "innerValue" of "span" HTML element to word from [icu.word]
+       */
+      find-widget:x:/../*/sys42.icu.get-active-key/*/id?value
+        element:span
+      set-widget-property:x:/-/*?value
+        innerValue:x:/../*/select-data/[1,2]/*/*/word?value
+
+      /*
+       * Associating [_action] lamba object to [onclick] of "key"
+       */
+      add:x:/+/*
+        src:x:/../*/_action/*
+      set-widget-ajax-event:x:/../*/sys42.icu.get-active-key/*/id?value
+        onclick
+          sys42.icu.on-key-clicked:x:/../*/_event?value
 
 
 
@@ -122,9 +261,11 @@ p5.configureImageKeyPress = function(e) {
                 class:icu-close-dialog
                 onclick
                   delete-widget:icu-configure-image-result
-                  sys42.icu.get-language-builder-widget
-                  sys42.add-css-classes:x:/-?value
-                    _class:icu-hide-language-builder
+
+                  /*
+                   * Closing language builder
+                   */
+                  sys42.icu.on-close-language-builder
               literal:icu-configure-image-header
                 element:h3
                 innerValue:Word ...?
@@ -194,9 +335,7 @@ p5.configureImageKeyPress = function(e) {
                       /*
                        * Making sure we hide language builder
                        */
-                      sys42.icu.get-language-builder-widget
-                      sys42.add-css-classes:x:/-?value
-                        _class:icu-hide-language-builder
+                      sys42.icu.on-close-language-builder
 
                   /*
                    * OK configure image button (selects image, and creates a new [icu.word] entry in database)
@@ -235,7 +374,7 @@ p5.configureImageKeyPress = function(e) {
                        * for configuring action
                        */
                       eval-x:x:/+/*
-                      sys42.execute-lisp-file:/system42/apps/icu/board/language-builder/configure-action.hl
+                      sys42.execute-lisp-file:/system42/apps/icu/board/language-builder/helpers/configure-action.hl
                         _image:x:/../*/insert-data/*?value
                       delete-widget:icu-configure-image-result
 
@@ -400,6 +539,21 @@ p5.configureImageKeyPress = function(e) {
 
 
 
+    /*
+     * Closes language builder
+     */
+    sys42.icu.on-close-language-builder
+
+      /*
+       * Retrieving language builder
+       */
+      sys42.icu.get-language-builder-widget
+      sys42.add-css-classes:x:/-?value
+        _class:icu-hide-language-builder
+
+
+
+
   _on-enter
 
     /*
@@ -421,7 +575,7 @@ p5.configureImageKeyPress = function(e) {
       placeholder:Search for image ...
       onkeypress:"return p5.searchIcuTextBox(event);"
       oninit
-        send-javascript:@"$('#{0}').focus();"
+        send-javascript:@"$('#{0}').focus().select();"
           :x:/../*/_event?value
 
     /*
@@ -441,11 +595,9 @@ p5.configureImageKeyPress = function(e) {
           onclick
 
             /*
-             * Simply raising "cancel" button onclick
+             * Closing language builder
              */
-            sys42.icu.get-language-builder-widget
-            sys42.add-css-classes:x:/-?value
-              _class:icu-hide-language-builder
+            sys42.icu.on-close-language-builder
 
 
 
@@ -500,3 +652,20 @@ if:x:/../*/get-widget-ajax-event/*/*?count
     _widget:x:/../*/sys42.icu.get-language-builder-widget?value
     _hover-css-class:icu-file-dragged-to-builder
     _dropped-css-class:icu-file-dropped-to-builder
+
+
+
+
+/*
+ * Checking if we've got an initial query to use
+ */
+if:x:/../*/_icu-query?value
+
+  /*
+   * We have an explicitly given query, either from session, or from caller.
+   * Setting search textbox value to that value
+   */
+  set-widget-property:icu-configure-key-search-textbox
+    value:x:/../*/_icu-query?value
+
+

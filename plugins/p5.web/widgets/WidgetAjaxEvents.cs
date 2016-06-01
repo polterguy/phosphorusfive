@@ -80,7 +80,15 @@ namespace p5.web.widgets
                     } else {
 
                         // Setting Widget's Ajax event to whatever we were given
-                        Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = idxEventNameNode.Clone();
+                        var clone = idxEventNameNode.Clone();
+
+                        // In case this event is copied from another event, we remove the [_event] node
+                        if (clone ["_event"] != null)
+                            clone ["_event"].UnTie ();
+
+                        // Making sure ajax event is parametrized with [_event] node
+                        clone.Insert (0, new Node ("_event", idxWidget.ID));
+                        Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = clone;
                         if (idxEventNameNode.Name != "oninit")
                             idxWidget [idxEventNameNode.Name] = "common_event_handler";
                     }

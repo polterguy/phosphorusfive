@@ -16,8 +16,7 @@
 
 
 /*
- * This example relies upon jQuery, in addition to that it needs some "custom CSS"
- * to be included.
+ * This example relies upon jQuery
  */
 include-javascript-file:/media/jquery/jquery-2.1.4.min.js
 

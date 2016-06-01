@@ -18,6 +18,14 @@ set:x:/../**/={_image}?value
 
 
 /*
+ * Retrieves the name of all files that was used the last time actions was configured, if any
+ */
+get-session-value:sys42.icu.actions-last-evaluated
+
+
+
+
+/*
  * Iterating all actions in plugin folder, and allows user to use action
  */
 list-files:/system42/apps/icu/board/language-builder/action-plugins/
@@ -50,9 +58,25 @@ for-each:x:/-/*?name
     src:x:/./-/*/*/action-name?value
   set:x:/..for-each/*/_buffer/*/*/_file?value
     src:x:/..for-each/*/_dp?value
+
+  /*
+   * Checking if currently iterated action was selected the last time we opened up "configure action" window
+   */
+  if:x:@"/../*/get-session-value/*/*/*/""={0}"""
+    :x:/..for-each/*/_dp?value
+
+    /*
+     * This action was chosen the last time user opened up this window, setting its initial value to selected
+     */
+    set:x:/..for-each/*/_buffer/*/*/class?value
+      src:{0} icu-selected-action
+        :x:/..for-each/*/_buffer/*/*/class?value
+
+  /*
+   * Now we can add button to container widget
+   */
   add:x:/../*/create-widget/*/widgets/*/*/*/container/=icu-configure-action-body/*
     src:x:/..for-each/*/_buffer/*
-
 
 
 
@@ -130,11 +154,9 @@ create-widget:icu-configure-action
         delete-widget:icu-configure-action
 
         /*
-         * Deleting language builder widget
+         * Closing language builder widget
          */
-        sys42.icu.get-language-builder-widget
-        sys42.add-css-classes:x:/-?value
-          _class:icu-hide-language-builder
+        sys42.icu.on-close-language-builder
 
       else
 
@@ -248,9 +270,7 @@ create-widget:icu-configure-action
             /*
              * Making sure we hide language builder
              */
-            sys42.icu.get-language-builder-widget
-            sys42.add-css-classes:x:/-?value
-              _class:icu-hide-language-builder
+            sys42.icu.on-close-language-builder
 
         literal:icu-configure-action-header
           element:h3
@@ -341,6 +361,16 @@ create-widget:icu-configure-action
                  */
                 get-widget-property:x:/../*/find-widget-like/*?value
                   _file
+
+                /*
+                 * Saving all currently chosen actions in session, such that we can enable the same buttons
+                 * the next time configure action window is opened
+                 */
+                add:x:/+/*/*
+                  src:x:/../*/get-widget-property/*/*
+                set-session-value:sys42.icu.actions-last-evaluated
+                  src
+                    files
 
                 /*
                  * Putting all files into session value, and starting iteration of configuration of actions,

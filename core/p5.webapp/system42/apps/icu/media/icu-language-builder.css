@@ -7,9 +7,33 @@
  */
 
 
+/*
+ * Main language builder classes and animations
+ */
 .icu .icu-language-builder {
     background-color:rgba(0,255,0,.2);
+    padding:50px 50px 45px 50px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100%' width='100%'><text x='55px' y='30px' fill='rgba(150,150,30,.4)' font-size='12' font-family='Verdana'>Drag and drop images here, to upload them, and use your own image</text></svg>");
 }
+@keyframes icu-animate-language-builder {
+    0% {
+        background-color:rgba(255,255,128,1);
+    }
+    100% {
+        background-color:rgba(0,255,0,.2);
+    }
+}
+.icu .icu-language-builder-animation {
+    animation-name:icu-animate-language-builder;
+    animation-duration:1s;
+    animation-fill-mode:forwards;
+    animation-iteration-count:1;
+}
+
+.icu .icu-hide-language-builder {
+    display:none;
+}
+
 
 
 /*
@@ -190,7 +214,4 @@
     animation-direction:alternate;
 }
 
-.icu .icu-hide-language-builder {
-    display:none;
-}
 

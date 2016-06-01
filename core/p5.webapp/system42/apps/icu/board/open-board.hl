@@ -190,6 +190,13 @@ while:x:/-?value
             :x:/..while/..while/*/_cur-x?value.string
             :x:/../*/_cur-y?value.string
 
+        /*
+         * Making sure language builder is hidden by default, when an existing "key" is clicked
+         */
+        add:x:/../*/_board-widgets/0/-/*/widgets/0/-/*/widgets/*/container/*/onclick
+          src
+            sys42.icu.on-close-language-builder
+
     else
 
       /*

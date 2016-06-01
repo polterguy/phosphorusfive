@@ -262,6 +262,8 @@ create-widget:icu-flickr-result
                     replace:x:/-?value
                       not-of:"abcdefghijklmnopqrstuvwxyz0123456789"
                       with:"-"
+                    replace:x:/-2?value
+                      not-of:"abcdefghijklmnopqrstuvwxyz0123456789- "
 
                     /*
                      * Resizing image to ICU "common-keys" folder, just using "flickr filename", which will
@@ -272,8 +274,8 @@ create-widget:icu-flickr-result
                     sys42.icu.resize-image-to-keys-folder:/users/{0}/temp/{1}
                       :x:/../*/whoami/*/username?value
                       :x:/../*/split/[1,2]/0?name
-                      _destination:/system42/apps/icu/media/images/user-space/common-keys/flickr-{0}-{1}.jpg
-                        :x:/../*/replace?value
+                      _destination:/system42/apps/icu/media/images/user-space/common-keys/flickr-{0}-{1}
+                        :x:/../*/replace/[0,1]?value
                         :x:/../*/split/[1,2]/0?name
 
                     /*
@@ -287,10 +289,10 @@ create-widget:icu-flickr-result
                      */
                     eval-x:x:/+/*
                     sys42.icu.configure-image-for-key
-                      _image:/system42/apps/icu/media/images/user-space/common-keys/flickr-{0}-{1}.jpg
-                        :x:/../*/replace?value
+                      _image:/system42/apps/icu/media/images/user-space/common-keys/flickr-{0}-{1}
+                        :x:/../*/replace/[0,1]?value
                         :x:/../*/split/[1,2]/0?name
-                      _word:x:/../*/to-lower?value
+                      _word:x:/../*/replace/[1,2]?value
                       _description::x:/../*/get-page-value/*/*/*/description?value
 
 /*

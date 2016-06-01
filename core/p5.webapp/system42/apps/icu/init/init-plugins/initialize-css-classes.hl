@@ -50,7 +50,7 @@ if:x:/../*/_icu-language-builder?value
    * Language builder was provided, applying CSS classes and hiding widget initially
    */
   sys42.add-css-classes:x:/../*/_icu-language-builder?value
-    _class:icu-language-builder box-shadow rounded-corners air-padding-more prepend-bottom
+    _class:icu-language-builder box-shadow rounded-corners prepend-bottom icu-language-builder-animation
 
   sys42.add-css-classes:x:/../*/_icu-language-builder?value
     _class:icu-hide-language-builder

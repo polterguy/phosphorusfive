@@ -345,7 +345,7 @@ for-each:x:/-/*?name
 
 
 /*
- * Making sure set the active board, either to "home" (default) or [_icu-board] if given,
+ * Making sure set the active board, either to "home" (default), or [_icu-board] if given,
  * or alternatively to HTTP get "board" parameter, passed in as part of URL (e.g. "?board=fruit" as part of URL)
  */
 if:x:/../*/_icu-board?value
@@ -366,7 +366,7 @@ else
   if:x:/-/*?value
 
     /*
-     * HTTP param was supplied, making sure we set active board to board requested by URL
+     * HTTP param for board was supplied, making sure we set active board to board requested by URL
      */
     whoami
     select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.?value

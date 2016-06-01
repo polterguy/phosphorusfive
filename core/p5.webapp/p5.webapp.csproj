@@ -446,13 +446,13 @@
     <None Include="system42\apps\icu\init\init-plugins\initialize-events.hl" />
     <None Include="system42\apps\icu\misc\show-settings.hl" />
     <None Include="system42\apps\icu\board\open-board.hl" />
-    <None Include="system42\apps\icu\board\language-builder\configure-action.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\type-word.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\open-board.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\delete-word.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\board-size.hl" />
     <None Include="system42\apps\icu\board\language-builder\search-plugins\flickr\search.hl" />
     <None Include="system42\apps\icu\media\images\user-space\README.md" />
+    <None Include="system42\apps\icu\board\language-builder\helpers\configure-action.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -504,5 +504,6 @@
     <Folder Include="system42\apps\icu\media\images\user-space\common-keys\" />
     <Folder Include="system42\apps\icu\board\language-builder\action-plugins\" />
     <Folder Include="system42\apps\icu\board\language-builder\search-plugins\flickr\" />
+    <Folder Include="system42\apps\icu\board\language-builder\helpers\" />
   </ItemGroup>
 </Project>

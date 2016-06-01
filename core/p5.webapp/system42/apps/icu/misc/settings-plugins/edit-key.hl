@@ -56,6 +56,22 @@ button
   onclick
 
     /*
+     * Checking if active key has a word
+     */
+    sys42.icu.get-active-key
+    if:x:/-/*/image?value
+
+      /*
+       * This key has an [icu.image] associated with it, making sure we pass in that image's [word] to language
+       * builder, as default search query
+       */
+      select-data:x:"/*/*/=:guid:{0}/*/word?value"
+        :x:/../*/sys42.icu.get-active-key/*/image?value
+      add:x:/../*/sys42.execute-lisp-file
+        src:"_query:{0}"
+          :x:/..if/*/select-data/*?value
+
+    /*
      * Invoking file responsible for editing key
      */
     sys42.execute-lisp-file:/system42/apps/icu/board/language-builder/configure-key.hl
