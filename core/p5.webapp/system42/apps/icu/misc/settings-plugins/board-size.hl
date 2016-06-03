@@ -92,26 +92,37 @@ button
       src:x:/../*/sys42.icu.get-active-board-size/*/height?value
     set:x:/../*/sys42.wizard-window/**/_old-width?value
       src:x:/../*/sys42.icu.get-active-board-size/*/width?value
+    set:x:/../*/sys42.wizard-window/*/*/=icu-board-width/*/label?value
+      src:Width - {0}
+        :x:/../*/sys42.icu.get-active-board-size/*/width?value
+    set:x:/../*/sys42.wizard-window/*/*/=icu-board-height/*/label?value
+      src:Height - {0}
+        :x:/../*/sys42.icu.get-active-board-size/*/height?value
 
     /*
      * Showing wizard window
      */
+    eval-x:x:/+/*(/_header|/_body)
     sys42.wizard-window
       _header:Supply new size
-      _body:Please supply new width and height of currently active board
+      _body:Supply new width and height of currently active board. Old width and height is {0}-{1}
+        :x:/../*/sys42.icu.get-active-board-size/*/width?value
+        :x:/../*/sys42.icu.get-active-board-size/*/height?value
       _widgets
         text:icu-board-width
           label:Width
-          placeholder:New width ...
-          type:number
-          mandatory:true
+          type:range
+          min:3
+          max:20
+          onchange:@"$('#icu-board-width-lbl').html('Width - ' + value);"
           title:New width of currently active board
           value
         text:icu-board-height
           label:Height
-          placeholder:New height ...
-          type:number
-          mandatory:true
+          type:range
+          min:1
+          max:10
+          onchange:@"$('#icu-board-height-lbl').html('Height - ' + value);"
           title:New height of currently active board
           value
       _onok
@@ -145,8 +156,6 @@ button
           /*
            * Looping through each [item] from [icu.board] to check if its x/y position is beyond new width/height
            */
-          _sys42.show-code-window:x:/..
-          _return
           for-each:x:/..if/*/select-data/*
             if:x:/..for-each/*/_dp/#/*/x?value.int
               >=:x:/../*/icu-board-width?value.int
@@ -241,4 +250,7 @@ some of your keys. Are you sure you wish to do this?"
            */
           sys42.icu.reload-current-board
 
+        /*
+         * Making sure we close dialog
+         */
         return:bool:true

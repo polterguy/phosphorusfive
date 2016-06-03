@@ -238,7 +238,7 @@ set-widget-lambda-event:{_icu-output-widget}
         delete-widget:x:/../*/_event?value
       widgets
         img
-          class:icu-fullscreen-image
+          class:icu-fullscreen-image rounded-corners box-shadow
           src:x:/../*/select-data/*/*/images/*(/original|/image)/[0,1]?value
           alt:x:/../*/html-encode?value
           title:x:/../*/html-encode?value
@@ -511,7 +511,7 @@ set-widget-lambda-event:{_icu-keyboard-widget}
     /*
      * Finding previous "active" key
      */
-    find-widget-like
+    find-widget-like:{_icu-keyboard-widget}
       class:icu-active-key
     if:x:/-/*?value
 
@@ -562,18 +562,102 @@ set-widget-lambda-event:{_icu-keyboard-widget}
 
 
   /*
-   * Opens up [icu.board] on keyboard widget supplied when instantiating ICU. Expects 
-   * to be given [name] of [icu.board] to open as [_arg]
+   * Opens up previous [icu.board] on keyboard widget from session history
+   */
+  sys42.icu.open-previous-history-board
+
+    /*
+     * Retrieves previous "history" board from session, opens up board, sets key that was clicked to
+     * open "current board" as active and removes the last session history board
+     */
+    get-session-value:sys42.icu.board-history
+    if:x:/../*/get-session-value/*/*/0?count
+      =:int:0
+
+      /*
+       * No more history items
+       */
+      sys42.info-window:No more history ...
+      return
+
+    /*
+     * Opens board
+     */
+    eval-x:x:/+/*
+    sys42.icu.open-board:x:/../*/get-session-value/*/*/0/-/*/board?value
+      _save-2-history:x:/../*/_save-2-history?value
+
+    /*
+     * Finding previously clicked widget, and setting it to active
+     */
+    find-widget:{_icu-keyboard-widget}
+      _x:x:/../*/get-session-value/*/*/0/-/*/x?value
+      _y:x:/../*/get-session-value/*/*/0/-/*/y?value
+    sys42.add-css-classes:x:/-/*?value
+      _class:icu-active-key
+
+    /*
+     * Removing last history item, and storing the rest back to session, unless [_keey-history] is true
+     */
+    if:x:/../*/_save-2-history?value.bool
+      !=:bool:true
+
+      /*
+       * Caller wants top "pop" history
+       */
+      set:x:/../*/get-session-value/*/*/0/-
+      add:x:/..if/*/set-session-value/*/*
+        src:x:/../*/get-session-value/*/*/*
+      set-session-value:sys42.icu.board-history
+        src
+          history
+
+
+
+
+  /*
+   * Opens up [icu.board] on keyboard widget. Expects to be given 
+   * database ID of [icu.board] to open as [_arg].
+   * Saves current board, and clicked key to "history", unless [_save-2-history] is false
    */
   sys42.icu.open-board
+
+    /*
+     * Storing "previous board", and key "recently clicked key" in session, 
+     * such that we can traverse "back" if necessary. But only if [_save-2-history] is NOT false
+     */
+    if:x:/../*/_save-2-history?value
+      !=:bool:false
+
+      /*
+       * Storing current board and clicked key in history
+       */
+      sys42.icu.get-active-key
+      sys42.icu.get-active-board
+      get-session-value:sys42.icu.board-history
+      add:x:/..if/*/set-session-value/*/*
+        src:x:/..if/*/get-session-value/*/*/*
+      eval-x:x:/+/*/*/*
+      add:x:/..if/*/set-session-value/*/*
+        src
+          item
+            board:x:/..if/*/sys42.icu.get-active-board?value
+            x:x:/..if/*/sys42.icu.get-active-key/*/x?value
+            y:x:/..if/*/sys42.icu.get-active-key/*/y?value
+      if:x:/..if/*/set-session-value/*/*/*?count
+        >:int:10
+        set:x:/..if/..if/*/set-session-value/*/*/0
+      set-session-value:sys42.icu.board-history
+        src
+          history
 
     /*
      * Selects correct board from database
      */
     whoami
-    select-data:x:/*/*/icu.board/*/username/={0}/./*/name/={1}/.?value
-      :x:/../*/whoami/*/username?value
+    select-data:x:@"/*/*/icu.board/""=:guid:{0}""/*/username/={1}/.?value"
       :x:/../*/_arg?value
+      :x:/../*/whoami/*/username?value
 
     /*
      * Invokes file responsible for building board on keyboard widget, but first setting currently active board
@@ -584,17 +668,17 @@ set-widget-lambda-event:{_icu-keyboard-widget}
     sys42.execute-lisp-file:/system42/apps/icu/board/open-board.hl
 
     /*
-     * Firing event that publishes the fact that a new board was opened
-     */
-    sys42.icu.on-board-opened
-
-    /*
      * Setting initial focus to first key in keyboard
      */
     find-widget-like:{_icu-keyboard-widget}
       class:icu-word
     send-javascript:@"$('#{0}').focus();"
       :x:/./-/0?value
+
+    /*
+     * Firing event that publishes the fact that a new board was opened
+     */
+    sys42.icu.on-board-opened
 
 
 

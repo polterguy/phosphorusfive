@@ -55,3 +55,8 @@ button
      */
     sys42.toggle-css-classes:x:/../*/_event?value
       _class:active
+
+    /*
+     * Hiding settings
+     */
+    sys42.icu.toggle-settings-widget

@@ -24,98 +24,7 @@ if
 
 
 /*
- * Retrieving "search query" and using it as search text for searching flickr.com for images matching criteria
- */
-get-widget-property:icu-configure-key-search-textbox
-  value
-p5.flickrnet.search
-  text:x:/../*/get-widget-property/*/*?value
-  page:0
-  per-page:20
-
-
-
-
-/*
- * Databinding result widget to flickr return value
- */
-databind:x:/../*/create-widget/*/widgets/*/container/*/widgets/*/container/=icu-flickr-result-items/*/widgets
-  src:x:/../*/p5.flickrnet.search/*
-  template
-    button
-      class:icu-flickr-result-item rounded-corners box-shadow
-      onclick
-
-        /*
-         * Showing preview of image.
-         * First hiding list of images, and then showing preview image widget
-         */
-        set-widget-property:icu-flickr-result-items
-          visible:false
-        set-widget-property:icu-flickr-preview
-          visible:true
-
-        /*
-         * Storing ID of button in page value, such that we can set focus back to it, if user closes dialog
-         */
-        set-page-value:sys42.icu.flickr-current-button
-          src:x:/../*/_event?value
-
-        /*
-         * HTML encoding description, in case it contans HTML
-         */
-        {_description}:x:/*/description?value
-        html-encode:x:/-?value
-
-        /*
-         * Then setting src and alt properties of preview image widget to properties from selected thumb
-         */
-        set-widget-property:icu-flickr-preview-image
-          {src}:x:/*/medium?value
-          alt:x:/../*/html-encode?value
-
-        /*
-         * Settings header of preview dialog to title from flickr
-         */
-        set-widget-property:icu-flickr-result-header
-          {innerValue}:x:/*/title?value
-
-        /*
-         * Making sure OK button gets initial focus
-         */
-        send-javascript:@"$('#icu-flickr-ok-select-image').focus();"
-
-        /*
-         * Making sure "esc" key closes preview
-         */
-        include-javascript:@"p5.flickrPreviewKeyUp = function(e) {
-  if(e.keyCode == 27) {
-    p5.$('icu-flickr-cancel-preview').raise('onclick');
-    e.stopPropagation();
-    return false;
-  }
-}"
-
-        /*
-         * Storing URL, title and description to image we're previewing as page value, 
-         * such that we can retreieve these values if user clicks OK
-         */
-        set-page-value:sys42.icu.current-preview-image
-          src
-            image
-              {medium}:x:/*/medium?value
-                {width}:x:/*/medium/*/width?value
-                {height}:x:/*/medium/*/height?value
-              {title}:x:/*/title?value
-              {description}:x:/*/description?value
-
-      widgets
-        img
-          {src}:x:/*/thumb?value
-          {alt}:x:/*/title?value
-
-/*
- * Building modal window, showing first 42 images
+ * Building modal window, showing first 20 images
  */
 sys42.icu.get-icu-wrapper
 eval-x:x:/+/*/parent
@@ -123,6 +32,142 @@ create-widget:icu-flickr-result
   class:icu-search-modal-bg
   parent:x:/../*/sys42.icu.get-icu-wrapper?value
   onkeyup:"return p5.flickrSearchKeyUp(event);"
+  events
+
+    /*
+     * Fetches 20 images from flickr with given search term, starting from [_page]
+     */
+    sys42.icu.flick-search-get-next-items
+
+      /*
+       * Clearing out previously created widgets
+       */
+      clear-widget:icu-flickr-result-items
+
+      /*
+       * Retrieving "search query", and using it as search text for searching flickr.com, for images matching query
+       */
+      get-widget-property:icu-configure-key-search-textbox
+        value
+      p5.flickrnet.search
+        text:x:/../*/get-widget-property/*/*?value
+        page:x:/../*/_page?value
+        per-page:20
+
+      /*
+       * Databinding result widget to flickr return value
+       */
+      _widgets
+      databind:x:/../*/_widgets
+        src:x:/../*/p5.flickrnet.search/*
+        template
+          create-container-widget
+            element:button
+            parent:icu-flickr-result-items
+            class:icu-flickr-result-item rounded-corners box-shadow
+            onclick
+
+              /*
+               * Showing preview of image.
+               * First hiding list of images, and then showing preview image widget
+               */
+              set-widget-property:icu-flickr-result-items
+                visible:false
+              set-widget-property:icu-flickr-preview
+                visible:true
+
+              /*
+               * Storing ID of button in page value, such that we can set focus back to it, if user closes dialog
+               */
+              set-page-value:sys42.icu.flickr-current-button
+                src:x:/../*/_event?value
+
+              /*
+               * HTML encoding description, in case it contans HTML
+               */
+              {_description}:x:/*/description?value
+              html-encode:x:/-?value
+
+              /*
+               * Then setting src and alt properties of preview image widget to properties from selected thumb
+               */
+              set-widget-property:icu-flickr-preview-image
+                {src}:x:/*/medium?value
+                alt:x:/../*/html-encode?value
+
+              /*
+               * Settings header of preview dialog to title from flickr
+               */
+              set-widget-property:icu-flickr-result-header
+                {innerValue}:x:/*/title?value
+
+              /*
+               * Making sure OK button gets initial focus
+               */
+              send-javascript:@"$('#icu-flickr-ok-select-image').focus();"
+
+              /*
+               * Making sure "esc" key closes preview
+               */
+              include-javascript:@"p5.flickrPreviewKeyUp = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('icu-flickr-cancel-preview').raise('onclick');
+    e.stopPropagation();
+    return false;
+  }
+}"
+
+              /*
+               * Storing URL, title and description to image we're previewing as page value, 
+               * such that we can retreieve these values if user clicks OK
+               */
+              set-page-value:sys42.icu.current-preview-image
+                src
+                  image
+                    {medium}:x:/*/medium?value
+                      {width}:x:/*/medium/*/width?value
+                      {height}:x:/*/medium/*/height?value
+                    {title}:x:/*/title?value
+                    {description}:x:/*/description?value
+
+            widgets
+              img
+                {src}:x:/*/thumb?value
+                {alt}:x:/*/title?value
+
+      /*
+       * Creating widgets, by evaluating [_widget], which should contain a bunch of [create-literal-widget] invocations now ...
+       */
+      eval:x:/../*/_widgets
+
+      /*
+       * Adding "next" button
+       */
+      set:x:/+/**/_page?value
+        +:x:/../*/_page?value.int
+          _:1
+      create-literal-widget
+        parent:icu-flickr-result-items
+        element:button
+        class:icu-flickr-result-item rounded-corners box-shadow
+        innerValue:@"<span class=""glyphicon glyphicon-play""></span>"
+        style:"background-color:White;font-size:24px;"
+        title:Get next batch of result
+        onclick
+
+          /*
+           * Fetching next items from flickr
+           */
+          sys42.icu.flick-search-get-next-items
+            _page
+
+      /*
+       * Making sure first search result from flickr gets focus
+       */
+      get-children-widgets:icu-flickr-result-items
+      send-javascript:@"$('#{0}').focus();"
+        :x:/./-/*/0?value
+
   widgets
     container
       class:icu-search-modal-window rounded-corners box-shadow air-padding-more
@@ -149,7 +194,24 @@ create-widget:icu-flickr-result
          * Contains all images in our search result
          */
         container:icu-flickr-result-items
-          widgets
+          oninit
+
+            /*
+             * Initial databinding operation
+             */
+            sys42.icu.flick-search-get-next-items
+              _page:int:0
+
+            /*
+             * Making sure search dialog can be closed with esc key
+             */
+            include-javascript:@"p5.flickrSearchKeyUp = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('icu-flickr-hide-preview').raise('onclick');
+    e.stopPropagation();
+    return false;
+  }
+}"
 
         /*
          * Used to preview a single image
@@ -281,22 +343,3 @@ create-widget:icu-flickr-result
                         :x:/../*/split/[1,2]/0?name
                       _word:x:/../*/replace/[1,2]?value
                       _description::x:/../*/get-page-value/*/*/*/description?value
-
-/*
- * Making sure first search result from flickr gets focus
- */
-get-children-widgets:icu-flickr-result-items
-send-javascript:@"$('#{0}').focus();"
-  :x:/./-/*/0?value
-
-/*
- * Making sure search dialog can be closed with esc key
- */
-include-javascript:@"p5.flickrSearchKeyUp = function(e) {
-  if(e.keyCode == 27) {
-    p5.$('icu-flickr-hide-preview').raise('onclick');
-    e.stopPropagation();
-    return false;
-  }
-}"
-

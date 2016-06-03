@@ -110,6 +110,9 @@ create-protected-event:sys42.wizard-window
               class:form-control
               onkeypress:"return p5.keyModalWizardPress(event);"
       // Label control properties
+      set:x:/./*/_controls/*/container/*/widgets/0?value
+        src:{0}-lbl
+          :x:/..for-each/*/_dp/#?value
       set:x:/..if/*/_controls/*/container/*/widgets/0/*/innerValue?value
         src:x:/..for-each/*/_dp/#/*/label?value
 
@@ -201,6 +204,14 @@ create-protected-event:sys42.wizard-window
       // Adding decorated template control to body of modal dialogue, BEFORE error widget
       insert-before:x:/../*/create-widget/**/container/=wizard-window-controls/*/widgets/*/literal/=error-txt
         src:x:/..else-if/*/_controls/*
+
+    else
+
+      /*
+       * Default, creating "whatever"
+       */
+      insert-before:x:/../*/create-widget/**/container/=wizard-window-controls/*/widgets/*/literal/=error-txt
+        src:x:/..for-each/*/_dp/#
 
 
 

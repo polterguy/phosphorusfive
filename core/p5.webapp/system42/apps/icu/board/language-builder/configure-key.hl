@@ -450,6 +450,18 @@ p5.configureImageKeyPress = function(e) {
         set:x:/../*/p5.imaging.resize/*/src-rect/*/top?value
           src:x:/./-?value
 
+      else-if:x:/../*/p5.imaging.get-size/*/height?value
+        =:int:283
+        and:x:/../*/p5.imaging.get-size/*/width?value
+          =:int:283
+
+        /*
+         * No need to resize at all, since image already is perfect size
+         * Simply copy file to correct directory, giving it the correct name
+         */
+        copy-file:x:/../*/_arg?value
+          to:x:/../*/_destination?value
+
       else
 
         /*
@@ -486,6 +498,31 @@ p5.configureImageKeyPress = function(e) {
       get-http-param:file-name
 
       /*
+       * Verifying file type is something we can handle
+       */
+      split:x:/../*/get-http-param/*/file-name?value
+        =:.
+      switch:x:/-/0/-?name
+        case:gif
+        case:png
+        case:jpg
+        case:jpeg
+
+          /*
+           * Legal file type
+           */
+          _foo
+        default
+
+          /*
+           * Oops, illegal file type
+           */
+          sys42.info-window:Only images are allowed here. Legal file extensions are .jpg, .jpeg, .gif and .png
+            _error:true
+            _time:more
+          return
+
+      /*
        * Making sure we get a unique filename, which will be the same for each consecutive upload of the same file
        * over again, to allow overwriting files, while also not overwriting, unless it is the same file uploaded,
        * and not just a different file, with the same name. This is done by adding in 15 characters of "sha256 hash"
@@ -507,7 +544,7 @@ p5.configureImageKeyPress = function(e) {
       whoami
       save-file:/system42/apps/icu/media/images/user-space/originals/{0}-{1}-{2}
         :x:/../*/whoami/*/username?value
-        :x:/../*/split/[0,1]/0?name
+        :x:/../*/split/[1,2]/0?name
         :x:/../*/get-http-param/*/file-name?value
         src:x:/../*/p5.string.decode-base64/*?value
 
@@ -517,11 +554,11 @@ p5.configureImageKeyPress = function(e) {
       eval-x:x:/+/*/_destination
       sys42.icu.resize-image-to-keys-folder:/system42/apps/icu/media/images/user-space/originals/{0}-{1}-{2}
         :x:/../*/whoami/*/username?value
-        :x:/../*/split/[0,1]/0?name
+        :x:/../*/split/[1,2]/0?name
         :x:/../*/get-http-param/*/file-name?value
         _destination:/system42/apps/icu/media/images/user-space/common-keys/{0}-{1}-{2}
           :x:/../*/whoami/*/username?value
-          :x:/../*/split/[0,1]/0?name
+          :x:/../*/split/[1,2]/0?name
           :x:/../*/get-http-param/*/file-name?value
 
       /*
@@ -529,19 +566,17 @@ p5.configureImageKeyPress = function(e) {
        * default "word" for [icu.word]
        */
       date-now
-      split:x:/../*/get-http-param/*/file-name?value
-        =:.
       eval-x:x:/+/*(/_word|/_description|/_image|/_original)
       sys42.icu.configure-image-for-key
         _image:/system42/apps/icu/media/images/user-space/common-keys/{0}-{1}-{2}
           :x:/../*/whoami/*/username?value
-          :x:/../*/split/[0,1]/0?name
+          :x:/../*/split/[1,2]/0?name
           :x:/../*/get-http-param/*/file-name?value
         _original:/system42/apps/icu/media/images/user-space/originals/{0}-{1}-{2}
           :x:/../*/whoami/*/username?value
-          :x:/../*/split/[0,1]/0?name
+          :x:/../*/split/[1,2]/0?name
           :x:/../*/get-http-param/*/file-name?value
-        _word:x:/../*/split/[1,2]/0?name
+        _word:x:/../*/split/[0,1]/0?name
         _description:Uploaded - {0}
           :x:/../*/date-now?value
 

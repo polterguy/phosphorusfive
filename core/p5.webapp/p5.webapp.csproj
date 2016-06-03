@@ -454,6 +454,9 @@
     <None Include="system42\apps\icu\media\images\user-space\README.md" />
     <None Include="system42\apps\icu\board\language-builder\helpers\configure-action.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\new-sheet.hl" />
+    <None Include="system42\apps\icu\misc\settings-plugins\go-back.hl" />
+    <None Include="system42\apps\icu\board\language-builder\action-plugins\go-back.hl" />
+    <None Include="system42\apps\icu\board\language-builder\search-plugins\trash.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

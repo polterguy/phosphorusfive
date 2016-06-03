@@ -1,0 +1,30 @@
+
+/*
+ * Action that goes back to previous board
+ */
+
+
+
+
+/*
+ * Name of action
+ */
+action-name:Go back
+
+
+
+
+/*
+ * Lambda callback object, responsible for configuring action
+ *
+ * Immediately returns, since no configration is necessary
+ */
+configure-action
+
+  /*
+   * Evaluates[_on-finished] lambda object, with static [_action]
+   */
+  eval:x:/../*/_on-finished
+    _action
+      sys42.icu.open-previous-history-board
+        _save-2-history:bool:true

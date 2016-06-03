@@ -75,6 +75,15 @@
 }
 
 
+/*
+ * Common for both settings widget and toggle keyboard widget
+ */
+.icu .icu-toggle-keyboard:focus,
+.icu .icu-toggle-settings:focus {
+    outline:0;
+}
+
+
 
 /*
  * Settings widget default CSS classes. 
@@ -90,8 +99,8 @@
 }
 .icu .icu-settings-widget {
     position:absolute;
-    top:45px;
-    right:45px;
+    top:-5px;
+    right:-5px;
     background-color:rgba(252,252,252,1);
     box-shadow:5px 5px 5px rgba(0,0,0,.2);
     border:solid 1px rgba(0,0,0,.2);
@@ -118,7 +127,7 @@
     background-size:cover;
     padding:35px 15px 10px 32px;
     overflow:auto;
-    min-height:185px;
+    min-height:201px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -129,8 +138,19 @@
 
 
 
+
+
 /*
- * Default CSS classes for "words" in output widget and keyboard widget, both with and without text shown
+ * Default CSS classes for "words" in both output widget and keyboard widget, both with and without text shown.
+ *
+ * Basically, output widget always shows images with 125x125 pixels.
+ * Keyboard widget however, will resize its images, according to a percentage, since it's an HTML "table" element.
+ *
+ * In addition, we can apply either "icu-show-text" or "icu-hide-text", to both keyboard widget, and output
+ * widget, which will either show text, or hide the text, depending upon which class you choose.
+ *
+ * Images are always, regardless of whether or not you display text, shown in "square" proportions, height == width
+ * This is true both for keyboard widget and output widget.
  */
 .icu .icu-word {
     display:block;
@@ -142,33 +162,21 @@
     border:none 0;
     padding:0;
 }
+
+/*
+ * Default image CSS class for words
+ */
 .icu .icu-word .icu-image {
-    float:left;
-}
-.icu .icu-output .icu-word {
-    width:125px;
-    height:125px;
-}
-.icu .icu-output .icu-word:focus {
-    outline:0;
-}
-.icu .icu-show-text .icu-word .icu-image {
-    width:100%;
-    height:calc(100% - 16px);
-}
-.icu .icu-hide-text .icu-word .icu-image {
     width:100%;
     height:100%;
 }
-.icu .icu-keyboard .icu-word {
-    width:calc(100% - 8px);
-    margin-bottom:8px;
-    margin-right:8px;
-}
-.icu .icu-keyboard .icu-word .icu-image {
-    width:100%;
-}
-.icu .icu-show-text .icu-word .icu-text {
+
+/*
+ * Default text CSS class for words (text displayed beneath image)
+ * Notice, we use "text-overflow:ellipsis", to make sure we hide the text we cannot find room for within
+ * the image. This is true both for keyboard widget and output widget
+ */
+.icu .icu-word .icu-text {
     float:left;
     clear:left;
     max-width:100%;
@@ -181,6 +189,62 @@
     overflow-x:hidden;
     padding:1px 3px 1px 3px;
 }
+
+
+/*
+ * Special classes for output widget.
+ * We default height to 141, such that we get 16 pixels extra for text
+ * Overridden below, in case text is hidden for output
+ */
+.icu .icu-output .icu-word {
+    width:125px;
+    height:141px;
+}
+
+/*
+ * In output widget, we never keep outline (blue border around current focus widget),
+ * in keyboard widget however, we only remove the outline, if we have an animation class that explicitly
+ * does so. Since otherwise, we have no visual clues as to which key is currently having focus.
+ */
+.icu .icu-output .icu-word:focus {
+    outline:0;
+}
+
+
+/*
+ * Special classes for keyboard widget.
+ * We subtract 8 pixels for margin to the right of word
+ */
+.icu .icu-keyboard .icu-word {
+    width:calc(100% - 8px);
+    margin-bottom:8px;
+    margin-right:8px;
+}
+
+
+/*
+ * Special classes for "show" text.
+ * Here we need to subtract 16 pixels, to allow for text to show
+ */
+.icu .icu-show-text .icu-word .icu-image {
+    width:100%;
+    height:calc(100% - 16px);
+}
+
+
+/*
+ * Special classes for "hide text".
+ * Only applies for output widget, since it's the only HTML div that have this class.
+ * Keyboard widget is HTML table element
+ */
+.icu div.icu-hide-text .icu-word {
+    width:125px;
+    height:125px;
+}
+
+/*
+ * Making sure we hide text, both for keyboard widget, and output widget, if class says so
+ */
 .icu .icu-hide-text .icu-word .icu-text {
     display:none;
 }
@@ -188,11 +252,13 @@
 
 
 /*
- * Default CSS classes for "keyboard widget"
+ * Default CSS classes for "keyboard widget".
+ *
+ * Notice that we add 8 pixels to the keyboard width, to accommodate for the 8 pixel margin for each key,
+ * such that keyboard widget should align with other 100% width widgets on screen.
  */
 .icu .icu-keyboard {
-    width:100%;
-    max-width:100%;
+    width:calc(100% + 8px);
     border-spacing:0px;
     border-collapse:collapse;
     table-layout:fixed;
