@@ -69,7 +69,7 @@ sys42.delete-css-classes:x:/../*/sys42.icu.get-language-builder-widget?value
  * Then loading all search plugins from plugin folder.
  * These are simply just buttons that are appended into input-group for search textbox
  */
-list-files:/system42/apps/icu/board/language-builder/search-plugins/
+list-files:/system42/apps/icu/board/language-builder/configure-plugins/
   filter:hl
 for-each:x:/-/*?name
 
@@ -120,6 +120,12 @@ create-widget:icu-configure-key
        * Retrieving active key's x and y position, in addition to ID of widget that's active
        */
       sys42.icu.get-active-key
+
+      /*
+       * Making sure active key gets an "image association"
+       */
+      set-widget-property:x:/../*/sys42.icu.get-active-key/*/id?value
+        _image:x:/../*/_image?value
 
       /*
        * Retrieving current board
@@ -363,9 +369,11 @@ p5.configureImageKeyPress = function(e) {
                       /*
                        * Creates an [icu.word] insertion, to stuff into database
                        */
+                      whoami
                       eval-x:x:/+/*/*|/+/*/*/images/*
                       insert-data
                         icu.word
+                          username:x:/../*/whoami/*/username?value
                           word:x:/../*/get-widget-property/[0,1]/*/*?value
                           description:x:/../*/get-widget-property/[1,2]/*/*?value
                           images
@@ -636,6 +644,7 @@ p5.configureImageKeyPress = function(e) {
         button:icu-configure-key-close-builder
           innerValue:@"<span class=""glyphicon glyphicon-remove""></span>"
           class:btn-default btn btn-lg
+          title:Close the language builder
           onclick
 
             /*

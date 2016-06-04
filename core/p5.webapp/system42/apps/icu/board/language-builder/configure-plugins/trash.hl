@@ -18,6 +18,7 @@ button
       set-widget-property:x:/../*/_event?value
         disabled
         class:disabled btn-default btn btn-lg
+
   onclick
 
     /*

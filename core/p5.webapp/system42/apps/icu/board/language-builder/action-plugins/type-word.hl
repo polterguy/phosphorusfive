@@ -32,7 +32,7 @@ configure-action
   add:x:/../*/_on-finished
     src
       _action
-        sys42.icu.on-type-word:x:/../*/_image?value
+        sys42.icu.on-type-word:x:/../*/_image?value.guid
 
   /*
    * Evaluates[_on-finished] lambda object

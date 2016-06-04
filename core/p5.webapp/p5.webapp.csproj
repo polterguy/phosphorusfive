@@ -435,8 +435,6 @@
     <None Include="system42\apps\icu\icu.hl" />
     <None Include="system42\apps\icu\init\initialize.hl" />
     <None Include="system42\apps\icu\init\init-plugins\README.md" />
-    <None Include="system42\apps\icu\board\language-builder\search-plugins\flickr.hl" />
-    <None Include="system42\apps\icu\board\language-builder\search-plugins\README.md" />
     <None Include="system42\apps\icu\misc\settings-plugins\animations.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\show-text.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\README.md" />
@@ -450,13 +448,18 @@
     <None Include="system42\apps\icu\board\language-builder\action-plugins\open-board.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\delete-word.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\board-size.hl" />
-    <None Include="system42\apps\icu\board\language-builder\search-plugins\flickr\search.hl" />
     <None Include="system42\apps\icu\media\images\user-space\README.md" />
     <None Include="system42\apps\icu\board\language-builder\helpers\configure-action.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\new-sheet.hl" />
     <None Include="system42\apps\icu\misc\settings-plugins\go-back.hl" />
     <None Include="system42\apps\icu\board\language-builder\action-plugins\go-back.hl" />
-    <None Include="system42\apps\icu\board\language-builder\search-plugins\trash.hl" />
+    <None Include="system42\apps\icu\board\language-builder\configure-plugins\README.md" />
+    <None Include="system42\apps\icu\board\language-builder\configure-plugins\trash.hl" />
+    <None Include="system42\apps\icu\board\language-builder\configure-plugins\edit-action.hl" />
+    <None Include="system42\apps\icu\board\language-builder\configure-plugins\a-flickr.hl" />
+    <None Include="system42\apps\icu\board\language-builder\configure-plugins\b-locals.hl" />
+    <None Include="system42\apps\icu\board\language-builder\configure-plugins\helpers\flickr-search.hl" />
+    <None Include="system42\apps\icu\board\language-builder\configure-plugins\helpers\local-search.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -502,13 +505,13 @@
     <Folder Include="system42\apps\icu\media\images\" />
     <Folder Include="system42\apps\icu\misc\" />
     <Folder Include="system42\apps\icu\init\init-plugins\" />
-    <Folder Include="system42\apps\icu\board\language-builder\search-plugins\" />
     <Folder Include="system42\apps\icu\misc\settings-plugins\" />
     <Folder Include="system42\apps\icu\media\images\user-space\" />
     <Folder Include="system42\apps\icu\media\images\user-space\common-keys\" />
     <Folder Include="system42\apps\icu\board\language-builder\action-plugins\" />
-    <Folder Include="system42\apps\icu\board\language-builder\search-plugins\flickr\" />
     <Folder Include="system42\apps\icu\board\language-builder\helpers\" />
     <Folder Include="system42\apps\icu\media\images\user-space\originals\" />
+    <Folder Include="system42\apps\icu\board\language-builder\configure-plugins\" />
+    <Folder Include="system42\apps\icu\board\language-builder\configure-plugins\helpers\" />
   </ItemGroup>
 </Project>

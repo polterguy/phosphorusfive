@@ -72,7 +72,7 @@
 /*
  * Flickr search CSS classes
  */
-.icu .icu-flickr-result-item {
+.icu .icu-search-result-item {
     padding:0;
     border:none 0;
     margin-right:15px;
@@ -85,8 +85,8 @@
     width:75px;
     height:75px;
 }
-.icu .icu-flickr-result-item:hover,
-.icu .icu-flickr-result-item:focus {
+.icu .icu-search-result-item:hover,
+.icu .icu-search-result-item:focus {
     transition:transform, box-shadow;
     transition-duration:.5s;
     transform:scale(1.1);
@@ -94,15 +94,15 @@
     z-index:5;
     outline:0;
 }
-.icu .icu-flickr-result-item:active {
+.icu .icu-search-result-item:active {
     transition:transform, box-shadow;
     transition-duration:.2s;
     transform:scale(.9);
     box-shadow:-5px -5px 2px rgba(0,0,0,.7);
 }
-.icu .icu-flickr-preview {
+.icu .icu-search-preview {
 }
-.icu .icu-flickr-preview-description {
+.icu .icu-search-preview-description {
     color:rgba(128,128,128,.7);
     font-size:small;
     max-height:50px;
@@ -110,11 +110,11 @@
     transition:max-height;
     transition-duration:.5s;
 }
-.icu .icu-flickr-preview-description:hover {
+.icu .icu-search-preview-description:hover {
     max-height:500px;
     overflow:show;
 }
-.icu .icu-flickr-preview-image {
+.icu .icu-search-preview-image {
     max-width:100%;
     max-height:400px;
     margin-left:auto;

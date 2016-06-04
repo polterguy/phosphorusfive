@@ -12,4 +12,4 @@ button
     /*
      * Evaluating file responsible for searching flickr for images
      */
-    sys42.execute-lisp-file:/system42/apps/icu/board/language-builder/search-plugins/flickr/search.hl
+    sys42.execute-lisp-file:/system42/apps/icu/board/language-builder/configure-plugins/helpers/flickr-search.hl

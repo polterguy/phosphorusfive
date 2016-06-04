@@ -64,7 +64,7 @@ create-widget:icu-flickr-result
           create-container-widget
             element:button
             parent:icu-flickr-result-items
-            class:icu-flickr-result-item rounded-corners box-shadow
+            class:icu-search-result-item rounded-corners box-shadow
             onclick
 
               /*
@@ -149,7 +149,7 @@ create-widget:icu-flickr-result
       create-literal-widget
         parent:icu-flickr-result-items
         element:button
-        class:icu-flickr-result-item rounded-corners box-shadow
+        class:icu-search-result-item rounded-corners box-shadow
         innerValue:@"<span class=""glyphicon glyphicon-play""></span>"
         style:"background-color:White;font-size:24px;"
         title:Get next batch of result
@@ -218,7 +218,7 @@ create-widget:icu-flickr-result
          */
         container:icu-flickr-preview
           visible:false
-          class:icu-flickr-preview
+          class:icu-search-preview
           onkeyup:"return p5.flickrPreviewKeyUp(event);"
           widgets
 
@@ -226,7 +226,7 @@ create-widget:icu-flickr-result
              * Actual preview image widget
              */
             literal:icu-flickr-preview-image
-              class:icu-flickr-preview-image rounded-corners box-shadow
+              class:icu-search-preview-image rounded-corners box-shadow
               element:img
 
             /*
