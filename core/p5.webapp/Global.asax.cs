@@ -36,7 +36,7 @@ namespace p5
             {
                 // Storing application base path for later usage, making sure we normalize path across operating systems
                 _applicationBasePath = Server.MapPath ("~");
-                _applicationBasePath.Replace("\\", "/");
+                _applicationBasePath = _applicationBasePath.Replace("\\", "/");
                 if (_applicationBasePath.EndsWith("/"))
                     _applicationBasePath = _applicationBasePath.Substring(0, _applicationBasePath.Length - 1);
 
