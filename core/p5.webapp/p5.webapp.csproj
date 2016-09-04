@@ -1,5 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -167,7 +173,8 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
@@ -207,9 +214,14 @@
     <Compile Include="code\configuration\ActiveEventAssembly.cs" />
     <Compile Include="code\configuration\ActiveEventAssemblyCollection.cs" />
     <Compile Include="code\configuration\PhosphorusConfiguration.cs" />
-    <Compile Include="code\PhosphorusPage.cs" />
+    <Compile Include="code\PhosphorusPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="system42\apps\icu\media\images\user-space\common-keys\" />
+    <Folder Include="system42\apps\icu\media\images\user-space\originals\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\p5.ajax\p5.ajax.csproj">
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
@@ -461,57 +473,5 @@
     <None Include="system42\apps\icu\board\language-builder\configure-plugins\helpers\flickr-search.hl" />
     <None Include="system42\apps\icu\board\language-builder\configure-plugins\helpers\local-search.hl" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="media\jquery\" />
-    <Folder Include="system42\startup\misc-dialog-events\" />
-    <Folder Include="system42\misc\" />
-    <Folder Include="code\configuration\" />
-    <Folder Include="system42\cms\" />
-    <Folder Include="system42\cms\page-types\" />
-    <Folder Include="system42\cms\templates\" />
-    <Folder Include="system42\editors\" />
-    <Folder Include="system42\editors\codemirror\" />
-    <Folder Include="system42\editors\ckeditor\" />
-    <Folder Include="system42\apps\" />
-    <Folder Include="system42\apps\file-browser\" />
-    <Folder Include="system42\cms\page-editor\" />
-    <Folder Include="system42\apps\users\" />
-    <Folder Include="system42\installation\" />
-    <Folder Include="system42\startup\misc-events\internals\" />
-    <Folder Include="system42\startup\internals\" />
-    <Folder Include="system42\startup\internals\pages\" />
-    <Folder Include="system42\startup\internals\users\" />
-    <Folder Include="system42\apps\x-ray-inspector\" />
-    <Folder Include="system42\apps\users\media\" />
-    <Folder Include="system42\apps\profile\" />
-    <Folder Include="users\root\documents\public\" />
-    <Folder Include="users\root\temp\" />
-    <Folder Include="system42\tests\" />
-    <Folder Include="system42\cms\page-editor\editors\controls\" />
-    <Folder Include="system42\cms\page-editor\editors\controls\help-files\" />
-    <Folder Include="system42\cms\page-editor\editors\controls\helpers\" />
-    <Folder Include="system42\cms\page-editor\editors\controls\help-files\your-first-widget\" />
-    <Folder Include="system42\cms\page-editor\editors\controls\help-files\widget-types\" />
-    <Folder Include="system42\cms\page-editor\editors\controls\help-files\composite-widgets\" />
-    <Folder Include="system42\cms\page-editor\editors\controls\help-files\hello-world\" />
-    <Folder Include="common\" />
-    <Folder Include="common\private\" />
-    <Folder Include="common\public\" />
-    <Folder Include="system42\apps\icu\" />
-    <Folder Include="system42\apps\icu\board\" />
-    <Folder Include="system42\apps\icu\init\" />
-    <Folder Include="system42\apps\icu\board\language-builder\" />
-    <Folder Include="system42\apps\icu\media\" />
-    <Folder Include="system42\apps\icu\media\images\" />
-    <Folder Include="system42\apps\icu\misc\" />
-    <Folder Include="system42\apps\icu\init\init-plugins\" />
-    <Folder Include="system42\apps\icu\misc\settings-plugins\" />
-    <Folder Include="system42\apps\icu\media\images\user-space\" />
-    <Folder Include="system42\apps\icu\media\images\user-space\common-keys\" />
-    <Folder Include="system42\apps\icu\board\language-builder\action-plugins\" />
-    <Folder Include="system42\apps\icu\board\language-builder\helpers\" />
-    <Folder Include="system42\apps\icu\media\images\user-space\originals\" />
-    <Folder Include="system42\apps\icu\board\language-builder\configure-plugins\" />
-    <Folder Include="system42\apps\icu\board\language-builder\configure-plugins\helpers\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
