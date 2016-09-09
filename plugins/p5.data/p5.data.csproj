@@ -43,6 +43,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Select.cs" />
     <Compile Include="Update.cs" />
     <Compile Include="Insert.cs" />
@@ -61,9 +62,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <Folder Include="helpers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\core\p5.exp\p5.exp.csproj">
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>

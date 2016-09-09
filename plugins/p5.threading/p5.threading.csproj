@@ -42,6 +42,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Lock.cs" />
     <Compile Include="Sleep.cs" />
     <Compile Include="Wait.cs" />
@@ -70,7 +71,5 @@
       <Name>p5.exp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="helpers\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

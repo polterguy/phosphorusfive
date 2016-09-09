@@ -64,7 +64,6 @@
     <Content Include="media\css\main.css" />
     <Content Include="media\jquery\jquery-2.1.4.min.js" />
     <Content Include="media\images\phosphorusfive-logo.png" />
-    <Content Include="packages.config" />
     <Content Include="media\images\marvin-headshot.png" />
     <Content Include="media\images\phosphorusfive-small-logo.png" />
     <Content Include="system42\editors\codemirror\mode\clike\clike.js" />

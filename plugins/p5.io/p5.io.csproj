@@ -46,6 +46,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="file\Load.cs" />
     <Compile Include="file\Save.cs" />
     <Compile Include="folder\Create.cs" />
@@ -83,7 +84,5 @@
       <Name>p5.exp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="helpers\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

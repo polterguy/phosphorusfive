@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle ("p5.xml")]
-[assembly: AssemblyDescription ("")]
+[assembly: AssemblyDescription ("Active Events for parsing and creating XML from lambda vice versa")]
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("")]
 [assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("thomashansen")]
+[assembly: AssemblyCopyright ("Copyright © Thomas Hansen 2016")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 

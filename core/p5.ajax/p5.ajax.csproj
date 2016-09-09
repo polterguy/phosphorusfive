@@ -53,6 +53,7 @@
     <EmbeddedResource Include="javascript\manager.js" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="core\Manager.cs" />
     <Compile Include="core\filters\HtmlFilter.cs" />
     <Compile Include="core\filters\Filter.cs" />

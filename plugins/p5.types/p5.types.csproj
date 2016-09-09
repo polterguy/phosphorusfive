@@ -43,6 +43,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="CanConvert.cs" />
     <Compile Include="types\BlobType.cs" />
     <Compile Include="types\BoolType.cs" />
@@ -78,7 +79,5 @@
       <Name>p5.exp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="types\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

@@ -44,6 +44,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="helpers\Conditions.cs" />
     <Compile Include="keywords\Add.cs" />
     <Compile Include="keywords\Branching.cs" />
@@ -97,8 +98,5 @@
       <Name>p5.core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="helpers\" />
-    <Folder Include="keywords\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
