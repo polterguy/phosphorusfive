@@ -46,6 +46,7 @@
     <Reference Include="System.Security" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="response\Echo.cs" />
     <Compile Include="response\Headers.cs" />
     <Compile Include="request\Cookies.cs" />
@@ -82,12 +83,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <Folder Include="request\" />
-    <Folder Include="storage\" />
-    <Folder Include="widgets\" />
-    <Folder Include="widgets\helpers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\core\p5.ajax\p5.ajax.csproj">
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
