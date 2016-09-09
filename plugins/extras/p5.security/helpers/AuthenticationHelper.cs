@@ -55,7 +55,7 @@ namespace p5.security.helpers
         public static void Login (ApplicationContext context, Node args)
         {
             // Checking for a brute force login attack
-            GuardAgainstBruteForce(context);
+            GuardAgainstBruteForce (context);
 
             // Defaulting result of Active Event to unsuccessful
             args.Value = false;
@@ -77,12 +77,10 @@ namespace p5.security.helpers
             var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
 
             // Then creating system fingerprint from given password
-            var cookieSalt = pwdFile["users"][username]["cookie-salt"].Get<string>(context);
-            var cookiePasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", cookieSalt + password)).Get<string> (context);
-            var systemPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + cookiePasswordFingerprint)).Get<string> (context);
+            var cookiePasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
 
             // Checking for match on password
-            if (userNode["password"].Get<string> (context) != systemPasswordFingerprint)
+            if (userNode["password"].Get<string> (context) != cookiePasswordFingerprint)
                 throw new SecurityException("Credentials not accepted"); // Exact same wording as above! IMPORTANT!!
 
             // Success, creating our ticket
@@ -170,12 +168,10 @@ namespace p5.security.helpers
             VerifyUsernameValid (username);
 
             // Creating user salt, and retrieving system salt
-            var userSalt = AuthFile.CreateNewSalt (context);
             var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
 
             // Then salting password with user salt, before salting it with system salt
-            var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", userSalt + password)).Get<string> (context);
-            var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + userPasswordFingerprint)).Get<string> (context);
+            var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
 
             // Locking access to password file as we create new user object
             AuthFile.ModifyAuthFile (
@@ -193,8 +189,7 @@ namespace p5.security.helpers
                     authFile["users"].Add(username);
 
                     // Creates a salt and password for user
-                    authFile ["users"].LastChild.Add("password", systemFingerprint);
-                    authFile ["users"].LastChild.Add("cookie-salt", userSalt);
+                    authFile ["users"].LastChild.Add("password", userPasswordFingerprint);
 
                     // Adding user to specified role
                     authFile ["users"].LastChild.Add("role", role);
@@ -234,9 +229,9 @@ namespace p5.security.helpers
                         args,
                         context);
 
-                // Adding user's node as return value, and each property of user, except [password] and [cookie-salt]
+                // Adding user's node as return value, and each property of user, except [password]
                 args.Add (idxUsername);
-                args [idxUsername].AddRange (authFile["users"][idxUsername].Clone ().Children.Where (ix => ix.Name != "password" && ix.Name != "cookie-salt"));
+                args [idxUsername].AddRange (authFile["users"][idxUsername].Clone ().Children.Where (ix => ix.Name != "password"));
             }
         }
 
@@ -296,21 +291,18 @@ namespace p5.security.helpers
 
                         // Changing user's password
                         // Creating user salt, and retrieving system salt
-                        var userSalt = AuthFile.CreateNewSalt (context);
                         var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
 
                         // Then salting password with user salt and system, before salting it with system salt
-                        var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", userSalt + password)).Get<string> (context);
-                        var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + userPasswordFingerprint)).Get<string> (context);
-                        authFile ["users"][username]["password"].Value = systemFingerprint;
-                        authFile["users"][username]["cookie-salt"].Value = userSalt;
+                        var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
+                        authFile ["users"][username]["password"].Value = userPasswordFingerprint;
                     }
 
                     // Updating user's role
                     authFile ["users"][username]["role"].Value = userRole;
 
                     // Removing old settings
-                    authFile["users"][username].Children.RemoveAll (ix => ix.Name != "password" && ix.Name != "role" && ix.Name != "cookie-salt");
+                    authFile["users"][username].Children.RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
 
                     // Adding all other specified objects to user
                     foreach (var idxNode in args.Children.Where (ix => ix.Name != "username" && ix.Name != "password" && ix.Name != "role")) {
@@ -335,7 +327,7 @@ namespace p5.security.helpers
                     args,
                     context);
 
-            args.AddRange (authFile["users"][context.Ticket.Username].Clone ().Children.Where (ix => ix.Name != "password" && ix.Name != "cookie-salt" && ix.Name != "role"));
+            args.AddRange (authFile["users"][context.Ticket.Username].Clone ().Children.Where (ix => ix.Name != "password" && ix.Name != "role"));
         }
 
         /*
@@ -351,7 +343,7 @@ namespace p5.security.helpers
                 delegate (Node authFile) {
 
                     // Removing old settings
-                    authFile["users"][username].Children.RemoveAll (ix => ix.Name != "password" && ix.Name != "role" && ix.Name != "cookie-salt");
+                    authFile["users"][username].Children.RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
 
                     // Changing all settings for user
                     foreach (var idxNode in args.Children) {
@@ -379,14 +371,11 @@ namespace p5.security.helpers
 
                     // Changing user's password
                     // Creating user salt, and retrieving system salt
-                    var userSalt = AuthFile.CreateNewSalt (context);
                     var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
 
                     // Then salting password with user salt and system, before salting it with system salt
-                    var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", userSalt + password)).Get<string> (context);
-                    var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + userPasswordFingerprint)).Get<string> (context);
-                    authFile ["users"][username]["password"].Value = systemFingerprint;
-                    authFile["users"][username]["cookie-salt"].Value = userSalt;
+                    var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
+                    authFile ["users"][username]["password"].Value = userPasswordFingerprint;
                 });
         }
 

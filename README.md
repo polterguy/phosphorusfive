@@ -9,7 +9,7 @@ software solutions.
 
 Phosphorus contains a managed Ajax library, allowing you to automatically map up the
 bridge between the server and the client. It also contains p5 lambda, a 
-*"non-programming language"*, allowing you to orchestrate your applications
+*"non-programming language"*, allowing you to orchestrate your applications as if
 building blocks together, in an extremely loosely manner. In addition, p5 contains
 Hyperlisp, which is a tree structure file-format, allowing you to easily create
 p5 lambda execution trees, and combine building blocks together, to form your 
@@ -28,11 +28,29 @@ solution, facilitating for exchanging any single building block with any other p
 of building block, which results in you *"orchestrating"* or *"growing"* your 
 software, as a conductor or a gardener, rather than having to do all the nitty 
 stuff yourself by hand. In addition it facilitates for you to become extremely 
-capable of *"reusing"* your code, at an entirely new level, highly unlikely 
-matched in any other frameworks out there.
+capable of *"reusing"* your code, in a way, you probably haven't seen before.
 
-If you wish to use buzz words, and go all hype, then maybe *"fifth generation 
-non-programming language"* might apply ...
+## Getting started with Phosphorus Five
+
+Make sure you've got either MonoDevelop, Xamarin (for Mac OS X) or Visual Studio
+installed. If you're on Linux with Mono(Develop), then make sure you've also got XSP4
+installed. If you're in Visual Studio, please make sure you turn *off* "browser link",
+since it tends to mess with the page life cycle of your p5 apps.
+
+Get the code for p5, preferably by forking the code from GitHub, open up the p5.sln file,
+make sure you've got the project called "p5.webbapp" as your startup project, and start 
+your debugger.
+
+Unless you have OpenPGP installed, and you've got a private key/certificate existing on your
+disc, referenced from the web.config underneath "p5.webapp", you will get an "unhandled exception",
+which actually is handled, but Visual Studio thinks it is unhandled due to the reflection nature of
+p5. You can safely ignore this exception, and simply continue. This PGP keypair is used to encrypt/decrypt
+the "auth" file, which contains your userdatabase.
+
+If you get funny bugs hinting towards "null reference exceptions" when debugging on IIS Express,
+simply re-touch one of your files, since this will re-deploy the DLLs. This is a bug in Visual Studio,
+which makes it impossible to "load the correct type", due to the shadow website debugging deployment
+in Visual Studio.
 
 ## Getting started with p5 lambda and Hyperlisp
 
@@ -366,14 +384,6 @@ operator. p5.ajax will automatically keep track of what needs to be sent from th
 server to the client. Use the *"RemoveAttribute"* method to remove an attribute,
 since setting an attribute value to null will not remove it, but keep the attribute
 with a null value.
-
-## Building your own release
-
-On Linux, building a release is easy, you simply choose "Release-Linux" as your project
-configuration, rebuild your solution, for then to choose "Tools/Deploy to Web" by 
-right-clicking "p5.webapp". To create a release, you must make sure 
-you have "uglifyjs" installed on your system, since the Linux Release configuration 
-of p5.ajax depends upon uglifyjs to minify its javascript.
 
 ## Creating an Ajax widget hierarchy with p5 lambda
 

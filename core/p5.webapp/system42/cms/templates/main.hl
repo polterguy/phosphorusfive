@@ -95,7 +95,8 @@ create-widget:template-root
                        * create a menu item for each [p5.page] object current Context user has access to
                        */
                       select-data:x:/*/*/p5.page
-                      for-each:x:/-/*
+                      set:x:@"/-/*/*/visible/""=:bool:false""/."
+                      for-each:x:/-2/*
 
                         // Menu item "template"
                         _create-item
@@ -298,6 +299,43 @@ p5.loginUsernameKeyUp = function(e) {
                                       
 
                       else
+
+                        /*
+                         * Creating our "apps" menu items
+                         */
+                        list-folders:/system42/apps/
+                        if:x:/-/*?count
+                          >:int:0
+                          _eval
+                            split:x:/./*/_dn/#?name
+                              =:/
+                            eval-x:x:/+/*
+                            return
+                              innerValue:x:/../*/split/0/-?name
+                          databind:x:/./*/create-container-widget/*/widgets/*/ul/*/widgets
+                            src:x:/././-/*
+                            template
+                              li
+                                widgets
+                                  a
+                                    {href}:/app-loader?app={0}launch.hl
+                                      :x:?name
+                                    {@eval}:x:/..if/*/_eval
+                          create-container-widget
+                            parent:main-menu
+                            element:li
+                            widgets
+                              a
+                                href:#
+                                class:dropdown-toggle
+                                data-toggle:dropdown
+                                role:button
+                                aria-haspopup:true
+                                aria-expanded:false
+                                innerValue:@"apps <span class=""caret""></span>"
+                              ul
+                                class:dropdown-menu
+                                widgets
 
                         /*
                          * User has previously logged in with his or hers credentials

@@ -1,0 +1,152 @@
+
+/*
+ * Allows the user to execute p5 lambda given through a 
+ * syntax highlighted textarea widget, seeing the results 
+ * in another textarea result widget. Relies upon CodeMirror.
+ */
+
+
+/*
+ * Including CodeMirror for both execute_input and execute_output
+ */
+sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+  _editor
+    execute_input
+      mode:hyperlisp
+      autofocus:true
+      fullscreen:true
+      autocomplete:true
+      keys
+        Alt-E:function() {window._execute_lambda();}
+        Alt-C:function() {window.execute_output.getDoc().setValue('');}
+sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+  _editor
+    execute_output
+      mode:hyperlisp
+      autofocus:false
+      height:"246px"
+
+
+/*
+ * Making sure our "Evaluate" button is wired up
+ */
+include-javascript:@"window._execute_lambda = function (e) {
+  var el = p5.$('execute');
+  el.raise('_onclick', {
+    onsuccess:function(ret, evt) {
+      window.execute_output.getDoc().setValue(ret.code);
+    }});
+    if (e !== null) {
+      event.preventDefault();
+    }
+}"
+
+
+/*
+ * Then checking to see if we've got some code stored in session, 
+ * and if so, we stuff it into our editor.
+ */
+get-session-value:executor.current-code
+if:x:/-/0?value
+  set:x:/../**/literal/=execute_input/*/innerValue?value
+    src:x:/../*/get-session-value/[0,1]/0?value
+
+
+/*
+ * Creating actual form to show the executor
+ */
+create-widget:executor
+  parent:content
+  class:col-xs-12
+  widgets
+
+
+    /*
+     * Input textarea element, transformed into a CodeMirror widget
+     */
+    container
+      widgets
+        literal:execute_input
+          element:textarea
+          innerValue:
+
+
+    /*
+     * Evaluate widget, executes execute_input, and puts the 
+     * resulting code into execute_output
+     */
+    container:exe-wrp
+      class:text-right
+      widgets
+        literal:execute
+          class:btn btn-primary
+          element:button
+          title:Alt+E
+          innerValue:Evaluate
+
+
+          /*
+           * Trickery to make sure we can handle our event in JavaScript
+           * to retrieve custom JSON return values from server in JavaScript
+           * the actual event handler is "_onclick", but this event is hidden,
+           * and won't be rendered to the browser since it ends with "_".
+           * the DOM javascript onclick event handler though, invokes a JavaScript function,
+           * which actually invokes the actual server-side event, which again returns
+           * the executed code as a piece of string, named "code", which the JavaScript
+           * again puts into the "execute_output" CodeMirror widget.
+           */
+          onclick:"window._execute_lambda(event);"
+          _onclick
+
+            // First retrieving text from execute_input textarea and converting to nodes
+            get-widget-property:execute_input
+              innerValue
+            lisp2lambda:x:/<?value
+
+            // Then storing current code in session such that code editor remembers content
+            set:x:/../*/set-session-value/*/src?value
+              src:x:/../*/get-widget-property/+/<?value
+            set-session-value:executor.current-code
+              src
+
+            // Then executing p5 lambda nodes, in such a way that our converted hyperlisp 
+            // becomes the "root node", while still reachable after execution is done!
+            set:x:/../*/_exe/#/*
+            add:x:/../*/_exe/#
+              src:x:/../*/lisp2lambda/*
+            _exe:node:"evaluator-code"
+
+            // Notice, [eval-mutable], since we want to retrieve transformed code after execution!
+            eval-mutable:x:/../*/_exe/#
+
+            // Then converting p5 lambda result nodes to text, and returning back to client as JSON
+            lambda2lisp:x:/../*/_exe/#/*
+            return-response-object:code
+              src:x:/./-?value
+            sys42.info-window:@"Code was successfully executed"
+
+
+    /*
+     * Output textarea element, transformed into a CodeMirror widget later
+     */
+    container
+      class:prepend-top
+      widgets
+        literal:execute_output
+          element:textarea
+
+
+    /*
+     * The clear button for clearing the execute_output editor surface
+     */
+    container:clear-wrp
+      class:text-right
+      widgets
+        literal:clear
+          element:button
+          title:Alt+C
+          class:btn btn-default
+          innerValue:Clear
+          onclick:"window.execute_output.getDoc().setValue('');event.preventDefault();"
+
+

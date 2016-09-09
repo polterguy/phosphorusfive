@@ -112,57 +112,18 @@ this coffee machine would want to listen to my troubles ...""""</em></blockquote
  */
 sys42.execute-lisp-file:/system42/cms/page-editor/page-editor.hl
 "
-    p5.page:/root/executor
+    p5.page:/app-loader
       type:lambda
-      name:Evaluator
+      name:App loader
       template:/system42/cms/templates/main.hl
-      role:root
+      visible:bool:false
       lambda:@"
 
 /*
- * simply executes the file that loads up the 'executor'
+ * Loads up the specified app according to the given HTTP parameter.
  */
-sys42.execute-lisp-file:/system42/apps/executor.hl
-"
-    p5.page:/root/users
-      name:Users
-      template:/system42/cms/templates/main.hl
-      type:lambda
-      role:root
-      lambda:@"/*
- * Simply executes the file that loads up the 'Users' page
- */
-sys42.execute-lisp-file:/system42/apps/users/edit-users.hl
-"
-    p5.page:/superuser/files
-      type:lambda
-      name:Files
-      template:/system42/cms/templates/main.hl
-      role:superuser
-      lambda:@"/*
- * Simply executes the file that loads up the 'file browser'
- */
-sys42.execute-lisp-file:/system42/apps/file-browser/launch.hl
-"
-    p5.page:/user/profile
-      name:Profile
-      template:/system42/cms/templates/main.hl
-      type:lambda
-      role:user
-      lambda:@"/*
- * Simply executes the file that loads up the 'Profile' page
- */
-sys42.execute-lisp-file:/system42/apps/profile/edit-profile.hl
-"
-    p5.page:/root/gnupg-database
-      name:GnuPG
-      template:/system42/cms/templates/main.hl
-      type:lambda
-      role:root
-      lambda:@"/*
- * Simply executes the file that loads up the 'GnuPG database' page
- */
-sys42.execute-lisp-file:/system42/apps/gnupg.hl
+get-http-param:app
+sys42.execute-lisp-file:x:/-/0?value
 "
     p5.page:/root/tests
       name:Tests
@@ -3389,9 +3350,9 @@ of this server, theoretically might be extorted to give out his web logs, which 
   widgets
     literal
       element:div
-      innerValue:@""<h1>Ken Robert sin restaurant</h1>
+      innerValue:@""<h1>Acme restaurant</h1>
 
-<p>Velkomme til Ken Robert sin restaurant. Vi &oslash;nsker &aring; vite hva du synesom oss?</p>
+<p>Velkommen til Acme restaurant. Vi &oslash;nsker &aring; vite hva du synesom oss?</p>
 ""
       class:"" col-sm-8 col-sm-push-2 col-xs-12""
     container
@@ -4397,52 +4358,4 @@ container
       src:""parent:{0}""
         :x:/../*/_event?value
     eval:x:/../*/select-data"
-    p5.page:/examples/icu
-      name:ICU
-      template:/system42/cms/templates/no-header-menu.hl
-      lambda:@"/*
- * Default [lambda] type of page
- * Edit this page to meet your own needs
- */
-create-widget:icu-example
-  parent:content
-  class:col-xs-12
-  style:""margin-bottom:50px;""
-  oninit
-    sys42.execute-lisp-file:/system42/apps/icu/launch.hl
-      _keyboard-widget:icu-input
-      _language-builder:icu-builder
-  widgets
-    container:icu-output
-      class:rounded-corners paper-sheet prepend-bottom
-      style:""min-height:500px;""
-      onclick
-        get-widget-property:icu-input
-          visible
-        if:x:/-/*/*?value.bool
-          =:bool:true
-          set-widget-property:icu-input
-            visible:false
-          clear-widget:icu-builder
-          find-widget-like:icu-input
-            class:icu-active-key
-          if:x:/-/*?value
-            set-widget-property:x:/./-/*?value
-              class:icu-empty-cell
-        else
-          set-widget-property:icu-input
-            visible:true
-          send-javascript:@""
-$('a.icu-key').each(function() {
-  var el = $('#' + this.id);
-  el.toggleClass('icu-drop-from-sky');
-  el.one('animationend',
-    function(e) {
-      $('#' + e.target.id).removeClass('icu-drop-from-sky');
-    });
-  });""
-    container:icu-builder
-    container:icu-input
-      visible:false
-"
       type:lambda

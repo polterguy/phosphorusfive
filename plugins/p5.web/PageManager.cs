@@ -231,37 +231,39 @@ namespace p5.web
          */
         private void InitializeEventStorage (ApplicationContext context)
         {
-            // Checking if this is initial load of page or not
-            if (AjaxPage.IsPostBack) {
-
-                // Retrieving existing widget lambda event storage
-                WidgetLambdaEventStorage = context.RaiseNative (
-                    "get-page-value", 
-                    new Node ("", "_WidgetLambdaEventStorage"))
-                    .Get<WidgetEventStorage> (context);
-
-                // Retrieving existing widget ajax event storage
-                WidgetAjaxEventStorage = context.RaiseNative (
-                    "get-page-value", 
-                    new Node ("", "_WidgetAjaxEventStorage"))
-                    .Get<WidgetEventStorage> (context);
-            } else {
+            // Checking if we should re/initialize storage
+            // Sometimes .Net on IIS Express messes this up, having a different assembly on two consecutive debugging sessions, hence we cannot
+            // check for simply "IsPostBack"
+            if (!AjaxPage.IsPostBack) {
 
                 // Initial loading of page, creating storage for widget lambda events
-                WidgetLambdaEventStorage = new WidgetEventStorage ();
+                WidgetLambdaEventStorage = new WidgetEventStorage();
 
                 // Associating lambda event storage with page by creating a "page value"
-                context.RaiseNative (
-                    "set-page-value", 
-                    new Node ("", "_WidgetLambdaEventStorage", new Node [] { new Node ("src", WidgetLambdaEventStorage) }));
+                context.RaiseNative(
+                    "set-page-value",
+                    new Node("", "_WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
 
                 // Creating storage for widget ajax events
-                WidgetAjaxEventStorage = new WidgetEventStorage ();
+                WidgetAjaxEventStorage = new WidgetEventStorage();
 
                 // Associating ajax event storage with page by creating a "page value"
-                context.RaiseNative (
-                    "set-page-value", 
-                    new Node ("", "_WidgetAjaxEventStorage", new Node [] { new Node ("src", WidgetAjaxEventStorage) }));
+                context.RaiseNative(
+                    "set-page-value",
+                    new Node("", "_WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
+            } else {
+
+                // Retrieving existing widget lambda event storage
+                WidgetLambdaEventStorage = context.RaiseNative(
+                    "get-page-value",
+                    new Node("", "_WidgetLambdaEventStorage"))
+                    .Get<WidgetEventStorage>(context);
+
+                // Retrieving existing widget ajax event storage
+                WidgetAjaxEventStorage = context.RaiseNative(
+                    "get-page-value",
+                    new Node("", "_WidgetAjaxEventStorage"))
+                    .Get<WidgetEventStorage>(context);
             }
         }
 

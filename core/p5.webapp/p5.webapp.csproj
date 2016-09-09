@@ -373,7 +373,6 @@
     <None Include="system42\startup\internals\users\sys42.empty-user-tmp-folder.hl" />
     <None Include="system42\startup\internals\users\sys42.verify-access.hl" />
     <None Include="system42\apps\x-ray-inspector\launch.hl" />
-    <None Include="system42\cms\templates\x-ray.hl" />
     <None Include="system42\apps\users\edit-specific-user.hl" />
     <None Include="system42\startup\internals\users\sys42.get-default-user-settings.hl" />
     <None Include="system42\installation\create-dynamic-salt.hl" />

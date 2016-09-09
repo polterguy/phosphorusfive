@@ -1,0 +1,303 @@
+/*
+ * Main entry point for the profile page
+ */
+
+
+whoami
+if:x:/-/*/role?value
+  =:root
+  // Warning user that he should not create a profile as root!
+  sys42.confirm-window
+    _header:Warning!
+    _body:@"You should not use the root user for anything but administrating your system, 
+and installing applications, etc. If you use your root account for only such things, it doesn't make
+any sense to change its profile settings. Click OK to logout your root account, and login as your
+superuser to change your superuser profile!"
+    _onok
+      logout
+      reload-location
+
+/*
+ * Include JavaScript to trap Carriage Return in widget
+ */
+include-javascript:@"p5.keyPressEditProfile = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('save-profile-button').raise('onclick');
+    $('#save-profile-button').focus();
+    return false;
+  }
+}
+p5.keyUpEditProfile = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('save-profile-button').raise('_onhide');
+  }
+}"
+
+create-widget:edit-profile
+  parent:content
+  class:edit-profile
+  widgets
+
+    /*
+     * Change password button
+     */
+    container
+      class:col-xs-6 col-md-2 form-group
+      widgets
+        literal:change-password
+          element:button
+          class:form-control btn btn-default
+          title:Click to change password
+          innerValue:Change password
+          onclick
+            _widgets
+              user-password
+              user-password-repeat
+            delete-widget-property:x:/-/*?name
+              disabled
+            set-widget-property:change-password
+              disabled
+            send-javascript:@"$('#user-password').focus().select();"
+            sys42.info-window:@"Supply a new password for your account"
+
+    /*
+     * Create GnuPG keypair button
+     */
+    container
+      class:col-xs-6 col-md-2 form-group
+      widgets
+        literal:create-pgp-keypair
+          element:button
+          class:form-control btn btn-default
+          title:Click to create a cryptographic GnuPG keypair
+          innerValue:Create key
+          oninit
+            user-settings
+            p5.crypto.list-private-keys:x:/-/*/email-address?value
+            if:x:/-/*?count
+              >:int:0
+              set-widget-property:create-pgp-keypair
+                disabled
+                title:You already have a key associated with your account!
+              get-session-value:sys42.key-is-created
+              if:x:/-/0?value
+                =:true
+                sys42.confirm-window
+                  _header:Your keypair is finished!
+                  _body:Your key is finished, and you can start encrypting your data and communication!
+                set-session-value:sys42.key-is-created
+            else
+              get-session-value:sys42.key-is-created
+              if:x:/-/*?value
+                set-widget-property:create-pgp-keypair
+                  disabled
+                  title:Your key is still not finished!
+                sys42.info-window:Your key is still under construction!
+          onclick
+            raise-widget-ajax-event:save-profile-button
+              onclick
+            user-settings
+            html-encode:x:/../*/user-settings/*/email-address?value
+            eval-x:x:/+/*/_body|/+/*/_header
+            sys42.confirm-window
+              _header:Create keypair for '{0}'
+                :x:/../*/html-encode?value
+              _body:@"Do you wish to create a GnuPG PGP private and public keypair and associate with your account? This will allow you
+to receive encrypted email, among other things?<br/>
+Please notice that your key will be associated with the email address of <em>'{0}'</em>, if this is not right, then please change your email
+address before you create your key!<br/><br/>
+Please verify <strong>'{0}'</strong> is your actual name and email address! If it is not, close this window in the upper right corner, and
+change your name and email address settings first!"
+                :x:/../*/html-encode?value
+              _onok
+                sys42.wizard-window
+                  _header:Provide a seed
+                  _body:@"Please provide a seed for the random number generator. This should be a random sequence of characters, 
+preferably at least a 500 characters long! You do not need to remember your seed, but your keypair becomes more secure the longer your seed is!
+500 characters should at least fill the entire textarea<br/><br/>
+In addition, you need to choose a password to retrieve your private key from the GnuPG database. This password you must remember,
+to retrieve your key from the GnuPG database! Your key will be created as RSA general, with a bit strength of 4096 bits, using your settings 
+email and name as its 'identity'.<br/><br/>
+When you have created your key, you can request the root/admin of your server to submit your key to the MIT PGP keyserver, which
+will allow your peers to download your key from a keyserver."
+                  _widgets
+                    textarea:seed
+                      mandatory:true
+                      placeholder:@"Supply a seed for the random number generator which is a sequence of random characters, such as e.g. '•Ω÷≈†µüı˛$%754adfgDFggDF%34' ..."
+                    password:password
+                      label:Password
+                      mandatory:true
+                      placeholder:Supply a password for your private key ...
+                      autocomplete:off
+                    password:password-repeat
+                      label:Password
+                      mandatory:true
+                      placeholder:Repeat the password for your private key ...
+                      autocomplete:off
+                  _onok
+                    if:x:/../*/password?value
+                      =:x:/../*/password-repeat?value
+
+                      /*
+                       * Passwords matched each other
+                       */
+                      user-settings
+                      eval-x:x:/+/*
+                      sys42.create-pgp-keypair
+                        _identity:x:/..if/*/user-settings/*/email-address?value
+                        _password:x:/../*/password?value
+                        _seed:x:/../*/seed?value
+                      sys42.info-window:@"Creating your keypair might take some time. Come back later, and check when it is done!"
+                        _time:more
+                      set:x:/..?value
+                        src:bool:true
+                      set-widget-property:create-pgp-keypair
+                        disabled
+                        title:Your key is under construction, refresh page to check if it is done!
+                      set-session-value:sys42.key-is-created
+                        src:true
+                    else
+
+                      /*
+                       * Failure" Passwords did not match! Signaling that fact to caller
+                       */
+                      set:x:/..?value
+                        src:Passwords don't match
+                      send-javascript:@"$('#password').focus().select();"
+
+    /*
+     * Password of user
+     */
+    container
+      class:col-xs-12 col-md-4 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              class:input-group-addon
+              innerValue:Password
+            void:user-password
+              disabled
+              element:input
+              type:password
+              class:form-control
+              placeholder:Password ...
+              title:Leave blank to keep existing password
+              onkeypress:"return p5.keyPressEditProfile(event);"
+              onkeyup:"return p5.keyUpEditProfile(event);"
+              autocomplete:off
+
+
+    /*
+     * Repeat password of user
+     */
+    container
+      class:col-xs-12 col-md-4 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              class:input-group-addon
+              innerValue:Repeat
+            void:user-password-repeat
+              disabled
+              element:input
+              type:password
+              class:form-control
+              placeholder:Repeat ...
+              title:Leave blank to keep existing password
+              onkeypress:"return p5.keyPressEditProfile(event);"
+              onkeyup:"return p5.keyUpEditProfile(event);"
+              autocomplete:off
+              onchange
+                _widgets
+                  user-password
+                  user-password-repeat
+                get-widget-property:x:/-/*?name
+                  value
+                if:x:/-/0/*?value
+                  !=:x:/./-/1/*?value
+                  sys42.info-window:Passwords don't match
+                    _error:true
+                  send-javascript:@"$('#user-password').select().focus();"
+                else
+                  change-password:x:/../*/get-widget-property/*/user-password/*?value
+                  sys42.info-window:Password was changed!
+                  set-widget-property:x:/../*/_widgets/*?name
+                    value
+                    disabled
+                  delete-widget-property:change-password
+                    disabled
+
+
+    /*
+     * Settings for user
+     */
+    container
+      class:col-xs-12 form-group
+      widgets
+        literal:user-settings
+          element:textarea
+          rows:15
+          class:form-control
+          placeholder:Settings for user ...
+
+
+    /*
+     * Save profile button
+     */
+    container
+      class:col-xs-3 col-xs-push-6 col-md-push-8 col-md-2 form-group
+      widgets
+        literal:save-profile-button
+          element:button
+          class:form-control btn btn-primary
+          innerValue:Save
+          accesskey:S
+          _onhide
+            _widgets
+              user-password
+              user-password-repeat
+            set-widget-property:x:/../*/_widgets/*?name
+              value
+              disabled
+            delete-widget-property:change-password
+              disabled
+          onclick
+            get-widget-property:user-settings
+              value
+            lisp2lambda:x:/-/*/*?value
+            add:x:/+
+              src:x:/./-/*
+            change-user-settings
+            sys42.info-window:Your settings was saved!
+
+
+    /*
+     * The "Delete user" button
+     */
+    container
+      class:col-xs-3 col-xs-push-6 col-md-push-8 col-md-2 form-group
+      widgets
+        literal
+          element:button
+          class:form-control btn btn-default
+          innerValue:Delete
+          accesskey:M
+          title:Deletes currently selected user
+          onclick
+            sys42.confirm-window
+              _header:Confirm deletion of your profile
+              _body:@"Please confirm that you really wish to delete your profile. 
+<strong>All files belonging to you will be deleted</strong>. This action cannot be undone!"
+              _onok
+                delete-my-user
+                logout
+                reload-location
+
+user-settings
+lambda2lisp:x:/-/*
+set-widget-property:user-settings
+  value:x:/./-?value
