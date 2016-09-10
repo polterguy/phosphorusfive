@@ -324,9 +324,7 @@ namespace p5
             [ActiveEvent (Name = "p5.security.get-password-salt", Protection = EventProtection.NativeClosed)]
             private static void p5_security_get_password_salt (ApplicationContext context, ActiveEventArgs e)
             {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                string dynamicSalt = context.RaiseNative("p5.security.get-dynamic-password-salt").Get(context, "");
-                e.Args.Value = configuration.PasswordSalt + dynamicSalt;
+                e.Args.Value = context.RaiseNative("p5.security.get-dynamic-password-salt").Get(context, "");
             }
 
             /// <summary>

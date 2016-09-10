@@ -37,18 +37,12 @@ installed. If you're on Linux with Mono(Develop), then make sure you've also got
 installed. If you're in Visual Studio, please make sure you turn *off* "browser link",
 since it tends to mess with the page life cycle of your p5 apps.
 
-Get the code for p5, preferably by forking the code from GitHub, open up the p5.sln file,
+Get the code for p5, preferably by forking the code from GitHub. Open up the p5.sln file,
 make sure you've got the project called "p5.webbapp" as your startup project, and start 
 your debugger.
 
-Unless you have OpenPGP installed, and you've got a private key/certificate existing on your
-disc, referenced from the web.config underneath "p5.webapp", you will get an "unhandled exception",
-which actually is handled, but Visual Studio thinks it is unhandled due to the reflection nature of
-p5. You can safely ignore this exception, and simply continue. This PGP keypair is used to encrypt/decrypt
-the "auth" file, which contains your userdatabase.
-
 If you get funny bugs hinting towards "null reference exceptions" when debugging on IIS Express,
-simply re-touch one of your files, since this will re-deploy the DLLs. This is a bug in Visual Studio,
+then rebuild the solution, since this will re-deploy the DLLs. This is a bug in Visual Studio,
 which makes it impossible to "load the correct type", due to the shadow website debugging deployment
 in Visual Studio.
 

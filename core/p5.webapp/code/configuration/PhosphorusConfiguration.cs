@@ -59,7 +59,7 @@ namespace p5.webapp.code.configuration
         ///     Gets the number of seconds a specific IP address must wait between attempting to login to the system
         /// </summary>
         /// <value>Number of seconds to cool off between login attempts</value>
-        [ConfigurationProperty ("loginCoolOffSeconds", IsRequired = false, DefaultValue = "10")]
+        [ConfigurationProperty ("loginCoolOffSeconds", IsRequired = false, DefaultValue = "5")]
         public int LoginCoolOffSeconds
         {
             get { return (int)this ["loginCoolOffSeconds"]; }
@@ -193,16 +193,6 @@ namespace p5.webapp.code.configuration
         public string MarvinPgpKeyPassword
         {
             get { return (string)this ["marvinPgpKeyPassword"]; }
-        }
-
-        /// <summary>
-        ///     Gets the password salt to use for storing passwords
-        /// </summary>
-        /// <value>Password salt to use for users in auth file</value>
-        [ConfigurationProperty ("passwordSalt", IsRequired = true)]
-        public string PasswordSalt
-        {
-            get { return (string)this ["passwordSalt"]; }
         }
 
         /// <summary>
