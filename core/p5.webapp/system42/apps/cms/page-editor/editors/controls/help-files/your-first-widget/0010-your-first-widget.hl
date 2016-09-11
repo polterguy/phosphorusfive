@@ -1,0 +1,23 @@
+
+/*
+ * First help page
+ */
+
+name:Your first widget - Hyperlisp videos
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Your first widget - Hyperlisp videos
+  create-literal-widget
+    element:p
+    innerValue:@"In the video playlist below, I go through Hyperlisp. Hyperlisp is a fairly advanced concept, which you can feel free
+to skip for now, and come back to later if you wish."
+
+  create-literal-widget
+    element:div
+    innerValue:@"<iframe width=""560"" height=""315"" src=""https://www.youtube.com/embed/ZnXzo87-jUA?list=PLddTxKjU1cfZbK60-xl4MZ1QaHD0rmgr0"" frameborder=""0"" allowfullscreen></iframe>"

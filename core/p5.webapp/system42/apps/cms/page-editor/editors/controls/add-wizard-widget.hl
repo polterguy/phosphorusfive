@@ -1,0 +1,207 @@
+/*
+ * Allows the user to add one widget to surface, by following a wizard,
+ * that will help him or her, build a "rich and complex widget"
+ */
+
+
+/*
+ * Loading file that contains our templates
+ */
+load-file:/system42/apps/cms/page-editor/editors/controls/helpers/wizard-template-widgets.hl
+
+
+
+/*
+ * Making sure we pass in "position arguments" into creation invocations
+ */
+add:x:/../*/databind/**/onclick/*/_position
+  src:x:/../*(/_before|/_inside)
+
+
+
+/*
+ * Databinds table widgets with content from file
+ */
+databind:x:/../*/create-widget/**/table/=wysiwyg-window-list-of-widget-wizard-elements/*/widgets
+  src:x:/../*/load-file/*/*
+  template
+    tr
+      style:"cursor:pointer;"
+      onclick
+
+        /*
+         * The next node, will have its value, databound towards the actual code, of
+         * the currently iterated wizard template widget
+         */
+        {_code}:x:/*/_code/*?node.string
+
+        /*
+         * The next node, will either contain a [_before] or [_inside] node,
+         * signaling where to insert the widget, according to what button user clicked.
+         * Default is "after", at which point the next node is empty
+         */
+        _position
+
+        /*
+         * Transforming given code into lambda
+         */
+        lisp2lambda:x:/../*/_code?value
+
+        /*
+         * Checking where we should insert the widget, default is after,
+         * if no [_position] is given
+         */
+        if:x:/../*/_position/*/_before
+
+          /*
+           * Before currently selected widget
+           */
+          sys42.wysiwyg-controls.get-insertion-position
+            _before:true
+          add:x:/../*/lisp2lambda/*
+            src:x:/..if/*/sys42.wysiwyg-controls.get-insertion-position/*
+        else-if:x:/../*/_position/*/_inside
+
+          /*
+           * Inside of currently selected widget
+           */
+          find-widget:wysiwyg-editor-surface
+            data-selected
+          eval-x:x:/+/*/*
+          add:x:/../*/lisp2lambda/*
+            src
+              parent:x:/..else-if/*/find-widget/*?value
+        else
+
+          /*
+           * After currently selected widget
+           */
+          sys42.wysiwyg-controls.get-insertion-position
+          add:x:/../*/lisp2lambda/*
+            src:x:/..else/*/sys42.wysiwyg-controls.get-insertion-position/*
+
+        /*
+         * Now we can evaluate lambda, which should contain a "position" argument,
+         * one way or another
+         */
+        eval:x:/../*/lisp2lambda
+
+          /*
+           * Passing in and [add] invocation, that actually appends a [sys42.wysiwyg-controls.select-widget]
+           * invocation to the code block, which makes sure the widget is selected in the WYSIWYG surface,
+           * after it has been created
+           */
+          add:x:/..
+            src
+              sys42.wysiwyg-controls.select-widget:x:/../*/~create-?value
+
+        /*
+         * Toggling (hiding) the modal window
+         */
+        send-javascript:@"$('#wysiwyg-controls-widget-wizard-window').modal('toggle');"
+
+        /*
+         * Refreshing CodeMirror codeview, if it is visible
+         */
+        sys42.wysiwyg-controls.update-code-wiew
+
+        /*
+         * Re-creating the "select widget" dropdown box
+         */
+        sys42.wysiwyg-controls.databind-select-widget-dropdown
+      widgets
+        td
+          {innerValue}:"<strong>{0}</strong>"
+            :x:?value
+        td
+          {innerValue}:x:/*/_description?value
+
+
+/*
+ * Making sure we delete any previously created (but non-visible)
+ * modal HTML widget wizard dialogues
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:wysiwyg-controls-widget-wizard-window
+  delete-widget:wysiwyg-controls-widget-wizard-window
+
+
+/*
+ * Making sure dialogues becomes initially visible, and that we give initial
+ * focus to "OK" button
+ */
+send-javascript:@"$('#wysiwyg-controls-widget-wizard-window').modal('toggle');
+$('#wysiwyg-controls-widget-wizard-window').on('shown.bs.modal', function () {
+  $('#wysiwyg-controls-widget-wizard-window-close').focus();
+})"
+
+
+
+
+/*
+ * Creating a modal dialog that asks user which wizard widget he wants to use
+ */
+create-widget:wysiwyg-controls-widget-wizard-window
+  class:modal fade
+  widgets
+    container
+      class:modal-dialog
+      role:document
+      widgets
+        container
+          class:modal-content
+          widgets
+
+            /*
+             * Header of dialog
+             */
+            container
+              class:modal-header
+              widgets
+
+                // Close button
+                literal
+                  element:button
+                  class:close
+                  data-dismiss:modal
+                  aria-label:Close
+                  innerValue:&times;
+
+                // Header of our modal window
+                text:@"<h4>Select a pre-fabricated widget</h4>"
+
+            /*
+             * Body of dialog
+             */
+            container
+              class:modal-body
+              widgets
+
+                // Actual literal widget containing body of dialogue
+                container:wysiwyg-controls-widget-wizard-window-body
+                  element:div
+                  widgets
+                    text:@"<p>Please choose a template widget from the list below to insert into page.</p>
+<p>You can also insert a [usercontrol], which is a pre-fabricated control, with functionality, by closing this
+window, and choosing the [+container] button to the left of the wizard button.</p>"
+                    table:wysiwyg-window-list-of-widget-wizard-elements
+                      class:prepend-top table table-hover
+                      widgets
+                        text:@"<thead><tr><th style=""width:150px;"">Name</th><th>Description</th></tr></thead>"
+                        
+
+            /*
+             * Footer of dialog (contains Close button)
+             */
+            container
+              class:modal-footer
+              widgets
+                literal:wysiwyg-controls-widget-wizard-window-close
+                  element:button
+                  class:btn btn-default
+                  innerValue:Close
+                  onclick
+
+                    // Hiding dialog
+                    send-javascript:@"$('#wysiwyg-controls-widget-wizard-window').modal('toggle');"

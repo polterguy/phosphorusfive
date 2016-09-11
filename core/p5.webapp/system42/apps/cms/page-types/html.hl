@@ -1,0 +1,30 @@
+
+/*
+ * Responsible for loading up page of type [html]
+ */
+
+// Checking to see if user has access to object first
+if
+  sys42.verify-access:x:/../*/_args/*/role?value
+
+  // Loading Template and exchanging {content} with HTML from database
+  set:x:/+?value
+    src:x:/../*/_args/*/template?value
+
+  // Loading up our template
+  load-file
+
+  // setting the [header] and [content] of our page object from our database
+  set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
+    src:x:/../*/_args/*/name?value
+  set:x:/-2/*/*/create-widget/*/widgets/**/={content}?value
+    src:x:/../*/_args/*/content?value
+  eval:x:/./*/load-file/*
+
+else
+
+  // Loading page that shows user does not have access to object
+  sys42.execute-lisp-file:/system42/apps/cms/page-types/special-page/p5.no-access.hl
+    _template:/system42/apps/cms/templates/main.hl
+
+

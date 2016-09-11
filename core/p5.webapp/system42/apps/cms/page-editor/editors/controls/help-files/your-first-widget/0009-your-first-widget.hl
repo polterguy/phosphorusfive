@@ -1,0 +1,77 @@
+
+/*
+ * First help page
+ */
+
+name:Your first widget - Creating an Action Subscriber 2/2
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Your first widget - Creating an Action Subscriber 2/2
+
+  create-literal-widget
+    element:p
+    innerValue:@"However, you don't even have to type in code to create your action subscribers. Go down to your code view, the brown/gray'ish box
+at the bottom of your page, and delete all existing code from it. Then click the <span class=""glyphicon glyphicon-info-sign""></span> Wizard button."
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Show me what I "
+      a
+        href:#
+        innerValue:should click
+        class:btn btn-default btn-xs
+        onclick
+          find-widget
+            title:Opens up the Hyperlisp Wizard to help you create logic for your Action Subscriber
+          if
+            sys42.wysiwyg-controls.blink-control:x:/./-/*?value
+            not
+            sys42.info-window:Please make sure you have your usercontrol selected in the WYSIWYG design surface!, and that you have opened up codeview for your Action Subscriber
+              _error:true
+              _time:more
+      text:@" please.</p>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Then choose the <em>""sys42.action.save-data-to-database""</em> action, and type in a name value of <em>""email-data""</em>.
+This will automatically add the code necessary to save your email form into your Phosphorus Five database."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Afterwards, add up also the <em>""sys42.action.show-info-window""</em> action, and type in the text of <em>""Thank you
+for submitting your email to us""</em>. Now you can save your page, view it, and type in a valid email/name combination. In fact, you have now 
+created your first fully functional data gathering application, and you can publish this page if you wish, and have people sign up for your
+newsletters. If you wish to see the data in your database, you can open up the <em>""Evaluator""</em>, inside of your <em>""root""</em>
+menu, at the top, and type in the following code."
+
+  create-literal-widget
+    element:pre
+    innerValue:@"select-data:x:/*/*/email-data"
+
+  create-literal-widget
+    element:p
+    innerValue:@"If you wish, you can also add up the <em>""sys42.forms.action.clear-form""</em> action.
+Notice, that even though we did add some code during this tutorial, our final product, didn't require us to type in as much as <strong>
+one single line of code to create our product</strong>! If you wish to dive into Hyperlisp though, feel free to check out the next page,
+which includes a fairly extensive youtube playlist on how to get started with Hyperlisp. Althought, technically, this is <strong>not
+a prerequisite</strong> for creating relatively rich web apps with Phosphorus Five!"
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/apps/cms/page-editor/editors/controls/help-files/your-first-widget/0010-your-first-widget.hl
+      text:"</p>"

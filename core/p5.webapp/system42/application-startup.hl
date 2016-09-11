@@ -51,3 +51,19 @@ create-event:sys42.execute-lisp-folder
  * Events above.
  */
 sys42.execute-lisp-folder:/system42/startup/
+
+
+/*
+ * Then it will execute all application specific startup files, which means any files directly inside any
+ * application folder, who's name is "startup.hl"
+ */
+_app-startup
+list-folders:/system42/apps/
+for-each:x:/-/*?name
+  if
+    file-exist:{0}startup.hl
+      :x:/..for-each/*/_dp?value
+    add:x:/../*/_app-startup
+      src:{0}startup.hl
+        :x:/..for-each/*/_dp?value
+sys42.execute-lisp-files:x:/../*/_app-startup/*?name

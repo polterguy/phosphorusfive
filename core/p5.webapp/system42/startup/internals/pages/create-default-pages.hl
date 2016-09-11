@@ -9,7 +9,7 @@ if:x:/-?value
     p5.page:/
       type:lambda
       name:Home
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       lambda:@"/*
  * Default landing page for your system, automatically 
  * created by your own personal Marvin!
@@ -100,22 +100,10 @@ else
 <blockquote><em>""""Hello, my name is Marvin, and I have just been adopted by my owner. That's why things looks a little bit odd here, since
 he still haven't told me what he wants me to do. Until then, I'll just be attending these cars, and speak to this coffee machine. Maybe
 this coffee machine would want to listen to my troubles ...""""</em></blockquote>"""
-    p5.page:/root/editor
-      type:lambda
-      name:Pages
-      template:/system42/cms/templates/main.hl
-      role:root
-      lambda:@"
-
-/*
- * simply executes the file that loads up the 'page editor'
- */
-sys42.execute-lisp-file:/system42/cms/page-editor/page-editor.hl
-"
     p5.page:/app-loader
       type:lambda
       name:App loader
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       visible:bool:false
       lambda:@"
 
@@ -126,22 +114,12 @@ get-http-param:app
 split:x:/-/0?value
   =:/
 set-widget-property:header
-  innerValue:x:/-/0/-/-?name
+  innerValue:x:/./-/0/-/-?name
 sys42.execute-lisp-file:x:/../*/get-http-param/0?value
-"
-    p5.page:/root/tests
-      name:Tests
-      template:/system42/cms/templates/main.hl
-      type:lambda
-      role:root
-      lambda:@"/*
- * Simply executes the file that loads up the unit tests page
- */
-sys42.execute-lisp-file:/system42/tests/index.hl
 "
     p5.page:/examples/ajax-widgets-1
       name:Ajax Widgets 1
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       type:lambda
       role:root
       lambda:@"/*
@@ -255,7 +233,7 @@ create-widget:foo
           onclick:""alert('foo 2 clicked');"""
     p5.page:/examples/databind-1
       name:Databind 1
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       type:lambda
       role:root
       lambda:@"/*
@@ -320,7 +298,7 @@ create-widget
     text:@""<thead><tr><th>Name</th><th>Phone</th><th>Street</th><th>Number</th></tr></thead>"""
     p5.page:/examples/databind-2
       name:Databind 2
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       type:lambda
       role:root
       lambda:@"/*
@@ -428,7 +406,7 @@ create-widget
     p5.page:/examples/cryptoxifier
       name:Cryptoxifier
       type:lambda
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       lambda:@"/*
  * Creates a web widget that allows you to encrypt and decrypt plain text,
@@ -615,7 +593,7 @@ create-widget:crypto-wrapper
     p5.page:/examples/link-scraper
       name:Link scraper
       type:lambda
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       lambda:@"/*
  * This little application allows the user to type
@@ -706,7 +684,7 @@ sys42.wizard-window
     p5.page:/examples/todo-app
       name:TODO app
       type:lambda
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       lambda:@"/*
  * Creates a 'TODO' CRUD application, that stores
@@ -926,7 +904,7 @@ create-widget:todo-main-form
     p5.page:/examples/rss-reader
       name:RSS reader
       type:lambda
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       lambda:@"/*
  * Example that shows how to load an RSS document,
@@ -1019,7 +997,7 @@ create-widget
     p5.page:/examples/address-book
       name:Address Book
       type:lambda
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       lambda:@"/*
  * Creates an Address Book application, that allows you
@@ -1369,7 +1347,7 @@ Please notice that this feature requires that you've setup your web.config with 
             innerValue:<tr><th>Edit</th><th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th>Delete</th></tr>"
     p5.page:/examples/csv-editor
       name:CSV editor
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       lambda:@"/*
  * Shows how you could create a CSV file editor, for
@@ -2634,7 +2612,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
     p5.page:/about
       type:html
       name:About
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       content:@"<p>Although Phosphorus Five and System42, is the architecture and creation of one single person, me that is, there are numerous others who have one way or another contributed. This page is to say thank you to all of these people.</p>
 
 <ul>
@@ -2656,7 +2634,7 @@ I am for hire, either to develop custom modules, teach, or do other things relat
 Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to talk about such a proposal</p>"
     p5.page:/usercontrols/input-name-and-email
       name:Usercontrol - Input name and email
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       type:controls
       controls:@"container
@@ -2752,7 +2730,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
             email:x:/../*/get-widget-property/1/*?value"
     p5.page:/usercontrols/data-table
       name:Usercontrol - Data table
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       type:controls
       controls:@"container
@@ -2936,7 +2914,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
       return:bool:false"
     p5.page:/usercontrols/paged-searchable-data-table
       name:Usercontrol - Paged and searchable data table
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       type:controls
       controls:@"container
@@ -3030,7 +3008,7 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
       widgets"
     p5.page:/examples/file-sharing
       name:File sharing example
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:superuser
       lambda:@"/*
  * An example of how to create a file sharing service, that allows
@@ -3339,7 +3317,7 @@ of this server, theoretically might be extorted to give out his web logs, which 
       type:lambda
     p5.page:/examples/rater
       name:Email Harvester - Rater
-      template:/system42/cms/templates/no-header-menu.hl
+      template:/system42/apps/cms/templates/no-header-menu.hl
       type:controls
       controls:@"container
   element:div
@@ -3527,7 +3505,7 @@ to constantly make sure we improve our service.</p>
               _onok"
     p5.page:/examples/rater-result
       name:Email Harvester - Profile
-      template:/system42/cms/templates/no-header-menu.hl
+      template:/system42/apps/cms/templates/no-header-menu.hl
       type:controls
       controls:@"literal
   element:div
@@ -3633,7 +3611,7 @@ container:encourage-user-to-share
                 :x:/../*/url-encode/[2,3]?value"
     p5.page:/examples/backend
       name:Email Harvester - Backend
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       type:controls
       controls:@"container
@@ -3727,7 +3705,7 @@ container
             sys42.forms.action.databind-table"
     p5.page:/examples/www-survey
       name:Web Survey Example
-      template:/system42/cms/templates/no-header-menu.hl
+      template:/system42/apps/cms/templates/no-header-menu.hl
       type:controls
       controls:@"literal
   element:h1
@@ -4341,7 +4319,7 @@ container
           sys42.forms.action.clear-form"
     p5.page:/examples/www-survey-backend
       name:Web Survey Backend
-      template:/system42/cms/templates/main.hl
+      template:/system42/apps/cms/templates/main.hl
       role:root
       type:controls
       controls:@"container

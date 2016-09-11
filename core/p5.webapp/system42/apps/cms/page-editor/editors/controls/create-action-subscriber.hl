@@ -1,0 +1,361 @@
+/*
+ * Shows the widgets that allows user to create a new Action subscriber,
+ * which means Widget lambda Active Event inside of [events] node
+ */
+
+
+/*
+ * Making sure we delete any previously created (but non-visible)
+ * modal HTML active event dialogues
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:wysiwyg-controls-event-window
+  delete-widget:wysiwyg-controls-event-window
+
+
+/*
+ * Including JavaScript to help handle carriage return key in textbox of dialogue
+ */
+include-javascript:@"
+p5.keyPressNewActiveEvent = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('wysiwyg-controls-event-window-ok').raise('onclick');
+    return false;
+  }
+}"
+
+/*
+ * Making sure dialogues becomes initially visible, and that we give initial
+ * focus to "OK" button
+ */
+send-javascript:@"$('#wysiwyg-controls-event-window').modal('toggle');"
+
+
+/*
+ * Creating actual modal Widget
+ */
+create-widget:wysiwyg-controls-event-window
+  class:modal fade
+  widgets
+    container
+      class:modal-dialog
+      role:document
+      widgets
+        container
+          class:modal-content
+          widgets
+
+            /*
+             * Header of dialog
+             */
+            container
+              class:modal-header
+              widgets
+
+                /*
+                 * Close button
+                 */
+                literal
+                  element:button
+                  class:close
+                  data-dismiss:modal
+                  aria-label:Close
+                  innerValue:&times;
+
+                /*
+                 * Help button
+                 */
+                literal
+                  element:a
+                  href:#
+                  style:"position:absolute;right:40px;"
+                  innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+                  onclick
+
+                    /*
+                     * Makes the "help" text visible, and hides the help button (this button)
+                     */
+                    set-widget-property:x:/../*/_event?value
+                      visible:false
+                    set-widget-property:wysiwyg-controls-add-event-description
+                      visible:true
+
+                /*
+                 * Header of our modal window
+                 */
+                text:@"<h4>Name your action subscriber</h4>"
+
+            /*
+             * Body of dialog
+             */
+            container
+              class:modal-body
+              widgets
+
+                // Actual literal widget containing body of dialogue
+                container:wysiwyg-controls-event-window-body
+                  element:div
+                  widgets
+                    literal
+                      innerValue:@"Please provide a name for your Action Subscriber ..."
+                    literal:wysiwyg-controls-add-event-description
+                      element:div
+                      visible:false
+                      innerValue:@"<p>An Active Event subscriber, is a subscriber to an <em>""action""</em>. Actions can be triggered
+from any other parts of your system, and when they are, whatever you choose to have your subscriber(s) do, will be done. An action is
+almost like a method or a function in those regards, except that you can handle an action multiple times, in unrelated parts of your system.</p>
+<p>Your Active Event subscriber should be named <strong>""sys42.forms.action.<em>xxxxx</em>""</strong> 
+where <em>'xxxxx'</em> is the custom name of your subscriber, in order to have Phosphorus Five recognize it as an <em>""action""</em>.
+Your custom name part must be <strong>at least 5 characters long</strong>.</p>
+<p>The <em>'xxxxx'</em> parts, must be only small letters, optionally having your words separated by a hyphen '-', and it should tell something 
+semantically about what your subscriber does. Optionally, to group similar subscribers together, you can add up aditional periods 
+'.', in the parts where you name your subscriber.</p>
+<p>An example of a good subscriber name is <strong>""sys42.forms.action.customer.save-to-database""</strong>. An example of a bad
+subscriber name is <strong class=""error"">""sys42.forms.action.do-stuff""</strong>.</p>
+<p>You can create an Active Event Subscriber to hook into Active Events published by other modules and/or controls, or to expose your own
+subscribers to other controls and/or modules, that are consuming your controls.</p>
+<p>When you have created your event subscriber, it will show up as a property of your widget, from where you can edit its content.</p>"
+                    label:wysiwyg-controls-new-event-label
+                      innerValue:Action subscriber name
+                      for:wysiwyg-window-new-event-name
+                    input:wysiwyg-window-new-event-name
+                      class:form-control prepend-bottom
+                      placeholder:Action subscriber name ...
+                      value:sys42.forms.action.
+                      onkeypress:@"return p5.keyPressNewActiveEvent(event);"
+                      oninit
+
+                        /*
+                         * Making sure our "New Action Subscriber textbox" gets focus initially
+                         */
+                        send-javascript:@"setTimeout (function(){$('#wysiwyg-window-new-event-name').select().focus();},500);"
+                    button:wysiwyg-controls-show-published-actions-btn
+                      class:btn btn-default
+                      innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> Suggest"
+                      title:Suggests name for your Action Subscriber, according to which Actions are published by page
+                      onclick
+
+                        /*
+                         * Disabling button, to prevent user from clicking it again
+                         */
+                        set-widget-property:x:/../*/_event?value
+                          class:btn btn-default disabled
+                          disabled
+
+                        /*
+                         * Populates table containing list of Actions published on page
+                         */
+                        sys42.wysiwyg-controls.populate-list-of-action-subscribers-in-page
+
+                    /*
+                     * This table contains all Active Event within the namespace of [sys42.forms.action.XXX]
+                     * published by page. Either directly (as consequences of [onclick], event handlers, etc)
+                     * or indirectly through usercontrols, and whatever they are invoking.
+                     * It allows user to click an existing published Action Subscriber (Active Event invocation), to choose
+                     * this as the name for his Action Subscriber (Active Event handler)
+                     */
+                    table:wysiwyg-window-list-of-events
+                      class:prepend-top table table-hover
+                      visible:false
+                      widgets
+                        literal
+                          innerValue:@"<thead><tr><th><h4>Actions published by page</h4></th></tr></thead>"
+
+                      /*
+                       * Lambda events for table
+                       */
+                      events
+
+                        /*
+                         *
+                         */
+                        sys42.wysiwyg-controls.populate-list-of-action-subscribers-in-page
+
+                          /*
+                           * Making sure main table widget is visible
+                           */
+                          set-widget-property:wysiwyg-window-list-of-events
+                            visible:true
+
+                          /*
+                           * Since we want to know all the Active Events published, by all widgets on page,
+                           * both from inside of usercontrols, and inside the page itself, we need to fetch
+                           * the entire code for page, in its current state, to find all Active Event invocations
+                           * starting with [sys42.forms.action.XXX].
+                           * Notice, since this requires having access to the entire code of page, we need
+                           * to fetch page editor data with [_no-wash-usercontrols] set to true, to avoid having
+                           * our "fetch page logic" removing all widgets belonging to usercontrols
+                           */
+                          sys42.get-page-editor-data
+                            _no-wash-usercontrols:bool:true
+                          lisp2lambda:x:/-/*/controls?value
+
+                          /*
+                           * Finding selected widget, to make sure we can "wash" away any Action Subscribers
+                           * that widget is already subscribing to
+                           */
+                          find-widget:wysiwyg-editor-surface
+                            data-selected
+                          list-widget-lambda-events:x:/-/*?value
+
+                          /*
+                           * Necessary to keep track of whether or not any Actions was found, that are published by page,
+                           * in order to know whether or not we should entirely remove the table or not
+                           */
+                          _found-actions:bool:false
+
+                          /*
+                           * Looping through each distinct Action name published by entire hierarchy of widgets on page,
+                           * including from within nested usercontrols, actions published by ajax events, and actions published by
+                           * other lambda events (Action Subscribers) on widgets
+                           */
+                          for-each:x:@"/../*/lisp2lambda/**(/"":regex:/^on[a-z]{5}/c""|/events/*)/**/"":regex:/^sys42.forms.action.[a-z0-9]|[-.]{5}$/c""/$"
+
+                            /*
+                             * Checking if Action Subscriber is already handled by currently selected widget, 
+                             * and if so, remove it from list
+                             */
+                            if:x:@"/../*/list-widget-lambda-events/*/*/""{0}"""
+                              :x:/..for-each/*/_dp/#?name
+                              continue
+
+                            /*
+                             * Making sure we signal that some action was found, such that we don't remove table afterwards
+                             */
+                            set:x:/../*/_found-actions?value
+                              src:bool:true
+
+                            /*
+                             * Passing in Active Event name to "tr" widget, such that we can know which Active Event
+                             * was chosen, if user clicks a row in table
+                             */
+                            set:x:/..for-each/**/create-widget/**/={active-event-name}?value
+                              src:x:/..for-each/*/_dp/#?name
+                            create-widget
+                              parent:wysiwyg-window-list-of-events
+                              element:tr
+                              style:"cursor:pointer;"
+                              _active-event-name:{active-event-name}
+                              onclick
+
+                                /*
+                                 * Figuring out which active event publisher user selected
+                                 */
+                                get-widget-property:x:/../*/_event?value
+                                  _active-event-name
+
+                                /*
+                                 * Setting that element as the value of widget's
+                                 * [element] declaration, and initiating change element's
+                                 * active event, for simplicity's sake
+                                 */
+                                set-widget-property:wysiwyg-window-new-event-name
+                                  value:x:/../*/get-widget-property/*/*?value
+                                raise-widget-ajax-event:wysiwyg-controls-event-window-ok
+                                  onclick
+                              widgets
+                                td
+                                  widgets
+                                    span
+                                      innerValue:"&nbsp;"
+                                      class:glyphicon glyphicon-flash
+                                    strong
+                                      innerValue:{active-event-name}
+
+                          /*
+                           * Checking if we found any actions at all, and if not, removing table entirely
+                           */
+                          if:x:/../*/_found-actions?value.bool
+                            =:bool:false
+
+                            /*
+                             * No rows in our table, simply removing it
+                             */
+                            delete-widget:wysiwyg-window-list-of-events
+                            set-widget-property:wysiwyg-controls-show-published-actions-btn
+                              innerValue:@"<span class=""glyphicon glyphicon-info-sign""></span> No more Actions published by page!"
+                        
+
+            /*
+             * Footer of dialog (contains OK and Cancel buttons)
+             */
+            container
+              class:modal-footer
+              widgets
+                button:wysiwyg-controls-event-window-ok
+                  class:btn btn-default
+                  innerValue:Add Action Subscriber
+                  onclick
+
+                    /*
+                     * Checking name of Active Event, to make sure it's at least somewhere within
+                     * "sanity land"
+                     */
+                    get-widget-property:wysiwyg-window-new-event-name
+                      value
+                    match:x:/../*/get-widget-property/*/*?value
+                      what:regex:/^sys42\.forms\.action\.[a-z0-9.-]{5}/
+                    if:x:/../*/match/*/*?name
+                      not
+
+                      /*
+                       * Not a valid Active Event name, informing user, and setting
+                       * focus to name textbox
+                       */
+                      send-javascript:"$('#wysiwyg-window-new-event-name').focus().select();"
+                      set-widget-property:wysiwyg-window-new-event-name
+                        class:form-control prepend-bottom error
+                      set-widget-property:wysiwyg-controls-new-event-label
+                        innerValue:Not a valid action subscriber name!
+                      return
+
+                    /*
+                     * Checking if Active Event (Action Subscriber) is already handled by widget
+                     */
+                    find-widget:wysiwyg-editor-surface
+                      data-selected
+                    list-widget-lambda-events:x:/-/*?value
+                    if:x:/-/*/*/{0}
+                      :x:/../*/get-widget-property/*/*?value
+
+                      /*
+                       * Widget already has an Active Event with this name, informing user,
+                       * setting textbox into "error mode" and returning early
+                       */
+                      send-javascript:"$('#wysiwyg-window-new-event-name').focus().select();"
+                      set-widget-property:wysiwyg-window-new-event-name
+                        class:form-control prepend-bottom error
+                      set-widget-property:wysiwyg-controls-new-event-label
+                        innerValue:Action is already handled in form!
+                      return
+
+                    /*
+                     * Now, we have confirmed Action Subscriber's name is somewhere within "sanity land",
+                     * hence we can add it as a lambda event to currently selected widget
+                     */
+                    set:x:/+/*?name
+                      src:x:/../*/get-widget-property/*/*?value
+                    set-widget-lambda-event:x:/../*/find-widget/*?value
+                      _active-event-name
+
+                        /*
+                         * Providing some default code for user
+                         */
+                        sys42.info-window:Hello World 2.0
+
+                    /*
+                     * Re-creating Action Subscriber list for currently selected widget, since it
+                     * now has one (additional) lambda Active Event
+                     */
+                    sys42.wysiwyg-controls.create-events-for-selected:x:/../*/get-widget-property/*/*?value
+
+                    /*
+                     * Hiding dialog
+                     */
+                    send-javascript:@"$('#wysiwyg-controls-event-window').modal('toggle');"
+
+                    /*
+                     * Refreshing CodeMirror codeview, if it is visible
+                     */
+                    sys42.wysiwyg-controls.update-code-wiew

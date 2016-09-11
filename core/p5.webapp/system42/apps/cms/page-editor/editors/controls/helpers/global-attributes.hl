@@ -1,0 +1,111 @@
+/*
+ * Contains a list of all legal HTML attributes, 
+ * according to HTML element type. This list is taken from;
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes
+ * And licensed as Commons Create Share-Alike
+ */
+
+
+
+/*
+ * First the attributes
+ */
+accesskey:@"Provides a hint for generating a keyboard shortcut for the current element. This attribute consists of a space-separated list of characters. The browser should use the first one that exists on the computer keyboard layout."
+
+class:@"Is a space-separated list of the classes of the element. Classes allows CSS and JavaScript to select and access specific elements via the class selectors, or functions like the method Document.getElementsByClassName()."
+
+contenteditable:@"Is an enumerated attribute indicating if the element should be editable by the user. If so, the browser modifies its widget to allow editing. The attribute must take one of the following values: true or false."
+
+contextmenu:@"Is the id of an &lt;menu&gt; to use as the contextual menu for this element."
+
+dir:@"Is an enumerated attribute indicating the directionality of the element's text. It can have the following values: ltr, rtl or auto."
+
+hidden:@"Is a Boolean attribute indicates that the element is not yet, or is no longer, relevant. For example, it can be used to hide elements of the page that can't be used until the login process has been completed. The browser won't render such elements. This attribute must not be used to hide content that could legitimately be shown."
+
+lang:@"Participates in defining the language of the element, the language that non-editable elements are written in or the language that editable elements should be written in. The tag contains one single entry value in the format defines in the Tags for Identifying Languages (BCP47) IETF document. xml:lang has priority over it."
+
+style:@"Contains CSS styling declarations to be applied to the element. Note that it is recommended for styles to be defined in a separate file or files. This attribute and the &lt;style&gt; element have mainly the purpose of allowing for quick styling, for example for testing purposes."
+
+tabindex:@"Is an integer attribute indicates if the element can take input focus (is focusable), if it should participate to sequential keyboard navigation, and if so, at what position. It can takes several values: * a negative value means that the element should be focusable, but should not be reachable via sequential keyboard navigation;
+- * 0 means that the element should be focusable and reachable via sequential keyboard navigation, but its relative order is defined by the platform convention;
+- * a positive value which means should be focusable and reachable via sequential keyboard navigation; its relative order is defined by the value of the attribute: the sequential follow the increasing number of the tabindex. If several elements share the same tabindex, their relative order follows their relative position in the document)."
+
+title:@"Contains a text representing advisory information related to the element it belongs to. Such information can typically, but not necessarily, be presented to the user as a tooltip."
+
+
+
+
+/*
+ * Then the DOM events
+ */
+onclick:@"The event occurs when the user clicks on an element"
+
+oncontextmenu:@"The event occurs when the user right-clicks on an element to open a context menu"
+
+ondblclick:@"The event occurs when the user double-clicks on an element"
+
+oninit:@"Invoked when widget is initialized. Never sent to client-side. Phosphorus Five specific server-side event. Useful for initializing the widget, or doing other stuff that only needs to be done when widget is first created"
+
+onmousedown:@"The event occurs when the user presses a mouse button over an element"
+
+onmouseenter:@"The event occurs when the pointer is moved onto an element"
+
+onmouseleave:@"The event occurs when the pointer is moved out of an element"
+
+onmousemove:@"The event occurs when the pointer is moving while it is over an element"
+
+onmouseover:@"The event occurs when the pointer is moved onto an element, or onto one of its children"
+
+onmouseout:@"The event occurs when a user moves the mouse pointer out of an element, or out of one of its children"
+
+onmouseup:@"The event occurs when a user releases a mouse button over an element"
+
+onkeydown:@"The event occurs when the user is pressing a key, but before the key is released"
+
+onkeypress:@"The event occurs when the user presses a key, after the keystroke has been registered"
+
+onkeyup:@"The event occurs when the user releases a key"
+
+onblur:@"The event occurs when an element loses focus"
+
+onfocus:@"The event occurs when an element gets focus"
+
+onfocusin:@"The event occurs when an element is about to get focus"
+
+onfocusout:@"The event occurs when an element is about to lose focus"
+
+ondrag:@"The event occurs when an element is being dragged"
+
+ondragend:@"The event occurs when the user has finished dragging an element"
+
+ondragenter:@"The event occurs when the dragged element enters the drop target"
+
+ondragleave:@"The event occurs when the dragged element leaves the drop target"
+
+ondragover:@"The event occurs when the dragged element is over the drop target"
+
+ondragstart:@"The event occurs when the user starts to drag an element"
+
+ondrop:@"The event occurs when the dragged element is dropped on the drop target"
+
+oncopy:@"The event occurs when the user copies the content of an element"
+
+oncut:@"The event occurs when the user cuts the content of an element"
+
+onpaste:@"The event occurs when the user pastes some content in an element"
+
+ontouchcancel:@"The event occurs when the touch is interrupted"
+
+ontouchend:@"The event occurs when a finger is removed from a touch screen"
+
+ontouchmove:@"The event occurs when a finger is dragged across the screen"
+
+ontouchstart:@"The event occurs when a finger is placed on a touch screen"
+
+
+
+
+
+
+
+

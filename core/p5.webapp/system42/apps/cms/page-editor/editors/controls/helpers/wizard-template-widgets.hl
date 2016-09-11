@@ -1,0 +1,382 @@
+/*
+ * Contains all template widgets, meaning widgets that you can 
+ * add to your page, that is pre-created and contains some sort of logic
+ */
+
+
+/*
+ * A bootstrap CSS button wizard template widget
+ */
+_wizard-item:Button
+  _description:Creates a default button, with bootstrap CSS classes wired up, and an [onclick] event handler
+  _code
+    create-literal-widget
+      element:button
+      class:btn btn-default
+      innerValue:Foo bar
+      title:Click me to do something intelligent ...
+      _onclick
+        sys42.info-window:Hello World 2.0!
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+/*
+ * A div wrapper for HTML content
+ */
+_wizard-item:Rich Text content
+  _description:Creates a div, that allows you to add rich content to your page
+  _code
+    create-literal-widget
+      element:div
+      class:col-xs-12
+      innerValue:@"<p>Some paragraph</p>
+<ul>
+<li>Some list item</li>
+<li>Another list item</li>
+</ul>"
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+/*
+ * A bootstrap CSS textbox wizard template widget
+ */
+_wizard-item:Textbox
+  _description:Creates a default textbox, with bootstrap CSS classes wired up
+  _code
+    create-void-widget
+      element:input
+      type:text
+      class:form-control
+      title:Type some text into me please
+      placeholder:Input please ...
+      data-field:foo-bar
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+
+/*
+ * A div panel-type of wizard template widget
+ */
+_wizard-item:Green Panel
+  _description:Creates a green 'container panel', with some initial width, and other display properties to make it render OK'ish
+  _code
+    create-container-widget
+      element:div
+      class:col-xs-12 col-md-6 bg-success rounded-corners air-padding
+      style:"min-height:100px;"
+      widgets
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+
+/*
+ * A div panel-type of wizard template widget
+ */
+_wizard-item:Bordered Panel
+  _description:Creates a bordered 'container panel', with some initial width, and other display properties to make it render OK'ish
+  _code
+    create-container-widget
+      element:div
+      class:col-xs-12 rounded-corners air-padding
+      style:"min-height:100px;border:dashed 1px rgba(0,0,0,.5);"
+      widgets
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+
+/*
+ * A large header (H1) widget
+ */
+_wizard-item:Header (H1)
+  _description:Creates a header widget, rendered with the 'h1' HTML element
+  _code
+    create-literal-widget
+      element:h1
+      innerValue:Your header goes here ...
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+
+
+/*
+ * A blockquote widget
+ */
+_wizard-item:Blockquote
+  _description:Creates a blockquote widget
+  _code
+    create-literal-widget
+      element:blockquote
+      innerValue:Your quote goes here ...
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+
+
+
+/*
+ * A select widget
+ */
+_wizard-item:Dropdown list
+  _description:Creates a dropdown list widget, rendered with the 'select' HTML element
+  _code
+    create-container-widget
+      element:select
+      class:form-control
+      widgets
+        literal
+          element:option
+          value:foo1
+          innerValue:Foo 1
+        literal
+          element:option
+          value:foo2
+          innerValue:Foo 2
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+
+
+
+
+/*
+ * A star rating widget, with 5 stars
+ */
+_wizard-item:Star Rating
+  _description:Creates a star rating widget, with 5 stars, allowing your users to rate something
+  _code
+    create-container-widget
+      class:star-rating
+      data-value:0
+      data-field:foo-bar
+      oninit
+
+        /*
+         * Includes stylesheet, and invokes event that sets initial value
+         */
+        include-stylesheet-file:/media/css/star-rating.css
+        get-widget-property:x:/../*/_event?value
+          data-value
+        if:x:/-/*/*?value.int
+          =:int:0
+          sys42.forms.action.clear-form
+        else
+          sys42.forms.action.star-clicked:x:/../*/get-widget-property/*/*?value
+      events
+
+        /*
+         * Event invoked when value of widget is changed, e.g. by user clicking one of the stars.
+         * Expects [_arg] to be an integer between 1 and 5
+         */
+        sys42.forms.action.star-clicked
+
+          /*
+           * Making sure invocation is for "current widget", and if not, returning early ...
+           */
+          if:x:/../*/_parent?value
+            !=:x:/../*/_event?value
+            return
+
+          /*
+           * Finds "hidden field" in form, such that we can update its value
+           */
+          find-widget:x:/../*/_event?value
+            element:input
+            type:hidden
+          get-widget-property:x:/../*/_event?value
+            data-field
+          set-widget-property:x:/../*/find-widget/[0,1]/*?value
+            value:x:/../*/_arg?value
+            data-field:x:/../*/get-widget-property/*/*?value
+
+          /*
+           * Loops through children widgets from 0 to [_arg], setting their "checked value"
+           * to true, by changing CSS class to "star-checked"
+           */
+          get-children-widgets:x:/../*/_event?value
+          for-each:x:/../*/get-children-widgets/*/*/[0,{0}]
+            :x:/../*/_arg?value
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star star-checked
+
+          /*
+           * Loops through children widgets from [_arg] and out (to end, which is 5), 
+           * setting their "checked value" to false, by changing CSS class to "star"
+           */
+          for-each:x:/../*/get-children-widgets/*/*/[{0},]
+            :x:/../*/_arg?value
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star
+
+          /*
+           * Updating [data-value] attribute of main wrapper widget, which contains all stars
+           */
+          set-widget-property:x:/../*/_event?value
+            data-value:x:/../*/_arg?value
+
+        /*
+         * Serializes value of control
+         */
+        sys42.forms.action.serialize-form
+          get-widget-property:x:/../*/_event?value
+            data-field
+            data-value
+          set:x:/+2/*/*/*?name
+            src:x:/../*/get-widget-property/*/*/data-field?value
+          eval-x:x:/+/*/*/*
+          insert-before:x:
+            src
+              _data
+                data-field:x:/../*/get-widget-property/*/*/data-value?value
+
+        /*
+         * Event invoked when forms should be cleared
+         */
+        sys42.forms.action.clear-form
+
+          /*
+           * Loops through all children widgets, setting their "checked value"
+           * to false, by changing CSS class to "star"
+           */
+          get-children-widgets:x:/../*/_event?value
+          for-each:x:/../*/get-children-widgets/*/*
+            set-widget-property:x:/..for-each/*/_dp/#?value
+              class:star
+
+        /*
+         * Core "action" to validate form, returns true only if user actually has chosen something,
+         * or if [data-value] attribute is non-sero to be specific
+         */
+        sys42.forms.action.validate-form
+          get-widget-property:x:/../*/_event?value
+            data-value
+          if:x:/-/*/*?value.int
+            =:int:0
+            return:bool:false
+          return:bool:true
+      onclick
+        sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+        if:x:/-?value
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+        else
+          sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+      widgets
+        a
+          href:#
+          class:star
+          data-value:1
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
+            sys42.forms.action.star-clicked:1
+              _parent:x:/../*/get-parent-widget/*?value
+        a
+          href:#
+          class:star
+          data-value:2
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
+            sys42.forms.action.star-clicked:2
+              _parent:x:/../*/get-parent-widget/*?value
+        a
+          href:#
+          class:star
+          data-value:3
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
+            sys42.forms.action.star-clicked:3
+              _parent:x:/../*/get-parent-widget/*?value
+        a
+          href:#
+          class:star
+          data-value:4
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
+            sys42.forms.action.star-clicked:4
+              _parent:x:/../*/get-parent-widget/*?value
+        a
+          href:#
+          class:star
+          data-value:5
+          innerValue:&nbsp;
+          onclick
+            sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
+            if:x:/-?value
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            else
+              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+          _onclick
+            get-parent-widget:x:/../*/_event?value
+            eval-x:x:/+/*
+            sys42.forms.action.star-clicked:5
+              _parent:x:/../*/get-parent-widget/*?value
+        input
+          type:hidden

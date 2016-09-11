@@ -8,7 +8,7 @@
 /*
  * Loading up main template
  */
-load-file:/system42/cms/templates/main.hl
+load-file:/system42/apps/cms/templates/main.hl
 
 // Removing {content} and setting {header} before evaluating template
 set:x:/-/*/*/create-widget/*/widgets/**/={header}?value

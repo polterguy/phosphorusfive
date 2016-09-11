@@ -1,0 +1,79 @@
+
+/*
+ * First help page
+ */
+
+name:Your first widget - Adding a usercontrol
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Your first widget - Adding a usercontrol
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>As previously said, a widget is a (most often) visible element on your page. It can be a header, paragraph, input element such as textboxes
+and dropdown lists, or more complex widget hierarchies, such as rich [usercontrols] and pre-fabricated widget hierarchies. At the top
+of your page now, is a toolbar for adding widgets to your page. Click "
+      a
+        href:#
+        innerValue:here
+        class:btn btn-default btn-xs
+        onclick
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-toolbar
+      text:@" to see where you can find this toolbar.</p>"
+
+  create-literal-widget
+    element:h4
+    innerValue:User controls
+
+  create-literal-widget
+    element:p
+    innerValue:@"The <strong>[+usercontrol]</strong> button, allows you to add a user control widget to your page."
+
+  create-literal-widget
+    element:p
+    innerValue:@"A usercontrol, is a pre fabricated rich widget, probably with lots of children widgets of its own, solving some specific task. Such
+as for instance gathering emails from visitors, displaying lists of information, or allowing the user to edit information. Usercontrols
+often have lots of internal logic, which you can <em>""subscribe""</em> to, through <em>""Action Subscribers""</em>."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Make sure you start out with an <strong>empty page</strong>, and open up the <strong>[+usercontrol]</strong> dropdown 
+button, and choose either <em>""Usercontrol before""</em>, or <em>""Usercontrol after""</em>. It doesn't matter which, as long as 
+your page is empty."
+
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Click "
+      a
+        href:#
+        innerValue:here
+        class:btn btn-default btn-xs
+        onclick
+          send-javascript:@"$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');}}, 2000);"
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-usercontrol-after
+      text:@" to see which button you need to click. When you have done so, make sure you select the 
+<strong>Input name and email</strong> usercontrol from the modal window that appears. If you wish to read more about usercontrols, 
+you can click the <span class=""glyphicon glyphicon-question-sign""></span> button in the modal window that appears when you
+inserts your usercontrol.</p>"
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/apps/cms/page-editor/editors/controls/help-files/your-first-widget/0003-your-first-widget.hl
+      text:"</p>"

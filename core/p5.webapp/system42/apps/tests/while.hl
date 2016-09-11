@@ -1,0 +1,139 @@
+/*
+ * Contains unit tests for testing [while] in system
+ */
+
+/*
+ * Tests that [while] behaves as expected when condition
+ * is existence of node
+ */
+node-exist
+  _input
+    foo1
+    foo2
+    foo3
+  _output
+  while:x:/../*/_input/0
+    add:x:/../*/_output
+      src:x:/../*/_input/0
+    set:x:/../*/_input/0
+  if:x:/../*/_input/0
+    or:x:/../*/_output/*?count
+      !=:int:3
+    throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when condition
+ * is that integer value is not 0
+ */
+integer-comparison
+  _result
+  _int:int:5
+  while:x:/../*/_int?value
+    !=:int:0
+    set:x:/../*/_result?value
+      src:{0}*
+        :x:/../*/_result?value
+    set:x:/../*/_int?value
+      -:x:/../*/_int?value
+        _:int:1
+  if:x:/../*/_result?value
+    !=:*****
+    or:x:/../*/_int?value
+      !=:int:0
+    throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when condition
+ * is a boolean expression value
+ */
+boolean-expression-comparison
+  _result
+  _bool:bool:true
+  while:x:/-?value
+    set:x:/../*/_result?value
+      src:{0}*
+        :x:/../*/_result?value
+    set:x:/../*/_bool?value
+      src:bool:false
+  if:x:/../*/_result?value
+    !=:*
+    throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when condition
+ * is a boolean constant value
+ */
+boolean-constant-comparison
+  _result
+  while:bool:true
+    set:x:/../*/_result?value
+      src:{0}*
+        :x:/../*/_result?value
+    set:x:/../*/while?value
+      src:bool:false
+  if:x:/../*/_result?value
+    !=:*
+    throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when break'ed
+ */
+break
+  _input
+    foo1
+    foo2
+    foo3
+  _output
+  while:x:/../*/_input/0
+    add:x:/../*/_output
+      src:x:/../*/_input/0
+    break
+    add:x:/../*/_output
+      src:x:/../*/_input/0
+  if:x:/../*/_output/*?count
+    !=:int:1
+    throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when break'ed in a nested [while]
+ */
+nested-break
+  _input
+    foo1
+    foo2
+    foo3
+  _output
+  while:x:/../*/_input/0
+    add:x:/../*/_output
+      src:x:/../*/_input/0
+    while:x:/../*/_input/0
+      add:x:/../*/_output
+        src:x:/../*/_input/0
+      break
+      add:x:/../*/_output
+        src:x:/../*/_input/0
+    set:x:/../*/_input/0
+  if:x:/../*/_output/*?count
+    !=:int:6
+    throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when continue'd
+ */
+continue
+  _input
+    foo1
+    foo2
+    foo3
+  _output
+  while:x:/../*/_input/0
+    if:x:/../*/_input/0?name
+      =:foo2
+      set:x:/../*/_input/0
+      continue
+    add:x:/../*/_output
+      src:x:/../*/_input/0
+    set:x:/../*/_input/0
+  if:x:/../*/_output/*?count
+    !=:int:2
+    throw:@"Assert error, [while] misbehaved!"

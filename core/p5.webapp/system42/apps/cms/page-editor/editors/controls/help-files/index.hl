@@ -1,0 +1,61 @@
+
+/*
+ * Index help page for [controls] types of pages
+ */
+
+
+name:Help index
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Help index
+  create-literal-widget
+    element:p
+    innerValue:@"Welcome to my brain! Here you can tap into my knowledge, and learn how to create rich web apps, <strong>even if you have
+never done any programming before</strong>. If this is your first visit, it would be wise of you to follow the tutorial(s) given here. Below is a list
+of all the help files you can access from within my brain. The smartest thing, is probably to read the help files sequentially though,
+and start with the first page, called <em>""Hello World""</em>, and reading my brain as if it was a book, from beginning to end. You can always come back to this page,
+by clicking the <em>""Home""</em> link at the bottom right corner of the help files."
+  create-container-widget:wysiwyg-controls-help-file-index-list
+    element:ul
+    oninit
+      set-widget-property:wysiwyg-controls-help-back-to-index
+        style:"display:none;position:absolute;bottom:5px;right:5px;"
+      list-files:/system42/apps/cms/page-editor/editors/controls/help-files/
+      set:x:@"/-/*/""~/index.hl"""
+      _databind-callback
+        load-file:x:/../*/_dn/#?name
+        eval-x:x:/+/*/*/**(/innerValue|/_help-file-id)
+        insert-before:x:
+          src
+            create-container-widget
+              element:li
+              parent:wysiwyg-controls-help-file-index-list
+              widgets
+                a
+                  href:#
+                  innerValue:x:/../*/load-file/*/*/name?value
+                  onclick
+                    _help-file-id:x:/../*/_dn/#?name
+                    sys42.wysiwyg-controls.show-help-page:x:/-?value
+      databind:x:/../*/_create-widgets
+        src:x:/../*/list-files/*
+        template
+          {@eval}:x:/../*/_databind-callback
+      _create-widgets
+      eval:x:/-
+  create-literal-widget
+    element:p
+    innerValue:@"The help files are created <em>""interactively""</em>, which means that I will show you where to click, and such,
+if you click the buttons embedded inside of my documents. Every now and then, I will even try to solve tasks for you, if you go 
+wrong somewhere."
+  create-literal-widget
+    element:p
+    innerValue:@"However, I still ancourage you to read my brain (help files) <strong>*carefully*</strong>, and follow the instructions 
+I give you with great details! If you do, you should be finished with all tutorials in about an hour, at which point you should be 
+a relatively skilled web developer, capable of creating relatively complex and rich web apps."

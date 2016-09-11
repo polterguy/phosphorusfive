@@ -1,0 +1,75 @@
+
+/*
+ * First help page
+ */
+
+name:Your first widget - Adding some class to your widgets
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Your first widget - Adding some class to your widgets
+
+  create-literal-widget
+    element:p
+    innerValue:@"You can add any attribute you wish to your widgets. Either by following a wizard, or by simply clicking the 
+<em>""Attribute""</em> button. <strong>Make sure you have your email/name usercontrol selected</strong>, and click the <em>""Attribute""</em> button."
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Show me what I "
+      a
+        href:#
+        innerValue:should click
+        class:btn btn-default btn-xs
+        onclick
+          if
+            sys42.wysiwyg-controls.blink-control:wysiwyg-button-add-attribute
+            not
+            sys42.info-window:Please make sure you have your usercontrol selected in the WYSIWYG design surface!
+              _error:true
+              _time:more
+      text:@" please.</p>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Make sure you name your new attribute <em>""class""</em>, and simply click return/enter. Then paste the following
+CSS classes into your class attribute value."
+
+  create-literal-widget
+    element:pre
+    innerValue:@"col-xs-6 bg-success rounded-corners"
+
+  create-literal-widget
+    element:p
+    innerValue:@"If you paid attention as you clicked enter, or moved the focus away from the class attribute textbox, you should
+have seen your usercontrol becoming smaller. If you now <em>""unselect""</em> the selected widget, by either clicking
+on any empty spot in your WYSIWYG design surface, or by selecting the <em>""Widget ...""</em> value from the <em>""Select""</em>
+dropdown list, you can also see how your email/name usercontrol changed background color."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Click save, and view your page again ..."
+
+  create-literal-widget
+    element:p
+    innerValue:@"Phosphorus Five uses the <a target=""_blank"" href=""http://getbootstrap.com/css/"">Bootstrap CSS Framework</a> by default, 
+for styling and CSS. But you can change the underlaying framework easily, by modifying your template."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/apps/cms/page-editor/editors/controls/help-files/your-first-widget/0007-your-first-widget.hl
+      text:"</p>"

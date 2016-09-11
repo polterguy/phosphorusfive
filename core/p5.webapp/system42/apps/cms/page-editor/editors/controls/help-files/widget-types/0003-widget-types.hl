@@ -1,0 +1,55 @@
+
+/*
+ * First help page
+ */
+
+name:Widget types - The literal widget 1/2
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Widget types - The literal widget 1/2
+
+  create-literal-widget
+    element:p
+    innerValue:@"A [literal] widget, is a widget which contains only plaintext or static HTML. It is useful when you only need
+a wrapper around some piece of text, or HTML. Imagine you want to render the following HTML."
+
+  create-literal-widget
+    element:pre
+    innerValue:@"&lt;span class=""bg-success"" id=""some-id""&gt;Hello &lt;strong&gt;boss!&lt/strong&gt; you are cool!&lt;/span&gt;"
+
+  create-literal-widget
+    element:p
+    innerValue:@"In the above example, you can get away with creating <strong>one</strong> widget, which is the outer most 
+<em>&lt;span&gt;</em> widget. As long as the <em>strong</em> widget inside of it, does not need event handlers, or needs to be
+manipulated, without the outer &lt;span&gt; widget also being manipulated, you don't need to use a [container] widget, but can get
+away with <strong>*one*</strong> [literal] widget, having the HTML of your span, be the <em>innerValue</em> of your [literal]."
+
+  create-literal-widget
+    element:p
+    innerValue:@"A [literal] widget, can in fact, contain any arbitrary HTML you wish for it to include. The defining factor when
+to use the [literal], and not a [container], is when this HTML does not need to be updated. Or rather, the HTML can be updated, 
+but only as a consequence of the outer [literal] widget having its innerValue set."
+
+  create-literal-widget
+    element:p
+    innerValue:@"If you create event handlers for your [literal] &lt;span&gt; widget above, such as an <em>onclick</em> event handler,
+then this event will be triggered when <strong>anything</strong> inside of your widget is clicked."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/apps/cms/page-editor/editors/controls/help-files/widget-types/0004-widget-types.hl
+      text:"</p>"

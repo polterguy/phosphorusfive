@@ -1,0 +1,406 @@
+
+/*
+ * Populates the "Add attribute" dropdown buttons for selected widget
+ */
+
+
+
+/*
+ * Emptying list of attribute buttons possibly created for previously selected widget
+ */
+clear-widget:wysiwyg-button-add-attribute-list
+clear-widget:wysiwyg-button-add-event-list
+
+
+
+/*
+ * Retrieving selected widget, since we need to figure out its element,
+ * since the legal attributes widget can have, is dependent upon which
+ * element the widget is rendered with
+ */
+find-widget:wysiwyg-editor-surface
+  data-selected
+get-widget-property:x:/-/*?value
+  element
+
+
+/*
+ * Creating "li" widget that wraps "add custom attribute" button
+ */
+create-widget
+  parent:wysiwyg-button-add-attribute-list
+  element:li
+  widgets
+    a
+      href:#
+      innerValue:@"Custom ... <span class=""glyphicon glyphicon-pencil"" style=""float:right;""></span>"
+      title:Adds a custom attribute to your widget, such as a 'aria-*', 'data-*' or '_foo' (invisible attribute)
+      onclick
+
+        /*
+         * Closing popdown button menu
+         */
+        send-javascript:@"$('#{0}').toggleClass('open');"
+          :wysiwyg-button-add-attribute-wrp
+
+        /*
+         * Using wizard window to retrieve attribute name from user
+         */
+        sys42.wizard-window
+          _header:Name of attribute
+          _body:@"<p>Please provide the name for your attribute. If I may suggest ...?</p>
+<ul>
+<li><strong>data-*</strong> - Extension attribute that's legal according to the HTML5 specifications</li>
+<li><strong>aria-*</strong> - Extension attribute that somehow relates to accessibility, and is legal according to the HTML5 specifications</li>
+<li><strong>_xxx</strong> - Invisible attribute, never rendered to the client, which can be useful for storing additional data coupled with your widget, on the server-side. Starts with an underscore ""_""</li>
+</ul>
+<p>PS!<br>
+Adding non-standard attributes to your widget is <strong>not recommended</strong>! Unless you know what you're doing here, you should
+probably close this window, without adding your attribute, and rather choose from the pre-defined list, to make sure your page 
+<strong>stays HTML5 compliant</strong>. I will allow you to add non-standard attributes, but I do not recommend it.</p>
+<p>Anything in the list above is legal though according to the HTML5 standard.</p>"
+          _widgets
+            text:new-attribute-name
+              label:Name
+              placeholder:Supply name for your attribute ...
+              mandatory:true
+          _onok
+
+            /*
+             * Adds the attribute to the currently selected widget, and makes sure we close modal window
+             */
+            sys42.wysiwyg-controls.add-attribute-event-to-widget:x:/../*/new-attribute-name?value
+
+            /*
+             * Return true to make sure we close the modal window
+             */
+            return:bool:true
+
+
+/*
+ * Creating "li" widget that wraps "add custom event" button
+ */
+create-widget
+  parent:wysiwyg-button-add-event-list
+  element:li
+  widgets
+    a
+      href:#
+      innerValue:@"Custom ... <span class=""glyphicon glyphicon-pencil"" style=""float:right;""></span>"
+      title:Adds a custom event to your widget, or event that's not in this list, such as 'ondrag', or '_onfoo' (invisible event)
+      onclick
+
+        /*
+         * Closing popdown button menu
+         */
+        send-javascript:@"$('#{0}').toggleClass('open');"
+          :wysiwyg-button-add-event-wrp
+
+        /*
+         * Using wizard window to retrieve event name from user
+         */
+        sys42.wizard-window
+          _header:Name of event
+          _body:@"<p>Please provide the name for your event. You should make sure your page stays HTML5 compliant though, and take great
+care to avoid adding <strong>non-standard events</strong>. Some events are not in the pre-defined list, and needs the custom event
+add mechanism though. This is especially true for attributes that are not global to all different devices, such as touch-screens events, etc.
+If you really need to add one of these events, you can use this window.</p>
+<p>You can also add <em>""hidden""</em> event handlers using this window, that are events that are never rendered to the client-side
+as attributes, but possible to invoke using <code>""p5.$('id-of-your-element').raise('_onxxx');""</code>. These events should start
+with an underscore ""_"".</p>
+<p>Realize that I will allow you to add non-standard events using this window, but I do not recommend it. Unless you really know what
+you are doing, you should probably close this window, and rather use the pre-defined list in the button dropdown list.</p>"
+          _widgets
+            text:new-event-name
+              label:Event name
+              placeholder:Supply name for your event ...
+              mandatory:true
+          _onok
+
+            /*
+             * Sanity check
+             */
+            if
+              fetch:x:/0/0?value
+                index-of:x:/../*/new-event-name?value
+                  what:on
+              !=:int:0
+              and
+                fetch:x:/0/0?value
+                  index-of:x:/../*/new-event-name?value
+                    what:_on
+                !=:int:0
+              send-javascript:@"$('#new-event-name').focus().select();"
+              return:That's not a legal event name!
+
+            /*
+             * Adds the attribute to the currently selected widget, and makes sure we close modal window
+             */
+            sys42.wysiwyg-controls.add-attribute-event-to-widget:x:/../*/new-event-name?value
+
+            /*
+             * Return true to make sure we close the modal window
+             */
+            return:bool:true
+
+
+/*
+ * Loading the file that contains our "Global Attributes", according to HTML5
+ */
+load-file:/system42/apps/cms/page-editor/editors/controls/helpers/global-attributes.hl
+
+
+/*
+ * Loading file that contains all HTML element declarations, since specific
+ * HTML elements might have additional attributes
+ */
+load-file:/system42/apps/cms/page-editor/editors/controls/helpers/legal-elements.hl
+
+
+/*
+ * Creating "li" widgets that serves as a separater between "add custom attributes/events" button,
+ * and "add global attributes/events" buttons
+ */
+create-literal-widget
+  parent:wysiwyg-button-add-attribute-list
+  element:li
+  role:separator
+  class:divider
+create-literal-widget
+  parent:wysiwyg-button-add-event-list
+  element:li
+  role:separator
+  class:divider
+
+
+/*
+ * Retrieving widget, with all properties, and events, such that we can remove
+ * from list created by [load-file], attributes and events that are already handled by
+ * widget, before we start creating our "add attribute/event buttons"
+ */
+sys42.get-widget:x:/../*/find-widget/*?value
+  _no-children:bool:true
+
+
+/*
+ * Removing the [onclick] event handler from widget's declaration, since it's 
+ * anyway the "select widget in surface" handler, such that it doesn't filter away
+ * the "Add onclick" event handler button for us
+ */
+set:x:/../*/sys42.get-widget/*/*/onclick
+
+/*
+ * Looping through each existing property, and removing from file-read results
+ */
+for-each:x:/../*/sys42.get-widget/*/*
+
+  /*
+   * Making sure any [_onXXX] event handlers from get-widget is renamed to correct name
+   */
+  replace:x:/..for-each/*/_dp/#?name
+    what:_on
+    with:on
+
+  /*
+   * Removing currently iterated property from global attribute file (if it exists)
+   */
+  set:x:/../*/load-file/[0,1]/*/*/{0}
+    :x:/..for-each/*/replace?value
+
+  /*
+   * Removing currently iterated property from HTML element file's element's declaration (if it exists)
+   */
+  set:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*/{1}
+    :x:/../*/get-widget-property/[0,1]/*/*?value
+    :x:/..for-each/*/replace?value
+
+
+
+/*
+ * Looping through each global attribute, adding a button for each remaining
+ * attribute in this file to our "+ Attribute" button dropdown button
+ */
+for-each:x:/../*/load-file/[0,1]/*/*(!/_header)
+
+  /*
+   * Parametrizing widget creation invocation
+   */
+  set:x:/..for-each/*/create-widget/*/widgets/*/a/*/innerValue?value
+    src:x:/..for-each/*/_dp/#?name
+  set:x:/..for-each/*/create-widget/*/widgets/*/a/*/title?value
+    src:x:/..for-each/*/_dp/#?value
+
+  /*
+   * Checking if this is an event, at which case we add it to "Create event" button dropdown list
+   */
+  if
+    fetch:x:/0/0?value
+      index-of:x:/..for-each/*/_dp/#?name
+        what:on
+    =:int:0
+
+    /*
+     * This is an event handler (starts with "onXXX"), hence adding it to "add event button" instead
+     * of "add attribute button". Making sure our JavaScript toggles the "add event" button, and not the 
+     * "add attribute" button when clicked
+     */
+    set:x:/..for-each/*/create-widget/*/parent?value
+      src:wysiwyg-button-add-event-list
+    set:x:/..for-each/*/create-widget/**/send-javascript/0?value
+      src:wysiwyg-button-add-event-wrp
+
+  /*
+   * Creating "li" widget that wraps "add attribute" button
+   */
+  create-widget
+    parent:wysiwyg-button-add-attribute-list
+    element:li
+    widgets
+      a
+        href:#
+        innerValue
+        title
+        onclick
+
+          /*
+           * Retrieving name of attribute to add, and invoking Active Event that adds attribute
+           * to currently selected widget
+           */
+          get-widget-property:x:/../*/_event?value
+            innerValue
+          sys42.wysiwyg-controls.add-attribute-event-to-widget:x:/../*/get-widget-property/*/*?value
+
+          /*
+           * Closing popdown button menu
+           */
+          send-javascript:@"$('#{0}').toggleClass('open');"
+            :wysiwyg-button-add-attribute-wrp
+
+          /*
+           * Removing "li" widget wrapping button clicked, since attribute is
+           * now added to widget, and we no longer need this option in list
+           */
+          get-parent-widget:x:/../*/_event?value
+          delete-widget:x:/-/*?value
+
+
+
+
+/*
+ * Used to track if a separator between "global events/attributes" 
+ * and "specialized events/attributes" has been added
+ */
+_has-event-separator:bool:false
+_has-attribute-separator:bool:false
+
+
+/*
+ * Then adding remaining attributes from our our legal elements file, 
+ * which might contain special attributes for the type of HTML element widget is rendered with
+ */
+for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
+  :x:/../*/get-widget-property/[0,1]/*/*?value
+
+  /*
+   * Parametrizing widget creation invocation
+   */
+  html-encode:x:/..for-each/*/_dp/#?value
+  set:x:/..for-each/*/create-widget/*/widgets/*/a/*/innerValue?value
+    src:x:/..for-each/*/_dp/#?name
+  set:x:/..for-each/*/create-widget/*/widgets/*/a/*/title?value
+    src:x:/..for-each/*/html-encode?value
+
+  /*
+   * Checking if this is an event, at which case we add it to "Create event" button dropdown list
+   */
+  if
+    fetch:x:/0/0?value
+      index-of:x:/..for-each/*/_dp/#?name
+        what:on
+    =:int:0
+
+    /*
+     * This is an event, making sure we add our spacer if this is our first
+     * specialized event for widget
+     */
+    if:x:/../*/_has-event-separator?value
+      =:bool:false
+      set:x:/../*/_has-event-separator?value
+        src:bool:true
+      /*
+       * Creating "li" widgets that serves as a separater between global attributes/events 
+       * and specialized attributes/events
+       */
+      create-literal-widget
+        parent:wysiwyg-button-add-event-list
+        element:li
+        role:separator
+        class:divider
+
+    /*
+     * This is an event handler (starts with "onXXX"), hence adding it to "add event button" instead
+     * of "add attribute button". Making sure our JavaScript toggles the "add event" button, and not the 
+     * "add attribute" button when clicked
+     */
+    set:x:/..for-each/*/create-widget/*/parent?value
+      src:wysiwyg-button-add-event-list
+    set:x:/..for-each/*/create-widget/**/send-javascript/0?value
+      src:wysiwyg-button-add-event-wrp
+  else
+
+    /*
+     * This is not an event, hence it's a normal attribute, making sure we add our spacer if this is our first
+     * specialized attribute for widget
+     */
+    if:x:/../*/_has-attribute-separator?value
+      =:bool:false
+      set:x:/../*/_has-attribute-separator?value
+        src:bool:true
+      /*
+       * Creating "li" widgets that serves as a separater between global attributes/events 
+       * and specialized attributes/events
+       */
+      create-literal-widget
+        parent:wysiwyg-button-add-attribute-list
+        element:li
+        role:separator
+        class:divider
+
+  /*
+   * Creating "li" widget that wraps "add attribute" button
+   */
+  create-widget
+    parent:wysiwyg-button-add-attribute-list
+    element:li
+    widgets
+      a
+        href:#
+        innerValue
+        title
+        onclick
+
+          /*
+           * Retrieving name of attribute to add, and invoking Active Event that adds attribute
+           * to currently selected widget
+           */
+          get-widget-property:x:/../*/_event?value
+            innerValue
+          sys42.wysiwyg-controls.add-attribute-event-to-widget:x:/../*/get-widget-property/*/*?value
+
+          /*
+           * Closing popdown button menu
+           */
+          send-javascript:@"$('#{0}').toggleClass('open');"
+            :wysiwyg-button-add-attribute-wrp
+
+          /*
+           * Removing "li" widget wrapping button clicked, since attribute is
+           * now added to widget, and we no longer need this option in list
+           */
+          get-parent-widget:x:/../*/_event?value
+          delete-widget:x:/-/*?value
+
+
+
+
+

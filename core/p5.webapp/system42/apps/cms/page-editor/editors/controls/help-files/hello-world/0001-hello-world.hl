@@ -1,0 +1,81 @@
+
+/*
+ * First help page
+ */
+
+name:Hello World - Creating your first Web App
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Hello World - Creating your first Web App
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>A widget is a (most often) visible element on your page. It can be a header, paragraph, input element such as textboxes
+and dropdown lists, or more complex widget hierarchies, such as rich [usercontrols] and pre-fabricated widget hierarchies. At the top
+of your page now, is a toolbar for adding widgets to your page. Click "
+      a
+        href:#
+        innerValue:here
+        class:btn btn-default btn-xs
+        onclick
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-toolbar
+      text:@" to see where you can find this toolbar.</p>"
+
+  create-literal-widget
+    element:h4
+    innerValue:Creating your first widget
+
+  create-literal-widget
+    element:p
+    innerValue:@"Make sure you start out with an empty page, by choosing the <em>""controls""</em> option from the dropdown box in the
+top left corner of this page. Then click the <strong>[+wizard]</strong> button, and choose <em>""before""</em>. Choose the <strong>Button</strong> wizard widget 
+by clicking the row where it says <em>""Button""</em> afterwards."
+
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Click "
+      a
+        href:#
+        innerValue:here
+        class:btn btn-default btn-xs
+        onclick
+          send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');}}, 2000);"
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-btn-before
+      text:@" to see which button you need to click. When you have done so, make sure you select the 
+<strong>Button</strong> Wizard Widget from the modal window that appears.</p>
+<p>You can now "
+      a
+        href:#
+        innerValue:save
+        class:btn btn-default btn-xs
+        onclick
+          sys42.wysiwyg-controls.blink-control:save-button
+      text:@" your page, by clicking the <em>""Save""</em> button at the bottom right corner of your page, for then to click "
+      a
+        href:#
+        innerValue:view page
+        class:btn btn-default btn-xs
+        onclick
+          sys42.wysiwyg-controls.blink-control:preview-button
+      text:@". This should open up your page in a new window, and you can already click the button that says <em>""Foo bar""</em>,
+and have a message box appear. If you wish, you can modify the button's text through its "
+      a
+        href:#
+        innerValue:innerValue
+        class:btn btn-default btn-xs
+        onclick
+          sys42.wysiwyg-controls.blink-control:widget-property-innerValue
+      text:@" property. You can also modify the text that is displayed in the message box through its <em>""onclick""</em> event handler.</p>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"<strong>Congratulations!</strong> You have now successfully created your first Web App with Phosphorus Five and System 42!"

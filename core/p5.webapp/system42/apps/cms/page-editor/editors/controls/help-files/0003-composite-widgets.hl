@@ -1,0 +1,72 @@
+
+/*
+ * First help page
+ */
+
+name:Widgets - Usercontrols and Wizard widgets
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Widgets - Usercontrols and Wizard widgets
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Probably among the most power you can extract from Phosphorus Five and System 42, is found in the <em>""composite widgets""</em>
+features. These are rich and complex widgets, that you can reuse, across your [controls] pages, almost like LEGO or building blocks.
+There exists two different types of <em>""composite widgets""</em>.</p>
+<ul>
+	<li>Usercontrols</li>
+	<li>Wizard widgets</li>
+</ul>
+
+<p>Usercontrols are reusable widgets, which are either pre-installed with Phosphorus Five, or can be created by you. A usercontrol, is
+actually just another [controls] page, which can be injected into other [controls] pages, as reusable objects. If you wish to
+create a usercontrol, all you need to do, is to create a normal [controls] page, and make sure its name starts with
+<em>""Usercontrol - ""</em>. If you do, you will be offered to inject this page, when you click the "
+      a
+        href:#
+        innerValue:@"Usercontrol"
+        title:Show me where to click please
+        class:btn btn-default btn-xs
+        onclick
+          send-javascript:@"$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-usercontrol-wrp').toggleClass('open');}}, 2000);"
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-usercontrol-after
+      text:@" buttons in your toolbar.</p>
+
+<p>Wizard widgets, are also pre-fabricated, but slightly more complicated to create yourself. These are pre-fabricated <em>""template""</em>widgets, 
+possibly with child widgets of themselves, that can be injected into your page through the "
+      a
+        href:#
+        innerValue:@"Wizard"
+        title:Show me where to click please
+        class:btn btn-default btn-xs
+        onclick
+          send-javascript:@"$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');setTimeout(function(){{$('#wysiwyg-controls-add-widget-wrp').toggleClass('open');}}, 2000);"
+          sys42.wysiwyg-controls.blink-control:wysiwyg-controls-add-wizard-after
+      text:@" button.</p>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"Both usercontrols and wizard widgets, often contains rich functionality, such as event handlers
+for some of its widgets, <em>""action subscribers""</em>, and <em>""action publishers""</em>. This makes it easy for
+you to <em>""hook into""</em> the functionality of these widgets, by providing hooks for existing event invocations, 
+or invoking existing events, that changes the state of these widgets somehow, or perform some other intelligent action."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/apps/cms/page-editor/editors/controls/help-files/composite-widgets/0004-composite-widgets.hl
+      text:"</p>"

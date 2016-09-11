@@ -35,8 +35,8 @@ create-protected-event:p5.web.load-ui
       equals:int:0
 
       // Page not found, loading up our "404 page"
-      sys42.execute-lisp-file:/system42/cms/page-types/special-page/not-found.hl
-        _template:/system42/cms/templates/main.hl
+      sys42.execute-lisp-file:/system42/apps/cms/page-types/special-page/not-found.hl
+        _template:/system42/apps/cms/templates/main.hl
     else
 
       // Adding up all nodes from results of select-data into [execute-lisp-file]
@@ -50,7 +50,7 @@ create-protected-event:p5.web.load-ui
       // pages. If you extend them, you should probably also create an editor
       // for your page type
       set:x:/+?value
-        src:/system42/cms/page-types/{0}.hl
+        src:/system42/apps/cms/page-types/{0}.hl
           :x:/..else/..else/*/select-data/*/*/type?value
       sys42.execute-lisp-file
         _args

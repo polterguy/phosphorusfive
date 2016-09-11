@@ -1,0 +1,302 @@
+/*
+ * Shows the modal dialog that allows user to
+ * select an existing [controls] page, and use
+ * as a "User control"
+ */
+
+
+/*
+ * Making sure we delete any previously created (but non-visible)
+ * modal HTML element dialogues
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:wysiwyg-controls-usercontrol-window
+  delete-widget:wysiwyg-controls-usercontrol-window
+
+
+/*
+ * Making sure dialogues becomes initially visible, and that we give initial
+ * focus to "Close" button
+ */
+send-javascript:@"$('#wysiwyg-controls-usercontrol-window').modal('toggle');
+$('#wysiwyg-controls-usercontrol-window').on('shown.bs.modal', function () {
+    $('#wysiwyg-controls-usercontrol-window-ok').focus();
+})"
+
+/*
+ * Making sure we pass in our creational statement into "Select" button
+ * for page
+ */
+set:x:/../*/create-widget/**/_create-widget
+  src:x:/../*/_create-widget
+
+/*
+ * Creating actual modal Widget
+ */
+create-widget:wysiwyg-controls-usercontrol-window
+  class:modal fade
+  widgets
+    container
+      class:modal-dialog
+      role:document
+      widgets
+        container
+          class:modal-content
+          widgets
+
+            /*
+             * Header of dialog
+             */
+            container
+              class:modal-header
+              widgets
+
+                /*
+                 * Help button
+                 */
+                button
+                  class:close
+                  innerValue:@"<span class=""glyphicon glyphicon-question-sign""></span>"
+                  onclick
+                    set-widget-property:x:/../*/_event?value
+                      visible:false
+                    set-widget-property:wysiwyg-controls-usercontrol-help
+                      visible:true
+                    set-widget-property:wysiwyg-controls-usercontrol-main-text
+                      visible:false
+
+                // Header of our modal window
+                text:@"<h4>Please choose an existing [controls] page</h4>"
+
+            /*
+             * Body of dialog
+             */
+            container
+              class:modal-body
+              widgets
+
+                /*
+                 * Widget containing body of dialogue
+                 */
+                container:wysiwyg-controls-usercontrol-window-body
+                  element:div
+                  widgets
+
+                    /*
+                     * Simple "body" of modal window
+                     */
+                    literal:wysiwyg-controls-usercontrol-main-text
+                      innerValue:@"Select the usercontrol you wish to include on your page ..."
+
+                    /*
+                     * Help or "explanation" widget, initially invisible, but possible to show through "?" button
+                     */
+                    literal:wysiwyg-controls-usercontrol-help
+                      visible:false
+                      innerValue:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" />
+<p>Usercontrols gives you the possibility of inserting existing [controls] pages,
+as reusable objects, into other [controls] pages. This allows you to incrementally build functionality, the same way you would with LEGO.</p>
+<p>In such a regard, a usercontrol is simply another [controls] page. If you wish to have your page recognised as a reusable usercontrol, 
+your page must start with the name <strong>""Usercontrol -&nbsp;""</strong>. Otherwise, it won't be recognised as a reusable usercontrol.</p>
+<p>When adding a usercontrol, a wrapper [container] control is created. The actual usercontrol [controls] page, will be rendered inside
+of this [container] control. Please take care when adding usercontrols, such that you do not create recursive dependencies in any ways. 
+Meaning, usercontrols that are referencing the page you are creating. Neither directly, nor indirectly.</p>
+<p>You can however add up the same usercontrol, multiple times, without problems, to the same page, <strong>as long as none of your controls 
+inside your usercontrol have <em>""static ids""</em></strong>. Meaning, they must all use the automatically assigned id.</p>
+<p>A usercontrol will also render to the client with the attribute <strong>""data-usercontrol""</strong>, which allows you to easily access
+your usercontrols from client-side JavaScript and CSS.</p>
+<p>Please select the usercontrol you wish to include on your page from the list below ...</p>"
+
+                    /*
+                     * Table containing list of usercontrols in system
+                     */
+                    table:wysiwyg-window-list-of-usercontrols
+                      class:prepend-top table table-hover
+                      oninit
+
+                        /*
+                         * Selecting all [controls] p5.page objects from database
+                         */
+                        select-data:x:/*/*/p5.page/*/type/=controls/.
+
+                        /*
+                         * Making sure we remove currently edited page, 
+                         * to try to avoid never ending recursive dependencies
+                         */
+                        get-widget-property:page-url
+                          value
+                        set:x:@"/../*/select-data/*/""={0}"""
+                          :x:/../*/get-widget-property/*/*?value
+
+                        /*
+                         * Looping through each [p5.page] object returned from [select-data] invocation above
+                         */
+                        for-each:x:/../*/select-data/*
+
+                          /*
+                           * Checking if page's name starts with "Usercontrol - ", at which point it by convention,
+                           * is considered to be a reusable page, possible to use as a usercontrol
+                           */
+                          if
+                            fetch:x:/0/0?value
+                              index-of:x:/..for-each/*/_dp/#/*/name?value
+                                what:"Usercontrol - "
+                            !=:int:0
+
+                            /*
+                             * NOT a usercontrol [controls] page, continuing with next iteration
+                             */
+                            continue
+
+                          /*
+                           * Creating a "tr" (table row) widget wrapping currently iterated usercontrol [controls] page.
+                           * Forward evaluating some expressions first though
+                           */
+                          eval-x:x:/+/**(/href|/innerValue|/_page-id)
+                          create-widget
+                            parent:wysiwyg-window-list-of-usercontrols
+                            element:tr
+                            style:"cursor:pointer;"
+                            onclick
+
+                              /*
+                               * Will contain the necessary p5.lambda to create our usercontrol after some manipulation below.
+                               * Used after parametrization process as [eval] object to create usercontrol
+                               */
+                              _create-widget
+
+                              /*
+                               * Will contain the URL (p5.page object ID) for usercontrol.
+                               * Forward evaluated outside of [create-widget] invocation above
+                               */
+                              _page-id:x:/..for-each/*/_dp/#?value
+
+                              /*
+                               * Forward evaluates string formatting argument to [select-data] below
+                               */
+                              eval-x:x:/+/*/*/*/select-data/*//
+
+                              /*
+                               * Adds the necessary code to dynamically load usercontrol ([controls] page) from
+                               * database, and insert the results as children widgets of main widget wrapping usercontrol 
+                               */
+                              add:x:/../*/_create-widget/*
+                                src
+                                  oninit
+
+                                    /*
+                                     * Selects page from database
+                                     */
+                                    select-data:x:@"/*/*/p5.page/""={0}""/*/controls?value.node"
+                                      :x:/../*/_page-id?value
+
+                                    /*
+                                     * Changes [literal], [container], etc, to [create-literal-vidget], [create-container-widget] etc
+                                     */
+                                    set:x:/-/*?name
+                                      rel-src:create-{0}-widget
+                                        :x:?name
+
+                                    /*
+                                     * Adds up main wrapper widget as [parent] to all [create-xxx-widget] invocations inside
+                                     *  of [select-data]
+                                     */
+                                    add:x:/../*/select-data/*
+                                      src:"parent:{0}"
+                                        :x:/../*/_event?value
+
+                                    /*
+                                     * This next node is here such that we can "undo" the modifications to the [oninit] event handler
+                                     * of usercontrols when page is being saved
+                                     */
+                                    _design-time-remover
+
+                                    /*
+                                     * Making sure we process usercontrol for WYSIWYG design time surface, by removing all
+                                     * ajax event handlers, such that they don't mess up design surface in any ways
+                                     */
+                                    set:x:/+/*/_node?value
+                                      src:x:/../*/select-data
+                                    sys42.execute-lisp-file:/system42/apps/cms/page-editor/editors/controls/helpers/process-widgets-event-handlers.hl
+                                      _node
+                                      _children-selectable:bool:false
+                                    eval:x:/../*/select-data
+
+                              /*
+                               * Making sure we return the widget's ID after widget is created inside of [_create-widget] eval object
+                               */
+                              add:x:/../*/_create-widget
+                                src
+                                  set:x:/..?value
+                                    src:x:/../*/create-widget?value
+
+                              /*
+                               * Making sure main wrapper widget has the attribute of [data-usercontrol] associated with
+                               * it, such that we can recognize it in WYSIWYG design surface, among other things.
+                               * BTW, the ID (URL) of [controls] page wrapped as usercontrol, will be the value of
+                               * [data-usercontrol], both in design view, and in production
+                               */
+                              add:x:/../*/_create-widget/*
+                                src:@"data-usercontrol:@""{0}"""
+                                  :x:/../*/_create-widget/**/oninit/*/select-data/*/?value
+
+                              /*
+                               * Finding custom properties of usercontrol, which is done by evaluating
+                               * [select-data] invocation of usercontrol, and retrieving all attributes
+                               * that starts with [_data-], treating these as "settings" for usercontrol,
+                               * by adding them to main usercontrol [container] wrapper, as attributes.
+                               */
+                              _eval-select
+                                insert-before:x:
+                                  src:x:/../*/select-data/*/**(/literal|/void|/container)/*/~_data-
+                              insert-before:x:/-/0
+                                src:x:/../*/_create-widget/*/create-widget/*/oninit/*/select-data
+                              eval:x:/../*/_eval-select
+                              add:x:/../*/_create-widget/*/create-widget
+                                src:x:/./-/*
+
+                              /*
+                               * Creating widget, by attaching it to WYSIWYG surface
+                               */
+                              eval:x:/../*/_create-widget
+
+                              /*
+                               * Selecting widget, and re-populating select widget dropdown list
+                               */
+                              sys42.wysiwyg-controls.select-widget:x:/-?value
+                              sys42.wysiwyg-controls.databind-select-widget-dropdown
+
+                              /*
+                               * Making modal window invisible, showing some information to user
+                               */
+                              send-javascript:@"$('#wysiwyg-controls-usercontrol-window').modal('toggle');"
+                              sys42.info-window:@"Please change widget's id and element to what you wish"
+                                _time:more
+
+                              /*
+                               * Refreshing CodeMirror codeview, if it is visible
+                               */
+                              sys42.wysiwyg-controls.update-code-wiew
+                            widgets
+                              td
+                                innerValue:x:/..for-each/*/_dp/#/*/name?value
+                      widgets
+                        thead
+                          innerValue:@"<tr><th>Page name</th></tr>"
+                        
+
+            /*
+             * Footer of dialog (contains OK and Cancel buttons)
+             */
+            container
+              class:modal-footer
+              widgets
+                literal:wysiwyg-controls-usercontrol-window-ok
+                  element:button
+                  class:btn btn-default
+                  innerValue:Close
+                  onclick
+
+                    // Hiding dialog
+                    send-javascript:@"$('#wysiwyg-controls-usercontrol-window').modal('toggle');"

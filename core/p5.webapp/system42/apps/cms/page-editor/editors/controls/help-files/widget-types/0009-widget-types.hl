@@ -1,0 +1,55 @@
+
+/*
+ * First help page
+ */
+
+name:Widget types - The void widget 3/3
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Widget types - The void widget 3/3
+
+  create-literal-widget
+    element:p
+    innerValue:@"If you did the previous steps correctly, then you can save your page, view it, type in your name, and click the button.
+You should then be given a <em>""code window""</em> at the top, showing you something like this."
+
+  create-literal-widget
+    element:pre
+    innerValue:@"onclick
+  _event:x5a44694
+  get-widget-values
+    xb596ae4
+      value:Thomas Hansen
+  sys42.show-code-window:x:/.."
+
+  create-literal-widget
+    element:p
+    innerValue:@"The [void] input widget's value, was clearly somehow retrieved by Phosphorus Five. This was due to our 
+<em>""get-widget-values""</em> Active Event invocation, which serializes all form element's on a page, and its descendant
+widgets, from a specified widget and downwards. If you had added multiple input elements, textareas, or select dropdown lists to
+your page, then also these values would have been retrieved."
+
+  create-literal-widget
+    element:p
+    innerValue:@"There is an easier way to handle this, which does not require coding at
+all in fact, by using <em>""Action Subscribers""</em>, to retrieve values from your form elements on your page, and do something 
+intelligent with them, but that is a subject for another tutorial."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/apps/cms/page-editor/editors/controls/help-files/widget-types/0010-widget-types.hl
+      text:"</p>"

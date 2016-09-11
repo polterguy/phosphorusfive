@@ -1,0 +1,89 @@
+
+/*
+ * First help page
+ */
+
+name:Hello World - Welcome to Phosphorus Five
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Hello World - Welcome to Phosphorus Five
+
+  create-literal-widget
+    element:p
+    innerValue:@"Welcome to Phosphorus Five, or to be more exact, the Phosphorus Five CMS [controls] designer. The [controls] WYSIWYG
+widget designer, is unique of its kind, and as far as I know, there exists nothing like it out there. With the [controls] WYSIWYG
+widget designer, you can easily create rich web apps, without ever having programmed a single line of code in your life."
+
+  create-literal-widget
+    element:p
+    innerValue:@"The first thing you've probably already noticed, is that beneath this help dialog, is a <em>""design surface""</em>.
+This design surface is a WYSIWYG (<strong>W</strong>hat <strong>Y</strong>ou <strong>S</strong>ee <strong>I</strong>s <strong>W</strong>hat 
+<strong>Y</strong>ou <strong>G</strong>et) surface, where all widgets you add to your page, will be shown. And things will look almost exactly
+the same, as they will in your final product."
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>First things first though. When you create a page, then this page has restricted access, such that only a <em>""root""</em>
+account can see it. (You are root now, and probably the only root in your system). This means that only you can see your page, which allows
+you to <em>""play around with it""</em>, before publishing your page to the world. Then when you are ready to publish your page, just change
+its <em>""Access Role""</em> to whatever role you wish to have access to see your page. This is common for all types of pages in Phosphorus.</p><p>"
+      a
+        href:#
+        innerValue:Click here
+        class:btn btn-default btn-xs
+        onclick
+          sys42.wysiwyg-controls.blink-control:page-editor-access-role-dropdown
+      text:" to see where you can change a page's Access Role.</p>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"In addition you can change a page's name, URL and template. The name is what's displayed as the header of your page. 
+The URL is the relative URL to access your page. The template, is which template you wish to render your page inside of, and typically a template
+contains a menu, and some other design elements, such as a bunch of CSS files, JavaScript files, etc."
+
+  create-container-widget
+    element:div
+    widgets
+      text:@"<p>Click to see where you can change the "
+      a
+        href:#
+        innerValue:name
+        class:btn btn-default btn-xs
+        onclick
+          sys42.wysiwyg-controls.blink-control:page-editor-name-textbox
+      text:" of your page, or the "
+      a
+        href:#
+        innerValue:url
+        class:btn btn-default btn-xs
+        onclick
+          sys42.wysiwyg-controls.blink-control:page-editor-url-textbox
+      text:" of your page, or the "
+      a
+        href:#
+        innerValue:template
+        class:btn btn-default btn-xs
+        onclick
+          sys42.wysiwyg-controls.blink-control:page-editor-template-dropdown
+      text:" of your page.</p>"
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/apps/cms/page-editor/editors/controls/help-files/hello-world/0001-hello-world.hl
+      text:"</p>"
+

@@ -1,0 +1,30 @@
+
+/*
+ * Responsible for loading up page of type [controls]
+ */
+
+// Checking to see if user has access to object first
+if
+  sys42.verify-access:x:/../*/_args/*/role?value
+
+  // Loading Template and removing {content} and {header} widget entirely
+  set:x:/+?value
+    src:x:/../*/_args/*/template?value
+
+  // Loading up our template
+  load-file
+
+  // Removing {content} and setting {header}
+  set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
+    src:x:/../*/_args/*/name?value
+  set:x:/-2/*/*/create-widget/*/widgets/**/={content}/.
+  eval:x:/./*/load-file/*
+
+  // Evaluating [lambda] from database
+  eval:x:/../*/_args/*/lambda?value
+
+else
+  sys42.execute-lisp-file:/system42/apps/cms/page-types/special-page/p5.no-access.hl
+    _template:/system42/apps/cms/templates/main.hl
+
+

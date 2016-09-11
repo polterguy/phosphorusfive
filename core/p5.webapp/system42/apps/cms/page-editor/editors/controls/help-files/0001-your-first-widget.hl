@@ -1,0 +1,49 @@
+
+/*
+ * First help page
+ */
+
+name:Your first widget - Getting started
+
+controls
+  create-literal-widget
+    element:img
+    src:/media/images/marvin-headshot.png
+    style:"float:right;"
+  create-literal-widget
+    element:h3
+    innerValue:Your first widget - Getting started
+
+  create-literal-widget
+    element:p
+    innerValue:@"There are many different types of widgets in Phosphorus Five and System 42. Below is a list."
+
+  create-literal-widget
+    element:div
+    innerValue:@"<ul>
+<li><strong>Wizard Widget</strong> - A pre-created widget, that allows you to use pre-defined templates, for solving common tasks</li>
+<li><strong>User control</strong> - A pre-created widget, that allows you to re-use your functionality across multiple pages</li>
+<li><strong>Container widget</strong> - A widget that can contain children widgets, which is useful for building rich and complex widget hierarchies</li>
+<li><strong>Literal widget</strong> - A widget that can contain static text or HTML.</li>
+<li><strong>Void widget</strong> - A widget without any content</li>
+</ul>"
+
+  create-literal-widget
+    element:p
+    innerValue:@"These widgets serves different purposes, and we will dive deeper into their difference later. However, in the next page,
+we will add a usercontrol to our page."
+
+  create-container-widget
+    element:div
+    style:"position:absolute;bottom:5px;"
+    widgets
+      text:@"<p>"
+      a
+        href:#
+        innerValue:next &gt;&gt;
+        class:btn btn-primary
+        onclick
+          sys42.wysiwyg-controls.show-help-page:/system42/apps/cms/page-editor/editors/controls/help-files/your-first-widget/0002-your-first-widget.hl
+      text:"</p>"
+
+
