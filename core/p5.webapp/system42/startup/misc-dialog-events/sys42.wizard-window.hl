@@ -18,8 +18,7 @@
  *              a value for it. If you supply an [autocomplete] child, with the value of [off],
  *              then dialogue will force autocomplete off, even if the browser is Google Chrome.
  *              Besides from the above mentioned arguments, the rest of the children will be added
- *              as properties and attributes for your specified widget. For an example of usage, 
- *              see "sys42.zip-window" Active Event
+ *              as properties and attributes for your specified widget
  */
 create-protected-event:sys42.wizard-window
 

@@ -1,0 +1,14 @@
+
+/*
+ * Responsible for creating the Active Event, or Action, that saves the
+ * [_arg] segment to database, with the given [_name]
+ */
+
+create-protected-event:sys42.action.save-data-to-database
+
+  add:x:/../*/insert-data
+    src:x:/../*/_name?value
+  add:x:/../*/insert-data/*
+    src:x:/../*/_arg/*
+  insert-data
+  return:x:/-/*?value

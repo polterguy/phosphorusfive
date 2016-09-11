@@ -8,7 +8,8 @@ setting in your web.config underneath p5.webapp. This allows you to create web
 apps from scratch, having complete control over every aspect of your systems.
 
 The purpose of System42 is to provide a starting point and example implementation 
-when developing p5 apps, in addition to being a useful Web Operating System by itself.
+when developing p5 apps, in addition to being a useful Web Operating System by itself,
+implementing most common tasks for you, in a nice graphical environment.
 
 System42 contains a minimalistic and extendible Web Operating System, allowing you 
 to transparently use your web server as an extension of your other devices, sharing, 
@@ -18,10 +19,3 @@ allowing you access to your private files and data, on evey device you own, such
 as your iPhone, Android, Tablets, PCs, Mac OSX computers, etc, etc, etc.
 
 System42 can also be used as an IDE for developing apps in Hyperlisp and p5 Lambda.
-
-System42 can also be used as a Content Management System (CMS or Publishing System)
-for sharing information, creating websites, webapps, etc, etc, etc. In plain English;
-System42 is a Web Operating System.
-
-The folder where you are currently reading this file from, contains System42, and 
-all of its "system files".

@@ -333,9 +333,7 @@
     <None Include="system42\startup\misc-dialog-events\sys42.confirm-window.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.info-window.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.show-code-window.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.unzip-window.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.wizard-window.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.zip-window.hl" />
     <None Include="system42\installation\create-initial-user.hl" />
     <None Include="system42\installation\install-server.hl" />
     <None Include="system42\installation\set-root-password.hl" />
@@ -351,7 +349,6 @@
     <None Include="users\root\documents\public\README.md" />
     <None Include="users\root\documents\private\README.md" />
     <None Include="users\root\temp\README.md" />
-    <None Include="system42\startup\internals\sys42.create-pgp-key.hl" />
     <None Include="system42\tests\index.hl" />
     <None Include="system42\tests\expressions.hl" />
     <None Include="system42\tests\for-each.hl" />

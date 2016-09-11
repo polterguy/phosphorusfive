@@ -1,0 +1,56 @@
+
+/*
+ * Responsible for creating the Active Event that removes a CSS class(es) from a widget. This Active Event
+ * takes a CSS class(es) as [_class], and will remove those CSS class(es) from the widget defined as [_arg] if
+ * the class already exist on widget.
+ *
+ * Pass in the ID of the widget to remove class on as [_arg], and the class to remove as [_class]
+ */
+
+create-protected-event:sys42.delete-css-classes
+
+  /*
+   * Splitting upon every given CSS class caller wants to add
+   */
+  split:x:/../*/_class?value
+    =:,
+    =:" "
+    trim:true
+
+  /*
+   * Retrieving CSS class of specified widget
+   */
+  get-widget-property:x:/../*/_arg?value
+    class
+
+  /*
+   * Splitting each CSS class already in widget, such that we can figure out if class(es)
+   * caller wants to add already exists or not
+   */
+  split:x:/../*/get-widget-property/*/*?value
+    =:" "
+
+  /*
+   * Looping through each class supplied
+   */
+  for-each:x:/../*/split/[0,1]/*/$
+
+    /*
+     * Checking if currently iterated CSS class is not already in [split] result
+     */
+    if:x:/../*/split/[1,2]/*/{0}
+      :x:/..for-each/*/_dp/#?name
+
+      /*
+       * Class exists, removing it
+       */
+      set:x:/../*/split/[1,2]/*/{0}
+        :x:/..for-each/*/_dp/#?name
+
+  /*
+   * Invoking [join] on split results, before settings new class value
+   */
+  join:x:/../*/split/[1,2]/*?name
+    sep:" "
+  set-widget-property:x:/../*/_arg?value
+    class:x:/./-?value
