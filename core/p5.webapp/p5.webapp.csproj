@@ -343,7 +343,6 @@
     <None Include="system42\startup\misc-events\internals\sys42.verify-signature-is-friend.hl" />
     <None Include="system42\startup\misc-events\internals\sys42.expired-webservice-invocation.hl" />
     <None Include="system42\startup\misc-events\internals\sys42.get-content-type.hl" />
-    <None Include="system42\startup\internals\pages\create-default-pages.hl" />
     <None Include="system42\startup\internals\users\sys42.empty-user-tmp-folder.hl" />
     <None Include="system42\startup\internals\users\sys42.verify-access.hl" />
     <None Include="system42\startup\internals\users\sys42.get-default-user-settings.hl" />

@@ -66,4 +66,4 @@ for-each:x:/-/*?name
     add:x:/../*/_app-startup
       src:{0}startup.hl
         :x:/..for-each/*/_dp?value
-sys42.execute-lisp-files:x:/../*/_app-startup/*?name
+sys42.execute-lisp-file:x:/../*/_app-startup/*?name
