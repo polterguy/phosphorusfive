@@ -19,6 +19,17 @@
  * your page in "system42/page-types"
  *
  */
+
+
+/*
+ * Verifying user is authorized to access this application
+ */
+whoami
+if:x:/-/*/role?value
+  !=:root
+  throw:@"Sorry, this page is only accessible to ""root acounts"""
+
+
 create-widget:page-editor
   parent:content
   widgets

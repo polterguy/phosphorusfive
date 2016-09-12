@@ -3,8 +3,16 @@
  */
 
 
+/*
+ * Verifying user is authorized to access this application
+ */
 whoami
-if:x:/-/*/role?value
+if:x:/-/*/default?value
+  !=:bool:false
+  throw:Sorry, this page is only accessible to logged in users
+
+
+if:x:/-2/*/role?value
   =:root
   // Warning user that he should not create a profile as root!
   sys42.confirm-window

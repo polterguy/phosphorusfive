@@ -5,6 +5,15 @@
 
 
 /*
+ * Verifying user is authorized to access this application
+ */
+whoami
+if:x:/-/*/role?value
+  !=:root
+  throw:Sorry, this page is only accessible to logged in users
+
+
+/*
  * Looping through each public key, adding to table widget below
  */
 p5.crypto.list-public-keys

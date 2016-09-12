@@ -4,6 +4,15 @@
  */
 
 
+/*
+ * Verifying user is authorized to access this application
+ */
+whoami
+if:x:/-/*/role?value
+  !=:root
+  throw:@"Sorry, this page is only accessible to ""root acounts"""
+
+
 include-stylesheet-file:/system42/apps/users/media/users.css
 
 create-widget:edit-users

@@ -8,6 +8,15 @@
  */
 
 
+/*
+ * Verifying user is authorized to access this application
+ */
+whoami
+if:x:/-/*/default?value.bool
+  !=:bool:false
+  throw:Sorry, this page is only accessible to logged in users
+
+
 get-session-value:sys42.download-file
 if:x:/-/*?value
 
