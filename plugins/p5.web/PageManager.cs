@@ -188,7 +188,7 @@ namespace p5.web {
         public void reload_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Redirecting using JavaScript
-            AjaxPage.Manager.SendJavaScriptToClient (string.Format ("window.location.replace(window.location.pathname);"));
+            AjaxPage.Manager.SendJavaScriptToClient (string.Format ("window.location.replace(window.location.href);"));
         }
 
         /// <summary>
