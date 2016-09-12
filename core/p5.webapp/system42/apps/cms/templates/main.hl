@@ -224,7 +224,7 @@ p5.loginUsernameKeyUp = function(e) {
                                    * Creates the window encapsulating the login window
                                    */
                                   create-widget:login-wrapper
-                                    class:form-inline col-md-4 col-md-push-1 col-xs-3 flash-from-left
+                                    class:form-inline col-md-5 col-xs-3 flash-from-left text-right
                                     parent:header-wrapper
                                     widgets
                                       container:login-controls
