@@ -6,12 +6,8 @@
 using System;
 using System.IO;
 using System.Web;
-using System.Text;
 using System.Linq;
 using System.Security;
-using System.Configuration;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -74,7 +70,7 @@ namespace p5.security.helpers
                 throw new SecurityException("Credentials not accepted");
 
             // Getting system salt
-            var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+            var serverSalt = context.RaiseNative ("p5.security.get-server-salt").Get<string> (context);
 
             // Then creating system fingerprint from given password
             var cookiePasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
@@ -146,6 +142,28 @@ namespace p5.security.helpers
         }
 
         /*
+         * Returns server-salt for application
+         */
+        public static string ServerSalt (ApplicationContext context)
+        {
+            // Retrieving "auth" file in node format
+            var authFile = AuthFile.GetAuthFile(context);
+            return authFile["server-salt"].Get<string>(context);
+        }
+
+        /*
+         * Sets the server salt for application
+         */
+        public static void SetServerSalt (ApplicationContext context, string salt)
+        {
+            AuthFile.ModifyAuthFile (context, delegate (Node node) {
+                if (node.Children.Find (delegate (Node ix) { return ix.Name == "server-salt"; }) != null)
+                    throw new SecurityException ("Tried to change server salt after initial creation");
+                node.FindOrCreate ("server-salt").Value = salt;
+            });
+        }
+
+        /*
          * Creates a new user
          */
         public static void CreateUser (ApplicationContext context, Node args)
@@ -168,7 +186,7 @@ namespace p5.security.helpers
             VerifyUsernameValid (username);
 
             // Creating user salt, and retrieving system salt
-            var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+            var serverSalt = context.RaiseNative ("p5.security.get-server-salt").Get<string> (context);
 
             // Then salting password with user salt, before salting it with system salt
             var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
@@ -291,7 +309,7 @@ namespace p5.security.helpers
 
                         // Changing user's password
                         // Creating user salt, and retrieving system salt
-                        var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+                        var serverSalt = context.RaiseNative ("p5.security.get-server-salt").Get<string> (context);
 
                         // Then salting password with user salt and system, before salting it with system salt
                         var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
@@ -371,7 +389,7 @@ namespace p5.security.helpers
 
                     // Changing user's password
                     // Creating user salt, and retrieving system salt
-                    var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+                    var serverSalt = context.RaiseNative ("p5.security.get-server-salt").Get<string> (context);
 
                     // Then salting password with user salt and system, before salting it with system salt
                     var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
@@ -585,7 +603,7 @@ namespace p5.security.helpers
                 throw new SecurityException ("Cookie not accepted");
 
             // Getting system salt
-            var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+            var serverSalt = context.RaiseNative ("p5.security.get-server-salt").Get<string> (context);
 
             // Then creating system fingerprint from given password
             var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + cookieHashSaltedPwd)).Get<string> (context);

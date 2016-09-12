@@ -87,7 +87,7 @@ namespace p5.security.helpers
 
             // Checking file exist
             if (!File.Exists (pwdFilePath))
-                return new Node ("").Add ("users"); // No users in system
+                return new Node ("").Add ("users"); // First time retrieval of "auth" file
 
             // Reading up passwords file
             using (TextReader reader = new StreamReader (File.OpenRead (pwdFilePath))) {

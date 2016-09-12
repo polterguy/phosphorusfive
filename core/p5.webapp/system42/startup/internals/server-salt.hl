@@ -1,9 +1,0 @@
-
-/*
- * Active Event that returns the server salt for installation
- */
-
-create-protected-event:p5.security.get-dynamic-password-salt
-  set:x:/..?value
-    fetch:x:/0/0?value
-      select-data:x:/*/*/server-salt?value

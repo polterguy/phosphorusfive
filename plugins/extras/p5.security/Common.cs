@@ -4,11 +4,7 @@
  */
 
 using System;
-using System.IO;
 using System.Web;
-using System.Linq;
-using System.Security;
-using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -65,6 +61,28 @@ namespace p5.security
             }
             byte[] userSeedBytes = userSeedByteList.ToArray ();
             e.Args.Value = BitConverter.ToString (userSeedBytes).Replace ("-", "");
+        }
+
+        /// <summary>
+        ///     Returns the password salt for the server to use when storing passwords in "auth" file
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent(Name = "p5.security.get-server-salt", Protection = EventProtection.NativeClosed)]
+        private static void p5_security_get_server_salt(ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = AuthenticationHelper.ServerSalt(context);
+        }
+
+        /// <summary>
+        ///     Sets the password salt for the server to use when storing passwords in "auth" file
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent(Name = "p5.security.set-server-salt", Protection = EventProtection.LambdaClosed)]
+        private static void p5_security_set_server_salt(ApplicationContext context, ActiveEventArgs e)
+        {
+            AuthenticationHelper.SetServerSalt (context, e.Args.GetExValue<string> (context));
         }
     }
 }

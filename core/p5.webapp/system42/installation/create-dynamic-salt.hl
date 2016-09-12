@@ -46,9 +46,7 @@ characters, using all different types of characters, such as $%&123*@()[/]{} and
           onclick
             get-widget-property:server-salt
               value
-            eval-x:x:/+/0
-            insert-data
-              server-salt:x:/../*/get-widget-property/*/*?value
+            p5.security.set-server-salt:x:/../*/get-widget-property/*/*?value
             delete-widget:set-server-salt
             sys42.execute-lisp-file:/system42/installation/set-root-password.hl
 

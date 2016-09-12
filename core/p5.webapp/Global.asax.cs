@@ -317,17 +317,6 @@ namespace p5
             }
 
             /// <summary>
-            ///     Returns the password salt for the server to use when storing passwords in "auth" file
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-password-salt", Protection = EventProtection.NativeClosed)]
-            private static void p5_security_get_password_salt (ApplicationContext context, ActiveEventArgs e)
-            {
-                e.Args.Value = context.RaiseNative("p5.security.get-dynamic-password-salt").Get(context, "");
-            }
-
-            /// <summary>
             ///     Returns a pseudo random string, generated from client IP, browser string, etc
             /// </summary>
             /// <param name="context">Application Context</param>
