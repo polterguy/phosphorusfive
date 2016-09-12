@@ -1,21 +1,16 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
 using System;
-using System.IO;
-using System.Text;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using p5.core;
 using p5.exp;
+using p5.core;
 
 /// <summary>
 ///     Main namespace for types and type-conversions in Phosphorus Five
 /// </summary>
-namespace p5.types
-{
+namespace p5.types {
     /// <summary>
     ///     Class helps figuring out if some value(s) can be converted to another type
     /// </summary>

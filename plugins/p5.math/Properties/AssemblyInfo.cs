@@ -1,15 +1,20 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿
+/*
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
+ */
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("p5.mail")]
-[assembly: AssemblyDescription("Active Events for using SMTP/POP3")]
+[assembly: AssemblyTitle("p5.math")]
+[assembly: AssemblyDescription("Active Events supporting math operations")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("p5.mail")]
+[assembly: AssemblyProduct("p5.math")]
 [assembly: AssemblyCopyright("Copyright © Thomas Hansen 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("40f7e691-9c51-4494-acd1-fc339716d262")]
+[assembly: Guid("a4e40332-22b0-4e34-b297-9896ebdf6665")]
 
 // Version information for an assembly consists of the following four values:
 //

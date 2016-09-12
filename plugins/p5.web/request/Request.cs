@@ -1,21 +1,16 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
-using System;
 using System.IO;
-using System.Net;
 using System.Web;
-using System.Collections.Generic;
-using p5.exp;
 using p5.core;
 
 /// <summary>
 ///     Main namespace for everything related to the current HTTP request
 /// </summary>
-namespace p5.web.ui.request
-{
+namespace p5.web.ui.request {
     /// <summary>
     ///     Class wrapping Active Events related to the HTTP request
     /// </summary>

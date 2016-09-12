@@ -1,19 +1,15 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
 using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
-using p5.core;
 using p5.exp;
+using p5.core;
 using p5.exp.exceptions;
 
-namespace p5.lambda.keywords
-{
+namespace p5.lambda.keywords {
     /// <summary>
     ///     Class wrapping exception support in p5 lambda.
     /// </summary>

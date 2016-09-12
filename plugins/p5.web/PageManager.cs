@@ -1,24 +1,17 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
 using System;
 using System.Web;
-using System.Linq;
-using System.Web.UI;
-using System.Collections;
-using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.ajax.core;
 using p5.web.widgets;
-using p5.ajax.widgets;
-using p5.exp.exceptions;
 using p5.web.widgets.helpers;
 
-namespace p5.web
-{
+namespace p5.web {
     /// <summary>
     ///     Class managing page for one HTTP request
     /// </summary>

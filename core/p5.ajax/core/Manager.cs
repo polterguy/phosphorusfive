@@ -1,21 +1,19 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System.Web.UI;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Web.UI;
 using p5.ajax.core.filters;
-using p5 = p5.ajax.widgets;
 
 /*
  * Making sure we include our "manager.js" JavaScript file as a WebResource
  */
 [assembly: WebResource ("p5.ajax.javascript.manager.js", "application/javascript")]
 
-namespace p5.ajax.core
-{
+namespace p5.ajax.core {
     /// <summary>
     ///     Manages an IAjaxPage
     /// </summary>

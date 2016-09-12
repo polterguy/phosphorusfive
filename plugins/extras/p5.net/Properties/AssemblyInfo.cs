@@ -1,15 +1,20 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿
+/*
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
+ */
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("p5.types")]
-[assembly: AssemblyDescription("Type support for Hyperlisp")]
+[assembly: AssemblyTitle("p5.net")]
+[assembly: AssemblyDescription("Active Events for creating HTTP REST requests")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("p5.types")]
+[assembly: AssemblyProduct("p5.net")]
 [assembly: AssemblyCopyright("Copyright © Thomas Hansen 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b48b26f5-9184-4212-9feb-34b442054fb5")]
+[assembly: Guid("8f30e4e0-98cb-46e0-ad43-66432642507f")]
 
 // Version information for an assembly consists of the following four values:
 //

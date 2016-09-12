@@ -1,23 +1,16 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
-using System;
-using System.IO;
-using System.Text;
 using System.Numerics;
 using System.Globalization;
-using System.Runtime.InteropServices;
-using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
 
 /// <summary>
 ///     Main namespace for all the different types Phosphorus Five supports
 /// </summary>
-namespace p5.types.types
-{
+namespace p5.types.types {
     /// <summary>
     ///     Class helps converts from BigInteger to string, and vice versa
     /// </summary>

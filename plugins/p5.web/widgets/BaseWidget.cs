@@ -1,24 +1,19 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
-using System;
-using System.Linq;
 using System.Web.UI;
-using System.Collections;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.ajax.core;
 using p5.ajax.widgets;
 using p5.exp.exceptions;
 
 /// <summary>
 ///     Main namespace for everything related to widgets
 /// </summary>
-namespace p5.web.widgets
-{
+namespace p5.web.widgets {
     /// <summary>
     ///     Base class for helper Active Event classes related to widgets
     /// </summary>

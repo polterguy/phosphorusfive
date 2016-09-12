@@ -4,10 +4,9 @@
  */
 
 using System;
-using System.Text;
 using System.Security.Cryptography;
-using p5.core;
 using p5.exp;
+using p5.core;
 
 namespace phosphorus.crypto
 {

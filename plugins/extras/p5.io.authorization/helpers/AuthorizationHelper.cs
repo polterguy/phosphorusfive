@@ -1,19 +1,12 @@
 ﻿/*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
-using System;
 using System.IO;
-using System.Web;
-using System.Linq;
-using System.Security;
 using System.Configuration;
-using System.Collections.Generic;
-using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
-using p5.io.authorization.helpers;
 
 namespace p5.io.authorization.helpers
 {

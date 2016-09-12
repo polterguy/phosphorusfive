@@ -1,12 +1,11 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
-using p5 = p5.ajax.widgets;
 
 namespace p5.ajax.core.filters
 {
