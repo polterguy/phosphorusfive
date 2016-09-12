@@ -384,7 +384,6 @@
     <Content Include="system42\apps\tests\expressions.hl" />
     <Content Include="system42\apps\tests\fetch.hl" />
     <Content Include="system42\apps\tests\for-each.hl" />
-    <Content Include="system42\apps\tests\hyperlisp.hl" />
     <Content Include="system42\apps\tests\index-of.hl" />
     <Content Include="system42\apps\tests\insert.hl" />
     <Content Include="system42\apps\tests\iterators.hl" />
