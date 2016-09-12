@@ -46,7 +46,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="file\Load.cs" />
     <Compile Include="file\Save.cs" />
     <Compile Include="folder\Create.cs" />
