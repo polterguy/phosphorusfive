@@ -92,11 +92,13 @@ create-widget:template-root
 
                       /*
                        * Selecting all [p5.page] objects from database, and looping through them, to
-                       * create a menu item for each [p5.page] object current Context user has access to
+                       * create a menu item for each [p5.page] object current Context user has access to,
+					   * makging sure we do NOT select any "usercontrols", since theseare rather "reusable page components",
+					   * and not really viewable pages for the end user.
                        */
-                      select-data:x:/*/*/p5.page
+                      select-data:x:@"/*/*/p5.page!(/*/*/p5.page/""=~/usercontrols/"")"
                       set:x:@"/-/*/*/visible/""=:bool:false""/."
-                      for-each:x:/-2/*
+                      for-each:x:/../*/select-data/[0,1]/*
 
                         // Menu item "template"
                         _create-item
