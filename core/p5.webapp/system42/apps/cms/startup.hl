@@ -93,7 +93,6 @@ Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to 
       type:lambda
       name:App loader
       template:/system42/apps/cms/templates/main.hl
-      visible:bool:false
       lambda:@"
 
 /*

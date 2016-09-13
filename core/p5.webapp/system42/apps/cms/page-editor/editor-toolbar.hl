@@ -446,6 +446,4 @@ Among other things, your page becomes inacessible on tablets and phones!"
                   delete-data:x:/*/*/p5.page/"={0}"
                     :x:/./-?value
                   sys42.set-currently-edited-page
-                  sys42.populate-select-page
-                  clear-widget:page-editor-surface
-                  sys42.create-main-menu
+                  reload-location

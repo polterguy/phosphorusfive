@@ -93,10 +93,13 @@ create-widget:template-root
                       /*
                        * Selecting all [p5.page] objects from database, and looping through them, to
                        * create a menu item for each [p5.page] object current Context user has access to,
-					   * makging sure we do NOT select any "usercontrols", since theseare rather "reusable page components",
-					   * and not really viewable pages for the end user.
+                       * making sure we do NOT select any "usercontrols", since theseare rather "reusable page components",
+                       * and not really viewable pages for the end user. In addition we also exclude the "app-loader" page,
+                       * since it is not an actual page per se. In addition, we also exclude pages that starts with the URL
+                       * "/invisible", such that user himself can create pages that are not visible in the menu, but only accessible
+                       * through a direct link.
                        */
-                      select-data:x:@"/*/*/p5.page!(/*/*/p5.page/""=~/usercontrols/"")"
+                      select-data:x:@"/*/*/p5.page!(/*/*/p5.page/""=~/usercontrols/""|/*/*/p5.page/""=/app-loader""|/*/*/p5.page/""=~/invisible"")"
                       set:x:@"/-/*/*/visible/""=:bool:false""/."
                       for-each:x:/../*/select-data/[0,1]/*
 
@@ -189,7 +192,7 @@ create-widget:template-root
                             literal
                               element:a
                               href:
-                              innerValue:Login
+                              innerValue:login
                               onclick
                                 sys42.show-login-window
                               events
@@ -350,7 +353,7 @@ p5.loginUsernameKeyUp = function(e) {
                             literal
                               element:a
                               href:
-                              innerValue:Logout
+                              innerValue:logout
                               onclick
                                 sys42.logout
                               events
