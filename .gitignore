@@ -208,4 +208,13 @@ core/p5.webapp/common/public/*
 !core/p5.webapp/common/public/README.md
 
 #DSW8
-**/dsw8
+core/p5.webapp/system42/apps/
+!core/p5.webapp/system42/apps/cms/
+!core/p5.webapp/system42/apps/executor/
+!core/p5.webapp/system42/apps/file-browser/
+!core/p5.webapp/system42/apps/gnupg/
+!core/p5.webapp/system42/apps/profile/
+!core/p5.webapp/system42/apps/tests/
+!core/p5.webapp/system42/apps/users/
+!core/p5.webapp/system42/apps/README.md
+
