@@ -414,6 +414,7 @@
     <Content Include="system42\startup\misc-events\css-helpers\sys42.remove-css-classes.hl" />
     <Content Include="system42\startup\misc-events\css-helpers\sys42.toggle-css-classes.hl" />
     <Content Include="system42\startup\misc-events\actions\sys42.action.save-data-to-database.hl" />
+    <Content Include="system42\startup\app-settings\README.md" />
     <None Include="system42\startup\pf.web.load-ui.hl" />
     <None Include="system42\startup\misc-events\sys42.get-widget.hl" />
     <None Include="system42\misc\content-types.hl" />

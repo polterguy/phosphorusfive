@@ -1,0 +1,63 @@
+﻿
+/*
+ * Sets application specific setting(s).
+ *
+ * Pass in name of app to set setting for as [_app], setting to set as [_arg], and new value of setting as [_src].
+ * Will update app setting according to which user is currently logged in. If currently logged in user is
+ * a "root account", optionally you can update (or set) settings for a specific user, by supplying user to set setting
+ * for as [_username].
+ *
+ * [_src] can either contain a single value, be a node hierarchy, or both.
+ */
+create-protected-event:sys42.set-app-setting
+
+  /*
+   * Sanity check
+   */
+  if:x:/../*/_app?value
+    not
+    throw:No application specified!
+
+  /*
+   * Retrieving currently logged in user, checking if user as "root", and if a specific user was supplied.
+   */
+  whoami
+  if:x:/../*/whoami/*/role?value
+    =:root
+    and:x:/../*/_username?value
+
+    /*
+     * Changing user to set setting for in [select-data], [delete-data] and [insert-data] below.
+     */
+    set:x:/../*/delete-data/0|/../*/insert-data/*/1?value
+      src:x:/../*/_username?value
+
+  else-if:x:/../*/_username?value
+
+    /*
+     * Non root account tried to change setting for another user!
+     */
+    throw:Only root accounts can retrieve settings for other users than the currently logged in identity user
+
+  delete-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}""/."
+    :x:/../*/whoami/*/username?value
+    :x:/../*/_app?value
+    :x:/../*/_arg?value
+  eval-x:x:/../*/insert-data/*/*
+
+  /*
+   * Checking if new setting was provided, or if this was a "delete setting" invocation.
+   */
+  if:x:/../*/_src
+    not
+    return
+  add:x:/../*/insert-data/*
+    src:x:/../*/_src
+  set:x:/../*/insert-data/*/*/_src?name
+    src:x:/../*/_arg?value
+  insert-data
+    sys42.app-settings
+      app-name:x:/../*/_app?value
+      username:x:/../*/whoami/*/username?value
+
+
