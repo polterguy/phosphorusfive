@@ -307,6 +307,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="README.md" />
     <None Include="system42\application-startup.hl" />
     <Content Include="system42\apps\cms\page-editor\editors\controls\help-files\composite-widgets\0004-composite-widgets.hl" />
     <Content Include="system42\apps\cms\page-editor\editors\controls\help-files\composite-widgets\0005-composite-widgets.hl" />
@@ -418,7 +419,6 @@
     <None Include="system42\startup\pf.web.load-ui.hl" />
     <None Include="system42\startup\misc-events\sys42.get-widget.hl" />
     <None Include="system42\misc\content-types.hl" />
-    <None Include="system42\misc\trusted-friends.hl" />
     <None Include="system42\editors\code-mirror-editor.hl" />
     <None Include="system42\editors\html-editor.hl" />
     <None Include="system42\editors\launch.hl" />
@@ -439,6 +439,7 @@
     <None Include="system42\startup\internals\users\sys42.verify-access.hl" />
     <None Include="system42\startup\internals\users\sys42.get-default-user-settings.hl" />
     <None Include="system42\installation\create-dynamic-salt.hl" />
+    <Content Include="users\README.md" />
     <None Include="users\root\documents\public\README.md" />
     <None Include="users\root\documents\private\README.md" />
     <None Include="users\root\temp\README.md" />
