@@ -308,6 +308,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
+    <Content Include="common\README.md" />
+    <Content Include="media\README.md" />
     <None Include="system42\application-startup.hl" />
     <Content Include="system42\apps\cms\page-editor\editors\controls\help-files\composite-widgets\0004-composite-widgets.hl" />
     <Content Include="system42\apps\cms\page-editor\editors\controls\help-files\composite-widgets\0005-composite-widgets.hl" />

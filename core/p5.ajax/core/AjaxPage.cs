@@ -94,8 +94,6 @@ namespace p5.ajax
             /// <param name="url">url to stylesheet to register</param>
             public void RegisterStylesheetFile (string url)
             {
-                if (ViewState ["_p5_css_files"] == null)
-                    ViewState ["_p5_css_files"] = new List<string> ();
                 var lst = ViewState ["_p5_css_files"] as List<string>;
                 if (!lst.Contains (url)) {
                     lst.Add (url);
@@ -124,7 +122,11 @@ namespace p5.ajax
              */
             List<string> IAjaxPage.StylesheetFilesToPush
             {
-                get { return ViewState ["_p5_css_files"] as List<string>; }
+                get {
+                    if (ViewState["_p5_css_files"] == null)
+                        ViewState["_p5_css_files"] = new List<string> ();
+                    return ViewState ["_p5_css_files"] as List<string>;
+                }
             }
 
             /*
@@ -140,7 +142,7 @@ namespace p5.ajax
                 Manager = new Manager (this);
 
                 // Retrieving viewstate entries per session
-                ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings ["viewstate-per-session-entries"]);
+                ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings ["viewstate-per-session-entries"] ?? "5");
 
                 base.OnPreInit (e);
             }

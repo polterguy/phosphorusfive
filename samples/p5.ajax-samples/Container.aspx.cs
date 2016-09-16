@@ -12,8 +12,11 @@ namespace p5.samples
 
     public partial class Container : AjaxPage
     {
-        // using the same event handler for both of our literal widgets
+        // Using the same event handler for both of our literal widgets
         [WebMethod]
-        protected void element_onclick (p5.Literal literal, EventArgs e) { literal.innerValue = "widget was clicked"; }
+        protected void element_onclick (p5.Literal literal, EventArgs e)
+        {
+            literal.innerValue = "Widget was clicked";
+        }
     }
 }

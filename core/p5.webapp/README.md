@@ -78,7 +78,7 @@ Contains "System42". See this folder's README.md file for an explanation about S
 
 ### The "Default.aspx" file
 
-This is the only physical file in your system, and resposnible for serving all URLs indirectly,
+This is the only physical file in your system, and responsible for serving all URLs indirectly,
 through using the main Hyperlisp engine.
 
 When initially accessing a virtual URL in your system, the *[p5.web.load-ui]* Active Event
@@ -89,7 +89,7 @@ When the *[p5.web.load-ui]* Active Event is raised, the actual URL requested by 
 will exists in the *[_form]* argument, passed into your Active Event handler.
 
 If you use Phosphorus Five in combination with System42, this Active Event is automatically
-handled, and will retrieve the *[p5.page]* from the p5.data database with the ID being
+handled, and will retrieve the *[p5.page]* from the p5.data database, with the ID being
 the URL requested.
 
 

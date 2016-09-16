@@ -15,7 +15,7 @@ namespace p5.samples
         [WebMethod]
         protected void element_onclick (p5.Literal literal, EventArgs e)
         {
-            literal.innerValue = "this is the updated text";
+            literal.innerValue = "This is the updated text";
         }
     }
 }

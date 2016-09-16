@@ -240,7 +240,7 @@ using p5.= p5.ajax.widgets;
 protected void hello_onclick (p5.Literal sender, EventArgs e)
 {
     // notice how you save a cast operation here ...
-    sender.innerHTML = "hello world";
+    sender.innerValue = "hello world";
 }
 
 /* ... */

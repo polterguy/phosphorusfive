@@ -53,6 +53,9 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="ActiveEvents.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>

@@ -15,11 +15,11 @@ namespace p5.samples
         [WebMethod]
         protected void hello_onclick (p5.Literal sender, EventArgs e)
         {
-            if (sender.innerValue == "click me for hello world") {
-                sender.innerValue = "click me again, while inspecting the HTTP request using your browser";
+            if (sender.innerValue == "Click me for hello world") {
+                sender.innerValue = "Click me again, while inspecting the HTTP request using your browser";
                 sender ["class"] = "change-is-the-only-constant";
             } else {
-                sender.innerValue = "click me for hello world";
+                sender.innerValue = "Click me for hello world";
                 sender.RemoveAttribute ("class");
             }
         }
