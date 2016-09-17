@@ -37,13 +37,14 @@ namespace p5.samples
         [WebMethod]
         protected void item_onclick (p5.Literal sender, EventArgs e)
         {
-            if (sender.innerValue == "are you sure?") {
+            if (sender.innerValue == "Are you sure?") {
                 List.RemoveControlPersistent (sender);
                 CurrentEdit = null;
+                Txt["value"] = "";
             } else {
                 Txt ["value"] = sender.innerValue;
                 CurrentEdit = sender.ID;
-                sender.innerValue = "are you sure?";
+                sender.innerValue = "Are you sure?";
             }
         }
 
@@ -85,7 +86,7 @@ namespace p5.samples
         {
             CurrentEdit = null;
             if (List.Controls.Count == 0) {
-                Txt ["value"] = "nothing to replace!!";
+                Txt ["value"] = "Nothing to replace!!";
             } else {
                 var which = new Random ().Next (0, List.Controls.Count);
                 List.RemoveControlPersistentAt (which);
@@ -105,7 +106,7 @@ namespace p5.samples
             var rnd = new Random ();
             foreach (var idx in List.GetChildControls<p5.Literal> ()) {
                 if (rnd.Next (0, 3) == 1) {
-                    idx.innerValue = "i like turtles!";
+                    idx.innerValue = "I like turtles!";
                     idx ["class"] = "turtles";
                 }
             }

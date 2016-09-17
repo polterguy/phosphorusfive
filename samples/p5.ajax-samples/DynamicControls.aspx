@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<title>dynamic controls example</title>
+    	<title>Dynamic widget example</title>
         <link rel="stylesheet" type="text/css" href="media/main.css">
         <meta charset="utf-8">
     </head>
@@ -15,103 +15,107 @@
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
 
-                <h1>dynamic controls example</h1>
+                <h1>Dynamic widget example</h1>
 
                 <p>
-                    this example shows you how you can dynamically add, remove and change controls
+                    This example shows you how you can dynamically add and remove children widgets of the Container widget
 
                 <p5:Container
                     runat="server"
                     id="List"
-                    ElementType="ul">
+                    Element="ul">
                     <p5:Literal
                         runat="server"
                         id="static1"
                         onclick="item_onclick"
-                        ElementType="li">static 1</p5:Literal>
+                        Element="li">Static 1</p5:Literal>
                     <p5:Literal
                         runat="server"
                         id="static2"
                         onclick="item_onclick"
-                        ElementType="li">static 2</p5:Literal>
+                        Element="li">Static 2</p5:Literal>
                 </p5:Container>
 
                 <p>
                     <p5:Void
                         runat="server"
                         id="Txt"
-                        ElementType="input"
+                        Element="input"
                         type="text"
-                        style="width:100px;"
+                        style="width:150px;padding:5px;"
                         name="txt"
-                        placeholder="text of element ..." />
+                        placeholder="Text of element ..." />
 
                     <p5:Void
                         runat="server"
                         id="append"
-                        ElementType="input"
+                        Element="input"
                         type="button"
                         onclick="append_onclick"
-                        value="append" />
+                        value="Append" />
 
                     <p5:Void
                         runat="server"
                         id="insert_top"
-                        ElementType="input"
+                        Element="input"
                         type="button"
                         onclick="insert_top_onclick"
-                        value="insert at top" />
+                        value="Insert at top" />
 
                     <p5:Void
                         runat="server"
                         id="insert_at_random"
-                        ElementType="input"
+                        Element="input"
                         type="button"
                         onclick="insert_at_random_onclick"
-                        value="insert at random" />
+                        value="Insert at random" />
 
                     <p5:Void
                         runat="server"
                         id="replace_random"
-                        ElementType="input"
+                        Element="input"
                         type="button"
                         onclick="replace_random_onclick"
-                        value="replace random element" />
+                        value="Replace random element" />
 
                     <p5:Void
                         runat="server"
                         id="love_bomb"
-                        ElementType="input"
+                        Element="input"
                         type="button"
                         onclick="love_bomb_onclick"
-                        value="love bomb" />
+                        value="Love bomb" />
 
                     <p5:Void
                         runat="server"
                         id="harvest_love"
-                        ElementType="input"
+                        Element="input"
                         type="button"
                         onclick="harvest_love_onclick"
-                        value="harvest love" />
+                        value="Harvest love" />
 
                     <p5:Void
                         runat="server"
                         id="Update"
-                        ElementType="input"
+                        Element="input"
                         type="button"
                         onclick="update_onclick"
-                        value="update" />
+                        value="Update" />
 
                 <p>
-                    the <em>"Container"</em> widget allows for dynamically adding, removing and updating its controls.&nbsp;&nbsp;use the
-                    <em>"CreatePersistentControl"</em> method to create a control you wish to let the widget remember across postbacks
+                    The <em>"Container"</em> widget allows for dynamically adding, removing and updating its controls. Use the
+                    <em>"CreatePersistentControl"</em> method to create a control you wish to let the widget remember across postbacks.
 
                 <p>
-                    this example also stores its viewstate in the session by utilizing the <em>"StoreViewStateInSession"</em> feature of 
-                    the <em>"AjaxPage"</em> helper class
+                    All widgets appended to a <em>"Container"</em> widget using the <em>"CreatePersistentControl"</em> method, will automatically be remembered
+                    across postbacks for you, and re-created on the server-side upon every request.
 
                 <p>
-                    back to <a href="Default.aspx">landing page</a>
+                    If you wish to <em>"persistently remove"</em> a widget from a Container widget, you can have p5.ajax remember which widgets were dynamically
+                    removed automatically for you, by using the <em>"RemoveControlPersistent"</em> method on your Container widget.
+
+                <p>
+                    Back to <a href="Default.aspx">landing page</a>
             </div>
         </form>
     </body>

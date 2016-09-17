@@ -12,13 +12,13 @@ namespace p5.samples
 
     public partial class Void : AjaxPage
     {
-        protected p5.Literal Lbl;
-        protected p5.Void Txt;
+        protected p5.Literal lbl;
+        protected p5.Void txtBox;
 
         [WebMethod]
         protected void btn_onclick (p5.Widget sender, EventArgs e)
         {
-            Lbl.innerValue = "value of textbox was; '" + Txt ["value"] + "'";
+            lbl.innerValue = "Value of textbox was; '" + txtBox["value"] + "'";
         }
     }
 }

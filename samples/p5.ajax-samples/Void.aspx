@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<title>void example</title>
+    	<title>Void widget example</title>
         <link rel="stylesheet" type="text/css" href="media/main.css">
         <meta charset="utf-8">
     </head>
@@ -15,40 +15,45 @@
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
 
-                <h1>void example</h1>
+                <h1>Void widget example</h1>
 
                 <p>
-                    this example shows how you can create void widgets
+                    This example shows how you can create void widgets
 
                 <p>
                     <p5:Void
                         runat="server"
-                        id="Txt"
-                        name="txt"
-                        ElementType="input"
+                        id="txtBox"
+                        name="txtBox"
+                        Element="input"
                         style="width:250px;"
                         placeholder="type text into me and click update ..."
                         type="text" />
                     <p5:Void
                         runat="server"
                         id="btn"
-                        ElementType="input"
+                        Element="input"
                         type="button"
                         value="update"
                         onclick="btn_onclick" />
 
                 <p5:Literal
                     runat="server"
-                    id="Lbl"
+                    id="lbl"
                     RenderType="open"
-                    ElementType="p">change is the only constant</p5:Literal>
+                    ElementType="p">Change is the only constant in the Universe</p5:Literal>
 
                 <p>
-                    a void widget has no content, neither text, nor controls.&nbsp;&nbsp;the void widget is typically used for
-                    some form elements, such as <em>"select"</em>, and <em>"input"</em> elements
+                    A void widget has no content, neither text, nor controls. The void widget is typically used for
+                    some form elements, such as <em>"input"</em> elements.
 
                 <p>
-                    onwards to the <a href="JavaScript.aspx">javascript example</a>
+                    Typically, you would in addition to giving your input elements an id, also give them a <em>"name"</em> property also.
+                    If you do not, they will not have their values serialized back to the server upon Ajax callbacks. Normally, you would
+                    use the same value for the <em>"name"</em> property, as you use for their <em>"id"</em> property.
+
+                <p>
+                    Onwards to the <a href="JavaScript.aspx">JavaScript example</a>
 
             </div>
         </form>
