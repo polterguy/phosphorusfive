@@ -282,6 +282,9 @@
                     </tr>
                 </table>
 
+                <p>
+                    Back to <a href="Default.aspx">landing page</a>
+
                 <div style="display:none;" id="sandbox">
                     <p5:Literal
                         runat="server"

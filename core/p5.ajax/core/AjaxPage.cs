@@ -94,7 +94,7 @@ namespace p5.ajax
             /// <param name="url">url to stylesheet to register</param>
             public void RegisterStylesheetFile (string url)
             {
-                var lst = ViewState ["_p5_css_files"] as List<string>;
+                var lst = (this as IAjaxPage).StylesheetFilesToPush;
                 if (!lst.Contains (url)) {
                     lst.Add (url);
                     _newCssFiles.Add (url);

@@ -194,10 +194,10 @@ in for instance a WinForms application, or any other type of app you can build u
 Mono and/or .Net. Which allows you to use Active Events in for instance desktop
 applications.
 
-## Getting started with phosphorus.ajax
+## Getting started with p5.ajax
 
 If you wish, you can of course use only p5.ajax in existing or new web forms apps.
-Create a reference to *"lib/phosphorus.ajax.dll"* in your asp.net web application
+Create a reference to *"lib/p5.ajax.dll"* in your ASP.NET web application.
 
 Then modify your web.config, and make sure it has something like this inside its 
 *"system.web"* section to recognize the Phosphorus.Ajax controls.
@@ -261,11 +261,12 @@ create-literal-widget:foo
       innerValue:I was clicked!
 ```
 
-If you type in the above code in the Evaluator of System 42, it will create an ajax
+If you type in the above code in the Evaluator of System42, it will create an ajax
 widget for you on your page.
 
-If you wish to have more samples for how to use phosphorus.ajax, you can check out the 
-*"p5.ajax-samples"* project by opening up the *"p5.sln"* file.
+If you wish to have more samples for how to use p5.ajax, you can check out the 
+*"p5.ajax-samples"* project by opening up the *"p5.sln"* file, and set the *"p5.ajax-samples"*
+project as your *"Startup project"*.
 
 ## The literal, container and void widgets
 
