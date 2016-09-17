@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<title>unit tests</title>
+    	<title>p5.ajax unit tests</title>
         <link rel="stylesheet" type="text/css" href="media/main.css">
         <link rel="stylesheet" type="text/css" href="media/tests.css">
         <meta charset="utf-8">
@@ -17,31 +17,30 @@
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
 
-                <h1>unit tests for phosphorus.ajax</h1>
+                <h1>Unit tests for p5.ajax</h1>
 
                 <table id="tests">
                     <tr class="spacer">
                         <th>
-                            <h3>description</h3>
+                            <h3>Description</h3>
                         </th>
                         <th>
-                            <input type="button" id="run_all" class="undetermined" value="run all" onclick="tests.run_all(event)">
+                            <input type="button" id="run_all" class="undetermined" value="run all" onclick="tests.run_all (event)">
                         </th>
                     </tr>
                     <tr class="spacer">
                         <td colspan="2">
-                            these are the unit tests for phosphorus.ajax, unit tests for the rest of Phosphorus Five can be found in
-                            the source as project <em>"p5.tests"</em>
+                            These are the unit tests for p5.ajax
                         </td>
                     </tr>
                     <tr class="spacer">
                         <td colspan="2">
-                            <h3>basic ajax event handling</h3>
+                            <h3>Basic ajax event handling</h3>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            invoke nothing event handler
+                            Invoke nothing event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_empty" class="undetermined" value="run" onclick="tests.invoke_empty(event)">
@@ -49,7 +48,7 @@
                     </tr>
                     <tr>
                         <td>
-                            invoke exception event handler
+                            Invoke exception event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_exception" class="undetermined" value="run" onclick="tests.invoke_exception(event)">
@@ -57,7 +56,7 @@
                     </tr>
                     <tr>
                         <td>
-                            invoke non existing event handler
+                            Invoke non existing event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_non_existing" class="undetermined" value="run" onclick="tests.invoke_non_existing(event)">
@@ -65,7 +64,7 @@
                     </tr>
                     <tr>
                         <td>
-                            invoke event handler not marked as WebMethod
+                            Invoke event handler not marked as WebMethod
                         </td>
                         <td>
                             <input type="button" id="invoke_no_webmethod" class="undetermined" value="run" onclick="tests.invoke_no_webmethod(event)">
@@ -73,7 +72,7 @@
                     </tr>
                     <tr>
                         <td>
-                            invoke event handler as 'onclick'
+                            Invoke event handler as 'onclick'
                         </td>
                         <td>
                             <input type="button" id="invoke_normal" class="undetermined" value="run" onclick="tests.invoke_normal(event)">
@@ -81,7 +80,7 @@
                     </tr>
                     <tr>
                         <td>
-                            run multiple consecutive requests at the same time while server sleeps .1 seconds
+                            Run multiple consecutive requests at the same time while server sleeps .1 seconds
                         </td>
                         <td>
                             <input type="button" id="invoke_multiple" class="undetermined" value="run" onclick="tests.invoke_multiple(event)">
@@ -89,7 +88,7 @@
                     </tr>
                     <tr>
                         <td>
-                            add custom parameters from javascript
+                            Add custom parameters from JavaScript
                         </td>
                         <td>
                             <input type="button" id="invoke_javascript" class="undetermined" value="run" onclick="tests.invoke_javascript(event)">
@@ -97,12 +96,12 @@
                     </tr>
                     <tr class="spacer">
                         <td colspan="2">
-                            <h3>ajax widgets attributes</h3>
+                            <h3>Ajax widgets attributes</h3>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            change innerValue
+                            Change innerValue
                         </td>
                         <td>
                             <input type="button" id="invoke_change_content" class="undetermined" value="run" onclick="tests.invoke_change_content(event)">
@@ -110,7 +109,7 @@
                     </tr>
                     <tr>
                         <td>
-                            change two attributes on widget
+                            Change two attributes on widget
                         </td>
                         <td>
                             <input type="button" id="invoke_change_two_properties" class="undetermined" value="run" onclick="tests.invoke_change_two_properties(event)">
@@ -118,7 +117,7 @@
                     </tr>
                     <tr>
                         <td>
-                            change attribute twice in the same event handler
+                            Change attribute twice in the same event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_change_twice" class="undetermined" value="run" onclick="tests.invoke_change_twice(event)">
@@ -126,7 +125,7 @@
                     </tr>
                     <tr>
                         <td>
-                            add attribute, then remove it in the same event handler
+                            Add attribute, then remove it in the same event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_add_remove_same" class="undetermined" value="run" onclick="tests.invoke_add_remove_same(event)">
@@ -134,7 +133,7 @@
                     </tr>
                     <tr>
                         <td>
-                            change attribute declared in markup
+                            Change attribute declared in markup
                         </td>
                         <td>
                             <input type="button" id="invoke_change_markup_attribute" class="undetermined" value="run" onclick="tests.invoke_change_markup_attribute(event)">
@@ -142,7 +141,7 @@
                     </tr>
                     <tr>
                         <td>
-                            remove attribute declared in markup
+                            Remove attribute declared in markup
                         </td>
                         <td>
                             <input type="button" id="invoke_remove_markup_attribute" class="undetermined" value="run" onclick="tests.invoke_remove_markup_attribute(event)">
@@ -150,7 +149,7 @@
                     </tr>
                     <tr>
                         <td>
-                            add attribute in event handler, then remove the same attribute in a new event handler
+                            Add attribute in event handler, then remove the same attribute in a new event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_add_remove" class="undetermined" value="run" onclick="tests.invoke_add_remove(event)">
@@ -158,7 +157,7 @@
                     </tr>
                     <tr>
                         <td>
-                            remove attribute declared in markup, then add it back up in a new event handler
+                            Remove attribute declared in markup, then add it back up in a new event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_remove_add_markup_attribute" class="undetermined" value="run" onclick="tests.invoke_remove_add_markup_attribute(event)">
@@ -166,7 +165,7 @@
                     </tr>
                     <tr>
                         <td>
-                            concatenate long attribute
+                            Concatenate long attribute
                         </td>
                         <td>
                             <input type="button" id="invoke_concatenate_long_attribute" class="undetermined" value="run" onclick="tests.invoke_concatenate_long_attribute(event)">
@@ -174,7 +173,7 @@
                     </tr>
                     <tr>
                         <td>
-                            create attribute then concatenate long string
+                            Create attribute then concatenate long string
                         </td>
                         <td>
                             <input type="button" id="invoke_create_concatenate_long_attribute" class="undetermined" value="run" onclick="tests.invoke_create_concatenate_long_attribute(event)">
@@ -182,12 +181,12 @@
                     </tr>
                     <tr class="spacer">
                         <td colspan="2">
-                            <h3>container ajax widgets</h3>
+                            <h3>Container ajax widgets</h3>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            change attribute of child of container widget
+                            Change attribute of child of container widget
                         </td>
                         <td>
                             <input type="button" id="invoke_change_container_child" class="undetermined" value="run" onclick="tests.invoke_change_container_child(event)">
@@ -195,7 +194,7 @@
                     </tr>
                     <tr>
                         <td>
-                            make container widget visible with visible children
+                            Make container widget visible with visible children
                         </td>
                         <td>
                             <input type="button" id="invoke_make_container_visible" class="undetermined" value="run" onclick="tests.invoke_make_container_visible(event)">
@@ -203,7 +202,7 @@
                     </tr>
                     <tr>
                         <td>
-                            make container widget visible with invisible children
+                            Make container widget visible with invisible children
                         </td>
                         <td>
                             <input type="button" id="invoke_make_container_visible_invisible_child" class="undetermined" value="run" onclick="tests.invoke_make_container_visible_invisible_child(event)">
@@ -211,7 +210,7 @@
                     </tr>
                     <tr>
                         <td>
-                            add child to container
+                            Add child to container
                         </td>
                         <td>
                             <input type="button" id="invoke_add_child" class="undetermined" value="run" onclick="tests.invoke_add_child(event)">
@@ -219,7 +218,7 @@
                     </tr>
                     <tr>
                         <td>
-                            insert child to container at top
+                            Insert child to container at top
                         </td>
                         <td>
                             <input type="button" id="invoke_insert_child" class="undetermined" value="run" onclick="tests.invoke_insert_child(event)">
@@ -227,7 +226,7 @@
                     </tr>
                     <tr>
                         <td>
-                            add child to container, check exist
+                            Add child to container, check exist
                         </td>
                         <td>
                             <input type="button" id="invoke_add_child_check_exist" class="undetermined" value="run" onclick="tests.invoke_add_child_check_exist(event)">
@@ -235,7 +234,7 @@
                     </tr>
                     <tr>
                         <td>
-                            insert child to container at top, check exist
+                            Insert child to container at top, check exist
                         </td>
                         <td>
                             <input type="button" id="invoke_insert_child_check_exist" class="undetermined" value="run" onclick="tests.invoke_insert_child_check_exist(event)">
@@ -243,7 +242,7 @@
                     </tr>
                     <tr>
                         <td>
-                            remove child from container
+                            Remove child from container
                         </td>
                         <td>
                             <input type="button" id="invoke_remove_child" class="undetermined" value="run" onclick="tests.invoke_remove_child(event)">
@@ -251,7 +250,7 @@
                     </tr>
                     <tr>
                         <td>
-                            remove multiple children from container
+                            Remove multiple children from container
                         </td>
                         <td>
                             <input type="button" id="invoke_remove_multiple" class="undetermined" value="run" onclick="tests.invoke_remove_multiple(event)">
@@ -259,7 +258,7 @@
                     </tr>
                     <tr>
                         <td>
-                            append child to container and remove in same request
+                            Append child to container and remove in same request
                         </td>
                         <td>
                             <input type="button" id="invoke_append_remove" class="undetermined" value="run" onclick="tests.invoke_append_remove(event)">
@@ -267,7 +266,7 @@
                     </tr>
                     <tr>
                         <td>
-                            remove and add multiple controls from complex control tree, and check they exist in next response
+                            Remove and add multiple controls from complex control tree, and check they exist in next response
                         </td>
                         <td>
                             <input type="button" id="invoke_remove_many" class="undetermined" value="run" onclick="tests.invoke_remove_many(event)">
@@ -275,7 +274,7 @@
                     </tr>
                     <tr>
                         <td>
-                            remove one control, and add back another control, with the same ID
+                            Remove one control, and add back another control, with the same ID
                         </td>
                         <td>
                             <input type="button" id="invoke_add_similar" class="undetermined" value="run" onclick="tests.invoke_add_similar(event)">
