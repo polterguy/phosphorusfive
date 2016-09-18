@@ -10,11 +10,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("p5.lambda")]
-[assembly: AssemblyDescription("Main lambda keywords")]
+[assembly: AssemblyTitle("p5.strings")]
+[assembly: AssemblyDescription("String lambda keywords")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("p5.lambda")]
+[assembly: AssemblyProduct("p5.strings")]
 [assembly: AssemblyCopyright("Copyright © Thomas Hansen 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("66d68ce5-ff39-4ff5-8ce2-cd8a0839cb9f")]
+[assembly: Guid("66d68ce5-ff39-4ff5-8da3-cd8a0839cb9f")]
 
 // Version information for an assembly consists of the following four values:
 //
