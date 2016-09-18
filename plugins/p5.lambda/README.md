@@ -1214,7 +1214,72 @@ The *[databind]* Active Event is extremely powerful. But this power, comes with 
 difficult to understand code, unless you are careful. Understanding how *[databind]* works, also requires some very good visualization skills,
 to understand what happens, and when it happens.
 
+### [fetch], evaluating lambda and fetching the requested result
 
+The *[fetch]* Active Event, allows you to declare a piece of lambda, have it evaluated, and fetch some parts of its result into the value
+of your *[fetch]* node. This is highly useful when you for instance have a *[set]* of *[if]* invocation, where you have a piece of code,
+that is to be evaluated, for then to use one or more nodes deep inside of the result of your lambda evaluation, being used as the source 
+for your *[if]* or *[set]* invocation. Consider the following code for instance.
+
+```
+_exe
+  return
+    person
+      name:Thomas
+      surname:Hansen
+fetch:x:/0/0/*/surname?value
+  eval:x:/../*/_exe
+```
+
+After evaluation of the above code, the value of *[fetch]* will be "Hansen". This allows you to "pre-fetch" one or more node's values, which
+again plugs perfectly into concepts such as *[if]* and similar Active Events, expecting a node's value, and not a complete node hierarchy.
+
+Consider this for instance, where we have injected an if inbetween our root node and our *[fetch]* node.
+
+```
+_exe
+  return
+    person
+      name:Thomas
+      surname:Hansen
+if
+  fetch:x:/0/0/*/surname?value
+    eval:x:/../*/_exe
+  =:Hansen
+  sys42.confirm-window
+    _header:Are you my brother?
+    _body:Looks like we have the same surnames ...
+```
+
+What happens in the above lambda, is that first the *[if]* Active Event is invoked. Since our if node does not have a value, its first
+child is considered to be "what is compared on our left hand side" parts. The logic of *[if]* is that if there's an Active Event invocation
+used to retrieve the left-hand-side, then this Active Event is onvoked before the two sides are compared for equality, as we're doing in the
+above example. This raises our *[fetch]* Active Event.
+
+The *[fetch]* Active Event again, will evaluate its children, almost like an *[eval]* invocation would, with one crucial difference, which is
+that after evaluation of its block, the expression in the value of *[fetch]* will be evaluated, and the results of that expression, will become
+the value of *[fetch]*. After the fetch has been evaluated, the comparison in the *[if]* occurs. Since the value of fetch now is "Hansen", 
+and this value will be compared against the constant of "Hansen", our evaluation yields true, and if allows branching of evaluation to enter
+into its lambda block, evaluating our *[sys42.confirm-window]* Active Event.
+
+Intelligently using *[fetch]*, allows you to nest logical pieces of code, in a more logical way, the same way you would using functions and 
+methods in traditional programming languages.
+
+Since *[fetch]* will put the results of its expression into its own value after evaluation, you can also use it in combination with
+for instance *[add]* and the *[insert-xxx]* Active Events. The following code illustrates this.
+
+```
+_exe
+  return
+    person
+      name:Thomas
+      surname:Hansen
+      address:Foo str. 24
+_result
+add:x:/../*/_result
+  fetch:x:/0/0/*(!/address)
+    eval:x:/../*/_exe
+```
 
 
 
