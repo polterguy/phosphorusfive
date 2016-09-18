@@ -6,7 +6,7 @@
 using p5.core;
 using p5.exp;
 
-namespace p5.lambda.keywords
+namespace p5.lambda.keywords.extras
 {
     /// <summary>
     ///     Class wrapping the [fetch] keyword in p5 lambda

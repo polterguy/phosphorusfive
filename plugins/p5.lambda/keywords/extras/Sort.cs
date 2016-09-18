@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 
-namespace p5.lambda.keywords
+namespace p5.lambda.keywords.extras
 {
     /// <summary>
     ///     Class wrapping the [sort] keyword in p5 lambda.

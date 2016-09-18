@@ -7,7 +7,7 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-namespace p5.lambda
+namespace p5.lambda.keywords.core
 {
     /// <summary>
     ///     Class wrapping the [eval-x] keyword in p5 lambda

@@ -8,7 +8,8 @@ using System.Collections;
 using p5.exp;
 using p5.core;
 
-namespace p5.lambda.keywords {
+namespace p5.lambda.keywords.core
+{
     /// <summary>
     ///     Class wrapping the p5 lambda [for-each] keyword.
     /// </summary>

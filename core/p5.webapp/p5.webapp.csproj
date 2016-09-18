@@ -213,6 +213,18 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\..\plugins\extras\p5.data\p5.data.csproj">
+      <Project>{ca83a3ed-bd5d-4557-aa1b-a7c04abd4d4f}</Project>
+      <Name>p5.data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.threading\p5.threading.csproj">
+      <Project>{ef65c1fb-fcc8-43f0-90ac-39da931268e4}</Project>
+      <Name>p5.threading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.web\p5.web.csproj">
+      <Project>{0f68bfa7-1cf7-4737-9058-ced4a9ed3427}</Project>
+      <Name>p5.web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\p5.ajax\p5.ajax.csproj">
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
       <Name>p5.ajax</Name>
@@ -233,10 +245,6 @@
       <Project>{C02D30A6-7DA2-4045-8644-9710AB40B629}</Project>
       <Name>p5.hyperlisp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.threading\p5.threading.csproj">
-      <Project>{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}</Project>
-      <Name>p5.threading</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.types\p5.types.csproj">
       <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>
       <Name>p5.types</Name>
@@ -244,10 +252,6 @@
     <ProjectReference Include="..\..\plugins\p5.math\p5.math.csproj">
       <Project>{E7026921-524B-4B2E-A549-251A5AEB4D89}</Project>
       <Name>p5.math</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.web\p5.web.csproj">
-      <Project>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</Project>
-      <Name>p5.web</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\plugins\extras\p5.crypto\p5.crypto.csproj">
       <Project>{46D8DEF8-01ED-4058-B2D5-689890865494}</Project>
@@ -260,10 +264,6 @@
     <ProjectReference Include="..\..\plugins\extras\p5.net\p5.net.csproj">
       <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
       <Name>p5.net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.data\p5.data.csproj">
-      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
-      <Name>p5.data</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.io\p5.io.csproj">
       <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>

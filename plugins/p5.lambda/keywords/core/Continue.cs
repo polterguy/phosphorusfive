@@ -5,7 +5,8 @@
 
 using p5.core;
 
-namespace p5.lambda.keywords {
+namespace p5.lambda.keywords.core
+{
     /// <summary>
     ///     Class wrapping the [continue] keyword in p5 lambda.
     /// </summary>

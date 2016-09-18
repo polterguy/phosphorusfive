@@ -8,7 +8,7 @@ using p5.core;
 using p5.exp.exceptions;
 using p5.lambda.helpers;
 
-namespace p5.lambda.keywords
+namespace p5.lambda.keywords.core
 {
     /// <summary>
     ///     Class wrapping the [while] keyword in p5 lambda

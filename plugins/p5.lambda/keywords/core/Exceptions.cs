@@ -9,7 +9,8 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-namespace p5.lambda.keywords {
+namespace p5.lambda.keywords.core
+{
     /// <summary>
     ///     Class wrapping exception support in p5 lambda.
     /// </summary>

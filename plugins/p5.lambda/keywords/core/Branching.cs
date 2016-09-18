@@ -7,7 +7,7 @@ using p5.core;
 using p5.exp.exceptions;
 using p5.lambda.helpers;
 
-namespace p5.lambda.keywords
+namespace p5.lambda.keywords.core
 {
     /// <summary>
     ///     Class wrapping conditional p5 lambda keywords, such as [if], [else-if] and [else]
