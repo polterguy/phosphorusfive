@@ -199,12 +199,8 @@ namespace p5.mime
             // Then adding current thread ID
             serverSeed += System.Threading.Thread.CurrentThread.ManagedThreadId.ToString ();
 
-            // Then appending a randomly created Guid, which is created using MAC address of network card, and server ticks
+            // Then appending a randomly created Guid
             serverSeed += Guid.NewGuid ().ToString ();
-
-            // Then adding random seeds generated from "around our application" (Global.asax adds up session, cookies, browser, IP, etc)
-            // p5.lambda adds up [vocabulary], Security adds up user's settings, etc, etc, etc
-            serverSeed += context.RaiseNative ("p5.security.get-pseudo-random-seed").Get<string> (context);
 
             // Then we hash the user seed, multiple times, depending upon the length of the supplied user seed
             // This is done this way, to avoid reducing the resolution of the user-provided seed, such that the longer seed the user

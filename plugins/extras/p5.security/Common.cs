@@ -44,26 +44,6 @@ namespace p5.security
         }
 
         /// <summary>
-        ///     Returns a pseudo random string, generated from sha2 hash of user's settings
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.security.get-pseudo-random-seed", Protection = EventProtection.NativeOpen)]
-        private static void p5_security_get_pseudo_random_seed (ApplicationContext context, ActiveEventArgs e)
-        {
-            var node = AuthFile.GetAuthFile (context);
-            string retVal = Utilities.Convert<string> (context, node);
-            List<byte> userSeedByteList = new List<byte>();
-            for (int idx = 0; idx < retVal.Length; idx += 100) {
-                var subStr = retVal.Substring (idx, Math.Min (100, retVal.Length - idx));
-                byte[] buffer = context.RaiseNative ("sha512-hash", new Node ("", subStr, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
-                userSeedByteList.AddRange (buffer);
-            }
-            byte[] userSeedBytes = userSeedByteList.ToArray ();
-            e.Args.Value = BitConverter.ToString (userSeedBytes).Replace ("-", "");
-        }
-
-        /// <summary>
         ///     Returns the password salt for the server to use when storing passwords in "auth" file
         /// </summary>
         /// <param name="context">Application Context</param>
