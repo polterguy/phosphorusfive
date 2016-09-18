@@ -215,6 +215,24 @@ eval:x:/../*/_x
 In the above scenarion, after evalution of our *[eval]*, only the "foo2" string will be the value of our
 eval invocation.
 
+#### Evaluating stuff that's not a node
+
+If you try to evaluate something that is somehow not a node, then this object will be attempted converted into a node, before it
+is evaluated. This allows you to evaluate strings, values, and even integer values for that matter, as if they were a node structure,
+making *[eval]* perform an automatic conversion (attempt) on your values before evaluating your object. Example below illustrates this.
+
+```
+_x:@"sys42.confirm-window
+  _header:Howdy from string
+  _body:Yup, I've got a body. Do you ...?
+return:Returned from string!"
+eval:x:/../*/_x?value
+```
+
+You can still return values and nodes as usual. There is actually no difference in regards to logic of evaluating a node or lambda object,
+or evaluating a string, except that unless the string you try to evaluate does not for some reasons convert legally into a node, the Hyperlisp
+parser will choke, and throw an exception.
+
 ## "Keywords" in p5.lambda
 
 p5.lambda contains several "keywords", which aren't really keywords, as previously explained, but in fact
@@ -293,9 +311,8 @@ and *[eval-x]* can only change expression types, and nothing else. Everything th
 
 The *[add]* Active Event, allows you to dynamically add nodes into your p5.lambda objects (tree node hierarchy)
 
-This active event must be given an expression as its destination, and can optionally take many different forms of sources through its *[src]*
-or *[rel-src]* parameters. For instance, to add up a static source, into some node destination, you could accomplish that doing the 
-following.
+This active event must be given an expression as its destination, and can optionally take many different forms of sources through its *[src]*.
+For instance, to add up a static source, into some node destination, you could accomplish that doing the following.
 
 ```
 _x
@@ -772,6 +789,36 @@ Notice in the above code, that the static *[src]* declaration of *[set]*, is act
 
 *[set]* can also change the names of nodes, if the destination expression is type declared as "?name".
 
+### Using an Active Event source for your [set], [add] or [insert-x] invocations
+
+Both the *[set]*, *[add]* and *[insert-xxx]* Active Events can instead of taking a static source, use an Active Event as their source.
+Imagine the following.
+
+```
+_data
+  person
+    first:Thomas
+    last:Hansen
+  person
+    first:John
+    last:Doe
+_exe
+  eval-x:x:/+/*
+  return
+    full-name:{0}, {1}
+      :x:/../*/_dn/#/*/last?value
+      :x:/../*/_dn/#/*/first?value
+add:x:/../*/_data/*
+  eval:x:/../*/_exe
+```
+
+In the above code, the *[_exe]* lambda object will be invoked once for each destination of our *[add]*. The invocation of our _exe block, will
+have a *[_dn]* (data node) passed into it, each time, beving the destination source currently being iterated. This allowss us to have a 
+"relative source" for each iteration, where what gets added into our destination, depends upon the destination itself.
+
+You can use any Active Event you wish instead of a *[src]* node, including your custom Active Events. Regardless of which Active Event you 
+choose to use as your source, each invocation of your Active Event will be passed in the *[_dn]* pointing to its current destination.
+
 ### [switch], a shorthand for multiple if invocations
 
 If you have a bunch of values, which you want to compare some value towards, then you can use a *[switch]* statement, such as the below example
@@ -1136,7 +1183,36 @@ If you remove the back-slash at line 29 in the above code, instead of showing th
 your person (1, 2 or 3) when you click the widget. This is because the *[sys42.info-window]* will be databound in the first invocation to
 our *[databind]* Active Event. Which obviously was not our intention.
 
+Notice!
+Sometimes you need to have the results of a *[databind]* invocations create a node who's name starts with a alpha character (@). If the value
+of this node is databound itself though, this would instead of creating a node starting with @ in its name, expect an Active Event who's name
+was that of your node. You can accomplish this though creating a lambda object, returning a node, who's name starts with an "@" though, and 
+then use *[eval]* as an Active Event invocation for your databound node. Imagine the following code.
 
+```
+_people
+  person1
+    name:Thomas Hansen
+  person2
+    name:John Doe
+  person3
+    name:Jane Doe
+_exe
+  eval-x:x:/+/*
+  return
+    @name:x:/../*/_dn/#/*/name?value
+databind:x:/../*/_out
+  src:x:/../*/_people/*
+  template
+    {@eval}:x:/../*/_exe
+_out
+```
+
+#### Warning!
+
+The *[databind]* Active Event is extremely powerful. But this power, comes with a cost, which is that it is very easy to create extremely 
+difficult to understand code, unless you are careful. Understanding how *[databind]* works, also requires some very good visualization skills,
+to understand what happens, and when it happens.
 
 
 
