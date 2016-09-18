@@ -21,6 +21,18 @@ An expression can retreieve 4 basic values
 * Value - The value part of your nodes
 * Count - Number of matches for your expression
 
+In addition, an expression can be type-converted. If you are for instance requesting a node's value, who is of type string, you can  convert
+the result into an integer by appending ".int" after the expression, such as the following example illustrates.
+
+```
+_data:string:5
+set:x:?value
+  src:x:/../*/_data?value.int
+```
+
+For the record, an expression without any iterators, is the "identity expression", yielding the "current node", which for the above example, means
+it will return the *[set]* node's value itself.
+
 If you wish to return the number of nodes having the name of for instance *"foo"* from within
 your *[_data]* segment, you can use syntax such as the following.
 
@@ -40,6 +52,8 @@ Expressions consists of three basic parts
 * :x: - Signifying its an expression type
 * Zero or more iterators, separated by "/"
 * A type declaration, being any of "?name", "?count", "?value" or "?node" (which is the default value, if no type declaration is explicitly supplied)
+
+If the type declaration is omitted, the type declaration is assumed to be "?node".
 
 Each iterator is separated by a slash (/), resembling the way XPath syntax is. An iterator will 
 react upon the results from its previous iterator, mening they're "piped" together, to create a combined result.
