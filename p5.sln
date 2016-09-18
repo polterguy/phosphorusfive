@@ -71,6 +71,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.web", "plugins\extras\p5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.threading", "plugins\extras\p5.threading\p5.threading.csproj", "{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.events", "plugins\p5.events\p5.events.csproj", "{8EB5FDEA-D073-4147-AE65-397A01B463DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.strings", "plugins\p5.strings\p5.strings.csproj", "{8EB5FDEA-D073-4147-AE65-376A03B463DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -234,6 +238,18 @@ Global
 		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
 		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{8EB5FDEA-D073-4147-AE65-397A01B463DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EB5FDEA-D073-4147-AE65-397A01B463DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EB5FDEA-D073-4147-AE65-397A01B463DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-397A01B463DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-397A01B463DF}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{8EB5FDEA-D073-4147-AE65-397A01B463DF}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A03B463DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A03B463DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A03B463DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A03B463DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A03B463DA}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A03B463DA}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -266,6 +282,8 @@ Global
 		{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
 		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
 		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
+		{8EB5FDEA-D073-4147-AE65-397A01B463DF} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{8EB5FDEA-D073-4147-AE65-376A03B463DA} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

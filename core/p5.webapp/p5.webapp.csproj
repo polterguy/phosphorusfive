@@ -225,6 +225,14 @@
       <Project>{0f68bfa7-1cf7-4737-9058-ced4a9ed3427}</Project>
       <Name>p5.web</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.events\p5.events.csproj">
+      <Project>{8eb5fdea-d073-4147-ae65-397a01b463df}</Project>
+      <Name>p5.events</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.strings\p5.strings.csproj">
+      <Project>{8eb5fdea-d073-4147-ae65-376a03b463da}</Project>
+      <Name>p5.strings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\p5.ajax\p5.ajax.csproj">
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
       <Name>p5.ajax</Name>

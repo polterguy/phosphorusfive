@@ -3,9 +3,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</ProjectGuid>
+    <ProjectGuid>{8EB5FDEA-D073-4147-AE65-376A03B463DA}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>p5.lambda</RootNamespace>
+    <RootNamespace>p5.strings</RootNamespace>
     <ReleaseVersion>1.0</ReleaseVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -18,7 +18,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AssemblyName>p5.lambda</AssemblyName>
+    <AssemblyName>p5.strings</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -43,32 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="helpers\Conditions.cs" />
-    <Compile Include="keywords\core\Add.cs" />
-    <Compile Include="keywords\core\Branching.cs" />
-    <Compile Include="keywords\core\Set.cs" />
-    <Compile Include="keywords\core\While.cs" />
-    <Compile Include="keywords\core\ForEach.cs" />
-    <Compile Include="keywords\core\Insert.cs" />
-    <Compile Include="Eval.cs" />
-    <Compile Include="keywords\extras\Retrieve.cs" />
-    <Compile Include="ComparisonOperators.cs" />
-    <Compile Include="keywords\extras\Fetch.cs" />
-    <Compile Include="keywords\core\EvalExpression.cs" />
-    <Compile Include="keywords\core\Exceptions.cs" />
-    <Compile Include="keywords\extras\Databind.cs" />
-    <Compile Include="keywords\extras\Sort.cs" />
-    <Compile Include="keywords\core\Return.cs" />
-    <Compile Include="keywords\core\Switch.cs" />
-    <Compile Include="keywords\core\Break.cs" />
-    <Compile Include="keywords\core\Continue.cs" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <None Include="README.md" />
-  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
@@ -90,5 +65,16 @@
       <Name>p5.core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="IndexOf.cs" />
+    <Compile Include="Join.cs" />
+    <Compile Include="Length.cs" />
+    <Compile Include="Match.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Replace.cs" />
+    <Compile Include="Split.cs" />
+    <Compile Include="ToLower.cs" />
+    <Compile Include="ToUpper.cs" />
+    <Compile Include="Trim.cs" />
+  </ItemGroup>
 </Project>

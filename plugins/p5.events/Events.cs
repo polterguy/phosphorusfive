@@ -9,7 +9,7 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-namespace p5.lambda.events.extras 
+namespace p5.events
 {
     /// <summary>
     ///     Common helper methods for dynamically created Active Events.
