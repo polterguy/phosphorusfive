@@ -808,6 +808,49 @@ Notice in the above code, that the static *[src]* declaration of *[set]*, is act
 
 *[set]* can also change the names of nodes, if the destination expression is type declared as "?name".
 
+### Remove nodes or values with [set]
+
+If you want to remove a node, or remove a value for that matter, then you can use *[set]* without a source at all. This will remove the 
+destination, instead of changing it. For instance to remove a node you could use something like the code below.
+
+```
+_data:foo
+set:x:/-
+```
+
+Notice that the p5.lambda execution engine perfectly tolerates tha above code, without cluttering the execution instrucction pointer, or
+messing up the order of the nodes that are supposed to be evaluated. The same way it'll do if you add or change nodes just below its current
+instruction pointer.
+
+The p5.lambda execution engine is extremely tolerant in regards to changes in the tree. You can even remove the currently iterated pointer,
+and still have the engine perfectly continue its normal execution flow. Consider this code.
+
+```
+_data
+set:x:
+set:x:/../*/_data?value
+  src:foo
+```
+
+If you run the above code through the System42/executor, it'll perfectly evaluate, and change the *[_data]* node's value to "foo". Realize 
+though, that since the tree is changed after our first *[set]* invocation, expressions might change as a result. Consider this code for 
+instance.
+
+```
+_data
+set:x:
+set:x:/-2?value
+  src:foo
+```
+
+The above code have some "weird consequences". To understand why, realize that as the execution engine reaches your second *[set]* invocation,
+the first [set] is gone. Hence, the "2nd younger sibling iterator" (/-2) will not return the *[_data]* node, but instead traverse past the 
+beginning of the tree, realizing it's don a round-trip, wrapping around to the eldest node in the tree, ending up with having the value of the 
+second *[set]* node change its value, and not the *[_data]* as might be assumed at first glance.
+
+This occurs since expressions are not evaluated before the instruction pointer reaches them. Which allowss you to reference nodes in your code,
+which are later created, as a consequence of the code being evaluated. It is said that "expressions are lazily evaluated".
+
 ### Using an Active Event source for your [set], [add] or [insert-x] invocations
 
 Both the *[set]*, *[add]* and *[insert-xxx]* Active Events can instead of taking a static source, use an Active Event as their source.
@@ -1233,64 +1276,6 @@ The *[databind]* Active Event is extremely powerful. But this power, comes with 
 difficult to understand code, unless you are careful. Understanding how *[databind]* works, also requires some very good visualization skills,
 to understand what happens, and when it happens.
 
-### [sort]ing your nodes
-
-In p5.lambda there is an Active Event which allows you to sort your nodes, and supply your own "sort callback". You callback will be invoked
-with an *[_lhs]* and an *[_rhs]* node, asking you to determine which node comes "before the other" of these two given arguments. Both 
-the *[_lhs]* and the *[_rhs]* node passed into your lambda block, will be passed by reference, allowing you to traverse the tree, both up and
-down from the nodes you wish to sort on.
-
-Imagine the following code, and let us sort them according to their names.
-
-```
-_data
-  person:1
-    name:Thomas Hansen
-  person:2
-    name:John Doe
-  person:3
-    name:Abraham Lincoln
-sort:x:/../*/_data/*
-  if:x:/../*/_lhs/#/*/name?value
-    <:x:/../*/_rhs/#/*/name?value
-    return:int:-1
-  else-if:x:/../*/_lhs/#/*/name?value
-    >:x:/../*/_rhs/#/*/name?value
-    return:int:1
-  else
-    return:int:0
-```
-
-After evaluating the above p5.lambda, "Abraham Lincoln" will be the first child beneath *[sort]*. Then you will find "John Doe", before
-finally "Thomas Hansen". This is the alphabetical sort order of them, according to their names.
-
-Notice that your *[sort]* callback expects you to return either -1, 1 or 0. -1 for those cases when *[_lhs]* should come before *[_rhs]*,
-1 for vice versa, and 0 for when the nodes are supposed to be handled as equals.
-
-Also notice that *[sort]* does not change the original node-set, but handles it immutable, and returns the sorted version as children of itself,
-after evaluation.
-
-After evaluation of the above code for instance, your resulting node-set will look like this.
-
-```
-_data
-  person:1
-    name:Thomas Hansen
-  person:2
-    name:John Doe
-  person:3
-    name:Abraham Lincoln
-sort
-  person:3
-    name:Abraham Lincoln
-  person:2
-    name:John Doe
-  person:1
-    name:Thomas Hansen
-```
-
-Notice how your supplied callback lambda object is now entirely gone, and only the sorted nodes are left in your lambda object.
-
 ### [fetch], evaluating lambda and fetching the requested result
 
 The *[fetch]* Active Event, allows you to declare a piece of lambda, have it evaluated, and fetch some parts of its result into the value
@@ -1358,6 +1343,68 @@ add:x:/../*/_result
     eval:x:/../*/_exe
 ```
 
+### [sort]ing your nodes
+
+In p5.lambda there is an Active Event which allows you to sort your nodes, and supply your own "sort callback". You callback will be invoked
+with an *[_lhs]* and an *[_rhs]* node, asking you to determine which node comes "before the other" of these two given arguments. Both 
+the *[_lhs]* and the *[_rhs]* node passed into your lambda block, will be passed by reference, allowing you to traverse the tree, both up and
+down from the nodes you wish to sort on.
+
+Imagine the following code, and let us sort them according to their names.
+
+```
+_data
+  person:1
+    name:Thomas Hansen
+  person:2
+    name:John Doe
+  person:3
+    name:Abraham Lincoln
+sort:x:/../*/_data/*
+  if:x:/../*/_lhs/#/*/name?value
+    <:x:/../*/_rhs/#/*/name?value
+    return:int:-1
+  else-if:x:/../*/_lhs/#/*/name?value
+    >:x:/../*/_rhs/#/*/name?value
+    return:int:1
+  else
+    return:int:0
+```
+
+After evaluating the above p5.lambda, "Abraham Lincoln" will be the first child beneath *[sort]*. Then you will find "John Doe", before
+finally "Thomas Hansen". This is the alphabetical sort order of them, according to their names.
+
+Notice that your *[sort]* callback expects you to return either -1, 1 or 0. -1 for those cases when *[_lhs]* should come before *[_rhs]*,
+1 for vice versa, and 0 for when the nodes are supposed to be handled as equals.
+
+Also notice that *[sort]* does not change the original node-set, but handles it immutable, and returns the sorted version as children of itself,
+after evaluation.
+
+After evaluation of the above code for instance, your resulting node-set will look like this.
+
+```
+_data
+  person:1
+    name:Thomas Hansen
+  person:2
+    name:John Doe
+  person:3
+    name:Abraham Lincoln
+sort
+  person:3
+    name:Abraham Lincoln
+  person:2
+    name:John Doe
+  person:1
+    name:Thomas Hansen
+```
+
+Notice how your supplied callback lambda object is now entirely gone, and only the sorted nodes are left in your node-tree.
+
+## Ninja tricks
+
+Below you can find some "tricks" with p5.lambda, helping you achieve some special thing, maybe not completely intuitive unless explained.
+
 ### Having a relative [src] node with Active Event sources
 
 Sometimes you wish to either *[add]*, *[set]* or use one of the *[insert-xxx]* Active Events, with a "relative source", which is relative
@@ -1401,7 +1448,31 @@ _data
 The above example allows us to create a "relative source" for our *[set]*, *[add]* and *[insert-xxx]* invocations. Where the source 
 is "relative" to the destination of our operation.
 
+### Parametrizing your expressions
 
+Sometimes you do not know the exact expression during runtime, but want to parametrize your expressions, according to some argument passed
+into your code. Imagine something like this for instance, which is probably a relatively common use-case when consuming Phosphorus Five.
+
+```
+_parameter:last
+_new-value:Doe
+_data
+  person
+    first:Thomas
+    last:Hansen
+set:x:/../*/_data/*/*/{0}?value
+  :x:/../*/_parameter?value
+  src:x:/../*/_new-value?value
+```
+
+In the above code, we do not know which node beneath our *[person]* is supposed to be updated, but the actual node is passed in as a 
+parameter through the *[_parameter]* node's value. By creating a formatted lazy evaluated expression, which takes the value of 
+our *[_parameter]* node as an argument, we can deduct exactly which node beneath *[person]* is supposed to be updated to runtime.
+
+Now of course, in the above example, the *[_parameter]* node is statically declared, but it doesn't matter if it is passed into a lambda
+object by value, or used as a constant, which is shown in the above code.
+
+To understand how formatting expressions work, check out the documentation for the "p5.exp" project.
 
 
 
