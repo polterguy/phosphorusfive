@@ -1233,6 +1233,64 @@ The *[databind]* Active Event is extremely powerful. But this power, comes with 
 difficult to understand code, unless you are careful. Understanding how *[databind]* works, also requires some very good visualization skills,
 to understand what happens, and when it happens.
 
+### [sort]ing your nodes
+
+In p5.lambda there is an Active Event which allows you to sort your nodes, and supply your own "sort callback". You callback will be invoked
+with an *[_lhs]* and an *[_rhs]* node, asking you to determine which node comes "before the other" of these two given arguments. Both 
+the *[_lhs]* and the *[_rhs]* node passed into your lambda block, will be passed by reference, allowing you to traverse the tree, both up and
+down from the nodes you wish to sort on.
+
+Imagine the following code, and let us sort them according to their names.
+
+```
+_data
+  person:1
+    name:Thomas Hansen
+  person:2
+    name:John Doe
+  person:3
+    name:Abraham Lincoln
+sort:x:/../*/_data/*
+  if:x:/../*/_lhs/#/*/name?value
+    <:x:/../*/_rhs/#/*/name?value
+    return:int:-1
+  else-if:x:/../*/_lhs/#/*/name?value
+    >:x:/../*/_rhs/#/*/name?value
+    return:int:1
+  else
+    return:int:0
+```
+
+After evaluating the above p5.lambda, "Abraham Lincoln" will be the first child beneath *[sort]*. Then you will find "John Doe", before
+finally "Thomas Hansen". This is the alphabetical sort order of them, according to their names.
+
+Notice that your *[sort]* callback expects you to return either -1, 1 or 0. -1 for those cases when *[_lhs]* should come before *[_rhs]*,
+1 for vice versa, and 0 for when the nodes are supposed to be handled as equals.
+
+Also notice that *[sort]* does not change the original node-set, but handles it immutable, and returns the sorted version as children of itself,
+after evaluation.
+
+After evaluation of the above code for instance, your resulting node-set will look like this.
+
+```
+_data
+  person:1
+    name:Thomas Hansen
+  person:2
+    name:John Doe
+  person:3
+    name:Abraham Lincoln
+sort
+  person:3
+    name:Abraham Lincoln
+  person:2
+    name:John Doe
+  person:1
+    name:Thomas Hansen
+```
+
+Notice how your supplied callback lambda object is now entirely gone, and only the sorted nodes are left in your lambda object.
+
 ### [fetch], evaluating lambda and fetching the requested result
 
 The *[fetch]* Active Event, allows you to declare a piece of lambda, have it evaluated, and fetch some parts of its result into the value
@@ -1341,7 +1399,7 @@ _data
 ```
 
 The above example allows us to create a "relative source" for our *[set]*, *[add]* and *[insert-xxx]* invocations. Where the source 
-is "relative" to the destination of our operations.
+is "relative" to the destination of our operation.
 
 
 
