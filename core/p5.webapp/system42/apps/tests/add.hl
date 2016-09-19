@@ -30,19 +30,6 @@ expression-source
       :x:/../0/0?node.string
 
 /*
- * Tests that "add" behaves correctly when source is [rel-src]
- */
-rel-source
-  _data
-    foo:bar
-  add:x:/-/*
-    rel-src:x:?name
-  if:x:/../0/0/0
-    !=:node:"foo"
-    throw:@"Assert error, expected [foo], got [{0}]!"
-      :x:/../0/0/0?node.string
-
-/*
  * Tests that "add" behaves correctly when source is Active Event
  */
 event-source

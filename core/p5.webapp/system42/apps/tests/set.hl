@@ -128,62 +128,6 @@ multiple-source
       :x:/../0?value
 
 /*
- * Tests that "set" behaves correctly with [rel-src]
- */
-rel-src
-  _data
-    foo1
-    foo2
-  set:x:/-/*?value
-    rel-src:x:?name
-  if:x:/../0/0?value
-    !=:foo1
-    or:x:/../0/1?value
-      !=:foo2
-    throw:@"Assert error, expected [foo1] and [foo2], got [{0}] and [{1}]!"
-      :x:/../0/0?value
-      :x:/../0/1?value
-
-/*
- * Tests that "set" behaves correctly with [rel-src] with formatted expression source
- */
-rel-src-formatted-expression
-  _output
-    foo1
-    foo2
-  _input
-    _foo1:bar1
-    _foo2:bar2
-  set:x:/-2/*?value
-    rel-src:x:/../*/_input/*/_{0}?value
-      :x:?name
-  if:x:/../0/0?value
-    !=:bar1
-    or:x:/../0/1?value
-      !=:bar2
-    throw:@"Assert error, expected [bar1] and [bar2], got [{0}] and [{1}]!"
-      :x:/../0/0?value
-      :x:/../0/1?value
-
-/*
- * Tests that "set" behaves correctly with [rel-src] with formatted constant source
- */
-rel-src-formatted-constant
-  _output
-    foo1
-    foo2
-  set:x:/-/*?value
-    rel-src:_{0}
-      :x:?name
-  if:x:/../0/0?value
-    !=:_foo1
-    or:x:/../0/1?value
-      !=:_foo2
-    throw:@"Assert error, expected [_foo1] and [_foo2], got [{0}] and [{1}]!"
-      :x:/../0/0?value
-      :x:/../0/1?value
-
-/*
  * Tests that "set" behaves correctly with event source,
  * referencing [_dn] or data node of Active Event
  */

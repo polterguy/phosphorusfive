@@ -403,7 +403,6 @@
     <Content Include="system42\apps\tests\length.hl" />
     <Content Include="system42\apps\tests\match.hl" />
     <Content Include="system42\apps\tests\replace.hl" />
-    <Content Include="system42\apps\tests\retrieve.hl" />
     <Content Include="system42\apps\tests\return.hl" />
     <Content Include="system42\apps\tests\set.hl" />
     <Content Include="system42\apps\tests\sort.hl" />

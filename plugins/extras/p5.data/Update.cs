@@ -36,18 +36,7 @@ namespace p5.data
                 var changed = new List<Node> ();
 
                 // Figuring out source, and executing the corresponding logic
-                if (e.Args.Children.Count > 0 && e.Args.LastChild.Name == "rel-src") {
-
-                    // Iterating through all destinations, figuring out source relative to each destinations
-                    foreach (var idxDestination in ex.Evaluate (context, Common.Database, e.Args)) {
-
-                        // Figuring out which file Node updated belongs to, and storing in changed list
-                        Common.AddNodeToChanges (idxDestination.Node, changed);
-
-                        // Source is relative to destination
-                        idxDestination.Value = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
-                    }
-                } else if (e.Args.Children.Count > 0 && e.Args.LastChild.Name == "src") {
+                if (e.Args.Children.Count > 0 && e.Args.LastChild.Name == "src") {
 
                     // Figuring out source
                     var source = XUtil.SourceSingle (context, e.Args);
@@ -64,7 +53,8 @@ namespace p5.data
                 } else {
 
                     // Syntax error
-                    throw new LambdaException ("No [src] or [rel-src] was given to [update-data]", e.Args, context);
+                    // TODO: Support Active Event source!
+                    throw new LambdaException ("No [src] was given to [update-data]", e.Args, context);
                 }
             
                 // Saving all affected files

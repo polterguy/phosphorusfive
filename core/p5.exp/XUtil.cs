@@ -379,19 +379,18 @@ namespace p5.exp
             // Assuming first node with non-empty name is source node ...
             var srcNode = srcNodes [0];
 
-            // Checking what type of source we have, it might be [src], [rel-src] or any Active Event invocation
-            if (srcNode.Name == "src" || srcNode.Name == "rel-src") {
+            // Checking what type of source we have, it might be [src] or any Active Event invocation
+            if (srcNode.Name == "src") {
 
                 // Returning "simple source"
                 // To support having sources which differs from evaluated lambda, such as [select-data] requires, 
                 // we pass in dataSource if dataSource differs from evaluatedNode, otherwise we pass in source node 
                 // itself as dataSource
-                // To support formatting expressions in [rel-src], we pass in dataSource as "formattingNode" if src is [rel-src]
                 return SourceSingleImplementation (
                     context,
                     srcNode, 
                     dataSource == evaluatedNode ? srcNode : dataSource,
-                    srcNode.Name == "rel-src" ? dataSource : null);
+                    null);
             } else {
 
                 // Active Event invocation source, invoking Active Event, return source as result from Active Event invocation.
@@ -480,7 +479,7 @@ namespace p5.exp
             Node evaluatedNode, 
             Node dataSource)
         {
-            // Finding first [src] or [rel-src] node
+            // Finding first [src] node
             var srcNodes = evaluatedNode.Children.Where (ix => ix.Name != "").ToList ();
 
             // Returning early if there is no source
@@ -490,10 +489,10 @@ namespace p5.exp
             // Assuming first node with non-empty name is source node
             var srcNode = srcNodes [0];
 
-            // Checking what type of source we have, it might be [src], [rel-src] or any Active Event
-            if (srcNode.Name == "src" || srcNode.Name == "rel-src") {
+            // Checking what type of source we have, it might be [src] or any Active Event
+            if (srcNode.Name == "src") {
 
-                // Simple source, either [src] or [rel-src]
+                // Simple source, [src] source
                 return SourceNodesImplementation (
                     context,
                     srcNode, 

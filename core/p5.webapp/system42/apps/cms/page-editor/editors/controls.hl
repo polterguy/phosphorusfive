@@ -2109,8 +2109,9 @@ is not legally allowed as a child of a '{1}' element"
        */
       for-each:x:/../*/lisp2lambda/*
         set:x:/./*/_dp/#?name
-          rel-src:create-{0}-widget
-            :x:?name
+          eval
+            return:create-{0}-widget
+              :x:/../*/_dn/#?name
         add:x:/..for-each/*/_dp/#
           src
             parent:wysiwyg-editor-surface

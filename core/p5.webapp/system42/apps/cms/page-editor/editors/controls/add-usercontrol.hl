@@ -195,8 +195,9 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                      * Changes [literal], [container], etc, to [create-literal-vidget], [create-container-widget] etc
                                      */
                                     set:x:/-/*?name
-                                      rel-src:create-{0}-widget
-                                        :x:?name
+                                      eval
+                                        return:create-{0}-widget
+                                          :x:/../*/_dn/#?name
 
                                     /*
                                      * Adds up main wrapper widget as [parent] to all [create-xxx-widget] invocations inside

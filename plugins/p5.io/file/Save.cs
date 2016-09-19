@@ -29,10 +29,10 @@ namespace p5.io.file
                 // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // Checking if we're given an expression as destination, to make sure we support [rel-src] and Active Event source
+                // Checking if we're given an expression as destination, to make sure we support Active Event source
                 if (XUtil.IsExpression (e.Args.Value)) {
 
-                    // Destination is an expression, which means we might have a [rel-src], [src] or Active Event invocation source
+                    // Destination is an expression, which means we might have an Active Event invocation source
                     var destEx = e.Args.Value as Expression;
                     foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 

@@ -53,7 +53,6 @@
     <Compile Include="keywords\core\ForEach.cs" />
     <Compile Include="keywords\core\Insert.cs" />
     <Compile Include="Eval.cs" />
-    <Compile Include="keywords\extras\Retrieve.cs" />
     <Compile Include="ComparisonOperators.cs" />
     <Compile Include="keywords\extras\Fetch.cs" />
     <Compile Include="keywords\core\EvalExpression.cs" />

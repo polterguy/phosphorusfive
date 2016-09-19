@@ -2964,8 +2964,9 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
         select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
           :/usercontrols/data-table
         set:x:/-/*?name
-          rel-src:create-{0}-widget
-            :x:?name
+          eval
+            return:create-{0}-widget
+              :x:/../*/_dn/#?name
         add:x:/../*/select-data/*
           src:""parent:{0}""
             :x:/../*/_event?value
@@ -3422,8 +3423,9 @@ of this server, theoretically might be extorted to give out his web logs, which 
         select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
           :/usercontrols/input-name-and-email
         set:x:/-/*?name
-          rel-src:create-{0}-widget
-            :x:?name
+          eval
+            return:create-{0}-widget
+              :x:/../*/_dn/#?name
         add:x:/../*/select-data/*
           src:""parent:{0}""
             :x:/../*/_event?value
@@ -3591,8 +3593,9 @@ container:encourage-user-to-share
     select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
       :/usercontrols/paged-searchable-data-table
     set:x:/-/*?name
-      rel-src:create-{0}-widget
-        :x:?name
+      eval
+        return:create-{0}-widget
+          :x:/../*/_dn/#?name
     add:x:/../*/select-data/*
       src:""parent:{0}""
         :x:/../*/_event?value
@@ -4246,8 +4249,9 @@ container
         select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
           :/usercontrols/input-name-and-email
         set:x:/-/*?name
-          rel-src:create-{0}-widget
-            :x:?name
+          eval
+            return:create-{0}-widget
+              :x:/../*/_dn/#?name
         add:x:/../*/select-data/*
           src:""parent:{0}""
             :x:/../*/_event?value
@@ -4299,8 +4303,9 @@ container
     select-data:x:@""/*/*/p5.page/""""={0}""""/*/controls?value.node""
       :/usercontrols/paged-searchable-data-table
     set:x:/-/*?name
-      rel-src:create-{0}-widget
-        :x:?name
+      eval
+        return:create-{0}-widget
+          :x:/../*/_dn/#?name
     add:x:/../*/select-data/*
       src:""parent:{0}""
         :x:/../*/_event?value
