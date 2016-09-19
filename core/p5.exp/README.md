@@ -379,6 +379,36 @@ it will "wrap around" to the last node, returning only the last children node of
 
 Using this technique, you can easily retrieve the "last child" of some node-set.
 
+### Formatting expressions
+
+In addition to p5.lambda expressions, you can also create a "formatting expression". This works similarly to how you format a 
+string in C#, and is evaluated _BEFORE_ any p5.lambda expressions are evaluated. This allows you to create a p5.lambda expression,
+where parts of it are string substituted, with either a constant value, or another expression, leading to some other node, value or name.
+
+Imagine the following code.
+
+```
+_foo:foo2
+_data
+  foo1:howdy
+  foo2:world
+_output
+set:x:/../*/_output?value
+  src:x:/../*/_data/*/{0}?value
+    :x:/../*/_foo?value
+```
+
+What occurs above, is that first the inner expression is evaluated. This is the node at the bottom of the above code, with noe name.
+Then the {0} parts in the *[src]* expression is substituted with the evaluated return value of the outer expression, resulting in
+that the [src] expression looks like this "src:x:/../*/_data/*/foo2?value", since the inner expression leads to the *[_foo]* node's value,
+which happens to be "foo2".
+
+Formatting expressions substitute their braced integer values, with their corresponding child node's, having no name, and its "value", after
+evaluating it if it is an expression. You can also use a constant, instead of an expression as your nameless substitution.
+
+This allows you to create both normal string, and/or complex expressions, which is "parametrized", and changes according to how your lambda
+object changes. Allowing you to pass in "parameters" to your expressions. In addition to concatenating strings of course.
+
 ### Boolean algebara on expressions
 
 p5.exp support boolean algabra on your expressions. This allows you to use all the four boolean algebraic

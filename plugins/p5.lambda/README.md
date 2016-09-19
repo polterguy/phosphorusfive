@@ -233,6 +233,25 @@ You can still return values and nodes as usual. There is actually no difference 
 or evaluating a string, except that unless the string you try to evaluate does not for some reasons convert legally into a node, the Hyperlisp
 parser will choke, and throw an exception.
 
+#### Evaluating a block of lambda instead of an expression
+
+If you do not provide a value to *[eval]*, then it will instead of handling its children as arguments, directly evaluate its children, as
+a p5.lambda block. This is often useful in combination with for instance the *[set]* Active Event, which we will later dive into, further
+down in the document here. However, to illustrate its simplest version, imagine this code.
+
+```
+eval
+  create-literal-widget
+    element:h3
+    innerValue:Foo, bar!
+```
+
+In the above code, the p5.lambda execution engine will see that our *[eval]* invocation does not have any expression, or anything in its
+value, that can be converted into a node in any ways. Therefor it will simply evaluate its own children nodes, as a piece of lambda block,
+having still the root node of its evaluation being the *[eval]* node itself.
+
+Later in our documentation we will dive into ssome use-cases where this is extremely useful. But for now, just keep it at the back of your mind.
+
 ## "Keywords" in p5.lambda
 
 p5.lambda contains several "keywords", which aren't really keywords, as previously explained, but in fact
@@ -1280,6 +1299,51 @@ add:x:/../*/_result
   fetch:x:/0/0/*(!/address)
     eval:x:/../*/_exe
 ```
+
+### Having a relative [src] node with Active Event sources
+
+Sometimes you wish to either *[add]*, *[set]* or use one of the *[insert-xxx]* Active Events, with a "relative source", which is relative
+to the destination. This can actually easily be achieved, using one of the p5.lambda "Ninja tricks" with a little help from our *[eval]*
+friend.
+
+Imagine you have a node list, containing first name and last names. Then you wish to create a third node, which is the last name combined
+with the first name, for some reasons. Let's show that with some code.
+
+```
+_data
+  person
+    first-name:Thomas
+    last-name:Hansen
+  person
+    first-name:John
+    last-name:Doe
+add:x:/../*/_data/*
+  eval
+    eval-x:x:/+
+    return:"full-name:{0}, {1}"
+      :x:/../*/_dn/#/*/last-name?value
+      :x:/../*/_dn/#/*/first-name?value
+```
+
+After evaluating the above lambda block, the output will look like this.
+
+```
+_data
+  person
+    first-name:Thomas
+    last-name:Hansen
+    full-name:Hansen, Thomas
+  person
+    first-name:John
+    last-name:Doe
+    full-name:Doe, John
+/* ... rest of code ... */
+```
+
+The above example allows us to create a "relative source" for our *[set]*, *[add]* and *[insert-xxx]* invocations. Where the source 
+is "relative" to the destination of our operations.
+
+
 
 
 
