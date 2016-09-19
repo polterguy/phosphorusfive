@@ -1,0 +1,108 @@
+/*
+ * Contains unit tests for testing dynamically created events in system
+ */
+
+/*
+ * Tests that events can be stateful
+ */
+stateful-event
+  create-event:test.stateful
+    _static:node:"count:int:0"
+    set:x:/../*/_static/#?value
+      +:x:/../*/_static/#?value
+        _:int:1
+    eval-x:x:/+
+    return:Count {0}
+      :x:/../*/_static/#?value
+  test.stateful
+  test.stateful
+  test.stateful
+  if:x:/../*/test.stateful/[0,1]?value
+    !=:Count 1
+    or:x:/../*/test.stateful/[1,2]?value
+      !=:Count 2
+    or:x:/../*/test.stateful/[2,3]?value
+      !=:Count 3
+    throw:@"Assert error, stateful events was not stateful"
+  delete-event:test.stateful
+
+/*
+ * Tests that events can be deleted
+ */
+delete-event
+  create-event:test.to-delete
+    return:foo
+  test.to-delete
+  delete-event:test.to-delete
+  test.to-delete
+  if:x:/../*/test.to-delete/[0,1]?value
+    !=:foo
+    or:x:/../*/test.to-delete/[1,2]?value
+    throw:@"Assert error, event could not be deleted"
+
+/*
+ * Tests that protected event cannot be deleted
+ */
+delete-protected-event
+  _exc
+  vocabulary:test.protected-to-delete
+  if:x:/-/*?count
+    >:int:0
+    try
+      delete-event:test.protected-to-delete
+    catch
+      set:x:/../*/_exc?value
+        src:bool:true
+      return
+    throw:"No exception occurred when attempting to delete protected event"
+  create-protected-event:test.protected-to-delete
+    return:foo
+  test.protected-to-delete
+  try
+    delete-event:test.protected-to-delete
+  catch
+    set:x:/../*/_exc?value
+      src:bool:true
+  test.protected-to-delete
+  if:x:/../*/test.protected-to-delete/[0,1]?value
+    !=:foo
+    or:x:/../*/test.protected-to-delete/[1,2]?value
+      !=:foo
+    or:x:/../*/_exc?value
+      !=:bool:true
+    throw:@"Assert error, protected event could be deleted"
+
+
+/*
+ * Tests that protected event cannot be modified
+ */
+modify-protected-event
+  _exc
+  vocabulary:test.protected-to-modify
+  if:x:/-/*?count
+    >:int:0
+    try
+      create-event:test.protected-to-modify
+        _foo
+    catch
+      set:x:/../*/_exc?value
+        src:bool:true
+      return
+    throw:"No exception occurred when attempting to mnodify protected event"
+  create-protected-event:test.protected-to-modify
+    return:foo
+  test.protected-to-modify
+  try
+    create-event:test.protected-to-modify
+      _foo
+  catch
+    set:x:/../*/_exc?value
+      src:bool:true
+  test.protected-to-modify
+  if:x:/../*/test.protected-to-modify/[0,1]?value
+    !=:foo
+    or:x:/../*/test.protected-to-modify/[1,2]?value
+      !=:foo
+    or:x:/../*/_exc?value
+      !=:bool:true
+    throw:@"Assert error, protected event could be modified"

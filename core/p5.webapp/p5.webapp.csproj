@@ -452,10 +452,6 @@
     <None Include="users\root\documents\public\README.md" />
     <None Include="users\root\documents\private\README.md" />
     <None Include="users\root\temp\README.md" />
-    <None Include="system42\tests\index.hl" />
-    <None Include="system42\tests\expressions.hl" />
-    <None Include="system42\tests\for-each.hl" />
-    <None Include="system42\tests\iterators.hl" />
     <None Include="system42\startup\misc-events\sys42.get-user-control-settings.hl" />
     <None Include="system42\misc\drag-and-drop-upload.hl" />
     <None Include="common\private\README.md" />

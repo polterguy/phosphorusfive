@@ -82,4 +82,11 @@ For the record, the above "Ninja Trick" is something you should be _careful_ wit
 considered "good practice". However, for those rare occassions where it makes sense, it really makes good sense though. A good example
 is for instance caching, and similar type of problems.
 
+### Protected dynamic Active Events
+
+Sometimes, you want to create an Active Event, which you do not want others to be able to tamper with, change, or delete, for some reasons.
+A good example of why, might be security reasons, where you want to have guarantees, of that nothing can modify your Active Event. This
+is easily done by using the *[create-protected-event]* Active Event, which is a "one way street", meaning once initially created, nobody can 
+neither "uncreate" it, nor change your event in any ways.
+
 
