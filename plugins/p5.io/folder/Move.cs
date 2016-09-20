@@ -22,7 +22,8 @@ namespace p5.io.folder
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "move-folder", Protection = EventProtection.LambdaClosed)]
-        public static void move_folder (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "rename-folder", Protection = EventProtection.LambdaClosed)]
+        public static void move_rename_folder (ApplicationContext context, ActiveEventArgs e)
         {
             /*
              * We do not remove value of arguments here, since it is used for returning value of 

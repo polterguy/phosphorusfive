@@ -12,7 +12,17 @@ Also realize that unless you are authorized to load, save, change or delete a sp
 be thrown by the framework. For instance, a user does not by default have access to files belonging to another user, existing within
 another user's "home" folder. (/users/username/... folder)
 
-## How to load, save, delete and query files in your system
+Notice also that all file manipulation Active Events in p5.io, relies upon the type conversion, normally implemented in "p5.types", which
+again will use UTF8 exclusively as its conversion encoding, when for instance saving files, and also loading files. This means that
+all files created using p5.io will be created as UTF8 files. In addition, all files loaded with p5.io, will be loaded with UTF8 encoding.
+
+In general, at the time of this writing, p5.io exclusively support UTF8 text files.
+
+Also notice that although you _can_ load and save binary data with p5.io, Hyperlisp and p5.lambda, is not in general terms very adequate
+for manipulating binary data. This means that you can load binary blob data, but for the most parts, the only intelligent thing you can do
+with it, is to base64 encode this data, and/or pass it into other Active Events that knows how to handle your binary data.
+
+## How to handle files in your system
 
 Below you can find the documentation for how to handle files in your system.
 
@@ -155,11 +165,159 @@ With *[move-file]*, you can either rename a file, or entirely move it into for i
 
 ```
 save-file:/foo.txt
+  src:foo bar
 move-file:/foo.txt
   to:/new-foo.txt
 ```
 
-Although *[move-file]* perfectly handles expressions, it does not accept an expression leading to multiple sources. Neither as its "source",
-nor as its "destination".
+Although *[move-file]* perfectly well handles expressions, it does not accept an expression leading to multiple sources. Neither as 
+its "source", nor as its "destination".
+
+The *[move-file]* Active Event, also has the alias of *[rename-file]* which can be used instead of "move-file". However, the logic is the
+exact same, and there is no difference in implementation of these two events. They are simply aliases for the same Active Event handler.
+
+### [copy-file], copying a file into a new file
+
+The *[copy-file]* Active Event, does exactly what you think it would do. It copies one source file, and creates a new copy of that file, into
+a destination file. The arguments to *[copy-file]* are the same as the arguments to *[move-file]*. Consider this code.
+
+```
+save-file:/foo.txt
+  src:foo bar
+copy-file:/foo.txt
+  to:/foo-copy.txt
+```
+
+The *[to]* node argument above, which is the child node of *[copy-file]*, is of course the destination filepath, for your copy.
+
+## How to handle folders in your system
+
+The Active Events for handling folders, are almost identical to the events for handling files, with some smaller differences though.
+Among other things, there obviously does not exist a *[save-folder]* event, but instead you'll find a *[create-folder]* Active Event,
+and so on.
+
+### [create-folder]
+
+Creates a folder at the given path. Notice that the parent folder must exist, and that this Active Event does not "recursively" create folders.
+Also notice that if the folder exist from before, an exception will occbr thrown.
+
+This Active Event also handles expressions, and will create all folders your expressions yields as a result, the same way for instance 
+the *[load-file]* would load multiple files. Below is some example code that creates two folders.
+
+Every single Active Event that somehow takes a folder, requires the path to both start with a slash (/), in addition to ending with a slash (/).
+
+```
+_folders
+  folder1:/foo/
+  folder2:/bar/
+create-folder:x:/-/*?value
+```
+
+### [delete-folder]
+
+Delete folder is implemented with the same semantics as *[create-folder]*, except of course, instead of creating folders, it deletes them.
+Example code below.
+
+```
+_folders
+  folder1:/foo/
+  folder2:/bar/
+delete-folder:x:/-/*?value
+```
+
+The above code will delete the folders previously created in our *[create-folder]* example.
+
+### [folder-exist]
+
+This Active Event is implemented with the same semantics as *[file-exist]*, which means if you pass in an expression as its value, and the 
+expression is leading to multiple folder paths, then all folders must exist, in order for the Active Event to return "true". Below we are
+checking if the folder "/system42/" exists, without any expressions as arguments.
+
+```
+folder-exist:/system42/
+```
+
+### [copy-folder] and [move-folder]
+
+These two Active Events works exactly like their "file counterparts" ([copy-file] and [move-file]). The *[move-folder]* even has an  alias,
+just like "move-file", which is *[rename-folder]*. Below is some sample code using them both.
+
+```
+create-folder:/foo-bar/
+copy-folder:/foo-bar/
+  to:/foo-bar-2/
+
+// We could also use [rename-folder] here
+move-folder:/foo-bar/
+  to:/foo-bar-new-name/
+```
+
+### [list-files] and [list-folders]
+
+These two Active Events allows you to list files or folders in your system. Both of them can be given either a constant as a value, or
+an expression leading to multiple folder paths. An example is given below.
+
+```
+list-files:/system42/
+list-folders:/system42/
+```
+
+If you evaluate the above Hyperlisp, you will see that these Active Events returns the files and folders as the "name" part of their children
+nodes. This is a general rule in p5.lambda, which is that many Active Events that returns a list of strings, returns these as the names of
+the children nodes of their main event node.
+
+#### Filtering files according to type
+
+When you invoke *[list-files]*, you can optionally supply a *[filter]* argument, to make sure you only retrieve files with a
+specific extension. The code below for instance, will only retrieve the ".aspx" files from your p5.webapp folder.
+
+```
+list-files:/
+  filter:aspx
+```
+
+### Ninja tricks in p5.io
+
+Below are some "Ninja tricks" when working with p5.io.
+
+#### Automatically getting a unique new folder/file name
+
+If you move, rename or copy a file or folder, and the destination file or folder already exist, then p5.io will create a new unique 
+file/folder path for you, automatically, and use this instead of your originally requested path. Regardless of whether or not p5.io
+creates a new unique path for you, it will return the path it uses for the destination, as the value of the invocation node. Look
+at this code after evaluation to see this in action.
+
+```
+create-folder:/foo-bar/
+create-folder:/foo-bar-2/
+copy-folder:/foo-bar-2/
+  to:/foo-bar/
+```
+
+After evaluating the above Hyperlisp, you will see that the value of your *[copy-folder]* node, will probably look something like this
+"/foo-bar copy 2/". This was because the destination value of your copy-folder invocation was a path to a folder that already exist.
+
+#### Executing every Hyperlisp file within a folder
+
+Combining *[list-files]* and *[eval]*, you can do some interesting things. One of these, is that you can evaluate all Hyperlisp files within
+some specific folder, easily, with only 3-4 lines of code. Imagine the following code.
+
+```
+list-files:/system42/some-hyperlisp-folder/
+  filter:hl
+load-file:x:/-/*?name
+eval:x:/-/*
+```
+
+What the above code actually does, is first of all listing every Hyperlisp file with a specific folder. Then it loads all these files.
+As we previously said, *[load-file]* will automatically convert a Hyperlisp file to a p5.lambda structure after loading it. Then we invoke
+the *[eval]* event, passing in an expression leading to all children nodes of *[load-file]*, which now should be the root node of all files 
+loaded this way. The end result is that all files in some specific folder is automatically evaluated and executed.
+
+PS!
+For the record, System42 contains a helper Active Event that does this for you, which you probably rather should use, instead of creating your
+own logic.
+
+
 
 

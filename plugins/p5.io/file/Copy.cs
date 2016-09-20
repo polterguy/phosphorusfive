@@ -16,13 +16,12 @@ namespace p5.io.file
     public static class Copy
     {
         /// <summary>
-        ///     Copies or renames a file
+        ///     Copies a file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "copy-file", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "rename-file", Protection = EventProtection.LambdaClosed)]
-        public static void copy_rename_file (ApplicationContext context, ActiveEventArgs e)
+        public static void copy_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {

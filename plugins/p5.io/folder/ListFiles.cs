@@ -32,16 +32,7 @@ namespace p5.io.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Checking if we've got a filter
-                List<string> filters;
-                if (e.Args ["filter"] != null) {
-
-                    // We are given filter(s)
-                    filters = XUtil.Iterate<string> (context, e.Args ["filter"]).ToList ();
-                } else {
-
-                    // No filters
-                    filters = new List<string> ();
-                }
+                string filter = e.Args.GetExChildValue ("filter", context, "");
 
                 // Iterating through each folder supplied by caller
                 foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
@@ -52,20 +43,13 @@ namespace p5.io.folder
                     // Iterating all files in current directory, and returning as nodes beneath args given
                     foreach (var idxFile in Directory.GetFiles (rootFolder + idxFolder)) {
 
-                        // Intentionally dropping "invisible linux 'backup' files" and "invisible system files" on MAC
-                        string[] splits = idxFile.Split (new char[] {'/'});
-                        if (!idxFile.EndsWith ("~") && !splits[splits.Length - 1].StartsWith (".")) {
+                        // Verifying file matches filter given, if any
+                        if (filter == "" || idxFile.EndsWith ("." + filter)) {
 
-                            // File is not a backup file on Linux.
-                            // Normalizing file path delimiters for both Linux and Windows, before we return it 
-                            // back to caller, but first verifying file matches filter given
-                            if (filters.Count == 0 || filters.Where (ix => idxFile.EndsWith ("." + ix)).GetEnumerator ().MoveNext ()) {
-
-                                // Returning filename back to caller
-                                var fileName = idxFile.Replace ("\\", "/");
-                                fileName = fileName.Replace (rootFolder, "");
-                                e.Args.Add (fileName);
-                            }
+                            // Returning filename back to caller
+                            var fileName = idxFile.Replace ("\\", "/");
+                            fileName = fileName.Replace (rootFolder, "");
+                            e.Args.Add (fileName);
                         }
                     }
                 }
