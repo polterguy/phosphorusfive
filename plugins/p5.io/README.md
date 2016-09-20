@@ -16,7 +16,7 @@ another user's "home" folder. (/users/username/... folder)
 
 Below you can find the documentation for how to handle files in your system.
 
-### [load-file], loading files the easy way.
+### [load-file], loading files
 
 To load a file, simply use the *[load-file]* Active Event. An example of this event is shown below.
 
@@ -67,7 +67,7 @@ load-file
      ... file 2 content ...
 ```
 
-### [save-file], without the hassle
+### [save-file], saving files
 
 The *[save-file]* Active Event, does the exact opposite of the *[load-file]* event. Try the following code.
 
@@ -100,10 +100,66 @@ load-file:/foo.hl
 ```
 
 The *[load-file]* invocation above, is there simply to show the results of your newly created file, and illustrates how only the results of
-the expression you pass into your *[src]* node becomes saved to disc. This allows you to save sub-sections for your trees, and even combine
-multiple pieces of text and/or p5.lambda, and save the combined results to disc.
+the expression you pass into your *[src]* node, are saved to disc. This allows you to save sub-sections of your trees, and even combine
+multiple pieces of text, and/or p5.lambda, and save the combined results to disc.
 
+You can also use Active Event invocations as an alternative to the *[src]* node. Conssider the following code.
 
+```
+_exe
+  return:Content of file
+save-file:/foo.txt
+  eval:x:/../*/_exe
+```
 
+The above example, will create a file, named "foo.txt", at the root of your p5.webapp folder, who's content is "Content of file".
+
+### [delete-file],deleting one or more files
+
+Just like *[load-file]*, *[delete-file]* can react upon several files at the same time. Its arguments work the same way as load-file, except of
+course, instead of loading the file(s), it deletes them instead. To delete the files created above in one of our *[save-file]* examples, you
+can use the following code.
+
+```
+delete-file:/foo.txt
+```
+
+The Active Event *[delete-file]*, does not take any arguments, besides a single constant value, or an expression leading to multiple file paths.
+However, just like the other file manipulation Active Events, it requires a fully qualified path, which must start with "/". To delete a file,
+the user context object, must be authorized to deleting it. Otherwise, and exception will be thrown.
+
+### [file-exist], checking if files exist
+
+Also *[file-exist]* takes its arguments the same way as for instance *[delete-file]* does. However, *[file-exist]* will return true, only if 
+all files you check the existance of actually exists. If one of the files does not exist, then *[file-exist]* will return false. Let us show
+that with an example.
+
+```
+// This file exist
+file-exist:/system42/application-startup.hl
+
+// Data segment where one of the files does not exist
+_data
+  file1:/system42/application-startup.hl
+  file2:/does-not-exist/foo.txt
+file-exist:x:/-/*?value
+```
+
+As you can see in the first invocation to *[file-exist]*, it yields "true", while the second invocation yields "false", since the "foo.txt"
+file does not exist.
+
+### [move-file], moving or renaming a file
+
+With *[move-file]*, you can either rename a file, or entirely move it into for instance a different folder. The Active Event takes the 
+"source file" as its value, and the "destinatin filepath/value" as the value of a *[to]* child node. Let's show this with an example.
+
+```
+save-file:/foo.txt
+move-file:/foo.txt
+  to:/new-foo.txt
+```
+
+Although *[move-file]* perfectly handles expressions, it does not accept an expression leading to multiple sources. Neither as its "source",
+nor as its "destination".
 
 

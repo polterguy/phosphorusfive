@@ -62,7 +62,9 @@
     <Compile Include="file\Exist.cs" />
     <Compile Include="folder\Exist.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="README.md" />
+  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>

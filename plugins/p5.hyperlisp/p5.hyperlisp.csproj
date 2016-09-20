@@ -52,7 +52,9 @@
     <Compile Include="helpers\Tokenizer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="README.md" />
+  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
