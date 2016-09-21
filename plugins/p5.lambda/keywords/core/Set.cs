@@ -38,16 +38,12 @@ namespace p5.lambda.keywords.core
                 // the relative destination to evaluate
                 var src = XUtil.InvokeSource (context, e.Args, idxDestination.Node);
 
-                // Checking how many values source returned
-                if (src.Count > 1) {
-
-                    // Oops, logical error!
+                // Checking how many values source returned, and throwing if there's more than one
+                if (src.Count > 1)
                     throw new LambdaException ("Multiple sources for [set]", e.Args, context);
-                } else {
 
-                    // Single source, or null source
-                    idxDestination.Value = src.Count == 1 ? src [0] : null;
-                }
+                // Single source, or null source
+                idxDestination.Value = src.Count == 1 ? src [0] : null;
             }
         }
     }

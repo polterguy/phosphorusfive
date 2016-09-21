@@ -34,14 +34,19 @@ namespace p5.lambda.keywords.core
             // Updating destination(s) with value of source
             foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
-                // Raising "src" Active Event
+                // Raising source Active Event
                 var src = XUtil.InvokeSource (context, e.Args, idxDestination.Node);
 
                 // Adding source nodes to destination
                 var tmpNodeIdxDest = idxDestination.Value as Node;
                 if (tmpNodeIdxDest == null)
                     throw new LambdaException ("Destination for [add] was not a node", e.Args, context);
+
+                // Iterating each source, appending into currently iterated destination
                 foreach (var idxSource in src) {
+
+                    // Checking if currently iterated source is a node, and if not, we convert it into a node, which will
+                    // result in a "root node", which we remove, and only add its children, into currently iterated destination
                     if (idxSource is Node)
                         tmpNodeIdxDest.Add ((idxSource as Node).Clone ());
                     else
