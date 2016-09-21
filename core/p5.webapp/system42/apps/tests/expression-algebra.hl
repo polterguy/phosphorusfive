@@ -7,15 +7,19 @@
  * Tests that logical OR behaves as expected
  */
 or
+  _out
   _data
     foo1:bar1
     foo2:bar2
-  set:x:/-?value
-    src:x:/./-/*/foo1|/./-/*/foo2?value
-  if:x:/../0?value
-    !=:bar1bar2
-    throw:@"Assert error, expected [bar1bar2], got [{0}]!"
-      :x:/../0?value
+    foo3:bar3
+  add:x:/-2
+    src:x:/./-/*/foo1|/./-/*/foo2
+  if:x:/../0
+    !=:node:@"_out
+  foo1:bar1
+  foo2:bar2"
+    throw:@"Assert error, expected foo1 and foo2 nodes, got ""{0}!"""
+      :x:/../0
 
 /*
  * Tests that logical AND behaves as expected
@@ -62,16 +66,19 @@ not
       :x:/../0?value
 
 /*
- * Tests that logical NOT behaves as expected
+ * Tests that logical XOR behaves as expected
  */
 xor
+  _out
   _data
     foo1:br1
     foo2:bar2
     fo3:bar3
-  set:x:/-?value
-    src:x:/./-/*/~foo^/./-/*/=~ba?value
-  if:x:/../0?value
-    !=:br1bar3
-    throw:@"Assert error, expected [br1bar3], got [{0}]!"
-      :x:/../0?value
+  add:x:/-2
+    src:x:/./-/*/~foo^/./-/*/=~ba
+  if:x:/../0
+    !=:node:@"_out
+  foo1:br1
+  fo3:bar3"
+    throw:@"Assert error, expected foo1 node and fo3 node, got ""{0}""!"
+      :x:/../0

@@ -114,20 +114,6 @@ multiple-destinations
       :x:/../0/1?value
 
 /*
- * Tests that "set" behaves correctly when given multiple source values
- */
-multiple-source
-  _data
-    foo1
-    foo2
-  set:x:/-?value
-    src:x:/../0/*?name
-  if:x:/../0?value
-    !=:foo1foo2
-    throw:@"Assert error, expected [foo1foo2], got [{0}]!"
-      :x:/../0?value
-
-/*
  * Tests that "set" behaves correctly with event source,
  * referencing [_dn] or data node of Active Event
  */

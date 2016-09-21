@@ -51,21 +51,6 @@ event-source
       :x:/../0/0/*?node.string
 
 /*
- * Tests that "add" behaves correctly when given no source, and
- * that it throws exception
- */
-no-source-throws
-  _result
-  try
-    add:x:/../*/_result
-  catch
-    set:x:/../*/_result?value
-      src:success
-  if:x:/../*/_result?value
-    !=:success
-    throw:@"Assert error, expected [add] to throw an exception!"
-
-/*
  * Tests that "add" behaves correctly when given no destination, and
  * that it throws exception
  */

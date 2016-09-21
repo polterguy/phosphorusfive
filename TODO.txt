@@ -1,0 +1,10 @@
+
+TODO before release
+===================
+
+* Implement *[src]* Active Event,to simplify add, insert-xxx and set, plus other events dependent upon similar logic.
+
+* Fix *[save-file]* (see above), such that it handles for instance, multiple source nodes, and p5.lambda structures
+
+* Dox for all projects
+

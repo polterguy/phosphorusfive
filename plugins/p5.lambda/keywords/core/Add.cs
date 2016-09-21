@@ -23,85 +23,29 @@ namespace p5.lambda.keywords.core
         [ActiveEvent (Name = "add", Protection = EventProtection.LambdaClosed)]
         public static void lambda_add (ApplicationContext context, ActiveEventArgs e)
         {
-            // Basic syntax checking
-            if (!(e.Args.Value is Expression))
-                throw new LambdaException ("[add] was not given a destination expression", e.Args, context);
-
-            // Retrieving source nodes
-            var srcNodes = e.Args.Children.Where (ix => ix.Name != "").ToList ();
-
-            // Sanity check
-            if (srcNodes.Count != 1)
+            // Asserting destination is expression
+            var destEx = e.Args.Value as Expression;
+            if (destEx == null)
                 throw new LambdaException (
-                    "[add] must be given exactly one source child node",
+                    string.Format ("Not a valid destination expression given to [set], value was '{0}', expected expression", e.Args.Value),
                     e.Args,
                     context);
 
-            // OK, we're sane, so far ...
-            var srcNode = srcNodes[0];
+            // Updating destination(s) with value of source
+            foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
-            // Figuring out source type
-            if (srcNode.Name == "src") {
+                // Raising "src" Active Event
+                var src = XUtil.InvokeSource (context, e.Args, idxDestination.Node);
 
-                // Static source
-                AppendStaticSource (e.Args, context);
-            } else {
-
-                // Relative source
-                AppendRelativeOrEventSource (e.Args, context);
-            }
-        }
-        
-        /*
-         * Appends a static source into destination
-         */
-        private static void AppendStaticSource (Node args, ApplicationContext context)
-        {
-            // Retrieving source before we start iterating destination, in case destination and source overlaps
-            var sourceNodes = XUtil.SourceNodes (context, args);
-
-            // Making sure there is a source
-            if (sourceNodes == null)
-                return;
-
-            // Looping through each destination node
-            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
-
-                // Verifying destination actually is a node
-                var curDest = idxDestination.Value as Node;
-                if (curDest == null)
-                    throw new LambdaException (
-                        "Cannot [add] into something that's not a node", 
-                        args, 
-                        context);
-
-                // Looping through each source
-                foreach (var idxSource in sourceNodes) {
-
-                    // Appending currently iterated cloned source into destination
-                    curDest.Add (idxSource.Clone ());
-                }
-            }
-        }
-
-        /*
-         * Appends a relative source into destination
-         */
-        private static void AppendRelativeOrEventSource (Node args, ApplicationContext context)
-        {
-            // Looping through each destination
-            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
-
-                // Verifying destination actually is a node
-                var curDest = idxDestination.Value as Node;
-                if (curDest == null)
-                    throw new LambdaException ("Cannot [add] into something that's not a node", args, context);
-
-                // Evaluating source for each destination since it is relative to destination
-                foreach (var idxSource in XUtil.SourceNodes (context, args, idxDestination.Node)) {
-
-                    // Appending currently iterated cloned source into destination
-                    curDest.Add (idxSource.Clone ());
+                // Adding source nodes to destination
+                var tmpNodeIdxDest = idxDestination.Value as Node;
+                if (tmpNodeIdxDest == null)
+                    throw new LambdaException ("Destination for [add] was not a node", e.Args, context);
+                foreach (var idxSource in src) {
+                    if (idxSource is Node)
+                        tmpNodeIdxDest.Add ((idxSource as Node).Clone ());
+                    else
+                        tmpNodeIdxDest.AddRange (Utilities.Convert<Node> (context, idxSource).Children);
                 }
             }
         }

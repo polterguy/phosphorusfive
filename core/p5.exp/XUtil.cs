@@ -41,6 +41,61 @@ namespace p5.exp
         }
 
         /// <summary>
+        ///     Helper method to invoke [src] node, or other types of sources, for Active Events that requires such
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="parent">Parent node expected to have a source node</param>
+        /// <param name="destination">Current destination node</param>
+        /// <returns></returns>
+        public static List<object> InvokeSource (ApplicationContext context, Node parent, Node destination)
+        {
+            // Retrieving source nodes, making sure we do not add up "formatting nodes"
+            var srcList = parent.Children.Where (ix => ix.Name != "").ToList ();
+
+            // Sanity check, making sure there's only one or zero
+            if (srcList.Count > 1) {
+
+                // Oops, logical error
+                throw new LambdaException ("Multiple sources defined for; " + parent.Name, parent, context);
+            } else if (srcList.Count == 0) {
+
+                // No source, making sure we never return null
+                return new List<object> ();
+            } else {
+
+                // Active Event source invocation
+                // Storing original children,  to make each invocation immutable, before we pass in "destination node"
+                var originalParentNode = parent.Clone ();
+                srcList[0].Insert (0, new Node ("_dn", destination));
+
+                // Raising source Active Event
+                context.RaiseLambda (srcList[0].Name, srcList[0]);
+
+                // Building up our return value(s)
+                var retVal = new List<object> ();
+                if (srcList[0].Value != null && srcList[0].Value is List<object>) {
+
+                    // Value is a list of objects
+                    retVal.AddRange (srcList[0].Value as List<object>);
+                } else if (srcList[0].Value != null) {
+
+                    // Adding value into return values
+                    retVal.Add (srcList[0].Value);
+                } else {
+
+                    // Fallback to children
+                    retVal.AddRange (srcList[0].Children.Where (ix => ix.Name != "_dn").Select (ix => ix.Clone ()));
+                }
+
+                // Making sure we reset original source node baack to what it was
+                parent.Clear ().AddRange (originalParentNode.Children);
+
+                // Returning list to caller
+                return retVal;
+            }
+        }
+
+        /// <summary>
         ///     Throws an exception if given args Node's value is null
         /// </summary>
         /// <param name="args">Arguments</param>

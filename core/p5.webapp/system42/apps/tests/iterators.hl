@@ -22,15 +22,18 @@ reference
  * Test the range iterator
  */
 range
+  _out
   _data
     foo1
     foo2
     foo3
     foo4
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/*/[1,3]?name
-  if:x:/-2?value
-    !=:foo2foo3
+  if:x:/-3
+    !=:node:@"_out
+  foo2
+  foo3"
     throw:@"Assert error, expected [foo2foo3], got [{0}]!"
       :x:/././-2?value
 
@@ -38,6 +41,7 @@ range
  * Test the descendant iterator
  */
 descendant
+  _out
   _data
     foo1
       foo2
@@ -46,10 +50,17 @@ descendant
         foo5
     foo6
       foo7
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/**?name
-  if:x:/-2?value
-    !=:foo1foo2foo3foo4foo5foo6foo7
+  if:x:/-3
+    !=:node:@"_out
+  foo1
+  foo2
+  foo3
+  foo4
+  foo5
+  foo6
+  foo7"
     throw:@"Assert error, expected [foo1foo2foo3foo4foo5foo6foo7], got [{0}]!"
       :x:/././-2?value
 
@@ -57,15 +68,18 @@ descendant
  * Test the children iterator
  */
 children
+  _out
   _data
     foo1
       foo2
         foo3
     foo6
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/*?name
-  if:x:/-2?value
-    !=:foo1foo6
+  if:x:/-3
+    !=:node:@"_out
+  foo1
+  foo6"
     throw:@"Assert error, expected [foo1foo6], got [{0}]!"
       :x:/././-2?value
 
@@ -73,15 +87,18 @@ children
  * Test the modulo iterator
  */
 modulo
+  _out
   _data
     foo1
     foo2
     foo3
     foo4
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/*/%2?name
-  if:x:/-2?value
-    !=:foo2foo4
+  if:x:/-3
+    !=:node:@"_out
+  foo2
+  foo4"
     throw:@"Assert error, expected [foo2foo4], got [{0}]!"
       :x:/././-2?value
 
@@ -153,6 +170,7 @@ parent
  * Test the left-shift iterator
  */
 left-shift
+  _out
   _data
     foo1
       foo2
@@ -161,10 +179,14 @@ left-shift
         foo5
           foo6
       foo7
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/**/foo7/<|/./-/**/foo7/</<|/./-/**/foo7/</</<|/./-/**/foo7/</</</<?name
-  if:x:/-2?value
-    !=:foo6foo5foo4foo3
+  if:x:/-3
+    !=:node:@"_out
+  foo6
+  foo5
+  foo4
+  foo3"
     throw:@"Assert error, expected [foo7foo6foo5foo4], got [{0}]!"
       :x:/././-2?value
 
@@ -172,6 +194,7 @@ left-shift
  * Test the right-shift iterator
  */
 right-shift
+  _out
   _data
     foo1
       foo2
@@ -180,10 +203,17 @@ right-shift
         foo5
           foo6
       foo7
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/0|/./-/0/>|/./-/0/>/>|/./-/0/>/>/>|/./-/0/>/>/>/>|/./-/0/>/>/>/>/>|/./-/0/>/>/>/>/>/>?name
-  if:x:/-2?value
-    !=:foo1foo2foo3foo4foo5foo6foo7
+  if:x:/-3
+    !=:node:@"_out
+  foo1
+  foo2
+  foo3
+  foo4
+  foo5
+  foo6
+  foo7"
     throw:@"Assert error, expected [foo1foo2foo3foo4foo5foo6foo7], got [{0}]!"
       :x:/././-2?value
 
@@ -191,6 +221,7 @@ right-shift
  * Test the sibling iterator
  */
 sibling
+  _out
   _data
     foo1
     foo2
@@ -199,10 +230,15 @@ sibling
     foo5
     foo6
     foo7
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/0|/./-/0/+|/./-/3/-|/./-/6/+4|/./-/0/-3?name
-  if:x:/-2?value
-    !=:foo1foo2foo3foo4foo5
+  if:x:/-3
+    !=:node:@"_out
+  foo1
+  foo2
+  foo3
+  foo4
+  foo5"
     throw:@"Assert error, expected [foo1foo2foo3foo4foo5], got [{0}]!"
       :x:/././-2?value
 
@@ -240,14 +276,17 @@ value-like-string
  * Test the value iterator for empty value "like" expression
  */
 value-like-empty-null
+  _out
   _data
     foo1
     foo2:
     foo3:bar3
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/*/=~?name
-  if:x:/-2?value
-    !=:foo1foo2
+  if:x:/-3
+    !=:node:@"_out
+  foo1
+  foo2"
     throw:@"Assert error, expected [foo1foo2], got [{0}]!"
       :x:/././-2?value
 
@@ -315,35 +354,43 @@ name-like-escaped
  * Test the distinct name iterator
  */
 distinct-name
+  _out
   _data
     foo1:su
     foo1:error
     foo2:cc
     foo2:error
     foo3:ess
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/*/$?value
-  if:x:/-2?value
-    !=:success
+  if:x:/-3
+    !=:node:@"_out
+  su
+  cc
+  ess"
     throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/././-2?value
+      :x:/././-3?node.string
 
 /*
  * Test the distinct value iterator
  */
 distinct-value
+  _out
   _data
     su:foo1
     error:foo1
     cc:foo2
     error:foo2
     ess:int:4
-  set:x:/-?value
+  add:x:/-2
     src:x:/./-/*/=$?name
-  if:x:/-2?value
-    !=:success
+  if:x:/-3
+    !=:node:@"_out
+  su
+  cc
+  ess"
     throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/././-2?value
+      :x:/././-3
 
 /*
  * Test an escaped iterator

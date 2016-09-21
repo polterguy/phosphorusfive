@@ -28,31 +28,25 @@ namespace p5.lambda.keywords.core
             if (destEx == null)
                 throw new LambdaException (
                     string.Format ("Not a valid destination expression given to [set], value was '{0}', expected expression", e.Args.Value),
-                    e.Args, 
+                    e.Args,
                     context);
 
-            // Figuring out source type, for then to execute the corresponding logic
-            if (e.Args.Children.Count (ix => ix.Name != "") > 0 && e.Args.LastChild.Name != "src") {
+            // Updating destination(s) with value of source
+            foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
-                // Iterating through all destinations, figuring out source either relative to each destinations,
-                // or using Active Event source invocation
-                foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
+                // Raising "src" Active Event. Notice, this must be done once, for each destination, in case the source event is expecting
+                // the relative destination to evaluate
+                var src = XUtil.InvokeSource (context, e.Args, idxDestination.Node);
 
-                    // Source is relative to destination, postponing figuring it out, until we're inside 
-                    // our destination nodes, on each iteration, passing in destination node as data source
-                    idxDestination.Value = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
-                }
-            } else if (e.Args.Children.Count(ix => ix.Name != "") == 0 || e.Args.LastChild.Name == "src") {
+                // Checking how many values source returned
+                if (src.Count > 1) {
 
-                // Static source, or "null source", hence retrieving source before iteration starts, 
-                // in case destination and source overlaps
-                var source = XUtil.SourceSingle (context, e.Args);
+                    // Oops, logical error!
+                    throw new LambdaException ("Multiple sources for [set]", e.Args, context);
+                } else {
 
-                // Iterating through all destinations, updating with source
-                foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
-
-                    // Setting value on MatchEntity will work correctly for both removal and changing values/names and nodes
-                    idxDestination.Value = source;
+                    // Single source, or null source
+                    idxDestination.Value = src.Count == 1 ? src [0] : null;
                 }
             }
         }

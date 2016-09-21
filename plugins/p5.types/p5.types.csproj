@@ -79,5 +79,7 @@
       <Name>p5.exp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="README.md" />
+  </ItemGroup>
 </Project>
