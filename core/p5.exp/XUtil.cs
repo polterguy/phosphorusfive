@@ -66,7 +66,7 @@ namespace p5.exp
                 // Active Event source invocation
                 // Storing original children,  to make each invocation immutable, before we pass in "destination node"
                 var originalParentNode = parent.Clone ();
-                srcList[0].Insert (0, new Node ("_dn", destination));
+                srcList[0].Insert (0, new Node ("_dn", destination ?? srcList[0]));
 
                 // Raising source Active Event
                 context.RaiseLambda (srcList[0].Name, srcList[0]);
@@ -100,7 +100,7 @@ namespace p5.exp
         /// </summary>
         /// <param name="args">Arguments</param>
         /// <param name="activeEventName">Active event name</param>
-        public static void AssertHasValue (
+        private static void AssertHasValue (
             ApplicationContext context, 
             Node args, 
             string activeEventName)
@@ -113,29 +113,11 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Throws an exception if given value is null
-        /// </summary>
-        /// <param name="args">Argument</param>
-        /// <param name="activeEventName">Active event name</param>
-        public static void AssertHasValue (
-            ApplicationContext context, 
-            Node args, 
-            object arg, 
-            string activeEventName)
-        {
-            if (arg == null)
-                throw new LambdaException (
-                    string.Format ("No arguments supplied to [{0}], possibly expression leading into oblivion", activeEventName), 
-                    args, 
-                    context);
-        }
-
-        /// <summary>
         ///     Throws an exception if given args Node does not have children nodes
         /// </summary>
         /// <param name="args">Arguments</param>
         /// <param name="activeEventName">Active event name</param>
-        public static void AssertHasChildren (
+        private static void AssertHasChildren (
             ApplicationContext context, 
             Node args, 
             string activeEventName)
@@ -152,7 +134,7 @@ namespace p5.exp
         /// </summary>
         /// <param name="args">Arguments</param>
         /// <param name="activeEventName">Active event name</param>
-        public static void AssertHasValueOrChildren (
+        private static void AssertHasValueOrChildren (
             ApplicationContext context, 
             Node args, 
             string activeEventName)

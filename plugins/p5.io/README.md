@@ -124,6 +124,29 @@ save-file:/foo.txt
 
 The above example, will create a file, named "foo.txt", at the root of your p5.webapp folder, who's content is "Content of file".
 
+#### Saving multiple files, with relative sources
+
+If you wish, you can save multiple files at the same time, and use expressions pointing to filenames, and content of your files be relative
+to your filename node. Imagine the following code.
+
+```
+_files
+  name:/foo.txt
+    content:Foo was here
+  name:/bar.txt
+    content:Bar was here
+save-file:x:/-/*?name
+  eval:x:/./+
+_get-content
+  return:x:/../*/_dn/#/*/content?value
+```
+
+What the above lambda object does, is to iterate each filename given in the *[name]* nodes beneath *[_files]*, for the to invoke the *[eval]*
+Active Event once for each destination, passing in the *[_dn]* being relative for each destination. Then our *[_get-content]* lambda object,
+returns  relative source, expected to be a *[content]* node, beneath each filepath.
+
+This "Ninja trick" allows you to save multiple files, in one go.
+
 ### [delete-file],deleting one or more files
 
 Just like *[load-file]*, *[delete-file]* can react upon several files at the same time. Its arguments work the same way as load-file, except of

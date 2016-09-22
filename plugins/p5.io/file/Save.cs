@@ -7,6 +7,7 @@ using System.IO;
 using p5.exp;
 using p5.core;
 using p5.io.common;
+using System.Collections.Generic;
 
 namespace p5.io.file
 {
@@ -36,21 +37,21 @@ namespace p5.io.file
                     var destEx = e.Args.Value as Expression;
                     foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
-                        // Retrieving content to save, possibly relative to currently iterated expression result
-                        var content = XUtil.SourceSingle (context, e.Args, e.Args.LastChild.Name == "src" ? e.Args : idxDestination.Node);
+                        // Getting relative source, and saving to file
+                        List<byte> content = GetSource (context, e.Args, idxDestination.Node);
 
                         // Saving currently iterated file
                         SaveFile (
-                            context, 
-                            e.Args, 
+                            context,
+                            e.Args,
                             rootFolder,
-                            Utilities.Convert<string> (context, idxDestination.Value), 
-                            Utilities.Convert<byte[]> (context, content, new byte[0]));
+                            Utilities.Convert<string> (context, idxDestination.Value),
+                            content);
                     }
                 } else {
 
-                    // Retrieving content to save
-                    var content = XUtil.SourceSingle (context, e.Args);
+                    // Getting relative source, and saving to file
+                    List<byte> content = GetSource (context, e.Args, null);
 
                     // Destination was not an expression, assuming constant filepath, possibly formatted
                     SaveFile (
@@ -58,9 +59,34 @@ namespace p5.io.file
                         e.Args,
                         rootFolder,
                         e.Args.GetExValue<string> (context),
-                        Utilities.Convert<byte[]> (context, content, new byte[0]));
+                        content);
                 }
             }
+        }
+
+        /*
+         * Helper for above
+         */
+        private static List<byte> GetSource (ApplicationContext context, Node parentNode, Node destination)
+        {
+            // Retrieving content to save, possibly relative to currently iterated expression result
+            var src = XUtil.InvokeSource (context, parentNode, destination);
+
+            // Creating our return value
+            List<byte> content = new List<byte> ();
+            foreach (var idxSrc in src) {
+
+                // Converting currenyl iterated source to blob, and appending into combined content
+                content.AddRange (Utilities.Convert<byte[]> (context, idxSrc, new byte[] { }));
+
+                // Appending CR/LF after every lambda source, to make sure we preserve good Hyperlisp syntax, 
+                // created from multiple source nodes
+                if (idxSrc is Node)
+                    content.AddRange (new byte[] { 13, 10 });
+            }
+
+            // Returning combined "byte[]" (blob) results to caller
+            return content;
         }
 
         /*
@@ -71,7 +97,7 @@ namespace p5.io.file
             Node args, 
             string rootFolder,
             string fileName,
-            byte[] content)
+            List<byte> content)
         {
             // Verifying user is allowed to save to file
             context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", args));
@@ -80,7 +106,7 @@ namespace p5.io.file
             using (FileStream stream = File.Create (rootFolder + fileName)) {
 
                 // Writing content to file stream
-                stream.Write (content, 0, content.Length);
+                stream.Write (content.ToArray (), 0, content.Count);
             }
         }
     }
