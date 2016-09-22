@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System.Linq;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -41,74 +42,44 @@ namespace p5.lambda.keywords.core
          */
         private static void InsertNodes (Node args, ApplicationContext context, bool after)
         {
-            if (!(args.Value is Expression))
+            var destEx = args.Value as Expression;
+            if (destEx == null)
                 throw new LambdaException ("Not a valid destination expression given, make sure you set [" + args.Name + "]'s value to an expression using :x:", args, context);
 
-            if (args.Children.Count > 0 && args.LastChild.Name == "src") {
+            // Updating destination(s) with value of source
+            foreach (var idxDestination in destEx.Evaluate (context, args, args)) {
 
-                // Static source
-                InsertStaticSource (args, context, after);
-            } else {
+                // Raising source Active Event
+                var src = XUtil.InvokeSource (context, args, idxDestination.Node);
 
-                // Relative source
-                InsertRelativeSource (args, context, after);
-            }
-        }
+                // Inseting source nodes to destination
+                var tmpNodeIdxDest = idxDestination.Value as Node;
+                if (tmpNodeIdxDest == null)
+                    throw new LambdaException ("Destination for [" + args.Name + "] was not a node", args, context);
 
-        /*
-         * Source is static
-         */
-        private static void InsertStaticSource (Node args, ApplicationContext context, bool after)
-        {
-            // Retrieving source before we start iterating destination,
-            // in case destination and source overlaps
-            var sourceNodes = XUtil.SourceNodes (context, args);
+                // Figuring out insertion point
+                var index = idxDestination.Node.Parent.IndexOf (idxDestination.Node) + (after ? 1 : 0);
 
-            // Making sure there is a source
-            if (sourceNodes == null)
-                return;
+                // Iterating each source, inserting into currently iterated destination
+                foreach (var idxSource in src) {
 
-            // Looping through every destination node
-            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
+                    // Checking if currently iterated source is a node, and if not, we convert it into a node, which will
+                    // result in a "root node", which we remove, and only insert its children, into currently iterated destination
+                    if (idxSource is Node) {
 
-                // Verifies destination actually is a node
-                var curDest = idxDestination.Value as Node;
-                if (curDest == null)
-                    throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", args, context);
+                        // Currently iterated source is already a node
+                        tmpNodeIdxDest.Parent.Insert (index++, (idxSource as Node).Clone ());
+                    } else {
 
-                // Finding index of currently iterated destination
-                var index = curDest.Parent.IndexOf (curDest) + (after ? 1 : 0);
-
-                // Looping through each node in source
-                foreach (var idxSourceNode in sourceNodes) {
-
-                    // Inserting copy into currently iterated destination, and incrementing index by one
-                    curDest.Parent.Insert (index++, idxSourceNode.Clone ());
-                }
-            }
-        }
-
-        /*
-         * Relative source
-         */
-        private static void InsertRelativeSource (Node args, ApplicationContext context, bool after)
-        {
-            // Looping through each destination first, since source is relative to destination
-            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
-
-                // Verifies destination actually is a node
-                var curDest = idxDestination.Value as Node;
-                if (curDest == null)
-                    throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", args, context);
-
-                // Finding index of currently iterated destination
-                var index = curDest.Parent.IndexOf (curDest) + (after ? 1 : 0);
-
-                // Evaluating source relative to destination, and iterating over each relative source
-                foreach (var idxSource in XUtil.SourceNodes (context, args, idxDestination.Node)) {
-
-                    // Inserting copy of source into currently iterated destination
-                    curDest.Parent.Insert (index++, idxSource.Clone ());
+                        // Currently iterated source is not a node, hence we convert it into such, which creates a "wrapper" node, which
+                        // we ignore, and only add its children. Making sure we "extract the list of insertion nodes" first, since
+                        // inserting the nodex, will change the Children collection, untying the currently iterated source node, changing
+                        // the collection
+                        var list = Utilities.Convert<Node> (context, idxSource).Children.ToList ();
+                        foreach (var idxSourceInner in list) {
+                            tmpNodeIdxDest.Parent.Insert (index++, idxSourceInner);
+                        }
+                    }
                 }
             }
         }

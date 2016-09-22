@@ -27,7 +27,7 @@ namespace p5.lambda.keywords.core
             var destEx = e.Args.Value as Expression;
             if (destEx == null)
                 throw new LambdaException (
-                    string.Format ("Not a valid destination expression given to [set], value was '{0}', expected expression", e.Args.Value),
+                    string.Format ("Not a valid destination expression given to [add], value was '{0}', expected expression", e.Args.Value),
                     e.Args,
                     context);
 
