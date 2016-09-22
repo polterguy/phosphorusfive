@@ -14,7 +14,7 @@ load-file:/system42/apps/cms/page-editor/editors/controls/helpers/wizard-templat
 /*
  * Making sure we pass in "position arguments" into creation invocations
  */
-add:x:/../*/databind/**/onclick/*/_position
+add:x:/../*/apply/**/onclick/*/_position
   src:x:/../*(/_before|/_inside)
 
 
@@ -22,7 +22,7 @@ add:x:/../*/databind/**/onclick/*/_position
 /*
  * Databinds table widgets with content from file
  */
-databind:x:/../*/create-widget/**/table/=wysiwyg-window-list-of-widget-wizard-elements/*/widgets
+apply:x:/../*/create-widget/**/table/=wysiwyg-window-list-of-widget-wizard-elements/*/widgets
   src:x:/../*/load-file/*/*
   template
     tr
@@ -108,7 +108,7 @@ databind:x:/../*/create-widget/**/table/=wysiwyg-window-list-of-widget-wizard-el
         /*
          * Re-creating the "select widget" dropdown box
          */
-        sys42.wysiwyg-controls.databind-select-widget-dropdown
+        sys42.wysiwyg-controls.apply-select-widget-dropdown
       widgets
         td
           {innerValue}:"<strong>{0}</strong>"

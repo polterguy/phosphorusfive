@@ -266,7 +266,7 @@ your usercontrols from client-side JavaScript and CSS.</p>
                                * Selecting widget, and re-populating select widget dropdown list
                                */
                               sys42.wysiwyg-controls.select-widget:x:/-?value
-                              sys42.wysiwyg-controls.databind-select-widget-dropdown
+                              sys42.wysiwyg-controls.apply-select-widget-dropdown
 
                               /*
                                * Making modal window invisible, showing some information to user

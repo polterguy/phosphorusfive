@@ -317,7 +317,7 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                               /*
                                * Databinding [_widgets] (arguments) node to [sys42.wizard-window]
                                */
-                              databind:x:/+/*/_widgets
+                              apply:x:/+/*/_widgets
                                 src:x:/../*/_arguments/*
                                 template
                                   {text}:x:?name

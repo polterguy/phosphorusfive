@@ -219,17 +219,17 @@ create-widget:foo
            * JavaScript event rendered to client as JavaScript
            */
           onclick:""alert('foo 2 clicked');"""
-    p5.page:/examples/databind-1
+    p5.page:/examples/apply-1
       name:Databind 1
       template:/system42/apps/cms/templates/main.hl
       type:lambda
       role:root
       lambda:@"/*
- * This example shows you how to use the [databind]
+ * This example shows you how to use the [apply]
  * Active Event to create a table that is databound towards
  * some sort of data source. To understand how this page is
  * wired together, please visit;
- * https://phosphorusfive.wordpress.com/2016/02/13/hyperlisp-101-databind/
+ * https://phosphorusfive.wordpress.com/2016/02/13/hyperlisp-101-apply/
  */
 
 /*
@@ -258,7 +258,7 @@ _data
 /*
  * Databinding table widget below to datasource above
  */
-databind:x:/../*/create-widget/*/widgets
+apply:x:/../*/create-widget/*/widgets
   src:x:/../*/_data/*
   template
     tr
@@ -272,7 +272,7 @@ databind:x:/../*/create-widget/*/widgets
         td
           {innerValue}:x:/*/adr/*/no?value
 
-// Uncomment the line below to see the results of our [databind] invocation
+// Uncomment the line below to see the results of our [apply] invocation
 // sys42.show-code-window:x:/..
 
 /*
@@ -284,14 +284,14 @@ create-widget
   class:table table-hover
   widgets
     text:@""<thead><tr><th>Name</th><th>Phone</th><th>Street</th><th>Number</th></tr></thead>"""
-    p5.page:/examples/databind-2
+    p5.page:/examples/apply-2
       name:Databind 2
       template:/system42/apps/cms/templates/main.hl
       type:lambda
       role:root
       lambda:@"/*
- * This example shows you how to use the [databind]
- * Active Event to databind towards *ANY* data, by creating
+ * This example shows you how to use the [apply]
+ * Active Event to apply towards *ANY* data, by creating
  * a table HTML element, that wraps every single 'leaf node'
  * in your datasource, automatically creating relevant table 
  * columns for your table.
@@ -299,7 +299,7 @@ create-widget
  * Notice that this type of logic can be used for databinding
  * literally any type of datasource, generically, and will
  * adapt according to the datasource supplied. This is therefor
- * a 'generic' [databind] piece of logic, working for anything,
+ * a 'generic' [apply] piece of logic, working for anything,
  * as long as each databound object instance have the same structure
  */
 
@@ -336,9 +336,9 @@ _data
  * and the 'Databind 1' example, that ensures that only
  * leaf nodes' are being a part of your data source.
  *
- * Notice also that we have TWO [databind] invocations, one
+ * Notice also that we have TWO [apply] invocations, one
  * for creating the table headers, and the second one to create
- * the table rows. Notice how the first [databind] that binds the
+ * the table rows. Notice how the first [apply] that binds the
  * headers, only selects the 1st data source instance, by using the
  * range iterator. (the [0,1] parts)
  *
@@ -348,14 +348,14 @@ _data
  */
 
 // Databinding headers of table
-databind:x:/../*/create-widget/*/widgets/*/thead/*/widgets/*/tr/*/widgets
+apply:x:/../*/create-widget/*/widgets/*/thead/*/widgets/*/tr/*/widgets
   src:x:/../*/_data/*/[0,1]/**(!/0/.)
   template
     th
       {innerValue}:x:?name
 
 // Databinding rows of table
-databind:x:/../*/create-widget/*/widgets
+apply:x:/../*/create-widget/*/widgets
   src:x:/../*/_data/*
   template
 
@@ -371,13 +371,13 @@ databind:x:/../*/create-widget/*/widgets
          *
          * When you supply an expression to a databound node, that returns a
          * node result, instead of a value or a name, it will be treated as
-         * an 'inner databind expression', looping once for each result, recursively
-         * inside of your 'outer databind expression'
+         * an 'inner apply expression', looping once for each result, recursively
+         * inside of your 'outer apply expression'
          */
         {td}:x:/**(!/0/.)
           {innerValue}:x:?value
 
-// Uncomment the line below to see the results of our [databind] invocations
+// Uncomment the line below to see the results of our [apply] invocations
 // sys42.show-code-window:x:/..
 /*
  * Creating our databound widget
@@ -635,7 +635,7 @@ sys42.wizard-window
      * Databinding our [create-widget] Active Event below to the hyperlinks
      * found in the HTML document
      */
-    databind:x:/../*/create-widget/*/widgets
+    apply:x:/../*/create-widget/*/widgets
       src:x:/../*/html2lambda/**/a
       template
         li
@@ -775,7 +775,7 @@ create-widget:todo-main-form
         /*
          * Databinds table showing all TODO items
          */
-        sys42.examples.databind-todo-list
+        sys42.examples.apply-todo-list
 
         /*
          * Making sure 'new item' textbox gets focus again, and selects all text,
@@ -797,12 +797,12 @@ create-widget:todo-main-form
          * Initially databinding and creating our table HTML element, containing
          * all [todo-item]'s from database
          */
-        sys42.examples.databind-todo-list
+        sys42.examples.apply-todo-list
 
       /*
        * All widgets can have an [events] segment associated with them,
        * which are local events for the page, only existing as long as widget exists.
-       * Here we supply our 'databind TODO items' Active Event
+       * Here we supply our 'apply TODO items' Active Event
        */
       events
 
@@ -810,10 +810,10 @@ create-widget:todo-main-form
          * This Active Event simply databinds a table HTML element, and stuffs it into
          * our 'todo-item-wrapper' div HTML element
          */
-        sys42.examples.databind-todo-list
+        sys42.examples.apply-todo-list
 
           /*
-           * Making sure we clean our widgets from any previous databind operations
+           * Making sure we clean our widgets from any previous apply operations
            */
           clear-widget:todo-item-wrapper
 
@@ -832,7 +832,7 @@ create-widget:todo-main-form
           /*
            * Databinds the table widget below to [todo-item]'s from database
            */
-          databind:x:/+/*/widgets
+          apply:x:/+/*/widgets
             src:x:/../*/select-data/*
             template
               tr
@@ -848,7 +848,7 @@ create-widget:todo-main-form
 
                           /*
                            * This 'static' ID will be databound, just like any other node in
-                           * the [template] parts of your [databind] invocation. This just so
+                           * the [template] parts of your [apply] invocation. This just so
                            * happens to contain the ID of the currently iterated [todo-item].
                            * Which means we can retrieve which item was clicked when deletion
                            * of one item is requested.
@@ -868,7 +868,7 @@ create-widget:todo-main-form
                            * Databinds the table HTML widget again, since we've now deleted on item
                            * from database
                            */
-                          sys42.examples.databind-todo-list
+                          sys42.examples.apply-todo-list
 
                           /*
                            * Make sure we set focus to 'new item' textbox afterwards
@@ -897,7 +897,7 @@ create-widget:todo-main-form
       lambda:@"/*
  * Example that shows how to load an RSS document,
  * parse it using the [xml2lambda] Active Event, 
- * and [databind] the results to an unordered list
+ * and [apply] the results to an unordered list
  */
 
 /*
@@ -946,7 +946,7 @@ set-widget-property:header
 /*
  * Databind the widget below to the items from digg's RSS feed
  */
-databind:x:/../*/create-widget/*/widgets
+apply:x:/../*/create-widget/*/widgets
   src:x:/../*/xml2lambda/*/rss/*/channel/*/item
   template
     li
@@ -1022,7 +1022,7 @@ create-widget:address-book-main
      * Making sure we initially create our address 
      * list table widget
      */
-    sys42.examples.databind-address-book
+    sys42.examples.apply-address-book
 
   widgets
     container
@@ -1040,11 +1040,11 @@ create-widget:address-book-main
           _onsearch
 
             /*
-             * Since [sys42.examples.databind-address-book] takes care of
+             * Since [sys42.examples.apply-address-book] takes care of
              * checking search criteria, we simply invoke it here, and give focus
              * to search field afterwards
              */
-            sys42.examples.databind-address-book
+            sys42.examples.apply-address-book
             send-javascript:@""$('#search-address-book').select().focus();""
     button:add-button
       class:col-xs-2 col-xs-push-10 col-md-1 col-md-push-11 btn btn-primary
@@ -1104,9 +1104,9 @@ create-widget:address-book-main
               value
 
             /*
-             * re-databind address book widget table
+             * re-apply address book widget table
              */
-            sys42.examples.databind-address-book
+            sys42.examples.apply-address-book
 
   /*
    * Events for widget
@@ -1116,7 +1116,7 @@ create-widget:address-book-main
     /*
      * Databinds table widget towards items in database
      */
-    sys42.examples.databind-address-book
+    sys42.examples.apply-address-book
 
       /*
        * Checking if table widget already exists, and if so, delete old table
@@ -1164,7 +1164,7 @@ create-widget:address-book-main
       /*
        * Databinding table widget below
        */
-      databind:x:/../*/create-widget/*/widgets
+      apply:x:/../*/create-widget/*/widgets
         src:x:/../*/select-data/*
         template
           tr
@@ -1227,7 +1227,7 @@ create-widget:address-book-main
                           /*
                            * Re-databinding address book items table widget
                            */
-                          sys42.examples.databind-address-book
+                          sys42.examples.apply-address-book
               td
                 widgets
                   strong
@@ -1318,7 +1318,7 @@ Please notice that this feature requires that you've setup your web.config with 
                         _onok
                           delete-data:x:@""/*/*/""""=:guid:{0}""""""
                             {}:x:?value
-                          sys42.examples.databind-address-book
+                          sys42.examples.apply-address-book
                     widgets
                       span
                         class:glyphicon glyphicon-remove
@@ -1630,7 +1630,7 @@ like me, feel free to contact me through the above email.</p>""
            * evaluation object above to create a friendly filename, without the
            * extension and the full path
            */
-          databind:x:/../*/create-widget/*/widgets
+          apply:x:/../*/create-widget/*/widgets
             src:x:/../*/list-files/*
             template
               tr
@@ -1725,8 +1725,8 @@ sure you wish to do this? This action cannot be undone afterwards!""
                               /*
                                * Now that we have inserted 'type declaration object' into
                                * database, we can insert each item in file. First we remove
-                               * column header declaration from file. Then we use [databind]
-                               * to databind an [insert-data] invocation, which inserts each
+                               * column header declaration from file. Then we use [apply]
+                               * to apply an [insert-data] invocation, which inserts each
                                * item record into our database
                                */
                               set:x:/../*/split/[0,1]/0
@@ -1739,7 +1739,7 @@ sure you wish to do this? This action cannot be undone afterwards!""
                                 >:int:0
 
                                 /*
-                                 * Used as callback during [databind] to create items, making sure
+                                 * Used as callback during [apply] to create items, making sure
                                  * we create it such that it inserts both column names and column values.
                                  * Adding columns to evaluation object from the column names from CSV file
                                  */
@@ -1766,7 +1766,7 @@ sure you wish to do this? This action cannot be undone afterwards!""
                                     set:x:/../*/split/0
 
                                   /*
-                                   * Here we make sure our evaluation object for [databind]
+                                   * Here we make sure our evaluation object for [apply]
                                    * returns all columns, and their values for row
                                    */
                                   insert-before:x:
@@ -1778,7 +1778,7 @@ sure you wish to do this? This action cannot be undone afterwards!""
                                  * mess up original order of items
                                  */
                                 eval-x:x:/+/*/*/*/type
-                                databind:x:/..if/*/append-data
+                                apply:x:/..if/*/append-data
                                   src:x:/../*/split/[0,1]/*
                                   template
                                     examples.csv-file-content
@@ -1786,10 +1786,10 @@ sure you wish to do this? This action cannot be undone afterwards!""
                                       items
 
                                         /*
-                                         * Notice that since we're inside a double nested [databind]
+                                         * Notice that since we're inside a double nested [apply]
                                          * operation here, we need to 'escape' our '{', such that it
-                                         * doesn't become evaluated by the outer most (first) [databind],
-                                         * but rather exclusively by the second (inner) [databind]
+                                         * doesn't become evaluated by the outer most (first) [apply],
+                                         * but rather exclusively by the second (inner) [apply]
                                          */
                                         \{@eval}:x:/..if/*/_x-create-insert-item
 
@@ -1949,7 +1949,7 @@ sure you wish to do this? This action cannot be undone afterwards!""
           /*
            * Databinding table widget's header
            */
-          databind:x:/../*/create-widget/*/widgets/*/thead/*/widgets/*/tr/*/widgets
+          apply:x:/../*/create-widget/*/widgets/*/thead/*/widgets/*/tr/*/widgets
             src:x:/../*/select-data/[0,1]/0/*/columns/*
             template
               th
@@ -1975,11 +1975,11 @@ sure you wish to do this? This action cannot be undone afterwards!""
                     innerValue:x:/..for-each/*/_dp?value
 
           /*
-           * Now we can invoke [databind], with evaluation callback,
+           * Now we can invoke [apply], with evaluation callback,
            * to create each data item row in table showing CSV file in
            * edit mode
            */
-          databind:x:/../*/create-widget/*/widgets
+          apply:x:/../*/create-widget/*/widgets
             src:x:/../*/select-data/[1,2]/*
             template
               tr
@@ -1991,7 +1991,7 @@ sure you wish to do this? This action cannot be undone afterwards!""
                  * an [_id] attribute, with the value being the ID from database,
                  * which we're using later when we're deleting items, such that we
                  * can more easily delete the HTML table's row (tr element) from
-                 * the widget hierarchy, to prevent forcing a re-databind, and flush, 
+                 * the widget hierarchy, to prevent forcing a re-apply, and flush, 
                  * of entire HTML for table as deletion of items is done
                  */
                 {_id}:x:?value
@@ -2009,7 +2009,7 @@ sure you wish to do this? This action cannot be undone afterwards!""
 
                         /*
                          * To make it easier to retrieve id of item
-                         * user wants to delete, we databind also a hidden attribute
+                         * user wants to delete, we apply also a hidden attribute
                          * on button HTML element to the id from database
                          */
                         {_id-btn}:x:?value
@@ -2046,7 +2046,7 @@ This action cannot be undone when it is finished""
                             _onok
 
                               /*
-                               * For simplicity, we databind the [_id] node below to
+                               * For simplicity, we apply the [_id] node below to
                                * the id of the item from the database. We could have
                                * used [get-parent-widget] a couple of times, but this
                                * would have created more complex Hyperlisp, in addition
@@ -2145,7 +2145,7 @@ This action cannot be undone when it is finished""
 
                 /*
                  * Using jQuery to set focus back to search textbox again,
-                 * before we re-databind the HTML table showing the content
+                 * before we re-apply the HTML table showing the content
                  * of the CSV file
                  */
                 send-javascript:@""$('#search-csv-editor').focus().select();""
@@ -2155,7 +2155,7 @@ This action cannot be undone when it is finished""
          * Updates a single item in table, to conserve bandwidth usage.
          * Expects an ID to database record wrapping item
          */
-        sys42.examples.re-databind-item
+        sys42.examples.re-apply-item
 
           /*
            * Finding the HTML tr element that wraps the CSV item
@@ -2265,7 +2265,7 @@ This action cannot be undone when it is finished""
           _select-data
 
           /*
-           * Evaluation callback provided to [databind], to (among other things)
+           * Evaluation callback provided to [apply], to (among other things)
            * create a unique ID for HTML input element, such that wizard window
            * below, will function properly
            */
@@ -2320,7 +2320,7 @@ This action cannot be undone when it is finished""
 
             /*
              * The next piece of logic, will return a [text] item to
-             * caller, which is used to [databind] the [_widgets] of
+             * caller, which is used to [apply] the [_widgets] of
              * our wizard window, making sure we get a textbox input
              * for each value of our CSV item
              */
@@ -2335,12 +2335,12 @@ This action cannot be undone when it is finished""
 
           /*
            * Dynamically creating our textbox input elements of
-           * our wizard window, by invoking [databind], supplying the
+           * our wizard window, by invoking [apply], supplying the
            * above evaluation object as [template]. This is a nice
-           * example of that [databind] can be used for things you
+           * example of that [apply] can be used for things you
            * wouldn't normally use it for in a traditional sense
            */
-          databind:x:/../*/sys42.wizard-window/*/_widgets
+          apply:x:/../*/sys42.wizard-window/*/_widgets
             src:x:/../*/select-data/*/*(/items/*|/columns/*)
             template
               {@eval}:x:/../*/_x-create-template-item
@@ -2432,7 +2432,7 @@ This action cannot be undone when it is finished""
                  * entire table widget, but rather only its row. This next
                  * Active Event invocation do just that!
                  */
-                sys42.examples.re-databind-item:x:/../*/_data-id?value
+                sys42.examples.re-apply-item:x:/../*/_data-id?value
               else
 
                 /*
@@ -2486,7 +2486,7 @@ This action cannot be undone when it is finished""
                     items
 
                 /*
-                 * re-databind entire form (TODO; Make it possible to only
+                 * re-apply entire form (TODO; Make it possible to only
                  * re-binding the last row by creating a new table tr element)
                  */
                 sys42.examples.edit-csv-objects
@@ -2708,7 +2708,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
   class:table table-hover
   _data-typename:p5.page
   oninit
-    sys42.forms.action.databind-table:x:/../*/_event?value
+    sys42.forms.action.apply-table:x:/../*/_event?value
   widgets
   events
     sys42.forms.action.reset-table-paging
@@ -2727,7 +2727,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
       set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
         _data-begin:0
         _data-end:x:/../*/\-?value
-    sys42.forms.action.databind-table-next
+    sys42.forms.action.apply-table-next
       if:x:/../*/_arg
         and:x:/../*/_arg?value
           !=:x:/../*/_event?value
@@ -2772,9 +2772,9 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
       set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
         _data-begin:x:/../*/\+/[0,1]?value
         _data-end:x:/../*/\+/[1,2]?value
-      sys42.forms.action.databind-table:x:/../*/_arg?value
+      sys42.forms.action.apply-table:x:/../*/_arg?value
       return:bool:true
-    sys42.forms.action.databind-table
+    sys42.forms.action.apply-table
       if:x:/../*/_arg
         and:x:/../*/_arg?value
           !=:x:/../*/_event?value
@@ -2819,7 +2819,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
           find-widget:x:/../*/_event?value
             element:thead
         not
-        databind:x:/..if/*/create-widget/*/widgets/*/tr/*/widgets
+        apply:x:/..if/*/create-widget/*/widgets/*/tr/*/widgets
           src:x:/../*/split/*
           template
             th
@@ -2848,7 +2848,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
         parent:x:/../*/_event?value
         element:tbody
         widgets
-    sys42.forms.action.databind-table-previous
+    sys42.forms.action.apply-table-previous
       if:x:/../*/_arg
         and:x:/../*/_arg?value
           !=:x:/../*/_event?value
@@ -2875,7 +2875,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
       set-widget-property:x:@/../*/sys42.get-user-control-settings/*/_settings-widget-id?value
         _data-begin:x:/../*/\-/[1,2]?value
         _data-end:x:/../*/\-/[2,3]?value
-      sys42.forms.action.databind-table:x:/../*/_arg?value
+      sys42.forms.action.apply-table:x:/../*/_arg?value
       return:bool:false"
     p5.page:/usercontrols/paged-searchable-data-table
       name:Usercontrol - Paged and searchable data table
@@ -2903,7 +2903,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
               data-usercontrol
             find-widget:x:/-/*?value
               element:table
-            sys42.forms.action.databind-table-previous:x:/-/*?value
+            sys42.forms.action.apply-table-previous:x:/-/*?value
         void
           element:input
           value:
@@ -2936,7 +2936,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
             find-widget:x:/../*/find-widget/[1,2]/*?value
               element:table
             sys42.forms.action.reset-table-paging:x:/-/*?value
-            sys42.forms.action.databind-table:x:/-2/*?value
+            sys42.forms.action.apply-table:x:/-2/*?value
             send-javascript:$('#{0}').parent().find('.search-textbox').focus().select();
               :x:/../*/_event?value
         literal
@@ -2951,7 +2951,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
               data-usercontrol
             find-widget:x:/-/*?value
               element:table
-            sys42.forms.action.databind-table-next:x:/-/*?value
+            sys42.forms.action.apply-table-next:x:/-/*?value
     container
       element:div
       _data-columns:name,type,role,template
@@ -3064,7 +3064,7 @@ as an administrator or superuser.</p>""
                 _:10
               set-session-value:sys42.file-sharer.paging
                 src:x:/./-?value
-              sys42.file-sharer.databind-files
+              sys42.file-sharer.apply-files
             else
               sys42.info-window:No more items ...
         button
@@ -3089,7 +3089,7 @@ as an administrator or superuser.</p>""
                 _:int:10
               set-session-value:sys42.file-sharer.paging
                 src:x:/./-?value
-              sys42.file-sharer.databind-files
+              sys42.file-sharer.apply-files
             else
               sys42.info-window:No more items ...
     container:file-sharer-files
@@ -3115,7 +3115,7 @@ as an administrator or superuser.</p>""
     /*
      * Databinding our ""datagrid""
      */
-    sys42.file-sharer.databind-files
+    sys42.file-sharer.apply-files
 
   /*
    * This Ajax event is required by the ""drag-and-drop-upload.hl"" file, and
@@ -3146,7 +3146,7 @@ as an administrator or superuser.</p>""
       =:guest
       sys42.info-window:Thank you for this files, we will have an administrator look at them as soon as we can!
       return
-    sys42.file-sharer.databind-files
+    sys42.file-sharer.apply-files
 
   events
 
@@ -3154,7 +3154,7 @@ as an administrator or superuser.</p>""
      * Lambda event that is invoked whenever the ""datagrid"" of available files
      * needs to be databound
      */
-    sys42.file-sharer.databind-files
+    sys42.file-sharer.apply-files
 
       /*
        * Checking if user belongs to the ""superuser"" role, and if not,
@@ -3276,7 +3276,7 @@ of this server, theoretically might be extorted to give out his web logs, which 
                       _onok
                         _filename:x:/..for-each/*/_dp/#?name
                         delete-file:x:/-?value
-                        sys42.file-sharer.databind-files
+                        sys42.file-sharer.apply-files
 
 
 "
@@ -3670,7 +3670,7 @@ container
           _body:Are you sure you wish to delete all rating data in your system?
           _onok
             delete-data:x:/*/*/customer-rating
-            sys42.forms.action.databind-table"
+            sys42.forms.action.apply-table"
     p5.page:/examples/www-survey
       name:Web Survey Example
       template:/system42/apps/cms/templates/no-header-menu.hl

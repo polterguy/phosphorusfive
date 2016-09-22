@@ -204,7 +204,7 @@ create-widget:wysiwyg-editor
                 /*
                  * Creates widget's children widgets ("option" HTML elements)
                  */
-                sys42.wysiwyg-controls.databind-select-widget-dropdown
+                sys42.wysiwyg-controls.apply-select-widget-dropdown
               onchange
 
                 /*
@@ -241,7 +241,7 @@ create-widget:wysiwyg-editor
                  * simply selects that as a value, otherwise it re-creates
                  * entire select dropdown list
                  */
-                sys42.wysiwyg-controls.databind-select-widget-dropdown
+                sys42.wysiwyg-controls.apply-select-widget-dropdown
 
                   /*
                    * Checking if we're given a widget id to select, and if so, simply
@@ -1343,9 +1343,9 @@ is not legally allowed as a child of a '{1}' element"
                   onclick
                     sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
                     if:x:/-?value
-                      sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+                      sys42.wysiwyg-controls.apply-select-widget-dropdown:x:/../*/_event?value
                     else
-                      sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+                      sys42.wysiwyg-controls.apply-select-widget-dropdown:_default
 
               /*
                * Actually creating widget, before selecting widget, and rebinding select dropdown list
@@ -1354,7 +1354,7 @@ is not legally allowed as a child of a '{1}' element"
                 src:x:/../*/get-session-value/*/*
               _create-widget
               sys42.wysiwyg-controls.select-widget:x:/-?value
-              sys42.wysiwyg-controls.databind-select-widget-dropdown
+              sys42.wysiwyg-controls.apply-select-widget-dropdown
 
               /*
                * Toggling button's dropdown state, and showing user some information
@@ -1379,7 +1379,7 @@ is not legally allowed as a child of a '{1}' element"
               data-selected
             get-parent-widget:x:/../*/find-widget/*?value
             sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0?value
-            sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/get-parent-widget/0?value
+            sys42.wysiwyg-controls.apply-select-widget-dropdown:x:/../*/get-parent-widget/0?value
           onmouseover:@"$('#' + p5._currentParentWidget).addClass('highlight');"
           onmouseout:@"$('#' + p5._currentParentWidget).removeClass('highlight');"
           events
@@ -1560,7 +1560,7 @@ is not legally allowed as a child of a '{1}' element"
                           :x:/..for-each/*/_dp/#?value
                         _onclick
                           sys42.wysiwyg-controls.select-widget:x:/..for-each/*/_dp/#?value
-                          sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/..for-each/*/_dp/#?value
+                          sys42.wysiwyg-controls.apply-select-widget-dropdown:x:/..for-each/*/_dp/#?value
 
 
 
@@ -1610,7 +1610,7 @@ is not legally allowed as a child of a '{1}' element"
                  * which will trigger a "re-create child collection" logic for all "option" HTML elements,
                  * being children of "select" HTML widget
                  */
-                sys42.wysiwyg-controls.databind-select-widget-dropdown
+                sys42.wysiwyg-controls.apply-select-widget-dropdown
 
                 /*
                  * Informing user how many widgets was actually deleted
@@ -1687,7 +1687,7 @@ is not legally allowed as a child of a '{1}' element"
                  * Re-creating "select widget" dropdown box, without arguments, to make sure it
                  * is re-created entirely
                  */
-                sys42.wysiwyg-controls.databind-select-widget-dropdown
+                sys42.wysiwyg-controls.apply-select-widget-dropdown
 
                 /*
                  * Hiding all "properties for selected widget", since no widgets are selected now!
@@ -1731,7 +1731,7 @@ is not legally allowed as a child of a '{1}' element"
         container:wysiwyg-editor-surface
           onclick
             sys42.wysiwyg-controls.unselect-widget
-            sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+            sys42.wysiwyg-controls.apply-select-widget-dropdown:_default
           widgets
 
 
@@ -2129,7 +2129,7 @@ is not legally allowed as a child of a '{1}' element"
       /*
        * Then we need to "refresh" selected widget in surface
        */
-      sys42.wysiwyg-controls.databind-select-widget-dropdown
+      sys42.wysiwyg-controls.apply-select-widget-dropdown
 
       /*
        * Then we need to delete widget's properties and action subscribers etc
@@ -2313,9 +2313,9 @@ is not legally allowed as a child of a '{1}' element"
           onclick
             sys42.wysiwyg-controls.select-widget:x:/../*/_event?value
             if:x:/-?value
-              sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+              sys42.wysiwyg-controls.apply-select-widget-dropdown:x:/../*/_event?value
             else
-              sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+              sys42.wysiwyg-controls.apply-select-widget-dropdown:_default
 
       /*
        * Checking widget creation Active Event, which might be
@@ -2376,7 +2376,7 @@ is not legally allowed as a child of a '{1}' element"
        * and re-databinding "select widget" dropdown box
        */
       sys42.wysiwyg-controls.select-widget:x:/../*/~create-?value
-      sys42.wysiwyg-controls.databind-select-widget-dropdown
+      sys42.wysiwyg-controls.apply-select-widget-dropdown
 
       /*
        * Refreshing CodeMirror codeview, if it is visible

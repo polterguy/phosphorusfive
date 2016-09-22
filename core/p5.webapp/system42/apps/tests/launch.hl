@@ -33,7 +33,7 @@ _eval-name
 /*
  * Databinding unit tests files to table widget
  */
-databind:x:/../*/create-widget/=unit-test-files/*/widgets
+apply:x:/../*/create-widget/=unit-test-files/*/widgets
   src:x:/../*/list-files/*
   template
     tr

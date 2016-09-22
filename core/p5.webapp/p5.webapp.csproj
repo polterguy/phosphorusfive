@@ -388,7 +388,7 @@
     <Content Include="system42\apps\tests\add.hl" />
     <Content Include="system42\apps\tests\branching.hl" />
     <Content Include="system42\apps\tests\comparison-operators.hl" />
-    <Content Include="system42\apps\tests\databind.hl" />
+    <Content Include="system42\apps\tests\apply.hl" />
     <Content Include="system42\apps\tests\eval.hl" />
     <Content Include="system42\apps\tests\expression-algebra.hl" />
     <Content Include="system42\apps\tests\expression-groups.hl" />

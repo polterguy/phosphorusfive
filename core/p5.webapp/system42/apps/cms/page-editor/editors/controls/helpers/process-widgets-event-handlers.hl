@@ -129,14 +129,14 @@ for-each:x:/../*/_node/#/*
              * Widget was selected. Making sure we set the [select] dropdown
              * box that allows selecting widgets, to the widget that was just selected
              */
-            sys42.wysiwyg-controls.databind-select-widget-dropdown:x:/../*/_event?value
+            sys42.wysiwyg-controls.apply-select-widget-dropdown:x:/../*/_event?value
           else
 
             /*
              * Widget was "unselected", making sure our "select widget" dropdown blox
              * is set to "no selection".
              */
-            sys42.wysiwyg-controls.databind-select-widget-dropdown:_default
+            sys42.wysiwyg-controls.apply-select-widget-dropdown:_default
 
   /*
    * Then recursively calling "self", with current iterated widget's children widgets,

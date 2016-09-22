@@ -1202,10 +1202,10 @@ The id attribute, must be unique for each widget in your page. Shortcut; I"
                     sys42.info-window:@"An 'automatic id' was created for your widget"
 
                     /*
-                     * Then we need to re-databind our select dropdown listbox, and change the value
+                     * Then we need to re-apply our select dropdown listbox, and change the value
                      * of our id textbox to the automatically generated id, before returning early
                      */
-                    sys42.wysiwyg-controls.databind-select-widget-dropdown
+                    sys42.wysiwyg-controls.apply-select-widget-dropdown
 
                     /*
                      * Since the widget was given an "automatically create" new id, we need to re-fetch
@@ -1287,7 +1287,7 @@ or supply an 'empty' value to have an automatically generated id created"
                    * Updating the "select widget" dropdown listbox, since id of widget
                    * changed
                    */
-                  sys42.wysiwyg-controls.databind-select-widget-dropdown
+                  sys42.wysiwyg-controls.apply-select-widget-dropdown
 
                   /*
                    * Refreshing CodeMirror codeview, if it is visible
@@ -1399,7 +1399,7 @@ its children widgets, and/or change its parent widget's element property.</p>"
                   /*
                    * Need to refresh "select widget" dropdown, since element's name changed
                    */
-                  sys42.wysiwyg-controls.databind-select-widget-dropdown
+                  sys42.wysiwyg-controls.apply-select-widget-dropdown
 
                   /*
                    * Need to refresh list of possible attributes and events for widget
@@ -1788,7 +1788,7 @@ CKEDITOR.instances['widget-property-innerValue'].on('change', function() {
         /*
          * Currently selected widget has lambda events, adding a table to main widget that shows them
          */
-        databind:x:/..if/*/create-widget/**/element/=tbody/./*/widgets
+        apply:x:/..if/*/create-widget/**/element/=tbody/./*/widgets
           src:x:/../*/sys42.get-widget/*/*/events/*
           template
             tr

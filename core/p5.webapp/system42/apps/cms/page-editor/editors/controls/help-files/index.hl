@@ -43,7 +43,7 @@ by clicking the <em>""Home""</em> link at the bottom right corner of the help fi
                   onclick
                     _help-file-id:x:/../*/_dn/#?name
                     sys42.wysiwyg-controls.show-help-page:x:/-?value
-      databind:x:/../*/_create-widgets
+      apply:x:/../*/_create-widgets
         src:x:/../*/list-files/*
         template
           {@eval}:x:/../*/_databind-callback

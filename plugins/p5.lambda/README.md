@@ -1068,20 +1068,17 @@ If you execute the above code, you will have the *[foo4]* node appended into you
 further execution of your loop, the *[continue]* invocation instead simply stops the currently iterated execution, and continues with the next
 iteration.
 
-### [databind], modifying your tree on steroids
+### [apply], modifying your tree on steroids
 
-Databinding in p5.lambda, has absolutely nothing with what you perceive as databinding in traditional programming languages. Databind in p5.lambda,
-is probably far more powerful than that which you are used to from before. With the *[databind]* Active Event, you are able to take one expression
-as your "input", add your own "template", and transform the "input" nodes into your own "destination". In such a way, it becomes an alterrnative to
-manually iterating your tree, to transform from one structure, to another, by providing short hand "hooks" for easily transforming from one 
-node-set, to another. Let's look at an example.
+With the *[apply]* Active Event, you are able to to "apply" one *[src]* node, expression or constant, to your "destination", acccording to 
+a *[template]*, referencing nodes and values from your *[src]*. Let's look at an example.
 
 ```
 _people
   thomas
   john
   jane
-databind:x:/../*/create-widget/*/widgets
+apply:x:/../*/create-widget/*/widgets
   src:x:/../*/_people/*
   template
     literal
@@ -1092,21 +1089,25 @@ create-widget
   widgets
 ```
 
-To understand the above code, realize that the *[databind]* Active Event will iterate over its *[src]* expresssion node-set, and "apply" the
-*[template]* for each iteration into the "destination" expression, which is the value of the *[databind]* node itself. While each node,
-having a name surrounded with braces "{}" inside of its *[template]* will be expected to be dynamically fetched from the expression, which
+To understand the above code, realize that the *[apply]* Active Event will iterate over its *[src]* expresssion node-set, and "apply" the
+*[template]* for each iteration into the "destination" expression, which is the value of the *[apply]* node itself. While each node,
+having a name surrounded with braces "{}" inside of your *[template]*, will be expected to be dynamically fetched from the *[src]*, which
 must be relative to the currently iterated *[src]* node-set.
 
 Since the *[src]* in the above example, is iterating each children node beneath the *[_people]* node, this means that the ":x:?name" 
-expression, for the above *[{innerValue}]* node, will fetch the names of these nodes ("thomas", "john" and "jane") as the loop executes.
+expression, for the above *[{innerValue}]* node, will fetch the names of these nodes ("thomas", "john" and "jane") as the loop iterates.
 
 It sometimes helps to "unroll one iteration" in your mind, to understand the expressions inside of a *[template]* argument.
 
+In the above example, our *[src]* expression yields 3 nodes as its result. Hence, the *[template]* is "applied" 3 times to the "destination",
+which is the value expression of our *[apply]* node. Every time it "applies" the template, it will "unroll" each "databound" expression,
+such as the one in *[{innerValue}]* above, with the expression being evaluated relatively to the currently iterated *[src]*.
+
 Only nodes that have names surrounded by braces ({}) will have their values dynamically changed, according to the *[src]* node being iterated.
-All other nodes, and expressions, will be left unchanged after evaluation. However, the braces ({}), will be removed after *[databind]*
+All other nodes, and expressions, will be left unchanged after evaluation. However, the braces ({}), will be removed after *[apply]*
 has been evaluated. This means, that with the above syntax, you can only change _values_ of nodes. However, to change and/or create new nodes,
-using *[databind]* is achieved using another feature of *[databind]*. Before we look at that, let us first create a more complex databind
-evaluation, to further visualize the iteration of a *[databind]* invocation.
+using *[apply]*, is achieved using another feature of *[apply]*. Before we look at that, let us first create a more complex apply
+evaluation, to further visualize the iteration of a *[apply]* invocation.
 
 ```
 _people
@@ -1116,7 +1117,7 @@ _people
     name:John Doe
   person3
     name:Jane Doe
-databind:x:/../*/create-widget/*/widgets
+apply:x:/../*/create-widget/*/widgets
   src:x:/../*/_people/*
   template
     literal
@@ -1128,19 +1129,19 @@ create-widget
 ```
 
 The above p5.lambda, will produce roughly the same output. However, now you can more easily see how the expressions inside of the databound 
-nodes (nodes having names surrounded by braces ({})) are dynamically fetching their values, having expressions being "relative" to the
-currently iterated node, since you see the expression in the above *[{innerValue}]* node referencing a child *[name]* node.
+nodes (nodes having names surrounded by braces ({})), are dynamically fetching their values, having expressions being "relative" to the
+currently iterated node, since you see the expression in the above *[{innerValue}]* node, is referencing a child *[name]* node.
 
-Normally an expression's "identity" will point to the node where the expression is declared. In *[databind]*, the "identity expression" will
-instead lead to the "currently iterated node" from its currently iterated *[src]* node-set value.
+Normally an "identity" expression will point to the node where the expression is declared. In *[apply]*, the "identity expression" will
+instead lead to the "currently iterated node", from its currently iterated *[src]* node-set value.
 
-If this was the complete feature list of *[databind]*, it wouldn't be very powerful though. First of all, we cannot decide what names nodes
-are given. Secondly, we cannot return different nodes, according to the data result-set currently being iterated. This too though is easily
-accomplished using *[databind]*. To understand how, realize you can invoke any Active Event you wish during a databind iteration, including
-also for instance *[eval]*. This allows you to evaluate some lambda object, for each iteration of a databind operation, passing in the currently
-iterated node-set. This is being done prepending an alpha character in front of the name of your databound node, at which point your
-entire databound node will be discarded, and replaced by whatever (if anything) returned from the evaluation of your lambda object. Let us
-illustrate with some code.
+If this was the complete feature list of *[apply]*, it wouldn't be very powerful though. First of all, we cannot decide what names nodes
+are created dynamically. The *[template]* seems to be static for all items. Secondly, we cannot return different nodes, according to the 
+data result-set currently being iterated. This too though is easily accomplished using *[apply]*. To understand how, realize that you can 
+invoke any Active Event you wish during an apply iteration, including also for instance *[eval]*. This allows you to evaluate some lambda 
+object, for each iteration of an apply iteration, passing in the currently iterated node-set. This is being done byt prepending an alpha 
+character in front of the name of your databound node, at which point your entire databound node will be discarded, and replaced by whatever 
+(if anything), returned from the evaluation of your lambda object. Let us illustrate with some code.
 
 ```
 _people
@@ -1161,7 +1162,7 @@ _exe
       innerValue:{0}, {1}
         :x:/../*/_dn/#/*/surname?value
         :x:/../*/_dn/#/*/name?value
-databind:x:/../*/create-widget/*/widgets
+apply:x:/../*/create-widget/*/widgets
   src:x:/../*/_people/*
   template
     {@eval}:x:/../*/_exe
@@ -1176,18 +1177,19 @@ be any Active Event you wish. And whatever your Active Event returns as nodes, w
 of your Active Event. If you watch the output of the above code in e.g. System42/executor, you will see that there are no traces of
 our original *[{@eval}]* node after evaluation.
 
-You can combine Active Event invocation sources with plain databound sources as we started out with, and/or static nodes, as you see with
+You can combine Active Event invocation sources, with plain databound sources, as we started out with, and/or static nodes, as you see with
 the *[br]* node in the above example.
 
-Notice that although we are creating a widget hierarchy above, you can create any node structure you wish with *[databind]*, including
-insertions into your database, etc, etc, etc. Any node structure you want to create, is easily accomplished using *[databind]*.
-Databinding in p5.lambda is not in any ways restricted to graphical objects such as you're probably used to from other programming languages.
+Notice that although we are creating a widget hierarchy above, you can create any node structure you wish with *[apply]*, including
+insertions into your database, etc, etc, etc. Any node structure you want to create, is easily accomplished using *[apply]*.
+Databinding in p5.lambda is not in any ways restricted to graphical objects, such as you're probably used to with "databinding" from 
+other programming languages.
 
 #### Escaping databound template value
 
 Sometimes, you have a node, which for some reasons, should be named "{xxx-something}". This creates a problem, since it'll be assumed
-to be a databound node. Use cases for such scenarios might be for instance nested *[databind]* lambda objects. For such cases, all you need
-to do, is to for instance prepend your node's name with a back slash (\). Imagine the following code, which contains nested databound lambda
+to be a databound node. Use cases for such scenarios, might be for instance nested *[apply]* lambda objects. For such cases, all you need
+to do, is to for instance prepend your node's name with a back slash (\). Imagine the following code, which contains nested apply lambda
 blocks.
 
 ```
@@ -1208,7 +1210,7 @@ _output1-exe
     innerValue:{0}, {1}
       :x:/../*/_dn/#/*/last?value
       :x:/../*/_dn/#/*/first?value
-databind:x:/../*/_output1
+apply:x:/../*/_output1
   src:x:/../*/_data/*
   template
     create-literal-widget
@@ -1216,7 +1218,7 @@ databind:x:/../*/_output1
       {@eval}:x:/../*/_output1-exe
       onclick
         {_foo}:x:/*/first?value
-        databind:x:/../*/_exe
+        apply:x:/../*/_exe
           src:x:/../*/_foo
           template
             \{sys42.info-window}:Hello {0}
@@ -1226,27 +1228,27 @@ databind:x:/../*/_output1
 eval:x:/../*/_output1
 ```
 
-The above code might seem difficult to understand when you first look at it. The important point though, is that we have two nested *[databind]*
-invocations above. Unless we had added the back-slash at line 29, then this databound node would have been databound in the first databind
-invocation. Which obviously was not our intention. Hence, we add a back-slash in fron of it, which will be removed during the first databound,
-but also make sure our node is not databound during the first databind invocation.
+The above code might seem difficult to understand when you first look at it. The important point though, is that we have two nested *[apply]*
+invocations above. Unless we had added the back-slash at line 29, then this databound node would have been databound in the first apply
+invocation. Which obviously was not our intention. Hence, we add a back-slash in front of it, which will be removed during the first databound,
+but also make sure our node is not databound during the first apply invocation.
 
-The code creates one *[create-literal-widget]* invocation for each child node of our *[_data]* segment, having the *[innerValue]* created
+The code creates one *[create-literal-widget]* invocation, for each child node of our *[_data]* segment, having the *[innerValue]* created
 as a combination of the *[last]* and *[first]* name of our persons.
 
-Then we handle the *[onclick]* Ajax event for our widgets, from where we invoke *[databind]* towards an invocation of *[sys42.info-window]*.
-Our info window is then databound towards the *[_foo]*'s value, which was previously databound in our first *[databind]* invocation towards
+Then we handle the *[onclick]* Ajax event for our widgets, from where we invoke *[apply]* towards an invocation of *[sys42.info-window]*.
+Our info window is then databound towards the *[_foo]*'s value, which was previously databound in our first *[apply]* invocation towards
 only the *[first]* name. Resulting in that when our widgets are clicked, they will speak "Hello 'first-name'".
 
 The above is probably not a relevant example, and the same result could have been easily achieved with other means. However, it is an example
-of how you must escape your inner *[databind]* invocations databound nodes, if you embed them inside of outer *[databind]* invocations.
+of how you must escape your inner *[apply]* invocations databound nodes, if you embed them inside of outer *[apply]* invocations.
 
 If you remove the back-slash at line 29 in the above code, instead of showing the "first name" in an info window, it will show the "ID" of
-your person (1, 2 or 3) when you click the widget. This is because the *[sys42.info-window]* will be databound in the first invocation to
-our *[databind]* Active Event. Which obviously was not our intention.
+your person (1, 2 or 3) when you click the widget. This is because the *[sys42.info-window]*, will be databound byt the first invocation to
+our *[apply]* Active Event, which obviously was not our intention.
 
 Notice!
-Sometimes you need to have the results of a *[databind]* invocations create a node who's name starts with a alpha character (@). If the value
+Sometimes you need to have the results of a *[apply]* invocations create a node who's name starts with a alpha character (@). If the value
 of this node is databound itself though, this would instead of creating a node starting with @ in its name, expect an Active Event who's name
 was that of your node. You can accomplish this though creating a lambda object, returning a node, who's name starts with an "@" though, and 
 then use *[eval]* as an Active Event invocation for your databound node. Imagine the following code.
@@ -1263,7 +1265,7 @@ _exe
   eval-x:x:/+/*
   return
     @name:x:/../*/_dn/#/*/name?value
-databind:x:/../*/_out
+apply:x:/../*/_out
   src:x:/../*/_people/*
   template
     {@eval}:x:/../*/_exe
@@ -1272,8 +1274,8 @@ _out
 
 #### Warning!
 
-The *[databind]* Active Event is extremely powerful. But this power, comes with a cost, which is that it is very easy to create extremely 
-difficult to understand code, unless you are careful. Understanding how *[databind]* works, also requires some very good visualization skills,
+The *[apply]* Active Event is extremely powerful. But this power, comes with a cost, which is that it is very easy to create extremely 
+difficult to understand code, unless you are careful. Understanding how *[apply]* works, also requires some very good visualization skills,
 to understand what happens, and when it happens.
 
 ### [fetch], evaluating lambda and fetching the requested result

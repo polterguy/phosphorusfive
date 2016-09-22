@@ -12,34 +12,34 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords.extras
 {
     /// <summary>
-    ///     Class wrapping execution engine keyword [databind]
+    ///     Class wrapping execution engine keyword [apply]
     /// </summary>
-    public static class Databind
+    public static class Apply
     {
         /// <summary>
-        ///     The [databind] keyword allows you to databind a p5.lambda object to another p5.lambda object
+        ///     The [apply] keyword allows you to apply a p5.lambda object to another p5.lambda object
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "databind", Protection = EventProtection.LambdaClosed)]
-        public static void lambda_databind (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "apply", Protection = EventProtection.LambdaClosed)]
+        public static void lambda_apply (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
             var destEx = e.Args.Value as Expression;
             if (destEx == null)
-                throw new LambdaException ("[databind] was not given a valid destination expression", e.Args, context);
+                throw new LambdaException ("[apply] was not given a valid destination expression", e.Args, context);
 
             // Retrieving template and performing sanity check
             var template = e.Args ["template"];
             if (template == null)
-                throw new LambdaException ("No [template] supplied to [databind]", e.Args, context);
+                throw new LambdaException ("No [template] supplied to [apply]", e.Args, context);
 
             // Databinding destination(s) by looping through each destinations given
             foreach (var idxDest in destEx.Evaluate (context, e.Args, e.Args)) {
 
                 // Sanity check
                 if (idxDest.TypeOfMatch != Match.MatchType.node)
-                    throw new LambdaException ("The destination of a [databind] operation must be a node", e.Args, context);
+                    throw new LambdaException ("The destination of a [apply] operation must be a node", e.Args, context);
 
                 // Retrieving source, possibly relative to destination
                 var source = XUtil.InvokeSource (context, e.Args, idxDest.Node, new List<string> (new string[] { "template" }));
@@ -145,11 +145,11 @@ namespace p5.lambda.keywords.extras
                     // Databound expression
                     var match = ex.Evaluate (context, dataSource, current);
 
-                    // Checking if this is an "inner databind operation", meaning a "sub template"
+                    // Checking if this is an "inner apply operation", meaning a "sub template"
                     if ((match.TypeOfMatch == p5.exp.Match.MatchType.node && 
                         (string.IsNullOrEmpty (match.Convert) || match.Convert == "node")) || match.Convert == "node") {
 
-                        // Inner databind expression type, meaning an "inner template", using result of expression as new source
+                        // Inner apply expression type, meaning an "inner template", using result of expression as new source
                         // Notice we do NOT return "retVal" here, but rather one node for each result
                         // in inner datasource expression, treating the children nodes as "inner templates"
                         foreach (var idxSourceNode in XUtil.Iterate<Node> (context, current, dataSource)) {
