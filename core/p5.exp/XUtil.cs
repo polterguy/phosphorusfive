@@ -47,10 +47,14 @@ namespace p5.exp
         /// <param name="parent">Parent node expected to have a source node</param>
         /// <param name="destination">Current destination node</param>
         /// <returns></returns>
-        public static List<object> InvokeSource (ApplicationContext context, Node parent, Node destination)
+        public static List<object> InvokeSource (ApplicationContext context, Node parent, Node destination, List<string> excludeNodes = null)
         {
+            // For simplicity, avoiding null reference exceptions inside of Linq later down
+            if (excludeNodes == null)
+                excludeNodes = new List<string> ();
+
             // Retrieving source nodes, making sure we do not add up "formatting nodes"
-            var srcList = parent.Children.Where (ix => ix.Name != "").ToList ();
+            var srcList = parent.Children.Where (ix => ix.Name != "" && !excludeNodes.Contains (ix.Name)).ToList ();
 
             // Sanity check, making sure there's only one or zero
             if (srcList.Count > 1) {
@@ -490,149 +494,8 @@ namespace p5.exp
                 }
             }
         }
-
         /// <summary>
-        ///    Will return multiple values if possible
-        /// </summary>
-        /// <returns>The nodes</returns>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        /// <param name="context">Context</param>
-        public static List<Node> SourceNodes (
-            ApplicationContext context,
-            Node evaluatedNode)
-        {
-            return SourceNodes (context, evaluatedNode, evaluatedNode);
-        }
-
-        /// <summary>
-        ///     Will return multiple values if possible
-        /// </summary>
-        /// <returns>The nodes</returns>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        /// <param name="dataSource">Data source</param>
-        /// <param name="context">Context</param>
-        public static List<Node> SourceNodes (
-            ApplicationContext context,
-            Node evaluatedNode, 
-            Node dataSource)
-        {
-            // Finding first [src] node
-            var srcNodes = evaluatedNode.Children.Where (ix => ix.Name != "").ToList ();
-
-            // Returning early if there is no source
-            if (srcNodes.Count == 0)
-                return null; // no source!
-
-            // Assuming first node with non-empty name is source node
-            var srcNode = srcNodes [0];
-
-            // Checking what type of source we have, it might be [src] or any Active Event
-            if (srcNode.Name == "src") {
-
-                // Simple source, [src] source
-                return SourceNodesImplementation (
-                    context,
-                    srcNode, 
-                    dataSource == evaluatedNode ? srcNode : dataSource);
-            } else {
-
-                // Active Event invocation source, invoking Active Event, return source as result from Active Event invocation.
-                // Cloning Active Event source node, such that we can reset node after invocation, and invoke event immutable
-                var origSrcNode = srcNode.Clone ();
-
-                // Adding "Data Node" as argument to Active Event
-                srcNode.Add ("_dn", dataSource);
-
-                // Making sure source evaluation is immutable, regardless of whether or not exceptions occur!
-                try {
-
-                    // Raising Active Event given as source
-                    context.RaiseLambda (srcNode.Name, srcNode);
-
-                    // Returning result of Active Event invocation as source
-                    return SourceNodesImplementation (context, srcNode, srcNode);
-                } finally {
-
-                    // Making sure we reset source node back to its original state, such that evaluation of Active Event becomes immutable
-                    srcNode.Value = origSrcNode.Value;
-                    srcNode.Name = origSrcNode.Name;
-                    srcNode.Clear ().AddRange (origSrcNode.Children);
-                }
-            }
-        }
-
-        /*
-         * Common implementation for SourceNodes
-         */
-        private static List<Node> SourceNodesImplementation (
-            ApplicationContext context,
-            Node evaluatedNode, 
-            Node dataSource)
-        {
-            var sourceNodes = new List<Node> ();
-
-            // Checking to see if we're given an expression
-            if (IsExpression (evaluatedNode.Value)) {
-
-                // [src] is an expression somehow
-                foreach (var idx in evaluatedNode.Get<Expression> (context).Evaluate (context, dataSource, evaluatedNode)) {
-                    if (idx.Value == null)
-                        continue;
-                    if (idx.TypeOfMatch != Match.MatchType.node && !(idx.Value is Node)) {
-
-                        // [src] is an expression leading to something that's not a node.
-                        // This will trigger conversion from string to node, adding a "root node" during conversion. 
-                        // We make sure we remove this node, when creating our source
-                        sourceNodes.AddRange (Utilities.Convert<Node> (context, idx.Value).Children.Select (idxInner => idxInner.Clone ()));
-                    } else {
-
-                        // [src] is an expression, leading to something that's already a node somehow
-                        var nodeValue = idx.Value as Node;
-                        if (nodeValue != null)
-                            sourceNodes.Add (nodeValue.Clone ());
-                    }
-                }
-            } else {
-                var nodeValue = evaluatedNode.Value as Node;
-                if (nodeValue != null) {
-
-                    // Value of source is a node, adding this node
-                    sourceNodes.Add (nodeValue.Clone ());
-                } else if (evaluatedNode.Value is string) {
-
-                    // Source is not an expression, but a string value. This will trigger a conversion
-                    // from string, to node, creating a "root node" during conversion. We are discarding this 
-                    // "root" node, and only adding children of that automatically generated root node
-                    sourceNodes.AddRange (
-                        Utilities.Convert<Node> (
-                            context, 
-                            FormatNode(context, evaluatedNode))
-                        .Children);
-                } else if (evaluatedNode.Value == null) {
-
-                    // Source has no value, neither static string values, nor expressions.
-                    // Adding all children of source node, if any
-                    sourceNodes.AddRange (evaluatedNode.Children.Select (idx => idx.Clone ()));
-                } else {
-
-                    // Source is not an expression, but has a non-string value. Making sure we create a node
-                    // out of that value, returning that node back to caller. Making sure we do NOT return the
-                    // automatically created "wrapper" object, which is created in this process, but rather its children!
-                    var strValue = Utilities.Convert<string> (context, evaluatedNode.Value, "");
-                    sourceNodes.AddRange (
-                        Utilities.Convert<Node> (
-                            context, 
-                            strValue)
-                        .Children);
-                }
-            }
-
-            // Returning node list back to caller
-            return sourceNodes.Count > 0 ? sourceNodes : null;
-        }
-
-        /// <summary>
-        ///     Raises a dynamically created Active Event
+        ///     Raises a dynamically created Active Events or lambda objects
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="args">Arguments to pass into event</param>

@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System.Linq;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -24,7 +25,8 @@ namespace p5.lambda.keywords.extras
         public static void lambda_databind (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
-            if (!(e.Args.Value is Expression))
+            var destEx = e.Args.Value as Expression;
+            if (destEx == null)
                 throw new LambdaException ("[databind] was not given a valid destination expression", e.Args, context);
 
             // Retrieving template and performing sanity check
@@ -32,26 +34,33 @@ namespace p5.lambda.keywords.extras
             if (template == null)
                 throw new LambdaException ("No [template] supplied to [databind]", e.Args, context);
 
-            // Retrieving source
-            var source = XUtil.SourceNodes (context, e.Args);
-
-            // Sanity check, checking there actually is a source, and if not, returning early
-            if (source == null)
-                return;
-
             // Databinding destination(s) by looping through each destinations given
-            var ex = e.Args.Get<Expression> (context);
-            foreach (var idxDest in ex.Evaluate (context, e.Args, e.Args)) {
+            foreach (var idxDest in destEx.Evaluate (context, e.Args, e.Args)) {
 
                 // Sanity check
-                if (idxDest.TypeOfMatch != p5.exp.Match.MatchType.node)
+                if (idxDest.TypeOfMatch != Match.MatchType.node)
                     throw new LambdaException ("The destination of a [databind] operation must be a node", e.Args, context);
+
+                // Retrieving source, possibly relative to destination
+                var source = XUtil.InvokeSource (context, e.Args, idxDest.Node, new List<string> (new string[] { "template" }));
 
                 // Looping through each source
                 foreach (var idxSrc in source) {
 
                     // Creating insertion node(s) from template, and appending to destination
-                    (idxDest.Value as Node).AddRange (CreateInsertionFromTemplate (context, template, idxSrc));
+                    if (idxSrc is Node) {
+
+                        // Source is already a node, simply inserting a cloned copy
+                        (idxDest.Value as Node).AddRange (CreateInsertionFromTemplate (context, template, (idxSrc as Node).Clone ()));
+                    } else {
+
+                        // Source was not a node, converting source into a node, which will create a "wrapper node", which we discard,
+                        // and only insert its children
+                        var list = Utilities.Convert<Node> (context, idxSrc).Children.ToList ();
+                        foreach (var idxSrcInner in list) {
+                            (idxDest.Value as Node).AddRange (CreateInsertionFromTemplate (context, template, idxSrcInner));
+                        }
+                    }
                 }
             }
         }
