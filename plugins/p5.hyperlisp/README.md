@@ -1,15 +1,14 @@
-Hyperlisp, the "programming language" of Phosphorus Five
+Hyperlisp, an alternative to JSON and XML
 ========
 
-The reasons why Hyperlisp"programming language" is written in double quotes in the header of this file, is because it actually
-is _not_ a programming language. In fact, at its core, it is nothing more than JSON or XML you might argue. A file format for
-describing data in a key/value/children relationship. In fact, there does not, from a fundamental point of view, exist any
-"programming languages" in Phosphorus Five. Hyperlisp however, do describe the relational execution tree structure, which p5.lambda
+Hyperlisp is actually _not_ a "programming language". In fact, at its core, it is nothing more than JSON or XML you might argue. 
+A file format for describing data, in a key/value/children relationship. In fact, there does not, from a fundamental point of view, 
+exist any "programming languages" in Phosphorus Five. Hyperlisp however, do describe the relational execution tree structure, which p5.lambda
 relies upon, when executing its executional graph objects. So Hyperlisp can be used for describing anything really. Just like XML can.
 
 The reason why Hyperlisp was invented though, was because XML is too verbose to be useful for describing this "execution tree structure",
 while JSON contains too much "unnecessary syntax". Hyperlisp however, perfectly balances the needs for Phosphorus Five, being a relational
-file format, allowing for describing the tree structure which p5.lambda is evaluating, using its *[eval]* Active Event. In addition, Hyperlisp
+file format, allowing for describing the tree structure, which p5.lambda is evaluating, using its *[eval]* Active Event. In addition, Hyperlisp
 is easily "typed", allowing for the type structure, the underlaying execution engine depends upon, to be preserved for values of nodes.
 
 Anyway, enough of the abstract, let's see it in action!
@@ -19,13 +18,13 @@ foo:int:5
   child-of-foo:Its value!
 ```
 
-The above Hyperlisp describes one node who's name is "foo". This node has a value, which is of type "int", and contains the value of "5".
-In addition, the "foo" node has one child node, called "child-of-foo", that has a string value of "Its value!".
+The above Hyperlisp, describes one node who's name is "foo". This node has a value, which is of type "int", and contains the value of "5".
+In addition, the "foo" node, has one child node, called "child-of-foo", that has a string value of "Its value!".
 
-Notice that all children of a node, is appended underneath the node, with two consecutive spaces in front of its name. The colon (:) separates
-the name of the node and its value. If you want to explicitly type a node's value, you can do so by injecting an additional colon (:) between
-the name and the value, as the Hyperlisp above shows, and then put the "type declaration" between the two colons, like this ":int:" to
-describe an integer.
+Notice, that all children of a node, is appended underneath the node, with two consecutive spaces in front of its name. The colon (:) separates
+the name of the node and its value. If you want to explicitly declare the value's type, you can do so by injecting an additional colon (:) 
+between the name and the value, as the Hyperlisp above shows. For then to put the "type declaration" between the two colons, like this ":int:" 
+to describe an integer.
 
 You can continue like this, as many levels inwards, as you wish. Below is a more complex tree structure.
 
@@ -37,7 +36,8 @@ foo
 ```
 
 Above we have 4 nodes in total. "foo" has two children, and "child1-of-foo" has one child of its own. The "foo" node in the above example, 
-does not have a value at all, which means its value becomes "null". The equivalent syntax for XML would look like this.
+does not have a value at all, which means its value becomes "null". Notice how for most cases, the number of lines in a Hyperlisp file, 
+almost perfectly describes the number of nodes in total in your execution tree. Also notice the equivalent syntax of the above writte in XML.
 
 ```xml
 <foo>
@@ -55,14 +55,14 @@ does not have a value at all, which means its value becomes "null". The equivale
 </foo>
 ```
 
-Hyperlisp reduces the above node declaration from 13 lines of XML to 4 lines of Hyperlisp. As you can see, Hyperlisp is for most 
+Hyperlisp reduces the above node declaration from 13 lines of XML, to 4 lines of Hyperlisp. As you can see, Hyperlisp is for most 
 practical concerns, far less verbose than XML. A similar effect, though not as extreme, would be shown if we converted the above Hyperlisp
-to JSON too. This is even before we've started added "type declarations", using only the "implicit type" of string. If we created a more
+to JSON. This is even before we've started added "type declarations", using only the "implicit type" of string. If we created a more
 complex node hierarchy, with several different types, its XML syntax would literally _explode_!
 
 ### String declarations in Hyperlisp
 
-If you wish, you can create more complex strings in Hyperlisp than what we've done above. For instance, what happens if you have a string
+If you wish, you can create more complex strings in Hyperlisp, than what we've done above. For instance, what happens if you have a string
 that contains a colon (:) ...?
 
 Well, then we use the same syntax as we would use in C# and/or JavaScript. We put our string into double quotes, like this.
@@ -87,7 +87,7 @@ platform you're using.
 
 ### Types in Hyperlisp
 
-As previously mentioned, Hyperlisp supports types, by adding an additional value between the "name" and its "value", inbetween colons (:).
+As previously mentioned, Hyperlisp supports types, by adding an additional value between the "name", and its "value", inbetween colons (:).
 Below is an example of some of the types in Hyperlisp.
 
 ```
@@ -96,18 +96,18 @@ some-decimal:decimal:5.5
 some-boolean:bool:true
 ```
 
-The above Hyperlisp declares on integer value, one decimal value, and one boolean value. Notice if you do not obey by the expected string
-representation for the type's value, according to the C# "Invariant Culture" rules, an exception will occur during parsing of your Hyperlisp.
+The above Hyperlisp, declares on integer value, one decimal value, and one boolean value. Notice, if you do not obey by the expected string
+representation for the type's value, according to the C# "Invariant Culture" rules, an exception will occur, during parsing of your Hyperlisp.
 
-The default (implicit) type in Hyperlisp is "string", unless explicitly overriden by another type declaration. Hence the two values below, 
-both have the "string" type.
+The default (implicit) type in Hyperlisp is "string", unless explicitly overriden by another type declaration. Hence, the two values below, 
+both have the same type, and value.
 
 ```
 foo1:thomas
 foo2:string:thomas
 ```
 
-The above ":string:" part is really not necessary, and redundant, since "string" is the default type, if your type declaration is omitted.
+The above ":string:" part is actually redundant, since "string" is the default type, if your type declaration is omitted.
 
 All the different types in Hyperlisp, are documented, and declared, in the "p5.types" project. See the documentation for this project, for
 a complete reference of all the types Hyperlisp supports. You can also easily create your own "type extensions" for the Hyperlisp parser, 
@@ -129,13 +129,13 @@ lisp2lambda:x:/-?value
 lambda2lisp:x:/-/*
 ```
 
-The invocation of *[lisp2lambda]* will convert the string value of *[_hl]* into a lambda node structure, where each node inside of the value
-of *[_hl]* will be appended as children to *[lisp2lambda]*. The second invocation, the one called *[lambda2lisp]*,will reverse this process,
-and return the Hyperlisp as the value of the *[lambda2lisp]* node after invocation.
+The invocation of *[lisp2lambda]*, will convert the string value of the *[_hl]* node, into a lambda node structure, where each node inside 
+of the value of *[_hl]*, will be appended as children to *[lisp2lambda]*. The second invocation, the one called *[lambda2lisp]*, will reverse 
+this process, and return the corresponding Hyperlisp, as the value of the *[lambda2lisp]* node, after invocation.
 
-Notice though that conversion from Hyperlisp to lambda, will _REMOVE_ all comments and additional spacing, leaving nothing but the "raw nodes",
-which are understood by the p5.lambda engine, as actual nodes. All comments and such will be ignored, and lost during parsing. Try the code
-below to understand how this affects your parsing.
+Notice though, that conversion from Hyperlisp to lambda, will _REMOVE_ all comments and additional spacing, leaving nothing but the "raw nodes",
+which are understood by the p5.lambda engine, as actual nodes. All comments and such, will be ignored, and lost during parsing. Try the code
+below, to understand how this affects your parsing.
 
 ```
 _hl:@"/*
@@ -147,7 +147,7 @@ lisp2lambda:x:/-?value
 lambda2lisp:x:/-/*
 ```
 
-This means that if you convert Hyperlisp to p5.lambda, for then to convert it back to Hyperlisp, then all comments and additional spacing is
+This means that if you convert Hyperlisp to p5.lambda, for then to convert it back to Hyperlisp, all comments, and additional spacing, is
 lost during the translation.
 
 This is a conscious choice, for among other things, preserving bandwidth and CPU resources, when evaluating p5.lambda, and also transmitting

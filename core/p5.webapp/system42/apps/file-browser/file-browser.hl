@@ -393,7 +393,7 @@ create-widget:file-browser
           // This will do the actual work after modifying "foo-bar" to correct Active Event
           _x-copy-move-file
             foo-bar
-              to
+              dest
             set:x:/..?value
               src:x:/./-?value
 

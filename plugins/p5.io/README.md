@@ -1,26 +1,27 @@
-p5.io, the main file input/output parts of Phosphorus Five
+p5.io, file IO in Phosphorus Five
 ========
 
-The p5.io library, and its Active Events, allows you to easily load, create, modify and delete files and folders in your system.
-It contains all the methods expected to handle your file system, for most problems you'd encounter while using P5.
+The p5.io library, and its Active Events, allows you to easily load, create, modify, and delete files, and folders in your system.
+It contains all the methods expected to handle your file system, for most problems you'd encounter, while using P5.
 
-Notice that all IO operations within Phosphorus Five, and its "p5.io" library, expects the path you supply to start with a "/". If
+Notice, that all IO operations within Phosphorus Five, and its "p5.io" library, expects the path you supply to start with a "/". If
 what you are referring to, is a folder, it also expects you to _end_ your path with a forward slash (/). Unless you create your paths
 like this, exceptions will occur during evaluation of your code.
 
-Also realize that unless you are authorized to load, save, change or delete a specific file or folder, then a security exception will
-be thrown by the framework. For instance, a user does not by default have access to files belonging to another user, existing within
-another user's "home" folder. (/users/username/... folder)
+Also realize, that unless you are authorized to load, save, change, or delete a specific file or folder, then a security exception will
+be thrown. For instance, a user does not by default have access to files belonging to another user, existing within another user's "home" 
+folder. (/users/username/some-folder/ e.g.)
 
-Notice also that all file manipulation Active Events in p5.io, relies upon the type conversion, normally implemented in "p5.types", which
-again will use UTF8 exclusively as its conversion encoding, when for instance saving files, and also loading files. This means that
-all files created using p5.io will be created as UTF8 files. In addition, all files loaded with p5.io, will be loaded with UTF8 encoding.
+Notice also, that all file manipulation Active Events in p5.io, relies upon the type conversion, normally implemented in "p5.types", which
+again will use UTF8 exclusively, as its conversion encoding, when for instance saving files, and also loading files. This means that
+all files created, using p5.io, will be created as UTF8 files. In addition, all files loaded with p5.io, will be assumed to be encoded as
+UTF8.
 
-In general, at the time of this writing, p5.io exclusively support UTF8 text files.
+In general, at the time of this writing, p5.io exclusively support UTF8 text files, in addition to some rudimentary support for binary files.
 
-Also notice that although you _can_ load and save binary data with p5.io, Hyperlisp and p5.lambda, is not in general terms very adequate
+Also notice, that although you _can_ load and save binary data with p5.io - Hyperlisp and p5.lambda, is not in general terms, very adequate
 for manipulating binary data. This means that you can load binary blob data, but for the most parts, the only intelligent thing you can do
-with it, is to base64 encode this data, and/or pass it into other Active Events that knows how to handle your binary data.
+with it, is to base64 encode this data, and/or pass it into other Active Events, that knows how to handle your binary data.
 
 ## How to handle files in your system
 
@@ -34,10 +35,10 @@ To load a file, simply use the *[load-file]* Active Event. An example of this ev
 load-file:/system42/application-startup.hl
 ```
 
-The above invocation will load the System42 "startup file" for you. Notice that this is a Hyperlisp file, which the *[load-file]* Active
+The above invocation, will load the System42 "startup file" for you. Notice that this is a Hyperlisp file, which the *[load-file]* Active
 Event will determine by itself, and automatically parse the file for you to a p5.lambda structure. If you do not wish to automatically
-parse the file, but rather load is "raw", as a piece of text, not transforming it into a p5.lambda object for you, you must add up the
-argument "convert" and set its value to "false". An example is shown below.
+parse the file, but rather load is the filw "raw", as a piece of text, not transforming it into a p5.lambda object for you, you must add the
+argument *[convert]*, and set its value to "false". An example is shown below.
 
 ```
 load-file:/system42/application-startup.hl
@@ -46,15 +47,15 @@ load-file:/system42/application-startup.hl
 
 If you run the above Hyperlisp through your System42/executor, you will see that now it contains simply a text string, preserving all comments
 for you, among other things. Unless you explicitly inform the *[load-file]* Active Event that you do not wish for any conversion to occur,
-it will automatically convert all Hyperlisp for you, to p5.lambda objects. This makes it very easy for you to load Hyperlisp, and immediately 
-execute your Hyperlisp, without having to convert it yourself.
+then it will automatically convert all Hyperlisp for you, to p5.lambda objects. This makes it very easy for you to load Hyperlisp, and 
+immediately execute your Hyperlisp, without having to convert it yourself.
 
 #### Loading multiple files at the same time
 
 Sometimes, you want to load multiple files at the same time. Often you might even want to treat them as "one aggregated" file result, 
 for instance for those cases where you wish to load multiple files, and evaluate the combined result as a single piece of p5.lambda object.
 
-For such cases, you can pass in an expression into  your *[load-file]* invocation, such as the following showss an example of.
+For such cases, you can pass in an expression into  your *[load-file]* invocation, such as the following is an example of.
 
 ```
 _files
@@ -63,7 +64,7 @@ _files
 load-file:x:/-/*?value
 ```
 
-The above code will load both of the given files, and append them into a node, beneath *[load-file]*, having the name being the path of
+The above code, will load both of the given files, and append them into a node, beneath *[load-file]*, having the name being the path of
 the file loaded. The structure will look roughly like this.
 
 ```
@@ -72,9 +73,9 @@ _files
   file2:/system42/startup/pf.web.load-ui.hl
 load-file
   /system42/application-startup.hl
-     ... file 1 content ...
+     ... file 1 content, p5.lambda nodes ...
   /system42/startup/pf.web.load-ui.hl
-     ... file 2 content ...
+     ... file 2 content, p5.lambda nodes ...
 ```
 
 ### [save-file], saving files
@@ -89,11 +90,11 @@ save-file:/foo.txt
 I am a newly created file! :)"
 ```
 
-After evaluating the above Hyperlisp, a new file will exist within your main "/phosphorusfive/core/p5.webapp/" folder called "foo.txt".
+After evaluating the above Hyperlisp, a new file will exist within your main "/phosphorusfive/core/p5.webapp/" folder, called "foo.txt".
 
 Whatever argument you pass into the *[src]* node, will somehow be converted into a text string, or a single binary piece of blob, and
-flushed into the file path given as the value of *[save-file]*. This allows you to create a new file, consisting of the results of an 
-expression, such as the following is an example of.
+flushed into the file path given as the value of *[save-file]*. This allows you to create a new file, or overwrite an existing file,
+consisting of the results of an expression, such as the following is an example of.
 
 ```
 _data
@@ -109,11 +110,22 @@ save-file:/foo.hl
 load-file:/foo.hl
 ```
 
-The *[load-file]* invocation above, is there simply to show the results of your newly created file, and illustrates how only the results of
+The *[load-file]* invocation above, is only there to show the results of your newly created file, and illustrates how only the results of
 the expression you pass into your *[src]* node, are saved to disc. This allows you to save sub-sections of your trees, and even combine
 multiple pieces of text, and/or p5.lambda, and save the combined results to disc.
 
-You can also use Active Event invocations as an alternative to the *[src]* node. Conssider the following code.
+You can also have a "static" source, containing the nodes as children of *[src]*, such as the following is an example of.
+
+```
+save-file:/foo.hl
+  src
+    person:1
+      name:thomas
+    person:2
+      name:john
+```
+
+Yet even more powerful control over what is saved, can be achieved by using an Active Event source. Consider the following code.
 
 ```
 _exe
@@ -126,8 +138,8 @@ The above example, will create a file, named "foo.txt", at the root of your p5.w
 
 #### Saving multiple files, with relative sources
 
-If you wish, you can save multiple files at the same time, and use expressions pointing to filenames, and content of your files be relative
-to your filename node. Imagine the following code.
+If you wish, you can save multiple files at the same time, and use expressions pointing to your filenames, having the content of your files 
+be relative to your filename node. Imagine the following code.
 
 ```
 _files
@@ -135,19 +147,19 @@ _files
     content:Foo was here
   name:/bar.txt
     content:Bar was here
-save-file:x:/-/*?name
+save-file:x:/-/*?value
   eval:x:/./+
 _get-content
   return:x:/../*/_dn/#/*/content?value
 ```
 
-What the above lambda object does, is to iterate each filename given in the *[name]* nodes beneath *[_files]*, for the to invoke the *[eval]*
-Active Event once for each destination, passing in the *[_dn]* being relative for each destination. Then our *[_get-content]* lambda object,
-returns  relative source, expected to be a *[content]* node, beneath each filepath.
+What the above lambda object does, is to iterate each filename given in the *[name]* nodes beneath *[_files]*, for then to invoke *[eval]*,
+once for each destination, passing in the *[_dn]* being relative for each destination. Then our *[_get-content]* lambda object,
+returns a relative source, expected to be a *[content]* node, beneath each filepath.
 
 This "Ninja trick" allows you to save multiple files, in one go.
 
-### [delete-file],deleting one or more files
+### [delete-file], deleting one or more files
 
 Just like *[load-file]*, *[delete-file]* can react upon several files at the same time. Its arguments work the same way as load-file, except of
 course, instead of loading the file(s), it deletes them instead. To delete the files created above in one of our *[save-file]* examples, you
@@ -159,12 +171,12 @@ delete-file:/foo.txt
 
 The Active Event *[delete-file]*, does not take any arguments, besides a single constant value, or an expression leading to multiple file paths.
 However, just like the other file manipulation Active Events, it requires a fully qualified path, which must start with "/". To delete a file,
-the user context object, must be authorized to deleting it. Otherwise, and exception will be thrown.
+the user context object must be authorized to deleting it. Otherwise, an exception will be thrown.
 
-### [file-exist], checking if files exist
+### [file-exist], checking if one or more files exist
 
-Also *[file-exist]* takes its arguments the same way as for instance *[delete-file]* does. However, *[file-exist]* will return true, only if 
-all files you check the existance of actually exists. If one of the files does not exist, then *[file-exist]* will return false. Let us show
+Also *[file-exist]*, takes its arguments the same way as for instance *[delete-file]* does. However, *[file-exist]* will return true, only if 
+all files you check the existance of exists. If one of the files does not exist, then *[file-exist]* will return false. Let us show
 that with an example.
 
 ```
@@ -196,7 +208,7 @@ move-file:/foo.txt
 Although *[move-file]* perfectly well handles expressions, it does not accept an expression leading to multiple sources. Neither as 
 its "source", nor as its "destination".
 
-The *[move-file]* Active Event, also has the alias of *[rename-file]* which can be used instead of "move-file". However, the logic is the
+The *[move-file]* Active Event, also has the alias of *[rename-file]*, which can be used instead of "move-file". However, the logic is the
 exact same, and there is no difference in implementation of these two events. They are simply aliases for the same Active Event handler.
 
 ### [copy-file], copying a file into a new file

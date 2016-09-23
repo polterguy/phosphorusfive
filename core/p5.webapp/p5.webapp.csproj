@@ -413,6 +413,7 @@
     <Content Include="system42\apps\users\edit-specific-user.hl" />
     <Content Include="system42\apps\users\launch.hl" />
     <Content Include="system42\apps\tests\events.hl" />
+    <Content Include="system42\apps\file-browser\startup.hl" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />

@@ -47,7 +47,12 @@ namespace p5.exp
         /// <param name="parent">Parent node expected to have a source node</param>
         /// <param name="destination">Current destination node</param>
         /// <returns></returns>
-        public static List<object> InvokeSource (ApplicationContext context, Node parent, Node destination, List<string> excludeNodes = null)
+        public static List<object> InvokeSource (
+            ApplicationContext context, 
+            Node parent, 
+            Node destination, 
+            string restrictionSrcName = "src",
+            List<string> excludeNodes = null)
         {
             // For simplicity, avoiding null reference exceptions inside of Linq later down
             if (excludeNodes == null)
@@ -66,6 +71,14 @@ namespace p5.exp
                 // No source, making sure we never return null
                 return new List<object> ();
             } else {
+
+                switch (srcList[0].Name) {
+                    case "src":
+                    case "dest":
+                        if (restrictionSrcName != srcList[0].Name)
+                            throw new LambdaException ("Sorry, you cannot use '" + srcList[0] + "' here.", parent, context);
+                        break;
+                }
 
                 // Active Event source invocation
                 // Storing original children,  to make each invocation immutable, before we pass in "destination node"
