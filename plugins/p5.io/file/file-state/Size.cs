@@ -23,9 +23,10 @@ namespace p5.io.file.file_state
         [ActiveEvent (Name = "file-size", Protection = EventProtection.LambdaClosed)]
         public static void file_size (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, delegate (string filename, string fullpath) {
+            QueryHelper.Run (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 FileInfo info = new FileInfo (fullpath);
                 e.Args.Add (filename, info.Length);
+                return true;
             });
         }
     }

@@ -24,44 +24,21 @@ namespace p5.io.file
         [ActiveEvent (Name = "load-file", Protection = EventProtection.LambdaClosed)]
         public static void file_load (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
-
-                // Retrieving root folder of app
-                var rootFolder = Common.GetRootFolder (context);
-
-                // Iterating through each file path given
-                foreach (var idxFile in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Retrieving actual system path
-                    var filename = Common.GetSystemPath (context, idxFile);
-
-                    // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
-
-                    // Checking to see if file exists
-                    if (File.Exists (rootFolder + filename)) {
-
-                        // File exists, figuring out file type
-                        if (IsTextFile (filename)) {
-
-                            // Loading file as string/text
-                            LoadTextFile (context, e.Args, rootFolder, filename);
-                        } else {
-
-                            // Loading file as blob/byte[]
-                            LoadBinaryFile (e.Args, rootFolder, filename);
-                        }
+            QueryHelper.Run (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
+                if (File.Exists (fullpath)) {
+                    if (IsTextFile (filename)) {
+                        LoadTextFile (context, e.Args, fullpath, filename);
                     } else {
-
-                        // Oops, file didn't exist!
-                        throw new LambdaException (
-                            string.Format ("Couldn't find file '{0}'", filename), 
-                            e.Args, 
-                            context);
+                        LoadBinaryFile (e.Args, fullpath, filename);
                     }
+                } else {
+                    throw new LambdaException (
+                        string.Format ("Couldn't find file '{0}'", filename),
+                        e.Args,
+                        context);
                 }
-            }
+                return true;
+            });
         }
 
         /*
@@ -91,10 +68,10 @@ namespace p5.io.file
         private static void LoadTextFile (
             ApplicationContext context, 
             Node args, 
-            string rootFolder,
+            string fullpath,
             string fileName)
         {
-            using (TextReader reader = File.OpenText (rootFolder + fileName)) {
+            using (TextReader reader = File.OpenText (fullpath)) {
 
                 // Reading file content
                 string fileContent = reader.ReadToEnd ();

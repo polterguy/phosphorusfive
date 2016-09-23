@@ -24,36 +24,21 @@ namespace p5.io.file
         [ActiveEvent (Name = "delete-file", Protection = EventProtection.LambdaClosed)]
         public static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            QueryHelper.Run (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
+                if (File.Exists (fullpath)) {
 
-                // Getting root folder
-                var rootFolder = Common.GetRootFolder (context);
+                    // File exists, removing file
+                    File.Delete (fullpath);
+                } else {
 
-                // Iterating through each path given
-                foreach (var idxFile in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Retrieving actual system path
-                    var filename = Common.GetSystemPath (context, idxFile);
-
-                    // Verifying user is authorized to writing to destination file
-                    context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
-
-                    // Checking if file exist
-                    if (File.Exists (rootFolder + filename)) {
-
-                        // File exists, removing file
-                        File.Delete (rootFolder + filename);
-                    } else {
-
-                        // Oops, file didn't exist, throwing an exception
-                        throw new LambdaException  (
-                            string.Format ("Tried to delete non-existing file '{0}'", filename), 
-                            e.Args, 
-                            context);
-                    }
+                    // Oops, file didn't exist, throwing an exception
+                    throw new LambdaException (
+                        string.Format ("Tried to delete non-existing file '{0}'", filename),
+                        e.Args,
+                        context);
                 }
-            }
+                return true;
+            });
         }
     }
 }

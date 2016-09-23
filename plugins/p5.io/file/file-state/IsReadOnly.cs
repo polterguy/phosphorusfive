@@ -23,9 +23,10 @@ namespace p5.io.file.file_state
         [ActiveEvent (Name = "file-is-read-only", Protection = EventProtection.LambdaClosed)]
         public static void file_is_read_only (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, delegate (string filename, string fullpath) {
+            QueryHelper.Run (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 FileInfo info = new FileInfo (fullpath);
                 e.Args.Add (filename, info.IsReadOnly);
+                return true;
             });
         }
     }

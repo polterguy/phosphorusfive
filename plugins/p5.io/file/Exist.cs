@@ -23,38 +23,19 @@ namespace p5.io.file
         [ActiveEvent (Name = "file-exist", Protection = EventProtection.LambdaClosed)]
         public static void file_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
-
-                // Getting root folder
-                var rootFolder = Common.GetRootFolder (context);
-
-                // Multiple filename source, returning existence of all files
-                foreach (var idxFile in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Retrieving actual system path
-                    var filename = Common.GetSystemPath (context, idxFile);
-
-                    // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
-
-                    // Letting caller know whether or not this file exists
-                    if (!File.Exists (rootFolder + filename)) {
-
-                        // File didn't exist, letting caller know, and aborting early
-                        e.Args.Value = false;
-                        return;
-                    } else {
-
-                        // File existed
-                        e.Args.Value = true;
-                    }
-                }
-
-                // In case expressions yields nothing, it should still be in value of node
-                if (XUtil.IsExpression (e.Args.Value))
+            QueryHelper.Run (context, e.Args, false, "read-file", delegate (string filename, string fullpath) {
+                if (!File.Exists (fullpath)) {
                     e.Args.Value = false;
-            }
+                    return false;
+                } else {
+                    e.Args.Value = true;
+                    return true;
+                }
+            });
+
+            // In case expressions yields nothing, it should still be in value of node
+            if (XUtil.IsExpression (e.Args.Value))
+                e.Args.Value = false;
         }
     }
 }

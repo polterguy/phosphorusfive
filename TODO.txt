@@ -2,11 +2,11 @@
 TODO before release
 ===================
 
-* Implement *[src]* Active Event,to simplify add, insert-xxx and set, plus other events dependent upon similar logic.
-
-* Fix *[save-file]* (see above), such that it handles for instance, multiple source nodes, and p5.lambda structures
-
 * Dox for all projects
 
-* Change [databind] to [apply]
+* investigate if the FileInfo.Encrypt/Decrypt metthods should be implemented. More specifically, if they're supported
+  in Mono, and if it's any point in implementing them. (uses "current account" for encrypting/decrypting, whatever that means)
+
+* [file-set-read-only] event
+
 
