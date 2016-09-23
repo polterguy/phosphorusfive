@@ -196,34 +196,58 @@ file does not exist.
 ### [move-file], moving or renaming a file
 
 With *[move-file]*, you can either rename a file, or entirely move it into for instance a different folder. The Active Event takes the 
-"source file" as its value, and the "destinatin filepath/value" as the value of a *[to]* child node. Let's show this with an example.
+"source file" as its value, and the "destinatin filepath/value" as the value of a *[dest]* child node. Let's show this with an example.
 
 ```
 save-file:/foo.txt
   src:foo bar
 move-file:/foo.txt
-  to:/new-foo.txt
+  dest:/new-foo.txt
 ```
 
-Although *[move-file]* perfectly well handles expressions, it does not accept an expression leading to multiple sources. Neither as 
-its "source", nor as its "destination".
+Notice that if the destination already exists, then a new unique filename will be automatically created, and the path of the actual filename
+for where the file was moved, will be returned as the value of *[move-file]*. You can also move several files in one invocation, cleverly
+using expressions, and Active Event sources. However, only the full path of the last file moved this way, will be returned as the value of
+your *[move-file]* Active Event. Consider this code.
+
+```
+save-file:/foo1.txt
+  src:foo1
+save-file:/foo2.txt
+  src:foo2
+move-file:x:/../*/save-file?value
+  eval
+    split:x:/../*/_dn/#?value
+      =:.
+    return:{0} - new path.{1}
+      :x:/../*/split/0?name
+      :x:/../*/split/1?name
+```
+
+The above p5.lambda, first creates two text files. Then it uses an expression leading to each *[save-file]*'s value for *[move-file]*, with
+an Active Event destination, utilizing the *[eval]* Active Event, which returns the old filename, with the text " - new path" appended at 
+its end. The end result being, that you end up with two files at the root of your "p5.website" folder called "foo1 - new path.txt" and
+"foo2 - new path.txt".
 
 The *[move-file]* Active Event, also has the alias of *[rename-file]*, which can be used instead of "move-file". However, the logic is the
 exact same, and there is no difference in implementation of these two events. They are simply aliases for the same Active Event handler.
 
 ### [copy-file], copying a file into a new file
 
-The *[copy-file]* Active Event, does exactly what you think it would do. It copies one source file, and creates a new copy of that file, into
-a destination file. The arguments to *[copy-file]* are the same as the arguments to *[move-file]*. Consider this code.
+The *[copy-file]* Active Event, does exactly what you think it should do. It copies one source file, and creates a new copy of that file, into
+a destination file. Besides from that it actually copies the file(s), instead of moving them, it works 100% identically to *[move-file]*. 
+The arguments to *[copy-file]* are also the same as the arguments to *[move-file]*. Consider this code.
 
 ```
 save-file:/foo.txt
   src:foo bar
 copy-file:/foo.txt
-  to:/foo-copy.txt
+  dest:/foo-copy.txt
 ```
 
-The *[to]* node argument above, which is the child node of *[copy-file]*, is of course the destination filepath, for your copy.
+The *[dest]* node argument above, which is the child node of *[copy-file]*, is of course the destination filepath, for your copy. Here too, you
+could have copied several files at once, like we did with *[move-file]*. In addition to that the last file coped this way, would have its full
+path returned as the value of *[copy-file]*.
 
 ## How to handle folders in your system
 
@@ -234,7 +258,7 @@ and so on.
 ### [create-folder]
 
 Creates a folder at the given path. Notice that the parent folder must exist, and that this Active Event does not "recursively" create folders.
-Also notice that if the folder exist from before, an exception will occbr thrown.
+Also notice that if the folder exist from before, an exception will be thrown.
 
 This Active Event also handles expressions, and will create all folders your expressions yields as a result, the same way for instance 
 the *[load-file]* would load multiple files. Below is some example code that creates two folders.

@@ -72,6 +72,9 @@ namespace p5.exp
                 return new List<object> ();
             } else {
 
+                // Making sure we obey by the declared "restriction" for Active Event name. Either user should use "src" or "dest".
+                // These two cannot be interchanged, to further clarify the language, such that no occurrency of "dest" is being used,
+                // where the logic is actually "source", vice versa. 
                 switch (srcList[0].Name) {
                     case "src":
                     case "dest":

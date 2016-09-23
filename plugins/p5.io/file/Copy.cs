@@ -33,7 +33,7 @@ namespace p5.io.file
                 // Actually moving (or renaming) file
                 File.Copy (rootFolder + source, rootFolder + destination);
 
-                // Making sure we return the filename as tha value of root node, in case a new filename was created
+                // Making sure we return the filename as the value of root node, in case a new filename was created
                 e.Args.Value = destination;
             });
         }

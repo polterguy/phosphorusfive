@@ -25,7 +25,7 @@ namespace p5.io.file
         public static void save_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
