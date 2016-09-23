@@ -1,0 +1,107 @@
+/*
+ * Contains unit tests for testing creation, deletion and so on
+ * of folders in your system
+ */
+
+/*
+ * Tests that creating a file behaves
+ */
+create-single-folder
+  if
+    folder-exist:~/temp/foo/
+    delete-folder:~/temp/foo/
+  create-folder:~/temp/foo/
+  if
+    folder-exist:~/temp/foo/
+    not
+    throw:@"Assert error, expected folder to exist!"
+
+/*
+ * Tests that creating multiple folders behaves
+ */
+create-multiple-folders
+  if
+    folder-exist:~/temp/foo1/
+    delete-folder:~/temp/foo1/
+  if
+    folder-exist:~/temp/foo2/
+    delete-folder:~/temp/foo2/
+  _folders
+    no1:~/temp/foo1/
+    no1:~/temp/foo2/
+  create-folder:x:/../*/_folders/*?value
+  if
+    folder-exist:~/temp/foo1/
+    not
+    or
+      folder-exist:~/temp/foo2/
+      not
+    throw:@"Assert error, expected folders to exist!"
+
+
+/*
+ * Tests that deep copying a folder behaves
+ */
+deep-copy-folder
+  if
+    folder-exist:~/temp/foo-bar/
+    delete-folder:~/temp/foo-bar/
+  if
+    folder-exist:~/temp/foo-bar-2/
+    delete-folder:~/temp/foo-bar-2/
+  create-folder:~/temp/foo-bar/
+  create-folder:~/temp/foo-bar/inner/
+  save-file:~/temp/foo-bar/inner/foo.txt
+    src:Foo was here
+  copy-folder:~/temp/foo-bar/
+    dest:~/temp/foo-bar-2/
+  load-file:~/temp/foo-bar-2/inner/foo.txt
+  if:x:/-/*?value
+    !=:Foo was here
+    throw:@"Assert error, file didn't contain expected data!"
+
+
+/*
+ * Tests that deep copying multiple folder behaves
+ */
+deep-copy-multiple-folders
+  if
+    folder-exist:~/temp/foo-bar-1/
+    delete-folder:~/temp/foo-bar-1/
+  if
+    folder-exist:~/temp/foo-bar-2/
+    delete-folder:~/temp/foo-bar-2/
+  if
+    folder-exist:~/temp/foo-bar-1-copy/
+    delete-folder:~/temp/foo-bar-1-copy/
+  if
+    folder-exist:~/temp/foo-bar-2-copy/
+    delete-folder:~/temp/foo-bar-2-copy/
+
+  create-folder:~/temp/foo-bar-1/
+  create-folder:~/temp/foo-bar-1/inner/
+  save-file:~/temp/foo-bar-1/inner/foo1.txt
+    src:Foo was here
+
+  create-folder:~/temp/foo-bar-2/
+  create-folder:~/temp/foo-bar-2/inner/
+  save-file:~/temp/foo-bar-2/inner/foo2.txt
+    src:Foo was here too
+
+  _folders
+    no1:~/temp/foo-bar-1/
+    no1:~/temp/foo-bar-2/
+  copy-folder:x:/../*/_folders/*?value
+    eval
+      split:x:/../*/_dn/#?value
+        =:/
+      return:~/temp/{0}-copy/
+        :x:/../*/split/0/-?name
+
+  load-file:~/temp/foo-bar-1-copy/inner/foo1.txt
+  load-file:~/temp/foo-bar-2-copy/inner/foo2.txt
+  if:x:/-2/*?value
+    !=:Foo was here
+    or:x:/./-/*?value
+      !=:Foo was here too
+    throw:@"Assert error, files didn't contain expected data!"

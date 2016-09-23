@@ -32,3 +32,31 @@ save-and-load-multiple-files
     or:x:/./-/1?value
       !=:Foo2
     throw:@"Assert error, expected 'Foo1' and 'Foo2' in files!"
+
+/*
+ * Tests that deleting a single file behaves
+ */
+delete-single-file
+  save-file:~/temp/bar.txt
+    src:Bar was here
+  delete-file:~/temp/bar.txt
+  if
+    file-exist:~/temp/bar.txt
+    throw:@"Assert error, expected file to have been deleted"
+
+
+/*
+ * Tests that deleting multiple files behaves
+ */
+delete-multiple-files
+  save-file:~/temp/bar1.txt
+    src:Bar1 was here
+  save-file:~/temp/bar2.txt
+    src:Bar2 was here
+  delete-file:x:/../*/save-file?value
+  if
+    file-exist:~/temp/bar1.txt
+    or
+      file-exist:~/temp/bar2.txt
+    throw:@"Assert error, expected files to have been deleted"
+
