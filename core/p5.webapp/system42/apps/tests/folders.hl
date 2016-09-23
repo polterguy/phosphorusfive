@@ -153,6 +153,7 @@ move-multiple-folders
       !=:Foo was here too
     throw:@"Assert error, files didn't contain expected data!"
 
+
 /*
  * Tests that listing folders behaves
  */
@@ -170,4 +171,37 @@ list-folders
       not
     or:x:/./-/*?count
       !=:int:2
+    throw:Didn't find expected folder
+
+
+/*
+ * Tests that listing folders behaves
+ */
+list-folders-expressions
+  if
+    folder-exist:~/foo/
+    delete-folder:~/foo/
+  if
+    folder-exist:~/bar/
+    delete-folder:~/bar/
+  create-folder:~/foo/
+  create-folder:~/foo/bar1/
+  create-folder:~/foo/bar2/
+  create-folder:~/bar/
+  create-folder:~/bar/bar3/
+  create-folder:~/bar/bar4/
+  _folders
+    no1:~/foo/
+    no1:~/bar/
+  list-folders:x:/../*/_folders/*?value
+  if:x:@/-/*/~bar1
+    not
+    or:x:@/./-/*/~bar2
+      not
+    or:x:@/./-/*/~bar3
+      not
+    or:x:@/./-/*/~bar4
+      not
+    or:x:/./-/*?count
+      !=:int:4
     throw:Didn't find expected folder
