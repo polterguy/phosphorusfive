@@ -25,52 +25,23 @@ namespace p5.io.folder
         [ActiveEvent (Name = "rename-folder", Protection = EventProtection.LambdaClosed)]
         public static void move_rename_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            /*
-             * We do not remove value of arguments here, since it is used for returning value of 
-             * new foldername, since it might not necessarily be the same as the one caller requested, 
-             * if folder exist from before
-             */
+            // Using our common helper for actual implementation
+            MoveCopyHelper.CopyMoveFileObject (context, e, delegate (string rootFolder, string source, string destination) {
 
-            // Basic syntax checking
-            if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
-                throw new ArgumentException ("[move-folder] needs both a value and a [to] node.");
-
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
-
-                // Getting root folder
-                var rootFolder = Common.GetRootFolder (context);
-
-                // Getting source and verify path is correct according to conventions
-                string sourceFolder = XUtil.Single<string> (context, e.Args);
-
-                // Getting destination and verify path is correct according to conventions
-                string destinationFolder = XUtil.Single<string> (context, e.Args ["to"]);
-
-                // Verifying user is authorized to both reading from source, and writing to destination
-                context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", sourceFolder).Add ("args", e.Args));
-                context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", destinationFolder).Add ("args", e.Args));
-
-                // Aborting early if there's nothing to do here ...
-                if (sourceFolder == destinationFolder)
-                    return;
-
-                // Getting new filename of file, if needed
-                if (Directory.Exists (rootFolder + destinationFolder)) {
-
-                    // Destination folder exist from before, creating a new unique destination foldername
-                    destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
-
-                    // Authorizing for new folder name
-                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", destinationFolder).Add ("args", e.Args));
-                }
+                // Verifying user is authorized to both modify source, and modify destination
+                context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", source).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", destination).Add ("args", e.Args));
 
                 // Actually moving (or renaming) folder
-                Directory.Move (rootFolder + sourceFolder, rootFolder + destinationFolder);
+                Directory.Move (rootFolder + source, rootFolder + destination);
 
-                // Returning actual destination foldername used to caller
-                e.Args.Value = destinationFolder;
-            }
+                // Making sure we return the filename as the value of root node, in case a new filename was created
+                e.Args.Value = destination;
+            }, delegate (string destination) {
+                return Common.CreateNewUniqueFolderName (context, destination);
+            }, delegate (string destination) {
+                return Directory.Exists (destination);
+            });
         }
     }
 }

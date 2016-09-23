@@ -261,9 +261,11 @@ Creates a folder at the given path. Notice that the parent folder must exist, an
 Also notice that if the folder exist from before, an exception will be thrown.
 
 This Active Event also handles expressions, and will create all folders your expressions yields as a result, the same way for instance 
-the *[load-file]* would load multiple files. Below is some example code that creates two folders.
+the *[load-file]* would load multiple files.
 
 Every single Active Event that somehow takes a folder, requires the path to both start with a slash (/), in addition to ending with a slash (/).
+
+Below is some example code that creates two folders.
 
 ```
 _folders
@@ -290,7 +292,8 @@ The above code will delete the folders previously created in our *[create-folder
 
 This Active Event is implemented with the same semantics as *[file-exist]*, which means if you pass in an expression as its value, and the 
 expression is leading to multiple folder paths, then all folders must exist, in order for the Active Event to return "true". Below we are
-checking if the folder "/system42/" exists, without any expressions as arguments.
+checking if the folder "/system42/" exists, without any expressions as arguments, but we could have supplied an expression, either leading to
+a single path, or multiple paths, if we wanted.
 
 ```
 folder-exist:/system42/
@@ -298,18 +301,28 @@ folder-exist:/system42/
 
 ### [copy-folder] and [move-folder]
 
-These two Active Events works exactly like their "file counterparts" ([copy-file] and [move-file]). The *[move-folder]* even has an  alias,
+These two Active Events works exactly like their "file counterparts" ([copy-file] and [move-file]). The *[move-folder]* even has an alias,
 just like "move-file", which is *[rename-folder]*. Below is some sample code using them both.
 
 ```
 create-folder:/foo-bar/
-copy-folder:/foo-bar/
-  to:/foo-bar-2/
+create-folder:/foo-bar/foo-bar-inner/
 
-// We could also use [rename-folder] here
+// Creating some dummy text file in folder
+save-file:/foo-bar/foo.txt
+  src:Foo bar text file
+save-file:/foo-bar/foo-bar-inner/foo2.txt
+  src:Foo bar text file
+copy-folder:/foo-bar/
+  dest:/foo-bar-2/
+
+// We could also have used [rename-folder] here
 move-folder:/foo-bar/
-  to:/foo-bar-new-name/
+  dest:/foo-bar-new-name/
 ```
+
+The above code first creates a folder with an inner folder. Then, for the example, it creates a couple of files within these two folders.
+Afterwards, it copies the root folder created like this, before it renames the original root folder created.
 
 ### [list-files] and [list-folders]
 

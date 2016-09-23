@@ -4,7 +4,6 @@
  */
 
 using System.IO;
-using p5.exp;
 using p5.core;
 using p5.io.common;
 
@@ -24,7 +23,7 @@ namespace p5.io.file
         public static void copy_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Using our common helper for actual implementation
-            MoveCopyHelper.CopyMoveFile (context, e, delegate (string rootFolder, string source, string destination) {
+            MoveCopyHelper.CopyMoveFileObject (context, e, delegate (string rootFolder, string source, string destination) {
 
                 // Verifying user is authorized to both modify source, and modify destination
                 context.RaiseNative ("p5.io.authorize.read-file", new Node ("", source).Add ("args", e.Args));
@@ -35,6 +34,11 @@ namespace p5.io.file
 
                 // Making sure we return the filename as the value of root node, in case a new filename was created
                 e.Args.Value = destination;
+            }, delegate (string destination) {
+                return Common.CreateNewUniqueFileName (context, destination);
+            },
+            delegate (string destination) {
+                return File.Exists (destination);
             });
         }
     }

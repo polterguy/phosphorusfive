@@ -46,7 +46,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="file\MoveCopyHelper.cs" />
+    <Compile Include="common\MoveCopyHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="file\Load.cs" />
     <Compile Include="file\Save.cs" />
@@ -59,7 +59,7 @@
     <Compile Include="folder\Move.cs" />
     <Compile Include="file\Copy.cs" />
     <Compile Include="folder\Copy.cs" />
-    <Compile Include="helpers\Common.cs" />
+    <Compile Include="common\Common.cs" />
     <Compile Include="file\Exist.cs" />
     <Compile Include="folder\Exist.cs" />
   </ItemGroup>

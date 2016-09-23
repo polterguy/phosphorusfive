@@ -7,25 +7,35 @@ using System.IO;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
-using p5.io.common;
 
-namespace p5.io.file
+namespace p5.io.common
 {
     /// <summary>
     ///     Class to help copy, rename and/or move files
     /// </summary>
     public static class MoveCopyHelper
     {
-        // Delegate for actual implementation for handling one single file
+        /// Delegate for actual implementation for handling one single file
         public delegate void MoveCopyDelegate (string rootFolder, string source, string destination);
 
+        /// Delegate for creating a new filename/foldername
+        public delegate string CreateNewFileObjectNameDelegate (string destination);
+
+        /// Delegate for checking if fileobject exists
+        public delegate bool FileObjectExistDelegate (string destination);
+
         /// <summary>
-        ///     Common helper for iterating files for move/copy/rename operation
+        ///     Common helper for iterating files/folders for move/copy/rename operation
         /// </summary>
         /// <param name="context"></param>
         /// <param name="e"></param>
         /// <param name="functor"></param>
-        public static void CopyMoveFile (ApplicationContext context, ActiveEventArgs e, MoveCopyDelegate functor)
+        public static void CopyMoveFileObject (
+            ApplicationContext context, 
+            ActiveEventArgs e, 
+            MoveCopyDelegate functor, 
+            CreateNewFileObjectNameDelegate functor2,
+            FileObjectExistDelegate functor3)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -46,13 +56,15 @@ namespace p5.io.file
                         // Making sure source yields only one value
                         if (dest.Count != 1)
                             throw new LambdaException ("The destination for your [move-file] operation must be one string", e.Args, context);
-                        MoveFile (
+                        CopyMoveFileObjectImplementation (
                             context, 
                             e.Args, 
                             rootFolder, 
                             Utilities.Convert<string> (context, idxSource.Value),
                             Utilities.Convert<string> (context, dest[0]),
-                            functor);
+                            functor,
+                            functor2,
+                            functor3);
                     }
                 } else {
 
@@ -63,13 +75,15 @@ namespace p5.io.file
                     // Making sure source yields only one value
                     if (dest.Count != 1)
                         throw new LambdaException ("The destination for your [move-file] operation must be one string", e.Args, context);
-                    MoveFile (
+                    CopyMoveFileObjectImplementation (
                         context,
                         e.Args,
                         rootFolder,
                         e.Args.Get<string> (context),
                         Utilities.Convert<string> (context, dest[0]),
-                        functor);
+                        functor,
+                        functor2,
+                        functor3);
                 }
             }
         }
@@ -77,19 +91,21 @@ namespace p5.io.file
         /*
          * Helper for above
          */
-        private static void MoveFile (
+        private static void CopyMoveFileObjectImplementation (
             ApplicationContext context, 
             Node args, 
             string rootFolder, 
             string sourceFile, 
             string destinationFile,
-            MoveCopyDelegate functor)
+            MoveCopyDelegate functor,
+            CreateNewFileObjectNameDelegate functor2,
+            FileObjectExistDelegate functor3)
         {
             // Getting new filename of file, if needed
-            if (File.Exists (rootFolder + destinationFile)) {
+            if (functor3 (rootFolder + destinationFile)) {
 
                 // Destination file exist from before, creating a new unique destination filename
-                destinationFile = Common.CreateNewUniqueFileName (context, destinationFile);
+                destinationFile = functor2 (destinationFile);
 
                 // Verifying user is allowed to save to updated destination filename
                 context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
