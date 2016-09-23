@@ -23,31 +23,17 @@ namespace p5.io.folder
         [ActiveEvent (Name = "list-folders", Protection = EventProtection.LambdaClosed)]
         public static void p5_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            // Getting root folder
+            var rootFolder = Common.GetRootFolder (context);
 
-                // Retrieving root folder
-                var rootFolder = Common.GetRootFolder (context);
-
-                // Iterating through each folder passed in by caller
-                foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Retrieving actual system path
-                    var foldername = Common.GetSystemPath (context, idxFolder);
-
-                    // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", foldername).Add ("args", e.Args));
-
-                    // Iterating all folders in current directory, and returning as nodes beneath args given
-                    foreach (var idxInnerFolder in Directory.GetDirectories (rootFolder + foldername)) {
-
-                        // Normalizing file path delimiters for both Linux and Windows
-                        var folderName = idxInnerFolder.Replace ("\\", "/");
-                        folderName = folderName.Replace (rootFolder, "");
-                        e.Args.Add (folderName.TrimEnd ('/') + "/");
-                    }
+            QueryHelper.Run (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
+                foreach (var idxFolder in Directory.GetDirectories (rootFolder + foldername)) {
+                    var folderName = idxFolder.Replace ("\\", "/");
+                    folderName = folderName.Replace (rootFolder, "");
+                    e.Args.Add (folderName.TrimEnd ('/') + "/");
                 }
-            }
+                return true;
+            });
         }
     }
 }

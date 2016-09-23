@@ -3,12 +3,10 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
-using System.IO;
 using p5.exp;
 using p5.core;
-using p5.io.common;
 
-namespace p5.io
+namespace p5.io.common
 {
     /// <summary>
     ///     Class to help query files and folders

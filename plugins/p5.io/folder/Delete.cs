@@ -24,33 +24,14 @@ namespace p5.io.folder
         [ActiveEvent (Name = "delete-folder", Protection = EventProtection.LambdaClosed)]
         public static void delete_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
-
-                // Retrieving root folder
-                var rootFolder = Common.GetRootFolder (context);
-
-                // Iterating through each folder caller wants to create
-                foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Retrieving actual system path
-                    var foldername = Common.GetSystemPath (context, idxFolder);
-
-                    // Verifying user is authorized to both reading from source, and writing to destination
-                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", foldername).Add ("args", e.Args));
-
-                    // Checking to see if folder already exists
-                    if (Directory.Exists (rootFolder + foldername)) {
-
-                        // Folder exists, removing it recursively
-                        Directory.Delete (rootFolder + foldername, true);
-                    } else {
-
-                        // Oops, folder didn't exist
-                        throw new LambdaException (string.Format ("Tried to delete non-existing folder - '{0}'", foldername), e.Args, context);
-                    }
+            QueryHelper.Run (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
+                if (Directory.Exists (fullpath)) {
+                    Directory.Delete (fullpath, true);
+                } else {
+                    throw new LambdaException (string.Format ("Tried to delete non-existing folder - '{0}'", foldername), e.Args, context);
                 }
-            }
+                return true;
+            });
         }
     }
 }

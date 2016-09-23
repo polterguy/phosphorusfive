@@ -25,38 +25,22 @@ namespace p5.io.folder
         [ActiveEvent (Name = "list-files", Protection = EventProtection.LambdaClosed)]
         public static void list_files (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            // Getting root folder
+            var rootFolder = Common.GetRootFolder (context);
 
-                // Retrieving root folder
-                var rootFolder = Common.GetRootFolder (context);
+            // Checking if we've got a filter
+            string filter = e.Args.GetExChildValue ("filter", context, "");
 
-                // Checking if we've got a filter
-                string filter = e.Args.GetExChildValue ("filter", context, "");
-
-                // Iterating through each folder supplied by caller
-                foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Retrieving actual system path
-                    var foldername = Common.GetSystemPath (context, idxFolder);
-
-                    // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", foldername).Add ("args", e.Args));
-
-                    // Iterating all files in current directory, and returning as nodes beneath args given
-                    foreach (var idxFile in Directory.GetFiles (rootFolder + foldername)) {
-
-                        // Verifying file matches filter given, if any
-                        if (filter == "" || idxFile.EndsWith ("." + filter)) {
-
-                            // Returning filename back to caller
-                            var fileName = idxFile.Replace ("\\", "/");
-                            fileName = fileName.Replace (rootFolder, "");
-                            e.Args.Add (fileName);
-                        }
+            QueryHelper.Run (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
+                foreach (var idxFile in Directory.GetFiles (fullpath)) {
+                    if (filter == "" || idxFile.EndsWith ("." + filter)) {
+                        var fileName = idxFile.Replace ("\\", "/");
+                        fileName = fileName.Replace (rootFolder, "");
+                        e.Args.Add (fileName);
                     }
                 }
-            }
+                return true;
+            });
         }
     }
 }

@@ -152,3 +152,22 @@ move-multiple-folders
     or:x:/./-/*?value
       !=:Foo was here too
     throw:@"Assert error, files didn't contain expected data!"
+
+/*
+ * Tests that listing folders behaves
+ */
+list-folders
+  if
+    folder-exist:~/foo/
+    delete-folder:~/foo/
+  create-folder:~/foo/
+  create-folder:~/foo/bar1/
+  create-folder:~/foo/bar2/
+  list-folders:~/foo/
+  if:x:@/-/*/~bar1
+    not
+    or:x:@/./-/*/~bar2
+      not
+    or:x:/./-/*?count
+      !=:int:2
+    throw:Didn't find expected folder

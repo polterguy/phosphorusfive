@@ -4,7 +4,6 @@
  */
 
 using System.IO;
-using p5.exp;
 using p5.core;
 using p5.io.common;
 using p5.exp.exceptions;
@@ -27,33 +26,14 @@ namespace p5.io.folder
         [ActiveEvent (Name = "create-folder", Protection = EventProtection.LambdaClosed)]
         public static void create_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
-
-                // Retrieving root folder
-                var rootFolder = Common.GetRootFolder (context);
-
-                // Iterating through each folder caller wants to create
-                foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Retrieving actual system path
-                    var foldername = Common.GetSystemPath (context, idxFolder);
-
-                    // Verifying user is authorized to writing to destination
-                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", foldername).Add ("args", e.Args));
-
-                    // Checking to see if folder already exists
-                    if (Directory.Exists (rootFolder + foldername)) {
-
-                        // Oops, folder exist from before
-                        throw new LambdaException (string.Format ("Folder '{0}' exist from before", foldername), e.Args, context);
-                    } else {
-
-                        // Folder didn't exist
-                        Directory.CreateDirectory (rootFolder + foldername);
-                    }
+            QueryHelper.Run (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
+                if (Directory.Exists (fullpath)) {
+                    throw new LambdaException (string.Format ("Folder '{0}' exist from before", foldername), e.Args, context);
+                } else {
+                    Directory.CreateDirectory (fullpath);
                 }
-            }
+                return true;
+            });
         }
     }
 }

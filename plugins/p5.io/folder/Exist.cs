@@ -23,38 +23,19 @@ namespace p5.io.folder
         [ActiveEvent (Name = "folder-exist", Protection = EventProtection.LambdaClosed)]
         public static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
-
-                // Getting root folder
-                var rootFolder = Common.GetRootFolder (context);
-
-                // Multiple folder source, returning existence of all folders
-                foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Retrieving actual system path
-                    var foldername = Common.GetSystemPath (context, idxFolder);
-
-                    // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", foldername).Add ("args", e.Args));
-
-                    // Letting caller know whether or not this file exists
-                    if (!Directory.Exists (rootFolder + foldername)) {
-
-                        // Folder didn't exist, letting caller know, and aborting early
-                        e.Args.Value = false;
-                        return;
-                    } else {
-
-                        // Folder existed
-                        e.Args.Value = true;
-                    }
-                }
-
-                // In case expression yields no results, it will still be in value of node
-                if (XUtil.IsExpression (e.Args.Value))
+            QueryHelper.Run (context, e.Args, false, "read-folder", delegate (string foldername, string fullpath) {
+                if (!Directory.Exists (fullpath)) {
                     e.Args.Value = false;
-            }
+                    return false;
+                } else {
+                    e.Args.Value = true;
+                    return true;
+                }
+            });
+
+            // In case expression yields no results, it will still be in value of node
+            if (XUtil.IsExpression (e.Args.Value))
+                e.Args.Value = false;
         }
     }
 }

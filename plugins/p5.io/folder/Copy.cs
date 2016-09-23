@@ -6,7 +6,6 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 using p5.io.common;
