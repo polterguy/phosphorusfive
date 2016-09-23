@@ -105,3 +105,50 @@ deep-copy-multiple-folders
     or:x:/./-/*?value
       !=:Foo was here too
     throw:@"Assert error, files didn't contain expected data!"
+
+
+
+/*
+ * Tests that moving multiple folders behaves
+ */
+move-multiple-folders
+  if
+    folder-exist:~/temp/foo-bar-move-1/
+    delete-folder:~/temp/foo-bar-move-1/
+  if
+    folder-exist:~/temp/foo-bar-move-2/
+    delete-folder:~/temp/foo-bar-move-2/
+  if
+    folder-exist:~/temp/foo-bar-move-1-copy/
+    delete-folder:~/temp/foo-bar-move-1-copy/
+  if
+    folder-exist:~/temp/foo-bar-move-2-copy/
+    delete-folder:~/temp/foo-bar-move-2-copy/
+
+  create-folder:~/temp/foo-bar-move-1/
+  create-folder:~/temp/foo-bar-move-1/inner/
+  save-file:~/temp/foo-bar-move-1/inner/foo1.txt
+    src:Foo was here
+
+  create-folder:~/temp/foo-bar-move-2/
+  create-folder:~/temp/foo-bar-move-2/inner/
+  save-file:~/temp/foo-bar-move-2/inner/foo2.txt
+    src:Foo was here too
+
+  _folders
+    no1:~/temp/foo-bar-move-1/
+    no1:~/temp/foo-bar-move-2/
+  copy-folder:x:/../*/_folders/*?value
+    eval
+      split:x:/../*/_dn/#?value
+        =:/
+      return:~/temp/{0}-copy/
+        :x:/../*/split/0/-?name
+
+  load-file:~/temp/foo-bar-move-1-copy/inner/foo1.txt
+  load-file:~/temp/foo-bar-move-2-copy/inner/foo2.txt
+  if:x:/-2/*?value
+    !=:Foo was here
+    or:x:/./-/*?value
+      !=:Foo was here too
+    throw:@"Assert error, files didn't contain expected data!"

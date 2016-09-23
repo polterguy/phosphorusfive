@@ -2,29 +2,30 @@ p5.io, file IO in Phosphorus Five
 ========
 
 The p5.io library, and its Active Events, allows you to easily load, create, modify, and delete files, and folders in your system.
-It contains all the methods expected to handle your file system, for most problems you'd encounter, while using P5.
+It contains most methods necessary to handle your file system, for most problems you'd encounter, while using P5.
 
 Notice, that all IO operations within Phosphorus Five, and its "p5.io" library, expects the path you supply to start with a "/". If
 what you are referring to, is a folder, it also expects you to _end_ your path with a forward slash (/). Unless you create your paths
-like this, exceptions will occur during evaluation of your code.
+like this, exceptions will be thrown during evaluation of your code.
 
-Also realize, that unless you are authorized to load, save, change, or delete a specific file or folder, then a security exception will
+Also realize, that unless you are authorized to load, save, change, or delete a specific file, or folder, then a security exception will
 be thrown. For instance, a user does not by default have access to files belonging to another user, existing within another user's "home" 
-folder. (/users/username/some-folder/ e.g.)
+folder. (e.g. /users/username/some-folder/)
 
-Notice also, that all file manipulation Active Events in p5.io, relies upon the type conversion, normally implemented in "p5.types", which
+Notice also, that all file IO Active Events in p5.io, relies upon the type conversion, normally implemented in "p5.types", which
 again will use UTF8 exclusively, as its conversion encoding, when for instance saving files, and also loading files. This means that
 all files created, using p5.io, will be created as UTF8 files. In addition, all files loaded with p5.io, will be assumed to be encoded as
-UTF8.
-
-All Active Events in p5.io will also automatically substitute a path, with "/users/logged-in-username" if it starts with "~". For instance, 
-if you are logged in as username "root", then "~/documents/foo.txt" will unroll to "/users/root/documents/foo.txt".
+UTF8. This is true for all text files, however, binary data can still be saved as such.
 
 In general, at the time of this writing, p5.io exclusively support UTF8 text files, in addition to some rudimentary support for binary files.
 
+All Active Events in p5.io, will also automatically substitute a path, with "/users/logged-in-username" if it starts with "~". For instance, 
+if you are logged in as username "root", then "~/documents/foo.txt" will unroll to "/users/root/documents/foo.txt". This allows you to
+transparently refer to files in a user's folder as "~/something.txt".
+
 Also notice, that although you _can_ load and save binary data with p5.io - Hyperlisp and p5.lambda, is not in general terms, very adequate
 for manipulating binary data. This means that you can load binary blob data, but for the most parts, the only intelligent thing you can do
-with it, is to base64 encode this data, and/or pass it into other Active Events, that knows how to handle your binary data.
+with it, is to base64 encode this data, and/or, pass it into other Active Events, that knows how to handle your binary data.
 
 ## How to handle files in your system
 
@@ -39,8 +40,8 @@ load-file:/system42/application-startup.hl
 ```
 
 The above invocation, will load the System42 "startup file" for you. Notice that this is a Hyperlisp file, which the *[load-file]* Active
-Event will determine by itself, and automatically parse the file for you to a p5.lambda structure. If you do not wish to automatically
-parse the file, but rather load is the filw "raw", as a piece of text, not transforming it into a p5.lambda object for you, you must add the
+Event will automatically determine, and hence parse the file for you, to a p5.lambda structure. If you do not wish to automatically
+parse the file, but rather load is the file "raw", as a piece of text, not transforming it into a p5.lambda object, you must add the
 argument *[convert]*, and set its value to "false". An example is shown below.
 
 ```
@@ -56,9 +57,9 @@ immediately execute your Hyperlisp, without having to convert it yourself.
 #### Loading multiple files at the same time
 
 Sometimes, you want to load multiple files at the same time. Often you might even want to treat them as "one aggregated" file result, 
-for instance for those cases where you wish to load multiple files, and evaluate the combined result as a single piece of p5.lambda object.
+for instance if you wish to load multiple files, and evaluate the combined result, as a single piece of p5.lambda object.
 
-For such cases, you can pass in an expression into  your *[load-file]* invocation, such as the following is an example of.
+For such cases, you can pass in an expression into your *[load-file]* invocation, such as the following is an example of.
 
 ```
 _files
@@ -81,19 +82,21 @@ load-file
      ... file 2 content, p5.lambda nodes ...
 ```
 
+Notice, if you try to load a file that does not exist, an exception will be thrown.
+
 ### [save-file], saving files
 
 The *[save-file]* Active Event, does the exact opposite of the *[load-file]* event. Try the following code.
 
 ```
-save-file:/foo.txt
+save-file:~/foo.txt
   src:@"Hello there stranger!
 =======
 
 I am a newly created file! :)"
 ```
 
-After evaluating the above Hyperlisp, a new file will exist within your main "/phosphorusfive/core/p5.webapp/" folder, called "foo.txt".
+After evaluating the above Hyperlisp, a new file will exist within your main "~/" user's folder, called "foo.txt".
 
 Whatever argument you pass into the *[src]* node, will somehow be converted into a text string, or a single binary piece of blob, and
 flushed into the file path given as the value of *[save-file]*. This allows you to create a new file, or overwrite an existing file,
@@ -108,9 +111,9 @@ _data
   people:Howdy world
     first:John
     last:Doe
-save-file:/foo.hl
+save-file:~/foo.hl
   src:x:/../*/_data/*/people
-load-file:/foo.hl
+load-file:~/foo.hl
 ```
 
 The *[load-file]* invocation above, is only there to show the results of your newly created file, and illustrates how only the results of
@@ -120,7 +123,7 @@ multiple pieces of text, and/or p5.lambda, and save the combined results to disc
 You can also have a "static" source, containing the nodes as children of *[src]*, such as the following is an example of.
 
 ```
-save-file:/foo.hl
+save-file:~/foo.hl
   src
     person:1
       name:thomas
@@ -133,7 +136,7 @@ Yet even more powerful control over what is saved, can be achieved by using an A
 ```
 _exe
   return:Content of file
-save-file:/foo.txt
+save-file:~/foo.txt
   eval:x:/../*/_exe
 ```
 
@@ -141,14 +144,14 @@ The above example, will create a file, named "foo.txt", at the root of your p5.w
 
 #### Saving multiple files, with relative sources
 
-If you wish, you can save multiple files at the same time, and use expressions pointing to your filenames, having the content of your files 
+If you wish, you can save multiple files at the same time, and use expressions pointing to your filenames, having the content of your files, 
 be relative to your filename node. Imagine the following code.
 
 ```
 _files
-  name:/foo.txt
+  name:~/foo.txt
     content:Foo was here
-  name:/bar.txt
+  name:~/bar.txt
     content:Bar was here
 save-file:x:/-/*?value
   eval:x:/./+
@@ -169,8 +172,10 @@ course, instead of loading the file(s), it deletes them instead. To delete the f
 can use the following code.
 
 ```
-delete-file:/foo.txt
+delete-file:~/foo.txt
 ```
+
+Notice, if the above file does not exist, an exception will be thrown.
 
 The Active Event *[delete-file]*, does not take any arguments, besides a single constant value, or an expression leading to multiple file paths.
 However, just like the other file manipulation Active Events, it requires a fully qualified path, which must start with "/". To delete a file,
@@ -199,13 +204,13 @@ file does not exist.
 ### [move-file], moving or renaming a file
 
 With *[move-file]*, you can either rename a file, or entirely move it into for instance a different folder. The Active Event takes the 
-"source file" as its value, and the "destinatin filepath/value" as the value of a *[dest]* child node. Let's show this with an example.
+"source file" as its value, and the "destinatin filepath/value", as the value of a *[dest]* child node. Let's show this with an example.
 
 ```
-save-file:/foo.txt
+save-file:~/foo.txt
   src:foo bar
-move-file:/foo.txt
-  dest:/new-foo.txt
+move-file:~/foo.txt
+  dest:~/new-foo.txt
 ```
 
 Notice that if the destination already exists, then a new unique filename will be automatically created, and the path of the actual filename
@@ -214,9 +219,9 @@ using expressions, and Active Event sources. However, only the full path of the 
 your *[move-file]* Active Event. Consider this code.
 
 ```
-save-file:/foo1.txt
+save-file:~/foo1.txt
   src:foo1
-save-file:/foo2.txt
+save-file:~/foo2.txt
   src:foo2
 move-file:x:/../*/save-file?value
   eval
@@ -235,22 +240,49 @@ its end. The end result being, that you end up with two files at the root of you
 The *[move-file]* Active Event, also has the alias of *[rename-file]*, which can be used instead of "move-file". However, the logic is the
 exact same, and there is no difference in implementation of these two events. They are simply aliases for the same Active Event handler.
 
-### [copy-file], copying a file into a new file
+If the files you are trying to move, does not exist, an exception will be thrown.
+
+### [copy-file], copying a file
 
 The *[copy-file]* Active Event, does exactly what you think it should do. It copies one source file, and creates a new copy of that file, into
 a destination file. Besides from that it actually copies the file(s), instead of moving them, it works 100% identically to *[move-file]*. 
 The arguments to *[copy-file]* are also the same as the arguments to *[move-file]*. Consider this code.
 
 ```
-save-file:/foo.txt
+save-file:~/foo.txt
   src:foo bar
-copy-file:/foo.txt
-  dest:/foo-copy.txt
+copy-file:~/foo.txt
+  dest:~/foo-copy.txt
 ```
 
 The *[dest]* node argument above, which is the child node of *[copy-file]*, is of course the destination filepath, for your copy. Here too, you
 could have copied several files at once, like we did with *[move-file]*. In addition to that the last file coped this way, would have its full
 path returned as the value of *[copy-file]*.
+
+### [file-size], [file-is-read-only], [file-creation-time] and [file-access-time]
+
+The *[file-size]*, *[file-is-read-only]*, *[file-creation-time]* and *[file-access-time]* Active Events, returns the size, read-only state,
+creation time, and access time of each file you supply to them, either as an expression, or as a constant. Example.
+
+```
+file-size:/web.config
+file-is-read-only:/web.config
+file-creation-time:/web.config
+file-access-time:/web.config
+```
+
+After evaluating the above code, your result will look something like this.
+
+```
+file-size
+  /web.config:long:8084
+file-is-read-only
+  /web.config:bool:false
+file-creation-time
+  /web.config:date:"2016-09-07T15:25:22.285"
+file-access-time
+  /web.config:date:"2016-09-18T23:18:41.166"
+```
 
 ## How to handle folders in your system
 
@@ -264,7 +296,7 @@ Creates a folder at the given path. Notice that the parent folder must exist, an
 Also notice that if the folder exist from before, an exception will be thrown.
 
 This Active Event also handles expressions, and will create all folders your expressions yields as a result, the same way for instance 
-the *[load-file]* would load multiple files.
+the *[load-file]* will load multiple files.
 
 Every single Active Event that somehow takes a folder, requires the path to both start with a slash (/), in addition to ending with a slash (/).
 
@@ -272,8 +304,8 @@ Below is some example code that creates two folders.
 
 ```
 _folders
-  folder1:/foo/
-  folder2:/bar/
+  folder1:~/foo/
+  folder2:~/bar/
 create-folder:x:/-/*?value
 ```
 
@@ -284,8 +316,8 @@ Example code below.
 
 ```
 _folders
-  folder1:/foo/
-  folder2:/bar/
+  folder1:~/foo/
+  folder2:~/bar/
 delete-folder:x:/-/*?value
 ```
 
@@ -295,7 +327,7 @@ The above code will delete the folders previously created in our *[create-folder
 
 This Active Event is implemented with the same semantics as *[file-exist]*, which means if you pass in an expression as its value, and the 
 expression is leading to multiple folder paths, then all folders must exist, in order for the Active Event to return "true". Below we are
-checking if the folder "/system42/" exists, without any expressions as arguments, but we could have supplied an expression, either leading to
+checking if the folder "/system42/" exists, without any expressions as arguments. We could have supplied an expression, either leading to
 a single path, or multiple paths, if we wanted.
 
 ```
@@ -308,23 +340,23 @@ These two Active Events works exactly like their "file counterparts" ([copy-file
 just like "move-file", which is *[rename-folder]*. Below is some sample code using them both.
 
 ```
-create-folder:/foo-bar/
-create-folder:/foo-bar/foo-bar-inner/
+create-folder:~/foo-bar/
+create-folder:~/foo-bar/foo-bar-inner/
 
 // Creating some dummy text file in folder
-save-file:/foo-bar/foo.txt
+save-file:~/foo-bar/foo.txt
   src:Foo bar text file
-save-file:/foo-bar/foo-bar-inner/foo2.txt
+save-file:~/foo-bar/foo-bar-inner/foo2.txt
   src:Foo bar text file
 
 // Then copying the folder we created
-copy-folder:/foo-bar/
-  dest:/foo-bar-2/
+copy-folder:~/foo-bar/
+  dest:~/foo-bar-2/
 
 // Before finally, we move the original folder we created above
 // BTW, we could also have used [rename-folder] here
-move-folder:/foo-bar/
-  dest:/foo-bar-new-name/
+move-folder:~/foo-bar/
+  dest:~/foo-bar-new-name/
 ```
 
 The above code first creates a folder with an inner folder. Then, for the example, it creates a couple of files within these two folders.
@@ -332,17 +364,17 @@ Afterwards, it copies the root folder created like this, before it renames the o
 
 ### [list-files] and [list-folders]
 
-These two Active Events allows you to list files or folders in your system. Both of them can be given either a constant as a value, or
-an expression leading to multiple folder paths. An example is given below.
+These two Active Events, allows you to list files or folders in your system. Both of them can be given either a constant as a value, or
+an expression, leading to multiple folder paths. An example is given below.
 
 ```
 list-files:/system42/
 list-folders:/system42/
 ```
 
-If you evaluate the above Hyperlisp, you will see that these Active Events returns the files and folders as the "name" part of their children
-nodes. This is a general rule in p5.lambda, which is that many Active Events that returns a list of strings, returns these as the names of
-the children nodes of their main event node.
+If you evaluate the above Hyperlisp, you will see that these Active Events returns the files and folders, as the "name" part of their children
+nodes. This is a general rule in p5.lambda, which is that in general terms, Active Events that returns a list of strings, returns these as 
+the names of the children nodes of their main event node.
 
 #### Filtering files according to type
 
@@ -366,14 +398,14 @@ creates a new unique path for you, it will return the path it uses for the desti
 at this code after evaluation to see this in action.
 
 ```
-create-folder:/foo-bar/
-create-folder:/foo-bar-2/
-copy-folder:/foo-bar-2/
-  to:/foo-bar/
+create-folder:~/foo-bar/
+create-folder:~/foo-bar-2/
+copy-folder:~/foo-bar-2/
+  dest:~/foo-bar/
 ```
 
-After evaluating the above Hyperlisp, you will see that the value of your *[copy-folder]* node, will probably look something like this
-"/foo-bar copy 2/". This was because the destination value of your copy-folder invocation was a path to a folder that already exist.
+After evaluating the above Hyperlisp, you will see that the value of your *[copy-folder]* node, will look something like "/foo-bar copy 2/".
+This is because the destination value of your copy-folder invocation was a path to a folder that already exist.
 
 #### Executing every Hyperlisp file within a folder
 
@@ -390,11 +422,13 @@ eval:x:/-/*
 What the above code actually does, is first of all listing every Hyperlisp file with a specific folder. Then it loads all these files.
 As we previously said, *[load-file]* will automatically convert a Hyperlisp file to a p5.lambda structure after loading it. Then we invoke
 the *[eval]* event, passing in an expression leading to all children nodes of *[load-file]*, which now should be the root node of all files 
-loaded this way. The end result is that all files in some specific folder is automatically evaluated and executed.
+loaded this way. The end result, is that all files in some specific folder is automatically evaluated and executed.
 
-PS!
-For the record, System42 contains a helper Active Event that does this for you, which you probably rather should use, instead of creating your
-own logic.
+System42 contains helper Active Events, both for evaluating single Hyperlisp files, in addition to recursively evaluating all Hyperlisp
+files within some specified folder. These are listed below.
+
+* sys42.execute-lisp-file - Evaluates one or more Hyperlisp files. Pass in either a constant, or an expression leading to one or more files.
+* sys42.execute-lisp-folder - Evaluates all Hyperlisp files within one or more specified folders.
 
 
 

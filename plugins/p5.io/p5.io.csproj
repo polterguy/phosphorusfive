@@ -47,6 +47,11 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="common\MoveCopyHelper.cs" />
+    <Compile Include="file\file-state\QueryHelper.cs" />
+    <Compile Include="file\file-state\IsReadOnly.cs" />
+    <Compile Include="file\file-state\AccessTime.cs" />
+    <Compile Include="file\file-state\CreationTime.cs" />
+    <Compile Include="file\file-state\Size.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="file\Load.cs" />
     <Compile Include="file\Save.cs" />
