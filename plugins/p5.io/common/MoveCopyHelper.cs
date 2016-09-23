@@ -60,8 +60,8 @@ namespace p5.io.common
                             context, 
                             e.Args, 
                             rootFolder, 
-                            Utilities.Convert<string> (context, idxSource.Value),
-                            Utilities.Convert<string> (context, dest[0]),
+                            Common.GetSystemPath (context, Utilities.Convert<string> (context, idxSource.Value)),
+                            Common.GetSystemPath (context, Utilities.Convert<string> (context, dest[0])),
                             functor,
                             functor2,
                             functor3);
@@ -79,8 +79,8 @@ namespace p5.io.common
                         context,
                         e.Args,
                         rootFolder,
-                        e.Args.Get<string> (context),
-                        Utilities.Convert<string> (context, dest[0]),
+                        Common.GetSystemPath (context, e.Args.Get<string> (context)),
+                        Common.GetSystemPath (context, Utilities.Convert<string> (context, dest[0])),
                         functor,
                         functor2,
                         functor3);

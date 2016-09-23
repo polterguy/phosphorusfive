@@ -32,11 +32,14 @@ namespace p5.io.file
                 // Multiple filename source, returning existence of all files
                 foreach (var idxFile in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Retrieving actual system path
+                    var filename = Common.GetSystemPath (context, idxFile);
+
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
 
                     // Letting caller know whether or not this file exists
-                    if (!File.Exists (rootFolder + idxFile)) {
+                    if (!File.Exists (rootFolder + filename)) {
 
                         // File didn't exist, letting caller know, and aborting early
                         e.Args.Value = false;
@@ -47,6 +50,8 @@ namespace p5.io.file
                         e.Args.Value = true;
                     }
                 }
+
+                // In case expressions yields nothing, it should still be in value of node
                 if (XUtil.IsExpression (e.Args.Value))
                     e.Args.Value = false;
             }

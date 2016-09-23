@@ -17,6 +17,9 @@ again will use UTF8 exclusively, as its conversion encoding, when for instance s
 all files created, using p5.io, will be created as UTF8 files. In addition, all files loaded with p5.io, will be assumed to be encoded as
 UTF8.
 
+All Active Events in p5.io will also automatically substitute a path, with "/users/logged-in-username" if it starts with "~". For instance, 
+if you are logged in as username "root", then "~/documents/foo.txt" will unroll to "/users/root/documents/foo.txt".
+
 In general, at the time of this writing, p5.io exclusively support UTF8 text files, in addition to some rudimentary support for binary files.
 
 Also notice, that although you _can_ load and save binary data with p5.io - Hyperlisp and p5.lambda, is not in general terms, very adequate
@@ -313,10 +316,13 @@ save-file:/foo-bar/foo.txt
   src:Foo bar text file
 save-file:/foo-bar/foo-bar-inner/foo2.txt
   src:Foo bar text file
+
+// Then copying the folder we created
 copy-folder:/foo-bar/
   dest:/foo-bar-2/
 
-// We could also have used [rename-folder] here
+// Before finally, we move the original folder we created above
+// BTW, we could also have used [rename-folder] here
 move-folder:/foo-bar/
   dest:/foo-bar-new-name/
 ```

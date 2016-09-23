@@ -33,7 +33,7 @@ namespace p5.lambda.keywords.core
 
                     // Source is an expression, evaluating it, and returning results back to caller
                     var match = exp.Evaluate (context, e.Args, e.Args);
-                    e.Args.Value = match.Select (ix => ix.Value).ToList ();
+                    e.Args.Value = match.TypeOfMatch == Match.MatchType.count ? (object)match.Count : (object)match.Select (ix => ix.Value).ToList ();
                 } else if (e.Args.Value != null) {
 
                     // Still there's a value, checking type of value

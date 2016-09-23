@@ -32,11 +32,14 @@ namespace p5.io.folder
                 // Multiple folder source, returning existence of all folders
                 foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Retrieving actual system path
+                    var foldername = Common.GetSystemPath (context, idxFolder);
+
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", foldername).Add ("args", e.Args));
 
                     // Letting caller know whether or not this file exists
-                    if (!Directory.Exists (rootFolder + idxFolder)) {
+                    if (!Directory.Exists (rootFolder + foldername)) {
 
                         // Folder didn't exist, letting caller know, and aborting early
                         e.Args.Value = false;
@@ -47,6 +50,8 @@ namespace p5.io.folder
                         e.Args.Value = true;
                     }
                 }
+
+                // In case expression yields no results, it will still be in value of node
                 if (XUtil.IsExpression (e.Args.Value))
                     e.Args.Value = false;
             }

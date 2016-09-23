@@ -23,12 +23,10 @@ namespace p5.exp.matchentities
 
         public override object Value
         {
-            get
-            {
+            get {
                 throw new ApplicationException ("Retrieving the value of a 'count' entity is not possible.");
             }
-            set
-            {
+            set {
                 throw new ApplicationException ("Changing the value of a 'count' entity is not possible.");
             }
         }

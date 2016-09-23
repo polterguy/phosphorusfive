@@ -33,18 +33,21 @@ namespace p5.io.folder
                 // Iterating through each folder caller wants to create
                 foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Retrieving actual system path
+                    var foldername = Common.GetSystemPath (context, idxFolder);
+
                     // Verifying user is authorized to both reading from source, and writing to destination
-                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", foldername).Add ("args", e.Args));
 
                     // Checking to see if folder already exists
-                    if (Directory.Exists (rootFolder + idxFolder)) {
+                    if (Directory.Exists (rootFolder + foldername)) {
 
                         // Folder exists, removing it recursively
-                        Directory.Delete (rootFolder + idxFolder, true);
+                        Directory.Delete (rootFolder + foldername, true);
                     } else {
 
                         // Oops, folder didn't exist
-                        throw new LambdaException (string.Format ("Tried to delete non-existing folder - '{0}'", idxFolder), e.Args, context);
+                        throw new LambdaException (string.Format ("Tried to delete non-existing folder - '{0}'", foldername), e.Args, context);
                     }
                 }
             }

@@ -73,5 +73,16 @@ namespace p5.io.common
             }
             return string.Format (baseFolder + "{0} copy {1}/", newFolderName, idxNo);
         }
+
+        /*
+         * Returns the actual file/folder path
+         */
+         public static string GetSystemPath (ApplicationContext context, string path)
+        {
+            if (path.StartsWith ("~")) {
+                return "/users/" + context.Ticket.Username + path.Substring (1);
+            }
+            return path;
+        }
     }
 }

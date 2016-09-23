@@ -45,7 +45,7 @@ namespace p5.io.file
                             context,
                             e.Args,
                             rootFolder,
-                            Utilities.Convert<string> (context, idxDestination.Value),
+                            Common.GetSystemPath (context, Utilities.Convert<string> (context, idxDestination.Value)),
                             content);
                     }
                 } else {
@@ -58,7 +58,7 @@ namespace p5.io.file
                         context,
                         e.Args,
                         rootFolder,
-                        e.Args.GetExValue<string> (context),
+                        Common.GetSystemPath (context, e.Args.GetExValue<string> (context)),
                         content);
                 }
             }

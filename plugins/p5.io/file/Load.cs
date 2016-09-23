@@ -33,27 +33,30 @@ namespace p5.io.file
                 // Iterating through each file path given
                 foreach (var idxFile in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Retrieving actual system path
+                    var filename = Common.GetSystemPath (context, idxFile);
+
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
 
                     // Checking to see if file exists
-                    if (File.Exists (rootFolder + idxFile)) {
+                    if (File.Exists (rootFolder + filename)) {
 
                         // File exists, figuring out file type
-                        if (IsTextFile (idxFile)) {
+                        if (IsTextFile (filename)) {
 
                             // Loading file as string/text
-                            LoadTextFile (context, e.Args, rootFolder, idxFile);
+                            LoadTextFile (context, e.Args, rootFolder, filename);
                         } else {
 
                             // Loading file as blob/byte[]
-                            LoadBinaryFile (e.Args, rootFolder, idxFile);
+                            LoadBinaryFile (e.Args, rootFolder, filename);
                         }
                     } else {
 
                         // Oops, file didn't exist!
                         throw new LambdaException (
-                            string.Format ("Couldn't find file '{0}'", idxFile), 
+                            string.Format ("Couldn't find file '{0}'", filename), 
                             e.Args, 
                             context);
                     }

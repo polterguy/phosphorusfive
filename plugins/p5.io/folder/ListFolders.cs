@@ -32,11 +32,14 @@ namespace p5.io.folder
                 // Iterating through each folder passed in by caller
                 foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Retrieving actual system path
+                    var foldername = Common.GetSystemPath (context, idxFolder);
+
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", foldername).Add ("args", e.Args));
 
                     // Iterating all folders in current directory, and returning as nodes beneath args given
-                    foreach (var idxInnerFolder in Directory.GetDirectories (rootFolder + idxFolder)) {
+                    foreach (var idxInnerFolder in Directory.GetDirectories (rootFolder + foldername)) {
 
                         // Normalizing file path delimiters for both Linux and Windows
                         var folderName = idxInnerFolder.Replace ("\\", "/");

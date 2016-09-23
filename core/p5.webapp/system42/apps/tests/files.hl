@@ -1,0 +1,34 @@
+/*
+ * Contains unit tests for testing creation, deletion and so on
+ * of files in your system
+ */
+
+/*
+ * Tests that creating a file behaves
+ */
+save-and-load-file
+  save-file:~/temp/foo.txt
+    src:Foo bar
+  load-file:~/temp/foo.txt
+  if:x:/-/*?value
+    !=:Foo bar
+    throw:@"Assert error, expected 'Foo bar' in file!"
+
+/*
+ * Tests that creating multiple file behaves
+ */
+save-and-load-multiple-files
+  _files
+    no1:~/temp/foo1.txt
+      content:Foo1
+    no1:~/temp/foo2.txt
+      content:Foo2
+  save-file:x:/../*/_files/*?value
+    eval
+      return:x:/../*/_dn/#/*/content?value
+  load-file:x:/../*/_files/*?value
+  if:x:/-/0?value
+    !=:Foo1
+    or:x:/./-/1?value
+      !=:Foo2
+    throw:@"Assert error, expected 'Foo1' and 'Foo2' in files!"

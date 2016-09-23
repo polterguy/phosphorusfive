@@ -33,19 +33,22 @@ namespace p5.io.file
                 // Iterating through each path given
                 foreach (var idxFile in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Retrieving actual system path
+                    var filename = Common.GetSystemPath (context, idxFile);
+
                     // Verifying user is authorized to writing to destination file
-                    context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
 
                     // Checking if file exist
-                    if (File.Exists (rootFolder + idxFile)) {
+                    if (File.Exists (rootFolder + filename)) {
 
                         // File exists, removing file
-                        File.Delete (rootFolder + idxFile);
+                        File.Delete (rootFolder + filename);
                     } else {
 
                         // Oops, file didn't exist, throwing an exception
                         throw new LambdaException  (
-                            string.Format ("Tried to delete non-existing file '{0}'", idxFile), 
+                            string.Format ("Tried to delete non-existing file '{0}'", filename), 
                             e.Args, 
                             context);
                     }

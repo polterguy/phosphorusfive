@@ -37,11 +37,14 @@ namespace p5.io.folder
                 // Iterating through each folder supplied by caller
                 foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Retrieving actual system path
+                    var foldername = Common.GetSystemPath (context, idxFolder);
+
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", foldername).Add ("args", e.Args));
 
                     // Iterating all files in current directory, and returning as nodes beneath args given
-                    foreach (var idxFile in Directory.GetFiles (rootFolder + idxFolder)) {
+                    foreach (var idxFile in Directory.GetFiles (rootFolder + foldername)) {
 
                         // Verifying file matches filter given, if any
                         if (filter == "" || idxFile.EndsWith ("." + filter)) {
