@@ -5,6 +5,7 @@
 
 using System;
 using System.Web;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using p5.exp;
@@ -29,22 +30,22 @@ namespace p5.web.storage
             var minutes = e.Args.GetExChildValue ("minutes", context, 30);
 
             // Settings cache value
-            p5.exp.Collection.Set (context, e.Args, delegate (string key, object value) {
+            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
-                    // Removing object, if it exists
+                    // Removal
                     HttpContext.Current.Cache.Remove (key);
                 } else {
 
-                    // Adding object
+                    // Setting or updating
                     HttpContext.Current.Cache.Insert (
-                        key, 
-                        value, 
-                        null, 
-                        DateTime.Now.AddMinutes (minutes), 
+                        key,
+                        value,
+                        null,
+                        DateTime.Now.AddMinutes (minutes),
                         System.Web.Caching.Cache.NoSlidingExpiration);
                 }
-            }, e.NativeSource);
+            }, e.NativeSource, new string[] { "minutes" }.ToList ());
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "get-cache-value", Protection = EventProtection.LambdaClosed)]
         public static void get_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.exp.Collection.Get (context, e.Args, key => HttpContext.Current.Cache [key], e.NativeSource);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Cache [key], e.NativeSource);
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace p5.web.storage
             foreach (DictionaryEntry idx in HttpContext.Current.Cache) {
                 retVal.Add (idx.Key.ToString ());
             }
-            p5.exp.Collection.List (context, e.Args, retVal, e.NativeSource);
+            XUtil.ListCollection (context, e.Args, retVal);
         }
     }
 }

@@ -242,3 +242,40 @@ update-multiple-data-keep-id
       !=:bar
     throw:@"Assert error, expected [something], got [something-else]!"
 
+
+/*
+ * Tests that checks that [update-data] behaves when given an Active Event source
+ */
+update-data-event-source
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo
+      name:Thomas Hansen
+    test.foo
+      name:John Doe
+  update-data:x:/*/*/test.foo
+    eval
+      split:x:/../*/_dn/#/*/name?value
+        =:" "
+      eval-x:x:/+/*/*
+      return
+        test.foo
+          first-name:x:/../*/split/0?name
+          surname:x:/../*/split/1?name
+  select-data:x:/*/*/test.foo
+  if:x:/-/0/*/first-name?value
+    !=:Thomas
+    or:x:/./-/0/*/surname?value
+      !=:Hansen
+    or:x:/./-/1/*/first-name?value
+      !=:John
+    or:x:/./-/1/*/surname?value
+      !=:Doe
+    or:x:/./-/0/*/name
+    or:x:/./-/1/*/name
+    or:x:/./-/0?value
+      !=:x:/../*/insert-data/0?value
+    or:x:/./-/1?value
+      !=:x:/../*/insert-data/1?value
+    throw:@"Unexpected results from update-data"

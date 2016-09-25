@@ -23,14 +23,14 @@ namespace p5.web.ui.response
         [ActiveEvent (Name = "set-http-header", Protection = EventProtection.LambdaClosed)]
         public static void set_http_header (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.Set (context, e.Args, delegate (string key, object value) {
+            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
-                    // Removing specific header
+                    // Removal
                     HttpContext.Current.Response.Headers.Remove (key);
                 } else {
 
-                    // Adding or modifying existing header
+                    // Setting or updating
                     HttpContext.Current.Response.AddHeader (key, Utilities.Convert<string> (context, value));
                 }
             }, e.NativeSource);

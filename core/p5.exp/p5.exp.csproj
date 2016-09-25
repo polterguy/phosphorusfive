@@ -74,7 +74,6 @@
     <Compile Include="iterators\IteratorDescendants.cs" />
     <Compile Include="iterators\IteratorNumberedChild.cs" />
     <Compile Include="iterators\IteratorIdentity.cs" />
-    <Compile Include="Collection.cs" />
     <Compile Include="iterators\IteratorDistinctValue.cs" />
     <Compile Include="iterators\IteratorDistinctName.cs" />
   </ItemGroup>

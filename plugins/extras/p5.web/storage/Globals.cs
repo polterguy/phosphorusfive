@@ -25,13 +25,15 @@ namespace p5.web.storage
         [ActiveEvent (Name = "set-global-value", Protection = EventProtection.LambdaClosed)]
         public static void set_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.Set (context, e.Args, delegate (string key, object value) {
+            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
-                    // removing object, if it exists
+
+                    // Removal
                     HttpContext.Current.Application.Remove (key);
                 } else {
-                    // adding object
-                    HttpContext.Current.Application [key] = value;
+
+                    // Setting or updating
+                    HttpContext.Current.Application[key] = value;
                 }
             }, e.NativeSource);
         }
@@ -44,7 +46,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "get-global-value", Protection = EventProtection.LambdaClosed)]
         public static void get_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.Get (context, e.Args, key => HttpContext.Current.Application [key], e.NativeSource);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Application [key], e.NativeSource);
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "list-global-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.List (context, e.Args, HttpContext.Current.Application.AllKeys, e.NativeSource);
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Application.AllKeys);
         }
     }
 }

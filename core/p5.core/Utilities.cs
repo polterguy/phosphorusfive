@@ -41,6 +41,14 @@ namespace p5.core
                     _args = args;
             }
 
+            /// <summary>
+            ///     Prevents the removal of value of args node, even if object is initialized with such state
+            /// </summary>
+            public void StopRemovingArgsValue ()
+            {
+                _args = null;
+            }
+
             /*
              * Private implementation
              */

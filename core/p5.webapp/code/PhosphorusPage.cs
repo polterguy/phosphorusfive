@@ -70,18 +70,15 @@ namespace p5.webapp.code
         [ActiveEvent (Name = "set-page-value", Protection = EventProtection.LambdaClosed)]
         public void set_page_value (ApplicationContext context, ActiveEventArgs e)
         {
-            // Using collection helper to traverse all keys supplied by caller
-            p5.exp.Collection.Set (context, e.Args, (key, value) => {
-
-                // Checking if this is delete operation
+            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
-                    // Removing object, if it exists
+                    // Removal
                     ViewState.Remove (key);
                 } else {
 
-                    // Adding object
-                    ViewState [key] = value;
+                    // Setting or updating
+                    ViewState[key] = value;
                 }
             }, e.NativeSource);
         }
@@ -94,7 +91,7 @@ namespace p5.webapp.code
         [ActiveEvent (Name = "get-page-value", Protection = EventProtection.LambdaClosed)]
         public void get_page_value (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.exp.Collection.Get (context, e.Args, key => ViewState [key], e.NativeSource);
+            XUtil.GetCollection (context, e.Args, key => ViewState [key], e.NativeSource);
         }
 
         /// <summary>
@@ -105,7 +102,7 @@ namespace p5.webapp.code
         [ActiveEvent (Name = "list-page-keys", Protection = EventProtection.LambdaClosed)]
         public void list_page_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.exp.Collection.List (context, e.Args, ViewState.Keys, e.NativeSource);
+            XUtil.ListCollection (context, e.Args, ViewState.Keys);
         }
 
         #endregion

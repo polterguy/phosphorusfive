@@ -9,6 +9,7 @@ using p5.exp;
 using p5.core;
 using p5.ajax.core;
 using p5.web.widgets;
+using p5.exp.exceptions;
 using p5.web.widgets.helpers;
 
 namespace p5.web {
@@ -200,8 +201,12 @@ namespace p5.web {
         public void return_response_object (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (context, e.Args);
-            var str = p5.core.Utilities.Convert<string> (context, XUtil.SourceSingle(context, e.Args), "");
-            AjaxPage.Manager.SendObject (key, str);
+            var source = XUtil.InvokeSource (context, e.Args, e.Args);
+            if (source.Count > 1)
+                throw new LambdaException ("More than one source given for [return-response-object]", e.Args, context);
+            if (source.Count == 0)
+                return; // Nothing to do here
+            AjaxPage.Manager.SendObject (key, core.Utilities.Convert<string> (context, source[0]));
         }
 
         #endregion

@@ -21,16 +21,15 @@ namespace p5.web.storage {
         [ActiveEvent (Name = "set-session-value", Protection = EventProtection.LambdaClosed)]
         public static void set_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.Set (context, e.Args, delegate (string key, object value) {
-
+            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
-                    // Removing object, if it exists
+                    // Removal
                     HttpContext.Current.Session.Remove (key);
                 } else {
 
-                    // Adding object
-                    HttpContext.Current.Session [key] = value;
+                    // Setting or updating
+                    HttpContext.Current.Session[key] = value;
                 }
             }, e.NativeSource);
         }
@@ -43,7 +42,7 @@ namespace p5.web.storage {
         [ActiveEvent (Name = "get-session-value", Protection = EventProtection.LambdaClosed)]
         public static void get_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.Get (context, e.Args, key => HttpContext.Current.Session [key], e.NativeSource);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Session [key], e.NativeSource);
         }
 
         /// <summary>
@@ -54,7 +53,7 @@ namespace p5.web.storage {
         [ActiveEvent (Name = "list-session-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_session_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.List (context, e.Args, HttpContext.Current.Session.Keys, e.NativeSource);
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Session.Keys);
         }
     }
 }

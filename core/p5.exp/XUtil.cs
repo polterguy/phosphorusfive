@@ -3,7 +3,9 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using p5.core;
 using p5.exp.exceptions;
@@ -15,6 +17,20 @@ namespace p5.exp
     /// </summary>
     public static class XUtil
     {
+        /// <summary>
+        ///     Delegate used for updating collections
+        /// </summary>
+        /// <param name="key">Key in collection</param>
+        /// <param name="value">Value for item with specified key (can be null)</param>
+        public delegate void SetCollectionDelegate (string key, object value);
+
+        /// <summary>
+        ///     Delegate used when retrieving collection values
+        /// </summary>
+        /// <param name="key">Key to retrieve from collection</param>
+        /// <returns></returns>
+        public delegate object GetCollectionDelegate (string key);
+
         /// <summary>
         ///     Returns true if given object is an expression
         /// </summary>
@@ -113,6 +129,162 @@ namespace p5.exp
 
                 // Returning list to caller
                 return retVal;
+            }
+        }
+
+        /// <summary>
+        ///     Common helper for iterating and updating a collection with new value(s)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        /// <param name="functor"></param>
+        /// <param name="exclusionArgs"></param>
+        public static void SetCollection (
+            ApplicationContext context, 
+            Node args, 
+            SetCollectionDelegate functor, 
+            bool isNative,
+            List<string> exclusionArgs = null)
+        {
+            // Iterating through each destinations, updating with source
+            if (IsExpression (args.Value)) {
+
+                // Expression destination (keys)
+                foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
+
+                    // Figuring out source, possibly relative to destination
+                    var source = InvokeSource (
+                        context,
+                        args,
+                        idxDestination.Node,
+                        "src",
+                        exclusionArgs);
+
+                    // Making sure there's only one source
+                    if (source.Count > 1)
+                        throw new LambdaException ("[" + args.Name + "]'s source returned multiple values", args, context);
+
+                    // Retrieving key and value for cookie
+                    var key = Utilities.Convert<string> (context, idxDestination.Value);
+
+                    // Checking if this is deletion of item, or setting item, before invoking functor callback
+                    functor (key, source.Count == 0 ? null : source[0]);
+                }
+            } else {
+
+                // Retrieving key and value for cookie
+                var key = Single<string> (context, args);
+
+                // Constant destination, checking if this is a "native" invocation before we proceed with default logic
+                if (isNative) {
+                    functor (key,  args.FirstChild.Value);
+                    return;
+                }
+                var source = InvokeSource (
+                    context,
+                    args,
+                    args,
+                    "src",
+                    exclusionArgs);
+
+                // Making sure there's only one source
+                if (source.Count > 1)
+                    throw new LambdaException ("[" + args.Name + "]'s source returned multiple values", args, context);
+
+                // Checking if this is deletion of item, or setting item, before invoking functor callback
+                functor (key, source.Count == 0 ? null : source[0]);
+            }
+        }
+
+        /// <summary>
+        ///     Iterates a collection, and returns as nodes back to caller
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        /// <param name="functor"></param>
+        public static void GetCollection (
+            ApplicationContext context, 
+            Node args, 
+            GetCollectionDelegate functor, 
+            bool isNative)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (var argsRemover = new Utilities.ArgsRemover (args, true)) {
+
+                // Iterating through each "key"
+                foreach (var idxKey in XUtil.Iterate<string> (context, args, true)) {
+
+                    // Retrieving object by invoking functor with key
+                    var value = functor (idxKey);
+
+                    // Checking if this is a "native" invocation, and if so, yielding object back to caller "raw"
+                    if (isNative) {
+                        args.Value = value;
+                        argsRemover.StopRemovingArgsValue ();
+                        return;
+                    }
+
+                    // Adding node for given key, defaulting to null value
+                    var resultNode = args.Add (idxKey).LastChild;
+
+                    // Checking if value is not null, and if not, adding result, 
+                    // according to what type of value we're given
+                    if (value != null) {
+
+                        // Adding key node, and value as object, if value is not node, otherwise
+                        // appending value nodes beneath key node
+                        if (value is Node) {
+
+                            // Value is Node
+                            resultNode.Add ((value as Node).Clone ());
+                        } else if (value is IEnumerable<Node>) {
+
+                            // Value is a bunch of nodes, adding them all
+                            resultNode.AddRange ((value as IEnumerable<Node>).Select (ix => ix.Clone ()));
+                        } else if (value is IEnumerable<object>) {
+
+                            // Value is a bunch of object values, adding them all as values of children appended into args
+                            resultNode.AddRange ((value as IEnumerable<object>).Select (ix => new Node ("", ix)));
+                        } else {
+
+                            // Value is any "other type of value", returning it "as is"
+                            resultNode.Value = value;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Helper to list collection keys, used in association with GetCollection and SetCollection
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="node"></param>
+        /// <param name="list"></param>
+        public static void ListCollection (ApplicationContext context, Node node, IEnumerable list)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new Utilities.ArgsRemover (node, true)) {
+
+                // Retrieving filters, if any
+                var filter = new List<string> (Iterate<string> (context, node));
+
+                // Looping through each existing key in collection
+                foreach (string idxKey in list) {
+
+                    // Returning current key, if it matches our filter, or filter is not given
+                    if (filter.Count == 0) {
+
+                        // No filter was given, returning everything
+                        node.Add (idxKey);
+                    } else {
+
+                        // Filter was given, checking if key matches one of our filters
+                        if (filter.Any (idxFilter => idxKey.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
+                            node.Add (idxKey);
+                        }
+                    }
+                }
             }
         }
 
@@ -402,115 +574,6 @@ namespace p5.exp
             }
         }
 
-        /// <summary>
-        ///     Will return one single source value from evaluatedNode
-        /// </summary>
-        /// <returns>The single</returns>
-        /// <param name="context">Context</param>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        public static object SourceSingle (
-            ApplicationContext context,
-            Node evaluatedNode)
-        {
-            return SourceSingle (context, evaluatedNode, evaluatedNode);
-        }
-
-        /// <summary>
-        ///     Will return one single source value from evaluatedNode
-        /// </summary>
-        /// <returns>The single</returns>
-        /// <param name="context">Context</param>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        /// <param name="dataSource">Data source</param>
-        public static object SourceSingle (
-            ApplicationContext context,
-            Node evaluatedNode, 
-            Node dataSource)
-        {
-            // Retrieving all children who's value is not "", as potential source nodes
-            var srcNodes = evaluatedNode.Children.Where (ix => ix.Name != "").ToList ();
-
-            // Returning early if there is no source
-            if (srcNodes.Count == 0)
-                return null; // no source!
-
-            // Assuming first node with non-empty name is source node ...
-            var srcNode = srcNodes [0];
-
-            // Checking what type of source we have, it might be [src] or any Active Event invocation
-            if (srcNode.Name == "src") {
-
-                // Returning "simple source"
-                // To support having sources which differs from evaluated lambda, such as [select-data] requires, 
-                // we pass in dataSource if dataSource differs from evaluatedNode, otherwise we pass in source node 
-                // itself as dataSource
-                return SourceSingleImplementation (
-                    context,
-                    srcNode, 
-                    dataSource == evaluatedNode ? srcNode : dataSource,
-                    null);
-            } else {
-
-                // Active Event invocation source, invoking Active Event, return source as result from Active Event invocation.
-                // Cloning Active Event source node, such that we can reset node after invocation, and invoke event immutable
-                var origSrcNode = srcNode.Clone ();
-
-                // Adding "Data Node" as argument to Active Event
-                srcNode.Add ("_dn", dataSource);
-
-                // Making sure source evaluation is immutable, regardless of whether or not exceptions occur!
-                try {
-
-                    // Raising Active Event given as source
-                    context.RaiseLambda (srcNode.Name, srcNode);
-
-                    // Returning result of Active Event invocation as source
-                    return SourceSingleImplementation (context, srcNode, srcNode, null);
-                } finally {
-
-                    // Making sure we reset source node back to its original state, such that evaluation of Active Event becomes immutable
-                    srcNode.Value = origSrcNode.Value;
-                    srcNode.Name = origSrcNode.Name;
-                    srcNode.Clear ().AddRange (origSrcNode.Children);
-                }
-            }
-        }
-
-        /*
-         * Actual implementation of SourceSingle, runs after above methods
-         */
-        private static object SourceSingleImplementation (
-            ApplicationContext context,
-            Node evaluatedNode, 
-            Node dataSource,
-            Node formattingNode)
-        {
-            // Prioritizing value!
-            if (evaluatedNode.Value != null) {
-
-                // This might be an expression, or a constant, converting value to single object, somehow
-                return Single<object> (context, evaluatedNode, dataSource, false, null, formattingNode);
-            } else {
-
-                // There is no value in [src] node, trying to create source out of [src]'s children
-                if (evaluatedNode.Children.Count == 0) {
-
-                    // "null source"
-                    return null;
-                } else if (evaluatedNode.Children.Count == 1) {
-
-                    // Source is a constant node, making sure we clone it, before returning it
-                    return evaluatedNode.FirstChild.Clone ();
-                } else {
-
-                    // More than one source, which is a logical error!
-                    throw new LambdaException (
-                        "Sorry, I cannot create a sane single source from given argument, there are multiple children, and no value", 
-                        evaluatedNode, 
-                        context);
-                }
-            }
-        }
         /// <summary>
         ///     Raises a dynamically created Active Events or lambda objects
         /// </summary>

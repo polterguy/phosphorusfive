@@ -21,16 +21,15 @@ namespace p5.web.storage {
         [ActiveEvent (Name = "set-context-value", Protection = EventProtection.LambdaClosed)]
         public static void set_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.Set (context, e.Args, delegate (string key, object value) {
-
+            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
-                    // Removing object, if it exists
+                    // Removal
                     HttpContext.Current.Items.Remove (key);
                 } else {
 
-                    // Adding object
-                    HttpContext.Current.Items [key] = value;
+                    // Setting or updating
+                    HttpContext.Current.Items[key] = value;
                 }
             }, e.NativeSource);
         }
@@ -43,7 +42,7 @@ namespace p5.web.storage {
         [ActiveEvent (Name = "get-context-value", Protection = EventProtection.LambdaClosed)]
         public static void get_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.Get (context, e.Args, key => HttpContext.Current.Items [key], e.NativeSource);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Items [key], e.NativeSource);
         }
 
         /// <summary>
@@ -54,7 +53,7 @@ namespace p5.web.storage {
         [ActiveEvent (Name = "list-context-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_context_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            Collection.List (context, e.Args, HttpContext.Current.Items.Keys, e.NativeSource);
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Items.Keys);
         }
     }
 }
