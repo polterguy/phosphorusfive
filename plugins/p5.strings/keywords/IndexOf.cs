@@ -39,7 +39,7 @@ namespace p5.strings.keywords
                     return; // Nothing to check
 
                 // Retrieving what source to look for
-                var src = XUtil.InvokeSource (context, e.Args, e.Args);
+                var src = XUtil.Source (context, e.Args, e.Args);
 
                 // Making sure there is a source
                 if (src.Count == 0) {

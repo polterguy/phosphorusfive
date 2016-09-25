@@ -70,7 +70,7 @@ namespace p5.io.file
         private static List<byte> GetSource (ApplicationContext context, Node parentNode, Node destination)
         {
             // Retrieving content to save, possibly relative to currently iterated expression result
-            var src = XUtil.InvokeSource (context, parentNode, destination);
+            var src = XUtil.Source (context, parentNode, destination);
 
             // Creating our return value
             List<byte> content = new List<byte> ();

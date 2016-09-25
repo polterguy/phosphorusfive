@@ -35,8 +35,8 @@ namespace p5.strings.keywords
                     return; // Nothing to check
 
                 // Retrieving what source to look for
-                var src = XUtil.InvokeSource (context, e.Args, e.Args, "src", new List<string> (new string[] { "dest" }));
-                var dest = XUtil.InvokeSource (context, e.Args, e.Args, "dest", null, 1);
+                var src = XUtil.Source (context, e.Args, e.Args, "src", new List<string> (new string[] { "dest" }));
+                var dest = XUtil.Source (context, e.Args, e.Args, "dest", null, 1);
                 if (dest.Count > 1)
                     throw new LambdaException ("There can only be one 'destination' for [replace]", e.Args, context);
                 var with = dest.Count == 1 ? Utilities.Convert<string> (context, dest[0]) : "";

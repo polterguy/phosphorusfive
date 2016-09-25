@@ -50,7 +50,7 @@ namespace p5.lambda.keywords.core
             foreach (var idxDestination in destEx.Evaluate (context, args, args)) {
 
                 // Raising source Active Event
-                var src = XUtil.InvokeSource (context, args, idxDestination.Node);
+                var src = XUtil.Source (context, args, idxDestination.Node);
 
                 // Inseting source nodes to destination
                 var tmpNodeIdxDest = idxDestination.Value as Node;

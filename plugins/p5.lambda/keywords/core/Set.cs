@@ -36,7 +36,7 @@ namespace p5.lambda.keywords.core
 
                 // Raising "src" Active Event. Notice, this must be done once, for each destination, in case the source event is expecting
                 // the relative destination to evaluate
-                var src = XUtil.InvokeSource (context, e.Args, idxDestination.Node);
+                var src = XUtil.Source (context, e.Args, idxDestination.Node);
 
                 // Checking how many values source returned, and throwing if there's more than one
                 if (src.Count > 1)

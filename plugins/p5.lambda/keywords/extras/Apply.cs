@@ -42,7 +42,7 @@ namespace p5.lambda.keywords.extras
                     throw new LambdaException ("The destination of a [apply] operation must be a node", e.Args, context);
 
                 // Retrieving source, possibly relative to destination
-                var source = XUtil.InvokeSource (context, e.Args, idxDest.Node, "src", new List<string> (new string[] { "template" }));
+                var source = XUtil.Source (context, e.Args, idxDest.Node, "src", new List<string> (new string[] { "template" }));
 
                 // Looping through each source
                 foreach (var idxSrc in source) {

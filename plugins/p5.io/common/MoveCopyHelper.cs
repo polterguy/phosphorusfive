@@ -50,7 +50,7 @@ namespace p5.io.common
                     foreach (var idxSource in destEx.Evaluate (context, e.Args, e.Args)) {
 
                         // Retrieving destination, possibly relative to currently iterated expression result
-                        var dest = XUtil.InvokeSource (context, e.Args, idxSource.Node, "dest");
+                        var dest = XUtil.Source (context, e.Args, idxSource.Node, "dest");
 
                         // Making sure source yields only one value
                         if (dest.Count != 1)
@@ -69,7 +69,7 @@ namespace p5.io.common
 
                     // Destination is a constant
                     // Retrieving destination, possibly relative to currently iterated expression result
-                    var dest = XUtil.InvokeSource (context, e.Args, e.Args, "dest");
+                    var dest = XUtil.Source (context, e.Args, e.Args, "dest");
 
                     // Making sure source yields only one value
                     if (dest.Count != 1)

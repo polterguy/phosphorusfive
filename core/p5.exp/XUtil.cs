@@ -62,14 +62,19 @@ namespace p5.exp
         /// <param name="context">Application Context</param>
         /// <param name="parent">Parent node expected to have a source node</param>
         /// <param name="destination">Current destination node</param>
+        /// <param name="restrictionSrcName">Can be either "src" or "dest", and restricts the name of the source node to be either. 
+        /// Has no effect on other Active Event sources, which it will still allow, regardless of its value</param>
+        /// <param name="excludeNodes">Names of nodes to exclude when looking for source node.</param>
+        /// <param name="sourceIsOffsetChild">When one Active Event can contain multiple "source nodes",
+        /// this restricts the lookup process to being the n'th source node, instead of looking for simply the first</param>
         /// <returns></returns>
-        public static List<object> InvokeSource (
+        public static List<object> Source (
             ApplicationContext context, 
             Node parent, 
             Node destination, 
             string restrictionSrcName = "src",
             List<string> excludeNodes = null,
-            int index = 0)
+            int sourceIsOffsetChild = 0)
         {
             // For simplicity, avoiding null reference exceptions inside of Linq later down
             if (excludeNodes == null)
@@ -84,9 +89,10 @@ namespace p5.exp
                 return new List<object> ();
             } else {
 
-                while (index > 0) {
+                // Making sure we remove up until offset, for cases where the same Active Event contains multiple invocation nodes to this method
+                while (sourceIsOffsetChild > 0) {
                     srcList.RemoveAt (0);
-                    index -= 1;
+                    sourceIsOffsetChild -= 1;
                 }
 
                 // Making sure we obey by the declared "restriction" for Active Event name. Either user should use "src" or "dest".
@@ -135,10 +141,15 @@ namespace p5.exp
         /// <summary>
         ///     Common helper for iterating and updating a collection with new value(s)
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="args"></param>
-        /// <param name="functor"></param>
-        /// <param name="exclusionArgs"></param>
+        /// <param name="context">Application context object</param>
+        /// <param name="args">Root node for updating collection</param>
+        /// <param name="functor">Callback supplied by caller, that will be invoked once for each "key", with whatever value method 
+        /// finds for specified key</param>
+        /// <param name="isNative">If true, then this is a "native invocation", which allows for setting any object type into the session,
+        /// at which the logic will change, and set the value "raw" into the collection, not iterating destinations etc. Only applicable if there
+        /// are no expressions in args.Value, but only constants.</param>
+        /// <param name="exclusionArgs">Contains a list of node names that are excluded when looking for the "source" for values 
+        /// for keys specified</param>
         public static void SetCollection (
             ApplicationContext context, 
             Node args, 
@@ -153,7 +164,7 @@ namespace p5.exp
                 foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
 
                     // Figuring out source, possibly relative to destination
-                    var source = InvokeSource (
+                    var source = Source (
                         context,
                         args,
                         idxDestination.Node,
@@ -175,12 +186,12 @@ namespace p5.exp
                 // Retrieving key and value for cookie
                 var key = Single<string> (context, args);
 
-                // Constant destination, checking if this is a "native" invocation before we proceed with default logic
+                // Constant destination, checking if this is a "native" invocation, before we proceed with default logic
                 if (isNative) {
-                    functor (key,  args.FirstChild.Value);
+                    functor (key, args.FirstChild.Value);
                     return;
                 }
-                var source = InvokeSource (
+                var source = Source (
                     context,
                     args,
                     args,
@@ -416,7 +427,7 @@ namespace p5.exp
             bool mustHaveValue = false,
             T defaultValue = default (T))
         {
-            return Single<T> (context, evaluatedNode, evaluatedNode, mustHaveValue, defaultValue);
+            return Single (context, evaluatedNode, evaluatedNode, mustHaveValue, defaultValue);
         }
 
         /// <summary>

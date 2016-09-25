@@ -41,7 +41,7 @@ namespace p5.data
                 foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
 
                     // Figuring out source, possibly relative to destination
-                    var source = XUtil.InvokeSource (context, e.Args, idxDestination.Node);
+                    var source = XUtil.Source (context, e.Args, idxDestination.Node);
 
                     // Making sure we're only given ONE source!
                     if (source.Count != 1)

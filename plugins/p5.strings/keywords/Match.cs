@@ -38,7 +38,7 @@ namespace p5.strings.keywords
                 captures.RemoveAt (0);
 
                 // Retrieving what source to look for
-                var src = XUtil.InvokeSource (context, e.Args, e.Args, "src", captures);
+                var src = XUtil.Source (context, e.Args, e.Args, "src", captures);
 
                 // Making sure there is a source
                 if (src.Count == 0) {
