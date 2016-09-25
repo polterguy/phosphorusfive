@@ -8,8 +8,8 @@
 constant
   _data:Thomas Dumbfuck Hansen
   replace:x:/-?value
-    what:Dumbfuck
-    with:Brilliant
+    src:Dumbfuck
+    dest:Brilliant
   if:x:/../*/replace?value
     !=:Thomas Brilliant Hansen
     throw:@"Assert error, [replace] misbehaved"
@@ -22,8 +22,8 @@ expression
   _what:Dumbfuck
   _data:Thomas Dumbfuck Hansen
   replace:x:/-?value
-    what:x:/../*/_what?value
-    with:x:/../*/_with?value
+    src:x:/../*/_what?value
+    dest:x:/../*/_with?value
   if:x:/../*/replace?value
     !=:Thomas Brilliant Hansen
     throw:@"Assert error, [replace] misbehaved"
@@ -34,8 +34,39 @@ expression
 regex
   _data:Thomas Dumbfuck Hansen is Dumbfuck
   replace:x:/-?value
-    what:regex:/dumbfuck/i
-    with:Brilliant
+    src:regex:/dumbfuck/i
+    dest:Brilliant
   if:x:/../*/replace?value
     !=:Thomas Brilliant Hansen is Brilliant
+    throw:@"Assert error, [replace] misbehaved"
+
+/*
+ * Tests that [replace] behaves as expected when given Active Event source and destination
+ */
+active-event-sources
+  _data:Thomas Hansen is a stupid guy
+  replace:x:/-?value
+    eval
+      return:a stupid
+    eval
+      return:an intelligent
+  if:x:/../*/replace?value
+    !=:Thomas Hansen is an intelligent guy
+    throw:@"Assert error, [replace] misbehaved"
+
+
+/*
+ * Tests that [replace] behaves as expected when given multiple sources
+ */
+active-event-sources
+  _data:Thomas Hansen is a retarded and a stupid man
+  _src
+    no1:a stupid
+    no2:a retarded
+  replace:x:/-2?value
+    src:x:/../*/_src/*?value
+    eval
+      return:an intelligent
+  if:x:/../*/replace?value
+    !=:Thomas Hansen is an intelligent and an intelligent man
     throw:@"Assert error, [replace] misbehaved"

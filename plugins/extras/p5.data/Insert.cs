@@ -33,7 +33,7 @@ namespace p5.data
              * Note, since [insert-data] creates an ID for items not explicitly giving an ID,
              * we do NOT remove arguments in this Active Event, since sometimes caller needs to
              * know the ID of the node inserted into database, and is not ready to create an ID
-             * for it himself. Therefor the generated ID is returned as tha value of each item inserted,
+             * for it himself. Therefor the generated ID is returned as the value of each item inserted,
              * and hence we cannot remove all arguments passed into Active Event
              * 
              * However, we DO remove children of each root node inserted, unless string is submitted 
@@ -123,15 +123,16 @@ namespace p5.data
                 node.Value = Guid.NewGuid ();
             } else {
 
-                // An ID was given, making sure it doesn't exist from before
-                // TODO: fix!!
-                /*var tmpId = node.Get<string> (context);
-                if (Expression.Create (string.Format (@"/* /* /""={0}""", tmpId), context)
-                    .Evaluate (context, Common.Database)
-                    .GetEnumerator ()
-                    .MoveNext ()) {
-                    throw new LambdaException ("ID exists from before in database", node, context);
-                }*/
+                // User gave us an "explicit new ID", making sure that it does not exist from before
+                foreach (var fileNodeIdx in Common.Database.Children) {
+                    foreach (var rootNodeIdx in fileNodeIdx.Children) {
+                        if (rootNodeIdx.Value.Equals (node.Value)) {
+
+                            // Explicit new ID exists from before!
+                            throw new LambdaException ("Sorry, your new node needs to have a unique ID, or use the ID it already had from before", node, context);
+                        }
+                    }
+                }
             }
         }
     }

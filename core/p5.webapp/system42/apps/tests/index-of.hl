@@ -9,7 +9,7 @@
 single-result
   _data:foobarhowdy
   index-of:x:/-?value
-    what:bar
+    src:bar
   if:x:/-/*?value
     !=:int:3
     or:x:/./-/*?count
@@ -23,7 +23,7 @@ single-result
 multiple-results
   _data:foobarhowdybar
   index-of:x:/-?value
-    what:bar
+    src:bar
   if:x:/-/0?value
     !=:int:3
     or:x:/./-/1?value
@@ -38,7 +38,7 @@ multiple-results
 regex
   _data:Thomas hansen thomas
   index-of:x:/-?value
-    what:regex:/thomas/i
+    src:regex:/thomas/i
   if:x:/-/0?value
     !=:int:0
     or:x:/./-/1?value
@@ -46,3 +46,31 @@ regex
     or:x:/./-/*?count
       !=:int:2
     throw:@"Assert error, [index-of] returned wrong result!"
+
+/*
+ * Tests that [index-of] behaves as expected when given mixed multiples sources
+ */
+mixed-sources
+  _data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
+  _src
+    no1:regex:/phosphorus/i
+    no2:regex:/Hansen/i
+    no3-string:Five
+  index-of:x:/../*/_data?value
+    src:x:/../*/_src/*?value
+  index-of:x:/../*/_data?value
+    src:x:/../*/_src/*?node
+  if:x:/-2
+    !=:node:@"index-of
+  /phosphorus/i:int:32
+  /phosphorus/i:int:67
+  /Hansen/i:int:7
+  /Hansen/i:int:49
+  Five:int:43"
+    or:x:/./-
+      !=:node:@"index-of
+  no1:int:32
+  no1:int:67
+  no2:int:7
+  no2:int:49
+  no3-string:int:43"

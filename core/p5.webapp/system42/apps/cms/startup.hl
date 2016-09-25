@@ -611,7 +611,7 @@ sys42.wizard-window
      * add 'http://' to its beginning
      */
     index-of:x:/../*/url-to-fetch?value
-      what:http
+      src:http
     if:x:/-/*?count
       =:int:0
       set:x:/../*/url-to-fetch?value
@@ -2672,7 +2672,7 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
       get-widget-property:x:/../*/find-widget/*?value
         value
       match:x:/../*/get-widget-property/1/0?value
-        what:regex:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+        src:regex:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
       if:x:/../*/match/*/*?name
         not
         set-widget-property:x:/../*/find-widget/[1,2]/*?value
@@ -3236,7 +3236,7 @@ of this server, theoretically might be extorted to give out his web logs, which 
        */
       for-each:x:/../*/list-files/*
         replace:x:/..for-each/*/_dp/#?name
-          what:/common/private/
+          src:/common/private/
         eval-x:x:/+/**(/innerValue|/_filename)
         create-widget
           parent:file-sharer-files-tbody
@@ -3291,7 +3291,7 @@ of this server, theoretically might be extorted to give out his web logs, which 
   oninit
     get-location
     index-of:x:/-?value
-      what:/root/editor
+      src:/root/editor
     if:x:/-/0
       return
     set-title:Please rate your experience at Acme Coffee and Restauarnt
@@ -3607,11 +3607,11 @@ container:encourage-user-to-share
       select-data:x:/*/*/customer-rating
       for-each:x:/-/*
         replace:x:/..for-each/*/_dp/#/*/name?value
-          what:,
-          with:-
+          src:,
+          dest:-
         replace:x:/..for-each/*/_dp/#/*/feedback?value
-          what:,
-          with:-
+          src:,
+          dest:-
         format-date:x:/..for-each/*/_dp/#/*/date?value
           format:""yyyy-MM-dd:HH:mm""
         set:x:/../*/_data?value

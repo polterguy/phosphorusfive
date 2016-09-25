@@ -7,7 +7,7 @@ using System.Linq;
 using p5.exp;
 using p5.core;
 
-namespace p5.lambda.keywords.extras
+namespace p5.strings.keywords
 {
     /// <summary>
     ///     Class wrapping the [trim] keyword in p5 lambda.

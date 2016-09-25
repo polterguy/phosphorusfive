@@ -1,0 +1,244 @@
+/*
+ * Contains unit tests for testing the p5.data project
+ */
+
+
+/*
+ * Tests that checks that [insert-data] behaves
+ */
+insert-data
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo
+      name:Thomas Hansen
+  if
+    fetch:x:/0/0?value
+      select-data:x:/*/*/test.foo/*/name?value
+    !=:Thomas Hansen
+    throw:@"Assert error, expected [something], got [something-else]!"
+
+
+/*
+ * Tests that checks that [insert-data] behaves and throws if you try to insert two items with the same ID
+ */
+insert-data-same-id-throws
+  _success:bool:false
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  try
+    insert-data
+      test.foo:THIS_IS_ID
+        name:Thomas Hansen
+      test.foo2:THIS_IS_ID
+        name:John Doe
+  catch
+    set:x:/../*/_success?value
+      src:boool:true
+  if:x:/../*/_success?value
+    not
+    throw:@"Assert error, insert-data didn't throw when given two similar IDs"
+
+
+/*
+ * Tests that checks that [insert-data] behaves and throws if you try to insert two items with the same ID
+ */
+insert-data-twice-same-id-throws
+  _success:bool:false
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo:THIS_IS_ID
+      name:Thomas Hansen
+  try
+    insert-data
+      test.foo2:THIS_IS_ID
+        name:John Doe
+  catch
+    set:x:/../*/_success?value
+      src:boool:true
+  if:x:/../*/_success?value
+    not
+    throw:@"Assert error, insert-data didn't throw when given two similar IDs"
+
+
+/*
+ * Tests that checks that [update-data] behaves while updating values
+ */
+update-data-value
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo
+      name:foo
+  update-data:x:/*/*/test.foo/*/name?value
+    src:bar
+  if
+    fetch:x:/0/0?value
+      select-data:x:/*/*/test.foo/*/name?value
+    !=:bar
+    throw:@"Assert error, expected [something], got [something-else]!"
+
+
+/*
+ * Tests that checks that [update-data] behaves while updating names
+ */
+update-data-name
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo
+      name:foo
+  update-data:x:/*/*/test.foo/*/name?name
+    src:bar22
+  if
+    fetch:x:/0/0?value
+      select-data:x:/*/*/test.foo/0?name
+    !=:bar22
+    throw:@"Assert error, expected [something], got [something-else]!"
+
+
+/*
+ * Tests that checks that [update-data] behaves and keeps id when root node is updated
+ */
+update-data-keep-id
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo
+      name:foo
+  select-data:x:/*/*/test.foo
+  update-data:x:/*/*/test.foo
+    src
+      test.foo
+        name:bar
+  select-data:x:/*/*/test.foo
+  if:x:/../*/select-data/[0,1]/*?value
+    !=:x:/../*/select-data/[1,2]/*?value
+    or:x:/../*/select-data/[0,1]/*?value
+      !=:x:/../*/insert-data/*?value
+    throw:@"Assert error, expected [something], got [something-else]!"
+
+
+/*
+ * Tests that checks that [update-data] behaves and updates ID when given explicit new ID
+ */
+update-data-new-id
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo
+      name:foo
+  select-data:x:/*/*/test.foo
+  update-data:x:/*/*/test.foo
+    src
+      test.foo:THIS_IS_NEW_ID
+        name:bar
+  select-data:x:/*/*/test.foo
+  if:THIS_IS_NEW_ID
+    !=:x:/../*/select-data/[1,2]/*?value
+    throw:@"Assert error, expected [something], got [something-else]!"
+
+
+/*
+ * Tests that checks that [update-data] behaves and throw when given explicit new ID that already exists in database
+ */
+update-data-new-id-exists-throws
+  _success:bool:false
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo
+      name:foo
+  insert-data
+    test.foo2:THIS_IS_NEW_ID
+      name:foo2
+  try
+    update-data:x:/*/*/test.foo
+      src
+        test.foo:THIS_IS_NEW_ID
+          name:bar
+  catch
+    set:x:/../*/_success?value
+      src:bool:true
+  if:x:/../*/_success?value
+    not
+    throw:@"Assert error, update-data didn't throw when it was expected to throw"
+
+
+/*
+ * Tests that checks that [update-data] behaves and throw when given explicit new ID that already exists in database
+ */
+update-data-new-id-exists-no-throws
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo:THIS_IS_ID
+      name:foo
+  update-data:x:/*/*/test.foo
+    src
+      test.foo:THIS_IS_ID
+        name:bar
+  select-data:x:/*/*/test.foo
+  if:x:/-/*?value
+    !=:THIS_IS_ID
+    throw:@"Oops, something went wrong"
+
+
+/*
+ * Tests that checks that [update-data] behaves and throw when given explicit new ID that already exists in database
+ */
+update-data-new-id-exists-throws-second
+  _success:bool:false
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo:THIS_IS_ID
+      name:foo
+  insert-data
+    test.foo:THIS_IS_ALSO_ID
+      name:foo
+  try
+    update-data:x:/*/*/test.foo
+      src
+        test.foo:THIS_IS_ID
+          name:bar
+  catch
+    set:x:/../*/_success?value
+      src:bool:true
+  if:x:/../*/_success?value
+    not
+    throw:@"Oops, something went wrong"
+
+
+/*
+ * Tests that checks that [update-data] behaves and keeps id when root node is updated, and we're doing multiple updates
+ */
+update-multiple-data-keep-id
+  delete-data:x:/*/*/test.foo
+  delete-data:x:/*/*/test.foo2
+  insert-data
+    test.foo
+      name:foo
+    test.foo
+      name:foo
+  select-data:x:/*/*/test.foo
+  update-data:x:/*/*/test.foo
+    src
+      test.foo
+        name:bar
+  select-data:x:/*/*/test.foo
+  if:x:/../*/select-data/[0,1]/0?value
+    !=:x:/../*/select-data/[1,2]/0?value
+    or:x:/../*/select-data/[0,1]/0?value
+      !=:x:/../*/insert-data/0?value
+    or:x:/../*/select-data/[0,1]/1?value
+      !=:x:/../*/select-data/[1,2]/1?value
+    or:x:/../*/select-data/[0,1]/1?value
+      !=:x:/../*/insert-data/1?value
+    or:x:/../*/select-data/[1,2]/0/*?value
+      !=:bar
+    or:x:/../*/select-data/[1,2]/1/*?value
+      !=:bar
+    throw:@"Assert error, expected [something], got [something-else]!"
+

@@ -52,7 +52,8 @@ namespace p5.exp
             Node parent, 
             Node destination, 
             string restrictionSrcName = "src",
-            List<string> excludeNodes = null)
+            List<string> excludeNodes = null,
+            int index = 0)
         {
             // For simplicity, avoiding null reference exceptions inside of Linq later down
             if (excludeNodes == null)
@@ -61,16 +62,16 @@ namespace p5.exp
             // Retrieving source nodes, making sure we do not add up "formatting nodes"
             var srcList = parent.Children.Where (ix => ix.Name != "" && !excludeNodes.Contains (ix.Name)).ToList ();
 
-            // Sanity check, making sure there's only one or zero
-            if (srcList.Count > 1) {
-
-                // Oops, logical error
-                throw new LambdaException ("Multiple sources defined for; " + parent.Name, parent, context);
-            } else if (srcList.Count == 0) {
+            if (srcList.Count == 0) {
 
                 // No source, making sure we never return null
                 return new List<object> ();
             } else {
+
+                while (index > 0) {
+                    srcList.RemoveAt (0);
+                    index -= 1;
+                }
 
                 // Making sure we obey by the declared "restriction" for Active Event name. Either user should use "src" or "dest".
                 // These two cannot be interchanged, to further clarify the language, such that no occurrency of "dest" is being used,

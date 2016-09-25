@@ -906,7 +906,7 @@ $('html, body').animate({{
               if
                 fetch:x:/0/0?value
                   index-of:x:/../*/_arg?value
-                    what:on
+                    src:on
                 !=:int:0
 
                 /*
@@ -2231,7 +2231,7 @@ is not legally allowed as a child of a '{1}' element"
         if
           fetch:x:/0/0?value
             index-of:x:/..for-each/*/_dp/#?name
-              what:_on
+              src:_on
           =:int:0
 
           /*
@@ -2239,8 +2239,8 @@ is not legally allowed as a child of a '{1}' element"
            */
           set:x:/..for-each/*/_dp/#?name
             replace:x:/..for-each/*/_dp/#?name
-              what:_on
-              with:on
+              src:_on
+              dest:on
 
       /*
        * Returning [controls] to caller. Notice, we return it as Hyperlisp, and not as

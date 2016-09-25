@@ -3,6 +3,8 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -35,26 +37,53 @@ namespace p5.data
                 // Used for storing all affected database nodes, such that we know which files to update
                 var changed = new List<Node> ();
 
-                // Figuring out source, and executing the corresponding logic
-                if (e.Args.Children.Count > 0 && e.Args.LastChild.Name == "src") {
+                // Iterating through each destinations, updating with source
+                foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
 
-                    // Figuring out source
-                    var source = XUtil.SourceSingle (context, e.Args);
+                    // Figuring out source, possibly relative to destination
+                    var source = XUtil.InvokeSource (context, e.Args, idxDestination.Node);
 
-                    // Iterating through all destinations, updating with source
-                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
+                    // Making sure we're only given ONE source!
+                    if (source.Count != 1)
+                        throw new LambdaException ("[update-data] requires exactly one source", e.Args, context);
 
-                        // Figuring out which file Node updated belongs to, and storing in changed list
-                        Common.AddNodeToChanges (idxDestination.Node, changed);
+                    // Figuring out which file Node updated belongs to, and storing in changed list
+                    Common.AddNodeToChanges (idxDestination.Node, changed);
 
-                        // Doing actual update
-                        idxDestination.Value = source;
+                    // Doing actual update, which depends upon whether or not update is updating an entire node hierarchy, or only a single value
+                    Node newNode = source[0] as Node;
+                    if (newNode != null) {
+
+                        // Checking if this is a "root node" update, and if so, make sure we keep the old ID, unless a new one is
+                        // explicitly given
+                        if (idxDestination.Node.Parent.Parent.Parent == null) {
+
+                            // "Root node" update, making sure node keep old ID, or if a new ID is explicitly given, make sure it is UNIQUE
+                            if (newNode.Value == null) {
+
+                                // We're keeping our old ID, no need to check for unique ID
+                                newNode.Value = idxDestination.Node.Value;
+                            } else {
+
+                                // User gave us an "explicit new ID", making sure that if it exists from before, then it is the node we are
+                                // updating that has it, an no OTHER nodes in our database!
+                                foreach (var fileNodeIdx in Common.Database.Children) {
+                                    foreach (var rootNodeIdx in fileNodeIdx.Children) {
+                                        if (rootNodeIdx != idxDestination.Node && rootNodeIdx.Value.Equals (newNode.Value)) {
+
+                                            // Explicit new ID exists from before, and it is NOT the node we're currently updating!
+                                            // This is an error!
+                                            throw new LambdaException ("Sorry, your new node needs to have a unique ID, or use the ID it already had from before", e.Args, context);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                } else {
 
-                    // Syntax error
-                    // TODO: Support Active Event source!
-                    throw new LambdaException ("No [src] was given to [update-data]", e.Args, context);
+                    // Since we only consumed source [0] by reference above, in our ID check, we simply use it directly, since the above logic correctly 
+                    // (possibly) changed the underlaying reference
+                    idxDestination.Value = source [0];
                 }
             
                 // Saving all affected files

@@ -110,22 +110,22 @@ sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/events!/element!/data-s
   if
     fetch:x:/0/0?value
       index-of:x:/../*/_rhs/#?name
-        what:_on
+        src:_on
     =:int:0
     or
       fetch:x:/0/0?value
         index-of:x:/../*/_rhs/#?name
-          what:on
+          src:on
       =:int:0
     and
       fetch:x:/0/0
         index-of:x:/../*/_lhs/#?name
-          what:_on
+          src:_on
       not
       or
         fetch:x:/0/0
           index-of:x:/../*/_lhs/#?name
-            what:on
+            src:on
         not
 
     /*
@@ -136,22 +136,22 @@ sort:x:/../*/sys42.get-widget/*/*(!/widgets!/innerValue!/events!/element!/data-s
   else-if
     fetch:x:/0/0?value
       index-of:x:/../*/_lhs/#?name
-        what:_on
+        src:_on
     =:int:0
     or
       fetch:x:/0/0?value
         index-of:x:/../*/_lhs/#?name
-          what:on
+          src:on
       =:int:0
     and
       fetch:x:/0/0
         index-of:x:/../*/_rhs/#?name
-          what:_on
+          src:_on
       not
       or
         fetch:x:/0/0
           index-of:x:/../*/_rhs/#?name
-            what:on
+            src:on
         not
 
     /*
@@ -192,12 +192,12 @@ for-each:x:/../*/sort/*
   if
     fetch:x:/0/0?value
       index-of:x:/..for-each/*/_dp/#?name
-        what:_on
+        src:_on
     =:int:0
     or
       fetch:x:/0/0?value
         index-of:x:/..for-each/*/_dp/#?name
-          what:on
+          src:on
       =:int:0
 
     /*
@@ -586,8 +586,8 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
      * Then stripping away the initial "_" from event handler name
      */
     replace:x:/..for-each/*/_dp/#?name
-      what:_on
-      with:on
+      src:_on
+      dest:on
 
     /*
      * Then passing in event handler name, and value, to [add] invocation below
@@ -1259,7 +1259,7 @@ or supply an 'empty' value to have an automatically generated id created"
                    * containing characters such as '#', '$', '%' and '&' etc ...
                    */
                   match:x:/../*/trim?value
-                    what:regex:/^[a-z0-9-_]+$/i
+                    src:regex:/^[a-z0-9-_]+$/i
                   if:x:/-/*/*?name
                     not
 

@@ -207,7 +207,7 @@ to allowing you to chain subscribers together, such that one subscriber can publ
                           if
                             fetch:x:/0/0?value
                               index-of:x:/..for-each/*/_dp/#?name
-                                what:sys42.forms.action.
+                                src:sys42.forms.action.
                             !=:int:0
                             or:x:/../*/lisp2lambda/[0,1]/*/{0}
                               :x:/..for-each/*/_dp/#?name

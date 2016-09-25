@@ -295,7 +295,7 @@ subscribers to other controls and/or modules, that are consuming your controls.<
                     get-widget-property:wysiwyg-window-new-event-name
                       value
                     match:x:/../*/get-widget-property/*/*?value
-                      what:regex:/^sys42\.forms\.action\.[a-z0-9.-]{5}/
+                      src:regex:/^sys42\.forms\.action\.[a-z0-9.-]{5}/
                     if:x:/../*/match/*/*?name
                       not
 

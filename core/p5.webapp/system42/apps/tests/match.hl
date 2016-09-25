@@ -9,7 +9,7 @@
 simple
   _data:Thomas Hansen
   match:x:/-?value
-    what:regex:/hansen/i
+    src:regex:/hansen/i
   if:x:/-/*/*?name
     !=:Hansen
     throw:"Expected [Hansen], got {0}"
@@ -21,7 +21,7 @@ simple
 single-group
   _data:Thomas Hansen
   match:x:/-?value
-    what:regex:/(?<surname>hansen)/i
+    src:regex:/(?<surname>hansen)/i
     surname
   if:x:/-/*/*?name
     !=:surname
@@ -36,7 +36,7 @@ single-group
 multiple-groups
   _data:Thomas Hansen
   match:x:/-?value
-    what:regex:/(?<firstname>thomas)* (?<surname>hansen)/i
+    src:regex:/(?<firstname>thomas)* (?<surname>hansen)/i
     surname
     firstname
   if:x:/-/*/0?name
@@ -58,7 +58,7 @@ multiple-groups
 multiple-groups-single-requested
   _data:Thomas Hansen
   match:x:/-?value
-    what:regex:/(?<firstname>thomas)* (?<surname>hansen)/i
+    src:regex:/(?<firstname>thomas)* (?<surname>hansen)/i
     surname
   if:x:/-/*/*?name
     !=:surname

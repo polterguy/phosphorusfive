@@ -10,7 +10,7 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-namespace p5.lambda.keywords.extras
+namespace p5.strings.keywords
 {
     /// <summary>
     ///     Class wrapping the [find] keyword in p5 lambda.
@@ -28,26 +28,51 @@ namespace p5.lambda.keywords.extras
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Figuring out source value for [find]
+                // Sanity check
+                List<Node> sourceNodes = e.Args.Children.Where (ix => ix.Name != "").ToList ();
+                if (sourceNodes.Count == 0)
+                    throw new LambdaException ("No source given to [index-of]", e.Args, context);
+
+                // Figuring out source value for [index-of]
                 string source = XUtil.Single<string> (context, e.Args, true);
                 if (source == null)
                     return; // Nothing to check
 
-                // Retrieving what to look for in source
-                var sepObject = e.Args.GetExChildValue<object> ("what", context, null);
-                if (sepObject == null || (sepObject is string && string.IsNullOrEmpty (sepObject as string)))
-                    throw new LambdaException ("No [what] supplied to [index-of]", e.Args, context);
+                // Retrieving what source to look for
+                var src = XUtil.InvokeSource (context, e.Args, e.Args);
 
-                // Checking type of find object
-                if (sepObject is Regex) {
-
-                    // Regex type of find
-                    e.Args.AddRange (IndexOfRegex (source, sepObject as Regex).Select (ix => new Node ("", ix)));
-                } else {
-
-                    // Simple string type of find
-                    e.Args.AddRange (IndexOfString (source, sepObject as string).Select (ix => new Node ("", ix)));
+                // Making sure there is a source
+                if (src.Count == 0) {
+                    e.Args.Clear ();
+                    return;
                 }
+
+                // Looping through each source
+                foreach (var idxSrc in src) {
+                    if (idxSrc is Regex) {
+
+                        // Regex type of find
+                        e.Args.AddRange (IndexOfRegex (source, idxSrc as Regex).Select (ix => new Node (Utilities.Convert<string> (context, idxSrc), ix)));
+                    } else if (idxSrc is Node) {
+
+                        // Simple string type of find
+                        var objIdxSrc = (idxSrc as Node).Value;
+                        if (objIdxSrc is Regex) {
+                            e.Args.AddRange (IndexOfRegex (source, objIdxSrc as Regex).Select (ix => new Node ((idxSrc as Node).Name, ix)));
+                        } else {
+                            var strIdxSrc = Utilities.Convert<string> (context, objIdxSrc);
+                            e.Args.AddRange (IndexOfString (source, strIdxSrc).Select (ix => new Node ((idxSrc as Node).Name, ix)));
+                        }
+                    } else {
+
+                        // Simple string type of find
+                        var strIdxSrc = Utilities.Convert<string> (context, idxSrc);
+                        e.Args.AddRange (IndexOfString (source, strIdxSrc).Select (ix => new Node (strIdxSrc, ix)));
+                    }
+                }
+
+                // Since our "args remover" won't remove the [src] argument, we explicitly remove it here
+                sourceNodes.ForEach (ix => e.Args [ix.Name].UnTie ());
             }
         }
 

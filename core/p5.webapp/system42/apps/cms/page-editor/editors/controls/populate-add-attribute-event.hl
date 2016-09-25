@@ -123,12 +123,12 @@ you are doing, you should probably close this window, and rather use the pre-def
             if
               fetch:x:/0/0?value
                 index-of:x:/../*/new-event-name?value
-                  what:on
+                  src:on
               !=:int:0
               and
                 fetch:x:/0/0?value
                   index-of:x:/../*/new-event-name?value
-                    what:_on
+                    src:_on
                 !=:int:0
               send-javascript:@"$('#new-event-name').focus().select();"
               return:That's not a legal event name!
@@ -198,8 +198,8 @@ for-each:x:/../*/sys42.get-widget/*/*
    * Making sure any [_onXXX] event handlers from get-widget is renamed to correct name
    */
   replace:x:/..for-each/*/_dp/#?name
-    what:_on
-    with:on
+    src:_on
+    dest:on
 
   /*
    * Removing currently iterated property from global attribute file (if it exists)
@@ -236,7 +236,7 @@ for-each:x:/../*/load-file/[0,1]/*/*(!/_header)
   if
     fetch:x:/0/0?value
       index-of:x:/..for-each/*/_dp/#?name
-        what:on
+        src:on
     =:int:0
 
     /*
@@ -316,7 +316,7 @@ for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
   if
     fetch:x:/0/0?value
       index-of:x:/..for-each/*/_dp/#?name
-        what:on
+        src:on
     =:int:0
 
     /*

@@ -43,7 +43,7 @@ create-protected-event:sys42.get-widget
      * and if it was, we remove the automatically assigned ID
      */
     match:x:/../*/list-widgets/0?value
-      what:regex:/x[abcdef0-9]{7}/c
+      src:regex:/x[abcdef0-9]{7}/c
     if:x:/-/*/*?name
       and:x:/../*/_keep-empty-ids?value.bool
         !=:bool:true
@@ -54,7 +54,7 @@ create-protected-event:sys42.get-widget
      * and if it was, we remove the "name" attribute entirely
      */
     match:x:/../*/_return-value/-/*/name
-      what:regex:/x[abcdef0-9]{7}/c
+      src:regex:/x[abcdef0-9]{7}/c
     if:x:/-/*/*?name
       set:x:/../*/_return-value/-/*/name
 
