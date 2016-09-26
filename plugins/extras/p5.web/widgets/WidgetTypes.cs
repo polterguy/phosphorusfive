@@ -136,11 +136,9 @@ namespace p5.web.widgets {
                     case "visible":
                         widget.Visible = idxArg.Get<bool> (context);
                         break;
-                    case "invisible-element":
-                        widget.InvisibleElement = idxArg.Get<string> (context);
-                        break;
                     case "element":
                         widget.Element = idxArg.Get<string> (context);
+                        widget.InvisibleElement = idxArg.Get<string> (context);
                         break;
                     case "has-id":
                         widget.HasID = idxArg.Get<bool> (context);

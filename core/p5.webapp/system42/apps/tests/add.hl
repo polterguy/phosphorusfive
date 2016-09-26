@@ -85,6 +85,37 @@ value-destination-throws
     throw:@"Assert error, expected [add] to throw an exception!"
 
 /*
+ * Tests that "add" behaves correctly when given name destination, and
+ * that it throws exception
+ */
+name-destination-throws
+  _result
+  try
+    add:x:/../*/_result?name
+      src
+        foo:bar
+  catch
+    set:x:/../*/_result?value
+      src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, expected [add] to throw an exception!"
+
+/*
+ * Tests that "add" behaves correctly when given value destination, and
+ * that it does not throw an exception, if value of node is a node itself
+ */
+value-destination-no-throw
+  _result:node:"res"
+  add:x:/../*/_result?value
+    src
+      foo:bar
+  if:x:/../*/_result?value
+    !=:node:@"res
+  foo:bar"
+    throw:@"Assert error, expected [add] to add a node into value, being node!"
+
+/*
  * Tests that "add" behaves correctly when given value destination, and
  * that it throws exception
  */
