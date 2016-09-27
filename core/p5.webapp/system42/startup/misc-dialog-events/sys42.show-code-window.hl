@@ -52,6 +52,6 @@ create-protected-event:sys42.show-code-window
 
           // removing entire debug window
           get-parent-widget:x:/../*/_event?value
-          delete-widget:x:/-/*?value
+          delete-widget:x:/-/*/*?value
 
 

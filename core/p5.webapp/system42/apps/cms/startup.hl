@@ -2898,8 +2898,8 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
           title:Click me to do something intelligent ...
           onclick
             get-parent-widget:x:/../*/_event?value
-            get-parent-widget:x:/-/*?value
-            find-widget:x:/-/*?value
+            get-parent-widget:x:/-/*/*?value
+            find-widget:x:/-/*/*?value
               data-usercontrol
             find-widget:x:/-/*?value
               element:table
@@ -2946,8 +2946,8 @@ Are you sure you wish to do this? This operation cannot be undone once finished.
           title:Click me to do something intelligent ...
           onclick
             get-parent-widget:x:/../*/_event?value
-            get-parent-widget:x:/-/*?value
-            find-widget:x:/-/*?value
+            get-parent-widget:x:/-/*/*?value
+            find-widget:x:/-/*/*?value
               data-usercontrol
             find-widget:x:/-/*?value
               element:table
@@ -3733,7 +3733,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:1
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Disagree
@@ -3745,7 +3745,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:2
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:No particular opinion
@@ -3757,7 +3757,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:3
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Agree
@@ -3769,7 +3769,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:4
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Strongly agree
@@ -3781,7 +3781,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:5
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             void
               element:input
               type:hidden
@@ -3869,7 +3869,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:1
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Disagree
@@ -3881,7 +3881,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:2
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:No particular opinion
@@ -3893,7 +3893,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:3
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Agree
@@ -3905,7 +3905,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:4
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Strongly agree
@@ -3917,7 +3917,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:5
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             void
               element:input
               type:hidden
@@ -4005,7 +4005,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:1
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Disagree
@@ -4017,7 +4017,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:2
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:No particular opinion
@@ -4029,7 +4029,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:3
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Agree
@@ -4041,7 +4041,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:4
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Strongly agree
@@ -4053,7 +4053,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:5
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             void
               element:input
               type:hidden
@@ -4141,7 +4141,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:1
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Disagree
@@ -4153,7 +4153,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:2
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:No particular opinion
@@ -4165,7 +4165,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:3
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Agree
@@ -4177,7 +4177,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:4
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             literal
               element:a
               title:Strongly agree
@@ -4189,7 +4189,7 @@ container
                 get-parent-widget:x:/../*/_event?value
                 eval-x:x:/+/*
                 sys42.forms.action.star-clicked:5
-                  _parent:x:/../*/get-parent-widget/*?value
+                  _parent:x:/../*/get-parent-widget/*/*?value
             void
               element:input
               type:hidden

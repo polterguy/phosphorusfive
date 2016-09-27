@@ -396,6 +396,413 @@ create-container-widget
 Normally, you will only update a single widget's properties though. But for those rare occassions, where you for instance wish to update the CSS
 class of multiple widgets in one go, being able to do such in a single go, is a nifty feature.
 
+Notice, you can also use the *[set-widget-property]* to set a property which does not previously exist on your widget. This will simply add the property.
+You can also use the *[delete-widget-property]* Active Event to entirely delete a property or attribute from your widget.
+You can also change a widget's visibility, and even ID using the *[set-widget-property]* Active Event. But thes properties cannot be
+removed. Only attributes rendered to the client as HTML attributes can be removed.
+
+### Changing and retrieving a widget's Ajax events dynamically
+
+The same way you can update and change properties of widgets, you can also change their lambda object for what occurs when some Ajax event is raised.
+To do this, you would use the *[get-widget-ajax-event]* and the *[set-widget-ajax-event]* Active Events. Consider this code.
+
+```
+create-literal-widget
+  parent:content
+  position:0
+  innerValue:Click me!
+  onclick
+    set-widget-property:x:/../*/_event?value
+      innerValue:I was clicked, click me once more! It tickles!
+    set-widget-ajax-event:x:/../*/_event?value
+      onclick
+        set-widget-property:x:/../*/_event?value
+          innerValue:I was clicked one more time! Thank you!
+```
+
+The above code dynamically changes the p5.lambda that is evaluated as the widget is clicked, when you click it the first time.
+The *[get-widget-ajax-event]* returns its existing lambda object. If you evaluate the following code.
+
+```
+create-literal-widget
+  parent:content
+  position:0
+  innerValue:Click me!
+  onclick
+    set-widget-property:x:/../*/_event?value
+      innerValue:I was clicked, click me once more! It tickles!
+    get-widget-ajax-event:x:/../*/_event?value
+      onclick
+    sys42.show-code-window:x:/-
+```
+
+Then you will see the output format of *[get-widget-ajax-event]* looking something like the following.
+
+```
+get-widget-ajax-event
+  x56592d0
+    onclick
+      _event:x56592d0
+      set-widget-property:x:/../*/_event?value
+        innerValue:I was clicked, click me once more! It tickles!
+      get-widget-ajax-event:x:/../*/_event?value
+        onclick
+      sys42.show-code-window:x:/-
+```
+
+As you can see above, below the *[get-widget-ajax-event]*, you can find the ID of the widget requested. Then below that node, you can find
+the name of the event requested. Inside of that node, you'll find the lambda being evaluated as the widget is clicked. This structure might
+seem counter intuitive in the beginning. However, it allows you to return multiple events, for multiple widgets, in one go. Which is 
+quite useful sometimes.
+
+Hint!
+You can also explicitly raise a widget's Ajax events from your own p5.lambda objects, by invoking *[raise-widget-ajax-event]*. To raise the *[onclick]*
+event on three widgets for instance, you could use code similar to this (which won't evaluate without throwing exceptions, since these widgets does
+not exist)
+
+```
+_widgets
+  no1-widget-id
+  no2-widget-id
+  no3-widget-id
+raise-widget-ajax-event:x:/-/*?name
+  onclick
+
+// Or to raise the "onmouseover" for a single widget
+raise-widget-ajax-event:no4-widget-id
+  onmouseover
+```
+
+Phosphorus will not discriminate in any ways between events dynamnically raised by the user clicking some object himself, or an event raised by your 
+lambda in the manner shown above.
+
+### Lambda events for widgets
+
+A widget can also have dynamically declared Active Events associated with it. These are Active Events which are accessible, for any
+context within your page, but only as long as the widget is existing on your page. This feature allows you to declare dynamically 
+created Active Events, which only exists, as long as your widget exist. Which again makes it easier for your separate parts of your
+page, to communicate with other parts of your page. Consider this code.
+
+```
+create-container-widget
+  parent:content
+  position:0
+  events
+    my-namespace.foo-event
+      sys42.confirm-window
+        _header:Howdy foo world
+        _body:Watch the other label as you click OK!
+        _onok
+          set-widget-property:the-other-guy
+            innerValue:The other guy was clicked!
+  widgets
+    literal:the-other-guy
+      innerValue:Initial value!
+    literal
+      innerValue:Click me!
+      onclick
+        my-namespace.foo-event
+```
+
+The lamba events are working identical to any other dynamically created Active Events, or lambda objects, and can take arguments, and return values
+and nodes to the caller. They're simply Active Events, which only lives as long as your widget lives, and only for your page!
+
+Also these lambda events can be dynamically changed, the same way you could with Ajax events, using the *[set-widget-lambda-event]* 
+and *[get-widget-lambda-event]*. Both of these Active Events, works similarly to their Ajax events counterparts.
+
+Hint!
+You can also use *[list-widget-lambda-events]* and *[list-widget-ajax-events]* to inspect which events are declared for a specific widget.
+
+### [oninit], initializaing your widgets
+
+The *[oninit]* is a special type of event, which is only raised when your widget is initially created. It is useful for initialization and such
+of your widget, but besides from its semantics, it works similarly to an Ajax event. Though none of its internals, not even its existence, is ever
+rendered back to the client in any ways.
+
+It can be useful for populating a "select" HTML widget, with "option" items, created dynamically from data in your database, for instance. But there
+are many other useful scenarios for this event. Semantically, it behaves similar to an Ajax event, but it cannot be raised from the client. And it 
+renders no additional data back to the client neither. When *[oninit]* fires, all other events and properties have already been created for your widget.
+This allows you to invoke widget lambda events, associated with your widget, and retreieve their properties, from within your *[oninit]* lambda object.
+
+Below is an example of *[oninit]* in action.
+
+```
+create-literal-widget
+  parent:content
+  position:0
+  oninit
+    set-widget-property:x:/../*/_event?value
+      innerValue:Dynamically changed property during [oninit]
+      element:h3
+```
+
+### Retrieving widgets
+
+There are also several helper Active Events to retrieve widgets, according to some criteria. These are listed below.
+
+* [get-parent-widget] - Returns the parent widget(s) of the specified widget(s)
+* [get-children-widgets] - Returns the children widgets of the specified widget(s)
+* [find-widget] - Returns the widgets that have the properties listed, with optionally, the values listed
+* [find-widget-like] - Same as above, but doesn't require an "exact match", but is happy if the value "contains" the requested value
+* [find-first-ancestor-widget] - Returns the first ancestor widget with the specifed properties and values
+* [find-first-ancestor-widget-like] - Same as above, but is happy as long as the value "contains" the value(s) specified
+* [list-widgets] - List all widgets that have IDs containing the specified string(s)
+* [list-widgets-like] - Same as above, but is happy as long as the ID(s) "contains" the value(s) specified
+* [widget-exist] - Yields true for each widget that exists matching the specified ID(s)
+
+#### [get-parent-widget]
+
+Returns the parent widget of one or more specified widget(s). Example given below.
+
+```
+create-container-widget:foo
+  parent:content
+  position:0
+  widgets
+    literal:bar1
+      innerValue:bar1
+    literal:bar2
+      innerValue:bar2
+get-parent-widget:x:/../0/**/literal?value
+```
+
+The above code, uses an expression leading to each value of each *[literal]* node within the *[widgets]* part of the *[create-container-widget]* 
+invocation. This means that it will return the parent widget for both the "bar1" widget and the "bar2" widget, which happens to be the same. 
+The output should look something like this, showing the type of widget as the name, and the ID of the parent widget as its value.
+
+```
+/* ... rest of code ... */
+get-parent-widget
+  bar1
+    container:foo
+  bar2
+    container:foo
+```
+
+Notice how *[get-parent-widget]* optionally can take an expression as its argument. This means we have to return an additional "layer" before returning
+the actual parent widget(s), since we need to return "parent widget to which widget" to the caller. If we had simply returned the parent as the first
+node of *[get-parent-widget]*, we wouldn't know who this was a parent to, since we can supply multiple widgets as arguments. This is a general pattern
+for many of the widget retrieval events.
+
+#### [get-children-widgets]
+
+Returns the children widgets of one or more specified widget(s). Example below.
+
+```
+create-container-widget:foo
+  parent:content
+  position:0
+  widgets
+    literal:bar1
+      innerValue:bar1
+    literal:bar2
+      innerValue:bar2
+get-children-widgets:foo
+```
+
+The above code uses a constant, instead of an expression as our previous example, and should return something like this.
+
+```
+/* ... rest of code ... */
+get-children-widgets
+  foo
+    literal:bar1
+    literal:bar2
+```
+
+Even though we do _not_ use an expression in the above example, we still return the children widgets in a similar structure as we did with our previous
+example of *[get-parent-widget]*, which used an expression. This is to make sure we always return data to the caller in the same format. If we had
+used an expression leading to multiple source widgets, instead of the constant of "foo", we would have had multiple return nodes beneath *[get-children-widgets]*
+in our result.
+
+Notice!
+Most of these retrieval Active Events will actually throw an exception if the queried widget does not exist. If you supplied "does-not-exist" to 
+your *[get-children-widgets]* invocation for instance, it would throw an exception.
+
+#### [find-widget] and [find-widget-like]
+
+These widgets does not take any arguments like values, besides from (optionally) the "root widget from where to start your search",
+but require you to parametrize them with children nodes, having at least a name, and optionally a value. The name of the node, is some attribute 
+that must exist on your widget, for it be returned as a "match". The value, is an optionally "value" for that attribute, which the widget must 
+either have an exact match of (*[find-widget]*), or "contain" (for the *[find-widget-like]* event).
+
+Let's see an example.
+
+```
+create-container-widget:foo
+  parent:content
+  position:0
+  widgets
+    literal:bar1
+      innerValue:bar1
+      class:foo-class
+    literal:bar2
+      innerValue:bar2
+find-widget:foo
+  innerValue:bar1
+  class:foo-class
+find-widget:foo
+  innerValue:bar
+find-widget-like:foo
+  innerValue:bar
+```
+
+The above code has two invocations to *[find-widget]* and one to *[find-widget-like]*. The first invocation, requires an exact match for 
+the *[innerValue]*, and the *[class]* attributes, being respectively "bar1", and "foo-class". This invocation will return only the "bar1" widget. 
+The second invocation won't yield any matches, since it requires an exact match and no widgets have the innerValue of "bar" exactly. 
+The third invocation will yield both widgets as its return value, since they both have an *[innerValue]* which _contains_ the text "bar".
+The result will look something like this.
+
+```
+/* ... rest of code ... */
+find-widget
+  literal:bar1
+find-widget
+find-widget-like
+  literal:bar1
+  literal:bar2
+```
+
+Also these Active Events can take expressions as their arguments. However, the currently value iterated for the expression, will not be returned
+as previously mentioned. Consider this code.
+
+```
+create-container-widget:foo1
+  parent:content
+  position:0
+  widgets
+    literal:bar1
+      innerValue:bar1
+      class:foo-class
+    literal:bar2
+      innerValue:bar2
+create-container-widget:foo2
+  parent:content
+  position:0
+  widgets
+    literal:bar3
+      innerValue:bar1
+      class:foo-class
+    literal:bar4
+      innerValue:bar2
+find-widget:x:/../*/[0,2]?value
+  innerValue:bar1
+```
+
+Which of course result in this result.
+
+```
+/* ... rest of code ... */
+find-widget
+  literal:bar1
+  literal:bar3
+```
+
+Notice, with the *[find-widget]* and the *[find-widget-like]* Active Events, the hierarchy is not as important as when you invoke *[get-parent-widget]*
+and *[get-children-widgets]*. Hence it does not yield an "additional node", like our first to widget retrieval events did. Notice also that you do not
+need to supply a value to these two Active Events. If you don't supply an value, they will both start searching at the "root system widget", which
+is the widget with the ID of "cnt", which you can find physically declared in the markup of your Default.aspx page.
+
+#### [find-first-ancestor-widget] and [find-first-ancestor-widget-like]
+
+These two Active Events are similar to the *[find-widget]* events, except of course, instead of searching "downwards" in the hierarchy from the root
+widget supplied, they search upwards in the ancestor chain for a match, from the currently iterated widget. These Active Events requires (for obvious 
+reasons) the caller to actually supply a value, and will not have a "default" value as our previously mentioned widget retrieval Active Events did.
+Example code given below.
+
+```
+create-container-widget:foo1
+  parent:content
+  position:0
+  class:foo-class-1
+  widgets
+    container:bar1
+      widgets
+        literal:starting-widget-1
+          innerValue:Foo bar
+create-container-widget:foo2
+  parent:content
+  position:0
+  class:foo-class-2
+  widgets
+    container:bar2
+      widgets
+        literal:starting-widget-2
+          innerValue:Foo bar
+find-first-ancestor-widget-like:x:/../**/literal?value
+  class:foo-class
+```
+
+Which of course will yield the following result.
+
+```
+/* ... rest of code ... */
+find-first-ancestor-widget-like
+  container:foo1
+  container:foo2
+```
+
+Notice, that also here, there is no "injection node" for the currently iterated expression value, since it is not as important as in 
+the *[get-parent-widget]* and *[get-children-widgets]* events. If you for some reasons require to know the result, associated with the starting 
+widget, you should break your invocations up, into multiple invocations, using for instance a *[for-each]* loop, or something similar.
+
+#### [list-widgets] and [list-widgets-like]
+
+These Active Events simply lists all widgets, with an ID matching some (optional) filter supplied. Notice, if you do not supply a filter, this Active
+Event will yield every single widget in your page, starting from the root "cnt" widget, declared in your Default.aspx markup. Example code is
+given below.
+
+```
+create-container-widget:test-foo1
+  widgets
+    literal:test-bar1
+      innerValue:Bar 1
+    literal:test-bar2
+      innerValue:Bar 2
+
+// Will only return "test-bar2"
+list-widgets:test-bar2
+
+// Will not return anything
+list-widgets:test
+
+// Will return all three widgets
+list-widgets-like:test
+
+// Will return only the two literals
+_lit
+  test-bar1
+  test-bar2
+list-widgets:x:/-/*?name
+```
+
+The above code should be fairly self explaining at this point ...
+
+One point though, as in many of the other widget retrieval Active Events, is the fact that you are also getting the "type" of widget returned, as
+the name of the node - While you get the ID of the widget, returned as the value - Which might be useful sometimes ...
+
+#### [widget-exist]
+
+This Active Event allows you to check for the existence of one or more specified widget(s). It can take either a constant, or an expression.
+Below is an example.
+
+```
+create-container-widget:test-foo1
+  widgets
+    literal:test-bar1
+      innerValue:Bar 1
+    literal:test-bar2
+      innerValue:Bar 2
+widget-exist:test-bar2
+```
+
+Which will yield the following result.
+
+```
+/* ... rest of code ... */
+widget-exist
+  test-bar2:bool:true
+```
 
 
 

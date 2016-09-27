@@ -37,13 +37,13 @@ namespace p5.web.widgets {
         public void get_parent_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given
                 foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "get-parent-widget")) {
 
                     // Returning parent of widget, and parent's typename
-                    e.Args.Add(GetTypeName (idxWidget.Parent), idxWidget.Parent.ID);
+                    e.Args.Add (idxWidget.ID).LastChild.Add (GetTypeName (idxWidget.Parent), idxWidget.Parent.ID);
                 }
             }
         }
@@ -57,7 +57,7 @@ namespace p5.web.widgets {
         public void get_children_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given
                 foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "get-children-widgets")) {
@@ -85,17 +85,30 @@ namespace p5.web.widgets {
         public void find_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Retrieving widget from where to start search, defaulting to "cnt"
-                var parentControl = FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Manager.AjaxPage);
+                // Used to hold return value, since we cannot modify root node, before iteration is finished
+                Node retVal = new Node ();
 
-                // Retrieving all controls having properties matching whatever arguments supplied
-                foreach (var idxWidget in FindWidgetsBy (e.Args, parentControl, context, e.Name == "find-widget-like")) {
+                // Iterating through each argument supplied, making sure it has "cnt" as a default value, if no explicit values are given
+                var list = XUtil.Iterate<string> (context, e.Args).ToList ();
+                if (list.Count == 0)
+                    list.Add ("cnt");
 
-                    // Adding type of widget as name, and ID as value
-                    e.Args.Add (GetTypeName (idxWidget), idxWidget.ID);
+                // Now we can safely loop through each ID in list
+                foreach (var idxId in list) {
+
+                    // Retrieving widget from where to start search, defaulting to "cnt"
+                    var parentControl = FindControl<Widget> (idxId, Manager.AjaxPage);
+
+                    // Retrieving all controls having properties matching whatever arguments supplied
+                    foreach (var idxWidget in FindWidgetsBy (e.Args, parentControl, context, e.Name == "find-widget-like")) {
+
+                        // Adding type of widget as name, and ID as value
+                        retVal.Add (GetTypeName (idxWidget), idxWidget.ID);
+                    }
                 }
+                e.Args.AddRange (retVal.Children);
             }
         }
 
@@ -109,80 +122,88 @@ namespace p5.web.widgets {
         public void find_first_ancestor_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Sanity check
                 if (e.Args.Children.Count (ix => ix.Name != "") == 0)
-                    throw new LambdaException ("No criteria submitted to [find-first-ancestor-widget]", e.Args, context);
+                    throw new LambdaException ("No criteria submitted to [" + e.Name + "]", e.Args, context);
+                if (e.Args.Value == null)
+                    throw new LambdaException ("No starting widget submitted to [" + e.Name + "]", e.Args, context);
 
-                // Retrieving widget from where to start search, defaulting to "cnt"
-                var startCtrl = FindControl<Control> (XUtil.Single<string> (context, e.Args, true), Manager.AjaxPage);
+                // Setting up a result node, to avoid modifying our args before all iteration is finished
+                Node retVal = new Node ();
 
-                // Sanity check
-                if (startCtrl == null)
-                    throw new LambdaException ("Start control not found for [find-first-ancestor-widget]", e.Args, context);
+                // Iterating each argument supplied
+                foreach (var idxId in XUtil.Iterate<string> (context, e.Args)) {
 
-                bool like = e.Name == "find-first-ancestor-widget-like";
+                    // Retrieving widget from where to start search, defaulting to "cnt"
+                    var startCtrl = FindControl<Control> (idxId, Manager.AjaxPage);
 
-                // Looping upwards in ancestor hierarchy, til either startCtrl is null, or given attribute(s) are found on a widget,
-                // with the (alternatively) supplied value
-                startCtrl = startCtrl.Parent;
-                while (startCtrl != null) {
-                    Widget curIdxWidget = startCtrl as Widget;
-                    if (curIdxWidget != null) {
-                        bool found = true;
-                        foreach (var idxChildNode in e.Args.Children) {
-                            if (idxChildNode.Name == "element") {
-                                if (like) {
-                                    if (!curIdxWidget.Element.Contains (idxChildNode.GetExValue<string> (context))) {
+                    // Sanity check
+                    if (startCtrl == null)
+                        throw new LambdaException ("Start control not found for [" + e.Name + "]", e.Args, context);
+
+                    // Checking type of invocation
+                    bool like = e.Name == "find-first-ancestor-widget-like";
+
+                    // Looping upwards in ancestor hierarchy, til either startCtrl is null, or given attribute(s) are found on a widget,
+                    // with the (alternatively) supplied value
+                    startCtrl = startCtrl.Parent;
+                    while (startCtrl != null) {
+                        Widget curIdxWidget = startCtrl as Widget;
+                        if (curIdxWidget != null) {
+                            bool found = true;
+                            foreach (var idxChildNode in e.Args.Children) {
+                                if (idxChildNode.Name == "element") {
+                                    if (like) {
+                                        if (!curIdxWidget.Element.Contains (idxChildNode.GetExValue<string> (context))) {
+                                            found = false;
+                                            break;
+                                        }
+                                    } else if (curIdxWidget.Element != idxChildNode.GetExValue<string> (context)) {
                                         found = false;
                                         break;
                                     }
-                                } else if (curIdxWidget.Element != idxChildNode.GetExValue<string> (context)) {
-                                    found = false;
-                                    break;
-                                }
-                            } else {
-                                if (!curIdxWidget.HasAttribute (idxChildNode.Name)) {
-                                    found = false;
-                                    break;
-                                }
-                                if (idxChildNode.Value == null) {
-
-                                    // Do nothing, this is a match
                                 } else {
-                                    if (curIdxWidget [idxChildNode.Name] != null) {
-                                        if (like) {
-                                            if (!curIdxWidget [idxChildNode.Name].Contains (idxChildNode.GetExValue<string> (context, null))) {
-                                                found = false;
-                                                break;
-                                            }
-                                        } else {
-                                            if (curIdxWidget [idxChildNode.Name] != idxChildNode.GetExValue<string> (context, null)) {
-                                                found = false;
-                                                break;
-                                            }
-                                        }
-                                    } else {
+                                    if (!curIdxWidget.HasAttribute (idxChildNode.Name)) {
                                         found = false;
                                         break;
+                                    }
+                                    if (idxChildNode.Value == null) {
+
+                                        // Do nothing, this is a match
+                                    } else {
+                                        if (curIdxWidget[idxChildNode.Name] != null) {
+                                            if (like) {
+                                                if (!curIdxWidget[idxChildNode.Name].Contains (idxChildNode.GetExValue<string> (context, null))) {
+                                                    found = false;
+                                                    break;
+                                                }
+                                            } else {
+                                                if (curIdxWidget[idxChildNode.Name] != idxChildNode.GetExValue<string> (context, null)) {
+                                                    found = false;
+                                                    break;
+                                                }
+                                            }
+                                        } else {
+                                            found = false;
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        if (found) {
+                            if (found) {
 
-                            // We found our first matching ancestor widget!
-                            e.Args.Add (GetTypeName (curIdxWidget), curIdxWidget.ID);
-                            return;
+                                // We found our first matching ancestor widget!
+                                retVal.Add (GetTypeName (curIdxWidget), curIdxWidget.ID);
+                                break;
+                            }
                         }
+                        startCtrl = startCtrl.Parent;
                     }
-                    startCtrl = startCtrl.Parent;
                 }
+                e.Args.AddRange (retVal.Children);
             }
-
-            // We didn't find any widgets matching criteria
-            e.Args.Value = null;
         }
 
         /// <summary>
@@ -191,10 +212,11 @@ namespace p5.web.widgets {
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widgets", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-widgets-like", Protection = EventProtection.LambdaClosed)]
         public void list_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Retrieving filter, if any
                 var filter = XUtil.Iterate<string>(context, e.Args).ToList ();
@@ -202,7 +224,7 @@ namespace p5.web.widgets {
                     return; // Possibly a filter expression, leading into oblivion
 
                 // Recursively retrieving all widgets on page, matching filter, or all, if there is no filters
-                ListWidgets(filter, e.Args, Manager.AjaxPage);
+                ListWidgets (filter, e.Args, Manager.AjaxPage, e.Name == "list-widgets");
             }
         }
 
@@ -215,7 +237,7 @@ namespace p5.web.widgets {
         public void widget_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
+            using (new Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all IDs given
                 foreach (var widgetId in XUtil.Iterate<string> (context, e.Args, true)) {
@@ -236,21 +258,23 @@ namespace p5.web.widgets {
         private static void ListWidgets (
             List<string> filter, 
             Node args, 
-            Control ctrl)
+            Control ctrl,
+            bool exactMatch)
         {
             // Checking if current ctrl is mathing filters supplied, 
             // alternative there are no filters, at which point everything should match
-            if (filter.Count == 0 || filter.Count(ix => ix == ctrl.ID) > 0) {
+            if (filter.Count == 0 || filter.Count (ix => (exactMatch ? ix == ctrl.ID : (ctrl.ID != null && ctrl.ID.Contains (ix)))) > 0) {
 
                 // Current Control is matching one of our filters, or there are no filters
-                args.Add(GetTypeName (ctrl), ctrl.ID);
+                if (ctrl is Widget)
+                    args.Add (GetTypeName (ctrl), ctrl.ID);
             }
 
             // Looping through each child control of current control, recursively invoking "self" to check for match
             foreach (Control idxChildCtrl in ctrl.Controls) {
 
                 // Recursively invoking "self"
-                ListWidgets (filter, args, idxChildCtrl);
+                ListWidgets (filter, args, idxChildCtrl, exactMatch);
             }
         }
 
@@ -308,9 +332,13 @@ namespace p5.web.widgets {
 
                 // Recursively invoking "self" with currently iterated child control
                 // Notice, the "ToList" parts are important here, to not break enumeration upon finding a match
-                foreach (var idxSubFind in FindWidgetsBy (args, idxChildCtrl, context, like).ToList ()) {
-                    yield return idxSubFind; // We have a match!
+                var list = new List<Control> ();
+                foreach (var idxSubFind in FindWidgetsBy (args, idxChildCtrl, context, like)) {
+                    list.Add (idxSubFind); // We have a match!
                 }
+                foreach (var idxSubMatch in list)
+                    if (idxSubMatch is Widget)
+                        yield return (idxSubMatch as Widget);
             }
         }
 

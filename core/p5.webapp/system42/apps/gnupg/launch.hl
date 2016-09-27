@@ -415,7 +415,7 @@ create-widget:create-keypair
         get-parent-widget:password-repeat
         eval-x:x:/+/*/after
         create-widget
-          after:x:/./-2/*?value
+          after:x:/./-2/*/*?value
           class:prepend-left prepend-top prepend-bottom prepend-right input-group
           widgets
             literal

@@ -281,7 +281,7 @@ for-each:x:/../*/load-file/[0,1]/*/*(!/_header)
            * now added to widget, and we no longer need this option in list
            */
           get-parent-widget:x:/../*/_event?value
-          delete-widget:x:/-/*?value
+          delete-widget:x:/-/*/*?value
 
 
 
@@ -398,7 +398,7 @@ for-each:x:/../*/load-file/[1,2]/*/*/{0}/*/attributes/*
            * now added to widget, and we no longer need this option in list
            */
           get-parent-widget:x:/../*/_event?value
-          delete-widget:x:/-/*?value
+          delete-widget:x:/-/*/*?value
 
 
 

@@ -1232,7 +1232,7 @@ you can simply delete it now. A complete version of the widget still exists on y
                  */
                 get-parent-widget:x:/../*/_position/*(/before|/after)?value
                 set:x:/../*/_paste-parent?value
-                  src:x:/./-/*?value
+                  src:x:/./-/*/*?value
 
               /*
                * Now retrieveing all legal children elements for the parent widget user tries to paste widget into,
@@ -1378,8 +1378,8 @@ is not legally allowed as a child of a '{1}' element"
             find-widget:wysiwyg-editor-surface
               data-selected
             get-parent-widget:x:/../*/find-widget/*?value
-            sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0?value
-            sys42.wysiwyg-controls.apply-select-widget-dropdown:x:/../*/get-parent-widget/0?value
+            sys42.wysiwyg-controls.select-widget:x:/../*/get-parent-widget/0/0?value
+            sys42.wysiwyg-controls.apply-select-widget-dropdown:x:/../*/get-parent-widget/0/0?value
           onmouseover:@"$('#' + p5._currentParentWidget).addClass('highlight');"
           onmouseout:@"$('#' + p5._currentParentWidget).removeClass('highlight');"
           events
@@ -1911,7 +1911,7 @@ is not legally allowed as a child of a '{1}' element"
        * children elements parent widget can legally have, and stuffing them into [_legal-elements]
        */
       get-parent-widget:x:/../*/_selected-widget?value
-      get-widget-property:x:/-/*?value
+      get-widget-property:x:/-/*/*?value
         element
 
       /*
@@ -2419,7 +2419,7 @@ is not legally allowed as a child of a '{1}' element"
          */
         get-parent-widget:x:/../*/_create-widget/*/*(/before|/after)?value
         set:x:/../*/_parent?value
-          src:x:/./-/*?value
+          src:x:/./-/*/*?value
 
       /*
        * Now retrieveing all legal children elements for the parent widget user tries to paste widget into,
@@ -2774,13 +2774,13 @@ value of the widget you're trying to insert the usercontrol as a child to</p>"
        * unless parent of currently selected widget is our WYSIWYG main surface
        */
       get-parent-widget:x:/../*/find-widget/*?value
-      if:x:/-/*?value
+      if:x:/-/*/*?value
         !=:wysiwyg-editor-surface
 
         /*
          * Enabling "Get parent" button
          */
-        sys42.wysiwyg-controls.toggle-get-parent-widget:x:/../*/get-parent-widget/*?value
+        sys42.wysiwyg-controls.toggle-get-parent-widget:x:/../*/get-parent-widget/*/*?value
       else
 
         /*
@@ -2856,7 +2856,7 @@ value of the widget you're trying to insert the usercontrol as a child to</p>"
             sys42.wysiwyg-controls.select-widget:x:/../*/_widget?value
         get-parent-widget:x:/../*/_cur-widget?value
         set:x:/../*/_cur-widget?value
-          src:x:/./-/*?value
+          src:x:/./-/*/*?value
 
 
 

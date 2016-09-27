@@ -268,7 +268,7 @@ Are you sure you wish to do this?"
                       sys42.wysiwyg-controls.change-selected-widgets-property:{attribute-name}
                         _new-value
                       get-parent-widget:x:/../*/_event?value
-                      find-widget:x:/-/*?value
+                      find-widget:x:/-/*/*?value
                         element:input
                       set-widget-property:x:/-/*?value
                         value:
@@ -286,8 +286,8 @@ Are you sure you wish to do this?"
                     _onok
                       sys42.wysiwyg-controls.change-selected-widgets-property:{attribute-name}
                       get-parent-widget:x:/../*/_event?value
-                      get-parent-widget:x:/-/*?value
-                      delete-widget:x:/-/*?value
+                      get-parent-widget:x:/-/*/*?value
+                      delete-widget:x:/-/*/*?value
 
                       /*
                        * Making sure we update codeview
@@ -400,18 +400,18 @@ for-each:x:/../*/sort/*
                      * Resizing main event handler wrapper widget to a "sane" size for editing JavaScript
                      */
                     get-parent-widget:x:/../*/_event?value
-                    get-parent-widget:x:/-/*?value
-                    set-widget-property:x:/../*/get-parent-widget/[1,2]/*?value
+                    get-parent-widget:x:/-/*/*?value
+                    set-widget-property:x:/../*/get-parent-widget/[1,2]/*/*?value
                       class:col-md-12 form-group
 
                     /*
                      * Hiding "delete JavaScript DOM event" and "Convert JavaScript DOM event to Hyperlisp event handler" buttons
                      */
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:trash
                     set-widget-property:x:/-/*?value
                       visible:false
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:glyphicon-off
                     set-widget-property:x:/-/*?value
                       visible:false
@@ -422,18 +422,18 @@ for-each:x:/../*/sort/*
                      * Minimizing main event handler wrapper widget back to original size
                      */
                     get-parent-widget:x:/../*/_event?value
-                    get-parent-widget:x:/-/*?value
-                    set-widget-property:x:/../*/get-parent-widget/[1,2]/*?value
+                    get-parent-widget:x:/-/*/*?value
+                    set-widget-property:x:/../*/get-parent-widget/[1,2]/*/*?value
                       class:col-md-6 form-group
 
                     /*
                      * Showing "delete JavaScript DOM event" and "Convert JavaScript DOM event to Hyperlisp event handler" buttons
                      */
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:trash
                     set-widget-property:x:/-/*?value
                       visible:true
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:glyphicon-off
                     set-widget-property:x:/-/*?value
                       visible:true
@@ -446,7 +446,7 @@ for-each:x:/../*/sort/*
                   onclick
 
                     /*
-                     * Foward evaluate expression in [get-parent-widget], inside of [_onok],
+                     * Forward evaluate expression in [get-parent-widget], inside of [_onok],
                      * to make sure we can retrieve the parent of this button, and not the "OK" button of modal window
                      */
                     eval-x:x:/+/*/_onok/*/get-parent-widget/[0,1]
@@ -464,7 +464,7 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                         /*
                          * Finding input textbox widget, which should be a child of previously found parent widget
                          */
-                        find-widget:x:/-/*?value
+                        find-widget:x:/-/*/*?value
                           element:input
 
                         /*
@@ -542,7 +542,7 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                          * DOM event we should delete. Then we retrieve this value from textbox' hidden attribute.
                          * Notice, this is returned without the prepending underscore ("_")
                          */
-                        find-widget:x:/-/*?value
+                        find-widget:x:/-/*/*?value
                           element:input
                         get-widget-property:x:/-/*?value
                           _event-handler-name
@@ -567,7 +567,7 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                         /*
                          * Delete main property wrapper widget
                          */
-                        delete-widget:x:/-/*?value
+                        delete-widget:x:/-/*/*?value
 
                         /*
                          * Refreshing CodeMirror codeview, if it is visible
@@ -717,8 +717,8 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                      * Resizing main event handler wrapper widget to a "sane" size for editing Hyperlisp
                      */
                     get-parent-widget:x:/../*/_event?value
-                    get-parent-widget:x:/-/*?value
-                    set-widget-property:x:/../*/get-parent-widget/[1,2]/*?value
+                    get-parent-widget:x:/-/*/*?value
+                    set-widget-property:x:/../*/get-parent-widget/[1,2]/*/*?value
                       class:col-md-12 form-group
 
                     /*
@@ -730,15 +730,15 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                     /*
                      * Showing the "minimize" button, "Hyperlisp wizard" button, and the "CodeMirror" button
                      */
-                    find-widget:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget:x:/../*/get-parent-widget/[0,1]/*/*?value
                       _close-button
                     set-widget-property:x:/-/*?value
                       visible:true
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:pencil
                     set-widget-property:x:/-/*?value
                       visible:true
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:glyphicon-info-sign
                       element:a
                     set-widget-property:x:/-/*?value
@@ -747,11 +747,11 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                     /*
                      * Hiding "delete event handler" and "nullify event handler" buttons
                      */
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:trash
                     set-widget-property:x:/-/*?value
                       visible:false
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:glyphicon-off
                     set-widget-property:x:/-/*?value
                       visible:false
@@ -791,7 +791,7 @@ are you sure you wish to do this? All JavaScript in your DOM event will be lost!
                   onclick
 
                     /*
-                     * Foward evaluate expression in [get-parent-widget], inside of [_onok],
+                     * Forward evaluate expression in [get-parent-widget], inside of [_onok],
                      * to make sure we can retrieve the parent of this button, and not the "OK" button of modal window
                      */
                     eval-x:x:/+/*/_onok/*/get-parent-widget/[0,1]
@@ -809,7 +809,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                         /*
                          * Finding textarea widget, which should be a child of previously found parent widget
                          */
-                        find-widget:x:/-/*?value
+                        find-widget:x:/-/*/*?value
                           element:textarea
 
                         /*
@@ -862,7 +862,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                   onclick
 
                     /*
-                     * Foward evaluate expression in [get-parent-widget], inside of [_onok],
+                     * Forward evaluate expression in [get-parent-widget], inside of [_onok],
                      * to make sure we can retrieve the parent of this button, and not the "OK" button of modal window
                      */
                     eval-x:x:/+/*/_onok/*/get-parent-widget/[0,1]
@@ -882,7 +882,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                          * server-side ajax event handler we should delete. Then we retrieve this value from textarea's hidden attribute.
                          * Notice, this is returned without the prepending underscore ("_")
                          */
-                        find-widget:x:/-/*?value
+                        find-widget:x:/-/*/*?value
                           element:textarea
                         get-widget-property:x:/-/*?value
                           _event-handler-name
@@ -902,12 +902,12 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                         /*
                          * Finding main container widget for property value, such that we can delete it
                          */
-                        get-parent-widget:x:/../*/get-parent-widget/[0,1]/*?value
+                        get-parent-widget:x:/../*/get-parent-widget/[0,1]/*/*?value
 
                         /*
                          * Delete main property wrapper widget
                          */
-                        delete-widget:x:/-/*?value
+                        delete-widget:x:/-/*/*?value
 
                         /*
                          * Refreshing CodeMirror codeview, if it is visible
@@ -964,7 +964,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                        * CodeMirror editing is enabled, hence we disable it
                        */
                       get-parent-widget:x:/../*/_event?value
-                      find-widget:x:/-/*?value
+                      find-widget:x:/-/*/*?value
                         element:textarea
                       send-javascript:@"window.{0}.toTextArea();"
                         :x:/..if/*/find-widget/*?value
@@ -982,7 +982,7 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                        * Applying argument to "CodeMirror" loading file first
                        */
                       get-parent-widget:x:/../*/_event?value
-                      find-widget:x:/-/*?value
+                      find-widget:x:/-/*/*?value
                         element:textarea
                       set:x:/+/*/*?name
                         src:x:/..else/*/find-widget/*?value
@@ -1019,14 +1019,14 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                      * Minimizing main event handler wrapper widget back to original size
                      */
                     get-parent-widget:x:/../*/_event?value
-                    get-parent-widget:x:/-/*?value
-                    set-widget-property:x:/../*/get-parent-widget/[1,2]/*?value
+                    get-parent-widget:x:/-/*/*?value
+                    set-widget-property:x:/../*/get-parent-widget/[1,2]/*/*?value
                       class:col-md-6 form-group
 
                     /*
                      * Resizing event handler textarea to have multiple rows,to ease editing
                      */
-                    find-widget:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget:x:/../*/get-parent-widget/[0,1]/*/*?value
                       element:textarea
                     set-widget-property:x:/-/*?value
                       rows:1
@@ -1036,11 +1036,11 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                      */
                     set-widget-property:x:/../*/_event?value
                       visible:false
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:pencil
                     set-widget-property:x:/-/*?value
                       visible:false
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:glyphicon-info-sign
                       element:a
                     set-widget-property:x:/-/*?value
@@ -1050,11 +1050,11 @@ are you sure you wish to do this? All Hyperlisp in your event handler will be lo
                     /*
                      * Showing "delete event handler" and "nullify event handler" buttons
                      */
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:trash
                     set-widget-property:x:/-/*?value
                       visible:true
-                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*?value
+                    find-widget-like:x:/../*/get-parent-widget/[0,1]/*/*?value
                       innerValue:glyphicon-off
                     set-widget-property:x:/-/*?value
                       visible:true
@@ -2017,8 +2017,8 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                    * CodeMirror editing is enabled, hence we disable it
                                    */
                                   get-parent-widget:x:/../*/_event?value
-                                  get-parent-widget:x:/-/*?value
-                                  find-widget:x:/-/*?value
+                                  get-parent-widget:x:/-/*/*?value
+                                  find-widget:x:/-/*/*?value
                                     element:textarea
                                   send-javascript:@"window.{0}.toTextArea();"
                                     :x:/..if/*/find-widget/*?value
@@ -2036,8 +2036,8 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                    * Applying argument to "CodeMirror" loading file first
                                    */
                                   get-parent-widget:x:/../*/_event?value
-                                  get-parent-widget:x:/-/*?value
-                                  find-widget:x:/-/*?value
+                                  get-parent-widget:x:/-/*/*?value
+                                  find-widget:x:/-/*/*?value
                                     element:textarea
                                   set:x:/+/*/*?name
                                     src:x:/..else/*/find-widget/*?value
@@ -2091,7 +2091,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                  * is visible in the "tr" row for the Action Subscriber name
                                  */
                                 get-parent-widget:x:/../*/find-first-ancestor-widget/*?value
-                                find-widget:x:/-/*?value
+                                find-widget:x:/-/*/*?value
                                   _active-event-name:x:/../*/get-widget-property/*/*?value
                                 set-widget-property:x:/-/*?value
                                   _code-view-visible:false
@@ -2159,7 +2159,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                      * and then find its Action Subscriber name "tr" widget
                                      */
                                     get-parent-widget:x:/../*/find-first-ancestor-widget/*?value
-                                    find-widget:x:/-/*?value
+                                    find-widget:x:/-/*/*?value
                                       _active-event-name:x:/../*/get-widget-property/*/*?value
 
                                     /*
@@ -2167,7 +2167,7 @@ Look for syntax errors in your Hyperlisp! Code was not saved!"
                                      * delete entire table wrapper
                                      */
                                     get-parent-widget:x:/../*/find-first-ancestor-widget/*?value
-                                    get-children-widgets:x:/-/*?value
+                                    get-children-widgets:x:/-/*/*?value
                                     if:x:/-/*/*?count
                                       =:int:2
 

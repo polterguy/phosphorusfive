@@ -313,7 +313,7 @@ _wizard-item:Star Rating
             get-parent-widget:x:/../*/_event?value
             eval-x:x:/+/*
             sys42.forms.action.star-clicked:1
-              _parent:x:/../*/get-parent-widget/*?value
+              _parent:x:/../*/get-parent-widget/*/*?value
         a
           href:#
           class:star
@@ -329,7 +329,7 @@ _wizard-item:Star Rating
             get-parent-widget:x:/../*/_event?value
             eval-x:x:/+/*
             sys42.forms.action.star-clicked:2
-              _parent:x:/../*/get-parent-widget/*?value
+              _parent:x:/../*/get-parent-widget/*/*?value
         a
           href:#
           class:star
@@ -345,7 +345,7 @@ _wizard-item:Star Rating
             get-parent-widget:x:/../*/_event?value
             eval-x:x:/+/*
             sys42.forms.action.star-clicked:3
-              _parent:x:/../*/get-parent-widget/*?value
+              _parent:x:/../*/get-parent-widget/*/*?value
         a
           href:#
           class:star
@@ -361,7 +361,7 @@ _wizard-item:Star Rating
             get-parent-widget:x:/../*/_event?value
             eval-x:x:/+/*
             sys42.forms.action.star-clicked:4
-              _parent:x:/../*/get-parent-widget/*?value
+              _parent:x:/../*/get-parent-widget/*/*?value
         a
           href:#
           class:star
@@ -377,6 +377,6 @@ _wizard-item:Star Rating
             get-parent-widget:x:/../*/_event?value
             eval-x:x:/+/*
             sys42.forms.action.star-clicked:5
-              _parent:x:/../*/get-parent-widget/*?value
+              _parent:x:/../*/get-parent-widget/*/*?value
         input
           type:hidden
