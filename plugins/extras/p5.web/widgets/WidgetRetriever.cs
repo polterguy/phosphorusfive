@@ -91,8 +91,10 @@ namespace p5.web.widgets {
                 Node retVal = new Node ();
 
                 // Iterating through each argument supplied, making sure it has "cnt" as a default value, if no explicit values are given
-                var list = XUtil.Iterate<string> (context, e.Args).ToList ();
-                if (list.Count == 0)
+                var list = new List<string> ();
+                if (e.Args.Value != null)
+                    list.AddRange (XUtil.Iterate<string> (context, e.Args));
+                else
                     list.Add ("cnt");
 
                 // Now we can safely loop through each ID in list

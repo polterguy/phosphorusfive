@@ -1066,7 +1066,7 @@ convert it easily back to p5.lambda using *[lisp2lambda]*.
 ### HTTP headers
 
 Now you could if you wanted to, store p5.lambda code in your HTTP headers, however, doing such a thing, makes absolutely no sense what-so-ever!!
-HTTP headers are for informing the browser and/or potential proxies, about some state of your application. And using it as a "general storage", would
+HTTP headers are for informing the browser, and/or potential proxies, about some state of your application. And using it as a "general storage", would
 be like using a crocodile to hunt raindeers! Don't do it!
 
 However, setting an HTTP header obeys by the same API as all other "storage events". To have your web app return a "custom header" to your client,
@@ -1079,6 +1079,10 @@ set-http-header:foo
 
 If you make sure you inspect your HTTP request, before you click evaluate in your System42/executor, you will see that the return value from your server,
 contains one additional HTTP header called "foo" having the value of "bar".
+
+HTTP headers "read" and "write" operations are sufffering from the same problem as cookies for the record, which is that "read" gets its data from the
+request, while "write" puts its data into the response. Which means that stuff you put into an HTTP header using a "set" operation, is not accessible
+for a consecutive "get" operation. For obvious reasons ...
 
 ### HTTP GET parameters
 
@@ -1096,8 +1100,115 @@ you will also find the HTTTP headers, and all sort of other "unexpected stuff" i
 implemented, and kept in P5 to remain consistant towards the underlaying implementtation of .Net.
 
 
-## Accessing and modifying the "raw request" and "raw response"
+## Accessing and modifying the "raw HTTP request" and the "raw HTTP response"
 
+If you wish, you can completely bypass the default HTTP serialization and deserialization, and instead, take complete control of every aspect of
+both the rendering and the parsing of HTTP requests and responses. This is useful if you are creating web services or returing files to the caller
+for instance. For such cases, you have the *[echo]* and *[echo-file]* Active Events for creating your own response. And you have the *[get-request-body]*,
+and the *[get-http-method]* events. These Active Events allows you to access the "raw" HTTP request, as sent by the client, and create your own response, 
+exactly as you see fit.
+
+The default HTTP request/response model in P5, uses POST requests for each Ajax request, and returns JSON to the caller. However, if you wish, you
+can completely bypass this model, and create your own. Imagine if you wish to return a file to the caller for instance. This is easily achieved by
+creating a page, which contains logic like this.
+
+```
+echo-file:/system42/README.md
+```
+
+If you evaluate the above code in for instance the System42/executor, then it will throw an exception, of course, since the Ajax method invoked when
+you click the "Evaluete" button expects the server to return JSON. However, if you create a page, which during initial loading, instead of creating
+an Ajax web widget hierarchy, evaluates the above lambda - The you will download the above file to the client when  you load that page.
+
+To see an example, create a *[lambda]* page in the CMS of System42/executor with the URL of "/download-my-file". Then change its code to the following.
+
+```
+echo-file:/system42/README.md
+set-http-header:Content-Type
+  src:text/plain
+```
+
+Then save your page and click "Preview", and you should see your file. If you change the code for your page to the following.
+
+```
+echo:@"This is foo calling!"
+set-http-header:Content-Type
+  src:text/plain
+```
+
+... then you will see some statically created text instead.
+
+Notice, once you invoke *[echo]* or *[echo-file]*, then you cannot invoke it again. This means that if you want to dynamically build up your content, 
+then you have to build it first, and have *[echo]* be the last piece of logic in your page. The *[echo-file]* event will also throw an exception if the
+currently logged in user is not authorized to reading the file you supply to it.
+
+Both *[echo]* and *[echo-file]* can optionally take expressions, leading to either one or more pieces of text, or one file.
+
+Creating web services, using *[echo]*, which instead of returning HTML to the client, returns some other piece of data, is quite easy using this
+technique.
+
+Hint!
+You can return Hyperlisp to the client using the *[echo]* event, since it will automatically convert whatever expression it is given to text, which
+allows you to return some sub-set of your tree to the caller.
+
+### Getting the raw HTTP request
+
+You can also retrieve the "raw" HTTP request, by using the *[get-request-body]* Active Event. This Active Event will return the raw HTTP request sent
+by the client, giving you complete access to do whatever you wish with it.
+
+Hint!
+This is a quite useful feature of P5, since it allows you to create "web service end-points", where you can for instance pass in Hyperlisp, or some
+other piece of "machine readable type of request", which is intended to be used by machines and web services, instead of browser clients.
+
+If you wish to directly save the request, without first putting it into memory, you can save some memory and CPU cycles by directly saving the request
+body using the *[save-request-body]* Active Event, which takes a constant or expression leading to a filename on your server. Notice, this event
+requires the currently logged in user context to be able to write to the path supplied.
+
+Hint!
+Use the *[login]* Active Event to change the current "user context ticket" if you wish to save your files to a "restricted folder".
+
+### Additional request helper events
+
+You can also get the HTTP method of your request, using the *[get-http-method]* Active Event, in addition to that you can have P5 make its best "guess"
+of whether or not the request originated from a "mobile device" using the *[request-is-mobile-device]* Active Event. The latter is not 100% perfect,
+since a mobile device is not required to identify itself as such to your server. But it is good enough for most cases, and will do a decent job, 
+determining if the client is some sort of "mobile device" or not.
+
+### Modifying your HTTP status code and text
+
+You can modify the "status message" and the "status code" of your response using these two Active Events.
+
+* [set-http-status-code] - Sets the "status code", requires an integer, or an expression leading to an integer as its input
+* [set-http-status] - Sets the "status message", tolerates anything that is convertible into text
+
+### Ninja tricks when creating web services
+
+One thing you should realize about *[echo]* and *[get-request-body]*, is that you can both pass in, and return Hyperlisp, which you then convert to 
+p5.lambda, for then to evaluate it as such. This feature of P5, allows you to pass "code" from your client, to a server, and have the server evaluate 
+your "code", for then to return "code" back again, which the client evaluates on its side.
+
+This allows the client to decide what code is to be evaluated on your web-server endpoints, which at least in theory, makes it possible for you to
+create one single web service point, for all your web-service needs. In addition, it lets you "massage" the output from some web service endpoint,
+before it is returned, which can possibly reduce your response, and network traffic, significantly compared to a "specialized web service endpoint",
+which possibly yields values back to the client, which the client is not interested in, etc.
+
+This feature has some serious security issues, which you should consider before you go down this path though. But if you are 100% certain of that you
+trust the client that initiated the request (due to being a part of your own intranet for instance), then you can safely use this feature, and allow
+your clients to invoke "code" in your web service endpoints.
+
+If you combine this feature, with the PGP cryptographic features of P5, requiring having your web service invocations cryptographically signed, before
+you evaluate them as Hyperlisp, you can create an additional layer of protection, further safe-guarding you against malicious requests. Which is 
+probably a "must", if you choose to use this "Ninja trick", in a production environment. This way you have a cryptographically secure context, giving
+your guarantees of that the invocation towards your web service, was created by some client, which you trust 100%, since the signing process of
+an invocation, makes sure it has not beeen tampered with in any ways after leaving the client. And only the client owning the private key that was
+used to sign the invocation, can create a signature matching your expectations.
+
+To use this feature, you would have to pass in your invocations as MIME messages, using the p5.mime library of P5. This would also allow you to
+encrypt your invocations, making it impossible for an adversary, to listen in on the "conversation", between your client(s) and your server(s).
+
+If you encrypt your web service invocations, you can even use features such as the Active Event *[login]*, in your embedded Hyperlisp,
+to change the Application Context user ticket for your web service invocations, giving you further rights, having your invocation being evaluated 
+in an explicit user context.
 
 
 

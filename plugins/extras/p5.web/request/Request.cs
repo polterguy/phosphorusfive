@@ -5,6 +5,7 @@
 
 using System.IO;
 using System.Web;
+using p5.exp;
 using p5.core;
 
 /// <summary>
@@ -51,6 +52,33 @@ namespace p5.web.ui.request {
                 var rawBytes = new byte [HttpContext.Current.Request.InputStream.Length];
                 HttpContext.Current.Request.InputStream.Read (rawBytes, 0, rawBytes.Length);
                 e.Args.Value = rawBytes;
+            }
+        }
+
+        /// <summary>
+        ///     Saves the current HTTP request's body to a specified file
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "save-request-body", Protection = EventProtection.LambdaClosed)]
+        public static void save_request_body (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Getting filename
+            var filename = e.Args.GetExValue<string> (context);
+
+            // Making sure we transform filename into actual filename in case it uses our "~" logic
+            if (filename.StartsWith ("~"))
+                filename = "users/" + context.Ticket.Username + filename.Substring (1);
+
+            // Verifying user is authorized writing to the file
+            context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
+
+            // Retrieving root node of web application
+            var rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
+
+            // Creating a file stream, copying the request stream to our filestream
+            using (FileStream fs = File.Create (rootFolder + filename)) {
+                HttpContext.Current.Request.InputStream.CopyTo (fs);
             }
         }
 
