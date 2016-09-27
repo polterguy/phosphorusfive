@@ -306,7 +306,7 @@ namespace p5.mime.helpers
                 // No explicit receivers, encrypting message with server key, since caller supplied an [encryption] node
                 var email = "foo@bar.com";
                 var fingerprint = "";
-                var key = _context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (_context);
+                var key = _context.Raise ("p5.security.get-marvin-pgp-key").Get<string> (_context);
                 if (key.IndexOf ("@") == -1)
                     fingerprint = key;
                 else
@@ -328,12 +328,12 @@ namespace p5.mime.helpers
             if (signatureNode.Children.Count (ix => ix.Name == "email" || ix.Name == "fingerprint") == 0) {
 
                 // Using server's private key
-                var key = _context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (_context);
+                var key = _context.Raise ("p5.security.get-marvin-pgp-key").Get<string> (_context);
                 if (key.IndexOf ("@") == -1)
                     fingerprint = key;
                 else
                     email = key;
-                password = _context.RaiseNative ("p5.security.get-marvin-pgp-key-password").Get<string> (_context);
+                password = _context.Raise ("p5.security.get-marvin-pgp-key-password").Get<string> (_context);
             } else {
 
                 // Using provided key and password
@@ -414,7 +414,7 @@ namespace p5.mime.helpers
             string fileName = fileNode.Get<string> (_context);
 
             // Verifying user is authorised to read from file given
-            _context.RaiseNative ("p5.io.authorize.read-file", new Node ("", fileName).Add ("args", fileNode));
+            _context.Raise ("p5.io.authorize.read-file", new Node ("", fileName).Add ("args", fileNode));
 
             // Retrieving ContentEncoding to use for reading stream
             ContentEncoding encoding = ContentEncoding.Default;

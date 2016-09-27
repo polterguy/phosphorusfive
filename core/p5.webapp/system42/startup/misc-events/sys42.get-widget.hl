@@ -7,7 +7,7 @@
  * Pass in ID of widget to recursively iterate as value, expression or [_arg]
  */
 
-create-protected-event:sys42.get-widget
+create-event:sys42.get-widget
 
   /*
    * Used as "position node", to make sure all return values are

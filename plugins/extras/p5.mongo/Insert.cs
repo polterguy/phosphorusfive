@@ -22,7 +22,7 @@ namespace p5.mongo {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mongo.insert", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mongo.insert")]
         public static void p5_mongo_insert (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each document to insert

@@ -19,7 +19,7 @@ namespace p5.io.file.file_state
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "file-access-time", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "file-access-time")]
         public static void file_access_time (ApplicationContext context, ActiveEventArgs e)
         {
             QueryHelper.Run (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {

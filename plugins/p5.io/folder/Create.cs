@@ -23,7 +23,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-folder", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "create-folder")]
         public static void create_folder (ApplicationContext context, ActiveEventArgs e)
         {
             QueryHelper.Run (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {

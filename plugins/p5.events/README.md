@@ -81,22 +81,6 @@ For the record, the above "Ninja Trick" is something you should be _careful_ wit
 considered "good architecture". However, for those rare occassions, where it makes sense, it really makes sense. A good example is for 
 instance caching, and similar types of concepts.
 
-### Protected dynamic Active Events
-
-Sometimes, you want to create an Active Event, which you do not want others to be able to tamper with, change, or delete, for some reasons.
-A good example of why, might be security reasons, where you want to have guarantees, of that nothing can modify your Active Event. This
-is easily done, by using the *[create-protected-event]* Active Event, which is a "one way street", meaning once initially created, nobody can 
-neither "uncreate" it, nor change it in any ways. Consider this code, which will throw an exception during evaluation.
-
-```
-create-protected-event:demo.protected-event
-  foo
-create-event:demo.protected-event
-  foo2
-```
-
-The second *[create-event]* invocation above, will throw an exception.
-
 ### Ninja tricks
 
 Below are some "Ninja tricks" for dynamically created Active Events. Most of whom depends upon the extremely dynamic nature of PPhosphorus Five,

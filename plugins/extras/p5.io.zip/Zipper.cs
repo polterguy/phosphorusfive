@@ -20,7 +20,7 @@ namespace p5.io.zip
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "zip", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "zip")]
         public static void zip (ApplicationContext context, ActiveEventArgs e)
         {
             /*

@@ -22,7 +22,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.import-public-pgp-key", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.crypto.import-public-pgp-key")]
         private static void p5_crypto_import_public_pgp_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning

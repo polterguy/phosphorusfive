@@ -17,7 +17,7 @@ namespace p5_active_event_sample_plugins
     {
         // Here we register a *STATIC* Active Event handler, which will be invoked every time
         // the "foo" Active Event is raised
-        [ActiveEvent (Name = "foo", Protection = EventProtection.NativeOpen)]
+        [ActiveEvent (Name = "foo")]
         public static void foo (ApplicationContext context, ActiveEventArgs e)
         {
             // Simply outputting some text to the console, proving we were here
@@ -30,7 +30,7 @@ namespace p5_active_event_sample_plugins
         // This Active Event will create an instance handler, showing this feature of P5
         // Notice, after this Active Event has been invoked, we will have *TWO* methods handling our
         // "foo" Active Event.
-        [ActiveEvent (Name = "create-instance-handler", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "create-instance-handler")]
         public static void create_instance_handler (ApplicationContext context, ActiveEventArgs e)
         {
             var fooInstance = new SomeActiveEventHandler ();
@@ -39,7 +39,7 @@ namespace p5_active_event_sample_plugins
 
         // Notice how this event handler, handles the same ("foo") Active Event, but is *NOT*a static method
         // Hence it is an instance handler, which will only kick in, for each registered instance event handler of this class
-        [ActiveEvent (Name = "foo", Protection = EventProtection.NativeOpen)]
+        [ActiveEvent (Name = "foo")]
         public void foo_instance (ApplicationContext context, ActiveEventArgs e)
         {
             // Simply outputting some text to the console, proving we were here
@@ -47,7 +47,7 @@ namespace p5_active_event_sample_plugins
         }
 
         // This Active Event will create an instance handler, showing this feature of P5
-        [ActiveEvent (Name = "unregister-instance-handler", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "unregister-instance-handler")]
         public void unregister_instance_handler (ApplicationContext context, ActiveEventArgs e)
         {
             context.UnregisterListeningObject (this);

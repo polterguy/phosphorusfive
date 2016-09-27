@@ -19,7 +19,7 @@ namespace p5.io.file.file_state
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "file-is-read-only", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "file-is-read-only")]
         public static void file_is_read_only (ApplicationContext context, ActiveEventArgs e)
         {
             QueryHelper.Run (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {

@@ -58,7 +58,7 @@ namespace p5
                 var context = Loader.Instance.CreateApplicationContext (new ApplicationContext.ContextTicket("root", "root", false));
 
                 // Raising the application start Active Event, making sure we do it with a "root" Context Ticket
-                context.RaiseNative ("p5.core.application-start");
+                context.Raise ("p5.core.application-start");
 
                 // Execute our "startup file", if there is one defined
                 if (!string.IsNullOrEmpty (ConfigurationManager.AppSettings ["application-startup-file"])) {
@@ -93,7 +93,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-web-service-invocation-fresh-time", Protection = EventProtection.LambdaClosed)]
+            [ActiveEvent (Name = "p5.security.get-web-service-invocation-fresh-time")]
             public static void p5_security_get_web_service_invocation_fresh_time (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -105,7 +105,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key")]
             private static void p5_security_get_marvin_pgp_key (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -117,7 +117,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key-password", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key-password")]
             private static void p5_security_get_marvin_pgp_key_password (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -129,7 +129,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.core.application-folder")]
             private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value = _applicationBasePath;
@@ -140,7 +140,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-auth-file", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.security.get-auth-file")]
             private static void p5_security_get_auth_file (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -152,7 +152,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-credential-cookie-days", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.security.get-credential-cookie-days")]
             private static void p5_security_get_credential_cookie_days (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -164,7 +164,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-default-context-role", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.security.get-default-context-role")]
             private static void p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -176,7 +176,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-default-context-username", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.security.get-default-context-username")]
             private static void p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -188,7 +188,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-login-cooloff-seconds", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.security.get-login-cooloff-seconds")]
             private static void p5_security_get_login_cooloff_seconds (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -200,7 +200,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-server", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-smtp-server")]
             private static void p5_mail_get_smtp_server (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -212,7 +212,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-port", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-smtp-port")]
             private static void p5_mail_get_smtp_port (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -224,7 +224,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-use-ssl", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-smtp-use-ssl")]
             private static void p5_mail_get_smtp_use_ssl (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -236,7 +236,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-username", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-smtp-username")]
             private static void p5_mail_get_smtp_username (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -248,7 +248,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-password", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-smtp-password")]
             private static void p5_mail_get_smtp_password (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -260,7 +260,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-server", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-pop3-server")]
             private static void p5_mail_get_pop3_server (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -272,7 +272,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-port", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-pop3-port")]
             private static void p5_mail_get_pop3_port (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -284,7 +284,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-use-ssl", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-pop3-use-ssl")]
             private static void p5_mail_get_pop3_use_ssl (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -296,7 +296,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-username", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-pop3-username")]
             private static void p5_mail_get_pop3_username (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -308,7 +308,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-password", Protection = EventProtection.NativeClosed)]
+            [ActiveEvent (Name = "p5.mail.get-pop3-password")]
             private static void p5_mail_get_pop3_password (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -325,7 +325,7 @@ namespace p5
             private static void ExecuteHyperlispFile (ApplicationContext context, string filePath)
             {
                 // Loading file, converting to Lambda, for then to evaluate as p5 lambda
-                context.RaiseNative ("eval", context.RaiseNative ("load-file", new Node("", filePath)) [0]);
+                context.Raise ("eval", context.Raise ("load-file", new Node("", filePath)) [0]);
             }
 
             /*

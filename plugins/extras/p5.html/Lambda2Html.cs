@@ -21,7 +21,7 @@ namespace p5.html
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "lambda2html", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "lambda2html")]
         public static void lambda2html (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

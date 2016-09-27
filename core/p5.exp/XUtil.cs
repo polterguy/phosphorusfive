@@ -112,7 +112,7 @@ namespace p5.exp
                 srcList[0].Insert (0, new Node ("_dn", destination ?? srcList[0]));
 
                 // Raising source Active Event
-                context.RaiseLambda (srcList[0].Name, srcList[0]);
+                context.Raise (srcList[0].Name, srcList[0]);
 
                 // Building up our return value(s)
                 var retVal = new List<object> ();
@@ -154,7 +154,6 @@ namespace p5.exp
             ApplicationContext context, 
             Node args, 
             SetCollectionDelegate functor, 
-            bool isNative,
             List<string> exclusionArgs = null)
         {
             // Iterating through each destinations, updating with source
@@ -189,16 +188,6 @@ namespace p5.exp
 
                 // Retrieving key and value for cookie
                 var key = Single<string> (context, args);
-
-                // Constant destination, checking if this is a "native" invocation, before we proceed with default logic
-                if (isNative) {
-                    functor (key, args.FirstChild.Value);
-                    return;
-                }
-
-                // Making sure collection key is not "hidden" key, before we retrieve source
-                if (key.StartsWith ("_"))
-                    throw new LambdaException ("Caller tried to access a protected collection key named; " + key, args, context);
                 var source = Source (
                     context,
                     args,
@@ -224,8 +213,7 @@ namespace p5.exp
         public static void GetCollection (
             ApplicationContext context, 
             Node args, 
-            GetCollectionDelegate functor, 
-            bool isNative)
+            GetCollectionDelegate functor)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (var argsRemover = new Utilities.ArgsRemover (args, true)) {
@@ -235,17 +223,6 @@ namespace p5.exp
 
                     // Retrieving object by invoking functor with key
                     var value = functor (idxKey);
-
-                    // Checking if this is a "native" invocation, and if so, yielding object back to caller "raw"
-                    if (isNative) {
-                        args.Value = value;
-                        argsRemover.StopRemovingArgsValue ();
-                        return;
-                    }
-
-                    // Making sure collection key is not "hidden" key
-                    if (idxKey.StartsWith ("_"))
-                        throw new LambdaException ("Caller tried to access a protected collection key named; " + idxKey, args, context);
 
                     // Adding node for given key, defaulting to null value
                     var resultNode = args.Add (idxKey).LastChild;
@@ -660,7 +637,7 @@ namespace p5.exp
             args.Value = null; // To make sure we don't return what we came in with!
 
             // Executing lambda children, and not evaluating any expression in evaluated node!
-            context.RaiseLambda ("eval", exeLambda);
+            context.Raise ("eval", exeLambda);
 
             // Making sure we return all nodes that was created during execution of event back to caller
             // in addition to value

@@ -53,7 +53,7 @@ namespace p5.exp.iterators
                     throw new ExpressionException ("Cannot use 'like' addition to value iterator when value is not of type string");
 
                 // converting given value to specified type
-                value = context.RaiseNative ("p5.hyperlisp.get-object-value." + _type, new Node ("", value)).Value;
+                value = context.Raise ("p5.hyperlisp.get-object-value." + _type, new Node ("", value)).Value;
             }
 
             // Filtering away all previous matches that does not match the specified value

@@ -5,7 +5,7 @@
  * Useful for creating your own custom "create-default-pages.hl" file
  */
 
-create-protected-event:sys42.get-pages-database-creation-script
+create-event:sys42.get-pages-database-creation-script
 
   /*
    * Will contain the lambda object necessary to create the [p5.page] objects in

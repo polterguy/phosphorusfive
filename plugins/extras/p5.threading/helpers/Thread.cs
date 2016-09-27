@@ -103,7 +103,7 @@ namespace p5.threading.helpers
          */
         private void Execute ()
         {
-            Context.RaiseLambda ("eval-mutable", Lambda);
+            Context.Raise ("eval-mutable", Lambda);
         }
     }
 }

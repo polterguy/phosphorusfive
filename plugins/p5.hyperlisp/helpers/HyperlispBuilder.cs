@@ -92,7 +92,7 @@ namespace p5.hyperlisp.helpers
 
             builder.Append (
                 string.Format (":{0}",
-                    _context.RaiseNative (
+                    _context.Raise (
                         "p5.hyperlisp.get-type-name." + node.Value.GetType (),
                         new Node ()).Get<string> (_context)));
         }

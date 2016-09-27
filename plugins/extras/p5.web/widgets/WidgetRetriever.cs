@@ -33,7 +33,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-parent-widget", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-parent-widget")]
         public void get_parent_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -53,7 +53,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-children-widgets", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-children-widgets")]
         public void get_children_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -80,8 +80,8 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "find-widget", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "find-widget-like", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "find-widget")]
+        [ActiveEvent (Name = "find-widget-like")]
         public void find_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -119,8 +119,8 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "find-first-ancestor-widget", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "find-first-ancestor-widget-like", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "find-first-ancestor-widget")]
+        [ActiveEvent (Name = "find-first-ancestor-widget-like")]
         public void find_first_ancestor_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -213,8 +213,8 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widgets", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "list-widgets-like", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-widgets")]
+        [ActiveEvent (Name = "list-widgets-like")]
         public void list_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -235,7 +235,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "widget-exist", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "widget-exist")]
         public void widget_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

@@ -22,7 +22,7 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "match", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "match")]
         public static void lambda_match (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

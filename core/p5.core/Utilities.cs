@@ -135,7 +135,7 @@ namespace p5.core
                     .Add ("content", plainText).Root;
 
             // Using [p5.mime.create] as actual encryption implementation
-            return context.RaiseNative (mimeEntity.Name, mimeEntity)["result"].Get<string> (context);
+            return context.Raise (mimeEntity.Name, mimeEntity)["result"].Get<string> (context);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace p5.core
             Node decryptNode = new Node ("p5.mime.parse", cipherText);
 
             // Using [p5.mime.parse] as actual decryption implementation
-            var resultNode = context.RaiseNative (decryptNode.Name, decryptNode);
+            var resultNode = context.Raise (decryptNode.Name, decryptNode);
 
             // Returning first [text] part found in multipart/encrypted
             return resultNode.FirstChild["text"]["content"].Get<string>(context);
@@ -302,7 +302,7 @@ namespace p5.core
                     } else {
                         builder.Append ("\r\n");
                     }
-                    builder.Append (context.RaiseNative (
+                    builder.Append (context.Raise (
                         "p5.hyperlisp.get-string-value." +
                         idx.GetType ().FullName, new Node ("", idx)).Value);
                 }
@@ -311,7 +311,7 @@ namespace p5.core
             Node node = new Node ("", value);
             if (encode && value is byte[])
                 node.Add ("encode", true);
-            return context.RaiseNative (
+            return context.Raise (
                 "p5.hyperlisp.get-string-value." +
                 value.GetType ().FullName, node).Value as string;
         }
@@ -321,11 +321,11 @@ namespace p5.core
          */
         private static T Convert2Object<T> (object value, ApplicationContext context, T defaultValue = default (T))
         {
-            var typeName = context.RaiseNative (
+            var typeName = context.Raise (
                 "p5.hyperlisp.get-type-name." + typeof (T).FullName).Get<string> (context);
             if (typeName == null)
                 return defaultValue;
-            return context.RaiseNative (
+            return context.Raise (
                 "p5.hyperlisp.get-object-value." +
                 typeName, new Node ("", value)).Get<T> (context);
         }

@@ -20,8 +20,8 @@ namespace p5.lambda.keywords.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "src", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "dest", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "src")]
+        [ActiveEvent (Name = "dest")]
         public static void lambda_src_dest (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning

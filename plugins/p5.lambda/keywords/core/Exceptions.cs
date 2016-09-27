@@ -21,12 +21,12 @@ namespace p5.lambda.keywords.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "try", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "try")]
         public static void lambda_try (ApplicationContext context, ActiveEventArgs e)
         {
             try {
                 // Evaluating [try] lambda block
-                context.RaiseLambda ("eval-mutable", e.Args);
+                context.Raise ("eval-mutable", e.Args);
             } catch (Exception err) {
 
                 // Storing exception message as [_exception] in parent of e.Args, 
@@ -38,7 +38,7 @@ namespace p5.lambda.keywords.core
                 } else if (e.Args.NextSibling.Name == "finally") {
 
                     // Evaluating [finally] block before rethrowing exception
-                    context.RaiseLambda ("eval-mutable", e.Args.NextNode);
+                    context.Raise ("eval-mutable", e.Args.NextNode);
                     ExceptionDispatchInfo.Capture(err.InnerException).Throw();
                 }
             }
@@ -49,7 +49,7 @@ namespace p5.lambda.keywords.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "catch", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "catch")]
         public static void lambda_catch (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if an exception did indeed occur
@@ -63,7 +63,7 @@ namespace p5.lambda.keywords.core
                 e.Args.Parent ["_exception"].UnTie ();
 
                 // Evaluating [catch] lambda block
-                context.RaiseLambda ("eval-mutable", e.Args);
+                context.Raise ("eval-mutable", e.Args);
             }
         }
 
@@ -72,7 +72,7 @@ namespace p5.lambda.keywords.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "throw", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "throw")]
         public static void lambda_throw (ApplicationContext context, ActiveEventArgs e)
         {
             throw new LambdaException (e.Args.GetExValue (context, "no message"), e.Args, context);

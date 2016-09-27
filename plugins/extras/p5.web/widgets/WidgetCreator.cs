@@ -33,10 +33,10 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-widget", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "create-container-widget", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "create-void-widget", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "create-literal-widget", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "create-widget")]
+        [ActiveEvent (Name = "create-container-widget")]
+        [ActiveEvent (Name = "create-void-widget")]
+        [ActiveEvent (Name = "create-literal-widget")]
         public void create_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Figuring out which type of widget we're creating
@@ -52,7 +52,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "delete-widget")]
         public void delete_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
@@ -68,7 +68,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "clear-widget", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "clear-widget")]
         public void clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
@@ -148,7 +148,7 @@ namespace p5.web.widgets {
                 createNode ["before"].Value = before;
             if (after != null)
                 createNode ["after"].Value = after;
-            context.RaiseNative ("p5.web.widgets." + type, createNode);
+            context.Raise ("p5.web.widgets." + type, createNode);
 
             // Getting [oninit], if any, for entire hierarchy, and invoking each of them, in "breadth first" order
             // Notice that since this is done AFTER creation of entire hierarchy, then each [oninit] can invoke dynamically 
@@ -159,7 +159,7 @@ namespace p5.web.widgets {
 
                 // Invoking currently iterated [oninit] lambda event
                 idxOnInit.Insert (0, new Node ("_event", idxOnInit.Parent.Get<Widget> (context).ID));
-                context.RaiseLambda ("eval", idxOnInit.Clone ());
+                context.Raise ("eval", idxOnInit.Clone ());
             }
 
             // Making sure we return ID of control
@@ -176,13 +176,6 @@ namespace p5.web.widgets {
         {
             // Looping through each event in args
             foreach (var idxEvt in eventNode.Children.ToList ()) {
-
-                // Verifying Active Event is not protected
-                if (!CanOverrideEventInLambda (context, idxEvt.Name))
-                    throw new LambdaException(
-                        string.Format ("You cannot override Active Event '{0}' since it is protected", idxEvt.Name),
-                        eventNode,
-                        context);
 
                 // Adding lambda event to lambda event storage
                 Manager.WidgetLambdaEventStorage [idxEvt.Name, widgetId] = idxEvt;

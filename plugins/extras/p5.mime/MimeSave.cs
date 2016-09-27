@@ -21,7 +21,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.save-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mime.save-file")]
         public static void p5_mime_save_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -34,7 +34,7 @@ namespace p5.mime
                 var filename = XUtil.Single<string> (context, e.Args, true);
 
                 // Verifying user is authorized to saving to the specified file
-                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
+                context.Raise ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
 
                 // Retrieving root MIME entity from args
                 var mimeNode = e.Args [0];

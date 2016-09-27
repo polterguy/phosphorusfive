@@ -21,9 +21,9 @@ namespace p5.mime.plugins
         /// <summary>
         ///     Posts or puts a MIME message over an HTTP request
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-post-mime", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "p5.net.http-put-mime", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "p5.net.http-get-mime", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.net.http-post-mime")]
+        [ActiveEvent (Name = "p5.net.http-put-mime")]
+        [ActiveEvent (Name = "p5.net.http-get-mime")]
         public static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -75,7 +75,7 @@ namespace p5.mime.plugins
                 createMimeNode.AddRange (args.Children);
 
                 // Returning MimeEntity to caller
-                return context.RaiseNative ("p5.mime.create-native", createMimeNode).Get<MimeEntity> (context);
+                return context.Raise ("p5.mime.create-native", createMimeNode).Get<MimeEntity> (context);
             } finally {
 
                 // Closing and disposing all streams created during creation of MimeEntity
@@ -132,7 +132,7 @@ namespace p5.mime.plugins
             });
 
             // Invoking Active Event that create HTTP request
-            context.RaiseNative(activeEventName, requestNode);
+            context.Raise(activeEventName, requestNode);
         }
 
         /*
@@ -163,7 +163,7 @@ namespace p5.mime.plugins
                 try {
                     result.Add (decryptionKeys);
                     result.Add (attachmentFolder);
-                    context.RaiseNative ("p5.mime.parse-native", result);
+                    context.Raise ("p5.mime.parse-native", result);
                 } finally {
                     result.Value = oldValue;
                 }

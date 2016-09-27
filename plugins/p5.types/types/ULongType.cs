@@ -17,7 +17,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ulong", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ulong")]
         private static void p5_hyperlisp_get_object_value_ulong (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is ulong) {
@@ -32,7 +32,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt64", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt64")]
         private static void p5_hyperlisp_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "ulong";

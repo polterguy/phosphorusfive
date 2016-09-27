@@ -52,7 +52,7 @@ namespace p5.webapp.code
             args.Add ("page", this);
 
             // Raising our "page initialized" active event
-            ApplicationContext.RaiseNative ("p5.web.initialize-page", args);
+            ApplicationContext.Raise ("p5.web.initialize-page", args);
 
             // Calling base
             base.OnLoad(e);
@@ -67,7 +67,7 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-page-value", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "set-page-value")]
         public void set_page_value (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
@@ -80,7 +80,7 @@ namespace p5.webapp.code
                     // Setting or updating
                     ViewState[key] = value;
                 }
-            }, e.NativeSource);
+            });
         }
 
         /// <summary>
@@ -88,10 +88,10 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-page-value", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-page-value")]
         public void get_page_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => ViewState [key], e.NativeSource);
+            XUtil.GetCollection (context, e.Args, key => ViewState [key]);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-page-keys", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-page-keys")]
         public void list_page_keys (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.ListCollection (context, e.Args, ViewState.Keys);
@@ -114,7 +114,7 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-title", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "set-title")]
         public void set_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving new Title of page
@@ -141,7 +141,7 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-title", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-title")]
         public void get_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -162,7 +162,7 @@ namespace p5.webapp.code
         protected void common_event_handler (Widget sender, Widget.AjaxEventArgs e)
         {
             var args = new Node(sender.ID, e.Name);
-            ApplicationContext.RaiseNative("p5.web.raise-ajax-event", args);
+            ApplicationContext.Raise("p5.web.raise-ajax-event", args);
         }
     }
 }

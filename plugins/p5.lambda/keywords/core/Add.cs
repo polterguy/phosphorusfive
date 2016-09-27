@@ -20,7 +20,7 @@ namespace p5.lambda.keywords.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "add", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "add")]
         public static void lambda_add (ApplicationContext context, ActiveEventArgs e)
         {
             // Asserting destination is expression

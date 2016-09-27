@@ -28,7 +28,7 @@ namespace p5.threading
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "lock", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "lock")]
         public static void p5_lock (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving all lockers caller wants to lock
@@ -37,7 +37,7 @@ namespace p5.threading
             // Recursively waits for each locker to be unlocked, evaluating given lambda, once all lockers are unlocked
             LockNext (
                 lockers, delegate {
-                    context.RaiseLambda ("eval-mutable", e.Args);
+                    context.Raise ("eval-mutable", e.Args);
                 });
         }
 

@@ -17,14 +17,14 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.node", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.node")]
         private static void p5_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is Node)
                 return;
             var code = e.Args.Get<string> (context);
             var tmp = new Node ("", code);
-            context.RaiseNative ("lisp2lambda", tmp);
+            context.Raise ("lisp2lambda", tmp);
             e.Args.Value = tmp.Children.Count > 0 ? new Node ("", null, tmp.Children) : null;
         }
 
@@ -33,12 +33,12 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.abs.node", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.abs.node")]
         private static void p5_hyperlisp_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
         {
             var code = e.Args.Get<string> (context);
             var tmp = new Node ("", code);
-            context.RaiseNative ("lisp2lambda", tmp);
+            context.Raise ("lisp2lambda", tmp);
 
             // Different logic if there's one node or multiple nodes!
             if (tmp.Children.Count == 1) {
@@ -64,11 +64,11 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.core.Node", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.core.Node")]
         private static void p5_hyperlisp_get_string_value_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             var tmp = new Node ("", e.Args.Value);
-            context.RaiseNative ("lambda2lisp", tmp);
+            context.Raise ("lambda2lisp", tmp);
             e.Args.Value = tmp.Value;
         }
 
@@ -77,7 +77,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.core.Node", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.core.Node")]
         private static void p5_hyperlisp_get_type_name_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "node";

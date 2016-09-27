@@ -41,7 +41,7 @@ namespace p5.mail
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mail.pop3.get-emails", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mail.pop3.get-emails")]
         public static void p5_mail_pop3_get_emails (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we remove arguments supplied
@@ -124,7 +124,7 @@ namespace p5.mail
                         foreach (var idxNode in args.Children.Where (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys")) {
                             msgNode.Add (idxNode.Clone ());
                         }
-                        context.RaiseNative("p5.mime.parse-native", msgNode);
+                        context.Raise("p5.mime.parse-native", msgNode);
                     } finally {
                         msgNode.Value = oldValue;
                         msgNode.Children.RemoveAll (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys");
@@ -241,7 +241,7 @@ namespace p5.mail
 
                 // Adding currently iterated message to [functor] and evaluating using [eval]
                 exe.Add (msgNode);
-                context.RaiseLambda ("eval", exe);
+                context.Raise ("eval", exe);
             } else {
 
                 // Returning node with message to caller

@@ -22,7 +22,7 @@ namespace p5.web.ui.request {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-http-method", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-http-method")]
         public static void get_http_method (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = HttpContext.Current.Request.HttpMethod;
@@ -33,7 +33,7 @@ namespace p5.web.ui.request {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-request-body", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-request-body")]
         public static void get_request_body (ApplicationContext context, ActiveEventArgs e)
         {
             if (HttpContext.Current.Request.InputStream.Length == 0) {
@@ -60,7 +60,7 @@ namespace p5.web.ui.request {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "save-request-body", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "save-request-body")]
         public static void save_request_body (ApplicationContext context, ActiveEventArgs e)
         {
             // Getting filename
@@ -71,10 +71,10 @@ namespace p5.web.ui.request {
                 filename = "users/" + context.Ticket.Username + filename.Substring (1);
 
             // Verifying user is authorized writing to the file
-            context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
+            context.Raise ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
 
             // Retrieving root node of web application
-            var rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
+            var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
 
             // Creating a file stream, copying the request stream to our filestream
             using (FileStream fs = File.Create (rootFolder + filename)) {
@@ -87,7 +87,7 @@ namespace p5.web.ui.request {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "request-is-mobile-device", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "request-is-mobile-device")]
         public static void request_is_mobile_device (ApplicationContext context, ActiveEventArgs e)
         {
             var userAgent = HttpContext.Current.Request.UserAgent.ToLower ();

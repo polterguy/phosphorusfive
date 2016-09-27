@@ -20,7 +20,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "delete-file")]
         public static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
             QueryHelper.Run (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {

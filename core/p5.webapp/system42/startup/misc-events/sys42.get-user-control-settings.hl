@@ -10,7 +10,7 @@
  * the attribute values returned.
  */
 
-create-protected-event:sys42.get-user-control-settings
+create-event:sys42.get-user-control-settings
 
   /*
    * Applying all arguments

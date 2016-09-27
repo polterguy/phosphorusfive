@@ -19,10 +19,10 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-http-header", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-http-header")]
         public static void get_http_header (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.Headers [key], e.NativeSource);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.Headers [key]);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-http-headers", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-http-headers")]
         public static void list_http_headers (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Headers.AllKeys);

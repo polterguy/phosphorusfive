@@ -123,7 +123,7 @@ namespace p5.io.authorization.helpers
 
                     // Making sure root password is not null, since during setup of server, guest needs write access to create 
                     // salt event files, etc ...
-                    if (!context.RaiseNative ("p5.security.root-password-is-null").Get<bool> (context))
+                    if (!context.Raise ("p5.security.root-password-is-null").Get<bool> (context))
                         throw new LambdaSecurityException (
                             string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                             stack, 
@@ -216,7 +216,7 @@ namespace p5.io.authorization.helpers
          */
         public static string GetAuthFile (ApplicationContext context)
         {
-            return context.RaiseNative ("p5.security.get-auth-file").Get<string> (context).Replace ("~", "");
+            return context.Raise ("p5.security.get-auth-file").Get<string> (context).Replace ("~", "");
         }
     }
 }

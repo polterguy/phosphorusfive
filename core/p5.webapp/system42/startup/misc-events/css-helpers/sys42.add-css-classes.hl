@@ -7,7 +7,7 @@
  * Pass in the ID of the widget to add class on as [_arg], and the class to add as [_class]
  */
 
-create-protected-event:sys42.add-css-classes
+create-event:sys42.add-css-classes
 
   /*
    * Splitting upon every given CSS class caller wants to add

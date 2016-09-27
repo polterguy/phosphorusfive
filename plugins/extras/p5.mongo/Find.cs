@@ -21,7 +21,7 @@ namespace p5.mongo {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mongo.find", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mongo.find")]
         public static void p5_mongo_find (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning

@@ -7,7 +7,7 @@
  * a "root account", optionally you can retrieve settings for a specific user, by supplying user to retrieve setting
  * for as [_username]
  */
-create-protected-event:sys42.list-app-settings
+create-event:sys42.list-app-settings
 
   /*
    * Sanity check

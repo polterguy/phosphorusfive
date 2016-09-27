@@ -20,7 +20,7 @@ namespace p5.lambda.keywords.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "for-each", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "for-each")]
         public static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
             // storing old for-each "body"
@@ -81,7 +81,7 @@ namespace p5.lambda.keywords.core
                                 // children from that Event invocation
                                 Node sourceNode = e.Args.Children.First(ix=>ix.Name != "");
                                 var oldSourceValue = sourceNode.Value;
-                                context.RaiseLambda (sourceNode.Name, sourceNode);
+                                context.Raise (sourceNode.Name, sourceNode);
                                 sourceNode.UnTie (); // removing node that was used as source
 
                                 // Value has presedence
@@ -115,7 +115,7 @@ namespace p5.lambda.keywords.core
             var dp = new Node ("_dp", source);
             args.Insert (0, dp);
 
-            context.RaiseLambda ("eval-mutable", args);
+            context.Raise ("eval-mutable", args);
             var rootChildName = args.Root.FirstChild != null ? args.Root.FirstChild.Name : null;
             bool shouldStop = rootChildName == "_return" || rootChildName == "_break";
             if (rootChildName == "_break" || rootChildName == "_continue") {

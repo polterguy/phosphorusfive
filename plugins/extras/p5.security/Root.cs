@@ -17,7 +17,7 @@ namespace p5.security
         /*
          * Useful during installation. Sets root password, but only if existing password is null!
          */
-        [ActiveEvent (Name = "p5.security.set-root-password", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.security.set-root-password")]
         public static void p5_security_set_root_password (ApplicationContext context, ActiveEventArgs e)
         {
             /*
@@ -34,7 +34,7 @@ namespace p5.security
         /*
          * Useful during installation. Sets root password, but only if existing password is null!
          */
-        [ActiveEvent (Name = "p5.security.root-password-is-null", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.security.root-password-is-null")]
         public static void p5_security_root_password_is_null (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = AuthenticationHelper.NoExistingRootAccount (context);

@@ -8,7 +8,7 @@
  * Pass in the ID of the widget to toggle class on as [_arg], and the class to toggle as [_class]
  */
 
-create-protected-event:sys42.toggle-css-classes
+create-event:sys42.toggle-css-classes
 
   /*
    * Splitting upon every given CSS class caller wants to toggle

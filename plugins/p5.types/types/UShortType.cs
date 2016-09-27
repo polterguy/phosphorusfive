@@ -17,7 +17,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ushort", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ushort")]
         private static void p5_hyperlisp_get_object_value_ushort (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is ushort) {
@@ -32,7 +32,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt16", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt16")]
         private static void p5_hyperlisp_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "ushort";

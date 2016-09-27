@@ -9,7 +9,7 @@
  *
  * [_src] can either contain a single value, be a node hierarchy, or both.
  */
-create-protected-event:sys42.set-app-setting
+create-event:sys42.set-app-setting
 
   /*
    * Sanity check

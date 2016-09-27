@@ -18,11 +18,11 @@ namespace p5.lambda.keywords.extras
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "fetch", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "fetch")]
         public static void lambda_fetch (ApplicationContext context, ActiveEventArgs e)
         {
             // Evaluating [fetch] lambda block
-            context.RaiseLambda ("eval-mutable", e.Args);
+            context.Raise ("eval-mutable", e.Args);
 
             // Now we can fetch expression value, and clear body
             e.Args.Value = XUtil.Single<object> (context, e.Args, true);

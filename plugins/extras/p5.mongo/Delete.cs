@@ -20,7 +20,7 @@ namespace p5.mongo
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mongo.delete", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mongo.delete")]
         public static void p5_mongo_delete (ApplicationContext context, ActiveEventArgs e)
         {
             // Hous cleaning

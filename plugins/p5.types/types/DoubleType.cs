@@ -17,7 +17,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.double", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.double")]
         private static void p5_hyperlisp_get_object_value_double (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is double) {
@@ -32,7 +32,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Double", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Double")]
         private static void p5_hyperlisp_get_type_name_System_Double (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "double";

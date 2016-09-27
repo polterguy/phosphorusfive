@@ -20,7 +20,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "folder-exist", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "folder-exist")]
         public static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
             QueryHelper.Run (context, e.Args, false, "read-folder", delegate (string foldername, string fullpath) {

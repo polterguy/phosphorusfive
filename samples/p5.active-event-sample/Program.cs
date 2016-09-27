@@ -31,7 +31,7 @@ namespace p5_active_event_sample
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
 
             // Then we raise our Active Event, which will invoke our "foo" Active Event in our plugin.
-            var retVal = context.RaiseNative ("foo");
+            var retVal = context.Raise ("foo");
 
             // Then we write the returned value from our plugin Active Event to the console
             System.Console.WriteLine ("Value from plugin was; " + retVal.Value);
@@ -39,19 +39,19 @@ namespace p5_active_event_sample
             // Then we invoke another Active Event, which is statically handled in our plugin, but which creates another handler
             // for our "foo" Active Event, being an "instance handler".
             System.Console.WriteLine ("Then we register an 'instance handler', and re-raise our 'foo' event, which then should have *TWO* handlers");
-            context.RaiseNative ("create-instance-handler");
+            context.Raise ("create-instance-handler");
 
             // When we now raise our "foo" Active Event, we will have two handlers for it
-            context.RaiseNative ("foo");
+            context.Raise ("foo");
 
             // Then we uregister our instance event handler
             System.Console.WriteLine ("Then we unregister our instance handler, before we re-raise our 'foo' event yet again");
 
             // Then we invoke an Active Event which "unregisters" our instance handler
-            context.RaiseNative ("unregister-instance-handler");
+            context.Raise ("unregister-instance-handler");
 
             // Before we invoke our foo Active Event for the last time, proving our instance handler is now "out of the picture"
-            context.RaiseNative ("foo");
+            context.Raise ("foo");
 
             // Before finally making sure our console window stays open until the user hits carriage return
             System.Console.ReadLine ();

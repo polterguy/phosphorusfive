@@ -24,7 +24,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.list-private-keys", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.crypto.list-private-keys")]
         private static void p5_crypto_list_private_keys (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
@@ -71,7 +71,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.list-public-keys", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.crypto.list-public-keys")]
         private static void p5_crypto_list_public_keys (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
@@ -118,7 +118,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.get-key-details", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.crypto.get-key-details")]
         private static void p5_crypto_get_key_details (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
@@ -168,7 +168,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.get-public-key", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.crypto.get-public-key")]
         private static void p5_crypto_get_public_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
@@ -215,7 +215,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.delete-private-key", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.crypto.delete-private-key")]
         private static void p5_crypto_delete_private_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
@@ -261,7 +261,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.delete-public-key", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.crypto.delete-public-key")]
         private static void p5_crypto_delete_public_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning

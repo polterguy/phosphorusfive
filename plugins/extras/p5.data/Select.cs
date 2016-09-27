@@ -20,7 +20,7 @@ namespace p5.data
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "select-data", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "select-data")]
         public static void select_data (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving expression and doing basic syntax checking

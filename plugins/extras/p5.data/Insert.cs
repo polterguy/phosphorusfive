@@ -25,8 +25,8 @@ namespace p5.data
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "insert-data", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "append-data", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "insert-data")]
+        [ActiveEvent (Name = "append-data")]
         public static void insert_data (ApplicationContext context, ActiveEventArgs e)
         {
             /*

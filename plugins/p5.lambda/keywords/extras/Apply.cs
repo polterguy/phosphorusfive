@@ -21,7 +21,7 @@ namespace p5.lambda.keywords.extras
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "apply", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "apply")]
         public static void lambda_apply (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
@@ -110,7 +110,7 @@ namespace p5.lambda.keywords.extras
                     // Setting accurate name for node, adding datasource as [_arg], and invoking Active Event source
                     current.Name = activeEventName;
                     current.Insert (0, new Node ("_dn", dataSource));
-                    context.RaiseLambda (current.Name, current);
+                    context.Raise (current.Name, current);
 
                     // Returning result, prioritising value
                     if (current.Value != null && current.Value != originalNode.Value) {

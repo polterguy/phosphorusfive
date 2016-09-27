@@ -20,7 +20,7 @@ namespace p5.lambda.keywords.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "switch", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "switch")]
         public static void lambda_switch (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check
@@ -70,7 +70,7 @@ namespace p5.lambda.keywords.core
                     eval = eval.NextSibling;
                 if (eval != null) {
                     eval.Value = true;
-                    context.RaiseLambda ("eval-mutable", eval);
+                    context.Raise ("eval-mutable", eval);
                 }
             }
         }

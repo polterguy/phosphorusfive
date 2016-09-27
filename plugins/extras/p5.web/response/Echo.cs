@@ -19,7 +19,7 @@ namespace p5.web.ui.response {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "echo", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "echo")]
         public static void echo (ApplicationContext context, ActiveEventArgs e)
         {
             // Discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it
@@ -49,7 +49,7 @@ namespace p5.web.ui.response {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "echo-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "echo-file")]
         public static void echo_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it
@@ -57,13 +57,13 @@ namespace p5.web.ui.response {
             HttpContext.Current.Response.ClearContent ();
 
             // Retrieving root node of web application
-            var rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
+            var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
 
             // Finding filename
             var fileName = XUtil.Single<string> (context, e.Args);
 
             // Verifying user is authorized to reading from currently iterated file
-            context.RaiseNative ("p5.io.authorize.read-file", new Node ("", fileName).Add ("args", e.Args));
+            context.Raise ("p5.io.authorize.read-file", new Node ("", fileName).Add ("args", e.Args));
 
             // Rendering file back to client
             using (Stream fileStream = File.OpenRead (rootFolder + fileName)) {

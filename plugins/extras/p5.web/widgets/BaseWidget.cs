@@ -56,23 +56,6 @@ namespace p5.web.widgets {
         }
 
         /*
-         * Helper to figure out if Active Event is protected or not
-         */
-        protected bool CanOverrideEventInLambda (ApplicationContext context, string evt)
-        {
-            // Verifying Active Event is not protected, first checking native handlers
-            if (context.HasEvent (evt)) {
-
-                // There exist a native handler for this Active Event, now getting protection level of event
-                if (context.GetEventProtection(evt) == EventProtection.LambdaOpen)
-                    return true;
-            }
-
-            // Checking if protected events contains given event name, and if so, returning true, else returning false
-            return context.RaiseNative("p5.lambda.get-protected-events")[evt] == null;
-        }
-
-        /*
          * Helper to retrieve a list of widgets from a Node, throws if widget with specified ID does not exist
          */
         protected IEnumerable<T> FindWidgets<T> (

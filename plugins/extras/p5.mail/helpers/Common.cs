@@ -20,7 +20,7 @@ namespace p5.mail.helpers
         /// <param name="context">Application Context</param>
         public static string GetBaseFolder (ApplicationContext context)
         {
-            return context.RaiseNative ("p5.core.application-folder").Get<string> (context);
+            return context.Raise ("p5.core.application-folder").Get<string> (context);
         }
 
         /// <summary>
@@ -38,13 +38,13 @@ namespace p5.mail.helpers
             // Retrieving server settings, defaulting to those found in web.config if not explicitly overridden
             string server = 
                 args.GetChildValue<string> ("server", context) ??
-                context.RaiseNative (string.Format ("p5.mail.get-{0}-server", serverType)).Get<string> (context);
+                context.Raise (string.Format ("p5.mail.get-{0}-server", serverType)).Get<string> (context);
             int port = args["port"] != null ? 
                 args.GetChildValue<int> ("port", context) : 
-                context.RaiseNative (string.Format ("p5.mail.get-{0}-port", serverType)).Get<int> (context);
+                context.Raise (string.Format ("p5.mail.get-{0}-port", serverType)).Get<int> (context);
             bool useSsl = args["ssl"] != null ? 
                 args.GetChildValue<bool> ("ssl", context) : 
-                context.RaiseNative (string.Format ("p5.mail.get-{0}-use-ssl", serverType)).Get<bool> (context);
+                context.Raise (string.Format ("p5.mail.get-{0}-use-ssl", serverType)).Get<bool> (context);
 
             // Connecting client to server
             client.Connect (
@@ -68,8 +68,8 @@ namespace p5.mail.helpers
             } else {
 
                 // Retrieving default username/password from web.config
-                username = context.RaiseNative (string.Format ("p5.mail.get-{0}-username", serverType)).Get<string> (context);
-                password = context.RaiseNative (string.Format ("p5.mail.get-{0}-password", serverType)).Get<string> (context);
+                username = context.Raise (string.Format ("p5.mail.get-{0}-username", serverType)).Get<string> (context);
+                password = context.Raise (string.Format ("p5.mail.get-{0}-password", serverType)).Get<string> (context);
             }
 
             if (!string.IsNullOrEmpty (username)) {

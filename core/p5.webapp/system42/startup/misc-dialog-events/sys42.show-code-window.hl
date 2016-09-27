@@ -11,7 +11,7 @@
  * This window can have multiple instances at the same time on page
  */
 
-create-protected-event:sys42.show-code-window
+create-event:sys42.show-code-window
 
   // Checking if user supplied an expression, and if not, showing error message
   if:x:/../*/_arg

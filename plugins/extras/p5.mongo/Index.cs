@@ -21,7 +21,7 @@ namespace p5.mongo {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mongo.create-index", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mongo.create-index")]
         public static void p5_mongo_create_index (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check
@@ -62,7 +62,7 @@ namespace p5.mongo {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mongo.create-text-index", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mongo.create-text-index")]
         public static void p5_mongo_create_text_index (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check
@@ -90,7 +90,7 @@ namespace p5.mongo {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mongo.list-indexes", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mongo.list-indexes")]
         public static void p5_mongo_list_indexes (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving table name and running sanity check
@@ -117,7 +117,7 @@ namespace p5.mongo {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mongo.drop-indexes", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mongo.drop-indexes")]
         public static void p5_mongo_drop_indexes (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving table name and running sanity check

@@ -152,30 +152,6 @@ implementation is very different. The consequences of dynamically loading plugin
 of having to know about them during compile time, is relatively staggeringly interesting for the
 art of de-coupling and loosely binding your assemblies together.
 
-## Protecting your Active Events
-
-If you wish, you can when creating an Active Event "protect it", such that once your handler is
-registered, no other handlers can be registered for the same Active Event. In addition, you can also
-protect your Active Events such that they cannot be invoked directly from p5.lambda (Hyperlisp for
-instance), but must be raised by C# code.
-
-This is done by using the "Protection" property on your Active Event attributes. This property has
-five values, which are listed below.
-
-* NativeClosed - Only "native code" (C#) can invoke it, and only one handler can exist for it
-* NativeOpen - Multiple handlers are allowed, but only C# code can invoke it
-* LambdaClosed - Lambda code can invoke it, but there can be only one handler
-* LambdaOpen - Lambda code can invoke it, and there can be multiple handlers for it
-* LambdaClosedNativeOpen - Lambda can invoke it, but if there are  multiple handlers, they must be written in C#
-
-The above properties have implications for from where you can raise your events. The ApplicationContext object,
-has two different methods for raising Active Events. When you create code in C#, you should always use the
-"RaiseNative" method. This informs the Active Event core, that the origin of your invocation is "native code".
-
-Inside the *[eval]* Active Event, in p5.lambda though, all events are raised using "RaiseLambda". This means that
-if you have a piece of Hyperlisp code, that tries to invoke a "native only" Active Event, then an eexception 
-will be raised, and the invocation won't be allowed to execute.
-
 ## "Null" handlers handling _all_ events
 
 If you create an Active Event handler in C#, which has "" as its name, then this event handler will be

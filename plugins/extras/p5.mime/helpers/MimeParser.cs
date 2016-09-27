@@ -72,7 +72,7 @@ namespace p5.mime.helpers
         {
             // Caller did not supply decryption keys, adding up the machine server key anyway
             _passwords = new List<GnuPrivacyContext.KeyPasswordMapper> ();
-            var key = context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (_context);
+            var key = context.Raise ("p5.security.get-marvin-pgp-key").Get<string> (_context);
             string email = "foo@bar.com", fingerprint = "";
 
             // Figuring out if this is email or fingerprint
@@ -82,7 +82,7 @@ namespace p5.mime.helpers
                 email = key;
 
             // Retrieving password for machine key
-            var password = context.RaiseNative ("p5.security.get-marvin-pgp-key-password").Get<string> (_context);
+            var password = context.Raise ("p5.security.get-marvin-pgp-key-password").Get<string> (_context);
             var mailboxAdr = string.IsNullOrEmpty (fingerprint) ? new MailboxAddress ("", email) : new SecureMailboxAddress ("", email, fingerprint);
             _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (mailboxAdr, password));
         }
@@ -190,7 +190,7 @@ namespace p5.mime.helpers
             }
 
             // Verifying user is authorized to writing to destination file
-            _context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", _attachmentFolder + fileName).Add ("args", _args));
+            _context.Raise ("p5.io.authorize.modify-file", new Node ("", _attachmentFolder + fileName).Add ("args", _args));
 
             // Saving attachment to disc
             using (FileStream stream = File.Create (rootFolder + _attachmentFolder + fileName)) {
@@ -211,7 +211,7 @@ namespace p5.mime.helpers
                 return;
             
             // Verifying user is authorized to writing to destination folder
-            _context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", _attachmentFolder).Add ("args", _args));
+            _context.Raise ("p5.io.authorize.modify-folder", new Node ("", _attachmentFolder).Add ("args", _args));
 
             // Verifies folder exist, and creates entire path if not
             string baseFolder = Common.GetRootFolder (_context).TrimEnd ('/') + "/";

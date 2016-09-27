@@ -20,7 +20,7 @@
  *              Besides from the above mentioned arguments, the rest of the children will be added
  *              as properties and attributes for your specified widget
  */
-create-protected-event:sys42.wizard-window
+create-event:sys42.wizard-window
 
   /*
    * Making sure we delete any previously created dialogs

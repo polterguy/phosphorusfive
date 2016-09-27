@@ -24,7 +24,7 @@ namespace p5.data.helpers
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">E</param>
-        [ActiveEvent (Name = "p5.core.application-start", Protection = EventProtection.NativeOpen)]
+        [ActiveEvent (Name = "p5.core.application-start")]
         private static void p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
         {
             // Acquiring lock on database
@@ -190,7 +190,7 @@ namespace p5.data.helpers
 
                 // Saves node as Hyperlisp
                 using (TextWriter writer = File.CreateText (_dbFullPath + fileNode.Value)) {
-                    writer.Write (context.RaiseNative ("lambda2lisp", new Node ().AddRange (fileNode.Clone ().Children)).Value);
+                    writer.Write (context.Raise ("lambda2lisp", new Node ().AddRange (fileNode.Clone ().Children)).Value);
                 }
             }
         }
@@ -204,7 +204,7 @@ namespace p5.data.helpers
             using (TextReader reader = File.OpenText (_dbFullPath + path)) {
 
                 // Converting file to lambda
-                Node retVal = context.RaiseNative ("lisp2lambda", new Node ("", reader.ReadToEnd ()));
+                Node retVal = context.Raise ("lisp2lambda", new Node ("", reader.ReadToEnd ()));
                 retVal.Value = path;
                 return retVal;
             }
@@ -309,7 +309,7 @@ namespace p5.data.helpers
          */
         private static string GetRootFolder (ApplicationContext context)
         {
-            return context.RaiseNative ("p5.core.application-folder").Get<string> (context);
+            return context.Raise ("p5.core.application-folder").Get<string> (context);
         }
     }
 }

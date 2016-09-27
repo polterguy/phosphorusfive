@@ -51,7 +51,7 @@ namespace p5.exp.exceptions
             {
                 var convert = new Node ();
                 convert.Add (_node);
-                _context.RaiseNative ("lambda2lisp", convert);
+                _context.Raise ("lambda2lisp", convert);
                 string lisp = convert.Get<string> (_context);
                 int curPosCrLf = 0, noCrLf = 0;
                 while (noCrLf != _lineNo) {

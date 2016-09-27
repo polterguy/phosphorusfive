@@ -19,7 +19,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.request.parse-mime", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.web.request.parse-mime")]
         public static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -30,7 +30,7 @@ namespace p5.mime
                     ContentType.Parse (HttpContext.Current.Request.ContentType), 
                     HttpContext.Current.Request.InputStream);
                 e.Args.Value = entity;
-                context.RaiseNative ("p5.mime.parse-native", e.Args);
+                context.Raise ("p5.mime.parse-native", e.Args);
             }
         }
     }

@@ -4,7 +4,7 @@
  * execute on a different thread
  */
 
-create-protected-event:sys42.create-pgp-keypair
+create-event:sys42.create-pgp-keypair
   eval-x:x:/+/0/*
   fork
     p5.crypto.create-pgp-keypair

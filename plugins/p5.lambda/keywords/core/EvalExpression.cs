@@ -19,7 +19,7 @@ namespace p5.lambda.keywords.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval-x", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "eval-x")]
         public static void eval_x (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving expression from main node, making sure it was in fact an expression

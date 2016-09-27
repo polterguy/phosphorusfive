@@ -17,7 +17,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.long", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.long")]
         private static void p5_hyperlisp_get_object_value_long (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is long) {
@@ -32,7 +32,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int64", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int64")]
         private static void p5_hyperlisp_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "long";

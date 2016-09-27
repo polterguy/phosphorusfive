@@ -23,7 +23,7 @@ namespace p5.threading
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "wait", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "wait")]
         public static void wait (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking

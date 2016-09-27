@@ -21,7 +21,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-folder", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "delete-folder")]
         public static void delete_folder (ApplicationContext context, ActiveEventArgs e)
         {
             QueryHelper.Run (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {

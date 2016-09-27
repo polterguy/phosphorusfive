@@ -21,7 +21,7 @@ namespace p5.threading
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "fork", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "fork")]
         public static void fork (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each lambda object in fork statement

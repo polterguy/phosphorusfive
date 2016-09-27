@@ -20,7 +20,7 @@ namespace p5.flickrnet
 {
     public static class FlickrNet
     {
-        [ActiveEvent (Name = "p5.flickrnet.search", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.flickrnet.search")]
         public static void p5_flickrnet_search (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

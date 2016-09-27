@@ -669,7 +669,7 @@ namespace your_namespace
 {
     public static class YourClass
     {
-        [ActiveEvent (Name = "foo", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "foo")]
         public static void foo (ApplicationContext context, ActiveEventArgs e)
         {
               foreach (var idx in XUtil.Iterate<Node> (context, e.Args)) {

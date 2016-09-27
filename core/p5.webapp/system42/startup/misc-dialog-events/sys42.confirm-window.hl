@@ -13,7 +13,7 @@
  * [_onok] is not evaluated. You cannot show more than one instance of this window
  * at the time
  */
-create-protected-event:sys42.confirm-window
+create-event:sys42.confirm-window
 
   /*
    * Making sure we delete any previously created dialogs

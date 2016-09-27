@@ -4,7 +4,7 @@
  * according to a filename/path, by inspecting the file suffix
  */
 
-create-protected-event:sys42.get-content-type
+create-event:sys42.get-content-type
 
   // Loading Content-Type mapping file
   load-file:/system42/misc/content-types.hl

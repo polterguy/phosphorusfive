@@ -25,7 +25,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.core.initialize-application-context", Protection = EventProtection.NativeOpen)]
+        [ActiveEvent (Name = "p5.core.initialize-application-context")]
         private static void p5_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if session is null, which it might be, during for instance [p5.core.application-start]
@@ -48,7 +48,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent(Name = "p5.security.get-server-salt", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent(Name = "p5.security.get-server-salt")]
         private static void p5_security_get_server_salt(ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = AuthenticationHelper.ServerSalt(context);
@@ -59,7 +59,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent(Name = "p5.security.set-server-salt", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent(Name = "p5.security.set-server-salt")]
         private static void p5_security_set_server_salt(ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.SetServerSalt (context, e.Args.GetExValue<string> (context));

@@ -22,7 +22,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.create", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mime.create")]
         public static void p5_mime_create (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -60,7 +60,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.create-native", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.mime.create-native")]
         private static void p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking

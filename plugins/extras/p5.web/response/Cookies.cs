@@ -24,7 +24,7 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-cookie-value", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "set-cookie-value")]
         public static void set_cookie_value (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
@@ -38,7 +38,7 @@ namespace p5.web.ui.response
                     // Setting or updating
                     HttpContext.Current.Response.Cookies.Add (CreateCookieFromNode (e.Args, context, key, value));
                 }
-            }, e.NativeSource, new string[] { "duration", "http-only" }.ToList ());
+            }, new string[] { "duration", "http-only" }.ToList ());
         }
 
         /*

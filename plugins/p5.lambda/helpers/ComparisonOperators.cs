@@ -22,8 +22,8 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "equals", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "=", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "equals")]
+        [ActiveEvent (Name = "=")]
         public static void equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -35,8 +35,8 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "not-equals", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "!=", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "not-equals")]
+        [ActiveEvent (Name = "!=")]
         public static void not_equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -48,8 +48,8 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "more-than", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = ">", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "more-than")]
+        [ActiveEvent (Name = ">")]
         public static void more_than (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -61,8 +61,8 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "less-than", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "<", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "less-than")]
+        [ActiveEvent (Name = "<")]
         public static void less_than (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -74,8 +74,8 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "more-than-equals", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = ">=", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "more-than-equals")]
+        [ActiveEvent (Name = ">=")]
         public static void more_than_equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -87,8 +87,8 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "less-than-equals", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "<=", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "less-than-equals")]
+        [ActiveEvent (Name = "<=")]
         public static void less_than_equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -100,8 +100,8 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "contains", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "~", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "contains")]
+        [ActiveEvent (Name = "~")]
         public static void contains (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving left hand side
@@ -127,8 +127,8 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "not-contains", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "!~", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "not-contains")]
+        [ActiveEvent (Name = "!~")]
         public static void not_contains (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving left hand side
@@ -154,7 +154,7 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "operators", Protection = EventProtection.LambdaClosedNativeOpen)]
+        [ActiveEvent (Name = "operators")]
         private static void operators (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("=");

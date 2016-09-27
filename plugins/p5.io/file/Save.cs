@@ -21,7 +21,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "save-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "save-file")]
         public static void save_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -100,7 +100,7 @@ namespace p5.io.file
             List<byte> content)
         {
             // Verifying user is allowed to save to file
-            context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", args));
+            context.Raise ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", args));
 
             // Saving file
             using (FileStream stream = File.Create (rootFolder + fileName)) {

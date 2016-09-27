@@ -23,7 +23,7 @@ namespace p5.io.common
         /// <param name="context">application context</param>
         public static string GetRootFolder (ApplicationContext context)
         {
-            return context.RaiseNative ("p5.core.application-folder").Get<string> (context);
+            return context.Raise ("p5.core.application-folder").Get<string> (context);
         }
 
         /*

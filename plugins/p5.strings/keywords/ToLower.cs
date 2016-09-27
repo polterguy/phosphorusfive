@@ -18,7 +18,7 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "to-lower", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "to-lower")]
         public static void lambda_to_lower (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

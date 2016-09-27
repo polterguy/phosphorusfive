@@ -31,7 +31,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.container", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.web.widgets.container")]
         public void p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = CreateWidget<Container> (context, e.Args, "div");
@@ -42,7 +42,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.literal", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.web.widgets.literal")]
         public void p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = CreateWidget<Literal> (context, e.Args, "p");
@@ -53,7 +53,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.void", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.web.widgets.void")]
         public void p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = CreateWidget<Void> (context, e.Args, "input");
@@ -64,7 +64,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.text", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.web.widgets.text")]
         public void p5_web_controls_text (ApplicationContext context, ActiveEventArgs e)
         {
             // Creating widget as persistent control
@@ -239,16 +239,16 @@ namespace p5.web.widgets {
                 case "container":
                 case "void":
                 case "text":
-                    context.RaiseNative ("p5.web.widgets." + idxChild.Name, idxChild);
+                    context.Raise ("p5.web.widgets." + idxChild.Name, idxChild);
                     break;
                 default:
                     idxChild.Add ("element", idxChild.Name);
                     if (idxChild ["innerValue"] != null) {
-                        context.RaiseNative ("p5.web.widgets.literal", idxChild);
+                        context.Raise ("p5.web.widgets.literal", idxChild);
                     } else if (idxChild ["widgets"] != null) {
-                        context.RaiseNative ("p5.web.widgets.container", idxChild);
+                        context.Raise ("p5.web.widgets.container", idxChild);
                     } else {
-                        context.RaiseNative ("p5.web.widgets.void", idxChild);
+                        context.Raise ("p5.web.widgets.void", idxChild);
                     }
                     break;
                 }
@@ -262,13 +262,6 @@ namespace p5.web.widgets {
         {
             // Looping through all events for widget
             foreach (var idxEvt in events.Children.ToList ()) {
-
-                // Verifying Active Event is not protected
-                if (!CanOverrideEventInLambda(context, idxEvt.Name))
-                    throw new LambdaException(
-                        string.Format ("You cannot override Active Event '{0}' since it is protected", idxEvt.Name),
-                        idxEvt,
-                        context);
 
                 // Registering our event
                 Manager.WidgetLambdaEventStorage [idxEvt.Name, widget.ID] = idxEvt.UnTie ();

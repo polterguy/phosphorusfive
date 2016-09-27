@@ -18,7 +18,7 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.io.authorize.read-file", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.io.authorize.read-file")]
         private static void p5_io_authorize_read_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeReadFile (
@@ -32,7 +32,7 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.io.authorize.modify-file", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.io.authorize.modify-file")]
         private static void p5_io_authorize_modify_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeModifyFile (
@@ -46,7 +46,7 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.io.authorize.read-folder", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.io.authorize.read-folder")]
         private static void _authorize_read_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeReadFolder (
@@ -60,7 +60,7 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.io.authorize.modify-folder", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.io.authorize.modify-folder")]
         private static void p5_io_authorize_modify_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeModifyFolder (

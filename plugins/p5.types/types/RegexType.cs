@@ -19,7 +19,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.regex", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.regex")]
         private static void p5_hyperlisp_get_object_value_regex (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is Regex) {
@@ -53,7 +53,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Text.RegularExpressions.Regex", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Text.RegularExpressions.Regex")]
         private static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             var value = e.Args.Get<Regex> (context);
@@ -67,7 +67,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Text.RegularExpressions.Regex", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Text.RegularExpressions.Regex")]
         private static void p5_hyperlisp_get_type_name_System_Text_RegularExpressions_Regex (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "regex";

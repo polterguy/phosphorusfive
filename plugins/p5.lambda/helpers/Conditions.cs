@@ -87,7 +87,7 @@ namespace p5.lambda.helpers
 
                     // Raising comparison operator Active Event, 
                     // or any other Active Event currently part of conditional operators
-                    context.RaiseLambda (idx.Name, idx);
+                    context.Raise (idx.Name, idx);
 
                     // Moving results of Active Event invocation up from conditional Active Event invocation result node's value,
                     // to the result of conditional statement, to "bubble" results up to the top-most branching Active Event result
@@ -123,7 +123,7 @@ namespace p5.lambda.helpers
             try
             {
                 // Evaluating body of conditional statement, now with offset at first non-comparison operator event
-                context.RaiseLambda ("eval-mutable", args);
+                context.Raise ("eval-mutable", args);
             }
             finally
             {
@@ -178,7 +178,7 @@ namespace p5.lambda.helpers
             if (_operators == null) {
             
                 // Retrieving all comparison operators and logical operators in system
-                _operators = context.RaiseNative ("operators");
+                _operators = context.Raise ("operators");
 
                 // Then adding all logical operators
                 _operators.Add ("or");

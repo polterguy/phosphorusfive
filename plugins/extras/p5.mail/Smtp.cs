@@ -25,7 +25,7 @@ namespace p5.mail
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mail.smtp.send-email", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mail.smtp.send-email")]
         public static void p5_mail_smtp_send_email (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
@@ -116,7 +116,7 @@ namespace p5.mail
             body.Value = streams;
 
             // Creating MIME message by using [create-native] MIME Active Event
-            message.Body = context.RaiseNative ("p5.mime.create-native", body).Get<MimeEntity> (context);
+            message.Body = context.Raise ("p5.mime.create-native", body).Get<MimeEntity> (context);
 
             // Returning message
             return message;

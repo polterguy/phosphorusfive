@@ -29,10 +29,10 @@ namespace p5.net
         /// <summary>
         ///     Creates a new HTTP REST request of specified type
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-get", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "p5.net.http-post", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "p5.net.http-put", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "p5.net.http-delete", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.net.http-get")]
+        [ActiveEvent (Name = "p5.net.http-post")]
+        [ActiveEvent (Name = "p5.net.http-put")]
+        [ActiveEvent (Name = "p5.net.http-delete")]
         public static void p5_net_http_request (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderRequest, RenderResponse);
@@ -41,8 +41,8 @@ namespace p5.net
         /// <summary>
         ///     Posts or puts a file over an HTTP request
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-post-file", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "p5.net.http-put-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.net.http-post-file")]
+        [ActiveEvent (Name = "p5.net.http-put-file")]
         public static void p5_net_http_post_put_file (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderFileRequest, RenderResponse);
@@ -51,7 +51,7 @@ namespace p5.net
         /// <summary>
         ///     Gets a file from an HTTP request
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-get-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.net.http-get-file")]
         public static void p5_net_http_get_file (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderRequest, RenderFileResponse);
@@ -60,9 +60,9 @@ namespace p5.net
         /// <summary>
         ///     Creates a new HTTP REST request of specified type for native callers, wanting to do their own rendering
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-get-native", Protection = EventProtection.NativeClosed)]
-        [ActiveEvent (Name = "p5.net.http-post-native", Protection = EventProtection.NativeClosed)]
-        [ActiveEvent (Name = "p5.net.http-put-native", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.net.http-get-native")]
+        [ActiveEvent (Name = "p5.net.http-post-native")]
+        [ActiveEvent (Name = "p5.net.http-put-native")]
         public static void p5_net_http_request_native (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderRequestNative, RenderResponseNative);
@@ -255,7 +255,7 @@ namespace p5.net
             var filename = XUtil.Single<string> (context, args ["filename"]);
 
             // Making sure user is authorized to read the file request should send
-            context.RaiseNative ("p5.io.authorize.read-file", new Node ("", filename).Add ("args", args));
+            context.Raise ("p5.io.authorize.read-file", new Node ("", filename).Add ("args", args));
 
             // Opening request stream, and render file as content of request
             using (Stream stream = request.GetRequestStream ()) {
@@ -270,7 +270,7 @@ namespace p5.net
                 SetRequestHeaders (context, request, args);
 
                 // Retrieving root node of web application
-                var rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
+                var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
 
                 // Copying FileStream to RequestStream
                 using (Stream fileStream = File.OpenRead (rootFolder + filename)) {
@@ -291,7 +291,7 @@ namespace p5.net
             if (content.Value == null && content.Children.Count > 0) {
 
                 // Hyperlisp content
-                return context.RaiseNative ("lambda2lisp", content.UnTie ()).Value;
+                return context.Raise ("lambda2lisp", content.UnTie ()).Value;
             } else {
 
                 // Some sort of "value" content, either text or binary (byte[])
@@ -378,7 +378,7 @@ namespace p5.net
                         if (args.GetExChildValue ("convert", context, true)) {
 
                             // Converting from Hyperlisp to p5 lambda
-                            Node convert = context.RaiseNative ("lisp2lambda", new Node ("content", reader.ReadToEnd ()));
+                            Node convert = context.Raise ("lisp2lambda", new Node ("content", reader.ReadToEnd ()));
                             convert.Value = null;
                             result.Add (convert);
                         } else {
@@ -443,7 +443,7 @@ namespace p5.net
             var filename = XUtil.Single<string> (context, args ["filename"]);
 
             // Making sure user is authorized to write/overwrite the file response should be saved to
-            context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));
+            context.Raise ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));
 
             // Retrieving HTTP response
             HttpWebResponse response = (HttpWebResponse)request.GetResponseNoException ();
@@ -456,7 +456,7 @@ namespace p5.net
             using (Stream stream = response.GetResponseStream ()) {
 
                 // Retrieving root folder of web application
-                var rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
+                var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
 
                 // Copying response content stream to file stream encapsualting file caller requested to save content to
                 using (Stream fileStream = File.Create (rootFolder + filename)) {

@@ -105,16 +105,6 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Returns protection level of Active Event
-        /// </summary>
-        /// <returns><c>true</c> if Active Event is protected; otherwise, <c>false</c></returns>
-        /// <param name="name">Name</param>
-        public EventProtection GetEventProtection (string activeEventName)
-        {
-            return _registeredActiveEvents.GetEvents().SingleOrDefault(idx => idx.Name == activeEventName).Protection;
-        }
-
-        /// <summary>
         ///     Determines whether this instance has the event with the specified name.
         /// </summary>
         /// <returns><c>true</c> if this instance has event with the specified name; otherwise, <c>false</c></returns>
@@ -145,11 +135,10 @@ namespace p5.core
                     foreach (var idxActiveEvent in _typesInstanceActiveEvents.Types [idxType].Events) {
 
                         // Adding Active Event
-                        _registeredActiveEvents.AddMethod(
+                        _registeredActiveEvents.AddMethod (
                             idxActiveEvent.Attribute.Name,
                             idxActiveEvent.Method,
-                            instance,
-                            idxActiveEvent.Attribute.Protection);
+                            instance);
                     }
                 }
 
@@ -181,23 +170,13 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Raises one Active Event from native code
-        /// </summary>
-        /// <param name="name">name of Active Event to raise</param>
-        /// <param name="pars">arguments to pass into the Active Event</param>
-        public Node RaiseNative (string name, Node pars = null)
-        {
-            return _registeredActiveEvents.Raise (name, pars, this, _ticket, true);
-        }
-
-        /// <summary>
         ///     Raises one Active Event from lambda object
         /// </summary>
         /// <param name="name">name of Active Event to raise</param>
         /// <param name="pars">arguments to pass into the Active Event</param>
-        public Node RaiseLambda (string name, Node pars = null)
+        public Node Raise (string name, Node pars = null)
         {
-            return _registeredActiveEvents.Raise (name, pars, this, _ticket, false);
+            return _registeredActiveEvents.Raise (name, pars, this, _ticket);
         }
 
         /*
@@ -215,13 +194,12 @@ namespace p5.core
                     _registeredActiveEvents.AddMethod (
                         idxAVTypeEvent.Attribute.Name, 
                         idxAVTypeEvent.Method, 
-                        null, 
-                        idxAVTypeEvent.Attribute.Protection);
+                        null);
                 }
             }
 
             // Raising "initialize" Application Context Active Event
-            RaiseNative("p5.core.initialize-application-context");
+            Raise("p5.core.initialize-application-context");
         }
     }
 }

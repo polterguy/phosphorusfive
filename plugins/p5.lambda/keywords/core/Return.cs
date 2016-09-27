@@ -18,7 +18,7 @@ namespace p5.lambda.keywords.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "return", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "return")]
         public static void lambda_return (ApplicationContext context, ActiveEventArgs e)
         {
             // Inserting "return signaling node", such that [eval] and similar constructs will break out

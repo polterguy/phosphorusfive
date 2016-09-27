@@ -33,8 +33,7 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-event", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "create-protected-event", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "create-event")]
         public static void create_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking to see if this event has no lambda objects, and is not protected, at which case it is a "delete event" invocation
@@ -45,7 +44,7 @@ namespace p5.events
             } else {
 
                 // Creating new event
-                CreateEvent (XUtil.Single<string> (context, e.Args), e.Args.Clone (), e.Name == "create-protected-event", context);
+                CreateEvent (XUtil.Single<string> (context, e.Args), e.Args.Clone (), context);
             }
         }
 
@@ -54,7 +53,7 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-event", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "delete-event")]
         public static void delete_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Iterating through all events to delete
@@ -70,7 +69,7 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-event", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-event")]
         public static void get_even (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -103,7 +102,7 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "vocabulary", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "vocabulary")]
         public static void vocabulary (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -122,35 +121,16 @@ namespace p5.events
             }
         }
 
-        /// <summary>
-        ///     Returns all protected dynamically created Active Events
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.lambda.get-protected-events", Protection = EventProtection.NativeClosed)]
-        private static void p5_lambda_get_protected_events (ApplicationContext context, ActiveEventArgs e)
-        {
-            foreach (var idxEvt in _events.Keys) {
-                if (_events [idxEvt].Get<bool> (context))
-                    e.Args.Add (idxEvt);
-            }
-        }
-
         /*
          * Creates a new Active Event
          */
-        internal static void CreateEvent (string name, Node lambda, bool isProtected, ApplicationContext context)
+        internal static void CreateEvent (string name, Node lambda, ApplicationContext context)
         {
             // Acquire lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
 
-                // Checking if this is a protected event and there is an existing event with same name, 
-                // or there is an existing event, and existing event is protected, and if so, throwing
-                if (isProtected && _events.ContainsKey (name) || (_events.ContainsKey (name) && _events[name].Get<bool> (context)))
-                    throw new LambdaException (string.Format ("Sorry, '{0}' is a protected event, and cannot be modified", name), lambda, context);
-
                 // Making sure we have a key for Active Event name
-                _events [name] = new Node ("", isProtected);
+                _events [name] = new Node ("");
 
                 // Adding event to dictionary
                 _events [name].AddRange (lambda.Children);
@@ -167,10 +147,6 @@ namespace p5.events
 
                 // Removing event, if it exists
                 if (_events.ContainsKey (name)) {
-
-                    // Checking if event is protected
-                    if (_events [name].Get<bool> (context))
-                        throw new LambdaException (string.Format ("You cannot delete '{0}' since it is marked as protected", name), args, context);
                     _events.Remove (name);
                 }
             }
@@ -188,17 +164,6 @@ namespace p5.events
         {
             // Looping through each Active Event from IEnumerable
             foreach (var idx in source) {
-
-                // Checking to see if this is Active Event is protected for C# code only, and if so, ignoring it
-                if (context.HasEvent (idx)) {
-
-                    // There exist a native Active Event handler for this event, now getting protection level of event
-                    EventProtection protection = context.GetEventProtection (idx);
-
-                    // Checking if Active Event is protected for native code only
-                    if (protection == EventProtection.NativeClosed || protection == EventProtection.NativeOpen)
-                        continue;
-                }
 
                 // Checking to see if we have any filter
                 if (filter.Count == 0) {
@@ -228,7 +193,7 @@ namespace p5.events
         /*
          * Responsible for executing all dynamically created Active Events or lambda objects
          */
-        [ActiveEvent (Name = "", Protection = EventProtection.NativeOpen)]
+        [ActiveEvent (Name = "")]
         private static void _p5_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if there's an event with given name in dynamically created events.

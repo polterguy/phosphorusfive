@@ -19,7 +19,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-cookie-value", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-cookie-value")]
         public static void get_cookie_value (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.GetCollection (context, e.Args, delegate (string key) {
@@ -32,7 +32,7 @@ namespace p5.web.ui.request
                     return HttpUtility.UrlDecode (cookie.Value);
                 }
                 return null;
-            }, e.NativeSource);
+            });
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-cookie-keys", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-cookie-keys")]
         public static void list_cookie_keys (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Cookies.AllKeys);

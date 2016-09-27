@@ -67,7 +67,7 @@ namespace p5.web {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "send-javascript", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "send-javascript")]
         public void send_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript snippet supplied
@@ -83,7 +83,7 @@ namespace p5.web {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "include-javascript", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "include-javascript")]
         public void include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript snippet supplied
@@ -99,7 +99,7 @@ namespace p5.web {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "include-javascript-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "include-javascript-file")]
         public void include_javascript_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript file supplied
@@ -115,7 +115,7 @@ namespace p5.web {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "include-stylesheet-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "include-stylesheet-file")]
         public void include_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each stylesheet file supplied
@@ -131,7 +131,7 @@ namespace p5.web {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-location", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "set-location")]
         public void set_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if this is ajax callback, which means we'll have to redirect using JavaScript
@@ -153,7 +153,7 @@ namespace p5.web {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-location", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-location")]
         public void get_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -169,7 +169,7 @@ namespace p5.web {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-base-location", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-base-location")]
         public void get_base_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -185,7 +185,7 @@ namespace p5.web {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "reload-location", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "reload-location")]
         public void reload_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Redirecting using JavaScript
@@ -197,7 +197,7 @@ namespace p5.web {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "return-response-object", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "return-response-object")]
         public void return_response_object (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (context, e.Args);
@@ -216,12 +216,12 @@ namespace p5.web {
         /*
          * Raised by page when an Ajax WebMethod is invoked
          */
-        [ActiveEvent (Name = "p5.web.raise-ajax-event", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.web.raise-ajax-event")]
         private void p5_web_raise_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             var widgetID = e.Args.Name;
             var eventName = e.Args.Get<string> (context);
-            context.RaiseLambda("eval", WidgetAjaxEventStorage[widgetID, eventName].Clone());
+            context.Raise("eval", WidgetAjaxEventStorage[widgetID, eventName].Clone());
         }
 
         /*
@@ -238,7 +238,7 @@ namespace p5.web {
                 WidgetLambdaEventStorage = new WidgetEventStorage();
 
                 // Associating lambda event storage with page by creating a "page value"
-                context.RaiseNative(
+                context.Raise(
                     "set-page-value",
                     new Node("", "_WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
 
@@ -246,21 +246,21 @@ namespace p5.web {
                 WidgetAjaxEventStorage = new WidgetEventStorage();
 
                 // Associating ajax event storage with page by creating a "page value"
-                context.RaiseNative(
+                context.Raise(
                     "set-page-value",
                     new Node("", "_WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
             } else {
 
                 // Retrieving existing widget lambda event storage
-                WidgetLambdaEventStorage = context.RaiseNative(
+                WidgetLambdaEventStorage = context.Raise (
                     "get-page-value",
-                    new Node("", "_WidgetLambdaEventStorage"))
+                    new Node("", "_WidgetLambdaEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
 
                 // Retrieving existing widget ajax event storage
-                WidgetAjaxEventStorage = context.RaiseNative(
+                WidgetAjaxEventStorage = context.Raise (
                     "get-page-value",
-                    new Node("", "_WidgetAjaxEventStorage"))
+                    new Node("", "_WidgetAjaxEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
             }
         }

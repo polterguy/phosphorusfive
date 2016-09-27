@@ -4,7 +4,7 @@
  * into user's "temp" folder, and returns the full relative filename
  * of zip file after zipping it
  */
-create-protected-event:sys42.zip-window
+create-event:sys42.zip-window
 
   /*
    * Asks user if he or she wants to associate a password with zip file created,
@@ -79,7 +79,7 @@ as the key. If you do not supply a password, then your zip file will not be encr
  * There can only be one instance of this window at the time on page
  */
 
-create-protected-event:sys42.unzip-window
+create-event:sys42.unzip-window
 
   /*
    * Asks the user for his password to unzip the file

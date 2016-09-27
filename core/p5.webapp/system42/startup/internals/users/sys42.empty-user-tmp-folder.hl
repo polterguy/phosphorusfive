@@ -4,7 +4,7 @@
  * user is logging out of system
  */
 
-create-protected-event:sys42.empty-user-tmp-folder
+create-event:sys42.empty-user-tmp-folder
 
   // Retrieving user
   whoami

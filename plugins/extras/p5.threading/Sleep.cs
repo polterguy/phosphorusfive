@@ -19,7 +19,7 @@ namespace p5.threading
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "sleep", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "sleep")]
         public static void sleep (ApplicationContext context, ActiveEventArgs e)
         {
             Thread.Sleep (XUtil.Single<int> (context, e.Args, true));

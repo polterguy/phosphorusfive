@@ -18,7 +18,7 @@ namespace p5.web.storage {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-context-value", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "set-context-value")]
         public static void set_context_value (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
@@ -31,7 +31,7 @@ namespace p5.web.storage {
                     // Setting or updating
                     HttpContext.Current.Items[key] = value;
                 }
-            }, e.NativeSource);
+            });
         }
 
         /// <summary>
@@ -39,10 +39,10 @@ namespace p5.web.storage {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-context-value", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-context-value")]
         public static void get_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Items [key], e.NativeSource);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Items [key]);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace p5.web.storage {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-context-keys", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-context-keys")]
         public static void list_context_keys (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.ListCollection (context, e.Args, HttpContext.Current.Items.Keys);

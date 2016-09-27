@@ -22,7 +22,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-files", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-files")]
         public static void list_files (ApplicationContext context, ActiveEventArgs e)
         {
             // Getting root folder

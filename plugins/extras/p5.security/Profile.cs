@@ -18,7 +18,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "login", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "login")]
         public static void login (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.Login (context, e.Args);
@@ -29,7 +29,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "logout", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "logout")]
         public static void logout (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.Logout (context);
@@ -40,7 +40,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "whoami", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "whoami")]
         public static void whoami (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add("username", AuthenticationHelper.GetTicket (context).Username);
@@ -53,7 +53,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "user-settings", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "user-settings")]
         public static void user_settings (ApplicationContext context, ActiveEventArgs e)
         {
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -66,7 +66,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "change-user-settings", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "change-user-settings")]
         public static void change_user_settings (ApplicationContext context, ActiveEventArgs e)
         {
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -79,7 +79,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "change-password", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "change-password")]
         public static void change_password (ApplicationContext context, ActiveEventArgs e)
         {
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -92,7 +92,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "delete-my-user", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "delete-my-user")]
         public static void delete_my_user (ApplicationContext context, ActiveEventArgs e)
         {
             using (new Utilities.ArgsRemover (e.Args, true)) {

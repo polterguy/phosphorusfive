@@ -145,7 +145,7 @@ namespace p5.hyperlisp.helpers
                 return value; // string is default type
 
             // Converting our string to the actual object, and returning back to caller
-            return _context.RaiseNative (
+            return _context.Raise (
                 "p5.hyperlisp.get-object-value." + (typeInfo == "node" ? "abs.node" : typeInfo), 
                 new Node ("", value, new Node [] { new Node ("decode", true) })).Value;
         }

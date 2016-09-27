@@ -23,7 +23,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "abs", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "abs")]
         public static void abs (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -46,7 +46,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "acos", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "acos")]
         public static void acos (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -65,7 +65,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "asin", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "asin")]
         public static void asin (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -84,7 +84,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "atan", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "atan")]
         public static void atan (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -103,7 +103,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "ceiling", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "ceiling")]
         public static void ceiling (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -122,7 +122,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "floor", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "floor")]
         public static void floor (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -141,7 +141,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "cos", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "cos")]
         public static void cos (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -160,7 +160,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "cosh", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "cosh")]
         public static void cosh (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -179,7 +179,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "log", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "log")]
         public static void log (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -202,7 +202,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "log10", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "log10")]
         public static void log10 (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -225,7 +225,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "round", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "round")]
         public static void round (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -244,7 +244,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "sin", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "sin")]
         public static void sin (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -263,7 +263,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "sinh", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "sinh")]
         public static void sinh (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -282,7 +282,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "sqrt", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "sqrt")]
         public static void sqrt (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -301,7 +301,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "tan", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "tan")]
         public static void tan (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -320,7 +320,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "tanh", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "tanh")]
         public static void tanh (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves

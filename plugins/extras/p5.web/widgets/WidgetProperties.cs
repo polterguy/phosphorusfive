@@ -33,7 +33,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-property", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-widget-property")]
         public void get_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -77,7 +77,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-widget-property", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "set-widget-property")]
         public void set_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widget IDs given by caller
@@ -133,7 +133,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget-property", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "delete-widget-property")]
         public void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Children.Count == 0)
@@ -167,7 +167,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widget-properties", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-widget-properties")]
         public void list_widget_properties (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -205,7 +205,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-values", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-widget-values")]
         public void get_widget_values (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

@@ -20,7 +20,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.load-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.mime.load-file")]
         public static void p5_mime_load_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -33,7 +33,7 @@ namespace p5.mime
                 foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", idxFilename).Add ("args", e.Args));
+                    context.Raise ("p5.io.authorize.read-file", new Node ("", idxFilename).Add ("args", e.Args));
 
                     // Loading, processing and returning currently iterated message
                     var parser = new helpers.MimeParser (

@@ -48,10 +48,9 @@ namespace p5.core
             /// </summary>
             /// <param name="name">Name of Active Event</param>
             /// <param name="isProtected">If set to <c>true</c> is protected, otherwise it is not protected</param>
-            public ActiveEvent(string name, EventProtection protection)
+            public ActiveEvent(string name)
             {
                 Name = name;
-                Protection = protection;
                 Methods = new List<MethodSink> ();
             }
 
@@ -60,15 +59,6 @@ namespace p5.core
             /// </summary>
             /// <value>The name</value>
             public string Name {
-                get;
-                private set;
-            }
-
-            /// <summary>
-            ///     Gets a value indicating whether this <see cref="p5.core.ActiveEvents+ActiveEvent"/> is protected or not
-            /// </summary>
-            /// <value><c>true</c> if protected; otherwise, <c>false</c></value>
-            public EventProtection Protection {
                 get;
                 private set;
             }
@@ -91,26 +81,16 @@ namespace p5.core
         /// <param name="name">Name of Active Event</param>
         /// <param name="method">Event handler for Active Event</param>
         /// <param name="instance">Instance, meaning the object that is registered as a listener object. Null if event handler is static</param>
-        /// <param name="isProtected">If set to <c>true</c> then Active Event is protected and cannot be overwritten once created</param>
         public void AddMethod (
             string name, 
             MethodInfo method, 
-            object instance, 
-            EventProtection protection)
+            object instance)
         {
             // Verifying we have an entry for event name
             if (!_events.ContainsKey(name)) {
 
                 // No existing event exist, create new event
-                _events[name] = new ActiveEvent(name, protection);
-            } else if (_events[name].Protection != EventProtection.NativeOpen && _events[name].Protection != EventProtection.LambdaOpen) {
-
-                // Oops, event entry existed, and it was protected from being handled multiple times
-                throw new SecurityException(string.Format("You cannot add to the Active Event '{0}' since it is protected from being declared multiple times", name));
-            } else if (protection != EventProtection.NativeOpen && protection != EventProtection.LambdaOpen) {
-
-                // Oops, caller tried to add a protected method, where one which was not protected existed from before
-                throw new SecurityException(string.Format("You cannot add a protected method to the Active Event '{0}' since there already exist one which is not protected", name));
+                _events[name] = new ActiveEvent(name);
             }
 
             // Now that we have for sure created an Active Event entry, 
@@ -178,29 +158,15 @@ namespace p5.core
             string name, 
             Node args, 
             ApplicationContext context, 
-            ApplicationContext.ContextTicket ticket, 
-            bool sourceIsNative)
+            ApplicationContext.ContextTicket ticket)
         {
             try
             {
-                // Used as buffer to store whether or not Active Event was protected or not
-                // This is done since we DO NOT invoke "null handlers" for protected events!
-                bool wasProtected = false;
-
                 // Constructing EventArgs
-                ActiveEventArgs e = new ActiveEventArgs(name, args ?? new Node(), sourceIsNative);
+                ActiveEventArgs e = new ActiveEventArgs (name, args ?? new Node());
 
                 // Checking if we have any Active Event handlers for given name
                 if (_events.ContainsKey (name)) {
-
-                    // Checking if Active Event cannot legally be raise by caller
-                    if (!sourceIsNative && 
-                        (_events[name].Protection == EventProtection.NativeClosed || 
-                        _events[name].Protection == EventProtection.NativeOpen))
-                        throw new SecurityException ("Caller tried to raise Active Event from lambda that has exclusive native code access");
-
-                    // Storing whether or not event was protected for C# code only, at which case we do not raise "null event handlers" for it
-                    wasProtected = _events[name].Protection == EventProtection.NativeClosed || _events[name].Protection == EventProtection.NativeOpen;
 
                     // Looping through all Active Events handlers for the given Active Event name
                     foreach (var idxMethod in _events [name].Methods.ToList ()) {
@@ -211,15 +177,7 @@ namespace p5.core
                 }
 
                 // Then looping through all "null Active Event handlers" afterwards
-                // ORDER COUNTS. Since most native Active Events are dependent upon arguments
-                // being specifically ordered somehow, we must wait until after we have raised
-                // all "native Active Events", before we raise all "null Active Event handlers".
-                // this is because "null event handlers" might possibly append nodes to the current
-                // Active Event's "root node", and hence mess up the parameter passing of native Active
-                // Events, that also have "null event handlers", where these null event handlers,
-                // are handling events, existing also as "native Active Event handlers"
-                // Please also notice that we do NOT raise "null handlers" for "protected" Active Events
-                if (!wasProtected && _events.ContainsKey ("")) {
+                if (_events.ContainsKey ("")) {
 
                     // Active Event was not protected, and we have a "null event handler"
                     foreach (var idxMethod in _events [""].Methods) {
@@ -233,7 +191,7 @@ namespace p5.core
             catch (TargetInvocationException err)
             {
                 // Making sure we transform reflection exceptions into actual exceptions thrown
-                    ExceptionDispatchInfo.Capture(err.InnerException).Throw();
+                ExceptionDispatchInfo.Capture(err.InnerException).Throw();
                 throw; // Never reached, needed for compiler to not choke ...!!
             }
         }

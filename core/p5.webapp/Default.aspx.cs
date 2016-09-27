@@ -37,11 +37,11 @@ namespace p5.webapp
                     args.Add(new Node("_form", HttpContext.Current.Items["_p5_original_url"]));
 
                     // Invoking the Active Event that actually loads our UI, now with a [_form] node being the URL of the requested page
-                    ApplicationContext.RaiseNative("p5.web.load-ui", args);
+                    ApplicationContext.Raise("p5.web.load-ui", args);
                 }
 
                 // Making sure base is set for page
-                var baseUrl = ApplicationContext.RaiseNative("get-application-location").Get<string> (ApplicationContext);
+                var baseUrl = ApplicationContext.Raise("get-application-location").Get<string> (ApplicationContext);
                 ((IAttributeAccessor)baseElement).SetAttribute("href", baseUrl);
             };
             base.OnInit(e);

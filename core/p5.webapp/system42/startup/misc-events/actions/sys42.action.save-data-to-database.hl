@@ -4,7 +4,7 @@
  * [_arg] segment to database, with the given [_name]
  */
 
-create-protected-event:sys42.action.save-data-to-database
+create-event:sys42.action.save-data-to-database
 
   add:x:/../*/insert-data
     src:x:/../*/_name?value

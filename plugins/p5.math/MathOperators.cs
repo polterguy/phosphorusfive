@@ -26,7 +26,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "+", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "+")]
         public static void plus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
@@ -42,7 +42,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "-", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "-")]
         public static void minus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
@@ -58,7 +58,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "*", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "*")]
         public static void multiply (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
@@ -74,7 +74,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "/", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "/")]
         public static void divide (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
@@ -90,7 +90,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "^", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "^")]
         public static void exponent (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
@@ -110,7 +110,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "%", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "%")]
         public static void modulo (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
@@ -152,7 +152,7 @@ namespace p5.math
                     } else {
 
                         // Active Event invocation to retrieve value to use
-                        nextValue = context.RaiseLambda (idxChild.Name, idxChild).Get<object> (context, 0);
+                        nextValue = context.Raise (idxChild.Name, idxChild).Get<object> (context, 0);
                     }
 
                     // Now evaluating result of above node's value with existing result, evaluating the "functor" passed

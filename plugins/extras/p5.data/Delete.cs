@@ -21,7 +21,7 @@ namespace p5.data
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-data", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "delete-data")]
         public static void delete_data (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking

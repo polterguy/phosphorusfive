@@ -21,7 +21,7 @@ namespace p5.lambda.keywords.extras
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "sort", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "sort")]
         public static void lambda_sort (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
@@ -62,7 +62,7 @@ namespace p5.lambda.keywords.extras
                         exeNode.Insert (1, new Node ("_rhs", rhs));
 
                         // Invoking [sort] callback
-                        context.RaiseLambda ("eval", exeNode);
+                        context.Raise ("eval", exeNode);
 
                         // Retrieving value of [sort] callback, defaulting to "equals"
                         return exeNode.Get<int> (context, 0);

@@ -24,7 +24,7 @@ namespace p5.mime.plugins
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "echo-mime", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "echo-mime")]
         public static void echo_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
@@ -40,7 +40,7 @@ namespace p5.mime.plugins
 
                     // Creating MIME message
                     e.Args.Value = streams;
-                    var entity = context.RaiseNative ("p5.mime.create-native", e.Args).Get<MimeEntity> (context);
+                    var entity = context.Raise ("p5.mime.create-native", e.Args).Get<MimeEntity> (context);
 
                     // Making sure we render the headers of root MimeEntity to response headers
                     RenderHeaders (entity);

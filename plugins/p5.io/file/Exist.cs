@@ -20,7 +20,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "file-exist", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "file-exist")]
         public static void file_exist (ApplicationContext context, ActiveEventArgs e)
         {
             QueryHelper.Run (context, e.Args, false, "read-file", delegate (string filename, string fullpath) {

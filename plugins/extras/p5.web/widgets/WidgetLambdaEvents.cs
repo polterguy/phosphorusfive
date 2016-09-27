@@ -31,7 +31,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-widget-lambda-event")]
         public void get_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -61,7 +61,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "set-widget-lambda-event")]
         public void set_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widget IDs
@@ -69,13 +69,6 @@ namespace p5.web.widgets {
 
                 // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
-
-                    // Verifying Active Event is not protected
-                    if (!CanOverrideEventInLambda (context, idxEventNameNode.Name))
-                        throw new LambdaSecurityException(
-                            string.Format ("You cannot override Active Event '{0}' since it is protected", idxEventNameNode.Name),
-                            e.Args,
-                            context);
 
                     // Checking if this is actually a deletion invocation
                     if (idxEventNameNode.Children.Count == 0) {
@@ -97,7 +90,7 @@ namespace p5.web.widgets {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widget-lambda-events", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-widget-lambda-events")]
         public void list_widget_lambda_events (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -125,7 +118,7 @@ namespace p5.web.widgets {
         /*
          * Raises Widget specific lambda events
          */
-        [ActiveEvent (Name = "", Protection = EventProtection.NativeOpen)]
+        [ActiveEvent (Name = "")]
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
             // Notice, since lambda events might end up creating new lambda events, the "ToList" operation below

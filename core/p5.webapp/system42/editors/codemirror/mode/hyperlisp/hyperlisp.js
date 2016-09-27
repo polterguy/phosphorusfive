@@ -815,7 +815,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case '^':
         case 'lambda2lisp':
         case 'create-event':
-        case 'create-protected-event':
+        case 'create-event':
         case 'login':
         case 'create-user':
         case 'eval-mutable':

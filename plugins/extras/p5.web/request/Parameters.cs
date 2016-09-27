@@ -19,10 +19,10 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-http-param", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "get-http-param")]
         public static void get_http_param (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.Params [key], e.NativeSource);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.Params [key]);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-http-params", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "list-http-params")]
         public static void list_http_params (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Params.AllKeys);

@@ -20,7 +20,7 @@ namespace p5.html
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "url-encode", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "url-encode")]
         public static void url_encode (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -46,7 +46,7 @@ namespace p5.html
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "url-decode", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "url-decode")]
         public static void url_decode (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

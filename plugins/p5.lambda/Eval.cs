@@ -32,7 +32,7 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "eval")]
         public static void eval (ApplicationContext context, ActiveEventArgs e)
         {
             Executor (ExecuteBlockCopy, context, e.Args, e.Args.Name != "eval");
@@ -43,7 +43,7 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval-mutable", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "eval-mutable")]
         public static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
         {
             Executor (ExecuteBlockMutable, context, e.Args, e.Args.Name != "eval-mutable");
@@ -180,7 +180,7 @@ namespace p5.lambda
                 if (!idxExe.Name.StartsWith ("_") && idxExe.Name != "") {
 
                     // Raising the given Active Event normally, taking inheritance chain into account
-                    context.RaiseLambda (idxExe.Name, idxExe);
+                    context.Raise (idxExe.Name, idxExe);
                 }
 
                 // Checking if we're supposed to return from evaluation

@@ -10,7 +10,7 @@
  * Pretty simple logic, but feel free to roll your own!
  */
 
-create-protected-event:sys42.verify-access
+create-event:sys42.verify-access
   set:x:/..?value
     src:bool:true
   if:x:/../*/_arg

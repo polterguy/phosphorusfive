@@ -41,7 +41,7 @@ namespace p5.io.common
                     var fileObjectName = Common.GetSystemPath (context, idxFileObject);
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize." + authorizeEvent, new Node ("", fileObjectName).Add ("args", args));
+                    context.Raise ("p5.io.authorize." + authorizeEvent, new Node ("", fileObjectName).Add ("args", args));
 
                     // Invoking callback delegate
                     if (!functor (fileObjectName, rootFolder + fileObjectName))

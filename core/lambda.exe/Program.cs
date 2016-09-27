@@ -24,7 +24,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.console.write-line", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.console.write-line")]
         public static void p5_console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
             Console.WriteLine (XUtil.Single<string> (context, e.Args, true));
@@ -35,7 +35,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.console.read-line", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.console.read-line")]
         public static void p5_console_read_line (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = Console.ReadLine();
@@ -68,7 +68,7 @@ namespace lambda_exe
                     var context = Loader.Instance.CreateApplicationContext ();
 
                     // Raising our application startup Active Event, in case there are modules loaded depending upon it
-                    context.RaiseNative ("p5.core.application-start", new Node ());
+                    context.Raise ("p5.core.application-start", new Node ());
 
                     // Checking if we're in "immediate mode" (which means user can type in Hyperlisp into the console to be evaluated)
                     if (immediate) {
@@ -78,11 +78,11 @@ namespace lambda_exe
                     } else {
 
                         // Loads given file as lambda
-                        var convertExeFile = context.RaiseNative ("load-file", new Node ("", exeNode.Value)) [0];
+                        var convertExeFile = context.Raise ("load-file", new Node ("", exeNode.Value)) [0];
 
                         // Appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
                         exeNode.AddRange (convertExeFile.Children);
-                        context.RaiseLambda ("eval", exeNode);
+                        context.Raise ("eval", exeNode);
                     }
                 }
             }
@@ -100,7 +100,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.core.application-folder")]
         private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
             string retVal = Assembly.GetExecutingAssembly().Location.Replace ("\\", "/");
@@ -150,8 +150,8 @@ namespace lambda_exe
                 } else {
 
                     // Converting Hyperlisp collected above to lambda and executing
-                    Node convert = context.RaiseNative ("lisp2lambda", new Node ("", hyperlisp));
-                    context.RaiseLambda ("eval", convert);
+                    Node convert = context.Raise ("lisp2lambda", new Node ("", hyperlisp));
+                    context.Raise ("eval", convert);
                     Console.WriteLine ();
                 }
             }

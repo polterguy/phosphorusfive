@@ -19,15 +19,15 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "copy-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "copy-file")]
         public static void copy_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Using our common helper for actual implementation
             MoveCopyHelper.CopyMoveFileObject (context, e, delegate (string rootFolder, string source, string destination) {
 
                 // Verifying user is authorized to both modify source, and modify destination
-                context.RaiseNative ("p5.io.authorize.read-file", new Node ("", source).Add ("args", e.Args));
-                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", destination).Add ("args", e.Args));
+                context.Raise ("p5.io.authorize.read-file", new Node ("", source).Add ("args", e.Args));
+                context.Raise ("p5.io.authorize.modify-file", new Node ("", destination).Add ("args", e.Args));
 
                 // Actually moving (or renaming) file
                 File.Copy (rootFolder + source, rootFolder + destination);
