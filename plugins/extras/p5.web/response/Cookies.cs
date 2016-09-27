@@ -24,8 +24,8 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-cookie", Protection = EventProtection.LambdaClosed)]
-        public static void set_cookie (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-cookie-value", Protection = EventProtection.LambdaClosed)]
+        public static void set_cookie_value (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
                 if (value == null) {

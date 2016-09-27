@@ -209,7 +209,7 @@ namespace p5.web.widgets {
         public void get_widget_values (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widget IDs given by caller
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-values")) {

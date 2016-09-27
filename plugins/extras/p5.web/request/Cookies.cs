@@ -19,8 +19,8 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-cookie", Protection = EventProtection.LambdaClosed)]
-        public static void get_cookie (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-cookie-value", Protection = EventProtection.LambdaClosed)]
+        public static void get_cookie_value (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.GetCollection (context, e.Args, delegate (string key) {
 

@@ -178,6 +178,10 @@ namespace p5.exp
                     // Retrieving key and value for cookie
                     var key = Utilities.Convert<string> (context, idxDestination.Value);
 
+                    // Making sure collection key is not "hidden" key
+                    if (key.StartsWith ("_"))
+                        throw new LambdaException ("Caller tried to access a protected collection key named; " + key, args, context);
+
                     // Checking if this is deletion of item, or setting item, before invoking functor callback
                     functor (key, source.Count == 0 ? null : source[0]);
                 }
@@ -191,6 +195,10 @@ namespace p5.exp
                     functor (key, args.FirstChild.Value);
                     return;
                 }
+
+                // Making sure collection key is not "hidden" key, before we retrieve source
+                if (key.StartsWith ("_"))
+                    throw new LambdaException ("Caller tried to access a protected collection key named; " + key, args, context);
                 var source = Source (
                     context,
                     args,
@@ -223,7 +231,7 @@ namespace p5.exp
             using (var argsRemover = new Utilities.ArgsRemover (args, true)) {
 
                 // Iterating through each "key"
-                foreach (var idxKey in XUtil.Iterate<string> (context, args, true)) {
+                foreach (var idxKey in Iterate<string> (context, args, true)) {
 
                     // Retrieving object by invoking functor with key
                     var value = functor (idxKey);
@@ -234,6 +242,10 @@ namespace p5.exp
                         argsRemover.StopRemovingArgsValue ();
                         return;
                     }
+
+                    // Making sure collection key is not "hidden" key
+                    if (idxKey.StartsWith ("_"))
+                        throw new LambdaException ("Caller tried to access a protected collection key named; " + idxKey, args, context);
 
                     // Adding node for given key, defaulting to null value
                     var resultNode = args.Add (idxKey).LastChild;
@@ -282,6 +294,10 @@ namespace p5.exp
 
                 // Looping through each existing key in collection
                 foreach (string idxKey in list) {
+
+                    // Making sure we do NOT return "protected keys"
+                    if (idxKey.StartsWith ("_"))
+                        continue;
 
                     // Returning current key, if it matches our filter, or filter is not given
                     if (filter.Count == 0) {

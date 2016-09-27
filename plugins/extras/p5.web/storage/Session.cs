@@ -7,7 +7,8 @@ using System.Web;
 using p5.exp;
 using p5.core;
 
-namespace p5.web.storage {
+namespace p5.web.storage
+{
     /// <summary>
     ///     Helper to retrieve and set Session values
     /// </summary>

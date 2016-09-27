@@ -835,7 +835,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-http-header':
         case 'set-widget-property':
         case 'set-cache-value':
-        case 'set-cookie':
+        case 'set-cookie-value':
         case 'set-widget-ajax-event':
         case 'set-widget-lambda-event':
         case 'return-response-object':
@@ -948,7 +948,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'get-page-value':
         case 'get-cache-value':
         case 'list-cache-keys':
-        case 'get-cookie':
+        case 'get-cookie-value':
         case 'list-cookie-keys':
         case 'get-http-header':
         case 'list-http-headers':

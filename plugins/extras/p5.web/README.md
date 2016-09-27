@@ -342,7 +342,7 @@ child node. Another interesting fact you see above, is that we use the "root ite
 during the evaluation of your *[onclick]* event, the onclick node _is_ your root node. This is similar to how it works when you invoke a lambda object,
 or dynamically created Active Event, using for instance *[eval]*. The rest of your lambda object, is not accessible at this point.
 
-You can also retrieve multiple widget's properties in one call, by supplying an expression leading to multiple IDs. Consider this.
+You can also retrieve multiple widget's properties in one invocation, by supplying an expression leading to multiple IDs. Consider this.
 
 ```
 create-container-widget
@@ -397,9 +397,26 @@ Normally, you will only update a single widget's properties though. But for thos
 class of multiple widgets in one go, being able to do such in a single go, is a nifty feature.
 
 Notice, you can also use the *[set-widget-property]* to set a property which does not previously exist on your widget. This will simply add the property.
-You can also use the *[delete-widget-property]* Active Event to entirely delete a property or attribute from your widget.
-You can also change a widget's visibility, and even ID using the *[set-widget-property]* Active Event. But thes properties cannot be
-removed. Only attributes rendered to the client as HTML attributes can be removed.
+You can also use the *[delete-widget-property]* Active Event to entirely delete a property or attribute from your widget. Notice here, that a widget
+with a "null" value in a property, still actually have the property. Its value is simply "null". 
+
+You can also change a widget's visibility, and even ID using the *[set-widget-property]* Active Event. But thes properties cannot be removed. 
+Only attributes rendered to the client as HTML attributes can be removed.
+
+Hint!
+There is also an event called *[list-widget-properties]*, which returns a list of _all_ properties, for one or more specified widget(s). This 
+Active Event can either be given an expression, leading to multiple IDs, or a constant, showing the properties of only one widget at the time.
+
+### Retrieving an entire hierarchy of widget values
+
+Sometimes, you wish to retrieve every single "form element" widget value, from some specified starting widget. For these occassions, you have 
+the *[get-widget-values]* Active Event. This Active Event will return all "form element values" below one or more specified "root widget".
+
+To see all form element values on your form in one go, you could use something like this for instance.
+
+```
+get-widget-values:cnt
+```
 
 ### Changing and retrieving a widget's Ajax events dynamically
 
@@ -507,8 +524,8 @@ create-container-widget
 The lamba events are working identical to any other dynamically created Active Events, or lambda objects, and can take arguments, and return values
 and nodes to the caller. They're simply Active Events, which only lives as long as your widget lives, and only for your page!
 
-Also these lambda events can be dynamically changed, the same way you could with Ajax events, using the *[set-widget-lambda-event]* 
-and *[get-widget-lambda-event]*. Both of these Active Events, works similarly to their Ajax events counterparts.
+Also these lambda events can be dynamically changed, the same way you could with Ajax events, using the *[set-widget-lambda-event]*, 
+and the *[get-widget-lambda-event]*. Both of these Active Events, works similarly to their Ajax events counterparts.
 
 Hint!
 You can also use *[list-widget-lambda-events]* and *[list-widget-ajax-events]* to inspect which events are declared for a specific widget.
@@ -535,6 +552,18 @@ create-literal-widget
       innerValue:Dynamically changed property during [oninit]
       element:h3
 ```
+
+### Deleting and "emptying" widgets
+
+In addition to the above mentioned events, you also have the *[delete-widget]* and *[clear-widget]* Active Events. The first one entirely deletes
+a widget from your page, while the second one empties its children collection. If your run this through your System42/executor for instance, 
+then your entire page will go "blank".
+
+```
+clear-widget:cnt
+```
+
+Just refresh the page afterwards, and you should be all right though ... ;)
 
 ### Retrieving widgets
 
@@ -803,6 +832,271 @@ Which will yield the following result.
 widget-exist
   test-bar2:bool:true
 ```
+
+### Some facts about p5.web and its Ajax widgets
+
+Warning, here comes the "marketing pitch" ...
+
+For those developers out there whom are seasoned C#/ASP.NET developers, it is probably clear at this point, that p5.web is able to keep its state
+automatically, mirroring what goes on in server-land, automagically back to the client, and vice versa. In addition, there is no weird syntax, and 
+simply Hyperlisp, combined with expressions. The end result becoming that of, as long as you understand Hyperlisp, expressions, and have some few 
+Active Events in your knowledge belt, plus optionally some basic HTML and CSS - Then creating fairly complex web apps, actually becomes ridiculously 
+easy. And the Ajax parts, "simply happens". In such a way, it could be argued that Phosphorus Five, to some extent, is a "fifth generation programming
+language". Taking away all the nitty gritty details from your burdon, allowing you to focus solely on your domain problems.
+
+And all of these features, simply are there for you, for free, without preventing you from rolling your own "cutting edge C# and/or ASP.NET" code ...
+
+Although I tend to refer to P5 as a "web operating system", since it solves so many problems - At its core, it is actually nothing but a bunch 
+of "loosely coupled libraries", which can be used either as a combined product, or included in your own projects, to give you only some small
+subset of functionality. p5.ajax is a primary example of this, being a "pure" C#/ASP.NET library, which you can consume completely alone, without
+having to bring in any other parts at all. Allowing you to create Web Controls, almost the same way as you would with "traditional ASP.NET".
+
+This creates a "ladder of transition" for you, which allows you to easily start using some smaller sub-sets of P5, without completely forcing unto
+you an entire "system development revolution" in any ways.
+
+Anyways, thought I'd just mention it ...
+
+## Storing stuff and state in a web context
+
+In ASP.NET you have lots of different "storage objects" which you can use, such as the Session object, Application object, Cache, Cookies, 
+and so on. These same storage facilitates are mapped into Phosphorus Five, through the C# Active Events you can find in the "storage folder" 
+of this project.
+
+They all more or less obey by the same "API" (Active Event syntax), which allows you to easily change between any one of them, later in your project,
+as you see fit. This gives you an "Agile" environment for development, where you can easily move your data storage around, from different objects, 
+as you see fit.
+
+Below is a complete list of all of these Active Events.
+
+* [set-session-value]
+* [get-session-value]
+* [list-session-keys]
+* [set-global-value]
+* [get-global-value]
+* [list-global-keys]
+* [set-context-value]
+* [get-context-value]
+* [list-context-keys]
+* [set-cache-value]
+* [get-cache-value]
+* [list-cache-keys]
+* [set-cookie-value]
+* [get-cookie-value]
+* [list-cookie-keys]
+* [set-http-header]
+* [get-http-header]
+* [list-http-headers]
+* [get-http-param]
+* [list-http-params]
+
+Not all of them can be interchanged with each other, since for instance things like HTTP headers, cannot tolerate complete node structures and more
+complex objects, in addition to that storing stuff you'd normally store in your session, obviously does not at all make sense storing in an HTTP
+header. But all of the above events, obeys by the same set of rules, and "API".
+
+### Accessing the ASP.NET Session object
+
+If we start out with the "Session" object from ASP.NET, there are three basic Active Events which allows you to use your session. 
+
+* [set-session-value]
+* [get-session-value]
+* [list-session-keys]
+
+For those not aquinted with how the session object works, it is often a memory based in-process storage, for objects you wish to associate with a
+single session (user activity), for as long as a user is actively using your web site. When the server is rebooted, the user leaves your website, 
+or some other disaster occurs, all session variables are discarded and lost.
+
+The session object _can_ (optionally, through configuring your web.config for instance), be stuffed into a database, making it cross-process enabled,
+and so on. But by default, it is in memory. All objects stored into the session, are only accessible for the currently visiting client, and only
+for the lifespan of his "session". Often iit times out after some minutes (20 minutes by default) of inactivity, which means the user will loose
+all his session variables if he does not somehow, interact with your website, for 20 minutes.
+
+To show you an example of it, imagine the following code.
+
+```
+set-session-value:test.my-session-variable
+  src:Some piece of data goes here
+get-session-value:test.my-session-variable
+```
+
+In the above code, we first "set" a session variable, name it "test.my-session-variable", and give it the static value of "Some piece of data goes here",
+before we retrieve it again. The retrieval does not have to be in the same request though. As long as your session has not timed out, you can refresh
+your browser, and evaluate the following code, and your original value will still be returned back to you.
+
+```
+get-session-value:test.my-session-variable
+```
+
+All of the "object storage" Active Events in p5.web, takes a "source" argument, the same way *[add]* and *[set]* does. Which allows you to create
+fairly complex sources, using Active Event sources, and so on. To store a slightly more complex object into your session, you could use something 
+like this.
+
+```
+set-session-value:test.my-session-variable
+  src
+    my-node:My value
+      my-other-node
+        some-integer:int:5
+get-session-value:test.my-session-variable
+```
+
+Above we see an example of adding typed objects into the session, which of course is no problem.
+
+Like with *[set]* though, you can only have _one_ source. This means that if you have complex hierarchies of nodes, you have to make sure you have 
+one "root node". This is because you're setting "one item" in your session. If you wish to put "arrays" into your session, you'll have to have them 
+as children of a single "root node". The following code will raise an exception ...
+
+```
+// Throws an exception!!
+set-session-value:test.my-session-variable
+  src
+    my-node:My value
+    my-other-node
+```
+
+As with *[set]*, you can also set multiple values using expressions, and have the source be a relative Active Event invocation, having the *[_dn]*
+node passed into each invocation of your source. Consider this code for instance.
+
+```
+_values
+  test-session-1:Some value
+  test-session-2:Some other value
+set-session-value:x:/-/*?name
+  eval
+    return:x:/../*/_dn/#?value
+get-session-value:test-session-1
+get-session-value:test-session-2
+```
+
+The above code will create two session variables for you, one called "test-session-1", and another called "test-session-2", with the values from
+these nodes as the values of your session objects.
+
+#### Listing your session keys using [list-session-keys]
+
+Sometimes it can be useful to have a list of which session keys you have in your current session object. This is easily done using *[list-session-keys]*.
+An example of usage is shown below.
+
+```
+list-session-keys
+```
+
+If you provide a value, or an expression as its value, this will be used as a "filter" that your keys must match, in order to be returned. Example
+is given below.
+
+```
+list-session-keys:test
+```
+
+The above would yield, assuming you've still got your session objects from our first example in your session, the following result.
+
+```
+list-session-keys
+  test-session-1
+  test-session-2
+```
+
+To retrieve all values, from all session objects, could easily be done combining this invocation with a *[get-session-value]* invocation.
+
+```
+list-session-keys:test
+get-session-value:x:/-/*?name
+```
+
+### Accessing the application object
+
+The "application" object has an API which is 100% identical to the "session" object, and consists of these three Active Events.
+
+* [get-global-value]
+* [set-global-value]
+* [list-global-keys]
+
+The only difference is the underlaying implementation, which stores your values in the "global application object" instead of your session object.
+The "application" object i global for all users of your website. Besides from that, it is really quite similar to the session object, and only
+"lives" for the life time of your server process, being stored in memory, the same way as your session values.
+
+To see some examples of it in use, see the session examples, and simply replace "session" with "global".
+
+### Accessing your "context" object
+
+The HttpContext object is also identical to both the session and the application ("global") object, except of course, it stores things in the 
+HttpContext object instead. To understand the difference, check out the documentation for the HttpContext class in .Net Framework. Replace 
+the parts "session" with "context" to use the HttpContext object instead.
+
+### Accessing your cache object
+
+Also this object is identical to both your session object, application object, and context object, except it uses the keyword "cache" instead of
+"session" and "application" etc. It carries one additional argument though, which is *[minutes]*, which defined for how many minutes the cache
+object you insert should be valid for. This argument is only applicable when invoking *[set-cache-object]*, and has no relevance for any of the
+other cache Active Events.
+
+### Cookies in P5
+
+The cookies Active Events are similar to the session Active Events, except you cannot retrieve a cookie that you set in the same response. This is 
+because when you "set" a cookie, you are modifying the HTTP response object, while when you "retrieve" a cookie, you are retrieving it from the 
+HTTP request. Hence after setting a new cookie value, then it won't be accessible before you return the response back to the client, and the client
+makes another request to your server.
+
+In addition, type information is "partially lost" when you set a cookie. To illustrate with an example, run these two piece of code in two different
+evaluations in your System42/executor.
+
+```
+set-cookie-value:some-cookie
+  src
+    foo:bar
+      some-integer:int:5
+```
+
+Then run this code.
+
+```
+get-cookie-value:some-cookie
+```
+
+As you can see in your last piece of code, your cookie value is returned as a "string". It is quite easily converted back into a node though, by
+running it through *[lisp2lambda]* with the following code.
+
+```
+get-cookie-value:some-cookie
+lisp2lambda:x:/-/*?value
+```
+
+This is because although you can store "objects" in your session, application and cache objects, etc - The cookie collection of your browser, can
+only handle "string". However, your node(s) are converted correctly into Hyperlisp before stored into your cookie collection, which allows you to
+convert it easily back to p5.lambda using *[lisp2lambda]*.
+
+### HTTP headers
+
+Now you could if you wanted to, store p5.lambda code in your HTTP headers, however, doing such a thing, makes absolutely no sense what-so-ever!!
+HTTP headers are for informing the browser and/or potential proxies, about some state of your application. And using it as a "general storage", would
+be like using a crocodile to hunt raindeers! Don't do it!
+
+However, setting an HTTP header obeys by the same API as all other "storage events". To have your web app return a "custom header" to your client,
+you could do something like this.
+
+```
+set-http-header:foo
+  src:bar
+```
+
+If you make sure you inspect your HTTP request, before you click evaluate in your System42/executor, you will see that the return value from your server,
+contains one additional HTTP header called "foo" having the value of "bar".
+
+### HTTP GET parameters
+
+To access your HTTP GET parameters, you can use *[get-http-param]* or *[list-http-params]*. Since the GET parameter of a request, is a read-only 
+type of collection, there exists no "setter". Try to add up the following string at the end of your URL; "&foo-key=bar-value". Then run the following code.
+
+```
+get-http-param:foo-key
+```
+
+Now of course, since modifying the HTTP GET parameter collection of a request, requires changing the URL of a request, there exists no "setter".
+Notice that since the parameter collection in ASP.NET also returns POST variables, in addition to lots of other types of objects, you will also find
+for instance stuff like your cookies hen invoking for instance *[list-http-params]*, and even its raw value when using *[get-http-param]*. In addition,
+you will also find the HTTTP headers, and all sort of other "unexpected stuff" in your parameter collection. However, this is the way ASP.NET is 
+implemented, and kept in P5 to remain consistant towards the underlaying implementtation of .Net.
+
+
+## Accessing and modifying the "raw request" and "raw response"
 
 
 
