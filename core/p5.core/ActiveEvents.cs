@@ -199,15 +199,15 @@ namespace p5.core
                         _events[name].Protection == EventProtection.NativeOpen))
                         throw new SecurityException ("Caller tried to raise Active Event from lambda that has exclusive native code access");
 
+                    // Storing whether or not event was protected for C# code only, at which case we do not raise "null event handlers" for it
+                    wasProtected = _events[name].Protection == EventProtection.NativeClosed || _events[name].Protection == EventProtection.NativeOpen;
+
                     // Looping through all Active Events handlers for the given Active Event name
-                    foreach (var idxMethod in _events [name].Methods) {
+                    foreach (var idxMethod in _events [name].Methods.ToList ()) {
 
                         // Invoking Event Handler
                         idxMethod.Method.Invoke (idxMethod.Instance, new object[] { context, e });
                     }
-
-                    // Storing whether or not event was protected for C# code only, at which case we do not raise "null event handlers" for it
-                    wasProtected = _events[name].Protection == EventProtection.NativeClosed || _events[name].Protection == EventProtection.NativeOpen;
                 }
 
                 // Then looping through all "null Active Event handlers" afterwards
@@ -230,7 +230,7 @@ namespace p5.core
                 // Returning args to caller
                 return e.Args;
             }
-            catch (System.Reflection.TargetInvocationException err)
+            catch (TargetInvocationException err)
             {
                 // Making sure we transform reflection exceptions into actual exceptions thrown
                     ExceptionDispatchInfo.Capture(err.InnerException).Throw();

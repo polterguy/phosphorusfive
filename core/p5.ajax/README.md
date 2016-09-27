@@ -3,7 +3,7 @@ p5.ajax, a managed Ajax library
 
 Contains the main Ajax library for Phosphorus Five. This Ajax library can be consumed
 either stand alone, in any ASP.NET Web Forms application, since its controls inherit from
-_System.Web.UI.Control_, or indirectly, through using the _p5.web_ library, allowing
+_System.Web.UI.Control_, or indirectly, through using the p5.web library, allowing
 you to create controls with Active Events, using for instance Hyperlisp as your programming 
 language.
 
@@ -16,6 +16,14 @@ structure;
 
 To create a property for your widgets, simply use the subscript operator, with
 the name being the property name, and its value being the value.
+
+The Container widget, will automatically track its children Controls collection,
+as long as you use the "CreatePersistentControl" and "RemoveControlPersistent" methods
+for adding and removing controls from its collection.
+
+This means that you do not need to re-create its controls collection upon postbacks,
+since it'll keep track of whatever controls it contains, at any specific point in time,
+automatically.
 
 ## Example usage in C#
 
