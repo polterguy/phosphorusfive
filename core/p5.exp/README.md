@@ -3,7 +3,7 @@ Hyperdimensional boolean algebraic graph object expressions
 
 Puuh, that name was a mouthful. However, really, for most practical concerns, if you know
 some XPath from before, you'll pick up p5 expressions in an hour or two. An expression
-is type-declared as "`:x:`", for then to have zero or more "iterators", optionally having
+is type-declared as `:x:`, for then to have zero or more "iterators", optionally having
 a "type declaration" at its end, optionally ending with a conversion of the yielded results.
 
 Example given.
@@ -15,7 +15,7 @@ set:x:/../*/_data/*/foo?value
   src:New Value
 ```
 
-In the above example `/../*/_data/*/foo?value` is an expression, and *"`:x:`"*
+In the above example `/../*/_data/*/foo?value` is an expression, and `:x:`
 declares it as such, and hence becomes its *type declaration* for the type engine of P5.
 
 It ends with an expression type declaration (?value), which informs the expression engine, 
@@ -38,7 +38,7 @@ set:x:?value
 ```
 
 For the record, an expression without any iterators, is the "identity expression", yielding the "current node", which for the above example, means
-it will return the *[set]* node's value itself. The "identity expression", when retreiving the "identity node", is actually written like this; "`:x:`",
+it will return the *[set]* node's value itself. The "identity expression", when retreiving the "identity node", is actually written like this; `:x:`,
 having no iterators, and no type declaration. The identity expression, which all expressions starts out with, will retrieve the "this node" for 
 most cases. For instance, this code, will delete its own node, since our *[set]* has no source, and it uses the identity expression as its destination.
 
