@@ -323,11 +323,11 @@ set:x:/../*/_data/*/\*?value
   src:New value
 ```
 
-The above Hyperlisp would change the value of the node with the name of *[\*]*.
+The above Hyperlisp would change the value of the node with the name of "*".
 
 ### Changing every even child node
 
-Imagine you have some Hyperlisp where you wish for only the even values to be updated. This could easily be
+Imagine you have some Hyperlisp, where you wish for only the even values to be updated. This could easily be
 accomplished using the "modulo iterator". Imagine the following Hyperlisp
 
 ```
@@ -340,7 +340,7 @@ set:x:/../*/_data/*/%2?value
   src:New value
 ```
 
-After evaluating the abovee Hyperlisp, your node-structure would look like this
+After evaluating the above Hyperlisp, your node-structure would look like this.
 
 ```
 _data
@@ -352,13 +352,13 @@ set:x:/../*/_data/*/%2?value
   src:New value
 ```
 
-This is because only the nodes matching the specified modulo will be returned due to the "/%2" iterator
+This is because only the nodes matching the specified modulo will be returned, due to the `/%2` iterator
 at the end of the above expression.
 
 ### Extracting all even children
 
-To extract all even iterators, you could use the "left shift iterator", in combination with the modulo iterator, 
-such as the code below demonstrates
+To extract all even iterators, you could for instance use the "left shift iterator", in combination with the modulo iterator, 
+such as the code below demonstrates.
 
 ```
 _data
@@ -399,7 +399,8 @@ Using this technique, you can easily retrieve the "last child" of some node-set.
 
 In addition to p5.lambda expressions, you can also create a "formatting expression". This works similarly to how you format a 
 string in C#, and is evaluated _BEFORE_ any p5.lambda expressions are evaluated. This allows you to create a p5.lambda expression,
-where parts of it are string substituted, with either a constant value, or another expression, leading to some other node, value or name.
+where parts of it is substituted with some constant or dynamically fetched string, with either a constant value, or another expression, 
+leading to some other node, value or name.
 
 Imagine the following code.
 
@@ -415,8 +416,8 @@ set:x:/../*/_output?value
 ```
 
 What occurs above, is that first the inner expression is evaluated. This is the node at the bottom of the above code, with noe name.
-Then the {0} parts in the *[src]* expression is substituted with the evaluated return value of the outer expression, resulting in
-that the [src] expression looks like this "src`:x:`/../*/_data/*/foo2?value", since the inner expression leads to the *[_foo]* node's value,
+Then the `{0}` parts in the *[src]* expression is substituted with the evaluated return value of the outer expression, resulting in
+that the [src] expression looks like this `src:x:/../*/_data/*/foo2?value`, since the inner expression leads to the *[_foo]* node's value,
 which happens to be "foo2".
 
 Formatting expressions substitute their braced integer values, with their corresponding child node's, having no name, and its "value", after
