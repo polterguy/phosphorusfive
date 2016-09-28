@@ -66,7 +66,7 @@ namespace p5.lambda.keywords.extras
                         context.Raise ("eval", exeNode);
 
                         // Retrieving value of [sort] callback, defaulting to "equals"
-                        return exeNode.Get<int> (context, 0);
+                        return exeNode.Get (context, 0);
                     });
                 }
 

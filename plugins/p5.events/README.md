@@ -254,7 +254,7 @@ eval
   return:x:/-/*/**/add?count
 ```
 
-Or even better, how many times are evey single p5.lambda "core" keyword used in my system ...?
+Or even better, how many times are evey single p5.lambda "core" keyword used in my the Active Events of system ...?
 
 Yet again, easy ... ;)
 
@@ -300,5 +300,12 @@ eval
 
 The above lambda, will return exactly how many times, every "keyword" from p5.lambda is being used, in total, in every single dynamic Active Event
 you have in your system. It will even sort them, such that the most frequently used "keywords" are being returned first.
+
+Hint!
+Implementing something similar on your Unit Test files, within your "/system42/apps/tests/" folder, allows you to create a "profile" of how many
+of your keywords are being used within your tests. This requires loading up all files within your "tests" folder, instead of retrieving the lambda
+objects for your dynamic Active Events.
+
+This is left for you as an excersise though ...
 
 
