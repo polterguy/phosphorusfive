@@ -325,7 +325,62 @@ set:x:/../*/_data/*/\*?value
 
 The above Hyperlisp would change the value of the node with the name of "*".
 
-### Changing every even child node
+### Extracting the previous or next sibling node
+
+A sibling node, is a node which belongs to the same parent node. Sometimes you want to retrieve the previous node, or the next node. These nodes
+are often referred to as "younger sibling nodes", and "elder sibling nodes". For such cases you can use the `/-` (younger sibling) or the `/+`
+(elder sibling) iterators. Both of these iterators, optioally takes an integer argument, being the "offset". If no offset is specified, it will 
+default to "1". Below is an example of the "younger sibling" iterator in use.
+
+```
+_data
+  foo1:bar1
+  foo2:bar2
+  foo3:bar3
+  foo4:bar4
+set:x:/../*/_data/*/foo3/-?value
+  src:UPDATED!
+```
+
+This would result in the following.
+
+```
+_data
+  foo1:bar1
+  foo2:UPDATED!
+  foo3:bar3
+  foo4:bar4
+set:x:/../*/_data/*/foo3/-?value
+  src:UPDATED!
+```
+
+To understand how the "offset" parts work, imagine if you replaced the expression above with the following `/../*/_data/*/foo3/-2?value`. Then this
+would yield the following result.
+
+```
+_data
+  foo1:UPDATED!
+  foo2:bar2
+  foo3:bar3
+  foo4:bar4
+set:x:/../*/_data/*/foo3/-2?value
+  src:UPDATED!
+```
+
+If you append the "elder sibling" iterator, at the end of your expression from above, like this; `/../*/_data/*/foo3/-2/+2?value` - Then you're back
+where you started, resulting in the following result.
+
+```
+_data
+  foo1:bar1
+  foo2:bar2
+  foo3:UPDATED!
+  foo4:bar4
+set:x:/../*/_data/*/foo3/-2/+2?value
+  src:UPDATED!
+```
+
+### Changing every even child node (modulo iterator)
 
 Imagine you have some Hyperlisp, where you wish for only the even values to be updated. This could easily be
 accomplished using the "modulo iterator". Imagine the following Hyperlisp
@@ -394,6 +449,162 @@ Then it will ask for the "younger sibling of this node". Since this node does _N
 it will "wrap around" to the last node, returning only the last children node of your *[_data]* segment.
 
 Using this technique, you can easily retrieve the "last child" of some node-set.
+
+### Extracting all unique node names and values
+
+Imagine you want to extract all unique node names or values from some node set. This can be done using either the `/$`´or the `=$`
+iterators. These iterators returns respectively, only the nodes having unique names, or the nodes having unique values. Example is given below.
+
+```
+_input
+  foo1:value1
+  foo1:value2
+  foo2:value2
+  foo2:value3
+_res1
+add:x:/-
+  src:x:/../*/_input/*/$
+_res2
+add:x:/-
+  src:x:/../*/_input/*/=$
+```
+
+The above code would produce the following result.
+
+```
+_input
+  foo1:value1
+  foo1:value2
+  foo2:value2
+  foo2:value3
+_res1
+  foo1:value1
+  foo2:value2
+add:x:/-
+  src:x:/../*/_input/*/$
+_res2
+  foo1:value1
+  foo1:value2
+  foo2:value3
+add:x:/-
+  src:x:/../*/_input/*/=$
+```
+
+Our first *[add]* invocation, will only extract the children nodes from our *[_data]* node, that have unique names - Discarding every node, 
+having a name, that matches the name of a node it has previously extracted. Our second invocation to *[add]*, does the same, except it only
+adds nodes with unique values.
+
+### Extracting a node from the value of a node
+
+Sometimes you have a node, who's value itself, contains another node. This pattern is quite common, and is referred to as "reference nodes".
+If you wish to retrieve this "inner node", in expressions, this can be done using the "reference iterator", which will automatically convert the value
+of the iterated nodes to a node itself. Either by conversion, or by casting if possible. Imagine the following code.
+
+```
+_data:node:@"inner1
+  inner2:old value
+  inner3:old value"
+set:x:/-/#/*/inner2?value
+  src:UPDATED!
+```
+
+After evaluating the above code, your result will look like this.
+
+```
+_data:node:@"inner1
+  inner2:UPDATED!
+  inner3:old value"
+set:x:/-/#/*/inner2?value
+  src:UPDATED!
+```
+
+### Extracting all "descendant" nodes
+
+The `/**` iterator, extracts all "descendants", meaning every children, and their children's children nodes, and so on inwards, for as deep as your
+node hierarchy is. To illustrate with an example.
+
+```
+_data
+  n1:old value
+    n2:old value
+    n3:old value
+      n4:old value
+        n5:old value
+set:x:/../*/_data/**?value
+  src:UPDATED!
+```
+
+After evaluation of the above code, you will get the following result.
+
+```
+_data
+  n1:UPDATED!
+    n2:UPDATED!
+    n3:UPDATED!
+      n4:UPDATED!
+        n5:UPDATED!
+set:x:/../*/_data/**?value
+  src:UPDATED!
+```
+
+### Extracting a named ancestor node
+
+The `/..` (root) iterator is quite useful for retrieving the root node of your lambda object. However, sometimes you rather want to traverse upwards
+in your hierarchy, until you encounter a node, who's name you know, and not traverse all the way to the root node. For such cases, the "named ancestor"
+node is quite useful. It looks like this `/..xxx`, where the "xxx" parts are replaced with whatever name you are looking for. An example is given below.
+
+```
+_data
+  n1:old value
+    n2:old value
+    n3:old value
+      n4:old value
+        n5:old value
+set:x:/../*/_data/**/n5/..n3?value
+  src:UPDATED!
+```
+
+The above code will first extract all descendants of the *[_data]* node, then discard all nodes not having the name of "n5", before it finally extracts
+that node's named ancestor, having the name of "n3". The result will look like this.
+
+```
+_data
+  n1:old value
+    n2:old value
+    n3:UPDATED!
+      n4:old value
+        n5:old value
+set:x:/../*/_data/**/n5/..n3?value
+  src:UPDATED!
+```
+
+### Extracting the parent node
+
+Sometimes you rather want to extract the current node-set's parent node(s). This is easily achieved with the `/.` iterator, which only return the 
+direct parent(s), of whatever node-set you're currently iterating. Imagine this code.
+
+```
+_data
+  no1:old value
+    foo
+  no2:old value
+    foo
+set:x:/-/**/foo/.?value
+  src:UPDATED!
+```
+
+The above code will first retrieve all descendants of the *[_data]* node, then discard all nodes not having the name of "foo", before it finally 
+retrieves all of the parent nodes to its previous result set. The result becomes like this.
+
+```
+_data
+  no1:UPDATED!
+    foo
+  no2:UPDATED!
+    foo
+set:x:/-/**/foo/.?value
+  src:UPDATED!
+```
 
 ### Formatting expressions
 
@@ -670,12 +881,10 @@ really just nodes.
 ## Consuming p5.exp from C# in your own code
 
 p5.exp is extremely easy to incorporate in your own projects and/or Active Events. If you take a look at for instance the
-p5.lambda project, which contains the "ghist of the p5.lambda 'non-programming language'", you will see that it heavily
-consumes the `XUtil` static methods, allowing for automatic traversion and iteration over your p5.lambda nodes.
+p5.lambda project, which contains the ghist of the p5.lambda "non-programming language", you will see that it heavily
+consumes the `XUtil` static methods, allowing for automatic traversion, and iteration, over your p5.lambda nodes.
 
 You can easily create Active Event handlers that takes expressions as their input, using the same pattern in your own code.
-
-p5.exp is not dependent upon any other projects, except the p5.core, due to the Node class being defined in that project.
 
 Imagine you have some Active Event called *[foo]*, which should take an expression, leading to possibly multiple
 nodes, where you should do something with these nodes. This could easily be accomplished with the following code.
@@ -695,36 +904,35 @@ namespace your_namespace
                   /*
                    * Do something with "idx" here ...
                    */
-                  idx.Value = 5;
+                  Utilities.Convert<Node> (context, idx.Value).Value = 5;
               }
         }
     }
 }
 ```
 
-The above code would somehow transform each iterated value of the expressions you pass into them to a "Node" somehow.
-Either by casting, or by conversion if they're not already nodes from before.
+The above code, would somehow transform each iterated value of the expression you pass into it, to a "Node" somehow.
+Either by casting, or by conversion, if they're not already nodes from before.
 
-If you invoked the above Active Event from Hyperlisp, using the following code for instance
-
-```
-_data
-  foo:value 1
-  foo:value 2
-foo:x:/../*/_data/*
-```
-
-Then your node-set would look like the following afterwards
+If you invoked the above Active Event from Hyperlisp, using the following code for instance.
 
 ```
 _data
-  foo:int:5
-  foo:int:5
+  n1:value 1
+  n2:value 2
 foo:x:/../*/_data/*
 ```
 
-See the project called *p5.core* for more details about how to create Active Events in C#.
+Then your node-set would look like the following afterwards.
 
+```
+_data
+  n1:int:5
+  n2:int:5
+foo:x:/../*/_data/*
+```
+
+See the project called "p5.active-event-sample-plugin" for more details about how to create Active Events in C#.
 
 
 
