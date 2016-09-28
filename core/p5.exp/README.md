@@ -583,7 +583,7 @@ is the one with the integer value of 5. You can use any type your installation o
 in your expressions, including any special types you might have declared yourself. Notice also that since we're using
 a colon (:) inside of the value of a node, we need to put the entire node inside of double quotes (").
 
-Expressions, annd iterators, can also be created spanning multiple lines, using the @"my-string" literal type of strings, 
+Expressions, and iterators, can also be created spanning multiple lines, using the @"my-string" literal type of strings, 
 such as below
 
 ```
@@ -608,8 +608,8 @@ is absolutely necessary to do so, since it tends to dramatically reduce the read
 ### Regular Expression iterators
 
 Both the "name iterator" and the "value iterator" also support regular expression matches, which might be useful
-for doing for instance case-insensitive matches, looking for occurrenceis of both "thomas" and "Thomas" for instance. 
-Imagine something like this for instance
+for doing for instance case-insensitive matches, looking for occurrencies of both "thomas" and "Thomas" for instance. 
+Imagine something like this for instance.
 
 ```
 _data
@@ -626,23 +626,24 @@ needs to be put inside of double quotes ("). In addition, since the expression a
 the expression as a whole needs to also be double-quoted, creating a fairly complex syntax for your expression, with 
 double-quotes inside of double-quotes. You should in general term avoid regular expression iterators, due to among
 other things the above problem. In addition, these iterators are much slower in execution than the native "p5 iterators",
-due to the regular expression needing compilation etc.
+due to the regular expression matching requiring potentially lots of CPU time, etc.
 
 However, a regular expression iterator starts with a slash "/" and ends with a slash "/". After the ending slash, you
 can supply regular expression options, which takes the following form
 
-* o - Compiled regular expression
-* c - Invariant culture
-* e - Use ecma style syntax
-* i - Ignore case
-* m - Multiline
-* r - Right to left evaluation
-* s - Single line
-* w - Ignore whitespace pattern
-* x - Use explicit capture
+* `o` - Compiled regular expression
+* `c` - Invariant culture
+* `e` - Use ecma style syntax
+* `i` - Ignore case
+* `m` - Multiline
+* `r` - Right to left evaluation
+* `s` - Single line
+* `w` - Ignore whitespace pattern
+* `x` - Use explicit capture
 
 These are the same options you can supply when you create a regular expression in .Net, and should be fairly well
-documented at the MSDN website, if you wish to dive into these options.
+documented at the MSDN website, if you wish to dive into these options. They can be combined the same way you combine regular expression options in
+the .Net framrwork too.
 
 ## Warning!
 
@@ -651,7 +652,7 @@ result-set back to you. This power comes with a cost though, which is that if yo
 the readability of your applications will be significantly reduced, and your apps might becomes more difficult to maintain,
 since it contains too complex expressions.
 
-Sometimes, it is better for readability to create a couple of more *[for-each]* loops, and *[if]* branchings, then
+Sometimes, it is better for readability to create a couple of more *[for-each]* loops, and *[if]* branchings, than
 it is to go completely over board with the most complex expressions you can imagine.
 
 Be careful with your expressions. The goal is not to create code making your app as a whole resemble "regular expressions".
@@ -669,14 +670,14 @@ really just nodes.
 ## Consuming p5.exp from C# in your own code
 
 p5.exp is extremely easy to incorporate in your own projects and/or Active Events. If you take a look at for instance the
-p5.lambda project, which contains the "ghist of the p5.lambda 'programming language'", you will see that it heavily
-consumes the XUtil static methods, allowing for automatic traversion and iteration over your p5.lambda nodes.
+p5.lambda project, which contains the "ghist of the p5.lambda 'non-programming language'", you will see that it heavily
+consumes the `XUtil` static methods, allowing for automatic traversion and iteration over your p5.lambda nodes.
 
 You can easily create Active Event handlers that takes expressions as their input, using the same pattern in your own code.
 
 p5.exp is not dependent upon any other projects, except the p5.core, due to the Node class being defined in that project.
 
-Imagine you have some Active Event called *[foo]*, which should take an expression, leadning to possible multiple
+Imagine you have some Active Event called *[foo]*, which should take an expression, leading to possibly multiple
 nodes, where you should do something with these nodes. This could easily be accomplished with the following code.
 
 ```csharp
@@ -702,7 +703,7 @@ namespace your_namespace
 ```
 
 The above code would somehow transform each iterated value of the expressions you pass into them to a "Node" somehow.
-Either by casting, or by conversion if they're already nodes from before.
+Either by casting, or by conversion if they're not already nodes from before.
 
 If you invoked the above Active Event from Hyperlisp, using the following code for instance
 
