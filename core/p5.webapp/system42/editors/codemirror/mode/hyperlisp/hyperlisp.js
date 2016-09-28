@@ -920,7 +920,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-location':
         case 'get-location':
         case 'get-base-location':
-        case 'get-event':
         case 'file-exist':
         case 'load-file':
         case 'load-text-file':

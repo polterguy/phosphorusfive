@@ -56,25 +56,6 @@ The *[delete-event]* allows you to delete multiple events at the same time thoug
 Besides, it is probably better to be more "clear" in your usage of vocabulary, and explicitly use the Active Event *[delete-event]* to communicate
 your intent better.
 
-## [get-event] to retrieve an event's lambda object
-
-The *[get-event]* Active Event, will return one or more dynamic Active Events, according to a filter criteria provided. Assuming you created the *[foo]*
-Active Event above, you can retrieve its lambda object with the following code.
-
-```
-get-event:foo
-```
-
-Which of course will return the following result.
-
-```
-get-event
-  foo
-    eval-x:x:/+
-    return:Hello there {0}
-      :x:/../*/_arg?value
-```
-
 ## Stateful Active Events
 
 Sometimes, it might be necessary to create a "stateful" Active Event. Meaning, an Active Event, that somehow is able to remember state, across
@@ -133,8 +114,7 @@ create-event:foo
 
 The above code, will create an Active Event, which simply displays a "confirmation window" once invoked. If you invoke it with *[foo]*, you will
 see it in action. However, if you wish to inspect it, instead of invoking it, this can easily be done, by injecting code into it, as arguments,
-which simply returns the root node. Although this can be done using the *[get-event]* Active Event, it is also easily done by rolling your own
-logic "by hand". To see this in action, evaluate this code. Make sure you've created the Active Event first, by evaluating the
+which simply returns the root node. To see this in action, evaluate this code. Make sure you've created the Active Event first, by evaluating the
 above Hyperlisp first though.
 
 ```
@@ -157,9 +137,9 @@ Active Event, and its lambda object, without seeing the "injected code" in our r
 This is true, regardless of how complex an Active Event is. It only works for dynamically created Active Events though, and not C# declared 
 events (for obvious reasons).
 
-Other things you can do with this, is "monitoring the complexity" of your Active Events. For instance, it could very well be argued, that the 
+Other things you can do with this, is "monitor the complexity" of your Active Events. For instance, it could very well be argued, that the 
 more lambda nodes an event has, the more complex it is. By counting the nodes within an Active Event, we can at least to some extent, evaluate
-its complexity. Imagine this code. (Which also depends upon you having created the *[foo]* Active Event from above previously)
+its complexity. Imagine this code (which also depends upon you having created the *[foo]* Active Event from above previously).
 
 ```
 foo
@@ -173,6 +153,8 @@ Active Event has.
 You can of course extend this as you see fit, and for instance count "all *[add]* invocations" in your Active Events, and so on. This allows you
 to acquire really rich and detailed meta-data information, about your dynamically created Active Events, in your system. To a much higher
 extent, than what most other programming languages allows you to do.
+
+p5.lambda is extremely "Agile" and "dynamic" in nature.
 
 ### Listing all Active Events in your system
 
@@ -284,7 +266,7 @@ eval
   return:x:/-/*/**/add?count
 ```
 
-Or even better, how many times are evey single p5.lambda "core" keyword used in my the Active Events of system ...?
+Or even better, how many times are every single p5.lambda "core" keyword, used in all Active Events, of your system ...?
 
 Yet again, easy ... ;)
 
@@ -329,7 +311,7 @@ eval
 ```
 
 The above lambda, will return exactly how many times, every "keyword" from p5.lambda is being used, in total, in every single dynamic Active Event
-you have in your system. It will even sort them, such that the most frequently used "keywords" are being returned first.
+you have in your system. It will even sort them, such that the most frequently used "keywords", are being returned first.
 
 Hint!
 Implementing something similar on your Unit Test files, within your "/system42/apps/tests/" folder, allows you to create a "profile" of how many

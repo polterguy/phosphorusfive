@@ -65,39 +65,6 @@ namespace p5.events
         }
 
         /// <summary>
-        ///     Retrieves dynamically created Active Events
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-event")]
-        public static void get_even (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
-
-                // Looping through all events caller wish to retrieve
-                foreach (var idxEventName in XUtil.Iterate<string> (context, e.Args)) {
-
-                    // Looping through all existing event keys
-                    foreach (var idxKey in _events.Keys) {
-
-                        // Checking is current event name contains current filter
-                        if (idxKey == idxEventName) {
-
-                            // Current Active Event contains current filter value in its name, and we have a match.
-                            // Checking if event is already returned by a previous filter, before adding
-                            if (!e.Args.Children.Any (idxExisting => idxExisting.Get<string> (context) == idxKey)) {
-
-                                // No previous filter matched Active Event name
-                                e.Args.Add (idxKey).LastChild.AddRange (_events [idxKey].Clone ().Children);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         ///     Lists all dynamically created Active Events.
         /// </summary>
         /// <param name="context">Application Context</param>

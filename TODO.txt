@@ -14,6 +14,6 @@ TODO before release
 
 * Add link to YouTube channel on main README.md file
 
-
+* Remove the [get-event] Active Event, and implement some "system42" dynamic event, that does the same, through "event lambda injection code"
 
 
