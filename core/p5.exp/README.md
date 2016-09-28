@@ -16,17 +16,17 @@ set:x:/../*/_data/*/foo?value
 ```
 
 In the above example `/../*/_data/*/foo?value` is an expression, and `:x:`
-declares it as such, and hence becomes its *type declaration* for the type engine of P5.
+declares it as such for the type engine of P5.
 
 It ends with an expression type declaration (?value), which informs the expression engine, 
 that we're interested in the values of whatever the expression yields as its result.
 
 An expression can retreieve 4 basic values.
 
-* Node - "?node" - The node itself, also the default value if no type is explicitly declared for your expression
-* Name - "?name" - The name part of your nodes
-* Value - "?value" - The value part of your nodes
-* Count - "?count" - Number of matches for your expression, returns a single integer value
+* Node - `?node` - The node itself, also the default value if no type is explicitly declared for your expression
+* Name - `?name` - The name part of your nodes
+* Value - `?value` - The value part of your nodes
+* Count - `?count` - Number of matches for your expression, returns a single integer value
 
 In addition, an expression can be type-converted. If you are for instance requesting a node's value, who is of type string, you can  convert
 the result into an integer, by appending ".int" after the expression, such as the following example illustrates.
