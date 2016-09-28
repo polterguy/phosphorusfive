@@ -2,9 +2,9 @@ Phosphorus Five, significantly simplifying the creation of web apps
 ===============
 
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
-Its "Hello World" can be executed by starting your debugger (making sure you've turned _OFF_ "Browser Link"
-in Visual Studio), open up the "apps/cms", choose to create a "New page ..." - Choose *[lambda]* page, 
-and paste in the following code.
+Its "Hello World" can be executed by making ure you have the "p5.webapp" as your startup project, start your debugger 
+(making sure you've turned _OFF_ "Browser Link" in Visual Studio), open up the "apps/cms" in the menu at the top, choose 
+to create a "New page ..." - Choose *[lambda]* page, and paste in the following code.
 
 ```
 create-literal-widget
@@ -21,11 +21,16 @@ Save your page, and click "Preview". If you get a browser notification saying "a
 have to change your browser settings for popups being allowed on localhost. If you do not have Visual Studio, P5
 works just as well on both Xamarin (Mac OS X) and MonoDevelop (Linux).
 
+Tip!
+A nice place to test out constructs shown in the documentation files for P5, is the menu item "apps/executor",
+which allows you to execute Hyperlisp and p5.lambda directly from within your browser. Most examples here
+assumes you're using the "executor" application to evaluate your code.
+
 The above code, is called "Hyperlisp", and is simply a key/value/children tree-structure, allowing for you
 to declare something which P5 refers to as "p5.lambda". p5.lambda is the basis for an "execution tree", that is
 a Turing complete opportinuty to "declare your apps", through a (very) rich "non-programming model".
 
-We say "non-programming", because really, there is no "programming language" in P5, only a bunch of loosely
+We say "non-programming", because really, there is no "programming language" in P5. Only a bunch of loosely
 coupled Active Events, that happens to, in their combined version, create a Turing complete execution
 environment.
 
@@ -66,52 +71,14 @@ In fact, the above "Hello World" example, is simply an invocation to an Active E
 happens to take a set of arguments, that allows you to create an Ajax control on your page, which once clicked, changes its "innerHTML",
 through the *[innerValue]* property.
 
-## Features
-
-P5 contains a whole range of features, which are all optional to use, and can be "cherry picked" from when creating your apps. Below is
-an example of some of these features.
-
-* p5.ajax, an Ajax library for ASP.NET that builds on top of "Web Forms"
-* p5.core, the main Active Event design pattern implementation that allows you to raise and handle Active Events
-* p5.exp, an expression language, that allows you to select sub-sections of tree-structures (graph objects) through a syntax similar to "XPath"
-* lambda.exe, a console program that allows you to execute Hyperlisp and p5.lambda, directly from the console, without having a front-end web based GUI
-* p5.webapp, a simple web app that is the "host" of your programs when developing your web apps
-* p5.data, an extremely fast memory based, yet persistent database, which through expressions allows you to store, retrieve, modify and delete tree-structures (p5.lambda nodes)
-* p5.html, allowing you to transform between HTML and p5.lambda (Hyperlisp)
-* p5.mail, built on the marvelous MimeKit, allowing you to send and retreieve email, using POP3 and SMTP protocols
-* p5.mime, allowing you to parse and create MIME messages, including PGP encrypted messages
-* p5.net, allowing you to create HTTP requests entirely as you wish, to for instance invoke web services, or download files over your network
-* p5.threading, allowing you to spawn of threads, and serialize access to shared resources, etc
-* p5.web, allowing you to entirely create your UX in an extremely simple way, declaring it through Hyperlisp, and modifying it using p5.lambda
-* p5.events, allowing you to dynamically create Active Events, using Hyperlisp and p5.lambda
-* p5.hyperlisp, allowing you to parse Hyperlisp and create a "Node" structure out of it (p5.lambda/graph object)
-* p5.io, allowing you to perform most tasks from the System.IO namespace of .Net, such as saving files, loading files, traversing directories, etc
-* p5.lambda, which is the Turing Complete execution platform, or "non-programmming language based" execution engine of P5, if you wish
-* p5.math, math operations or Active Events, allowing you to do most tasks related to math operations, such as +, -, /, * etc.
-* p5.strings, giving you the most common string operations
-* p5.types, containing the type support for Hyperlisp, which is extendible, allowing you to create your own types if you wish
-
-Plus more ...
-
-The above list might seem overwhelming, especially when you couple it with Hyperlisp (a new concept), p5 expressions (a new concept) and 
-p5.lambda (a new concept) - But really, these are only optional plugins, which you do not have to use, unless you wish. If you want to, you could
-create your web app, entirely in ASP.NET and C#, and add up for instance only p5.ajax, to have a Web Forms based Ajax control library.
-Then you could start incorporating Active Events in your project, when you feel for it, for then to add one plugin at the time. Slowly building up 
-knowhow about how P5 works.
-
-But of course, the most benefit will be aquired, if you go "all in", and entirely develop your apps in Hyperlisp and p5.lambda, using p5.web,
-and p5.ajax, combined with all other plugins of P5. Even possibly also using the CMS, which is a part of the "front-end" parts, called "System42".
-
-This would in theory allow you to develop your apps,at least to some extent, from within your browser, using the Hyperlisp/p5.lambda CodeMirror
-editor, which is included in the "CMS".
-
-For the record; Really, it's not "CMS", more in fact an IDE, and even a Visual IDE, but in lack of a better word, I keep on referring to it as a "CMS".
-
 ## Documentation
 
 To see the documentation for the different projects, open up the folder for whatever project's dox you wish to read, and check out the embedded README.md
 file. The dox for the "core" can be found in the projects folders inside of the "core" folder, while the dox for the different plugins, can be found
 within the different project folders inside of the "plugin" folders.
+
+* [Documentation for the core](/tree/master/core/)
+* [Documentation for the plugins](/tree/master/plugins/)
 
 There are also many YouTube videos, showing of some aspect about P5 at [my YouTube channel] (https://www.youtube.com/channel/UCmZvIkxA08v9O6oi3NtwUjA/videos)
 
