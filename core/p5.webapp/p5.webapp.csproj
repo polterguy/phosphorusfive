@@ -414,6 +414,9 @@
     <Content Include="system42\apps\users\launch.hl" />
     <Content Include="system42\apps\tests\events.hl" />
     <Content Include="system42\apps\file-browser\startup.hl" />
+    <Content Include="system42\apps\tests\database.hl" />
+    <Content Include="system42\apps\tests\files.hl" />
+    <Content Include="system42\apps\tests\folders.hl" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />

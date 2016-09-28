@@ -37,7 +37,6 @@ namespace p5.events
         public static void create_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking to see if this event has no lambda objects, and is not protected, at which case it is a "delete event" invocation
-            if (e.Args.Children.Count == 0 && e.Name == "create-event") {
 
                 // Deleting event, if existing, since it doesn't have any lambda objects associated with it
                 DeleteEvent (XUtil.Single<string> (context, e.Args), context, e.Args);

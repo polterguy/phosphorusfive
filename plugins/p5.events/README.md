@@ -46,6 +46,35 @@ Active Event - They behave exactly the same way in all regards. When you invoke 
 event's lambda object, which is evaluated, as if it was a normal lambda object, making it possible to pass in arguments, and return nodes and 
 values, as if it was a normal lambda object, evaluated using the *[eval]* Active Event.
 
+## Deleting events
+
+The *[delete-event]* Active Event, allows you to completely delete a dynamic Active Event. You can either provide an expression, leading to multiple
+names, or a constant, deleting only one event.
+
+However, if you invoke *[create-event]* with no lambda object as its children, you will also delete any existing events with the given name.
+The *[delete-event]* allows you to delete multiple events at the same time though, which the *[create-event]*, without a lambda object does _not_.
+Besides, it is probably better to be more "clear" in your usage of vocabulary, and explicitly use the Active Event *[delete-event]* to communicate
+your intent better.
+
+## [get-event] to retrieve an event's lambda object
+
+The *[get-event]* Active Event, will return one or more dynamic Active Events, according to a filter criteria provided. Assuming you created the *[foo]*
+Active Event above, you can retrieve its lambda object with the following code.
+
+```
+get-event:foo
+```
+
+Which of course will return the following result.
+
+```
+get-event
+  foo
+    eval-x:x:/+
+    return:Hello there {0}
+      :x:/../*/_arg?value
+```
+
 ## Stateful Active Events
 
 Sometimes, it might be necessary to create a "stateful" Active Event. Meaning, an Active Event, that somehow is able to remember state, across
@@ -104,7 +133,8 @@ create-event:foo
 
 The above code, will create an Active Event, which simply displays a "confirmation window" once invoked. If you invoke it with *[foo]*, you will
 see it in action. However, if you wish to inspect it, instead of invoking it, this can easily be done, by injecting code into it, as arguments,
-which simply returns the root node. To see this in action, evaluate this code. Make sure you've created the Active Event first, by evaluating the
+which simply returns the root node. Although this can be done using the *[get-event]* Active Event, it is also easily done by rolling your own
+logic "by hand". To see this in action, evaluate this code. Make sure you've created the Active Event first, by evaluating the
 above Hyperlisp first though.
 
 ```
