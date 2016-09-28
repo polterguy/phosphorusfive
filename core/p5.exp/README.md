@@ -459,8 +459,8 @@ set:x:/../*/_data/*/=jane|/../*/_data/*/=john?value
   src:hansen
 ```
 
-The above expression would use the "|" boolean algebraic operator, to "join" the results of the above
-two expressions, separated by the pipe sign (|). This would result in the following code after evaluation
+The above expression would use the `|` boolean algebraic operator, to "join" the results of the above
+two expressions, separated by the pipe sign (|). This would result in the following code after evaluation.
 
 ```
 _data
@@ -482,7 +482,7 @@ _data
   jane:doe
 ```
 
-To accomplish the above task, you would have to use the AND boolean operator (&) such as below
+To accomplish the above task, you would have to use the AND boolean operator `&` such as below.
 
 ```
 _data
@@ -506,10 +506,10 @@ set:x:/../*/_data/*/=jane&/../*/_data/*/doe?value
   src:UPDATED!
 ```
 
-Notice that only the nodes matching BOTH the name of "jane" AND the value of "doe" are updated above.
+Notice how only the nodes matching _BOTH_ the name of "jane" AND the value of "doe" are updated above.
 
 If you wish to return the ones having either _ONE_ of a name being "jane" or a value of "doe", this
-could be accomplished using the XOR (^) boolean operator, such as below
+could be accomplished using the XOR `^` boolean operator, such as below.
 
 ```
 _data
@@ -533,15 +533,15 @@ set:x:/../*/_data/*/=jane^/../*/_data/*/doe?value
   src:UPDATED!
 ```
 
-Notice that the ones matching BOTH criteria is _NOT_ updated, but only the ones matching only one of
-the criteria of our XOR operands.
+Notice that the nodes matching _BOTH_ criteria is _NOT_ updated, but only the ones matching only _one_ of
+the criteria in our XOR operands.
 
 ### Grouping expressions
 
 Sometimes, especially when using boolean algebra in your expressions, your expressions might become very long 
-and tedious to read. For such scenarios, you can create "grouping" of your expressions, to create "sub-expressions",
+and tedious to read. For such scenarios, you can "group" your expressions, to create "sub-expressions",
 that reacts upon their "outer expressions". The OR statement we started out with in this section for instance, 
-could be re-written to the following expressions, using the "grouping" operators of parantheses
+could be re-written to the following expressions, using "grouping" parantheses.
 
 ```
 _data
@@ -553,19 +553,20 @@ set:x:/../*/_data/*(|/=jane|/=john)?value
   src:hansen
 ```
 
-What the above syntax means, is basically that the two sub-expressions inside of the parantheses signifies that
-these two expressions are reacting upon the expression _OUTSIDE_ of the paranthese themselves. Meaning the outer
-expression becomes the "root" expression result-set, both of these two expressions reacts upon.
+What the above syntax means, is basically that the two sub-expressions, inside of our parantheses, are reacting upon the expression 
+_OUTSIDE_ of the paranthese themselves. Meaning, the outer expression becomes the "root" expression result-set, both of these two 
+expressions reacts upon.
 
-This allows you to create fairly complex expressions, reacting upon the results of their previous "outer expressions".
+This allows you to create fairly complex expressions, reacting upon the results of their previous "outer expressions", yet still keep your expression
+short and understandable.
 
 ### Extracting typed values
 
 Sometimes you wish to create a value match for something that is not of type "string". This creates a problem, due to the
-typing system of Phosphorus Five and your p5.lambda structures, since a 5 does _NOT_ equal a "5". This can easily
-be done though, since the value iterator supports types, the same way Hyperlisp itself supports types, by adding a ":my-type:"
+typing system of Phosphorus Five, and your p5.lambda structures, since the integer value of 5 does _NOT_ equal the string value of "5". 
+This can easily be done though, since the value iterator supports types, the same way Hyperlisp itself supports types, by adding a `:my-type:`
 in front of the value. Since however, the ":" is a special character in Hyperlisp, this means you'll have to first declare
-your entire expression inside of a "string literal", the same way you'd create a string literal in C#. Example
+your entire expression inside of a "string literal", the same way you'd create a string literal in C#. Example is given below.
 
 ```
 _data
