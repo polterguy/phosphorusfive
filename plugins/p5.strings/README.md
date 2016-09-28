@@ -66,9 +66,8 @@ index-of
 ```
 
 As you can see from above, the search is also case-sensitive, since it doesn't give a match for "phosphorus" within the email address. If
-you wish to do a case-insensitive search, you need to resort to regular expression source. Before we look at that though, let's look at how
-we can use multiples static sources. Instead of having an expression as the value of *[src]*, we could have simply supplied multiple static 
-values.
+you wish to do a case-insensitive search, you need to resort to a regular expression type of source. Before we look at that though, let's look at how
+we can use multiples static sources. Instead of having an expression as the value of *[src]*. One way to achieve that would look like this.
 
 ```
 _data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
@@ -90,13 +89,13 @@ index-of:x:/-?value
   src:regex:/hansen/i
 ```
 
-Now it matches both occurrencies of "Hansen", since the regex is created with the "case-insensitive" flag set to true. Any regular expressions
-you wish to use, can be ued though. The above is just a simple example. Though, if you create very complex regular expressions, containing
+The above matches both occurrencies of "Hansen", since the regex we supplied, is created with the "case-insensitive" flag set to true. Any regular 
+expressions you wish to use, can be used here, the above is just a simple example. Though, if you create very complex regular expressions, containing
 for instance a ":", etc, you might have to put your regular expression value, into quotes, or double quotes. You can also use multiple regular
 expressions as your source.
 
 ```
-_data:Thomas Hansen are the same letter as hansen, thomas SAID Marin sammens
+_data:Thomas Hansen are the same letter as hansen, thomas SAID Marin sami people
 index-of:x:/-?value
   src
     no1:regex:/hansen/i
@@ -305,7 +304,7 @@ replace:x:/-?value
     return:an intelligent
 ```
 
-If you use Active Event sources, then your first Active Event invocation will be assumed to be your *[src]*, and the second its *[dest]*. In
+If you use Active Event sources, then your first Active Event invocation, will be considered your *[src]*, and the second its *[dest]*. In
 addition, you can have multiple sources defined, such as the following illustrates.
 
 ```
@@ -319,8 +318,11 @@ replace:x:/-2?value
     return:an intelligent
 ```
 
-However, there can be only one destination value. Above you see how you can combine Active Event sources with expression destinations. Vice
+However, there can be only one "destination" value. Above you see how you can combine Active Event sources with expression destinations. Vice
 versa is of course also possible.
+
+Notice the "destination" is not really the destination, since this is defined as the value of the *[replace]* node itself - But rather the "what to 
+substitute your matches with". Think of it as the "destination for what to replace with" to get the vocabulary correct.
 
 
 

@@ -63,4 +63,7 @@
       <Name>p5.active-event-sample-plugin</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
 </Project>

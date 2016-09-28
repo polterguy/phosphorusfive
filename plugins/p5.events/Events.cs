@@ -110,8 +110,6 @@ namespace p5.events
 
                 // Retrieving filter, if any
                 var filter = new List<string> (XUtil.Iterate<string> (context, e.Args));
-                if (e.Args.Value != null && filter.Count == 0)
-                    return; // Possibly a filter expression, leading into oblivion, since filter still was given, we return "nothing"
 
                 // Getting all dynamic Active Events
                 ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context);

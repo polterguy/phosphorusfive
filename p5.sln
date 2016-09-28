@@ -11,12 +11,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}"
+	ProjectSection(SolutionItems) = preProject
+		plugins\README.md = plugins\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extras", "extras", "{E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{65EAD177-7108-4766-9B7D-5C20378DD4BE}"
+	ProjectSection(SolutionItems) = preProject
+		core\README.md = core\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{D324EDB9-E389-4183-B7E9-B4C4D281C238}"
+	ProjectSection(SolutionItems) = preProject
+		samples\README.md = samples\README.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.lambda", "plugins\p5.lambda\p5.lambda.csproj", "{8EB5FDEA-D073-4147-AE65-376A01B463DF}"
 EndProject
