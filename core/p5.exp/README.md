@@ -28,8 +28,8 @@ An expression can retreieve 4 basic values.
 * Value - `?value` - The value part of your nodes
 * Count - `?count` - Number of matches for your expression, returns a single integer value
 
-In addition, an expression can be type-converted. If you are for instance requesting a node's value, who is of type string, you can  convert
-the result into an integer, by appending ".int" after the expression, such as the following example illustrates.
+In addition, an expression can be type-converted. If you are for instance requesting a node's value, that is of type string, you can  convert
+the result into an integer, by appending `.int` after the expression, such as the following example illustrates.
 
 ```
 _data:string:5
@@ -37,10 +37,11 @@ set:x:?value
   src:x:/../*/_data?value.int
 ```
 
-For the record, an expression without any iterators, is the "identity expression", yielding the "current node", which for the above example, means
-it will return the *[set]* node's value itself. The "identity expression", when retreiving the "identity node", is actually written like this; `:x:`,
-having no iterators, and no type declaration. The identity expression, which all expressions starts out with, will retrieve the "this node" for 
-most cases. For instance, this code, will delete its own node, since our *[set]* has no source, and it uses the identity expression as its destination.
+For the record, an expression without any iterators, is the "identity expression", yielding the "current node", which for the above example, and its 
+destination, means it will return the *[set]* node's value itself. The "identity expression", when retreiving the "identity node", is actually written 
+like this; `:x:`, having no iterators, and no type declaration. The identity expression, which all expressions starts out with, will retrieve the 
+"this node" for most cases. For instance, this code, will delete its own node, since our *[set]* has no source, and it uses the identity expression 
+as its destination.
 
 ```
 set:x:
@@ -59,41 +60,41 @@ set:x:?value
   src:x:/../*/_data/*/foo?count
 ```
 
-After evaluation of the above Hyperlisp, the value of the *[set]* node will be ":int:2", which
+After evaluation of the above Hyperlisp, the value of the *[set]* node will be `:int:2`, which
 signifies that it holds an integer value, and its value is "2".
 
 Expressions consists of three basic parts
 
 * `:x:` - Signifying its an expression type
 * Zero or more iterators, separated by "/"
-* A type declaration, being any of "?name", "?count", "?value" or "?node" (which is the default value, if no type declaration is explicitly supplied)
+* A type declaration, being any of `?name`, `?count`, `?value` or v?node` (which is the default value, if no type declaration is explicitly supplied)
 
-If the type declaration is omitted, the type declaration is assumed to be "?node".
+If the type declaration is omitted, the type declaration is assumed to be `?node`.
 
 Each iterator is separated by a slash (/), resembling the syntax of XPath. An iterator will 
 react upon the results from its previous iterator, mening they're "piped" together, to create a combined result.
-Expressions are said to be "left associative" for those interested in the theory behind them - Which cimply means that the expression engine
-parses them from the "left to the right".
+Expressions are said to be "left associative" for those interested in the theory behind them - Which means that the expression engine
+parses them from the left to the right.
 
 There are 17 basic different unique iterators, that each extracts a different type of result
 
-* /* - Children iterator, extracts all children of previous result set
-* /** - Descendants iterator, extracts all descendents of previous result set
-* /$ - Distinct name iterator, extracts all nodes from previous result set, excluding nodes with duplicate names
-* /=$-  Distinct value iterator, extracts all nodes from previous result set, excluding nodes with duplicate values
-* /%x - Modulo iterator, extracting every node matching the given (x) modulo, for instance to extract all even nodes, use "/%2"
-* /xxx - Named iterator, extracts all nodes with the specified (xxx) name
-* /..xxx - Named ancestor iterator, extracts all ancestor with the specified (xxx) name
-* /n - Numbered child iterator, extracts the "y" child from the previous result set, where n must be an integer value
-* /. - Parent iterator, extracts parent nodes from previous result set
-* /[n1, n2] - Range iterator, extracts a range of values from previous result set, where n1 and n2 must be a range from 0..n
-* /# - Reference iterator, casts the previous node's values into a node, yielding that node back to caller
-* /.. - Root node iterator, extracts the root node from previous result set
-* /< - Left shift iterator, lefts shifts the nodes from the previous result set
-* /> - Right shift iterator
-* /-n - Younger sibling iterator, retreieves the younger sibling from previous result set. "n" must be an integer, if supplied. If no "n" is supplied, the value of "1" will be assumed
-* /+n - Elder sibling iterator, opposite of above
-* /=xxx - Value iterator, extracts all nodes with the specified value
+* `/*` - Children iterator, extracts all children of previous result set
+* `/**` - Descendants iterator, extracts all descendents of previous result set
+* `/$` - Distinct name iterator, extracts all nodes from previous result set, excluding nodes with duplicate names
+* `/=$` -  Distinct value iterator, extracts all nodes from previous result set, excluding nodes with duplicate values
+* `/%x` - Modulo iterator, extracting every node matching the given (x) modulo, for instance to extract all even nodes, use "/%2"
+* `/xxx` - Named iterator, extracts all nodes with the specified (xxx) name
+* `/..xxx` - Named ancestor iterator, extracts all ancestor with the specified (xxx) name
+* `/n` - Numbered child iterator, extracts the "y" child from the previous result set, where n must be an integer value
+* `/.` - Parent iterator, extracts parent nodes from previous result set
+* `/[n1, n2]` - Range iterator, extracts a range of values from previous result set, where n1 and n2 must be a range from 0..n
+* `/#` - Reference iterator, casts the previous node's values into a node, yielding that node back to caller
+* `/..` - Root node iterator, extracts the root node from previous result set
+* `/<` - Left shift iterator, lefts shifts the nodes from the previous result set
+* `/>` - Right shift iterator
+* `/-n` - Younger sibling iterator, retreieves the younger sibling from previous result set. "n" must be an integer, if supplied. If no "n" is supplied, the value of "1" will be assumed
+* `/+n` - Elder sibling iterator, opposite of above
+* `/=xxx` - Value iterator, extracts all nodes with the specified value
 
 ## Examples
 
