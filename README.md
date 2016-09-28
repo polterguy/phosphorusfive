@@ -28,20 +28,20 @@ assumes you're using the "executor" application to evaluate your code.
 
 The above code, is called "Hyperlisp", and is simply a key/value/children tree-structure, allowing for you
 to declare something which P5 refers to as "p5.lambda". p5.lambda is the basis for an "execution tree", that is
-a Turing complete opportinuty to "declare your apps", through a (very) rich "non-programming model".
+a Turing complete opportunity to "declare your apps", through a (very) rich "non-programming model".
 
 We say "non-programming", because really, there is no "programming language" in P5. Only a bunch of loosely
 coupled Active Events, that happens to, in their combined version, create a Turing complete execution
 environment.
 
 In fact, if you wish, you can "declare" your execution trees, by using XML or JSON. Although we recommend
-using Hyperlisp, due to its much more condens syntax, and lack of "overhead" compared to XML and JSON.
+using Hyperlisp, due to its much more condens syntax, and lack of "overhead", compared to XML and JSON.
 
 This trait of P5, allows you to "orchestrate" your apps, by combining your parts together, more like how a conductor 
 is orchestrating his musicians. It hence becomes an extremely high abstraction, allowing you to focus more on the 
 big picture, without having to care about the implementation details (unless you want to)
 
-All this, while retaining your ability to create C# code, exactly as you're used to from ASP.NET.
+All this, while retaining your ability to create C#/VB/F# code, exactly as you're used to from ASP.NET.
 
 ## 3 basic innovations
 
@@ -52,22 +52,22 @@ Phosphorus Five consists of three basic innovations.
 * Hyperlisp or p5.lambda
 
 The Ajax library is entirely created on top of ASP.NET's web controls, allowing you to use them the same way you would create a web forms website.
-Simply inject them declaratively into your markup, and set their properties and attributes in your codebehind.
+Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind.
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them.
 
-Hyperlisp or p5.lambda is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps together almost
+Hyperlisp or p5.lambda is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps together, almost
 as if they were LEGO bricks.
 
 P5 is entirely created in C#, and should work perfectly with Visual Studio, Xamarin and MonoDevelop.
-It creates 100% conforming HTML5 markup, and comes with many of the "industry best practices" included, such as Bootsstrap CSS and jQuery.
+It creates 100% conforming HTML5 markup, and comes with many of the "industry best practices" included, such as Bootsstrap CSS, and jQuery.
 
 The three USPs mentioned above though, creates a unique model for development, which allows you to combine your existing C# skills,
 creating a "plugin environment", where you can assemble your apps, almost as if they were made out of LEGO. This is in stark
-contrast to the traditional way of "carving" apps together, using interfaces for plugins, which requires a much higher degree of
+contrast to the traditional way of "carving out apps", using interfaces for plugins, which requires a much higher degree of
 dependencies between your app's different components.
 
-Phosphorus Five facilitates for an extremely Agile environment. Where any piece can in theory, be interchanged with any other piece you wish.
+Phosphorus Five facilitates for an extremely Agile environment. Where any piece of logic, can in theory, be interchanged with any other piece you wish.
 
 This just so happens to facilitate for an environment, where you can reuse your code, to a much higher extent, than what you're used
 to being able to do in most other "frameworks".
@@ -75,7 +75,7 @@ to being able to do in most other "frameworks".
 At a fundamental level, it might be argued that Active Events, which is really the core of the brilliance of P5, replaces the way
 you invoke "methods" and "functions". Although, you can still keep on leveraging your existing C# knowledge and OOP knowledge, this
 design pattern has huge implications, allowing you to loosely couple your logic together, in a way that far superseeds what you're 
-probably used to from before.
+used to from before.
 
 In fact, the above "Hello World" example, is simply an invocation to an Active Event, who's name is *[create-literal-widget]*, which
 happens to take a set of arguments, that allows you to create an Ajax control on your page, which once clicked, changes its "innerHTML",
@@ -116,6 +116,8 @@ created in for instance C#, VB.NET, F#, or "Boo" for that matter.
 
 Although I recommend people to use the entire "framework", for those only interested in using e.g. the Ajax library, and/or the Active Event design
 pattern implementation, there can be found some examples of this in the "samples" folder.
+
+[C# examples] (/samples/)
 
 ## License
 
