@@ -1,9 +1,11 @@
-Phosphorus Five main web app root folder
+Phosphorus Five "application pool" (main website)
 ========
 
-This is the main web root folder of your Phosphorus Five installation. P5 as a 
-general rule, does not have access to any files outside of this folder. P5 needs 
-complete  control (read/write/delete/etc) of files inside of this folder.
+This is the main web root folder of your Phosphorus Five installation. This is the project 
+you would normally set as your "startup project" when testing P5.
+
+P5 as a general rule, does not have access to any files outside of this folder. P5 needs 
+complete control (read/write/delete/etc) of files inside of this folder to function optimally.
 
 ## File structure
 
@@ -74,7 +76,7 @@ To serve files from this folder, use for instance the *[echo-file]* Active Event
 
 ### The "system42" folder
 
-Contains "System42". See this folder's README.md file for an explanation about System42.
+Contains "System42". See the documentation for [System42](/core/p5.webapp/system42/).
 
 ### The "Default.aspx" file
 

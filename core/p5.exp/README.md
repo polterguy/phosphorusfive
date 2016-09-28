@@ -637,7 +637,7 @@ evaluating it, if it is an expression. You can also use a constant, instead of a
 This allows you to create both normal string, and/or complex expressions, which is "parametrized", and changes according to how your lambda
 object changes. Allowing you to pass in "parameters" to your expressions, in addition to that it allows you to concatenate strings of course.
 
-### Boolean algebara on expressions
+### Boolean algebra on expressions
 
 p5.exp support boolean algabra on your expressions. This allows you to use all the four boolean algebraic
 operators to combine results. The four algebraic operators are as following
