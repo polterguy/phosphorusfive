@@ -64,7 +64,7 @@ signifies that it holds an integer value, and its value is "2".
 
 Expressions consists of three basic parts
 
-* \:x\: - Signifying its an expression type
+* : x : - Signifying its an expression type
 * Zero or more iterators, separated by "/"
 * A type declaration, being any of "?name", "?count", "?value" or "?node" (which is the default value, if no type declaration is explicitly supplied)
 
