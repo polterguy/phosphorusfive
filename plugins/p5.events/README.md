@@ -137,6 +137,8 @@ Active Event, and its lambda object, without seeing the "injected code" in our r
 This is true, regardless of how complex an Active Event is. It only works for dynamically created Active Events though, and not C# declared 
 events (for obvious reasons).
 
+Notice, System42 implements an Active Event helper, that does exactly the above, called *[sys42.get-event]*.
+
 Other things you can do with this, is "monitor the complexity" of your Active Events. For instance, it could very well be argued, that the 
 more lambda nodes an event has, the more complex it is. By counting the nodes within an Active Event, we can at least to some extent, evaluate
 its complexity. Imagine this code (which also depends upon you having created the *[foo]* Active Event from above previously).
@@ -231,7 +233,7 @@ test.retrieve-event-code:confirm
 
 Which would return the p5.lambda object, for every single event, that has a name containing the "confirm" word, somehow. The reason why this works,
 is because we're de-referencing the *[_arg]* argument for our Active Event, which is the value of the node used to invoke our *[test.retrieve-event-code]*,
-in our invocation to *[vocabulary]*. This means that when *[vocabulary]* is evaluated, it will filter away every single event not containing the word
+in our invocation to *[vocabulary]*. This means that when *[vocabulary]* is evaluated, it will filter away every single event, not containing the word
 "confirm" in its name, somehow.
 
 If you consumed your newly declared Active Event with the following lambda instead.
@@ -258,7 +260,7 @@ eval
 
 Or how many invocations do I have to my *[add]* Active Event?
 
-Easy ... ;)
+Easy ...
 
 ```
 eval
@@ -268,7 +270,7 @@ eval
 
 Or even better, how many times are every single p5.lambda "core" keyword, used in all Active Events, of your system ...?
 
-Yet again, easy ... ;)
+Yet again, easy ...
 
 ```
 eval
@@ -314,7 +316,7 @@ The above lambda, will return exactly how many times, every "keyword" from p5.la
 you have in your system. It will even sort them, such that the most frequently used "keywords", are being returned first.
 
 Hint!
-Implementing something similar on your Unit Test files, within your "/system42/apps/tests/" folder, allows you to create a "profile" of how many
+Implementing something similar on your Unit Test files, within your "/system42/apps/tests/" folder, allows you to create a "coverage" of how many
 of your keywords are being used within your tests. This requires loading up all files within your "tests" folder, instead of retrieving the lambda
 objects for your dynamic Active Events.
 

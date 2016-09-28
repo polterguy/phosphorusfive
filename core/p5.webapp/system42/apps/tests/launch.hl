@@ -291,7 +291,7 @@ create-widget:add-unit-test
      * Creates new unit test file
      */
     button
-      class:btn btn-default col-xs-6
+      class:btn btn-default col-xs-4
       innerValue:+
       title:Create new unit test file
       onclick
@@ -352,10 +352,54 @@ foo2
      * Clear unit tests
      */
     button
-      class:btn btn-default col-xs-6
+      class:btn btn-default col-xs-4
       innerValue:Clear
       title:Clear unit tests
       onclick
         delete-widget:add-unit-test
         delete-widget:unit-test-files
         sys42.execute-lisp-file:/system42/apps/tests/launch.hl
+
+    /*
+     * Shows the coverage of the test suite
+     */
+    button
+      class:btn btn-default col-xs-4
+      innerValue:Coverage
+      title:Shows the coverage of your unit tests
+      onclick
+        vocabulary
+        set:x:/-/*/dynamic|/-/*/=|/-/*/=~.
+        list-files:/system42/apps/tests/
+        set:x:/-/*/~launch.hl
+        load-file:x:/-2/*?name
+        for-each:x:/../*/vocabulary/*
+          add:x:/./*/_dp/#
+            src:"{0}:int:{1}"
+              :x:/..for-each/*/_dp/#?value
+              :x:/../*/load-file/*/*/**/\{0}?count
+                :x:/..for-each/*/_dp/#?value
+        sort-desc:x:/../*/vocabulary/*/*
+        apply:x:/../*/create-widget/*/widgets/*/table/*/widgets
+          src:x:/../*/sort-desc/*
+          template
+            tr
+              widgets
+                td
+                  {innerValue}:x:?name
+                td
+                  {innerValue}:x:?value
+        create-widget
+          parent:content
+          style:"margin-top:145px;"
+          widgets
+            table
+              class:table table-hover
+              widgets
+                tr
+                  widgets
+                    th
+                      innerValue:Keyword
+                    th
+                      innerValue:Hit count
+
