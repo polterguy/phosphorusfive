@@ -159,18 +159,8 @@ set:x:/../*/_data/*?value
   src:New value
 ```
 
-The above Hyperlisp would extract all children of the *[_data]* node, and set their values to "New value". Resulting
-in the following p5.lambda structure as its result. Now we can dissect the entire expression above, armed with knowledge of all iterators
-being used.
-
-* First the *[set]* retreieves the "identity expression", which is the set node itself
-* Then it extracts the "root node" of our entire lambda object with our `/..` iterator. This will return only one node, being the "invisible outer root node" of our lambda object
-* Then it extracts all children of this "root node". This will result in the *[_data]* node and the *[set]* node being our current result-set
-* Then it removes all nodes not having the name of *[_data]* due to our `/_data` iterator
-* Then it extracts all children nodes of the *[_data]* node
-
-Since the *[set]* Active Event can handle multiple destinations, it will set the values of all children nodes of our *[_data]* node to be "New value",
-which was the constant source provided as an argument to *[set]*.
+The above Hyperlisp will extract all children of the *[_data]* node, and set their values to "New value". Resulting
+in the following p5.lambda structure as its result. 
 
 ```
 _data
@@ -180,6 +170,17 @@ _data
 set:x:/../*/_data/*?value
   src:New value
 ```
+
+Now we can dissect the entire expression above, armed with knowledge of all iterators being used.
+
+* First the *[set]* retreieves the "identity expression", which is the set node itself
+* Then it extracts the "root node" of our entire lambda object with our `/..` iterator. This will return only one node, being the "invisible outer root node" of our lambda object
+* Then it extracts all children of this "root node". This will result in the *[_data]* node and the *[set]* node being our current result-set
+* Then it removes all nodes not having the name of *[_data]* due to our `/_data` iterator
+* Then it extracts all children nodes of the *[_data]* node
+
+Since the *[set]* Active Event can handle multiple destinations, it will set the values of all children nodes of our *[_data]* node to be "New value",
+which was the constant source provided as an argument to *[set]*.
 
 To extract all children of a specified node, use the "/*" asterix (retrieve children) iterator.
 
