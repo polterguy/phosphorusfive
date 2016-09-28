@@ -24,5 +24,8 @@ which you can access easily, either from Hyperlisp and p5.lambda, or from C#.
 
 To see an example of how to do this, check out the C# example called [p5.active-event-sample-plugin](/samples/p5.active-event-sample-plugin/)
 
+To see an example of how to consume Active Events from your C# code, check out the C# example 
+called [p5.active-event-sample](/samples/p5.active-event-sample/)
+
 
 

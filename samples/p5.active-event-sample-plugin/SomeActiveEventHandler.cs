@@ -38,7 +38,7 @@ namespace p5_active_event_sample_plugins
         }
 
         // Notice how this event handler, handles the same ("foo") Active Event, but is *NOT*a static method
-        // Hence it is an instance handler, which will only kick in, for each registered instance event handler of this class
+        // Hence it is an "instance handler", which will only kick in, for each registered instance of this class
         [ActiveEvent (Name = "foo")]
         public void foo_instance (ApplicationContext context, ActiveEventArgs e)
         {
