@@ -3,11 +3,11 @@ The core of Phosphorus Five
 
 Here you can find the "core parts" of Phosphorus Five. There are five different projects in this folder;
 
-* [lambda.exe](/lambda.exe/) which allows you to execute Hyperlisp in a console/terminal window
-* [p5.ajax](/p5.ajax/) containing the Ajax library for ASP.NET
-* [p5.core](/p5.core/) containing the Active Event design pattern implementation
-* [p5.exp](/p5.exp/) containing the expression parser
-* [p5.webapp](/p5.webapp/) being the main "application pool" for your web app/web site
+* [lambda.exe](/core/lambda.exe/) which allows you to execute Hyperlisp in a console/terminal window
+* [p5.ajax](/core/p5.ajax/) containing the Ajax library for ASP.NET
+* [p5.core](/core/p5.core/) containing the Active Event design pattern implementation
+* [p5.exp](/core/p5.exp/) containing the expression parser
+* [p5.webapp](/core/p5.webapp/) being the main "application pool" for your web app/web site
 
 When playing with P5, you should set the "p5.webapp" project as your startup project. 
 
