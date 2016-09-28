@@ -82,12 +82,12 @@ There are 17 basic different unique iterators, that each extracts a different ty
 * `/**` - Descendants iterator, extracts all descendents of previous result set
 * `/$` - Distinct name iterator, extracts all nodes from previous result set, excluding nodes with duplicate names
 * `/=$` -  Distinct value iterator, extracts all nodes from previous result set, excluding nodes with duplicate values
-* `/%x` - Modulo iterator, extracting every node matching the given (x) modulo, for instance to extract all even nodes, use "/%2"
+* `/%n` - Modulo iterator, extracting every node matching the given (n) modulo, where n must be a number
 * `/xxx` - Named iterator, extracts all nodes with the specified (xxx) name
 * `/..xxx` - Named ancestor iterator, extracts all ancestor with the specified (xxx) name
-* `/n` - Numbered child iterator, extracts the "y" child from the previous result set, where n must be an integer value
+* `/n` - Numbered child iterator, extracts the n'th child from the previous result set, where n must be an integer value
 * `/.` - Parent iterator, extracts parent nodes from previous result set
-* `/[n1, n2]` - Range iterator, extracts a range of values from previous result set, where n1 and n2 must be a range from 0..n
+* `/[n1, n2]` - Range iterator, extracts a range of values from previous result set, where n1 and n2 must be numbers, n2 larger than n1
 * `/#` - Reference iterator, casts the previous node's values into a node, yielding that node back to caller
 * `/..` - Root node iterator, extracts the root node from previous result set
 * `/<` - Left shift iterator, lefts shifts the nodes from the previous result set
