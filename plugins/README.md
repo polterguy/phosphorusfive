@@ -16,6 +16,6 @@ Below is a list of all the plugins in the system as of today.
 * [/plugins/p5.strings/](p5.strings), containing the events necessary to manipulate strings
 * [/plugins/p5.types/](p5.types), containing the default type conversion Active Events of P5
 
-In addition, there are several more plugins accessible in the [/plugins/extras/](/extras/) folder.
+In addition, there are several more plugins accessible in the [/extras/](/plugins/extras/) folder.
 
 
