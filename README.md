@@ -137,6 +137,11 @@ If you create your own plugins, and/or want to remove existing plugins, you do t
 This will change the DLLs dynamically loaded during startup of your website, and allow you to invoke your own custom made Active Events, possibly 
 created in for instance C#, VB.NET, F#, or "Boo" for that matter.
 
+## C# samples
+
+Although I recommend people to use the entire "framework", for those only interested in using e.g. the Ajax library, and/or the Active Event design
+pattern implementation, there can be found some examples of this in the "samples" folder.
+
 ## License
 
 Phosphorus Five is free and open source software, and licensed under the terms
