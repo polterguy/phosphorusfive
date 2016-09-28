@@ -88,7 +88,8 @@ will be raised. It is your responsibility of creating some sort of hook, for ins
 Hyperlisp, to handle this Active Event.
 
 When the *[p5.web.load-ui]* Active Event is raised, the actual URL requested by the client,
-will exists in the *[_form]* argument, passed into your Active Event handler.
+will exists in the *[_form]* argument, passed into your Active Event handler, in case you wish
+to override this logic.
 
 If you use Phosphorus Five in combination with System42, this Active Event is automatically
 handled, and will retrieve the *[p5.page]* from the p5.data database, with the ID being
