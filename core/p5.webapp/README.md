@@ -15,7 +15,7 @@ main "www root folder".
 ### The "users" folder
 
 This folder contains one folder for each user in your system, carrying the same
-name as your user's username. Inside of your user's private folders, are both
+name as your user's username. Inside of your user's folders, are both
 a "temp" folder, which is used for holding temporary files for the specific user,
 in addition to a "documents" folder, which stores a user's documents.
 
@@ -29,6 +29,9 @@ To retrieve files from your "private" folder, the Active Event *[echo-file]* mus
 used. However, this Active Event will throw an exception, if you try to access files
 from another user's private folder. And you must be logged in as the user whom you
 are trying to retrieve files from to be able to retrieve these files.
+
+If you wish to store documents and files, that are accessible for all users, you
+should use the "common" folder.
 
 ### The "auth" file
 
