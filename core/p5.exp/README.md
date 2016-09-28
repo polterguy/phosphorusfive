@@ -118,7 +118,7 @@ The above Hyperlisp would retreieve all nodes that have the name of "foo", and s
 is because of the iterator "/foo" parts above. The rest of the expression will be explained later, as we proceed downwards 
 in our documentation.
 
-After evaluation of the above Hyperlisp, your node-set would look like this
+After evaluation of the above Hyperlisp, your node-set would look like this. Notice the values of your *[foo]* nodes.
 
 ```
 _data
@@ -148,7 +148,7 @@ can be used in front of the value of both a "named iterator", and a "valued iter
 
 ### Extracting all children of a specified node
 
-If we instead want to update _ALL_ children of the *[_data]* node above, we could use the *children iterator*. Example
+If we instead want to update _ALL_ children of the *[_data]* node above, we could use the *children iterator*. Example below.
 
 ```
 _data
@@ -160,7 +160,17 @@ set:x:/../*/_data/*?value
 ```
 
 The above Hyperlisp would extract all children of the *[_data]* node, and set their values to "New value". Resulting
-in the following p5.lambda structure as its result
+in the following p5.lambda structure as its result. Now we can dissect the entire expression above, armed with knowledge of all iterators
+being used.
+
+* First the *[set]* retreieves the "identity expression", which is the set node itself
+* Then it extracts the "root node" of our entire lambda object with our `/..` iterator. This will return only one node, being the "invisible outer root node" of our lambda object
+* Then it extracts all children of this "root node". This will result in the *[_data]* node and the *[set]* node being our current result-set
+* Then it removes all nodes not having the name of *[_data]* due to our `/_data` iterator
+* Then it extracts all children nodes of the *[_data]* node
+
+Since the *[set]* Active Event can handle multiple destinations, it will set the values of all children nodes of our *[_data]* node to be "New value",
+which was the constant source provided as an argument to *[set]*.
 
 ```
 _data
