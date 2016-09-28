@@ -421,20 +421,20 @@ that the [src] expression looks like this `src:x:/../*/_data/*/foo2?value`, sinc
 which happens to be "foo2".
 
 Formatting expressions substitute their braced integer values, with their corresponding child node's, having no name, and its "value", after
-evaluating it if it is an expression. You can also use a constant, instead of an expression as your nameless substitution.
+evaluating it, if it is an expression. You can also use a constant, instead of an expression as your nameless substitutions.
 
 This allows you to create both normal string, and/or complex expressions, which is "parametrized", and changes according to how your lambda
-object changes. Allowing you to pass in "parameters" to your expressions. In addition to concatenating strings of course.
+object changes. Allowing you to pass in "parameters" to your expressions, in addition to that it allows you to concatenate strings of course.
 
 ### Boolean algebara on expressions
 
 p5.exp support boolean algabra on your expressions. This allows you to use all the four boolean algebraic
 operators to combine results. The four algebraic operators are as following
 
-* & - AND
-* | - OR
-* ! - NOT
-* ^ - XOR
+* `&` - AND
+* `|` - OR
+* `!` - NOT
+* `^` - XOR
 
 Combining these in your expressions, allows you to for instance return the "union" of two expressions. Imagine
 wanting to retrieve all nodes have the value of either "jane" or "john" from the Hyperlisp below.
