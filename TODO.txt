@@ -6,8 +6,14 @@ TODO before release
 
 * [file-set-read-only] event
 
-* Further refactor the "XUtil.Source" methods, try to remove all of them, except InvokeSource.
-
 * Fix the usage of "no brute attack login" in login logic
+
+* Clean up the p5.core Utilities class!
+
+* Fix bugs created during refactoring in "Controls" CMS and "Files"
+
+* Add link to YouTube channel on main README.md file
+
+
 
 

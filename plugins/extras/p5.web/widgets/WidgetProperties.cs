@@ -37,7 +37,7 @@ namespace p5.web.widgets {
         public void get_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widget IDs given by caller
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-property")) {
@@ -50,14 +50,8 @@ namespace p5.web.widgets {
                         case "visible":
                             CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.Visible);
                             break;
-                        case "invisible-element":
-                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.InvisibleElement);
-                            break;
                         case "element":
                             CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.Element);
-                            break;
-                        case "has-id":
-                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.HasID);
                             break;
                         case "render-type":
                             CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.RenderType.ToString ());
@@ -89,17 +83,8 @@ namespace p5.web.widgets {
                     case "visible":
                         idxWidget.Visible = valueNode.GetExValue<bool> (context);
                         break;
-                    case "invisible-element":
-                        idxWidget.InvisibleElement = valueNode.GetExValue<string> (context);
-                        if (!idxWidget.Visible)
-                            idxWidget.ReRender ();
-                        break;
                     case "element":
                         idxWidget.Element = valueNode.GetExValue<string> (context);
-                        idxWidget.ReRender ();
-                        break;
-                    case "has-id":
-                        idxWidget.HasID = valueNode.GetExValue<bool> (context);
                         idxWidget.ReRender ();
                         break;
                     case "render-type":
@@ -183,8 +168,6 @@ namespace p5.web.widgets {
                     if (!widget.Visible)
                         curNode.Add ("visible", false);
                     curNode.Add ("element", widget.Element);
-                    if (!widget.HasID)
-                        curNode.Add ("has-id", false);
 
                     // Then the generic attributes
                     foreach (var idxAtr in widget.AttributeKeys) {

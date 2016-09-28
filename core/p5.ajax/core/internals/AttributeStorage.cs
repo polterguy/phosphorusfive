@@ -284,8 +284,6 @@ namespace p5.ajax.core.internals
                 var name = idx.Name;
                 string value;
                 if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
-                    if (!widget.HasID)
-                        throw new ArgumentException ("You cannot declare events on Widgets that does not render its ID attribute");
                     value = "p5.e(event)";
                 } else {
                     value = idx.Value;

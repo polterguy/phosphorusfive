@@ -46,7 +46,7 @@ namespace p5.ajax.widgets
         public override string this [string name]
         {
             get {
-                if (name == "value" && Element == "select" && AllChildrenHasIds ()) {
+                if (name == "value" && Element == "select") {
 
                     // Special treatment for select HTML elements, to make it resemble what goes on on the client-side
                     string retVal = "";
@@ -64,7 +64,7 @@ namespace p5.ajax.widgets
             set {
                 if (name == "innerValue")
                     throw new ArgumentException ("you cannot set the 'innerValue' property of the '" + ID + "' Container widget");
-                if (name == "value" && Element == "select" && AllChildrenHasIds ()) {
+                if (name == "value" && Element == "select") {
 
                     // Special treatment for select HTML elements, to make it resemble what goes on on the client-side
                     var splits = value.Split (',');

@@ -123,16 +123,6 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
-        ///     Gets or sets the tag name used to render the html element when it is invisible
-        /// </summary>
-        /// <value>The invisible element name</value>
-        public string InvisibleElement
-        {
-            get { return ViewState ["ie"] == null ? "span" : ViewState ["ie"] as string; }
-            set { ViewState ["ie"] = value; }
-        }
-
-        /// <summary>
         ///     Gets or sets the rendering type
         /// </summary>
         /// <value>The render type</value>
@@ -140,16 +130,6 @@ namespace p5.ajax.widgets
         {
             get { return (RenderingType) (ViewState ["rt"] ?? RenderingType.normal); }
             set { ViewState ["rt"] = value; }
-        }
-
-        /// <summary>
-        ///     Sets or gets whether your widget has its ID attribute rendered to the client or not
-        /// </summary>
-        /// <value>Whether an "id" attribute is rendered to the client or not</value>
-        public bool HasID
-        {
-            get { return ViewState ["hasid"] == null ? true : (bool) ViewState ["hasid"]; }
-            set { ViewState ["hasid"] = value; }
         }
 
         /// <summary>
@@ -323,14 +303,6 @@ namespace p5.ajax.widgets
                                     break;
                             }
                             break;
-                        case "select":
-                            if (!AllChildrenHasIds ()) {
-                                if (Page.Request.Params [this ["name"]] != null)
-                                    _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
-                                else
-                                    _attributes.RemoveAttribute ("value");
-                            }
-                            break;
                         case "textarea":
                             if (Page.Request.Params [this ["name"]] != null)
                                 _attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
@@ -484,22 +456,6 @@ namespace p5.ajax.widgets
             base.OnLoad (e);
         }
 
-        /// <summary>
-        ///     Returns true if all children controls have IDs
-        /// </summary>
-        /// <returns><c>true</c>, if all children have ID attributes rendered, <c>false</c> otherwise</returns>
-        protected bool AllChildrenHasIds ()
-        {
-            foreach (Control idxCtrl in Controls) {
-                var idxWidget = idxCtrl as Widget;
-                if (idxWidget != null) {
-                    if (idxWidget.HasID)
-                        return true;
-                }
-            }
-            return true;
-        }
-
         // Private methods for internal use in the class
         private string GetWidgetHtml ()
         {
@@ -531,7 +487,7 @@ namespace p5.ajax.widgets
 
         private string GetWidgetInvisibleHtml ()
         {
-            return string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", InvisibleElement, ClientID);
+            return string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", Element, ClientID);
         }
 
         public bool AreAncestorsVisible ()
@@ -566,11 +522,7 @@ namespace p5.ajax.widgets
         private void RenderHtmlResponse (HtmlTextWriter writer)
         {
             // Render opening tag
-            if (HasID) {
-                writer.Write (@"<{0} id=""{1}""", Element, ClientID);
-            } else {
-                writer.Write (@"<{0}", Element);
-            }
+            writer.Write (@"<{0} id=""{1}""", Element, ClientID);
 
             // Render attributes
             _attributes.Render (writer, this);

@@ -201,6 +201,19 @@ using this logic. When invoked, it does a lookup into its registered "dynamic Ac
 exists a (dynamic) handler for the specified event. If it does, it raises that dynamic event, as a 
 piece of lambda object.
 
+## Additional helper classes
+
+The "Utilities" class contains some additional helper methods and/or classes, which helps
+your out, when creating your Active Events. Among other things, it contains a "Convert" method,
+which will use the internal conversion Active Events, often declared in p5.types, to convert
+back and forth between object and string representation, vice versa. If you have an object,
+and you wish to make sure it becomes a string, you should use this method.
+
+In addition, it is a general design pattern, that most "get" Active Events should delete
+their original arguments. This is easily achieved, using the class "Utilities.ArgsRemover"
+class, which iimplements IDisposable, which cleans up arguments from a node when being
+disposed.
+
 ## More examples
 
 If you check out the project called "p5.active-event-sample", then it illustrates an example of a 

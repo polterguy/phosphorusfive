@@ -138,10 +138,6 @@ namespace p5.web.widgets {
                         break;
                     case "element":
                         widget.Element = idxArg.Get<string> (context);
-                        widget.InvisibleElement = idxArg.Get<string> (context);
-                        break;
-                    case "has-id":
-                        widget.HasID = idxArg.Get<bool> (context);
                         break;
                     case "render-type":
                         widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), idxArg.Get<string> (context));
