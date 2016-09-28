@@ -15,7 +15,7 @@ set:x:/../*/_data/*/foo?value
   src:New Value
 ```
 
-In the above example *"/../*/_data/*/foo?value"* is an expression, and *": x :"*
+In the above example *"/../\*/_data/*/foo?value"* is an expression, and *": x :"*
 declares it as such, and hence becomes its *type declaration* for the type engine of P5.
 
 It ends with an expression type declaration (?value), which informs the expression engine, 
