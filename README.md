@@ -2,7 +2,7 @@ Phosphorus Five, simplifying the creation of web apps
 ===============
 
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
-Its "Hello World" can be executed by making ure you have the "p5.webapp" as your startup project, start your debugger 
+Its "Hello World" can be executed by making sure you have the "p5.webapp" as your startup project, start your debugger 
 (making sure you've turned _OFF_ "Browser Link" in Visual Studio), open up the "apps/cms" in the menu at the top, choose 
 to create a "New page ..." - Choose *[lambda]* page, and paste in the following code.
 
@@ -41,13 +41,23 @@ This trait of P5, allows you to "orchestrate" your apps, by combining your parts
 is orchestrating his musicians. It hence becomes an extremely high abstraction, allowing you to focus more on the 
 big picture, without having to care about the implementation details (unless you want to)
 
+All this, while retaining your ability to create C# code, exactly as you're used to from ASP.NET.
+
 ## 3 basic innovations
 
 Phosphorus Five consists of three basic innovations.
 
-* A "managed" Ajax library, which allows you to create apps almost as you would in for instance ASP.NET Web Forms
-* A design pattern called "Active Events", which allows you to dynamically link together plugins, _without_ creating dependencies between them
-* Hyperlisp, facilitating for "p5.lambda", which is an "evolutionary execution engine", being the obvious results of the Active Events design pattern
+* A managed Ajax library
+* A design pattern called Active Events
+* Hyperlisp or p5.lambda
+
+The Ajax library is entirely created on top of ASP.NET's web controls, allowing you to use them the same way you would create a web forms website.
+Simply inject them declaratively into your markup, and set their properties and attributes in your codebehind.
+
+Active Events allows you to loosely couple your modules together, without having any dependencies between them.
+
+Hyperlisp or p5.lambda is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps together almost
+as if they were LEGO bricks.
 
 P5 is entirely created in C#, and should work perfectly with Visual Studio, Xamarin and MonoDevelop.
 It creates 100% conforming HTML5 markup, and comes with many of the "industry best practices" included, such as Bootsstrap CSS and jQuery.
