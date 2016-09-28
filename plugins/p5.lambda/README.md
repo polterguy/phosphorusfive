@@ -1403,6 +1403,10 @@ sort
 
 Notice how your supplied callback lambda object is now entirely gone, and only the sorted nodes are left in your node-tree.
 
+Notice also that providing a lambda block to *[sort]* is optional. If you do not, then the default sorting will be used. The "default 
+sorting", sorts ascending by value of your nodes. If you wish to sort descending, you can use the alias of *[sort-desc]* which
+your *[sort]* Active Event implements.
+
 ## Ninja tricks
 
 Below you can find some "tricks" with p5.lambda, helping you achieve some special thing, maybe not completely intuitive unless explained.

@@ -22,6 +22,7 @@ namespace p5.lambda.keywords.extras
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "sort")]
+        [ActiveEvent (Name = "sort-desc")]
         public static void lambda_sort (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
@@ -36,14 +37,14 @@ namespace p5.lambda.keywords.extras
                     // Defaulting to sorting nodes by "value" casted to IComparable
                     nodeList.Sort (delegate(Node lhs, Node rhs) {
                         if (lhs.Value == null && rhs.Value != null)
-                            return -1;
+                            return e.Name == "sort" ? -1 : 1;
                         else if (lhs.Value != null && rhs.Value == null)
-                            return 1;
+                            return e.Name == "sort" ? 1 : -1;
                         else if (lhs.Value == null && rhs.Value == null)
                             return 0;
 
                         // Assuming value somehow implements IComparable
-                        return (lhs.Value as IComparable).CompareTo (rhs.Value);
+                        return (lhs.Value as IComparable).CompareTo (rhs.Value) * (e.Name == "sort" ? 1 : -1);
                     });
                 } else {
 

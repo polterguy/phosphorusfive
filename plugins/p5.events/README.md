@@ -121,7 +121,7 @@ this means that we will "return early" from our event, before the event lambda o
 
 Though, when our "injected" code is evaluated, it is from within the scope of the *[foo]* Active Event, which means that we have access to the 
 lambda object of our dynamically created Active Event. Since our *[return]* invocation, is created such that it returns everything from the 3rd 
-node (the /[2,] iterator), this means that only the original code of our Active Event *[foo]*, will be returned. And thus we can "inspect" our
+node (the `/[2,]` iterator), this means that only the original code of our Active Event *[foo]*, will be returned. And thus we can "inspect" our
 Active Event, and its lambda object, without seeing the "injected code" in our result.
 
 This is true, regardless of how complex an Active Event is. It only works for dynamically created Active Events though, and not C# declared 
@@ -140,7 +140,7 @@ The above code, returns the "node count" of your Active Event's lambda object. E
 injected "return" node. Hence, we can with the above code, know exactly how many nodes, or lambda objects, any dynamically created
 Active Event has.
 
-You can of course extend this as you see fit, and for instance count "all [add] invocations" in your Active Events, and so on. This allows you
+You can of course extend this as you see fit, and for instance count "all *[add]* invocations" in your Active Events, and so on. This allows you
 to acquire really rich and detailed meta-data information, about your dynamically created Active Events, in your system. To a much higher
 extent, than what most other programming languages allows you to do.
 
@@ -217,7 +217,7 @@ Then you could invoke it like this for instance.
 test.retrieve-event-code:confirm
 ```
 
-Which would return the p5.lambda object for every single event that has a name containing the "confirm" word, somehow. The reason why this works,
+Which would return the p5.lambda object, for every single event, that has a name containing the "confirm" word, somehow. The reason why this works,
 is because we're de-referencing the *[_arg]* argument for our Active Event, which is the value of the node used to invoke our *[test.retrieve-event-code]*,
 in our invocation to *[vocabulary]*. This means that when *[vocabulary]* is evaluated, it will filter away every single event not containing the word
 "confirm" in its name, somehow.
@@ -241,7 +241,7 @@ Easy ...
 ```
 eval
   test.retrieve-event-code
-  return:x:/-/*/*?count
+  return:x:/-/*/**?count
 ```
 
 Or how many invocations do I have to my *[add]* Active Event?
@@ -293,18 +293,9 @@ eval
         :x:/..for-each/*/_dp?value
         :x:/../*/test.retrieve-event-code/*/**/{0}?count
           :x:/..for-each/*/_dp?value
-  sort:x:/../0/*
-    if:x:/./*/_lhs/#?value
-      <:x:/././*/_rhs/#?value
-      return:1
-    if:x:/./*/_lhs/#?value
-      >:x:/././*/_rhs/#?value
-      return:-1
-    if:x:/./*/_lhs/#?value
-      =:x:/././*/_rhs/#?value
-      return:0
+  sort-desc:x:/../0/*
   insert-before:x:
-    src:x:/../*/sort/*
+    src:x:/../*/sort-desc/*
 ```
 
 The above lambda, will return exactly how many times, every "keyword" from p5.lambda is being used, in total, in every single dynamic Active Event
