@@ -173,29 +173,16 @@ set:x:/../*/_data/*?value
 
 Now we can dissect the entire expression above, armed with knowledge of all iterators being used.
 
-* First the *[set]* retreieves the "identity expression", which is the set node itself
+* First the *[set]* retreieves the "identity expression", which is the *[set]* node itself
 * Then it extracts the "root node" of our entire lambda object with our `/..` iterator. This will return only one node, being the "invisible outer root node" of our lambda object
 * Then it extracts all children of this "root node". This will result in the *[_data]* node and the *[set]* node being our current result-set
-* Then it removes all nodes not having the name of *[_data]* due to our `/_data` iterator
+* Then it removes all nodes not having the name of *[_data]* due to our `/_data` iterator, which is a "named iterator"
 * Then it extracts all children nodes of the *[_data]* node
 
-Since the *[set]* Active Event can handle multiple destinations, it will set the values of all children nodes of our *[_data]* node to be "New value",
-which was the constant source provided as an argument to *[set]*.
+Since the *[set]* Active Event can handle multiple destinations, it will set the values of all children nodes of our *[_data]* node to the constant
+of "New value", which was the constant source provided as a *[src]* argument to *[set]*.
 
-To extract all children of a specified node, use the "/*" asterix (retrieve children) iterator.
-
-To understand what goes on above, realize that the "/.." iterator first retrieves the "root node" of your p5.lambda
-structure, which is an invisible node, automatically created for you, becoming your "root node". The "root node" is almost
-like your "XML document node", except it is automatically created for you, and all first level nodes in the above Hyperlisp,
-will become children of this node.
-
-Then all children of the root node will be extracted, due to the first "/*" (children retriever) iterator. Afterwards, 
-only the nodes matching the "name" of "_data" will be returned, due to the "/_data" part of your expression.
-
-Then all children of the "_data" node will be returned, matching all the "foo" nodes above, in addition to the "not-foo"
-node.
-
-The end result being that both the two "foo" nodes, in addition to the "not-foo" node, have their values updated, thanks
+The end result being that both the two *[foo]* nodes, in addition to the *[not-foo]* node, have their values updated, thanks
 to the *[set]* Active Event invocation, taking the expression as its destination expression, to whatever value is in its 
 *[src]* argument, which happens to be the constant of "New value".
 
@@ -235,14 +222,14 @@ set:x:/../*/_data/*/[1,3]?value
   src:New value
 ```
 
-This is because the "/*" node returns all children of the *[_data]* segment, but the iterator after
+This is because the `/*` node returns all children of the *[_data]* segment, but the iterator after
 that iterator, will make sure only the nodes from (including) the 1st node, to (not including) the 3rd
-node will be returned. The range iterator returns nodes according to [n1..n2>, to use mathematical
-terminology.
+node will be returned. The range iterator returns nodes according to [n1..n2>, to use math terminology,
+and formalize its function.
 
 Both the start and the end of your range iterator are optional arguments to it, and if not supplied, 
-will have the default values of "1st node" and "last node", whatever they are. For instance, to change the
-value of all nodes, except the 1st child node of the above *[_data]* segment, you could use something like
+will have the default values of "zeroth node" and "last node", whatever they are. For instance, to change the
+value of all nodes, except the zeroth child node of the above *[_data]* segment, you could use something like
 this
 
 ```
@@ -272,8 +259,8 @@ the value of your 1st node is actually "0", the second node "1", and so on ...
 
 ### Extracting the n'th child of a node
 
-Imagine you only wish to extract the 2nd child node of some node-set. This could be accomplished using a "Numberedchild iterator".
-Example
+Imagine you only wish to extract the 2nd child node of some node-set. This could be accomplished using a "numbered child iterator".
+Example is given below.
 
 ```
 _data
@@ -298,7 +285,7 @@ set:x:/../*/_data/*/1?value
 Notice that the only difference between a "numbered child" iterator, and a "named iterator", is
 that the numbered child iterator consists of only integer numbers, meaning [0..9] character strings.
 
-This creates a problem for us, if we wish to retrieve a node who's _NAME_ is "1" for instance. Imagine
+This creates a problem for us, if we wish to retrieve a node who's _NAME_ is *[1]* for instance. Imagine
 for instance the scenario below.
 
 ```
@@ -311,7 +298,7 @@ set:x:/../*/_data/*/1?value
 ```
 
 The above p5.lambda would perfectly evaluate. However, the results would probably not be what you
-wish for, since the "foo2" node would have its value updated, and not the "1" node. If you have nodes
+wish for, since the "foo2" node would have its value updated, and not the *[1]* node. If you have nodes
 with integer names, such as above, and you wish to explicitly name these nodes, you need to escape your
 name, using a back-slash, like the below code
 
@@ -325,7 +312,7 @@ set:x:/../*/_data/*/\1?value
 ```
 
 You can also escape other characters, having nodes with really funny names, such as "/" etc. Imagine this
-Hyperlisp for instance
+Hyperlisp for instance.
 
 ```
 _data
@@ -336,7 +323,7 @@ set:x:/../*/_data/*/\*?value
   src:New value
 ```
 
-The above Hyperlisp would change the value of the node with the name of "*".
+The above Hyperlisp would change the value of the node with the name of *[\*]*.
 
 ### Changing every even child node
 
