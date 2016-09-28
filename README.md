@@ -3,7 +3,7 @@ Phosphorus Five, significantly reducing the complexity of the art of creating we
 
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
 Its "Hello World" can be executed by starting your debugger (making sure you've turned _OFF_ "Browser Link"
-in Visual Studio), open up the "apps/CMS", choose to create a "New page ..." - Choose *[lambda]* page, 
+in Visual Studio), open up the "apps/cms", choose to create a "New page ..." - Choose *[lambda]* page, 
 and paste in the following code.
 
 ```
@@ -95,9 +95,9 @@ Plus more ...
 
 The above list might seem overwhelming, especially when you couple it with Hyperlisp (a new concept), p5 expressions (a new concept) and 
 p5.lambda (a new concept) - But really, these are only optional plugins, which you do not have to use, unless you wish. If you want to, you could
-create your web app, entirely in ASP.NET and C#, and add up for instance only p5.ajax, to have a Web Forms based Ajax control library, and nothing else.
-Then you could start incorporating Active Events in your project, when you feel for it, for then to add one plugin at the time, as you feel for it.
-Slowly building up knowledge about how P5 works.
+create your web app, entirely in ASP.NET and C#, and add up for instance only p5.ajax, to have a Web Forms based Ajax control library.
+Then you could start incorporating Active Events in your project, when you feel for it, for then to add one plugin at the time. Slowly building up 
+knowhow about how P5 works.
 
 But of course, the most benefit will be aquired, if you go "all in", and entirely develop your apps in Hyperlisp and p5.lambda, using p5.web,
 and p5.ajax, combined with all other plugins of P5. Even possibly also using the CMS, which is a part of the "front-end" parts, called "System42".
@@ -113,7 +113,7 @@ To see the documentation for the different projects, open up the folder for what
 file. The dox for the "core" can be found in the projects folders inside of the "core" folder, while the dox for the different plugins, can be found
 within the different project folders inside of the "plugin" folders.
 
-There are also many YouTube videos, showing of some aspect about P5 at my YouTube channel.
+There are also many YouTube videos, showing of some aspect about P5 at [my YouTube channel] (https://www.youtube.com/channel/UCmZvIkxA08v9O6oi3NtwUjA/videos)
 
 ## About System42
 
