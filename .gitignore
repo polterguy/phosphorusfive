@@ -209,3 +209,6 @@ core/p5.webapp/common/public/*
 
 # Excluding DSW8
 core/p5.webapp/system42/apps/dsw8
+
+# Excluding auto generated Visual Studio files
+.vs/
