@@ -1,4 +1,4 @@
-Phosphorus Five, significantly simplifying the creation of web apps
+Phosphorus Five, simplifying the creation of web apps
 ===============
 
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
@@ -77,8 +77,8 @@ To see the documentation for the different projects, open up the folder for what
 file. The dox for the "core" can be found in the projects folders inside of the "core" folder, while the dox for the different plugins, can be found
 within the different project folders inside of the "plugin" folders.
 
-* [Documentation for the core](/tree/master/core/)
-* [Documentation for the plugins](/tree/master/plugins/)
+* [Documentation for the core](/core/)
+* [Documentation for the plugins](/plugins/)
 
 There are also many YouTube videos, showing of some aspect about P5 at [my YouTube channel] (https://www.youtube.com/channel/UCmZvIkxA08v9O6oi3NtwUjA/videos)
 
