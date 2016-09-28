@@ -193,6 +193,8 @@ and/or tweaking your web.config.
 ## More example code
 
 To see an example of the p5.ajax library in use directly, without anything else but the
-Ajax library itself, please see the website project called "p5.ajax-samples".
+Ajax library itself, please see the website project called "p5.ajax-samples", that can be
+found within the "samples" folder. To testthis project, make sure you set it as your "startup"
+project in Visual Studio, Xamarin or MonoDevelop, and start your debugger.
 
 

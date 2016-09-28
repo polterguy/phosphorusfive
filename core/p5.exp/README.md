@@ -1,8 +1,12 @@
-p5.exp, the expression engine for Phosphorus Five
+Hyperdimensional boolean algebraic graph object expressions
 ========
 
-p5.exp contains the expression engine for Phosphorus Five, and is what allows
-you to extract nodes from a node graph object hierarchy using syntax such as
+Puuh, that name was a mouthful. However, really, for most practical concerns, if you know
+some XPath from before, you'll pick up p5 expressions in an hour or two. An expression
+is type-declared as ":x:", for then to have zero or more "iterators", optionally having
+a "type declaration" at its end, optionally ending with a conversion of the yielded results.
+
+Example given.
 
 ```
 _data
@@ -12,17 +16,20 @@ set:x:/../*/_data/*/foo?value
 ```
 
 In the above example *"/../*/_data/*/foo?value"* is an expression, and *":x:"*
-declares it as such, and hence becomes its *type declaration*.
+declares it as such, and hence becomes its *type declaration* for the type engine of P5.
 
-An expression can retreieve 4 basic values
+It ends with an expression type declaration (?value), which informs the expression engine, 
+that we're interested in the values of whatever the expression yields as its result.
 
-* Node - The node itself, also the default value if no type is explicitly declared for your expression
-* Name - The name part of your nodes
-* Value - The value part of your nodes
-* Count - Number of matches for your expression
+An expression can retreieve 4 basic values.
+
+* Node - "?node" - The node itself, also the default value if no type is explicitly declared for your expression
+* Name - "?name" - The name part of your nodes
+* Value - "?value" - The value part of your nodes
+* Count - "?count" - Number of matches for your expression, returns a single integer value
 
 In addition, an expression can be type-converted. If you are for instance requesting a node's value, who is of type string, you can  convert
-the result into an integer by appending ".int" after the expression, such as the following example illustrates.
+the result into an integer, by appending ".int" after the expression, such as the following example illustrates.
 
 ```
 _data:string:5
@@ -31,7 +38,15 @@ set:x:?value
 ```
 
 For the record, an expression without any iterators, is the "identity expression", yielding the "current node", which for the above example, means
-it will return the *[set]* node's value itself.
+it will return the *[set]* node's value itself. The "identity expression", when retreiving the "identity node", is actually written like this; ":x:",
+having no iterators, and no type declaration. The identity expression, which all expressions starts out with, will retrieve the "this node" for 
+most cases. For instance, this code, will delete its own node, since our *[set]* has no source, and it uses the identity expression as its destination.
+
+```
+set:x:
+```
+
+The above code will not produce any results, since its only instruction, is deleting the node containing its only instruction.
 
 If you wish to return the number of nodes having the name of for instance *"foo"* from within
 your *[_data]* segment, you can use syntax such as the following.
@@ -49,14 +64,16 @@ signifies that it holds an integer value, and its value is "2".
 
 Expressions consists of three basic parts
 
-* :x: - Signifying its an expression type
+* \:x: - Signifying its an expression type
 * Zero or more iterators, separated by "/"
 * A type declaration, being any of "?name", "?count", "?value" or "?node" (which is the default value, if no type declaration is explicitly supplied)
 
 If the type declaration is omitted, the type declaration is assumed to be "?node".
 
-Each iterator is separated by a slash (/), resembling the way XPath syntax is. An iterator will 
+Each iterator is separated by a slash (/), resembling the syntax of XPath. An iterator will 
 react upon the results from its previous iterator, mening they're "piped" together, to create a combined result.
+Expressions are said to be "left associative" for those interested in the theory behind them - Which cimply means that the expression engine
+parses them from the "left to the right".
 
 There are 17 basic different unique iterators, that each extracts a different type of result
 
