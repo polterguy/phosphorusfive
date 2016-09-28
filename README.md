@@ -1,7 +1,7 @@
 Phosphorus Five, significantly reducing the complexity of the art of creating web apps
 ===============
 
-Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps.
+Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
 Its "Hello World" can be executed by starting your debugger (making sure you've turned _OFF_ "Browser Link"
 in Visual Studio), open up the "apps/CMS", choose to create a "New page ..." - Choose *[lambda]* page, 
 and paste in the following code.
@@ -18,37 +18,44 @@ create-literal-widget
 ```
 
 Save your page, and click "Preview". If you get a browser notification saying "a popup was blocked", you might
-have to change your browser settings for popups being allowed on localhost.
+have to change your browser settings for popups being allowed on localhost. If you do not have Visual Studio, P5
+works just as well on both Xamarin (Mac OS X) and MonoDevelop (Linux).
 
 The above code, is called "Hyperlisp", and is simply a key/value/children tree-structure, allowing for you
-to declare something which P5 refers to as "p5.lambda", which is the basis for an "execution tree", that is
-a Turing complete way of "declaring" your apps, through a (very) rich "non-programming model".
+to declare something which P5 refers to as "p5.lambda". p5.lambda is the basis for an "execution tree", that is
+a Turing complete opportinuty to "declare your apps", through a (very) rich "non-programming model".
 
 We say "non-programming", because really, there is no "programming language" in P5, only a bunch of loosely
-coupled Active Events, that happens to, in their combined results, create a Turing complete execution
+coupled Active Events, that happens to, in their combined version, create a Turing complete execution
 environment.
 
 In fact, if you wish, you can "declare" your execution trees, by using XML or JSON. Although we recommend
 using Hyperlisp, due to its much more condens syntax, and lack of "overhead" compared to XML and JSON.
+
+This trait of P5, allows you to "orchestrate" your apps, by combining your parts together, more like how a conductor 
+is orchestrating his musicians. It hence becomes an extremely high abstraction, allowing you to focus more on the 
+big picture, without having to care about the implementation details (unless you want to)
 
 ## 3 basic innovations
 
 Phosphorus Five consists of three basic innovations.
 
 * A "managed" Ajax library, which allows you to create apps almost as you would in for instance ASP.NET Web Forms
-* A design pattern called "Active Events", which allows you to dynamically link together plugins, _without_ dependencies
+* A design pattern called "Active Events", which allows you to dynamically link together plugins, _without_ creating dependencies between them
 * Hyperlisp, facilitating for "p5.lambda", which is an "evolutionary execution engine", being the obvious results of the Active Events design pattern
 
-It is entirely created in C#, and should work perfectly with both Visual Studio, Xamarin and MonoDevelop.
-It creates 100% conforming HTML5 markup, and uses many of the "industry standards" behind its hood, such as the Bootsstrap CSS framework.
+P5 is entirely created in C#, and should work perfectly with Visual Studio, Xamarin and MonoDevelop.
+It creates 100% conforming HTML5 markup, and comes with many of the "industry best practices" included, such as Bootsstrap CSS and jQuery.
 
 The three USPs mentioned above though, creates a unique model for development, which allows you to combine your existing C# skills,
-creating a "plugin environment", where you can assemble your apps, almost as if they were made out of "clay" or LEGO. This is in stark
-contrast to the traditional way of assembling apps together, using interfaces for plugins, which requires a much higher degree of
+creating a "plugin environment", where you can assemble your apps, almost as if they were made out of LEGO. This is in stark
+contrast to the traditional way of "carving" apps together, using interfaces for plugins, which requires a much higher degree of
 dependencies between your app's different components.
 
+Phosphorus Five facilitates for an extremely Agile environment. Where any piece can in theory, be interchanged with any other piece you wish.
+
 This just so happens to facilitate for an environment, where you can reuse your code, to a much higher extent, than what you're used
-to being able to do in most other "Frameworks".
+to being able to do in most other "frameworks".
 
 At a fundamental level, it might be argued that Active Events, which is really the core of the brilliance of P5, replaces the way
 you invoke "methods" and "functions". Although, you can still keep on leveraging your existing C# knowledge and OOP knowledge, this
@@ -56,22 +63,13 @@ design pattern has huge implications, allowing you to loosely couple your logic 
 probably used to from before.
 
 In fact, the above "Hello World" example, is simply an invocation to an Active Event, who's name is *[create-literal-widget]*, which
-happens to take a set of arguments, that allows you to create an Ajax control on your page, which once clicked, changes its own "innerHTML",
+happens to take a set of arguments, that allows you to create an Ajax control on your page, which once clicked, changes its "innerHTML",
 through the *[innerValue]* property.
-
-To understand its abilities, realize that also the *[controls]* parts of the "CMS", which is a complete Visual IDE, with RAD development
-qualities, is entirely created using "Hyperlisp" and "p5.lambda". To see its powers, choose to for instance edit the pre-existing page 
-called "Email Harvester - Rater" and try to click around on the design surface, and watch how the surface changes, and allows you
-to build your apps, and a "RAD environment".
-
-Of course, creating apps in a "RAD environment" is _optional_, and you can completely ditch the Visual IDE if you wish, and develop your 
-apps 100% completely in p5.lambda, or even C# if you wish for that matter. What you will discover though, is that most of the problems
-you need to implement, before starting on your "domain problems", are already implemented for you, out of the box in P5.
 
 ## Features
 
 P5 contains a whole range of features, which are all optional to use, and can be "cherry picked" from when creating your apps. Below is
-a non-exhaustive list of these features.
+an example of some of these features.
 
 * p5.ajax, an Ajax library for ASP.NET that builds on top of "Web Forms"
 * p5.core, the main Active Event design pattern implementation that allows you to raise and handle Active Events
@@ -93,7 +91,7 @@ a non-exhaustive list of these features.
 * p5.strings, giving you the most common string operations
 * p5.types, containing the type support for Hyperlisp, which is extendible, allowing you to create your own types if you wish
 
-Plus even more ...
+Plus more ...
 
 The above list might seem overwhelming, especially when you couple it with Hyperlisp (a new concept), p5 expressions (a new concept) and 
 p5.lambda (a new concept) - But really, these are only optional plugins, which you do not have to use, unless you wish. If you want to, you could
