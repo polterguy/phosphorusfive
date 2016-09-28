@@ -114,7 +114,7 @@ created in for instance C#, VB.NET, F#, or "Boo" for that matter.
 
 ## C# samples
 
-Although I recommend people to use the entire "framework", for those only interested in using e.g. the Ajax library, and/or the Active Event design
+Although I recommend people to use P5 in its entirety, for those only interested in using e.g. the Ajax library, and/or the Active Event design
 pattern implementation, there can be found some examples of this in the "samples" folder.
 
 [C# examples] (/samples/)
