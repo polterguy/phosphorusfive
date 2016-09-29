@@ -29,7 +29,8 @@ insert-data
     address:Foobar Rd. 64
 ```
 
-The above code will insert a new item into your database, and automatically assign a new unique ID (Guid) to it, which uniquely identifies it within your database.
+The above code will insert a new item into your database, and automatically assign a new unique ID (Guid) to it, which uniquely identifies 
+it within your database. The ID for your item, is returned as the value of the item you insert, after invocation of *[insert-data]*.
 
 To select the item you inserted, you can use for instance the following code.
 
@@ -54,12 +55,13 @@ again, contains one or more files, named "db0.hl", "db1.hl", etc. By default, yo
 files into each folder. So as your database grows, it will start creating more and more folders and files.
 
 Each file is in fact a simple Hyperlisp file, and can (in theory) be edited with Notepad or TextEdit if you wish. This simple trait of p5.data, makes it extremely
-easily understood, robust and easy to fix, if corruption should occur somehow. However, as a general rule, you should not edit these files yourself, unless you stop
+easily understood, robust, and easy to fix, if corruption should occur somehow. However, as a general rule, you should not edit these files yourself, unless you stop
 your web-server before you start editing them. Let p5.data take care of its own file structure, unless you really have to edit them yourself.
 
 Only during *[insert-data]*, *[update-data]* and *[delete-data]*, the p5.data needs to access your disc. During *[select-data]*, which should be the bulk of your 
 database Active Events, it never accesses your disc in any ways. Which makes it extremely fast for select data operations. In addition, due to the underlaying file
-structure, using multiple files for its data, it rarely have to update (save) more than one or two files, depending upon how much data you change in it.
+structure, using multiple files for its data, it rarely have to update (save) more than a fraction of your database files, depending upon how much data 
+you change in it.
 
 This makes it extremely fast for "settings types of data", while not very scalable for huge documents, images (although possible), other binary data, or huge 
 datasets. Use it with _care_!
@@ -85,13 +87,14 @@ insert-data
 The above *[insert-data]* invocation, will insert three items, of different "types", into your database, using one single "lock" operation. If you watch its result, 
 after evaluating it, you will see that each item has its automatically generated ID returned, and nothing else.
 
-The objects you insert into your database, can be as deep and complex, containing any types, Phosphorus Five support, through its p5.types project, or your own
-type conversions, as you wish. You can also insert as many items as you wish, in one go. And in fact, the above *[insert-data]* invocation, will only create
-one lock, so if you can, you should insert all "related items" at once. To get away with as few locks as you can.
+The objects you insert into your database, can be as deep and complex as you wish, containing any types Phosphorus Five supports, 
+through its p5.types project, or your own type conversion Active Events. You can also insert as many items as you wish, in one go. And 
+in fact, the above *[insert-data]* invocation, will only create one lock, so if you can, you should insert all "related items" at once. 
+To get away with as few locks as you can.
 
 If you wish, you can also supply an "explicit" ID of your items, by adding it as the "value" of each root child node beneath *[select-data]*. Your ID can also be
-any type P5 supports. However, the ID must be unique for your server. In fact, the CMS in System42 uses the URL as the ID of its database items, which you can see
-in your database files if you open them in some text editor.
+any type P5 supports. However, the ID must be unique for your server. In fact, the CMS in System42, uses the URL as the ID of its database items, 
+which you can see in your database files, if you open them in some text editor.
 
 ## [select-data] dissected
 
@@ -120,26 +123,19 @@ select-data
       email:phosphorusfive@gmail.com
 ```
 
-The Guids will vary though.
-
 You can (of course) use any expressions in p5.data as you can legally use in any other parts of P5, as long as you do not select further upwards than at least "two
-children from root". Meaning, starting out your expressions with for instance ":x:/*/*/... plus other iterators ...".
+children from root". Meaning, starting out your expressions with for instance `:x:/*/*/... plus other iterators ...`.
 
 You can also select items from your database according to their IDs. However, since the automatically generated IDs are Guids, you need to type them as such,
-in your equality iterators. Below is an example for you.
+in your value iterators. Below is an example for you.
 
 ```
 // Exchange the Guid below, with the Guid that was generated for one of your items
-select-data:x:@"/*/*/""=:guid:9eb516b4-8a6e-4d8c-850d-834f2f184c24"""
+select-data:x:@"/*/*/=:guid:9eb516b4-8a6e-4d8c-850d-834f2f184c24"
 ```
 
-Notice how I need to put my entire expression into a string literal, for then to also put my entire equality iterator into a nested string literal. You could also
-write the above code like this.
-
-```
-// Exchange the Guid below, with the Guid that was generated for one of your items
-select-data:x:"/*/*/\"=:guid:9eb516b4-8a6e-4d8c-850d-834f2f184c24\""
-```
+Notice how I need to put my entire expression into a string literal. This is because my expression contains a colon (:), which is a special
+character in Hyperlisp, declaring where the name/type ends, and the value starts.
 
 With *[select-data]*, you can also count items in your database. Consider this code for instance.
 
