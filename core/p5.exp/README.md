@@ -1,4 +1,4 @@
-Hyperdimensional boolean algebraic graph object expressions
+Hyperdimensional boolean algebraic graph expressions
 ========
 
 Puuh, that name was a mouthful. However, really, for most practical concerns, if you know
@@ -21,6 +21,8 @@ declares it as such for the type engine of P5.
 It ends with an expression type declaration (?value), which informs the expression engine, 
 that we're interested in the values of whatever the expression yields as its result.
 
+## An expression's type declaration
+
 An expression can retreieve 4 basic values.
 
 * Node - `?node` - The node itself, also the default value if no type is explicitly declared for your expression
@@ -28,7 +30,7 @@ An expression can retreieve 4 basic values.
 * Value - `?value` - The value part of your nodes
 * Count - `?count` - Number of matches for your expression, returns a single integer value
 
-In addition, an expression can be type-converted. If you are for instance requesting a node's value, that is of type string, you can  convert
+In addition, an expression can be type-converted. If you are for instance requesting a node's value, that is of type string, you can convert
 the result into an integer, by appending `.int` after the expression, such as the following example illustrates.
 
 ```
@@ -75,6 +77,8 @@ Each iterator is separated by a slash (/), resembling the syntax of XPath. An it
 react upon the results from its previous iterator, mening they're "piped" together, to create a combined result.
 Expressions are said to be "left associative" for those interested in the theory behind them - Which means that the expression engine
 parses them from the left to the right.
+
+## Iterator types
 
 There are 17 basic different unique iterators, that each extracts a different type of result
 
