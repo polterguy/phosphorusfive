@@ -96,7 +96,7 @@ in your database files if you open them in some text editor.
 ## [select-data] dissected
 
 To understand *[select-data]*, is to understand the internal structure for how items are stored in memory. Your database has one "root node", in addition to several 
-"file nodes". These nodes _should_ be ignored, which is why each expression starts out with two "children iterators" (:x:/*/*).
+"file nodes". These nodes _should_ be ignored, which is why each expression starts out with two "children iterators" (`:x:/*/*`).
 
 After these two children iterators, you can supply any combination of iterators you wish. For instance, to select two of the three items we inserted above, you
 could use something like this.
