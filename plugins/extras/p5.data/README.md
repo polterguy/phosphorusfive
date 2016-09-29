@@ -3,8 +3,8 @@ The memory based database in Phosphorus Five
 
 p5.data wraps a memory based persistent database. It contains 4 Active Events.
 
-* [insert-data] - Inserts p5.lambda nodes into your database
-* [select-data] - Selects p5.lambda nodes from your database
+* [insert-data] - Inserts new p5.lambda nodes into your database
+* [select-data] - Selects existing p5.lambda nodes from your database
 * [update-data] - Updates existing p5.lambda nodes in your database
 * [delete-data] - Deletes existing p5.lambda nodes from your database
 
