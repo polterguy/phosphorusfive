@@ -47,23 +47,45 @@ assembly using.
 Loader.Instance.LoadAssembly ("name-of-your-dll");
 ```
 
+To raise an Active Event from C#, you use the *"Raise"* method on your 
+ApplicationContext object, passing in a Node, which will become the arguments 
+passed into your Active Event.
+
+```csharp
+ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
+Node node = new Node ();
+ctx.Raise ("foo", node);
+
+/*
+ * At this point, the node.Value should contain the integer value of "10".
+ * If you declared the Active Event handler we previously looked at,
+ * in some class, who's assembly you loaded up dynamically using the Loader.
+ */
+```
+
 The context argument passed into your Active Event handlers, is the application
 context, from which the Active Event was raised from within. The ActiveEventArgs,
 contains the name of the Active Event, and more importantly the `Node`, through 
 its `e.Args` property, containing the arguments, passed back and forth, into your 
 handler.
 
-Whatever you change in your "Args" property of your ActiveEventArgs from within 
-your Active Event handler, will be returned back to the caller by reference through
-the `e.Args` property of the `ActiveEventArgs` argument passed into your Active Event.
+Whatever you change in your `e.Args` property of your `ActiveEventArgs` from within 
+your Active Event handler, will be returned back to the caller by reference to
+the caller.
+
+Also, whatever you pass into your `e.Args` before you raise your Active Event, 
+will be passed into the handler(s) for your Active Events.
 
 Notice, if you use p5.core in combination with p5.webapp, then each request has 
-its own application context. And the application context contains the user's
-"Ticket", which defines what kind of things the request/user is authorized to
-performing.
+its own application context. The application context contains the user's
+"Ticket", which among other things, defines what the request/user is authorized to
+do in your server.
+
+If you create your own project from scratch, and you want to use Active Events,
+then you will normally have only one ApplicationContext object for each process.
 
 With Active Events, you don't invoke the method directly, but rather indirectly,
-through its *"Name"* property declared in your *"ActiveEvent"* attribute. This
+through their *"Name"* properties, declared in your *"ActiveEvent"* attribute. This
 means that you never have dependencies between the caller, and the handler of
 your Active Events. This allows you to dynamically easily replace any functionality 
 in your system, with other modules and pieces of functionality, without needing 
@@ -82,22 +104,6 @@ entirety of p5.lambda, the "programming language", is entirely implemented
 using Active Events. This means that the "keywords" themselves, are in fact
 nothing but "Active Event sinks", which you can invoke from any parts of
 your system.
-
-To raise an Active Event from C#, you use the *"Raise"* method on your 
-ApplicationContext object, passing in a Node, which will become the arguments 
-passed into your Active Event.
-
-```csharp
-ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
-Node node = new Node ();
-ctx.Raise ("foo", node);
-
-/*
- * At this point, the node.Value should contain the integer value of "10".
- * If you declared the Active Event handler we previously looked at,
- * in some class, who's assembly you loaded up dynamically using the Loader.
- */
-```
 
 Notice, with the above logic, there is no hardlinked references between your assembly
 implementing the *[foo]* Active Event, and the assembly invoking your "foo" Active Event. 
