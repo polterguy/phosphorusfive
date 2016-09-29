@@ -12,7 +12,7 @@ Together, they create a tree-based persistent, still memory based, storage for y
 it. It is relatively fast (obviously, since it is memory based), but the flipside, is that (obviously) it does not scale beyond whatever amount of memory you
 have in the machine that's running your Phosphorus Five installation.
 
-The "query language" you use to access items within it, is p5.lambda expressions, which is documented in the p5.exp project.
+The "query language" you use to access items within it, is p5.lambda expressions, which is documented in the [p5.exp](/core/p5.exp/) project.
 
 You can conceptualize p5.data in comparison to relational database systems (often SQL based), in that where a relational database is normally based upon "sets" or
 "tables" (2 dimensional matrixes with "rows" and "columns"), p5.data is based upon tree-structures graph objects, or "nodes". In such a regard, the p5.data database,
