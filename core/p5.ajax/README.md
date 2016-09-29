@@ -163,25 +163,31 @@ of widgets, and then you do something like this in one of your web methods.
 myWidget.Element = "div";
 ```
 
-The above would change your widget's HTML element, and presist (remember) the change for 
+The above would change your widget's HTML element, and persist (remember) the change for 
 every consecutive callback.
 
-## JSON as the communication protocol
+## JSON
 
-p5.ajax uses JSON internally to serialize values back and forth, during Ajax requests,
-and rarely needs to entirely re-render any controls, using "partial rendering". You can 
+p5.ajax uses JSON internally to return updates back to the client. This means, that among
+other things, it rarely needs to re-render your controls, using "partial rendering". You can 
 also inject any new control, in a postback or Ajax callback, at any position in your 
-page, as long as its parent control is of type "Container", and you use the "factory method"
+page, as long as its parent control, is of type "Container", and you use the "factory method"
 to create your controls.
 
 The JSON parts of p5.ajax, means that the bandwidth consumption when consuming the library,
 is ridiculously small, compared to frameworks built around "partial rendering", which requires
 some portion of the page, to be "partially re-rendered".
 
-In addition, the ViewState is "bye, bye". Or rather, to be specific, it is kept, but on
-the server, in your session. This means that the amount of data sent back and forth
-between your clients and server, is probably just a fraction of what you are used
-to in other Ajax frameworks.
+This also makes the client-side JavaScript parts of P5 tiny compared to other Ajax "frameworks".
+In its release build, minified and GZipped, the entire JavaScript parts to p5.ajax, is actually
+no more than 5KB.
+
+## ViewState
+
+The ViewState is "bye, bye" in p5.ajax. Or rather, to be correct, it is kept, but on
+the server side of things. This means that the amount of data sent back and forth
+between your clients and server, is probably less than a fraction of what you are used
+to from other Ajax frameworks, such as ASP.NET Ajax and similar frameworks.
 
 The above have some consequences though, which is that the memory consumption on the
 server, increases for each session object that connects to it simultaneously.
@@ -189,24 +195,27 @@ server, increases for each session object that connects to it simultaneously.
 "Out of the box", without tweaking the library, this means that it is best suited
 for building web apps, where you don't have an extreme amount of simultaneously
 users. As a general rule, I'd suggest using p5.ajax for building "enterprise apps",
-with not too many siimultaneous user, and not social media websites, such as 
-Facebook or Twitter, for the above mentioned reasons.
+without too many simultaneous users, and not for instance, social media websites, 
+such as Facebook or Twitter, for the above mentioned reasons.
 
-Another consequence, is that (by default) only 5 simultaneous tabs are tolerated
+Another consequence, is that (by default), only 5 simultaneous tabs are tolerated
 at the same time, for each session object. If the user opens up a sixth tab,
-and/or refreshes one of his pages more than 5 times, then the previous "ViewState keys"
-are invalidated, and the next Ajax request towards the server, will be rejected, due
-to a non-valid ViewState lookup key.
+and/or refreshes one of his pages more than 5 times, then the "oldest" ViewState key
+is invalidated, and the next Ajax request towards the server, will be rejected, from 
+that page, due to a non-valid ViewState lookup. If this was not the case, a single
+session (user), could exhaust your server's memory, simply by refreshing his webpage,
+thousands of times.
 
-Have this in mind when doing p5.ajax development. The library is best suited for
+Have this in mind as you do your p5.ajax development. The library is best suited for
 "single page web apps", with complex and rich UI, doing lots of Ajax requests.
-It is not as well suited for apps where you have many tabs open at the same time,
-such as for instance would often be the case with social media websites, such as 
-StackOverflow.com, Facebook and Twitter etc ...
+It is not as well suited for apps, where you have many tabs open at the same time,
+or thousands of simultaneous users, such as for instance would often be the case 
+with social media websites, such as StackOverflow, Facebook or Twitter etc ...
 
 As a general rule, I encourage people to use it to build "Enterprise Apps", while
-use something else to build websites, requiring thousands and sometimes millions 
-of simultaneous users. Although it could be tweaked to handle also such scenarios.
+use something else to build websites, requiring thousands, and sometimes millions 
+of simultaneous users. Although it could probably be tweaked to handle also such 
+scenarios.
 
 The ViewState logic _can_ be overridden though, by implementing your own IAjaxPage,
 and/or tweaking your web.config.
@@ -215,7 +224,7 @@ and/or tweaking your web.config.
 
 To see an example of the p5.ajax library in use directly, without anything else but the
 Ajax library itself, please see the website project called "p5.ajax-samples", that can be
-found within the "samples" folder. To testthis project, make sure you set it as your "startup"
-project in Visual Studio, Xamarin or MonoDevelop, and start your debugger.
+found within the "samples" folder. To test this project, make sure you set it as your 
+"startup" project in Visual Studio, Xamarin or MonoDevelop, and start your debugger.
 
 

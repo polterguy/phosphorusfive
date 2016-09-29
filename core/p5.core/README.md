@@ -1,20 +1,24 @@
-The main Active Event implementation
+The Active Event design pattern implementation
 ========
 
-This project contains the main Active Event design patter implementation.
-This design pattern allows you to completely eliminate _all_ dependencies
+This project contains the main Active Event design pattern implementation.
+This design pattern, allows you to completely eliminate _all_ dependencies
 between your different projects, creating an event based communication model,
-based upon Active Event, instead of hardlinked references and interfaces.
+based upon Active Events, instead of hardlinked references and interfaces.
 
 If you pass around only "POD data objects", this allows you to completely
 eliminate all dependencies between your different components, facilitating 
-for an extremely loosely coupled structure of your web apps.
+for an extremely loosely coupled structure of your apps.
+
+Notice, although Phosphorus Five primarily is for "web applications", the 
+Active Event design pattern, and hence this project, can easily be incorporated
+into any other types of projects.
 
 ## Example usage
 
 Include a reference to p5.core in your project, and make sure you dynamically
 load the DLLL containing the below class somehow. For instance, by using the 
-"Loader.Instance.LoadAssembly" method from p5.core, loading up your plugin 
+`Loader.Instance.LoadAssembly` method from p5.core, loading up your plugin 
 DLLs dynamically.
 
 ```csharp
@@ -30,7 +34,7 @@ protected static void foo_method (ApplicationContext context, ActiveEventArgs e)
      * allows you to pass in and return any number and/or types 
      * of arguments you wish.
 	 */
-    e.Args.Value = 5 + 5;
+    e.Args.Value = 5;
 }
 
 /* ... end of some class declaration ... */
@@ -45,10 +49,13 @@ Loader.Instance.LoadAssembly ("name-of-your-dll");
 
 The context argument passed into your Active Event handlers, is the application
 context, from which the Active Event was raised from within. The ActiveEventArgs,
-contains the name of the Active Event, and more importantly the "Node", containing
-the arguments, passed back and forth, into your handler. Whatever you change in your
-"Args" property of your ActiveEventArgs from within your Active Event handler, will 
-be returned back to the caller by reference.
+contains the name of the Active Event, and more importantly the `Node`, through 
+its `e.Args` property, containing the arguments, passed back and forth, into your 
+handler.
+
+Whatever you change in your "Args" property of your ActiveEventArgs from within 
+your Active Event handler, will be returned back to the caller by reference through
+the `e.Args` property of the `ActiveEventArgs` argument passed into your Active Event.
 
 Notice, if you use p5.core in combination with p5.webapp, then each request has 
 its own application context. And the application context contains the user's
