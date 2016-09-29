@@ -38,10 +38,8 @@ application level, for apps that needs some sort of startup/initialization scrip
 ### The "apps" folder
 
 This is the System42 version of your windows "C:/Program Files/" folder, and contains 
-all apps in your System42 installation. Each app can have two special files;
-
-* startup.hl - Which is executed when application pool for webserver starts
-* launch.hl - Which is the file that executes when user launches your app
+all apps in your System42 installation. See the documentation for the [apps](/core/p5.webapp/system42/apps/)
+folder for details about this folder.
 
 ### The "editors" folder
 
