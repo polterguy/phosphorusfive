@@ -380,26 +380,85 @@ foo2
               :x:/../*/load-file/*/*/**/\{0}?count
                 :x:/..for-each/*/_dp/#?value
         sort-desc:x:/../*/vocabulary/*/*
-        apply:x:/../*/create-widget/*/widgets/*/table/*/widgets
+        _get-css-for-row
+          if:x:/../*/_dn/#?value.int
+            =:int:0
+            return
+              class:danger
+          else-if:x:/../*/_dn/#?value.int
+            <=:int:4
+            return
+              class:warning
+          else
+            return
+              class:success
+        _get-info-for-row
+          if:x:/../*/_dn/#?value.int
+            =:int:0
+            return
+              td
+                innerValue:No tests!
+          else-if:x:/../*/_dn/#?value.int
+            <=:int:4
+            return
+              td
+                innerValue:Not enought!
+          else
+            return
+              td
+                innerValue:OK
+        apply:x:/../*/create-widget/*/widgets/**/table/*/widgets
           src:x:/../*/sort-desc/*
           template
             tr
+              {@eval}:x:/../*/_get-css-for-row
               widgets
                 td
                   {innerValue}:x:?name
                 td
                   {innerValue}:x:?value
+                {@eval}:x:/../*/_get-info-for-row
         create-widget
-          parent:content
-          style:"margin-top:145px;"
+          class:modal fade
+          oninit
+            send-javascript:@"$('#{0}').modal('toggle');"
+              :x:/../*/_event?value
           widgets
-            table
-              class:table table-hover
+            container
+              class:modal-dialog
+              role:document
               widgets
-                tr
+                container
+                  class:modal-content
                   widgets
-                    th
-                      innerValue:Keyword
-                    th
-                      innerValue:Hit count
+                    container
+                      class:modal-header
+                      widgets
+                        literal
+                          element:button
+                          class:close
+                          data-dismiss:modal
+                          aria-label:Close
+                          innerValue:&times;
+                        literal
+                          element:h4
+                          innerValue:Coverage of Active Events in test suite
+                    container
+                      class:modal-body
+                      widgets
+                        table
+                          class:table table-hover table-condensed
+                          style:"font-size:small;"
+                          widgets
+                            tr
+                              widgets
+                                th
+                                  style:"border-top:none;"
+                                  innerValue:Active Event
+                                th
+                                  style:"border-top:none;"
+                                  innerValue:Hit count
+                                th
+                                  style:"border-top:none;"
+                                  innerValue:Assessment
 
