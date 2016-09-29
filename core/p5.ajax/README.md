@@ -3,7 +3,7 @@ Ajax on steroids
 
 This project contains the main Ajax library for Phosphorus Five. This Ajax library can be consumed
 either stand alone, in any ASP.NET Web Forms application, since its controls inherit from
-_System.Web.UI.Control_, or indirectly, through using the p5.web library, allowing
+_System.Web.UI.Control_ - Or indirectly, through using the p5.web library, allowing
 you to create controls with Active Events, using for instance Hyperlisp as your programming 
 language.
 
@@ -14,33 +14,44 @@ for "p5.web".
 
 ## The trinity of widgets
 
-In general there are only three controls, giving you 100% control over your page's HTML
-structure;
+In general there are only three Ajax controls, or "widgets", as we usually refer to them as, 
+giving you 100% control over your page's HTML structure;
 
 * Container - A "panel" type of widget, having children widgets of itself
 * Literal - A web control containing text, and/or HTML as its content
 * Void - A web control with neither children controls, nor textual fragment content
 
-To create a property for your widgets, simply use the subscript operator, with
-the name being the property name, and its value being the value.
+To create a property for your widget(s), simply use the subscript operator, with
+the name being the property name, and its value being the value. To change the HTML 
+element a widget is rendered with, simply set its `Element` property.
 
-This means that you can create any attribute and/or element you wish, since you
-can declare yourself, which element any specific widget is rendered with, through 
-the "Element" property.
+The above two traits of p5.ajax, allows you to aquire 100% perfect control over what
+HTML is rendered to your clients. And since the `Container` widget allows you to
+dynamically add and remove widgets from its children Controls collecction, this allows
+you to create any type of markup you wish, dynamically building up your website's HTML,
+exactly as you need.
+
+p5.ajax does not have a "Tree Ajax Control" or a "DataGrid Ajax Control", simply
+because it is not its responsibility to create such Controls/widgets. However, to
+create these as extension controls, utilizing the three pre-existing widgets from p5.ajax,
+would be very easy, and could probably be done, without having to resort to JavaScript
+at all.
 
 ## No more keeping track of your controls
 
 The Container widget, will automatically track its children Controls collection,
-as long as you use the "CreatePersistentControl" and "RemoveControlPersistent" methods
+as long as you use the `CreatePersistentControl`, and `RemoveControlPersistent` methods
 for adding and removing controls from its collection.
 
-This means, that you do not need to re-create its controls collection upon postbacks,
+This means, that you do not need to re-create its controls collection upon postbacks or callbacks,
 since it'll keep track of whatever controls it contains, at any specific point in time,
-automatically.
+automatically for you.
 
-You can insert, add and remove any control(s) you wish from a Container widget, as
-long as you use the above mentioned methods, and the controls will be automatically
-re-created upon every postback and/or callback to your server.
+You can add and remove any control(s) you wish from a Container widget, as
+long as you use the above mentioned methods. The controls will be automatically
+re-created upon every postback and/or callback to your server. Which of course,
+for beginners in ASP.NET, entirely removes the burdon of having to keep track
+of which controls have been previously created.
 
 ## Example usage in C#
 
@@ -48,7 +59,7 @@ Create a reference to *"p5.ajax.dll"* in your ASP.NET Web Forms application,
 and make sure you have a "Default.aspx" page.
 
 Then modify your web.config, and make sure it has something like this inside its 
-*"system.web"* section to recognize the p5.ajax controls.
+*"system.web"* section, to recognize the p5.ajax controls.
 
 ```xml
 <system.web>
@@ -65,7 +76,6 @@ Then modify your web.config, and make sure it has something like this inside its
 
 Then either inherit your page from AjaxPage, or implement the IAjaxPage interface, 
 before you create a literal widget, by adding the code below in your .aspx markup.
-The easiest is to inherit from AjaxPage directly.
 
 ```xml
 <p5:Literal
@@ -123,18 +133,19 @@ care of attribute creation, deletion, and so on. And all attributes added to any
 will be automatically remembered across postbacks.
 
 Due to the automatic attribute serialization de-serialization, and stateful Container
-controls, using p5.ajax is dead simple. Simply add and/or change/remove any attribute
+controls, using p5.ajax is extremely easy. Simply add and/or change/remove any attribute
 you wish from your controls, and have the underlaying library take care of the automatic 
 changes being propagated back to the client.
 
 To add an attribute, or change its value, is as simple as this.
 
-```
+```csharp
 // Notice, this does NOT render as "valid" HTML! But it proves the point!
 myWidget ["some-attribute"] = "some-value";
 ```
 
-To delete an attribute, simply use the "RemoveAttribute" method on your widget.
+To delete an attribute, simply use the `RemoveAttribute` method on your widget, and pass in 
+the nameof the attribute you wish to remove.
 
 ## Change is the only constant
 
@@ -144,6 +155,16 @@ But also all other parts of a widget is automatically kept track of during execu
 of your page. In fact, you can even change the element a widget is rendered with, 
 dynamically - And even its ID - And p5.ajax will automatically take care of everything
 that changes, and render the correct HTML/JSON back to the client.
+
+Imagine you have a "myWidget" on your page, which can be any of the three existing types
+of widgets, and then you do something like this in one of your web methods.
+
+```csharp
+myWidget.Element = "div";
+```
+
+The above would change your widget's HTML element, and presist (remember) the change for 
+every consecutive callback.
 
 ## JSON as the communication protocol
 

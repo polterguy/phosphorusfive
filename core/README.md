@@ -17,4 +17,15 @@ pieces like a fully fledged CMS or publishing system, the ability to browse file
 But System42 can easily be entirely removed by deleting the "system42" folder, and changing your web.config to point to another 
 "startup file".
 
+In fact, when you create web apps and/or websites, then the only projects you'd normally need to include a reference to, are these;
+
+* p5.ajax, if you wish to have Ajax functionality in your project
+* p5.core, if you wish to consume Active Events in your project
+* p5.exp, if you wish to use expressions in your project
+
+In addition, you could also choose to use the "p5.webapp", either as a starting ground for your own ASP.NET website project, or hosting
+your entire application, adding up all your own functionality as plugins. However, all projects are actually optional, and you can use
+any single part of Phosphorus Five, without needing to use any other parts.
+
+
 

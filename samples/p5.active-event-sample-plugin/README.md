@@ -6,6 +6,7 @@ This project illustrates how you could create a plugin, which you dynamically co
 The project illustrates the following concepts;
 
 * `ActiveEvent` attribute to declare methods as Active Events
+* Both static Active Event handlers and instance handlers
 * `ApplicationContext.RegisterListeningObject` to register objects as listening for Active Events
 * `ApplicationContext.UnregisterListeningObject` to unregister objects as Active Event handlers
 
