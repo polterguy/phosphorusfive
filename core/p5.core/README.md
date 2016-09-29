@@ -3,7 +3,7 @@ The Active Event design pattern implementation
 
 This project contains the main Active Event design pattern implementation.
 This design pattern, allows you to completely eliminate _all_ dependencies
-between your different projects, creating an event based communication model,
+between your projects, creating an event based communication model,
 based upon Active Events, instead of hardlinked references and interfaces.
 
 If you pass around only "POD data objects", this allows you to completely
@@ -16,17 +16,17 @@ into any other types of projects.
 
 ## Example usage
 
-Create two projects, one "plugin" and one "main app". Then create a reference to 
-"p5.core" in both of them. Then create the Active Event below inside a class in 
-your "plugin DLL project", compile the project, and simply copy the DLL into
-the "bin" folder of your "main app" project.
+Create two projects, one "plugin project" and one "main app project". Then create 
+a reference to "p5.core" in both of them. Afterwards, create the Active Event 
+below inside a class in your "plugin DLL project", compile the project, and 
+simply copy the DLL into the "bin" folder of your "main app" project.
 
 Make sure you load up your "plugin DLL", using `Loader.Instance.LoadAssembly`,
 into your "main app", in some method in your "main application".
 
 After you've done so, simply create an `ApplicationContext`, using for instance
-the `Loader.Instance.CreateApplicationContext` method, and invoke your Active Event using
-the `ApplicationContext.Raise` method to invoke your "plugin's" Active Event (method)
+the `Loader.Instance.CreateApplicationContext` method, and invoke your Active Event,
+using the `ApplicationContext.Raise` method to invoke your "plugin's" Active Event (method)
 
 Code for your "plugin project".
 
@@ -43,7 +43,7 @@ protected static void foo_method (ApplicationContext context, ActiveEventArgs e)
      * allows you to pass in and return any number and/or types 
      * of arguments you wish.
 	 */
-    e.Args.Value = 5;
+    e.Args.Value = "Hello " + e.Args.Value;
 }
 
 /* ... end of some class declaration ... */
@@ -55,17 +55,17 @@ Code to load up your "plugin" DLL dynamically from your "main app".
 Loader.Instance.LoadAssembly ("name-of-your-dll");
 ```
 
-Code to create an `ApplicationContext` and raise an Active Event. Normally,
+Code to create an `ApplicationContext`, and raise an Active Event. Normally,
 you will keep your ApplicationContext object around, for the lifespan of your
-app, and reuse it, every time you want to raise an event, if it's a desktop 
-application for instance.
+app, and reuse it, every time you want to raise an event.
 
 ```csharp
 ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
-Node node = ctx.Raise ("foo", node);
+Node node = new Node ("", "Thomas");
+ctx.Raise ("foo", node);
 
 /*
- * At this point, the node.Value should contain the integer value of "5".
+ * At this point, the node.Value should contain the integer value of "Hello Thomas".
  * If you declared the Active Event handler we previously looked at,
  * in some class, who's assembly you loaded up dynamically using the Loader.
  */
@@ -84,64 +84,6 @@ the caller.
 Also, whatever you pass into your `e.Args` before you raise your Active Event, 
 will be passed into the handler(s) for your Active Events.
 
-Notice, if you use p5.core in combination with p5.webapp, then each request has 
-its own application context. The application context contains the user's
-"Ticket", which among other things, defines what the request/user is authorized to
-do in your server.
-
-If you create your own project from scratch, and you want to use Active Events,
-then you will normally have only one ApplicationContext object for each process.
-
-With Active Events, you don't invoke the method directly, but rather indirectly,
-through their *"Name"* properties, declared in your *"ActiveEvent"* attribute. This
-means that you never have dependencies between the caller, and the handler of
-your Active Events. This allows you to dynamically easily replace any functionality 
-in your system, with other modules and pieces of functionality, without needing 
-the caller and handler, to know anything about each other. Instead of replacing 
-OOP, p5.core replaces the very way you invoke functions.
-
-Notice, Active Events can easily be used in combination with traditional
-OO and method invocations. This means that you can still utilize your existing
-OO and C# knowhow. However, it gives you an alternative path to implement 
-"plugins" in your project, which you will probably find far superior to
-the traditional way of using "interfaces" and such, for communication between
-modules.
-
-To understand just how powerful this design pattern is, realize that the
-entirety of p5.lambda, the "programming language", is entirely implemented
-using Active Events. This means that the "keywords" themselves, are in fact
-nothing but "Active Event sinks", which you can invoke from any parts of
-your system.
-
-Notice, with the above logic, there is no hardlinked references between your assembly
-implementing the *[foo]* Active Event, and the assembly invoking your "foo" Active Event. 
-Neither are there any types from neither of the assemblies, dependent upon the other assembly.
-
-So all "hard linking" from one of your assemblies, to the other, completely vanishes, allowing
-you to build applications more like you would assemble "LEGO bricks", than the traditional
-way of creating a plugin architecture.
-
-The way it internally works, is by creating a hashtable, or dictionary, of dynamically linked
-methods, using reflection, allowing you to invoke these methods through their Active Event "name", 
-instead of directly through a hard linked object reference. Then this dictionary is partially
-create during your "Loader.Instance.LoadAssembly" invocations, and partially during 
-your "RegisterListeningObject" invocation. Which depends upon whether or not your Active
-Event handler is a static method or a member method.
-
-You can also create instance Active Event handlers, at which point you will have to "register"
-your objects as Active Event listeners, through the "RegisterListeningObject" method on your
-ApplicationContext. If you do, then your Active Events will be raised within the context
-of the object you registered as an "event listener", and have access to all private member fields,
-properties, and methods of your object. You can register as many instances of the same class
-as you wish to be "instance listeners", but it is up to you yourselves, to make sure you 
-"unregister" your instances.
-
-Notice, if you register objects as "event listeners", you will have to "unregister" them, when
-you no longer want them to listen for events, using the "UnregisterListeningObject" method on
-your ApplicationContext. Otherwise, you will end up with "dangling objects", that the garbage 
-collector won't be able to collect, and you will have these "dangling objects", handle any
-Active Events they are listening to, when they are invoked.
-
 ## Parametrizing your Active Events
 
 All arguments passed in and out of an Active Event, must be passed in through the "Node" class.
@@ -156,38 +98,6 @@ and try to as much as possible, to stick with only the System types from .Net - 
 "string" and so on. This is to make sure you avoid creating unnecessary dependencies between
 your modules, by having to "hard link" in some project, which both the invoker and the caller 
 becomes dependent upon.
-
-If you check out the "plugins" projects in Phosphorus Five, you will see that apart from p5.core
-and p5.exp, none of them have any references to any other projects, except the p5.webapp, which
-only have the references to the projects it references, for simplicity during building and debugging,
-since a reference here, will automatically copy the assemblies into the "bin" folder of your website.
-
-However, the references to the assemblies in the web app (p5.webapp), is actually only there
-for convenience, since it automatically copies your project into your web apps "bin" folder.
-If we wanted to, we could completely remove or add any of these plugins, update our web.config,
-to reflect which assemblies to load, and such completely modify our app's behaviour.
-
-For the p5.webapp, the actual plugins you use, is actually defined in your "web.config" file,
-which has a list of assemblies, which are dynamically loaded, using the "Loader" class of p5.core.
-
-In theory, the only assembly you'll ever have to include a reference to, when using Active Events,
-is the "p5.core" assembly. Still you could easily have your different modules, perfectly communicate
-together, as if they were "hard linked" together. Needless to say, but this gives you an _extreme_
-amount of flexibility, and literally _exterminates_ all of your dependencies, if done correctly.
-
-Active Events gives you a flexibility and agility, I'd claim that no other plugin library would ever
-be able to give you on this planet! A bold statement, but I dare you to prove me wrong!
-
-## Dynamically loading up plugin assemblies
-
-To dynamically load up an assembly which contains Active Event handlers, you would use the "Loader"
-class, and its method(s) "LoadAssembly". This will load the specified assembly into your "AppDomain",
-register all (static) Active Event handlers, and let you invoke Active Events handlers in it by raising 
-them using ApplicationContext.Raise.
-
-Notice, you must create your ApplicationContext _AFTER_ you have loaded your assemblies, since your
-ApplicationContext is created according to which assemblies where dynamically loaded before it was 
-created.
 
 ## Multiple handlers for the same Active Event
 
