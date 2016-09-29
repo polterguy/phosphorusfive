@@ -147,9 +147,9 @@ disposed.
 
 ## More examples
 
-If you check out the project called [p5.active-event-sample](/examples/p5.active-event-sample/), 
+If you check out the project called [p5.active-event-sample](/samples/p5.active-event-sample/), 
 then it illustrates an example of a console program, that dynamically loads a plugin assembly, 
-called [p5.active-event-sample-plugin](/examples/p5.active-event-sample-plugin/), which handles 
+called [p5.active-event-sample-plugin](/samples/p5.active-event-sample-plugin/), which handles 
 some Active Events, through some Active Event handlers - Both static event handlers, and member 
 event handlers.
 
