@@ -24,9 +24,11 @@ the "bin" folder of your "main app" project.
 Make sure you load up your "plugin DLL", using `Loader.Instance.LoadAssembly`,
 into your "main app", in some method in your "main application".
 
-After you've done so, simply create an `ApplicationContext` using for instance
-the `Loader.Instance.LoadAssembly` method, and invoke your Active Event using
+After you've done so, simply create an `ApplicationContext`, using for instance
+the `Loader.Instance.CreateApplicationContext` method, and invoke your Active Event using
 the `ApplicationContext.Raise` method to invoke your "plugin's" Active Event (method)
+
+Code for your "plugin project".
 
 ```csharp
 using p5.core;
@@ -47,24 +49,23 @@ protected static void foo_method (ApplicationContext context, ActiveEventArgs e)
 /* ... end of some class declaration ... */
 ```
 
-Then in any other parts of your code, you can dynamically load up this plugin
-assembly using.
+Code to load up your "plugin" DLL dynamically from your "main app".
 
 ```
 Loader.Instance.LoadAssembly ("name-of-your-dll");
 ```
 
-To raise an Active Event from C#, you use the *"Raise"* method on your 
-ApplicationContext object, passing in a Node, which will become the arguments 
-passed into your Active Event.
+Code to create an `ApplicationContext` and raise an Active Event. Normally,
+you will keep your ApplicationContext object around, for the lifespan of your
+app, and reuse it, every time you want to raise an event, if it's a desktop 
+application for instance.
 
 ```csharp
 ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
-Node node = new Node ();
-ctx.Raise ("foo", node);
+Node node = ctx.Raise ("foo", node);
 
 /*
- * At this point, the node.Value should contain the integer value of "10".
+ * At this point, the node.Value should contain the integer value of "5".
  * If you declared the Active Event handler we previously looked at,
  * in some class, who's assembly you loaded up dynamically using the Loader.
  */
