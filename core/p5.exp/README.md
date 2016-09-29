@@ -80,7 +80,7 @@ parses them from the left to the right.
 
 ## Iterator types
 
-There are 17 basic different unique iterators, that each extracts a different type of result
+There are 17 basic iterators, that each extracts a different type of result
 
 * `/*` - Children iterator, extracts all children of previous result set
 * `/**` - Descendants iterator, extracts all descendents of previous result set
@@ -936,7 +936,8 @@ _data
 foo:x:/../*/_data/*
 ```
 
-See the project called "p5.active-event-sample-plugin" for more details about how to create Active Events in C#.
+See the project called [p5.active-event-sample-plugin](/samples/p5.active-event-sample-plugin/) for more details about 
+how to create Active Events in C#.
 
 
 
