@@ -87,12 +87,23 @@ namespace p5.io.authorization.helpers
             // Extra security for non-root users
             if (context.Ticket.Role != "root") {
 
+                // Verifying suffix of file is a type of file that user is allowed to save
+                switch (Path.GetExtension (filename)) {
+
+                    // Blacklisted ...!
+                    case ".config":
+                        throw new LambdaSecurityException (
+                            string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename),
+                            stack,
+                            context);
+                }
+
                 // Checking if this is "common folder", at which point we return immediately,
                 // since all users have access to this folder
                 if (filename.ToLower ().StartsWith ("/common/"))
                     return; // Legal
 
-                // Verifying file is not underneath ANOTHER user's folder, which is not legal even for root account!
+                // Verifying file is not underneath ANOTHER user's folder, which is not legal!
                 if (filename.ToLower ().StartsWith ("/users/") && 
                     filename.ToLower ().IndexOf (string.Format ("/users/{0}/", context.Ticket.Username.ToLower ())) != 0)
                     throw new LambdaSecurityException (
@@ -106,17 +117,6 @@ namespace p5.io.authorization.helpers
                         string.Format ("User '{0}' tried to access 'auth' file", context.Ticket.Username, filename), 
                         stack, 
                         context);
-
-                // Verifying suffix of file is a type of file that user is allowed to save
-                switch (Path.GetExtension (filename)) {
-
-                    // Blacklisted ...!
-                    case ".config":
-                        throw new LambdaSecurityException (
-                            string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
-                            stack, 
-                            context);
-                }
 
                 // Verifies only root account can write to anything but "user files"
                 if (!filename.ToLower ().StartsWith ("/users/")) {
