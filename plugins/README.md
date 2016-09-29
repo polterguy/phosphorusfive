@@ -16,7 +16,7 @@ Below is a list of all the plugins in the system as of today.
 * [/plugins/p5.strings/](p5.strings), containing the events necessary to manipulate strings
 * [/plugins/p5.types/](p5.types), containing the default type conversion Active Events of P5
 
-In addition, there are several more plugins accessible in the [/extras/](/plugins/extras/) folder.
+In addition, there are several more plugins in the [extras](/plugins/extras/) folder.
 
 To create your own plugins for P5, is actually ridiculously easy, due to the Active Event design pattern. If you
 wish, you can easily "extend" p5.lambda, creating your own "programming instructions", or more specifically Active Events,
