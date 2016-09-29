@@ -16,10 +16,17 @@ into any other types of projects.
 
 ## Example usage
 
-Include a reference to p5.core in your project, and make sure you dynamically
-load the DLLL containing the below class somehow. For instance, by using the 
-`Loader.Instance.LoadAssembly` method from p5.core, loading up your plugin 
-DLLs dynamically.
+Create two projects, one "plugin" and one "main app". Then create a reference to 
+"p5.core" in both of them. Then create the Active Event below inside a class in 
+your "plugin DLL project", compile the project, and simply copy the DLL into
+the "bin" folder of your "main app" project.
+
+Make sure you load up your "plugin DLL", using `Loader.Instance.LoadAssembly`,
+into your "main app", in some method in your "main application".
+
+After you've done so, simply create an `ApplicationContext` using for instance
+the `Loader.Instance.LoadAssembly` method, and invoke your Active Event using
+the `ApplicationContext.Raise` method to invoke your "plugin's" Active Event (method)
 
 ```csharp
 using p5.core;
