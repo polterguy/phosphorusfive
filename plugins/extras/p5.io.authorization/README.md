@@ -2,7 +2,7 @@ Authorization in Phosphorus Five
 ===============
 
 This project, is really for internal use, and only used by other plugins, when the system wants to check if a user is authorized
-to access or modify a file or folder. If you create your own disc IO Active Events though, you might want to invoke some of these
+to access or modify a file or folder. If you create your own disc IO Active Events in C#, you might want to invoke some of these
 Active Events yourself, from within your own Active Events, to make sure the user is authorized to access or change your file(s)
 or folder(s).
 
