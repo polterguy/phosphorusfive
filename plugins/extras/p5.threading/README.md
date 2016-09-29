@@ -132,7 +132,7 @@ Notice the seconds *[set]* invocation still having its original expression value
 
 The *[sleep]* Active Event, "sleeps" the current thread, for a specified milliseconds amount of time, before allowing the thread to proceed.
 
-## [lock], What do we want? Now! When? Fewer race conditions!
+## [lock] - "What do we want? Now! When? Fewer race conditions!"
 
 Sometimes you have some shared object, or resource, which you cannot have multiple threads access at the same time. For such cases, you can
 use a *[lock]* invocation, to make sure only one thread at the time is able to access your shared object. An example is given below.
@@ -171,6 +171,68 @@ get to put its changes into the file, since it was loading the file before any o
 the first two threads did their changes, saving their version of our file, but the last thread overwrites these changes, since it had loaded the 
 file, at a point in time, when none of the other threads had gotten to save its changes.
 
-To illustrate the problem, I simply adore this little joke, a friend of mine told me once; _"What do we want? Now! When? Fewer race conditions!"_ ;)
+To illustrate the problem, I simply adore this little joke, a friend of mine told me once; _"What do we want? Now! When? Fewer race conditions!"_
+
+## Example usage
+
+Threads are notoriously difficult to use correctly, and as a general rule, you should be extremely careful when using them, and preferably avoid
+them altogether if you can. However, sometimes, having a multi-threaded solution simply creates too much benefit for you, to avoid implementing
+threading in your app. Some examples are given below.
+
+### Creating multiple HTTP requests
+
+Sometimes you have a list of HTTP requests, where you wish to download the files, found at each location. If you were to do this sequentially,
+this would mean that you for every single request, had to wait until it was finished, before starting your next request. If you instead created 
+your network logic, such that each request was initiated from a different thread, then they would all be downloaded simultaneously, and
+you wouldn't have to wait for one to finish downloading, before you start the next one. Which could prove orders of magnitudes faster, than 
+sequentially downloading each document. Depending upon how much overhead each of your server endpoints have in handling your requests.
+
+Imagine the following code.
+
+```
+p5.net.http-get:"http://google.com"
+p5.net.http-get:"http://digg.com"
+p5.net.http-get:"http://facebook.com"
+p5.net.http-get:"http://reddit.com"
+p5.net.http-get:"http://twitter.com"
+```
+
+On my system, this takes about 10 seconds to evaluate using localhost as my P5 server. If I instead created these requests in parallel, in 
+different threads, the difference would be very easy to notice.
+
+```
+wait
+  fork
+    p5.net.http-get:"http://google.com"
+  fork
+    p5.net.http-get:"http://digg.com"
+  fork
+    p5.net.http-get:"http://facebook.com"
+  fork
+    p5.net.http-get:"http://reddit.com"
+  fork
+    p5.net.http-get:"http://twitter.com"
+```
+
+The above code, takes about 3 seconds on my system to evaluate. Basically, 4 times as fast. This is because I don't have to wait for one server
+to finish my request, before I start my request towards the next server.
+
+## Thread safety in Phosphorus Five
+
+With threading support in P5, the obvious question becomes; _"Is Phosphorus Five thread safe?"_
+
+The short answer is; _"YES!!"_
+
+Things like for instance p5.data, is 100% thread safe, and you never risk race conditions while using it. Other parts, such as p5.io, is not thread 
+safe, and if multiple processes/threads are modifying the same file, you might get race conditions. If you have multiple processes updating the same
+files in your system, using "p5.io", then it is up to you to make sure you don't get in trouble.
+
+Other parts that might not necessary be thread safe, are the Active Events where I use underlaying .Net technology, such as the *[set-global-value]*,
+which is using the ASP.NET `HttpContext.Current.Application` object. Whether or not these places are thread safe, depend upon the .Net classes 
+themselves. If you don't know, you should consult the MSDN website, and see what the different classes implements in regards to thread safety.
+
+All other parts, should be, as a general rule, 100% thread safe, simply because they do not share any common objects in any ways!
+
+
 
 

@@ -19,4 +19,5 @@ TODO before release
 * Investigate the p5.threading, and find out why [fork] is not the root node, when using a [wait] invocation. Which MIGHT be the corrrect way to
   do things, but make sure!!
 
+* Also investigate why a "shared reference node" won't have its reference node updated for multiple [fork] inside of a single [wait]
 
