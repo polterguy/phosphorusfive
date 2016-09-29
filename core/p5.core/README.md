@@ -166,7 +166,7 @@ folder, and have no other significancy besides from that.
 
 ## Even more examples
 
-The entirety of everything inside of the [/plugins/](plugins) folder in Phosphorus Five, including the 
+The entirety of everything inside of the [plugins](/plugins/) folder in Phosphorus Five, including the 
 p5.lambda "programming language itself", is entirely created as Active Events.
 
 If you wish to see more examples of how to use Active Events, I encourage you to look at the 
