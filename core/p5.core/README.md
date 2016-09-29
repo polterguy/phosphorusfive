@@ -160,9 +160,13 @@ instance event handlers, and registering and unregistering your instance event l
 
 It also illustrates how you can have multiple handlers for the same Active Event.
 
+Notice, for convenience, the main app project in these examples, holds a reference to the
+plugin project. This is only to avoid having to copy the plugin DLL into your app's bin
+folder, and have no other significancy besides from that.
+
 ## Even more examples
 
-The entirety of everything inside of the "plugins" folder in Phosphorus Five, including the 
+The entirety of everything inside of the [/plugins/](plugins) folder in Phosphorus Five, including the 
 p5.lambda "programming language itself", is entirely created as Active Events.
 
 If you wish to see more examples of how to use Active Events, I encourage you to look at the 
