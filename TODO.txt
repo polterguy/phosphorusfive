@@ -16,4 +16,7 @@ TODO before release
 
 * Remove the [get-event] Active Event, and implement some "system42" dynamic event, that does the same, through "event lambda injection code"
 
+* Investigate the p5.threading, and find out why [fork] is not the root node, when using a [wait] invocation. Which MIGHT be the corrrect way to
+  do things, but make sure!!
+
 

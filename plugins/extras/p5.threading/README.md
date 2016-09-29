@@ -132,4 +132,45 @@ Notice the seconds *[set]* invocation still having its original expression value
 
 The *[sleep]* Active Event, "sleeps" the current thread, for a specified milliseconds amount of time, before allowing the thread to proceed.
 
+## [lock], What do we want? Now! When? Fewer race conditions!
+
+Sometimes you have some shared object, or resource, which you cannot have multiple threads access at the same time. For such cases, you can
+use a *[lock]* invocation, to make sure only one thread at the time is able to access your shared object. An example is given below.
+
+```
+save-file:~/foo.txt
+  src:initial value
+wait
+  fork
+    lock:my-file
+      load-file:~/foo.txt
+      save-file:~/foo.txt
+        src:"{0}\r\n{1}"
+          :x:/..lock/*/load-file/*?value
+          :first thread
+  fork
+    lock:my-file
+      load-file:~/foo.txt
+      save-file:~/foo.txt
+        src:"{0}\r\n{1}"
+          :x:/..lock/*/load-file/*?value
+          :second thread
+  fork
+    lock:my-file
+      load-file:~/foo.txt
+      save-file:~/foo.txt
+        src:"{0}\r\n{1}"
+          :x:/..lock/*/load-file/*?value
+          :third thread
+load-file:~/foo.txt
+```
+
+In the above example, we want to ensure "atomic" access while loading and saving our file. Without this, we could in theory, run the risk of that
+all threads starts at the same time, loads our file, and overwrites the file. This would mean that only the last thread saving our file, would
+get to put its changes into the file, since it was loading the file before any of the previous threads was able to save their changes, then
+the first two threads did their changes, saving their version of our file, but the last thread overwrites these changes, since it had loaded the 
+file, at a point in time, when none of the other threads had gotten to save its changes.
+
+To illustrate the problem, I simply adore this little joke, a friend of mine told me once; _"What do we want? Now! When? Fewer race conditions!"_ ;)
+
 
