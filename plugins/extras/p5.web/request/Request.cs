@@ -74,7 +74,7 @@ namespace p5.web.ui.request {
             context.Raise ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
 
             // Retrieving root node of web application
-            var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
+            var rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
 
             // Creating a file stream, copying the request stream to our filestream
             using (FileStream fs = File.Create (rootFolder + filename)) {

@@ -93,8 +93,8 @@ namespace p5.security.helpers
                 // Caller wants to create persistent cookie to remember username/password
                 HttpCookie cookie = new HttpCookie (_credentialCookieName);
                 cookie.Expires = DateTime.Now.AddDays (context.Raise (
-                    "get-config-setting", 
-                    new Node ("", "p5.security.get-credential-cookie-days")) [0].Get<int> (context));
+                    ".get-config-setting", 
+                    new Node ("", "p5.security.credential-cookie-valid")) [0].Get<int> (context));
                 cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie
 
                 // Notice, we use another fingerprint as password for cookie than what we use for storing cookie in auth file
@@ -221,7 +221,7 @@ namespace p5.security.helpers
                 });
 
             // Creating newly created user's directory structure
-            CreateUserDirectory (context.Raise("p5.core.application-folder").Get<string>(context), username);
+            CreateUserDirectory (context.Raise(".p5.core.application-folder").Get<string>(context), username);
         }
 
         /*

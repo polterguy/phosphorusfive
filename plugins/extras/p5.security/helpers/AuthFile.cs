@@ -89,11 +89,11 @@ namespace p5.security.helpers
                 // Returning file as lambda, making sure we decrypt it first, but only if user has explicitly
                 // declared a decryption key to use through web.config
                 var gpgEmailAddress = context.Raise (
-                    "get-config-setting", 
+                    ".get-config-setting", 
                     new Node ("", "p5.security.marvin-pgp-key"))[0].Get<string> (context);
                 var gpgPassword = context.Raise (
-                    "get-config-setting", 
-                    new Node ("", "p5.security.marvin-pgp-key-password"))[0].Get<string> (context);
+                    ".get-config-setting", 
+                    new Node ("", ".p5.security.marvin-pgp-key-password"))[0].Get<string> (context);
                 if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
 
                     // User has a PGP key declared in web.config, try to load and decrypt file first
@@ -130,11 +130,11 @@ namespace p5.security.helpers
                 // Writing auth file content to disc, making sure we store it encrypted, but only if user
                 // has supplied an encryption and decryption key through web.config
                 var gpgEmailAddress = context.Raise (
-                    "get-config-setting", 
+                    ".get-config-setting", 
                     new Node ("", "p5.security.marvin-pgp-key"))[0].Get<string> (context);
                 var gpgPassword = context.Raise (
-                    "get-config-setting", 
-                    new Node ("", "p5.security.marvin-pgp-key-password"))[0].Get<string> (context);
+                    ".get-config-setting", 
+                    new Node ("", ".p5.security.marvin-pgp-key-password"))[0].Get<string> (context);
                 if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
                     try {
                         writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));
@@ -153,10 +153,10 @@ namespace p5.security.helpers
         private static string GetAuthFilePath (ApplicationContext context)
         {
             // Getting filepath to pwd file
-            string rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
+            string rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
 
             // The logic below makes it possible to store auth file OUTSIDE of main web application folder!
-            string pwdFilePath = context.Raise ("p5.security.get-auth-file").Get<string> (context).Replace ("~", rootFolder);
+            string pwdFilePath = context.Raise (".p5.security.get-auth-file").Get<string> (context).Replace ("~", rootFolder);
 
             // Returning path to caller
             return pwdFilePath;

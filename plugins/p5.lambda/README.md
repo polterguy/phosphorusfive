@@ -215,6 +215,20 @@ eval:x:/../*/_x
 In the above scenarion, after evalution of our *[eval]*, only the "foo2" string will be the value of our
 eval invocation.
 
+#### Notice!
+
+Nodes starting with either an underscore (_) or a period (.), are _impossible_ to evaluate with p5.lambda. Hence, Active Events starting
+with one of these characters, are considered "C# only Active Events", only possible to raise from C#.
+
+This is by convention, to make it possible to create "p5.lambda hidden Active Events", which is only possible to raise from C#,
+for security reasons for instance.
+
+Realize though, you can evaluate an *[eval]* block, which has a name, starting with an underscore or period. However, the *[eval]* block
+won't raise any Active Events starting with either of these two characters.
+
+The convention is to use underscore (_) for "data segment", and period (.) for "invisible Active Events", although, you can choose this for yourself.
+There is no semantic difference in whether or not you use an underscore or a period.
+
 #### Evaluating stuff that's not a node
 
 If you try to evaluate something that is somehow not a node, then this object will be attempted converted into a node, before it

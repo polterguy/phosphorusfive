@@ -21,7 +21,7 @@ namespace p5.events
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-config-setting")]
-        [ActiveEvent (Name = "_get-config-setting")]
+        [ActiveEvent (Name = ".get-config-setting")]
         public static void get_config_setting (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
@@ -32,7 +32,7 @@ namespace p5.events
 
                     // Making sure this is not a "protected setting", unless invoker was "native"
                     // Hint; Lambda cannot invoke Active Events that starts with an underscore (_)
-                    if (!e.Name.StartsWith ("_") && idxName.StartsWith ("_"))
+                    if (!e.Name.StartsWith (".") && idxName.StartsWith ("."))
                         throw new LambdaException ("Caller tried to access protected config setting in [get-config-setting]", e.Args, context);
 
                     // Setting was not protected (did not start with an "_"), or caller was natively invoking this Active Event

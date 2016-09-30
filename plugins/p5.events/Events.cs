@@ -44,7 +44,7 @@ namespace p5.events
             } else {
 
                 // Creating new event
-                CreateEvent (XUtil.Single<string> (context, e.Args), e.Args.Clone (), context);
+                CreateEvent (XUtil.Single<string> (context, e.Args), e.Args, context);
             }
         }
 
@@ -89,8 +89,12 @@ namespace p5.events
         /*
          * Creates a new Active Event
          */
-        internal static void CreateEvent (string name, Node lambda, ApplicationContext context)
+        internal static void CreateEvent (string name, Node args, ApplicationContext context)
         {
+            // Sanity check
+            if (name.StartsWith ("_") || name.StartsWith ("."))
+                throw new LambdaException ("Tried to create a 'protected event'", args, context);
+
             // Acquire lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
 
@@ -98,7 +102,7 @@ namespace p5.events
                 _events [name] = new Node ("");
 
                 // Adding event to dictionary
-                _events [name].AddRange (lambda.Children);
+                _events [name].AddRange (args.Clone ().Children);
             }
         }
 
@@ -107,6 +111,10 @@ namespace p5.events
          */
         internal static void DeleteEvent (string name, ApplicationContext context, Node args)
         {
+            // Sanity check
+            if (name.StartsWith ("_") || name.StartsWith ("."))
+                throw new LambdaException ("Tried to create a 'protected event'", args, context);
+
             // Acquire lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
 

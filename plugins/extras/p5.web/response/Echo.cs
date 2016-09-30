@@ -57,7 +57,7 @@ namespace p5.web.ui.response {
             HttpContext.Current.Response.ClearContent ();
 
             // Retrieving root node of web application
-            var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
+            var rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
 
             // Finding filename
             var fileName = XUtil.Single<string> (context, e.Args);

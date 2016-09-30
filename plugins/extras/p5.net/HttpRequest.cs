@@ -270,7 +270,7 @@ namespace p5.net
                 SetRequestHeaders (context, request, args);
 
                 // Retrieving root node of web application
-                var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
+                var rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
 
                 // Copying FileStream to RequestStream
                 using (Stream fileStream = File.OpenRead (rootFolder + filename)) {
@@ -456,7 +456,7 @@ namespace p5.net
             using (Stream stream = response.GetResponseStream ()) {
 
                 // Retrieving root folder of web application
-                var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
+                var rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
 
                 // Copying response content stream to file stream encapsualting file caller requested to save content to
                 using (Stream fileStream = File.Create (rootFolder + filename)) {

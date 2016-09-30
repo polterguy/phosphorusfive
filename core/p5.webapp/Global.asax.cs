@@ -63,7 +63,7 @@ namespace p5
 
                 // Execute our "startup file", if there is one defined
                 var appStartupFiles = context.Raise (
-                    "get-config-setting",
+                    ".get-config-setting",
                     new Node ("", "p5.webapp.application-startup-file")) [0].Get<string>(context);
                 if (!string.IsNullOrEmpty (appStartupFiles)) {
 
@@ -96,8 +96,8 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.core.application-folder")]
-            private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
+            [ActiveEvent (Name = ".p5.core.application-folder")]
+            private static void _p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value = _applicationBasePath;
             }
@@ -107,8 +107,8 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-auth-file")]
-            private static void p5_security_get_auth_file (ApplicationContext context, ActiveEventArgs e)
+            [ActiveEvent (Name = ".p5.security.get-auth-file")]
+            private static void _p5_security_get_auth_file (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.AuthFile;

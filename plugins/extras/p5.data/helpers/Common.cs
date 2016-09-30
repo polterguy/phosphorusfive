@@ -69,8 +69,8 @@ namespace p5.data.helpers
 
                 // Finding and setting our database root directory
                 _dbFullPath = context.Raise (
-                    "get-config-setting",
-                    new Node ("", "p5.data.path")) [0].Get<string>(context, "~/db/");
+                    ".get-config-setting",
+                    new Node ("", ".p5.data.path")) [0].Get<string>(context, "~/db/");
                 _dbFullPath = _dbFullPath.Replace ("~", GetRootFolder (context));
 
                 // Checking to see if database directory exist
@@ -142,8 +142,8 @@ namespace p5.data.helpers
         {
             // Searching through database to see if there are any nodes we can use from before
             var objectsPerFile = context.Raise (
-                    "get-config-setting",
-                    new Node ("", "p5.data.nodes-per-file"))[0].Get<int> (context, 32);
+                    ".get-config-setting",
+                    new Node ("", ".p5.data.nodes-per-file"))[0].Get<int> (context, 32);
             if (forceAppend) {
                 if (Database.Children.Count > 0) {
                     if (Database.Children [Database.Children.Count - 1].Children.Count < objectsPerFile)
@@ -255,8 +255,8 @@ namespace p5.data.helpers
         {
             // Retrieving maximum number of files for folder
             var maxFilesPerDirectory = context.Raise (
-                    "get-config-setting",
-                    new Node ("", "p5.data.files-per-folder"))[0].Get<int> (context, 256);
+                    ".get-config-setting",
+                    new Node ("", ".p5.data.files-per-folder"))[0].Get<int> (context, 256);
 
             // Retrieving all folders currently in use
             var directoryList = GetFolders (context).ToList ();
@@ -315,7 +315,7 @@ namespace p5.data.helpers
          */
         private static string GetRootFolder (ApplicationContext context)
         {
-            return context.Raise ("p5.core.application-folder").Get<string> (context);
+            return context.Raise (".p5.core.application-folder").Get<string> (context);
         }
     }
 }

@@ -307,7 +307,7 @@ namespace p5.mime.helpers
                 var email = "foo@bar.com";
                 var fingerprint = "";
                 var key = _context.Raise (
-                    "get-config-setting", 
+                    ".get-config-setting", 
                     new Node ("", "p5.security.marvin-pgp-key")) [0].Get<string> (_context);
                 if (key.IndexOf ("@") == -1)
                     fingerprint = key;
@@ -331,15 +331,15 @@ namespace p5.mime.helpers
 
                 // Using server's private key
                 var key = _context.Raise (
-                    "get-config-setting", 
+                    ".get-config-setting", 
                     new Node ("", "p5.security.marvin-pgp-key"))[0].Get<string> (_context);
                 if (key.IndexOf ("@") == -1)
                     fingerprint = key;
                 else
                     email = key;
                 password = _context.Raise (
-                    "get-config-setting", 
-                    new Node ("", "p5.security.marvin-pgp-key-passsword"))[0].Get<string> (_context);
+                    ".get-config-setting", 
+                    new Node ("", ".p5.security.marvin-pgp-key-passsword"))[0].Get<string> (_context);
             } else {
 
                 // Using provided key and password

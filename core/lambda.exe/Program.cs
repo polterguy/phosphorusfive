@@ -100,7 +100,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.core.application-folder")]
+        [ActiveEvent (Name = ".p5.core.application-folder")]
         private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
             string retVal = Assembly.GetExecutingAssembly().Location.Replace ("\\", "/");
