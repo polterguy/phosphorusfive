@@ -45,7 +45,7 @@ namespace p5.mail
         public static void p5_mail_pop3_get_emails (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we remove arguments supplied
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Creating our POP3 client
                 using (var client = new Pop3Client ()) {
@@ -237,10 +237,10 @@ namespace p5.mail
                 Node exe = args ["functor"].Clone ();
 
                 // Making sure we avoid raising the message node as an Active Event
-                msgNode.Insert (0, new Node ("offset", 2 /* Remember the [offset] node itself! */));
+                exe.Insert (0, new Node ("offset", 2 /* Remember the [offset] node itself! */));
 
                 // Adding currently iterated message to [functor] and evaluating using [eval]
-                exe.Add (msgNode);
+                exe.Insert (1, msgNode);
                 context.Raise ("eval", exe);
             } else {
 

@@ -116,10 +116,106 @@ How to create your *[body]*, is actually beyond the scope of this documentation,
 by [p5.mime](/plugins/extras/p5.mime/). But basically, you can send any MIME messages you wish, including PGP encrypted messages, and cryptographically
 signed messages, as you see fit. You can also add any amount and types of attachments you wish.
 
+Notice, there must be exactly _one_ *[body]* for each *[envelope]*, and each *[body]* must have exactly one MIME entity, which of course can be
+a multipart, containing multiple child MIME entities.
+
+[See p5.mime for how to create a body](/plugins/extras/p5.mime/)
+
 ## Retrieving emails with POP3
 
+The *[p5.mail.pop3.get-emails]* Active Event, allows you to retrieve emails from a POP3 server. It has the same types of "connection arguments" as 
+the *[p5.mail.smtp.send-email]* Active Event, which also can be stored in your web.config file, for simplicity.
 
+Assuming you've setup GMail to be able to handle incoming POP3 requests, you can use the following code to retrieve 5 messages from GMail.
 
+```
+p5.mail.pop3.get-emails
+  server:pop.gmail.com
+  port:995
+  ssl:true
+  username:your-gmail-email@gmail.com
+  password:your-gmail-password
+  count:5
+```
+
+The above code, will (normally) retrieve your 5 oldest emails. It will automatically parse any MIME entities, and return the entities as a 
+tree-structure. It will not delete the message on your POP3 server. To have your messages deleted, as you retrieve them, make sure you pass in
+a *[delete]* argument, and set its value to "true".
+
+If you wish to access the "raw" email, and not its "processed version", you can set the *[process-envelope]*, and the *[process-body]*
+arguments to false, to respectively avoid parsing the entire envelope, or optionally to only avoid parsing the body of the message. This will return
+the email(s) as a "raw string" instead of hierarchically parsed, and optionally decrypted.
+
+If you set *[process-body]* to false, the entire body of your email, will be returned as *[raw-body]*. If you set the *[process-envelope]* to false,
+then the entire email envelope will be returned as *[raw-envelope]*.
+
+The message ID, as given by your POP3 server, will be returned as the value of each *[envelope]* returned from this Active Event. The message ID,
+can be used to uniquely identify the message later.
+
+The standard headers you can possibly expect to have each of your *[envelope]*s return, are listed below. To understand their meaning, feel
+free to check up the POP3 standard documents.
+
+* [Subject] - The subject of the email
+* [From] - Collection of emails
+* [Resent-From] - Collection of addresses
+* [Bcc] - Collection of addresses
+* [Cc] - Collection of addresses
+* [Resent-CC] - Collection of addresses
+* [Reply-To] - Collection of addresses
+* [Resent-Reply-To] - Collection of addresses
+* [To] - Collection of addresses
+* [Resent-To] - Collection of addresses
+* [Date]
+* [Resent-Message-ID]
+* [Sender] - A single name/email child node
+* [Resent-Sender] - A single name/email child node
+* [MIME-Version]
+* [Resent-Date]
+* [Importance]
+* [In-Reply-To]
+* [Priority]
+* [References] - A list of referenced emails
+
+In addition, any "custom" POP3 headers, will be returned in an *[X-Headers]* section, beneath each *[envelope]*, as a "name/value" pair.
+
+### Supplying your own callback handler for messages
+
+If you wish, you can supply a piece of p5.lambda, as *[functor]*, which is invoked once for every message that is retrieved. This would 
+significantly reduce the memory consumption of your invocation, since it allows you to store each email into for instance a database or something, 
+before the next email is fetched, resulting in not retrieving every email at once.
+
+An example is given below.
+
+```
+p5.mail.pop3.get-emails
+  server:pop.gmail.com
+  port:995
+  ssl:true
+  username:your-gmail-email@gmail.com
+  password:your-gmail-password
+  count:3
+  functor
+    sys42.show-code-window:x:/..
+```
+
+If you use a *[functor]* callback, then the envelope being currently handled, will be sent in as an *[envelope]* argument, as a root node of 
+your *[functor]*.
+
+### How parsing of your POP3 MIME messages happens
+
+The *[p5.mail.pop3.get-emails]* Active Event, relies upon [p5.mime](/plugins/extras/p5.mime/), just like its counterpart SMTP Active Event.
+Among other things, you can supply an *[attachment-folder]* argument, which will be transferred into the MIME parser Active Events, 
+which declares a folder on disc, where you want to automatically save attachments. This will significantly reduce memory consumption, while
+parsing your MIME/email messages, since no attachments will be loaded into memory, but directly saved to disc.
+
+You can also supply a pair of *[decryption-keys]* as an argument, which also will be transferred into each MIME/email parsing invocation to
+p5.mime. If you do, then any encrypted messages, will be attempted decrypted, using your private GnuPG keys, declared through your *[encryption-keys]*
+argument.
+
+[Check out p5.mime for details about MIME parsing](/plugins/extras/p5.mime/)
+
+Notice, if you do not supply a pair of encryption keys, then by default, any encrypted messages, will be attempted decrypted using your "machine keys",
+which you can defined through the "marvinPgpKey" and "marvinPgpKeyPassword" in your app's config file - (Which is web.config for p5.webapp).
 
 
 
