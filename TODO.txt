@@ -21,3 +21,11 @@ TODO before release
 
 * Also investigate why a "shared reference node" won't have its reference node updated for multiple [fork] inside of a single [wait]
 
+* Investigate if we should prefix all "native" Active Events, such as [p5.mime.create-native], with "_", to avoid calling them from p5.lambda?
+
+* Simplify p5.mail and p5.mime
+
+
+
+
+

@@ -6,7 +6,7 @@ p5.mime is using MimeKit internally, and allows for PGP encryption, decryption, 
 Active Events, which doesn't necessarily belong together with MIME, can be found in this p5.crypto. These Active Events are mostly events
 related to creating a cryptographically secure hash, in addition to creating a cryptographic random number.
 
-## Creating a cryptographically secure hash
+## Creating a cryptographic hash
 
 There are two Active Events in P5 related to creating a hash.
 
