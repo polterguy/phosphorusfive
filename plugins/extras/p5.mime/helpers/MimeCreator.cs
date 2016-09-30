@@ -111,7 +111,7 @@ namespace p5.mime.helpers
         /*
          * Creates a Multipart MimeEntity, which might be encrypted, signed, or both
          */
-        private Multipart CreateMultipart(Node multipartNode)
+        private Multipart CreateMultipart (Node multipartNode)
         {
             // Setting up a return value
             Multipart multipart = new Multipart (multipartNode.Get<string> (_context));

@@ -36,7 +36,7 @@ namespace p5.mime
                     try {
 
                         // Creating and returning MIME message to caller as string
-                        MimeCreator creator = new MimeCreator(
+                        MimeCreator creator = new MimeCreator (
                             context, 
                             idxMimeNode,
                             streams);
