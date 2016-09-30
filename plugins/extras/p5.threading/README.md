@@ -224,15 +224,16 @@ With threading support in P5, the obvious question becomes; _"Is Phosphorus Five
 The short answer is; _"YES!!"_
 
 Things like for instance [p5.data](/plugins/extras/p5.data/), is 100% thread safe, and you never risk race conditions while using it. 
-Other parts, such as [p5.io](/plugins/p5.io/), is not thread safe, and if multiple processes/threads are modifying the same file, you might 
-get race conditions. If you have multiple processes updating the same files in your system, using p5.io, then it is up to you to make sure 
-you don't get in trouble.
+Other parts, such as [p5.io](/plugins/p5.io/), is not (necessarily) 100% thread safe, and if multiple processes/threads are modifying the same 
+file, you might get race conditions. If you have multiple processes updating the same files in your system, using p5.io, then it is up to you 
+to make sure you don't get in trouble.
 
-Other parts that might not necessary be thread safe, are the Active Events where I use underlaying .Net technology, such as the *[set-global-value]*,
-which is using the ASP.NET `HttpContext.Current.Application` object. Whether or not these places are thread safe, depend upon the .Net classes 
-themselves. If you don't know, you should consult the MSDN website, and see what the different classes implements in regards to thread safety.
+Other parts again, that might not necessary be thread safe, are the Active Events, where I use underlaying .Net technology, such as 
+the *[set-global-value]*, which is using the ASP.NET `HttpContext.Current.Application` object. Whether or not these events are thread safe, 
+depends upon the underlaying .Net classes themselves. If you don't know, you should consult the MSDN website, and see what the different 
+classes implements, in regards to thread safety.
 
-All other parts, should be, as a general rule, 100% thread safe, simply because they do not share any common objects in any ways!
+Most other parts, should be, as a general rule, 100% thread safe - Simply because they do not share any common objects in any ways!
 
 
 
