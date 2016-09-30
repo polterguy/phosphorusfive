@@ -88,8 +88,12 @@ namespace p5.security.helpers
 
                 // Returning file as lambda, making sure we decrypt it first, but only if user has explicitly
                 // declared a decryption key to use through web.config
-                var gpgEmailAddress = context.Raise("p5.security.get-marvin-pgp-key").Get<string>(context);
-                var gpgPassword = context.Raise("p5.security.get-marvin-pgp-key-password").Get<string>(context);
+                var gpgEmailAddress = context.Raise (
+                    "get-config-setting", 
+                    new Node ("", "p5.security.get-marvin-pgp-key"))[0].Get<string> (context);
+                var gpgPassword = context.Raise (
+                    "get-config-setting", 
+                    new Node ("", "p5.security.get-marvin-pgp-key-password"))[0].Get<string> (context);
                 if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
 
                     // User has a PGP key declared in web.config, try to load and decrypt file first
@@ -125,8 +129,12 @@ namespace p5.security.helpers
             
                 // Writing auth file content to disc, making sure we store it encrypted, but only if user
                 // has supplied an encryption and decryption key through web.config
-                var gpgEmailAddress = context.Raise("p5.security.get-marvin-pgp-key").Get<string>(context);
-                var gpgPassword = context.Raise("p5.security.get-marvin-pgp-key-password").Get<string>(context);
+                var gpgEmailAddress = context.Raise (
+                    "get-config-setting", 
+                    new Node ("", "p5.security.get-marvin-pgp-key"))[0].Get<string> (context);
+                var gpgPassword = context.Raise (
+                    "get-config-setting", 
+                    new Node ("", "p5.security.get-marvin-pgp-key-password"))[0].Get<string> (context);
                 if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
                     try {
                         writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));

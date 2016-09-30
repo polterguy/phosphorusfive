@@ -306,7 +306,9 @@ namespace p5.mime.helpers
                 // No explicit receivers, encrypting message with server key, since caller supplied an [encryption] node
                 var email = "foo@bar.com";
                 var fingerprint = "";
-                var key = _context.Raise ("p5.security.get-marvin-pgp-key").Get<string> (_context);
+                var key = _context.Raise (
+                    "get-config-setting", 
+                    new Node ("", "p5.security.get-marvin-pgp-key")) [0].Get<string> (_context);
                 if (key.IndexOf ("@") == -1)
                     fingerprint = key;
                 else
@@ -328,12 +330,16 @@ namespace p5.mime.helpers
             if (signatureNode.Children.Count (ix => ix.Name == "email" || ix.Name == "fingerprint") == 0) {
 
                 // Using server's private key
-                var key = _context.Raise ("p5.security.get-marvin-pgp-key").Get<string> (_context);
+                var key = _context.Raise (
+                    "get-config-setting", 
+                    new Node ("", "p5.security.get-marvin-pgp-key"))[0].Get<string> (_context);
                 if (key.IndexOf ("@") == -1)
                     fingerprint = key;
                 else
                     email = key;
-                password = _context.Raise ("p5.security.get-marvin-pgp-key-password").Get<string> (_context);
+                password = _context.Raise (
+                    "get-config-setting", 
+                    new Node ("", "p5.security.get-marvin-pgp-key-passsword"))[0].Get<string> (_context);
             } else {
 
                 // Using provided key and password

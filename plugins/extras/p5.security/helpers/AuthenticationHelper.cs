@@ -50,9 +50,6 @@ namespace p5.security.helpers
          */
         public static void Login (ApplicationContext context, Node args)
         {
-            // Checking for a brute force login attack
-            GuardAgainstBruteForce (context);
-
             // Defaulting result of Active Event to unsuccessful
             args.Value = false;
 
@@ -94,8 +91,10 @@ namespace p5.security.helpers
             if (persist) {
 
                 // Caller wants to create persistent cookie to remember username/password
-                HttpCookie cookie = new HttpCookie(_credentialCookieName);
-                cookie.Expires = DateTime.Now.AddDays(context.Raise ("p5.security.get-credential-cookie-days").Get<int> (context));
+                HttpCookie cookie = new HttpCookie (_credentialCookieName);
+                cookie.Expires = DateTime.Now.AddDays (context.Raise (
+                    "get-config-setting", 
+                    new Node ("", "p5.security.get-credential-cookie-days")) [0].Get<int> (context));
                 cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie
 
                 // Notice, we use another fingerprint as password for cookie than what we use for storing cookie in auth file
@@ -584,10 +583,6 @@ namespace p5.security.helpers
          */
         private static void LoginFromCookie (HttpCookie cookie, ApplicationContext context)
         {
-            // Making sure nobody can reach us by brute force, by supplying a new 
-            // cookie in a "brute force cookie login" attempt
-            GuardAgainstBruteForce (context);
-
             // User has persistent cookie associated with client
             var cookieSplits = cookie.Value.Split (' ');
             if (cookieSplits.Length != 2)
@@ -630,27 +625,6 @@ namespace p5.security.helpers
                 context.Raise ("p5.security.get-default-context-username").Get<string> (context), 
                 context.Raise ("p5.security.get-default-context-role").Get<string> (context), 
                 true);
-        }
-
-        /*
-         * Helper to guard against brute force login attempt. Basically denies an IP address to attempt to login without having
-         * to wait a configurable amount of seconds between each attempt
-         */
-        private static void GuardAgainstBruteForce(ApplicationContext context)
-        {
-            // Finding delta from last login attempt and "now"
-            TimeSpan span = DateTime.Now - LastLoginAttemptForIP;
-
-            // Verifying delta is lower than threshold accepted
-            int seconds = context.Raise ("p5.security.get-login-cooloff-seconds").Get<int> (context);
-            if (span.TotalSeconds < seconds)
-                throw new SecurityException (
-                    string.Format (
-                        "Your IP address is trying unsuccessfully to login too frequently, please wait '{0}' seconds before trying again.", 
-                        seconds));
-
-            // Making sure we set the last login attempt to now!
-            LastLoginAttemptForIP = DateTime.Now;
         }
 
         /*

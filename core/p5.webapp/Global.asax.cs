@@ -31,7 +31,7 @@ namespace p5
              * Loads up all plugins assemblies, raises the [p5.core.application-start] Active Event, and
              * executes the "application-startup-file" declared in web.config, if any
              */
-            protected void Application_Start (Object sender, EventArgs e)
+            protected void Application_Start (object sender, EventArgs e)
             {
                 // Storing application base path for later usage, making sure we normalize path across operating systems
                 _applicationBasePath = Server.MapPath ("~");
@@ -86,43 +86,7 @@ namespace p5
                 }
             }
 
-            #region [ -- Common helper Active Event sinks to retrieve global settings -- ]
-
-            /// <summary>
-            ///     Returns the TimeSpan for how old a Web Service invocation can be before it is considered to be "out of date"
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-web-service-invocation-fresh-time")]
-            public static void p5_security_get_web_service_invocation_fresh_time (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = Utilities.Convert<TimeSpan> (context, configuration.WebServiceInvocationsFreshTime);
-            }
-
-            /// <summary>
-            ///     Returns the name of the server PGP key to use for encryption operations
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key")]
-            private static void p5_security_get_marvin_pgp_key (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.MarvinPgpKey;
-            }
-
-            /// <summary>
-            ///     Returns the password for the server PGP key to use for encryption operations
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key-password")]
-            private static void p5_security_get_marvin_pgp_key_password (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.MarvinPgpKeyPassword;
-            }
+            #region [ -- Common helper Active Event sinks to retrieve system's configuration settings -- ]
 
             /// <summary>
             ///     Returns the Application base folder
@@ -148,18 +112,6 @@ namespace p5
             }
 
             /// <summary>
-            ///     Returns the number of days before persistent credential cookie expires
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-credential-cookie-days")]
-            private static void p5_security_get_credential_cookie_days (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.PersistCredentialCookieDays;
-            }
-
-            /// <summary>
             ///     Returns the default role used for the ApplicationContext Ticket
             /// </summary>
             /// <param name="context">Application Context</param>
@@ -181,138 +133,6 @@ namespace p5
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.DefaultContextUsername;
-            }
-
-            /// <summary>
-            ///     Returns the number of "cool off" seconds that must pass between unsuccessful login attempts
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-login-cooloff-seconds")]
-            private static void p5_security_get_login_cooloff_seconds (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.LoginCoolOffSeconds;
-            }
-
-            /// <summary>
-            ///     Returns the default SMTP server URL
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-server")]
-            private static void p5_mail_get_smtp_server (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.SmtpServer;
-            }
-
-            /// <summary>
-            ///     Returns the default SMTP server port
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-port")]
-            private static void p5_mail_get_smtp_port (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.SmtpPort;
-            }
-
-            /// <summary>
-            ///     Returns the default SMTP use SSL property
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-use-ssl")]
-            private static void p5_mail_get_smtp_use_ssl (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.SmtpUseSsl;
-            }
-
-            /// <summary>
-            ///     Returns the default SMTP username
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-username")]
-            private static void p5_mail_get_smtp_username (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.SmtpUsername;
-            }
-
-            /// <summary>
-            ///     Returns the default SMTP username
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-smtp-password")]
-            private static void p5_mail_get_smtp_password (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.SmtpPassword;
-            }
-
-            /// <summary>
-            ///     Returns the default POP3 server URL
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-server")]
-            private static void p5_mail_get_pop3_server (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.Pop3Server;
-            }
-
-            /// <summary>
-            ///     Returns the default POP3 server port
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-port")]
-            private static void p5_mail_get_pop3_port (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.Pop3Port;
-            }
-
-            /// <summary>
-            ///     Returns the default POP3 use SSL property
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-use-ssl")]
-            private static void p5_mail_get_pop3_use_ssl (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.Pop3UseSsl;
-            }
-
-            /// <summary>
-            ///     Returns the default POP3 username
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-username")]
-            private static void p5_mail_get_pop3_username (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.Pop3Username;
-            }
-
-            /// <summary>
-            ///     Returns the default POP3 username
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.mail.get-pop3-password")]
-            private static void p5_mail_get_pop3_password (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.Pop3Password;
             }
 
             #endregion

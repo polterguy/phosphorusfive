@@ -90,6 +90,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.active-event-sample", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.active-event-sample-plugin", "samples\p5.active-event-sample-plugin\p5.active-event-sample-plugin.csproj", "{8EB5FDEA-D073-4147-AE65-397A01B463AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.config", "plugins\p5.config\p5.config.csproj", "{F27D30F1-86C0-4B44-8108-B3049BC94CEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -277,6 +279,12 @@ Global
 		{8EB5FDEA-D073-4147-AE65-397A01B463AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8EB5FDEA-D073-4147-AE65-397A01B463AA}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
 		{8EB5FDEA-D073-4147-AE65-397A01B463AA}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{F27D30F1-86C0-4B44-8108-B3049BC94CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F27D30F1-86C0-4B44-8108-B3049BC94CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F27D30F1-86C0-4B44-8108-B3049BC94CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F27D30F1-86C0-4B44-8108-B3049BC94CEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F27D30F1-86C0-4B44-8108-B3049BC94CEC}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{F27D30F1-86C0-4B44-8108-B3049BC94CEC}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -313,6 +321,7 @@ Global
 		{8EB5FDEA-D073-4147-AE65-376A03B463DA} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 		{6C5F05C3-5480-42D0-8FA3-00B8749EA45A} = {D324EDB9-E389-4183-B7E9-B4C4D281C238}
 		{8EB5FDEA-D073-4147-AE65-397A01B463AA} = {D324EDB9-E389-4183-B7E9-B4C4D281C238}
+		{F27D30F1-86C0-4B44-8108-B3049BC94CEC} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

@@ -1,4 +1,4 @@
-Parsing MIME messages in Phosphorus Five
+Parsing and creating MIME messages in Phosphorus Five
 ===============
 
 MIME stands for "Multi-purpose Internet Message Exchange", and is usually associated with email. However, in Phosphorus Five, there exists

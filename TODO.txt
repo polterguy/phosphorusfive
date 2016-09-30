@@ -25,7 +25,9 @@ TODO before release
 
 * Simplify p5.mail and p5.mime
 
+* Finish dox for p5.mime, p5.strings, and all other projects
 
+* Create general "p5.config" project, to retrieve settings, instead of using global.asax for this
 
 
 

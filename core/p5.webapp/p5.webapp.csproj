@@ -225,6 +225,10 @@
       <Project>{0f68bfa7-1cf7-4737-9058-ced4a9ed3427}</Project>
       <Name>p5.web</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.config\p5.config.csproj">
+      <Project>{f27d30f1-86c0-4b44-8108-b3049bc94cec}</Project>
+      <Name>p5.config</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.events\p5.events.csproj">
       <Project>{8eb5fdea-d073-4147-ae65-397a01b463df}</Project>
       <Name>p5.events</Name>
