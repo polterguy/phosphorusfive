@@ -77,7 +77,7 @@ namespace p5.io.zip
             var destFolder = e.Args.GetExChildValue<string> ("to", context);
 
             // Verifying user is authorized to writing to destination folder
-            context.Raise ("p5.io.authorize.modify-folder", new Node ("", destFolder).Add ("args", e.Args));
+            context.Raise (".p5.io.authorize.modify-folder", new Node ("", destFolder).Add ("args", e.Args));
             return destFolder;
         }
 
@@ -93,7 +93,7 @@ namespace p5.io.zip
             string password)
         {
             // Verifying user is allowed to read from zipfile given
-            context.Raise ("p5.io.authorize.read-file", new Node ("", zipFilePath).Add ("args", args));
+            context.Raise (".p5.io.authorize.read-file", new Node ("", zipFilePath).Add ("args", args));
 
             // Creating ZipFile, wrapping a file stream, denoting the path to physical file on disc
             using (var zipFile = new ZipFile (File.OpenRead (rootFolder + zipFilePath)) {
@@ -148,7 +148,7 @@ namespace p5.io.zip
                 curPath += idxSplit + "/";
 
                 // Verifies user is authorized to writing to currently iterated destination folder
-                context.Raise ("p5.io.authorize.modify-folder", new Node ("", curPath).Add ("args", args));
+                context.Raise (".p5.io.authorize.modify-folder", new Node ("", curPath).Add ("args", args));
 
                 // Verifies folder exist, and if not, creates it
                 if (!Directory.Exists (rootFolder + curPath)) {

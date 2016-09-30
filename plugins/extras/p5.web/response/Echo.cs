@@ -63,7 +63,7 @@ namespace p5.web.ui.response {
             var fileName = XUtil.Single<string> (context, e.Args);
 
             // Verifying user is authorized to reading from currently iterated file
-            context.Raise ("p5.io.authorize.read-file", new Node ("", fileName).Add ("args", e.Args));
+            context.Raise (".p5.io.authorize.read-file", new Node ("", fileName).Add ("args", e.Args));
 
             // Rendering file back to client
             using (Stream fileStream = File.OpenRead (rootFolder + fileName)) {

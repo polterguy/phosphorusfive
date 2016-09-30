@@ -25,8 +25,8 @@ namespace p5.mail
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mail.smtp.send-email")]
-        public static void p5_mail_smtp_send_email (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.smtp.send-email")]
+        public static void p5_smtp_send_email (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
             if (e.Args.Children.Count (ix => ix.Name == "envelope") == 0)
@@ -36,7 +36,7 @@ namespace p5.mail
                     context);
 
             // Making sure we remove arguments supplied
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Creating our SMTP client
                 using (var client = new SmtpClient ()) {

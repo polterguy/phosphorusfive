@@ -137,7 +137,7 @@ p5.mime.create
 Notice how the above code, would by default create a "Content-Disposition" MIME header for you, putting in the original filename into its
 "filename" argument, and making sure the entity is marked as an "attachment".
 
-Some of the Active Events in P5, such as the *[p5.mail.smtp.send-email]* event, from [p5.mail](/plugins/extras/p5.mail/), will actually directly
+Some of the Active Events in P5, such as the *[p5.smtp.send-email]* event, from [p5.mail](/plugins/extras/p5.mail/), will actually directly
 serialize the file to the socket, and never load the (whole) file into memory, if you use the above *[filename]* argument, instead of loading
 the file into memory first. Which of course, means saving significant amounts of resources for your P5 server.
 

@@ -6,20 +6,20 @@ called [p5.mime](/plugins/extras/p5.mime/), to build and parse your MIME message
 
 It contains two Active Events.
 
-* [p5.mail.smtp.send-email]
-* [p5.mail.pop3.get-emails]
+* [p5.smtp.send-email]
+* [p5.pop3.get-emails]
 
 There is no IMAP support in P5 at the moment.
 
 ## Sending an email using SMTP
 
-To send an email, you have to use the *[p5.mail.smtp.send-email]* Active Event. This event allowss you to send rich MIME messages, with attachments,
+To send an email, you have to use the *[p5.smtp.send-email]* Active Event. This event allowss you to send rich MIME messages, with attachments,
 and multiple entities. Below is some example code, assuming you've got a GMail account. Change the *[username]*, *[password]*, *[Sender]*
 and *[To]* parts, if you wish to test the code for yourself. Hint, with GMail's SMTP servers, you can send yourself an email. Just make sure you've
 got your own email address as both the *[Sender]* and the *[To]* argument.
 
 ```
-p5.mail.smtp.send-email
+p5.smtp.send-email
   server:smtp.gmail.com
   port:465
   ssl:true
@@ -48,16 +48,16 @@ are fetched from your web.config, are listed below.
 * [password]
 
 By not including these arguments directly, it is also easier to change your server settings later, without having to modify multiple invocations 
-to [p5.mail.smtp.send-email], all around your code. The rest of these examples, will assume you've setup your web.config such that it contains
+to [p5.smtp.send-email], all around your code. The rest of these examples, will assume you've setup your web.config such that it contains
 the above mentioned settings.
 
 ### Sending multiple emails in one go
 
-With *[p5.mail.smtp.send-email]*, you can send multiple emails at the same time. Every *[envelope]* argument you supply, becomes one single email.
+With *[p5.smtp.send-email]*, you can send multiple emails at the same time. Every *[envelope]* argument you supply, becomes one single email.
 Below is some piece of code, sending two email in on go.
 
 ```
-p5.mail.smtp.send-email
+p5.smtp.send-email
   envelope
     Subject:Hello from Phosphorus Five
     Sender
@@ -81,7 +81,7 @@ p5.mail.smtp.send-email
 As before, make sure you modify the *[To]* and *[Sender]* arguments, before you evaluated the above code.
 
 Each email you send, can contain its own separate attachments, content, recipients, sender arguments, and so on. Think of them as separated "letters",
-and your *[p5.mail.smtp.send-email]* as your "post office mailbox".
+and your *[p5.smtp.send-email]* as your "post office mailbox".
 
 ### SMTP header arguments
 
@@ -123,13 +123,13 @@ a multipart, containing multiple child MIME entities.
 
 ## Retrieving emails with POP3
 
-The *[p5.mail.pop3.get-emails]* Active Event, allows you to retrieve emails from a POP3 server. It has the same types of "connection arguments" as 
-the *[p5.mail.smtp.send-email]* Active Event, which also can be stored in your web.config file, for simplicity.
+The *[p5.pop3.get-emails]* Active Event, allows you to retrieve emails from a POP3 server. It has the same types of "connection arguments" as 
+the *[p5.smtp.send-email]* Active Event, which also can be stored in your web.config file, for simplicity.
 
 Assuming you've setup GMail to be able to handle incoming POP3 requests, you can use the following code to retrieve 5 messages from GMail.
 
 ```
-p5.mail.pop3.get-emails
+p5.pop3.get-emails
   server:pop.gmail.com
   port:995
   ssl:true
@@ -187,7 +187,7 @@ before the next email is fetched, resulting in not retrieving every email at onc
 An example is given below.
 
 ```
-p5.mail.pop3.get-emails
+p5.pop3.get-emails
   server:pop.gmail.com
   port:995
   ssl:true
@@ -203,7 +203,7 @@ your *[functor]*.
 
 ### How parsing of your POP3 MIME messages happens
 
-The *[p5.mail.pop3.get-emails]* Active Event, relies upon [p5.mime](/plugins/extras/p5.mime/), just like its counterpart SMTP Active Event.
+The *[p5.pop3.get-emails]* Active Event, relies upon [p5.mime](/plugins/extras/p5.mime/), just like its counterpart SMTP Active Event.
 Among other things, you can supply an *[attachment-folder]* argument, which will be transferred into the MIME parser Active Events, 
 which declares a folder on disc, where you want to automatically save attachments. This will significantly reduce memory consumption, while
 parsing your MIME/email messages, since no attachments will be loaded into memory, but directly saved to disc.

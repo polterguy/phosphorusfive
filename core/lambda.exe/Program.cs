@@ -68,7 +68,7 @@ namespace lambda_exe
                     var context = Loader.Instance.CreateApplicationContext ();
 
                     // Raising our application startup Active Event, in case there are modules loaded depending upon it
-                    context.Raise ("p5.core.application-start", new Node ());
+                    context.Raise (".p5.core.application-start", new Node ());
 
                     // Checking if we're in "immediate mode" (which means user can type in Hyperlisp into the console to be evaluated)
                     if (immediate) {

@@ -8,10 +8,10 @@ or folder(s).
 
 It contains 4 Active Events.
 
-* [p5.io.authorize.read-file], checking if the ApplicationContext's "Ticket" is authorized to reading/loading a file
-* [p5.io.authorize.modify-file], checking if the "Ticket" is authorized to modify/delete/overwrite a file
-* [p5.io.authorize.read-folder], checking if the "Ticket" is authorized to reading/loading data from a folder
-* [p5.io.authorize.modify-folder], checking if the "Ticket" is authorized to modify/delete a folder's content
+* [.p5.io.authorize.read-file], checking if the ApplicationContext's "Ticket" is authorized to reading/loading a file
+* [.p5.io.authorize.modify-file], checking if the "Ticket" is authorized to modify/delete/overwrite a file
+* [.p5.io.authorize.read-folder], checking if the "Ticket" is authorized to reading/loading data from a folder
+* [.p5.io.authorize.modify-folder], checking if the "Ticket" is authorized to modify/delete a folder's content
 
 All Active Events above, requires as their argument, the file/folder name as the value of the e.Args node (main node of invocation). In addition, since these
 Active Events throws exception if the user ("Ticket") is not legally allowed to access a folder, all Active Events takes the invocation node by reference,

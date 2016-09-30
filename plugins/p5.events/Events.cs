@@ -82,7 +82,7 @@ namespace p5.events
                 ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context);
 
                 // Getting all core Active Events
-                ListActiveEvents (context.ActiveEvents, e.Args, filter, "static", context);
+                ListActiveEvents (context.ActiveEvents.Where (ix => !ix.StartsWith ("_") && !ix.StartsWith (".")), e.Args, filter, "static", context);
             }
         }
 

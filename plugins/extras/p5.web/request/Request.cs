@@ -71,7 +71,7 @@ namespace p5.web.ui.request {
                 filename = "users/" + context.Ticket.Username + filename.Substring (1);
 
             // Verifying user is authorized writing to the file
-            context.Raise ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
+            context.Raise (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
 
             // Retrieving root node of web application
             var rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);

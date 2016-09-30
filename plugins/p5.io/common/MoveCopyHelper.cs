@@ -107,7 +107,7 @@ namespace p5.io.common
                 destinationFile = functor2 (destinationFile);
 
                 // Verifying user is allowed to save to updated destination filename
-                context.Raise ("p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
+                context.Raise (".p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
             }
 
             functor (rootFolder, sourceFile, destinationFile);

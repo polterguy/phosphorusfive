@@ -42,7 +42,7 @@ namespace p5.io.zip.helpers
             }
 
             // Verifying user is authorized to writing to destination
-            context.Raise ("p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
+            context.Raise (".p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
 
             // Returning possibly new path to caller
             return destinationFile;
@@ -62,11 +62,11 @@ namespace p5.io.zip.helpers
             if (Directory.Exists (rootFolder + sourceFileFolder)) {
 
                 // Verifies user is authorised to reading folder
-                context.Raise ("p5.io.authorize.read-folder", new Node ("", sourceFileFolder).Add ("args", args));
+                context.Raise (".p5.io.authorize.read-folder", new Node ("", sourceFileFolder).Add ("args", args));
             } else {
 
                 // Verifies user is authorised to reading file
-                context.Raise ("p5.io.authorize.read-file", new Node ("", sourceFileFolder).Add ("args", args));
+                context.Raise (".p5.io.authorize.read-file", new Node ("", sourceFileFolder).Add ("args", args));
             }
 
             // Checking that destination is not underneath source

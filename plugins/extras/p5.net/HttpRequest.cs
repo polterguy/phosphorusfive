@@ -255,7 +255,7 @@ namespace p5.net
             var filename = XUtil.Single<string> (context, args ["filename"]);
 
             // Making sure user is authorized to read the file request should send
-            context.Raise ("p5.io.authorize.read-file", new Node ("", filename).Add ("args", args));
+            context.Raise (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", args));
 
             // Opening request stream, and render file as content of request
             using (Stream stream = request.GetRequestStream ()) {
@@ -443,7 +443,7 @@ namespace p5.net
             var filename = XUtil.Single<string> (context, args ["filename"]);
 
             // Making sure user is authorized to write/overwrite the file response should be saved to
-            context.Raise ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));
+            context.Raise (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));
 
             // Retrieving HTTP response
             HttpWebResponse response = (HttpWebResponse)request.GetResponseNoException ();

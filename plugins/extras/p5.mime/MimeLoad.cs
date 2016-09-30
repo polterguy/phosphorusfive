@@ -33,7 +33,7 @@ namespace p5.mime
                 foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.Raise ("p5.io.authorize.read-file", new Node ("", idxFilename).Add ("args", e.Args));
+                    context.Raise (".p5.io.authorize.read-file", new Node ("", idxFilename).Add ("args", e.Args));
 
                     // Loading, processing and returning currently iterated message
                     var parser = new helpers.MimeParser (

@@ -28,7 +28,7 @@ namespace p5
             private static string _applicationBasePath;
 
             /*
-             * Loads up all plugins assemblies, raises the [p5.core.application-start] Active Event, and
+             * Loads up all plugins assemblies, raises the [.p5.core.application-start] Active Event, and
              * executes the "application-startup-file" declared in web.config, if any
              */
             protected void Application_Start (object sender, EventArgs e)
@@ -59,7 +59,7 @@ namespace p5
                 var context = Loader.Instance.CreateApplicationContext (new ApplicationContext.ContextTicket("root", "root", false));
 
                 // Raising the application start Active Event, making sure we do it with a "root" Context Ticket
-                context.Raise ("p5.core.application-start");
+                context.Raise (".p5.core.application-start");
 
                 // Execute our "startup file", if there is one defined
                 var appStartupFiles = context.Raise (

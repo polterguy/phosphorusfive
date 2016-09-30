@@ -34,7 +34,7 @@ namespace p5.mime
                 var filename = XUtil.Single<string> (context, e.Args, true);
 
                 // Verifying user is authorized to saving to the specified file
-                context.Raise ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
+                context.Raise (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
 
                 // Retrieving root MIME entity from args
                 var mimeNode = e.Args [0];

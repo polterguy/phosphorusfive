@@ -32,8 +32,8 @@ namespace p5.io.folder
             MoveCopyHelper.CopyMoveFileObject (context, e, delegate (string rootFolder, string source, string destination) {
 
                 // Verifying user is authorized to both modify source, and modify destination
-                context.Raise ("p5.io.authorize.read-folder", new Node ("", source).Add ("args", e.Args));
-                context.Raise ("p5.io.authorize.modify-folder", new Node ("", destination).Add ("args", e.Args));
+                context.Raise (".p5.io.authorize.read-folder", new Node ("", source).Add ("args", e.Args));
+                context.Raise (".p5.io.authorize.modify-folder", new Node ("", destination).Add ("args", e.Args));
 
                 // Actually moving (or renaming) folder
                 CopyFolder (context, e.Args, GetSourceFileObjects (rootFolder + source, ""), rootFolder + source, rootFolder + destination);

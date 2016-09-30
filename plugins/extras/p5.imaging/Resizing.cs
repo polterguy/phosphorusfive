@@ -34,7 +34,7 @@ namespace p5.imaging
 
                 // Verifying user is authorized to reading file
                 string sourcePath = e.Args.GetExValue<string> (context);
-                context.Raise ("p5.io.authorize.read-file", new Node ("", sourcePath).Add ("args", e.Args));
+                context.Raise (".p5.io.authorize.read-file", new Node ("", sourcePath).Add ("args", e.Args));
 
                 // Getting root folder, and opening file
                 var rootFolder = Helpers.GetBaseFolder (context);
@@ -94,8 +94,8 @@ namespace p5.imaging
                         context);
 
                 // Verifies user is authorised to reading source file, and saving to destination file
-                context.Raise ("p5.io.authorize.read-file", new Node ("", sourcePath).Add ("args", e.Args));
-                context.Raise ("p5.io.authorize.modify-file", new Node ("", destPath).Add ("args", e.Args));
+                context.Raise (".p5.io.authorize.read-file", new Node ("", sourcePath).Add ("args", e.Args));
+                context.Raise (".p5.io.authorize.modify-file", new Node ("", destPath).Add ("args", e.Args));
 
                 var srcRc = e.Args ["src-rect"] ?? new Node ();
 

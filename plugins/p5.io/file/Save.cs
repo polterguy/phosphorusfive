@@ -100,7 +100,7 @@ namespace p5.io.file
             List<byte> content)
         {
             // Verifying user is allowed to save to file
-            context.Raise ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", args));
+            context.Raise (".p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", args));
 
             // Saving file
             using (FileStream stream = File.Create (rootFolder + fileName)) {

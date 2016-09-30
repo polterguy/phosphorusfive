@@ -1277,10 +1277,10 @@ Please notice that this feature requires that you've setup your web.config with 
                           {_email}:x:/*/email?value
 
                           /*
-                           * Forward evaluates all expressions inside of [p5.mail.smtp.send-email]
+                           * Forward evaluates all expressions inside of [p5.smtp.send-email]
                            */
-                          eval-x:x:/../*/p5.mail.smtp.send-email/**
-                          p5.mail.smtp.send-email
+                          eval-x:x:/../*/p5.smtp.send-email/**
+                          p5.smtp.send-email
                             envelope
                               Subject:x:/../*/subject?value
                               To

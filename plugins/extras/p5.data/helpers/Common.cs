@@ -24,8 +24,8 @@ namespace p5.data.helpers
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">E</param>
-        [ActiveEvent (Name = "p5.core.application-start")]
-        private static void p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = ".p5.core.application-start")]
+        private static void _p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
         {
             // Acquiring lock on database
             lock (Common.Lock) {

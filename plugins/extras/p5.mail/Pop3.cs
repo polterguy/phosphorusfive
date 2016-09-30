@@ -41,8 +41,8 @@ namespace p5.mail
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mail.pop3.get-emails")]
-        public static void p5_mail_pop3_get_emails (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.pop3.get-emails")]
+        public static void p5_pop3_get_emails (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we remove arguments supplied
             using (new Utilities.ArgsRemover (e.Args, true)) {

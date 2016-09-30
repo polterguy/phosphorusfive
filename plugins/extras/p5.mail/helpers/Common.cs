@@ -27,8 +27,9 @@ namespace p5.mail.helpers
         ///     Connects the given server using credentials found in args
         /// </summary>
         /// <param name="context">Application Context</param>
-        /// <param name="server">Server to connect</param>
+        /// <param name="client">MailService type</param>
         /// <param name="args">Active Event Arguments</param>
+        /// <param name="serverType">pop3 or smtp</param>
         public static void ConnectServer (
             ApplicationContext context, 
             MailService client, 
