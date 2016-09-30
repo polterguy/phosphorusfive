@@ -90,3 +90,11 @@ reference-argument
   if:x:/-?value
     !=:very-much-success
     throw:@"Assert error, [eval] misbehaved"
+
+/*
+ * Tests that [eval] will not evaluate a node starting with "."
+ */
+no-eval-dot
+  .p5.core.application-folder
+  if:x:/-?value
+    throw:Eval evaluated an Active Event starting with a .

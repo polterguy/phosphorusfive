@@ -40,3 +40,36 @@ delete-event
     or:x:/../*/test.to-delete/[1,2]?value
     throw:@"Assert error, event could not be deleted"
 
+
+/*
+ * Tests that events cannot be created with a "." as the start of their name
+ */
+create-dot-event-throw
+  _success:bool:false
+  try
+    create-event:.foo
+      foo
+  catch
+    set:x:/../*/_success?value
+      src:boool:true
+  if:x:/../*/_success?value
+    not
+    throw:Could create protected event
+
+
+/*
+ * Tests that events cannot be created with a "." as the start of their name
+ */
+create-underscore-event-throw
+  _success:bool:false
+  try
+    create-event:_foo
+      foo
+  catch
+    set:x:/../*/_success?value
+      src:boool:true
+  if:x:/../*/_success?value
+    not
+    throw:Could create protected event
+  
+  
