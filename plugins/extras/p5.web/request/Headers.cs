@@ -22,7 +22,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "get-http-header")]
         public static void get_http_header (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.Headers [key]);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.Headers [key], true);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "list-http-headers")]
         public static void list_http_headers (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Headers.AllKeys);
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Headers.AllKeys, true);
         }
     }
 }

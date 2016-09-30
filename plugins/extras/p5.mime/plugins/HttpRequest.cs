@@ -75,7 +75,7 @@ namespace p5.mime.plugins
                 createMimeNode.AddRange (args.Children);
 
                 // Returning MimeEntity to caller
-                return context.Raise ("p5.mime.create-native", createMimeNode).Get<MimeEntity> (context);
+                return context.Raise (".p5.mime.create-native", createMimeNode).Get<MimeEntity> (context);
             } finally {
 
                 // Closing and disposing all streams created during creation of MimeEntity
@@ -101,7 +101,7 @@ namespace p5.mime.plugins
             Node attachmentFolder)
         {
             // Figuring out Content-Type HTTP header to use, and creating Node to use for HTTP request invocation Active Event
-            var activeEventName = string.Format ("p5.net.http-{0}-native", method);
+            var activeEventName = string.Format (".p5.net.http-{0}-native", method);
             var requestNode = new Node (activeEventName, args.Value);
 
             // Streaming MimeEntity to memory, if we have one, before invoking Active Event that creates HTTP request
@@ -163,7 +163,7 @@ namespace p5.mime.plugins
                 try {
                     result.Add (decryptionKeys);
                     result.Add (attachmentFolder);
-                    context.Raise ("p5.mime.parse-native", result);
+                    context.Raise (".p5.mime.parse-native", result);
                 } finally {
                     result.Value = oldValue;
                 }

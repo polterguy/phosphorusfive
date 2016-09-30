@@ -24,6 +24,7 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-cache-value")]
+        [ActiveEvent (Name = ".set-cache-value")]
         public static void set_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving for how long the value should be set in cache, before removed
@@ -45,7 +46,7 @@ namespace p5.web.storage
                         DateTime.Now.AddMinutes (minutes),
                         System.Web.Caching.Cache.NoSlidingExpiration);
                 }
-            }, new string[] { "minutes" }.ToList ());
+            }, e.Name.StartsWith ("."), new string[] { "minutes" }.ToList ());
         }
 
         /// <summary>
@@ -54,9 +55,10 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-cache-value")]
+        [ActiveEvent (Name = ".get-cache-value")]
         public static void get_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Cache [key]);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Cache [key], e.Name.StartsWith ("."));
         }
 
         /// <summary>
@@ -65,13 +67,14 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-cache-keys")]
+        [ActiveEvent (Name = ".list-cache-keys")]
         public static void list_cache_keys (ApplicationContext context, ActiveEventArgs e)
         {
             var retVal = new List<string> ();
             foreach (DictionaryEntry idx in HttpContext.Current.Cache) {
                 retVal.Add (idx.Key.ToString ());
             }
-            XUtil.ListCollection (context, e.Args, retVal);
+            XUtil.ListCollection (context, e.Args, retVal, e.Name.StartsWith ("."));
         }
     }
 }

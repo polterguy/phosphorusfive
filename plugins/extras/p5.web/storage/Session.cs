@@ -20,6 +20,7 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-session-value")]
+        [ActiveEvent (Name = ".set-session-value")]
         public static void set_session_value (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
@@ -32,7 +33,7 @@ namespace p5.web.storage
                     // Setting or updating
                     HttpContext.Current.Session[key] = value;
                 }
-            });
+            }, e.Name.StartsWith ("."));
         }
 
         /// <summary>
@@ -41,9 +42,10 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-session-value")]
+        [ActiveEvent (Name = ".get-session-value")]
         public static void get_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Session [key]);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Session [key], e.Name.StartsWith ("."));
         }
 
         /// <summary>
@@ -52,9 +54,10 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-session-keys")]
+        [ActiveEvent (Name = ".list-session-keys")]
         public static void list_session_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Session.Keys);
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Session.Keys, e.Name.StartsWith ("."));
         }
     }
 }

@@ -6,28 +6,22 @@ TODO before release
 
 * [file-set-read-only] event
 
-* Fix the usage of "no brute attack login" in login logic
-
 * Clean up the p5.core Utilities class!
 
 * Fix bugs created during refactoring in "Controls" CMS and "Files"
-
-* Add link to YouTube channel on main README.md file
-
-* Remove the [get-event] Active Event, and implement some "system42" dynamic event, that does the same, through "event lambda injection code"
 
 * Investigate the p5.threading, and find out why [fork] is not the root node, when using a [wait] invocation. Which MIGHT be the corrrect way to
   do things, but make sure!!
 
 * Also investigate why a "shared reference node" won't have its reference node updated for multiple [fork] inside of a single [wait]
 
-* Investigate if we should prefix all "native" Active Events, such as [p5.mime.create-native], with "_", to avoid calling them from p5.lambda?
-
 * Simplify p5.mail and p5.mime
 
 * Finish dox for p5.mime, p5.strings, and all other projects
 
-* Create general "p5.config" project, to retrieve settings, instead of using global.asax for this
+* Consider moving "PGP key" Active Events into p5.crypto ...?
+
+* Check if [create-user], [edit-user], etc - Active Events should not check if Ticket is "root" account ...?
 
 
 

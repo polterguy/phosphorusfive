@@ -22,7 +22,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "get-http-param")]
         public static void get_http_param (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.Params [key]);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.Params [key], true);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "list-http-params")]
         public static void list_http_params (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Params.AllKeys);
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Params.AllKeys, true);
         }
     }
 }

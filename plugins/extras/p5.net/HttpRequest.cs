@@ -60,10 +60,10 @@ namespace p5.net
         /// <summary>
         ///     Creates a new HTTP REST request of specified type for native callers, wanting to do their own rendering
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-get-native")]
-        [ActiveEvent (Name = "p5.net.http-post-native")]
-        [ActiveEvent (Name = "p5.net.http-put-native")]
-        public static void p5_net_http_request_native (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = ".p5.net.http-get-native")]
+        [ActiveEvent (Name = ".p5.net.http-post-native")]
+        [ActiveEvent (Name = ".p5.net.http-put-native")]
+        public static void _p5_net_http_request_native (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderRequestNative, RenderResponseNative);
         }

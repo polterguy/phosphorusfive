@@ -23,6 +23,7 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-global-value")]
+        [ActiveEvent (Name = ".set-global-value")]
         public static void set_global_value (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
@@ -35,7 +36,7 @@ namespace p5.web.storage
                     // Setting or updating
                     HttpContext.Current.Application[key] = value;
                 }
-            });
+            }, e.Name.StartsWith ("."));
         }
 
         /// <summary>
@@ -44,9 +45,10 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-global-value")]
+        [ActiveEvent (Name = ".get-global-value")]
         public static void get_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Application [key]);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Application [key], e.Name.StartsWith ("."));
         }
 
         /// <summary>
@@ -55,9 +57,10 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-global-keys")]
+        [ActiveEvent (Name = ".list-global-keys")]
         public static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Application.AllKeys);
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Application.AllKeys, e.Name.StartsWith ("."));
         }
     }
 }

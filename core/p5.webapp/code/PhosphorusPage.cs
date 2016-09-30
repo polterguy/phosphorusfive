@@ -68,6 +68,7 @@ namespace p5.webapp.code
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-page-value")]
+        [ActiveEvent (Name = ".set-page-value")]
         public void set_page_value (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
@@ -80,7 +81,7 @@ namespace p5.webapp.code
                     // Setting or updating
                     ViewState[key] = value;
                 }
-            });
+            }, e.Name.StartsWith ("."));
         }
 
         /// <summary>
@@ -89,9 +90,10 @@ namespace p5.webapp.code
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-page-value")]
+        [ActiveEvent (Name = ".get-page-value")]
         public void get_page_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => ViewState [key]);
+            XUtil.GetCollection (context, e.Args, key => ViewState [key], e.Name.StartsWith ("."));
         }
 
         /// <summary>
@@ -100,9 +102,10 @@ namespace p5.webapp.code
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-page-keys")]
+        [ActiveEvent (Name = ".list-page-keys")]
         public void list_page_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, ViewState.Keys);
+            XUtil.ListCollection (context, e.Args, ViewState.Keys, e.Name.StartsWith ("."));
         }
 
         #endregion

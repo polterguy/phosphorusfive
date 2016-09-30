@@ -868,21 +868,21 @@ as you see fit.
 
 Below is a complete list of all of these Active Events.
 
-* [set-session-value]
-* [get-session-value]
-* [list-session-keys]
-* [set-global-value]
-* [get-global-value]
-* [list-global-keys]
-* [set-context-value]
-* [get-context-value]
-* [list-context-keys]
-* [set-cache-value]
-* [get-cache-value]
-* [list-cache-keys]
-* [set-cookie-value]
-* [get-cookie-value]
-* [list-cookie-keys]
+* [set-session-value] - Has private (.) alias
+* [get-session-value] - Has private (.) alias
+* [list-session-keys] - Has private (.) alias
+* [set-global-value] - Has private (.) alias
+* [get-global-value] - Has private (.) alias
+* [list-global-keys] - Has private (.) alias
+* [set-context-value] - Has private (.) alias
+* [get-context-value] - Has private (.) alias
+* [list-context-keys] - Has private (.) alias
+* [set-cache-value] - Has private (.) alias
+* [get-cache-value] - Has private (.) alias
+* [list-cache-keys] - Has private (.) alias
+* [set-cookie-value] - Has private (.) alias
+* [get-cookie-value] - Has private (.) alias
+* [list-cookie-keys] - Has private (.) alias
 * [set-http-header]
 * [get-http-header]
 * [list-http-headers]
@@ -892,6 +892,18 @@ Below is a complete list of all of these Active Events.
 Not all of them can be interchanged with each other, since for instance things like HTTP headers, cannot tolerate complete node structures and more
 complex objects, in addition to that storing stuff you'd normally store in your session, obviously does not at all make sense storing in an HTTP
 header. But all of the above events, obeys by the same set of rules, and "API".
+
+Most of the above Active Events also have "native alias versions", which allows you to invoke them with a "." in front of their name. If you do,
+then you are allowed to retrieve, list and modify "protected data", which is really data starting with either an underscore (_) or a period (.).
+
+This ensures that you can store things into these objects, which is only accessible through C#. Which is an additional security feature, for things
+you do not wish some random piece of p5.lambda to access.
+
+Notice, there is also three Active Events defined in the p5.webapp project, which allows you to store "page values" (ViewState) called.
+
+* [set-page-value] - Has private (.) alias
+* [get-page-value] - Has private (.) alias
+* [list-page-keys] - Has private (.) alias
 
 ### Accessing the ASP.NET Session object
 

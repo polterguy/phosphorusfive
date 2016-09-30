@@ -116,7 +116,7 @@ namespace p5.mail
             body.Value = streams;
 
             // Creating MIME message by using [create-native] MIME Active Event
-            message.Body = context.Raise ("p5.mime.create-native", body).Get<MimeEntity> (context);
+            message.Body = context.Raise (".p5.mime.create-native", body).Get<MimeEntity> (context);
 
             // Returning message
             return message;

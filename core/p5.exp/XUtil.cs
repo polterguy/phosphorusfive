@@ -154,6 +154,7 @@ namespace p5.exp
             ApplicationContext context, 
             Node args, 
             SetCollectionDelegate functor, 
+            bool isNative,
             List<string> exclusionArgs = null)
         {
             // Iterating through each destinations, updating with source
@@ -178,7 +179,7 @@ namespace p5.exp
                     var key = Utilities.Convert<string> (context, idxDestination.Value);
 
                     // Making sure collection key is not "hidden" key
-                    if (key.StartsWith ("_"))
+                    if (!isNative && (key.StartsWith ("_") || key.StartsWith (".")))
                         throw new LambdaException ("Caller tried to access a protected collection key named; " + key, args, context);
 
                     // Checking if this is deletion of item, or setting item, before invoking functor callback
@@ -213,13 +214,18 @@ namespace p5.exp
         public static void GetCollection (
             ApplicationContext context, 
             Node args, 
-            GetCollectionDelegate functor)
+            GetCollectionDelegate functor,
+            bool isNative)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (var argsRemover = new Utilities.ArgsRemover (args, true)) {
 
                 // Iterating through each "key"
                 foreach (var idxKey in Iterate<string> (context, args, true)) {
+
+                    // Checking if caller tries to access "protected storage key"
+                    if (!isNative && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
+                        throw new LambdaException ("Tried to access 'protected key' in " + args.Name, args, context);
 
                     // Retrieving object by invoking functor with key
                     var value = functor (idxKey);
@@ -261,7 +267,7 @@ namespace p5.exp
         /// <param name="context"></param>
         /// <param name="node"></param>
         /// <param name="list"></param>
-        public static void ListCollection (ApplicationContext context, Node node, IEnumerable list)
+        public static void ListCollection (ApplicationContext context, Node node, IEnumerable list, bool isNative)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (node, true)) {
@@ -273,7 +279,7 @@ namespace p5.exp
                 foreach (string idxKey in list) {
 
                     // Making sure we do NOT return "protected keys"
-                    if (idxKey.StartsWith ("_"))
+                    if (!isNative && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
                         continue;
 
                     // Returning current key, if it matches our filter, or filter is not given

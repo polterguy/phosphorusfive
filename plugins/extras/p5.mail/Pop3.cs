@@ -124,7 +124,7 @@ namespace p5.mail
                         foreach (var idxNode in args.Children.Where (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys")) {
                             msgNode.Add (idxNode.Clone ());
                         }
-                        context.Raise("p5.mime.parse-native", msgNode);
+                        context.Raise(".p5.mime.parse-native", msgNode);
                     } finally {
                         msgNode.Value = oldValue;
                         msgNode.Children.RemoveAll (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys");

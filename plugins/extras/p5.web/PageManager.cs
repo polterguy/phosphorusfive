@@ -239,7 +239,7 @@ namespace p5.web {
 
                 // Associating lambda event storage with page by creating a "page value"
                 context.Raise(
-                    "set-page-value",
+                    ".set-page-value",
                     new Node("", "_WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
 
                 // Creating storage for widget ajax events
@@ -247,19 +247,19 @@ namespace p5.web {
 
                 // Associating ajax event storage with page by creating a "page value"
                 context.Raise(
-                    "set-page-value",
+                    ".set-page-value",
                     new Node("", "_WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
             } else {
 
                 // Retrieving existing widget lambda event storage
                 WidgetLambdaEventStorage = context.Raise (
-                    "get-page-value",
+                    ".get-page-value",
                     new Node("", "_WidgetLambdaEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
 
                 // Retrieving existing widget ajax event storage
                 WidgetAjaxEventStorage = context.Raise (
-                    "get-page-value",
+                    ".get-page-value",
                     new Node("", "_WidgetAjaxEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
             }

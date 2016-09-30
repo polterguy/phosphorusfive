@@ -199,7 +199,7 @@ namespace p5.core
             }
 
             // Raising "initialize" Application Context Active Event
-            Raise("p5.core.initialize-application-context");
+            Raise(".p5.core.initialize-application-context");
         }
     }
 }

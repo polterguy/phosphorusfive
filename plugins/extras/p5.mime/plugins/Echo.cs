@@ -40,7 +40,7 @@ namespace p5.mime.plugins
 
                     // Creating MIME message
                     e.Args.Value = streams;
-                    var entity = context.Raise ("p5.mime.create-native", e.Args).Get<MimeEntity> (context);
+                    var entity = context.Raise (".p5.mime.create-native", e.Args).Get<MimeEntity> (context);
 
                     // Making sure we render the headers of root MimeEntity to response headers
                     RenderHeaders (entity);

@@ -185,7 +185,7 @@ namespace p5.mime
             var bcSeed = new ThreadedSeedGenerator ().GenerateSeed (128, false);
 
             // Then we retrieve the server password salt
-            string serverPasswordSalt = context.Raise ("p5.security.get-server-salt").Get<string> (context);
+            string serverPasswordSalt = context.Raise (".p5.security.get-server-salt").Get<string> (context);
 
             // Then we retrieve the ticks of server
             string serverSeed = DateTime.Now.Ticks.ToString ();

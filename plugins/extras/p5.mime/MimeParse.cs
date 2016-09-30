@@ -21,8 +21,8 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.parse-native")]
-        private static void p5_mime_parse_native (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = ".p5.mime.parse-native")]
+        private static void _p5_mime_parse_native (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving MimeEntity from caller's arguments
             var entity = e.Args.Get<MimeEntity> (context);

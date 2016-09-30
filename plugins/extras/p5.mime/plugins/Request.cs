@@ -30,7 +30,7 @@ namespace p5.mime
                     ContentType.Parse (HttpContext.Current.Request.ContentType), 
                     HttpContext.Current.Request.InputStream);
                 e.Args.Value = entity;
-                context.Raise ("p5.mime.parse-native", e.Args);
+                context.Raise (".p5.mime.parse-native", e.Args);
             }
         }
     }

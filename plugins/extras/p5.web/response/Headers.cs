@@ -33,7 +33,7 @@ namespace p5.web.ui.response
                     // Setting or updating
                     HttpContext.Current.Response.AddHeader (key, Utilities.Convert<string> (context, value));
                 }
-            });
+            }, true);
         }
     }
 }
