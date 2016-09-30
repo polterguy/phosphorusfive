@@ -55,17 +55,20 @@ namespace p5
                 }
 
                 // Creating our App Context
+                // Notice, the Application_Start's ApplicationContext is evaluated from within the context of "root"
                 var context = Loader.Instance.CreateApplicationContext (new ApplicationContext.ContextTicket("root", "root", false));
 
                 // Raising the application start Active Event, making sure we do it with a "root" Context Ticket
                 context.Raise ("p5.core.application-start");
 
                 // Execute our "startup file", if there is one defined
-                if (!string.IsNullOrEmpty (ConfigurationManager.AppSettings ["application-startup-file"])) {
+                var appStartupFiles = context.Raise (
+                    "get-config-setting",
+                    new Node ("", "p5.webapp.application-startup-file")) [0].Get<string>(context);
+                if (!string.IsNullOrEmpty (appStartupFiles)) {
 
                     // There is an application-startup-file declared in web.config, executing it as a Hyperlisp file
-                    var appStartFilePath = ConfigurationManager.AppSettings ["application-startup-file"];
-                    ExecuteHyperlispFile (context, appStartFilePath);
+                    ExecuteHyperlispFile (context, appStartupFiles);
                 }
             }
 

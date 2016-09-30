@@ -61,7 +61,9 @@ namespace p5.io.authorization.helpers
                         context);
 
                 // Verify all database files are safe
-                if (filename.ToLower ().StartsWith ((ConfigurationManager.AppSettings ["database-path"].Replace ("~", "") ?? "/db/")))
+                if (filename.ToLower ().StartsWith (context.Raise (
+                    "get-config-setting",
+                    new Node ("", "p5.data.path"))[0].Get<string> (context, "~/db/")))
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to read from database file '{1}'", context.Ticket.Username, filename), 
                         stack, 
@@ -164,7 +166,9 @@ namespace p5.io.authorization.helpers
                         context);
 
                 // Verifies nobody but root account can read from database folder
-                if (foldername.StartsWith ((ConfigurationManager.AppSettings ["database-path"].Replace ("~", "") ?? "/db/")))
+                if (foldername.StartsWith (context.Raise (
+                    "get-config-setting",
+                    new Node ("", "p5.data.path"))[0].Get<string> (context, "~/db/")))
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to read from database folder '{1}'", context.Ticket.Username, foldername), 
                         stack, 
@@ -196,7 +200,9 @@ namespace p5.io.authorization.helpers
                     return; // Legal
 
                 // Verifies nobody but root account can write to database folder
-                if (foldername.StartsWith ((ConfigurationManager.AppSettings ["database-path"].Replace ("~", "") ?? "/db/")))
+                if (foldername.StartsWith (context.Raise (
+                    "get-config-setting",
+                    new Node ("", "p5.data.path"))[0].Get<string> (context, "~/db/")))
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to write to database folder '{1}'", context.Ticket.Username, foldername), 
                         stack, 

@@ -68,7 +68,9 @@ namespace p5.data.helpers
                 Database = new Node ();
 
                 // Finding and setting our database root directory
-                _dbFullPath = (ConfigurationManager.AppSettings ["database-path"] ?? "~/db/");
+                _dbFullPath = context.Raise (
+                    "get-config-setting",
+                    new Node ("", "p5.data.path")) [0].Get<string>(context, "~/db/");
                 _dbFullPath = _dbFullPath.Replace ("~", GetRootFolder (context));
 
                 // Checking to see if database directory exist
@@ -139,7 +141,9 @@ namespace p5.data.helpers
         public static Node GetAvailableFileNode (ApplicationContext context, bool forceAppend)
         {
             // Searching through database to see if there are any nodes we can use from before
-            var objectsPerFile = int.Parse (ConfigurationManager.AppSettings ["database-nodes-per-file"] ?? "32");
+            var objectsPerFile = context.Raise (
+                    "get-config-setting",
+                    new Node ("", "p5.data.nodes-per-file"))[0].Get<int> (context, 32);
             if (forceAppend) {
                 if (Database.Children.Count > 0) {
                     if (Database.Children [Database.Children.Count - 1].Children.Count < objectsPerFile)
@@ -250,7 +254,9 @@ namespace p5.data.helpers
         private static string FindAvailableNewFileName (ApplicationContext context)
         {
             // Retrieving maximum number of files for folder
-            var maxFilesPerDirectory = int.Parse (ConfigurationManager.AppSettings ["database-files-per-directory"] ?? "256");
+            var maxFilesPerDirectory = context.Raise (
+                    "get-config-setting",
+                    new Node ("", "p5.data.files-per-folder"))[0].Get<int> (context, 256);
 
             // Retrieving all folders currently in use
             var directoryList = GetFolders (context).ToList ();

@@ -3,7 +3,7 @@ System42, the answer to life, the universe and everything
 
 System42 is an example minimalistic Web Operating System, built on top of 
 Phosphorus Five. If you wish to use Phosphorus Five as a stand alone framework, you
-should delete the entire System42 folder, and modify the "application-startup-file"
+should delete the entire System42 folder, and modify the "p5.webapp.application-startup-file"
 setting in your web.config underneath the p5.webapp folder. This allows you to create web
 apps from scratch, having complete control over every aspect of your systems.
 
