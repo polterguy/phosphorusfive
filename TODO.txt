@@ -4,8 +4,6 @@ TODO before release
 
 * Dox for all projects
 
-* [file-set-read-only] event
-
 * Clean up the p5.core Utilities class!
 
 * Fix bugs created during refactoring in "Controls" CMS and "Files"
@@ -22,6 +20,9 @@ TODO before release
 * Consider moving "PGP key" Active Events into p5.crypto ...?
 
 * Check if [create-user], [edit-user], etc - Active Events should not check if Ticket is "root" account ...?
+
+* Consider allowing the [zip] Active Event work like [save-file], with a relative source, creating multiple archives in one go.
+  Do the same with [unzip]
 
 
 

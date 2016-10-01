@@ -60,16 +60,26 @@ zip:~/temp/startup.zip
   password:foo-bar
 ```
 
-Notice, that it is only the files which are encrypted if you use this feature. This means that the filenames and foldernames inside of your
-zip archive, will still be visible in plain text. But the content of your files, will be protected by AES encryption.
+If you create an encrypted zip archive, then the only way to extract it, is by providing the same *[password]* when invoking *[unzip]*. This makes sure
+nobody can access the files inside of your zip archive, unless they somehow manage to get to the password, or are able to "guess" the password somehow.
+
+Notice, it is only the files themselves which are encrypted if you use this feature. This means that the filenames and foldernames inside of your
+zip archive, will still be visible in plain text. The content of your files, will be protected by AES encryption though. Have this in mind, as sometimes
+providing "meta data", such as filenames and folder names, to an adversary, is almost equally dangerous as providing the files' content.
 
 If you wish to further hide, also the file names and folder names, you must either double-zip your archive, or alternatively use PGP cryptography,
 using e.g. [p5.mime](/plugins/extras/p5.mime/), which actually also does a good job in reducing the size of files.
 
 p5.io.zip is internally using [SharpZipLib](https://icsharpcode.github.io/SharpZipLib/), which is licensed as GPL with the GNU Classpath exception.
-Unless you modify p5.io.zip itself, this has no consequences for you and your code. If you modify p5.io.zip, or the underlaying SharpZipLib library,
-you must release any changes back under the same license terms.
+Unless you modify p5.io.zip itself, this has no consequences for you or your code. If you modify p5.io.zip, or the underlaying SharpZipLib library,
+you must release any changes under the same license terms to all users of your modified library.
 
 In fact, even if SharpZipLib was licensed as "pure" GPL, this would be no different for you, due to the dynamic linking of Phosphorus Five,
 where you never physically link to the libraries (Active Event plugin projects) you create.
+
+With P5, you can, as a general rule, link towards GPL code, and only the plugins you create, linking towards the GPL code, will be affected by the GPL. 
+Which is actually a really nifty feature of P5, for those not wanting to open source license everything they create. This trait of P5, is possible
+because of that none of your plugins, are ever "statically linked", towards the rest of your project in any ways.
+
+
 

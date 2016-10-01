@@ -430,6 +430,9 @@ files within some specified folder. These are listed below.
 * sys42.execute-lisp-file - Evaluates one or more Hyperlisp files. Pass in either a constant, or an expression leading to one or more files.
 * sys42.execute-lisp-folder - Evaluates all Hyperlisp files within one or more specified folders.
 
+#### Changing the read-only state of a file
 
+You can set one or more files to "read-only" with the *[file-set-read-only]* Active Event. In addition, you can remove the "read-only" attribute,
+using the *[file-delete-read-only]* Active Event. Both of these Active Events takes either a constant or an expression, leading to multiple files.
 
 
