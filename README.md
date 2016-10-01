@@ -53,35 +53,24 @@ Phosphorus Five consists of three basic innovations.
 * A design pattern called Active Events
 * Hyperlisp or p5.lambda
 
-The Ajax library is entirely created on top of ASP.NET's web controls, allowing you to use them the same way you would create a web forms website.
+The Ajax library is created on top of ASP.NET's web controls, allowing you to use them the same way you would create a web forms website.
 Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind.
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them.
 
-Hyperlisp or p5.lambda is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps together, almost
+Hyperlisp, and p5.lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps together, almost
 as if they were LEGO bricks.
 
-P5 is entirely created in C#, and should work perfectly with Visual Studio, Xamarin and MonoDevelop.
-It creates 100% conforming HTML5 markup, and comes with many of the "industry best practices" included, such as Bootsstrap CSS, and jQuery.
+P5 is created in C#, and should work perfectly with Visual Studio, Xamarin and MonoDevelop.
 
-The three USPs mentioned above though, creates a unique model for development, which allows you to combine your existing C# skills,
-creating a "plugin environment", where you can assemble your apps, almost as if they were made out of LEGO. This is in stark
-contrast to the traditional way of "carving out apps", using interfaces for plugins, which requires a much higher degree of
+The three USPs mentioned above though, creates a development model, which allows you to combine your existing C# skills,
+creating "plugins", where you can assemble your apps, almost as if they were made out of LEGO. This is in stark
+contrast to the traditional way of "carving out apps", using interfaces for plugins, which often creates a much higher degree of
 dependencies between your app's different components.
-
-Phosphorus Five facilitates for an extremely Agile environment. Where any piece of logic, can in theory, be interchanged with any other piece you wish.
-
-This just so happens to facilitate for an environment, where you can reuse your code, to a much higher extent, than what you're used
-to being able to do in most other "frameworks".
-
-At a fundamental level, it might be argued that Active Events, which is really the core of the brilliance of P5, replaces the way
-you invoke "methods" and "functions". Although, you can still keep on leveraging your existing C# knowledge and OOP knowledge, this
-design pattern has huge implications, allowing you to loosely couple your logic together, in a way that far superseeds what you're 
-used to from before.
 
 In fact, the above "Hello World" example, is simply an invocation to an Active Event, who's name is *[create-literal-widget]*, which
 happens to take a set of arguments, that allows you to create an Ajax control on your page, which once clicked, changes its "innerHTML",
-through the *[innerValue]* property.
+through the *[innerValue]* property to "Hello World!".
 
 ## Documentation
 
@@ -97,26 +86,21 @@ There are also many YouTube videos, showing of some aspect about P5 at [my YouTu
 ## About System42
 
 System42 is really just a folder within the "/core/p5.webapp/" folder in Phosphorus Five. It serves two purposes. First of all it is a use-case
-of the core C# parts of Phosphorus Five, showing the capability of P5. Secondly, it is a relatively nifty CMS by itself.
+of the core C# parts of Phosphorus Five, showing the capability of P5. Secondly, it is a relatively complete CMS by itself.
 
-If you do not wish to use System42, simply delete it entirely, and modify your web.config file, to invoke a different "startup file" during
+If you do not wish to use System42, simply delete it, and modify your web.config file, to invoke a different "startup file" during
 startup. This would give you a completely "clean" install, with zero overhead, allowing you to entirely create your own "front-end"/"back-end"
 as you see fit.
 
-However, before you do, feel free to see the power of Phosphorus Five, which to a large extent is show-cased in System42. System42 is in fact, entirely
-built in Hyperlisp and p5.lambda, and shows what kind of powers you get, when going "all in", and doing everything in Hyperlisp/p5.lambda - Using
-all the plugins of the system.
-
 ## Removing features/plugins
 
-If you create your own plugins, and/or want to remove existing plugins, you do this by modifying your "web.config", where it says "plugin assemblies".
+If you create your own plugins, and/or want to remove existing plugins, you do this by modifying your "web.config", in its "phosphorus" section.
 This will change the DLLs dynamically loaded during startup of your website, and allow you to invoke your own custom made Active Events, possibly 
 created in for instance C#, VB.NET, F#, or "Boo" for that matter.
 
 ## C# samples
 
-Although I recommend people to use P5 in its entirety, for those only interested in using e.g. the Ajax library, and/or the Active Event design
-pattern implementation, there can be found some examples of this in the "samples" folder.
+For those only interested in using e.g. the Ajax library, and/or the Active Event implementation, there can be found some examples in the "samples" folder.
 
 [C# examples] (/samples/)
 
