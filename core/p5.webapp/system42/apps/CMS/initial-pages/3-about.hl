@@ -6,7 +6,12 @@ p5.page:/about
   type:html
   name:About
   template:/system42/apps/cms/templates/default.hl
-  content:@"<p>Although Phosphorus Five and System42, is the architecture and creation of one single person, me that is, there are numerous others who have one way or another contributed. This page is to say thank you to all of these people.</p>
+  content:@"
+<img class='prepend-left' src='/media/images/marvin-headshot.png' style='float:right;' />
+
+<h2>About Phosphorus Five and System42</h2>
+
+<p>Although Phosphorus Five and System42, is the architecture and creation of one single person, me that is, there are numerous others who have one way or another contributed. This page is to say thank you to all of these people.</p>
 
 <ul>
 	<li>Svein Daniel Solvenus - sveindaniel_phosphorus_at_solvenus_dot_no - for providing extensive testing and invaluable feedback, over a long period of time</li>

@@ -309,4 +309,3 @@ When you're ready to publish it, then change its access role accordingly!"
           add:x:/+
             src:x:/../*/_id
           sys42.execute-lisp-file:/system42/apps/cms/page-editor/editor-toolbar.hl
-

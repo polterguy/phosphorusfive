@@ -7,14 +7,14 @@ p5.page:/app-loader
   name:App loader
   template:/system42/apps/cms/templates/default.hl
   lambda:@"
-
 /*
  * Loads up the specified app according to the given HTTP parameter.
  */
 get-http-param:app
 split:x:/-/0?value
   =:/
-set-widget-property:header
-  innerValue:x:/./-/0/-/-?name
 sys42.execute-lisp-file:x:/../*/get-http-param/0?value
+set-widget-property:header
+  innerValue:x:/./-2/0/-/-?name
+set-title:x:/-3/0/-/-?name
 "

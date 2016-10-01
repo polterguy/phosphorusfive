@@ -6,8 +6,17 @@ p5.page:/
   type:html
   name:Home
   template:/system42/apps/cms/templates/default.hl
-  content:@"<p><img class='prepend-left' src='/media/images/marvin-headshot.png' style='float:right;' /></p>
+  content:@"
+<img class='prepend-left' src='/media/images/marvin-headshot.png' style='float:right;' />
 
-<p>Phosphorus Five is a collection of plugin libraries for C# and ASP.NET, 
-that helps you create rich web apps. System42 is a sample use-case, utilizing P5, to create a minimalistic CMS.
-For more information, check out the <a href='https://github.com/polterguy/phosphorusfive'>dox</a>.</p>"
+<h2>Welcome</h2>
+
+<p>Phosphorus Five is a collection of plugin libraries for C# and ASP.NET, that helps you create rich web apps. 
+System42 is a sample use-case, utilizing P5, to create a minimalistic CMS. For more information, check out the 
+<a href='https://github.com/polterguy/phosphorusfive'>documentation</a>.</p>
+
+<p>If you need help, or found a bug, feel free to supply an <a href='https://github.com/polterguy/phosphorusfive/issues'>issue</a>.</p>
+
+<p>Contact me on <a href='mailto:phosphorusfive@gmail.com?subject=Ask%20Marvin'>email</a>.</p>
+
+"

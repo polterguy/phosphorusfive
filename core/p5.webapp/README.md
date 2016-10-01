@@ -115,3 +115,6 @@ Also the web app itself exposes some few Active Events. Some of the more importa
 The "page-value" Active Events above, obeys by the same rule-set as the "collection values" in [p5.web](/plugins/extras/p5.web/).
 And take similar types of arguments as for instance *[get-session-value]* etc do.
 
+Most of the above mentioned Active Events are either defined in Global.asax.cs or PhosphorusPage.cs in the "code" folder.
+
+

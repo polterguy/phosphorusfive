@@ -91,7 +91,7 @@ create-widget:executor
 
       widgets
         literal:execute
-          class:btn btn-default col-lg-2 col-lg-push-10 btn-attach-top
+          class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
           element:button
           title:Alt+E
           innerValue:Evaluate
@@ -155,8 +155,6 @@ create-widget:executor
         literal:clear
           element:button
           title:Alt+C
-          class:btn btn-default col-lg-2 col-lg-push-10 btn-attach-top
+          class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
           innerValue:Clear
           onclick:"window.execute_output.getDoc().setValue('');event.preventDefault();"
-
-

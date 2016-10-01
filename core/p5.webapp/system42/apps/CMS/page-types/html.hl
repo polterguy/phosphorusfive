@@ -14,10 +14,7 @@ if
   // Loading up our template
   load-file
 
-  // setting the [header] and [content] of our page object from our database
-  set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
-    src:x:/../*/_args/*/name?value
-  set:x:/-2/*/*/create-widget/*/widgets/**/={content}?value
+  set:x:/-/*/*/create-widget/*/widgets/**/={content}?value
     src:x:/../*/_args/*/content?value
   eval:x:/./*/load-file/*
 
@@ -27,4 +24,11 @@ else
   sys42.execute-lisp-file:/system42/apps/cms/page-types/special-page/p5.no-access.hl
     _template:/system42/apps/cms/templates/default.hl
 
+
+/*
+ * Then making sure we modify the "header" and title of page
+ */
+set-widget-property:header
+  innerValue:x:/../*/_args/*/name?value
+set-title:x:/../*/_args/*/name?value
 

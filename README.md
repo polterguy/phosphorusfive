@@ -26,7 +26,7 @@ A nice place to test out constructs shown in the documentation files for P5, is 
 which allows you to execute Hyperlisp and p5.lambda, directly from within your browser. Most examples here
 assumes you're using the "Executor" application to evaluate your code.
 
-## What IS that code ...?
+## What is that code ...?
 
 The above code, is called "Hyperlisp", and is simply a key/value/children tree-structure, allowing for you
 to declare something which P5 refers to as "p5.lambda". p5.lambda is the basis for an "execution tree", that is

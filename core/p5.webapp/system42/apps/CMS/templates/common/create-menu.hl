@@ -16,6 +16,9 @@ if
       container
         class:container-fluid
         widgets
+          literal:header
+            element:h1
+            class:main-page-header
           container
             class:navbar-header
             widgets
