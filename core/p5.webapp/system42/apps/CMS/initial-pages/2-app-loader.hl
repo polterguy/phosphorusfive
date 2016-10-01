@@ -6,6 +6,7 @@ p5.page:/app-loader
   type:lambda
   name:App loader
   template:/system42/apps/cms/templates/default.hl
+  role:root
   lambda:@"
 /*
  * Loads up the specified app according to the given HTTP parameter.

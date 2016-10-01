@@ -46,9 +46,11 @@ else
         src:/media/images/marvin-headshot.png
         style:"float:right;"
       literal
-        element:blockquote
-        innerValue:@"Sorry, I cannot give you access to that page, since my owner has restricted access to it.
-Maybe it works if you login ...?"
+        element:h2
+        innerValue:Oops!
+      literal
+        element:p
+        innerValue:@"I cannot give you access to that page, since my owner has restricted access to it!"
       container
         class:form-inline flash-from-left
         widgets
