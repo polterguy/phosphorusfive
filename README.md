@@ -86,11 +86,13 @@ There are also many YouTube videos, showing of some aspect about P5 at [my YouTu
 ## About System42
 
 System42 is really just a folder within the "/core/p5.webapp/" folder in Phosphorus Five. It serves two purposes. First of all it is a use-case
-of the core C# parts of Phosphorus Five, showing the capability of P5. Secondly, it is a relatively complete CMS by itself.
+of the C# parts of Phosphorus Five, showing the capability of P5. Secondly, it is a relatively complete CMS by itself.
 
 If you do not wish to use System42, simply delete it, and modify your web.config file, to invoke a different "startup file" during
 startup. This would give you a completely "clean" install, with zero overhead, allowing you to entirely create your own "front-end"/"back-end"
 as you see fit.
+
+[Browse the Hyperlisp files in System42](/core/p5.webapp/system42/) to get a feel for Hyperlisp, and see some more example code.
 
 ## Removing features/plugins
 
