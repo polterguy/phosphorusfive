@@ -36,7 +36,7 @@ create-event:p5.web.load-ui
 
       // Page not found, loading up our "404 page"
       sys42.execute-lisp-file:/system42/apps/cms/page-types/special-page/not-found.hl
-        _template:/system42/apps/cms/templates/main.hl
+        _template:/system42/apps/cms/templates/default.hl
     else
 
       // Adding up all nodes from results of select-data into [execute-lisp-file]

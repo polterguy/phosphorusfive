@@ -25,6 +25,6 @@ if
 
 else
   sys42.execute-lisp-file:/system42/apps/cms/page-types/special-page/p5.no-access.hl
-    _template:/system42/apps/cms/templates/main.hl
+    _template:/system42/apps/cms/templates/default.hl
 
 

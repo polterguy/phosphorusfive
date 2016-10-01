@@ -1,0 +1,16 @@
+
+/*
+ * A completely "empty" template file for the CMS of System42.
+ * Will not include *anything* on the page, except for a "content" widget, and the 
+ * bare minimum to be able to show p5.ajax controls.
+ */
+
+
+/*
+ * Creating our main template webpage
+ */
+create-widget:content
+  widgets
+    literal
+      element:div
+      innerValue:{content}

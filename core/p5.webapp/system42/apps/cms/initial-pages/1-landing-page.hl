@@ -5,7 +5,7 @@
 p5.page:/
   type:lambda
   name:home
-  template:/system42/apps/cms/templates/main.hl
+  template:/system42/apps/cms/templates/default.hl
   lambda:@"/*
  * Default landing page for your system, automatically 
  * created by your own personal Marvin!
@@ -27,7 +27,7 @@ if:x:/-/*/role?value
 I am your servant! FYI, the first thing you will notice with me, is that this page is only visible for you! If you log out
 and refresh the page, you will see a different page, showing the dynamic features of Phosphorus Five!""""<br/><br/>
 
-""""System 42 and Phosphorus Five is a Web Operating System, allowing you to create your own 'Silicon
+""""System 42 and Phosphorus Five is a collection of tools, allowing you to create your own 'Silicon
 Valley', keeping your files secure, but accessible from any device, sending encrypted emails, or receiving encrypted emails, 
 creating a website, setting up a file sharing service, setting up your own blog, video directory, publishing system, 
 etc, etc, etc. You can also setup System42 such that your friends have access to use features, create articles, send and receive emails, 
@@ -45,8 +45,7 @@ else-if:x:/-2/*/role?value
     widgets
       literal:bar
         innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
-<blockquote><em>""""Hi there friend. My name is Marving, and since you are a friend of my owner, feel free to use my brain. A great
-place for you to start, is probably the <a href=""""/superuser/files"""">file system</a>, where you can upload and store files in a secure manner""""</em></blockquote>""
+<blockquote><em>""""Hi there friend. My name is Marvin, and since you are a friend of my owner, feel free to use my brain.""""</em></blockquote>""
 
 else
 
@@ -59,6 +58,6 @@ else
     widgets
       literal:bar
         innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
-<blockquote><em>""""Hello, my name is Marvin, and I have just been adopted by my owner. That's why things looks a little bit odd here, since
-he still haven't told me what he wants me to do. Until then, I'll just be attending these cars, and speak to this coffee machine. Maybe
-this coffee machine would want to listen to my troubles ...""""</em></blockquote>"""
+<blockquote><em>""""Hello, my name is Marvin, and I have just been adopted by my owner. That's why things looks a little bit odd here, 
+since he still haven't told me what he wants me to do. Until then, I'll just be attending these cars, and speak to this coffee 
+machine. Maybe this coffee machine would want to listen to my troubles ...""""</em></blockquote>"""

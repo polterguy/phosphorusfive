@@ -5,9 +5,9 @@
 
 
 list-files:/system42/apps/cms/templates/
-if:x:/-/*/"/system42/apps/cms/templates/main.hl"
+if:x:/-/*/"/system42/apps/cms/templates/default.hl"
   insert-before:x:/./+2/0/0
-    src:"template:/system42/apps/cms/templates/main.hl"
+    src:"template:/system42/apps/cms/templates/default.hl"
 else
   insert-before:x:/./+/0/0
     src:"template:{0}"

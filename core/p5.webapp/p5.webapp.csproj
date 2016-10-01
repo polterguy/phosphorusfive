@@ -329,8 +329,8 @@
     <Content Include="system42\apps\cms\page-types\special-page\p5.no-access.hl" />
     <Content Include="system42\apps\cms\launch.hl" />
     <Content Include="system42\apps\cms\startup.hl" />
-    <Content Include="system42\apps\cms\templates\main.hl" />
-    <Content Include="system42\apps\cms\templates\no-header-menu.hl" />
+    <Content Include="system42\apps\cms\templates\default.hl" />
+    <Content Include="system42\apps\cms\templates\no-navbar-menu.hl" />
     <Content Include="system42\apps\executor\launch.hl" />
     <Content Include="system42\apps\tests\add.hl" />
     <Content Include="system42\apps\tests\branching.hl" />
@@ -364,6 +364,9 @@
     <Content Include="system42\apps\cms\initial-pages\2-app-loader.hl" />
     <None Include="system42\apps\cms\initial-pages\3-about.hl" />
     <None Include="system42\apps\cms\initial-pages\1-landing-page.hl" />
+    <Content Include="system42\apps\cms\templates\empty.hl" />
+    <Content Include="system42\apps\cms\templates\common\create-menu.hl" />
+    <Content Include="system42\apps\cms\templates\inverse-menu.hl" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />

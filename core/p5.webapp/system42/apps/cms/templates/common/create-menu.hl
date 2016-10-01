@@ -1,0 +1,362 @@
+
+/*
+ * Making sure we have our "navbar wrapper" widget, unless it's already created from before
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:main-navbar-wrapper
+  not
+  set:x:/+/**/={_extra-css-classes}?value
+    src:x:/../*/__extra-css-classes?value
+  create-widget:main-navbar-wrapper
+    parent:template-root
+    element:nav
+    class:navbar navbar-default navbar-fixed-top
+    widgets
+      container
+        class:container-fluid
+        widgets
+          container
+            class:navbar-header
+            widgets
+
+              /*
+                * Toggles visibility of navbar, only visible in small screen resolutions
+                */
+              literal:toggle-navbar
+                element:button
+                type:button
+                class:navbar-toggle collapsed
+                data-toggle:collapse
+                data-target:#navbar-main
+                aria-expanded:false
+                innerValue:@"<span class=""icon-bar""></span>"
+
+          /*
+            * Main menu items wrapper
+            */
+          container:navbar-main
+            class:collapse navbar-collapse
+            widgets
+
+              /*
+                * This is where all your menu items ends up, as child widgets
+                */
+              container:main-menu
+                element:ul
+                class:nav navbar-nav
+                events
+
+                  /*
+                    * Creates the menu of our page
+                    */
+                  sys42.create-main-menu
+                    sys42.execute-lisp-file:/system42/apps/cms/templates/common/create-menu.hl
+                      _extra-css-classes:{_extra-css-classes}
+else
+
+  /*
+   * Making sure we delete any previous menus created
+   */
+  clear-widget:main-menu
+
+
+
+/*
+ * Then applying any additional CSS classes passed into file as "arguments"
+ */
+if:x:/../*/_extra-css-classes?value
+  eval-x:x:/+/*
+  sys42.add-css-classes:main-navbar-wrapper
+    _class:x:/../*/_extra-css-classes?value
+
+/*
+  * Retrieving current Context user for later, since we'll need to check his role, 
+  * to see which pages he or she has access to
+  */
+whoami
+
+/*
+  * Selecting all [p5.page] objects from database, and looping through them, to
+  * create a menu item for each [p5.page] object current Context user has access to.
+  * 
+  * We exclude the "app-loader" page, since it is not an actual page per se. 
+  * In addition, we also exclude pages that contains the text "/invisible" in their URLs, such that 
+  * the user can create pages that are not visible in the menu, but only accessible through a 
+  * direct link.
+  */
+select-data:x:@"/*/*/p5.page!(/*/*/p5.page/""=/app-loader""|/*/*/p5.page/""=~/invisible"")"
+for-each:x:/../*/select-data/[0,1]/*
+
+  // Menu item "template"
+  _create-item
+    create-literal-widget
+      parent:main-menu
+      element:li
+      innerValue
+
+  // Verifying user has access to currently iterated [p5.page] object
+  if
+    sys42.verify-access:x:/..for-each/*/_dp/#/*/role?value
+
+    // Creating menu item, settings properties first
+    set:x:/..for-each/*/_create-item/*/create-literal-widget/*/innerValue?value
+      src:@"<a href=""{0}"">{1}</a>"
+        :x:/..for-each/*/_dp/#?value
+        :x:/..for-each/*/_dp/#/*/name?value
+
+    // Checking if this is a nested menu item
+    split:x:/..for-each/*/_dp/#?value
+      =:/
+    if:x:/./*/split/*?count
+      >:int:1
+
+      // This was a "nested" item, checking if parent item(s) for current item is already created
+      // We do support nested menu items, although if user creates a page with more than two levels
+      // of nesting, we warn during creation of page that it is "not a good idea!"
+      set:x:/././*/split/0/-
+      _cur
+      _last:main-menu
+      for-each:x:/././*/split/*?name
+        set:x:/././*/_cur?value
+          src:{0}{1}
+            :x:/././././*/_cur?value
+            :x:/..for-each/*/_dp?value
+        if
+          fetch:x:/0/0?value
+            widget-exist:{0}-menu-item
+              :x:/..for-each/./*/_cur?value
+          not
+
+          // Root item for current nested item is not created, creating it
+          eval-x:x:/+|/+/**
+          create-container-widget:{0}-menu-wrp
+            :x:/..for-each/./*/_cur?value
+            parent:x:/..for-each/./*/_last?value
+            element:li
+            class:dropdown
+            widgets
+              literal
+                element:a
+                href:#
+                class:dropdown-toggle
+                data-toggle:dropdown
+                role:button
+                aria-haspopup:true
+                aria-expanded:false
+                innerValue:@"{0} <span class=""caret""></span>"
+                  :x:/..for-each/*/_dp?value
+              container:{0}-menu-item
+                :x:/..for-each/./*/_cur?value
+                element:ul
+                class:dropdown-menu
+
+        // Updating [parent] for current item to be root item for group
+        set:x:/..for-each/..for-each/*/_create-item/*/*/parent?value
+          src:{0}-menu-item
+            :x:/..for-each/./*/_cur?value
+        set:x:/..for-each/./*/_last?value
+          src:{0}-menu-item
+            :x:/..for-each/./*/_cur?value
+    eval:x:/..for-each/*/_create-item
+                          
+/*
+  * Adding login/logout button to menu
+  */
+if:x:/../*/whoami/*/default?value
+  =:bool:true
+
+  /*
+    * This is the default Context user, and hence user is not logged in
+    * Creating our login menu item
+    */
+  create-widget:login-menu-button
+    parent:main-menu
+    element:li
+    widgets
+      literal
+        element:a
+        href:
+        innerValue:login
+        onclick
+          sys42.show-login-window
+        events
+
+          /*
+            * Shows the login user window
+            */
+          sys42.show-login-window
+
+            /*
+              * Making sure we hide login menu button
+              */
+            set-widget-property:login-menu-button
+              visible:false
+
+            /*
+              * Sends and includes JavaScript to page, to be able to handle Carriage Return and Escape 
+              * keys in login window
+              */
+            send-javascript:"$('#toggle-navbar').click();setTimeout(function(){$('#username').focus().select();},250);"
+            include-javascript:@"p5.loginUsernameKeyPressed = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('login-button').raise('onclick');
+    return false;
+  }
+}
+p5.loginUsernameKeyUp = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('login-button').raise('_onhide');
+  }
+}"
+
+            /*
+              * Creates the window encapsulating the login window
+              */
+            create-widget:login-wrapper
+              class:form-inline col-md-5 col-xs-3 flash-from-left text-right
+              parent:header-wrapper
+              widgets
+                container:login-controls
+                  class:form-group
+                  widgets
+                    void:username
+                      class:form-control input-sm
+                      element:input
+                      type:text
+                      placeholder:Username ...
+                      onkeypress:"return p5.loginUsernameKeyPressed(event);"
+                      onkeyup:"p5.loginUsernameKeyUp(event);"
+                    void:password
+                      class:form-control input-sm
+                      element:input
+                      type:password
+                      placeholder:Password ...
+                      onkeypress:"return p5.loginUsernameKeyPressed(event);"
+                      onkeyup:"p5.loginUsernameKeyUp(event);"
+                    literal:login-button
+                      element:button
+                      class:btn btn-default form-control input-sm
+                      innerValue:login
+                      onclick
+                        sys42.login-button-clicked
+                      _onhide
+                        delete-widget:login-wrapper
+                        set-widget-property:login-menu-button
+                          visible:true
+                      events
+
+                        /*
+                          * Logs in user according to values of "username" and "password" widgets
+                          * in login form
+                          */
+                        sys42.login-button-clicked
+
+                          /*
+                            * Retrieves username and password supplied by user
+                            */
+                          get-widget-property:username
+                            value
+                          get-widget-property:password
+                            value
+
+                          /*
+                            * Sets the username and password field's values to our [login] Active Event
+                            */
+                          set:x:/+2/0/*/username?value
+                            src:x:/././*/get-widget-property/[0,1]/+/<?value
+                          set:x:/+1/0/*/password?value
+                            src:x:/././*/get-widget-property/[1,2]/+/<?value
+                          if
+                            login
+                              username
+                              password
+                              persist:bool:true
+
+                            /*
+                              * User was successfully logged in, reloading location to
+                              * make sure user sees page in context of his newly logged in credentials
+                              */
+                            reload-location
+                          else
+
+                            /*
+                              * User supplied wrong credentials
+                              */
+                            set-widget-property:login-controls
+                              class:form-group has-error
+                            send-javascript:"p5.wrongCredentials();"
+                                      
+
+else
+
+  /*
+    * User has previously logged in with his or hers credentials
+    * Creating the logout button, but first, since user is logged in, our "apps" menu items,
+    * if there are any apps.
+    */
+  list-folders:/system42/apps/
+  if:x:/-/*?count
+    >:int:0
+    _eval
+      if
+        file-exist:{0}launch.hl
+          :x:/../*/_dn/#?name
+        not
+        return
+      split:x:/./*/_dn/#?name
+        =:/
+      eval-x:x:/+/*/*/*/*
+      return
+        li
+          widgets
+            a
+              href:/app-loader?app={0}launch.hl
+                :x:/../*/_dn/#?name
+              innerValue:x:/../*/split/0/-?name
+    apply:x:/./*/create-container-widget/*/widgets/*/ul/*/widgets
+      src:x:/././-/*
+      template
+        {@eval}:x:/..if/*/_eval
+    create-container-widget
+      parent:main-menu
+      element:li
+      widgets
+        a
+          href:#
+          class:dropdown-toggle
+          data-toggle:dropdown
+          role:button
+          aria-haspopup:true
+          aria-expanded:false
+          innerValue:@"apps <span class=""caret""></span>"
+        ul
+          class:dropdown-menu
+          widgets
+
+  /*
+    * Creating the logout button
+    */
+  create-widget
+    parent:main-menu
+    element:li
+    widgets
+      literal
+        element:a
+        href:
+        innerValue:logout
+        onclick
+          sys42.logout
+        events
+
+          /*
+            * Deleting all user's session items and emptying "tmp" folder, 
+            * before logging user out and reloading location, to make sure user
+            * sees page in context of default Context user
+            */
+          sys42.logout
+            list-session-keys
+            set-session-value:x:/-/*?name
+            sys42.empty-user-tmp-folder
+            logout
+            reload-location

@@ -5,7 +5,7 @@
 p5.page:/app-loader
   type:lambda
   name:App loader
-  template:/system42/apps/cms/templates/main.hl
+  template:/system42/apps/cms/templates/default.hl
   lambda:@"
 
 /*
