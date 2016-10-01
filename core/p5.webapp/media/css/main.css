@@ -6,6 +6,13 @@
  */
 
 
+/*
+ * Making sure we get some spacing at the bottom, to avoid having widgets
+ * cluttered all the way to the end of the browser
+ */
+body {
+    margin-bottom:150px;
+}
 
 /*
  * Helper to give some space before element begins

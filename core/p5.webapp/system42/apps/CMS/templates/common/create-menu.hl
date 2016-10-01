@@ -329,7 +329,7 @@ else
           role:button
           aria-haspopup:true
           aria-expanded:false
-          innerValue:@"apps <span class=""caret""></span>"
+          innerValue:@"Apps <span class=""caret""></span>"
         ul
           class:dropdown-menu
           widgets

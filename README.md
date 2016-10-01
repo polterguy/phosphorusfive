@@ -3,7 +3,7 @@ Phosphorus Five, simplifying the creation of web apps
 
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
 Its "Hello World" can be executed by making sure you have the "p5.webapp" as your startup project, start your debugger 
-(making sure you've turned _OFF_ "Browser Link" in Visual Studio), open up the "apps/cms" in the menu at the top, choose 
+(making sure you've turned _OFF_ "Browser Link" in Visual Studio), click the "Apps/CMS" menu item, choose 
 to create a "New page ..." - Choose *[lambda]* page, and paste in the following code.
 
 ```
@@ -22,19 +22,21 @@ have to change your browser settings for popups being allowed on localhost. If y
 works just as well on both Xamarin (Mac OS X) and MonoDevelop (Linux).
 
 Tip!
-A nice place to test out constructs shown in the documentation files for P5, is the menu item "apps/executor",
-which allows you to execute Hyperlisp and p5.lambda directly from within your browser. Most examples here
-assumes you're using the "executor" application to evaluate your code.
+A nice place to test out constructs shown in the documentation files for P5, is the menu item "Apps/Executor",
+which allows you to execute Hyperlisp and p5.lambda, directly from within your browser. Most examples here
+assumes you're using the "Executor" application to evaluate your code.
+
+## What IS that code ...?
 
 The above code, is called "Hyperlisp", and is simply a key/value/children tree-structure, allowing for you
 to declare something which P5 refers to as "p5.lambda". p5.lambda is the basis for an "execution tree", that is
 a Turing complete opportunity to "declare your apps", through a (very) rich "non-programming model".
 
 We say "non-programming", because really, there is no "programming language" in P5. Only a bunch of loosely
-coupled Active Events, that happens to, in their combined version, create a Turing complete execution
-environment.
+coupled Active Events, that happens to, in their combined result, create a Turing complete execution
+engine, allowing you to "orchestrate your components together like LEGO bricks".
 
-In fact, if you wish, you can "declare" your execution trees, by using XML or JSON. Although we recommend
+In fact, if you wish, you could in theory "declare" your execution trees, by using XML or JSON. Although we recommend
 using Hyperlisp, due to its much more condens syntax, and lack of "overhead", compared to XML and JSON.
 
 This trait of P5, allows you to "orchestrate" your apps, by combining your parts together, more like how a conductor 

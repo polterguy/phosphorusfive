@@ -18,6 +18,7 @@ p5.page:/about
 	<li><a href=""https://codemirror.net/"">CodeMirror</a>, and Marijn Haverbeke, for creating a brilliant syntax highlighted code editor for the web</li>
 	<li><a href=""https://htmlagilitypack.codeplex.com/"">HtmlAgilityPack</a> and all participants, for making the job of semantically parsing HTML a breeze</li>
 	<li><a href=""http://getbootstrap.com/"">Bootstrap</a>, the CSS framework, for delivering a brilliant CSS framework, which Phosphorus and System42 is 100% dependent upon</li>
+	<li><a href=""https://jquery.com/"">jQuery</a>, used internally by some of the features in Phosphorus</li>
 </ul>
 <p>There are many more too, which either directly or indirectly have contributed.</p>
 
