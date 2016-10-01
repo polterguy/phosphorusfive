@@ -53,12 +53,6 @@ setup. It creates a server-seed, which is used to seed the cryptographic random
 number generator, and salt your hashed passwords etc. In addition, it creates a root
 password, and a superuser normal account, for everyday use of your system.
 
-### The "misc" folder
-
-This folder contains some helper files, which does things, that doesn't really belong
-to a specific concept. One example is the different ContentTypes P5 supports out of
-the box.
-
 ### The "startup" folder
 
 This folder contains files that are evaluated during application startup of your server,
