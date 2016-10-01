@@ -31,7 +31,6 @@ create-widget:guide
     literal
       element:img
       style:"float:right;"
-      class:prepend-left
       src:/media/images/marvin-headshot.png
 
 

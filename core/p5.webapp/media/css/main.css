@@ -1,77 +1,17 @@
 
 
 /*
- * To ensure body of document starts below navbar (menu)
+ * Contains the "default" CSS file for Phosphorus Five, 
+ * which is included by all templates in the CSS.
  */
-body {
-  padding-top: 50px;
-}
 
-/*
- * Icon being URL to phosphorusfive.wordpress.com
- */
-.navbar-icon-p5 {
-    background:transparent url(../images/phosphorusfive-small-logo.png) no-repeat 10px 10px;
-    width:40px;
-}
 
-/*
- * Making sure navbar inverse dropdown is also black
- */
-.navbar-inverse .dropdown-menu>li>a,
-.navbar-inverse .navbar-nav .open .dropdown-menu {
-    background-color:#222;
-    border-color:#080808;
-    color:#999;
-}
-
-.navbar-inverse .dropdown-menu>li>a:hover {
-    color:#fff;
-    background-color:#000;
-}
-
-/*
- * To support multiple levels of dropdown menus for bootstrap
- */
-.nav li.dropdown ul.dropdown-menu li:hover>ul {
-    display:block; 
-    position:absolute; 
-    left:100%;
-}
-
-.nav li.dropdown ul.dropdown-menu ul {
-    display: none;
-    float:right;
-    position: relative;
-    top: auto;
-    margin-top: -30px;
-}
-
-/*
- * To ensure fullscreen mode in CodeMirror does not hide the menu,
- * or other controls are above it, we need to add this little "hack"
- */
-.CodeMirror-fullscreen {
-    margin-top:50px !important;
-    z-index:1031 !important;
-}
-
-/*
- * To ensure content is filling the whole screen, regardless of its height
- */
-.content-row {
-    min-height:632px;
-}
 
 /*
  * Helper to give some space before element begins
  */
 .prepend-top {
     margin-top:15px;
-}
-
-.prepend-top-2 {
-    margin-top:45px;
 }
 
 /*
@@ -82,50 +22,6 @@ body {
 }
 
 
-/*
- * Helper to give some space after element is finished
- */
-.prepend-right {
-    margin-right:30px;
-}
-
-
-.prepend-right-2 {
-    margin-right:60px;
-}
-
-
-/*
- * Helper to give some space before element starts
- */
-.prepend-left {
-    margin-left:30px;
-}
-
-
-.prepend-left-2 {
-    margin-left:60px;
-}
-
-.air-padding {
-    padding:15px 15px 5px 15px;
-}
-
-.air-padding-more {
-    padding:30px 30px 25px 30px;
-}
-
-.bold {
-    font-weight:bold;
-}
-
-.rounded-corners {
-    border-radius:5px;
-}
-
-.box-shadow {
-    box-shadow:2px 2px 5px rgba(0,0,0,.5);
-}
 
 
 /*
@@ -154,7 +50,7 @@ body {
     background:#28211c;
     max-width:300px;
     position:fixed;
-    top:50px;
+    top:0px;
     right:25px;
     color:#9d9b97;
     padding:5px 25px 0 25px;
@@ -166,61 +62,19 @@ body {
     margin-top:-100px;
 }
 
+/*
+ * Used when caller requests info window to stay "slightly longer", due 
+ * to e.g. more text needing more time to read, etc.
+ */
 .info-window-more {
     animation-duration: 6s;
 }
 
 
-/*
- * Blink CSS class animations
- */
-@keyframes animate-blink {
-    0% {
-        background:rgba(255,255,0,0) !important;
-    }
-    20% {
-        background:rgba(255,255,0,1) !important;
-    }
-    100% {
-        background:rgba(255,255,0,0) !important;
-    }
-}
-
-.blink {
-    background:inherit;
-    animation-name: animate-blink;
-    animation-duration: .3s;
-}
-
 
 /*
- * Blink-shadow CSS class animations
+ * Animation used to among other things, "fly in" login box, and other similar things
  */
-@keyframes animate-blink-shadow {
-    0% {
-        box-shadow:0 0 20px rgba(0,255,0,0);
-        transform:scale(1);
-    }
-    20% {
-        box-shadow:0 0 20px rgba(0,255,0,1);
-        transform:scale(1.2);
-    }
-    40% {
-        box-shadow:0 0 20px rgba(255,255,0,1);
-        transform:scale(1);
-    }
-    100% {
-        box-shadow:0 0 20px rgba(0,255,0,0);
-    }
-}
-
-.blink-shadow {
-    position:relative !important;
-    z-index:200;
-    animation-name: animate-blink-shadow;
-    animation-duration: 2s !important;
-}
-
 @keyframes animate-flash-from-left {
     0% {
         margin-left:-4000px;
@@ -229,27 +83,30 @@ body {
         margin-left:0px;
     }
 }
-
 .flash-from-left {
     animation-name:animate-flash-from-left;
     animation-duration:.5s;
     position:relative;
 }
 
+
+/*
+ * Used to modify Bootstrap's default behavior, to have a guarantee of that input group
+ * addons have at least a minimum amount of width.
+ */
 .input-group-addon {
     min-width:100px;
     text-align:left;
 }
 
-.input-group-addon-force-float {
-    min-width:auto;
-    text-align:left;
-}
 
+/*
+ * Used among other things, when an error is supposed to be shown in wizard-window, and
+ * similar places.
+ */
 .error {
     background-color:rgba(255,0,0,.1);
 }
-
 .error-text {
     color:rgb(200,0,0);
     background-color:rgba(255,255,0,.1);
@@ -259,7 +116,3 @@ body {
     font-weight:bold;
 }
 
-.highlight {
-    background-color:rgba(0,255,0,.5) !important;
-    border:dashed 1px black !important;
-}

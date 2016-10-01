@@ -54,6 +54,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="media\css\navbar.css" />
+    <Content Include="media\jquery\images\ui-icons_444444_256x240.png" />
+    <Content Include="media\jquery\images\ui-icons_555555_256x240.png" />
+    <Content Include="media\jquery\images\ui-icons_777620_256x240.png" />
+    <Content Include="media\jquery\images\ui-icons_777777_256x240.png" />
+    <Content Include="media\jquery\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="media\jquery\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="media\jquery\jquery-ui.min.css" />
+    <Content Include="media\jquery\jquery-ui.min.js" />
+    <Content Include="media\jquery\jquery-ui.structure.min.css" />
+    <Content Include="media\jquery\jquery-ui.theme.min.css" />
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -62,9 +73,7 @@
     <Content Include="media\bootstrap\js\bootstrap.min.js" />
     <Content Include="media\css\main.css" />
     <Content Include="media\jquery\jquery-2.1.4.min.js" />
-    <Content Include="media\images\phosphorusfive-logo.png" />
     <Content Include="media\images\marvin-headshot.png" />
-    <Content Include="media\images\phosphorusfive-small-logo.png" />
     <Content Include="system42\editors\codemirror\mode\clike\clike.js" />
     <Content Include="system42\editors\codemirror\mode\css\css.js" />
     <Content Include="system42\editors\codemirror\mode\htmlmixed\htmlmixed.js" />
@@ -143,20 +152,10 @@
     <Content Include="system42\editors\ckeditor\styles.js" />
     <Content Include="system42\editors\codemirror\theme\the-matrix-reduced-secondary.css" />
     <Content Include="users\root\documents\private\web.config" />
-    <Content Include="media\images\dangerous-shit.jpg" />
-    <Content Include="media\images\general-help-1.png" />
-    <Content Include="media\images\marvin-headshot-transparent.png" />
     <Content Include="system42\editors\codemirror\addon\hint\show-hint.css" />
     <Content Include="system42\editors\codemirror\addon\hint\show-hint.js" />
     <Content Include="system42\editors\codemirror\theme\paraiso.css" />
     <Content Include="common\private\web.config" />
-    <Content Include="media\images\star-rating.png" />
-    <Content Include="media\css\star-rating.css" />
-    <Content Include="media\images\star-value-1.png" />
-    <Content Include="media\images\star-value-2.png" />
-    <Content Include="media\images\star-value-3.png" />
-    <Content Include="media\images\star-value-4.png" />
-    <Content Include="media\images\star-value-5.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -376,7 +375,6 @@
     <Content Include="system42\startup\misc-events\css-helpers\sys42.add-css-classes.hl" />
     <Content Include="system42\startup\misc-events\css-helpers\sys42.remove-css-classes.hl" />
     <Content Include="system42\startup\misc-events\css-helpers\sys42.toggle-css-classes.hl" />
-    <Content Include="system42\startup\misc-events\actions\sys42.action.save-data-to-database.hl" />
     <Content Include="system42\startup\app-settings\README.md" />
     <Content Include="system42\startup\misc-events\sys42.get-event.hl" />
     <Content Include="system42\startup\app-settings\sys42.get-app-setting.hl" />
@@ -399,8 +397,7 @@
     <None Include="system42\installation\install-server.hl" />
     <None Include="system42\installation\set-root-password.hl" />
     <None Include="system42\installation\system-finished.hl" />
-    <None Include="system42\startup\misc-events\internals\sys42.get-content-type.hl" />
-    <None Include="system42\startup\internals\users\sys42.empty-user-tmp-folder.hl" />
+    <None Include="system42\startup\users\sys42.empty-user-tmp-folder.hl" />
     <None Include="system42\apps\cms\startup\sys42.verify-access.hl" />
     <None Include="system42\installation\create-dynamic-salt.hl" />
     <Content Include="users\README.md" />
@@ -409,7 +406,6 @@
     <None Include="users\root\temp\README.md" />
     <None Include="common\private\README.md" />
     <None Include="common\public\README.md" />
-    <None Include="system42\startup\misc-events\sys42.get-pages-database-creation-script.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

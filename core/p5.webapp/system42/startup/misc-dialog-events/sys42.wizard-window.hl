@@ -97,7 +97,7 @@ create-event:sys42.wizard-window
       // Creating some sort of "text" control
       _controls
         container
-          class:input-group prepend-left prepend-top prepend-bottom prepend-right
+          class:input-group prepend-top prepend-bottom
           widgets
             literal
               class:input-group-addon
@@ -159,7 +159,7 @@ create-event:sys42.wizard-window
       // Creating "textarea" control
       _controls
         container
-          class:prepend-left prepend-top prepend-bottom prepend-right
+          class:prepend-top prepend-bottom
           widgets
             textarea
               _control

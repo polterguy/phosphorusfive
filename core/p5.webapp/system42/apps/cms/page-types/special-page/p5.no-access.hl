@@ -45,7 +45,6 @@ else
         element:img
         src:/media/images/marvin-headshot.png
         style:"float:right;"
-        class:prepend-left
       literal
         element:blockquote
         innerValue:@"Sorry, I cannot give you access to that page, since my owner has restricted access to it.
@@ -54,7 +53,7 @@ Maybe it works if you login ...?"
         class:form-inline flash-from-left
         widgets
           container
-            class:form-group prepend-left-2
+            class:form-group
             widgets
               container
                 class:input-group
@@ -75,7 +74,7 @@ Maybe it works if you login ...?"
                         delete-widget:login-menu-button
                     onkeypress:"return p5.keyLoginPress(event);"
               container
-                class:input-group prepend-left
+                class:input-group
                 widgets
                   literal
                     class:input-group-addon
@@ -90,7 +89,7 @@ Maybe it works if you login ...?"
                     onkeypress:"return p5.keyLoginPress(event);"
               literal:login-user
                 element:button
-                class:btn btn-primary prepend-left
+                class:btn btn-primary
                 innerValue:Login
                 onclick
                   _widgets

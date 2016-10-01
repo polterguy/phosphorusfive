@@ -102,3 +102,13 @@ li.CodeMirror-hint-active {
     background: #a7a99b;
     color:Black;
 }
+
+/*
+ * To ensure fullscreen mode in CodeMirror does not hide the menu,
+ * or other controls are above it, we need to add this little "hack"
+ */
+.CodeMirror-fullscreen {
+    margin-top:50px !important;
+    z-index:1031 !important;
+}
+

@@ -40,7 +40,7 @@ body {
      * and header above
      */
     container:content
-      class:row content-row
+      class:row
       widgets
         literal
           element:div

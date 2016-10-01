@@ -12,6 +12,7 @@
  */
 sys42.include-default-stylesheet-files
 sys42.include-default-javascript-files
+include-stylesheet-file:/media/css/navbar.css
 
 
 /*
@@ -46,15 +47,6 @@ create-widget:template-root
                   data-target:#navbar-main
                   aria-expanded:false
                   innerValue:@"<span class=""icon-bar""></span>"
-
-                /*
-                 * Logo
-                 */
-                literal:x-ray
-                  element:a
-                  href:http://phosphorusfive.wordpress.com
-                  class:navbar-brand navbar-icon-p5
-                  title:Got Privacy ...?
 
             /*
              * Main menu items wrapper
@@ -395,7 +387,7 @@ p5.loginUsernameKeyUp = function(e) {
      * and header above
      */
     container:content
-      class:row content-row
+      class:row
       widgets
         literal
           element:div

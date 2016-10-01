@@ -32,7 +32,7 @@ belong to the role 'superuser', and is quite powerful, but not as powerful as th
       class:form-inline
       widgets
         container
-          class:form-group prepend-left
+          class:form-group
           widgets
             container
               class:input-group
@@ -49,7 +49,7 @@ belong to the role 'superuser', and is quite powerful, but not as powerful as th
                     send-javascript:@"$('#user-username').focus().select();"
                   onkeypress:"return p5.keyInstallPressed2(event);"
         container
-          class:form-group prepend-top prepend-left
+          class:form-group prepend-top
           widgets
             container
               class:input-group
@@ -64,7 +64,7 @@ belong to the role 'superuser', and is quite powerful, but not as powerful as th
                   placeholder:User password ...
                   onkeypress:"return p5.keyInstallPressed2(event);"
             container
-              class:input-group prepend-left
+              class:input-group
               widgets
                 literal
                   class:input-group-addon
@@ -76,7 +76,7 @@ belong to the role 'superuser', and is quite powerful, but not as powerful as th
                   placeholder:Repeat password ...
                   onkeypress:"return p5.keyInstallPressed2(event);"
         container
-          class:form-group prepend-top prepend-left
+          class:form-group prepend-top
           widgets
             literal:save-user
               element:button
