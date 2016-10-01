@@ -1,0 +1,20 @@
+
+/*
+ * Declaration of our "app loader page"
+ */
+p5.page:/app-loader
+  type:lambda
+  name:App loader
+  template:/system42/apps/cms/templates/main.hl
+  lambda:@"
+
+/*
+ * Loads up the specified app according to the given HTTP parameter.
+ */
+get-http-param:app
+split:x:/-/0?value
+  =:/
+set-widget-property:header
+  innerValue:x:/./-/0/-/-?name
+sys42.execute-lisp-file:x:/../*/get-http-param/0?value
+"

@@ -1,0 +1,64 @@
+
+/*
+ * Declaration of our "landing page"
+ */
+p5.page:/
+  type:lambda
+  name:home
+  template:/system42/apps/cms/templates/main.hl
+  lambda:@"/*
+ * Default landing page for your system, automatically 
+ * created by your own personal Marvin!
+ */
+whoami
+if:x:/-/*/role?value
+  =:root
+
+  /*
+   * Hey, my owner just paid a visit! I am so happy today!!
+   */
+  create-widget:foo
+    parent:content
+    class:col-xs-12
+    widgets
+      literal:bar
+        innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
+<blockquote><em>""""Hi there owner. I am so pleased to see you! [<strong>*wagging tail*</strong>]! Please tell me what to do! 
+I am your servant! FYI, the first thing you will notice with me, is that this page is only visible for you! If you log out
+and refresh the page, you will see a different page, showing the dynamic features of Phosphorus Five!""""<br/><br/>
+
+""""System 42 and Phosphorus Five is a Web Operating System, allowing you to create your own 'Silicon
+Valley', keeping your files secure, but accessible from any device, sending encrypted emails, or receiving encrypted emails, 
+creating a website, setting up a file sharing service, setting up your own blog, video directory, publishing system, 
+etc, etc, etc. You can also setup System42 such that your friends have access to use features, create articles, send and receive emails, 
+retrieve or edit files, and so on. Basically, System 42 is your own private little version of 'Silicon Valley' :)""""</em></blockquote>""
+
+else-if:x:/-2/*/role?value
+  =:superuser
+
+  /*
+   * A close and personal friend of my owner possibly!
+   */
+  create-widget:foo
+    parent:content
+    class:col-xs-12
+    widgets
+      literal:bar
+        innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
+<blockquote><em>""""Hi there friend. My name is Marving, and since you are a friend of my owner, feel free to use my brain. A great
+place for you to start, is probably the <a href=""""/superuser/files"""">file system</a>, where you can upload and store files in a secure manner""""</em></blockquote>""
+
+else
+
+  /*
+   * Probably some random visitor
+   */
+  create-widget:foo
+    parent:content
+    class:col-xs-12
+    widgets
+      literal:bar
+        innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
+<blockquote><em>""""Hello, my name is Marvin, and I have just been adopted by my owner. That's why things looks a little bit odd here, since
+he still haven't told me what he wants me to do. Until then, I'll just be attending these cars, and speak to this coffee machine. Maybe
+this coffee machine would want to listen to my troubles ...""""</em></blockquote>"""
