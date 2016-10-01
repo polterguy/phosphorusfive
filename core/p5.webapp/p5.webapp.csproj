@@ -376,7 +376,7 @@
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="system42\startup\misc-events\css-helpers\sys42.add-css-classes.hl" />
-    <Content Include="system42\startup\misc-events\css-helpers\sys42.remove-css-classes.hl" />
+    <Content Include="system42\startup\misc-events\css-helpers\sys42.delete-css-classes.hl" />
     <Content Include="system42\startup\misc-events\css-helpers\sys42.toggle-css-classes.hl" />
     <Content Include="system42\startup\app-settings\README.md" />
     <Content Include="system42\startup\misc-events\sys42.get-event.hl" />
