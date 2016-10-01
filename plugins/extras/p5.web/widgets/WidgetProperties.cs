@@ -135,8 +135,6 @@ namespace p5.web.widgets {
                     case "visible":
                     case "invisible-element":
                     case "element":
-                    case "has-id":
-                    case "has-name":
                     case "render-type":
                         throw new LambdaException ("Cannot remove property '" + nameNode.Name + "' of widget", e.Args, context);
                     default:

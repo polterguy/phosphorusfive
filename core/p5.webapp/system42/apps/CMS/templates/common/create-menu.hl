@@ -217,21 +217,21 @@ p5.loginUsernameKeyUp = function(e) {
               * Creates the window encapsulating the login window
               */
             create-widget:login-wrapper
-              class:form-inline col-md-5 col-xs-3 flash-from-left text-right
+              class:form-inline login-widget
               parent:header-wrapper
               widgets
                 container:login-controls
                   class:form-group
                   widgets
                     void:username
-                      class:form-control input-sm
+                      class:form-control
                       element:input
                       type:text
                       placeholder:Username ...
                       onkeypress:"return p5.loginUsernameKeyPressed(event);"
                       onkeyup:"p5.loginUsernameKeyUp(event);"
                     void:password
-                      class:form-control input-sm
+                      class:form-control
                       element:input
                       type:password
                       placeholder:Password ...
@@ -239,7 +239,7 @@ p5.loginUsernameKeyUp = function(e) {
                       onkeyup:"p5.loginUsernameKeyUp(event);"
                     literal:login-button
                       element:button
-                      class:btn btn-default form-control input-sm
+                      class:btn btn-default form-control
                       innerValue:Login
                       onclick
                         sys42.login-button-clicked

@@ -35,7 +35,6 @@ create-widget:template-root
       class:row
       widgets
         container
-          has-id:false
           class:col-md-7 col-xs-9
           widgets
 

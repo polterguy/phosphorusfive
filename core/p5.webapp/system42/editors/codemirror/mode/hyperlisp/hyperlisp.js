@@ -1164,7 +1164,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'position':
         case 'element':
         case 'visible':
-        case 'has-id':
         case 'render-type':
 
           /*

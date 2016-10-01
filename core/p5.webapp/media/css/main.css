@@ -20,7 +20,7 @@ body {
 .main-page-header {
     position:absolute;
     top:0;
-    right:50px;
+    right:80px;
     margin-top:12px;
     font-size:25px;
     color:rgba(0,0,0,.3);
@@ -95,6 +95,33 @@ body {
     animation-duration: 6s;
 }
 
+
+/*
+ * CSS classes for login widgets
+ */
+#login-wrapper {
+    position:absolute;
+    top:10px;
+    left:20px;
+    z-index:2000;
+}
+
+@keyframes animate-login-widget {
+    0% {
+        margin-top:-50px;
+        opacity:0;
+    }
+    100% {
+        margin-top:0;
+        opacity:1;
+    }
+}
+
+.login-widget {
+    animation-name:animate-login-widget;
+    animation-duration:.5s;
+    position:relative;
+}
 
 
 /*

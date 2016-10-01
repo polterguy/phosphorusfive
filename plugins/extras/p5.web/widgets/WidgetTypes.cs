@@ -153,7 +153,6 @@ namespace p5.web.widgets {
                     case "parent":
                     case "before":
                     case "after":
-                    case "has-name":
                         // Skipping these buggers, since they're handled elsewhere
                         break;
                     case "oninit":
@@ -199,16 +198,12 @@ namespace p5.web.widgets {
             
         /*
          * Ensuring that the "name" property is the same as the "ID" of the widget, unless a name property is explicitly given,
-         * or element type doesn't necessarily require a "name" to function properly, or [has-name] equals false
+         * or element type doesn't necessarily require a "name" to function properly
          */
         private void EnsureNameProperty (Widget widget, Node node, ApplicationContext context)
         {
             if (widget.HasAttribute ("name"))
                 return; // Caller already explicitly added name attribute
-
-            if (!node.GetChildValue ("has-name", context, true)) {
-                return; // Caller explicitly told us he didn't want any name attribute value
-            }
 
             // Making sure "input", "select" and "textarea" widgets have a name corresponding to their ID
             switch (widget.Element) {

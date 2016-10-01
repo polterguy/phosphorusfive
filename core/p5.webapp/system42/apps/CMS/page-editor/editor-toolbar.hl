@@ -126,7 +126,6 @@ create-widget
             literal
               element:div
               innerValue:URL
-              has-id:false
               class:input-group-addon
             void:page-url
               element:input
@@ -148,7 +147,6 @@ create-widget
               element:div
               class:input-group-addon
               innerValue:Template
-              has-id:false
             container:page-template
               element:select
               class:form-control
@@ -168,7 +166,6 @@ create-widget
               element:div
               class:input-group-addon
               innerValue:Access Role
-              has-id:false
             container:page-role
               element:select
               class:form-control
