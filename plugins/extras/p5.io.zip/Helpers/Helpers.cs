@@ -38,7 +38,7 @@ namespace p5.io.zip.helpers
             if (File.Exists (rootFolder + destinationFile)) {
 
                 // Destination file exist from before, creating a new unique destination filename
-                destinationFile = Helpers.CreateNewUniqueFileName (context, destinationFile);
+                destinationFile = CreateNewUniqueFileName (context, destinationFile);
             }
 
             // Verifying user is authorized to writing to destination
@@ -102,6 +102,17 @@ namespace p5.io.zip.helpers
                 idxNo += 1;
             }
             return string.Format (folder + "{0} copy {1}{2}", filename, idxNo, suffix);
+        }
+
+        /*
+         * Returns the actual file/folder path
+         */
+        public static string GetSystemPath (ApplicationContext context, string path)
+        {
+            if (path.StartsWith ("~")) {
+                return "/users/" + context.Ticket.Username + path.Substring (1);
+            }
+            return path;
         }
     }
 }

@@ -4,6 +4,7 @@
  */
 
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Zip;
 using p5.exp;
@@ -35,9 +36,9 @@ namespace p5.io.zip
             e.Args.FindOrCreate ("password").UnTie (); // Making sure password NEVER LEAVES METHOD!!
 
             // Basic syntax checking
-            if (e.Args.Value == null || e.Args.LastChild == null || e.Args ["to"] == null)
+            if (e.Args.Value == null)
                 throw new LambdaException (
-                    "[unzip] needs both a value and a [to] node",
+                    "[unzip] needs both a destination as its value",
                     e.Args,
                     context);
 
@@ -50,15 +51,18 @@ namespace p5.io.zip
                 // Getting destination folder
                 var destFolder = GetDestinationFolder (context, e);
 
+                // Getting source files
+                var source = XUtil.Source (context, e.Args, e.Args, "src", new string[] { "password" }.ToList ());
+
                 // Looping through each source zip file given
-                foreach (var idxZipFilePath in XUtil.Iterate<string> (context, e.Args)) {
+                foreach (var idxZipFilePath in source) {
 
                     // Unzips currently iterated file
                     UnzipFile (
                         context, 
                         e.Args,
                         rootFolder,
-                        idxZipFilePath,
+                        Helpers.GetSystemPath (context, Utilities.Convert<string> (context, idxZipFilePath)),
                         destFolder,
                         password);
                 }
@@ -74,7 +78,7 @@ namespace p5.io.zip
         private static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving detination folder
-            var destFolder = e.Args.GetExChildValue<string> ("to", context);
+            var destFolder = Helpers.GetSystemPath (context, e.Args.GetExValue<string> (context));
 
             // Verifying user is authorized to writing to destination folder
             context.Raise (".p5.io.authorize.modify-folder", new Node ("", destFolder).Add ("args", e.Args));
