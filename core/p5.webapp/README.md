@@ -98,6 +98,20 @@ If you use Phosphorus Five in combination with System42, this Active Event is au
 handled, and will retrieve the *[p5.page]* from the p5.data database, with the ID being
 the URL requested.
 
+## Active Events
 
+Also the web app itself exposes some few Active Events. Some of the more important ones, are listed below.
 
+* [.p5.core.application-folder] - Returns the root "p5.webapp" folder
+* [.p5.security.get-auth-file] - Returns the filepath to the "auth" file
+* [p5.security.get-default-context-role] - Returns the default Ticket role for users not logged in
+* [p5.security.get-default-context-username] - Returns the default Ticket username for users not logged in
+* [set-page-value] - Sets a "page value", think of a "page value" as a ViewState entry. Has a "private" override
+* [get-page-value] - Opposite of above
+* [list-page-keys] - Lists all "page keys" for current page
+* [set-title] - Changes the title of your page
+* [get-title] - Returns the title of page
+
+The "page-value" Active Events above, obeys by the same rule-set as the "collection values" in [p5.web](/plugins/extras/p5.web/).
+And take similar types of arguments as for instance *[get-session-value]* etc do.
 
