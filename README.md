@@ -97,8 +97,7 @@ There are also many YouTube videos, showing of some aspect about P5 at [my YouTu
 ## About System42
 
 System42 is really just a folder within the "/core/p5.webapp/" folder in Phosphorus Five. It serves two purposes. First of all it is a use-case
-of the core C# parts of Phosphorus Five, showing the capability of P5. Secondly, it is a "front-end" for your system, solving most back-end tasks
-for your system, such as browsing your system's file structure, creating a CMS, handling PGP keys, handling users, etc, etc, etc.
+of the core C# parts of Phosphorus Five, showing the capability of P5. Secondly, it is a relatively nifty CMS by itself.
 
 If you do not wish to use System42, simply delete it entirely, and modify your web.config file, to invoke a different "startup file" during
 startup. This would give you a completely "clean" install, with zero overhead, allowing you to entirely create your own "front-end"/"back-end"
