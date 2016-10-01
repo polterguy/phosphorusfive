@@ -85,10 +85,13 @@ create-widget:executor
      * resulting code into execute_output
      */
     container:exe-wrp
-      class:text-right
+
+      // Necessary to have the next widget obey its "margin-top" CSS
+      style:"overflow:auto;"
+
       widgets
         literal:execute
-          class:btn btn-primary
+          class:btn btn-default col-lg-2 col-lg-push-10 btn-attach-top
           element:button
           title:Alt+E
           innerValue:Evaluate
@@ -132,7 +135,6 @@ create-widget:executor
             lambda2lisp:x:/../*/_exe/#/*
             return-response-object:code
               src:x:/./-?value
-            sys42.info-window:@"Code was successfully executed"
 
 
     /*
@@ -149,12 +151,11 @@ create-widget:executor
      * The clear button for clearing the execute_output editor surface
      */
     container:clear-wrp
-      class:text-right
       widgets
         literal:clear
           element:button
           title:Alt+C
-          class:btn btn-default
+          class:btn btn-default col-lg-2 col-lg-push-10 btn-attach-top
           innerValue:Clear
           onclick:"window.execute_output.getDoc().setValue('');event.preventDefault();"
 

@@ -77,7 +77,14 @@ Some of them are mentioned below.
 * [sys42.toggle-css-classes] - Toggles a CSS class from a widget
 * [sys42.get-event] - Returns the p5.lambda code for one or more dynamically created Active Events
 * [sys42.get-widget] - Returns all p5.lambda associated with a widget, including events
+* [sys42.execute-lisp-file] - Executes one or more Hyperlisp files
+* [sys42.execute-lisp-folder] - Executes all Hyperlisp files in a folder, recursively
 
+In addition, System42 contains a web based Hyperlisp editor, built on top of CodeMirror, an HTML editor,
+built on top of CKEditor, and other things, that might help you out, when creating your own apps.
+
+System42 also contains a suite of Unit Tests, to test the integrity of Phosphorus Five. Which is highly
+extendible, such that you can create your own tests, and plug them into the existing suite.
 
 
 

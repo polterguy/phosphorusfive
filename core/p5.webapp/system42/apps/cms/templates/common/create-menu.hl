@@ -177,7 +177,7 @@ if:x:/../*/whoami/*/default?value
       literal
         element:a
         href:
-        innerValue:login
+        innerValue:Login
         onclick
           sys42.show-login-window
         events
@@ -237,7 +237,7 @@ p5.loginUsernameKeyUp = function(e) {
                     literal:login-button
                       element:button
                       class:btn btn-default form-control input-sm
-                      innerValue:login
+                      innerValue:Login
                       onclick
                         sys42.login-button-clicked
                       _onhide
@@ -344,7 +344,7 @@ else
       literal
         element:a
         href:
-        innerValue:logout
+        innerValue:Logout
         onclick
           sys42.logout
         events
