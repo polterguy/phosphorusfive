@@ -74,7 +74,7 @@
 /*
  * Used for syntactic Hyperlisp errors
  */
-.cm-s-paraiso span.cm-error { background: #ef6155; color: #776e71; }
+.cm-s-paraiso span.cm-error { background: rgba(255,0,0,.2); color: #776e71; }
 
 /*
  * Active line
