@@ -70,3 +70,19 @@ for-each:x:/-/*?name
 sys42.execute-lisp-file:x:/../*/_app-startup/*?name
 
 
+/*
+ * Then it will execute all components specific startup files, which means any files directly inside any
+ * components folder, who's name is "startup.hl"
+ */
+_components-startup
+list-folders:/system42/components/
+for-each:x:/-/*?name
+  if
+    file-exist:{0}startup.hl
+      :x:/..for-each/*/_dp?value
+    add:x:/../*/_components-startup
+      src:{0}startup.hl
+        :x:/..for-each/*/_dp?value
+sys42.execute-lisp-file:x:/../*/_components-startup/*?name
+
+

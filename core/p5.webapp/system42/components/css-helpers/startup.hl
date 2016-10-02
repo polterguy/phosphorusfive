@@ -4,4 +4,4 @@
  * Evaluates all Hyperlisp files in the "startup" folder.
  */
 
-sys42.execute-lisp-folder:/system42/apps/common-dialogues/startup/
+sys42.execute-lisp-folder:/system42/components/css-helpers/startup/

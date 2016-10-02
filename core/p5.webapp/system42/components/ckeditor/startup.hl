@@ -1,7 +1,7 @@
-﻿
+
 /*
  * Startup script that is evaluated when server is started.
  * Evaluates all Hyperlisp files in the "startup" folder.
  */
 
-sys42.execute-lisp-folder:/system42/apps/app-settings/startup/
+sys42.execute-lisp-folder:/system42/components/ckeditor/startup/
