@@ -1,0 +1,118 @@
+
+/*
+ * Responsible for creating the Active Event that shows the user a modal dialog,
+ * to make user confirm some action, before action is evaluated
+ *
+ * Arguments;
+ * 
+ * [_header] - Header of modal dialogue
+ * [_body]   - Explanatory text of dialogue
+ * [_onok]   - Code to be evaluated if user clicks OK button
+ *
+ * If user closes modal dialogue, without clicking OK, then the code given through
+ * [_onok] is not evaluated. You cannot show more than one instance of this window
+ * at the time
+ */
+create-event:sys42.confirm-window
+
+  /*
+   * Making sure we delete any previously created dialogs
+   * Notice that sice we only hide the dialog when it is closed, we need
+   * to check if any previous dialogs exist, and if so, delete them, before 
+   * we create any new ones
+   */
+  if
+    fetch:x:/0/0?value
+      widget-exist:confirm-window
+    delete-widget:confirm-window
+
+  /*
+   * Setting properties of Modal Dialog
+   */
+  set:x:/../*/create-widget/**/literal/=confirm-window-header/*/innerValue?value
+    src:x:/../*/_header?value
+  set:x:/../*/create-widget/**/literal/=confirm-window-body/*/innerValue?value
+    src:x:/../*/_body?value
+
+  /*
+   * Appending code into OK onclick button's event handler
+   */
+  add:x:/../*/create-widget/**/literal/=confirm-window-ok/*/onclick
+    src:x:/../*/_onok/*
+
+  /*
+   * Appending additional buttons into footer of dialogue
+   */
+  insert-before:x:/../*/create-widget/**/class/=modal-footer/./*/widgets/*/literal/=confirm-window-ok
+    src:x:/../*/_extra-buttons/*
+
+
+  /*
+   * Creating actual modal Widget
+   */
+  create-widget:confirm-window
+    class:modal fade
+    oninit
+
+      // Making sure dialog is visible
+      send-javascript:@"
+      $('#confirm-window').modal('toggle');
+$('#confirm-window').on('shown.bs.modal', function () {
+    $('#confirm-window-ok').focus();
+})"
+
+    widgets
+      container
+        class:modal-dialog
+        role:document
+        widgets
+          container
+            class:modal-content
+            widgets
+
+              /*
+               * Header of dialog
+               */
+              container
+                class:modal-header
+                widgets
+
+                  // Close button
+                  literal
+                    element:button
+                    class:close
+                    data-dismiss:modal
+                    aria-label:Close
+                    innerValue:&times;
+
+                  // Actual literal widget containing header of dialogue
+                  literal:confirm-window-header
+                    element:h4
+                    innerValue
+
+              /*
+               * Body of dialog
+               */
+              container:confirm-window-body-wrapper
+                class:modal-body
+                widgets
+
+                  // Actual literal widget containing body of dialogue
+                  literal:confirm-window-body
+                    element:div
+                    innerValue
+
+              /*
+               * Footer of dialog (contains OK and Cancel buttons)
+               */
+              container
+                class:modal-footer
+                widgets
+                  literal:confirm-window-ok
+                    element:button
+                    class:btn btn-default
+                    innerValue:OK
+                    onclick
+
+                      // Hiding dialog
+                      send-javascript:@"$('#confirm-window').modal('toggle');"

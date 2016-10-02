@@ -1,0 +1,66 @@
+
+/*
+ * Responsible for creating the Active Event that shows the user a small
+ * informational window, providing feedback to user
+ *
+ * Arguments;
+ *
+ * [_arg] or value - Message, or epxression leading to message, you wish to display to user
+ * [_error]        - If true, will make the text appear dark red, mutually exclusive with [_warning]
+ * [_warning]      - If true, will make text appear orange, mutually exclusive with [_error]
+ * [_time]         - If value is "more", then window will stick for a slightly longer time than its default, providing
+ *                   more time to read content of window
+ *
+ * You cannot show more than one instance of this window at the time
+ */
+create-event:sys42.info-window
+
+  /*
+   * Making sure we delete any previously created windows
+   * Notice that sice we only hide the window when it is closed, we need
+   * to check if any previous windows exist, and if so, delete them, before 
+   * we create any new ones
+   */
+  if
+    fetch:x:/0/0?value
+      widget-exist:info-window
+    delete-widget:info-window
+
+  /*
+   * Setting properties of window
+   */
+  set:x:/../*/create-widget/**/literal/=info-window-message/*/innerValue?value
+    src:x:/../*/_arg?value
+
+  /*
+   * Checking if this is an "error" type of feedback
+   */
+  if:x:/../*/_error?value.bool
+    =:bool:true
+    add:x:/../*/create-widget/*/widgets/*/literal
+      src:node:@"style:""color:#e55;"""
+
+  /*
+   * Checking if this is a "warning" type of feedback
+   */
+  else-if:x:/../*/_warning?value.bool
+    =:bool:true
+    add:x:/../*/create-widget/*/widgets/*/literal
+      src:node:@"style:""color:#ea5;"""
+
+  /*
+   * Checking if this is feedback needs "more time" to stick on screen
+   */
+  if:x:/../*/_time?value
+    =:more
+    set:x:/../*/create-widget/*/class?value
+      src:info-window info-window-more
+
+  /*
+   * Creating actual window popdown
+   */
+  create-widget:info-window
+    class:info-window
+    widgets
+      literal:info-window-message
+        innerValue

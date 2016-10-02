@@ -1,0 +1,56 @@
+
+/*
+ * Responsible for creating the CKEditor HTML editor widget
+ */
+create-event:sys42.widgets.ck-editor
+
+  /*
+   * Applying options for widget, with default values.
+   * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
+   * up prioritizing specified argument, resorting to [_default] value if not given
+   */
+  _defaults
+    _height:381
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)/$"
+
+  /*
+   * Setting CKEditor's basepath.
+   * Notice this must occur BEFORE we include CKEditor's JavaScript files!
+   */
+  include-javascript:"window.CKEDITOR_BASEPATH='/system42/apps/ckeditor/';"
+
+  /*
+   * Loading CKEditor's JavaScript file
+   */
+  include-javascript-file:/system42/apps/ckeditor/ckeditor.js
+
+  /*
+   * JavaScript to replace textarea with CKEditor instance
+   */
+  send-javascript:@"CKEDITOR.replace('{0}',{{
+  contentsCss: [CKEDITOR.basePath + 'contents.css', '/media/bootstrap/css/bootstrap.min.css'],
+  allowedContent: true,
+  height:{1}
+}});"
+    :x:/../*/_arg?value
+    :x:/../*/_options/*/_height?value
+
+  /*
+   * Making sure the textarea HTML innerValue updates every time CKEditor content updates,
+   * since we rely upon being able to postback this value over Ajax Requests and Post Requests
+   */
+  send-javascript:@"for (var i in CKEDITOR.instances) {
+    CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
+}"
+
+  /*
+   * Returning "textarea" widget that CKEditor should wrap on client side
+   */
+  add:x:/+/*
+    src:x:/../*/innerValue|/../*/events
+  return
+    literal
+      element:textarea
+

@@ -1,0 +1,57 @@
+
+/*
+ * Responsible for creating the Active Event that allows the user to view a piece of
+ * lambda code in a "debug window" during execution. Pass in an expression leading to
+ * whatever piece of code you'd like to study
+ *
+ * Arguments;
+ *
+ * [_arg] or value - Expression leading to node or node-list, or node (-list) you wish to inspect
+ *
+ * This window can have multiple instances at the same time on page
+ */
+
+create-event:sys42.show-code-window
+
+  // Checking if user supplied an expression, and if not, showing error message
+  if:x:/../*/_arg
+    not
+
+    // Informing used he has to submit a lambda expression or add nodes himself
+    set:x:/../**/literal/*/element/=pre/./*/innerValue?value
+      src:"No input given to {0}. Supply an expression as value of event invocation, for instance; 'sys42.show-code-window:x:/../*'"
+        :x:/..?name
+  else
+
+    // Converting lambda to lisp
+    lambda2lisp:x:/../*/_arg/*
+
+    // HTML-encoding HTML
+    html-encode:x:/-?value
+
+    // Setting the literal content to the nodes converted to Hyperlisp (or default code)
+    set:x:/../**/literal/*/element/=pre/./*/innerValue?value
+      src:x:/./-?value
+
+  // creating a widget showing the Hyperlisp code created from the given p5 lambda tree
+  create-widget
+    class:col-xs-12
+    style:"position:relative;"
+    parent:content
+    position:0
+    widgets
+      literal
+        element:pre
+        innerValue
+      literal
+        element:a
+        href:#
+        class:glyphicon glyphicon-remove
+        style:"position:absolute;top:10px;right:25px;cursor:pointer;"
+        onclick
+
+          // removing entire debug window
+          get-parent-widget:x:/../*/_event?value
+          delete-widget:x:/-/*/*?value
+
+
