@@ -355,6 +355,7 @@
     <Content Include="system42\startup\sys42.include-default-javascript-files.hl" />
     <Content Include="system42\startup\sys42.include-default-stylesheet-files.hl" />
     <Content Include="system42\startup\custom-widgets\sys42.widgets.codemirror.hl" />
+    <Content Include="system42\startup\custom-widgets\sys42.widgets.ck-editor.hl" />
     <None Include="system42\startup\pf.web.load-ui.hl" />
     <None Include="system42\startup\misc-events\sys42.get-widget.hl" />
     <None Include="system42\editors\ckeditor\README.md" />

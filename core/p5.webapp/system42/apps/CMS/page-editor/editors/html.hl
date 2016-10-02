@@ -5,19 +5,6 @@
 
 
 /*
- * Setting CKEditor's basepath, notice this must occur BEFORE 
- * we include the CKEditor's JavaScript files!
- */
-include-javascript:"window.CKEDITOR_BASEPATH='/system42/editors/ckeditor/';"
-
-
-/*
- * Loading CKEditor's JavaScript file
- */
-include-javascript-file:/system42/editors/ckeditor/ckeditor.js
-
-
-/*
  * Loading page from database
  */
 select-data:x:/*/*/p5.page/"={0}"
@@ -25,9 +12,9 @@ select-data:x:/*/*/p5.page/"={0}"
 
 
 /*
- * Setings the value of textarea to [content] from database
+ * Setting the value of textarea to [content] from database
  */
-set:x:/../*/create-widget/*/widgets/*/literal/=ck-editor/*/innerValue?value
+set:x:/../*/create-widget/*/widgets/*/=ck-editor/*/innerValue?value
   src:x:/../*/select-data/*/*/content?value
 
 
@@ -40,28 +27,6 @@ set:x:/../*/create-widget/*/parent?value
 
 
 /*
- * Populating the "template" drop down select list
- */
-list-files:/system42/apps/cms/templates/
-for-each:x:/-/*
-  _literal
-    literal
-      element:option
-      selected
-      value
-      innerValue
-  set:x:/-/*/literal/*/value?value
-    src:x:/..for-each/*/_dp/#?value
-  set:x:/-2/*/literal/*/innerValue?value
-    src:x:/..for-each/*/_dp/#?value
-  if:x:/..for-each/*/_dp/#?value
-    not-equals:x:/../*/select-data/*/*/template?value
-    set:x:/..for-each/*/_literal/*/literal/*/selected
-  add:x:/../*/create-widget/*/widgets/**/container/=page-template/*/widgets
-    src:x:/..for-each/*/_literal/*
-
-
-/*
  * Creates the editor widget
  */
 create-widget
@@ -69,8 +34,8 @@ create-widget
   class:col-xs-12
   style:"display:inline-block;width:100%;"
   widgets
-    literal:ck-editor
-      element:textarea
+    sys42.widgets.ck-editor:ck-editor
+      _height:600
       innerValue
 
 
@@ -94,22 +59,3 @@ create-widget
             src:content
           set:x:/../0?value
             src:x:/../*/get-widget-property/*/*?value
-
-
-/*
- * JavaScript to replace textarea with CKEditor instance
- */
-send-javascript:@"CKEDITOR.replace('ck-editor',{
-  contentsCss: [CKEDITOR.basePath + 'contents.css', '/media/bootstrap/css/bootstrap.min.css'],
-  allowedContent: true,
-  height:381
-});"
-
-
-/*
- * Making sure the textarea HTML innerValue updates every time CKEditor content updates,
- * since we rely upon being able to postback this value over Ajax Requests and Post Requests
- */
-send-javascript:@"for (var i in CKEDITOR.instances) {
-   CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
-}"
