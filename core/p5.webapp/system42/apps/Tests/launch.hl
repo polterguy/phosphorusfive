@@ -434,19 +434,41 @@ foo2
       innerValue:Coverage
       title:Shows the coverage of your unit tests
       onclick
+
+        /*
+         * Lists all static Active Events in system that doesn't contain a "." in their names
+         */
         vocabulary
         set:x:/-/*/dynamic|/-/*/=|/-/*/=~.
+
+        /*
+         * Then loading up all unit test files, making sure we remove the "launch.hl" file
+         */
         list-files:/system42/apps/tests/
           filter:hl
         set:x:/-/*/~launch.hl
         load-file:x:/-2/*?name
+
+        /*
+         * Then looping through our vocabulary, and figuring out how many times each Active Event can be found 
+         * in the combined results for ALL of our unit test files.
+         */
         for-each:x:/../*/vocabulary/*
           add:x:/./*/_dp/#
             src:"{0}:int:{1}"
               :x:/..for-each/*/_dp/#?value
               :x:/../*/load-file/*/*/**/\{0}?count
                 :x:/..for-each/*/_dp/#?value
+
+        /*
+         * Then we sort descending our vocabulary/hit-count list
+         */
         sort-desc:x:/../*/vocabulary/*/*
+
+        /*
+         * To lambda objects used when [apply]'ing to HTML table below.
+         * The first lambda is used to figure out which CSS class to use for row.
+         */
         _get-css-for-row
           if:x:/../*/_dn/#?value.int
             =:int:0
@@ -459,6 +481,10 @@ foo2
           else
             return
               class:success
+
+        /*
+         * This lambda object is used to figure out which "info" to show for row
+         */
         _get-info-for-row
           if:x:/../*/_dn/#?value.int
             =:int:0
@@ -474,7 +500,12 @@ foo2
             return
               td
                 innerValue:OK
-        apply:x:/../*/create-widget/*/widgets/**/table/*/widgets/*/tbody/*/widgets
+
+        /*
+         * Then [apply]'ing to our [widgets] node in our [create-widget] invocation below,
+         * to create one row for each keyword.
+         */
+        apply:x:/../*/create-widget/*/widgets/**/table/*/widgets
           src:x:/../*/sort-desc/*
           template
             tr
@@ -485,6 +516,12 @@ foo2
                 td
                   {innerValue}:x:?value
                 {@eval}:x:/../*/_get-info-for-row
+
+        /*
+         * Now we can create our "coverage" report for uni tests.
+         * Notice, we create a modal window, with an HTML table inside of it,
+         * with one row for each "keyword".
+         */
         create-widget
           class:modal fade
           oninit
