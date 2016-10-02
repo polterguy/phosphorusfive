@@ -5,21 +5,6 @@
 
 
 /*
- * Including CodeMirror for [lambda] editor
- */
-sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
-  _editor
-    editor_surface
-      mode:hyperlisp
-      autofocus:true
-      fullscreen:true
-      autocomplete:true
-      height:484px
-      keys
-        Alt-S:@"function(cm) {p5.$('save-button').raise('onclick');}"
-
-
-/*
  * Loading page from database
  */
 select-data:x:/*/*/p5.page/"={0}"
@@ -29,7 +14,7 @@ select-data:x:/*/*/p5.page/"={0}"
 /*
  * Setting the content of editor_surface to the [lambda] from database
  */
-set:x:/../*/create-widget/*/widgets/*/literal/=editor_surface/*/innerValue?value
+set:x:/../*/create-widget/*/widgets/*/=editor_surface/*/innerValue?value
   src:x:/../*/select-data/*/*/lambda?value
 
 
@@ -48,8 +33,9 @@ create-widget
   parent
   class:col-xs-12
   widgets
-    literal:editor_surface
-      element:textarea
+    sys42.widgets.codemirror:editor_surface
+      _height:600px
+      _auto-focus:true
       innerValue
 
 

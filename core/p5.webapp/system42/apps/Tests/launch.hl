@@ -16,6 +16,7 @@ if:x:/-/*/role?value
  * assuming all other files are unit test files
  */
 list-files:/system42/apps/tests/
+  filter:hl
 set:x:@"/-/*/""/system42/apps/tests/launch.hl"""
 
 /*
@@ -33,7 +34,7 @@ _eval-name
 /*
  * Databinding unit tests files to table widget
  */
-apply:x:/../*/create-widget/=unit-test-files/*/widgets
+apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
   src:x:/../*/list-files/*
   template
     tr
@@ -55,6 +56,25 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets
               href:#
               title:Click to edit or view unit test file
               onclick
+
+                /*
+                 * Checking  if editor is already loaded, and if so, deleting widget for it (entire "tr" element)
+                 * Returns early if editor exists
+                 */
+                if
+                  fetch:x:/0/0?value
+                    widget-exist:{0}_editor
+                      :x:/../*/_event?value
+                  delete-widget:{0}_editor
+                    :x:/../*/_event?value
+                  return
+
+                /*
+                 * Invoking the Active Event responsible for creating our CodeMirror editor (in a "tr" row beneath test row)
+                 */
+                add:x:/+
+                  src:"_widget:{0}"
+                    :x:/../*/_event?value
                 sys42.launch-unit-test-editor
                   {_file}:x:?name
 
@@ -169,43 +189,87 @@ create-widget:unit-test-files
      */
     sys42.launch-unit-test-editor
 
-      // Launching editor
-      eval-x:x:/+/0/*
-      if
-        sys42.execute-lisp-file:/system42/editors/launch.hl
-          _file:x:/../*/_file?value
-          _parent:content
-          _widget-id:unit-test-file-editor
-        =:bool:true
+      /*
+       * Retrieving parent's parent widget (which should be the "tr" HTML row)
+       */
+      get-parent-widget:x:/../*/_widget?value
+      get-parent-widget:x:/-/*/*?value
 
-        // Changing header of page to reflect we're in edit mode
-        set-widget-property:header
-          innerValue:Editing test file <small>{0}</small>
-            :x:/../*/_file?value
+      /*
+       * Loading unit test file
+       */
+      load-file:x:/../*/_file?value
+        convert:false
 
-        // Hiding unit test table and "add" button
-        set-widget-property:unit-test-files
-          visible:false
-        set-widget-property:add-unit-test
-          visible:false
+      /*
+       * Then creating a new "tr" row, after that one, which contains only one column, containing the content
+       * of our currently edited test file
+       */
+      eval-x:x:/+/*|/+|/+/**(/~codemirror|/_file)|/+/*/*/*/*/*/innerValue
+      create-widget:{0}_editor
+        :x:/../*/_widget?value
+        after:x:/../*/get-parent-widget/[1,2]/*/*?value
+        element:tr
+        widgets
+          td
+            colspan:3
+            style:"border-top:none;"
+            widgets
 
-    /*
-     * Invoked when file editor is destroyed
-     */
-    sys42.destroy-file-editor
+              /*
+               * Our CodeMirror custom editor widget
+               */
+              sys42.widgets.codemirror:{0}_codemirror
+                :x:/../*/_widget?value
+                _auto-focus:true
+                _height:700px
+                innerValue:x:/../*/load-file/*?value
+              container
+                class:btn-group col-xs-2 col-xs-push-10
+                widgets
+                  literal
+                    element:button
+                    style:"width:50%;"
+                    class:btn btn-default btn-attach-top
+                    innerValue:Save
+                    onclick
 
-      // Changing header of page back to original state
-      set-widget-property:header
-        innerValue:Tests
+                      /*
+                       * Retrieving value from CodeMirror "textarea", and saving to specified test file.
+                       * [_file] and [_codemirror] is forward evaluated before creation of widget
+                       */
+                      _file:x:/../*/_file?value
+                      _codemirror:{0}_codemirror
+                        :x:/../*/_widget?value
+                      get-widget-property:x:/-?value
+                        value
+                      save-file:x:/../*/_file?value
+                        src:x:/../*/get-widget-property/*/*?value
 
-      // Deleting editor widget
-      delete-widget:unit-test-file-editor
+                      /*
+                       * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
+                       */
+                      find-first-ancestor-widget:x:/../*/_event?value
+                        element:tr
+                      delete-widget:x:/-/*?value
 
-      // Making unit test table and "add button" visible again
-      set-widget-property:unit-test-files
-        visible:true
-      set-widget-property:add-unit-test
-        visible:true
+                      /*
+                       * Feedback to user
+                       */
+                      sys42.info-window:File was saved
+                  literal
+                    element:button
+                    style:"width:50%;"
+                    class:btn btn-default btn-attach-top
+                    innerValue:Close
+                    onclick
+
+                      /*
+                       * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
+                       */
+                      find-first-ancestor-widget:x:/../*/_event?value
+                        element:tr
+                      delete-widget:x:/-/*?value
 
     /*
      * Evaluates one Unit Test file
@@ -280,6 +344,8 @@ create-widget:unit-test-files
                       set-widget-property:x:/../*/_event?value
                         class:btn btn-success form-control
                         disabled
+    tbody
+      widgets
 
 
 create-widget:add-unit-test
@@ -371,6 +437,7 @@ foo2
         vocabulary
         set:x:/-/*/dynamic|/-/*/=|/-/*/=~.
         list-files:/system42/apps/tests/
+          filter:hl
         set:x:/-/*/~launch.hl
         load-file:x:/-2/*?name
         for-each:x:/../*/vocabulary/*
@@ -407,7 +474,7 @@ foo2
             return
               td
                 innerValue:OK
-        apply:x:/../*/create-widget/*/widgets/**/table/*/widgets
+        apply:x:/../*/create-widget/*/widgets/**/table/*/widgets/*/tbody/*/widgets
           src:x:/../*/sort-desc/*
           template
             tr

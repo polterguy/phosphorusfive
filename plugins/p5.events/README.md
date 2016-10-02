@@ -315,11 +315,87 @@ eval
 The above lambda, will return exactly how many times, every "keyword" from p5.lambda is being used, in total, in every single dynamic Active Event
 you have in your system. It will even sort them, such that the most frequently used "keywords", are being returned first.
 
-Hint!
-Implementing something similar on your Unit Test files, within your "/system42/apps/tests/" folder, allows you to create a "coverage" of how many
-of your keywords are being used within your tests. This requires loading up all files within your "tests" folder, instead of retrieving the lambda
-objects for your dynamic Active Events.
+### Defaults to lambda objects
 
-This is left for you as an excersise though ...
+Sometimes you have for instance an Active Event, that takes a set of arguments, where you wish to use some default value, if the argument
+is not supplied by the caller. This can easily be done, by combining the *[add]* Active Event, with some boolean agebraic expression trickery.
+Example is given below.
+
+```
+_lambda
+  _defaults
+    _auto-focus:false
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+  insert-before:x:
+    src:x:/../*/_options/*
+eval:x:/../*/_lambda
+```
+
+The above lambda simply evaluates the *[_lambda]* node, which again first applies every argument given into *[_option]*. If an argument is
+not given, it will fetch the value for the argument from the *[_defaults]* segment.
+
+When it adds the arguments, and their default values, into *[_options]*, it will exclude the *[_defaults]* node, and the *[_options]* node. 
+Besides from that, it will consider ever node starting with an underscore (_) to be an argument. Due to our expression ending with the 
+"unique name" iterator (/$), and that it fetches the arguments, before it logically ORs these arguments together with the *[_defaults]* values - 
+After evaluating the *[add]*, only root nodes for the lambda object starting with "_", or if not given than taken from the *[_defaults]* 
+segment, will exist within the *[_options]* node.
+
+The above lambda then simply returns everything afterwards from the *[_option]* node, to show what the node contains, after applying the 
+arguments. If you invoke it with the *[_auto-focue]* argument set, you will see it returns your value of it, and not the default value of true.
+
+```
+_lambda
+  _defaults
+    _auto-focus:false
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+  insert-before:x:
+    src:x:/../*/_options/*
+eval:x:/../*/_lambda
+  _auto-focus:ARGUMENT SUPPLIED
+```
+
+The above technique, is quite useful for both having arguments in your p5.lambda objects, and/or Active Events, that have default values. In
+addition, it serves the purpose of helping you to "document" your Active Events, since if used consistently by convention, any consumer of your
+Active Events, can easily retrieve every single argument your Active Event acccepts, by invoking your lambda with some "add/return" trickery.
+Such as shown below.
+
+```
+_lambda
+  _defaults
+    _auto-focus:false
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+  insert-before:x:
+    src:x:/../*/_options/*
+eval:x:/../*/_lambda
+  insert-before:x:
+    src:x:/../*/_defaults/*
+  return
+```
+
+The above lambda, will work for any lambda object, including also Active Events. It will return every *[_defaults]* nodes you have within your 
+lambda, and not in fact evluate the lambda itself at all.
+
+If you wish to create something similar for your own Active Events, it would look something like this.
+```
+create-event:test.my-foo-bar-event
+  _defaults
+    _some-argument-1:foo
+    _some-argument-2:bar
+    _some-argument-3:bool:true
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+```
+
+4 lines of code, plus all default values, and you have a 100% generic way of using default arguments in your Active Events, and in addition,
+to help you document your Active Events, semantically, allowing consumers to easily retrieve meta-data, about the arguments your events accepts.
+
+
 
 

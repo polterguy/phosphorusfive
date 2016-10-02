@@ -357,10 +357,6 @@
     <Content Include="system42\startup\custom-widgets\sys42.widgets.codemirror.hl" />
     <None Include="system42\startup\pf.web.load-ui.hl" />
     <None Include="system42\startup\misc-events\sys42.get-widget.hl" />
-    <None Include="system42\editors\code-mirror-editor.hl" />
-    <None Include="system42\editors\html-editor.hl" />
-    <None Include="system42\editors\launch.hl" />
-    <None Include="system42\editors\codemirror\include-codemirror.hl" />
     <None Include="system42\editors\ckeditor\README.md" />
     <None Include="system42\editors\ckeditor\skins\moono\readme.md" />
     <None Include="system42\startup\misc-dialog-events\sys42.confirm-window.hl" />

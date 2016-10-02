@@ -311,10 +311,10 @@ By default, all create widget Active Events, will use the following HTML element
 
 This means you can omit the *[element]* arguments if you are creating the above HTML elements.
 
-### Creating "custom widgets"
+### Creating custom reusable widgets
 
-To create a custom widget, all you have to do, is to create an Active Event, containing, (but obviously not starting) with a ".".
-Then you make sure this Active Event returns exactly _one_ valid "widget" for a *[widgets]* argument to a container widget. Now you 
+To create a custom widget, all you have to do, is to create an Active Event, containing a period (.).
+Then you make sure this Active Event returns exactly _one_ valid widget for a *[widgets]* argument to a container widget. Now you 
 can use your Active Event as a "widget type".
 
 ```
@@ -334,17 +334,19 @@ create-widget
 ```
 
 The above lambda, first declares an Active Event with the name of "foo.bar". This Active Event returns one *[literal]* widget. Then we use
-our *[foo.bar]* as if it was just another widget type, in our *[widgets]* collection of our root container widget, created 
+our *[foo.bar]* as if it was just another widget type, in our *[widgets]* collection, of our root container widget, created 
 through *[create-widget]*.
 
 The above Ninja trick, allows you to create reusable complex widgets, as Active Events, which you can include in any other parts of your program.
 Just as if they were "normal widgets".
 
-It is important that such "custom widget" Active Events returns _ONE_ and _ONLY_ one widget back to the caller. This single widget however, 
+It is important that such "custom widget" Active Events, returns _ONE_ and _EXACTLY_ one widget back to the caller. This single widget however, 
 can be a *[container]* widget, containing several children widgets itself.
 
-Notice, the single return value from your Active Event, will have the "ID" passed in as value to your invocation, automatically become the ID
-for the return widget from your Active Event.
+Notice, the single return value from your Active Event, will have the "widget id" passed in as value to your invocation, automatically become 
+the id for the return widget from your Active Event.
+
+Below is a list of the widgets that is pre-created like this from System42.
 
 ### The [text] widget, for injecting stuff into your HTML
 
