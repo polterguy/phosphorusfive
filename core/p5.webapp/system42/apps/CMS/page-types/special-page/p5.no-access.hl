@@ -28,9 +28,9 @@ if:x:/../*/whoami/*/default?value
    * User is logged in, explaining that he does not have access to this URL
    */
   set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}?value
-    src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:left;"" />
-<h5>Sorry, I cannot give you access to that page, since my owner has created restricted access rights to it.
-Feel free to try finding another page by using the menu at the top!</h5>"
+    src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" />
+<h2>Sorry!</h2>
+<p>I cannot give you access to that page!</p>"
 
 else
 
@@ -41,79 +41,86 @@ else
    */
   add:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/./.
     src
-      literal
-        element:img
-        src:/media/images/marvin-headshot.png
-        style:"float:right;"
-      literal
-        element:h2
-        innerValue:Oops!
-      literal
-        element:p
-        innerValue:@"I cannot give you access to that page, since my owner has restricted access to it!"
       container
-        class:form-inline flash-from-left
+        class:col-xs-12
         widgets
+          literal
+            element:img
+            class:hidden-xs
+            src:/media/images/marvin-headshot.png
+            style:"float:right;"
+          literal
+            element:h2
+            innerValue:Sorry!
+          literal
+            element:p
+            innerValue:@"I cannot give you access to that page!"
           container
-            class:form-group
+            class:form col-md-4 col-md-push-1 prepend-top flash-from-left col-xs-12
             widgets
               container
-                class:input-group
+                class:form-group
                 widgets
-                  literal
-                    class:input-group-addon
-                    innerValue:Username
-                  literal:login-username
-                    element:input
-                    type:text
-                    class:form-control
-                    placeholder:Username ...
-                    oninit
-                      send-javascript:@"setTimeout(function(){$('#login-username').focus().select();},250);"
-                      if
-                        fetch:x:/0/0?value
-                          widget-exist:login-menu-button
-                        delete-widget:login-menu-button
-                    onkeypress:"return p5.keyLoginPress(event);"
-              container
-                class:input-group
-                widgets
-                  literal
-                    class:input-group-addon
-                    innerValue:Password
-                  literal:login-password
-                    element:input
-                    type:password
-                    class:form-control
-                    placeholder:Password ...
-                    oninit
-                      send-javascript:@"$('#user-username').focus().select();"
-                    onkeypress:"return p5.keyLoginPress(event);"
-              literal:login-user
-                element:button
-                class:btn btn-primary
-                innerValue:Login
-                onclick
-                  _widgets
-                    login-username
-                    login-password
-                  get-widget-property:x:/-/*?name
-                    value
-                  set:x:/../**/login/*/username?value
-                    src:x:/../*/get-widget-property/*/login-username/*?value
-                  set:x:/../**/login/*/password?value
-                    src:x:/../*/get-widget-property/*/login-password/*?value
-                  if
-                    login
-                      username
-                      password
-                      persist:bool:true
+                  container
+                    class:input-group
+                    widgets
+                      literal
+                        class:input-group-addon
+                        innerValue:Username
+                      literal:login-username
+                        element:input
+                        type:text
+                        class:form-control
+                        placeholder:Username ...
+                        oninit
+                          send-javascript:@"setTimeout(function(){$('#login-username').focus().select();},250);"
+                          if
+                            fetch:x:/0/0?value
+                              widget-exist:login-menu-button
+                            delete-widget:login-menu-button
+                        onkeypress:"return p5.keyLoginPress(event);"
+                  container
+                    class:input-group
+                    widgets
+                      literal
+                        class:input-group-addon
+                        innerValue:Password
+                      literal:login-password
+                        element:input
+                        type:password
+                        class:form-control
+                        placeholder:Password ...
+                        oninit
+                          send-javascript:@"$('#user-username').focus().select();"
+                        onkeypress:"return p5.keyLoginPress(event);"
+                  container
+                    class:text-right
+                    widgets
+                      literal:login-user
+                        element:button
+                        class:btn btn-primary btn-attach-top
+                        innerValue:Login
+                        onclick
+                          _widgets
+                            login-username
+                            login-password
+                          get-widget-property:x:/-/*?name
+                            value
+                          set:x:/../**/login/*/username?value
+                            src:x:/../*/get-widget-property/*/login-username/*?value
+                          set:x:/../**/login/*/password?value
+                            src:x:/../*/get-widget-property/*/login-password/*?value
+                          if
+                            login
+                              username
+                              password
+                              persist:bool:true
 
-                    // Reloading page to make sure everything is wired up together correctly
-                    reload-location
-                  else
-                    sys42.info-window:Sorry, wrong credentials
-                      _error:true
+                            // Reloading page to make sure everything is wired up together correctly
+                            reload-location
+                          else
+                            sys42.info-window:Sorry, wrong credentials
+                              _error:true
   set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/.
 
 
@@ -140,3 +147,7 @@ p5.keyLoginPress = function(e) {
     return false;
   }
 }"
+
+set-title:No access
+set-widget-property:header
+  innerValue:No access

@@ -16,8 +16,9 @@ load-file:x:/../*/_template?value
 set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
   src:"Page not found - 404!"
 set:x:/-2/*/*/create-widget/*/widgets/**/={content}?value
-  src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:left;"" />
-<h5>Sorry, I could not find that page, even though my head is as big as a planet. Feel free to try finding another page by using the menu at the top!</h5>"
+  src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" />
+<h2>Sorry!</h2>
+<p>I could not find that page!</p>"
 
 
 /*
@@ -31,4 +32,8 @@ eval:x:/./*/load-file/*
  */
 set-http-status-code:404
 set-http-status:404 Marvin could not find that page
+
+set-title:Page not found
+set-widget-property:header
+  innerValue:Page not found
 

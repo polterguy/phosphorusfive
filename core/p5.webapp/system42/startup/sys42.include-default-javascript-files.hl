@@ -1,0 +1,17 @@
+
+/*
+ * Responsible for making sure all JavaSccript files are included
+ */
+create-event:sys42.include-default-javascript-files
+
+  // Including jQuery, then bootstrap
+  include-javascript-file
+    /media/jquery/jquery-2.1.4.min.js
+    /media/jquery/jquery-ui.min.js
+    /media/bootstrap/js/bootstrap.min.js
+    
+
+
+
+
+

@@ -54,33 +54,3 @@ create-event:p5.web.load-ui
           :x:/..else/..else/*/select-data/*/*/type?value
       sys42.execute-lisp-file
         _args
-
-
-
-/*
- * Responsible for making sure all CSS files are included
- */
-create-event:sys42.include-default-stylesheet-files
-
-  // Including bootstrap
-  include-stylesheet-file
-    /media/bootstrap/css/bootstrap.min.css
-    /media/css/main.css
-
-
-/*
- * Responsible for making sure all JavaSccript files are included
- */
-create-event:sys42.include-default-javascript-files
-
-  // Including jQuery, then bootstrap
-  include-javascript-file
-    /media/jquery/jquery-2.1.4.min.js
-    /media/jquery/jquery-ui.min.js
-    /media/bootstrap/js/bootstrap.min.js
-    
-
-
-
-
-

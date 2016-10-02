@@ -11,23 +11,19 @@ p5.page:/about
 
 <h2>About Phosphorus Five and System42</h2>
 
-<p>Although Phosphorus Five and System42, is the architecture and creation of one single person, me that is, there are numerous others who have one way or another contributed. This page is to say thank you to all of these people.</p>
+<p>Although Phosphorus Five and System42, is the architecture and creation of one single person, there are numerous others who 
+have one way or another contributed. This page is to say thank you to all of these people.</p>
 
 <ul>
 	<li>Svein Daniel Solvenus - sveindaniel_phosphorus_at_solvenus_dot_no - for providing extensive testing and invaluable feedback, over a long period of time</li>
-	<li><a href=""https://github.com/jstedfast/MimeKit/"">MimeKit</a>, <a href=""https://github.com/jstedfast/MailKit"">MailKit</a> and its brilliant creator, Jeffrey Steadfast, for always responding to my MimeKit/MailKit support requests within minutes, even on x-mas eve</li>
-	<li><a href=""https://www.bouncycastle.org/"">The Legion of the Bouncy Castle</a>, and all who contributes to it, for creating a brilliant cryptography library for .net and Mono</li>
+	<li><a href=""https://github.com/jstedfast/MimeKit/"">MimeKit</a>, <a href=""https://github.com/jstedfast/MailKit"">MailKit</a> and its brilliant creator, Jeffrey Steadfast, for always responding to my MimeKit/MailKit support requests within minutes</li>
+	<li><a href=""https://www.bouncycastle.org/"">The Legion of the Bouncy Castle</a>, and all who contributes to it, for creating a brilliant cryptography library for .Net and Mono</li>
 	<li><a href=""http://xamarin.com/"">Xamarin</a>, <a href=""http://www.mono-project.com/"">Mono</a>, and all the other people working on both of these great projects, for delivering a marvelous IDE and Free Software runtime for .Net </li>
 	<li><a href=""https://github.com/icsharpcode/SharpZipLib"">SharpZipLib</a>, Mike Krueger and David Pierson, in addition to everyone contributing to this awesome library, for delivering an Open Source zip library for .Net and Mono</li>
-	<li><a href=""http://ckeditor.com/"">CKEditor</a> and Frederico Knabben, its creator, for giving out the best HTML wysiwyg editor imaginable as Free Software</li>
+	<li><a href=""http://ckeditor.com/"">CKEditor</a> and Frederico Knabben, its creator, for giving out a really good HTML WYSIWYG editor, as Free Software</li>
 	<li><a href=""https://codemirror.net/"">CodeMirror</a>, and Marijn Haverbeke, for creating a brilliant syntax highlighted code editor for the web</li>
 	<li><a href=""https://htmlagilitypack.codeplex.com/"">HtmlAgilityPack</a> and all participants, for making the job of semantically parsing HTML a breeze</li>
-	<li><a href=""http://getbootstrap.com/"">Bootstrap</a>, the CSS framework, for delivering a brilliant CSS framework, which Phosphorus and System42 is 100% dependent upon</li>
+	<li><a href=""http://getbootstrap.com/"">Bootstrap</a>, the CSS framework, for delivering a brilliant CSS framework</li>
 	<li><a href=""https://jquery.com/"">jQuery</a>, used internally by some of the features in Phosphorus</li>
-</ul>
-<p>There are many more too, which either directly or indirectly have contributed.</p>
-
-
-<p>PS!<br>
-I am for hire, either to develop custom modules, teach, or do other things related to Phosphorus Five and System42!<br/>
-Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to talk about such a proposal</p>"
+	<li><a href=""https://microsoft.com/"">Microsoft</a>, for creating and architecting the .Net Framework, the facilitator of P5</li>
+</ul>"
