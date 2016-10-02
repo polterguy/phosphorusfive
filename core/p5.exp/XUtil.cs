@@ -626,7 +626,7 @@ namespace p5.exp
             } else if (args.Value != null) {
 
                 // Simple value argument
-                exeLambda.Add ("_arg", XUtil.FormatNode (context, args));
+                exeLambda.Add ("_arg", FormatNode (context, args));
             }
 
             // Removing all empty nodes of args, to be sure we don't keeo garbage around

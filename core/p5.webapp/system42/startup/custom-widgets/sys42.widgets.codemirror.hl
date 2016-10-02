@@ -1,0 +1,101 @@
+
+/*
+ * Responsible for creating the CodeMirror Hyperlisp editor widget
+ */
+create-event:sys42.widgets.codemirror
+
+  /*
+   * Applying options for widget, with default values.
+   * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
+   * up prioritizing specified argument, resorting to [_default] value if not given
+   */
+  _defaults
+    _auto-focus:false
+    _mode:hyperlisp
+    _theme:paraiso
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)/$"
+
+  /*
+   * Making sure necessary JavaScript files are included
+   */
+  include-javascript-file
+    /system42/editors/codemirror/lib/codemirror.js
+    /system42/editors/codemirror/addon/selection/active-line.js
+    /system42/editors/codemirror/addon/display/placeholder.js
+    /system42/editors/codemirror/addon/display/fullscreen.js
+    /system42/editors/codemirror/addon/hint/show-hint.js
+  include-javascript-file:/system42/editors/codemirror/mode/{0}/{0}.js
+    :x:/../*/_options/*/_mode?value
+
+  /*
+   * Making sure necessary Stylesheet files are included
+   */
+  include-stylesheet-file
+    /system42/editors/codemirror/lib/codemirror.css
+    /system42/editors/codemirror/addon/display/fullscreen.css
+    /system42/editors/codemirror/addon/hint/show-hint.css
+  include-stylesheet-file:/system42/editors/codemirror/theme/{0}.css
+    :x:/../*/_options/*/_theme?value
+
+  /*
+   * Retrieving "vocabulary" of server, for auto complete to work
+   */
+  vocabulary
+
+  /*
+   * Then removing all operators, since they're probably not thought of as Active Events by users
+   */
+  set:x:/../*/vocabulary/*(/"=-"|/"=!~"|/"=!="|/=%|/=*|/"=/"|/"=^"|/"=\\~"|/=+|/=<|/=<=|/==|/=>|/=>=)
+  join:x:/../*/vocabulary/*?value
+    sep:,
+    wrap:@""""
+
+  /*
+   * Sending JSON object containing full list of keywords to client
+   */
+  send-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
+    :x:/../*/join?value
+
+  /*
+   * Making sure textarea input is replaced with the CodeMirror editor
+   */
+  send-javascript:@"window.{0} = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
+mode:'hyperlisp',
+theme:'paraiso',
+lineNumbers:true,
+styleActiveLine:true,
+path:'/system42/editors/codemirror/',
+autofocus:{1},
+tabSize:2,
+indentAuto:true,
+extraKeys: {{
+  'Alt-F':function(cm) {{cm.setOption('fullScreen', !cm.getOption('fullScreen'));}},
+  'Ctrl-Space':'autocomplete'}}
+}});
+window.{0}.on('change',function (cMirror) {{
+  var wdg = p5.$('{0}');
+  wdg.el.value = cMirror.getValue();
+}});
+CodeMirror.keyMap.default['Shift-Tab'] = 'indentLess';
+CodeMirror.keyMap.default['Tab'] = 'indentMore';"
+    :x:/../*/_arg?value
+    :x:/../*/_options/*/_auto-focus?value
+
+  /*
+   * Then checking if caller supplied an "explicit height"
+   */
+  if:x:/../*/_height
+    send-javascript:@"window.{0}.setSize('100%', '{1}');"
+      :x:/../*/_arg?value
+      :x:/../*/_height?value
+
+  /*
+   * Then returning our "textarea" widget to caller
+   */
+  add:x:/+/*
+    src:x:/../*/innerValue
+  return
+    literal
+      element:textarea

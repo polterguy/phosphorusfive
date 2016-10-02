@@ -270,6 +270,82 @@ using the *[type]* attributes from HTML and the *[placeholder]* attribute from H
 the p5.web project in Phosphorus Five, requires some basic knowledge about HTML, and preferably HTML5 - In addition to some basic knowledge about
 CSS of course.
 
+### Ninja tricks for declaring HTML elements of your widgets
+
+When you create a container widget, you can optionally declare its children widgets' HTML element as their name. This saves you a couple of
+lines of code for each widget. If you do, the "type" of widget (containerr, literal, void), will be figured out according to whether or not you've
+added a *[innerValue]* argument, *[widgets]* argument, or none of the previously mentioned. For instance, to create a container widget, that has
+one "p" element child, you could do something like the following.
+
+```
+create-widget
+  parent:content
+  widgets
+    p
+      innerValue:Some text
+```
+
+The widget is still a fully fledged widget, and you can add event handlers, lambda events, and so on to it, as if it was declared like the following.
+
+```
+create-widget
+  parent:content
+  widgets
+    literal
+      element:p
+      innerValue:Some text
+```
+
+However, you save one line of code, and your p5.lambda widget declarations becomes more easily understood and read, since they reflect the HTML
+hierarchy the create more directly.
+
+Notice, in both of our two examples above, we are using *[create-widget]*, which is an "alias" Active Event to *[create-container-widget]*.
+
+### The default HTML elements for widgets
+
+By default, all create widget Active Events, will use the following HTML elements for rendering the widgets on the client.
+
+* [create-container-widget] - "div"
+* [create-literal-widget] - "p"
+* [create-void-widget] - "input"
+
+This means you can omit the *[element]* arguments if you are creating the above HTML elements.
+
+### Creating "custom widgets"
+
+To create a custom widget, all you have to do, is to create an Active Event, containing, (but obviously not starting) with a ".".
+Then you make sure this Active Event returns exactly _one_ valid "widget" for a *[widgets]* argument to a container widget. Now you 
+can use your Active Event as a "widget type".
+
+```
+// This Active Event becomes a "custom widget type"
+create-event:foo.bar
+  return
+    literal
+      innerValue:Howdy world
+
+create-widget
+  parent:content
+  position:0
+  widgets
+
+    // At this point, we can use our "custom widget" as if it was any other widget type
+    foo.bar:some-id-to-widget
+```
+
+The above lambda, first declares an Active Event with the name of "foo.bar". This Active Event returns one *[literal]* widget. Then we use
+our *[foo.bar]* as if it was just another widget type, in our *[widgets]* collection of our root container widget, created 
+through *[create-widget]*.
+
+The above Ninja trick, allows you to create reusable complex widgets, as Active Events, which you can include in any other parts of your program.
+Just as if they were "normal widgets".
+
+It is important that such "custom widget" Active Events returns _ONE_ and _ONLY_ one widget back to the caller. This single widget however, 
+can be a *[container]* widget, containing several children widgets itself.
+
+Notice, the single return value from your Active Event, will have the "ID" passed in as value to your invocation, automatically become the ID
+for the return widget from your Active Event.
+
 ### The [text] widget, for injecting stuff into your HTML
 
 There exist a fourth "widget", although it is not actually a "widget", it is simply the ability to "inject text" into your resulting HTML at some
@@ -551,6 +627,27 @@ create-literal-widget
     set-widget-property:x:/../*/_event?value
       innerValue:Dynamically changed property during [oninit]
       element:h3
+```
+
+### About expressions in create widget invocations
+
+Unfortunately, you cannot use expressions in your create widget arguments. You can of course use them in event handlers and such, but not
+for properties supplied to the widget creation events. However, there is an easy "hack" for you, available through intelligent usage of 
+the *[eval-x]* Active Event. Which will "forward evaluate" expressions for you. This allows you to declare widget properties as expressions,
+then forward evaluate the expression before you create your widgets, at which point the properties for your widgets are no longer expressions,
+but constants in fact. Consider this code.
+
+```
+_el:div
+
+// This doesn't work, and will create a widget with a *really* weird ID!
+create-literal-widget
+  element:x:/../*/_el?value
+
+// However, with our [eval-x] trick, it works
+eval-x:x:/+/*/element
+create-literal-widget
+  element:x:/../*/_el?value
 ```
 
 ### Deleting and "emptying" widgets

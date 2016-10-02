@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Web.UI;
 using p5.ajax.widgets;
+using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 using Void = p5.ajax.widgets.Void;
@@ -226,22 +227,47 @@ namespace p5.web.widgets {
                 // Passing in parent widget, when invoking creational Active Event for currently iterated widget
                 idxChild.Insert (0, new Node ("_parent", widget));
                 switch (idxChild.Name) {
-                case "literal":
-                case "container":
-                case "void":
-                case "text":
-                    context.Raise ("p5.web.widgets." + idxChild.Name, idxChild);
-                    break;
-                default:
-                    idxChild.Add ("element", idxChild.Name);
-                    if (idxChild ["innerValue"] != null) {
-                        context.Raise ("p5.web.widgets.literal", idxChild);
-                    } else if (idxChild ["widgets"] != null) {
-                        context.Raise ("p5.web.widgets.container", idxChild);
-                    } else {
-                        context.Raise ("p5.web.widgets.void", idxChild);
-                    }
-                    break;
+                    case "literal":
+                    case "container":
+                    case "void":
+                    case "text":
+
+                        // "Native" widget
+                        context.Raise ("p5.web.widgets." + idxChild.Name, idxChild);
+                        break;
+                    default:
+
+                        // Checking if this is a "custom widget"
+                        if (idxChild.Name.IndexOf (".") > 0) {
+
+                            // Making sure we store the ID for widget
+                            var id = idxChild.Value;
+
+                            // This is a "custom widget", which means we invoke its name and arguments as an Active Event, and use the returned
+                            // lambda object as the currently iterated child widget.
+                            context.Raise (idxChild.Name, idxChild);
+                            if (idxChild.Children.Count != 1)
+                                throw new LambdaException ("Custom widget event did not return exactly one child value", idxChild, context);
+
+                            // Making sure we decorate the ID for widget automatically
+                            idxChild.FirstChild.Value = id;
+
+                            // Recursively invoking self, with the children widgets, that should now be declared in the childre collection nodes
+                            // of the currently iterated child widget.
+                            CreateChildWidgets (context, widget, idxChild);
+                        } else {
+
+                            // This is the "HTML element" helper syntax, declaring the element of the widget as the node's name
+                            idxChild.Add ("element", idxChild.Name);
+                            if (idxChild["innerValue"] != null) {
+                                context.Raise ("p5.web.widgets.literal", idxChild);
+                            } else if (idxChild["widgets"] != null) {
+                                context.Raise ("p5.web.widgets.container", idxChild);
+                            } else {
+                                context.Raise ("p5.web.widgets.void", idxChild);
+                            }
+                        }
+                        break;
                 }
             }
         }

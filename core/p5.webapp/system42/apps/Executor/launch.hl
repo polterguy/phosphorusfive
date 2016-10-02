@@ -16,27 +16,6 @@ if:x:/-/*/role?value
 
 
 /*
- * Including CodeMirror for both execute_input and execute_output
- */
-sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
-  _editor
-    execute_input
-      mode:hyperlisp
-      autofocus:true
-      fullscreen:true
-      autocomplete:true
-      keys
-        Alt-E:function() {window._execute_lambda();}
-        Alt-C:function() {window.execute_output.getDoc().setValue('');}
-sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
-  _editor
-    execute_output
-      mode:hyperlisp
-      autofocus:false
-      height:"246px"
-
-
-/*
  * Making sure our "Evaluate" button is wired up
  */
 include-javascript:@"window._execute_lambda = function (e) {
@@ -57,7 +36,7 @@ include-javascript:@"window._execute_lambda = function (e) {
  */
 get-session-value:executor.current-code
 if:x:/-/0?value
-  set:x:/../**/literal/=execute_input/*/innerValue?value
+  set:x:/../**/=execute_input/*/innerValue?value
     src:x:/../*/get-session-value/[0,1]/0?value
 
 
@@ -75,9 +54,10 @@ create-widget:executor
      */
     container
       widgets
-        literal:execute_input
-          element:textarea
+        sys42.widgets.codemirror:execute_input
           innerValue:
+          _auto-focus:true
+          _height:500px
 
 
     /*
@@ -93,7 +73,6 @@ create-widget:executor
         literal:execute
           class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
           element:button
-          title:Alt+E
           innerValue:Evaluate
 
 
@@ -143,8 +122,8 @@ create-widget:executor
     container
       class:prepend-top
       widgets
-        literal:execute_output
-          element:textarea
+        sys42.widgets.codemirror:execute_output
+          _height:200px
 
 
     /*
@@ -154,7 +133,6 @@ create-widget:executor
       widgets
         literal:clear
           element:button
-          title:Alt+C
           class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
           innerValue:Clear
           onclick:"window.execute_output.getDoc().setValue('');event.preventDefault();"
