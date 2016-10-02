@@ -1,39 +1,66 @@
-CKEditor 4
+HTML WYSIWYG editor for Phosphorus Five
 ==========
 
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.  
-http://ckeditor.com - See LICENSE.md for license information.
+Notice, this module is built on top of CKEditor, which is copyright (c) 2003-2016, CKSource - Frederico Knabben. 
 
-CKEditor is a text editor to be used inside web pages. It's not a replacement
-for desktop text editors like Word or OpenOffice, but a component to be used as
-part of web applications and websites.
+CKEditor is licensed under the following licenses (which you can choose from)
 
-## Documentation
+* GPL
+* LGPL
+* MPL (Mozilla Public License)
 
-The full editor documentation is available online at the following address:
-http://docs.ckeditor.com
+Read more [here](http://ckeditor.com)
 
-## Installation
+This "app" creates a single Active Event for you, called *[sys42.widgets.ck-editor]*, which wraps CKEditor as a 
+"custom widget" on your page. To use it, you could use something like the code below.
 
-Installing CKEditor is an easy task. Just follow these simple steps:
+```
+create-widget
+  parent:content
+  class:col-xs-12
+  style:"display:inline-block;width:100%;"
+  widgets
+    sys42.widgets.ck-editor:my-editor
+```
 
- 1. **Download** the latest version from the CKEditor website:
-    http://ckeditor.com. You should have already completed this step, but be
-    sure you have the very latest version.
- 2. **Extract** (decompress) the downloaded file into the root of your website.
+Notice, the *[style]* attribute above, is unfortunately necessary to make sure CKEditor doesn't render in a "funny way". Feel freeto play around
+with it, or add it into a CSS class in a stylesheet file, if you wish.
 
-**Note:** CKEditor is by default installed in the `ckeditor` folder. You can
-place the files in whichever you want though.
+To get to HTML created by it, simply use *[get-widget-property]*, and pass in *[value]* as the argument of what to retrieve.
+Example code given below.
 
-## Checking Your Installation
+```
+create-widget
+  parent:content
+  class:col-xs-12
+  style:"display:inline-block;width:100%;"
+  widgets
+    sys42.widgets.ck-editor:my-editor
+    button
+      innerValue:Get HTML
+      class:btn btn-default btn-attach-top
+      onclick
+        get-widget-property:my-editor
+          value
+        sys42.show-code-window:x:/..
+```
 
-The editor comes with a few sample pages that can be used to verify that
-installation proceeded properly. Take a look at the `samples` directory.
+To find out which arguments you can pass into it, you can use the generic lambda object, retrieving the *[_defaults]* section
+of an Active Event, such as illustrated below.
 
-To test your installation, just call the following page at your website:
+```
+sys42.widgets.ck-editor
+  insert-before:x:
+    src:x:/../*/_defaults/*
+  return
+```
 
-	http://<your site>/<CKEditor installation path>/samples/index.html
+In addition to the "arguments" you can pass into it, you can also pass in the following.
 
-For example:
+* [innerValue] - To set the initial Hyperlisp as the widget is loaded
+* [events] - To associate lambda events with the widget
 
-	http://www.example.com/ckeditor/samples/index.html
+All other properties are ignored, and to the most parts, don't really give any sense, since the HTML "textarea" widget rendered, is actually
+completely replaced at the client-side of things, by the CKEditor's internals.
+
+

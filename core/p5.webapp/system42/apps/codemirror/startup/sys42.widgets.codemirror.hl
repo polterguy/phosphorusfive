@@ -13,10 +13,10 @@ create-event:sys42.widgets.codemirror
     _auto-focus:false
     _mode:hyperlisp
     _theme:paraiso
-    _height
+    _height:300px
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)/$"
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
 
   /*
    * Making sure necessary JavaScript files are included
@@ -85,12 +85,11 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
     :x:/../*/_options/*/_auto-focus?value
 
   /*
-   * Then checking if caller supplied an "explicit height"
+   * Then settings height
    */
-  if:x:/../*/_options/*/_height?value
-    send-javascript:@"window.{0}.setSize('100%', '{1}');"
-      :x:/../*/_arg?value
-      :x:/../*/_height?value
+  send-javascript:@"window.{0}.setSize('100%', '{1}');"
+    :x:/../*/_arg?value
+    :x:/../*/_height?value
 
   /*
    * Then returning our "textarea" widget to caller

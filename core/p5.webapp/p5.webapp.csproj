@@ -341,6 +341,7 @@
     <Content Include="system42\apps\app-settings\startup.hl" />
     <Content Include="system42\apps\common-dialogues\startup.hl" />
     <Content Include="system42\apps\css-helpers\startup.hl" />
+    <Content Include="system42\apps\codemirror\README.md" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />
