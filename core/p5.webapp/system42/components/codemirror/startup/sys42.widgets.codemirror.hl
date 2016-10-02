@@ -22,22 +22,22 @@ create-event:sys42.widgets.codemirror
    * Making sure necessary JavaScript files are included
    */
   include-javascript-file
-    /system42/apps/codemirror/lib/codemirror.js
-    /system42/apps/codemirror/addon/selection/active-line.js
-    /system42/apps/codemirror/addon/display/placeholder.js
-    /system42/apps/codemirror/addon/display/fullscreen.js
-    /system42/apps/codemirror/addon/hint/show-hint.js
-  include-javascript-file:/system42/apps/codemirror/mode/{0}/{0}.js
+    /system42/components/codemirror/lib/codemirror.js
+    /system42/components/codemirror/addon/selection/active-line.js
+    /system42/components/codemirror/addon/display/placeholder.js
+    /system42/components/codemirror/addon/display/fullscreen.js
+    /system42/components/codemirror/addon/hint/show-hint.js
+  include-javascript-file:/system42/components/codemirror/mode/{0}/{0}.js
     :x:/../*/_options/*/_mode?value
 
   /*
    * Making sure necessary Stylesheet files are included
    */
   include-stylesheet-file
-    /system42/apps/codemirror/lib/codemirror.css
-    /system42/apps/codemirror/addon/display/fullscreen.css
-    /system42/apps/codemirror/addon/hint/show-hint.css
-  include-stylesheet-file:/system42/apps/codemirror/theme/{0}.css
+    /system42/components/codemirror/lib/codemirror.css
+    /system42/components/codemirror/addon/display/fullscreen.css
+    /system42/components/codemirror/addon/hint/show-hint.css
+  include-stylesheet-file:/system42/components/codemirror/theme/{0}.css
     :x:/../*/_options/*/_theme?value
 
   /*
@@ -67,7 +67,7 @@ mode:'hyperlisp',
 theme:'paraiso',
 lineNumbers:true,
 styleActiveLine:true,
-path:'/system42/apps/codemirror/',
+path:'/system42/components/codemirror/',
 autofocus:{1},
 tabSize:2,
 indentAuto:true,
