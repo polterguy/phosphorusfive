@@ -62,13 +62,6 @@ create-widget:{0}_editor
                   src:x:/../*/get-widget-property/*/*?value
 
                 /*
-                  * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
-                  */
-                find-first-ancestor-widget:x:/../*/_event?value
-                  element:tr
-                delete-widget:x:/-/*?value
-
-                /*
                   * Feedback to user
                   */
                 sys42.info-window:File was saved
@@ -93,8 +86,8 @@ create-widget:{0}_editor
                     _file:x:/../*/_file?value
                     delete-file:x:/../*/_file?value
                     sys42.info-window:File was deleted
-                    delete-widget:add-unit-test
-                    delete-widget:unit-test-files
+                    delete-widget:unit-test-bottom-toolbar
+                    delete-widget:unit-test-datagrid
                     sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
 
             /*

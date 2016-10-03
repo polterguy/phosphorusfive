@@ -175,6 +175,36 @@ list-folders
 
 
 /*
+ * Tests that listing folders behaves, and throw when not given a valid path
+ */
+list-folders-throw
+  _success:bool:false
+  try
+    list-folders:~/temp
+  catch
+    set:x:/../*/_success?value
+      src:bool:true
+  if:x:/../*/_success?value
+    not
+    throw:[list-folders] didn't throw when expected to throw
+
+
+/*
+ * Tests that listing folders behaves, and throw when not given a valid path
+ */
+list-files-throw
+  _success:bool:false
+  try
+    list-folders:~/temp
+  catch
+    set:x:/../*/_success?value
+      src:bool:true
+  if:x:/../*/_success?value
+    not
+    throw:[list-folders] didn't throw when expected to throw
+
+
+/*
  * Tests that listing folders behaves
  */
 list-folders-expressions

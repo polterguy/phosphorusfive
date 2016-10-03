@@ -1,6 +1,6 @@
 
 /*
- * Allows the user to inspect, edit and evaluate unit tests in the system.
+ * Allows the user to inspect, edit, and evaluate unit tests in the system.
  * All unit tests can be found in the "/tests/" folder.
  */
 
@@ -11,20 +11,20 @@
 whoami
 if:x:/-/*/role?value
   !=:root
-  throw:Only root user can run Unit Tests
+  throw:Only root user can run unit tests
 
 
 /*
  * List all files in "/tests/" directory.
- * Each file is a "single test suite for specified concept".
+ * Each file is considered a "single test collection for specific concept".
  */
-list-files:/system42/apps/Unit tests/tests
+list-files:/system42/apps/Unit tests/tests/
   filter:hl
 
 
 /*
  * Callback invoked while [apply]'ing innerValue of unit test name,
- * such that we can remove the directory path and ".hl" extension
+ * such that we can remove the directory path and ".hl" extension.
  */
 _eval-name
   split:x:/../*/_dn/#?name
@@ -39,7 +39,7 @@ _eval-name
 /*
  * Applying unit tests files to table widget
  */
-apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
+apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
   src:x:/../*/list-files/*
   template
     tr
@@ -73,17 +73,22 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
                   fetch:x:/0/0?value
                     widget-exist:{0}_editor
                       :x:/../*/_event?value
+
+                  /*
+                   * Deleting existing editor, since file is already edited, before returning early.
+                   */
                   delete-widget:{0}_editor
                     :x:/../*/_event?value
                   return
 
                 /*
-                 * Invoking the Active Event responsible for creating our CodeMirror editor (in a "tr" row beneath test row)
+                 * Invoking the Hyperlisp file responsible for creating our CodeMirror 
+                 * editor (in a "tr" row beneath test row)
                  */
                 add:x:/+
                   src:"_widget:{0}"
                     :x:/../*/_event?value
-                sys42.launch-unit-test-editor
+                sys42.execute-lisp-file:/system42/apps/Unit tests/edit-unit-test.hl
                   {_file}:x:?name
 
         /*
@@ -108,8 +113,8 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
               onclick
 
                 /*
-                 * Evaluates the databound unit test file, which may contain
-                 * multiple unit tests. [_file] is filename of unit test file
+                 * Evaluates the unit test file, which may contain multiple unit tests. 
+                 * [_file] is filename of unit test file, created during [apply].
                  */
                 {_file}:x:?name
                 add:x:/+
@@ -122,20 +127,11 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
  * we can finally create the widget that displays all unit tests in the system.
  * This creates an HTML table, with one row for each test file.
  */
-create-widget:unit-test-files
+create-widget:unit-test-datagrid
   parent:content
   element:table
   class:table
   events
-
-    /*
-     * Invoked when a unit test file is being edited.
-     * Simply passes onwards the given arguments to "edit-unit-test.hl"
-     */
-    sys42.launch-unit-test-editor
-      add:x:/+
-        src:x:@"/../*/"":regex:/^_/"""
-      sys42.execute-lisp-file:/system42/apps/Unit tests/edit-unit-test.hl
 
 
   /*
@@ -169,13 +165,17 @@ create-widget:unit-test-files
       widgets
 
 
-create-widget:add-unit-test
+/*
+ * Creates widget at the bottom, containing button row with "+", "Clear" and "Coverage" buttons.
+ */
+create-widget:unit-test-bottom-toolbar
   parent:content
   class:col-xs-6 col-xs-push-6 col-md-4 col-md-push-8 col-lg-3 col-lg-push-9 text-right prepend-top
   widgets
 
+
     /*
-     * Creates new unit test file
+     * Creates new unit test file button
      */
     button
       class:btn btn-default col-xs-4
@@ -184,8 +184,9 @@ create-widget:add-unit-test
       onclick
         sys42.execute-lisp-file:/system42/apps/Unit tests/create-new-test-file.hl
 
+
     /*
-     * Clear unit tests
+     * Clear unit tests button
      */
     button
       class:btn btn-default col-xs-4
@@ -197,12 +198,13 @@ create-widget:add-unit-test
          * Simply deletes all widgets, and invokes "self" again.
          * Which should reset the page.
          */
-        delete-widget:add-unit-test
-        delete-widget:unit-test-files
+        delete-widget:unit-test-bottom-toolbar
+        delete-widget:unit-test-datagrid
         sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
 
+
     /*
-     * Shows the coverage for the test suite
+     * Shows the coverage for the test suite button
      */
     button
       class:btn btn-default col-xs-4

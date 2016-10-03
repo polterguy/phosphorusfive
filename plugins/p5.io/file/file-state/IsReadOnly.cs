@@ -23,7 +23,7 @@ namespace p5.io.file.file_state
         [ActiveEvent (Name = "file-is-read-only")]
         public static void file_is_read_only (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, true, "file-is-read-only", delegate (string filename, string fullpath) {
+            QueryHelper.Run (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 FileInfo info = new FileInfo (fullpath);
                 e.Args.Add (filename, info.IsReadOnly);
                 return true;
@@ -38,7 +38,7 @@ namespace p5.io.file.file_state
         [ActiveEvent (Name = "file-set-read-only")]
         public static void file_set_read_only (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, true, "file-set-read-only", delegate (string filename, string fullpath) {
+            QueryHelper.Run (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
                 FileInfo info = new FileInfo (fullpath);
                 info.IsReadOnly = true;
                 return true;
@@ -53,7 +53,7 @@ namespace p5.io.file.file_state
         [ActiveEvent (Name = "file-delete-read-only")]
         public static void file_delete_read_only (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, true, "file-set-read-only", delegate (string filename, string fullpath) {
+            QueryHelper.Run (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
                 FileInfo info = new FileInfo (fullpath);
                 info.IsReadOnly = false;
                 return true;
