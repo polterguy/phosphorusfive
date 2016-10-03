@@ -15,9 +15,8 @@ if:x:/-/*/role?value
  * List all files in directory, but removing "index.hl",
  * assuming all other files are unit test files
  */
-list-files:/system42/apps/tests/
+list-files:/system42/apps/Unit tests/tests
   filter:hl
-set:x:@"/-/*/""/system42/apps/tests/launch.hl"""
 
 /*
  * Callback invoked while databinding innerValue of unit test name
@@ -226,11 +225,11 @@ create-widget:unit-test-files
                 _height:700px
                 innerValue:x:/../*/load-file/*?value
               container
-                class:btn-group col-xs-2 col-xs-push-10
+                class:btn-group col-xs-3 col-xs-push-9
                 widgets
                   literal
                     element:button
-                    style:"width:50%;"
+                    style:"width:33%;"
                     class:btn btn-default btn-attach-top
                     innerValue:Save
                     onclick
@@ -260,7 +259,27 @@ create-widget:unit-test-files
                       sys42.info-window:File was saved
                   literal
                     element:button
-                    style:"width:50%;"
+                    style:"width:33%;"
+                    class:btn btn-default btn-attach-top
+                    innerValue:Delete
+                    onclick
+
+                      /*
+                       * Deletes the specified test
+                       */
+                      sys42.confirm-window
+                        _header:Confirm deletion!
+                        _body:Are you sure you wish to delete this file?
+                        _onok
+                          _file:x:/../*/_file?value
+                          delete-file:x:/../*/_file?value
+                          sys42.info-window:File was deleted
+                          delete-widget:add-unit-test
+                          delete-widget:unit-test-files
+                          sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
+                  literal
+                    element:button
+                    style:"width:33%;"
                     class:btn btn-default btn-attach-top
                     innerValue:Close
                     onclick
@@ -414,7 +433,7 @@ p5.testEnterClicked = function(e) {
                   send-javascript:@"$('#test-filename').focus().select();"
                 else
                   save-file:{0}{1}
-                    :/system42/apps/tests/
+                    :/system42/apps/Unit tests/tests/
                     :x:/../*/get-widget-property/*/*?value
                     src:@"/*
  * Contains unit tests for testing [whatever] in system
@@ -438,10 +457,11 @@ foo2
 "
                   delete-widget:add-unit-test
                   delete-widget:unit-test-files
-                  sys42.execute-lisp-file:/system42/apps/tests/launch.hl
+                  sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
                   sys42.modal-window.close
-                  find-widget-like
-                    _file-button:x:/../*/get-widget-property/*/*?value
+                  find-widget
+                    _file-button:/system42/apps/Unit tests/tests/{0}
+                      :x:/../*/get-widget-property/*/*?value
                   raise-widget-ajax-event:x:/-/*?value
                     onclick
 
@@ -455,7 +475,7 @@ foo2
       onclick
         delete-widget:add-unit-test
         delete-widget:unit-test-files
-        sys42.execute-lisp-file:/system42/apps/tests/launch.hl
+        sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
 
     /*
      * Shows the coverage of the test suite
@@ -475,7 +495,7 @@ foo2
         /*
          * Then loading up all unit test files, making sure we remove the "launch.hl" file
          */
-        list-files:/system42/apps/tests/
+        list-files:/system42/apps/Unit tests/tests/
           filter:hl
         set:x:/-/*/~launch.hl
         load-file:x:/-2/*?name
