@@ -27,7 +27,7 @@ create-event:p5.web.load-ui
       equals:int:0
 
       // Page not found, loading up our "404 page"
-      sys42.execute-lisp-file:/system42/apps/CMS/page-types/special-page/not-found.hl
+      sys42.execute-lisp-file:/system42/apps/CMS/page-loader/special-page/not-found.hl
         _template:/system42/apps/CMS/page-templates/default.hl
     else
 
@@ -36,13 +36,13 @@ create-event:p5.web.load-ui
         src:x:/..else/..else/*/select-data/*/*
 
       // Setting value of [execute-lisp-file] to type of page we're loading
-      // If you look in "system42/cms/page-types/" folder, you will see all the
+      // If you look in "system42/cms/page-loader/" folder, you will see all the
       // different types of pages that exist in the system. These types of
       // pages are extendible, and can be added to to create custom types of
       // pages. If you extend them, you should probably also create an editor
       // for your page type
       set:x:/+?value
-        src:/system42/apps/CMS/page-types/{0}.hl
+        src:/system42/apps/CMS/page-loader/{0}.hl
           :x:/..else/..else/*/select-data/*/*/type?value
       sys42.execute-lisp-file
         _args

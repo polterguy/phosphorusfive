@@ -6,7 +6,7 @@
  * a new page is created, or an existing page is edited.
  *
  * The rest is done by "Specialized editors", found in "system42/apps/cms/page-editor/specialized-editors/", 
- * in addition to the templates for new pages, found in "system42/cms/page-editor/templates/", which
+ * in addition to the templates for new pages, found in "system42/cms/page-editor/new-page-templates/", which
  * are used create a "default starting point" for your new page.
  *
  * About creating your own page type.
@@ -18,7 +18,7 @@
  * dependencies between your own custom page types, and the rest of the system, what so ever.
  *
  * Notice, if you do, you will also need a Hyperlisp script to load up and display your page 
- * in "system42/apps/cms/page-types/", who's name should match the "page type".
+ * in "system42/apps/cms/page-loader/", who's name should match the "page type".
  */
 
 
@@ -122,7 +122,7 @@ create-widget:cms-page-editor
 
                 /*
                  * Here we create a new page, according to what option user selected, by
-                 * executing "system42/cms/page-editor/templates/xxx.hl"
+                 * executing "system42/cms/page-editor/new-page-templates/xxx.hl"
                  * which is expected to create a new default page of selected type "xxx".
                  */
                 sys42.cms.create-new-page

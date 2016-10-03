@@ -2,10 +2,10 @@
 /*
  * Responsible for creating a new CMS page in our system.
  * Pass in type of page as [_type] and the template to create it from as [_template] 
- * ([_template] is only filename from "/page-editor/templates/", and not full path of file)
+ * ([_template] is only filename from "/page-editor/new-page-templates/", and not full path of file)
  */
 
-sys42.execute-lisp-file:/system42/apps/CMS/page-editor/templates/{0}.hl
+sys42.execute-lisp-file:/system42/apps/CMS/page-editor/new-page-templates/{0}.hl
   :x:/../*/_template?value
 
 /*
