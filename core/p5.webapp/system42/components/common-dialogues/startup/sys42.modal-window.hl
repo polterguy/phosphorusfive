@@ -1,0 +1,176 @@
+
+/*
+ * Responsible for creating the Active Event that shows the user a modal window,
+ * allowing for the caller to supply his own set of widgets for the modal window.
+ *
+ * By default, it is created with on "OK" button, which can be overridden if caller
+ * supplies his own set of [_buttons].
+ *
+ * [_header]   - Header of modal wizard window
+ * [_body]     - Explanatory text of dialogue
+ * [_onok]     - Lambda callback to evaluate upon user clicking "OK" button
+ * [_buttons]  - Buttons to use instead of the (default) "OK" button
+ * [_widgets]  - List of widgets to append into the body parts of the modal window
+ */
+create-event:sys42.modal-window
+
+  /*
+   * Applying options for widget, with default values.
+   * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
+   * up prioritizing specified argument, resorting to [_default] value if not given
+   */
+  _defaults
+    _header:Supply feedback ...
+    _body:
+    _onok
+    _buttons
+      literal
+        element:button
+        class:btn btn-default
+        innerValue:OK
+        onclick
+          sys42.modal-window.close
+          sys42.modal-window.evaluate-ok
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+  /*
+   * Making sure we delete any previously created dialogs
+   * Notice that since we only hide the dialog when it is closed, we need
+   * to check if any previous dialogs exist, and if so, delete them, before 
+   * we create this one
+   */
+  if
+    fetch:x:/0/0?value
+      widget-exist:modal-window
+    delete-widget:modal-window
+
+  /*
+   * Setting [_header] of modal window
+   */
+  set:x:/../*/create-widget/**/literal/=modal-window-header/*/innerValue?value
+    src:x:/../*/_options/*/_header?value
+
+  /*
+   * Setting [_body] of modal window.
+   * Notice, if no [_body] is provided, the [_body] widget is entirely removed
+   */
+  if:x:/../*/_options/*/_body?value
+    !=:
+    set:x:/../*/create-widget/**/literal/=modal-window-body/*/innerValue?value
+      src:x:/../*/_options/*/_body?value
+  else
+    set:x:/../*/create-widget/**/literal/=modal-window-body
+
+  /*
+   * Appending buttons into footer of dialogue, which unless overridden through [_buttons], means
+   * only the "OK" button.
+   */
+  add:x:/../*/create-widget/**/class/=modal-footer/./*/widgets
+    src:x:/../*/_options/*/_buttons/*
+
+  /*
+   * Appending [_widgets] into body of dialogue
+   */
+  add:x:/../*/create-widget/**/=modal-window-widgets/*/widgets
+    src:x:/../*/_options/*/_widgets/*
+
+  /*
+   * Appending [_onok] into [sys42.modal-window.evaluate-ok]
+   */
+  add:x:/../*/create-widget/*/events/*/sys42.modal-window.evaluate-ok
+    src:x:/../*/_options/*/_onok/*
+
+  /*
+   * Creating actual modal Widget
+   */
+  create-widget:modal-window
+    class:modal fade
+    events
+
+      /*
+       * Closes dialogue
+       */
+      sys42.modal-window.close
+        send-javascript:@"$('#modal-window').modal('toggle');"
+
+      /*
+       * Evaluates OK lambda object.
+       * Notice the [_onok] lambda, passed in from caller, will be appended into this event.
+       */
+      sys42.modal-window.evaluate-ok
+
+      /*
+       * Gives initial focus to a specific widget
+       */
+      sys42.modal-window.initial-focus
+        send-javascript:@"$('#modal-window').on('shown.bs.modal', function () {{$('#{0}').focus();}})"
+          :x:/../*/_arg?value
+
+    oninit
+
+      /*
+       * Making sure dialog becomes initially visible
+       */
+      send-javascript:@"$('#modal-window').modal('toggle');"
+
+    widgets
+      container
+        class:modal-dialog
+        widgets
+          container
+            class:modal-content
+            widgets
+
+              /*
+               * Header of dialog
+               */
+              container
+                class:modal-header
+                widgets
+                  literal
+                    element:button
+                    class:close
+                    data-dismiss:modal
+                    aria-label:Close
+                    innerValue:&times;
+                  literal:modal-window-header
+                    element:h4
+                    innerValue
+
+              /*
+               * Body of dialog, contains [_body] and dynamically created widgets
+               */
+              container
+                class:modal-body
+                widgets
+                  literal:modal-window-body
+                    innerValue
+                  container:modal-window-widgets
+                    class:form
+                    oninit
+
+                      /*
+                       * Settings focus to first child widget passed in as [_widgets] argument,
+                       * if there are any children widgets
+                       */
+                      find-widget-like:x:/../*/_event?value
+                        class:form-control
+                      if:x:/../*/find-widget-like/*?count
+                        >:int:0
+                        sys42.modal-window.initial-focus:x:/../*/find-widget-like/0?value
+
+
+                    /*
+                     * This is where our [_widgets] are appended
+                     */
+                    widgets
+
+              /*
+               * Footer of dialog, contains [_buttons]
+               */
+              container
+                class:modal-footer
+                widgets
+

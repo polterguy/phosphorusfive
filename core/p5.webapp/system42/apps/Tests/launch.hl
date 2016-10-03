@@ -55,6 +55,7 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
               {@eval}:x:/../*/_eval-name
               href:#
               title:Click to edit or view unit test file
+              {_file-button}:x:?name
               onclick
 
                 /*
@@ -334,7 +335,7 @@ create-widget:unit-test-files
                     sys42.info-window:@"{0} unit tests evaluated in {1:s\.fff} seconds"
                       :x:/./-4/*?value
                       :x:/./-2?value
-                      _time:more
+                      _class:info-window-longer
                     get-context-value:sys42.unit-test-errors
                     if:x:/-/*?value
                       set-widget-property:x:/../*/_event?value
@@ -361,34 +362,61 @@ create-widget:add-unit-test
       innerValue:+
       title:Create new unit test file
       onclick
-        sys42.wizard-window
+        sys42.modal-window
           _header:Name of unit test file
           _body:Please provide a filename for your new test file
           _widgets
-            text:filename
-              label:Filename
-              placeholder:Name of file ...
-              mandatory:true
-          _onok
-            split:x:/../*/filename?value
-              =:.
-            if:x:/-/*?count
-              =:int:1
-              set:x:/../*/filename?value
-                src:{0}.hl
-                  :x:/../*/filename?value
-            split:x:/../*/filename?value
-              =:/
-            if:x:/-/*?count
-              >:int:1
-              set:x:/..?value
-                src:Please only provide filename, no paths!
-              send-javascript:@"$('#filename').focus().select();"
-            else
-              save-file:{0}{1}
-                :/system42/apps/tests/
-                :x:/../*/filename?value
-                src:@"/*
+            container:test-filename-wrp
+              class:form-group
+              widgets
+                input:test-filename
+                  type:text
+                  class:form-control
+                  placeholder:Name of file ...
+                  onkeypress:"return p5.testEnterClicked(event);"
+                  oninit
+                    /*
+                      * Including JavaScript to help handle carriage return key in fields of dialogue
+                      */
+                    include-javascript:@"
+p5.testEnterClicked = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('test-create-btn').raise('onclick');
+    return false;
+  }
+}"
+          _buttons
+            button:test-create-btn
+              class:btn btn-default
+              innerValue:Create
+              onclick
+                get-widget-property:test-filename
+                  value
+                if:x:/../*/get-widget-property/*/*?value
+                  =:
+                  set-widget-property:test-filename-wrp
+                    class:form-group has-error
+                  send-javascript:@"$('#test-filename').focus().select();"
+                  return
+                split:x:/../*/get-widget-property/*/*?value
+                  =:.
+                if:x:/-/*?count
+                  =:int:1
+                  set:x:/../*/get-widget-property/*/*?value
+                    src:{0}.hl
+                      :x:/../*/get-widget-property/*/*?value
+                split:x:/../*/get-widget-property/*/*?value
+                  =:/
+                if:x:/-/*?count
+                  >:int:1
+                  set-widget-property:test-filename-wrp
+                    class:form-group has-error
+                  send-javascript:@"$('#test-filename').focus().select();"
+                else
+                  save-file:{0}{1}
+                    :/system42/apps/tests/
+                    :x:/../*/get-widget-property/*/*?value
+                    src:@"/*
  * Contains unit tests for testing [whatever] in system
  */
 
@@ -408,11 +436,14 @@ foo2
   if:bool:false
     throw:@""Assert error, expected [something], got [something-else]!""
 "
-              set:x:/..?value
-                src:bool:true
-              delete-widget:add-unit-test
-              delete-widget:unit-test-files
-              sys42.execute-lisp-file:/system42/apps/tests/launch.hl
+                  delete-widget:add-unit-test
+                  delete-widget:unit-test-files
+                  sys42.execute-lisp-file:/system42/apps/tests/launch.hl
+                  sys42.modal-window.close
+                  find-widget-like
+                    _file-button:x:/../*/get-widget-property/*/*?value
+                  raise-widget-ajax-event:x:/-/*?value
+                    onclick
 
     /*
      * Clear unit tests

@@ -264,8 +264,7 @@ create-widget
                     sys42.info-window:@"In general, it is considered bad practice to have more than two levels of nested menus! 
 Your page currently has {0} levels!"
                       :x:/././-/*?count
-                      _warning:true
-                      _time:more
+                      _class:info-window-warning info-window-longer
                     set-widget-property:page-url
                       style:"background-color:rgba(255,0,0,.2);"
                       title:@"This is a bad idea!

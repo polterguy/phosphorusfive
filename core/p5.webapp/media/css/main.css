@@ -91,10 +91,23 @@ body {
  * Used when caller requests info window to stay "slightly longer", due 
  * to e.g. more text needing more time to read, etc.
  */
-.info-window-more {
+.info-window-longer {
     animation-duration: 6s;
 }
 
+/*
+ * Used when user wants to display an "error" feedback message
+ */
+.info-window-error {
+    color:#e55;
+}
+
+/*
+ * Used when user wants to display a "warning" feedback message
+ */
+.info-window-warning {
+    color:#ea5;
+}
 
 /*
  * CSS classes for login widgets

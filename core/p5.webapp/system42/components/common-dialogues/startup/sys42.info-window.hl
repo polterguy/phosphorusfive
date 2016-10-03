@@ -5,15 +5,24 @@
  *
  * Arguments;
  *
- * [_arg] or value - Message, or epxression leading to message, you wish to display to user
- * [_error]        - If true, will make the text appear dark red, mutually exclusive with [_warning]
- * [_warning]      - If true, will make text appear orange, mutually exclusive with [_error]
- * [_time]         - If value is "more", then window will stick for a slightly longer time than its default, providing
- *                   more time to read content of window
+ * [_arg] (or value) - Message, or epxression leading to message, you wish to display to user
+ * [_class]          - Additional CS classes that will be added to the widget. Out of the box,
+ *                     there exist "info-window-longer", "info-window-error" and "info-window-warning"
  *
  * You cannot show more than one instance of this window at the time
  */
 create-event:sys42.info-window
+
+  /*
+   * Applying options for widget, with default values.
+   * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
+   * up prioritizing specified argument, resorting to [_default] value if not given
+   */
+  _defaults
+    _arg:You should really have provided some text here as value of invocation ...
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
 
   /*
    * Making sure we delete any previously created windows
@@ -29,38 +38,23 @@ create-event:sys42.info-window
   /*
    * Setting properties of window
    */
-  set:x:/../*/create-widget/**/literal/=info-window-message/*/innerValue?value
-    src:x:/../*/_arg?value
+  set:x:/../*/create-widget/**/literal/*/innerValue?value
+    src:x:/../*/_options/*/_arg?value
 
   /*
-   * Checking if this is an "error" type of feedback
+   * Checking if caller provided "additional CSS classes"
    */
-  if:x:/../*/_error?value.bool
-    =:bool:true
-    add:x:/../*/create-widget/*/widgets/*/literal
-      src:node:@"style:""color:#e55;"""
-
-  /*
-   * Checking if this is a "warning" type of feedback
-   */
-  else-if:x:/../*/_warning?value.bool
-    =:bool:true
-    add:x:/../*/create-widget/*/widgets/*/literal
-      src:node:@"style:""color:#ea5;"""
-
-  /*
-   * Checking if this is feedback needs "more time" to stick on screen
-   */
-  if:x:/../*/_time?value
-    =:more
+  if:x:/../*/_options/*/_class?value
     set:x:/../*/create-widget/*/class?value
-      src:info-window info-window-more
+      src:{0} {1}
+        :x:/../*/create-widget/*/class?value
+        :x:/../*/_options/*/_class?value
 
   /*
-   * Creating actual window popdown
+   * Creating actual info window
    */
   create-widget:info-window
     class:info-window
     widgets
-      literal:info-window-message
+      literal
         innerValue

@@ -120,7 +120,7 @@ else
                             reload-location
                           else
                             sys42.info-window:Sorry, wrong credentials
-                              _error:true
+                              _class:info-window-error
   set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/.
 
 

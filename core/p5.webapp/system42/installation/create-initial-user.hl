@@ -93,7 +93,7 @@ belong to the role 'superuser', and is quite powerful, but not as powerful as th
                 if:x:/../*/get-widget-property/*/user-password/*?value
                   !=:x:/../*/get-widget-property/*/password-repeat/*?value
                   sys42.info-window:Sorry, passwords don't match
-                    _error:true
+                    _class:info-window-error
                   send-javascript:@"$('#user-password').focus().select();"
                 else
                   set:x:/+4/*/username?value

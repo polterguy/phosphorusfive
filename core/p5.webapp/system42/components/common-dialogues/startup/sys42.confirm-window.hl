@@ -1,25 +1,52 @@
 
 /*
  * Responsible for creating the Active Event that shows the user a modal dialog,
- * to make user confirm some action, before action is evaluated
+ * to make user confirm some action, before action is evaluated.
  *
  * Arguments;
  * 
- * [_header] - Header of modal dialogue
- * [_body]   - Explanatory text of dialogue
- * [_onok]   - Code to be evaluated if user clicks OK button
+ * [_header]         - Header of modal dialogue
+ * [_body]           - Explanatory text of dialogue
+ * [_onok]           - Code to be evaluated if user clicks OK button
+ * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
+ *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
+ *                     provide your own logic in the onclick handler of these buttons instead.
+ *                     To evaluate the [_onok] lambda, you can invoke [sys42.confirm-window.evaluate-ok],
+ *                     To close dialogue, you can invoke [sys42.confirm-window.close]
  *
- * If user closes modal dialogue, without clicking OK, then the code given through
- * [_onok] is not evaluated. You cannot show more than one instance of this window
- * at the time
+ * If user closes modal dialogue, without clicking OK, then the given [_onok] is not evaluated.
+ * There can be only one instance of this dialogue at the same time in your page.
  */
 create-event:sys42.confirm-window
 
   /*
-   * Making sure we delete any previously created dialogs
+   * Applying options for widget, with default values.
+   * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
+   * up prioritizing specified argument, resorting to [_default] value if not given
+   */
+  _defaults
+    _header:Information ...
+    _body:You should really have supplied something intelligent here in the [_body] argument ...
+    _onok
+    _buttons
+      literal
+        element:button
+        class:btn btn-default
+        innerValue:OK
+        oninit
+          sys42.confirm-window.initial-focus:x:/../*/_event?value
+        onclick
+          sys42.confirm-window.close
+          sys42.confirm-window.evaluate-ok
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+  /*
+   * Making sure we delete any previously created dialogs.
    * Notice that sice we only hide the dialog when it is closed, we need
    * to check if any previous dialogs exist, and if so, delete them, before 
-   * we create any new ones
+   * we create this one.
    */
   if
     fetch:x:/0/0?value
@@ -27,39 +54,51 @@ create-event:sys42.confirm-window
     delete-widget:confirm-window
 
   /*
-   * Setting properties of Modal Dialog
+   * Appending buttons into footer of dialogue, which unless overridden through [_buttons], means
+   * only the "OK" button.
    */
-  set:x:/../*/create-widget/**/literal/=confirm-window-header/*/innerValue?value
-    src:x:/../*/_header?value
-  set:x:/../*/create-widget/**/literal/=confirm-window-body/*/innerValue?value
-    src:x:/../*/_body?value
+  add:x:/../*/create-widget/**/class/=modal-footer/./*/widgets
+    src:x:/../*/_options/*/_buttons/*
 
   /*
-   * Appending code into OK onclick button's event handler
+   * Appending [_onok] into [sys42.confirm-window.evaluate-ok]
    */
-  add:x:/../*/create-widget/**/literal/=confirm-window-ok/*/onclick
-    src:x:/../*/_onok/*
+  add:x:/../*/create-widget/*/events/*/sys42.confirm-window.evaluate-ok
+    src:x:/../*/_options/*/_onok/*
 
   /*
-   * Appending additional buttons into footer of dialogue
+   * Creating actual modal Widget, making sure we forward evaluate the [_header] and [_body]
    */
-  insert-before:x:/../*/create-widget/**/class/=modal-footer/./*/widgets/*/literal/=confirm-window-ok
-    src:x:/../*/_extra-buttons/*
-
-
-  /*
-   * Creating actual modal Widget
-   */
+  eval-x:x:/+/**(/=confirm-window-body|/=confirm-window-header)/*/innerValue
   create-widget:confirm-window
     class:modal fade
+    events
+
+      /*
+       * Closes dialogue
+       */
+      sys42.confirm-window.close
+        send-javascript:@"$('#confirm-window').modal('toggle');"
+
+      /*
+       * Evaluates OK lambda object.
+       * Notice the [_onok] lambda, passed in from caller, will be appended into this event.
+       */
+      sys42.confirm-window.evaluate-ok
+
+      /*
+       * Gives initial focus to a specific widget
+       */
+      sys42.confirm-window.initial-focus
+        send-javascript:@"$('#confirm-window').on('shown.bs.modal', function () {{$('#{0}').focus();}})"
+          :x:/../*/_arg?value
+
     oninit
 
-      // Making sure dialog is visible
-      send-javascript:@"
-      $('#confirm-window').modal('toggle');
-$('#confirm-window').on('shown.bs.modal', function () {
-    $('#confirm-window-ok').focus();
-})"
+      /*
+       * Making sure dialog becomes initially visible
+       */
+      send-javascript:@"$('#confirm-window').modal('toggle');"
 
     widgets
       container
@@ -76,43 +115,29 @@ $('#confirm-window').on('shown.bs.modal', function () {
               container
                 class:modal-header
                 widgets
-
-                  // Close button
                   literal
                     element:button
                     class:close
                     data-dismiss:modal
                     aria-label:Close
                     innerValue:&times;
-
-                  // Actual literal widget containing header of dialogue
                   literal:confirm-window-header
                     element:h4
-                    innerValue
+                    innerValue:x:/../*/_options/*/_header?value
 
               /*
                * Body of dialog
                */
-              container:confirm-window-body-wrapper
+              container
                 class:modal-body
                 widgets
-
-                  // Actual literal widget containing body of dialogue
                   literal:confirm-window-body
                     element:div
-                    innerValue
+                    innerValue:x:/../*/_options/*/_body?value
 
               /*
-               * Footer of dialog (contains OK and Cancel buttons)
+               * Footer of dialog, contains [_buttons], which by default means only "OK" button.
                */
               container
                 class:modal-footer
                 widgets
-                  literal:confirm-window-ok
-                    element:button
-                    class:btn btn-default
-                    innerValue:OK
-                    onclick
-
-                      // Hiding dialog
-                      send-javascript:@"$('#confirm-window').modal('toggle');"
