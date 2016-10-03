@@ -24,5 +24,8 @@ TODO before release
 * Consider allowing the [zip] Active Event work like [save-file], with a relative source, creating multiple archives in one go.
   Do the same with [unzip]
 
-
+* Consider [memento] Active Event, that can serialize an execution tree into e.g. Session or something, for then to have it
+  recalled and continued evaluated using [recall] or something.
+  Allows for temporary "halting" server execution, to fetch data from end-user, before recalling execution, considering the
+  data from user, which is a really freaking *SICK* feature!! :D
 

@@ -1,0 +1,107 @@
+
+/*
+ * Responsible for creating a new CMS page in our system.
+ * Pass in type of page as [_type] and the template to create it from as [_template] 
+ * ([_template] is only filename from "/page-editor/templates/", and not full path of file)
+ */
+
+sys42.execute-lisp-file:/system42/apps/cms/page-editor/templates/{0}.hl
+  :x:/../*/_template?value
+
+/*
+ * Adding the "type of page" property to our [insert-data] invocation.
+ */
+add:x:/../*/insert-data/0
+  src:"type:{0}"
+    :x:/../*/_type?value
+
+/*
+ * Adding the return values from our "template" file invocation.
+ */
+add:x:/../*/insert-data/0
+  src:x:/../*/sys42.execute-lisp-file/*
+
+/*
+ * Figuring out next available "/change-this-" default URL for our page.
+ * In case user creates multiple pages, without changing the URL of them, this might
+ * be "change-this-2", "change-this-3", etc ...
+ */
+select-data:x:/*/*/p5.page/"=~/change-this-"
+_high:int:1
+
+/*
+ * Looping through each [p5.page] selected above, finding the next 
+ * available "change-this-N" URL for our page.
+ */
+for-each:x:/../*/select-data/*?value
+
+  /*
+   * Splitting upon "-" such that we can get to number, 
+   * which should be the last entity in our split.
+   */
+  split:x:/./*/_dp?value
+    =:-
+  if
+
+    /*
+     * Making sure it's actually an integer, before we figure out if it's higher 
+     * than our currentl [_high] value.
+     */
+    can-convert:x:/./-/0/-?name
+      type:int
+    and:x:/./-/0/-?name.int
+      more-than-equals:x:/../*/_high?value
+
+    /*
+     * Last entity from [split] was an integer, and it was higher than our previous [_high] value.
+     * Making sure we set our current [_high] value to +1 more than currently iterated [p5.page]'s
+     * "change-thix-N" value.
+     */
+    set:x:/../*/_high?value
+      +:x:/..for-each/*/split/0/-?name.int
+        _:1
+
+/*
+ * Setting the URL of our newly created page to "change-this-n", where "n" is [_high]'s value.
+ * Which should guarantee that this page has the "next available integer value" for its URL in regards
+ * to "change-this-n".
+ */
+set:x:/../*/insert-data/0?value
+  src:/change-this-{0}
+    :x:/../*/_high?value
+
+/*
+ * Now, finally, we can actually insert our page into our database.
+ */
+insert-data
+  p5.page
+    role:root
+    name:Change this
+
+/*
+ * Making sure we set back the "create new page drop down" to the "New page ..." value.
+ * Such that user can create a new page, by triggering an "onchange" event on widget.
+ */
+sys42.cms.reset-create-new-page-widget
+
+/*
+ * Setting currently edited page to return value (ID) from [insert-data], 
+ * which should be URL of page.
+ */
+sys42.cms.set-currently-edited-page:x:/../*/insert-data/0?value
+
+/*
+ * Now we can start editing our page.
+ * But first we need to re-populate our "select existing page" drop down.
+ */
+sys42.cms.populate-select-page
+sys42.cms.edit-page
+
+/*
+ * Re-creating our "navbar" menu, such that page's link is immediately visible in navbar.
+ * Before we give feedback to user about newly created page.
+ */
+sys42.cms.create-navbar-menu
+sys42.info-window:@"Page is restricted such that only a 'root' account can see it"
+  _class:info-window-longer
+

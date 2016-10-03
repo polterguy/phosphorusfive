@@ -287,11 +287,11 @@
     <Content Include="system42\apps\CMS\initial-pages\2-app-loader.hl" />
     <Content Include="system42\apps\CMS\initial-pages\3-about.hl" />
     <Content Include="system42\apps\CMS\launch.hl" />
-    <Content Include="system42\apps\CMS\page-editor\editor-toolbar.hl" />
+    <Content Include="system42\apps\CMS\page-editor\editor.hl" />
     <Content Include="system42\apps\CMS\page-editor\editors\html.hl" />
     <Content Include="system42\apps\CMS\page-editor\editors\lambda.hl" />
-    <Content Include="system42\apps\CMS\page-editor\templates\create-new-html-page.hl" />
-    <Content Include="system42\apps\CMS\page-editor\templates\create-new-lambda-page.hl" />
+    <Content Include="system42\apps\CMS\page-editor\templates\html.hl" />
+    <Content Include="system42\apps\CMS\page-editor\templates\lambda.hl" />
     <Content Include="system42\apps\CMS\page-types\html.hl" />
     <Content Include="system42\apps\CMS\page-types\lambda.hl" />
     <Content Include="system42\apps\CMS\page-types\special-page\not-found.hl" />
@@ -351,6 +351,7 @@
     <Content Include="system42\apps\Unit tests\evaluate-single-test.hl" />
     <Content Include="system42\apps\Unit tests\create-new-test-file.hl" />
     <Content Include="system42\apps\Unit tests\show-coverage.hl" />
+    <Content Include="system42\apps\CMS\create-new-page.hl" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />
@@ -378,7 +379,6 @@
     <None Include="system42\components\common-dialogues\startup\sys42.confirm-window.hl" />
     <None Include="system42\components\common-dialogues\startup\sys42.info-window.hl" />
     <None Include="system42\components\common-dialogues\startup\sys42.show-code-window.hl" />
-    <None Include="system42\components\common-dialogues\startup\sys42.wizard-window.hl" />
     <None Include="system42\installation\create-initial-user.hl" />
     <None Include="system42\installation\install-server.hl" />
     <None Include="system42\installation\set-root-password.hl" />

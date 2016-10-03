@@ -53,7 +53,7 @@ if
                   /*
                     * Creates the menu of our page
                     */
-                  sys42.create-main-menu
+                  sys42.cms.create-navbar-menu
                     sys42.execute-lisp-file:/system42/apps/cms/templates/common/create-menu.hl
                       _extra-css-classes:{_extra-css-classes}
 else

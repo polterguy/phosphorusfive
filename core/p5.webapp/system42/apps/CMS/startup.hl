@@ -2,6 +2,7 @@
 /*
  * Startup script that is evaluated when server is started.
  * First it evaluates all Hyperlisp files in the "startup" folder.
+ *
  * Then it checks to see if there are any [p5.page] objects
  * in the database, and if not, it loads up every file inside
  * of "initial-pages", and saves them to the database.

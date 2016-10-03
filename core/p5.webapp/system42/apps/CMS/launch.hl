@@ -1,22 +1,24 @@
 
 /*
- * Creates our "Edit Page" Widget, which actually only contains 
- * a header, back link, and a couple of drop down lists to create 
- * new pages, and edit existing pages. In addition, it creates the 
- * "general properties toolbar" when a page is selected for editing.
- * The rest is done by "Specialized editors", found in 
- * "system42/cms/page-editor/editors", in addition to the templates
- * for new pages foun in "system42/cms/page-editor/templates".
+ * Creates our main CMS Widget, which actually only contains a couple of drop down lists to create 
+ * new pages, and edit existing pages. In addition, it creates the "general properties toolbar",
+ * which it does through invoking the "/system42/apps/cms/page-editor/editor-toolbar.hl", when
+ * a new page is created, or an existing page is edited.
  *
- * To support custom editors for your own types of pages, you will need
- * one file in both of those directories, matching the [type] of page
- * you store into the database when saving your page. If you do, you can 
- * "plug in" your own custom editors into the system, without having any 
- * dependencies between your own custom page types, and the rest of the
- * system, what so ever.
+ * The rest is done by "Specialized editors", found in "system42/apps/cms/page-editor/editors/", 
+ * in addition to the templates for new pages, found in "system42/cms/page-editor/templates/", which
+ * are used create a "default starting point" for your new page.
  *
- * Notice, if you do, you will also need a page to load up and display
- * your page in "system42/page-types"
+ * About creating your own page type.
+ *
+ * To support custom editors for your own types of pages, you will need one file in both of those 
+ * directories, matching the [type] of page you store into the database, when saving your page.
+ *
+ * If you do, you can "plug in" your own custom editors into the system, without having any 
+ * dependencies between your own custom page types, and the rest of the system, what so ever.
+ *
+ * Notice, if you do, you will also need a Hyperlisp script to load up and display your page 
+ * in "system42/apps/cms/page-types/", who's name should match the "page type".
  *
  */
 
@@ -30,13 +32,16 @@ if:x:/-/*/role?value
   throw:@"Sorry, this page is only accessible to ""root acounts"""
 
 
-create-widget:page-editor
+/*
+ * Creating our main widget, consisting of two drop down lists, and really not much more.
+ */
+create-widget:cms-page-editor
   parent:content
   widgets
 
 
     /*
-     * The "Create new page ..." drop down select list
+     * The "Create new page" drop down
      */
     container
       class:col-md-3 col-xs-12 form-group
@@ -47,7 +52,7 @@ create-widget:page-editor
             literal
               class:input-group-addon
               innerValue:Create
-            container:create-new-page
+            container:cms-create-new-page
               element:select
               class:form-control
 
@@ -56,7 +61,7 @@ create-widget:page-editor
                * Populates the "create new page" select drop down list
                */
               oninit
-                sys42.populate-create-new-page
+                sys42.cms.populate-create-new-page
 
 
               /*
@@ -64,7 +69,7 @@ create-widget:page-editor
                * was selected
                */
               onchange
-                sys42.create-new-page
+                sys42.cms.create-new-page
 
 
               /*
@@ -77,83 +82,76 @@ create-widget:page-editor
                  * Here we loop through all files in "system42/cms/page-editor/editors",
                  * and create one "create new page" option item for each of those files
                  */
-                sys42.populate-create-new-page
+                sys42.cms.populate-create-new-page
+
+                  /*
+                   * First we create our "information option value", simply displaying "New page ..."
+                   */
                   create-literal-widget
                     element:option
-                    parent:create-new-page
+                    parent:cms-create-new-page
                     value:_default
                     innerValue:New page ...
+
+                  /*
+                   * Then we create one "option" for each editor we have installed as a plugin 
+                   * in the "/system42/apps/cms/page-editor/editors/" folder.
+                   */
                   list-files:/system42/apps/cms/page-editor/editors/
                   for-each:x:/-/*?name
+
+                    /*
+                     * Removing folder name and ".hl" extension, before we set the [value] and [innerValue]
+                     * of our "option" HTML element for our "create new page drop down".
+                     */
                     split:x:/./*/_dp?value
                       =:/
-                    split:x:/-/0/-?name
                       =:.
                     add:x:/..for-each/*/create-literal-widget
                       src:"value:{0}"
-                        :x:/..for-each/*/split/[1,2]/0?name
+                        :x:/..for-each/*/split/0/-2?name
                     add:x:/..for-each/*/create-literal-widget
                       src:"innerValue:{0}"
-                        :x:/..for-each/*/split/[1,2]/0?name
+                        :x:/..for-each/*/split/0/-2?name
+
+                    /*
+                     * Creating our "option" HTML element for currently iterated "specialized editor".
+                     */
                     create-literal-widget
                       element:option
-                      parent:create-new-page
+                      parent:cms-create-new-page
 
 
                 /*
                  * Here we create a new page, according to what option user selected, by
-                 * executing "system42/cms/page-editor/templates/create-new-X-page.hl"
-                 * which is expected to create a new default page of selected type X
+                 * executing "system42/cms/page-editor/templates/xxx.hl"
+                 * which is expected to create a new default page of selected type "xxx".
                  */
-                sys42.create-new-page
-                  get-widget-property:create-new-page
-                    value
-                  sys42.execute-lisp-file:/system42/apps/cms/page-editor/templates/create-new-{0}-page.hl
-                    :x:/../*/get-widget-property/*/*?value
-                  add:x:/../*/insert-data/0
-                    src:"type:{0}"
-                      :x:/../*/get-widget-property/*/*?value
-                  add:x:/../*/insert-data/0
-                    src:x:/./-2/*
-                  select-data:x:/*/*/p5.page/"=~/change-this-"
-                  _high:int:1
-                  for-each:x:/../*/select-data/*?value
-                    split:x:/./*/_dp?value
-                      =:-
-                    if
-                      can-convert:x:/./-/0/-?name
-                        type:int
-                      and:x:/./-/0/-?name.int
-                        more-than-equals:x:/../*/_high?value
-                      set:x:/../*/_high?value
-                        +:x:/..for-each/*/split/0/-?name.int
-                          _:1
-                  set:x:/../*/insert-data/0?value
-                    src:/change-this-{0}
-                      :x:/../*/_high?value
-                  insert-data
-                    p5.page
-                      name:Change this
-                  set-widget-property:create-new-page
-                    value:_default
-                  sys42.set-currently-edited-page:x:/../*/insert-data/0?value
+                sys42.cms.create-new-page
 
                   /*
-                   * For some reasons, there seems to be a viewstate bug when creating a new [controls] page,
-                   * which shows immediately once you start adding widgets to it. Hence, for now, we refresh page.
-                   * Hence commenting out logic below, and just reloading location
+                   * Figuring out which page type user wants to create ("html", "lambda", etc) before
+                   * firing up the "template" create page Hyperlisp script from our template folder.
                    */
-                  reload-location
-                  _sys42.populate-select-page
-                  _sys42.edit-page
-                  _sys42.create-main-menu
-                  _sys42.info-window:@"Page is restricted such that only the 'root' account can see it. 
-When you're ready to publish it, then change its access role accordingly!"
-                    _time:more
+                  get-widget-property:cms-create-new-page
+                    value
+                  eval-x:x:/+/*
+                  sys42.execute-lisp-file:/system42/apps/cms/create-new-page.hl
+                    _type:x:/../*/get-widget-property/*/*?value
+                    _template:x:/../*/get-widget-property/*/*?value
+
+
+                /*
+                 * Resets the currently selected item in drop down to the "_default" value,
+                 * which is the "New page ..." option item.
+                 */
+                sys42.cms.reset-create-new-page-widget
+                  set-widget-property:cms-create-new-page
+                    value:_default
 
 
     /*
-     * The edit existing page select drop down list
+     * The edit existing page select drop down.
      */
     container
       class:col-md-9 col-xs-12 form-group
@@ -164,27 +162,27 @@ When you're ready to publish it, then change its access role accordingly!"
             literal
               class:input-group-addon
               innerValue:Edit
-            container:select-page
+            container:cms-select-page
               element:select
               class:form-control
 
 
               /*
-               * Here we select the currently edited page, if any, and 
-               * load up the correct page editor
+               * Here we populate the drop down list for "select existing page", checks if there are any pages
+               * currently beeing edited, and if so, fire up our specialized editor and start editing page.
                */
               oninit
-                sys42.populate-select-page
+                sys42.cms.populate-select-page
                 if
-                  sys42.get-currently-edited-page
-                  sys42.edit-page
+                  sys42.cms.get-currently-edited-page
+                  sys42.cms.edit-page
 
 
               /*
                * Here we start editing the selected page
                */
               onchange
-                sys42.page-was-selected-for-editing
+                sys42.cms.page-was-selected-for-editing
 
 
               /*
@@ -194,17 +192,18 @@ When you're ready to publish it, then change its access role accordingly!"
 
 
                 /*
-                 * Stores the currently edited page in session
+                 * Stores the currently edited page in session, in case user refreshes the
+                 * page, or go back and forth to other apps, while editing, etc ...
                  */
-                sys42.set-currently-edited-page
+                sys42.cms.set-currently-edited-page
                   set-session-value:sys42.currently-edited-page
                     src:x:/../*/_arg?value
 
 
                 /*
-                 * Returns the currently edited page
+                 * Returns the currently edited page.
                  */
-                sys42.get-currently-edited-page
+                sys42.cms.get-currently-edited-page
                   get-session-value:sys42.currently-edited-page
                   set:x:/..?value
                     src:x:/./-/*?value
@@ -214,98 +213,151 @@ When you're ready to publish it, then change its access role accordingly!"
                  * Retrieves all pages from database, and creates
                  * one option item for each of them, to allow editing
                  */
-                sys42.populate-select-page
-                  clear-widget:select-page
+                sys42.cms.populate-select-page
+
+                  /*
+                   * Clears any previously created "option" HTML elements from "select existing page for editing" drop down.
+                   */
+                  clear-widget:cms-select-page
+
+                  /*
+                   * Adding the [_default] item, which simply is an informational piece of text.
+                   */
                   create-literal-widget
                     element:option
-                    parent:select-page
+                    parent:cms-select-page
                     value:_default
                     innerValue:Choose existing page to edit ...
-                  sys42.get-currently-edited-page
+
+                  /*
+                   * Retrieves the currently selected page, if any, such that we can set its
+                   * associated "option" HTML element to "selected".
+                   */
+                  sys42.cms.get-currently-edited-page
+
+                  /*
+                   * Selecting all [p5.page] objects from database, and iterating through them all, such
+                   * that we can create one "option" HTML element for each.
+                   */
                   select-data:x:/*/*/p5.page
                   for-each:x:/-/*
-                    set:x:/..for-each/*/create-literal-widget/*/value?value
-                      src:x:/..for-each/*/_dp/#?value
-                    set:x:/..for-each/*/create-literal-widget/*/innerValue?value
-                      src:{0} - [{1}]
-                        :x:/..for-each/*/_dp/#/*/name?value
-                        :x:/..for-each/*/_dp/#/*/type?value
-                    if:x:/../*/sys42.get-currently-edited-page?value
-                      equals:x:/..for-each/*/_dp/#?value
+
+                    /*
+                     * Checking if currently iterated [p5.page] is being edited, and if so, making sure the
+                     * "option" HTML element for it is selected.
+                     */
+                    if:x:/../*/sys42.cms.get-currently-edited-page?value
+                      =:x:/..for-each/*/_dp/#?value
                       add:x:/..for-each/*/create-literal-widget
                         src
                           selected
+
+                    /*
+                     * Forward evaluating the expressions in [create-literal-widget], before invoking it.
+                     */
+                    eval-x:x:/+/*
                     create-literal-widget
                       element:option
-                      parent:select-page
-                      value
-                      innerValue
+                      parent:cms-select-page
+                      value:x:/..for-each/*/_dp/#?value
+                      innerValue:{0} [{1}] {2}
+                        :x:/..for-each/*/_dp/#/*/name?value
+                        :x:/..for-each/*/_dp/#/*/type?value
+                        :x:/..for-each/*/_dp/#?value
 
 
                 /*
-                 * Invoked when user selects a page for editing. Retrieves which page
-                 * user wants to edit, and starts the correct page editor according to
-                 * user's request
+                 * Invoked when user selects a page for editing. 
+                 * Retrieves which page user wants to edit, and starts the correct page editor 
+                 * according to what type of page it is.
                  */
-                sys42.page-was-selected-for-editing
-                  get-widget-property:select-page
+                sys42.cms.page-was-selected-for-editing
+
+                  /*
+                   * Figuring out which page was selected for editing, if any.
+                   */
+                  get-widget-property:cms-select-page
                     value
-                  sys42.set-currently-edited-page:x:/-/*/*(!/=_default)?value
-                  if:x:/-2/*/*(!/=_default)?value
-                    sys42.edit-page
+
+                  /*
+                   * Setting the selected page into our session, such that we can remember it, across refresh,
+                   * and so on.
+                   * Notice, our little boolean algebra trick here, makes sure the value become "null" (no [_arg]),
+                   * if the selected "page" was [_default], which is the informational piece of text, explaining
+                   * what the drop down's purpose is.
+                   */
+                  sys42.cms.set-currently-edited-page:x:/-/*/*(!/=_default)?value
+                  if:x:/../*/get-widget-property/*/*(!/=_default)?value
+
+                    /*
+                     * Editing page
+                     */
+                    sys42.cms.edit-page
                   else
-                    clear-widget:page-editor-surface
+
+                    /*
+                     * No page is being edited, simply clear the editor surface.
+                     */
+                    clear-widget:cms-page-editor-surface
 
 
     /*
-     * This is the widget where the actual editing occurs. It
-     * will contain an "edit property" part, which for the most
-     * parts is common for all types of pages, with a "Name", "URL"
-     * property, etc, in addition to the custom editor, which depends
-     * upon the type of page user is editing
+     * This is the widget where the actual editing occurs. 
+     * It will contain an "edit property" part, which is common for all types of pages, with a "Name", "URL"
+     * property, etc, in addition to the custom editor, which depends upon the type of page user is editing.
      */
-    container:page-editor-surface
+    container:cms-page-editor-surface
 
 
       /*
-       * Lambda events for "Page Editor main surface"
+       * Lambda events for "Page Editor main surface" widget.
        */
       events
 
 
         /*
-         * Invoked when a page is selected for editing, either because
-         * it was just created, or because an existing page was selected
-         * for editing. Clears the editor surface, in case another page is
-         * already being edited, and starts the editing process. Which means
-         * that it loads up the "common toolbar" for common settings, such as
-         * "Name", "URL", etc, in addition to starting the custom editor, which
-         * depends upon the [type] of page, and can be found in
-         * "system42/cms/page-editor/editors"
+         * Invoked when a page is selected for editing, either because it was just created, 
+         * or because an existing page was selected for editing. 
+         *
+         * Clears the editor surface, in case another page is already being edited, and starts 
+         * the editing process. Which means that it loads up the "common toolbar" for common 
+         * settings, such as "Name", "URL", etc, in addition to starting the custom editor, which
+         * depends upon the [type] of page, and can be found in the "/system42/apps/cms/page-editor/editors/" folder.
          */
-        sys42.edit-page
-          clear-widget:page-editor-surface
-          sys42.get-currently-edited-page
+        sys42.cms.edit-page
+
+          /*
+           * Clears out any previous editors.
+           */
+          clear-widget:cms-page-editor-surface
+
+          /*
+           * Figuring out which page we're editing, if any.
+           */
+          sys42.cms.get-currently-edited-page
           if:x:/-?value
+
+            /*
+             * We are editing a page, loading [p5.page]'s [type] declaration from database, which is
+             * needed to load "specialized editor".
+             */
             select-data:x:/*/*/p5.page/"={0}"/*/type?value
-              :x:/../*/sys42.get-currently-edited-page?value
-            add:x:/..if/*/sys42.execute-lisp-file
-              src:"_id:{0}"
-                :x:/../*/sys42.get-currently-edited-page?value
-            add:x:/..if/*/sys42.create-editor-toolbar
-              src:"_id:{0}"
-                :x:/../*/sys42.get-currently-edited-page?value
-            sys42.create-editor-toolbar
-            sys42.execute-lisp-file:/system42/apps/cms/page-editor/editors/{0}.hl
-              :x:/..if/*/select-data/*?value
-              _parent-widget:page-editor-editor-surface
+              :x:/../*/sys42.cms.get-currently-edited-page?value
+
+            /*
+             * Creating "common" toolbar, showing Name, URL, Access Role, etc for page object.
+             */
+            eval-x:x:/+/*
+            sys42.cms.create-editor
+              _editor:x:/..if/*/select-data/*?value
+              _id:x:/../*/sys42.cms.get-currently-edited-page?value
 
 
         /*
-         * Creates the common toolbar for editing pages. Contains 
-         * the common properties of pages, such as "Name", "URL", etc.
+         * Creates the common toolbar for editing pages.
+         * Contains the common properties of pages, such as "Name", "URL", etc.
          */
-        sys42.create-editor-toolbar
+        sys42.cms.create-editor
           add:x:/+
-            src:x:/../*/_id
-          sys42.execute-lisp-file:/system42/apps/cms/page-editor/editor-toolbar.hl
+            src:x:/../*(/_id|/_editor)
+          sys42.execute-lisp-file:/system42/apps/cms/page-editor/editor.hl

@@ -71,7 +71,7 @@ set:x:/../*/create-widget/*/oninit/**/={_id}?value
  * Creating actual toolbar
  */
 create-widget
-  parent:page-editor-surface
+  parent:cms-page-editor-surface
 
 
   /*
@@ -179,7 +179,18 @@ create-widget
     /*
      * Custom editor surface
      */
-    container:page-editor-editor-surface
+    container:cms-specialized-editor-surface
+
+      /*
+       * Custom events for specialized editor surface widget.
+       */
+      events
+
+        /*
+         * Returns ID of specialized edditor surface widget.
+         */
+        sys42.cms.get-specialized-editor-surface
+          return:x:/../*/_event?value
 
 
     /*
@@ -222,7 +233,7 @@ create-widget
                  * Saves currently edited page
                  */
                 sys42.save-edited-page
-                  sys42.get-currently-edited-page
+                  sys42.cms.get-currently-edited-page
                   _widgets
                     page-url
                     page-name
@@ -245,16 +256,16 @@ create-widget
                   add:x:/../*/update-data/*/*
                     src:x:/../*/sys42.get-page-editor-data/*
                   update-data:x:/*/*/p5.page/"={0}"
-                    :x:/../*/sys42.get-currently-edited-page?value
+                    :x:/../*/sys42.cms.get-currently-edited-page?value
                     src
                       p5.page
                         name
                         template
-                  sys42.create-main-menu
+                  sys42.cms.create-navbar-menu
 
                   // Since URL of page (and hence ID) might have changed, we'll need to go through this again
-                  sys42.set-currently-edited-page:x:/../*/get-widget-property/*/page-url/*?value
-                  sys42.populate-select-page
+                  sys42.cms.set-currently-edited-page:x:/../*/get-widget-property/*/page-url/*?value
+                  sys42.cms.populate-select-page
 
                   // Checking how many levels of nesting we have in page, to warn user of that more than two levels are BAD
                   split:x:/../*/get-widget-property/*/page-url/*/value?value
@@ -409,7 +420,7 @@ Among other things, your page becomes inacessible on tablets and phones!"
                      * Then we need to "refresh editor", but first, setting "edited page" to
                      * the page we just saved
                      */
-                    sys42.set-currently-edited-page:x:/../*/get-widget-property/[1,2]/*/*?value
+                    sys42.cms.set-currently-edited-page:x:/../*/get-widget-property/[1,2]/*/*?value
 
                     /*
                      * Simple version, refreshing page location.
@@ -426,7 +437,7 @@ Among other things, your page becomes inacessible on tablets and phones!"
               innerValue:View page
               class:btn btn-default
               onclick
-                sys42.get-currently-edited-page
+                sys42.cms.get-currently-edited-page
                 send-javascript:@"window.open('{0}', '_blank');"
                   :x:/./-?value
 
@@ -457,8 +468,19 @@ Among other things, your page becomes inacessible on tablets and phones!"
                  * Deletes the currently edited page
                  */
                 sys42.delete-currently-edited-page
-                  sys42.get-currently-edited-page
+                  sys42.cms.get-currently-edited-page
                   delete-data:x:/*/*/p5.page/"={0}"
                     :x:/./-?value
-                  sys42.set-currently-edited-page
+                  sys42.cms.set-currently-edited-page
                   reload-location
+
+
+/*
+ * Loading "specialized editor", depending upon which page type we're editing.
+ */
+sys42.cms.get-currently-edited-page
+add:x:/../*/sys42.execute-lisp-file
+  src:"_id:{0}"
+    :x:/../*/sys42.cms.get-currently-edited-page?value
+sys42.execute-lisp-file:/system42/apps/cms/page-editor/editors/{0}.hl
+  :x:/../*/_editor?value

@@ -1,9 +1,12 @@
 
 /*
- * Returns default [html] type of page
+ * Creates a default [html] type of page, and returns to caller.
  */
 
-
+/*
+ * Making sure we use the "default" template if it exists,
+ * otherwise we use the first template we find.
+ */
 list-files:/system42/apps/cms/templates/
 if:x:/-/*/"/system42/apps/cms/templates/default.hl"
   insert-before:x:/./+2/0/0
@@ -12,8 +15,11 @@ else
   insert-before:x:/./+/0/0
     src:"template:{0}"
       :x:/../*/list-files/0?name
-insert-before:x:/../0
+
+/*
+ * Returning page to caller.
+ */
+insert-before:x:
   src
-    role:root
     content:@"<p>Foo, and then a dash of bar too, I guess ...?</p>"
 

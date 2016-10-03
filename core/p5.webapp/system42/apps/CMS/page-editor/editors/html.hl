@@ -19,11 +19,11 @@ set:x:/../*/create-widget/*/widgets/*/=ck-editor/*/innerValue?value
 
 
 /*
- * Making sure editor is loaded underneath the correct widget according to 
- * caller's specifications
+ * Making sure editor is loaded with correct parent widget.
  */
+sys42.cms.get-specialized-editor-surface
 set:x:/../*/create-widget/*/parent?value
-  src:x:/../*/_parent-widget?value
+  src:x:/./-?value
 
 
 /*
