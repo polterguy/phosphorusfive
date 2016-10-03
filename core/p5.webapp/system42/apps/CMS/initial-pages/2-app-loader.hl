@@ -12,10 +12,9 @@ p5.page:/app-loader
  * Loads up the specified app according to the given HTTP parameter.
  */
 get-http-param:app
-split:x:/-/0?value
-  =:/
-sys42.execute-lisp-file:x:/../*/get-http-param/0?value
+sys42.execute-lisp-file:/system42/apps/{0}/launch.hl
+  :x:/../*/get-http-param/0?value
 set-widget-property:header
-  innerValue:x:/./-2/0/-/-?name
-set-title:x:/-3/0/-/-?name
+  innerValue:x:/../*/get-http-param/0?value
+set-title:x:/../*/get-http-param/0?value
 "

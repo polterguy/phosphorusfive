@@ -309,13 +309,14 @@ else
         return
       split:x:/./*/_dn/#?name
         =:/
+      url-encode:x:/../*/split/0/-?name
       eval-x:x:/+/*/*/*/*
       return
         li
           widgets
             a
-              href:/app-loader?app={0}launch.hl
-                :x:/../*/_dn/#?name
+              href:/app-loader?app={0}
+                :x:/../*/url-encode?value
               innerValue:x:/../*/split/0/-?name
     apply:x:/./*/create-container-widget/*/widgets/*/ul/*/widgets
       src:x:/././-/*
