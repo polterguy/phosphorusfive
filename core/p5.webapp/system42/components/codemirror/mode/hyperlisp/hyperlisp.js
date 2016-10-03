@@ -878,22 +878,14 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'not':
         case 'src':
         case 'sleep':
-        case 'equals':
         case '=':
-        case 'not-equals':
         case '!=':
-        case 'more-than':
         case '>':
-        case 'less-than':
         case '<':
-        case 'more-than-equals':
         case '>=':
-        case 'less-than-equals':
         case '<=':
         case '~':
-        case 'contains':
         case '!~':
-        case 'not-contains':
         case 'lisp2lambda':
         case 'sha256-hash':
         case 'widget-exist':

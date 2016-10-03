@@ -30,7 +30,7 @@ for-each:x:/-/*?name
   set:x:/..for-each/*/_lit/*/*/innerValue?value
     src:x:/..for-each/*/split/[1,2]/0?name
   if:x:/../*/select-data/[0,1]/*/*/template?value
-    equals:x:/..for-each/*/_dp?value
+    =:x:/..for-each/*/_dp?value
     add:x:/..for-each/*/_lit/*
       src
         selected
@@ -54,7 +54,7 @@ for-each:x:/-/*?name
   set:x:/..for-each/*/_lit/*/*/innerValue?value
     src:x:/..for-each/*/_dp?value
   if:x:/../*/select-data/[0,1]/*/*/role?value
-    equals:x:/..for-each/*/_dp?value
+    =:x:/..for-each/*/_dp?value
     add:x:/..for-each/*/_lit/*
       src:selected
   add:x:/../*/create-widget/**/container/=page-role/*/widgets
@@ -248,7 +248,7 @@ create-widget
                   set:x:/../*/update-data/*/*/*/template?value
                     src:x:/../*/get-widget-property/*/page-template/*?value
                   if:x:/../*/get-widget-property/*/page-role/*?value
-                    not-equals:"_default"
+                    !=:"_default"
                     add:x:/../*/update-data/*/*
                       src:"role:{0}"
                         :x:/../*/get-widget-property/*/page-role/*?value

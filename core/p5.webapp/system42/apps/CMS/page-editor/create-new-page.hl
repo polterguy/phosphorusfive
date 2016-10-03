@@ -50,7 +50,7 @@ for-each:x:/../*/select-data/*?value
     can-convert:x:/./-/0/-?name
       type:int
     and:x:/./-/0/-?name.int
-      more-than-equals:x:/../*/_high?value
+      >=:x:/../*/_high?value
 
     /*
      * Last entity from [split] was an integer, and it was higher than our previous [_high] value.
