@@ -11,6 +11,9 @@
  * [_onok]     - Lambda callback to evaluate upon user clicking "OK" button
  * [_buttons]  - Buttons to use instead of the (default) "OK" button
  * [_widgets]  - List of widgets to append into the body parts of the modal window
+ *
+ * Notice, if the user clicks enter while any of the [_widgets] widgets have focus, then
+ * the first button in the [_buttons] list will be clicked (alternatively the "OK" button)
  */
 create-event:sys42.modal-window
 
@@ -29,8 +32,10 @@ create-event:sys42.modal-window
         class:btn btn-default
         innerValue:OK
         onclick
-          sys42.modal-window.close
-          sys42.modal-window.evaluate-ok
+          if
+            sys42.modal-window.evaluate-ok
+            !=:bool:false
+            sys42.modal-window.close
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
@@ -149,7 +154,23 @@ create-event:sys42.modal-window
                     innerValue
                   container:modal-window-widgets
                     class:form
+                    onkeypress:"return p5.modalWindowKeyPress(event);"
+                    _onenterpressed
+                      find-widget:modal-window-footer
+                        element:button
+                      raise-widget-ajax-event:x:/-/*?value
+                        onclick
                     oninit
+
+                      /*
+                       * Including JavaScript to help handle carriage return key in dialogue
+                       */
+                      include-javascript:@"p5.modalWindowKeyPress = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('modal-window-widgets').raise('_onenterpressed');
+    return false;
+  }
+}"
 
                       /*
                        * Settings focus to first child widget passed in as [_widgets] argument,
@@ -170,7 +191,7 @@ create-event:sys42.modal-window
               /*
                * Footer of dialog, contains [_buttons]
                */
-              container
+              container:modal-window-footer
                 class:modal-footer
                 widgets
 

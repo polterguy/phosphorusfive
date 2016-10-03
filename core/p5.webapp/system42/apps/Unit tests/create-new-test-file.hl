@@ -6,27 +6,17 @@
  */
 sys42.modal-window
   _header:Name of unit test file
-  _body:Please provide a filename for your new test file
   _widgets
     container:test-filename-wrp
       class:form-group
       widgets
+        label
+          for:test-filename
+          innerValue:Name of test
         input:test-filename
           type:text
           class:form-control
           placeholder:Name of file ...
-          onkeypress:"return p5.testEnterClicked(event);"
-          oninit
-            /*
-              * Including JavaScript to help handle carriage return key in fields of dialogue
-              */
-            include-javascript:@"
-p5.testEnterClicked = function(e) {
-  if(e.keyCode == 13) {
-    p5.$('test-create-btn').raise('onclick');
-    return false;
-  }
-}"
   _buttons
     button:test-create-btn
       class:btn btn-default

@@ -301,35 +301,56 @@ Among other things, your page becomes inacessible on tablets and phones!"
                 /*
                  * Forward evaluating expressions inside of [_widgets] below
                  */
-                eval-x:x:/+/*/*/*/value|/+/*/_onok/*/_old-page
-                sys42.wizard-window
-                  _header:Supply name and URL
-                  _body:Please supply a new name and URL of the page you wish to save
+                eval-x:x:/+/*/*/*/*/*/value|/+/*/_onok/*/_old-page
+                sys42.modal-window
+                  _header:Supply name and URL of new page
                   _widgets
-                    text:new-page-name
-                      label:Name
-                      mandatory:true
-                      placeholder:Name of page ...
-                      value:{0} - copy
-                        :x:/../*/get-widget-property/[0,1]/*/*?value
-                    text:new-page-url
-                      label:URL
-                      mandatory:true
-                      placeholder:URL of page ...
-                      value:{0}-copy
-                        :x:/../*/get-widget-property/[1,2]/*/*?value
+                    div:new-page-name-wrp
+                      class:form-group
+                      widgets
+                        label
+                          for:new-page-name
+                          class:control-label
+                          innerValue:Page name
+                        input:new-page-name
+                          type:text
+                          class:form-control
+                          placeholder:Name of page ...
+                          value:{0} - copy
+                            :x:/../*/get-widget-property/[0,1]/*/*?value
+                    div:new-page-url-wrp
+                      class:form-group
+                      widgets
+                        label
+                          for:new-page-url
+                          class:control-label
+                          innerValue:Page URL
+                        input:new-page-url
+                          type:url
+                          class:form-control
+                          placeholder:URL of page ...
+                          value:{0}-copy
+                            :x:/../*/get-widget-property/[1,2]/*/*?value
                   _onok
 
                     /*
                      * Will contain the database id of old page
                      */
-                    _old-page::x:/../*/get-widget-property/[1,2]/*/*?value
+                    _old-page:x:/../*/get-widget-property/[1,2]/*/*?value
+
+                    /*
+                     * Getting the new page's name and URL
+                     */
+                    get-widget-property:new-page-name
+                      value
+                    get-widget-property:new-page-url
+                      value
 
                     /*
                      * Making sure supplied name does not exist from before
                      */
                     select-data:x:@"/*/*/p5.page/""={0}"""
-                      :x:/../*/new-page-url?value
+                      :x:/../*/get-widget-property/[1,2]/*/*?value
                     if:x:/../*/select-data/[0,1]/*?count
                       >:int:0
 
@@ -337,12 +358,14 @@ Among other things, your page becomes inacessible on tablets and phones!"
                        * Page exists from before, alerting user, and returning 
                        * without setting the "close modal window flag"
                        */
+                      sys42.add-css-classes:new-page-url-wrp
+                        _class:has-error
                       send-javascript:@"$('#new-page-url').focus().select();"
 
                       /*
                        * Returning early
                        */
-                      return:Page already exists, please choose unique name!
+                      return:bool:false
 
                     /*
                      * Getting page data, and saving as a new object in database
@@ -358,12 +381,12 @@ Among other things, your page becomes inacessible on tablets and phones!"
                       :x:/../*/_old-page?value
 
                     /*
-                     * Changing id (URL of page) to new URL in addition to name of page
+                     * Changing id (URL of page) to new URL, in addition to changing name of page
                      */
                     set:x:/../*/select-data/[1,2]/*?value
-                      src:x:/../*/new-page-url?value
+                      src:x:/../*/get-widget-property/[1,2]/*/*?value
                     set:x:/../*/select-data/[1,2]/*/*/name?value
-                      src:x:/../*/new-page-name?value
+                      src:x:/../*/get-widget-property/[0,1]/*/*?value
 
                     /*
                      * Then removing all items from [select-data] that also exists in [sys42.get-page-editor-data]
@@ -386,17 +409,13 @@ Among other things, your page becomes inacessible on tablets and phones!"
                      * Then we need to "refresh editor", but first, setting "edited page" to
                      * the page we just saved
                      */
-                    sys42.set-currently-edited-page:x:/../*/new-page-url?value
+                    sys42.set-currently-edited-page:x:/../*/get-widget-property/[1,2]/*/*?value
 
                     /*
-                     * Simple version, refreshing page location
+                     * Simple version, refreshing page location.
+                     * No need to close dialogues or anything, simply reloading page, should do the trick
                      */
                     reload-location
-
-                    /*
-                     * Returning success, to make sure dialog is closed
-                     */
-                    return:bool:true
 
 
             /*
