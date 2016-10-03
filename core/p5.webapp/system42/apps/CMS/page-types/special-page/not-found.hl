@@ -1,20 +1,18 @@
 
 /*
- * Responsible for showing the 404 not-found page
+ * Responsible for showing the 404 not-found page.
  */
 
 
 /*
- * Loading up our template
+ * Loading up our template.
  */
 load-file:x:/../*/_template?value
 
 
 /*
- * Setting the [header] and [content] of our page to "not found" info
+ * Setting the [content] of our page to "not found" info.
  */
-set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
-  src:"Page not found - 404!"
 set:x:/-2/*/*/create-widget/*/widgets/**/={content}?value
   src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" />
 <h2>Sorry!</h2>
@@ -34,6 +32,4 @@ set-http-status-code:404
 set-http-status:404 Marvin could not find that page
 
 set-title:Page not found
-set-widget-property:header
-  innerValue:Page not found
 

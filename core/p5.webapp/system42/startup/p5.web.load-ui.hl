@@ -6,20 +6,12 @@
 create-event:p5.web.load-ui
 
   /* 
-   * Checking if there are less than 2 users, which might happen if
-   * owner has explicitly chosen to delete "auth" file, to go through
-   * installation process again, or never in fact gone through installation
-   * process at all. 
-   * When system is installed, there must be at least 2 users!
+   * Checking if there are no users in system, at which case, user must go through 
+   * installation process.
    */
-  whoami
   list-users
   if:x:/-/*?count
-    <:int:2
-    and:x:/./-2/*/username?value
-      =:root
-    or:x:/./-/*?count
-      =:int:0
+    <:int:1
 
     // Root password is null, or there are less than two user in system, and logged in user is root
     // Making sure we go through installation process, to finish setup of system
@@ -35,8 +27,8 @@ create-event:p5.web.load-ui
       equals:int:0
 
       // Page not found, loading up our "404 page"
-      sys42.execute-lisp-file:/system42/apps/cms/page-types/special-page/not-found.hl
-        _template:/system42/apps/cms/templates/default.hl
+      sys42.execute-lisp-file:/system42/apps/CMS/page-types/special-page/not-found.hl
+        _template:/system42/apps/CMS/page-templates/default.hl
     else
 
       // Adding up all nodes from results of select-data into [execute-lisp-file]
@@ -50,7 +42,7 @@ create-event:p5.web.load-ui
       // pages. If you extend them, you should probably also create an editor
       // for your page type
       set:x:/+?value
-        src:/system42/apps/cms/page-types/{0}.hl
+        src:/system42/apps/CMS/page-types/{0}.hl
           :x:/..else/..else/*/select-data/*/*/type?value
       sys42.execute-lisp-file
         _args

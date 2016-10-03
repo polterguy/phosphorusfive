@@ -29,3 +29,7 @@ TODO before release
   Allows for temporary "halting" server execution, to fetch data from end-user, before recalling execution, considering the
   data from user, which is a really freaking *SICK* feature!! :D
 
+* Make sure none of the unrelated files are dependent upon CMS in any ways. Among other things, "installation" loads up a template.
+
+* Create some sort of "persistent login" (remember me functionality)
+

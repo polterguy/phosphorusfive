@@ -13,7 +13,7 @@ select-data:x:/*/*/p5.page/"={0}"
 /*
  * Setting templates
  */
-list-files:/system42/apps/cms/templates/
+list-files:/system42/apps/CMS/page-templates/
 for-each:x:/-/*?name
   _lit
     literal
@@ -482,5 +482,5 @@ sys42.cms.get-currently-edited-page
 add:x:/../*/sys42.execute-lisp-file
   src:"_id:{0}"
     :x:/../*/sys42.cms.get-currently-edited-page?value
-sys42.execute-lisp-file:/system42/apps/cms/page-editor/specialized-editors/{0}.hl
+sys42.execute-lisp-file:/system42/apps/CMS/page-editor/specialized-editors/{0}.hl
   :x:/../*/_editor?value

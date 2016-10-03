@@ -19,11 +19,8 @@ create-widget:set-server-salt
      */
     literal
       element:blockquote
-      innerValue:@"<em>""Welcome to System42, I am Marvin, and I will be your guide in these parts of our galaxy. Before you can start
-benefitting from my superior brain, you will have to go through some simple settings. The first thing you will have to do, is to create a 
-<strong>random server salt</strong>, used to make it more difficult to hack your system. Provide a random set of characters in the form 
-below. You do not have to remember these characters, and you should NOT in fact write them down! Try to create this with at least 100 
-characters, using all different types of characters, such as $%&123*@()[/]{} and so on!""</em>"
+      innerValue:@"<em>""Welcome to System42, I am Marvin. The first thing you will have to do, is to create a 
+<strong>random server salt</strong>.""</em>"
 
 
     /*
@@ -36,7 +33,7 @@ characters, using all different types of characters, such as $%&123*@()[/]{} and
           element:textarea
           class:form-control
           rows:10
-          placeholder:Server salt ...
+          placeholder:Random server salt, e.g. 'sdiug45%/{huDSHJU3q796(!d'
           oninit
             send-javascript:@"$('#server-salt').focus().select();"
         literal:update-salt

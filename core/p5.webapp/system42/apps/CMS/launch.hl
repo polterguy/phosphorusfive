@@ -2,7 +2,7 @@
 /*
  * Creates our main CMS Widget, which actually only contains a couple of drop down lists to create 
  * new pages, and edit existing pages. In addition, it creates the "general properties toolbar",
- * which it does through invoking the "/system42/apps/cms/page-editor/editor-toolbar.hl", when
+ * which it does through invoking the "/system42/apps/CMS/page-editor/editor-toolbar.hl", when
  * a new page is created, or an existing page is edited.
  *
  * The rest is done by "Specialized editors", found in "system42/apps/cms/page-editor/specialized-editors/", 
@@ -19,7 +19,6 @@
  *
  * Notice, if you do, you will also need a Hyperlisp script to load up and display your page 
  * in "system42/apps/cms/page-types/", who's name should match the "page type".
- *
  */
 
 
@@ -94,9 +93,9 @@ create-widget:cms-page-editor
 
                   /*
                    * Then we create one "option" for each editor we have installed as a plugin 
-                   * in the "/system42/apps/cms/page-editor/specialized-editors/" folder.
+                   * in the "/system42/apps/CMS/page-editor/specialized-editors/" folder.
                    */
-                  list-files:/system42/apps/cms/page-editor/specialized-editors/
+                  list-files:/system42/apps/CMS/page-editor/specialized-editors/
                   for-each:x:/-/*?name
 
                     /*
@@ -135,7 +134,7 @@ create-widget:cms-page-editor
                   get-widget-property:cms-create-new-page
                     value
                   eval-x:x:/+/*
-                  sys42.execute-lisp-file:/system42/apps/cms/page-editor/create-new-page.hl
+                  sys42.execute-lisp-file:/system42/apps/CMS/page-editor/create-new-page.hl
                     _type:x:/../*/get-widget-property/*/*?value
                     _template:x:/../*/get-widget-property/*/*?value
 
@@ -330,7 +329,7 @@ create-widget:cms-page-editor
          *
          * Which means that it loads up the "common toolbar" for common settings, such as page Name, URL, etc, 
          * in addition to starting the "specialized editor", which depends upon the [type] of page, and can be 
-         * found in the "/system42/apps/cms/page-editor/specialized-editors/" folder.
+         * found in the "/system42/apps/CMS/page-editor/specialized-editors/" folder.
          */
         sys42.cms.edit-page
 
@@ -357,6 +356,6 @@ create-widget:cms-page-editor
              * letting it load up the "specialized editor".
              */
             eval-x:x:/+/*
-            sys42.execute-lisp-file:/system42/apps/cms/page-editor/editor.hl
+            sys42.execute-lisp-file:/system42/apps/CMS/page-editor/editor.hl
               _editor:x:/..if/*/select-data/*?value
               _id:x:/../*/sys42.cms.get-currently-edited-page?value

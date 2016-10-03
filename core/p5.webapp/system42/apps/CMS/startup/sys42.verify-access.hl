@@ -1,29 +1,57 @@
 
 /*
- * Checks to see if the user has access to the given object. "Root"
- * user has access to everything. Everything that "user" has access to,
- * all registered users in system has access to. Everything else, must
- * have the access right matching the supplied role's name. 
- * This means that if an object is restricted to "root", then only
- * root has access. If an object is restricted to "user", then all
- * registered users have access, also "superusers", and your own roles.
+ * Creates the Active event that is responsible for verifying that user has access to a specific page or not.
+ *
+ * Logic is as following;
+ *
+ * Checks to see if the user has access to the given object. "Root" user has access to everything. 
+ * Everything that "user" has access to, all registered users in system has access to. 
+ * Everything else, must have the access right matching the supplied role's name. 
+ * 
+ * This means that if an object is restricted to "root", then only root has access. 
+ * If an object is restricted to "user", then all registered users have access, also "superusers", and your own roles.
+ *
  * Pretty simple logic, but feel free to roll your own!
  */
 
 create-event:sys42.verify-access
+
+  /*
+   * Defaulting return value to "hass access".
+   */
   set:x:/..?value
     src:bool:true
+
+  /*
+   * Checking if we were given a role as input, otherwise we return default value,
+   * which allows user to gain access.
+   */
   if:x:/../*/_arg
+
+    /*
+     * Retrieving currently logged in user's role.
+     */
     whoami
+
+    /*
+     * Checking if "user" was provided as role, and if user is logged in at all.
+     * If both are true, user has access.
+     */
     if:x:/../*/_arg?value
       =:user
       and:x:/./-/*/default?value
         !=:bool:true
         // Has access!
+
+    /*
+     * Else, checking if currently logged in user not equals "root", and 
+     * logged in user's role not equals specified argument "role", at which 
+     * case user does NOT have access.
+     */
     else-if:x:/./*/whoami/*/role?value
-      not-equals:root
+      !=:root
       and:x:/././*/whoami/*/role?value
-        not-equals:x:/../*/_arg?value
+        !=:x:/../*/_arg?value
       // Has not access
       set:x:/..?value
         src:bool:false

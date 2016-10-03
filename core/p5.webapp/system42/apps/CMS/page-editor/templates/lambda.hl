@@ -4,25 +4,18 @@
  */
 
 
-list-files:/system42/apps/cms/templates/
-if:x:/-/*/"/system42/apps/cms/templates/default.hl"
-  insert-before:x:/./+2/0/0
-    src:"template:/system42/apps/cms/templates/default.hl"
-else
-  insert-before:x:/./+/0/0
-    src:"template:{0}"
-      :x:/../*/list-files/0?name
 insert-before:x:/../0
   src
+    template:/system42/apps/CMS/page-templates/default.hl
     lambda:@"/*
- * Default [lambda] type of page
- * Edit this page to meet your own needs
+ * Default [lambda] type of page.
+ * Edit this page to meet your own needs.
  */
 create-widget:foo
   parent:content
   class:col-xs-12
   widgets
     literal:bar
-      innerValue:Howdy Lambda World!"
+      innerValue:Foo bar!"
 
 

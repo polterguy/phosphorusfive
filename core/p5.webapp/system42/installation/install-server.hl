@@ -8,13 +8,13 @@
 /*
  * Loading up main template
  */
-load-file:/system42/apps/cms/templates/default.hl
+load-file:/system42/apps/CMS/page-templates/default.hl
 
-// Removing {content} and setting {header} before evaluating template
-set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
-  src:Installation Guide
-set:x:/-2/*/*/create-widget/*/widgets/**/={content}/.
+// Removing {content} before evaluating template
+set:x:/-/*/*/create-widget/*/widgets/**/={content}/.
 eval:x:/./*/load-file/*
+set-widget-property:header
+  innerValue:Installation Guide
 
 /*
  * Creating actual guide form
@@ -53,9 +53,3 @@ if:x:/-/*?count
 
     // Need to set root password, and do other types of installation setup things
     sys42.execute-lisp-file:/system42/installation/set-root-password.hl
-else-if:x:/../*/whoami/*/role?value
-  =:root
-
-  // Possibly a refresh of page, or previously abandoned setup installation process
-  // Continuing from where we left off, which is creating initial non-root user
-  sys42.execute-lisp-file:/system42/installation/create-initial-user.hl

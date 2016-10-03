@@ -18,10 +18,6 @@ create-widget:finished
      */
     literal
       element:blockquote
-      innerValue:@"<em>""Congratulations, your system is now setup, and ready to use! The first thing you'd probably want
-to do, is to visit your <a href=""/root/editor"">Page editor</a>, and modify the main landing page. If you log out and 
-<a href=""/"">reload</a> this page, you will see how your website looks like at the moment for any random visitor. Another 
-thing you will want to do, is logging out your root user, and login with your superuser account, and go through your 
-<a href=""/profile"">profile</a>.""</em>"
+      innerValue:@"<em>""Congratulations, your system is now setup, and ready to use.""</em>"
 
 

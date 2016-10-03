@@ -4,22 +4,10 @@
  */
 
 /*
- * Making sure we use the "default" template if it exists,
- * otherwise we use the first template we find.
- */
-list-files:/system42/apps/cms/templates/
-if:x:/-/*/"/system42/apps/cms/templates/default.hl"
-  insert-before:x:/./+2/0/0
-    src:"template:/system42/apps/cms/templates/default.hl"
-else
-  insert-before:x:/./+/0/0
-    src:"template:{0}"
-      :x:/../*/list-files/0?name
-
-/*
  * Returning page to caller.
  */
 insert-before:x:
   src
+    template:/system42/apps/CMS/page-templates/default.hl
     content:@"<p>Foo, and then a dash of bar too, I guess ...?</p>"
 

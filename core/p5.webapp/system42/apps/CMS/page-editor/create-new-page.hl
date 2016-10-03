@@ -5,7 +5,7 @@
  * ([_template] is only filename from "/page-editor/templates/", and not full path of file)
  */
 
-sys42.execute-lisp-file:/system42/apps/cms/page-editor/templates/{0}.hl
+sys42.execute-lisp-file:/system42/apps/CMS/page-editor/templates/{0}.hl
   :x:/../*/_template?value
 
 /*

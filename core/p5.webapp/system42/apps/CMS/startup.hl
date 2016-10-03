@@ -8,7 +8,7 @@
  * of "initial-pages", and saves them to the database.
  */
 
-sys42.execute-lisp-folder:/system42/apps/cms/startup/
+sys42.execute-lisp-folder:/system42/apps/CMS/startup/
 
 
 /*
@@ -19,6 +19,6 @@ if:x:/-?value
   =:int:0
 
   // Yup, create the initial pages
-  list-files:/system42/apps/cms/initial-pages/
+  list-files:/system42/apps/CMS/initial-pages/
   load-file:x:/-/*?name
   insert-data:x:/-/*/*

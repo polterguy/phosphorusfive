@@ -1,24 +1,17 @@
 
 /*
- * Responsible for showing the no-access page
+ * Responsible for showing the "No access" page.
  */
 
 
 /*
- * Loading up our template
+ * Loading up our template.
  */
 load-file:x:/../*/_template?value
 
 
 /*
- * Setting the [header] of our page to "no access" info
- */
-set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
-  src:"No Access!"
-
-
-/*
- * Checking if there's a user logged in, and if so, showing relevant feedback to user
+ * Checking if there's a user logged in, and if so, showing relevant feedback to user.
  */
 whoami
 if:x:/../*/whoami/*/default?value
@@ -35,9 +28,12 @@ if:x:/../*/whoami/*/default?value
 else
 
   /*
-   * User is not logged in, explaining that he may have success accessing this page
+   * User is not logged in, explaining that he may have success accessing this page,
    * if he logs in. Since we're creating a "big" login form here though, we hide the
-   * login button from the main menu, if it exist
+   * login button from the main menu, if it exist.
+   *
+   * PS!
+   * We do this by adding our own widget hierarchy into the template just loaded.
    */
   add:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/./.
     src
@@ -121,24 +117,28 @@ else
                           else
                             sys42.info-window:Sorry, wrong credentials
                               _class:info-window-error
+
+  /*
+   * Making sure we entirely remove the literal:{content} widget.
+   */
   set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/.
 
 
 /*
- * Evaluating template, now with modified content
+ * Evaluating template, now with modified content.
  */
 eval:x:/../*/load-file/*
 
 
 /*
- * Returning intelligent status codes to client
+ * Returning intelligent status codes to client.
  */
 set-http-status-code:403
 set-http-status:403 Marvin cannot give you access to that page
 
 
 /*
- * Including JavaScript to help handle carriage return key in login box
+ * Including JavaScript to help handle carriage return key in login box.
  */
 include-javascript:@"
 p5.keyLoginPress = function(e) {

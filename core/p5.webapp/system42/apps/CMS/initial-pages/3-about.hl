@@ -5,7 +5,7 @@
 p5.page:/about
   type:html
   name:About
-  template:/system42/apps/cms/templates/default.hl
+  template:/system42/apps/CMS/page-templates/default.hl
   content:@"
 <img class='prepend-left' src='/media/images/marvin-headshot.png' style='float:right;' />
 
