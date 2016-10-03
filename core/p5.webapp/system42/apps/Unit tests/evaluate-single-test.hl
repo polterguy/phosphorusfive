@@ -1,0 +1,53 @@
+
+/*
+ * Loads file, and loops through each root node in the file.
+ * Every "root node" in file, are expected to be a single test.
+ */
+load-file:x:/../*/_file?value
+for-each:x:/-/*/*
+
+  /*
+   * Sets the currently iterated unit test (lambda) to become the value
+   * of the [_test] node.
+   */
+  _test
+  set:x:/-?value
+    src:x:/..for-each/*/_dp/#
+
+  /*
+   * Wraps execution of currently iterated test into a [try]/[catch] block, to be able
+   * to trap exceptions.
+   */
+  try
+
+    /*
+     * Evaluating currently iterated unit test
+     */
+    eval:x:/..for-each/*/_test?value
+
+    /*
+     * If unit test did not throw an exception, it was successfully evaluated.
+     * Making sure we signal that fact, by adding a [_success] node to root node,
+     * signaling success for currently iterated test to caller.
+     */
+    add:x:/..
+      src:"_success:{0}"
+        :x:/..for-each/*/_dp/#?name
+  catch
+
+    /*
+     * Oops, test failed, since an exception was thrown.
+     * Signaling failure to caller as an [_error] node, with a text string, where the
+     * string contains "test-name; 'exception message'\r\n\r\n p5.lambda stack-trace for exception"
+     */
+    eval-x:x:/+/*/*
+    add:x:/..
+      src
+        _error:@"{0}; ""{1}""
+
+{2}"
+          :x:/..for-each/*/_dp/#?name
+          :x:/..catch/*/message?value
+          :x:/..catch/*/stack-trace?value
+
+

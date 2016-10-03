@@ -1,0 +1,82 @@
+
+/*
+ * Creates a new unit test file in system.
+ * Simply shows a modal window, asking user to provide name for test file,
+ * and if user clicks "OK", creates a new default file for user.
+ */
+sys42.modal-window
+  _header:Name of unit test file
+  _body:Please provide a filename for your new test file
+  _widgets
+    container:test-filename-wrp
+      class:form-group
+      widgets
+        input:test-filename
+          type:text
+          class:form-control
+          placeholder:Name of file ...
+          onkeypress:"return p5.testEnterClicked(event);"
+          oninit
+            /*
+              * Including JavaScript to help handle carriage return key in fields of dialogue
+              */
+            include-javascript:@"
+p5.testEnterClicked = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('test-create-btn').raise('onclick');
+    return false;
+  }
+}"
+  _buttons
+    button:test-create-btn
+      class:btn btn-default
+      innerValue:Create
+      onclick
+        get-widget-property:test-filename
+          value
+        if:x:/../*/get-widget-property/*/*?value
+          =:
+          set-widget-property:test-filename-wrp
+            class:form-group has-error
+          send-javascript:@"$('#test-filename').focus().select();"
+          return
+        split:x:/../*/get-widget-property/*/*?value
+          =:.
+        if:x:/-/*?count
+          =:int:1
+          set:x:/../*/get-widget-property/*/*?value
+            src:{0}.hl
+              :x:/../*/get-widget-property/*/*?value
+        split:x:/../*/get-widget-property/*/*?value
+          =:/
+        if:x:/-/*?count
+          >:int:1
+          set-widget-property:test-filename-wrp
+            class:form-group has-error
+          send-javascript:@"$('#test-filename').focus().select();"
+        else
+          save-file:{0}{1}
+            :/system42/apps/Unit tests/tests/
+            :x:/../*/get-widget-property/*/*?value
+            src:@"/*
+ * Contains unit tests for testing [whatever] in system
+ */
+
+/*
+ * Tests that [foo] behaves correctly
+ */
+foo
+  _some-test-code-goes-here
+  if:bool:false
+    throw:@""Assert error, expected [something], got [something-else]!""
+"
+          delete-widget:add-unit-test
+          delete-widget:unit-test-files
+          sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
+          sys42.modal-window.close
+          find-widget
+            _file-button:/system42/apps/Unit tests/tests/{0}
+              :x:/../*/get-widget-property/*/*?value
+          raise-widget-ajax-event:x:/-/*?value
+            onclick
+

@@ -1,25 +1,30 @@
-/*
- * Allows the user to evaluate unit tests in system
- */
 
 /*
- * Verifies user is root first, since only root
- * can run unit tests
+ * Allows the user to inspect, edit and evaluate unit tests in the system.
+ * All unit tests can be found in the "/tests/" folder.
+ */
+
+
+/*
+ * Verifies user is root first, since only root can run unit tests
  */
 whoami
 if:x:/-/*/role?value
   !=:root
   throw:Only root user can run Unit Tests
 
+
 /*
- * List all files in directory, but removing "index.hl",
- * assuming all other files are unit test files
+ * List all files in "/tests/" directory.
+ * Each file is a "single test suite for specified concept".
  */
 list-files:/system42/apps/Unit tests/tests
   filter:hl
 
+
 /*
- * Callback invoked while databinding innerValue of unit test name
+ * Callback invoked while [apply]'ing innerValue of unit test name,
+ * such that we can remove the directory path and ".hl" extension
  */
 _eval-name
   split:x:/../*/_dn/#?name
@@ -30,8 +35,9 @@ _eval-name
     src
       innerValue:x:/../*/split/0/-2?name
 
+
 /*
- * Databinding unit tests files to table widget
+ * Applying unit tests files to table widget
  */
 apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
   src:x:/../*/list-files/*
@@ -46,7 +52,9 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
       widgets
 
         /*
-         * Unit test filename
+         * Unit test filename.
+         * If the user clicks the filename, then the Hyperlisp/CodeMirror editor is launched, allowing
+         * the user to edit the specified test.
          */
         td
           widgets
@@ -58,8 +66,8 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
               onclick
 
                 /*
-                 * Checking  if editor is already loaded, and if so, deleting widget for it (entire "tr" element)
-                 * Returns early if editor exists
+                 * Checking  if editor is already loaded, and if so, deleting existing editing widget (entire "tr" element).
+                 * Returns early if editor exists.
                  */
                 if
                   fetch:x:/0/0?value
@@ -79,12 +87,9 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
                   {_file}:x:?name
 
         /*
-         * Result text from evaluation of file, contains
-         * either one or more bugs, or the names of all
-         * unit tests that ran. Value depends upon whether
-         * or not evaluation of unit tests was a success
-         * or not. Before test is ran, "Undetermined" is
-         * its value
+         * Result text from evaluation of file. Contains either one or more bugs, or the names of all
+         * unit tests that was evaluated successfully. Value depends upon whether or not evaluation of 
+         * unit tests was a success or not. Before test is evaluated, "Undetermined" is its value.
          */
         td
           style:"width:60%;"
@@ -93,8 +98,7 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
 
         /*
          * Button that allows evaluation of a single unit test file.
-         * Notice that you cannot run a single unit test, you can however
-         * run a single unit test file
+         * Notice that you cannot run a single unit test, you can run a single test file though.
          */
         td
           widgets
@@ -108,75 +112,15 @@ apply:x:/../*/create-widget/=unit-test-files/*/widgets/*/tbody/*/widgets
                  * multiple unit tests. [_file] is filename of unit test file
                  */
                 {_file}:x:?name
-                _html
-                sys42.evaluate-unit-test-file:x:/../*/_file?value
-                if:x:/-/*/_error
+                add:x:/+
+                  src:x:@"/../*/"":regex:/^_/"""
+                sys42.execute-lisp-file:/system42/apps/Unit tests/single-test-button-clicked.hl
 
-                  /*
-                   * Error while evaluating unit test file, setting result
-                   * to ell error "messages" + "stack-trace" of exception,
-                   * and making sure we signal in context value that error 
-                   * occurred
-                   */
-                  for-each:x:/../*/sys42.evaluate-unit-test-file/*/_error?value
-                    html-encode:x:/./*/_dp?value
-                    set:x:/../*/_html?value
-                      src:@"{0}<pre class=""error"">{1}</pre>"
-                        :x:/../*/_html?value
-                        :x:/..for-each/*/html-encode?value
-                  set-context-value:sys42.unit-test-errors
-                    src:bool:true
-
-                  /*
-                   * Setting unit tests table row to class "error", and button
-                   * CSS class to warning
-                   */
-                  find-widget
-                    _file-row:x:/../*/_file?value
-                  set-widget-property:x:/-/*?value
-                    class:error
-                  set-widget-property:x:/../*/_event?value
-                    class:btn btn-warning form-control
-                    disabled
-                else
-
-                  /*
-                   * Success while evaluating unit test file, no errors.
-                   * Setting unit tests table row to class "success" and
-                   * button CSS class to success
-                   */
-                  find-widget
-                    _file-row:x:/../*/_file?value
-                  set-widget-property:x:/-/*?value
-                    class:success
-                  set-widget-property:x:/../*/_event?value
-                    class:btn btn-success form-control
-                    disabled
-
-                /*
-                 * Updating unit test count
-                 */
-                get-session-value:sys42.unit-test-count
-                if:x:/-/*?value
-                  +:x:/./-/*?value
-                    _:x:/../*/sys42.evaluate-unit-test-file/*(/_success|/_error)?count
-                  set-session-value:sys42.unit-test-count
-                    src:x:/./-?value
-
-                /*
-                 * Providing textual feedback to user about state of unit tests
-                 */
-                find-widget
-                  _file-result:x:/../*/_file?value
-                join:x:/../*/sys42.evaluate-unit-test-file/*/_success?value
-                  sep:"]\r\n</li><li>["
-                set-widget-property:x:/-2/*?value
-                  innerValue:@"{0}<pre><ol><li>[{1}]</li></ol></pre>"
-                    :x:/../*/_html?value
-                    :x:/././-?value
 
 /*
- * Creating widget showing all unit test files in a table
+ * Now, after the above [apply], and other sanity checks, 
+ * we can finally create the widget that displays all unit tests in the system.
+ * This creates an HTML table, with one row for each test file.
  */
 create-widget:unit-test-files
   parent:content
@@ -185,136 +129,13 @@ create-widget:unit-test-files
   events
 
     /*
-     * Invoked when a unit test file is being edited
+     * Invoked when a unit test file is being edited.
+     * Simply passes onwards the given arguments to "edit-unit-test.hl"
      */
     sys42.launch-unit-test-editor
-
-      /*
-       * Retrieving parent's parent widget (which should be the "tr" HTML row)
-       */
-      get-parent-widget:x:/../*/_widget?value
-      get-parent-widget:x:/-/*/*?value
-
-      /*
-       * Loading unit test file
-       */
-      load-file:x:/../*/_file?value
-        convert:false
-
-      /*
-       * Then creating a new "tr" row, after that one, which contains only one column, containing the content
-       * of our currently edited test file
-       */
-      eval-x:x:/+/*|/+|/+/**(/~codemirror|/_file)|/+/*/*/*/*/*/innerValue
-      create-widget:{0}_editor
-        :x:/../*/_widget?value
-        after:x:/../*/get-parent-widget/[1,2]/*/*?value
-        element:tr
-        widgets
-          td
-            colspan:3
-            style:"border-top:none;"
-            widgets
-
-              /*
-               * Our CodeMirror custom editor widget
-               */
-              sys42.widgets.codemirror:{0}_codemirror
-                :x:/../*/_widget?value
-                _auto-focus:true
-                _height:700px
-                innerValue:x:/../*/load-file/*?value
-              container
-                class:btn-group col-xs-3 col-xs-push-9
-                widgets
-                  literal
-                    element:button
-                    style:"width:33%;"
-                    class:btn btn-default btn-attach-top
-                    innerValue:Save
-                    onclick
-
-                      /*
-                       * Retrieving value from CodeMirror "textarea", and saving to specified test file.
-                       * [_file] and [_codemirror] is forward evaluated before creation of widget
-                       */
-                      _file:x:/../*/_file?value
-                      _codemirror:{0}_codemirror
-                        :x:/../*/_widget?value
-                      get-widget-property:x:/-?value
-                        value
-                      save-file:x:/../*/_file?value
-                        src:x:/../*/get-widget-property/*/*?value
-
-                      /*
-                       * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
-                       */
-                      find-first-ancestor-widget:x:/../*/_event?value
-                        element:tr
-                      delete-widget:x:/-/*?value
-
-                      /*
-                       * Feedback to user
-                       */
-                      sys42.info-window:File was saved
-                  literal
-                    element:button
-                    style:"width:33%;"
-                    class:btn btn-default btn-attach-top
-                    innerValue:Delete
-                    onclick
-
-                      /*
-                       * Deletes the specified test
-                       */
-                      sys42.confirm-window
-                        _header:Confirm deletion!
-                        _body:Are you sure you wish to delete this file?
-                        _onok
-                          _file:x:/../*/_file?value
-                          delete-file:x:/../*/_file?value
-                          sys42.info-window:File was deleted
-                          delete-widget:add-unit-test
-                          delete-widget:unit-test-files
-                          sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
-                  literal
-                    element:button
-                    style:"width:33%;"
-                    class:btn btn-default btn-attach-top
-                    innerValue:Close
-                    onclick
-
-                      /*
-                       * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
-                       */
-                      find-first-ancestor-widget:x:/../*/_event?value
-                        element:tr
-                      delete-widget:x:/-/*?value
-
-    /*
-     * Evaluates one Unit Test file
-     */
-    sys42.evaluate-unit-test-file
-      load-file:x:/../*/_arg?value
-      for-each:x:/-/*/*
-        _test
-        set:x:/-?value
-          src:x:/..for-each/*/_dp/#
-        try
-          eval:x:/..for-each/*/_test?value
-          add:x:/..
-            src:"_success:{0}"
-              :x:/..for-each/*/_dp/#?name
-        catch
-          eval-x:x:/+/*/*
-          add:x:/..
-            src
-              _error:@"{0}; ""{1}""
-
-{2}"
-                :x:/..for-each/*/_dp/#?name
-                :x:/..catch/*/message?value
-                :x:/..catch/*/stack-trace?value
+      add:x:/+
+        src:x:@"/../*/"":regex:/^_/"""
+      sys42.execute-lisp-file:/system42/apps/Unit tests/edit-unit-test.hl
 
 
   /*
@@ -337,33 +158,13 @@ create-widget:unit-test-files
                   class:btn btn-primary form-control
                   innerValue:Evaluate all
                   onclick
-                    set-context-value:sys42.unit-test-errors
-                      src:bool:false
-                    date-now
-                    set-session-value:sys42.unit-test-count
-                      src:int:0
-                    find-widget
-                      innerValue:Evaluate
-                    raise-widget-ajax-event:x:/../*/find-widget/*?value
-                      onclick
-                    get-session-value:sys42.unit-test-count
-                    date-now
-                    -:x:/-?value
-                      _:x:/../*/date-now/[0,1]?value
-                    eval-x:x:/+
-                    sys42.info-window:@"{0} unit tests evaluated in {1:s\.fff} seconds"
-                      :x:/./-4/*?value
-                      :x:/./-2?value
-                      _class:info-window-longer
-                    get-context-value:sys42.unit-test-errors
-                    if:x:/-/*?value
-                      set-widget-property:x:/../*/_event?value
-                        class:btn btn-warning form-control
-                        disabled
-                    else
-                      set-widget-property:x:/../*/_event?value
-                        class:btn btn-success form-control
-                        disabled
+
+                    /*
+                     * Evaluating all unit tests in one go
+                     */
+                    add:x:/+
+                      src:x:/../*/_event
+                    sys42.execute-lisp-file:/system42/apps/Unit tests/evaluate-all.hl
     tbody
       widgets
 
@@ -381,89 +182,7 @@ create-widget:add-unit-test
       innerValue:+
       title:Create new unit test file
       onclick
-        sys42.modal-window
-          _header:Name of unit test file
-          _body:Please provide a filename for your new test file
-          _widgets
-            container:test-filename-wrp
-              class:form-group
-              widgets
-                input:test-filename
-                  type:text
-                  class:form-control
-                  placeholder:Name of file ...
-                  onkeypress:"return p5.testEnterClicked(event);"
-                  oninit
-                    /*
-                      * Including JavaScript to help handle carriage return key in fields of dialogue
-                      */
-                    include-javascript:@"
-p5.testEnterClicked = function(e) {
-  if(e.keyCode == 13) {
-    p5.$('test-create-btn').raise('onclick');
-    return false;
-  }
-}"
-          _buttons
-            button:test-create-btn
-              class:btn btn-default
-              innerValue:Create
-              onclick
-                get-widget-property:test-filename
-                  value
-                if:x:/../*/get-widget-property/*/*?value
-                  =:
-                  set-widget-property:test-filename-wrp
-                    class:form-group has-error
-                  send-javascript:@"$('#test-filename').focus().select();"
-                  return
-                split:x:/../*/get-widget-property/*/*?value
-                  =:.
-                if:x:/-/*?count
-                  =:int:1
-                  set:x:/../*/get-widget-property/*/*?value
-                    src:{0}.hl
-                      :x:/../*/get-widget-property/*/*?value
-                split:x:/../*/get-widget-property/*/*?value
-                  =:/
-                if:x:/-/*?count
-                  >:int:1
-                  set-widget-property:test-filename-wrp
-                    class:form-group has-error
-                  send-javascript:@"$('#test-filename').focus().select();"
-                else
-                  save-file:{0}{1}
-                    :/system42/apps/Unit tests/tests/
-                    :x:/../*/get-widget-property/*/*?value
-                    src:@"/*
- * Contains unit tests for testing [whatever] in system
- */
-
-/*
- * Tests that checks that ""foo1"" behaves correctly
- */
-foo1
-  _some-test-code-goes-here
-  if:bool:false
-    throw:@""Assert error, expected [something], got [something-else]!""
-
-/*
- * Tests that checks that ""foo2"" behaves correctly
- */
-foo2
-  _some-other-piece-of-test-code-goes-here
-  if:bool:false
-    throw:@""Assert error, expected [something], got [something-else]!""
-"
-                  delete-widget:add-unit-test
-                  delete-widget:unit-test-files
-                  sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
-                  sys42.modal-window.close
-                  find-widget
-                    _file-button:/system42/apps/Unit tests/tests/{0}
-                      :x:/../*/get-widget-property/*/*?value
-                  raise-widget-ajax-event:x:/-/*?value
-                    onclick
+        sys42.execute-lisp-file:/system42/apps/Unit tests/create-new-test-file.hl
 
     /*
      * Clear unit tests
@@ -473,12 +192,17 @@ foo2
       innerValue:Clear
       title:Clear unit tests
       onclick
+
+        /*
+         * Simply deletes all widgets, and invokes "self" again.
+         * Which should reset the page.
+         */
         delete-widget:add-unit-test
         delete-widget:unit-test-files
         sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
 
     /*
-     * Shows the coverage of the test suite
+     * Shows the coverage for the test suite
      */
     button
       class:btn btn-default col-xs-4
@@ -487,133 +211,6 @@ foo2
       onclick
 
         /*
-         * Lists all static Active Events in system that doesn't contain a "." in their names
+         * Simply evaluates the "show-coverage.hl" file
          */
-        vocabulary
-        set:x:/-/*/dynamic|/-/*/=|/-/*/=~.
-
-        /*
-         * Then loading up all unit test files, making sure we remove the "launch.hl" file
-         */
-        list-files:/system42/apps/Unit tests/tests/
-          filter:hl
-        set:x:/-/*/~launch.hl
-        load-file:x:/-2/*?name
-
-        /*
-         * Then looping through our vocabulary, and figuring out how many times each Active Event can be found 
-         * in the combined results for ALL of our unit test files.
-         */
-        for-each:x:/../*/vocabulary/*
-          add:x:/./*/_dp/#
-            src:"{0}:int:{1}"
-              :x:/..for-each/*/_dp/#?value
-              :x:/../*/load-file/*/*/**/\{0}?count
-                :x:/..for-each/*/_dp/#?value
-
-        /*
-         * Then we sort descending our vocabulary/hit-count list
-         */
-        sort-desc:x:/../*/vocabulary/*/*
-
-        /*
-         * To lambda objects used when [apply]'ing to HTML table below.
-         * The first lambda is used to figure out which CSS class to use for row.
-         */
-        _get-css-for-row
-          if:x:/../*/_dn/#?value.int
-            =:int:0
-            return
-              class:danger
-          else-if:x:/../*/_dn/#?value.int
-            <=:int:4
-            return
-              class:warning
-          else
-            return
-              class:success
-
-        /*
-         * This lambda object is used to figure out which "info" to show for row
-         */
-        _get-info-for-row
-          if:x:/../*/_dn/#?value.int
-            =:int:0
-            return
-              td
-                innerValue:No tests!
-          else-if:x:/../*/_dn/#?value.int
-            <=:int:4
-            return
-              td
-                innerValue:Not enought!
-          else
-            return
-              td
-                innerValue:OK
-
-        /*
-         * Then [apply]'ing to our [widgets] node in our [create-widget] invocation below,
-         * to create one row for each keyword.
-         */
-        apply:x:/../*/create-widget/*/widgets/**/table/*/widgets
-          src:x:/../*/sort-desc/*
-          template
-            tr
-              {@eval}:x:/../*/_get-css-for-row
-              widgets
-                td
-                  {innerValue}:x:?name
-                td
-                  {innerValue}:x:?value
-                {@eval}:x:/../*/_get-info-for-row
-
-        /*
-         * Now we can create our "coverage" report for uni tests.
-         * Notice, we create a modal window, with an HTML table inside of it,
-         * with one row for each "keyword".
-         */
-        create-widget
-          class:modal fade
-          oninit
-            send-javascript:@"$('#{0}').modal('toggle');"
-              :x:/../*/_event?value
-          widgets
-            container
-              class:modal-dialog
-              role:document
-              widgets
-                container
-                  class:modal-content
-                  widgets
-                    container
-                      class:modal-header
-                      widgets
-                        literal
-                          element:button
-                          class:close
-                          data-dismiss:modal
-                          aria-label:Close
-                          innerValue:&times;
-                        literal
-                          element:h4
-                          innerValue:Coverage of Active Events in test suite
-                    container
-                      class:modal-body
-                      widgets
-                        table
-                          class:table table-hover table-condensed
-                          style:"font-size:small;"
-                          widgets
-                            tr
-                              widgets
-                                th
-                                  style:"border-top:none;"
-                                  innerValue:Active Event
-                                th
-                                  style:"border-top:none;"
-                                  innerValue:Hit count
-                                th
-                                  style:"border-top:none;"
-                                  innerValue:Assessment
-
+        sys42.execute-lisp-file:/system42/apps/Unit tests/show-coverage.hl

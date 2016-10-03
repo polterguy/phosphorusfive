@@ -1,0 +1,117 @@
+
+/*
+  * Retrieving parent's parent widget (which should be the "tr" HTML row)
+  */
+get-parent-widget:x:/../*/_widget?value
+get-parent-widget:x:/-/*/*?value
+
+/*
+  * Loading unit test file, making sure we do NOT convert to p5.lambda, to
+  * preserve comments
+  */
+load-file:x:/../*/_file?value
+  convert:false
+
+/*
+  * Then creating a new "tr" row, after that one, which contains only one column, containing the content
+  * of our currently edited test file
+  */
+eval-x:x:/+/*|/+|/+/**(/~codemirror|/_file)|/+/*/*/*/*/*/innerValue
+create-widget:{0}_editor
+  :x:/../*/_widget?value
+  after:x:/../*/get-parent-widget/[1,2]/*/*?value
+  element:tr
+  widgets
+    td
+      colspan:3
+      style:"border-top:none;"
+      widgets
+
+        /*
+          * Our CodeMirror custom editor widget
+          */
+        sys42.widgets.codemirror:{0}_codemirror
+          :x:/../*/_widget?value
+          _auto-focus:true
+          _height:700px
+          innerValue:x:/../*/load-file/*?value
+        container
+          class:btn-group col-xs-3 col-xs-push-9
+          widgets
+
+            /*
+              * The "Save" button for edited unit test
+              */
+            literal
+              element:button
+              style:"width:33%;"
+              class:btn btn-default btn-attach-top
+              innerValue:Save
+              onclick
+
+                /*
+                  * Retrieving value from CodeMirror "textarea", and saving to specified test file.
+                  * [_file] and [_codemirror] is forward evaluated before creation of widget
+                  */
+                _file:x:/../*/_file?value
+                _codemirror:{0}_codemirror
+                  :x:/../*/_widget?value
+                get-widget-property:x:/-?value
+                  value
+                save-file:x:/../*/_file?value
+                  src:x:/../*/get-widget-property/*/*?value
+
+                /*
+                  * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
+                  */
+                find-first-ancestor-widget:x:/../*/_event?value
+                  element:tr
+                delete-widget:x:/-/*?value
+
+                /*
+                  * Feedback to user
+                  */
+                sys42.info-window:File was saved
+
+            /*
+              * The "Delete" button for edited unit test
+              */
+            literal
+              element:button
+              style:"width:33%;"
+              class:btn btn-default btn-attach-top
+              innerValue:Delete
+              onclick
+
+                /*
+                  * Deletes the specified test
+                  */
+                sys42.confirm-window
+                  _header:Confirm deletion!
+                  _body:Are you sure you wish to delete this file?
+                  _onok
+                    _file:x:/../*/_file?value
+                    delete-file:x:/../*/_file?value
+                    sys42.info-window:File was deleted
+                    delete-widget:add-unit-test
+                    delete-widget:unit-test-files
+                    sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
+
+            /*
+              * The "Close" button for edited unit test, such that user
+              * can stop editing test
+              */
+            literal
+              element:button
+              style:"width:33%;"
+              class:btn btn-default btn-attach-top
+              innerValue:Close
+              onclick
+
+                /*
+                  * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
+                  */
+                find-first-ancestor-widget:x:/../*/_event?value
+                  element:tr
+                delete-widget:x:/-/*?value
+

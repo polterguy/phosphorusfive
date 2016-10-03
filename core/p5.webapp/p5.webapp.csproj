@@ -345,6 +345,12 @@
     <Content Include="system42\components\README.md" />
     <Content Include="system42\components\css-helpers\README.md" />
     <Content Include="system42\components\common-dialogues\startup\sys42.modal-window.hl" />
+    <Content Include="system42\apps\Unit tests\edit-unit-test.hl" />
+    <Content Include="system42\apps\Unit tests\evaluate-all.hl" />
+    <Content Include="system42\apps\Unit tests\single-test-button-clicked.hl" />
+    <Content Include="system42\apps\Unit tests\evaluate-single-test.hl" />
+    <Content Include="system42\apps\Unit tests\create-new-test-file.hl" />
+    <Content Include="system42\apps\Unit tests\show-coverage.hl" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />

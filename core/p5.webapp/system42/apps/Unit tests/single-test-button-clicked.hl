@@ -1,0 +1,78 @@
+
+/*
+ * Evaluates a single unit test, according to the specified [_event] and [_file] arguments.
+ * The [_event] is the button that was clicked to evaluate the test.
+ */
+_html
+eval-x:x:/+/*
+sys42.execute-lisp-file:/system42/apps/Unit tests/evaluate-single-test.hl
+  _file:x:/../*/_file?value
+if:x:/-/*/_error
+
+  /*
+   * Error while evaluating unit test file, setting result
+   * to ell error "messages" + "stack-trace" of exception,
+   * and making sure we signal in context value that error 
+   * occurred
+   */
+  for-each:x:/../*/sys42.execute-lisp-file/*/_error?value
+    html-encode:x:/./*/_dp?value
+    set:x:/../*/_html?value
+      src:@"{0}<pre class=""error"">{1}</pre>"
+        :x:/../*/_html?value
+        :x:/..for-each/*/html-encode?value
+  set-context-value:sys42.unit-test-errors
+    src:bool:true
+
+  /*
+   * Setting unit tests table row to class "error", and button
+   * CSS class to warning
+   */
+  find-widget
+    _file-row:x:/../*/_file?value
+  set-widget-property:x:/-/*?value
+    class:error
+  set-widget-property:x:/../*/_event?value
+    class:btn btn-warning form-control
+    disabled
+else
+
+  /*
+   * Success while evaluating unit test file, no errors.
+   * Setting unit tests table row to class "success" and
+   * button CSS class to success
+   */
+  find-widget
+    _file-row:x:/../*/_file?value
+  set-widget-property:x:/-/*?value
+    class:success
+  set-widget-property:x:/../*/_event?value
+    class:btn btn-success form-control
+    disabled
+
+/*
+ * Updating unit test count
+ * Notice, this is only done when evaluating all unit tests
+ */
+get-session-value:sys42.unit-test-count
+if:x:/-/*?value
+  +:x:/./-/*?value
+    _:x:/../*/sys42.execute-lisp-file/*(/_success|/_error)?count
+  set-session-value:sys42.unit-test-count
+    src:x:/./-?value
+
+/*
+ * Providing textual feedback to user about state of unit tests, into 
+ * the "result" table cell.
+ * This will create a numbered list to the user, of all successfully evaluated
+ * unit tests, and their names.
+ */
+find-widget
+  _file-result:x:/../*/_file?value
+join:x:/../*/sys42.execute-lisp-file/*/_success?value
+  sep:"]\r\n</li><li>["
+set-widget-property:x:/-2/*?value
+  innerValue:@"{0}<pre><ol><li>[{1}]</li></ol></pre>"
+    :x:/../*/_html?value
+    :x:/././-?value
+
