@@ -79,12 +79,6 @@ insert-data
     name:Change this
 
 /*
- * Making sure we set back the "create new page drop down" to the "New page ..." value.
- * Such that user can create a new page, by triggering an "onchange" event on widget.
- */
-sys42.cms.reset-create-new-page-widget
-
-/*
  * Setting currently edited page to return value (ID) from [insert-data], 
  * which should be URL of page.
  */

@@ -5,7 +5,7 @@
  * which it does through invoking the "/system42/apps/cms/page-editor/editor-toolbar.hl", when
  * a new page is created, or an existing page is edited.
  *
- * The rest is done by "Specialized editors", found in "system42/apps/cms/page-editor/editors/", 
+ * The rest is done by "Specialized editors", found in "system42/apps/cms/page-editor/specialized-editors/", 
  * in addition to the templates for new pages, found in "system42/cms/page-editor/templates/", which
  * are used create a "default starting point" for your new page.
  *
@@ -41,7 +41,7 @@ create-widget:cms-page-editor
 
 
     /*
-     * The "Create new page" drop down
+     * The "Create new page" drop down.
      */
     container
       class:col-md-3 col-xs-12 form-group
@@ -58,22 +58,21 @@ create-widget:cms-page-editor
 
 
               /*
-               * Populates the "create new page" select drop down list
+               * Populates the "create new page" select drop down list.
                */
               oninit
                 sys42.cms.populate-create-new-page
 
 
               /*
-               * Here we create a new page according to which option item
-               * was selected
+               * Here we create a new page according to which option item was selected.
                */
               onchange
                 sys42.cms.create-new-page
 
 
               /*
-               * Lambda events for "Create new page" widget
+               * Lambda events for "Create new page" widget.
                */
               events
 
@@ -95,9 +94,9 @@ create-widget:cms-page-editor
 
                   /*
                    * Then we create one "option" for each editor we have installed as a plugin 
-                   * in the "/system42/apps/cms/page-editor/editors/" folder.
+                   * in the "/system42/apps/cms/page-editor/specialized-editors/" folder.
                    */
-                  list-files:/system42/apps/cms/page-editor/editors/
+                  list-files:/system42/apps/cms/page-editor/specialized-editors/
                   for-each:x:/-/*?name
 
                     /*
@@ -136,16 +135,13 @@ create-widget:cms-page-editor
                   get-widget-property:cms-create-new-page
                     value
                   eval-x:x:/+/*
-                  sys42.execute-lisp-file:/system42/apps/cms/create-new-page.hl
+                  sys42.execute-lisp-file:/system42/apps/cms/page-editor/create-new-page.hl
                     _type:x:/../*/get-widget-property/*/*?value
                     _template:x:/../*/get-widget-property/*/*?value
 
-
-                /*
-                 * Resets the currently selected item in drop down to the "_default" value,
-                 * which is the "New page ..." option item.
-                 */
-                sys42.cms.reset-create-new-page-widget
+                  /*
+                   * Resetting the "create new page" drop down to its [_default] value.
+                   */
                   set-widget-property:cms-create-new-page
                     value:_default
 
@@ -182,7 +178,7 @@ create-widget:cms-page-editor
                * Here we start editing the selected page
                */
               onchange
-                sys42.cms.page-was-selected-for-editing
+                sys42.cms.selected-page-changed
 
 
               /*
@@ -196,6 +192,11 @@ create-widget:cms-page-editor
                  * page, or go back and forth to other apps, while editing, etc ...
                  */
                 sys42.cms.set-currently-edited-page
+
+                  /*
+                   * We store the currently edited page in session, such that user can refresh page,
+                   * or go to other apps, and come back, and continue editing the page he previously edited.
+                   */
                   set-session-value:sys42.currently-edited-page
                     src:x:/../*/_arg?value
 
@@ -204,6 +205,11 @@ create-widget:cms-page-editor
                  * Returns the currently edited page.
                  */
                 sys42.cms.get-currently-edited-page
+
+                  /*
+                   * We store the currently edited page in session, such that user can refresh page,
+                   * or go to other apps, and come back, and continue editing the page he previously edited.
+                   */
                   get-session-value:sys42.currently-edited-page
                   set:x:/..?value
                     src:x:/./-/*?value
@@ -271,7 +277,7 @@ create-widget:cms-page-editor
                  * Retrieves which page user wants to edit, and starts the correct page editor 
                  * according to what type of page it is.
                  */
-                sys42.cms.page-was-selected-for-editing
+                sys42.cms.selected-page-changed
 
                   /*
                    * Figuring out which page was selected for editing, if any.
@@ -320,14 +326,16 @@ create-widget:cms-page-editor
          * or because an existing page was selected for editing. 
          *
          * Clears the editor surface, in case another page is already being edited, and starts 
-         * the editing process. Which means that it loads up the "common toolbar" for common 
-         * settings, such as "Name", "URL", etc, in addition to starting the custom editor, which
-         * depends upon the [type] of page, and can be found in the "/system42/apps/cms/page-editor/editors/" folder.
+         * the editing process.
+         *
+         * Which means that it loads up the "common toolbar" for common settings, such as page Name, URL, etc, 
+         * in addition to starting the "specialized editor", which depends upon the [type] of page, and can be 
+         * found in the "/system42/apps/cms/page-editor/specialized-editors/" folder.
          */
         sys42.cms.edit-page
 
           /*
-           * Clears out any previous editors.
+           * Clears out any previous editors, including the common toolbar.
            */
           clear-widget:cms-page-editor-surface
 
@@ -338,26 +346,17 @@ create-widget:cms-page-editor
           if:x:/-?value
 
             /*
-             * We are editing a page, loading [p5.page]'s [type] declaration from database, which is
+             * We are editing a page, hence we load [p5.page]'s [type] declaration from database, which is
              * needed to load "specialized editor".
              */
             select-data:x:/*/*/p5.page/"={0}"/*/type?value
               :x:/../*/sys42.cms.get-currently-edited-page?value
 
             /*
-             * Creating "common" toolbar, showing Name, URL, Access Role, etc for page object.
+             * Creating actual page editor, passing in ID and page type to common editor,
+             * letting it load up the "specialized editor".
              */
             eval-x:x:/+/*
-            sys42.cms.create-editor
+            sys42.execute-lisp-file:/system42/apps/cms/page-editor/editor.hl
               _editor:x:/..if/*/select-data/*?value
               _id:x:/../*/sys42.cms.get-currently-edited-page?value
-
-
-        /*
-         * Creates the common toolbar for editing pages.
-         * Contains the common properties of pages, such as "Name", "URL", etc.
-         */
-        sys42.cms.create-editor
-          add:x:/+
-            src:x:/../*(/_id|/_editor)
-          sys42.execute-lisp-file:/system42/apps/cms/page-editor/editor.hl

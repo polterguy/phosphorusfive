@@ -288,8 +288,8 @@
     <Content Include="system42\apps\CMS\initial-pages\3-about.hl" />
     <Content Include="system42\apps\CMS\launch.hl" />
     <Content Include="system42\apps\CMS\page-editor\editor.hl" />
-    <Content Include="system42\apps\CMS\page-editor\editors\html.hl" />
-    <Content Include="system42\apps\CMS\page-editor\editors\lambda.hl" />
+    <Content Include="system42\apps\CMS\page-editor\specialized-editors\html.hl" />
+    <Content Include="system42\apps\CMS\page-editor\specialized-editors\lambda.hl" />
     <Content Include="system42\apps\CMS\page-editor\templates\html.hl" />
     <Content Include="system42\apps\CMS\page-editor\templates\lambda.hl" />
     <Content Include="system42\apps\CMS\page-types\html.hl" />
@@ -351,7 +351,7 @@
     <Content Include="system42\apps\Unit tests\evaluate-single-test.hl" />
     <Content Include="system42\apps\Unit tests\create-new-test-file.hl" />
     <Content Include="system42\apps\Unit tests\show-coverage.hl" />
-    <Content Include="system42\apps\CMS\create-new-page.hl" />
+    <Content Include="system42\apps\CMS\page-editor\create-new-page.hl" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />
