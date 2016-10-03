@@ -22,7 +22,6 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "equals")]
         [ActiveEvent (Name = "=")]
         public static void equals (ApplicationContext context, ActiveEventArgs e)
         {
@@ -35,7 +34,6 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "not-equals")]
         [ActiveEvent (Name = "!=")]
         public static void not_equals (ApplicationContext context, ActiveEventArgs e)
         {
@@ -48,7 +46,6 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "more-than")]
         [ActiveEvent (Name = ">")]
         public static void more_than (ApplicationContext context, ActiveEventArgs e)
         {
@@ -61,7 +58,6 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "less-than")]
         [ActiveEvent (Name = "<")]
         public static void less_than (ApplicationContext context, ActiveEventArgs e)
         {
@@ -74,7 +70,6 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "more-than-equals")]
         [ActiveEvent (Name = ">=")]
         public static void more_than_equals (ApplicationContext context, ActiveEventArgs e)
         {
@@ -87,7 +82,6 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "less-than-equals")]
         [ActiveEvent (Name = "<=")]
         public static void less_than_equals (ApplicationContext context, ActiveEventArgs e)
         {
@@ -100,7 +94,6 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "contains")]
         [ActiveEvent (Name = "~")]
         public static void contains (ApplicationContext context, ActiveEventArgs e)
         {
@@ -127,7 +120,6 @@ namespace p5.lambda.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "not-contains")]
         [ActiveEvent (Name = "!~")]
         public static void not_contains (ApplicationContext context, ActiveEventArgs e)
         {
@@ -165,14 +157,6 @@ namespace p5.lambda.helpers
             e.Args.Add ("<=");
             e.Args.Add ("~");
             e.Args.Add ("!~");
-            e.Args.Add ("equals");
-            e.Args.Add ("not-equals");
-            e.Args.Add ("more-than");
-            e.Args.Add ("less-than");
-            e.Args.Add ("more-than-equals");
-            e.Args.Add ("less-than-equals");
-            e.Args.Add ("contains");
-            e.Args.Add ("not-contains");
         }
 
         /*

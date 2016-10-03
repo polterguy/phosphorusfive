@@ -28,4 +28,6 @@ When you create a page, it is stored in the [p5.data](/plugins/extras/p5.data/) 
 You can set several properties to your pages, such as their virtual URL, Name, which template to use, and so on. By default, System42's CMS
 comes with a handful of pre-defined templates, allowing you to create pages with a navbar navigation menu, a completely "empty" page, etc.
 
+The CMS of System42 is also a reference/example implementation of a website/webapp created with Phosphorus Five.
+
 
