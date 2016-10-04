@@ -1,24 +1,23 @@
-Ajax on steroids
+A Managed Ajax library for ASP.NET and C#
 ========
 
 This project contains the main Ajax library for Phosphorus Five. This Ajax library can be consumed
 either stand alone, in any ASP.NET Web Forms application, since its controls inherit from
-_System.Web.UI.Control_ - Or indirectly, through using the p5.web library, allowing
-you to create controls with Active Events, using for instance Hyperlambda as your programming 
+_System.Web.UI.Control_ - Or indirectly, through using the [p5.web library](/plugins/extras/p5.web/), 
+allowing you to create controls with Active Events, using for instance Hyperlambda as your programming 
 language.
 
-In our documentation here, we will assume some C# knowledge, and create our examples,
-as "pure" ASP.NET examples. If you wish to see it further abstracted, the way you'd probably
-normally use it, in combination with P5, then I encourage you to rather check out the documentation
-for "p5.web".
+In our documentation here, we will assume some C# knowledge, and create our examples, as "pure" ASP.NET 
+examples. If you wish to see it further abstracted, the way you'd probably normally use it, in combination 
+with P5, then I encourage you to rather check out the documentation for [p5.web](/plugins/extras/p5.web/).
 
 ## The trinity of widgets
 
-In general there are only three Ajax controls, or "widgets", as we usually refer to them as, 
-giving you 100% control over your page's HTML structure;
+In general there are only 3 Ajax controls, or "widgets", as we usually refer to them as, giving you 100% 
+control over your page's rendered HTML;
 
-* Container - A "panel" type of widget, having children widgets of itself
 * Literal - A web control containing text, and/or HTML as its content
+* Container - A "panel" type of widget, having children widgets of itself
 * Void - A web control with neither children controls, nor textual fragment content
 
 To create a property for your widget(s), simply use the subscript operator, with
@@ -34,8 +33,8 @@ exactly as you need.
 p5.ajax does not have a "Tree Ajax Control" or a "DataGrid Ajax Control", simply
 because it is not its responsibility to create such Controls/widgets. However, to
 create these as extension controls, utilizing the three pre-existing widgets from p5.ajax,
-would be very easy, and could probably be done, without having to resort to JavaScript
-at all.
+would be very easy, and could easily be done, without even having to resort to JavaScript
+at all, if you wish.
 
 ## No more keeping track of your controls
 
@@ -49,17 +48,17 @@ automatically for you.
 
 You can add and remove any control(s) you wish from a Container widget, as
 long as you use the above mentioned methods. The controls will be automatically
-re-created upon every postback and/or callback to your server. Which of course,
-for beginners in ASP.NET, entirely removes the burdon of having to keep track
-of which controls have been previously created.
+re-created upon every postback to your server. Which of course, for beginners in 
+ASP.NET, entirely removes the burdon of having to keep track of which controls 
+have been previously created.
 
 ## Example usage in C#
 
-Create a reference to *"p5.ajax.dll"* in your ASP.NET Web Forms application,
-and make sure you have a "Default.aspx" page.
+Create a reference to _"p5.ajax.dll"_ in your ASP.NET Web Forms application, and make sure 
+you have a "Default.aspx" page.
 
-Then modify your web.config, and make sure it has something like this inside its 
-*"system.web"* section, to recognize the p5.ajax controls.
+Modify your web.config, and make sure it has something like this inside its _"system.web"_ 
+section, to recognize the p5.ajax controls.
 
 ```xml
 <system.web>
@@ -74,8 +73,8 @@ Then modify your web.config, and make sure it has something like this inside its
 </system.web>
 ```
 
-Then either inherit your page from AjaxPage, or implement the IAjaxPage interface, 
-before you create a literal widget, by adding the code below in your .aspx markup.
+Then either inherit your page from AjaxPage, or implement the IAjaxPage interface, before you create 
+a literal widget, by adding the code below in your .aspx markup.
 
 ```xml
 <p5:Literal
@@ -83,17 +82,17 @@ before you create a literal widget, by adding the code below in your .aspx marku
     id="hello"
     Element="strong"
     onclick="hello_onclick">
-    click me
+    Click me
 </p5:Literal>
 <p5:Container
     runat="server"
     id="hello_ul"
     Element="ul"
-    click me
+    Foo bar!
 </p5:Container>
 ```
 
-Then add the following code in your codebehind
+Add the following code in your codebehind
 
 ```csharp
 using p5.ajax.core;
@@ -101,20 +100,20 @@ using p5.= p5.ajax.widgets;
 
 /* ... rest of class ... */
 
-p5.Container hello_ul;
+protected p5.Container hello_ul;
 
 [WebMethod]
 protected void hello_onclick (p5.Literal sender, EventArgs e)
 {
     // Notice, no cast here ...
-    sender.innerValue = "hello world";
+    sender.innerValue = "Hello World!";
     sender["style"] = "background-color:LightBlue;";
 
     // Dynamically adding a new "li" HTML element to our ul container.
     // Notice, if we want our Container control to take care of persistence
     // of our newly created child control, we must create it through the Container's
     // factory method, indirectly!
-    Literal lit = hello_ul.CreatePersistentControl<Literal> ();
+    var lit = hello_ul.CreatePersistentControl<Literal> ();
     lit.Element = "li";
     lit["class"] = "some-class-value";
     lit.innerValue = "Item no; " + hello_ul.Controls.Count;
@@ -123,19 +122,20 @@ protected void hello_onclick (p5.Literal sender, EventArgs e)
 /* ... */
 ```
 
-For security reasons, you must explicitly mark your server-side Ajax methods with 
-the [WebMethod] attribute.
+For security reasons, you must explicitly mark your server-side Ajax methods with the [WebMethod] attribute. 
+Besides from that, they work similarly to how a server side event works in ASP.NET. Although, you can create
+events for _anything_ in p5.ajax, as long as you start the property name with "on".
 
 ## Structure of p5.ajax
 
-All three widgets described above, inherit from the "Widget" class. This class takes
+All three widgets described above, inherit from the `Widget` class. This class takes
 care of attribute creation, deletion, and so on. And all attributes added to any control,
 will be automatically remembered across postbacks.
 
 Due to the automatic attribute serialization de-serialization, and stateful Container
 controls, using p5.ajax is extremely easy. Simply add and/or change/remove any attribute
 you wish from your controls, and have the underlaying library take care of the automatic 
-changes being propagated back to the client.
+changes being returned back to the client.
 
 To add an attribute, or change its value, is as simple as this.
 
@@ -145,7 +145,7 @@ myWidget ["some-attribute"] = "some-value";
 ```
 
 To delete an attribute, simply use the `RemoveAttribute` method on your widget, and pass in 
-the nameof the attribute you wish to remove.
+the name of the attribute you wish to remove.
 
 ## Change is the only constant
 
@@ -171,31 +171,30 @@ every consecutive callback.
 p5.ajax uses JSON internally to return updates back to the client. This means, that among
 other things, it rarely needs to re-render your controls, using "partial rendering". You can 
 also inject any new control, in a postback or Ajax callback, at any position in your 
-page, as long as its parent control, is of type "Container", and you use the "factory method"
-to create your controls.
+page, as long as its parent control, is of type "Container", and you use the apropriate factory 
+method to create your controls.
 
 The JSON parts of p5.ajax, means that the bandwidth consumption when consuming the library,
 is ridiculously small, compared to frameworks built around "partial rendering", which requires
-some portion of the page, to be "partially re-rendered".
+some portion of the page, to be partially re-rendered.
 
 This also makes the client-side JavaScript parts of P5 tiny compared to other Ajax "frameworks".
-In its release build, minified and GZipped, the entire JavaScript parts to p5.ajax, is actually
-no more than 5KB.
+In its release build, minified and GZipped, the entire JavaScript parts in p5.ajax, is actually ~5KB.
 
 ## ViewState
 
-The ViewState is "bye, bye" in p5.ajax. Or rather, to be correct, it is kept, but on
-the server side of things. This means that the amount of data sent back and forth
-between your clients and server, is probably less than a fraction of what you are used
-to from other Ajax frameworks, such as ASP.NET Ajax and similar frameworks.
+The ViewState is "bye, bye" in p5.ajax. Or rather, to be accurate, it is kept, but on
+the server. This means that the amount of data sent back and forth between your clients and server, 
+is probably less than a fraction of what you are used to from other Ajax frameworks, such as 
+ASP.NET Ajax, and similar frameworks.
 
-The above have some consequences though, which is that the memory consumption on the
+The above comes with some consequences though, which is that the memory consumption on the
 server, increases for each session object that connects to it simultaneously.
 
-"Out of the box", without tweaking the library, this means that it is best suited
+Out of the box, without tweaking the library, this means that it is best suited
 for building web apps, where you don't have an extreme amount of simultaneously
-users. As a general rule, I'd suggest using p5.ajax for building "enterprise apps",
-without too many simultaneous users, and not for instance, social media websites, 
+users. As a general rule, I'd suggest using p5.ajax for building enterprise apps,
+without too many simultaneous users, and not for instance; Social media websites, 
 such as Facebook or Twitter, for the above mentioned reasons.
 
 Another consequence, is that (by default), only 5 simultaneous tabs are tolerated
@@ -207,12 +206,12 @@ session (user), could exhaust your server's memory, simply by refreshing his web
 thousands of times.
 
 Have this in mind as you do your p5.ajax development. The library is best suited for
-"single page web apps", with complex and rich UI, doing lots of Ajax requests.
+single page web apps, with complex and rich UI, doing lots of Ajax requests.
 It is not as well suited for apps, where you have many tabs open at the same time,
 or thousands of simultaneous users, such as for instance would often be the case 
 with social media websites, such as StackOverflow, Facebook or Twitter etc ...
 
-As a general rule, I encourage people to use it to build "Enterprise Apps", while
+As a general rule, I encourage people to use it to build enterprise apps, while
 use something else to build websites, requiring thousands, and sometimes millions 
 of simultaneous users. Although it could probably be tweaked to handle also such 
 scenarios.
@@ -223,8 +222,8 @@ and/or tweaking your web.config.
 ## More example code
 
 To see an example of the p5.ajax library in use directly, without anything else but the
-Ajax library itself, please see the website project called "p5.ajax-samples", that can be
-found within the "samples" folder. To test this project, make sure you set it as your 
-"startup" project in Visual Studio, Xamarin or MonoDevelop, and start your debugger.
+Ajax library itself, please check out the website project called [p5.ajax-samples](/samples/p5.ajax-samples/).
+To test this project, make sure you set it as your startup project in Visual Studio, Xamarin or MonoDevelop, 
+and start your debugger.
 
 

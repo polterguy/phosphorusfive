@@ -15,17 +15,17 @@ namespace p5.hyperlambda.helpers
     /// <summary>
     ///     Class encapsulating internals of creation of Hyperlambda
     /// </summary>
-    public class HyperlispBuilder
+    public class HyperlambdaBuilder
     {
         private readonly ApplicationContext _context;
         private readonly IEnumerable<Node> _nodes;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="HyperlispBuilder" /> class
+        ///     Initializes a new instance of the <see cref="HyperlambdaBuilder" /> class
         /// </summary>
         /// <param name="context">Application context object</param>
         /// <param name="nodes">Nodes to convert into Hyperlambda</param>
-        public HyperlispBuilder (ApplicationContext context, IEnumerable<Node> nodes)
+        public HyperlambdaBuilder (ApplicationContext context, IEnumerable<Node> nodes)
         {
             _context = context;
             _nodes = nodes;

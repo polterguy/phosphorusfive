@@ -58,7 +58,7 @@ namespace p5.hyperlambda
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Using HyperlispBuilder to create Hyperlambda from p5 lambda
-                e.Args.Value = new HyperlispBuilder (
+                e.Args.Value = new HyperlambdaBuilder (
                     context, 
                     XUtil.Iterate<Node> (context, e.Args, false, false, true))
                     .Hyperlambda;

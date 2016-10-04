@@ -1,4 +1,4 @@
-Console Hyperlambda executor
+Console Hyperlambda evaluator
 ========
 
 Allows you to execute Hyperlambda directly from a terminal window. If you start this
@@ -20,11 +20,10 @@ mono lambda.exe -f hello.hl
 
 The lambda.exe program contains two special Active Events itself, which are;
 
-* p5.console.write-line - Writes a line to the std output.
-* p5.console.read-line - Reads a line of input from the std input, and returns as "value" of node.
+* [p5.console.write-line] - Writes a line to the std output.
+* [p5.console.read-line] - Reads a line of input from the std input, and returns as "value" of node.
 
-This console program also have an "immediate mode", which allows you to type
-in Hyperlambda as you go, into the console, and have it executed when you are finished.
-See the help instructions for the program for details about how to do this.
+lambda.exe also have an immediate mode, which allows you to type in Hyperlambda as you go, into the console, 
+and have it evaluated when you are finished. See the help instructions for the program for details about how to do this.
 
 
