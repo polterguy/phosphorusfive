@@ -28,7 +28,7 @@ namespace p5.exp
         private Match.MatchType _expressionType;
 
         // If value(s) of expression results should be converted to another type, this will contains
-        // the Hyperlisp type name (int, float, bool, etc)
+        // the Hyperlambda type name (int, float, bool, etc)
         private string _convertResultsType;
 
         /*

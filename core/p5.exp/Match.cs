@@ -107,7 +107,7 @@ namespace p5.exp
         /// <summary>
         ///     Type to convert values retrieved from match to
         /// </summary>
-        /// <value>Type to convert to, can be any of your Hyperlisp types, defined through your [p5.hyperlisp.get-type-name.xxx] 
+        /// <value>Type to convert to, can be any of your Hyperlambda types, defined through your [p5.hyperlambda.get-type-name.xxx] 
         /// Active Events</value>
         public string Convert
         {

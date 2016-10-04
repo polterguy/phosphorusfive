@@ -149,14 +149,14 @@ namespace p5.core
                     case '\n':
                     case '\r':
                         throw new ArgumentException (
-                            string.Format ("Syntax error in hyperlisp, single line string literal contains new line near '{0}'", builder.ToString ()));
+                            string.Format ("Syntax error in hyperlambda, single line string literal contains new line near '{0}'", builder.ToString ()));
                     default:
                         builder.Append ((char) c);
                         break;
                 }
             }
             throw new ArgumentException (
-                string.Format ("Syntax error in hyperlisp, single line string literal not closed before end of input near '{0}'", builder.ToString ()));
+                string.Format ("Syntax error in hyperlambda, single line string literal not closed before end of input near '{0}'", builder.ToString ()));
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace p5.core
                     case '\r':
                         if ((char) reader.Read () != '\n')
                             throw new ArgumentException (
-                                string.Format ("Syntax error in hyperlisp, carriage return found but no new line character in multi line string literal near '{0}'", builder.ToString ()));
+                                string.Format ("Syntax error in hyperlambda, carriage return found but no new line character in multi line string literal near '{0}'", builder.ToString ()));
                         builder.Append ("\r\n");
                         break;
                     default:
@@ -191,7 +191,7 @@ namespace p5.core
                 }
             }
             throw new ArgumentException (
-                string.Format ("Syntax error in hyperlisp, multiline string literal not closed before end of input near '{0}'", builder.ToString ()));
+                string.Format ("Syntax error in hyperlambda, multiline string literal not closed before end of input near '{0}'", builder.ToString ()));
         }
 
         /*
@@ -202,7 +202,7 @@ namespace p5.core
             var c = reader.Read ();
             switch (c) {
                 case -1:
-                    throw new ArgumentException ("Syntax error in hyperlisp, end of input found when looking for escape character in single line string literal");
+                    throw new ArgumentException ("Syntax error in hyperlambda, end of input found when looking for escape character in single line string literal");
                 case '"':
                     return "\"";
                 case '\'':
@@ -224,12 +224,12 @@ namespace p5.core
                 case 'r':
                     // '\r' must be followed by '\n'
                     if ((char) reader.Read () != '\\' || (char) reader.Read () != 'n')
-                        throw new ArgumentException ("Syntax error in hyperlisp, carriage return found, but no new line character found");
+                        throw new ArgumentException ("Syntax error in hyperlambda, carriage return found, but no new line character found");
                     return "\r\n";
                 case 'x':
                     return HexaCharacter (reader);
                 default:
-                    throw new ArgumentException (string.Format ("Invalid escape sequence found in hyperlisp string literal; '\\{0}'",
+                    throw new ArgumentException (string.Format ("Invalid escape sequence found in hyperlambda string literal; '\\{0}'",
                         (char) c));
             }
         }
@@ -263,7 +263,7 @@ namespace p5.core
                         builder.Append ("\r\n");
                     }
                     builder.Append (context.Raise (
-                        "p5.hyperlisp.get-string-value." +
+                        "p5.hyperlambda.get-string-value." +
                         idx.GetType ().FullName, new Node ("", idx)).Value);
                 }
                 return builder.ToString ();
@@ -272,7 +272,7 @@ namespace p5.core
             if (encode && value is byte[])
                 node.Add ("encode", true);
             return context.Raise (
-                "p5.hyperlisp.get-string-value." +
+                "p5.hyperlambda.get-string-value." +
                 value.GetType ().FullName, node).Value as string;
         }
 
@@ -282,11 +282,11 @@ namespace p5.core
         private static T Convert2Object<T> (object value, ApplicationContext context, T defaultValue = default (T))
         {
             var typeName = context.Raise (
-                "p5.hyperlisp.get-type-name." + typeof (T).FullName).Get<string> (context);
+                "p5.hyperlambda.get-type-name." + typeof (T).FullName).Get<string> (context);
             if (typeName == null)
                 return defaultValue;
             return context.Raise (
-                "p5.hyperlisp.get-object-value." +
+                "p5.hyperlambda.get-object-value." +
                 typeName, new Node ("", value)).Get<T> (context);
         }
     }

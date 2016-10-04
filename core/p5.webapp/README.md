@@ -69,7 +69,7 @@ Contains files common for all users, and does not belong to one specific user in
 It stills contains both a "private" and a "public" folder, which semantically works like
 the private and public folders of user specific document folders. The private folder will
 not serve documents, even if the user has a direct link to a specific file, unless the 
-document is requested using some sort of Hyperlisp re-direct handler, which indirectly 
+document is requested using some sort of Hyperlambda re-direct handler, which indirectly 
 serves it, by explcitily echoing the document back to client.
 
 This allows you to create your own authorization system for retrieving and serving documents 
@@ -84,11 +84,11 @@ Contains "System42". See the documentation for [System42](/core/p5.webapp/system
 ### The "Default.aspx" file
 
 This is the only physical file in your system, and responsible for serving all URLs indirectly,
-through using the main Hyperlisp engine.
+through using the main Hyperlambda engine.
 
 When initially accessing a virtual URL in your system, the *[p5.web.load-ui]* Active Event
 will be raised. It is your responsibility of creating some sort of hook, for instance in 
-Hyperlisp, to handle this Active Event.
+Hyperlambda, to handle this Active Event.
 
 When the *[p5.web.load-ui]* Active Event is raised, the actual URL requested by the client,
 will exists in the *[_url]* argument, passed into your Active Event handler, in case you wish

@@ -1,8 +1,8 @@
 Components
 ========
 
-This folder contains all of your System42 "components". A component is a reusable piece of logic, written in Hyperlisp, 
-which you can reuse across multiple apps. Think "COM, the Hyperlisp version".
+This folder contains all of your System42 "components". A component is a reusable piece of logic, written in Hyperlambda, 
+which you can reuse across multiple apps. Think "COM, the Hyperlambda version".
 
 There is one file which most components would declare, which is "startup.hl", expected to do the initialization of your 
 component. Usually, if this file exists, it will create the Active Events necessary to consume your component.

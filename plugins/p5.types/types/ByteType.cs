@@ -17,7 +17,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.byte")]
+        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.byte")]
         private static void p5_hyperlisp_get_object_value_byte (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is byte) {
@@ -28,11 +28,11 @@ namespace p5.types.types {
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the byte type
+        ///     Returns the Hyperlambda type-name for the byte type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Byte")]
+        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.System.Byte")]
         private static void p5_hyperlisp_get_type_name_System_Byte (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "byte";

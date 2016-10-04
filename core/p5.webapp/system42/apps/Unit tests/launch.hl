@@ -53,7 +53,7 @@ apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
 
         /*
          * Unit test filename.
-         * If the user clicks the filename, then the Hyperlisp/CodeMirror editor is launched, allowing
+         * If the user clicks the filename, then the Hyperlambda/CodeMirror editor is launched, allowing
          * the user to edit the specified test.
          */
         td
@@ -82,7 +82,7 @@ apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
                   return
 
                 /*
-                 * Invoking the Hyperlisp file responsible for creating our CodeMirror 
+                 * Invoking the Hyperlambda file responsible for creating our CodeMirror 
                  * editor (in a "tr" row beneath test row)
                  */
                 add:x:/+

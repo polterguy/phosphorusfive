@@ -245,7 +245,7 @@ namespace p5.mime.helpers
 
                 // Some "application" types are actually text, and should be handled as such
                 // Making sure we handle the most common text application types as such, to save caller from a conversion roundtrip
-                case "application/x-hyperlisp":
+                case "application/x-hyperlambda":
                 case "application/javascript":
                 case "application/x-javascript":
                 case "application/ecmascript":

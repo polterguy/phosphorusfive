@@ -2,7 +2,7 @@
 /*
  * Responsible for creating the Active Event that returns the code necessary to create
  * a specific widget existing on page. Basically "reverse engineers" an existing Widget
- * on page, returning the Hyperlisp/lambda necessary to re-create it in its entirety.
+ * on page, returning the Hyperlambda/lambda necessary to re-create it in its entirety.
  *
  * Pass in ID of widget to recursively iterate as value, expression or [_arg]
  */

@@ -17,62 +17,62 @@
 
 
 /*
- * Used for both single line comments and multiline comments in Hyperlisp
+ * Used for both single line comments and multiline comments in Hyperlambda
  */
 .cm-s-paraiso span.cm-comment { color: #b7b9ab; }
 
 /*
- * Used for both single line strings and multiline strings in Hyperlisp
+ * Used for both single line strings and multiline strings in Hyperlambda
  */
 .cm-s-paraiso span.cm-string { color: #cea438; }
 
 /*
- * Used for values of nodes Hyperlisp, that are not necessarily string literals
+ * Used for values of nodes Hyperlambda, that are not necessarily string literals
  */
 .cm-s-paraiso span.cm-property, .cm-s-paraiso span.cm-attribute { color: #cea438; }
 
 /*
- * Used for keywords in Hyperlisp, e.g. [while] and [if]
+ * Used for keywords in Hyperlambda, e.g. [while] and [if]
  */
 .cm-s-paraiso span.cm-keyword { color: #df7175; }
 
 /*
- * Used for "variables" in Hyperlisp, e.g. [_foo]
+ * Used for "variables" in Hyperlambda, e.g. [_foo]
  */
 .cm-s-paraiso span.cm-variable { color: #36c6ef; }
 
 /*
- * Used for Active Events in Hyperlisp, e.g. [sys42.show-code-window]
+ * Used for Active Events in Hyperlambda, e.g. [sys42.show-code-window]
  */
 .cm-s-paraiso span.cm-variable-2 { color: #06b6ef; }
 
 /*
- * Used for type declarations in Hyperlisp, e.g. "_foo:int:54"
+ * Used for type declarations in Hyperlambda, e.g. "_foo:int:54"
  */
 .cm-s-paraiso span.cm-def { color: #9f3135; }
 
 /*
- * Used for expressions in Hyperlisp, e.g. "/../0?value"
+ * Used for expressions in Hyperlambda, e.g. "/../0?value"
  */
 .cm-s-paraiso span.cm-number { color: #df7175; }
 
 /*
- * Used for widget creation and widget types in Hyperlisp, e.g. [a], [div], [container] and [create-widget], etc
+ * Used for widget creation and widget types in Hyperlambda, e.g. [a], [div], [container] and [create-widget], etc
  */
 .cm-s-paraiso span.cm-widget-type { color: #118f05; }
 
 /*
- * Used for widget properties in Hyperlisp, e.g. [parent], [element], [position], [before] etc
+ * Used for widget properties in Hyperlambda, e.g. [parent], [element], [position], [before] etc
  */
 .cm-s-paraiso span.cm-widget-property { color: #51cf45; }
 
 /*
- * Used for widget attributes in Hyperlisp, e.g. [href], [title], [onclick] etc
+ * Used for widget attributes in Hyperlambda, e.g. [href], [title], [onclick] etc
  */
 .cm-s-paraiso span.cm-widget-attribute { color: #51cf45; }
 
 /*
- * Used for syntactic Hyperlisp errors
+ * Used for syntactic Hyperlambda errors
  */
 .cm-s-paraiso span.cm-error { background: rgba(255,0,0,.2); color: #776e71; }
 

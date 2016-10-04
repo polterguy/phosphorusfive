@@ -79,7 +79,7 @@ namespace p5.io.file
                 // Checking if we should automatically convert file content to lambda
                 if (fileName.EndsWith (".hl") && args.GetExChildValue ("convert", context, true)) {
 
-                    // Automatically converting to Hyperlisp before returning
+                    // Automatically converting to Hyperlambda before returning
                     args.Add (fileName, null, Utilities.Convert<Node> (context, fileContent).Children);
                 }
                 else {

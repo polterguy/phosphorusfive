@@ -17,7 +17,7 @@
  * If you do, you can "plug in" your own custom editors into the system, without having any 
  * dependencies between your own custom page types, and the rest of the system, what so ever.
  *
- * Notice, if you do, you will also need a Hyperlisp script to load up and display your page 
+ * Notice, if you do, you will also need a Hyperlambda script to load up and display your page 
  * in "system42/apps/cms/page-loader/", who's name should match the "page type".
  */
 
@@ -130,7 +130,7 @@ create-widget:cms-page-editor
 
                   /*
                    * Figuring out which page type user wants to create ("html", "lambda", etc) before
-                   * firing up the "template" create page Hyperlisp script from our template folder.
+                   * firing up the "template" create page Hyperlambda script from our template folder.
                    */
                   get-widget-property:cms-create-new-page
                     value

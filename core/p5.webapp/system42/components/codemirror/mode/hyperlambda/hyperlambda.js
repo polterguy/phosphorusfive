@@ -1,6 +1,6 @@
 
 /*
- * CodeMirror module for editing Hyperlisp files.
+ * CodeMirror module for editing Hyperlambda files.
  * Will take care of most cases of indentation correctly, automatically,
  * and also show keywords, expressions, type declarations, and Active 
  * Event invocations with a special coloring that makes it easier to read code.
@@ -21,17 +21,17 @@
 
 
 /*
- * CodeMirror plugin declaration for Hyperlisp code type
+ * CodeMirror plugin declaration for Hyperlambda code type
  */
-CodeMirror.defineMode("hyperlisp", function() {
+CodeMirror.defineMode("hyperlambda", function() {
   return {
 
     /*
-     * Defines the different CSS class names for the different types of entities in Hyperlisp.
-     * Notice, some of the Hyperlisp types doesn't really exist in other programming languages,
-     * vice versa, hence it's not always "intuitive" which CSS class a Hyperlisp entity is using.
+     * Defines the different CSS class names for the different types of entities in Hyperlambda.
+     * Notice, some of the Hyperlambda types doesn't really exist in other programming languages,
+     * vice versa, hence it's not always "intuitive" which CSS class a Hyperlambda entity is using.
      *
-     * Hyperlisp uses only these classes from a traditional CodeMirror theme;
+     * Hyperlambda uses only these classes from a traditional CodeMirror theme;
      *
      *  - comment      ==>  Used for comments and multiline comments
      *  - string       ==> Used for strings and multiline strings
@@ -42,7 +42,7 @@ CodeMirror.defineMode("hyperlisp", function() {
      *  - def          ==> Used for type declarations of a node's value
      *  - number       ==> Used for p5.lambda expressions
      *  - property     ==> Used for a node's value, unless it's an expression or a string literal value
-     *  - error        ==> Used for syntactic Hyperlisp errors. Normally this means that the entire rest of the document goes into "error mode"
+     *  - error        ==> Used for syntactic Hyperlambda errors. Normally this means that the entire rest of the document goes into "error mode"
      *  - tag          ==> Used for displaying widget types, among other things, such as [literal], [container] and [void], in addition to all HTML element names
      *
      * In addition, if you wish, you can give all attributes, properties and widget creation invocations of widgets 
@@ -50,7 +50,7 @@ CodeMirror.defineMode("hyperlisp", function() {
      * in your CodeMirror theme
      *
      *
-     * The following CodeMirror theme classes are NOT used by the Hyperlisp CodeMirror plugin
+     * The following CodeMirror theme classes are NOT used by the Hyperlambda CodeMirror plugin
      *  - bracket
      *  - link
      */
@@ -91,7 +91,7 @@ CodeMirror.defineMode("hyperlisp", function() {
       activeevent:'variable-2',
 
       /*
-       * Hyperlisp value type declaration, found inbetween name of node and value, e.g.
+       * Hyperlambda value type declaration, found inbetween name of node and value, e.g.
        * "foo:int:54" - "int" is here type declaration
        */
       type:'def',
@@ -117,7 +117,7 @@ CodeMirror.defineMode("hyperlisp", function() {
       widget_type:'tag widget-type',
 
       /*
-       * Displayed when there is a syntacic error in Hyperlisp, e.g. a space too much or little
+       * Displayed when there is a syntacic error in Hyperlambda, e.g. a space too much or little
        * in front of name, or a string literal is not closed, etc.
        */
       error:'error'
@@ -138,7 +138,7 @@ CodeMirror.defineMode("hyperlisp", function() {
 
     /*
      * Initial state of parser, invoked by CodeMirror as it is starting to parse
-     * the given Hyperlisp. Setting mode to "name" and indent to "0", to make sure
+     * the given Hyperlambda. Setting mode to "name" and indent to "0", to make sure
      * we start out with name being default state, and no indentation occurring
      */
     startState: function() {
@@ -146,7 +146,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         mode:'name',
         indent:0,
         previousIndent:0,
-        noContent:true // Only true if this is first "content" of Hyperlisp, which makes sure first node starts with "no indentation"
+        noContent:true // Only true if this is first "content" of Hyperlambda, which makes sure first node starts with "no indentation"
       };
     },
 
@@ -169,31 +169,31 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'name':
 
           /*
-           * Hyperlisp "name" mode
+           * Hyperlambda "name" mode
            */
           return this.tokenizeNameMode (stream, state);
         case 'value':
 
           /*
-           * Hyperlisp "value" mode
+           * Hyperlambda "value" mode
            */
           return this.tokenizeValueMode (stream, state);
         case 'mcomment':
 
           /*
-           * Hyperlisp multiline comment mode
+           * Hyperlambda multiline comment mode
            */
           return this.tokenizeMultiCommentMode (stream, state);
         case 'mstring-name':
 
           /*
-           * Hyperlisp multiline string mode
+           * Hyperlambda multiline string mode
            */
           return this.tokenizeMultilineStringMode (stream, state, true);
         case 'mstring-value':
 
           /*
-           * Hyperlisp multiline string mode
+           * Hyperlambda multiline string mode
            */
           return this.tokenizeMultilineStringMode (stream, state, false);
         case 'error':
@@ -539,7 +539,7 @@ CodeMirror.defineMode("hyperlisp", function() {
       /*
        * No needs to be "fancy" here, simply skip til "end of line", and then parse content, to see
        * if we passed "end of multi line comment" or not ...
-       * This is done since a multiline comment (or a normal comment for that matter), in Hyperlisp,
+       * This is done since a multiline comment (or a normal comment for that matter), in Hyperlambda,
        * is NOT, I repeat *NOT* allowed to have ANY content after it is closed, to avoid creating
        * the weirdest intentation nightmare you could imagine ...!!
        */
@@ -555,7 +555,7 @@ CodeMirror.defineMode("hyperlisp", function() {
 
         /*
          * Somehow coder managed to stuff something *AFTER* multi line comment, on same line,
-         * which is illegal in Hyperlisp (see over)
+         * which is illegal in Hyperlambda (see over)
          * Returning "error" which stops tokenizing the rest of the document, leaving everything from here,
          * until the end of the document in "error state"
          */
@@ -741,7 +741,7 @@ CodeMirror.defineMode("hyperlisp", function() {
 
 
     /*
-     * Checks for indentation bugs in Hyperlisp
+     * Checks for indentation bugs in Hyperlambda
      */
     checkIndentation: function (state, pos) {
 
@@ -813,7 +813,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case '*':
         case '%':
         case '^':
-        case 'lambda2lisp':
+        case 'lambda2hyper':
         case 'create-event':
         case 'create-event':
         case 'login':
@@ -886,7 +886,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case '<=':
         case '~':
         case '!~':
-        case 'lisp2lambda':
+        case 'hyper2lambda':
         case 'sha256-hash':
         case 'widget-exist':
         case 'reload-location':
@@ -1295,18 +1295,18 @@ CodeMirror.defineMode("hyperlisp", function() {
 });
 
 /*
- * Helper that defines MIME type of Hyperlisp content.
+ * Helper that defines MIME type of Hyperlambda content.
  * Not entirely sure where we'd need this, but possibly some plugins
  * created, that downloads code from JavaScript ...?
  */
-CodeMirror.defineMIME("text/x-hyperlisp", "hyperlisp");
+CodeMirror.defineMIME("text/x-hyperlambda", "hyperlambda");
 
 
 
 /*
- * Helper for showing autocomplete for Hyperlisp keywords
+ * Helper for showing autocomplete for Hyperlambda keywords
  */
-CodeMirror.registerHelper("hint", "hyperlisp", function(cm, options) {
+CodeMirror.registerHelper("hint", "hyperlambda", function(cm, options) {
 
   /*
    * Checking if there are any autocomplete keywords, and if not, returning early
@@ -1328,7 +1328,7 @@ CodeMirror.registerHelper("hint", "hyperlisp", function(cm, options) {
   var start = end - curWord.length;
 
   /*
-   * Then finding each word that matches from our Hyperlisp keywords list
+   * Then finding each word that matches from our Hyperlambda keywords list
    */
   for (var idx = 0; idx < CodeMirror._hyperlispKeywords.length; idx++) {
     if (CodeMirror._hyperlispKeywords[idx].indexOf (curWord) != -1) {

@@ -22,7 +22,7 @@ namespace p5.exp.exceptions
         /// </summary>
         /// <param name="message">Message for exception, describing what went wrong</param>
         /// <param name="node">Node where expression was found</param>
-        /// <param name="context">Application context Necessary to perform conversion from p5 lambda to Hyperlisp to show Hyperlisp StackTrace</param>
+        /// <param name="context">Application context Necessary to perform conversion from p5 lambda to Hyperlambda to show Hyperlambda StackTrace</param>
         public LambdaException (string message, Node node, ApplicationContext context, Exception innerException = null)
             : base (message, innerException)
         {
@@ -38,12 +38,12 @@ namespace p5.exp.exceptions
             }
             _lineNo = idxNo + 1;
 
-            // Storing context since we need it to convert to Hyperlisp later
+            // Storing context since we need it to convert to Hyperlambda later
             _context = context;
         }
 
         /*
-         * Overiding StackTrace from Exception class to provide "Hyperlisp stack trace" instead of default stacktrace
+         * Overiding StackTrace from Exception class to provide "Hyperlambda stack trace" instead of default stacktrace
          */
         public override string StackTrace
         {
@@ -51,7 +51,7 @@ namespace p5.exp.exceptions
             {
                 var convert = new Node ();
                 convert.Add (_node);
-                _context.Raise ("lambda2lisp", convert);
+                _context.Raise ("lambda2hyper", convert);
                 string lisp = convert.Get<string> (_context);
                 int curPosCrLf = 0, noCrLf = 0;
                 while (noCrLf != _lineNo) {

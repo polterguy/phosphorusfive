@@ -57,7 +57,7 @@ sys42.widgets.ck-editor
 
 In addition to the "arguments" you can pass into it, you can also pass in the following.
 
-* [innerValue] - To set the initial Hyperlisp as the widget is loaded
+* [innerValue] - To set the initial Hyperlambda as the widget is loaded
 * [events] - To associate lambda events with the widget
 
 All other properties are ignored, and to the most parts, don't really give any sense, since the HTML "textarea" widget rendered, is actually

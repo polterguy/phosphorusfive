@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("p5.types")]
-[assembly: AssemblyDescription("Type support for Hyperlisp")]
+[assembly: AssemblyDescription("Type support for Hyperlambda")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("p5.types")]

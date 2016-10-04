@@ -17,7 +17,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.int")]
+        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.int")]
         private static void p5_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is int) {
@@ -28,11 +28,11 @@ namespace p5.types.types {
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the int type
+        ///     Returns the Hyperlambda type-name for the int type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int32")]
+        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.System.Int32")]
         private static void p5_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "int";

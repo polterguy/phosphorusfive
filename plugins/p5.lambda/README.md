@@ -7,7 +7,7 @@ evaluated through the main execution engine, through the Node class being the ex
 evaluated as the execution graph.
 
 However, for all practical concerns, it "feels like" a programming language, since it allows you to
-create code in Hyperlisp, that will be evaluated, and it is Turing complete in regards to execution, and allows
+create code in Hyperlambda, that will be evaluated, and it is Turing complete in regards to execution, and allows
 you to do everything you can do in any other programming languages.
 
 p5.lambda contains the basic Active Events, that implements the "programming constructs" of Phosphorus Five
@@ -39,8 +39,8 @@ actually simply Active Events, and nothing you cannot implement yourself, to ext
 
 The third Active Event called *[create-literal-widget]* is declared in p5.web.
 
-What happens when you evaluate the above piece of Hyperlisp, is that *[eval]* is being invoked, with the root node
-of your above Hyperlisp as the "current instruction pointer". To evaluate *[eval]* directly yourself, is quite simple,
+What happens when you evaluate the above piece of Hyperlambda, is that *[eval]* is being invoked, with the root node
+of your above Hyperlambda as the "current instruction pointer". To evaluate *[eval]* directly yourself, is quite simple,
 and can be achieved with the following code
 
 ```
@@ -69,7 +69,7 @@ Notice though that if you explicitly invoke *[eval]* on a node, that starts with
 node, making it become the root node of its execution context (stack of execution).
 
 There also exists an *[eval-mutable]* Active Event, which allows you access to the entire main root graph object, but
-this Active Event is for the most parts for keyword implementors, and rarely something you'd consume yourself from Hyperlisp.
+this Active Event is for the most parts for keyword implementors, and rarely something you'd consume yourself from Hyperlambda.
 
 The difference between *[eval]* and *[eval-mutable]* is that the first creates a new root node hierarchy, not allowing the
 execution to gain access to any nodes from the outside of itself, except nodes explicitly passed in as parameters, such
@@ -136,7 +136,7 @@ is done evaluating *[insert-after]*, it finds a new Active Event invocation, bei
 Active Event reference, which in turn evaluates, creating our Literal widget.
 
 If you change the above code to using *[insert-after]* instead, there will be no Literal widget after evaluation, 
-but the node hierarchy is clearly changed, as you can see in the output, after evaluation of your Hyperlisp.
+but the node hierarchy is clearly changed, as you can see in the output, after evaluation of your Hyperlambda.
 
 ```
 insert-before:x:
@@ -244,7 +244,7 @@ eval:x:/../*/_x?value
 ```
 
 You can still return values and nodes as usual. There is actually no difference in regards to logic of evaluating a node or lambda object,
-or evaluating a string, except that unless the string you try to evaluate does not for some reasons convert legally into a node, the Hyperlisp
+or evaluating a string, except that unless the string you try to evaluate does not for some reasons convert legally into a node, the Hyperlambda
 parser will choke, and throw an exception.
 
 #### Evaluating a block of lambda instead of an expression
@@ -613,7 +613,7 @@ In the above example, the branch will only occur if either the *[_name]* is "tho
 
 If you have both *[and]* and *[or]* operators, in the same scope, then *[and]* will get presedence, as in other programming languages.
 
-Notice though that the syntax for p5.lambda, creates very "verbose" code, for complex conditions. This is due to that Hyperlisp is a simple
+Notice though that the syntax for p5.lambda, creates very "verbose" code, for complex conditions. This is due to that Hyperlambda is a simple
 key/value/children file format, and in fact not a "programming language" per se. This means that each node can only have one name, and one value. In
 addition to a list of children.
 
@@ -988,10 +988,10 @@ catch
 ```
 
 In addition to the *[message]* argument passed into your *[catch]* block, you also get the *[type]* of exception thrown, which is the 
-fully qualified class name of it from .Net/Mono, and the entire *[stack-trace]*. The type of an exception thrown from Hyperlisp, will always
+fully qualified class name of it from .Net/Mono, and the entire *[stack-trace]*. The type of an exception thrown from Hyperlambda, will always
 be "p5.exp.exceptions.LambdaException".
 
-When you *[throw]* an exception from Hyperlisp, you can also pass in an expression as its message.
+When you *[throw]* an exception from Hyperlambda, you can also pass in an expression as its message.
 
 ### [return],  returning from a lambda object evaluation
 

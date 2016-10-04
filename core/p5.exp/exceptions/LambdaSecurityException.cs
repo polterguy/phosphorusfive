@@ -18,7 +18,7 @@ namespace p5.exp.exceptions
         /// </summary>
         /// <param name="message">Message for exception, describing what went wrong</param>
         /// <param name="node">Node where expression was found</param>
-        /// <param name="context">Application context Necessary to perform conversion from p5 lambda to Hyperlisp to show Hyperlisp StackTrace</param>
+        /// <param name="context">Application context Necessary to perform conversion from p5 lambda to Hyperlambda to show Hyperlambda StackTrace</param>
         public LambdaSecurityException (string message, Node node, ApplicationContext context, Exception innerException = null)
             : base (message, node, context, innerException)
         { }

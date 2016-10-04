@@ -130,7 +130,7 @@ Below is an example of creating a leaf entity from a filename.
 
 ```
 p5.mime.create
-  application:Hyperlisp
+  application:Hyperlambda
     filename:/system42/application-startup.hl
 ```
 

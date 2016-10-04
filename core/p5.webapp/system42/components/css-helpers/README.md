@@ -1,7 +1,7 @@
 System42 CSS helper Active Events
 ===============
 
-This directory contains Hyperlisp that creates "CSS helper" Active Events.
+This directory contains Hyperlambda that creates "CSS helper" Active Events.
 These events, allows you to add, remove or toggle a CSS class to one or more widgets.
 The events are listed below.
 

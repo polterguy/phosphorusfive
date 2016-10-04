@@ -19,7 +19,7 @@ namespace p5.mongo.helpers
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.objectid")]
+        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.objectid")]
         private static void p5_hyperlisp_get_object_value_objectid (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -34,11 +34,11 @@ namespace p5.mongo.helpers
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the ObjectId type
+        ///     Returns the Hyperlambda type-name for the ObjectId type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.MongoDB.Bson.ObjectId")]
+        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.MongoDB.Bson.ObjectId")]
         private static void p5_hyperlisp_get_type_name_MongoDB_Bson_ObjectId (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "objectid";

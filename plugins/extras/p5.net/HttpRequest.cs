@@ -139,7 +139,7 @@ namespace p5.net
                         args, 
                         context);
 
-                // Checking to see if this is Hyperlisp content, since we're by default setting Content-Type to application/x-hyperlisp if it is
+                // Checking to see if this is Hyperlambda content, since we're by default setting Content-Type to application/x-hyperlambda if it is
                 bool isHyperlisp = args ["content"].Value == null && args ["content"].Children.Count > 0;
 
                 // Retrieving actual content to post or put
@@ -164,12 +164,12 @@ namespace p5.net
                             stream.Write (byteContent, 0, byteContent.Length);
                         } else {
 
-                            // Some sort of "text" type of content, can also be Hyperlisp.
-                            // Setting our Content-Type header, defaulting to "text/plain", unless Hyperlisp is given
+                            // Some sort of "text" type of content, can also be Hyperlambda.
+                            // Setting our Content-Type header, defaulting to "text/plain", unless Hyperlambda is given
                             request.ContentType = args.GetExChildValue (
                                 "Content-Type", 
                                 context, 
-                                isHyperlisp ? "application/x-hyperlisp" : "text/plain");
+                                isHyperlisp ? "application/x-hyperlambda" : "text/plain");
 
                             // Any other type of content, such as string/integer/boolean etc
                             using (TextWriter writer = new StreamWriter (stream)) {
@@ -264,7 +264,7 @@ namespace p5.net
                 request.ContentType = args.GetExChildValue (
                     "Content-Type", 
                     context, 
-                    filename.EndsWith (".hl") ? "application/x-hyperlisp" : "application/octet-stream");
+                    filename.EndsWith (".hl") ? "application/x-hyperlambda" : "application/octet-stream");
 
                 // Setting other HTTP request headers
                 SetRequestHeaders (context, request, args);
@@ -290,8 +290,8 @@ namespace p5.net
         {
             if (content.Value == null && content.Children.Count > 0) {
 
-                // Hyperlisp content
-                return context.Raise ("lambda2lisp", content.UnTie ()).Value;
+                // Hyperlambda content
+                return context.Raise ("lambda2hyper", content.UnTie ()).Value;
             } else {
 
                 // Some sort of "value" content, either text or binary (byte[])
@@ -369,16 +369,16 @@ namespace p5.net
             using (Stream stream = response.GetResponseStream ()) {
 
                 // Checking type of response
-                if (response.ContentType.StartsWith ("application/x-hyperlisp")) {
+                if (response.ContentType.StartsWith ("application/x-hyperlambda")) {
 
-                    // Hyperlisp, possibly special treatment
+                    // Hyperlambda, possibly special treatment
                     using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
 
                         // Checking if caller wants to automatically convert to p5 lambda, which is default behavior
                         if (args.GetExChildValue ("convert", context, true)) {
 
-                            // Converting from Hyperlisp to p5 lambda
-                            Node convert = context.Raise ("lisp2lambda", new Node ("content", reader.ReadToEnd ()));
+                            // Converting from Hyperlambda to p5 lambda
+                            Node convert = context.Raise ("hyper2lambda", new Node ("content", reader.ReadToEnd ()));
                             convert.Value = null;
                             result.Add (convert);
                         } else {

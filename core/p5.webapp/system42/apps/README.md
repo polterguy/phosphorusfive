@@ -2,9 +2,9 @@ Applications in System42
 ========
 
 This folder contains all of your System42 applications. An application is a folder that normally, at the very least,
-contains one file, "launch.hl". This file is the Hyperlisp file that is executed when the user choose to start your app.
+contains one file, "launch.hl". This file is the Hyperlambda file that is executed when the user choose to start your app.
 
-In addition, an app can optionally contain a "startup.hl" Hyperlisp file, directly within its main folder. This file 
+In addition, an app can optionally contain a "startup.hl" Hyperlambda file, directly within its main folder. This file 
 is evaluated when the web-server initially starts, and/or restarts, and is useful for initializing your app.
 
 This allows you to distribute your Phosphorus apps using x-copy deployment. By default, Phosphorus Five contains 

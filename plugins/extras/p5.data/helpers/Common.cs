@@ -192,9 +192,9 @@ namespace p5.data.helpers
                 }
             } else {
 
-                // Saves node as Hyperlisp
+                // Saves node as Hyperlambda
                 using (TextWriter writer = File.CreateText (_dbFullPath + fileNode.Value)) {
-                    writer.Write (context.Raise ("lambda2lisp", new Node ().AddRange (fileNode.Clone ().Children)).Value);
+                    writer.Write (context.Raise ("lambda2hyper", new Node ().AddRange (fileNode.Clone ().Children)).Value);
                 }
             }
         }
@@ -208,7 +208,7 @@ namespace p5.data.helpers
             using (TextReader reader = File.OpenText (_dbFullPath + path)) {
 
                 // Converting file to lambda
-                Node retVal = context.Raise ("lisp2lambda", new Node ("", reader.ReadToEnd ()));
+                Node retVal = context.Raise ("hyper2lambda", new Node ("", reader.ReadToEnd ()));
                 retVal.Value = path;
                 return retVal;
             }

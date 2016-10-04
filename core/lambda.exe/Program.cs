@@ -70,10 +70,10 @@ namespace lambda_exe
                     // Raising our application startup Active Event, in case there are modules loaded depending upon it
                     context.Raise (".p5.core.application-start", new Node ());
 
-                    // Checking if we're in "immediate mode" (which means user can type in Hyperlisp into the console to be evaluated)
+                    // Checking if we're in "immediate mode" (which means user can type in Hyperlambda into the console to be evaluated)
                     if (immediate) {
 
-                        // Starting immediate mode, allowing user to type in Hyperlisp to be evaluated
+                        // Starting immediate mode, allowing user to type in Hyperlambda to be evaluated
                         ImmediateMode (context);
                     } else {
 
@@ -116,7 +116,7 @@ namespace lambda_exe
         {
             // Initializing plugins that must be here in order for lambda executioner to function
             Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly());
-            Loader.Instance.LoadAssembly ("plugins/", "p5.hyperlisp");
+            Loader.Instance.LoadAssembly ("plugins/", "p5.hyperlambda");
             Loader.Instance.LoadAssembly ("plugins/", "p5.types");
             Loader.Instance.LoadAssembly ("plugins/", "p5.lambda");
             Loader.Instance.LoadAssembly ("plugins/", "p5.math");
@@ -128,29 +128,29 @@ namespace lambda_exe
         }
 
         /*
-         * Starts immediate mode, allowing user to type in a bunch of Hyperlisp, executing when empty line is submitted
+         * Starts immediate mode, allowing user to type in a bunch of Hyperlambda, executing when empty line is submitted
          */ 
         private static void ImmediateMode (ApplicationContext context)
         {
             // Looping until user types "exit"
             while (true) {
 
-                // Retrieving next piece of Hyperlisp to executed from console
-                string hyperlisp = GetNextHyperlisp (context);
+                // Retrieving next piece of Hyperlambda to executed from console
+                string hyperlambda = GetNextHyperlisp (context);
 
                 // Checking if user wants to exit program
-                if (hyperlisp.Trim () == "exit") {
+                if (hyperlambda.Trim () == "exit") {
 
                     // Exiting program entirely
                     break;
-                } else if (hyperlisp.Trim () == "") {
+                } else if (hyperlambda.Trim () == "") {
 
                     // User didn't type anything at all
                     Console.WriteLine ("Nothing to do here, type 'exit' to exit program");
                 } else {
 
-                    // Converting Hyperlisp collected above to lambda and executing
-                    Node convert = context.Raise ("lisp2lambda", new Node ("", hyperlisp));
+                    // Converting Hyperlambda collected above to lambda and executing
+                    Node convert = context.Raise ("hyper2lambda", new Node ("", hyperlambda));
                     context.Raise ("eval", convert);
                     Console.WriteLine ();
                 }
@@ -158,11 +158,11 @@ namespace lambda_exe
         }
 
         /*
-         * Retrieves Hyperlisp from console
+         * Retrieves Hyperlambda from console
          */
         private static string GetNextHyperlisp (ApplicationContext context)
         {
-            // Used as buffer to hold Hyperlisp
+            // Used as buffer to hold Hyperlambda
             StringBuilder builder = new StringBuilder();
 
             // Looping until user types in empty line or "exit"
@@ -178,11 +178,11 @@ namespace lambda_exe
                 if (line == "")
                     break; // Breaking and executing given code
 
-                // Appending carriage return, to create understandable Hyperlisp
+                // Appending carriage return, to create understandable Hyperlambda
                 builder.Append (line + "\r\n");
             }
 
-            // Returning Hyperlisp to caller
+            // Returning Hyperlambda to caller
             return builder.ToString ();
         }
 
@@ -197,7 +197,7 @@ namespace lambda_exe
             Console.WriteLine ("*****    Instructions for Phosphorus Five command line p5 lambda executor  *****");
             Console.WriteLine ("********************************************************************************");
             Console.WriteLine ();
-            Console.WriteLine ("The lambda executor allows you to execute Hyperlisp files or code");
+            Console.WriteLine ("The lambda executor allows you to execute Hyperlambda files or code");
             Console.WriteLine ();
             Console.WriteLine ("-f Mandatory, unless you're in immediate mode, and is your lambda file, ");
             Console.WriteLine ("   for instance; -f some-lambda-file");
@@ -205,10 +205,10 @@ namespace lambda_exe
             Console.WriteLine ("-p Allows you to load additional plugins, for instance; -p \"plugins/my.plugin\"");
             Console.WriteLine ("   you can repeat the -p argument as many times as you wish");
             Console.WriteLine ();
-            Console.WriteLine ("-i Starts 'immediate mode', allowing you to write in any Hyperlisp, ending and");
+            Console.WriteLine ("-i Starts 'immediate mode', allowing you to write in any Hyperlambda, ending and");
             Console.WriteLine ("   executing your code with an empty line. End immediate mode with 'exit'");
             Console.WriteLine ();
-            Console.WriteLine ("All other arguments are passed into the execution tree of the Hyperlisp file you "
+            Console.WriteLine ("All other arguments are passed into the execution tree of the Hyperlambda file you "
                                + "are executing as a key/value pair, e.g; _var \"x\" creates a new node for you "
                                + "at the top of your execution file called '_var' with the content of 'x'");
             Console.WriteLine ();
@@ -243,7 +243,7 @@ namespace lambda_exe
                         "You cannot submit more than one execution file to the lambda executor");
                 } else if (idx == "-f") {
 
-                    // Next argument is a path to an input Hyperlisp file
+                    // Next argument is a path to an input Hyperlambda file
                     nextIsInput = true;
                 } else if (nextIsPlugin) {
 
@@ -260,11 +260,11 @@ namespace lambda_exe
                     immediate = true;
                 } else if (exeNode.Children.Count == 0 || exeNode [exeNode.Children.Count - 1].Value != null) {
 
-                    // Arbitrary argument name passed into Hyperlisp file
+                    // Arbitrary argument name passed into Hyperlambda file
                     exeNode.Add (new Node (idx));
                 } else {
 
-                    // Arbitrary argument value passed into Hyperlisp file
+                    // Arbitrary argument value passed into Hyperlambda file
                     exeNode [exeNode.Children.Count - 1].Value = idx;
                 }
             }

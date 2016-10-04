@@ -2,19 +2,19 @@ p5.types, main type support library of Phosphorus Five
 ========
 
 This library's Active Events are rarely used directly, but rather used when converting from one type to another, indirectly.
-Among other things, the Hyperlisp parser is dependent upon this library, to convert from string representation to object representation
+Among other things, the Hyperlambda parser is dependent upon this library, to convert from string representation to object representation
 for your objects, and vice versa.
 
 To extend the typing system, you will normally have to implement three different Active Events
 
-* p5.hyperlisp.get-object-value.my-type
-* p5.hyperlisp.get-string-value.MyTypeNamespace.MyTypeClassName
-* p5.hyperlisp.get-type-name.MyTypeNamespace.MyTypeClassName
+* p5.hyperlambda.get-object-value.my-type
+* p5.hyperlambda.get-string-value.MyTypeNamespace.MyTypeClassName
+* p5.hyperlambda.get-type-name.MyTypeNamespace.MyTypeClassName
 
 The first Active Event above, is supposed to convert a string representation to the object version of your type.
 
 The second Active Event above, is only necessary to implement if your implementation of "ToString" for your .Net type, does
-not return the string representation of your type, the way it should be serialized into for instance Hyperlisp.
+not return the string representation of your type, the way it should be serialized into for instance Hyperlambda.
 
 The third Active Event above, should simply return the value "my-type", and nothing else.
 
@@ -42,7 +42,7 @@ Out of the box, P5 supports most native types you'll need. Below is a list of th
 * Regex, typename "regex"
 * sbyte, typename "sbyte"
 * short, typename "short"
-* string, typename "string" - Also the default typename for Hyperlisp, if no type is explicitly declared
+* string, typename "string" - Also the default typename for Hyperlambda, if no type is explicitly declared
 * TimeSpan, typename "time"
 * uint, typename "uint"
 * ulong, typename "ulong"

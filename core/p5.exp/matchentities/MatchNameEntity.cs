@@ -29,7 +29,7 @@ namespace p5.exp.matchentities
 
                     // We need to convert value before returning to caller
                     retVal = _match.Context.Raise (
-                        "p5.hyperlisp.get-object-value." + _match.Convert, 
+                        "p5.hyperlambda.get-object-value." + _match.Convert, 
                         new Node ("", retVal)).Value;
                 }
                 return retVal;

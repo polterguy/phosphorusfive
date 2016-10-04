@@ -92,7 +92,7 @@ create-widget:executor
             // First retrieving text from execute_input textarea and converting to nodes
             get-widget-property:execute_input
               innerValue
-            lisp2lambda:x:/<?value
+            hyper2lambda:x:/<?value
 
             // Then storing current code in session such that code editor remembers content
             set:x:/../*/set-session-value/*/src?value
@@ -100,18 +100,18 @@ create-widget:executor
             set-session-value:executor.current-code
               src
 
-            // Then executing p5 lambda nodes, in such a way that our converted hyperlisp 
+            // Then executing p5 lambda nodes, in such a way that our converted hyperlambda 
             // becomes the "root node", while still reachable after execution is done!
             set:x:/../*/_exe/#/*
             add:x:/../*/_exe/#
-              src:x:/../*/lisp2lambda/*
+              src:x:/../*/hyper2lambda/*
             _exe:node:"evaluator-code"
 
             // Notice, [eval-mutable], since we want to retrieve transformed code after execution!
             eval-mutable:x:/../*/_exe/#
 
             // Then converting p5 lambda result nodes to text, and returning back to client as JSON
-            lambda2lisp:x:/../*/_exe/#/*
+            lambda2hyper:x:/../*/_exe/#/*
             return-response-object:code
               src:x:/./-?value
 

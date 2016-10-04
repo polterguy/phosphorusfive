@@ -54,7 +54,7 @@ folder, can be overridden in your web.config. If you open your db folder, you wi
 again, contains one or more files, named "db0.hl", "db1.hl", etc. By default, your database will serialize maximum 32 objects into each file, and a maximum of 256
 files into each folder. So as your database grows, it will start creating more and more folders and files.
 
-Each file is in fact a simple Hyperlisp file, and can (in theory) be edited with Notepad or TextEdit if you wish. This simple trait of p5.data, makes it extremely
+Each file is in fact a simple Hyperlambda file, and can (in theory) be edited with Notepad or TextEdit if you wish. This simple trait of p5.data, makes it extremely
 easily understood, robust, and easy to fix, if corruption should occur somehow. However, as a general rule, you should not edit these files yourself, unless you stop
 your web-server before you start editing them. Let p5.data take care of its own file structure, unless you really have to edit them yourself.
 
@@ -135,7 +135,7 @@ select-data:x:"/*/*/=:guid:9eb516b4-8a6e-4d8c-850d-834f2f184c24"
 ```
 
 Notice how I need to put my entire expression into a string literal. This is because my expression contains a colon (:), which is a special
-character in Hyperlisp, declaring where the name/type ends, and the value starts.
+character in Hyperlambda, declaring where the name/type ends, and the value starts.
 
 With *[select-data]*, you can also count items in your database. Consider this code for instance.
 

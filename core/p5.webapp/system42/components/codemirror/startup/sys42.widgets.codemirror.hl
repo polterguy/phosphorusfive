@@ -1,6 +1,6 @@
 
 /*
- * Responsible for creating the CodeMirror Hyperlisp editor widget
+ * Responsible for creating the CodeMirror Hyperlambda editor widget
  */
 create-event:sys42.widgets.codemirror
 
@@ -11,7 +11,7 @@ create-event:sys42.widgets.codemirror
    */
   _defaults
     _auto-focus:false
-    _mode:hyperlisp
+    _mode:hyperlambda
     _theme:paraiso
     _height:300px
   _options
@@ -63,7 +63,7 @@ create-event:sys42.widgets.codemirror
    * Making sure textarea input is replaced with the CodeMirror editor
    */
   send-javascript:@"window.{0} = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
-mode:'hyperlisp',
+mode:'hyperlambda',
 theme:'paraiso',
 lineNumbers:true,
 styleActiveLine:true,

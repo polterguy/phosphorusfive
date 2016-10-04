@@ -469,7 +469,7 @@ namespace p5.exp
                     if (idx is Node || (singleRetVal is Node)) {
 
                         // Current iteration contains a node, making sure we format our string nicely, such that
-                        // the end result becomes valid hyperlisp, before trying to convert to type T afterwards
+                        // the end result becomes valid hyperlambda, before trying to convert to type T afterwards
                         multipleRetVal += "\r\n";
                         singleRetVal = null;
                     }

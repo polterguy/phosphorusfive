@@ -4,7 +4,7 @@ Ajax on steroids
 This project contains the main Ajax library for Phosphorus Five. This Ajax library can be consumed
 either stand alone, in any ASP.NET Web Forms application, since its controls inherit from
 _System.Web.UI.Control_ - Or indirectly, through using the p5.web library, allowing
-you to create controls with Active Events, using for instance Hyperlisp as your programming 
+you to create controls with Active Events, using for instance Hyperlambda as your programming 
 language.
 
 In our documentation here, we will assume some C# knowledge, and create our examples,

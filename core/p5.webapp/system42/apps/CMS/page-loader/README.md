@@ -1,7 +1,7 @@
 System42's CMS page loader
 ========
 
-This folder contains the Hyperlisp scripts, necessary to actually _load_ your files, according to whatever logic you wish for
+This folder contains the Hyperlambda scripts, necessary to actually _load_ your files, according to whatever logic you wish for
 to occur during this process. See the [page-editor](/core/p5.webapp/system42/apps/cms/page-editor/) folder for more details
 about how this work.
 

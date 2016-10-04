@@ -938,7 +938,7 @@ Warning, here comes the "marketing pitch" ...
 
 For those developers out there whom are seasoned C#/ASP.NET developers, it is probably clear at this point, that p5.web is able to keep its state
 automatically, mirroring what goes on in server-land, automagically back to the client, and vice versa. In addition, there is no weird syntax, and 
-simply Hyperlisp, combined with expressions. The end result becoming that of, as long as you understand Hyperlisp, expressions, and have some few 
+simply Hyperlambda, combined with expressions. The end result becoming that of, as long as you understand Hyperlambda, expressions, and have some few 
 Active Events in your knowledge belt, plus optionally some basic HTML and CSS - Then creating fairly complex web apps, actually becomes ridiculously 
 easy. And the Ajax parts, "simply happens". In such a way, it could be argued that Phosphorus Five, to some extent, is a "fifth generation programming
 language". Taking away all the nitty gritty details from your burdon, allowing you to focus solely on your domain problems.
@@ -1163,16 +1163,16 @@ get-cookie-value:some-cookie
 ```
 
 As you can see in your last piece of code, your cookie value is returned as a "string". It is quite easily converted back into a node though, by
-running it through *[lisp2lambda]* with the following code.
+running it through *[hyper2lambda]* with the following code.
 
 ```
 get-cookie-value:some-cookie
-lisp2lambda:x:/-/*?value
+hyper2lambda:x:/-/*?value
 ```
 
 This is because although you can store "objects" in your session, application and cache objects, etc - The cookie collection of your browser, can
-only handle "string". However, your node(s) are converted correctly into Hyperlisp before stored into your cookie collection, which allows you to
-convert it easily back to p5.lambda using *[lisp2lambda]*.
+only handle "string". However, your node(s) are converted correctly into Hyperlambda before stored into your cookie collection, which allows you to
+convert it easily back to p5.lambda using *[hyper2lambda]*.
 
 ### HTTP headers
 
@@ -1259,7 +1259,7 @@ Creating web services, using *[echo]*, which instead of returning HTML to the cl
 technique.
 
 Hint!
-You can return Hyperlisp to the client using the *[echo]* event, since it will automatically convert whatever expression it is given to text, which
+You can return Hyperlambda to the client using the *[echo]* event, since it will automatically convert whatever expression it is given to text, which
 allows you to return some sub-set of your tree to the caller.
 
 ### Getting the raw HTTP request
@@ -1268,7 +1268,7 @@ You can also retrieve the "raw" HTTP request, by using the *[get-request-body]* 
 by the client, giving you complete access to do whatever you wish with it.
 
 Hint!
-This is a quite useful feature of P5, since it allows you to create "web service end-points", where you can for instance pass in Hyperlisp, or some
+This is a quite useful feature of P5, since it allows you to create "web service end-points", where you can for instance pass in Hyperlambda, or some
 other piece of "machine readable type of request", which is intended to be used by machines and web services, instead of browser clients.
 
 If you wish to directly save the request, without first putting it into memory, you can save some memory and CPU cycles by directly saving the request
@@ -1294,7 +1294,7 @@ You can modify the "status message" and the "status code" of your response using
 
 ### Ninja tricks when creating web services
 
-One thing you should realize about *[echo]* and *[get-request-body]*, is that you can both pass in, and return Hyperlisp, which you then convert to 
+One thing you should realize about *[echo]* and *[get-request-body]*, is that you can both pass in, and return Hyperlambda, which you then convert to 
 p5.lambda, for then to evaluate it as such. This feature of P5, allows you to pass "code" from your client, to a server, and have the server evaluate 
 your "code", for then to return "code" back again, which the client evaluates on its side.
 
@@ -1308,7 +1308,7 @@ trust the client that initiated the request (due to being a part of your own int
 your clients to invoke "code" in your web service endpoints.
 
 If you combine this feature, with the PGP cryptographic features of P5, requiring having your web service invocations cryptographically signed, before
-you evaluate them as Hyperlisp, you can create an additional layer of protection, further safe-guarding you against malicious requests. Which is 
+you evaluate them as Hyperlambda, you can create an additional layer of protection, further safe-guarding you against malicious requests. Which is 
 probably a "must", if you choose to use this "Ninja trick", in a production environment. This way you have a cryptographically secure context, giving
 your guarantees of that the invocation towards your web service, was created by some client, which you trust 100%, since the signing process of
 an invocation, makes sure it has not beeen tampered with in any ways after leaving the client. And only the client owning the private key that was
@@ -1317,7 +1317,7 @@ used to sign the invocation, can create a signature matching your expectations.
 To use this feature, you would have to pass in your invocations as MIME messages, using the p5.mime library of P5. This would also allow you to
 encrypt your invocations, making it impossible for an adversary, to listen in on the "conversation", between your client(s) and your server(s).
 
-If you encrypt your web service invocations, you can even use features such as the Active Event *[login]*, in your embedded Hyperlisp,
+If you encrypt your web service invocations, you can even use features such as the Active Event *[login]*, in your embedded Hyperlambda,
 to change the Application Context user ticket for your web service invocations, giving you further rights, having your invocation being evaluated 
 in an explicit user context.
 

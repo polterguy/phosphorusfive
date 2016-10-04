@@ -1,7 +1,7 @@
 System 42 settings events
 ===============
 
-This directory contains Hyperlisp that creates "application specific settings" Active Events.
+This directory contains Hyperlambda that creates "application specific settings" Active Events.
 There are three basic Active Events defined in this directory.
 
 * [sys42.get-app-setting]

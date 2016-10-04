@@ -10,11 +10,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("p5.hyperlisp")]
-[assembly: AssemblyDescription("Hyperlisp parser and constructor Active Events")]
+[assembly: AssemblyTitle("p5.hyperlambda")]
+[assembly: AssemblyDescription("Hyperlambda parser and constructor Active Events")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("p5.hyperlisp")]
+[assembly: AssemblyProduct("p5.hyperlambda")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

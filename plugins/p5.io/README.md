@@ -23,7 +23,7 @@ All Active Events in p5.io, will also automatically substitute a path, with "/us
 if you are logged in as username "root", then "~/documents/foo.txt" will unroll to "/users/root/documents/foo.txt". This allows you to
 transparently refer to files in a user's folder as "~/something.txt".
 
-Also notice, that although you _can_ load and save binary data with p5.io - Hyperlisp and p5.lambda, is not in general terms, very adequate
+Also notice, that although you _can_ load and save binary data with p5.io - Hyperlambda and p5.lambda, is not in general terms, very adequate
 for manipulating binary data. This means that you can load binary blob data, but for the most parts, the only intelligent thing you can do
 with it, is to base64 encode this data, and/or, pass it into other Active Events, that knows how to handle your binary data.
 
@@ -39,7 +39,7 @@ To load a file, simply use the *[load-file]* Active Event. An example of this ev
 load-file:/system42/application-startup.hl
 ```
 
-The above invocation, will load the System42 "startup file" for you. Notice that this is a Hyperlisp file, which the *[load-file]* Active
+The above invocation, will load the System42 "startup file" for you. Notice that this is a Hyperlambda file, which the *[load-file]* Active
 Event will automatically determine, and hence parse the file for you, to a p5.lambda structure. If you do not wish to automatically
 parse the file, but rather load is the file "raw", as a piece of text, not transforming it into a p5.lambda object, you must add the
 argument *[convert]*, and set its value to "false". An example is shown below.
@@ -49,10 +49,10 @@ load-file:/system42/application-startup.hl
   convert:false
 ```
 
-If you run the above Hyperlisp through your System42/executor, you will see that now it contains simply a text string, preserving all comments
+If you run the above Hyperlambda through your System42/executor, you will see that now it contains simply a text string, preserving all comments
 for you, among other things. Unless you explicitly inform the *[load-file]* Active Event that you do not wish for any conversion to occur,
-then it will automatically convert all Hyperlisp for you, to p5.lambda objects. This makes it very easy for you to load Hyperlisp, and 
-immediately execute your Hyperlisp, without having to convert it yourself.
+then it will automatically convert all Hyperlambda for you, to p5.lambda objects. This makes it very easy for you to load Hyperlambda, and 
+immediately execute your Hyperlambda, without having to convert it yourself.
 
 #### Loading multiple files at the same time
 
@@ -96,7 +96,7 @@ save-file:~/foo.txt
 I am a newly created file! :)"
 ```
 
-After evaluating the above Hyperlisp, a new file will exist within your main "~/" user's folder, called "foo.txt".
+After evaluating the above Hyperlambda, a new file will exist within your main "~/" user's folder, called "foo.txt".
 
 Whatever argument you pass into the *[src]* node, will somehow be converted into a text string, or a single binary piece of blob, and
 flushed into the file path given as the value of *[save-file]*. This allows you to create a new file, or overwrite an existing file,
@@ -372,7 +372,7 @@ list-files:/system42/
 list-folders:/system42/
 ```
 
-If you evaluate the above Hyperlisp, you will see that these Active Events returns the files and folders, as the "name" part of their children
+If you evaluate the above Hyperlambda, you will see that these Active Events returns the files and folders, as the "name" part of their children
 nodes. This is a general rule in p5.lambda, which is that in general terms, Active Events that returns a list of strings, returns these as 
 the names of the children nodes of their main event node.
 
@@ -404,31 +404,31 @@ copy-folder:~/foo-bar-2/
   dest:~/foo-bar/
 ```
 
-After evaluating the above Hyperlisp, you will see that the value of your *[copy-folder]* node, will look something like "/foo-bar copy 2/".
+After evaluating the above Hyperlambda, you will see that the value of your *[copy-folder]* node, will look something like "/foo-bar copy 2/".
 This is because the destination value of your copy-folder invocation was a path to a folder that already exist.
 
-#### Executing every Hyperlisp file within a folder
+#### Executing every Hyperlambda file within a folder
 
-Combining *[list-files]* and *[eval]*, you can do some interesting things. One of these, is that you can evaluate all Hyperlisp files within
+Combining *[list-files]* and *[eval]*, you can do some interesting things. One of these, is that you can evaluate all Hyperlambda files within
 some specific folder, easily, with only 3-4 lines of code. Imagine the following code.
 
 ```
-list-files:/system42/some-hyperlisp-folder/
+list-files:/system42/some-hyperlambda-folder/
   filter:hl
 load-file:x:/-/*?name
 eval:x:/-/*
 ```
 
-What the above code actually does, is first of all listing every Hyperlisp file with a specific folder. Then it loads all these files.
-As we previously said, *[load-file]* will automatically convert a Hyperlisp file to a p5.lambda structure after loading it. Then we invoke
+What the above code actually does, is first of all listing every Hyperlambda file with a specific folder. Then it loads all these files.
+As we previously said, *[load-file]* will automatically convert a Hyperlambda file to a p5.lambda structure after loading it. Then we invoke
 the *[eval]* event, passing in an expression leading to all children nodes of *[load-file]*, which now should be the root node of all files 
 loaded this way. The end result, is that all files in some specific folder is automatically evaluated and executed.
 
-System42 contains helper Active Events, both for evaluating single Hyperlisp files, in addition to recursively evaluating all Hyperlisp
+System42 contains helper Active Events, both for evaluating single Hyperlambda files, in addition to recursively evaluating all Hyperlambda
 files within some specified folder. These are listed below.
 
-* sys42.execute-hyper-file - Evaluates one or more Hyperlisp files. Pass in either a constant, or an expression leading to one or more files.
-* sys42.execute-hyper-folder - Evaluates all Hyperlisp files within one or more specified folders.
+* sys42.execute-hyper-file - Evaluates one or more Hyperlambda files. Pass in either a constant, or an expression leading to one or more files.
+* sys42.execute-hyper-folder - Evaluates all Hyperlambda files within one or more specified folders.
 
 #### Changing the read-only state of a file
 

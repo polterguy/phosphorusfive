@@ -91,7 +91,7 @@
     <Content Include="media\css\main.css" />
     <Content Include="media\jquery\jquery-2.1.4.min.js" />
     <Content Include="media\images\headshot.png" />
-    <Content Include="system42\components\codemirror\mode\hyperlisp\hyperlisp.js" />
+    <Content Include="system42\components\codemirror\mode\hyperlambda\hyperlambda.js" />
     <Content Include="system42\components\ckeditor\ckeditor.js" />
     <Content Include="system42\components\ckeditor\config.js" />
     <Content Include="system42\components\ckeditor\contents.css" />
@@ -192,6 +192,10 @@
       <Project>{8eb5fdea-d073-4147-ae65-397a01b463df}</Project>
       <Name>p5.events</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.hyperlambda\p5.hyperlambda.csproj">
+      <Project>{c02d30a6-7da2-4045-8644-9710ab40b629}</Project>
+      <Name>p5.hyperlambda</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.strings\p5.strings.csproj">
       <Project>{8eb5fdea-d073-4147-ae65-376a03b463da}</Project>
       <Name>p5.strings</Name>
@@ -211,10 +215,6 @@
     <ProjectReference Include="..\..\plugins\p5.lambda\p5.lambda.csproj">
       <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
       <Name>p5.lambda</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.hyperlisp\p5.hyperlisp.csproj">
-      <Project>{C02D30A6-7DA2-4045-8644-9710AB40B629}</Project>
-      <Name>p5.hyperlisp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.types\p5.types.csproj">
       <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>

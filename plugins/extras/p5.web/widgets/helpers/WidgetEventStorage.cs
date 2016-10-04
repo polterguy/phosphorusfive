@@ -80,7 +80,7 @@ namespace p5.web.widgets.helpers
             // If it does not succeed, due to for instance the ID of your widget being referenced by some other
             // node in your events, you'll either have to manually change your Ajax Events, or refresh the page ...
             // Sorry ...!!
-            // If it does not work, you've probably written what's defined as "bad Hyperlisp" anyway ...!
+            // If it does not work, you've probably written what's defined as "bad Hyperlambda" anyway ...!
 
             // Looping through all Ajax Events on widget
             foreach (var idxChildNode in _events[newKey]) {

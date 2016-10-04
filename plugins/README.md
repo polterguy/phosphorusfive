@@ -9,7 +9,7 @@ execution engine in P5.
 Below is a list of all the plugins in the system as of today.
 
 * [/plugins/p5.events/](p5.events), allowing yout to create Active Events in p5.lambda
-* [/plugins/p5.hyperlisp/](p5.hyperlisp), the Hyperlisp parser and creator
+* [/plugins/p5.hyperlambda/](p5.hyperlambda), the Hyperlambda parser and creator
 * [/plugins/p5.io/](p5.io), giving you file/folder Active Events, to create, modify, delete, etc files and folders
 * [/plugins/p5.lambda/](p5.lambda), the core "non-programming language instruction set", such as *[add]* and *[set]*
 * [/plugins/p5.math/](p5.math), containing all the math operators and events, such as *[+]*, *[-]*, *[*]* etc
@@ -20,7 +20,7 @@ In addition, there are several more plugins in the [extras](/plugins/extras/) fo
 
 To create your own plugins for P5, is actually ridiculously easy, due to the Active Event design pattern. If you
 wish, you can easily "extend" p5.lambda, creating your own "programming instructions", or more specifically Active Events,
-which you can access easily, either from Hyperlisp and p5.lambda, or from C#.
+which you can access easily, either from Hyperlambda and p5.lambda, or from C#.
 
 To see an example of how to create your own Active Event plugin in C#, check out the C# example 
 called [p5.active-event-sample-plugin](/samples/p5.active-event-sample-plugin/)

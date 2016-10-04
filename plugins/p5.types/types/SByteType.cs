@@ -17,7 +17,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.sbyte")]
+        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.sbyte")]
         private static void p5_hyperlisp_get_object_value_sbyte (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is sbyte) {
@@ -28,11 +28,11 @@ namespace p5.types.types {
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the sbyte type
+        ///     Returns the Hyperlambda type-name for the sbyte type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.SByte")]
+        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.System.SByte")]
         private static void p5_hyperlisp_get_type_name_System_SByte (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "sbyte";

@@ -25,21 +25,21 @@ create-event:sys42.show-code-window
     /*
      * Converting lambda to lisp
      */
-    lambda2lisp:x:/../*/_arg/*
+    lambda2hyper:x:/../*/_arg/*
 
     /*
-     * HTML-encoding result, in case there are angle brackets, etc in the resulting Hyperlisp
+     * HTML-encoding result, in case there are angle brackets, etc in the resulting Hyperlambda
      */
     html-encode:x:/-?value
 
     /*
-     * Setting the literal's content to the nodes converted to Hyperlisp
+     * Setting the literal's content to the nodes converted to Hyperlambda
      */
     set:x:/../**/literal/*/element/=pre/./*/innerValue?value
       src:x:/./-?value
 
   /*
-   * Creating a widget showing the Hyperlisp code created from the given p5 lambda tree
+   * Creating a widget showing the Hyperlambda code created from the given p5 lambda tree
    */
   create-widget
     class:col-xs-12

@@ -1,8 +1,8 @@
-The Hyperlisp and p5.lambda Executor
+The Hyperlambda and p5.lambda Executor
 ========
 
-The Executor allows you to evaluate Hyperlisp and p5.lambda directly, from within your browser. It consists of two
-syntax highlighted Hyperlisp editors; One taking your "input Hyperlisp", and the other displaying its "output", after
+The Executor allows you to evaluate Hyperlambda and p5.lambda directly, from within your browser. It consists of two
+syntax highlighted Hyperlambda editors; One taking your "input Hyperlambda", and the other displaying its "output", after
 having been evaluated, showing the result of your evaluated code.
 
 To try it out, start System42, and paste the following code into the input editor, and click the "Evaluate" button.

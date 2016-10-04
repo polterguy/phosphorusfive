@@ -23,12 +23,12 @@ works just as well on both Xamarin (Mac OS X) and MonoDevelop (Linux).
 
 Tip!
 A nice place to test out constructs shown in the documentation files for P5, is the menu item "Apps/Executor",
-which allows you to execute Hyperlisp and p5.lambda, directly from within your browser. Most examples here
+which allows you to execute Hyperlambda and p5.lambda, directly from within your browser. Most examples here
 assumes you're using the "Executor" application to evaluate your code.
 
 ## What is that code ...?
 
-The above code, is called "Hyperlisp", and is simply a key/value/children tree-structure, allowing for you
+The above code, is called "Hyperlambda", and is simply a key/value/children tree-structure, allowing for you
 to declare something which P5 refers to as "p5.lambda". p5.lambda is the basis for an "execution tree", that is
 a Turing complete opportunity to "declare your apps", through a (very) rich "non-programming model".
 
@@ -37,7 +37,7 @@ coupled Active Events, that happens to, in their combined result, create a Turin
 engine, allowing you to "orchestrate your components together like LEGO bricks".
 
 In fact, if you wish, you could in theory "declare" your execution trees, by using XML or JSON. Although we recommend
-using Hyperlisp, due to its much more condens syntax, and lack of "overhead", compared to XML and JSON.
+using Hyperlambda, due to its much more condens syntax, and lack of "overhead", compared to XML and JSON.
 
 This trait of P5, allows you to "orchestrate" your apps, by combining your parts together, more like how a conductor 
 is orchestrating his musicians. It hence becomes an extremely high abstraction, allowing you to focus more on the 
@@ -51,14 +51,14 @@ Phosphorus Five consists of three basic innovations.
 
 * A managed Ajax library
 * A design pattern called Active Events
-* Hyperlisp or p5.lambda
+* Hyperlambda or p5.lambda
 
 The Ajax library is created on top of ASP.NET's web controls, allowing you to use them the same way you would create a web forms website.
 Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind.
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them.
 
-Hyperlisp, and p5.lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps together, almost
+Hyperlambda, and p5.lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps together, almost
 as if they were LEGO bricks.
 
 P5 is created in C#, and should work perfectly with Visual Studio, Xamarin and MonoDevelop.
@@ -92,7 +92,7 @@ If you do not wish to use System42, simply delete it, and modify your web.config
 startup. This would give you a completely "clean" install, with zero overhead, allowing you to entirely create your own "front-end"/"back-end"
 as you see fit.
 
-[Browse the Hyperlisp files in System42](/core/p5.webapp/system42/) to get a feel for Hyperlisp, and see some more example code.
+[Browse the Hyperlambda files in System42](/core/p5.webapp/system42/) to get a feel for Hyperlambda, and see some more example code.
 
 ## Removing features/plugins
 

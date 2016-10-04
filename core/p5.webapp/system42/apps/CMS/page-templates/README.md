@@ -1,8 +1,8 @@
 System42's CMS page templates
 ========
 
-This folder contains the Hyperlisp scripts, containing your "templates" for the CMS. A template is kind of like a "skin", only much
-more powerful, being able to evaluate Hyperlisp on the server side, while still retaining a completely detached "skin", not in
+This folder contains the Hyperlambda scripts, containing your "templates" for the CMS. A template is kind of like a "skin", only much
+more powerful, being able to evaluate Hyperlambda on the server side, while still retaining a completely detached "skin", not in
 any ways dependent upon your pages vice/versa.
 
 By default System42's CMS comes with a handful of pre-built templates, which you can use as the basis for your own. Some of these

@@ -37,7 +37,7 @@ p5.smtp.send-email
 ```
 
 The connection arguments to the server are optional, and if not supplied, these will be fetched from your web.config. In fact, to supply them through
-your web.config, is actually more secure, since in theory, an exception might occur during transmitting the email, which might result in the Hyperlisp
+your web.config, is actually more secure, since in theory, an exception might occur during transmitting the email, which might result in the Hyperlambda
 stacktrace become accessible to the end user, having him see the password for your SMTP account. The arguments that are optional, and if not supplied
 are fetched from your web.config, are listed below.
 

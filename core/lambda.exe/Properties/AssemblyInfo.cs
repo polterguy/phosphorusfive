@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("lambda_exe")]
-[assembly: AssemblyDescription("Console program for evaluating Hyperlisp")]
+[assembly: AssemblyDescription("Console program for evaluating Hyperlambda")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("lambda_exe")]

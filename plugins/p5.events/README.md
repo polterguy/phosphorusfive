@@ -3,7 +3,7 @@ Dynamically creating Active Events in p5.lambda
 
 In Phosphorus Five, you can either create static Active Events in C#, by tagging your C# methods with
 the *ActiveEvent* attribute. You can also use any p5.lambda object as an "anonymous function".
-In addition, you can also easily execute Hyperlisp files, the same way you'd invoke a function or method, passing in arguments,
+In addition, you can also easily execute Hyperlambda files, the same way you'd invoke a function or method, passing in arguments,
 and returning values, just like you would with a normal function.
 
 However, there is also the possibility of dynamically creating globally accessible Active Events, through the *[create-event]*
@@ -34,7 +34,7 @@ to restart, for some reasons (reboot of server or recycling your app pool for in
 if you wish for them to still be acccessible.
 
 In System42, this is easily done, by creating a "startup" file, which is executed during startup somehow. Either by putting your *[create-event]*
-invocations inside a Hyperlisp file, inside of your "/system42/startup/" folder, or by putting your event creational logic, inside your _app's_
+invocations inside a Hyperlambda file, inside of your "/system42/startup/" folder, or by putting your event creational logic, inside your _app's_
 "startup.hl" file, inside of your "/system42/your-app/" folder.
 
 This dynamic trait of p5.lambda, allows you to dynamically create Active Events, during runtime of your application, without requiring a 
@@ -78,7 +78,7 @@ foo
 foo
 ```
 
-If you now evaluate the following Hyperlisp, you will clearly see your *[foo]* Active Event is able to remember its "invocation count", 
+If you now evaluate the following Hyperlambda, you will clearly see your *[foo]* Active Event is able to remember its "invocation count", 
 across multiple invocations.
 
 ```
@@ -115,7 +115,7 @@ create-event:foo
 The above code, will create an Active Event, which simply displays a "confirmation window" once invoked. If you invoke it with *[foo]*, you will
 see it in action. However, if you wish to inspect it, instead of invoking it, this can easily be done, by injecting code into it, as arguments,
 which simply returns the root node. To see this in action, evaluate this code. Make sure you've created the Active Event first, by evaluating the
-above Hyperlisp first though.
+above Hyperlambda first though.
 
 ```
 foo
@@ -125,7 +125,7 @@ foo
 ```
 
 To understand what goes on in the above piece of p5.lambda, realize that arguments passed into an Active Event, will be prepended at the top of
-the event. Since what we pass in, are Hyperlisp "keywords", this means that these keywords will be evaluated, from inside of our Active Event,
+the event. Since what we pass in, are Hyperlambda "keywords", this means that these keywords will be evaluated, from inside of our Active Event,
 before the original code for our *[foo]* Active Event is evaluated. Since our code, contains a return invocation as its last piece of code,
 this means that we will "return early" from our event, before the event lambda object itself, is even evaluated. 
 

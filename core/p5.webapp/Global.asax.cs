@@ -67,7 +67,7 @@ namespace p5
                     new Node ("", "p5.webapp.application-startup-file")) [0].Get<string>(context);
                 if (!string.IsNullOrEmpty (appStartupFiles)) {
 
-                    // There is an application-startup-file declared in web.config, executing it as a Hyperlisp file
+                    // There is an application-startup-file declared in web.config, executing it as a Hyperlambda file
                     ExecuteHyperlispFile (context, appStartupFiles);
                 }
             }
@@ -143,7 +143,7 @@ namespace p5
             #region [ -- Private helper methods -- ]
 
             /*
-             * Executes a Hyperlisp file
+             * Executes a Hyperlambda file
              */
             private static void ExecuteHyperlispFile (ApplicationContext context, string filePath)
             {

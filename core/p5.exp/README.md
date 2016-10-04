@@ -62,7 +62,7 @@ set:x:?value
   src:x:/../*/_data/*/foo?count
 ```
 
-After evaluation of the above Hyperlisp, the value of the *[set]* node will be `:int:2`, which
+After evaluation of the above Hyperlambda, the value of the *[set]* node will be `:int:2`, which
 signifies that it holds an integer value, and its value is "2".
 
 Expressions consists of three basic parts
@@ -118,11 +118,11 @@ set:x:/../*/_data/*/foo?value
   src:New value
 ```
 
-The above Hyperlisp would retreieve all nodes that have the name of "foo", and set their values to "New value". This
+The above Hyperlambda would retreieve all nodes that have the name of "foo", and set their values to "New value". This
 is because of the iterator "/foo" parts above. The rest of the expression will be explained later, as we proceed downwards 
 in our documentation.
 
-After evaluation of the above Hyperlisp, your node-set would look like this. Notice the values of your *[foo]* nodes.
+After evaluation of the above Hyperlambda, your node-set would look like this. Notice the values of your *[foo]* nodes.
 
 ```
 _data
@@ -163,7 +163,7 @@ set:x:/../*/_data/*?value
   src:New value
 ```
 
-The above Hyperlisp will extract all children of the *[_data]* node, and set their values to "New value". Resulting
+The above Hyperlambda will extract all children of the *[_data]* node, and set their values to "New value". Resulting
 in the following p5.lambda structure as its result. 
 
 ```
@@ -214,7 +214,7 @@ set:x:/../*/_data/*/[1,3]?value
   src:New value
 ```
 
-After evaluation of the above Hyperlisp, your node-set would look like this
+After evaluation of the above Hyperlambda, your node-set would look like this
 
 ```
 _data
@@ -316,7 +316,7 @@ set:x:/../*/_data/*/\1?value
 ```
 
 You can also escape other characters, having nodes with really funny names, such as "/" etc. Imagine this
-Hyperlisp for instance.
+Hyperlambda for instance.
 
 ```
 _data
@@ -327,7 +327,7 @@ set:x:/../*/_data/*/\*?value
   src:New value
 ```
 
-The above Hyperlisp would change the value of the node with the name of "*".
+The above Hyperlambda would change the value of the node with the name of "*".
 
 ### Extracting the previous or next sibling node
 
@@ -386,8 +386,8 @@ set:x:/../*/_data/*/foo3/-2/+2?value
 
 ### Changing every even child node (modulo iterator)
 
-Imagine you have some Hyperlisp, where you wish for only the even values to be updated. This could easily be
-accomplished using the "modulo iterator". Imagine the following Hyperlisp
+Imagine you have some Hyperlambda, where you wish for only the even values to be updated. This could easily be
+accomplished using the "modulo iterator". Imagine the following Hyperlambda
 
 ```
 _data
@@ -399,7 +399,7 @@ set:x:/../*/_data/*/%2?value
   src:New value
 ```
 
-After evaluating the above Hyperlisp, your node-structure would look like this.
+After evaluating the above Hyperlambda, your node-structure would look like this.
 
 ```
 _data
@@ -652,7 +652,7 @@ operators to combine results. The four algebraic operators are as following
 * `^` - XOR
 
 Combining these in your expressions, allows you to for instance return the "union" of two expressions. Imagine
-wanting to retrieve all nodes have the value of either "jane" or "john" from the Hyperlisp below.
+wanting to retrieve all nodes have the value of either "jane" or "john" from the Hyperlambda below.
 
 ```
 _data
@@ -709,7 +709,7 @@ set:x:/../*/_data/*/=jane&/../*/_data/*/doe?value
   src:UPDATED!
 ```
 
-After evaluation, the above Hyperlisp would look like this
+After evaluation, the above Hyperlambda would look like this
 
 ```
 _data
@@ -736,7 +736,7 @@ set:x:/../*/_data/*/=jane^/../*/_data/*/doe?value
   src:UPDATED!
 ```
 
-After evaluation of the above Hyperlisp, the result would look like this
+After evaluation of the above Hyperlambda, the result would look like this
 
 ```
 _data
@@ -779,8 +779,8 @@ short and understandable.
 
 Sometimes you wish to create a value match for something that is not of type "string". This creates a problem, due to the
 typing system of Phosphorus Five, and your p5.lambda structures, since the integer value of 5 does _NOT_ equal the string value of "5". 
-This can easily be done though, since the value iterator supports types, the same way Hyperlisp itself supports types, by adding a `:my-type:`
-in front of the value. Since however, the ":" is a special character in Hyperlisp, this means you'll have to first declare
+This can easily be done though, since the value iterator supports types, the same way Hyperlambda itself supports types, by adding a `:my-type:`
+in front of the value. Since however, the ":" is a special character in Hyperlambda, this means you'll have to first declare
 your entire expression inside of a "string literal", the same way you'd create a string literal in C#. Example is given below.
 
 ```
@@ -918,7 +918,7 @@ namespace your_namespace
 The above code, would somehow transform each iterated value of the expression you pass into it, to a "Node" somehow.
 Either by casting, or by conversion, if they're not already nodes from before.
 
-If you invoked the above Active Event from Hyperlisp, using the following code for instance.
+If you invoked the above Active Event from Hyperlambda, using the following code for instance.
 
 ```
 _data

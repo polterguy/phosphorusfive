@@ -190,9 +190,9 @@ namespace p5.mime
             // Then we retrieve the ticks of server
             string serverSeed = DateTime.Now.Ticks.ToString ();
 
-            // Then we append the Hyperlisp for the entire code tree
+            // Then we append the Hyperlambda for the entire code tree
             // Notice, this will even include the GnuPG password in our seed, in sha2 hashed form!
-            // In addition, every time the Hyperlisp active Event calling this method changes, the seed will change
+            // In addition, every time the Hyperlambda active Event calling this method changes, the seed will change
             var code = Utilities.Convert<string> (context, args.Root);
             serverSeed += context.Raise ("sha256-hash", new Node ("", code)).Get<string> (context);;
 

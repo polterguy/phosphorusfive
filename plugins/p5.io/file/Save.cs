@@ -79,7 +79,7 @@ namespace p5.io.file
                 // Converting currenyl iterated source to blob, and appending into combined content
                 content.AddRange (Utilities.Convert<byte[]> (context, idxSrc, new byte[] { }));
 
-                // Appending CR/LF after every lambda source, to make sure we preserve good Hyperlisp syntax, 
+                // Appending CR/LF after every lambda source, to make sure we preserve good Hyperlambda syntax, 
                 // created from multiple source nodes
                 if (idxSrc is Node)
                     content.AddRange (new byte[] { 13, 10 });

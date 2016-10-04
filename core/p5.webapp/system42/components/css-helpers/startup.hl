@@ -1,7 +1,7 @@
 
 /*
  * Startup script that is evaluated when server is started.
- * Evaluates all Hyperlisp files in the "startup" folder.
+ * Evaluates all Hyperlambda files in the "startup" folder.
  */
 
 sys42.execute-hyper-folder:/system42/components/css-helpers/startup/

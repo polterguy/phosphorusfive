@@ -1,8 +1,8 @@
 System42's CMS page editor(s)
 ========
 
-This folder contains the Hyperlisp scripts, necessary to edit your CMS pages. By default, System42's CMS comes with two pages
-pre-installed; HTML and "lambda" pages. The latter allow you to evaluate any piece of Hyperlisp as your page is loaded.
+This folder contains the Hyperlambda scripts, necessary to edit your CMS pages. By default, System42's CMS comes with two pages
+pre-installed; HTML and "lambda" pages. The latter allow you to evaluate any piece of Hyperlambda as your page is loaded.
 
 If you wish to create your own custom "page type", you'll need to at the very least create three files. A "new-page-template"
 file, matching the *[type]* declaration of your *[p5.page]* objects, which serves as the "default new file" template.

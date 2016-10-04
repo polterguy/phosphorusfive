@@ -24,14 +24,14 @@ operation.
 
 All files belonging to System42 is contained in the "system42" folder. The "application-startup.hl" 
 file is evaluated when your application pool starts in your web server. This file creates a couple 
-of helper Active Events, for evaluating Hyperlisp files, and folders. In addition, it evaluates all 
+of helper Active Events, for evaluating Hyperlambda files, and folders. In addition, it evaluates all 
 files in the "/system42/startup/" folder.
 
 When it is done with the above tasks, it will evaluate all "application specific" and "components specific"
 startup files. These are files inside of any "/system42/apps/xxx/" and "/system42/components/xxx/" folders, 
 who's names are "startup.hl".
 
-This allows you to create startup Hyperlisp scripts, both on system level, and on application/component level, 
+This allows you to create startup Hyperlambda scripts, both on system level, and on application/component level, 
 for apps and components, that needs some sort of startup/initialization scripts to be evaluated during installation.
 
 ### The "apps" folder
@@ -60,15 +60,15 @@ some helper Active Events you should consider keeping.
 
 Some of them are mentioned below.
 
-* [sys42.execute-hyper-file] - Executes one or more Hyperlisp files
-* [sys42.execute-hyper-folder] - Executes all Hyperlisp files in a folder, recursively
+* [sys42.execute-hyper-file] - Executes one or more Hyperlambda files
+* [sys42.execute-hyper-folder] - Executes all Hyperlambda files in a folder, recursively
 * [sys42.get-event] - Returns the p5.lambda code for one or more dynamically created Active Events
 * [sys42.get-widget] - Returns all p5.lambda associated with a widget, including events
 * [sys42.include-default-javascript-files] - Which includes jQuery and Bootstrap's JavaScript files for you
 * [sys42.include-default-stylesheet-files] - Which includes Bootstrap's CSS files, and the "/media/main.css" CSS files for you
 * [sys42.empty-user-tmp-folder] - Which empties a user's "temp" folder
 
-In addition, System42 contains a web based Hyperlisp editor, built on top of CodeMirror, an HTML editor,
+In addition, System42 contains a web based Hyperlambda editor, built on top of CodeMirror, an HTML editor,
 built on top of CKEditor, and other things, that might help you out, when creating your own apps.
 
 System42 also contains a suite of Unit Tests, to test the integrity of Phosphorus Five. Which is highly
