@@ -55,11 +55,22 @@ namespace p5.security
         }
 
         /// <summary>
+        ///     Returns true if server salt is alread set
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.security.has-salt")]
+        private static void p5_security_has_salt (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = !string.IsNullOrEmpty (AuthenticationHelper.ServerSalt (context));
+        }
+
+        /// <summary>
         ///     Sets the password salt for the server to use when storing passwords in "auth" file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent(Name = "p5.security.set-server-salt")]
+        [ActiveEvent (Name = "p5.security.set-server-salt")]
         private static void p5_security_set_server_salt(ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.SetServerSalt (context, e.Args.GetExValue<string> (context));

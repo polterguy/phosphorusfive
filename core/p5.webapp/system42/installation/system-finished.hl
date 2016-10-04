@@ -9,15 +9,16 @@
  */
 create-widget:finished
   parent:guide
-  class:flash-from-left
+  class:flash-from-left col-xs-12
   widgets
 
 
-    /*
-     * First paragraph of informational text
-     */
     literal
-      element:blockquote
-      innerValue:@"<em>""Congratulations, your system is now setup, and ready to use.""</em>"
+      element:h2
+      class:hidden-xs
+      innerValue:Congratulations
+    literal
+      element:p
+      innerValue:Your system is now setup, and ready to use.
 
 

@@ -147,7 +147,7 @@ namespace p5.security.helpers
         {
             // Retrieving "auth" file in node format
             var authFile = AuthFile.GetAuthFile(context);
-            return authFile["server-salt"].Get<string>(context);
+            return authFile.GetChildValue<string> ("server-salt", context);
         }
 
         /*

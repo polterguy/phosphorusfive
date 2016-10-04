@@ -38,13 +38,6 @@ create-widget:template-root
           class:col-md-7 col-xs-9
           widgets
 
-            /*
-             * Header of page
-             */
-            literal:header
-              element:h1
-              innerValue:{header}
-
 
     /*
      * Actual dynamic content comes here, after navbar menu at top, 

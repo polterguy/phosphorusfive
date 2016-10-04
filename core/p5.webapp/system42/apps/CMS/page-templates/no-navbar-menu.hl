@@ -21,12 +21,6 @@ create-widget:template-root
   class:container
   widgets
 
-    /*
-      * Header of page
-      */
-    literal:header
-      element:h1
-      innerValue:{header}
 
     /*
      * Actual dynamic content comes here, after navbar menu at top, 

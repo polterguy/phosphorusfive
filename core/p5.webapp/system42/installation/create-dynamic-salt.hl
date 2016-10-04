@@ -10,7 +10,7 @@
  */
 create-widget:set-server-salt
   parent:guide
-  class:flash-from-left
+  class:flash-from-left col-xs-12 col-md-8
   widgets
 
 
@@ -18,16 +18,19 @@ create-widget:set-server-salt
      * First paragraph of informational text
      */
     literal
-      element:blockquote
-      innerValue:@"<em>""Welcome to System42. The first thing you will have to do, is to create a 
-<strong>random server salt</strong>.""</em>"
+      element:h2
+      class:hidden-xs
+      innerValue:@"Welcome to System42"
+    literal
+      element:p
+      innerValue:@"The first thing you will have to do, is to create a random server salt."
 
 
     /*
      * Root password container wrapper
      */
     container
-      class:col-xs-9 form-group
+      class:form-group
       widgets
         literal:server-salt
           element:textarea
@@ -38,7 +41,7 @@ create-widget:set-server-salt
             send-javascript:@"$('#server-salt').focus().select();"
         literal:update-salt
           element:button
-          class:col-xs-2 col-xs-push-10 btn btn-primary
+          class:col-xs-4 col-xs-push-8 col-sm-2 col-sm-push-10 btn btn-default btn-attach-top
           innerValue:Save
           onclick
             get-widget-property:server-salt

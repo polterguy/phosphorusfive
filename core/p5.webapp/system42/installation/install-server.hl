@@ -25,15 +25,6 @@ create-widget:guide
   widgets
 
 
-    /*
-     * Marvin image
-     */
-    literal
-      element:img
-      style:"float:right;"
-      src:/media/images/marvin-headshot.png
-
-
 /*
  * Checking if user is logged in, and that there are more than 0 users in the system,
  * to determine what to do, and which GUI to show user
@@ -44,8 +35,8 @@ if:x:/-/*?count
   =:int:0
 
   if
-    select-data:x:/*/*/server-salt?count
-    =:int:0
+    p5.security.has-salt
+    not
 
     // Need to create server dynamic salt
     sys42.execute-hyper-file:/system42/installation/create-dynamic-salt.hl
