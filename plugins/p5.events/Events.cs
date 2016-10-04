@@ -34,17 +34,18 @@ namespace p5.events
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "create-event")]
+        [ActiveEvent (Name = ".create-event")]
         public static void create_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking to see if this event has no lambda objects, and is not protected, at which case it is a "delete event" invocation
             if (e.Args.Children.Count (ix => ix.Name != "") == 0) {
 
                 // Deleting event, if existing, since it doesn't have any lambda objects associated with it
-                DeleteEvent (XUtil.Single<string> (context, e.Args), context, e.Args);
+                DeleteEvent (XUtil.Single<string> (context, e.Args), context, e.Args, e.Name.StartsWith ("."));
             } else {
 
                 // Creating new event
-                CreateEvent (XUtil.Single<string> (context, e.Args), e.Args, context);
+                CreateEvent (XUtil.Single<string> (context, e.Args), e.Args, context, e.Name.StartsWith ("."));
             }
         }
 
@@ -60,7 +61,7 @@ namespace p5.events
             foreach (var idxName in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Deleting event
-                DeleteEvent (idxName, context, e.Args);
+                DeleteEvent (idxName, context, e.Args, e.Name.StartsWith ("."));
             }
         }
 
@@ -70,6 +71,7 @@ namespace p5.events
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "vocabulary")]
+        [ActiveEvent (Name = ".vocabulary")]
         public static void vocabulary (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -79,20 +81,20 @@ namespace p5.events
                 var filter = new List<string> (XUtil.Iterate<string> (context, e.Args));
 
                 // Getting all dynamic Active Events
-                ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context);
+                ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context, e.Name.StartsWith ("."));
 
                 // Getting all core Active Events
-                ListActiveEvents (context.ActiveEvents.Where (ix => !ix.StartsWith ("_") && !ix.StartsWith (".")), e.Args, filter, "static", context);
+                ListActiveEvents (context.ActiveEvents, e.Args, filter, "static", context, e.Name.StartsWith ("."));
             }
         }
 
         /*
          * Creates a new Active Event
          */
-        internal static void CreateEvent (string name, Node args, ApplicationContext context)
+        internal static void CreateEvent (string name, Node args, ApplicationContext context, bool isNative)
         {
             // Sanity check
-            if (name.StartsWith ("_") || name.StartsWith ("."))
+            if (!isNative && (name.StartsWith ("_") || name.StartsWith (".")))
                 throw new LambdaException ("Tried to create a 'protected event'", args, context);
 
             // Acquire lock since we're consuming object shared amongst more than one thread (_events)
@@ -109,10 +111,10 @@ namespace p5.events
         /*
          * Removes the given dynamically created Active Event(s)
          */
-        internal static void DeleteEvent (string name, ApplicationContext context, Node args)
+        internal static void DeleteEvent (string name, ApplicationContext context, Node args, bool isNative)
         {
             // Sanity check
-            if (name.StartsWith ("_") || name.StartsWith ("."))
+            if (!isNative && (name.StartsWith ("_") || name.StartsWith (".")))
                 throw new LambdaException ("Tried to create a 'protected event'", args, context);
 
             // Acquire lock since we're consuming object shared amongst more than one thread (_events)
@@ -133,10 +135,14 @@ namespace p5.events
             Node node, 
             List<string> filter,
             string eventTypeName, 
-            ApplicationContext context)
+            ApplicationContext context,
+            bool isNative)
         {
             // Looping through each Active Event from IEnumerable
             foreach (var idx in source) {
+
+                if (!isNative && (idx.StartsWith (".") || idx.StartsWith ("_")))
+                    continue;
 
                 // Checking to see if we have any filter
                 if (filter.Count == 0) {

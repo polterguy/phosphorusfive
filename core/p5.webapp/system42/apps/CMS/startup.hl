@@ -8,7 +8,7 @@
  * of "initial-pages", and saves them to the database.
  */
 
-sys42.execute-hyper-folder:/system42/apps/CMS/startup/
+sys42.execute-lambda-folder:/system42/apps/CMS/startup/
 
 
 /*

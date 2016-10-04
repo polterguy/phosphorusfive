@@ -1,14 +1,15 @@
-Hyperlambda, an alternative to JSON and XML
+Hyperlambda, a non-programming language
 ========
 
 Hyperlambda is actually _not_ a "programming language". In fact, at its core, it is nothing more than JSON or XML you might argue. 
 A file format for describing data, in a key/value/children relationship. In fact, there does not, from a fundamental point of view, 
-exist any "programming languages" in Phosphorus Five. Hyperlambda however, do describe the relational execution tree structure, which p5.lambda
-relies upon, when executing its executional graph objects. So Hyperlambda can be used for describing anything really. Just like XML can.
+exist any "programming languages" in Phosphorus Five. Hyperlambda however, do describe the execution tree structure, which p5.lambda
+relies upon, when executing its graph objects. So Hyperlambda can be used for describing anything really. Just like XML and JSON can.
+It is among other things, used internally in the [p5.data](/plugins/p5.data/) project, as the file format for the database.
 
-The reason why Hyperlambda was invented though, was because XML is too verbose to be useful for describing this "execution tree structure",
+The reason why Hyperlambda was invented, was because XML is too verbose to be useful for describing this "execution tree structure",
 while JSON contains too much "unnecessary syntax". Hyperlambda however, perfectly balances the needs for Phosphorus Five, being a relational
-file format, allowing for describing the tree structure, which p5.lambda is evaluating, using its *[eval]* Active Event. In addition, Hyperlambda
+file format, allowing for describing the tree structure, which p5.lambda is evaluating, using its p5.lammbda construct - In addition, Hyperlambda
 is easily "typed", allowing for the type structure, the underlaying execution engine depends upon, to be preserved for values of nodes.
 
 Anyway, enough of the abstract, let's see it in action!
@@ -21,12 +22,16 @@ foo:int:5
 The above Hyperlambda, describes one node who's name is "foo". This node has a value, which is of type "int", and contains the value of "5".
 In addition, the "foo" node, has one child node, called "child-of-foo", that has a string value of "Its value!".
 
+For the record, the convention of documenting nodes in Hyperlambda, in these files, is by adding square brackets around them, such as this 
+shows; *[foo]*. We also usually make sure nodes are *italics*, except when it is obvious that we're talking about a node. From here, you will
+mostly see nodes shown like this; *[foo]*. Where the "foo" parts are their names.
+
 Notice, that all children of a node, is appended underneath the node, with two consecutive spaces in front of its name. The colon (:) separates
-the name of the node and its value. If you want to explicitly declare the value's type, you can do so by injecting an additional colon (:) 
+the name of the node, and its value. If you want to explicitly declare the value's type, you can do so by injecting an additional colon (:) 
 between the name and the value, as the Hyperlambda above shows. For then to put the "type declaration" between the two colons, like this ":int:" 
 to describe an integer.
 
-You can continue like this, as many levels inwards, as you wish. Below is a more complex tree structure.
+You can continue like this, inwards as many levels, as you wish. Below is a more complex tree structure.
 
 ```
 foo
@@ -35,7 +40,7 @@ foo
   child2-of-foo:Another value
 ```
 
-Above we have 4 nodes in total. "foo" has two children, and "child1-of-foo" has one child of its own. The "foo" node in the above example, 
+Above we have 4 nodes in total. *[foo]* has two children, and *[child1-of-foo]* has one child of its own. The *[foo]' node in the above example, 
 does not have a value at all, which means its value becomes "null". Notice how for most cases, the number of lines in a Hyperlambda file, 
 almost perfectly describes the number of nodes in total in your execution tree. Also notice the equivalent syntax of the above writte in XML.
 
@@ -73,7 +78,7 @@ foo:"Some string with a colon : in it"
 
 The above declares one node, with a string value, containing a colon inside of its value.
 
-Hyperlambda strings can also be escaped the same way you'd escape a C# string, using for instance "\r" and "\n" to signify CR and/or LF sequences.
+Hyperlambda strings, can also be escaped the same way you'd escape a C# string, using for instance "\r" and "\n" to signify CR and/or LF sequences.
 In addition, you can create "multiline strings", using the Hyperlambda equivalent of the "@" character notation from C#. Consider this code.
 
 ```
@@ -84,6 +89,9 @@ and here is the continuation of the string"
 The above Hyperlambda still only contains _one_ node. This node has a string literal, spanning multiple lines, where each newline automatically 
 becomes substituted with a CRLF sequence (\r\n). Notice that the CRLF sequence is substituted the same way, regardles of which underlaying
 platform you're using.
+
+When you read Hyperlambda, you can eexpect it to always be UTF8, and use both CR and LF as end of line delimiters. Regardless of what underlaying 
+platform you use.
 
 ### Types in Hyperlambda
 
@@ -109,10 +117,10 @@ foo2:string:thomas
 
 The above ":string:" part is actually redundant, since "string" is the default type, if your type declaration is omitted.
 
-All the different types in Hyperlambda, are documented, and declared, in the "p5.types" project. See the documentation for this project, for
+All the different types in Hyperlambda, are documented, and declared, in [p5.types](/plugins/p5.types/). See the documentation for this project, for
 a complete reference of all the types Hyperlambda supports. You can also easily create your own "type extensions" for the Hyperlambda parser, 
-by creating Active Event handlers, that parses from the string representation, to object representation, and vice versa, for your types,
-in for instance C#. To understand how to do this, use any one of the pre-existing types in "p5.types" as an example starting ground.
+by creating Active Event handlers, that parses from the string representation, to object representation, and vice versa. To understand how to do 
+this, use any one of the pre-existing types in "p5.types" as your starting ground. This would probably have to be done in C# though.
 
 Realize though, that in order to create your own "type extension", your type must somehow, support being serialized from object to string, 
 and vice versa.
@@ -133,7 +141,7 @@ The invocation of *[hyper2lambda]*, will convert the string value of the *[_hl]*
 of the value of *[_hl]*, will be appended as children to *[hyper2lambda]*. The second invocation, the one called *[lambda2hyper]*, will reverse 
 this process, and return the corresponding Hyperlambda, as the value of the *[lambda2hyper]* node, after invocation.
 
-Notice though, that conversion from Hyperlambda to lambda, will _REMOVE_ all comments and additional spacing, leaving nothing but the "raw nodes",
+Notice though, that conversion from Hyperlambda to lambda, will _remove_ all comments and additional spacing, leaving nothing but the "raw nodes",
 which are understood by the p5.lambda engine, as actual nodes. All comments and such, will be ignored, and lost during parsing. Try the code
 below, to understand how this affects your parsing.
 
@@ -152,7 +160,14 @@ lost during the translation.
 
 This is a conscious choice, for among other things, preserving bandwidth and CPU resources, when evaluating p5.lambda, and also transmitting
 p5.lambda over a network, etc. If you wish to keep comments and additional spacing, you will have to handle your Hyperlambda as Hyperlambda, and not
-transform it to p5.lambda, for then to return it to Hyperlambda again.
+transform it to p5.lambda, for then to re-create its originating Hyperlambda again.
+
+For the record, Hyperlambda, yet again, is the name of the file format. This file format, describes p5.lambda. Think of Hyperlambda as XML, and p5.lambda
+as its DOM (Document Object Model). The DOM is the result of parsing XML. p5.lambda is the result of parsing Hyperlambda.
+
+The evaluation engine of Phosphorus Five, exclusively understands p5.lambda, and knows nothing about Hyperlambda in fact. This project, is the only project,
+that in any ways, knows about the existence of Hyperlambda. If you wanted to, you could entirely change the underlaying file format of P5 to XML, by exchanging
+this project, with something that parses XML, through the same Active Events! BTW, don't do it! XML is not a good format for describing p5.lambda ...
 
 
 

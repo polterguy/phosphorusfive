@@ -33,3 +33,9 @@ TODO before release
 
 * Create some sort of "persistent login" (remember me functionality)
 
+* Make sure p5.data cannot access nodes from root or file nodes (minimum /*/* expressions)
+
+* Make sure the Hyperlisp CodeMirror editor uses the supplied JSON object for autocompletion, also to determine keywords
+
+* Consider documenting all Active Events by adding a [_dox] node, allowing consumers to invoke them with [add] trickery to retrieve dox.
+

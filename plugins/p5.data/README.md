@@ -1,22 +1,23 @@
-The memory based database in Phosphorus Five
+The Phosphorus Five database
 ===============
 
-p5.data wraps a memory based persistent database. It contains 4 Active Events.
+Phosphorus Five has its own database. This is a memory based persistent database, which is extremely fast. This project encapsulates that database. 
+It consists of 4 Active Events.
 
 * [insert-data] - Inserts new p5.lambda nodes into your database
-* [select-data] - Selects existing p5.lambda nodes from your database
-* [update-data] - Updates existing p5.lambda nodes in your database
+* [select-data] - Selects existing p5.lambda nodes/values/names from your database
+* [update-data] - Updates existing p5.lambda nodes/values/names in your database
 * [delete-data] - Deletes existing p5.lambda nodes from your database
 
 Together, they create a tree-based persistent, still memory based, storage for your p5.lambda objects. This means that you can put both "data" and "code" in
 it. It is relatively fast (obviously, since it is memory based), but the flipside, is that (obviously) it does not scale beyond whatever amount of memory you
 have in the machine that's running your Phosphorus Five installation.
 
-The "query language" you use to access items within it, is p5.lambda expressions, which is documented in the [p5.exp](/core/p5.exp/) project.
+The query language you use to access items within it, is p5.lambda expressions, which is documented in the [p5.exp](/core/p5.exp/) project.
 
 You can conceptualize p5.data in comparison to relational database systems (often SQL based), in that where a relational database is normally based upon "sets" or
-"tables" (2 dimensional matrixes with "rows" and "columns"), p5.data is based upon tree-structures graph objects, or "nodes". In such a regard, the p5.data database,
-consists of "3 dimensions", where traditional databases rarely have more than "2 dimensions", one might argue.
+"tables" (2 dimensional matrixes with "rows" and "columns") - p5.data is based upon tree-structures, graph objects, or "nodes". In such a regard, the p5.data database,
+consists of "3 dimensions", where traditional databases rarely have more than "2 dimensions".
 
 ## Inserting data [insert-data]
 
@@ -38,7 +39,8 @@ To select the item you inserted, you can use for instance the following code.
 select-data:x:/*/*/foo.my-object
 ```
 
-After you evaluate the above *[select-data]* lambda, assuming you previously used *[insert-data]* to insert the item, you will end up with the following result.
+After you evaluate the above *[select-data]* lambda, assuming you previously evaluated the above *[insert-data]* to insert the item, you will end 
+up with the following result.
 
 ```
 select-data
@@ -47,16 +49,16 @@ select-data
     address:Foobar Rd. 64
 ```
 
-Your ID (the ":guid:xxx" parts) will of course be different.
+The ID (the ":guid:xxx" parts) will of course be different for your system.
 
-Internally, the database creates its own file-structure, which by default should exist within your "/phosphorusfive/core/p5.webapp/db/" folder on disc. Though the exact
-folder, can be overridden in your web.config. If you open your db folder, you will see that it contains one or more folders, named "db0", "db1", etc. These folders 
+Internally, the database creates its own file-structure, which by default should exist within your "/core/p5.webapp/db/" folder on disc. Though the exact
+folder, can be overridden in your web.config. If you open your db folder, you will see that it contains one or more folders, named "/db0/", "/db1/", etc. These folders 
 again, contains one or more files, named "db0.hl", "db1.hl", etc. By default, your database will serialize maximum 32 objects into each file, and a maximum of 256
 files into each folder. So as your database grows, it will start creating more and more folders and files.
 
 Each file is in fact a simple Hyperlambda file, and can (in theory) be edited with Notepad or TextEdit if you wish. This simple trait of p5.data, makes it extremely
 easily understood, robust, and easy to fix, if corruption should occur somehow. However, as a general rule, you should not edit these files yourself, unless you stop
-your web-server before you start editing them. Let p5.data take care of its own file structure, unless you really have to edit them yourself.
+your web server, before you start editing them. Let p5.data take care of its own file structure, unless you really have to edit them yourself.
 
 Only during *[insert-data]*, *[update-data]* and *[delete-data]*, the p5.data needs to access your disc. During *[select-data]*, which should be the bulk of your 
 database Active Events, it never accesses your disc in any ways. Which makes it extremely fast for select data operations. In addition, due to the underlaying file
@@ -88,27 +90,44 @@ The above *[insert-data]* invocation, will insert three items, of different "typ
 after evaluating it, you will see that each item has its automatically generated ID returned, and nothing else.
 
 The objects you insert into your database, can be as deep and complex as you wish, containing any types Phosphorus Five supports, 
-through its p5.types project, or your own type conversion Active Events. You can also insert as many items as you wish, in one go. And 
-in fact, the above *[insert-data]* invocation, will only create one lock, so if you can, you should insert all "related items" at once. 
-To get away with as few locks as you can.
+through its [p5.types](/plugins/p5.types/) project, or your own type conversion Active Events. You can also insert as many items as you wish, in one go. And 
+in fact, the above *[insert-data]* invocation, will only create one lock, so if you can, you should insert all "related items" at once, to get away with as 
+few database locks as you can.
 
-If you wish, you can also supply an "explicit" ID of your items, by adding it as the "value" of each root child node beneath *[select-data]*. Your ID can also be
-any type P5 supports. However, the ID must be unique for your server. In fact, the CMS in System42, uses the URL as the ID of its database items, 
-which you can see in your database files, if you open them in some text editor.
+If you wish, you can also supply an "explicit" ID to *[insert-data]*, by adding it as the "value" of each node inserted. Your ID can also be
+any type P5 supports. However, the ID must be unique for your server. In fact, the CMS in System42, uses the URL as the ID of its *[p5.page]* items, 
+which you can see in your database, if you run the following Hyperlambda.
+
+```
+select-data:x:/*/*/p5.page
+```
+
+Below is an example of inserting items with an explicit ID.
+
+```
+insert-data
+  foo.my-item-type:some-ID-goes-here
+    name:John Doe
+  foo.my-item-type:some-OTHER-ID-goes-here
+    name:Jane Smith
+```
 
 ## [select-data] dissected
 
 To understand *[select-data]*, is to understand the internal structure for how items are stored in memory. Your database has one "root node", in addition to several 
-"file nodes". These nodes _should_ be ignored, which is why each expression starts out with two "children iterators" (`:x:/*/*`).
+"file nodes". These nodes _should_ be ignored, which is why all expressions starts out with two "children iterators" (`:x:/*/*`).
 
-After these two children iterators, you can supply any combination of iterators you wish. For instance, to select two of the three items we inserted above, you
+Notice also, that expressions supplied to the database Active Events, does not use the database Active Event invocation nodes, as the "identity node", but rather
+the database "root node", which is actually just a huge tree, or p5.lambda/Node object, containing all your database items.
+
+After the two initial children iterators, you can supply any combination of iterators you wish. For instance, to select two of the three items we inserted above, you
 could use something like this.
 
 ```
 select-data:x:/*/*/foo.my-type|/*/*/foo.some-third-type
 ```
 
-The above code, assumes some basic knowledge about how boolean algebraic expressions works. But basically, it selects all items having the name of "foo.my-type"
+The above code, assumes some basic knowledge about boolean algebraic expressions. But basically, it selects all items having the name of "foo.my-type"
 and all items having the name of "foo.some-other-type". Assuming you evaluated the insert-data example that inserted three items at once, your result will look
 something like this.
 
@@ -124,7 +143,7 @@ select-data
 ```
 
 You can (of course) use any expressions in p5.data as you can legally use in any other parts of P5, as long as you do not select further upwards than at least "two
-children from root". Meaning, starting out your expressions with for instance `:x:/*/*/... plus other iterators ...`.
+children nodes from root". Meaning, starting your expressions with for instance `:x:/*/*/... plus other iterators ...`.
 
 You can also select items from your database according to their IDs. However, since the automatically generated IDs are Guids, you need to type them as such,
 in your value iterators. Below is an example for you.
@@ -135,7 +154,7 @@ select-data:x:"/*/*/=:guid:9eb516b4-8a6e-4d8c-850d-834f2f184c24"
 ```
 
 Notice how I need to put my entire expression into a string literal. This is because my expression contains a colon (:), which is a special
-character in Hyperlambda, declaring where the name/type ends, and the value starts.
+character in Hyperlambda, declaring where the name and/or type ends, and the value starts.
 
 With *[select-data]*, you can also count items in your database. Consider this code for instance.
 
@@ -158,25 +177,30 @@ If you evaluate the above p5.lambda, you will see that it returns the number of 
 than one item of course. You can also of course delete items by their IDs, or use any other legal expressions, with boolean algebraic expressions, and any amount of 
 complexity you choose.
 
+You can also delete multiple items using *[delete-data]*, which of course will only create one lock on your database for you. Whatever expressions you
+can legally create through [p5.exp](/core/p5.exp/), you can use to delete data using *[delete-data]*. Example given below.
+
 ```
 delete-data:x:/*/*/~foo.
 ```
 
-You can also delete multiple items using *[delete-data]*, which of course will only create one lock on your database for you. Whatever expressions you
-can legally create through [p5.exp](/core/p5.exp/), you can use to delete data using *[delete-data]*.
-
 ## Updating data with [update-data]
 
-The *[update-data]* Active Event is probably the most complex one of all data events. This is because it allows to update any parts of your tree, 
+The *[update-data]* Active Event is probably the most complex of all data events. This is because it allows to update any parts of your tree, 
 any ways you see fit, including values of nodes, names of nodes, and even the nodes themselves. It takes a *[src]* argument, which can be replaced 
 with any Active Event invocation you wish. Let's first take a look at a traditional *[src]* invocation.
 
 ```
+// Inserting item to have something to update
 insert-data
   foo.test-update
     name:John Doe
+
+// This is our update invocation
 update-data:x:/*/*/foo.test-update/*/name?value
   src:Jane Smith
+
+// Selecting item to verify it was actually updated
 select-data:x:/*/*/foo.test-update
 ```
 
@@ -211,7 +235,7 @@ select-data:x:/*/*/foo.test-update
 The above code, uses the automatically generated ID for the item from my database. The guid needs to be replaced with the guid generated 
 by your system, for one of your items, if you wish to test this for yourself.
 
-You can also update multiple items, relatively according to their previous values, by using an Active Event source for your *[update-data]* invocations.
+You can also update multiple items, relatively, according to their previous values, by using an Active Event source for your *[update-data]* invocations.
 Imagine the following.
 
 ```
@@ -244,7 +268,16 @@ for another item in your database from before - Then an exception will be thrown
 
 If an exception occurs, during both insert, delete and update, then the entire batch of change will be rejected!
 
+## Big data sets
 
+p5.data is _not_ for humongous data sets. If you wish to handle huge data sets, you will have to use something else. At the time being, I am working on a MongoDB
+adapter, or plugin. Unfortunately, this project is still immature, and should not be used for anything but basic testing purposes. Finishing this project however,
+is high priority for me.
+
+Until then, you'll have to resort to your own data plugin for big data. Wrapping MSSQL, Oracle, or MongoDB for that matter yourselves, should probably be quite easy,
+due to the Active Event design pattern in P5.
+
+See an example of how you could create your own plugin [here](/samples/p5.active-event-sample-plugin/).
 
 
 

@@ -1,4 +1,4 @@
-p5.io, file IO in Phosphorus Five
+File IO in Phosphorus Five
 ========
 
 The p5.io library, and its Active Events, allows you to easily load, create, modify, and delete files, and folders in your system.
@@ -12,8 +12,10 @@ Also realize, that unless you are authorized to load, save, change, or delete a 
 be thrown. For instance, a user does not by default have access to files belonging to another user, existing within another user's "home" 
 folder. (e.g. /users/username/some-folder/)
 
-Notice also, that all file IO Active Events in p5.io, relies upon the type conversion, normally implemented in "p5.types", which
-again will use UTF8 exclusively, as its conversion encoding, when for instance saving files, and also loading files. This means that
+This is implemented in the [p5.io.authorization](/plugins/extras/p5.io.authorization/) project.
+
+Notice also, that all file IO Active Events in p5.io, relies upon the type conversion, normally implemented in [p5.types](/plugins/p5.types/), 
+which in turn will use UTF8 exclusively, as its conversion encoding, when for instance saving files, and also loading files. This means that
 all files created, using p5.io, will be created as UTF8 files. In addition, all files loaded with p5.io, will be assumed to be encoded as
 UTF8. This is true for all text files, however, binary data can still be saved as such.
 
@@ -21,13 +23,14 @@ In general, at the time of this writing, p5.io exclusively support UTF8 text fil
 
 All Active Events in p5.io, will also automatically substitute a path, with "/users/logged-in-username" if it starts with "~". For instance, 
 if you are logged in as username "root", then "~/documents/foo.txt" will unroll to "/users/root/documents/foo.txt". This allows you to
-transparently refer to files in a user's folder as "~/something.txt".
+transparently refer to files in a user's folder as "~/something.txt". This is the only exception to the rule of that any paths must start with 
+a slash "/".
 
 Also notice, that although you _can_ load and save binary data with p5.io - Hyperlambda and p5.lambda, is not in general terms, very adequate
 for manipulating binary data. This means that you can load binary blob data, but for the most parts, the only intelligent thing you can do
 with it, is to base64 encode this data, and/or, pass it into other Active Events, that knows how to handle your binary data.
 
-## How to handle files in your system
+## Handling files in your system
 
 Below you can find the documentation for how to handle files in your system.
 
@@ -39,10 +42,10 @@ To load a file, simply use the *[load-file]* Active Event. An example of this ev
 load-file:/system42/application-startup.hl
 ```
 
-The above invocation, will load the System42 "startup file" for you. Notice that this is a Hyperlambda file, which the *[load-file]* Active
-Event will automatically determine, and hence parse the file for you, to a p5.lambda structure. If you do not wish to automatically
-parse the file, but rather load is the file "raw", as a piece of text, not transforming it into a p5.lambda object, you must add the
-argument *[convert]*, and set its value to "false". An example is shown below.
+The above invocation, will load System42's startup file for you. Notice that this is a Hyperlambda file, which the *[load-file]* Active
+Event will automatically determine, and hence parse the file for you automatically, to become a p5.lambda structure. If you do not wish to 
+automatically parse the file, but rather load is the file "raw", as a piece of text, not transforming it into a p5.lambda object, you must 
+add the argument *[convert]*, and set its value to "false". An example is shown below.
 
 ```
 load-file:/system42/application-startup.hl
@@ -89,18 +92,18 @@ Notice, if you try to load a file that does not exist, an exception will be thro
 The *[save-file]* Active Event, does the exact opposite of the *[load-file]* event. Try the following code.
 
 ```
-save-file:~/foo.txt
-  src:@"Hello there stranger!
+save-file:~/foo.md
+  src:@"Hello there file system!
 =======
 
-I am a newly created file! :)"
+I am a newly created markdown file!"
 ```
 
-After evaluating the above Hyperlambda, a new file will exist within your main "~/" user's folder, called "foo.txt".
+After evaluating the above Hyperlambda, a new file will exist within your main "~/" user's folder, called "foo.md".
 
 Whatever argument you pass into the *[src]* node, will somehow be converted into a text string, or a single binary piece of blob, and
-flushed into the file path given as the value of *[save-file]*. This allows you to create a new file, or overwrite an existing file,
-consisting of the results of an expression, such as the following is an example of.
+flushed into the file path given as the value of *[save-file]*. This allows you to create a new file, or overwrite an existing file.
+You can also use expression in your *[src]*, such as the following is an example of.
 
 ```
 _data
@@ -112,13 +115,13 @@ _data
     first:John
     last:Doe
 save-file:~/foo.hl
-  src:x:/../*/_data/*/people
+  src:x:/../*/_data/*
 load-file:~/foo.hl
 ```
 
 The *[load-file]* invocation above, is only there to show the results of your newly created file, and illustrates how only the results of
 the expression you pass into your *[src]* node, are saved to disc. This allows you to save sub-sections of your trees, and even combine
-multiple pieces of text, and/or p5.lambda, and save the combined results to disc.
+multiple pieces of text, and/or p5.lambda sub-trees, and save the combined results to disc.
 
 You can also have a "static" source, containing the nodes as children of *[src]*, such as the following is an example of.
 
@@ -156,12 +159,12 @@ _files
 save-file:x:/-/*?value
   eval:x:/./+
 _get-content
-  return:x:/../*/_dn/#/*/content?value
+  return:x:/../*/_dn/#/*?value
 ```
 
-What the above lambda object does, is to iterate each filename given in the *[name]* nodes beneath *[_files]*, for then to invoke *[eval]*,
-once for each destination, passing in the *[_dn]* being relative for each destination. Then our *[_get-content]* lambda object,
-returns a relative source, expected to be a *[content]* node, beneath each filepath.
+What the above lambda object does, is to iterate each filename given in value of the *[name]* nodes beneath *[_files]*, for then to invoke *[eval]*,
+once for each destination, passing in the *[_dn]*, being relative for each destination. Then our *[_get-content]* lambda object, returns a relative 
+source, expected to be the child node(s) beneath each filepath nodes.
 
 This "Ninja trick" allows you to save multiple files, in one go.
 
@@ -427,8 +430,8 @@ loaded this way. The end result, is that all files in some specific folder is au
 System42 contains helper Active Events, both for evaluating single Hyperlambda files, in addition to recursively evaluating all Hyperlambda
 files within some specified folder. These are listed below.
 
-* sys42.execute-hyper-file - Evaluates one or more Hyperlambda files. Pass in either a constant, or an expression leading to one or more files.
-* sys42.execute-hyper-folder - Evaluates all Hyperlambda files within one or more specified folders.
+* sys42.execute-lambda-file - Evaluates one or more Hyperlambda files. Pass in either a constant, or an expression leading to one or more files.
+* sys42.execute-lambda-folder - Evaluates all Hyperlambda files within one or more specified folders.
 
 #### Changing the read-only state of a file
 
