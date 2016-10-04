@@ -1,7 +1,9 @@
 
 /*
- * Responsible for loading up the user interface. Called by the framework when the UI is needed.
- * Notice that the URL of the page is the value of the [p5.page] object in the database 
+ * Responsible for loading up the user interface. 
+ * Invoked by the core P5 framework when the UI is needed.
+ *
+ * Argument expected to by supplied is [_url], being the URL of the page requested.
  */
 create-event:p5.web.load-ui
 
@@ -13,16 +15,16 @@ create-event:p5.web.load-ui
     =:int:0
 
     /*
-     * There are no users in system, makins sure we run through the installation process.
+     * There are no users in system, making sure we run through the installation process.
      */
     sys42.execute-lisp-file:/system42/installation/install-server.hl
   else
 
     /*
-     * Figuring out which page to load according to argument supplied in [_form].
+     * Figuring out which page to load according to argument supplied in [_url].
      */
     select-data:x:@"/*/*/p5.page/""={0}"""
-      :x:/../*/_form?value
+      :x:/../*/_url?value
 
     /*
      * Checking if page exists, and if not, loading our "page not found" special page.

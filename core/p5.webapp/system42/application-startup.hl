@@ -1,88 +1,112 @@
 
 /*
- * Creates the Active Event that allows you to execute Hyperlisp p5 lambda files. The Hyperlisp
- * file(s) you wish to execute is given as value of [sys42.execute-lisp-file], and all nodes benath
- * [sys42.execute-lisp-file] when invoked, will be passed into your p5 lambda file execution. File 
- * to exeute can be given either as an expression, or a constant. Multiple files can be executed at 
- * the same time, by providing an expression that leads to multiple results
+ * File responsible for initializing System42.
+ * Invoked by the P5 core, due to setting in web.config.
+ *
+ * Creates two helper Active Events, before evaluating all startup scripts.
  */
-create-event:sys42.execute-lisp-file
-
-  // loading up all files given as arguments
-  load-file:x:/../*/_arg?value
-
-  // Adding everything as arguments to file evaluation that we're given ourselves as arguments
-  add:x:/+
-    src:x:/../*(!/load-file!/add!/eval!/_arg!/!/insert-before!/set)
-
-  // Executing results of [load-file], now possibly with arguments inside of eval
-  eval:x:/-2/*
-  insert-before:x:
-    src:x:/./-/*
-  set:x:/..?value
-    src:x:/../*/eval?value
 
 
 /*
- * Executes all files within given directory recursively, assuming they're Hyperlisp p5 lambda 
- * files. The directory you wish to execute the files within, is given through the value of the 
- * [sys42.execute-lisp-folder] node, which might be either an expression or a constant. You can
- * pass in multiple folders by using expressions as an argument.
+ * Creates the Active Event that allows you to execute Hyperlisp p5 lambda files. 
+ *
+ * The Hyperlisp file(s) you wish to execute is given as value of [sys42.execute-lisp-file], and all nodes benath
+ * [sys42.execute-lisp-file] when invoked, will be passed into your p5 lambda file execution.
+ *
+ * File to exeute can be given either as an expression, or a constant. Multiple files can be executed at the same time, 
+ * by providing an expression that leads to multiple results.
+ */
+create-event:sys42.execute-lisp-file
+
+  /*
+   * Loading up all files given as [_arg] arguments.
+   */
+  load-file:x:/../*/_arg?value
+
+  /*
+   * Forwarding all arguments given to evaluation of file.
+   */
+  add:x:/+
+    src:x:/../*(!/load-file!/add!/eval!/_arg!/!/insert-before!/set)
+
+  /*
+   * Evaluating [load-file], which now should contains the arguments passed in.
+   */
+  eval:x:/-2/*
+
+  /*
+   * Returning the results of the above evaluation to caller.
+   */
+  insert-before:x:
+    src:x:/./-/*
+  set:x:/..?value
+    src:x:/./-2/eval?value
+
+
+/*
+ * Evaluates all Hyperlisp files within the specified directory(ies) recursively.
+ *
+ * The directory you wish to evaluate, is given as the value of the [sys42.execute-lisp-folder] node, 
+ * which might be either an expression, or a constant. You can pass in multiple folders in one go, 
+ * by using an expression leading to multiple folders as your argument.
  */
 create-event:sys42.execute-lisp-folder
 
-  // listing all files in directories we're given
+  /*
+   * Listing all Hyperlisp files in directories we're given.
+   */
   list-files:x:/../*/_arg?value
     filter:hl
 
-  // executing all files listed from that folder
+  /*
+   * Evaluating all Hyperlisp files from that folder.
+   */
   sys42.execute-lisp-file:x:/-/*?name
 
-  // listing all folders in all folders this Active Event is given
+  /*
+   * Listing all folders recursively, within the folder(s) we've just evaluated.
+   */
   list-folders:x:/../*/_arg?value
 
-  // if above [list-folder] could find folders, we recursively invoke self
+  /*
+   * If the above [list-folder] gave us any result(s), we recursively invoke self.
+   */
   if:x:/-/*
     sys42.execute-lisp-folder:x:/./-/*?name
 
 
 /*
- * After creation of the above Active Events, this file will execute all
- * files in the "system42/startup" folder recursively, by using the Active
- * Events above.
+ * After creating the above Active Events, this file will execute all files in the "/system42/startup/" 
+ * folder recursively, by using the Active Events above.
  */
 sys42.execute-lisp-folder:/system42/startup/
 
 
 /*
- * Then it will execute all application specific startup files, which means any files directly inside any
- * application folder, who's name is "startup.hl"
+ * Then it will execute all application and component specific startup files, which means any files directly 
+ * inside any application/component folder, who's name is "startup.hl".
  */
-_app-startup
-list-folders:/system42/apps/
+_paths
+  /system42/apps/
+  /system42/components/
+_startup
+list-folders:x:/../*/_paths/*?name
 for-each:x:/-/*?name
+
+  /*
+   * Checking if "startup.hl" file exists within currently iterated folder,
+   * and if so, adding it to [_startup] such that we can evaluate it later.
+   */
   if
     file-exist:{0}startup.hl
       :x:/..for-each/*/_dp?value
-    add:x:/../*/_app-startup
+    add:x:/../*/_startup
       src:{0}startup.hl
         :x:/..for-each/*/_dp?value
-sys42.execute-lisp-file:x:/../*/_app-startup/*?name
-
 
 /*
- * Then it will execute all components specific startup files, which means any files directly inside any
- * components folder, who's name is "startup.hl"
+ * Evaluating all files in [_startup] node.
  */
-_components-startup
-list-folders:/system42/components/
-for-each:x:/-/*?name
-  if
-    file-exist:{0}startup.hl
-      :x:/..for-each/*/_dp?value
-    add:x:/../*/_components-startup
-      src:{0}startup.hl
-        :x:/..for-each/*/_dp?value
-sys42.execute-lisp-file:x:/../*/_components-startup/*?name
+sys42.execute-lisp-file:x:/../*/_startup/*?name
 
 
