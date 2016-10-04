@@ -81,8 +81,8 @@ Some of them are mentioned below.
 
 * [sys42.get-event] - Returns the p5.lambda code for one or more dynamically created Active Events
 * [sys42.get-widget] - Returns all p5.lambda associated with a widget, including events
-* [sys42.execute-lisp-file] - Executes one or more Hyperlisp files
-* [sys42.execute-lisp-folder] - Executes all Hyperlisp files in a folder, recursively
+* [sys42.execute-hyper-file] - Executes one or more Hyperlisp files
+* [sys42.execute-hyper-folder] - Executes all Hyperlisp files in a folder, recursively
 * [sys42.include-default-javascript-files] - Which includes jQuery and Bootstrap's JavaScript files for you
 * [sys42.include-default-stylesheet-files] - Which includes Bootstrap's CSS files, and the "default" CSS files for you
 * [sys42.empty-user-tmp-folder] - Which empties a user's "temp" folder. Invoked when a user logs out

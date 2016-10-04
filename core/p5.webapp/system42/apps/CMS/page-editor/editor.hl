@@ -479,8 +479,8 @@ Among other things, your page becomes inacessible on tablets and phones!"
  * Loading "specialized editor", depending upon which page type we're editing.
  */
 sys42.cms.get-currently-edited-page
-add:x:/../*/sys42.execute-lisp-file
+add:x:/../*/sys42.execute-hyper-file
   src:"_id:{0}"
     :x:/../*/sys42.cms.get-currently-edited-page?value
-sys42.execute-lisp-file:/system42/apps/CMS/page-editor/specialized-editors/{0}.hl
+sys42.execute-hyper-file:/system42/apps/CMS/page-editor/specialized-editors/{0}.hl
   :x:/../*/_editor?value

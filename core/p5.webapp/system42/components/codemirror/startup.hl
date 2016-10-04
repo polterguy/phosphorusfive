@@ -4,4 +4,4 @@
  * Evaluates all Hyperlisp files in the "startup" folder.
  */
 
-sys42.execute-lisp-folder:/system42/components/codemirror/startup/
+sys42.execute-hyper-folder:/system42/components/codemirror/startup/

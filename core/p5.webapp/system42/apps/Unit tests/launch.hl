@@ -88,7 +88,7 @@ apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
                 add:x:/+
                   src:"_widget:{0}"
                     :x:/../*/_event?value
-                sys42.execute-lisp-file:/system42/apps/Unit tests/edit-unit-test.hl
+                sys42.execute-hyper-file:/system42/apps/Unit tests/edit-unit-test.hl
                   {_file}:x:?name
 
         /*
@@ -119,7 +119,7 @@ apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
                 {_file}:x:?name
                 add:x:/+
                   src:x:@"/../*/"":regex:/^_/"""
-                sys42.execute-lisp-file:/system42/apps/Unit tests/single-test-button-clicked.hl
+                sys42.execute-hyper-file:/system42/apps/Unit tests/single-test-button-clicked.hl
 
 
 /*
@@ -160,7 +160,7 @@ create-widget:unit-test-datagrid
                      */
                     add:x:/+
                       src:x:/../*/_event
-                    sys42.execute-lisp-file:/system42/apps/Unit tests/evaluate-all.hl
+                    sys42.execute-hyper-file:/system42/apps/Unit tests/evaluate-all.hl
     tbody
       widgets
 
@@ -182,7 +182,7 @@ create-widget:unit-test-bottom-toolbar
       innerValue:+
       title:Create new unit test file
       onclick
-        sys42.execute-lisp-file:/system42/apps/Unit tests/create-new-test-file.hl
+        sys42.execute-hyper-file:/system42/apps/Unit tests/create-new-test-file.hl
 
 
     /*
@@ -200,7 +200,7 @@ create-widget:unit-test-bottom-toolbar
          */
         delete-widget:unit-test-bottom-toolbar
         delete-widget:unit-test-datagrid
-        sys42.execute-lisp-file:/system42/apps/Unit tests/launch.hl
+        sys42.execute-hyper-file:/system42/apps/Unit tests/launch.hl
 
 
     /*
@@ -215,4 +215,4 @@ create-widget:unit-test-bottom-toolbar
         /*
          * Simply evaluates the "show-coverage.hl" file
          */
-        sys42.execute-lisp-file:/system42/apps/Unit tests/show-coverage.hl
+        sys42.execute-hyper-file:/system42/apps/Unit tests/show-coverage.hl

@@ -19,7 +19,7 @@ create-widget:set-server-salt
      */
     literal
       element:blockquote
-      innerValue:@"<em>""Welcome to System42, I am Marvin. The first thing you will have to do, is to create a 
+      innerValue:@"<em>""Welcome to System42. The first thing you will have to do, is to create a 
 <strong>random server salt</strong>.""</em>"
 
 
@@ -45,5 +45,5 @@ create-widget:set-server-salt
               value
             p5.security.set-server-salt:x:/../*/get-widget-property/*/*?value
             delete-widget:set-server-salt
-            sys42.execute-lisp-file:/system42/installation/set-root-password.hl
+            sys42.execute-hyper-file:/system42/installation/set-root-password.hl
 

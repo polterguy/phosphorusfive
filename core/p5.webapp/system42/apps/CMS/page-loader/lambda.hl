@@ -39,7 +39,7 @@ else
   /*
    * Loading page that shows user does not have access to object.
    */
-  sys42.execute-lisp-file:/system42/apps/CMS/page-loader/special-page/no-access.hl
+  sys42.execute-hyper-file:/system42/apps/CMS/page-loader/special-page/no-access.hl
     _template:/system42/apps/CMS/page-templates/default.hl
 
 

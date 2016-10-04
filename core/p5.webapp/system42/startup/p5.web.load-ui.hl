@@ -17,7 +17,7 @@ create-event:p5.web.load-ui
     /*
      * There are no users in system, making sure we run through the installation process.
      */
-    sys42.execute-lisp-file:/system42/installation/install-server.hl
+    sys42.execute-hyper-file:/system42/installation/install-server.hl
   else
 
     /*
@@ -32,7 +32,7 @@ create-event:p5.web.load-ui
     if:x:/-/*?count
       =:int:0
 
-      sys42.execute-lisp-file:/system42/apps/CMS/page-loader/special-page/not-found.hl
+      sys42.execute-hyper-file:/system42/apps/CMS/page-loader/special-page/not-found.hl
         _template:/system42/apps/CMS/page-templates/default.hl
     else
 
@@ -51,5 +51,5 @@ create-event:p5.web.load-ui
       set:x:/+?value
         src:/system42/apps/CMS/page-loader/{0}.hl
           :x:/..else/..else/*/select-data/*/*/type?value
-      sys42.execute-lisp-file
+      sys42.execute-hyper-file
         _args

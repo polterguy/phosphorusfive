@@ -134,7 +134,7 @@ create-widget:cms-page-editor
                   get-widget-property:cms-create-new-page
                     value
                   eval-x:x:/+/*
-                  sys42.execute-lisp-file:/system42/apps/CMS/page-editor/create-new-page.hl
+                  sys42.execute-hyper-file:/system42/apps/CMS/page-editor/create-new-page.hl
                     _type:x:/../*/get-widget-property/*/*?value
                     _template:x:/../*/get-widget-property/*/*?value
 
@@ -356,6 +356,6 @@ create-widget:cms-page-editor
              * letting it load up the "specialized editor".
              */
             eval-x:x:/+/*
-            sys42.execute-lisp-file:/system42/apps/CMS/page-editor/editor.hl
+            sys42.execute-hyper-file:/system42/apps/CMS/page-editor/editor.hl
               _editor:x:/..if/*/select-data/*?value
               _id:x:/../*/sys42.cms.get-currently-edited-page?value

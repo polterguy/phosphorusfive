@@ -427,8 +427,8 @@ loaded this way. The end result, is that all files in some specific folder is au
 System42 contains helper Active Events, both for evaluating single Hyperlisp files, in addition to recursively evaluating all Hyperlisp
 files within some specified folder. These are listed below.
 
-* sys42.execute-lisp-file - Evaluates one or more Hyperlisp files. Pass in either a constant, or an expression leading to one or more files.
-* sys42.execute-lisp-folder - Evaluates all Hyperlisp files within one or more specified folders.
+* sys42.execute-hyper-file - Evaluates one or more Hyperlisp files. Pass in either a constant, or an expression leading to one or more files.
+* sys42.execute-hyper-folder - Evaluates all Hyperlisp files within one or more specified folders.
 
 #### Changing the read-only state of a file
 

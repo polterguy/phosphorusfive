@@ -50,4 +50,4 @@ create-widget:template-root
 /*
  * Creating our menu
  */
-sys42.execute-lisp-file:/system42/apps/CMS/page-templates/common/create-menu.hl
+sys42.execute-hyper-file:/system42/apps/CMS/page-templates/common/create-menu.hl
