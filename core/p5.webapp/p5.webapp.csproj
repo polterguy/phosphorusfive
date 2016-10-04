@@ -285,7 +285,6 @@
     <Content Include="system42\apps\README.md" />
     <Content Include="system42\apps\CMS\initial-pages\1-landing-page.hl" />
     <Content Include="system42\apps\CMS\initial-pages\2-app-loader.hl" />
-    <Content Include="system42\apps\CMS\initial-pages\3-about.hl" />
     <Content Include="system42\apps\CMS\launch.hl" />
     <Content Include="system42\apps\CMS\page-editor\editor.hl" />
     <Content Include="system42\apps\CMS\page-editor\specialized-editors\html.hl" />
