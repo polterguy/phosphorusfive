@@ -64,7 +64,7 @@ namespace p5
                 // Execute our "startup file", if there is one defined
                 var appStartupFiles = context.Raise (
                     ".get-config-setting",
-                    new Node ("", "p5.webapp.application-startup-file")) [0].Get<string>(context);
+                    new Node ("", ".p5.webapp.application-startup-file")) [0].Get<string>(context);
                 if (!string.IsNullOrEmpty (appStartupFiles)) {
 
                     // There is an application-startup-file declared in web.config, executing it as a Hyperlambda file
@@ -73,7 +73,7 @@ namespace p5
             }
 
             /*
-             * Rewrites path to support "URL rewriting"
+             * Rewrites path to support virtual URLs
              */
             protected void Application_BeginRequest (object sender, EventArgs e)
             {
@@ -119,8 +119,8 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-default-context-role")]
-            private static void p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
+            [ActiveEvent (Name = ".p5.security.get-default-context-role")]
+            private static void _p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.DefaultContextRole;
@@ -131,8 +131,8 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-default-context-username")]
-            private static void p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
+            [ActiveEvent (Name = ".p5.security.get-default-context-username")]
+            private static void _p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.DefaultContextUsername;

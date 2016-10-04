@@ -435,7 +435,7 @@ namespace p5.security.helpers
             }
 
             // Making sure default role is added
-            string defaultRole = context.Raise ("p5.security.get-default-context-role").Get<string> (context);
+            string defaultRole = context.Raise (".p5.security.get-default-context-role").Get<string> (context);
             if (!string.IsNullOrEmpty(defaultRole)) {
 
                 // There exist a default role, checking if it's already added
@@ -622,8 +622,8 @@ namespace p5.security.helpers
         private static ApplicationContext.ContextTicket CreateDefaultTicket (ApplicationContext context)
         {
             return new ApplicationContext.ContextTicket (
-                context.Raise ("p5.security.get-default-context-username").Get<string> (context), 
-                context.Raise ("p5.security.get-default-context-role").Get<string> (context), 
+                context.Raise (".p5.security.get-default-context-username").Get<string> (context), 
+                context.Raise (".p5.security.get-default-context-role").Get<string> (context), 
                 true);
         }
 

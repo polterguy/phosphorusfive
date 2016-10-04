@@ -201,7 +201,7 @@ core/p5.webapp/users/*
 **/.DS_Store
 
 #auth file
-core/p5.webapp/auth
+core/p5.webapp/auth.hl
 
 #common files
 core/p5.webapp/common/public/*

@@ -23,7 +23,7 @@ create-literal-widget
 
 To run the CMS, you need to be logged in as "root".
 
-When you create a page, it is stored in the [p5.data](/plugins/extras/p5.data/) database as a *[p5.page]* object.
+When you create a page, it is stored in the [p5.data](/plugins/p5.data/) database as a *[p5.page]* object.
 
 You can set several properties to your pages, such as their virtual URL, Name, which template to use, and so on. By default, System42's 
 CMS comes with a handful of pre-defined templates, allowing you to create pages with a navbar navigation menu, a completely "empty" 

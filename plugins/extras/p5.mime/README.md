@@ -4,9 +4,7 @@ Parsing and creating MIME messages in Phosphorus Five
 MIME stands for "Multi-purpose Internet Message Exchange", and is usually associated with email. However, in Phosphorus Five, there exists
 many other use cases for MIME. Among other things, you can use them as the basis for web service invocations, from one server to another.
 
-This allows you to use the PGP cryptography features of MIME, when invoking web services, or using MIME for any other purpose. If you
-define a "marvinPgpKey" and password in your app's config file for instance, then the "auth" file (file containing usernames and hashed passswords, etc),
-will be encrypted as a MIME message, ussing PGP for encryption.
+This allows you to use the PGP cryptography features of MIME, when invoking web services, or using MIME for any other purpose.
 
 ## Creating your first MIME message
 

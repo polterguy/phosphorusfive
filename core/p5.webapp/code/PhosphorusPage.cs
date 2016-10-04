@@ -60,7 +60,7 @@ namespace p5.webapp.code
 
         #endregion
 
-        #region [ -- Page value Active Events -- ]
+        #region [ -- Page specific Active Events -- ]
 
         /// <summary>
         ///     Sets one or more page object(s)

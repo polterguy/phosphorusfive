@@ -142,7 +142,7 @@ namespace p5.ajax
                 Manager = new Manager (this);
 
                 // Retrieving viewstate entries per session
-                ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings ["p5.webapp.viewstate-per-session-entries"] ?? "5");
+                ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings [".p5.webapp.viewstate-per-session-entries"] ?? "5");
 
                 base.OnPreInit (e);
             }

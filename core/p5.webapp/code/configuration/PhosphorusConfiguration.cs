@@ -49,7 +49,7 @@ namespace p5.webapp.code.configuration
         ///     Gets the path to the file on disc that is used for authenticating and authorizing users
         /// </summary>
         /// <value>Path to auth file</value>
-        [ConfigurationProperty ("authFile", IsRequired = false, DefaultValue = "~/auth")]
+        [ConfigurationProperty ("authFile", IsRequired = false, DefaultValue = "~/auth.hl")]
         public string AuthFile
         {
             get { return this ["authFile"] as string; }

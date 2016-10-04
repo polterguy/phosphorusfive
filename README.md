@@ -82,7 +82,7 @@ System42 is really just a folder within the "/core/p5.webapp/" folder in Phospho
 is a use-case for the C# Active Events in Phosphorus Five, showing the capability of P5. Secondly, it is a relatively complete CMS 
 by itself, and could probably be used as the basis for a CMS for your website.
 
-If you do not wish to use System42, simply delete it, and modify your web.config file, to invoke a different "p5.webapp.application-startup-file" 
+If you do not wish to use System42, simply delete it, and modify your web.config file, to invoke a different ".p5.webapp.application-startup-file" 
 during startup. This would give you a completely clean install, with zero overhead, allowing you to entirely create your own 
 front-end/back-end as you see fit.
 

@@ -59,7 +59,7 @@ sys42.list-app-settings
 ```
 
 These Active Events combined, creates a nifty shortcut for storing application specific settings and data.
-Internally it relies upon [pd.data](/plugins/extras/p5.data/), which means it is _not_ a general storage for 
+Internally it relies upon [pd.data](/plugins/p5.data/), which means it is _not_ a general storage for 
 _all_ data in your application, since p5.data is a memory based database storage. However, for the smaller
 settings you've got in your app, these Active Events provides an excellent shortcut for you to store "settings".
 

@@ -77,7 +77,7 @@ extendible, such that you can create your own tests, and plug them into the exis
 ### Rolling your own from scratch
 
 If you wish to use Phosphorus Five as a stand alone framework, you should delete the entire System42 folder, 
-and modify the "p5.webapp.application-startup-file" setting in your web.config, beneath your p5.webapp folder. 
+and modify the ".p5.webapp.application-startup-file" setting in your web.config, beneath your p5.webapp folder. 
 This allows you to create web apps from scratch, having complete control over every aspect of your systems.
 
 However, you are probably better off simply deleting the apps and components you do not want to use, since 

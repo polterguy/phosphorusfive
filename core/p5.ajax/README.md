@@ -3,13 +3,13 @@ A Managed Ajax library for ASP.NET and C#
 
 This project contains the main Ajax library for Phosphorus Five. This Ajax library can be consumed
 either stand alone, in any ASP.NET Web Forms application, since its controls inherit from
-_System.Web.UI.Control_ - Or indirectly, through using the [p5.web library](/plugins/extras/p5.web/), 
+_System.Web.UI.Control_ - Or indirectly, through using the [p5.web library](/plugins/p5.web/), 
 allowing you to create controls with Active Events, using for instance Hyperlambda as your programming 
 language.
 
 In our documentation here, we will assume some C# knowledge, and create our examples, as "pure" ASP.NET 
 examples. If you wish to see it further abstracted, the way you'd probably normally use it, in combination 
-with P5, then I encourage you to rather check out the documentation for [p5.web](/plugins/extras/p5.web/).
+with P5, then I encourage you to rather check out the documentation for [p5.web](/plugins/p5.web/).
 
 ## The trinity of widgets
 
@@ -228,7 +228,7 @@ and start your debugger.
 
 ## Epilogue
 
-The above traits of p5.ajax, meaning that it keeps its state, is a perfect match for [p5.web](/plugins/extras/p5.web/).
+The above traits of p5.ajax, meaning that it keeps its state, is a perfect match for [p5.web](/plugins/p5.web/).
 This allows you to simply "declare" your widget hierarchy, for then to in your own server side events, modify
 any widget's state, including adding controls (widgets) to your page. Which results in a ridiculously simple
 to understand development model, without compromising power in any ways.
@@ -245,7 +245,7 @@ A testimonial towards this trait, is the fact of that even though p5.ajax depend
 built on top of the "ASP.NET Page Life cycle", you never even once have to worry about this, and simply add/remove/change
 whatever you wish, in which ever server-side event you feel for doing such.
 
-When combining this with [p5.lambda](/plugins/p5.lambda/) and [p5.web](/plugins/extras/p5.web/), development of really
+When combining this with [p5.lambda](/plugins/p5.lambda/) and [p5.web](/plugins/p5.web/), development of really
 rich UI and UX apps becomes so easy, that you would highly likely be very pleasently surprised as you dive into it.
 
 

@@ -24,21 +24,21 @@ namespace p5.events
         [ActiveEvent (Name = ".get-config-setting")]
         public static void get_config_setting (ApplicationContext context, ActiveEventArgs e)
         {
-            // House cleaning
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            XUtil.GetCollection (context, e.Args, delegate (string key) {
+                return ConfigurationManager.AppSettings[key];
+            }, e.Name.StartsWith ("."));
+        }
 
-                // Iterating through all settings to retrieve, adding setting to returned values
-                foreach (var idxName in XUtil.Iterate<string> (context, e.Args)) {
-
-                    // Making sure this is not a "protected setting", unless invoker was "native"
-                    // Hint; Lambda cannot invoke Active Events that starts with an underscore (_)
-                    if (!e.Name.StartsWith (".") && idxName.StartsWith ("."))
-                        throw new LambdaException ("Caller tried to access protected config setting in [get-config-setting]", e.Args, context);
-
-                    // Setting was not protected (did not start with an "_"), or caller was natively invoking this Active Event
-                    e.Args.Add (idxName, ConfigurationManager.AppSettings [idxName]);
-                }
-            }
+        /// <summary>
+        ///     Retrieves an app.config/web.config setting
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "list-config-settings")]
+        [ActiveEvent (Name = ".list-config-settings")]
+        public static void list_config_settings (ApplicationContext context, ActiveEventArgs e)
+        {
+            XUtil.ListCollection (context, e.Args, ConfigurationManager.AppSettings.AllKeys, e.Name.StartsWith ("."));
         }
     }
 }

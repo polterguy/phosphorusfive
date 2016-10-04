@@ -172,21 +172,17 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\..\plugins\extras\p5.data\p5.data.csproj">
-      <Project>{ca83a3ed-bd5d-4557-aa1b-a7c04abd4d4f}</Project>
-      <Name>p5.data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\extras\p5.threading\p5.threading.csproj">
       <Project>{ef65c1fb-fcc8-43f0-90ac-39da931268e4}</Project>
       <Name>p5.threading</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\extras\p5.web\p5.web.csproj">
-      <Project>{0f68bfa7-1cf7-4737-9058-ced4a9ed3427}</Project>
-      <Name>p5.web</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.config\p5.config.csproj">
       <Project>{f27d30f1-86c0-4b44-8108-b3049bc94cec}</Project>
       <Name>p5.config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.data\p5.data.csproj">
+      <Project>{ca83a3ed-bd5d-4557-aa1b-a7c04abd4d4f}</Project>
+      <Name>p5.data</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.events\p5.events.csproj">
       <Project>{8eb5fdea-d073-4147-ae65-397a01b463df}</Project>
@@ -199,6 +195,10 @@
     <ProjectReference Include="..\..\plugins\p5.strings\p5.strings.csproj">
       <Project>{8eb5fdea-d073-4147-ae65-376a03b463da}</Project>
       <Name>p5.strings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.web\p5.web.csproj">
+      <Project>{0f68bfa7-1cf7-4737-9058-ced4a9ed3427}</Project>
+      <Name>p5.web</Name>
     </ProjectReference>
     <ProjectReference Include="..\p5.ajax\p5.ajax.csproj">
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
