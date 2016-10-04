@@ -6,41 +6,46 @@
 create-event:p5.web.load-ui
 
   /* 
-   * Checking if there are no users in system, at which case, user must go through 
-   * installation process.
+   * Checking if there are no users in system, at which case, user must go through installation process.
    */
   list-users
   if:x:/-/*?count
-    <:int:1
+    =:int:0
 
-    // Root password is null, or there are less than two user in system, and logged in user is root
-    // Making sure we go through installation process, to finish setup of system
+    /*
+     * There are no users in system, makins sure we run through the installation process.
+     */
     sys42.execute-lisp-file:/system42/installation/install-server.hl
   else
 
-    // Figuring out which page to load according to argument supplied in [_form]
-    select-data:x:/*/*/p5.page/"={0}"
+    /*
+     * Figuring out which page to load according to argument supplied in [_form].
+     */
+    select-data:x:@"/*/*/p5.page/""={0}"""
       :x:/../*/_form?value
 
-    // Checking if page exists
-    if:x:/..else/*/select-data/*?count
-      equals:int:0
+    /*
+     * Checking if page exists, and if not, loading our "page not found" special page.
+     */
+    if:x:/-/*?count
+      =:int:0
 
-      // Page not found, loading up our "404 page"
       sys42.execute-lisp-file:/system42/apps/CMS/page-loader/special-page/not-found.hl
         _template:/system42/apps/CMS/page-templates/default.hl
     else
 
-      // Adding up all nodes from results of select-data into [execute-lisp-file]
+      /*
+       * Adding up all nodes from results of select-data into [execute-lisp-file], which is our [p5.page] object.
+       */
       add:x:/+2/*/_args
         src:x:/..else/..else/*/select-data/*/*
 
-      // Setting value of [execute-lisp-file] to type of page we're loading
-      // If you look in "system42/cms/page-loader/" folder, you will see all the
-      // different types of pages that exist in the system. These types of
-      // pages are extendible, and can be added to to create custom types of
-      // pages. If you extend them, you should probably also create an editor
-      // for your page type
+      /*
+       * Setting value of [execute-lisp-file] to type of page we're loading.
+       * If you look in "system42/apps/CMS/page-loader/" folder, you will see all the different types of pages that exist 
+       * in the system. These types of pages are extendible, and can be added to to create custom types of pages. 
+       * If you extend them, you should probably also create an editor for your page type.
+       */
       set:x:/+?value
         src:/system42/apps/CMS/page-loader/{0}.hl
           :x:/..else/..else/*/select-data/*/*/type?value

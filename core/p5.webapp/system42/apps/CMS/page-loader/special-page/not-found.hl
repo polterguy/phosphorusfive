@@ -13,7 +13,7 @@ load-file:x:/../*/_template?value
 /*
  * Setting the [content] of our page to "not found" info.
  */
-set:x:/-2/*/*/create-widget/*/widgets/**/={content}?value
+set:x:/-/*/*/create-widget/*/widgets/**/={content}?value
   src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" />
 <h2>Sorry!</h2>
 <p>I could not find that page!</p>"
