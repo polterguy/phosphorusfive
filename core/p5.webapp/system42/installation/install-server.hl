@@ -1,28 +1,22 @@
 
 /*
- * Executed after server has been initially installed. Guides the 
- * user through setting up a secure root password, etc
+ * Executed when the server is initially installed.
+ * Guides the user through setting up a secure root password, createing a server salt, etc.
  */
 
-
-/*
- * Loading up main template
- */
-load-file:/system42/apps/CMS/page-templates/default.hl
-
-// Removing {content} before evaluating template
-set:x:/-/*/*/create-widget/*/widgets/**/={content}/.
-eval:x:/./*/load-file/*
-set-widget-property:header
-  innerValue:Installation Guide
 
 /*
  * Creating actual guide form
  */
-create-widget:guide
-  parent:content
-  class:col-xs-12
+sys42.include-default-stylesheet-files
+sys42.include-default-javascript-files
+create-widget:content
+  class:container
   widgets
+    container:guide
+      class:col-xs-12
+      style:"margin-top:20%;"
+      widgets
 
 
 /*

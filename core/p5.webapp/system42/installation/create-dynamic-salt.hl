@@ -10,7 +10,7 @@
  */
 create-widget:set-server-salt
   parent:guide
-  class:flash-from-left col-xs-12 col-md-8
+  class:flash-from-left col-xs-12 col-md-8 col-md-push-2
   widgets
 
 
@@ -23,7 +23,7 @@ create-widget:set-server-salt
       innerValue:@"Welcome to System42"
     literal
       element:p
-      innerValue:@"The first thing you will have to do, is to create a random server salt."
+      innerValue:@"First you have to create a random server salt."
 
 
     /*

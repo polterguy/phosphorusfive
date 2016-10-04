@@ -9,7 +9,9 @@
  */
 create-widget:finished
   parent:guide
-  class:flash-from-left col-xs-12
+  class:flash-from-left col-xs-12 text-center
+  oninit
+    send-javascript:@"setTimeout (function (){location.reload();}, 2000);"
   widgets
 
 
