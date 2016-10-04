@@ -2,9 +2,9 @@ Hyperdimensional boolean algebraic graph expressions
 ========
 
 Puuh, that name was a mouthful. However, really, for most practical concerns, if you know
-some XPath from before, you'll pick up p5 expressions in an hour or two. An expression
-is type-declared as `:x:`, for then to have zero or more "iterators", optionally having
-a "type declaration" at its end, optionally ending with a conversion of the yielded results.
+some XPath from before, you'll pick up P5 expressions in an hour or two. An expression
+is type-declared as `:x:`, for then to have zero or more iterators, optionally having
+a type declaration at the end, optionally ending with a conversion of its result.
 
 Example given.
 
@@ -18,7 +18,7 @@ set:x:/../*/_data/*/foo?value
 In the above example `/../*/_data/*/foo?value` is an expression, and `:x:`
 declares it as such for the type engine of P5.
 
-It ends with an expression type declaration (?value), which informs the expression engine, 
+It ends with the type declaration `?value`, which informs the expression engine, 
 that we're interested in the values of whatever the expression yields as its result.
 
 ## An expression's type declaration
@@ -39,10 +39,10 @@ set:x:?value
   src:x:/../*/_data?value.int
 ```
 
-For the record, an expression without any iterators, is the "identity expression", yielding the "current node", which for the above example, and its 
-destination, means it will return the *[set]* node's value itself. The "identity expression", when retreiving the "identity node", is actually written 
+For the record, an expression without any iterators, is the identity expression, yielding the current node, which for the above example, and its 
+destination, means it will update the *[set]* node's value itself. The identity expression, when retreiving the identity node, is actually written 
 like this; `:x:`, having no iterators, and no type declaration. The identity expression, which all expressions starts out with, will retrieve the 
-"this node" for most cases. For instance, this code, will delete its own node, since our *[set]* has no source, and it uses the identity expression 
+this node for most cases. For instance, this code, will delete its own node, since our *[set]* has no source, and it uses the identity expression 
 as its destination.
 
 ```
@@ -67,47 +67,69 @@ signifies that it holds an integer value, and its value is "2".
 
 Expressions consists of three basic parts
 
-* `:x:` - Signifying its an expression type
-* Zero or more iterators, separated by "/"
-* A type declaration, being any of `?name`, `?count`, `?value` or v?node` (which is the default value, if no type declaration is explicitly supplied)
+* `:x:` - Signifying it is an expression type
+* Zero or more iterators, separated by `/`
+* An optional type declaration, being any of `?name`, `?count`, `?value` or `?node`
 
 If the type declaration is omitted, the type declaration is assumed to be `?node`.
 
-Each iterator is separated by a slash (/), resembling the syntax of XPath. An iterator will 
-react upon the results from its previous iterator, mening they're "piped" together, to create a combined result.
-Expressions are said to be "left associative" for those interested in the theory behind them - Which means that the expression engine
-parses them from the left to the right.
+Each iterator is separated by a slash `/`, resembling the syntax of XPath. An iterator will 
+react upon the results from its previous iterator, mening they're piped together, left associatively, to create a combined result.
+Left associately means that the expression engine evaluate them from the left to the right.
 
 ## Iterator types
 
-There are 17 basic iterators, that each extracts a different type of result
+There are 17 basic iterators, each yielding different results
 
-* `/*` - Children iterator, extracts all children of previous result set
-* `/**` - Descendants iterator, extracts all descendents of previous result set
-* `/$` - Distinct name iterator, extracts all nodes from previous result set, excluding nodes with duplicate names
-* `/=$` -  Distinct value iterator, extracts all nodes from previous result set, excluding nodes with duplicate values
-* `/%n` - Modulo iterator, extracting every node matching the given (n) modulo, where n must be a number
-* `/xxx` - Named iterator, extracts all nodes with the specified (xxx) name
-* `/..xxx` - Named ancestor iterator, extracts all ancestor with the specified (xxx) name
-* `/n` - Numbered child iterator, extracts the n'th child from the previous result set, where n must be an integer value
 * `/.` - Parent iterator, extracts parent nodes from previous result set
-* `/[n1, n2]` - Range iterator, extracts a range of values from previous result set, where n1 and n2 must be numbers, n2 larger than n1
-* `/#` - Reference iterator, casts the previous node's values into a node, yielding that node back to caller
 * `/..` - Root node iterator, extracts the root node from previous result set
-* `/<` - Left shift iterator, lefts shifts the nodes from the previous result set
-* `/>` - Right shift iterator
+* `/..xxx` - Named ancestor iterator, extracts all ancestor with the specified (xxx) name
+* `/*` - Children iterator, extracts all children of previous result set
+* `/**` - Descendants iterator, extracts all descendents of previous result set (children and childrens' children, etc)
+* `/xxx` - Named iterator, extracts all nodes with the specified "xxx" name
+* `/=xxx` - Value iterator, extracts all nodes with the specified "xxx" value
 * `/-n` - Younger sibling iterator, retreieves the younger sibling from previous result set. "n" must be an integer, if supplied. If no "n" is supplied, the value of "1" will be assumed
 * `/+n` - Elder sibling iterator, opposite of above
-* `/=xxx` - Value iterator, extracts all nodes with the specified value
+* `/n` - Numbered child iterator, extracts the n'th child from the previous result set, where n must be an integer value
+* `/%n` - Modulo iterator, extracting every node matching the given (n) modulo, where n must be an integer number
+* `/[n1, n2]` - Range iterator, extracts a range of values from previous result set, where n1 and n2 must be numbers, n2 larger than n1
+* `/$` - Distinct name iterator, extracts all nodes from previous result set, excluding nodes with duplicate names
+* `/=$` -  Distinct value iterator, extracts all nodes from previous result set, excluding nodes with duplicate values
+* `/#` - Reference iterator, casts/converts the previous nodes' values, into a node, yielding that node back to caller
+* `/<` - Left shift iterator, lefts shifts the nodes from the previous result set
+* `/>` - Right shift iterator, opposite of above
 
 ## Examples
 
-Below are some examples of how to use expressions.
+To understand expressions, realize that they're actually just "declared iterators", or "loops". They are acting upon the `Node` class, which
+you can find [here](/core/p5.core/Node.cs). The Node class again, is really just a name/value/children collection, with some helper methods. It is
+also the foundation for Hyperlambda. Think of the Node as the "DOM of Hyperlampda". (Document Object Model)
 
-### Extracting nodes with a specific name
+With that knowledge arming us, let's look at some examples of how to use expressions.
 
-Now imagine we have a p5.lambda structure (node set), and we wish to change the value of each node that has the name of "foo" to "New value".
-Then we could do something like this
+### Extracting the "root node" from a node-set
+
+The root node iterator `/..` will always yield one result. This single node will be the "root node".
+
+Every time you construct a lambda object from Hyperlambda, what you are actually doing, is evaluating a single node, 
+using [eval](/plugins/p5.lambda#eval-the-heart-of-p5lambda). This node is the equivalent of the document node from XML, 
+except in Hyperlambda, it is invisible.
+
+What *[eval]* does, is to simply evaluate all of this node's children nodes, raising them as Active Events, sequentially in order from top 
+to bottom.
+
+The root node iterator, `/..`, simply yields back this node, once, and only once. Meaning, regardless of how many nodes you have in your previous
+result-set - After having evaluated the root iterator, there will be exactly one left. Unless one of the previous iterators yielded nothing, at which
+point also the root iterator will yield nothing, since iterators are "left associative", reacting upon previous iterators, and once there are no
+more results, the iteration stops, and a "null result" is returned.
+
+Most expressions we use in this example, will start out with the root iterator. Have this explanation in the back of your mind, as you read through
+the rest of this documentation.
+
+### Extracting nodes with a specific name from a node-set
+
+Imagine we have a p5.lambda structure (node set), and we wish to change the value of each node that has the name of "foo" to "New value".
+Then we could do something like this.
 
 ```
 _data
@@ -118,11 +140,25 @@ set:x:/../*/_data/*/foo?value
   src:New value
 ```
 
-The above Hyperlambda would retreieve all nodes that have the name of "foo", and set their values to "New value". This
-is because of the iterator "/foo" parts above. The rest of the expression will be explained later, as we proceed downwards 
-in our documentation.
+The above Hyperlambda will retreieve all nodes that have the name of "foo", and set their values to "New value". This
+is because of the iterator `/foo` parts above, in addition to the `_data` parts.
 
-After evaluation of the above Hyperlambda, your node-set would look like this. Notice the values of your *[foo]* nodes.
+Our first iterator above is the root node iterator `/..`, which will extract the "invisible root node". Then our next iterator is the 
+children iterator `/*`, which will be explained later, which yields *[_data]* and *[set]*. Then comes another named iterator `/_data`, 
+excluding everything not having the name of "_data". Afterwards, another children iterator `/*`, and another named iterator `/_foo`. 
+The resulting node-set, will consist of both nodes inside our *[_data]* segment, having the name of _"foo"_.
+
+In total, there are 5 iterators in the above example.
+
+Let's walk through the above expression, once more
+
+* The `/..` iterator retrieves the invisible root node
+* The `/*` iterator retrieves all children of the previous node-set, resulting in *[_data]* and *[set]*
+* The `/_data` iterator excludes all nodes having another name but "_data", resulting on only *[_data]* as the current result-set
+* The `/*` iterator extracts all children nodes of *[_data]*
+* Then finally, the `/foo` excludes all nodes not having the name of "foo", resulting in the 1st and third child of *[_data]* being our result-set.
+
+After evaluation of the above Hyperlambda, your resulting node-set will look like this. Notice the values of your *[foo]* nodes.
 
 ```
 _data
@@ -133,9 +169,8 @@ set:x:/../*/_data/*/foo?value
   src:New value
 ```
 
-Notice how the *[not-foo]* node was _NOT_ updated! If you wish to also have the *[not-foo]* node updated, you could accomplish
-this by making sure the "name iterator" looks for a "like comparison", by prepending a ~ in front of the value of the iterator.
-Example
+Notice how the *[not-foo]* node was _not_ updated! If you wish to also have the *[not-foo]* node updated, you could accomplish
+this by making sure the "name iterator" looks for a "contains comparison", by prepending a tilde "~" in front of the value of the iterator.
 
 ```
 _data
@@ -146,13 +181,13 @@ set:x:/../*/_data/*/~foo?value
   src:New value
 ```
 
-The above would look for any nodes within the *[_data]* segement of your p5.lambda object, having a name, *containing*
-the value of "foo". Meaning, it would _ALSO_ match the *[not-foo]* node. A tilde (~), signifying a "like" comparison, 
-can be used in front of the value of both a "named iterator", and a "valued iterator".
+The above will look for any nodes within the *[_data]* segement of your p5.lambda object, having a name, _containing_
+the value of _"foo"_. Meaning, it will _also_ match the *[not-foo]* node. A tilde `~`, signifies a "like" comparison, 
+and can be used in front of the value of both a "named iterator", and a "valued iterator".
 
-### Extracting all children of a specified node
+### Extracting all children of a node-set
 
-If we instead want to update _ALL_ children of the *[_data]* node above, we could use the *children iterator*. Example below.
+If we instead want to update _all_ children of the *[_data]* node above, we could use the *children iterator*, and drop the last name iterator.
 
 ```
 _data
@@ -163,7 +198,7 @@ set:x:/../*/_data/*?value
   src:New value
 ```
 
-The above Hyperlambda will extract all children of the *[_data]* node, and set their values to "New value". Resulting
+The above Hyperlambda, will extract all children of the *[_data]* node, and set their values to "New value". Resulting
 in the following p5.lambda structure as its result. 
 
 ```
@@ -175,24 +210,14 @@ set:x:/../*/_data/*?value
   src:New value
 ```
 
-Now we can dissect the entire expression above, armed with knowledge of all iterators being used.
-
-* First the *[set]* retreieves the "identity expression", which is the *[set]* node itself
-* Then it extracts the "root node" of our entire lambda object with our `/..` iterator. This will return only one node, being the "invisible outer root node" of our lambda object
-* Then it extracts all children of this "root node". This will result in the *[_data]* node and the *[set]* node being our current result-set
-* Then it removes all nodes not having the name of *[_data]* due to our `/_data` iterator, which is a "named iterator"
-* Then it extracts all children nodes of the *[_data]* node
-
 Since the *[set]* Active Event can handle multiple destinations, it will set the values of all children nodes of our *[_data]* node to the constant
 of "New value", which was the constant source provided as a *[src]* argument to *[set]*.
 
-The end result being that both the two *[foo]* nodes, in addition to the *[not-foo]* node, have their values updated, thanks
-to the *[set]* Active Event invocation, taking the expression as its destination expression, to whatever value is in its 
-*[src]* argument, which happens to be the constant of "New value".
+The end result being that both the two *[foo]* nodes, in addition to the *[not-foo]* node, have their values updated.
 
 ### Extracting a specific range of nodes
 
-Imagine you wish to extract all node from the second to the 3rd node from within this data segment
+Imagine you wish to extract all node from the 2nd to the 3rd node from within this data segment
 
 ```
 _data
@@ -202,7 +227,7 @@ _data
   foo4:bar4
 ```
 
-The above task could be accomplished with something like the below for instance
+The above task could be accomplished with something like this for instance
 
 ```
 _data
@@ -227,9 +252,8 @@ set:x:/../*/_data/*/[1,3]?value
 ```
 
 This is because the `/*` node returns all children of the *[_data]* segment, but the iterator after
-that iterator, will make sure only the nodes from (including) the 1st node, to (not including) the 3rd
-node will be returned. The range iterator returns nodes according to [n1..n2>, to use math terminology,
-and formalize its function.
+our last children iterator, will make sure only the nodes from (including) the 1st node, to (not including) the 3rd
+node will be returned. The range iterator returns nodes according to [n1..n2>, to use math terminology.
 
 Both the start and the end of your range iterator are optional arguments to it, and if not supplied, 
 will have the default values of "zeroth node" and "last node", whatever they are. For instance, to change the
@@ -258,13 +282,12 @@ set:x:/../*/_data/*/[,2]?value
   src:New value
 ```
 
-Remember though that both the start value and the end value of the "range iterator" are zero-indexed, meaning
-the value of your 1st node is actually "0", the second node "1", and so on ...
+Both the start value and the end value of the "range iterator" are zero-indexed, meaning the value of your 1st node is actually "0", 
+the second node "1", and so on ...
 
 ### Extracting the n'th child of a node
 
 Imagine you only wish to extract the 2nd child node of some node-set. This could be accomplished using a "numbered child iterator".
-Example is given below.
 
 ```
 _data
@@ -275,7 +298,7 @@ set:x:/../*/_data/*/1?value
   src:New value
 ```
 
-After evaluation of the above p5.lambda structure, your node-set would look like this
+After evaluation of the above p5.lambda structure, your node-set will look like this
 
 ```
 _data
@@ -287,9 +310,9 @@ set:x:/../*/_data/*/1?value
 ```
 
 Notice that the only difference between a "numbered child" iterator, and a "named iterator", is
-that the numbered child iterator consists of only integer numbers, meaning [0..9] character strings.
+that the numbered child iterator consists of only integer numbers, meaning [0..9] characters.
 
-This creates a problem for us, if we wish to retrieve a node who's _NAME_ is *[1]* for instance. Imagine
+This creates a problem for us, if we wish to retrieve a node who's _name_ is *[1]* for instance. Imagine
 for instance the scenario below.
 
 ```
@@ -302,9 +325,9 @@ set:x:/../*/_data/*/1?value
 ```
 
 The above p5.lambda would perfectly evaluate. However, the results would probably not be what you
-wish for, since the "foo2" node would have its value updated, and not the *[1]* node. If you have nodes
+wanted, since the "foo2" node would have its value updated, and not the *[1]* node. If you have nodes
 with integer names, such as above, and you wish to explicitly name these nodes, you need to escape your
-name, using a back-slash, like the below code
+name, using a back-slash, like code below illustrates.
 
 ```
 _data
@@ -315,8 +338,8 @@ set:x:/../*/_data/*/\1?value
   src:New value
 ```
 
-You can also escape other characters, having nodes with really funny names, such as "/" etc. Imagine this
-Hyperlambda for instance.
+Notice the back slash in front of our "1" above. You can also escape other characters, having nodes with really funny names, such as "/" etc. 
+Imagine this Hyperlambda for instance.
 
 ```
 _data

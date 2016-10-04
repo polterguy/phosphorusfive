@@ -226,4 +226,26 @@ Ajax library itself, please check out the website project called [p5.ajax-sample
 To test this project, make sure you set it as your startup project in Visual Studio, Xamarin or MonoDevelop, 
 and start your debugger.
 
+## Epilogue
+
+The above traits of p5.ajax, meaning that it keeps its state, is a perfect match for [p5.web](/plugins/extras/p5.web/).
+This allows you to simply "declare" your widget hierarchy, for then to in your own server side events, modify
+any widget's state, including adding controls (widgets) to your page. Which results in a ridiculously simple
+to understand development model, without compromising power in any ways.
+
+In addition, by only having 3 different controls, allows you to easily create your own custom extensions, exactly
+as you see fit. Instead of being forced to use a "DataGrid" or "TreeControl" as I for some reasons feel for implementing
+it.
+
+Building up complex and rich hierarchies of controls, rendered with the element you wish, having the attributes
+and events you see fit, is simply a breeze. And none of the code necessary for wiring up things becomes a burdon
+to the developer.
+
+A testimonial towards this trait, is the fact of that even though p5.ajax depends upon ASP.NET, and is entirely
+built on top of the "ASP.NET Page Life cycle", you never even once have to worry about this, and simply add/remove/change
+whatever you wish, in which ever server-side event you feel for doing such.
+
+When combining this with [p5.lambda](/plugins/p5.lambda/) and [p5.web](/plugins/extras/p5.web/), development of really
+rich UI and UX apps becomes so easy, that you would highly likely be very pleasently surprised as you dive into it.
+
 
