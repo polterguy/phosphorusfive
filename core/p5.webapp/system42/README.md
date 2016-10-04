@@ -52,25 +52,12 @@ This is the System42 version of your windows "COM objects", and contains compone
 your System42 installation, which you can reuse in your apps. See the documentation for 
 the [components](/core/p5.webapp/system42/components/) folder for details about this folder.
 
-### The "installation" folder
-
-This folder contains scripts that are to be evaluated when server is initially
-setup. It allows you to create a server-seed, which is used to seed the cryptographic random
-number generator, and salt your hashed passwords etc. In addition, it creates a root
-password, and a superuser normal account, for everyday use of your system.
-
 ### The "startup" folder
 
 This folder contains files that are evaluated during application startup of your server,
 either because of your server rebooting, or because of the web-server process being restarted
 for some reasons.
 
-The most important file in this folder is the file called "p5.web.load-ui.hl", which
-declares the Active Event called *[p5.web.load-ui]*, which is the Active Event that maps
-URLs to *[p5.page]* objects in the P5 database. This event is invoked from the core of Phosphorus 
-Five during an initial loading of a page's URL. If you create your own system, from scratch, without
-any of the System42 features - This is the Active Event you are expected to create yourself,
-to load URLs from HTTP requests.
 
 ### Helper Active Events
 
