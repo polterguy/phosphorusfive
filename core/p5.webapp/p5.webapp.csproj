@@ -351,6 +351,15 @@
     <Content Include="system42\apps\Unit tests\create-new-test-file.hl" />
     <Content Include="system42\apps\Unit tests\show-coverage.hl" />
     <Content Include="system42\apps\CMS\page-editor\create-new-page.hl" />
+    <Content Include="system42\apps\CMS\initial-pages\README.md" />
+    <Content Include="system42\apps\CMS\installation\README.md" />
+    <Content Include="system42\apps\CMS\page-editor\README.md" />
+    <Content Include="system42\apps\CMS\page-loader\README.md" />
+    <Content Include="system42\apps\CMS\page-templates\README.md" />
+    <Content Include="system42\apps\CMS\startup\README.md" />
+    <Content Include="system42\apps\CMS\page-loader\special-page\README.md" />
+    <Content Include="system42\apps\CMS\page-editor\specialized-editors\README.md" />
+    <Content Include="system42\apps\CMS\page-editor\new-page-templates\README.md" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />
@@ -372,6 +381,7 @@
     <Content Include="system42\components\codemirror\startup\sys42.widgets.codemirror.hl" />
     <Content Include="system42\components\ckeditor\startup\sys42.widgets.ck-editor.hl" />
     <None Include="system42\apps\CMS\startup\p5.web.load-ui.hl" />
+    <Content Include="system42\startup\README.md" />
     <None Include="system42\startup\sys42.get-widget.hl" />
     <None Include="system42\components\ckeditor\README.md" />
     <None Include="system42\components\ckeditor\skins\moono\readme.md" />
@@ -382,7 +392,7 @@
     <None Include="system42\apps\CMS\installation\set-root-password.hl" />
     <None Include="system42\apps\CMS\installation\system-finished.hl" />
     <None Include="system42\startup\sys42.empty-user-tmp-folder.hl" />
-    <None Include="system42\apps\CMS\installation\create-dynamic-salt.hl" />
+    <None Include="system42\apps\CMS\installation\create-server-salt.hl" />
     <Content Include="users\README.md" />
     <None Include="users\root\documents\public\README.md" />
     <None Include="users\root\documents\private\README.md" />

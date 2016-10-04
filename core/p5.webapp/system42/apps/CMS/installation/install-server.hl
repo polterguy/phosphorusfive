@@ -33,7 +33,7 @@ if:x:/-/*?count
     not
 
     // Need to create server dynamic salt
-    sys42.execute-hyper-file:/system42/apps/CMS/installation/create-dynamic-salt.hl
+    sys42.execute-hyper-file:/system42/apps/CMS/installation/create-server-salt.hl
   else
 
     // Need to set root password, and do other types of installation setup things

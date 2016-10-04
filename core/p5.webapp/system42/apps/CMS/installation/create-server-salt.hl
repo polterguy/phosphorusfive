@@ -23,7 +23,7 @@ create-widget:set-server-salt
       innerValue:@"Welcome to System42"
     literal
       element:p
-      innerValue:@"First you have to create a random server salt."
+      innerValue:First you have to create a random server salt
 
 
     /*

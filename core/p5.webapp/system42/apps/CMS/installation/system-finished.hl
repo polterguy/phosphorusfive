@@ -21,6 +21,6 @@ create-widget:finished
       innerValue:Congratulations
     literal
       element:p
-      innerValue:Your system is now setup, and ready to use.
+      innerValue:Your system is now setup, and ready to use
 
 
