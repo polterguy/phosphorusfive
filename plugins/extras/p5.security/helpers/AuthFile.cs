@@ -85,30 +85,7 @@ namespace p5.security.helpers
 
                 // Retrieving content of file
                 var fileContent = reader.ReadToEnd ();
-
-                // Returning file as lambda, making sure we decrypt it first, but only if user has explicitly
-                // declared a decryption key to use through web.config
-                var gpgEmailAddress = context.Raise (
-                    ".get-config-setting", 
-                    new Node ("", "p5.security.server-pgp-key"))[0].Get<string> (context);
-                var gpgPassword = context.Raise (
-                    ".get-config-setting", 
-                    new Node ("", ".p5.security.server-pgp-key-password"))[0].Get<string> (context);
-                if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
-
-                    // User has a PGP key declared in web.config, try to load and decrypt file first
-                    try {
-                        _authFileContent = Utilities.Convert<Node> (context, Utilities.DecryptMarvin (context, fileContent));
-                    } catch {
-
-                        // File was probably saved unenecypted, and key added afterwards. Try to read file as plain text instead
-                        _authFileContent = Utilities.Convert<Node> (context, fileContent);
-                    }
-                } else {
-                    _authFileContent = Utilities.Convert<Node> (context, fileContent);
-                }
-
-                // Returning cached version
+                _authFileContent = Utilities.Convert<Node> (context, fileContent);
                 return _authFileContent;
             }
         }
@@ -126,24 +103,7 @@ namespace p5.security.helpers
 
             // Saving file
             using (TextWriter writer = new StreamWriter (File.Create (pwdFilePath))) {
-            
-                // Writing auth file content to disc, making sure we store it encrypted, but only if user
-                // has supplied an encryption and decryption key through web.config
-                var gpgEmailAddress = context.Raise (
-                    ".get-config-setting", 
-                    new Node ("", "p5.security.server-pgp-key"))[0].Get<string> (context);
-                var gpgPassword = context.Raise (
-                    ".get-config-setting", 
-                    new Node ("", ".p5.security.server-pgp-key-password"))[0].Get<string> (context);
-                if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
-                    try {
-                        writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));
-                    } catch {
-                        writer.Write (Utilities.Convert<string> (context, authFileNode.Children));
-                    }
-                } else {
-                    writer.Write (Utilities.Convert<string> (context, authFileNode.Children));
-                }
+                writer.Write (Utilities.Convert<string> (context, authFileNode.Children));
             }
         }
 

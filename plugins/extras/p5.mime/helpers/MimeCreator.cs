@@ -300,22 +300,6 @@ namespace p5.mime.helpers
                         _context);
             }
 
-            // Checking if there were any explicit receivers to encrypt for, and if not, we encrypt for current machine by default
-            if (retVal.Count == 0) {
-
-                // No explicit receivers, encrypting message with server key, since caller supplied an [encryption] node
-                var email = "foo@bar.com";
-                var fingerprint = "";
-                var key = _context.Raise (
-                    ".get-config-setting", 
-                    new Node ("", "p5.security.server-pgp-key")) [0].Get<string> (_context);
-                if (key.IndexOf ("@") == -1)
-                    fingerprint = key;
-                else
-                    email = key;
-                retVal.Add (new SecureMailboxAddress ("", email, fingerprint));
-            }
-
             // Returning list of mailboxes to encrypt for
             return retVal;
         }
@@ -327,26 +311,9 @@ namespace p5.mime.helpers
         {
             // Figuring out which private key to use for signing entity
             string email = "foo@bar.com", fingerprint = "", password = "";
-            if (signatureNode.Children.Count (ix => ix.Name == "email" || ix.Name == "fingerprint") == 0) {
-
-                // Using server's private key
-                var key = _context.Raise (
-                    ".get-config-setting", 
-                    new Node ("", "p5.security.server-pgp-key"))[0].Get<string> (_context);
-                if (key.IndexOf ("@") == -1)
-                    fingerprint = key;
-                else
-                    email = key;
-                password = _context.Raise (
-                    ".get-config-setting", 
-                    new Node ("", ".p5.security.server-pgp-key-passsword"))[0].Get<string> (_context);
-            } else {
-
-                // Using provided key and password
-                password = signatureNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetChildValue ("password", _context, "");
-                email = signatureNode.GetChildValue ("email", _context, "foo@bar.com");
-                fingerprint = signatureNode.GetChildValue ("fingerprint", _context, "");
-            }
+            password = signatureNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetChildValue ("password", _context, "");
+            email = signatureNode.GetChildValue ("email", _context, "foo@bar.com");
+            fingerprint = signatureNode.GetChildValue ("fingerprint", _context, "");
 
             // Returning MailboxAddress to sign entity on behalf of
             return new Tuple<string, MailboxAddress> (password, new SecureMailboxAddress ("", email, fingerprint));

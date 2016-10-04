@@ -119,46 +119,6 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Encrypts the specified plainText and returns ciphertext
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="plainText">Plain text to encrypt</param>
-        public static string EncryptMarvin (
-            ApplicationContext context, 
-            string plainText)
-        {
-            // Invoking [p5.mime.create] Active Event, passing in email to use for retrieving public
-            // key from Gnu Privacy Guard
-            var mimeEntity = new Node ("p5.mime.create")
-                .Add ("text", "plain").LastChild
-                    .Add ("encryption")
-                    .Add ("content", plainText).Root;
-
-            // Using [p5.mime.create] as actual encryption implementation
-            return context.Raise (mimeEntity.Name, mimeEntity)["result"].Get<string> (context);
-        }
-
-        /// <summary>
-        ///     Decrypts the specified ciphertext and returns as plain text
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="cipherText">Ciphertext text to decrypt</param>
-        public static string DecryptMarvin (
-            ApplicationContext context, 
-            string cipherText)
-        {
-            // Invoking [p5.mime.parse] Active Event, passing in password to use for retrieving private
-            // key from Gnu Privacy Guard
-            Node decryptNode = new Node ("p5.mime.parse", cipherText);
-
-            // Using [p5.mime.parse] as actual decryption implementation
-            var resultNode = context.Raise (decryptNode.Name, decryptNode);
-
-            // Returning first [text] part found in multipart/encrypted
-            return resultNode.FirstChild["text"]["content"].Get<string>(context);
-        }
-
-        /// <summary>
         ///     Returns true if string can be converted to an integer
         /// </summary>
         /// <returns><c>true</c> if this instance is a whole, positive, integer number; otherwise, <c>false</c></returns>

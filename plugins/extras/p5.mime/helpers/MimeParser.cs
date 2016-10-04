@@ -40,11 +40,7 @@ namespace p5.mime.helpers
             string attachmentFolder)
         {
             // Retrieving passwords from args
-            if (args ["decryption-keys"] == null) {
-
-                // Adding machine decryption key, since no explicit decryption key was supplied
-                AddMachineDecryptionKey (context);
-            } else {
+            if (args ["decryption-keys"] != null) {
 
                 // Caller supplied explicit decryption keys, making sure we add them up as keys to use for decrypting MIME entities
                 AddExplicitDecryptionKeys (context, args);
@@ -63,32 +59,6 @@ namespace p5.mime.helpers
         public void Process ()
         {
             ProcessEntity (_rootEntity, _args);
-        }
-
-        /*
-         * Adds up machine decryption key
-         */
-        private void AddMachineDecryptionKey (ApplicationContext context)
-        {
-            // Caller did not supply decryption keys, adding up the machine server key anyway
-            _passwords = new List<GnuPrivacyContext.KeyPasswordMapper> ();
-            var key = _context.Raise (
-                ".get-config-setting", 
-                new Node ("", "p5.security.server-pgp-key"))[0].Get<string> (_context);
-            string email = "foo@bar.com", fingerprint = "";
-
-            // Figuring out if this is email or fingerprint
-            if (key.IndexOf ("@") == -1)
-                fingerprint = key;
-            else
-                email = key;
-
-            // Retrieving password for machine key
-            var password = _context.Raise (
-                ".get-config-setting", 
-                new Node ("", ".p5.security.server-pgp-key-password"))[0].Get<string> (_context);
-            var mailboxAdr = string.IsNullOrEmpty (fingerprint) ? new MailboxAddress ("", email) : new SecureMailboxAddress ("", email, fingerprint);
-            _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (mailboxAdr, password));
         }
 
         /*
