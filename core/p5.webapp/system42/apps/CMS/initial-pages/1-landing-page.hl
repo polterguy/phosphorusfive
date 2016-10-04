@@ -7,7 +7,7 @@ p5.page:/
   name:Home
   template:/system42/apps/CMS/page-templates/default.hl
   content:@"
-<img class='prepend-left' src='/media/images/marvin-headshot.png' style='float:right;' />
+<img class='prepend-left' src='/media/images/headshot.png' style='float:right;' />
 
 <h2>Welcome</h2>
 

@@ -90,7 +90,7 @@
     <Content Include="media\bootstrap\js\bootstrap.min.js" />
     <Content Include="media\css\main.css" />
     <Content Include="media\jquery\jquery-2.1.4.min.js" />
-    <Content Include="media\images\marvin-headshot.png" />
+    <Content Include="media\images\headshot.png" />
     <Content Include="system42\components\codemirror\mode\hyperlisp\hyperlisp.js" />
     <Content Include="system42\components\ckeditor\ckeditor.js" />
     <Content Include="system42\components\ckeditor\config.js" />

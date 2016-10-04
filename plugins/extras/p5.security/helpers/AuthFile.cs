@@ -90,10 +90,10 @@ namespace p5.security.helpers
                 // declared a decryption key to use through web.config
                 var gpgEmailAddress = context.Raise (
                     ".get-config-setting", 
-                    new Node ("", "p5.security.marvin-pgp-key"))[0].Get<string> (context);
+                    new Node ("", "p5.security.server-pgp-key"))[0].Get<string> (context);
                 var gpgPassword = context.Raise (
                     ".get-config-setting", 
-                    new Node ("", ".p5.security.marvin-pgp-key-password"))[0].Get<string> (context);
+                    new Node ("", ".p5.security.server-pgp-key-password"))[0].Get<string> (context);
                 if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
 
                     // User has a PGP key declared in web.config, try to load and decrypt file first
@@ -131,10 +131,10 @@ namespace p5.security.helpers
                 // has supplied an encryption and decryption key through web.config
                 var gpgEmailAddress = context.Raise (
                     ".get-config-setting", 
-                    new Node ("", "p5.security.marvin-pgp-key"))[0].Get<string> (context);
+                    new Node ("", "p5.security.server-pgp-key"))[0].Get<string> (context);
                 var gpgPassword = context.Raise (
                     ".get-config-setting", 
-                    new Node ("", ".p5.security.marvin-pgp-key-password"))[0].Get<string> (context);
+                    new Node ("", ".p5.security.server-pgp-key-password"))[0].Get<string> (context);
                 if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
                     try {
                         writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));

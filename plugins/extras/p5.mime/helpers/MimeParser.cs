@@ -74,7 +74,7 @@ namespace p5.mime.helpers
             _passwords = new List<GnuPrivacyContext.KeyPasswordMapper> ();
             var key = _context.Raise (
                 ".get-config-setting", 
-                new Node ("", "p5.security.marvin-pgp-key"))[0].Get<string> (_context);
+                new Node ("", "p5.security.server-pgp-key"))[0].Get<string> (_context);
             string email = "foo@bar.com", fingerprint = "";
 
             // Figuring out if this is email or fingerprint
@@ -86,7 +86,7 @@ namespace p5.mime.helpers
             // Retrieving password for machine key
             var password = _context.Raise (
                 ".get-config-setting", 
-                new Node ("", ".p5.security.marvin-pgp-key-password"))[0].Get<string> (_context);
+                new Node ("", ".p5.security.server-pgp-key-password"))[0].Get<string> (_context);
             var mailboxAdr = string.IsNullOrEmpty (fingerprint) ? new MailboxAddress ("", email) : new SecureMailboxAddress ("", email, fingerprint);
             _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (mailboxAdr, password));
         }
