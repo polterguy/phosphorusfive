@@ -16,6 +16,12 @@ namespace p5.io.common
     /// </summary>
     public static class Common
     {
+        [ActiveEvent (Name = ".p5.io.unroll-path")]
+        public static void _p5_io_unroll_path (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = GetSystemPath (context, e.Args.Get<string> (context));
+        }
+
         /// <summary>
         ///     Returns the root folder of application pool back to caller
         /// </summary>

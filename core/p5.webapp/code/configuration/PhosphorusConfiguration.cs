@@ -19,7 +19,7 @@ namespace p5.webapp.code.configuration
         ///     Gets the plugin directory
         /// </summary>
         /// <value>The plugin directory</value>
-        [ConfigurationProperty ("assemblyDirectory", DefaultValue = "~/plugins/", IsRequired = false)]
+        [ConfigurationProperty ("assemblyDirectory", DefaultValue = "/bin/", IsRequired = false)]
         public string PluginDirectory
         {
             get { return this ["assemblyDirectory"] as string; }
@@ -49,7 +49,7 @@ namespace p5.webapp.code.configuration
         ///     Gets the path to the file on disc that is used for authenticating and authorizing users
         /// </summary>
         /// <value>Path to auth file</value>
-        [ConfigurationProperty ("authFile", IsRequired = false, DefaultValue = "~/auth.hl")]
+        [ConfigurationProperty ("authFile", IsRequired = false, DefaultValue = "/auth.hl")]
         public string AuthFile
         {
             get { return this ["authFile"] as string; }

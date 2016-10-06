@@ -67,8 +67,7 @@ namespace p5.web.ui.request {
             var filename = e.Args.GetExValue<string> (context);
 
             // Making sure we transform filename into actual filename in case it uses our "~" logic
-            if (filename.StartsWith ("~"))
-                filename = "users/" + context.Ticket.Username + filename.Substring (1);
+            filename = context.Raise (".p5.io.unroll-path", new Node ("", filename)).Get<string> (context);
 
             // Verifying user is authorized writing to the file
             context.Raise (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));

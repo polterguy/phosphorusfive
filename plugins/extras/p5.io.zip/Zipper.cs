@@ -24,10 +24,6 @@ namespace p5.io.zip
         [ActiveEvent (Name = "zip")]
         public static void zip (ApplicationContext context, ActiveEventArgs e)
         {
-            /*
-             * Notice, since zip might zip another file than requested by the user, we return that filepath
-             * as value of main args
-             */
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Getting root folder

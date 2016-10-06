@@ -25,6 +25,14 @@ namespace p5.io.zip.helpers
         }
 
         /*
+         * Returns the actual file/folder path
+         */
+        public static string GetSystemPath (ApplicationContext context, string path)
+        {
+            return context.Raise (".p5.io.unroll-path", new Node ("", path)).Get<string> (context);
+        }
+
+        /*
          * Verifies destination file does not exist, and if it does, returns a new path to caller, 
          * and verifies user is authorized to writing to new path
          */
@@ -102,17 +110,6 @@ namespace p5.io.zip.helpers
                 idxNo += 1;
             }
             return string.Format (folder + "{0} copy {1}{2}", filename, idxNo, suffix);
-        }
-
-        /*
-         * Returns the actual file/folder path
-         */
-        public static string GetSystemPath (ApplicationContext context, string path)
-        {
-            if (path.StartsWith ("~")) {
-                return "/users/" + context.Ticket.Username + path.Substring (1);
-            }
-            return path;
         }
     }
 }

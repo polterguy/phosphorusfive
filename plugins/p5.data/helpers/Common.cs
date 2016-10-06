@@ -70,8 +70,8 @@ namespace p5.data.helpers
                 // Finding and setting our database root directory
                 _dbFullPath = context.Raise (
                     ".get-config-setting",
-                    new Node ("", ".p5.data.path")) [0].Get<string>(context, "~/db/");
-                _dbFullPath = _dbFullPath.Replace ("~", GetRootFolder (context));
+                    new Node ("", ".p5.data.path")) [0].Get (context, "/db/");
+                _dbFullPath = GetRootFolder (context) + _dbFullPath;
 
                 // Checking to see if database directory exist
                 if (!Directory.Exists (_dbFullPath)) {
