@@ -23,41 +23,47 @@ namespace p5.io.common
         /// <summary>
         ///     Common helper for iterating files/folders for move/copy/rename operation
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="e"></param>
+        /// <param name="context">Application Context</param>
+        /// <param name="args">Root node for Active Event invoking method</param>
+        /// <param name="sourceAuthorizeEvent">Authorize event for source file(s)</param>
+        /// <param name="destinationAuthorizeEvent">Authorize event for destination file(s)</param>
         /// <param name="functorMoveObject">Actual implementation of moving/copying a single file object</param>
         /// <param name="functorObjectExist">Expected to return true if object exist from before</param>
         public static void CopyMoveFileObject (
             ApplicationContext context, 
-            ActiveEventArgs e, 
+            Node args, 
+            string sourceAuthorizeEvent,
+            string destinationAuthorizeEvent,
             MoveCopyDelegate functorMoveObject, 
             ObjectExistDelegate functorObjectExist)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (args)) {
 
                 // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Checking if we're given an expression as source, to make sure we support Active Event source
-                if (XUtil.IsExpression (e.Args.Value)) {
+                if (XUtil.IsExpression (args.Value)) {
 
                     // Destination is an expression, which means we might have an Active Event invocation source
-                    var destEx = e.Args.Value as Expression;
-                    foreach (var idxSource in destEx.Evaluate (context, e.Args, e.Args)) {
+                    var destEx = args.Value as Expression;
+                    foreach (var idxSource in destEx.Evaluate (context, args, args)) {
 
                         // Retrieving destination, possibly relative to currently iterated expression result
-                        var dest = XUtil.Source (context, e.Args, idxSource.Node, "dest");
+                        var dest = XUtil.Source (context, args, idxSource.Node, "dest");
 
                         // Making sure source yields only one value
                         if (dest.Count != 1)
-                            throw new LambdaException ("The destination for your [move-file] operation must be one string", e.Args, context);
+                            throw new LambdaException ("The destination for your [move-file] operation must be one string", args, context);
                         CopyMoveFileObjectImplementation (
                             context, 
-                            e.Args, 
+                            args, 
                             rootFolder, 
                             Common.GetSystemPath (context, Utilities.Convert<string> (context, idxSource.Value)),
                             Common.GetSystemPath (context, Utilities.Convert<string> (context, dest[0])),
+                            sourceAuthorizeEvent,
+                            destinationAuthorizeEvent,
                             functorMoveObject,
                             functorObjectExist);
                     }
@@ -65,17 +71,19 @@ namespace p5.io.common
 
                     // Source is a constant
                     // Retrieving destination
-                    var dest = XUtil.Source (context, e.Args, e.Args, "dest");
+                    var dest = XUtil.Source (context, args, args, "dest");
 
                     // Making sure source yields only one value
                     if (dest.Count != 1)
-                        throw new LambdaException ("The destination for your [move-file] operation must be one string", e.Args, context);
+                        throw new LambdaException ("The destination for your [move-file] operation must be one string", args, context);
                     CopyMoveFileObjectImplementation (
                         context,
-                        e.Args,
+                        args,
                         rootFolder,
-                        Common.GetSystemPath (context, e.Args.Get<string> (context)),
+                        Common.GetSystemPath (context, args.Get<string> (context)),
                         Common.GetSystemPath (context, Utilities.Convert<string> (context, dest[0])),
+                        sourceAuthorizeEvent,
+                        destinationAuthorizeEvent,
                         functorMoveObject,
                         functorObjectExist);
                 }
@@ -91,9 +99,15 @@ namespace p5.io.common
             string rootFolder, 
             string sourceFile, 
             string destinationFile,
+            string authorizeSourceEventName,
+            string authorizeDestinationEventName,
             MoveCopyDelegate functorMoveCopy,
             ObjectExistDelegate functorObjectExist)
         {
+            // Making sure user is authorized to do file/folder operation
+            Common.RaiseAuthorizeEvent (context, args, authorizeSourceEventName, sourceFile);
+            Common.RaiseAuthorizeEvent (context, args, authorizeDestinationEventName, destinationFile);
+
             // Getting new filename of file, if needed
             if (functorObjectExist (rootFolder + destinationFile)) {
 

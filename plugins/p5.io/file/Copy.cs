@@ -23,11 +23,12 @@ namespace p5.io.file
         public static void copy_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Using our common helper for actual implementation
-            MoveCopyHelper.CopyMoveFileObject (context, e, delegate (string rootFolder, string source, string destination) {
-
-                // Verifying user is authorized to both modify source, and modify destination
-                context.Raise (".p5.io.authorize.read-file", new Node ("", source).Add ("args", e.Args));
-                context.Raise (".p5.io.authorize.modify-file", new Node ("", destination).Add ("args", e.Args));
+            MoveCopyHelper.CopyMoveFileObject (
+                context, 
+                e.Args, 
+                "read-file", 
+                "modify-file", 
+                delegate (string rootFolder, string source, string destination) {
 
                 // Actually moving (or renaming) file
                 File.Copy (rootFolder + source, rootFolder + destination);

@@ -5,7 +5,6 @@
 
 using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
 
 namespace p5.io.common
 {
@@ -44,16 +43,7 @@ namespace p5.io.common
                     var fileObjectName = Common.GetSystemPath (context, idxFileObject);
 
                     // Verifying user is authorized to reading from currently iterated file
-                    switch (authorizeEvent) {
-                        case "read-file":
-                        case "read-folder":
-                        case "modify-file":
-                        case "modify-folder":
-                            context.Raise (".p5.io.authorize." + authorizeEvent, new Node ("", fileObjectName).Add ("args", args));
-                            break;
-                        default:
-                            throw new LambdaException ("Unknown authorization event in " + args.Name, args, context);
-                    }
+                    Common.RaiseAuthorizeEvent (context, args, authorizeEvent, idxFileObject);
 
                     // Invoking callback delegate
                     functor (fileObjectName, rootFolder + fileObjectName);

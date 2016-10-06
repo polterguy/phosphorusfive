@@ -26,11 +26,12 @@ namespace p5.io.folder
         public static void move_rename_folder (ApplicationContext context, ActiveEventArgs e)
         {
             // Using our common helper for actual implementation
-            MoveCopyHelper.CopyMoveFileObject (context, e, delegate (string rootFolder, string source, string destination) {
-
-                // Verifying user is authorized to both modify source, and modify destination
-                context.Raise (".p5.io.authorize.modify-folder", new Node ("", source).Add ("args", e.Args));
-                context.Raise (".p5.io.authorize.modify-folder", new Node ("", destination).Add ("args", e.Args));
+            MoveCopyHelper.CopyMoveFileObject (
+                context, 
+                e.Args, 
+                "modify-folder", 
+                "modify-folder", 
+                delegate (string rootFolder, string source, string destination) {
 
                 // Actually moving (or renaming) folder
                 Directory.Move (rootFolder + source, rootFolder + destination);
