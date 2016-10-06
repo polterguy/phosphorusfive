@@ -41,7 +41,7 @@ namespace p5.io.file
         }
 
         /*
-         * Determines if file is text according to file extension
+         * Determines if file is text according to the most common file extensions
          */
         private static bool IsTextFile (string fileName)
         {
