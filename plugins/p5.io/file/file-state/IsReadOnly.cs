@@ -23,10 +23,9 @@ namespace p5.io.file.file_state
         [ActiveEvent (Name = "file-is-read-only")]
         public static void file_is_read_only (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
+            QueryHelper.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 FileInfo info = new FileInfo (fullpath);
                 e.Args.Add (filename, info.IsReadOnly);
-                return true;
             });
         }
 
@@ -36,27 +35,12 @@ namespace p5.io.file.file_state
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "file-set-read-only")]
+        [ActiveEvent (Name = "file-delete-read-only")]
         public static void file_set_read_only (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
+            QueryHelper.Iterate (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
                 FileInfo info = new FileInfo (fullpath);
-                info.IsReadOnly = true;
-                return true;
-            });
-        }
-
-        /// <summary>
-        ///     Changes the read-only state of the specified file(s)
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "file-delete-read-only")]
-        public static void file_delete_read_only (ApplicationContext context, ActiveEventArgs e)
-        {
-            QueryHelper.Run (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
-                FileInfo info = new FileInfo (fullpath);
-                info.IsReadOnly = false;
-                return true;
+                info.IsReadOnly = e.Name == "file-set-read-only";
             });
         }
     }

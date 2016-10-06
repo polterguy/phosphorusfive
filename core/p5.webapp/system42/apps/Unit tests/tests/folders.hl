@@ -8,11 +8,13 @@
  */
 create-single-folder
   if
-    folder-exist:~/temp/foo/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo/
     delete-folder:~/temp/foo/
   create-folder:~/temp/foo/
   if
-    folder-exist:~/temp/foo/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo/
     not
     throw:@"Assert error, expected folder to exist!"
 
@@ -21,20 +23,24 @@ create-single-folder
  */
 create-multiple-folders
   if
-    folder-exist:~/temp/foo1/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo1/
     delete-folder:~/temp/foo1/
   if
-    folder-exist:~/temp/foo2/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo2/
     delete-folder:~/temp/foo2/
   _folders
     no1:~/temp/foo1/
     no1:~/temp/foo2/
   create-folder:x:/../*/_folders/*?value
   if
-    folder-exist:~/temp/foo1/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo1/
     not
     or
-      folder-exist:~/temp/foo2/
+      fetch:x:/0/0?value
+        folder-exist:~/temp/foo2/
       not
     throw:@"Assert error, expected folders to exist!"
 
@@ -44,10 +50,12 @@ create-multiple-folders
  */
 deep-copy-folder
   if
-    folder-exist:~/temp/foo-bar/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar/
     delete-folder:~/temp/foo-bar/
   if
-    folder-exist:~/temp/foo-bar-2/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar-2/
     delete-folder:~/temp/foo-bar-2/
   create-folder:~/temp/foo-bar/
   create-folder:~/temp/foo-bar/inner/
@@ -66,16 +74,20 @@ deep-copy-folder
  */
 deep-copy-multiple-folders
   if
-    folder-exist:~/temp/foo-bar-1/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar-1/
     delete-folder:~/temp/foo-bar-1/
   if
-    folder-exist:~/temp/foo-bar-2/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar-2/
     delete-folder:~/temp/foo-bar-2/
   if
-    folder-exist:~/temp/foo-bar-1-copy/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar-1-copy/
     delete-folder:~/temp/foo-bar-1-copy/
   if
-    folder-exist:~/temp/foo-bar-2-copy/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar-2-copy/
     delete-folder:~/temp/foo-bar-2-copy/
 
   create-folder:~/temp/foo-bar-1/
@@ -113,16 +125,20 @@ deep-copy-multiple-folders
  */
 move-multiple-folders
   if
-    folder-exist:~/temp/foo-bar-move-1/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar-move-1/
     delete-folder:~/temp/foo-bar-move-1/
   if
-    folder-exist:~/temp/foo-bar-move-2/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar-move-2/
     delete-folder:~/temp/foo-bar-move-2/
   if
-    folder-exist:~/temp/foo-bar-move-1-copy/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar-move-1-copy/
     delete-folder:~/temp/foo-bar-move-1-copy/
   if
-    folder-exist:~/temp/foo-bar-move-2-copy/
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo-bar-move-2-copy/
     delete-folder:~/temp/foo-bar-move-2-copy/
 
   create-folder:~/temp/foo-bar-move-1/
@@ -159,7 +175,8 @@ move-multiple-folders
  */
 list-folders
   if
-    folder-exist:~/foo/
+    fetch:x:/0/0?value
+      folder-exist:~/foo/
     delete-folder:~/foo/
   create-folder:~/foo/
   create-folder:~/foo/bar1/
@@ -209,10 +226,12 @@ list-files-throw
  */
 list-folders-expressions
   if
-    folder-exist:~/foo/
+    fetch:x:/0/0?value
+      folder-exist:~/foo/
     delete-folder:~/foo/
   if
-    folder-exist:~/bar/
+    fetch:x:/0/0?value
+      folder-exist:~/bar/
     delete-folder:~/bar/
   create-folder:~/foo/
   create-folder:~/foo/bar1/

@@ -23,7 +23,7 @@ namespace p5.io.file
         [ActiveEvent (Name = "delete-file")]
         public static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
+            QueryHelper.Iterate (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
                 if (File.Exists (fullpath)) {
 
                     // File exists, removing file
@@ -36,7 +36,6 @@ namespace p5.io.file
                         e.Args,
                         context);
                 }
-                return true;
             });
         }
     }

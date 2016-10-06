@@ -14,14 +14,14 @@ namespace p5.io.common
     public static class QueryHelper
     {
         // Callback for iterating files and folders. Unless you return "true", iteration will stop.
-        public delegate bool QueryHelperDelegate (string filename, string fullpath);
+        public delegate void QueryHelperDelegate (string filename, string fullpath);
 
         /// <summary>
         ///     Allows you to iterate files and folders for querying them
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="args">Parameters passed into Active Event</param>
-        public static void Run (
+        public static void Iterate (
             ApplicationContext context, 
             Node args, 
             bool removeArgsValue, 
@@ -44,8 +44,7 @@ namespace p5.io.common
                     context.Raise (".p5.io.authorize." + authorizeEvent, new Node ("", fileObjectName).Add ("args", args));
 
                     // Invoking callback delegate
-                    if (!functor (fileObjectName, rootFolder + fileObjectName))
-                        return;
+                    functor (fileObjectName, rootFolder + fileObjectName);
                 }
             }
         }

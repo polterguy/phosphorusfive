@@ -36,8 +36,6 @@ namespace p5.io.file
                 // Making sure we return the filename as the value of root node, in case a new filename was created
                 e.Args.Value = destination;
             }, delegate (string destination) {
-                return Common.CreateNewUniqueFileName (context, destination);
-            }, delegate (string destination) {
                 return File.Exists (destination);
             });
         }

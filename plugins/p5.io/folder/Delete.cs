@@ -24,13 +24,12 @@ namespace p5.io.folder
         [ActiveEvent (Name = "delete-folder")]
         public static void delete_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
+            QueryHelper.Iterate (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
                 if (Directory.Exists (fullpath)) {
                     Directory.Delete (fullpath, true);
                 } else {
                     throw new LambdaException (string.Format ("Tried to delete non-existing folder - '{0}'", foldername), e.Args, context);
                 }
-                return true;
             });
         }
     }

@@ -303,8 +303,9 @@ else
     >:int:0
     _eval
       if
-        file-exist:{0}launch.hl
-          :x:/../*/_dn/#?name
+        fetch:x:/0/0?value
+          file-exist:{0}launch.hl
+            :x:/../*/_dn/#?name
         not
         return
       split:x:/./*/_dn/#?name

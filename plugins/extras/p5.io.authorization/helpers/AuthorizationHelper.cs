@@ -24,7 +24,7 @@ namespace p5.io.authorization.helpers
             Node stack)
         {
             // Verifies filename is a valid filename
-            if (string.IsNullOrEmpty (filename) || !filename.StartsWith ("/"))
+            if (string.IsNullOrEmpty (filename) || !filename.StartsWith ("/") || filename.Contains ("\\"))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid file path", filename), 
                     stack, 
@@ -80,7 +80,7 @@ namespace p5.io.authorization.helpers
             Node stack)
         {
             // Verifies filename is a valid filename
-            if (string.IsNullOrEmpty (filename) || !filename.StartsWith ("/"))
+            if (string.IsNullOrEmpty (filename) || !filename.StartsWith ("/") || filename.Contains ("\\"))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid file path", filename), 
                     stack, 
@@ -143,7 +143,7 @@ namespace p5.io.authorization.helpers
             Node stack)
         {
             // Verifies foldername is a valid foldername
-            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWith ("/") || !foldername.EndsWith ("/"))
+            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWith ("/") || !foldername.EndsWith ("/") || foldername.Contains ("\\"))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid folder path", foldername), 
                     stack, 
@@ -185,7 +185,7 @@ namespace p5.io.authorization.helpers
             Node stack)
         {
             // Verifies foldername is a valid foldername
-            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWith ("/") || !foldername.EndsWith ("/"))
+            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWith ("/") || !foldername.EndsWith ("/") || foldername.Contains ("\\"))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid folder path", foldername), 
                     stack, 

@@ -17,9 +17,6 @@ namespace p5.io.common
         /// Delegate for actual implementation for handling one single file
         public delegate void MoveCopyDelegate (string rootFolder, string source, string destination);
 
-        /// Delegate for creating a new filename/foldername
-        public delegate string CreateNewFileObjectNameDelegate (string destination);
-
         /// Delegate for checking if fileobject exists
         public delegate bool FileObjectExistDelegate (string destination);
 
@@ -28,13 +25,12 @@ namespace p5.io.common
         /// </summary>
         /// <param name="context"></param>
         /// <param name="e"></param>
-        /// <param name="functor"></param>
+        /// <param name="functorMoveObject"></param>
         public static void CopyMoveFileObject (
             ApplicationContext context, 
             ActiveEventArgs e, 
-            MoveCopyDelegate functor, 
-            CreateNewFileObjectNameDelegate functor2,
-            FileObjectExistDelegate functor3)
+            MoveCopyDelegate functorMoveObject, 
+            FileObjectExistDelegate functorObjectExist)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -42,7 +38,7 @@ namespace p5.io.common
                 // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // Checking if we're given an expression as destination, to make sure we support Active Event source
+                // Checking if we're given an expression as source, to make sure we support Active Event source
                 if (XUtil.IsExpression (e.Args.Value)) {
 
                     // Destination is an expression, which means we might have an Active Event invocation source
@@ -61,14 +57,13 @@ namespace p5.io.common
                             rootFolder, 
                             Common.GetSystemPath (context, Utilities.Convert<string> (context, idxSource.Value)),
                             Common.GetSystemPath (context, Utilities.Convert<string> (context, dest[0])),
-                            functor,
-                            functor2,
-                            functor3);
+                            functorMoveObject,
+                            functorObjectExist);
                     }
                 } else {
 
-                    // Destination is a constant
-                    // Retrieving destination, possibly relative to currently iterated expression result
+                    // Source is a constant
+                    // Retrieving destination
                     var dest = XUtil.Source (context, e.Args, e.Args, "dest");
 
                     // Making sure source yields only one value
@@ -80,9 +75,8 @@ namespace p5.io.common
                         rootFolder,
                         Common.GetSystemPath (context, e.Args.Get<string> (context)),
                         Common.GetSystemPath (context, Utilities.Convert<string> (context, dest[0])),
-                        functor,
-                        functor2,
-                        functor3);
+                        functorMoveObject,
+                        functorObjectExist);
                 }
             }
         }
@@ -96,21 +90,17 @@ namespace p5.io.common
             string rootFolder, 
             string sourceFile, 
             string destinationFile,
-            MoveCopyDelegate functor,
-            CreateNewFileObjectNameDelegate functor2,
-            FileObjectExistDelegate functor3)
+            MoveCopyDelegate functorMoveCopy,
+            FileObjectExistDelegate functorObjectExist)
         {
             // Getting new filename of file, if needed
-            if (functor3 (rootFolder + destinationFile)) {
+            if (functorObjectExist (rootFolder + destinationFile)) {
 
-                // Destination file exist from before, creating a new unique destination filename
-                destinationFile = functor2 (destinationFile);
-
-                // Verifying user is allowed to save to updated destination filename
-                context.Raise (".p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
+                // Destination file exist from before, throwing an exception
+                throw new LambdaException (destinationFile + " already exist from before", args, context);
             }
 
-            functor (rootFolder, sourceFile, destinationFile);
+            functorMoveCopy (rootFolder, sourceFile, destinationFile);
         }
     }
 }

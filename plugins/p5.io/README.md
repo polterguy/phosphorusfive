@@ -5,21 +5,25 @@ The p5.io library, and its Active Events, allows you to easily load, create, mod
 It contains most methods necessary to handle your file system, for most problems you'd encounter, while using P5.
 
 Notice, that all IO operations within Phosphorus Five, and its "p5.io" library, expects the path you supply to start with a "/". If
-what you are referring to, is a folder, it also expects you to _end_ your path with a forward slash (/). Unless you create your paths
+what you are referring to is a folder, it also expects you to _end_ your path with a forward slash (/). Unless you create your paths
 like this, exceptions will be thrown during evaluation of your code.
 
+Regardless of which platform you are using underneath, you'll have to use forwards slash "/" to separate folders. This is true for both
+Windows, Linux and Mac OS.
+
 Also realize, that unless you are authorized to load, save, change, or delete a specific file, or folder, then a security exception will
-be thrown. For instance, a user does not by default have access to files belonging to another user, existing within another user's "home" 
-folder. (e.g. /users/username/some-folder/)
+be thrown if you attempt to. For instance, a user does not by default have access to files belonging to another user, existing within 
+another user's "home" folder. (e.g. /users/username/some-folder/)
 
 This is implemented in the [p5.io.authorization](/plugins/extras/p5.io.authorization/) project.
 
 Notice also, that all file IO Active Events in p5.io, relies upon the type conversion, normally implemented in [p5.types](/plugins/p5.types/), 
 which in turn will use UTF8 exclusively, as its conversion encoding, when for instance saving files, and also loading files. This means that
 all files created, using p5.io, will be created as UTF8 files. In addition, all files loaded with p5.io, will be assumed to be encoded as
-UTF8. This is true for all text files, however, binary data can still be saved as such.
+UTF8. This is true for all text files. However, binary data can still be saved as such.
 
 In general, at the time of this writing, p5.io exclusively support UTF8 text files, in addition to some rudimentary support for binary files.
+Hyperlambda files, are considered text files.
 
 All Active Events in p5.io, will also automatically substitute a path, with "/users/logged-in-username" if it starts with "~". For instance, 
 if you are logged in as username "root", then "~/documents/foo.txt" will unroll to "/users/root/documents/foo.txt". This allows you to
@@ -27,7 +31,7 @@ transparently refer to files in a user's folder as "~/something.txt". This is th
 a slash "/".
 
 Also notice, that although you _can_ load and save binary data with p5.io - Hyperlambda and p5.lambda, is not in general terms, very adequate
-for manipulating binary data. This means that you can load binary blob data, but for the most parts, the only intelligent thing you can do
+for manipulating binary data. This means that you can load binary data, but for the most parts, the only intelligent thing you can do
 with it, is to base64 encode this data, and/or, pass it into other Active Events, that knows how to handle your binary data.
 
 ## Handling files in your system
@@ -42,9 +46,9 @@ To load a file, simply use the *[load-file]* Active Event. An example of this ev
 load-file:/system42/application-startup.hl
 ```
 
-The above invocation, will load System42's startup file for you. Notice that this is a Hyperlambda file, which the *[load-file]* Active
+The above invocation will load System42's startup file for you. Notice that this is a Hyperlambda file, which the *[load-file]* Active
 Event will automatically determine, and hence parse the file for you automatically, to become a p5.lambda structure. If you do not wish to 
-automatically parse the file, but rather load is the file "raw", as a piece of text, not transforming it into a p5.lambda object, you must 
+automatically parse the file, but rather load the file "raw", as a piece of text, not transforming it into a p5.lambda object, you must 
 add the argument *[convert]*, and set its value to "false". An example is shown below.
 
 ```
@@ -59,9 +63,7 @@ immediately execute your Hyperlambda, without having to convert it yourself.
 
 #### Loading multiple files at the same time
 
-Sometimes, you want to load multiple files at the same time. Often you might even want to treat them as "one aggregated" file result, 
-for instance if you wish to load multiple files, and evaluate the combined result, as a single piece of p5.lambda object.
-
+Sometimes, you want to load multiple files at the same time. Often you might even want to treat them as "one aggregated" file result.
 For such cases, you can pass in an expression into your *[load-file]* invocation, such as the following is an example of.
 
 ```
@@ -89,7 +91,8 @@ Notice, if you try to load a file that does not exist, an exception will be thro
 
 ### [save-file], saving files
 
-The *[save-file]* Active Event, does the exact opposite of the *[load-file]* event. Try the following code.
+The *[save-file]* Active Event, does the exact opposite of the *[load-file]* event. Meaning, it saves a new file, or overwrites an existing on.
+Try the following code.
 
 ```
 save-file:~/foo.md
@@ -100,9 +103,10 @@ I am a newly created markdown file!"
 ```
 
 After evaluating the above Hyperlambda, a new file will exist within your main "~/" user's folder, called "foo.md".
+If the file already exists, it will be overwritten.
 
 Whatever argument you pass into the *[src]* node, will somehow be converted into a text string, or a single binary piece of blob, and
-flushed into the file path given as the value of *[save-file]*. This allows you to create a new file, or overwrite an existing file.
+flushed into the given file, passed in as the value of *[save-file]*. This allows you to create a new file, or overwrite an existing file.
 You can also use expression in your *[src]*, such as the following is an example of.
 
 ```
@@ -120,8 +124,8 @@ load-file:~/foo.hl
 ```
 
 The *[load-file]* invocation above, is only there to show the results of your newly created file, and illustrates how only the results of
-the expression you pass into your *[src]* node, are saved to disc. This allows you to save sub-sections of your trees, and even combine
-multiple pieces of text, and/or p5.lambda sub-trees, and save the combined results to disc.
+the expression you pass into your *[src]* to *[save-file]*, are saved to disc. This allows you to save sub-sections of your trees, and even 
+combine multiple pieces of text, and/or p5.lambda sub-trees, and save the combined result to disc.
 
 You can also have a "static" source, containing the nodes as children of *[src]*, such as the following is an example of.
 
@@ -162,8 +166,8 @@ _get-content
   return:x:/../*/_dn/#/*?value
 ```
 
-What the above lambda object does, is to iterate each filename given in value of the *[name]* nodes beneath *[_files]*, for then to invoke *[eval]*,
-once for each destination, passing in the *[_dn]*, being relative for each destination. Then our *[_get-content]* lambda object, returns a relative 
+What the above lambda object does, is to iterate each filename given in value of the *[name]* nodes beneath *[_files]*. For then to invoke *[eval]*,
+once for each destination, passing in *[_dn]*, being relative for each destination. Then our *[_get-content]* lambda object, returns a relative 
 source, expected to be the child node(s) beneath each filepath nodes.
 
 This "Ninja trick" allows you to save multiple files, in one go.
@@ -171,7 +175,7 @@ This "Ninja trick" allows you to save multiple files, in one go.
 ### [delete-file], deleting one or more files
 
 Just like *[load-file]*, *[delete-file]* can react upon several files at the same time. Its arguments work the same way as load-file, except of
-course, instead of loading the file(s), it deletes them instead. To delete the files created above in one of our *[save-file]* examples, you
+course, instead of loading the file(s), it deletes them. To delete the files created above in one of our *[save-file]* examples, you
 can use the following code.
 
 ```
@@ -182,27 +186,21 @@ Notice, if the above file does not exist, an exception will be thrown.
 
 The Active Event *[delete-file]*, does not take any arguments, besides a single constant value, or an expression leading to multiple file paths.
 However, just like the other file manipulation Active Events, it requires a fully qualified path, which must start with "/". To delete a file,
-the user context object must be authorized to deleting it. Otherwise, an exception will be thrown.
+the user context object must be authorized to modifying the file. Otherwise, an exception will be thrown.
 
 ### [file-exist], checking if one or more files exist
 
-Also *[file-exist]*, takes its arguments the same way as for instance *[delete-file]* does. However, *[file-exist]* will return true, only if 
-all files you check the existance of exists. If one of the files does not exist, then *[file-exist]* will return false. Let us show
-that with an example.
+*[file-exist]* accepts its arguments the same way *[load-file]* does. However, *[file-exist]* will return true for each file that
+exists, instead of returning the content of the file. Example given below.
 
 ```
-// This file exist
-file-exist:/system42/application-startup.hl
-
-// Data segment where one of the files does not exist
 _data
   file1:/system42/application-startup.hl
   file2:/does-not-exist/foo.txt
 file-exist:x:/-/*?value
 ```
 
-As you can see in the first invocation to *[file-exist]*, it yields "true", while the second invocation yields "false", since the "foo.txt"
-file does not exist.
+Notice how the above example returns true for the first file, but false for the second file.
 
 ### [move-file], moving or renaming a file
 
@@ -216,15 +214,12 @@ move-file:~/foo.txt
   dest:~/new-foo.txt
 ```
 
-Notice that if the destination already exists, then a new unique filename will be automatically created, and the path of the actual filename
-for where the file was moved, will be returned as the value of *[move-file]*. You can also move several files in one invocation, cleverly
-using expressions, and Active Event sources. However, only the full path of the last file moved this way, will be returned as the value of
-your *[move-file]* Active Event. Consider this code.
+To move multiple files in one go, you could do something similar to this.
 
 ```
-save-file:~/foo1.txt
+save-file:~/temp/foo1.txt
   src:foo1
-save-file:~/foo2.txt
+save-file:~/temp/foo2.txt
   src:foo2
 move-file:x:/../*/save-file?value
   eval
@@ -241,9 +236,10 @@ its end. The end result being, that you end up with two files at the root of you
 "foo2 - new path.txt".
 
 The *[move-file]* Active Event, also has the alias of *[rename-file]*, which can be used instead of "move-file". However, the logic is the
-exact same, and there is no difference in implementation of these two events. They are simply aliases for the same Active Event handler.
+exact same, and there are no differences in implementation of these two events. They are simply aliases for the same Active Event handler.
 
-If the files you are trying to move, does not exist, an exception will be thrown.
+If the files you are trying to move, does not exist, an exception will be thrown. If there exist a file from before, with the same path as the
+new destination filenames for your file(s), then an exception will also be thrown.
 
 ### [copy-file], copying a file
 
@@ -259,13 +255,12 @@ copy-file:~/foo.txt
 ```
 
 The *[dest]* node argument above, which is the child node of *[copy-file]*, is of course the destination filepath, for your copy. Here too, you
-could have copied several files at once, like we did with *[move-file]*. In addition to that the last file coped this way, would have its full
-path returned as the value of *[copy-file]*.
+could have copied several files at once, like we did with *[move-file]*.
 
 ### [file-size], [file-is-read-only], [file-creation-time] and [file-access-time]
 
 The *[file-size]*, *[file-is-read-only]*, *[file-creation-time]* and *[file-access-time]* Active Events, returns the size, read-only state,
-creation time, and access time of each file you supply to them, either as an expression, or as a constant. Example.
+creation time, and access time of each file you supply to them.
 
 ```
 file-size:/web.config
@@ -286,6 +281,11 @@ file-creation-time
 file-access-time
   /web.config:date:"2016-09-18T23:18:41.166"
 ```
+
+#### Changing the read-only state of a file
+
+You can set one or more files to "read-only" with the *[file-set-read-only]* Active Event. In addition, you can remove the "read-only" attribute,
+using the *[file-delete-read-only]* Active Event. Both of these Active Events takes either a constant or an expression, leading to multiple files.
 
 ## How to handle folders in your system
 
@@ -379,6 +379,17 @@ If you evaluate the above Hyperlambda, you will see that these Active Events ret
 nodes. This is a general rule in p5.lambda, which is that in general terms, Active Events that returns a list of strings, returns these as 
 the names of the children nodes of their main event node.
 
+Notice the *[list-files]* Active Event, can optionally be given a *[filter]*. This is a piece of string, that each file must contain, to yield a match.
+For instance, to list only the Hyperlambda files in your System42 folder, you could do something like this.
+
+```
+list-files:/system42/
+  filter:.hl
+```
+
+Notice, if you start your filter with a period ".", then *[list-files]* assumes that you wish to filter upon file extensions. Otherwise, it will simply
+retrieve all files somehow containing your specified search term. Regardless of where this is found in the filename.
+
 #### Filtering files according to type
 
 When you invoke *[list-files]*, you can optionally supply a *[filter]* argument, to make sure you only retrieve files with a
@@ -432,10 +443,5 @@ files within some specified folder. These are listed below.
 
 * sys42.execute-lambda-file - Evaluates one or more Hyperlambda files. Pass in either a constant, or an expression leading to one or more files.
 * sys42.execute-lambda-folder - Evaluates all Hyperlambda files within one or more specified folders.
-
-#### Changing the read-only state of a file
-
-You can set one or more files to "read-only" with the *[file-set-read-only]* Active Event. In addition, you can remove the "read-only" attribute,
-using the *[file-delete-read-only]* Active Event. Both of these Active Events takes either a constant or an expression, leading to multiple files.
 
 

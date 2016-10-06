@@ -23,19 +23,9 @@ namespace p5.io.file
         [ActiveEvent (Name = "file-exist")]
         public static void file_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, false, "read-file", delegate (string filename, string fullpath) {
-                if (!File.Exists (fullpath)) {
-                    e.Args.Value = false;
-                    return false;
-                } else {
-                    e.Args.Value = true;
-                    return true;
-                }
+            QueryHelper.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
+                e.Args.Add (filename, File.Exists (fullpath));
             });
-
-            // In case expressions yields nothing, it should still be in value of node
-            if (XUtil.IsExpression (e.Args.Value))
-                e.Args.Value = false;
         }
     }
 }

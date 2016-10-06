@@ -26,13 +26,12 @@ namespace p5.io.folder
         [ActiveEvent (Name = "create-folder")]
         public static void create_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
+            QueryHelper.Iterate (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
                 if (Directory.Exists (fullpath)) {
                     throw new LambdaException (string.Format ("Folder '{0}' exist from before", foldername), e.Args, context);
                 } else {
                     Directory.CreateDirectory (fullpath);
                 }
-                return true;
             });
         }
     }

@@ -56,7 +56,7 @@ create-event:sys42.execute-lambda-folder
    * Listing all Hyperlambda files in directories we're given.
    */
   list-files:x:/../*/_arg?value
-    filter:hl
+    filter:.hl
 
   /*
    * Evaluating all Hyperlambda files from that folder.
@@ -98,8 +98,9 @@ for-each:x:/-/*?name
    * and if so, adding it to [_startup] such that we can evaluate it later.
    */
   if
-    file-exist:{0}startup.hl
-      :x:/..for-each/*/_dp?value
+    fetch:x:/0/0?value
+      file-exist:{0}startup.hl
+        :x:/..for-each/*/_dp?value
     add:x:/../*/_startup
       src:{0}startup.hl
         :x:/..for-each/*/_dp?value

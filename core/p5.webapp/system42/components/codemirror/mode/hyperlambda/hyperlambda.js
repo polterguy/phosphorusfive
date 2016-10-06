@@ -824,8 +824,7 @@ CodeMirror.defineMode("hyperlambda", function() {
         case 'move-folder':
         case 'copy-folder':
         case 'save-file':
-        case 'save-text-file':
-        case 'save-binary-file':
+        case 'list-files':
         case 'update-data':
         case 'insert-data':
         case 'append-data':
@@ -919,7 +918,6 @@ CodeMirror.defineMode("hyperlambda", function() {
         case 'delete-file':
         case 'create-folder':
         case 'folder-exist':
-        case 'list-files':
         case 'list-folders':
         case 'delete-folder':
         case 'select-data':

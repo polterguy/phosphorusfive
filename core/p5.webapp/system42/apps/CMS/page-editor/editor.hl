@@ -14,7 +14,7 @@ select-data:x:/*/*/p5.page/"={0}"
  * Setting templates
  */
 list-files:/system42/apps/CMS/page-templates/
-  filter:hl
+  filter:.hl
 for-each:x:/-/*?name
   _lit
     literal

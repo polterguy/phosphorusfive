@@ -96,7 +96,7 @@ create-widget:cms-page-editor
                    * in the "/system42/apps/CMS/page-editor/specialized-editors/" folder.
                    */
                   list-files:/system42/apps/CMS/page-editor/specialized-editors/
-                    filter:hl
+                    filter:.hl
                   for-each:x:/-/*?name
 
                     /*

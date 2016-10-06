@@ -26,13 +26,12 @@ namespace p5.io.folder
             // Getting root folder
             var rootFolder = Common.GetRootFolder (context);
 
-            QueryHelper.Run (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
+            QueryHelper.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
                 foreach (var idxFolder in Directory.GetDirectories (rootFolder + foldername)) {
                     var folderName = idxFolder.Replace ("\\", "/");
                     folderName = folderName.Replace (rootFolder, "");
                     e.Args.Add (folderName.TrimEnd ('/') + "/");
                 }
-                return true;
             });
         }
     }

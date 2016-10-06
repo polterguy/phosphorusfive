@@ -23,19 +23,9 @@ namespace p5.io.folder
         [ActiveEvent (Name = "folder-exist")]
         public static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Run (context, e.Args, false, "read-folder", delegate (string foldername, string fullpath) {
-                if (!Directory.Exists (fullpath)) {
-                    e.Args.Value = false;
-                    return false;
-                } else {
-                    e.Args.Value = true;
-                    return true;
-                }
+            QueryHelper.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
+                e.Args.Add (foldername, Directory.Exists (fullpath));
             });
-
-            // In case expression yields no results, it will still be in value of node
-            if (XUtil.IsExpression (e.Args.Value))
-                e.Args.Value = false;
         }
     }
 }

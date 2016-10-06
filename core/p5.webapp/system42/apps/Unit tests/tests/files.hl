@@ -41,7 +41,8 @@ delete-single-file
     src:Bar was here
   delete-file:~/temp/bar.txt
   if
-    file-exist:~/temp/bar.txt
+    fetch:x:/0/0?value
+      file-exist:~/temp/bar.txt
     throw:@"Assert error, expected file to have been deleted"
 
 
@@ -55,8 +56,10 @@ delete-multiple-files
     src:Bar2 was here
   delete-file:x:/../*/save-file?value
   if
-    file-exist:~/temp/bar1.txt
+    fetch:x:/0/0?value
+      file-exist:~/temp/bar1.txt
     or
-      file-exist:~/temp/bar2.txt
+      fetch:x:/0/0?value
+        file-exist:~/temp/bar2.txt
     throw:@"Assert error, expected files to have been deleted"
 

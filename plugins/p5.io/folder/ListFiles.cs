@@ -31,16 +31,25 @@ namespace p5.io.folder
             // Checking if we've got a filter
             string filter = e.Args.GetExChildValue ("filter", context, "");
 
-            QueryHelper.Run (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
+            QueryHelper.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
                 foreach (var idxFile in Directory.GetFiles (fullpath)) {
-                    if (filter == "" || idxFile.EndsWith ("." + filter)) {
+                    if (filter == "" || MatchFilter (idxFile, filter)) {
                         var fileName = idxFile.Replace ("\\", "/");
                         fileName = fileName.Replace (rootFolder, "");
                         e.Args.Add (fileName);
                     }
                 }
-                return true;
             });
+        }
+
+        /*
+         * Helper for above
+         */
+        private static bool MatchFilter (string filename, string filter)
+        {
+            if (filter.StartsWith ("."))
+                return Path.GetExtension (filename).ToLower () == filter.ToLower ();
+            return Path.GetFileName (filename).Contains (filter);
         }
     }
 }
