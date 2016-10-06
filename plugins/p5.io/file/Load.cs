@@ -24,7 +24,7 @@ namespace p5.io.file
         [ActiveEvent (Name = "load-file")]
         public static void file_load (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Iterate (context, e.Args, true, "load-file", delegate (string filename, string fullpath) {
+            ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 if (File.Exists (fullpath)) {
                     if (IsTextFile (filename)) {
                         LoadTextFile (context, e.Args, fullpath, filename);

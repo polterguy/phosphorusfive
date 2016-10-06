@@ -22,7 +22,7 @@ namespace p5.io.file.file_state
         [ActiveEvent (Name = "file-creation-time")]
         public static void file_creation_time (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
+            ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 FileInfo info = new FileInfo (fullpath);
                 e.Args.Add (filename, info.CreationTime);
             });

@@ -23,7 +23,7 @@ namespace p5.io.folder
         [ActiveEvent (Name = "folder-exist")]
         public static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
+            ObjectIterator.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
                 e.Args.Add (foldername, Directory.Exists (fullpath));
             });
         }

@@ -26,7 +26,7 @@ namespace p5.io.folder
             // Getting root folder
             var rootFolder = Common.GetRootFolder (context);
 
-            QueryHelper.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
+            ObjectIterator.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
                 foreach (var idxFolder in Directory.GetDirectories (rootFolder + foldername)) {
                     var folderName = idxFolder.Replace ("\\", "/");
                     folderName = folderName.Replace (rootFolder, "");

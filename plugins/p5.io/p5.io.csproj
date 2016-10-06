@@ -47,7 +47,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="common\MoveCopyHelper.cs" />
-    <Compile Include="common\QueryHelper.cs" />
+    <Compile Include="common\ObjectIterator.cs" />
     <Compile Include="file\file-state\IsReadOnly.cs" />
     <Compile Include="file\file-state\AccessTime.cs" />
     <Compile Include="file\file-state\CreationTime.cs" />

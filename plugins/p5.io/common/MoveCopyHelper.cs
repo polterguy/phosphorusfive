@@ -18,19 +18,20 @@ namespace p5.io.common
         public delegate void MoveCopyDelegate (string rootFolder, string source, string destination);
 
         /// Delegate for checking if fileobject exists
-        public delegate bool FileObjectExistDelegate (string destination);
+        public delegate bool ObjectExistDelegate (string destination);
 
         /// <summary>
         ///     Common helper for iterating files/folders for move/copy/rename operation
         /// </summary>
         /// <param name="context"></param>
         /// <param name="e"></param>
-        /// <param name="functorMoveObject"></param>
+        /// <param name="functorMoveObject">Actual implementation of moving/copying a single file object</param>
+        /// <param name="functorObjectExist">Expected to return true if object exist from before</param>
         public static void CopyMoveFileObject (
             ApplicationContext context, 
             ActiveEventArgs e, 
             MoveCopyDelegate functorMoveObject, 
-            FileObjectExistDelegate functorObjectExist)
+            ObjectExistDelegate functorObjectExist)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -91,7 +92,7 @@ namespace p5.io.common
             string sourceFile, 
             string destinationFile,
             MoveCopyDelegate functorMoveCopy,
-            FileObjectExistDelegate functorObjectExist)
+            ObjectExistDelegate functorObjectExist)
         {
             // Getting new filename of file, if needed
             if (functorObjectExist (rootFolder + destinationFile)) {

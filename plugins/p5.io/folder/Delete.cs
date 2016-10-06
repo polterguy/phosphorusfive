@@ -24,7 +24,7 @@ namespace p5.io.folder
         [ActiveEvent (Name = "delete-folder")]
         public static void delete_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Iterate (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
+            ObjectIterator.Iterate (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
                 if (Directory.Exists (fullpath)) {
                     Directory.Delete (fullpath, true);
                 } else {

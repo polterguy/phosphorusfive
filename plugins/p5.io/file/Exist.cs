@@ -23,7 +23,7 @@ namespace p5.io.file
         [ActiveEvent (Name = "file-exist")]
         public static void file_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            QueryHelper.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
+            ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 e.Args.Add (filename, File.Exists (fullpath));
             });
         }

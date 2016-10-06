@@ -31,7 +31,7 @@ namespace p5.io.folder
             // Checking if we've got a filter
             string filter = e.Args.GetExChildValue ("filter", context, "");
 
-            QueryHelper.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
+            ObjectIterator.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
                 foreach (var idxFile in Directory.GetFiles (fullpath)) {
                     if (filter == "" || MatchFilter (idxFile, filter)) {
                         var fileName = idxFile.Replace ("\\", "/");

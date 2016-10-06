@@ -444,4 +444,19 @@ files within some specified folder. These are listed below.
 * sys42.execute-lambda-file - Evaluates one or more Hyperlambda files. Pass in either a constant, or an expression leading to one or more files.
 * sys42.execute-lambda-folder - Evaluates all Hyperlambda files within one or more specified folders.
 
+## Warning! WRITE PORTABLE CODE!
+
+The underlaying filesystem on Windows and Linux/Mac OS, have big differences. I have tried to accommodate for most of these differences, to create a
+uniform and common way of typing out paths and such. One example is that I consistently replace backslash "\" with forward slash "/", and P5 doesn't 
+even accept backslash as a part of a path. However, a filename in Windows called "FOO.txt" points to the same file as "foo.TXT". Windows does not 
+differentiate between CAPS in filenames. Linux and Mac OS does however discriminate between CAPS!
+
+This means that you can read the FILENAME.TXT as the same file called "filename.txt" on Windows. When you later port your code to your Linux server,
+your code will no longer work, because "FILENAME.TXT" is no longer the same as "filename.txt".
+
+Therefor I highly encourage you to use the _correct_ CAPS of your filenames when developing your apps. Regardless of whether or not it works on Windows.
+Otherwise your code will not be portable to run on Linux servers.
+
+I could have verified that filenames had the right CAPS, but this would blow up the code, and use additional resources on your system. Therefor I have
+chosen to (for now) allow the underlaying filesystem take care of usage of CAPS. Have this in mind though as you create your own apps!
 
