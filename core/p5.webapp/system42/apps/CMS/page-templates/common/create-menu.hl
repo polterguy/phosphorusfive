@@ -54,7 +54,7 @@ if
                     * Creates the menu of our page
                     */
                   sys42.cms.create-navbar-menu
-                    sys42.execute-lambda-file:/system42/apps/CMS/page-templates/common/create-menu.hl
+                    sys42.execute-lambda-file:@CMS/page-templates/common/create-menu.hl
                       _extra-css-classes:{_extra-css-classes}
 else
 

@@ -15,6 +15,17 @@ save-and-load-file
     throw:@"Assert error, expected 'Foo bar' in file!"
 
 /*
+ * Tests that creating a file behaves
+ */
+save-and-load-file-unrolled-path
+  save-file:@TEMP/foo.txt
+    src:Foo bar
+  load-file:~/temp/foo.txt
+  if:x:/-/*?value
+    !=:Foo bar
+    throw:@"Assert error, expected 'Foo bar' in file!"
+
+/*
  * Tests that creating multiple file behaves
  */
 save-and-load-multiple-files

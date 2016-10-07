@@ -360,6 +360,7 @@
     <Content Include="system42\apps\CMS\page-loader\special-page\README.md" />
     <Content Include="system42\apps\CMS\page-editor\specialized-editors\README.md" />
     <Content Include="system42\apps\CMS\page-editor\new-page-templates\README.md" />
+    <Content Include="system42\apps\CMS\startup\p5.io.unroll-path.hl" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />
@@ -382,6 +383,7 @@
     <Content Include="system42\components\ckeditor\startup\sys42.widgets.ck-editor.hl" />
     <None Include="system42\apps\CMS\startup\p5.web.load-ui.hl" />
     <Content Include="system42\startup\README.md" />
+    <Content Include="system42\startup\p5.io.unroll-path.hl" />
     <None Include="system42\startup\sys42.get-widget.hl" />
     <None Include="system42\components\ckeditor\README.md" />
     <None Include="system42\components\ckeditor\skins\moono\readme.md" />

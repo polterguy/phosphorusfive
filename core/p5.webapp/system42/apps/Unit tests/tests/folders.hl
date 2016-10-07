@@ -4,7 +4,7 @@
  */
 
 /*
- * Tests that creating a file behaves
+ * Tests that creating a folder behaves
  */
 create-single-folder
   if
@@ -12,6 +12,21 @@ create-single-folder
       folder-exist:~/temp/foo/
     delete-folder:~/temp/foo/
   create-folder:~/temp/foo/
+  if
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo/
+    not
+    throw:@"Assert error, expected folder to exist!"
+
+/*
+ * Tests that creating a folder behaves
+ */
+create-single-folder-unrolled-path
+  if
+    fetch:x:/0/0?value
+      folder-exist:~/temp/foo/
+    delete-folder:~/temp/foo/
+  create-folder:@TEMP/foo/
   if
     fetch:x:/0/0?value
       folder-exist:~/temp/foo/

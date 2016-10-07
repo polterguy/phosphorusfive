@@ -33,8 +33,8 @@ if:x:/-/*?count
     not
 
     // Need to create server dynamic salt
-    sys42.execute-lambda-file:/system42/apps/CMS/installation/create-server-salt.hl
+    sys42.execute-lambda-file:@CMS/installation/create-server-salt.hl
   else
 
     // Need to set root password, and do other types of installation setup things
-    sys42.execute-lambda-file:/system42/apps/CMS/installation/set-root-password.hl
+    sys42.execute-lambda-file:@CMS/installation/set-root-password.hl

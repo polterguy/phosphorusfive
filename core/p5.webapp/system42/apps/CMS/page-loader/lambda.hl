@@ -39,7 +39,7 @@ else
   /*
    * Loading page that shows user does not have access to object.
    */
-  sys42.execute-lambda-file:/system42/apps/CMS/page-loader/special-page/no-access.hl
-    _template:/system42/apps/CMS/page-templates/default.hl
+  sys42.execute-lambda-file:@CMS/page-loader/special-page/no-access.hl
+    _template:@CMS/page-templates/default.hl
 
 

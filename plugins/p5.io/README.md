@@ -397,29 +397,12 @@ specific extension. The code below for instance, will only retrieve the ".aspx" 
 
 ```
 list-files:/
-  filter:aspx
+  filter:.aspx
 ```
 
 ### Ninja tricks in p5.io
 
 Below are some "Ninja tricks" when working with p5.io.
-
-#### Automatically getting a unique new folder/file name
-
-If you move, rename or copy a file or folder, and the destination file or folder already exist, then p5.io will create a new unique 
-file/folder path for you, automatically, and use this instead of your originally requested path. Regardless of whether or not p5.io
-creates a new unique path for you, it will return the path it uses for the destination, as the value of the invocation node. Look
-at this code after evaluation to see this in action.
-
-```
-create-folder:~/foo-bar/
-create-folder:~/foo-bar-2/
-copy-folder:~/foo-bar-2/
-  dest:~/foo-bar/
-```
-
-After evaluating the above Hyperlambda, you will see that the value of your *[copy-folder]* node, will look something like "/foo-bar copy 2/".
-This is because the destination value of your copy-folder invocation was a path to a folder that already exist.
 
 #### Executing every Hyperlambda file within a folder
 
@@ -428,7 +411,7 @@ some specific folder, easily, with only 3-4 lines of code. Imagine the following
 
 ```
 list-files:/system42/some-hyperlambda-folder/
-  filter:hl
+  filter:.hl
 load-file:x:/-/*?name
 eval:x:/-/*
 ```
@@ -443,6 +426,11 @@ files within some specified folder. These are listed below.
 
 * sys42.execute-lambda-file - Evaluates one or more Hyperlambda files. Pass in either a constant, or an expression leading to one or more files.
 * sys42.execute-lambda-folder - Evaluates all Hyperlambda files within one or more specified folders.
+
+#### Additional helper Active Events
+
+If you create your own file plugin, that uses paths, you can use the *[.p5.io.unroll-path]* Active Event, to make sure for instance "~" is
+replaces with the user's home directory. This Active Event takes a path as its input, and returns the "unrolled path" back to caller.
 
 ## Warning! WRITE PORTABLE CODE!
 

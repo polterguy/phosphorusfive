@@ -5,7 +5,7 @@
 p5.page:/
   type:html
   name:Home
-  template:/system42/apps/CMS/page-templates/default.hl
+  template:@CMS/page-templates/default.hl
   content:@"
 <img class='prepend-left' src='/media/images/headshot.png' style='float:right;' />
 

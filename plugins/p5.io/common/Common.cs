@@ -40,8 +40,19 @@ namespace p5.io.common
         /// <returns></returns>
         public static string GetSystemPath (ApplicationContext context, string path)
         {
+            // Checking if path contains variables
             if (path.StartsWith ("~")) {
+
+                // Returning user's folder
                 return "/users/" + context.Ticket.Username + path.Substring (1);
+            } else if (path.StartsWith ("@")) {
+
+                // Returning variable path according to results of Active Event invocation
+                var variable = path.Substring (0, path.IndexOf ("/"));
+                var variableUnrolled = context.Raise ("p5.io.unroll-path." + variable).Get<string> (context);
+
+                // Recursively invoking self untill there is nothing more to unroll
+                return GetSystemPath (context, variableUnrolled + path.Substring (variable.Length));
             }
             return path;
         }
