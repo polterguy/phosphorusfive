@@ -7,6 +7,8 @@
  * 
  * [_header]         - Header of modal dialogue
  * [_body]           - Explanatory text of dialogue
+ * [_class]          - Override the default CSS class
+ * [_parent]         - Override the default parent widget
  * [_onok]           - Code to be evaluated if user clicks OK button
  * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
  *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must

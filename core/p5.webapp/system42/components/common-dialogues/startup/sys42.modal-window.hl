@@ -6,11 +6,13 @@
  * By default, it is created with on "OK" button, which can be overridden if caller
  * supplies his own set of [_buttons].
  *
- * [_header]   - Header of modal wizard window
- * [_body]     - Explanatory text of dialogue
- * [_onok]     - Lambda callback to evaluate upon user clicking "OK" button
- * [_buttons]  - Buttons to use instead of the (default) "OK" button
- * [_widgets]  - List of widgets to append into the body parts of the modal window
+ * [_header]         - Header of modal wizard window
+ * [_body]           - Explanatory text of dialogue
+ * [_class]          - Override the default CSS class
+ * [_parent]         - Override the default parent widget
+ * [_onok]           - Lambda callback to evaluate upon user clicking "OK" button
+ * [_buttons]        - Buttons to use instead of the (default) "OK" button
+ * [_widgets]        - List of widgets to append into the body parts of the modal window
  *
  * Notice, if the user clicks enter while any of the [_widgets] widgets have focus, then
  * the first button in the [_buttons] list will be clicked (alternatively the "OK" button)
@@ -23,7 +25,7 @@ create-event:sys42.modal-window
    * up prioritizing specified argument, resorting to [_default] value if not given
    */
   _defaults
-    _header:Supply info!
+    _header:Supply info
     _body:
     _class:modal fade
     _parent:cnt

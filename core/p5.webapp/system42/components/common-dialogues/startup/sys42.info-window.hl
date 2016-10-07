@@ -6,8 +6,8 @@
  * Arguments;
  *
  * [_arg] (or value) - Message, or epxression leading to message, you wish to display to user
- * [_class]          - Additional CS classes that will be added to the widget. Out of the box,
- *                     there exist "info-window-longer", "info-window-error" and "info-window-warning"
+ * [_class]          - Override the default CSS class
+ * [_parent]         - Override the default parent widget
  *
  * You cannot show more than one instance of this window at the time
  */
@@ -21,6 +21,7 @@ create-event:sys42.info-window
   _defaults
     _arg:You should really have provided some text here as value of invocation ...
     _class:info-window
+    _parent:cnt
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
