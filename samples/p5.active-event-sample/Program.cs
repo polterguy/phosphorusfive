@@ -1,17 +1,35 @@
 /*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
- * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
+ * 
+ * This file is part of Phosphorus Five.
+ *
+ * Phosphorus Five is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Phosphorus Five is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * If you cannot for some reasons use the Affero GPL license, Phosphorus
+ * Five is also commercially available under Quid Pro Quo terms. Check 
+ * out our website at http://gaiasoul.com for more details.
  */
 
- /*
-  * This console program contains a reference to the project called "p5.active-event-sample-plugin", but this
-  * is only for our convenience, since we don't want to physically copy and paste our plugin DLL into the bin
-  * folder for this console program, every time we compile our project. If we wanted to, we wouldn't need this 
-  * reference at all in fact, but could completely rely upon dynamically loading our plugin DLL into our AppDomain.
-  * 
-  * However, there are no dependencies between our console program (this program) and our plugin in any ways.
-  * Still our console program is perfectly able to invoke Active Events (methods) in our plugin assembly.
-  */
+/*
+ * This console program contains a reference to the project called "p5.active-event-sample-plugin", but this
+ * is only for our convenience, since we don't want to physically copy and paste our plugin DLL into the bin
+ * folder for this console program, every time we compile our project. If we wanted to, we wouldn't need this 
+ * reference at all in fact, but could completely rely upon dynamically loading our plugin DLL into our AppDomain.
+ * 
+ * However, there are no dependencies between our console program (this program) and our plugin in any ways.
+ * Still our console program is perfectly able to invoke Active Events (methods) in our plugin assembly.
+ */
 
 using p5.core;
 

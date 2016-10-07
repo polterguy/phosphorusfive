@@ -5,7 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8F53-441B-ACE1-5E8330F8CE00}"
 	ProjectSection(SolutionItems) = preProject
-		LICENSE = LICENSE
+		.gitignore = .gitignore
+		LICENSE.md = LICENSE.md
 		README.md = README.md
 		TODO.txt = TODO.txt
 	EndProjectSection

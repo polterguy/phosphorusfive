@@ -1,13 +1,31 @@
 /*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, phosphorusfive@gmail.com
- * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
+ * 
+ * This file is part of Phosphorus Five.
+ *
+ * Phosphorus Five is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Phosphorus Five is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * If you cannot for some reasons use the Affero GPL license, Phosphorus
+ * Five is also commercially available under Quid Pro Quo terms. Check 
+ * out our website at http://gaiasoul.com for more details.
  */
 
- /*
-  * This is a "plugin assembly", consumed in our "p5.active-event-sample" console program. Neither contains
-  * any references to the other in any ways, still our console program is able to invoke Active Events in this assembly,
-  * as if they were methods in a library.
-  */
+/*
+ * This is a "plugin assembly", consumed in our "p5.active-event-sample" console program. Neither contains
+ * any references to the other in any ways, still our console program is able to invoke Active Events in this assembly,
+ * as if they were methods in a library.
+ */
 
 using p5.core;
 
