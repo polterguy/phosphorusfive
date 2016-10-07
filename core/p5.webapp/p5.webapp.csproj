@@ -361,6 +361,7 @@
     <Content Include="system42\apps\CMS\page-editor\specialized-editors\README.md" />
     <Content Include="system42\apps\CMS\page-editor\new-page-templates\README.md" />
     <Content Include="system42\apps\CMS\startup\p5.io.unroll-path.hl" />
+    <Content Include="system42\apps\Unit tests\startup.hl" />
     <None Include="system42\README.md" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />

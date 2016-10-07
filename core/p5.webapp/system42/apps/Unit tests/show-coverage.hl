@@ -15,7 +15,7 @@ set:x:/-/*/dynamic|/-/*/=|/-/*/=~.
 /*
  * Then loading up all unit test files, making sure we remove the "launch.hl" file
  */
-list-files:/system42/apps/Unit tests/tests/
+list-files:@tests/tests/
   filter:.hl
 set:x:/-/*/~launch.hl
 load-file:x:/-2/*?name

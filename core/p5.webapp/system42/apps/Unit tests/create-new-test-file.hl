@@ -22,6 +22,10 @@ sys42.modal-window
       class:btn btn-default
       innerValue:Create
       onclick
+
+        /*
+         * Getting name of new test file, and verifying it's not empty
+         */
         get-widget-property:test-filename
           value
         if:x:/../*/get-widget-property/*/*?value
@@ -30,6 +34,10 @@ sys42.modal-window
             class:form-group has-error
           send-javascript:@"$('#test-filename').focus().select();"
           return
+
+        /*
+         * Checking if user supplied the name without a ".hl" extension, and if so, we add it
+         */
         split:x:/../*/get-widget-property/*/*?value
           =:.
         if:x:/-/*?count
@@ -37,6 +45,10 @@ sys42.modal-window
           set:x:/../*/get-widget-property/*/*?value
             src:{0}.hl
               :x:/../*/get-widget-property/*/*?value
+
+        /*
+         * Checking if user supplied a slash in the filename, and if so, alert him that this is an error
+         */
         split:x:/../*/get-widget-property/*/*?value
           =:/
         if:x:/-/*?count
@@ -45,8 +57,12 @@ sys42.modal-window
             class:form-group has-error
           send-javascript:@"$('#test-filename').focus().select();"
         else
+
+          /*
+           * Filename of test file is OK, creating a default test file
+           */
           save-file:{0}{1}
-            :/system42/apps/Unit tests/tests/
+            :@tests/tests/
             :x:/../*/get-widget-property/*/*?value
             src:@"/*
  * Contains unit tests for testing [whatever] in system
@@ -60,12 +76,26 @@ foo
   if:bool:false
     throw:@""Assert error, expected [something], got [something-else]!""
 "
+
+          /*
+           * Making sure we close our modal window
+           */
+          sys42.modal-window.close
+
+          /*
+           * Deleting widgets and re-creating datagrid (and other widgets) by invoking "self"
+           */
           delete-widget:unit-test-bottom-toolbar
           delete-widget:unit-test-datagrid
-          sys42.execute-lambda-file:/system42/apps/Unit tests/launch.hl
-          sys42.modal-window.close
+          sys42.execute-lambda-file:@tests/launch.hl
+
+          /*
+           * Making sure our newly created test is edited
+           */
+          p5.io.unroll-path.@tests
           find-widget
-            _file-button:/system42/apps/Unit tests/tests/{0}
+            _file-button:{0}/tests/{1}
+              :x:/././-?value
               :x:/../*/get-widget-property/*/*?value
           raise-widget-ajax-event:x:/-/*?value
             onclick

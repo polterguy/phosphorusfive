@@ -88,7 +88,7 @@ create-widget:{0}_editor
                     sys42.info-window:File was deleted
                     delete-widget:unit-test-bottom-toolbar
                     delete-widget:unit-test-datagrid
-                    sys42.execute-lambda-file:/system42/apps/Unit tests/launch.hl
+                    sys42.execute-lambda-file:@tests/launch.hl
 
             /*
               * The "Close" button for edited unit test, such that user

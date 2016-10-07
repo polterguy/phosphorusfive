@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
@@ -16,6 +17,11 @@ namespace p5.io.common
     /// </summary>
     public static class Common
     {
+        /// <summary>
+        ///     Unrolls the path for current node, if path contains variables
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="e"></param>
         [ActiveEvent (Name = ".p5.io.unroll-path")]
         public static void _p5_io_unroll_path (ApplicationContext context, ActiveEventArgs e)
         {
