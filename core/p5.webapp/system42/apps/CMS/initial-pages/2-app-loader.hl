@@ -14,7 +14,10 @@ p5.page:/app-loader
 get-http-param:app
 sys42.execute-lambda-file:/system42/apps/{0}/launch.hl
   :x:/../*/get-http-param/0?value
-set-widget-property:header
-  innerValue:x:/../*/get-http-param/0?value
+if
+  fetch:x:/0/0?value
+    widget-exist:header
+  set-widget-property:header
+    innerValue:x:/../*/get-http-param/0?value
 set-title:x:/../*/get-http-param/0?value
 "

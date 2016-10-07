@@ -38,7 +38,10 @@ else
 /*
  * Then making sure we modify the "header" and title of page
  */
-set-widget-property:header
-  innerValue:x:/../*/_args/*/name?value
+if
+  fetch:x:/0/0?value
+    widget-exist:header
+  set-widget-property:header
+    innerValue:x:/../*/_args/*/name?value
 set-title:x:/../*/_args/*/name?value
 

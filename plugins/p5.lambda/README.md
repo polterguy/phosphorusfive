@@ -1,22 +1,17 @@
-p5.lambda, the core "programming language" of Phosphorus Five
+The core p5.lambda "non-programming language" of Phosphorus Five
 ===============
 
-p5.lambda is the core of the "programming language" in Phosphorus Five. Although, programming language
-doesn't quite fit the description, since there is no "language" per se, but only a graph object hierarchy,
-evaluated through the main execution engine, through the Node class being the execution tree structure, directly
-evaluated as the execution graph.
+This is the core of the "programming language" of Phosphorus Five. Although, programming language,
+doesn't quite fit the description, since there is no "language" per se, but only an execution tree.
 
-However, for all practical concerns, it "feels like" a programming language, since it allows you to
-create code in Hyperlambda, that will be evaluated, and it is Turing complete in regards to execution, and allows
-you to do everything you can do in any other programming languages.
-
-p5.lambda contains the basic Active Events, that implements the "programming constructs" of Phosphorus Five
-though.
+However, for all practical concerns, it "feels like" a programming language. It allows you to create code 
+in Hyperlambda, that will be evaluated as programming instructions. It is also Turing complete in regards 
+to execution, and allows you to do everything you can do in any other programming languages.
 
 ## [eval], the heart of p5.lambda
 
-The main Active Event in p5.lambda, and most important event in P5, is definitely *[eval]*. With *[eval]*,
-you can evaluate any Node hierarchy, such as the one illustrated below
+The main Active Event in p5.lambda, and probably most important event in P5, is definitely *[eval]*. 
+With *[eval]*, you can evaluate any Node hierarchy, such as the one illustrated below
 
 ```
 _x
@@ -34,14 +29,16 @@ for-each:x:/../*/_x/*?value
 
 If you run the above code, through the "apps/executor" in System42, you will see that it creates 4 web widgets for you.
 
-The two Active Events *[for-each]* and *[set]* are declared in the p5.lambda project, and really as you can see in the code, 
+The two Active Events *[for-each]* and *[set]* are declared in the p5.lambda project, and as you can see in its code, 
 actually simply Active Events, and nothing you cannot implement yourself, to extend the programming language if you wish.
 
-The third Active Event called *[create-literal-widget]* is declared in p5.web.
+The third Active Event called *[create-literal-widget]* is declared in [p5.web](/plugins/p5.web/).
 
-What happens when you evaluate the above piece of Hyperlambda, is that *[eval]* is being invoked, with the root node
-of your above Hyperlambda as the "current instruction pointer". To evaluate *[eval]* directly yourself, is quite simple,
-and can be achieved with the following code
+What happens when you evaluate the above piece of Hyperlambda, is that *[eval]* is being invoked, with the root node's children
+of your above Hyperlambda, as the "instructions" to evaluate. The children nodes of this root node again, are simply references
+to Active Events, having the same names as their node names, and are being raised sequentially in order of appearance.
+
+To evaluate *[eval]* directly yourself, is quite simple, and can be achieved with the following code
 
 ```
 _x
@@ -53,27 +50,25 @@ _x
 eval:x:/../*/_x
 ```
 
-The above code creates a node structure, data-segment, containing p5.lambda instructions, which are evaluated as you invoke
-*[eval]* on the *[_x]* node, passing in an expression leading to that node. To understand expressions, check out the 
-documentation for the p5.exp project.
+The above code creates a node structure, or a "data-segment", containing p5.lambda instructions, which are evaluated as you invoke
+*[eval]* on the *[_x]* node. To understand expressions, check out the documentation for the [p5.exp](/core/p5.exp/) project.
 
-Notice that *[eval]* will _NOT_ evaluate any nodes, having names, starting with an underscore (_). This allows you to create
+Notice that *[eval]* will _NOT_ evaluate any nodes, having names, starting with an underscore (_) or a period ".". This allows you to create
 data-segments in your code, where these data-segments will not be raised as Active Events. All nodes having a name,
-not starting with an underscore, will be attempted raised as Active Event by *[eval]*. This might produce weird results for you, 
+not starting with an underscore or period, will be raised as Active Events by *[eval]*. This might produce weird results for you, 
 if you do not start your data-segments with an underscore, and there just so happens to exist an Active Event, with the same name 
 as the name of your data-segment.
 
 A good rule of thumb, is to always start your "data-segments" with an underscore for the above reasons.
 
-Notice though that if you explicitly invoke *[eval]* on a node, that starts with an underscore (_), then *[eval]* will evaluate that
-node, making it become the root node of its execution context (stack of execution).
+Notice though that if you explicitly invoke *[eval]* on a node, that starts with an underscore (_) or period (.), then *[eval]* will evaluate 
+that node's children, making your evaluated node become the root node of its execution context (stack of execution).
 
 There also exists an *[eval-mutable]* Active Event, which allows you access to the entire main root graph object, but
 this Active Event is for the most parts for keyword implementors, and rarely something you'd consume yourself from Hyperlambda.
 
-The difference between *[eval]* and *[eval-mutable]* is that the first creates a new root node hierarchy, not allowing the
-execution to gain access to any nodes from the outside of itself, except nodes explicitly passed in as parameters, such
-as the below code demonstrates
+*[eval]* creates a new root node hierarchy, not allowing the execution to gain access to any nodes from the outside of itself, 
+except nodes explicitly passed in as parameters, such as the below code demonstrates.
 
 ```
 _x
@@ -129,14 +124,14 @@ insert-after:x:
       innerValue:Foo bar
 ```
 
-What happens in the above example, is that as *[eval]* comes to the *[insert-after]* Active Event invocation,
+What happens in the above example, is that when *[eval]* comes to the *[insert-after]* Active Event invocation,
 there exists no *[create-literal-widget]* in the execution tree. The invocation to the *[insert-after]* Active Event
 however, injects this node just after the *[insert-after]* node in the execution tree. When the instruction pointer
 is done evaluating *[insert-after]*, it finds a new Active Event invocation, being our newly added *[create-literal-widget]*
 Active Event reference, which in turn evaluates, creating our Literal widget.
 
-If you change the above code to using *[insert-after]* instead, there will be no Literal widget after evaluation, 
-but the node hierarchy is clearly changed, as you can see in the output, after evaluation of your Hyperlambda.
+If you change the above code to using *[insert-before]* instead, there will be no Literal widget after evaluation, 
+but the node hierarchy is clearly changed, as you can see in the output.
 
 ```
 insert-before:x:
@@ -146,8 +141,8 @@ insert-before:x:
       innerValue:Foo bar
 ```
 
-Still the instruction pointer for *[eval]*, managed to perfectly keep track, of where in the execution
-tree it currently is, without messing up the order of your instructions. To prove it, run the following code
+The instruction pointer for *[eval]*, managed to perfectly keep track, of where in the execution tree it currently is, 
+without messing up the order of your instructions. To prove it, run the following code, which shows that only one widget is created.
 
 ```
 insert-before:x:
@@ -160,18 +155,17 @@ create-literal-widget
   innerValue:Foo bar 2
 ```
 
-For the record, the above ":x:" expression, is the *"identity expression"* in the p5 expression engine, 
-and simply means the "current node". This is where all expressions starts out.
+For the record, the above ":x:" expression, is the *"identity expression"* in the p5 expression engine, and simply means the "current node". 
+This is where all expressions starts out.
 
-For a more thourough explanation of expressions, yet again, check out the documentation for the p5.exp
-project.
+For a more thourough explanation of expressions, yet again, check out the documentation for the [p5.exp](/core/p5.exp/) project.
 
 #### Evaluating multiple lambda objects in one go
 
 *[eval]* can also execute multiple sources in one evaluation. Imagine you have a node hierarchy, where
 you have several nodes you wish to evaluate. This can actually be done with one *[eval]* invocation, since
 each result of your expression will be evaluated in order, according to how they were fetched by your expression.
-Try out the following code in your System42 evaluator to see this in action
+Try out the following code in your System42 evaluator to see this in action.
 
 ```
 _x
@@ -189,7 +183,7 @@ eval:x:/../*/_x
 
 The above expression will return the *[_x]* nodes in consecutive order, and *[eval]* will evaluate them
 in the order returned by the expresssion. Hence, we end up with two new widgets on our page. Similar things
-will happen if you have two *[eval]* invocations, returning some values back to caller, such as the following
+will happen if you have two *[eval]* invocations, returning some values back to caller, such as the following.
 
 ```
 _x
@@ -218,16 +212,13 @@ eval invocation.
 #### Notice!
 
 Nodes starting with either an underscore (_) or a period (.), are _impossible_ to evaluate with p5.lambda. Hence, Active Events starting
-with one of these characters, are considered "C# only Active Events", only possible to raise from C#.
-
-This is by convention, to make it possible to create "p5.lambda hidden Active Events", which is only possible to raise from C#,
-for security reasons for instance.
+with one of these characters, are considered "protected events", and only C# code, can raise these.
 
 Realize though, you can evaluate an *[eval]* block, which has a name, starting with an underscore or period. However, the *[eval]* block
 won't raise any Active Events starting with either of these two characters.
 
 The convention is to use underscore (_) for "data segment", and period (.) for "invisible Active Events", although, you can choose this for yourself.
-There is no semantic difference in whether or not you use an underscore or a period.
+There are no semantic differences in whether or not you use an underscore or a period.
 
 #### Evaluating stuff that's not a node
 
@@ -247,11 +238,14 @@ You can still return values and nodes as usual. There is actually no difference 
 or evaluating a string, except that unless the string you try to evaluate does not for some reasons convert legally into a node, the Hyperlambda
 parser will choke, and throw an exception.
 
+In P5, you could in theory, evaluate any block of lambda nodes you wish. Whether or not this makes sense though, depends upon the nodes you
+try to evaluate.
+
 #### Evaluating a block of lambda instead of an expression
 
 If you do not provide a value to *[eval]*, then it will instead of handling its children as arguments, directly evaluate its children, as
-a p5.lambda block. This is often useful in combination with for instance the *[set]* Active Event, which we will later dive into, further
-down in the document here. However, to illustrate its simplest version, imagine this code.
+a p5.lambda block. This is often useful in combination with for instance the *[set]* and *[add]* Active Events, which we will later dive into, 
+further down in the document here. However, to illustrate its simplest version, imagine this code.
 
 ```
 eval
@@ -264,18 +258,18 @@ In the above code, the p5.lambda execution engine will see that our *[eval]* inv
 value, that can be converted into a node in any ways. Therefor it will simply evaluate its own children nodes, as a piece of lambda block,
 having still the root node of its evaluation being the *[eval]* node itself.
 
-Later in our documentation we will dive into ssome use-cases where this is extremely useful. But for now, just keep it at the back of your mind.
+Later in our documentation we will dive into some use-cases where this is extremely useful. But for now, just keep it at the back of your mind.
 
 ## "Keywords" in p5.lambda
 
 p5.lambda contains several "keywords", which aren't really keywords, as previously explained, but in fact
 simply Active Events, creating an extremely extendible environment for your programming needs. But the core
-keywords, that should exist in a default installation of Phosphorus Five are as following.
+"keywords", that should exist in a default installation of Phosphorus Five are as following.
 
 ### [eval-x], forward evaluating expressions
 
 This Active Event allows you to forward evaluate expressions, and is useful when you want to use expressions,
-in Active Event invocations, where the Active Event itself does not in general terms support expressions, or
+in Active Event invocations, where the Active Event itself, does not in general terms support expressions, or
 you need to evaluate expressions for some other reasons, before the event is invoked. Consider the following
 code for instance
 
@@ -286,29 +280,32 @@ _x
 eval:x:/../*/_x
 ```
 
-At the point where *[_x]* is evaluated, it no longer has access to the *[_y]* node, ssince this
-node is outside th scope of the *[_x]* node, and we chose to use *[eval]* and not *[eval-mutable]*.
-Now we could of course use *[eval-mutable]*, but this would create potentially other problems. Among
-other things, having the evaluated code having access to the entire execution tree, which might be a security risk.
+At the point where *[_x]* is evaluated, it no longer has access to the *[_y]* node, since this
+node is outside the scope of the *[_x]* node. Now we could of course use *[eval-mutable]*, but this would create 
+potentially other problems. Among other things, having the evaluated code having access to the entire execution 
+tree.
 
-Instead we could choose to forward the expression inside of our *[_x]* node, in our *[return]* invocation, such
+Instead we could choose to forward evaluate the expression inside of our *[_x]* node, in our *[return]* invocation, such
 as the following code does.
 
 ```
 _y:hello world
 _x
   return:x:/../*/_y?value
+
+// Forward evaluating the expression inside of [_x] first
 eval-x:x:/../*/_x/*
+
+// THEN we evaluate [_x]
 eval:x:/../*/_x
 ```
 
-When we then invoke our *[eval]* Active Event, the value of our *[return]* Active Event invocation is no
-longer an expression, but contains the constant value of that expression, as evaluated during our invocation of our
-*[eval-x]* Active Event.
+When we then invoke our *[eval]* Active Event, the value of *[return]*, is no longer an expression, but contains the constant value 
+of that expression, as evaluated during our invocation of our *[eval-x]* Active Event.
 
 The above example might not seem so very useful, besides, a better way of accomplishing the above, would be to pass in values
 as arguments to our *[eval]* invocation. However, a more useful example, could imply using for instance *[create-literal-widget]*,
-which is an Active Event, that takes a lot of properties and children nodes, where the invocation does not support expressions in any way.
+which is an Active Event, that takes a lot of properties and children nodes, where the event does not support expressions in its arguments.
 Consider this code.
 
 ```
@@ -320,8 +317,8 @@ create-literal-widget
   innerValue:x:/../*/_x?value
 ```
 
-If you simply evaluate it as is, you will get the expression as a string literal, being the *[innerValue]* of your widget. However,
-a little bit of *[eval-x]* magic, and we're all set for the type of result we really wanted.
+If you simply evaluate it as is, you will have the expression, become the *[innerValue]* of your widget. However, a little bit 
+of *[eval-x]* magic, and we're all set for the type of result we really wanted.
 
 ```
 _x:Hello World
@@ -333,16 +330,16 @@ create-literal-widget
   innerValue:x:/../*/_x?value
 ```
 
-Notice how we run *[eval-x]* on all nodes above, and not only the *[innerValue]*. This is because *[eval-x]* will simply
-ignore nodes that does not have expressions as their values.
+Notice how we run *[eval-x]* on all nodes above, and not only the *[innerValue]*. *[eval-x]* will simply ignore nodes that does not have 
+expressions as their values.
 
-Notice also that *[eval-x]* _ALWAYS_ expects a Node result set, and not a "?value" or "?name". *[eval-x]* can also only
+Notice also that *[eval-x]* _always_ expects a Node result set in its expression, and not a "?value" or "?name". *[eval-x]* can also only
 change values of nodes, and not names or other parts of them. This is because the type system in P5, only works for values, 
-and *[eval-x]* can only change expression types, and nothing else. Everything that is not an expression, it will leave alone as is.
+and *[eval-x]* can only change expression types, and nothing else. Everything that is not an expression, will be left as it was.
 
 ### [add], adding nodes to your trees
 
-The *[add]* Active Event, allows you to dynamically add nodes into your p5.lambda objects (tree node hierarchy)
+The *[add]* Active Event, allows you to dynamically add nodes into your p5.lambda objects (tree node hierarchy).
 
 This active event must be given an expression as its destination, and can optionally take many different forms of sources through its *[src]*.
 For instance, to add up a static source, into some node destination, you could accomplish that doing the following.

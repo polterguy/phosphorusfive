@@ -149,5 +149,8 @@ p5.keyLoginPress = function(e) {
 }"
 
 set-title:No access
-set-widget-property:header
-  innerValue:No access
+if
+  fetch:x:/0/0?value
+    widget-exist:header
+  set-widget-property:header
+    innerValue:No access

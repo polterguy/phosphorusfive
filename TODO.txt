@@ -39,3 +39,8 @@ TODO before release
 
 * Consider documenting all Active Events by adding a [_dox] node, allowing consumers to invoke them with [add] trickery to retrieve dox.
 
+* Replace Hyperlambda parser, with option to preserve comments as [#comment] nodes, such that we canparse files, without loosing comments,
+  and create automated refactoring features, etc. Also make it more stable. It's not 100% today ...
+
+
+

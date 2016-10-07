@@ -25,8 +25,11 @@ if
    * Notice, we do this before we evaluate database lambda object, in case it overrides 
    * the header and/or title in its code.
    */
-  set-widget-property:header
-    innerValue:x:/../*/_args/*/name?value
+  if
+    fetch:x:/0/0?value
+      widget-exist:header
+    set-widget-property:header
+      innerValue:x:/../*/_args/*/name?value
   set-title:x:/../*/_args/*/name?value
 
   /*
