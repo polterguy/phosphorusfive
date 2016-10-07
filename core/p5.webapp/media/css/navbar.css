@@ -43,5 +43,17 @@ body {
     top:50px;
 }
 
+/*
+ * Main H1 header
+ */
+.main-page-header {
+    position:absolute;
+    top:0;
+    right:80px;
+    margin-top:12px;
+    font-size:25px;
+    color:rgba(0,0,0,.3);
+}
+
 
 

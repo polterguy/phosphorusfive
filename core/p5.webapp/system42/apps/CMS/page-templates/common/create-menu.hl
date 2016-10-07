@@ -9,7 +9,8 @@ if
   set:x:/+/**/={_extra-css-classes}?value
     src:x:/../*/__extra-css-classes?value
   create-widget:main-navbar-wrapper
-    parent:template-root
+    parent:cnt
+    position:0
     element:nav
     class:navbar navbar-default navbar-fixed-top
     widgets
