@@ -3,9 +3,10 @@
  * Creates some path unrolling Active Events for p5.io
  */
 
+
+/*
+ * Maps up "@apps" to "/system42/apps"
+ */
 create-event:p5.io.unroll-path.@apps
   return:/system42/apps
-
-create-event:p5.io.unroll-path.@TEMP
-  return:~/temp
 

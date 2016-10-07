@@ -14,6 +14,18 @@
 create-event:sys42.show-code-window
 
   /*
+   * Applying options for widget, with default values.
+   * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
+   * up prioritizing specified argument, resorting to [_default] value if not given
+   */
+  _defaults
+    _class:col-xs-12 show-code-window
+    _parent:content
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+  /*
    * Checking if user supplied an expression, and if not, showing error message
    */
   if:x:/../*/_arg
@@ -41,9 +53,10 @@ create-event:sys42.show-code-window
   /*
    * Creating a widget showing the Hyperlambda code created from the given p5 lambda tree
    */
+  eval-x:x:/+/*
   create-widget
-    class:col-xs-12 show-code-window
-    parent:content
+    parent:x:/../*/_options/*/_parent?value
+    class:x:/../*/_options/*/_class?value
     position:0
     widgets
       literal

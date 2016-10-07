@@ -23,8 +23,10 @@ create-event:sys42.modal-window
    * up prioritizing specified argument, resorting to [_default] value if not given
    */
   _defaults
-    _header:Supply feedback ...
+    _header:Supply info!
     _body:
+    _class:modal fade
+    _parent:cnt
     _onok
     _buttons
       literal
@@ -90,8 +92,10 @@ create-event:sys42.modal-window
   /*
    * Creating actual modal Widget
    */
+  eval-x:x:/+/*
   create-widget:modal-window
-    class:modal fade
+    parent:x:/../*/_options/*/_parent?value
+    class:x:/../*/_options/*/_class?value
     events
 
       /*

@@ -20,6 +20,7 @@ create-event:sys42.info-window
    */
   _defaults
     _arg:You should really have provided some text here as value of invocation ...
+    _class:info-window
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
@@ -42,19 +43,12 @@ create-event:sys42.info-window
     src:x:/../*/_options/*/_arg?value
 
   /*
-   * Checking if caller provided "additional CSS classes"
-   */
-  if:x:/../*/_options/*/_class?value
-    set:x:/../*/create-widget/*/class?value
-      src:{0} {1}
-        :x:/../*/create-widget/*/class?value
-        :x:/../*/_options/*/_class?value
-
-  /*
    * Creating actual info window
    */
+  eval-x:x:/+/*
   create-widget:info-window
-    class:info-window
+    parent:x:/../*/_options/*/_parent?value
+    class:x:/../*/_options/*/_class?value
     widgets
       literal
         innerValue

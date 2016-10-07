@@ -27,6 +27,8 @@ create-event:sys42.confirm-window
   _defaults
     _header:Information ...
     _body:You should really have supplied something intelligent here in the [_body] argument ...
+    _class:modal fade
+    _parent:cnt
     _onok
     _buttons
       literal
@@ -69,9 +71,10 @@ create-event:sys42.confirm-window
   /*
    * Creating actual modal Widget, making sure we forward evaluate the [_header] and [_body]
    */
-  eval-x:x:/+/**(/=confirm-window-body|/=confirm-window-header)/*/innerValue
+  eval-x:x:/+/*|/+/**(/=confirm-window-body|/=confirm-window-header)/*/innerValue
   create-widget:confirm-window
-    class:modal fade
+    parent:x:/../*/_options/*/_parent?value
+    class:x:/../*/_options/*/_class?value
     events
 
       /*

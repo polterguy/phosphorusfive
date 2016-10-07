@@ -19,7 +19,7 @@ eval-x:x:/+
 sys42.info-window:@"{0} unit tests evaluated in {1:s\.fff} seconds"
   :x:/./-4/*?value
   :x:/./-2?value
-  _class:info-window-longer
+  _class:info-window-longer info-window
 get-context-value:sys42.unit-test-errors
 if:x:/-/*?value
   set-widget-property:x:/../*/_event?value

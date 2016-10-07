@@ -42,5 +42,7 @@ TODO before release
 * Replace Hyperlambda parser, with option to preserve comments as [#comment] nodes, such that we canparse files, without loosing comments,
   and create automated refactoring features, etc. Also make it more stable. It's not 100% today ...
 
+*  Make sure all common dialogues optionally takes [parent] and [class] arguments
+
 
 

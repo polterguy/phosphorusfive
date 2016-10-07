@@ -95,7 +95,7 @@ for-each:x:/-/*?name
 
   /*
    * Checking if "startup.hl" file exists within currently iterated folder,
-   * and if so, adding it to [_startup] such that we can evaluate it later.
+   * and if so, adding it to [_startup], such that we can evaluate it later.
    */
   if
     fetch:x:/0/0?value
