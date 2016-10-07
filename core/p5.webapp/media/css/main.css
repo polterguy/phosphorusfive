@@ -192,3 +192,13 @@ body {
     border-top-right-radius:0;
     border-top-style:none;
 }
+
+
+
+/*
+ * Styles for the [sys42.show-code-window] widget.
+ */
+.show-code-window {
+    position:relative;
+}
+

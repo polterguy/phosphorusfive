@@ -42,8 +42,7 @@ create-event:sys42.show-code-window
    * Creating a widget showing the Hyperlambda code created from the given p5 lambda tree
    */
   create-widget
-    class:col-xs-12
-    style:"position:relative;"
+    class:col-xs-12 show-code-window
     parent:content
     position:0
     widgets

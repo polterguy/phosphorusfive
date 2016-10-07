@@ -106,7 +106,7 @@ namespace p5.web {
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Passing file to client
-                AjaxPage.RegisterJavaScriptFile (idxFile);
+                AjaxPage.RegisterJavaScriptFile (context.Raise (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
             }
         }
 
@@ -122,7 +122,7 @@ namespace p5.web {
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Register file for inclusion back to client
-                AjaxPage.RegisterStylesheetFile (idxFile);
+                AjaxPage.RegisterStylesheetFile (context.Raise (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
             }
         }
 
