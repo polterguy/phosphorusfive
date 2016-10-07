@@ -404,6 +404,24 @@ list-files:/
 
 Below are some "Ninja tricks" when working with p5.io.
 
+#### Using path variables
+
+p5.io supports "unrolling paths". This feature allows you to instead of hard coding a path, you can create a variable Active Event, which is invoked
+if your path starts with an "@" character. If you defined an Active Event called for instance *[p5.io.unroll-path.@my-documents]*, then you can
+refer to your documents folder using _@my-documents_. This gives you more flexibility in regards to your paths, and allows you to later change your
+mind, or even install your apps in a different folder, than what you originally decided upon when creating it.
+
+Below is some sample code that creates such a variable Active Event, for then to consume it when creating a file.
+
+```
+create-event:p5.io.unroll-path.@my-temp
+  return:~/temp
+save-file:@my-temp/foo.txt
+  src:Foo bar
+```
+
+After evaluating the above code, you should have a foo.txt file in your temp folder.
+
 #### Executing every Hyperlambda file within a folder
 
 Combining *[list-files]* and *[eval]*, you can do some interesting things. One of these, is that you can evaluate all Hyperlambda files within
