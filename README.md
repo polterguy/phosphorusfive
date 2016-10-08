@@ -105,5 +105,5 @@ the "samples" folder.
 
 Phosphorus Five is free and open source software, and licensed under the terms
 of the Affero GPL license, in addition to a commercial license. Read more about
-our Quid Pro Quo license terms at our website at [GaiaSoul.Com](http://gaiasoul.com).
+our Quid Pro Quo license terms at our website at [Gaiasoul](http://gaiasoul.com).
 
