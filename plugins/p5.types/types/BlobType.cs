@@ -14,9 +14,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Phosphorus Five.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * If you cannot for some reasons use the Affero GPL license, Phosphorus
+ * If you cannot for some reasons use the GPL license, Phosphorus
  * Five is also commercially available under Quid Pro Quo terms. Check 
  * out our website at http://gaiasoul.com for more details.
  */
