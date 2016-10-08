@@ -83,7 +83,7 @@ insert-data
     customer:foo-bar
       name:Thomas Hansen
       address:Unknown
-      email:phosphorusfive@gmail.com
+      email:mr.gaia@gaiasoul.com
 ```
 
 The above *[insert-data]* invocation, will insert three items, of different "types", into your database, using one single "lock" operation. If you watch its result, 
@@ -139,7 +139,7 @@ select-data
     customer:foo-bar
       name:Thomas Hansen
       address:Unknown
-      email:phosphorusfive@gmail.com
+      email:mr.gaia@gaiasoul.com
 ```
 
 You can (of course) use any expressions in p5.data as you can legally use in any other parts of P5, as long as you do not select further upwards than at least "two

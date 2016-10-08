@@ -51,7 +51,7 @@ regex
  * Tests that [index-of] behaves as expected when given mixed multiples sources
  */
 mixed-sources
-  _data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
+  _data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is mr.gaia@gaiasoul.com
   _src
     no1:regex:/phosphorus/i
     no2:regex:/Hansen/i

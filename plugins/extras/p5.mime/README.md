@@ -183,7 +183,7 @@ containing the list of recipients, such as the following illustrates.
 p5.mime.create
   multipart:mixed
     encryption
-      email:phosphorusfive@gmail.com
+      email:mr.gaia@gaiasoul.com
       // OR alternatively use the "fingerprint" of the certificate
       fingerprint:xxxx-some-PGP-certificate-fingerprint
     text:plain
@@ -197,7 +197,7 @@ signing of messages. This means you'll have to have GnuPG installed on your syst
 
 You would also (obviously) have to have the certificate used for encryption installed into your GnuPG database. The above p5.lambda, will throw an
 exception, simply because it won't find the certificate needed to encrypt your message (assuming you haven't created a keypair 
-for "phosphorusfive@gmail.com")
+for "mr.gaia@gaiasoul.com")
 
 Signing a multipart, with a private PGP key, is just as simple. Except, this time you would have to declare which _private key_ to use. Which requires
 you to also supply a *[password]* node, beneath the *[email]/[fingerprint]* argument you supply, to have the GnuPG database release your private key,
@@ -209,7 +209,7 @@ p5.mime.create
 
     // Notice, this time we only sign the multipart
     signature
-      email:phosphorusfive@gmail.com
+      email:mr.gaia@gaiasoul.com
         password:Your-GnuPG-password
     text:plain
       content:Foo bar 1

@@ -27,7 +27,7 @@ As you can see, the original arguments are gone, and the index of the value "Han
 occurrencies of the value "Hansen", it would result in multiple return values. One for each occurrency of the value "Hansen".
 
 ```
-_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
+_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is mr.gaia@gaiasoul.com
 index-of:x:/-?value
   src:Hansen
 ```
@@ -35,7 +35,7 @@ index-of:x:/-?value
 Which of course results in.
 
 ```
-_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
+_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is mr.gaia@gaiasoul.com
 index-of
   Hansen:int:7
   Hansen:int:49
@@ -44,7 +44,7 @@ index-of
 The *[src]* argument, can also be an expression, leading to multiple results. For instance like this.
 
 ```
-_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
+_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is mr.gaia@gaiasoul.com
 _src
   no1:Phosphorus
   no2:Hansen
@@ -55,7 +55,7 @@ index-of:x:/../*/_data?value
 The above p5.lambda, would result in the following result.
 
 ```
-_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
+_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is mr.gaia@gaiasoul.com
 _src
   no1:Phosphorus
   no2:Hansen
@@ -70,7 +70,7 @@ you wish to do a case-insensitive search, you need to resort to a regular expres
 we can use multiples static sources. Instead of having an expression as the value of *[src]*. One way to achieve that would look like this.
 
 ```
-_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
+_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is mr.gaia@gaiasoul.com
 index-of:x:/../*/_data?value
   src
     no1:Phosphorus
@@ -126,7 +126,7 @@ Notice how, if you use a node as a source, that the Active Event returns the ind
 from your original node. Notice the different result from these two invocations.
 
 ```
-_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
+_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is mr.gaia@gaiasoul.com
 _src
   no1:Phosphorus
   no2:Hansen
@@ -142,7 +142,7 @@ in having a "friendly name" for your grouped results. The advantage becomes more
 expression sources.
 
 ```
-_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is phosphorusfive@gmail.com
+_data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is mr.gaia@gaiasoul.com
 _src
   no1:regex:/phosphorus/i
   no2:regex:/Hansen/i
@@ -275,7 +275,7 @@ match
 Notice how you first of all get the *[start]* and *[length]* index of each match. Notice also how the regular expression groupings from your
 regular expression, are returned in the *[result]* node, grouping the matches together, according to the "grouping name" you give it in
 your regular expression. This makes it easy to for instance extract the name and email address out of an email entity such as 
-"<Thomas Hansen> phosphorusfive@gmail.com" into two separate matches.
+"<Thomas Hansen> mr.gaia@gaiasoul.com" into two separate matches.
 
 The *[match]* Active Event will also automatically convert anything in its value to a single string. Just like *[length]* and *[join]* will.
 
