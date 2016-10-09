@@ -163,6 +163,8 @@ create-event:sys42.widgets.tree
                   src
                     element:ul
                     parent:x:/..for-each/*/get-parent-widget/*/*?value
+                set:x:/..else/*/sys42.widgets.tree._create-items/*/*/class?value
+                  src:tree-item-children tree-item-children-animate
                 eval:x:/..else/*/sys42.widgets.tree._create-items
       widgets
 
@@ -171,6 +173,11 @@ create-event:sys42.widgets.tree
  * Supporting Active Event, to create items.
  */
 create-event:sys42.widgets.tree._create-items
+
+  /*
+   * Checking if we have items, and if not, returning early.
+   */
+  include-stylesheet-file:/system42/components/tree-widget/media/tree.css
 
   /*
    * Checking if we have items, and if not, returning early.

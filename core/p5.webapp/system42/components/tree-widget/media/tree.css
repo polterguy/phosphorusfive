@@ -1,0 +1,60 @@
+/*
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * 
+ * This file is part of Phosphorus Five.
+ *
+ * Phosphorus Five is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ *
+ * Phosphorus Five is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Phosphorus Five.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * If you cannot for some reasons use the GPL license, Phosphorus
+ * Five is also commercially available under Quid Pro Quo terms. Check 
+ * out our website at http://gaiasoul.com for more details.
+ */
+
+
+/*
+ * Root tree default CSS class.
+ */
+.tree-widget {
+    background-color:rgba(255,255,255,1);
+    padding:15px 15px 15px 15px;
+    font-size:1.5em;
+}
+
+ul.tree-item-children {
+    list-style:none;
+    padding-left:20px;
+}
+
+@keyframes tree-item-children-animation {
+    0% {
+        opacity:0;
+        margin-top:-200px;
+    }
+    100% {
+        opacity:1;
+    }
+}
+ul.tree-item-children-animate {
+    animation-name: tree-item-children-animation;
+    animation-duration: .5s;
+}
+
+li.tree-item {
+}
+
+a.tree-item-label {
+}
+
+
+
