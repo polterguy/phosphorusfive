@@ -136,7 +136,7 @@ Event invocation, and then simply return the root node, before letting the event
 
 ```
 create-event:foo
-  sys42.confirm-window
+  sys42.windows.confirm
     _header:Foo bar
     _body:Hello world
 ```

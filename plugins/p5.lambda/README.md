@@ -227,7 +227,7 @@ is evaluated. This allows you to evaluate strings, values, and even integer valu
 making *[eval]* perform an automatic conversion (attempt) on your values before evaluating your object. Example below illustrates this.
 
 ```
-_x:@"sys42.confirm-window
+_x:@"sys42.windows.confirm
   _header:Howdy from string
   _body:Yup, I've got a body. Do you ...?
 return:Returned from string!"
@@ -901,19 +901,19 @@ illustrates.
 _foo:thomas
 switch:x:/-?value
   case:john
-    sys42.confirm-window
+    sys42.windows.confirm
       _header:Hello there Mr
       _body:John Doe
   case:jane
-    sys42.confirm-window
+    sys42.windows.confirm
       _header:Hello there Mrs
       _body:Jane Doe
   case:thomas
-    sys42.confirm-window
+    sys42.windows.confirm
       _header:Hello there Guru
       _body:Thomas Hansen
   default
-    sys42.confirm-window
+    sys42.windows.confirm
       _header:Hello there Mr/Mrs
       _body:Stranger ...?
 ```
@@ -931,11 +931,11 @@ _foo:john
 switch:x:/-?value
   case:john
   case:jane
-    sys42.confirm-window
+    sys42.windows.confirm
       _header:Hello there Mrs/Mr
       _body:Doe
   case:thomas
-    sys42.confirm-window
+    sys42.windows.confirm
       _header:Hello there Guru
       _body:Thomas Hansen
 ```
@@ -964,7 +964,7 @@ Consider the following.
 try
   throw:Darn it, my head hurts!!
 catch
-  sys42.confirm-window
+  sys42.windows.confirm
     _header:ERROR!
     _body:Something went wrong
 ```
@@ -979,7 +979,7 @@ try
 catch
   set:x:/+/*/_body?value
     src:x:/..catch/*/message?value
-  sys42.confirm-window
+  sys42.windows.confirm
     _header:ERROR!
     _body
 ```
@@ -1002,7 +1002,7 @@ lambda evaluation. To illustrate with some code.
 ```
 _exe
   return:foo
-  sys42.confirm-window
+  sys42.windows.confirm
     _header:Never evaluated
 eval:x:/-
 ```
@@ -1232,7 +1232,7 @@ apply:x:/../*/_output1
         apply:x:/../*/_exe
           src:x:/../*/_foo
           template
-            \{sys42.info-window}:Hello {0}
+            \{sys42.windows.info-tip}:Hello {0}
               :x:?value
         _exe
         eval:x:/-
@@ -1247,7 +1247,7 @@ but also make sure our node is not databound during the first apply invocation.
 The code creates one *[create-literal-widget]* invocation, for each child node of our *[_data]* segment, having the *[innerValue]* created
 as a combination of the *[last]* and *[first]* name of our persons.
 
-Then we handle the *[onclick]* Ajax event for our widgets, from where we invoke *[apply]* towards an invocation of *[sys42.info-window]*.
+Then we handle the *[onclick]* Ajax event for our widgets, from where we invoke *[apply]* towards an invocation of *[sys42.windows.info-tip]*.
 Our info window is then databound towards the *[_foo]*'s value, which was previously databound in our first *[apply]* invocation towards
 only the *[first]* name. Resulting in that when our widgets are clicked, they will speak "Hello 'first-name'".
 
@@ -1255,7 +1255,7 @@ The above is probably not a relevant example, and the same result could have bee
 of how you must escape your inner *[apply]* invocations databound nodes, if you embed them inside of outer *[apply]* invocations.
 
 If you remove the back-slash at line 29 in the above code, instead of showing the "first name" in an info window, it will show the "ID" of
-your person (1, 2 or 3) when you click the widget. This is because the *[sys42.info-window]*, will be databound byt the first invocation to
+your person (1, 2 or 3) when you click the widget. This is because the *[sys42.windows.info-tip]*, will be databound byt the first invocation to
 our *[apply]* Active Event, which obviously was not our intention.
 
 Notice!
@@ -1321,7 +1321,7 @@ if
   fetch:x:/0/0/*/surname?value
     eval:x:/../*/_exe
   =:Hansen
-  sys42.confirm-window
+  sys42.windows.confirm
     _header:Are you my brother?
     _body:Looks like we have the same surnames ...
 ```
@@ -1335,7 +1335,7 @@ The *[fetch]* Active Event again, will evaluate its children, almost like an *[e
 that after evaluation of its block, the expression in the value of *[fetch]* will be evaluated, and the results of that expression, will become
 the value of *[fetch]*. After the fetch has been evaluated, the comparison in the *[if]* occurs. Since the value of fetch now is "Hansen", 
 and this value will be compared against the constant of "Hansen", our evaluation yields true, and if allows branching of evaluation to enter
-into its lambda block, evaluating our *[sys42.confirm-window]* Active Event.
+into its lambda block, evaluating our *[sys42.windows.confirm]* Active Event.
 
 Intelligently using *[fetch]*, allows you to nest logical pieces of code, in a more logical way, the same way you would using functions and 
 methods in traditional programming languages.

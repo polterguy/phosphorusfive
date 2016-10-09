@@ -29,7 +29,7 @@ create-widget
       onclick
         get-widget-property:my_editor
           value
-        sys42.show-code-window:x:/..
+        sys42.windows.show-lambda:x:/..
 ```
 
 Which of course will return the Hyperlambda as "plain text", and not transform it to p5.lambda. To make p5.lambda out of it, you can use

@@ -115,7 +115,7 @@ else
                             // Reloading page to make sure everything is wired up together correctly
                             reload-location
                           else
-                            sys42.info-window:Sorry, wrong credentials
+                            sys42.windows.info-tip:Sorry, wrong credentials
                               _class:info-window-error
 
   /*

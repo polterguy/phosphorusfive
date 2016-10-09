@@ -13,7 +13,7 @@
  * This window can have multiple instances at the same time on page
  */
 
-create-event:sys42.show-code-window
+create-event:sys42.windows.show-lambda
 
   /*
    * Applying options for widget, with default values.
@@ -33,7 +33,7 @@ create-event:sys42.show-code-window
   if:x:/../*/_arg
     not
     set:x:/../**/literal/*/element/=pre/./*/innerValue?value
-      src:"No input given to [sys42.show-code-window]. Supply an expression as value of event invocation, for instance; 'sys42.show-code-window:x:/../*'"
+      src:"No input given to [sys42.windows.show-lambda]. Supply an expression as value of event invocation, for instance; 'sys42.windows.show-lambda:x:/../*'"
   else
 
     /*

@@ -13,13 +13,13 @@
  * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
  *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
  *                     provide your own logic in the onclick handler of these buttons instead.
- *                     To evaluate the [_onok] lambda, you can invoke [sys42.confirm-window.evaluate-ok],
- *                     To close dialogue, you can invoke [sys42.confirm-window.close]
+ *                     To evaluate the [_onok] lambda, you can invoke [sys42.windows.confirm.evaluate-ok],
+ *                     To close dialogue, you can invoke [sys42.windows.confirm.close]
  *
  * If user closes modal dialogue, without clicking OK, then the given [_onok] is not evaluated.
  * There can be only one instance of this dialogue at the same time in your page.
  */
-create-event:sys42.confirm-window
+create-event:sys42.windows.confirm
 
   /*
    * Applying options for widget, with default values.
@@ -38,10 +38,10 @@ create-event:sys42.confirm-window
         class:btn btn-default
         innerValue:OK
         oninit
-          sys42.confirm-window.initial-focus:x:/../*/_event?value
+          sys42.windows.confirm.initial-focus:x:/../*/_event?value
         onclick
-          sys42.confirm-window.close
-          sys42.confirm-window.evaluate-ok
+          sys42.windows.confirm.close
+          sys42.windows.confirm.evaluate-ok
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
@@ -65,9 +65,9 @@ create-event:sys42.confirm-window
     src:x:/../*/_options/*/_buttons/*
 
   /*
-   * Appending [_onok] into [sys42.confirm-window.evaluate-ok]
+   * Appending [_onok] into [sys42.windows.confirm.evaluate-ok]
    */
-  add:x:/../*/create-widget/*/events/*/sys42.confirm-window.evaluate-ok
+  add:x:/../*/create-widget/*/events/*/sys42.windows.confirm.evaluate-ok
     src:x:/../*/_options/*/_onok/*
 
   /*
@@ -82,19 +82,19 @@ create-event:sys42.confirm-window
       /*
        * Closes dialogue
        */
-      sys42.confirm-window.close
+      sys42.windows.confirm.close
         send-javascript:@"$('#confirm-window').modal('toggle');"
 
       /*
        * Evaluates OK lambda object.
        * Notice the [_onok] lambda, passed in from caller, will be appended into this event.
        */
-      sys42.confirm-window.evaluate-ok
+      sys42.windows.confirm.evaluate-ok
 
       /*
        * Gives initial focus to a specific widget
        */
-      sys42.confirm-window.initial-focus
+      sys42.windows.confirm.initial-focus
         send-javascript:@"$('#confirm-window').on('shown.bs.modal', function () {{$('#{0}').focus();}})"
           :x:/../*/_arg?value
 

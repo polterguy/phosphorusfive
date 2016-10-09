@@ -42,7 +42,7 @@ create-widget
       onclick
         get-widget-property:my-editor
           value
-        sys42.show-code-window:x:/..
+        sys42.windows.show-lambda:x:/..
 ```
 
 To find out which arguments you can pass into it, you can use the generic lambda object, retrieving the *[_defaults]* section

@@ -273,7 +273,7 @@ create-widget
                     =:/
                   if:x:/-/*?count
                     >:int:2
-                    sys42.info-window:@"In general, it is considered bad practice to have more than two levels of nested menus! 
+                    sys42.windows.info-tip:@"In general, it is considered bad practice to have more than two levels of nested menus! 
 Your page currently has {0} levels!"
                       :x:/././-/*?count
                       _class:info-window-warning info-window-longer
@@ -284,7 +284,7 @@ Try to avoid using more than two levels (/) in your URLs.
 Among other things, your page becomes inacessible on tablets and phones!"
                     send-javascript:"$('#page-url').focus().select();"
                   else
-                    sys42.info-window:Page '{0}' was successfully saved
+                    sys42.windows.info-tip:Page '{0}' was successfully saved
                       :x:/../*/get-widget-property/*/page-name/*?value
                     set-widget-property:page-url
                       style
@@ -314,7 +314,7 @@ Among other things, your page becomes inacessible on tablets and phones!"
                  * Forward evaluating expressions inside of [_widgets] below
                  */
                 eval-x:x:/+/*/*/*/*/*/value|/+/*/_onok/*/_old-page
-                sys42.modal-window
+                sys42.windows.modal
                   _header:Supply name and URL of new page
                   _widgets
                     div:new-page-name-wrp
@@ -451,12 +451,12 @@ Among other things, your page becomes inacessible on tablets and phones!"
               innerValue:Delete
               class:btn btn-default
               onclick
-                sys42.confirm-window
+                sys42.windows.confirm
                   _header:Please confirm deletion
                   _body:Are you sure you want to delete this page? This action cannot be undone!
                   _onok
                     sys42.delete-currently-edited-page
-                    sys42.info-window:Page was successfully deleted
+                    sys42.windows.info-tip:Page was successfully deleted
 
 
               /*

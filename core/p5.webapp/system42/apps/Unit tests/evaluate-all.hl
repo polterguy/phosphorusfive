@@ -16,7 +16,7 @@ date-now
 -:x:/-?value
   _:x:/../*/date-now/[0,1]?value
 eval-x:x:/+
-sys42.info-window:@"{0} unit tests evaluated in {1:s\.fff} seconds"
+sys42.windows.info-tip:@"{0} unit tests evaluated in {1:s\.fff} seconds"
   :x:/./-4/*?value
   :x:/./-2?value
   _class:info-window-longer info-window

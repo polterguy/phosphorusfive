@@ -96,6 +96,6 @@ sys42.cms.edit-page
  * Before we give feedback to user about newly created page.
  */
 sys42.cms.create-navbar-menu
-sys42.info-window:@"Page is restricted such that only a 'root' account can see it"
+sys42.windows.info-tip:@"Page is restricted such that only a 'root' account can see it"
   _class:info-window-longer
 

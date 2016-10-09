@@ -42,7 +42,7 @@
 .cm-s-paraiso span.cm-variable { color: #36c6ef; }
 
 /*
- * Used for Active Events in Hyperlambda, e.g. [sys42.show-code-window]
+ * Used for Active Events in Hyperlambda, e.g. [sys42.windows.show-lambda]
  */
 .cm-s-paraiso span.cm-variable-2 { color: #06b6ef; }
 

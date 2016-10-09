@@ -4,7 +4,7 @@
  * Simply shows a modal window, asking user to provide name for test file,
  * and if user clicks "OK", creates a new default file for user.
  */
-sys42.modal-window
+sys42.windows.modal
   _header:Name of unit test file
   _widgets
     container:test-filename-wrp
@@ -80,7 +80,7 @@ foo
           /*
            * Making sure we close our modal window
            */
-          sys42.modal-window.close
+          sys42.windows.modal.close
 
           /*
            * Deleting widgets and re-creating datagrid (and other widgets) by invoking "self"

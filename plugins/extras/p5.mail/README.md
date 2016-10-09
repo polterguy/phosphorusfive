@@ -195,7 +195,7 @@ p5.pop3.get-emails
   password:your-gmail-password
   count:3
   functor
-    sys42.show-code-window:x:/..
+    sys42.windows.show-lambda:x:/..
 ```
 
 If you use a *[functor]* callback, then the envelope being currently handled, will be sent in as an *[envelope]* argument, as a root node of 

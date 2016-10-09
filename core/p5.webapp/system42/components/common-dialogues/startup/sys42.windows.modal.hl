@@ -17,7 +17,7 @@
  * Notice, if the user clicks enter while any of the [_widgets] widgets have focus, then
  * the first button in the [_buttons] list will be clicked (alternatively the "OK" button)
  */
-create-event:sys42.modal-window
+create-event:sys42.windows.modal
 
   /*
    * Applying options for widget, with default values.
@@ -37,9 +37,9 @@ create-event:sys42.modal-window
         innerValue:OK
         onclick
           if
-            sys42.modal-window.evaluate-ok
+            sys42.windows.modal.evaluate-ok
             !=:bool:false
-            sys42.modal-window.close
+            sys42.windows.modal.close
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
@@ -86,9 +86,9 @@ create-event:sys42.modal-window
     src:x:/../*/_options/*/_widgets/*
 
   /*
-   * Appending [_onok] into [sys42.modal-window.evaluate-ok]
+   * Appending [_onok] into [sys42.windows.modal.evaluate-ok]
    */
-  add:x:/../*/create-widget/*/events/*/sys42.modal-window.evaluate-ok
+  add:x:/../*/create-widget/*/events/*/sys42.windows.modal.evaluate-ok
     src:x:/../*/_options/*/_onok/*
 
   /*
@@ -103,19 +103,19 @@ create-event:sys42.modal-window
       /*
        * Closes dialogue
        */
-      sys42.modal-window.close
+      sys42.windows.modal.close
         send-javascript:@"$('#modal-window').modal('toggle');"
 
       /*
        * Evaluates OK lambda object.
        * Notice the [_onok] lambda, passed in from caller, will be appended into this event.
        */
-      sys42.modal-window.evaluate-ok
+      sys42.windows.modal.evaluate-ok
 
       /*
        * Gives initial focus to a specific widget
        */
-      sys42.modal-window.initial-focus
+      sys42.windows.modal.initial-focus
         send-javascript:@"$('#modal-window').on('shown.bs.modal', function () {{$('#{0}').focus();}})"
           :x:/../*/_arg?value
 
@@ -186,7 +186,7 @@ create-event:sys42.modal-window
                         class:form-control
                       if:x:/../*/find-widget-like/*?count
                         >:int:0
-                        sys42.modal-window.initial-focus:x:/../*/find-widget-like/0?value
+                        sys42.windows.modal.initial-focus:x:/../*/find-widget-like/0?value
 
 
                     /*

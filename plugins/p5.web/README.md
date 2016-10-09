@@ -226,13 +226,13 @@ create-container-widget
       innerValue:Element no 1
       style:"background-color:LightGreen;"
       onclick
-        sys42.info-window:Widget 1 was clicked
+        sys42.windows.info-tip:Widget 1 was clicked
     literal
       element:li
       innerValue:Element no 2
       style:"background-color:LightBlue;"
       onclick
-        sys42.info-window:Widget 2 was clicked
+        sys42.windows.info-tip:Widget 2 was clicked
 ```
 
 You can also of course create container widgets that have container widgets as their children widgets, as deeply as you see fit for your personal needs.
@@ -260,7 +260,7 @@ create-void-widget
   onclick
     get-widget-property:some-void-widget
       value
-    sys42.info-window:You typed; '{0}'
+    sys42.windows.info-tip:You typed; '{0}'
       :x:/../*/get-widget-property/*/*?value
 ```
 
@@ -398,10 +398,10 @@ create-literal-widget
     get-widget-property:x:/../*/_event?value
       innerValue
       class
-    sys42.show-code-window:x:/..
+    sys42.windows.show-lambda:x:/..
 ```
 
-The *[sys42.show-code-window]* invocation above, is a helper event in System42, and allows you to inspect any section of your currently evaluated 
+The *[sys42.windows.show-lambda]* invocation above, is a helper event in System42, and allows you to inspect any section of your currently evaluated 
 lambda object. We use it as a shortcut event, for seeing the results of our *[get-widget-property]* invocation. After evaluating the above code, 
 in System42/executor, you should see something like this at the top of your main browser window.
 
@@ -412,7 +412,7 @@ onclick
     xa886f5b
       innerValue:Foo
       class:bar
-  sys42.show-code-window:x:/..
+  sys42.windows.show-lambda:x:/..
 ```
 
 As you can see above, the *[get-widget-property]* returns the ID for your widget, and beneath the ID, each property requested as a "key"/"value" 
@@ -443,7 +443,7 @@ create-container-widget
         get-widget-property:x:/../*/_widgets/*?name
           innerValue
           class
-        sys42.show-code-window:x:/..
+        sys42.windows.show-lambda:x:/..
 ```
 
 The *[set-widget-property]* works similarly, except of course, instead of retrieving the properties, it changes them. Consider this.
@@ -528,7 +528,7 @@ create-literal-widget
       innerValue:I was clicked, click me once more! It tickles!
     get-widget-ajax-event:x:/../*/_event?value
       onclick
-    sys42.show-code-window:x:/-
+    sys42.windows.show-lambda:x:/-
 ```
 
 Then you will see the output format of *[get-widget-ajax-event]* looking something like the following.
@@ -542,7 +542,7 @@ get-widget-ajax-event
         innerValue:I was clicked, click me once more! It tickles!
       get-widget-ajax-event:x:/../*/_event?value
         onclick
-      sys42.show-code-window:x:/-
+      sys42.windows.show-lambda:x:/-
 ```
 
 As you can see above, below the *[get-widget-ajax-event]*, you can find the ID of the widget requested. Then below that node, you can find
@@ -584,7 +584,7 @@ create-container-widget
   position:0
   events
     my-namespace.foo-event
-      sys42.confirm-window
+      sys42.windows.confirm
         _header:Howdy foo world
         _body:Watch the other label as you click OK!
         _onok

@@ -64,7 +64,7 @@ create-widget:{0}_editor
                 /*
                   * Feedback to user
                   */
-                sys42.info-window:File was saved
+                sys42.windows.info-tip:File was saved
 
             /*
               * The "Delete" button for edited unit test
@@ -79,13 +79,13 @@ create-widget:{0}_editor
                 /*
                   * Deletes the specified test
                   */
-                sys42.confirm-window
+                sys42.windows.confirm
                   _header:Confirm deletion!
                   _body:Are you sure you wish to delete this file?
                   _onok
                     _file:x:/../*/_file?value
                     delete-file:x:/../*/_file?value
-                    sys42.info-window:File was deleted
+                    sys42.windows.info-tip:File was deleted
                     delete-widget:unit-test-bottom-toolbar
                     delete-widget:unit-test-datagrid
                     sys42.execute-lambda-file:@tests/launch.hl
