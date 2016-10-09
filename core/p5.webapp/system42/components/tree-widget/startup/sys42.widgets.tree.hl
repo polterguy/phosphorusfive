@@ -1,0 +1,95 @@
+
+/*
+ * Creates the tree widget Active Event, in addition to some helper Active Events.
+ */
+
+
+/*
+ * The actual tree widget Active Event.
+ */
+create-event:sys42.widgets.tree
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _class:tree-widget
+    _onclick
+      get-widget-property:x:/../*/_event?value
+        _item-id
+      sys42.windows.info-tip:Item {0} was clicked
+        :x:/../*/get-widget-property/*/*?value
+      sys42.windows.show-lambda:x:/..
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+  /*
+   * Adding items to return widget, recursively.
+   */
+  eval-x:x:/+/*/*
+  add:x:/../*/return/*/container/*/widgets
+    sys42.widgets.tree._create-items
+      _items:x:/../*/_options/*/_items
+
+  /*
+   * Forward evaluating [class] and other arguments, and making sure [onclick] evaluates the supplied [_onclick] callback lambda.
+   */
+  eval-x:x:/../*/return/*/*
+  add:x:/../*/return/*/*/**/a/*/class/=tree-item-label/./*/onclick
+    src:x:/../*/_options/*/_onclick/*
+  return
+    container
+      class:x:/../*/_options/*/_class?value
+      widgets
+
+
+/*
+ * Supporting Active Event, to create items.
+ */
+create-event:sys42.widgets.tree._create-items
+
+  /*
+   * Checking if we have items, and if not, returning early.
+   */
+  if:x:/../*/_items/#/*
+    not
+    return
+
+  /*
+   * Looping through all [_items]
+   */
+  for-each:x:/../*/_items/#/*
+
+    /*
+     * Forward evaluating [_items] collection in recursive invocation of "self" inside of [add] to make sure
+     * we add children [_items] of currently iterated item.
+     */
+    eval-x:x:/+/*/*
+    add:x:/..for-each/*/add/[1,2]/*/*/*/widgets
+      sys42.widgets.tree._create-items
+        _items:x:/..for-each/*/_dp/#/*/_items
+
+    /*
+     * Settings properties for currently iterated item, and adding item into [return] below.
+     */
+    eval-x:x:/..for-each/*/add/[1,2]/*/*/*/*/a/*(/innerValue|/_item-id)
+    add:x:/../*/return/*/*
+      src
+        li
+          class:tree-item
+          widgets
+            a
+              href:#
+              class:tree-item-label
+              innerValue:x:/..for-each/*/_dp/#?name
+              _item-id:x:/..for-each/*/_dp/#?value
+              onclick
+
+  /*
+   * Returning widget hierarchy
+   */
+  return
+    ul
+      class:tree-item-children
+      widgets

@@ -367,9 +367,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="system42\components\tree-widget\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.threading\p5.threading.csproj">
       <Project>{ef65c1fb-fcc8-43f0-90ac-39da931268e4}</Project>
@@ -537,12 +535,12 @@
     <Content Include="system42\components\codemirror-widget\startup.hl" />
     <Content Include="system42\components\ckeditor-widget\startup.hl" />
     <Content Include="system42\components\app-settings\startup.hl" />
-    <Content Include="system42\components\common-dialogues\startup.hl" />
+    <Content Include="system42\components\common-windows\startup.hl" />
     <Content Include="system42\components\css-helpers\startup.hl" />
     <Content Include="system42\components\codemirror-widget\README.md" />
     <Content Include="system42\components\README.md" />
     <Content Include="system42\components\css-helpers\README.md" />
-    <Content Include="system42\components\common-dialogues\startup\sys42.windows.modal.hl" />
+    <Content Include="system42\components\common-windows\startup\sys42.windows.modal.hl" />
     <Content Include="system42\apps\Unit tests\edit-unit-test.hl" />
     <Content Include="system42\apps\Unit tests\evaluate-all.hl" />
     <Content Include="system42\apps\Unit tests\single-test-button-clicked.hl" />
@@ -566,6 +564,8 @@
     <Content Include="system42\components\ckeditor-widget\media\plugins\scayt\README.md" />
     <Content Include="system42\components\ckeditor-widget\media\plugins\wsc\LICENSE.md" />
     <Content Include="system42\components\ckeditor-widget\media\plugins\wsc\README.md" />
+    <Content Include="system42\components\tree-widget\startup.hl" />
+    <Content Include="system42\components\tree-widget\startup\sys42.widgets.tree.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\apps\CMS\media\bootstrap\css\bootstrap.css.map" />
     <None Include="system42\apps\CMS\media\bootstrap\css\bootstrap-theme.css.map" />
@@ -592,9 +592,9 @@
     <None Include="system42\startup\sys42.get-widget.hl" />
     <None Include="system42\components\ckeditor-widget\README.md" />
     <None Include="system42\components\ckeditor-widget\media\skins\moono\readme.md" />
-    <None Include="system42\components\common-dialogues\startup\sys42.windows.confirm.hl" />
-    <None Include="system42\components\common-dialogues\startup\sys42.windows.info-tip.hl" />
-    <None Include="system42\components\common-dialogues\startup\sys42.windows.show-lambda.hl" />
+    <None Include="system42\components\common-windows\startup\sys42.windows.confirm.hl" />
+    <None Include="system42\components\common-windows\startup\sys42.windows.info-tip.hl" />
+    <None Include="system42\components\common-windows\startup\sys42.windows.show-lambda.hl" />
     <None Include="system42\apps\CMS\installation\install-server.hl" />
     <None Include="system42\apps\CMS\installation\set-root-password.hl" />
     <None Include="system42\apps\CMS\installation\system-finished.hl" />

@@ -270,8 +270,7 @@ namespace p5.web.widgets
                             // Making sure we decorate the ID for widget automatically
                             idxChild.FirstChild.Value = id;
 
-                            // Recursively invoking self, with the children widgets, that should now be declared in the childre collection nodes
-                            // of the currently iterated child widget.
+                            // Recursively invoking self, with the children widgets, that should now be declared as the first child node of idxChild.
                             CreateChildWidgets (context, widget, idxChild);
                         } else {
 
