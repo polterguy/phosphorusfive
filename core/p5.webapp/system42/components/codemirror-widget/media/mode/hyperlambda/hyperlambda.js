@@ -851,7 +851,7 @@ CodeMirror.defineMode("hyperlambda", function() {
         case 'try':
         case 'catch':
         case 'finally':
-        case 'databind':
+        case 'apply':
         case 'template':
         case 'sort':
         case 'switch':

@@ -19,7 +19,8 @@ create-event:sys42.widgets.tree
         _item-id
       sys42.windows.info-tip:Item {0} was clicked
         :x:/../*/get-widget-property/*/*?value
-      sys42.windows.show-lambda:x:/..
+    _on-get-items
+      sys42.windows.info-top:You should really have supplied an [_on-get-items] callback!
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
@@ -32,15 +33,137 @@ create-event:sys42.widgets.tree
     sys42.widgets.tree._create-items
       _items:x:/../*/_options/*/_items
 
+
   /*
-   * Forward evaluating [class] and other arguments, and making sure [onclick] evaluates the supplied [_onclick] callback lambda.
+   * Adding [_on-get-items] callback into [sys42.widgets.tree._get-items]
    */
-  eval-x:x:/../*/return/*/*
-  add:x:/../*/return/*/*/**/a/*/class/=tree-item-label/./*/onclick
+  add:x:/../*/return/*/*/events/*/sys42.widgets.tree._get-items
+    src:x:/../*/_options/*/_on-get-items/*
+
+
+  /*
+   * Forward evaluating [class] and other arguments, and making sure [onclick] evaluates the supplied [_onclick] callback lambda, before
+   * we return unrolled widget to caller.
+   */
+  eval-x:x:/../*/return/*/*/class
+  add:x:/../*/return/*/*/events/*/sys42.widgets.tree.item-clicked
     src:x:/../*/_options/*/_onclick/*
   return
     container
+      _root-tree
       class:x:/../*/_options/*/_class?value
+      events
+
+        /*
+         * Invoked when an item is clicked
+         */
+        sys42.widgets.tree.item-clicked
+
+
+          /*
+           * First we must make sure this is the tree requested by caller to toggle items within.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our tree.
+             * Returning early, before callback lambda is evaluated
+             */
+            return
+
+        /*
+         * Invoked when tree needs to retrieve children items for a specific tree node.
+         * The lambda for this event, is created from the [_on-get-items] callback supplied during creation of tree.
+         */
+        sys42.widgets.tree._get-items
+
+          /*
+           * First we must make sure this is the tree requested by caller to toggle items within.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our tree.
+             * Returning early, before callback lambda is evaluated
+             */
+            return
+
+
+        /*
+         * Invoked when user wants to "toggle" an item.
+         */
+        sys42.widgets.tree.toggle-items
+
+          /*
+           * First we must make sure this is the tree requested by caller to toggle items within.
+           */
+          if:x:/../*/_arg?value
+            =:x:/../*/_event?value
+
+            /*
+             * This is the tree caller requested to have items toggled in, now looping through all [_items] caller wants to toggle.
+             */
+            for-each:x:/../*/_items/*?name
+
+              /*
+               * Finding anchor/hyperlink for currently iterated item, then retrieving its parent, for then to find its 
+               * parent's "ul" widget - If it exist.
+               */
+              find-widget:x:/../*/_event?value
+                _item-id:x:/..for-each/*/_dp?value
+              if:x:/..for-each/*/find-widget/*?value
+                not
+
+                /*
+                 * Caller supplied a non-existing item.
+                 */
+                throw:Oops, that item doesn't exist!
+
+              /*
+               * Now checking if there already exist a "ul" HTML widget beneath the main "tree-item".
+               * If a "ul" widget exist, we delete it, if not, we invoke the lambda callback provided during creation,
+               * to retrieve additional items.
+               */
+              get-parent-widget:x:/..for-each/*/find-widget/*?value
+              get-children-widgets:x:/-/*/*?value
+              if:x:/-/*/*/container
+
+                /*
+                 * Children items are already visible, deleting them.
+                 */
+                delete-widget:x:/..for-each/*/get-children-widgets/*/*/container?value
+              else
+
+                /*
+                 * Children items are NOT visible, requesting them through lambda callback supplied during creation, 
+                 * and creating widgets from these items.
+                 */
+                eval-x:x:/+/*
+                sys42.widgets.tree._get-items:x:/../*/_arg?value
+                  _id:x:/..for-each/*/_dp?value
+
+                /*
+                 * Then evaluating Active Event responsible for creating widgets out of our returned [_items] collection,
+                 * from the above [sys42.widgets.tree._get-items] invocation.
+                 */
+                eval-x:x:/+/*
+                sys42.widgets.tree._create-items
+                  _items:x:/..else/*/sys42.widgets.tree._get-items/*/_items
+
+                /*
+                 * Making sure we change the returned [ul] to a [create-container-widget] invocation, passing in the 
+                 * correct [parent] and making sure the [element] argument becomes "ul".
+                 */
+                set:x:/..else/*/sys42.widgets.tree._create-items/0?name
+                  src:create-container-widget
+                eval-x:x:/+/*/*
+                add:x:/..else/*/sys42.widgets.tree._create-items/0
+                  src
+                    element:ul
+                    parent:x:/..for-each/*/get-parent-widget/*/*?value
+                eval:x:/..else/*/sys42.widgets.tree._create-items
       widgets
 
 
@@ -85,6 +208,13 @@ create-event:sys42.widgets.tree._create-items
               innerValue:x:/..for-each/*/_dp/#?name
               _item-id:x:/..for-each/*/_dp/#?value
               onclick
+                find-first-ancestor-widget:x:/../*/_event?value
+                  _root-tree
+                get-widget-property:x:/../*/_event?value
+                  _item-id
+                eval-x:x:/+/*
+                sys42.widgets.tree.item-clicked:x:/../*/find-first-ancestor-widget/*?value
+                  _item-id:x:/../*/get-widget-property/*/*?value
 
   /*
    * Returning widget hierarchy
