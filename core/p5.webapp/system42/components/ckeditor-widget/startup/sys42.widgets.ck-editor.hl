@@ -19,18 +19,17 @@ create-event:sys42.widgets.ck-editor
    * Setting CKEditor's basepath.
    * Notice this must occur BEFORE we include CKEditor's JavaScript files!
    */
-  include-javascript:"window.CKEDITOR_BASEPATH='/system42/components/ckeditor/';"
+  include-javascript:"window.CKEDITOR_BASEPATH='/system42/components/ckeditor-widget/media/';"
 
   /*
    * Loading CKEditor's JavaScript file
    */
-  include-javascript-file:/system42/components/ckeditor/ckeditor.js
+  include-javascript-file:/system42/components/ckeditor-widget/media/ckeditor.js
 
   /*
    * JavaScript to replace textarea with CKEditor instance
    */
   send-javascript:@"CKEDITOR.replace('{0}',{{
-  contentsCss: [CKEDITOR.basePath + 'contents.css', '/media/bootstrap/css/bootstrap.min.css'],
   allowedContent: true,
   height:{1}
 }});"
