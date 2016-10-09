@@ -18,7 +18,7 @@
  */
 sys42.include-default-stylesheet-files
 sys42.include-default-javascript-files
-include-stylesheet-file:/media/css/navbar.css
+include-stylesheet-file:@CMS/media/css/navbar.css
 
 
 /*

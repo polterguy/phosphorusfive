@@ -64,8 +64,7 @@ See the web.config example for an explanation of each of these settings.
 
 ### The "media" folder
 
-Contains global images, JavaScript, and CSS files, which are an integral part of P5. P5 
-is by default, built on top of Boootstrap CSS, and jQuery, which you can find in this folder.
+Contains global images, JavaScript, and CSS files, which are an integral part of P5.
 
 ### The "common" folder
 

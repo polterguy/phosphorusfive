@@ -54,17 +54,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="media\css\navbar.css" />
-    <Content Include="media\jquery\images\ui-icons_444444_256x240.png" />
-    <Content Include="media\jquery\images\ui-icons_555555_256x240.png" />
-    <Content Include="media\jquery\images\ui-icons_777620_256x240.png" />
-    <Content Include="media\jquery\images\ui-icons_777777_256x240.png" />
-    <Content Include="media\jquery\images\ui-icons_cc0000_256x240.png" />
-    <Content Include="media\jquery\images\ui-icons_ffffff_256x240.png" />
-    <Content Include="media\jquery\jquery-ui.min.css" />
-    <Content Include="media\jquery\jquery-ui.min.js" />
-    <Content Include="media\jquery\jquery-ui.structure.min.css" />
-    <Content Include="media\jquery\jquery-ui.theme.min.css" />
+    <Content Include="system42\apps\CMS\media\css\navbar.css" />
+    <Content Include="system42\apps\CMS\media\jquery\images\ui-icons_444444_256x240.png" />
+    <Content Include="system42\apps\CMS\media\jquery\images\ui-icons_555555_256x240.png" />
+    <Content Include="system42\apps\CMS\media\jquery\images\ui-icons_777620_256x240.png" />
+    <Content Include="system42\apps\CMS\media\jquery\images\ui-icons_777777_256x240.png" />
+    <Content Include="system42\apps\CMS\media\jquery\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="system42\apps\CMS\media\jquery\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="system42\apps\CMS\media\jquery\jquery-ui.min.css" />
+    <Content Include="system42\apps\CMS\media\jquery\jquery-ui.min.js" />
+    <Content Include="system42\apps\CMS\media\jquery\jquery-ui.structure.min.css" />
+    <Content Include="system42\apps\CMS\media\jquery\jquery-ui.theme.min.css" />
     <Content Include="system42\components\codemirror\addon\display\autorefresh.js" />
     <Content Include="system42\components\codemirror\addon\display\fullscreen.css" />
     <Content Include="system42\components\codemirror\addon\display\fullscreen.js" />
@@ -85,11 +85,11 @@
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="media\bootstrap\css\bootstrap.min.css" />
-    <Content Include="media\bootstrap\css\bootstrap-theme.min.css" />
-    <Content Include="media\bootstrap\js\bootstrap.min.js" />
-    <Content Include="media\css\main.css" />
-    <Content Include="media\jquery\jquery-2.1.4.min.js" />
+    <Content Include="system42\apps\CMS\media\bootstrap\css\bootstrap.min.css" />
+    <Content Include="system42\apps\CMS\media\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="system42\apps\CMS\media\bootstrap\js\bootstrap.min.js" />
+    <Content Include="system42\apps\CMS\media\css\main.css" />
+    <Content Include="system42\apps\CMS\media\jquery\jquery-2.1.4.min.js" />
     <Content Include="media\images\headshot.png" />
     <Content Include="system42\components\codemirror\mode\hyperlambda\hyperlambda.js" />
     <Content Include="system42\components\ckeditor\ckeditor.js" />
@@ -280,7 +280,7 @@
   <ItemGroup>
     <Content Include="README.md" />
     <Content Include="common\README.md" />
-    <Content Include="media\README.md" />
+    <Content Include="system42\apps\CMS\media\README.md" />
     <None Include="system42\application-startup.hl" />
     <Content Include="system42\apps\README.md" />
     <Content Include="system42\apps\CMS\initial-pages\1-landing-page.hl" />
@@ -363,13 +363,13 @@
     <Content Include="system42\apps\CMS\startup\p5.io.unroll-path.hl" />
     <Content Include="system42\apps\Unit tests\startup.hl" />
     <None Include="system42\README.md" />
-    <None Include="media\bootstrap\css\bootstrap.css.map" />
-    <None Include="media\bootstrap\css\bootstrap-theme.css.map" />
-    <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="system42\apps\CMS\media\bootstrap\css\bootstrap.css.map" />
+    <None Include="system42\apps\CMS\media\bootstrap\css\bootstrap-theme.css.map" />
+    <None Include="system42\apps\CMS\media\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="system42\apps\CMS\media\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="system42\apps\CMS\media\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="system42\apps\CMS\media\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="system42\apps\CMS\media\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="system42\components\css-helpers\startup\sys42.add-css-classes.hl" />
     <Content Include="system42\components\css-helpers\startup\sys42.delete-css-classes.hl" />
     <Content Include="system42\components\css-helpers\startup\sys42.toggle-css-classes.hl" />
@@ -378,8 +378,8 @@
     <Content Include="system42\components\app-settings\startup\sys42.get-app-setting.hl" />
     <Content Include="system42\components\app-settings\startup\sys42.list-app-settings.hl" />
     <Content Include="system42\components\app-settings\startup\sys42.set-app-setting.hl" />
-    <Content Include="system42\startup\sys42.include-default-javascript-files.hl" />
-    <Content Include="system42\startup\sys42.include-default-stylesheet-files.hl" />
+    <Content Include="system42\apps\CMS\startup\sys42.include-default-javascript-files.hl" />
+    <Content Include="system42\apps\CMS\startup\sys42.include-default-stylesheet-files.hl" />
     <Content Include="system42\components\codemirror\startup\sys42.widgets.codemirror.hl" />
     <Content Include="system42\components\ckeditor\startup\sys42.widgets.ck-editor.hl" />
     <None Include="system42\apps\CMS\startup\p5.web.load-ui.hl" />

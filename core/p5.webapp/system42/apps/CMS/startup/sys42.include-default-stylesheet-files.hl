@@ -6,5 +6,5 @@ create-event:sys42.include-default-stylesheet-files
 
   // Including bootstrap
   include-stylesheet-file
-    /media/bootstrap/css/bootstrap.min.css
-    /media/css/main.css
+    @CMS/media/bootstrap/css/bootstrap.min.css
+    @CMS/media/css/main.css

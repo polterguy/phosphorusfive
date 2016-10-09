@@ -47,6 +47,11 @@ By default, only a single HTML page, in addition to the page necessary to start 
 This folder contains the files that will be evaluated during the initial setup of your server, and guides you through setting up a
 server salt, root password, and other things necessary to "initialize" your server.
 
+### The "media" folder
+
+This folder contains CSS and JavaScript files, that System42 is dependent upon. System42 is built upon Bootstrap CSS, and uses
+jQuery some places. The files for these libraries can be found in the media folder.
+
 ### The "page-editor" folder
 
 This folder contains the actual CMS editor, and all of the plugins for the different types of pages that are in the system.

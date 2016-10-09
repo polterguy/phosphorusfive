@@ -6,9 +6,9 @@ create-event:sys42.include-default-javascript-files
 
   // Including jQuery, then bootstrap
   include-javascript-file
-    /media/jquery/jquery-2.1.4.min.js
-    /media/jquery/jquery-ui.min.js
-    /media/bootstrap/js/bootstrap.min.js
+    @CMS/media/jquery/jquery-2.1.4.min.js
+    @CMS/media/jquery/jquery-ui.min.js
+    @CMS/media/bootstrap/js/bootstrap.min.js
     
 
 
