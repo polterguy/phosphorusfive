@@ -9,6 +9,7 @@
  * [_header]         - Header of modal wizard window
  * [_body]           - Explanatory text of dialogue
  * [_class]          - Override the default CSS class
+ * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
  * [_parent]         - Override the default parent widget
  * [_onok]           - Lambda callback to evaluate upon user clicking "OK" button
  * [_buttons]        - Buttons to use instead of the (default) "OK" button
@@ -28,6 +29,7 @@ create-event:sys42.windows.modal
     _header:Supply info
     _body:
     _class:modal fade
+    _inner-class:modal-dialog
     _parent:cnt
     _onok
     _buttons
@@ -94,7 +96,7 @@ create-event:sys42.windows.modal
   /*
    * Creating actual modal Widget
    */
-  eval-x:x:/+/*
+  eval-x:x:/+/*|/+/*/widgets/*/container/*/class
   create-widget:modal-window
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
@@ -128,7 +130,7 @@ create-event:sys42.windows.modal
 
     widgets
       container
-        class:modal-dialog
+        class:x:/../*/_options/*/_inner-class?value
         widgets
           container
             class:modal-content

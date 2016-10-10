@@ -280,6 +280,7 @@
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.css" />
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.js" />
     <Content Include="system42\components\tree-widget\media\tree.css" />
+    <Content Include="system42\components\tree-widget\media\tree.png" />
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />

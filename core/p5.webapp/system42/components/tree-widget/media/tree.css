@@ -26,34 +26,109 @@
  * Root tree default CSS class.
  */
 .tree-widget {
-    background-color:rgba(255,255,255,1);
-    padding:15px 15px 15px 15px;
-    font-size:1.5em;
 }
 
-ul.tree-item-children {
+/*
+ * Wrapper element for entire item, including its children UL elements.
+ * Removing left padding for items as default value.
+ */
+.tree-widget li.tree-item {
+    padding-left:0;
+}
+
+/*
+ * Making sure only "second level items" are indendent.
+ */
+.tree-widget ul.tree-item-children > li.tree-item > ul.tree-item-children > li.tree-item {
+    padding-left:16px;
+}
+.tree-widget ul.tree-item-children > li.tree-item > ul.tree-item-children > li.tree-expanded {
+    background-position:0 -80px, 0 0;
+    background-image:url(/system42/components/tree-widget/media/tree-1.png), url(/system42/components/tree-widget/media/tree-2.png);
+    background-repeat:no-repeat, repeat-y;
+}
+.tree-widget ul.tree-item-children > li.tree-item > ul.tree-item-children > li.tree-expanded:last-child {
+    background-position:0 0;
+    background-image:url(/system42/components/tree-widget/media/tree-3.png);
+    background-repeat:no-repeat;
+}
+
+/*
+ * The label (hyperlink) for tree items.
+ */
+.tree-widget a.tree-item-label {
+    padding-left:18px;
+    background-image:url(/system42/components/tree-widget/media/tree-1.png);
+    background-repeat:no-repeat;
+    background-position:0 0;
+    text-decoration:none;
+    display:block;
+    height:100%;
+    line-height:19px;
+}
+.tree-widget a.tree-item-label:hover {
+    background-color:rgba(0,0,0,.1);
+}
+.tree-widget ul.tree-item-children > li.tree-expanded > a.tree-item-label {
+    padding-left:18px;
+    background-image:url(/system42/components/tree-widget/media/tree-1.png);
+    background-repeat:no-repeat;
+    background-position:0 -20px;
+    text-decoration:none;
+}
+
+/*
+ * Selected item class for label (hyperlink) of selected tree items.
+ */
+.tree-widget li.tree-item > a.tree-selected {
+    background-color:rgba(128,255,128,.3);
+}
+
+/*
+ * Expanded CSS class for label (hyperlink).
+ */
+.tree-widget li.tree-expanded > a.tree-item-label {
+    background-position:0 -40px;
+}
+
+/*
+ * Expanded CSS class for children li elements.
+ */
+.tree-widget li.tree-expanded > ul.tree-item-children > li.tree-item {
+    background-position:0 -80px;
+    background-image:url(/system42/components/tree-widget/media/tree-1.png);
+    background-repeat:no-repeat;
+}
+.tree-widget li.tree-expanded > ul.tree-item-children > li.tree-item:last-child {
+    background-position:0 -60px;
+    background-image:url(/system42/components/tree-widget/media/tree-1.png);
+}
+
+/*
+ * The children ul element of tree items.
+ */
+.tree-widget ul.tree-item-children {
+    padding-left:0;
     list-style:none;
-    padding-left:20px;
 }
 
+/*
+ * Animations for showing children items during expansion of children items.
+ */
 @keyframes tree-item-children-animation {
     0% {
         opacity:0;
-        margin-top:-200px;
+        margin-left:-50%;
+        transform:scale(0);
     }
     100% {
         opacity:1;
+        transform:scale(1);
     }
 }
-ul.tree-item-children-animate {
+.tree-widget ul.tree-item-children-animate {
     animation-name: tree-item-children-animation;
     animation-duration: .5s;
-}
-
-li.tree-item {
-}
-
-a.tree-item-label {
 }
 
 
