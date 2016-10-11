@@ -28,30 +28,30 @@ using p5.core;
 namespace p5.web.ui.request
 {
     /// <summary>
-    ///     Helper to retrieve request parameters
+    ///     Helper to retrieve GET HTTP request parameters
     /// </summary>
-    public static class Parameters
+    public static class QueryString
     {
         /// <summary>
-        ///     Returns one or more request parameter(s).
+        ///     Returns one or more HTTP GET request parameter(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-http-param")]
-        public static void get_http_param (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-http-get-param")]
+        public static void get_http_get_param (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.Params [key], true);
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Request.QueryString [key], true);
         }
 
         /// <summary>
-        ///     Lists all keys for our parameters.
+        ///     Lists all keys for our GET parameters.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-http-params")]
-        public static void list_http_params (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-http-get-params")]
+        public static void list_http_get_params (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Params.AllKeys, true);
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.QueryString.AllKeys, true);
         }
     }
 }

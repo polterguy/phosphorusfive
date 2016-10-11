@@ -176,10 +176,26 @@ namespace p5.web
         public void get_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover(e.Args)) {
+            using (new core.Utilities.ArgsRemover(e.Args)) {
 
                 // Returning current URL
                 e.Args.Value = AjaxPage.Request.Url.ToString();
+            }
+        }
+
+        /// <summary>
+        ///     Returns the URL/location of your web page without the query string parameters.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "get-location-url")]
+        public void get_location_url (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new core.Utilities.ArgsRemover (e.Args)) {
+
+                // Returning current URL
+                e.Args.Value = AjaxPage.Request.Url.GetLeftPart (UriPartial.Path);
             }
         }
 

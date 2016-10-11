@@ -220,12 +220,27 @@ namespace p5.web.widgets
                 // Looping through all child widgets of currently handled widget
                 foreach (var idxNode in args["widgets"].Children) {
 
-                    // Recursively invoking "self" to retrieve [oninit] of children widgets of currentl handled widget
-                    // Notice "ToList", which makes sure enumeration doesn't halt when finding our first candidate
-                    foreach (var idxInner in GetInitMethods (idxNode).ToList ()) {
+                    // Checking if this is a "custom control", at which point we should iterate its children again.
+                    if (idxNode.Name.Contains (".")) {
 
-                        // And we have a MATCH! (this is an [oninit] lambda event, found in recursive invocation of "self"
-                        yield return idxInner;
+                        // Recursively invoking "self" to retrieve [oninit] of children's children widgets of currently handled widget
+                        // Notice "ToList", which makes sure enumeration doesn't halt when finding our first candidate
+                        foreach (var idxInnerFirst in idxNode.Children.ToList ()) {
+                            foreach (var idxInnerSecond in GetInitMethods (idxInnerFirst).ToList ()) {
+
+                                // And we have a MATCH! (this is an [oninit] lambda event, found in recursive invocation of "self"
+                                yield return idxInnerSecond;
+                            }
+                        }
+                    } else {
+
+                        // Recursively invoking "self" to retrieve [oninit] of children widgets of currently handled widget
+                        // Notice "ToList", which makes sure enumeration doesn't halt when finding our first candidate
+                        foreach (var idxInner in GetInitMethods (idxNode).ToList ()) {
+
+                            // And we have a MATCH! (this is an [oninit] lambda event, found in recursive invocation of "self"
+                            yield return idxInner;
+                        }
                     }
                 }
             }

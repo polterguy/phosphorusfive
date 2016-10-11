@@ -62,6 +62,10 @@ namespace p5.lambda.keywords.core
                 // Iterating each source, appending into currently iterated destination
                 foreach (var idxSource in src) {
 
+                    // Sanity checking source.
+                    if (idxSource == null)
+                        continue;
+
                     // Checking if currently iterated source is a node, and if not, we convert it into a node, which will
                     // result in a "root node", which we remove, and only add its children, into currently iterated destination
                     if (idxSource is Node)

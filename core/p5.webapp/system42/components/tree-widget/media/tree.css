@@ -115,20 +115,78 @@
 /*
  * Animations for showing children items during expansion of children items.
  */
-@keyframes tree-item-children-animation {
+@keyframes tree-item-children-animation-child-li {
     0% {
         opacity:0;
-        margin-left:-50%;
-        transform:scale(0);
+        margin-left:-50px;
     }
     100% {
         opacity:1;
-        transform:scale(1);
+        margin-left:0;
     }
 }
-.tree-widget ul.tree-item-children-animate {
-    animation-name: tree-item-children-animation;
-    animation-duration: .5s;
+.tree-widget ul.tree-item-children-animate > li.tree-item {
+    opacity:0;
+    animation-name: tree-item-children-animation-child-li;
+    animation-duration: .3s;
+    animation-fill-mode:forwards;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(1) {
+    animation-delay:.05s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(2) {
+    animation-delay:.1s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(3) {
+    animation-delay:.15s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(4) {
+    animation-delay:.20s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(5) {
+    animation-delay:.25s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(6) {
+    animation-delay:.30s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(7) {
+    animation-delay:.35s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(8) {
+    animation-delay:.40s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(9) {
+    animation-delay:.45s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(10) {
+    animation-delay:.50s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(11) {
+    animation-delay:.55s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(12) {
+    animation-delay:.60s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(13) {
+    animation-delay:.65s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(14) {
+    animation-delay:.70s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(15) {
+    animation-delay:.75s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(16) {
+    animation-delay:.80s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(17) {
+    animation-delay:.85s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(18) {
+    animation-delay:.90s;
+}
+.tree-widget ul.tree-item-children-animate > li.tree-item:nth-child(19) {
+    animation-delay:.95s;
 }
 
 

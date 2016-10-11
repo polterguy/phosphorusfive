@@ -6,18 +6,19 @@
 
 /*
  * The actual tree widget Active Event.
- * Creates a tree widget, which allows for hierarchically browse relational tree structures, such as for instance a file
+ * Creates a tree widget, which allows for hierarchically browsing relational tree structures, such as for instance a file
  * system, etc.
+ * Tree Widget is "SEO friendly", which means that it will allow spiders to crawl the nodes in your tree, as if they were hyperlinks,
+ * while  still remaining the single page app feeling for human users, through Ajax functionality.
  *
  * Arguments;
  * 
  * [_class]           - CSS class to use, defaults to "tree-widget".
- * [_onclick]         - Callback lambda object to evaluate when an item is clicked, default implementation toggles item,
- *                      and sets clicked item to "selected".
- *                      Callback will be given [_item-id] to ID of item and [_arg] being ID of main tree widget.
+ * [_css-file]        - CSS file to include, defaults to "tree.css" from tree widget's media folder.
  * [_on-get-items]    - Callback lambda evaluated when the tree need more items.
  *                      Callback will be given [_item-id] for which item to retrieve children of.
  *                      Callback is expected to return an [_items] collection, similarly to when the tree is initially created.
+ * [_on-select]       - Callback lambda to invoke when an item is selected.
  * [_items]           - Collection of items to show initially as "root items".
  *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
  *                      item, used to uniquely identify the item, when the item is clicked for instance, etc.
@@ -29,15 +30,13 @@ create-event:sys42.widgets.tree
    */
   _defaults
     _class:tree-widget
-    _onclick
-      add:x:/+/*|/+2/*
-        src:x:/../*/_item-id?value
-      sys42.widgets.tree.toggle-items:x:/../*/_arg?value
-        _items
-      sys42.widgets.tree.select-items:x:/../*/_arg?value
-        _items
+    _css-file:/system42/components/tree-widget/media/tree.css
     _on-get-items
-      sys42.windows.info-top:You should really have supplied an [_on-get-items] callback!
+      sys42.windows.info-top:You should really have supplied an [_on-get-items] callback! If not for anything else, than to make it empty!
+        _class:info-window info-window-longer info-window-error
+    _on-select
+      sys42.windows.info-top:You should really have supplied an [_on-select] callback! If not for anything else, than to make it empty!
+        _class:info-window info-window-longer info-window-error
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
@@ -46,7 +45,7 @@ create-event:sys42.widgets.tree
   /*
    * Making sure we include our tree specific CSS file.
    */
-  include-stylesheet-file:/system42/components/tree-widget/media/tree.css
+  include-stylesheet-file:x:/../*/_options/*/_css-file?value
 
 
   /*
@@ -66,10 +65,10 @@ create-event:sys42.widgets.tree
 
 
   /*
-   * Adding [_onclick] callback lambda to [sys42.widgets.tree._item-clicked]
+   * Adding [_on-select] callback into [sys42.widgets.tree._select]
    */
-  add:x:/../*/return/*/*/events/*/sys42.widgets.tree._item-clicked
-    src:x:/../*/_options/*/_onclick/*
+  add:x:/../*/return/*/*/events/*/sys42.widgets.tree._select
+    src:x:/../*/_options/*/_on-select/*
 
 
   /*
@@ -84,29 +83,34 @@ create-event:sys42.widgets.tree
   return
     container
 
+
       /*
        * Used to track the "root widget" for our tree, such that we can easily retrieve it, 
        * using [find-first-ancestor-widget] later.
        */
       _root-tree
 
+
       /*
        * Forward evaluated before [return] invocation, to [_options]/[_class] value.
        */
       class:x:/../*/_options/*/_class?value
+
+
+      /*
+       * Events for tree widget.
+       */
       events
 
-        /*
-         * Invoked when an item is clicked.
-         * The lambda invoked here, is dynamically supplied by caller, through [_onclick] lambda callback argument.
-         * Which allows caller to do anything he wish to do, when an item is clicked.
-         */
-        sys42.widgets.tree._item-clicked
 
+        /*
+         * Invoked when tree needs to retrieve children items for a specific tree node.
+         * The lambda for this event, is created from the [_on-get-items] callback supplied during creation of tree.
+         */
+        sys42.widgets.tree._get-items
 
           /*
-           * First we must make sure this is the tree requested by caller,
-           * to support multiple trees on the same page.
+           * First we must make sure this is the tree requested by caller to toggle items within.
            */
           if:x:/../*/_arg?value
             !=:x:/../*/_event?value
@@ -125,10 +129,9 @@ create-event:sys42.widgets.tree
 
 
         /*
-         * Invoked when tree needs to retrieve children items for a specific tree node.
-         * The lambda for this event, is created from the [_on-get-items] callback supplied during creation of tree.
+         * Invoked when items are selected in tree widget.
          */
-        sys42.widgets.tree._get-items
+        sys42.widgets.tree._select
 
           /*
            * First we must make sure this is the tree requested by caller to toggle items within.
@@ -138,7 +141,7 @@ create-event:sys42.widgets.tree
 
             /*
              * This is NOT our tree.
-             * Returning early, before callback lambda is evaluated
+             * Returning early, before callback lambda is evaluated.
              */
             return
 
@@ -151,6 +154,11 @@ create-event:sys42.widgets.tree
 
         /*
          * Invoked when an item is "selected".
+         *
+         * [_arg] must be the ID of the main tree widget.
+         * [_items] must be a collection of items to select.
+         *
+         * Notice, all previously selected items are de-selected!
          */
         sys42.widgets.tree.select-items
 
@@ -181,19 +189,22 @@ create-event:sys42.widgets.tree
             for-each:x:/../*/_items/*?name
               find-widget:x:/../*/_event?value
                 _item-id:x:/..for-each/*/_dp?value
-              sys42.add-css-classes:x:/-/*?value
+              find-widget:x:/-/*?value
+                element:a
+              sys42.add-css-classes:x:/-/0?value
                 _class:tree-selected
 
             /*
-             * Then raising our "select items", in case others are interested in the fact that some item(s) was selected.
+             * Making sure [_on-select] lambda callback is invoked.
              */
             add:x:/+
               src:x:/../*/_items
-            sys42.widgets.tree.on-select-items:x:/../*/_arg?value
+            sys42.widgets.tree._select:x:/../*/_arg?value
 
 
         /*
          * Invoked when user wants to "toggle" one or more items.
+         * Expects [_items] collection.
          */
         sys42.widgets.tree.toggle-items
 
@@ -227,21 +238,28 @@ create-event:sys42.widgets.tree
                * Now checking if there already exist a "ul" HTML widget beneath the main "tree-item".
                * If a "ul" widget exist, we delete it, if not, we invoke the lambda callback provided during creation,
                * to retrieve additional items, before we create it (the "ul" widget).
+               *
+               * Notice, deletion can be prevented by adding the [_no-delete] argument set to true.
                */
-              get-parent-widget:x:/..for-each/*/find-widget/*?value
-              get-children-widgets:x:/-/*/*?value
+              get-children-widgets:x:/..for-each/*/find-widget/*?value
               if:x:/-/*/*/container
 
                 /*
-                 * Children items are already visible, deleting them.
+                 * Checking if caller did not want items deleted to "force open".
                  */
-                delete-widget:x:/..for-each/*/get-children-widgets/*/*/container?value
+                if:x:/../*/_no-delete?value
+                  not
 
-                /*
-                 * Removing the "expanded" CSS class in parent widget.
-                 */
-                sys42.delete-css-classes:x:/..for-each/*/get-parent-widget/*/*?value
-                  _class:tree-expanded
+                  /*
+                   * Children items are already visible, and caller did not want to "force open", hence deleting items.
+                   */
+                  delete-widget:x:/..for-each/*/get-children-widgets/*/*/container?value
+
+                  /*
+                   * Removing the "expanded" CSS class on parent widget.
+                   */
+                  sys42.delete-css-classes:x:/..for-each/*/find-widget/*?value
+                    _class:tree-expanded
               else
 
                 /*
@@ -278,18 +296,18 @@ create-event:sys42.widgets.tree
 
                 /*
                  * Making sure we add "ul" as value of [element] to [create-container-widget] invocation, in addition
-                 * to making sure our "ul" widget gets the correct [parent] argument.
+                 * to making sure our "ul" widget gets the correct [parent] argument, which is the parent "li" element.
                  */
                 eval-x:x:/+/*/*
                 add:x:/..else/*/sys42.widgets.tree._create-items/0
                   src
                     element:ul
-                    parent:x:/..for-each/*/get-parent-widget/*/*?value
+                    parent:x:/..for-each/*/find-widget/*?value
 
                 /*
-                 * Making sure we add the "tree-item-children-animate" CSS class to our invocation, since this is
-                 * a dynamically created child control collection. To create some nice animations as the items show
-                 * up on page.
+                 * Making sure we add the "tree-item-children-animate" CSS class to our widget, since this is
+                 * a dynamically created child control collection. To create some nice animations, as the items shows
+                 * up on page initially.
                  */
                 set:x:/..else/*/sys42.widgets.tree._create-items/*/*/class?value
                   src:tree-item-children tree-item-children-animate
@@ -304,8 +322,44 @@ create-event:sys42.widgets.tree
                 /*
                  * Adding the "expanded" CSS class in parent widget.
                  */
-                sys42.add-css-classes:x:/..for-each/*/get-parent-widget/*/*?value
+                sys42.add-css-classes:x:/..for-each/*/find-widget/*?value
                   _class:tree-expanded
+
+      /*
+       * Checking if we should "unroll items".
+       */
+      oninit
+
+        /*
+         * Checking URL to determine if we should "unroll" items.
+         */
+        get-http-param:sys42_widgets_tree_unroll
+        if:x:/../*/get-http-param/*?value
+          not
+
+          /*
+           * Nothing to do here.
+           */
+          return
+
+        /*
+         * Splitting up every ID from URL, and adding every ID to invocation of [toggle-items] forcing "unrolling" through [_no-delete].
+         */
+        split:x:/../*/get-http-param/*?value
+          =:|
+        add:x:/+/*/_items
+          src:x:/../*/split/*?name
+        sys42.widgets.tree.toggle-items:x:/../*/_event?value
+          _items
+          _no-delete:bool:true
+
+        /*
+         * Making sure we select outer most item.
+         */
+        add:x:/../*/sys42.widgets.tree.select-items/*
+          src:x:/../*/split/0/-?name
+        sys42.widgets.tree.select-items:x:/../*/_event?value
+          _items
       widgets
 
 
@@ -341,40 +395,73 @@ create-event:sys42.widgets.tree._create-items
         _nested:bool:true
 
     /*
-     * Setting properties for currently iterated item, and adding item into [return] below.
-     *
-     * These are simply [innerValue] in addition to [_item-id] which is a server-side hidden property of the hyperlink
-     * for the item, allowing us to figure out the "id" of which item was clicked, among other things.
-     */
-    eval-x:x:/..for-each/*/add/[1,2]/*/*/*/*/a/*(/innerValue|/_item-id)
-
-    /*
-     * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
-     * to caller's request.
+     * Checking if this is a [_nested] item, at which case, we should add the "tree-expanded" CSS class to "li" HTML widget.
      */
     if:x:/../*/_nested?value
       set:x:/..for-each/*/add/[1,2]/*/*/*/class?value
         src:{0} tree-expanded
           :x:/..for-each/*/add/[1,2]/*/*/*/class?value
+
+    /*
+     * Setting properties for currently iterated item, and adding item into [return] below.
+     *
+     * These are simply [innerValue] on hyperlink, in addition to [_item-id] on "li", which is a server-side hidden property
+     * for the item, allowing us to figure out the "id" of which item was clicked, among other things.
+     */
+    eval-x:x:/..for-each/*/add/[1,2]/*/*/*(/_item-id|/*/a/*/innerValue)
+
+    /*
+     * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
+     * to caller's request.
+     */
     add:x:/../*/return/*/*
       src
         li
           class:tree-item
+          _item-id:x:/..for-each/*/_dp/#?value
           widgets
             a
-              href:#
               role:button
               class:tree-item-label
               innerValue:x:/..for-each/*/_dp/#?name
-              _item-id:x:/..for-each/*/_dp/#?value
               onclick
+
+                /*
+                 * Getting id of item, and passing into [toggle-items] and [select-items] as [_items] collection.
+                 */
+                get-parent-widget:x:/../*/_event?value
+                get-widget-property:x:/-/*/*?value
+                  _item-id
+                add:x:/../*/sys42.widgets.tree.toggle-items/*|/../*/sys42.widgets.tree.select-items/*
+                  src:x:/../*/get-widget-property/*/*?value
+
+                /*
+                 * The finding "root tree" widget for currently clicked item, such that we can pass it
+                 * into [toggle-items] and [select-items].
+                 */
                 find-first-ancestor-widget:x:/../*/_event?value
                   _root-tree
-                get-widget-property:x:/../*/_event?value
-                  _item-id
-                eval-x:x:/+/*
-                sys42.widgets.tree._item-clicked:x:/../*/find-first-ancestor-widget/*?value
-                  _item-id:x:/../*/get-widget-property/*/*?value
+                sys42.widgets.tree.toggle-items:x:/../*/find-first-ancestor-widget/*?value
+                  _items
+                sys42.widgets.tree.select-items:x:/../*/find-first-ancestor-widget/*?value
+                  _items
+
+              /*
+               * To make sure we are able to create our SEO URL in hyperlink, we handle [oninit],
+               * since at that point, the widget is "rooted", and we can traverse all "li" elements
+               * upwards in hierarchy, all the way to the "root" widget, to retrieve all IDs of elements.
+               */
+              oninit
+
+                /*
+                 * Retrieving parent "li" HTML widget, and passing it into [_create-url], which will
+                 * traverse the hierarchy upwards, adding all necessary IDs, and creating a URL that will
+                 * expand all items leading to "current item".
+                 */
+                get-parent-widget:x:/../*/_event?value
+                sys42.widgets.tree._create-url:x:/-/*/*?value
+                set-widget-property:x:/../*/_event?value
+                  href:x:/../*/sys42.widgets.tree._create-url?value
 
   /*
    * Returning widget hierarchy.
@@ -383,3 +470,79 @@ create-event:sys42.widgets.tree._create-items
     ul
       class:tree-item-children
       widgets
+
+
+/*
+ * Supporting Active Event, to create URL from given [_arg] "li" widget.
+ */
+create-event:sys42.widgets.tree._create-url
+
+  /*
+   * First we get current location, without GET parameters, before we add the question mark to make sure we 
+   * "open" our GET params collection.
+   */
+  get-location-url
+  set:x:/../*/get-location-url?value
+    src:{0}?
+      :x:/../*/get-location-url?value
+
+  /*
+   * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
+   * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tree_unroll".
+   */
+  list-http-get-params
+  set:x:/-/*/sys42_widgets_tree_unroll
+  if:x:/-2/*
+    get-http-get-param:x:/./-2/*?name
+    for-each:x:/-/*
+      url-encode:x:/./*/_dp/#?value
+      set:x:/../*/get-location-url?value
+        src:{0}{1}={2}&
+          :x:/../*/get-location-url?value
+          :x:/..for-each/*/_dp/#?name
+          :x:/..for-each/*/url-encode?value
+
+  /*
+   *
+   */
+  set:x:/../*/get-location-url?value
+    src:{0}sys42_widgets_tree_unroll=
+      :x:/../*/get-location-url?value
+
+  /*
+   * Then we need to recursively iterate from current widget, and upwards in hierarchy, until
+   * we reach "main root tree widget", and append all IDs to the URL separated by a pipe sign (|).
+   */
+  set:x:/+?value
+    src:x:/../*/_arg?value
+  _cur
+  _param
+  while:bool:true
+    get-widget-property:x:/../*/_cur?value
+      _item-id
+    set:x:/../*/_param?value
+      src:{0}|{1}
+        :x:/..while/*/get-widget-property/[0,1]/*/*?value
+        :x:/../*/_param?value
+    get-parent-widget:x:/../*/_cur?value
+    get-parent-widget:x:/-/*/*?value
+    get-widget-property:x:/-/*/*?value
+      element
+    if:x:/-/*/*?value
+      !=:li
+
+      // This is main root tree widget, which is "div" and not "li".
+      break
+    set:x:/../*/_cur?value
+      src:x:/..while/*/get-parent-widget/[1,2]/*/*?value
+
+  /*
+   * Now we URL encode entire parameter, before we return it concatenated with base URL to caller.
+   */
+  trim:x:/../*/_param?value
+    chars:|
+  url-encode:x:/../*/trim?value
+
+  return:{0}{1}
+    :x:/../*/get-location-url?value
+    :x:/../*/url-encode?value
