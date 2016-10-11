@@ -8,8 +8,10 @@
  * The actual tree widget Active Event.
  * Creates a tree widget, which allows for hierarchically browsing relational tree structures, such as for instance a file
  * system, etc.
+ *
  * Tree Widget is "SEO friendly", which means that it will allow spiders to crawl the nodes in your tree, as if they were hyperlinks,
- * while  still remaining the single page app feeling for human users, through Ajax functionality.
+ * while  still remaining the single page app feeling for human users, through Ajax functionality. But only if you explicitly set
+ * the [_crawl] paremeter to true. If you do, you can override the default name of the HTTP GET parameter, by supplying it as [_crawl-get-name].
  *
  * Arguments;
  * 
@@ -22,6 +24,8 @@
  * [_items]           - Collection of items to show initially as "root items".
  *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
  *                      item, used to uniquely identify the item, when the item is clicked for instance, etc.
+ * [_crawl]           - If true, the tree will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
+ * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tree_unroll".
  */
 create-event:sys42.widgets.tree
 
@@ -37,6 +41,8 @@ create-event:sys42.widgets.tree
     _on-select
       sys42.windows.info-top:You should really have supplied an [_on-select] callback! If not for anything else, than to make it empty!
         _class:info-window info-window-longer info-window-error
+    _crawl-get-name:sys42_widgets_tree_unroll
+    _crawl:bool:false
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
@@ -69,6 +75,17 @@ create-event:sys42.widgets.tree
    */
   add:x:/../*/return/*/*/events/*/sys42.widgets.tree._select
     src:x:/../*/_options/*/_on-select/*
+
+
+  /*
+   * Removing the [oninit] of widget, if crawling is disabled.
+   */
+  if:x:/../*/_options/*/_crawl?value.bool
+    not
+    set:x:/../*/return/*/*/oninit
+  else
+    set:x:/../*/return/*/*/_root-tree?value
+      src:x:/../*/_options/*/_crawl-get-name?value
 
 
   /*
@@ -333,8 +350,10 @@ create-event:sys42.widgets.tree
         /*
          * Checking URL to determine if we should "unroll" items.
          */
-        get-http-param:sys42_widgets_tree_unroll
-        if:x:/../*/get-http-param/*?value
+        get-widget-property:x:/../*/_event?value
+          _root-tree
+        get-http-get-param:x:/-/*/*?value
+        if:x:/../*/get-http-get-param/*?value
           not
 
           /*
@@ -345,7 +364,7 @@ create-event:sys42.widgets.tree
         /*
          * Splitting up every ID from URL, and adding every ID to invocation of [toggle-items] forcing "unrolling" through [_no-delete].
          */
-        split:x:/../*/get-http-param/*?value
+        split:x:/../*/get-http-get-param/*?value
           =:|
         add:x:/+/*/_items
           src:x:/../*/split/*?name
@@ -421,6 +440,7 @@ create-event:sys42.widgets.tree._create-items
           _item-id:x:/..for-each/*/_dp/#?value
           widgets
             a
+              href:#
               role:button
               class:tree-item-label
               innerValue:x:/..for-each/*/_dp/#?name
@@ -458,10 +478,15 @@ create-event:sys42.widgets.tree._create-items
                  * traverse the hierarchy upwards, adding all necessary IDs, and creating a URL that will
                  * expand all items leading to "current item".
                  */
-                get-parent-widget:x:/../*/_event?value
-                sys42.widgets.tree._create-url:x:/-/*/*?value
-                set-widget-property:x:/../*/_event?value
-                  href:x:/../*/sys42.widgets.tree._create-url?value
+                find-first-ancestor-widget:x:/../*/_event?value
+                  _root-tree
+                get-widget-property:x:/-/*?value
+                  _root-tree
+                if:x:/-/*/*?value
+                  get-parent-widget:x:/../*/_event?value
+                  sys42.widgets.tree._create-url:x:/-/*/*?value
+                  set-widget-property:x:/../*/_event?value
+                    href:x:/..if/*/sys42.widgets.tree._create-url?value
 
   /*
    * Returning widget hierarchy.
@@ -490,8 +515,13 @@ create-event:sys42.widgets.tree._create-url
    * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
    * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tree_unroll".
    */
+  find-first-ancestor-widget:x:/../*/_arg?value
+    _root-tree
+  get-widget-property:x:/-/*?value
+    _root-tree
   list-http-get-params
-  set:x:/-/*/sys42_widgets_tree_unroll
+  set:x:/-/*/{0}
+    :x:/../*/get-widget-property/*/*?value
   if:x:/-2/*
     get-http-get-param:x:/./-2/*?name
     for-each:x:/-/*
@@ -503,15 +533,17 @@ create-event:sys42.widgets.tree._create-url
           :x:/..for-each/*/url-encode?value
 
   /*
-   *
+   * Adding key for our "unroll" GET parameter.
    */
   set:x:/../*/get-location-url?value
-    src:{0}sys42_widgets_tree_unroll=
+    src:{0}{1}=
       :x:/../*/get-location-url?value
+      :x:/../*/get-widget-property/*/*?value
 
   /*
    * Then we need to recursively iterate from current widget, and upwards in hierarchy, until
    * we reach "main root tree widget", and append all IDs to the URL separated by a pipe sign (|).
+   * Making sure we url-encode the whole thing, before adding it.
    */
   set:x:/+?value
     src:x:/../*/_arg?value
@@ -526,6 +558,11 @@ create-event:sys42.widgets.tree._create-url
         :x:/../*/_param?value
     get-parent-widget:x:/../*/_cur?value
     get-parent-widget:x:/-/*/*?value
+
+    /*
+     * Checking if we're done. Unless current widget is an "li" widget, we're at the
+     * root widget for our tree widget.
+     */
     get-widget-property:x:/-/*/*?value
       element
     if:x:/-/*/*?value

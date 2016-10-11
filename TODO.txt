@@ -44,5 +44,5 @@ TODO before release
 
 *  Make sure all common dialogues optionally takes [parent] and [class] arguments
 
-
+* Make sure all widget retriever Active Events returns results in the same way. It's a freaking nightmare now, with different "APIs"
 
