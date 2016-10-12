@@ -198,4 +198,133 @@ expansions for the same items, it will simply remove a "hide" CSS class on the c
 This means it is also very cheap in regards to server resource usage, if the user is expanding and hiding the same items, looking for 
 some specific node, in your tree.
 
+## Handling selected event
+
+If you wish, you can supply an *[_on-select]* lambda callback, which will be invoked when the user is selecting items in your tree.
+Your lambda callback will be given a collection of *[_items]*, where the name property of the node, is the ID of the item selected.
+
+Below is an example of a tree widget that simply shows an "info tip box" as the user selects items.
+
+```
+create-container-widget
+  parent:content
+  class:col-xs-12
+  widgets
+    sys42.widgets.tree
+      _on-select
+        sys42.windows.info-tip:You selected '{0}'
+          :x:/../*/_items/0?name
+      _items
+        Foo:foo
+          _items
+            Foo 1:foo-1
+            Foo 2:foo-2
+        Bar:bar
+          _items
+            Bar 1:bar-1
+              _items
+                Howdy World:tjobing-1
+            Bar 2:bar-2
+```
+
+## Selecting multiple items
+
+Although there is no user interface for the widget by default, to allow for the user to select multiple items, this is still possible to
+achieve using its API. The *[sys42.widgets.tree.select-items]* lambda widget event, allows you to select multiple items. Below is an example.
+Click the button to select both the "foo-1" and the "bar-2" item.
+
+```
+create-container-widget
+  parent:content
+  class:col-xs-12
+  widgets
+    sys42.widgets.tree:my-tree
+      _items
+        Foo:foo
+          _items
+            Foo 1:foo-1
+            Foo 2:foo-2
+        Bar:bar
+          _items
+            Bar 1:bar-1
+              _items
+                Howdy World:tjobing-1
+            Bar 2:bar-2
+    literal
+      class:btn btn-default
+      innerValue:Select two items
+      onclick
+        sys42.widgets.tree.select-items:my-tree
+          _items
+            foo-1
+            bar-2
+```
+
+Hint, you can also, by using its API, "unroll" items, or "toggle" items, by invoking the *[sys42.widgets.tree.toggle-items]* Active Event.
+Which takes the exact same set of parameters as the *[sys42.widgets.tree.select-items]* event. Below is an example of toggling (collapsing)
+two items in your tree, through clicking a button.
+
+```
+create-container-widget
+  parent:content
+  class:col-xs-12
+  widgets
+    sys42.widgets.tree:my-tree
+      _items
+        Foo:foo
+          _items
+            Foo 1:foo-1
+            Foo 2:foo-2
+        Bar:bar
+          _items
+            Bar 1:bar-1
+              _items
+                Howdy World:tjobing-1
+            Bar 2:bar-2
+    literal
+      class:btn btn-default
+      innerValue:Toggle two items
+      onclick
+        sys42.widgets.tree.toggle-items:my-tree
+          _items
+            foo
+            bar-1
+```
+
+The *[sys42.widgets.tree.toggle-items]* Active Event, optionally take a *[_force-expand]* argument, which if set to true, will not collapse
+items that are already expanded, but exclusively open already collapsed items.
+
+## Retrieving currently selected items
+
+The tree widget also supports retrieving currently selected items, through its *[sys42.widgets.tree.get-selected-items]* Active Event.
+Below is an example of usage. Select any item in your tree, and then click the button.
+
+```
+create-container-widget
+  parent:content
+  class:col-xs-12
+  widgets
+    sys42.widgets.tree:my-tree
+      _items
+        Foo:foo
+          _items
+            Foo 1:foo-1
+            Foo 2:foo-2
+        Bar:bar
+          _items
+            Bar 1:bar-1
+              _items
+                Howdy World:tjobing-1
+            Bar 2:bar-2
+    literal
+      class:btn btn-default
+      innerValue:Get selected item(s)
+      onclick
+        sys42.widgets.tree.get-selected-items:my-tree
+        sys42.windows.info-tip:You selected '{0}'
+          :x:/../*/sys42.widgets.tree.get-selected-items/0/0?name
+```
+
+Notice, the *[sys42.widgets.tree.get-selected-items]* event, might return also 0 or multiple items, depending upon how many items
+user has selected, and if you have somehow selected multiple items through its API or something similar.
 

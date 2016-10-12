@@ -181,6 +181,44 @@ create-event:sys42.widgets.tree
 
 
         /*
+         * Invoke this to retrieve currently selected item(s) of widget.
+         *
+         * [_arg] must be the ID of the main tree widget.
+         * 
+         * The event will return an [_items] coollection, where the name of the nodes, are the IDs of all
+         * items that are currently selected in your tree.
+         */
+        sys42.widgets.tree.get-selected-items
+
+          /*
+           * First we must make sure this is the tree requested by caller.
+           */
+          if:x:/../*/_arg?value
+            =:x:/../*/_event?value
+
+            /*
+             * This is the tree caller requested to retrieve selected items in.
+             * Finding all items in the tree that are currently selected.
+             */
+            find-widget-like:x:/../*/_event?value
+              class:tree-selected
+            if:x:/-/*?count
+              !=:int:0
+
+              /*
+               * Tree has selected items.
+               * Finding its parent "li" widget, and retrieving its [_item-id], and returning as [_items] collection to caller.
+               */
+              get-parent-widget:x:/./-/*?value
+              get-widget-property:x:/-/*/*?value
+                _item-id
+              add:x:/+/*
+                src:x:/./-/*/*?value
+              return
+                _items
+
+
+        /*
          * Invoked when an item is "selected".
          *
          * [_arg] must be the ID of the main tree widget.
