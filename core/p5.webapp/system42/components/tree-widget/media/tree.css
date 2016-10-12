@@ -76,6 +76,9 @@
     background-position:0 -20px;
     text-decoration:none;
 }
+.tree-widget a.tree-item-label .glyphicon {
+    margin-right:5px;
+}
 
 /*
  * Selected item class for label (hyperlink) of selected tree items.

@@ -259,7 +259,7 @@ create-event:sys42.widgets.tree
                * Notice, deletion can be prevented by adding the [_no-delete] argument set to true.
                */
               get-children-widgets:x:/..for-each/*/find-widget/*?value
-              if:x:/-/*/*/container
+              if:x:/-/*/*/container/[1,2]
 
                 /*
                  * Checking if caller did not want items deleted to "force open".
@@ -270,13 +270,22 @@ create-event:sys42.widgets.tree
                   /*
                    * Children items are already visible, and caller did not want to "force open", hence deleting items.
                    */
-                  delete-widget:x:/..for-each/*/get-children-widgets/*/*/container?value
+                  delete-widget:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
 
                   /*
                    * Removing the "expanded" CSS class on parent widget.
                    */
                   sys42.delete-css-classes:x:/..for-each/*/find-widget/*?value
                     _class:tree-expanded
+
+                  /*
+                   * Making sure we add the "glyphicon-folder-closed" and remove the "-open" parts.
+                   */
+                  get-children-widgets:x:/..for-each/*/get-children-widgets/*/*/container/[0,1]?value
+                  sys42.delete-css-classes:x:/-/*/0?value
+                    _class:glyphicon-folder-open
+                  sys42.add-css-classes:x:/-2/*/0?value
+                    _class:glyphicon-folder-close
               else
 
                 /*
@@ -341,6 +350,15 @@ create-event:sys42.widgets.tree
                  */
                 sys42.add-css-classes:x:/..for-each/*/find-widget/*?value
                   _class:tree-expanded
+
+                /*
+                  * Making sure we add the "glyphicon-folder-closed" and remove the "-open" parts.
+                  */
+                get-children-widgets:x:/..for-each/*/get-children-widgets/*/*/container/[0,1]?value
+                sys42.delete-css-classes:x:/-/*/0?value
+                  _class:glyphicon-folder-close
+                sys42.add-css-classes:x:/-2/*/0?value
+                  _class:glyphicon-folder-open
 
       /*
        * Checking if we should "unroll items".
@@ -420,6 +438,8 @@ create-event:sys42.widgets.tree._create-items
       set:x:/..for-each/*/add/[1,2]/*/*/*/class?value
         src:{0} tree-expanded
           :x:/..for-each/*/add/[1,2]/*/*/*/class?value
+      set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/class?value
+        src:glyphicon glyphicon-folder-open
 
     /*
      * Setting properties for currently iterated item, and adding item into [return] below.
@@ -427,7 +447,7 @@ create-event:sys42.widgets.tree._create-items
      * These are simply [innerValue] on hyperlink, in addition to [_item-id] on "li", which is a server-side hidden property
      * for the item, allowing us to figure out the "id" of which item was clicked, among other things.
      */
-    eval-x:x:/..for-each/*/add/[1,2]/*/*/*(/_item-id|/*/a/*/innerValue)
+    eval-x:x:/..for-each/*/add/[1,2]/*/*/*(/_item-id|/*/a/*/widgets/*/span/[1,2]/*/innerValue)
 
     /*
      * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
@@ -443,7 +463,6 @@ create-event:sys42.widgets.tree._create-items
               href:#
               role:button
               class:tree-item-label
-              innerValue:x:/..for-each/*/_dp/#?name
               onclick
 
                 /*
@@ -487,6 +506,12 @@ create-event:sys42.widgets.tree._create-items
                   sys42.widgets.tree._create-url:x:/-/*/*?value
                   set-widget-property:x:/../*/_event?value
                     href:x:/..if/*/sys42.widgets.tree._create-url?value
+              widgets
+                span
+                  class:glyphicon glyphicon-folder-close
+                  innerValue:
+                span
+                  innerValue:x:/..for-each/*/_dp/#?name
 
   /*
    * Returning widget hierarchy.
