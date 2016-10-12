@@ -186,4 +186,16 @@ initial loading. And as you expand items, it loads an addition ~1KB.
 Everything is transferred from the server as JSON (which is the default behavior of [p5.ajax](/core/p5.ajax/)), and the bandwidth usage for
 expanding two items with 3 and 2 children items each, becomes 1.2KB of JSON transferred from your server.
 
+Notice, this is even before you start minifying your CSS and GZipping your web-server's content. Which means you could probably create your
+entire initial tree view widget in about ~6KB-7KB of server load, and another ~1KB for each expansion/toggling of items in it. Depending
+upon how many items you have in your structure.
+
+## Server resource consumption
+
+The widget will only request new items when an item is initially expanded through your supplied *[_on-get-items]* lambda callback. On consecutive
+expansions for the same items, it will simply remove a "hide" CSS class on the client, never invoking your get items lambda callback.
+
+This means it is also very cheap in regards to server resource usage, if the user is expanding and hiding the same items, looking for 
+some specific node, in your tree.
+
 
