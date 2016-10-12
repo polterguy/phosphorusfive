@@ -17,18 +17,18 @@
  * 
  * [_class]           - CSS class to use, defaults to "tree-widget".
  * [_css-file]        - CSS file to include, defaults to "tree.css" from tree widget's media folder.
+ * [_items]           - Collection of items to show initially as "root items".
+ *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
+ *                      item, used to uniquely identify the item, when the item is clicked for instance, etc.
+ *                      Optionally you can supply child nodes for each item, declaring the CSS classes used to display it as [_class-close]
+ *                      and [_class-open]. Their default values are "glyphicon glyphicon-folder-close" and "glyphicon glyphicon-folder-open".
+ * [_crawl]           - If true, the tree will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
+ * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tree_unroll".
  * [_on-get-items]    - Callback lambda evaluated when the tree need more items.
  *                      Callback will be given [_item-id] for which item to retrieve children of.
  *                      Callback is expected to return an [_items] collection, similarly to when the tree is initially created.
  *                      See [_items] below to understand the collection the tree widget expects.
- * [_crawl]           - If true, the tree will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
- * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tree_unroll".
  * [_on-select]       - Callback lambda to invoke when an item is selected.
- * [_items]           - Collection of items to show initially as "root items".
- *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
- *                      item, used to uniquely identify the item, when the item is clicked for instance, etc.
- *                      Optionally you can supply child nodes for each item, declaring the CSS classes used to display it as [_class]
- *                      and [_class-open]. Their default values are "glyphicon glyphicon-folder-close" and "glyphicon glyphicon-folder-open".
  */
 create-event:sys42.widgets.tree
 
@@ -49,6 +49,14 @@ create-event:sys42.widgets.tree
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+
+  /*
+   * Making sure caller supplied at the very least one item.
+   */
+  if:x:/../*/_options/*/_items/*
+    not
+    throw:You have to supply at the very least one root item when creating your tree widget.
 
 
   /*
@@ -225,6 +233,10 @@ create-event:sys42.widgets.tree
         /*
          * Invoked when user wants to "toggle" one or more items.
          * Expects [_items] collection.
+         *
+         * Notice, you can force this event to only expand items, by adding the [_force-expand] argument, and set its
+         * value to being true. If you do, it will not hide already expanded items.
+         * This feature is used among other things during "unrolling" of items due to SEO friendly URLs being traversed.
          */
         sys42.widgets.tree.toggle-items
 
@@ -256,47 +268,80 @@ create-event:sys42.widgets.tree
 
               /*
                * Now checking if there already exist a "ul" HTML widget beneath the main "tree-item".
-               * If a "ul" widget exist, we hide it, if not, we check if it his hidden, if it doesn't exist, we 
-               * invoke the lambda callback provided during creation, to retrieve additional items, before we 
-               * create it (the "ul" widget).
+               * If a "ul" widget exist, and it is not hidden, we hide it, unless [_force-expand] is true.
+               * If the "ul" widget exist, and is hidden, we show it.
+               * If it doesn't exist, we invoke the lambda callback provided during creation, to retrieve 
+               * additional items, before we create the "ul" widget and show it.
                *
-               * Notice, deletion can be prevented by adding the [_no-delete] argument set to true.
+               * This prevents having to retrieve the items from the supplied lambda callback more than once
+               * for each item.
+               *
+               * Notice, hiding can be prevented by adding the [_force-expand] argument set to true.
                * If you do, it will only expand, regardless of if the item is expanded from before or not.
+               * This feature is being used, among other things, while "unrolling" items (SEO friendly links).
                */
               get-children-widgets:x:/..for-each/*/find-widget/*?value
               if:x:/-/*/*/container/[1,2]
 
                 /*
-                 * Checking if caller did not want items deleted to "force open".
+                 * Children items already exist, hence we check if it is hidden,
+                 * and if so, we simply make it visible, otherwise we hide it (unless [_force-expand] is true).
                  */
-                if:x:/../*/_no-delete?value
-                  not
+                get-widget-property:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
+                  class
+
+                /*
+                 * Checking if "ul" HTML widget is simply hidden.
+                 */
+                if:x:/-/*/*?value
+                  ~:tree-hidden
 
                   /*
-                   * Children items are already visible, and caller did not want to "force open", hence we check if it is hidden,
-                   * and if so, we simply makeit visible, otherwise we hide it.
+                   * "ul" HTML widget was simply hidden, making sure we show it, by deleting the "tree-hidden" class, and
+                   * add the "tree-expanded" CSS class to main "li" HTML widget, before finally updating the "icon CSS class"
+                   * to the [_class-open] value.
                    */
-                  get-widget-property:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
-                    class
-                  if:x:/-/*/*?value
-                    ~:tree-hidden
-                    sys42.delete-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
-                      _class:tree-hidden
-                    sys42.add-css-classes:x:/..for-each/*/find-widget/*?value
-                      _class:tree-expanded
-                    get-children-widgets:x:/..for-each/*/get-children-widgets/*/*/container/[0,1]?value
-                    get-widget-property:x:/-/*/0?value
-                      _class-open
-                    set-widget-property:x:/-2/*/0?value
-                      class:x:/./-/*/*?value
-                  else
+                  sys42.delete-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
+                    _class:tree-hidden
+                  sys42.add-css-classes:x:/..for-each/*/find-widget/*?value
+                    _class:tree-expanded
+
+                  /*
+                   * Making sure we set the "icon span" CSS class to [_class-open].
+                   */
+                  get-children-widgets:x:/..for-each/*/get-children-widgets/*/*/container/[0,1]?value
+                  get-widget-property:x:/-/*/0?value
+                    _class-open
+                  set-widget-property:x:/-2/*/0?value
+                    class:x:/./-/*/*?value
+                else
+
+                  /*
+                   * Checking if caller wanted to "force an expansion" (meaning, open items will not be closed).
+                   * Only if caller did NOT supply [_force-expand] as true, we actually hide items.
+                   */
+                  if:x:/../*/_force-expand?value
+                    not
+
+                    /*
+                     * "ul" HTML widget is visible, and caller did not supply [_force-expand] as true,
+                     * hence we hide it, by applying the "tree-hidden" class to the main "ul" HTML widget.
+                     */
                     sys42.add-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
                       _class:tree-hidden
+
+                    /*
+                     * Then we delete the "tree-expanded" CSS class to our main "li" HTML widget.
+                     */
                     sys42.delete-css-classes:x:/..for-each/*/find-widget/*?value
                       _class:tree-expanded
+
+                    /*
+                     * Finally we apply our "close icon CSS class" to the icon "span" HTML widget.
+                     */
                     get-children-widgets:x:/..for-each/*/get-children-widgets/*/*/container/[0,1]?value
                     get-widget-property:x:/-/*/0?value
-                      _class
+                      _class-close
                     set-widget-property:x:/-2/*/0?value
                       class:x:/./-/*/*?value
               else
@@ -393,7 +438,8 @@ create-event:sys42.widgets.tree
           return
 
         /*
-         * Splitting up every ID from URL, and adding every ID to invocation of [toggle-items] forcing "unrolling" through [_no-delete].
+         * Splitting up every ID from URL, and adding every ID to invocation of [toggle-items],
+         * while forcing an "unrolling" through [_force-expand].
          */
         split:x:/../*/get-http-get-param/*?value
           =:|
@@ -401,7 +447,7 @@ create-event:sys42.widgets.tree
           src:x:/../*/split/*?name
         sys42.widgets.tree.toggle-items:x:/../*/_event?value
           _items
-          _no-delete:bool:true
+          _force-expand:bool:true
 
         /*
          * Making sure we select outer most item.
@@ -424,7 +470,7 @@ create-event:sys42.widgets.tree._create-items
    * These are the default CSS classes used for icon items, if no explicit override is supplied by caller.
    */
   _options
-    _class:glyphicon glyphicon-folder-close
+    _class-close:glyphicon glyphicon-folder-close
     _class-open:glyphicon glyphicon-folder-open
 
   /*
@@ -449,28 +495,40 @@ create-event:sys42.widgets.tree._create-items
     add:x:/..for-each/*/add/[1,2]/*/*/*/widgets
       sys42.widgets.tree._create-items
         _items:x:/..for-each/*/_dp/#/*/_items
-        _nested:bool:true
+        _expanded:bool:true
 
     /*
-     * Checking if this is a [_nested] item, at which case, we should add the "tree-expanded" CSS class to "li" HTML widget,
-     * and the "icon open" class to the nested icon span.
+     * Checking if this is a [_expanded] item, at which case, we should add the "tree-expanded" CSS class to "li" HTML widget,
+     * and the "icon open" CSS class to the nested icon "span" HTML element.
      */
-    if:x:/../*/_nested?value
+    if:x:/../*/_expanded?value
+
+      /*
+       * Adding the CSS class of "tree-expanded" to our "li" HTML element.
+       */
       set:x:/..for-each/*/add/[1,2]/*/*/*/class?value
         src:{0} tree-expanded
           :x:/..for-each/*/add/[1,2]/*/*/*/class?value
+
+      /*
+       * Applying the [_class-open] CSS class to the "icon" span HTML element.
+       */
       set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/class?value
         src:x:(/..for-each/*/_dp/#/*/_class-open|/../*/_options/*/_class-open)/$?value
     else
+
+      /*
+       * Applying the [_class-close] CSS class to the "icon" span HTML element.
+       */
       set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/class?value
-        src:x:(/..for-each/*/_dp/#/*/_class|/../*/_options/*/_class)/$?value
+        src:x:(/..for-each/*/_dp/#/*/_class-close|/../*/_options/*/_class-close)/$?value
 
     /*
-     * Storing the icon and open icon in widget as invisible property, such that we can retrieve it later when
-     * item  is expanded.
+     * Storing the "close icon CSS class" and "open icon CSS class" in widget as invisible property, 
+     * such that we can retrieve it later when item  is toggled.
      */
-    set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/_class?value
-      src:x:(/..for-each/*/_dp/#/*/_class|/../*/_options/*/_class)/$?value
+    set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/_class-close?value
+      src:x:(/..for-each/*/_dp/#/*/_class-close|/../*/_options/*/_class-close)/$?value
     set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/_class-open?value
       src:x:(/..for-each/*/_dp/#/*/_class-open|/../*/_options/*/_class-open)/$?value
 
@@ -508,7 +566,7 @@ create-event:sys42.widgets.tree._create-items
                   src:x:/../*/get-widget-property/*/*?value
 
                 /*
-                 * The finding "root tree" widget for currently clicked item, such that we can pass it
+                 * Then finding "root tree" widget for currently clicked item, such that we can pass it
                  * into [toggle-items] and [select-items].
                  */
                 find-first-ancestor-widget:x:/../*/_event?value
@@ -534,6 +592,11 @@ create-event:sys42.widgets.tree._create-items
                   _root-tree
                 get-widget-property:x:/-/*?value
                   _root-tree
+
+                /*
+                 * Notice, if the [_root-tree] hidden property on root widget contains something, it means we should
+                 * create an SEO friendly tree, and use the value of [_root-tree] as the HTTP GET parameter name while doing.
+                 */
                 if:x:/-/*/*?value
                   get-parent-widget:x:/../*/_event?value
                   sys42.widgets.tree._create-url:x:/-/*/*?value
@@ -541,7 +604,7 @@ create-event:sys42.widgets.tree._create-items
                     href:x:/..if/*/sys42.widgets.tree._create-url?value
               widgets
                 span
-                  _class
+                  _class-close
                   _class-open
                   class
                   innerValue:
