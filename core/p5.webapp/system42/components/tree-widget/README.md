@@ -306,6 +306,11 @@ If you use the glyphicons, you are yourself responsible for making sure you incl
 documentation for the System42 [Bootstrap CSS module](/core/p5.webapp/system42/components/bootstrap/). You only need to include the CSS file
 though, and not any of the JavaScript files.
 
+If you want to create your own icons, then the "good size" for your icons, if you use the default styling theme, is 20 pixels high. The 
+width doesn#t matter, but if you create your icons higher, than this will distort the lines and other styling elements in the default skin.
+
+You are of course free to create icons any size you wish, if you create your own style.
+
 ## Bandwidth usage
 
 The Ajax tree view control/widget actually does not itself use any JavaScript, besides the core JavaScript from p5.ajax, which in its
