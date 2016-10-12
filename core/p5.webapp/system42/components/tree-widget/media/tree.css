@@ -76,8 +76,20 @@
     background-position:0 -20px;
     text-decoration:none;
 }
+@keyframes tree-item-animate-icon {
+    0% {
+        color:rgba(255,255,128,1);
+    }
+    100% {
+        color:rgba(128,128,255,.5);
+    }
+}
 .tree-widget a.tree-item-label .glyphicon {
     margin-right:5px;
+    color:rgba(128,128,255,0);
+    animation-name:tree-item-animate-icon;
+    animation-duration: 1.5s;
+    animation-fill-mode:forwards;
 }
 
 /*
