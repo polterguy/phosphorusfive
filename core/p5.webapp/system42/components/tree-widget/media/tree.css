@@ -126,6 +126,9 @@
     padding-left:0;
     list-style:none;
 }
+.tree-widget ul.tree-hidden {
+    display:none;
+}
 
 /*
  * Animations for showing children items during expansion of children items.

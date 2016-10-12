@@ -256,10 +256,12 @@ create-event:sys42.widgets.tree
 
               /*
                * Now checking if there already exist a "ul" HTML widget beneath the main "tree-item".
-               * If a "ul" widget exist, we delete it, if not, we invoke the lambda callback provided during creation,
-               * to retrieve additional items, before we create it (the "ul" widget).
+               * If a "ul" widget exist, we hide it, if not, we check if it his hidden, if it doesn't exist, we 
+               * invoke the lambda callback provided during creation, to retrieve additional items, before we 
+               * create it (the "ul" widget).
                *
                * Notice, deletion can be prevented by adding the [_no-delete] argument set to true.
+               * If you do, it will only expand, regardless of if the item is expanded from before or not.
                */
               get-children-widgets:x:/..for-each/*/find-widget/*?value
               if:x:/-/*/*/container/[1,2]
@@ -271,24 +273,32 @@ create-event:sys42.widgets.tree
                   not
 
                   /*
-                   * Children items are already visible, and caller did not want to "force open", hence deleting items.
+                   * Children items are already visible, and caller did not want to "force open", hence we check if it is hidden,
+                   * and if so, we simply makeit visible, otherwise we hide it.
                    */
-                  delete-widget:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
-
-                  /*
-                   * Removing the "expanded" CSS class on parent widget.
-                   */
-                  sys42.delete-css-classes:x:/..for-each/*/find-widget/*?value
-                    _class:tree-expanded
-
-                  /*
-                   * Making sure we apply the "default" CSS class to icon item.
-                   */
-                  get-children-widgets:x:/..for-each/*/get-children-widgets/*/*/container/[0,1]?value
-                  get-widget-property:x:/-/*/0?value
-                    _class
-                  set-widget-property:x:/-2/*/0?value
-                    class:x:/./-/*/*?value
+                  get-widget-property:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
+                    class
+                  if:x:/-/*/*?value
+                    ~:tree-hidden
+                    sys42.delete-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
+                      _class:tree-hidden
+                    sys42.add-css-classes:x:/..for-each/*/find-widget/*?value
+                      _class:tree-expanded
+                    get-children-widgets:x:/..for-each/*/get-children-widgets/*/*/container/[0,1]?value
+                    get-widget-property:x:/-/*/0?value
+                      _class-open
+                    set-widget-property:x:/-2/*/0?value
+                      class:x:/./-/*/*?value
+                  else
+                    sys42.add-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
+                      _class:tree-hidden
+                    sys42.delete-css-classes:x:/..for-each/*/find-widget/*?value
+                      _class:tree-expanded
+                    get-children-widgets:x:/..for-each/*/get-children-widgets/*/*/container/[0,1]?value
+                    get-widget-property:x:/-/*/0?value
+                      _class
+                    set-widget-property:x:/-2/*/0?value
+                      class:x:/./-/*/*?value
               else
 
                 /*
