@@ -6,10 +6,17 @@
 
 
 /*
+ * Including media files.
+ */
+sys42.jquery.include
+sys42.bootstrap.include-css
+sys42.bootstrap.include-javascript
+include-stylesheet-file:@CMS/media/css/main.css
+
+
+/*
  * Creating actual guide form
  */
-sys42.include-default-stylesheet-files
-sys42.include-default-javascript-files
 create-widget:content
   class:container
   widgets

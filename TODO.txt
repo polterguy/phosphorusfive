@@ -46,3 +46,6 @@ TODO before release
 
 * Make sure all widget retriever Active Events returns results in the same way. It's a freaking nightmare now, with different "APIs"
 
+* Create sample folder in System42, with some example lambda pages, showing of some feature for users.
+
+

@@ -495,13 +495,12 @@ create-event:sys42.widgets.tree._create-items
     add:x:/..for-each/*/add/[1,2]/*/*/*/widgets
       sys42.widgets.tree._create-items
         _items:x:/..for-each/*/_dp/#/*/_items
-        _expanded:bool:true
 
     /*
-     * Checking if this is a [_expanded] item, at which case, we should add the "tree-expanded" CSS class to "li" HTML widget,
+     * Checking if this item has children, at which case, we should add the "tree-expanded" CSS class to "li" HTML widget,
      * and the "icon open" CSS class to the nested icon "span" HTML element.
      */
-    if:x:/../*/_expanded?value
+    if:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/ul
 
       /*
        * Adding the CSS class of "tree-expanded" to our "li" HTML element.

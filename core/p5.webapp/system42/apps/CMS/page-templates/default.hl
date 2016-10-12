@@ -12,12 +12,12 @@
 
 
 /*
- * Including all default stylesheets and JavaScript files for page,
- * which means bootstrap CSS, jQuery and main.css.
- * Notice, we also include our "navbar hack" here.
+ * Including all default stylesheets and JavaScript files for page.
  */
-sys42.include-default-stylesheet-files
-sys42.include-default-javascript-files
+sys42.jquery.include
+sys42.bootstrap.include-css
+sys42.bootstrap.include-javascript
+include-stylesheet-file:@CMS/media/css/main.css
 include-stylesheet-file:@CMS/media/css/navbar.css
 
 
