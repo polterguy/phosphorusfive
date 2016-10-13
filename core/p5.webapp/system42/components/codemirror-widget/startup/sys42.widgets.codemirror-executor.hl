@@ -1,0 +1,167 @@
+
+/*
+ * Responsible for creating the CodeMirror Executor Hyperlambda widget.
+ *
+ * This widget, contrary to the pure [sys42.widgets.codemirror] widget, allows you to create an entire executor
+ * widget, with both input and output, in addition to a couple of buttons to run and clear the different codemirror modules.
+ *
+ * This is a nice feature while debugging your own stuff, since it allows you to retrieve variables and such, from other widgets
+ * on your page, and test Hyperlambda constructs.
+ * Notice, you cannot have multiple instances of this widget on your page.
+ *
+ * Arguments;
+ *
+ * [_class]            - Sets the CSS class of your widget.
+ */
+create-event:sys42.widgets.codemirror-executor
+
+  /*
+   * Applying options for widget, with default values.
+   * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
+   * up prioritizing specified argument, resorting to [_default] value if not given.
+   */
+  _defaults
+    _class:col-xs-12
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+
+  /*
+   * Making sure our "Evaluate" button is wired up.
+   */
+  include-javascript:@"window._sys42_widgets_codemirror_executor = function (e) {
+    var el = p5.$((event.target || event.srcElement).id);
+    el.raise('_onclick', {
+      onsuccess:function(ret, evt) {
+        window.execute_output.getDoc().setValue(ret.code);
+      }});
+      e.preventDefault();
+  }"
+
+
+  /*
+   * Then checking to see if we've got some code stored in session, 
+   * and if so, we stuff it into our editor.
+   */
+  get-session-value:sys42.widgets.codemirror-executor.current-code
+  if:x:/-/0?value
+    set:x:/../**/=execute_input/*/innerValue?value
+      src:x:/../*/get-session-value/0?value
+
+
+  /*
+   * Returning widget creation node to caller, making sure we forward evaluate options first.
+   */
+  eval-x:x:/+/*/*/class
+  return
+    container
+      class::x:/../*/_options/*/_class?value
+      widgets
+
+
+        /*
+         * Input textarea element, transformed into a CodeMirror widget
+         */
+        container
+          widgets
+            sys42.widgets.codemirror:execute_input
+              innerValue:
+              _auto-focus:true
+              _height:500px
+
+
+        /*
+         * Evaluate widget, executes execute_input, and puts the 
+         * resulting code into execute_output
+         */
+        container
+
+          /*
+           * Necessary to have the next widget obey its "margin-top" CSS.
+           */
+          style:"overflow:auto;"
+
+          widgets
+            literal
+              class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
+              element:button
+              innerValue:Evaluate
+
+
+              /*
+               * Trickery to make sure we can handle our event in JavaScript
+               * to retrieve custom JSON return values from server in JavaScript
+               * the actual event handler is "_onclick", but this event is hidden,
+               * and won't be rendered to the browser since it ends with "_".
+               * the DOM javascript onclick event handler though, invokes a JavaScript function,
+               * which actually invokes the actual server-side event, which again returns
+               * the executed code as a piece of string, named "code", which the JavaScript
+               * again puts into the "execute_output" CodeMirror widget.
+               */
+              onclick:"window._sys42_widgets_codemirror_executor(event);"
+              _onclick
+
+                /*
+                 * First retrieving text from execute_input textarea and converting to lambda
+                 */
+                get-widget-property:execute_input
+                  innerValue
+                hyper2lambda:x:/-/*/*?value
+
+                /*
+                 * Then storing current code in session such that code editor remembers content
+                 */
+                set:x:/../*/set-session-value/*/src?value
+                  src:x:/../*/get-widget-property/+/<?value
+                set-session-value:sys42.widgets.codemirror-executor.current-code
+                  src
+
+                /*
+                 * Then executing lambda, in such a way that our converted hyperlambda 
+                 * becomes the "root node", while still reachable after execution is done!
+                 */
+                set:x:/../*/_exe/#/*
+                add:x:/../*/_exe/#
+                  src:x:/../*/hyper2lambda/*
+                _exe:node:"exe"
+
+                /*
+                 * Notice, [eval-mutable], since we want to retrieve transformed code after execution!
+                 */
+                eval-mutable:x:/../*/_exe/#
+
+                /*
+                 * Then converting lambda result to Hyperlambda, and returning back to client as JSON
+                 */
+                lambda2hyper:x:/../*/_exe/#/*
+                return-response-object:code
+                  src:x:/./-?value
+
+
+        /*
+         * Output textarea element, transformed into a CodeMirror widget later
+         */
+        container
+          class:prepend-top
+          widgets
+            sys42.widgets.codemirror:execute_output
+              _height:200px
+
+
+        /*
+         * The clear button for clearing the execute_output editor surface
+         */
+        container
+
+          /*
+           * Necessary to have the next widget obey its "margin-top" CSS.
+           */
+          style:"overflow:auto;"
+
+          widgets
+            literal
+              element:button
+              class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
+              innerValue:Clear
+              onclick:"window.execute_output.getDoc().setValue('');event.preventDefault();"

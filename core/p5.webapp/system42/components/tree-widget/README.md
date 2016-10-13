@@ -333,3 +333,30 @@ expansions for the same items, it will simply remove a "hide" CSS class on the c
 This means it is also very cheap in regards to server resource usage, if the user is expanding and hiding the same items, looking for 
 some specific node, in your tree.
 
+## Ninja tricks
+
+The absolutely smallest possible "folder browser" you can create using Phosphorus Five, can be created using the Ajax Tree Widget, with
+no more than _16 lines of code_. The code below, allows you to browse all folders in your Phosphosur Five installation, from your browser.
+
+```
+create-container-widget
+  widgets
+    sys42.widgets.tree
+      _items
+        root:/
+      _on-get-items
+        list-folders:x:/../*/_item-id?value
+        for-each:x:/-/*?name
+          split:x:/./*/_dp?value
+            =:/
+          add:x:/../*/return/*
+            src:@"{0}:{1}"
+              :x:/..for-each/*/split/0/-?name
+              :x:/..for-each/*/_dp?value
+        return
+          _items
+```
+
+
+
+

@@ -48,4 +48,6 @@ TODO before release
 
 * Create sample folder in System42, with some example lambda pages, showing of some feature for users.
 
+* Make tree view widget able to contain children widgets.
+
 

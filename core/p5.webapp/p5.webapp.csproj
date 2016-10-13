@@ -573,6 +573,7 @@
     <Content Include="system42\components\jquery\README.md" />
     <Content Include="system42\components\jquery\startup.hl" />
     <Content Include="system42\components\tree-widget\README.md" />
+    <Content Include="system42\components\codemirror-widget\startup\sys42.widgets.codemirror.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\css\bootstrap.css.map" />
     <None Include="system42\components\bootstrap\css\bootstrap-theme.css.map" />
@@ -589,7 +590,7 @@
     <Content Include="system42\components\app-settings\startup\sys42.get-app-setting.hl" />
     <Content Include="system42\components\app-settings\startup\sys42.list-app-settings.hl" />
     <Content Include="system42\components\app-settings\startup\sys42.set-app-setting.hl" />
-    <Content Include="system42\components\codemirror-widget\startup\sys42.widgets.codemirror.hl" />
+    <Content Include="system42\components\codemirror-widget\startup\sys42.widgets.codemirror-executor.hl" />
     <Content Include="system42\components\ckeditor-widget\startup\sys42.widgets.ck-editor.hl" />
     <None Include="system42\apps\CMS\startup\p5.web.load-ui.hl" />
     <Content Include="system42\startup\README.md" />

@@ -16,123 +16,24 @@ if:x:/-/*/role?value
 
 
 /*
- * Making sure our "Evaluate" button is wired up
+ * Invoking custom control event, for later to transform its results, into a [create-container-widget] invocation.
  */
-include-javascript:@"window._execute_lambda = function (e) {
-  var el = p5.$('execute');
-  el.raise('_onclick', {
-    onsuccess:function(ret, evt) {
-      window.execute_output.getDoc().setValue(ret.code);
-    }});
-    if (e !== null) {
-      event.preventDefault();
-    }
-}"
+sys42.widgets.codemirror-executor
 
 
 /*
- * Then checking to see if we've got some code stored in session, 
- * and if so, we stuff it into our editor.
+ * Making sure the [container] returned from invoking custom control event, is transformed into [create-widget],
+ * with the proper [parent].
  */
-get-session-value:executor.current-code
-if:x:/-/0?value
-  set:x:/../**/=execute_input/*/innerValue?value
-    src:x:/../*/get-session-value/[0,1]/0?value
+set:x:/../*/sys42.widgets.codemirror-executor/0?name
+  src:create-widget
+add:x:/../*/sys42.widgets.codemirror-executor/0
+  src
+    parent:content
 
 
 /*
- * Creating actual form to show the executor
+ * Then evaluating the results of our [sys42.widgets.codemirror-executor], which is now a [create-widget] invocation
  */
-create-widget:executor
-  parent:content
-  class:col-xs-12
-  widgets
+eval:x:/../*/sys42.widgets.codemirror-executor
 
-
-    /*
-     * Input textarea element, transformed into a CodeMirror widget
-     */
-    container
-      widgets
-        sys42.widgets.codemirror:execute_input
-          innerValue:
-          _auto-focus:true
-          _height:500px
-
-
-    /*
-     * Evaluate widget, executes execute_input, and puts the 
-     * resulting code into execute_output
-     */
-    container:exe-wrp
-
-      // Necessary to have the next widget obey its "margin-top" CSS
-      style:"overflow:auto;"
-
-      widgets
-        literal:execute
-          class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
-          element:button
-          innerValue:Evaluate
-
-
-          /*
-           * Trickery to make sure we can handle our event in JavaScript
-           * to retrieve custom JSON return values from server in JavaScript
-           * the actual event handler is "_onclick", but this event is hidden,
-           * and won't be rendered to the browser since it ends with "_".
-           * the DOM javascript onclick event handler though, invokes a JavaScript function,
-           * which actually invokes the actual server-side event, which again returns
-           * the executed code as a piece of string, named "code", which the JavaScript
-           * again puts into the "execute_output" CodeMirror widget.
-           */
-          onclick:"window._execute_lambda(event);"
-          _onclick
-
-            // First retrieving text from execute_input textarea and converting to nodes
-            get-widget-property:execute_input
-              innerValue
-            hyper2lambda:x:/<?value
-
-            // Then storing current code in session such that code editor remembers content
-            set:x:/../*/set-session-value/*/src?value
-              src:x:/../*/get-widget-property/+/<?value
-            set-session-value:executor.current-code
-              src
-
-            // Then executing p5 lambda nodes, in such a way that our converted hyperlambda 
-            // becomes the "root node", while still reachable after execution is done!
-            set:x:/../*/_exe/#/*
-            add:x:/../*/_exe/#
-              src:x:/../*/hyper2lambda/*
-            _exe:node:"evaluator-code"
-
-            // Notice, [eval-mutable], since we want to retrieve transformed code after execution!
-            eval-mutable:x:/../*/_exe/#
-
-            // Then converting p5 lambda result nodes to text, and returning back to client as JSON
-            lambda2hyper:x:/../*/_exe/#/*
-            return-response-object:code
-              src:x:/./-?value
-
-
-    /*
-     * Output textarea element, transformed into a CodeMirror widget later
-     */
-    container
-      class:prepend-top
-      widgets
-        sys42.widgets.codemirror:execute_output
-          _height:200px
-
-
-    /*
-     * The clear button for clearing the execute_output editor surface
-     */
-    container:clear-wrp
-      widgets
-        literal:clear
-          element:button
-          class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
-          innerValue:Clear
-          onclick:"window.execute_output.getDoc().setValue('');event.preventDefault();"
