@@ -33,8 +33,8 @@
 /*
  * Making sure we increase font size to 150%, to create a larger TreeView.
  */
-.tree-widget-large {
-    font-size:2em;
+.tree-widget-medium {
+    font-size:1.5em;
 }
 
 
@@ -51,7 +51,7 @@
  *
  * Making sure we remove all list styles, in addition to removing default padding.
  */
-.tree-widget-large ul.tree-item-children {
+.tree-widget-medium ul.tree-item-children {
     padding-left:0;
     list-style:none;
 }
@@ -60,7 +60,7 @@
 /*
  * Making sure we hide "ul" elements, that are shown, but hidden afterwards, by a collapse operation.
  */
-.tree-widget-large ul.tree-hidden {
+.tree-widget-medium ul.tree-hidden {
     display:none;
 }
 
@@ -76,7 +76,7 @@
 /*
  * Making sure items by default are NOT indented.
  */
-.tree-widget-large li.tree-item {
+.tree-widget-medium li.tree-item {
     padding-left:0;
 }
 
@@ -85,7 +85,7 @@
  * Making sure only items more than 1st level are indendent.
  * Basically, overriding the above class, for everything but 1st level elements.
  */
-.tree-widget-large li.tree-item > ul.tree-item-children > li.tree-item {
+.tree-widget-medium li.tree-item > ul.tree-item-children > li.tree-item {
     padding-left:15px;
 }
 
@@ -108,7 +108,7 @@
 /*
  * The animation class for showing children items of an item.
  */
-.tree-widget-large ul.tree-item-children-animate > li.tree-item {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item {
     opacity:0;
     animation-name: tree-item-children-animation-child-li;
     animation-duration: .3s;
@@ -122,31 +122,31 @@
  * Notice, we roundtrip the animation delay, after 10 items, which means if you have more than 10 children items, it
  * will create "multiple snake animations".
  */
-.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10n+1) {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item:nth-child(10n+1) {
     animation-delay:.05s;
 }
-.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10n+2) {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item:nth-child(10n+2) {
     animation-delay:.1s;
 }
-.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10n+3) {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item:nth-child(10n+3) {
     animation-delay:.15s;
 }
-.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10n+4) {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item:nth-child(10n+4) {
     animation-delay:.20s;
 }
-.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10n+5) {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item:nth-child(10n+5) {
     animation-delay:.25s;
 }
-.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10n+6) {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item:nth-child(10n+6) {
     animation-delay:.30s;
 }
-.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10n+7) {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item:nth-child(10n+7) {
     animation-delay:.35s;
 }
-.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10n+8) {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item:nth-child(10n+8) {
     animation-delay:.40s;
 }
-.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10n+9) {
+.tree-widget-medium ul.tree-item-children-animate > li.tree-item:nth-child(10n+9) {
     animation-delay:.45s;
 }
 
@@ -163,7 +163,7 @@
  * Making sure hyperlinks are rendered as block level elements, in addition to without underline decoration, in addition
  * to making them black and some higher line-height, to give some spacing between items.
  */
-.tree-widget-large a.tree-item-label {
+.tree-widget-medium a.tree-item-label {
     text-decoration:none;
     display:block;
     height:100%;
@@ -175,7 +175,7 @@
 /*
  * Making sure hovered items have visual clues.
  */
-.tree-widget-large a.tree-item-label:hover {
+.tree-widget-medium a.tree-item-label:hover {
     background-color:rgba(0,0,0,.1);
 }
 
@@ -183,7 +183,7 @@
 /*
  * Making sure selected items have visual clues.
  */
-.tree-widget-large li.tree-item > a.tree-selected {
+.tree-widget-medium li.tree-item > a.tree-selected {
     background-color:rgba(128,255,128,.3);
 }
 
@@ -202,8 +202,8 @@
  * 
  * Notice, these are the folder icons, and not the expanded/collapsed glyphicons.
  */
-.tree-widget-large a.tree-item-label .glyphicon {
-    margin-right:12px;
+.tree-widget-medium a.tree-item-label .glyphicon {
+    margin-right:10px;
     color:rgba(200,200,0,.3);
 }
 
@@ -220,7 +220,7 @@
 /*
  * Making sure our hyperlinks on expanded items have the "chevron-up" glyphicon.
  */
-.tree-widget-large li.tree-item > a.tree-item-label:before {
+.tree-widget-medium li.tree-item > a.tree-item-label:before {
   font-family: "Glyphicons Halflings";
   content: "\e113";
   font-size:.7em;
@@ -232,7 +232,7 @@
 /*
  * Making sure our hyperlinks on expanded items have the "chevron-down" glyphicon.
  */
-.tree-widget-large li.tree-expanded > a.tree-item-label:before {
+.tree-widget-medium li.tree-expanded > a.tree-item-label:before {
   content: "\e114";
 }
 
@@ -241,15 +241,15 @@
  * Making sure leaf nodes are indented by the size of our glyphicon, to allow them to line up
  * with none-leaf items.
  */
-.tree-widget-large li.tree-leaf > a.tree-item-label {
-  padding-left:25px;
+.tree-widget-medium li.tree-leaf > a.tree-item-label {
+  padding-left:20px;
 }
 
 
 /*
  * Removing glyphicon from leaf nodes.
  */
-.tree-widget-large li.tree-leaf > a.tree-item-label:before {
+.tree-widget-medium li.tree-leaf > a.tree-item-label:before {
   content:none;
 }
 

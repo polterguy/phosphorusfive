@@ -279,6 +279,8 @@
     <Content Include="system42\components\codemirror-widget\media\addon\selection\selection-pointer.js" />
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.css" />
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.js" />
+    <Content Include="system42\components\tree-widget\media\skins\medium\medium.css" />
+    <Content Include="system42\components\tree-widget\media\skins\small\small.css" />
     <Content Include="system42\components\tree-widget\media\skins\large\large.css" />
     <Content Include="system42\components\tree-widget\media\skins\default\tree-1.png" />
     <Content Include="system42\components\tree-widget\media\skins\default\tree-2.png" />
