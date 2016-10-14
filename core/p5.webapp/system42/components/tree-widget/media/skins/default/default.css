@@ -249,7 +249,7 @@
  * give room for the label's text that follows.
  */
 .tree-widget-default a.tree-item-label .glyphicon {
-    margin-right:8px;
+    margin-right:7px;
     animation-name:tree-item-animate-icon;
     animation-duration: 1s;
     animation-fill-mode:forwards;

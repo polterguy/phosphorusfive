@@ -15,9 +15,7 @@
  *
  * Arguments;
  * 
- * [_class]           - CSS class to use, defaults to "tree-widget-default".
- * [_css-file]        - CSS file to include, defaults to "tree.css" from tree widget's media/skins/default folder.
- *                      If you wish to create your own skin, make sure you change this argument to whtever CSS file contains your skin.
+ * [_skin]            - Skin file and class to use. Default value is "default".
  * [_items]           - Collection of items to show initially as "root items".
  *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
  *                      item, used to uniquely identify the item, when the item is clicked for instance, etc.
@@ -37,8 +35,7 @@ create-event:sys42.widgets.tree
    * Applying options for widget, with default values.
    */
   _defaults
-    _class:tree-widget-default
-    _css-file:/system42/components/tree-widget/media/skins/default/tree.css
+    _skin:default
     _on-get-items
       sys42.windows.info-top:You should really have supplied an [_on-get-items] callback! If not for anything else, than to make it empty!
         _class:info-window info-window-longer info-window-error
@@ -63,7 +60,8 @@ create-event:sys42.widgets.tree
   /*
    * Making sure we include our tree specific CSS file.
    */
-  include-stylesheet-file:x:/../*/_options/*/_css-file?value
+  include-stylesheet-file:/system42/components/tree-widget/media/skins/{0}/{0}.css
+    :x:/../*/_options/*/_skin?value
 
 
   /*
@@ -123,7 +121,8 @@ create-event:sys42.widgets.tree
       /*
        * Forward evaluated before [return] invocation, to [_options]/[_class] value.
        */
-      class:x:/../*/_options/*/_class?value
+      class:tree-widget-{0}
+        :x:/../*/_options/*/_skin?value
 
 
       /*

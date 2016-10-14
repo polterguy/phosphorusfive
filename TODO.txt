@@ -50,4 +50,7 @@ TODO before release
 
 * Make tree view widget able to contain children widgets.
 
+* Minify JS and CSS upon release build.
+
+
 
