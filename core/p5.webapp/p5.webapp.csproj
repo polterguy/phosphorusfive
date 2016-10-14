@@ -279,8 +279,11 @@
     <Content Include="system42\components\codemirror-widget\media\addon\selection\selection-pointer.js" />
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.css" />
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.js" />
-    <Content Include="system42\components\tree-widget\media\tree.css" />
-    <Content Include="system42\components\tree-widget\media\tree.png" />
+    <Content Include="system42\components\tree-widget\media\skins\large\tree.css" />
+    <Content Include="system42\components\tree-widget\media\skins\default\tree-1.png" />
+    <Content Include="system42\components\tree-widget\media\skins\default\tree-2.png" />
+    <Content Include="system42\components\tree-widget\media\skins\default\tree-3.png" />
+    <Content Include="system42\components\tree-widget\media\skins\default\tree.css" />
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />

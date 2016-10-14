@@ -44,12 +44,12 @@
 }
 .tree-widget ul.tree-item-children > li.tree-item > ul.tree-item-children > li.tree-expanded {
     background-position:0 -80px, 0 0;
-    background-image:url(/system42/components/tree-widget/media/tree-1.png), url(/system42/components/tree-widget/media/tree-2.png);
+    background-image:url(tree-1.png), url(tree-2.png);
     background-repeat:no-repeat, repeat-y;
 }
 .tree-widget ul.tree-item-children > li.tree-item > ul.tree-item-children > li.tree-expanded:last-child {
     background-position:0 0;
-    background-image:url(/system42/components/tree-widget/media/tree-3.png);
+    background-image:url(tree-3.png);
     background-repeat:no-repeat;
 }
 
@@ -58,7 +58,7 @@
  */
 .tree-widget a.tree-item-label {
     padding-left:18px;
-    background-image:url(/system42/components/tree-widget/media/tree-1.png);
+    background-image:url(tree-1.png);
     background-repeat:no-repeat;
     background-position:0 0;
     text-decoration:none;
@@ -71,7 +71,7 @@
 }
 .tree-widget ul.tree-item-children > li.tree-expanded > a.tree-item-label {
     padding-left:18px;
-    background-image:url(/system42/components/tree-widget/media/tree-1.png);
+    background-image:url(tree-1.png);
     background-repeat:no-repeat;
     background-position:0 -20px;
     text-decoration:none;
@@ -100,23 +100,19 @@
 }
 
 /*
- * Expanded CSS class for label (hyperlink).
- */
-.tree-widget li.tree-expanded > a.tree-item-label {
-    background-position:0 -40px;
-}
-
-/*
  * Expanded CSS class for children li elements.
  */
 .tree-widget li.tree-expanded > ul.tree-item-children > li.tree-item {
     background-position:0 -80px;
-    background-image:url(/system42/components/tree-widget/media/tree-1.png);
+    background-image:url(tree-1.png);
     background-repeat:no-repeat;
 }
 .tree-widget li.tree-expanded > ul.tree-item-children > li.tree-item:last-child {
     background-position:0 -60px;
-    background-image:url(/system42/components/tree-widget/media/tree-1.png);
+    background-image:url(tree-1.png);
+}
+.tree-widget li.tree-expanded > ul.tree-item-children > li.tree-leaf a.tree-item-label {
+    background-position:0 -40px;
 }
 
 /*

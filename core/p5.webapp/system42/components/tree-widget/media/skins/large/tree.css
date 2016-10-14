@@ -1,0 +1,177 @@
+/*
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * 
+ * This file is part of Phosphorus Five.
+ *
+ * Phosphorus Five is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ *
+ * Phosphorus Five is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Phosphorus Five.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * If you cannot for some reasons use the GPL license, Phosphorus
+ * Five is also commercially available under Quid Pro Quo terms. Check 
+ * out our website at http://gaiasoul.com for more details.
+ */
+
+
+/*
+ * Root tree default CSS class.
+ */
+.tree-widget-large {
+    font-size:1.5em;
+}
+
+/*
+ * Wrapper element for entire item, including its children UL elements.
+ * Removing left padding for items as default value.
+ */
+.tree-widget-large li.tree-item {
+    padding-left:0;
+}
+
+/*
+ * Making sure only "second level items" are indendent.
+ */
+.tree-widget-large ul.tree-item-children > li.tree-item > ul.tree-item-children > li.tree-item {
+    padding-left:25px;
+}
+
+/*
+ * The label (hyperlink) for tree items.
+ */
+.tree-widget-large li.tree-item > a.tree-item-label:before {
+  font-family: "Glyphicons Halflings";
+  content: "\e113";
+  font-size:.7em;
+  color:rgba(0,0,0,.3);
+  margin-right:5px;
+}
+.tree-widget-large li.tree-expanded > a.tree-item-label:before {
+  content: "\e114";
+}
+.tree-widget-large li.tree-leaf > a.tree-item-label:before {
+  content:none;
+}
+.tree-widget-large li.tree-leaf > a.tree-item-label {
+  padding-left:45px;
+}
+.tree-widget-large a.tree-item-label {
+    padding-left:25px;
+    text-decoration:none;
+    display:block;
+    height:100%;
+    line-height:19px;
+}
+.tree-widget-large a.tree-item-label:hover {
+    background-color:rgba(0,0,0,.1);
+}
+.tree-widget-large a.tree-item-label .glyphicon {
+    margin-right:5px;
+    color:rgba(200,200,0,.3);
+}
+
+/*
+ * Selected item class for label (hyperlink) of selected tree items.
+ */
+.tree-widget-large li.tree-item > a.tree-selected {
+    background-color:rgba(128,255,128,.3);
+}
+
+/*
+ * The children ul element of tree items.
+ */
+.tree-widget-large ul.tree-item-children {
+    padding-left:0;
+    list-style:none;
+}
+.tree-widget-large ul.tree-hidden {
+    display:none;
+}
+
+/*
+ * Animations for showing children items during expansion of children items.
+ */
+@keyframes tree-item-children-animation-child-li {
+    0% {
+        opacity:0;
+        margin-left:-50px;
+    }
+    100% {
+        opacity:1;
+        margin-left:0;
+    }
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item {
+    opacity:0;
+    animation-name: tree-item-children-animation-child-li;
+    animation-duration: .3s;
+    animation-fill-mode:forwards;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(1) {
+    animation-delay:.05s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(2) {
+    animation-delay:.1s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(3) {
+    animation-delay:.15s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(4) {
+    animation-delay:.20s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(5) {
+    animation-delay:.25s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(6) {
+    animation-delay:.30s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(7) {
+    animation-delay:.35s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(8) {
+    animation-delay:.40s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(9) {
+    animation-delay:.45s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(10) {
+    animation-delay:.50s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(11) {
+    animation-delay:.55s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(12) {
+    animation-delay:.60s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(13) {
+    animation-delay:.65s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(14) {
+    animation-delay:.70s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(15) {
+    animation-delay:.75s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(16) {
+    animation-delay:.80s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(17) {
+    animation-delay:.85s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(18) {
+    animation-delay:.90s;
+}
+.tree-widget-large ul.tree-item-children-animate > li.tree-item:nth-child(19) {
+    animation-delay:.95s;
+}
+
+
+

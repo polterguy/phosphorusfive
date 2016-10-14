@@ -16,7 +16,8 @@
  * Arguments;
  * 
  * [_class]           - CSS class to use, defaults to "tree-widget".
- * [_css-file]        - CSS file to include, defaults to "tree.css" from tree widget's media folder.
+ * [_css-file]        - CSS file to include, defaults to "tree.css" from tree widget's media/skins/default folder.
+ *                      If you wish to create your own skin, make sure you change this argument to whtever CSS file contains your skin.
  * [_items]           - Collection of items to show initially as "root items".
  *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
  *                      item, used to uniquely identify the item, when the item is clicked for instance, etc.
@@ -37,7 +38,7 @@ create-event:sys42.widgets.tree
    */
   _defaults
     _class:tree-widget
-    _css-file:/system42/components/tree-widget/media/tree.css
+    _css-file:/system42/components/tree-widget/media/skins/default/tree.css
     _on-get-items
       sys42.windows.info-top:You should really have supplied an [_on-get-items] callback! If not for anything else, than to make it empty!
         _class:info-window info-window-longer info-window-error
@@ -576,6 +577,14 @@ create-event:sys42.widgets.tree._create-items
      * for the item, allowing us to figure out the "id" of which item was clicked, among other things.
      */
     eval-x:x:/..for-each/*/add/[1,2]/*/*/*(/_item-id|/*/a/*/widgets/*/span/[1,2]/*/innerValue)
+
+    /*
+     * Adding any custom CSS classes caller supplied to currently iterated widget.
+     */
+    if:x:/..for-each/*/_dp/#/*/_class?value
+      set:x:/..for-each/*/add/[1,2]/*/*/*/class?value
+        src:tree-item {0}
+          :x:/..for-each/*/_dp/#/*/_class?value
 
     /*
      * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
