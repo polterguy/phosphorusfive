@@ -579,6 +579,9 @@
     <Content Include="system42\components\jquery\startup.hl" />
     <Content Include="system42\components\tree-widget\README.md" />
     <Content Include="system42\components\codemirror-widget\startup\sys42.widgets.codemirror.hl" />
+    <Content Include="system42\components\navbar-widget\startup.hl" />
+    <Content Include="system42\components\navbar-widget\README.md" />
+    <Content Include="system42\components\navbar-widget\startup\sys42.widgets.navbar.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\css\bootstrap.css.map" />
     <None Include="system42\components\bootstrap\css\bootstrap-theme.css.map" />

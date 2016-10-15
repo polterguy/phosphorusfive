@@ -1,0 +1,291 @@
+
+/*
+ * Creates the navbar or menu widget Active Event, in addition to some helper Active Events.
+ */
+
+
+/*
+ * The actual navbar widget Active Event.
+ * Creates a navbar widget, which creates a navigation menu allowing for navigating your app.
+ */
+create-event:sys42.widgets.navbar
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _class:navbar navbar-default navbar-fixed-top
+    _crawl-get-name:sys42_widgets_navbar_unroll
+    _crawl:bool:false
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+
+  /*
+   * Making sure caller supplied at the very least one item.
+   */
+  if:x:/../*/_options/*/_items/*
+    not
+    throw:You have to supply at the very least one root item when creating your navbar widget.
+
+
+  /*
+   * Making sure we include Boootstrap.
+   *
+   * Notice, the navbar depends upon the Bootstrap JavaScript when it is collapsed.
+   * In addition we must include our navbar.css file, which creates some padding for our body, in addition to creating
+   * the hack to allow Boostrap's navbar to have multiple levels of inner menus.
+   */
+  sys42.bootstrap.include-css
+  sys42.bootstrap.include-javascript
+  include-stylesheet-file:@CMS/media/css/navbar.css
+
+
+  /*
+   * Adding items recursively to return widget.
+   */
+  eval-x:x:/+/*/*
+  add:x:/../*/return/*/container/*/widgets/*/container/*/widgets/*/container/=navbar-main/*/widgets/*/ul/*/widgets
+    sys42.widgets.navbar._create-items:x:/../*/_arg?value
+      _items:x:/../*/_options/*/_items
+
+
+  /*
+   * Forward evaluating properties inside of [return].
+   */
+  eval-x:x:/../*/return/*/*/class
+
+
+  /*
+   * Returning menu to caller
+   */
+  return
+    container
+      element:nav
+      class:x:/../*/_options/*/_class?value
+      widgets
+        container
+          class:container-fluid
+          widgets
+            container
+              class:navbar-header
+              widgets
+
+                /*
+                 * Toggles visibility of navbar, only visible in small screen resolutions.
+                 */
+                button:toggle-navbar
+                  type:button
+                  class:navbar-toggle collapsed
+                  data-toggle:collapse
+                  data-target:#navbar-main
+                  aria-expanded:false
+                  innerValue:@"<span class=""icon-bar""></span><span class=""icon-bar""></span><span class=""icon-bar""></span>"
+
+            /*
+             * Main menu items wrapper
+             */
+            container:navbar-main
+              class:collapse navbar-collapse
+              widgets
+                ul
+                  class:nav navbar-nav
+
+                  /*
+                   *This part will be dynamically populated from your [_items] collection.
+                   */
+                  widgets
+
+
+/*
+ * Supporting Active Event, to create items.
+ */
+create-event:sys42.widgets.navbar._create-items
+
+  /*
+   * Checking if we have items, and if not, returning early.
+   */
+  if:x:/../*/_items/#/*
+    not
+    return
+
+  /*
+   * Looping through all [_items]
+   */
+  for-each:x:/../*/_items/#/*
+
+    /*
+     * Checking if this item is nested
+     */
+    if:x:/..for-each/*/_dp/#/*/_items
+
+      /*
+       * This item has nested shildren.
+       *
+       * Forward evaluating [_items] collection in recursive invocation of "self" inside of [add], to make sure
+       * we recursively add children [_items] of currently iterated [_items] item.
+       */
+      eval-x:x:/+/*/*
+      add:x:/..if/*/add/[1,2]/*/*/*/widgets/*/ul/*/widgets
+        sys42.widgets.navbar._create-items:x:/../*/_arg?value
+          _items:x:/..for-each/*/_dp/#/*/_items
+
+      /*
+       * Setting properties for currently iterated item, and adding item into [return] below.
+       */
+      eval-x:x:/..if/*/add/[1,2]/*/*/*/widgets/*/a/*/innerValue
+
+      /*
+       * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
+       * to caller's request.
+       */
+      add:x:/../*/return
+        src
+          li
+            class:dropdown
+            widgets
+              a
+                href:#
+                class:dropdown-toggle
+                data-toggle:dropdown
+                role:button
+                aria-haspopup:true
+                aria-expanded:false
+                innerValue:@"{0} <span class=""caret""></span>"
+                  :x:/..for-each/*/_dp/#?name
+              ul
+                class:dropdown-menu
+                widgets
+    else-if:x:/..for-each/*/_dp/#?name
+      =:_separator
+
+      /*
+       * This is a separator item.
+       */
+      add:x:/../*/return
+        src
+          li
+            class:divider
+            role:separator
+
+    else
+
+      /*
+       * This item does not have any nested children.
+       * Adding the supplied [_onclick] to our currently iterated item.
+       */
+      add:x:/..else/*/add/[1,2]/*/*/*/widgets/*/a/*/onclick/*/_lambda
+        src:x:/..for-each/*/_dp/#/*/_onclick/*
+
+      /*
+       * Setting properties for currently iterated item, and adding item into [return] below.
+       */
+      eval-x:x:/..else/*/add/[1,2]/*/*/*/widgets/*/a/*/innerValue
+
+      /*
+       * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
+       * to caller's request.
+       */
+      eval-x:x:/+/**/_root-tree
+      add:x:/../*/return
+        src
+          li
+            widgets
+              a
+                href:#
+                role:button
+                innerValue:x:/..for-each/*/_dp/#?name
+                onclick
+
+                  /*
+                   * First we evaluate our item click event, which sets the item as active, in additio to some other things.
+                   */
+                  eval-x:x:/+/*
+                  sys42.widgets.navbar._item-clicked
+                    _root-tree:x:/../*/_arg?value
+                    _event:x:/../*/_event?value
+
+                  /*
+                   * Then we evaluate the user provided lambda for item.
+                   */
+                  _lambda
+                  eval:x:/-
+
+  /*
+   * Returning widget collection to caller.
+   */
+  return
+
+
+/*
+ * Helper active event invoked when an item is clicked.
+ */
+create-event:sys42.widgets.navbar._item-clicked
+
+  /*
+   * Checking if there's a previous active menu item, and if so, removing the "active" CSS class from it.
+   */
+  find-widget-like:x:/../*/_root-tree?value
+    class:active
+    element:li
+  if:x:/../*/find-widget-like/*
+    sys42.delete-css-classes:x:/../*/find-widget-like/*?value
+      _class:active
+
+  /*
+   * Adding the "active" CSS class to clicked item.
+   */
+  get-parent-widget:x:/../*/_event?value
+  sys42.add-css-classes:x:/-/*/*?value
+    _class:active
+
+  /*
+   * Used to track which "li" item we should remove the "open" CSS class from.
+   */
+  _cur
+
+  /*
+   * Checking if this is a "root menu item", at which point it has no ancestor widgets of type "ul" with "dropdown-menu" class.
+   */
+  find-first-ancestor-widget-like:x:/-3/*/*?value
+    element:li
+    class:dropdown
+  if:x:/-/*?value
+
+    /*
+     * This is not a "root menu item".
+     */
+    set:x:/../*/_cur?value
+      src:x:/././-/*?value
+
+    /*
+     * Looping until we find the outer most "li" element that has the CSS class of "open".
+     */
+    while:bool:true
+      find-first-ancestor-widget-like:x:/../*/_cur?value
+        element:li
+        class:dropdown
+      if:x:/-/*?value
+        not
+
+        /*
+         * We have found the outer most "li" element, with the CSS class of "open".
+         */
+        break
+
+      /*
+       * Continuing iteration.
+       */
+      set:x:/../*/_cur?value
+        src:x:/..while/*/find-first-ancestor-widget-like/*?value
+
+    /*
+     * Notice, since the adding of the CSS classes actually happens on the client side only, due to Bootstrap's
+     * JavaScript file adding them in JS, we need to transfer JS to the client that removes the CSS class.
+     */
+    get-children-widgets:x:/../*/_cur?value
+    send-javascript:@"p5.$('{0}').el.className = 'dropdown';p5.$('{1}').el.ariaExpanded = false;"
+      :x:/../*/_cur?value
+      :x:/./-/*/0?value
+
