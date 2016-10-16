@@ -54,7 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="system42\apps\CMS\media\css\navbar.css" />
+    <Content Include="system42\apps\CMS\media\css\navbar-fix.css" />
     <Content Include="system42\components\ckeditor-widget\media\lang\af.js" />
     <Content Include="system42\components\ckeditor-widget\media\lang\ar.js" />
     <Content Include="system42\components\ckeditor-widget\media\lang\bg.js" />

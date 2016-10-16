@@ -39,7 +39,7 @@ create-event:sys42.widgets.navbar
    */
   sys42.bootstrap.include-css
   sys42.bootstrap.include-javascript
-  include-stylesheet-file:@CMS/media/css/navbar.css
+  include-stylesheet-file:@CMS/media/css/navbar-fix.css
 
 
   /*
@@ -49,6 +49,8 @@ create-event:sys42.widgets.navbar
   add:x:/../*/return/*/container/*/widgets/*/container/*/widgets/*/container/=navbar-main/*/widgets/*/ul/*/widgets
     sys42.widgets.navbar._create-items:x:/../*/_arg?value
       _items:x:/../*/_options/*/_items
+      _crawl:x:/../*/_options/*/_crawl?value
+      _crawl-get-name:x:/../*/_options/*/_crawl-get-name?value
 
 
   /*
@@ -58,10 +60,49 @@ create-event:sys42.widgets.navbar
 
 
   /*
+   * Setting the [_root-navbar] property to the crawl URL HTTP GET parameter, if supplied.
+   */
+  if:x:/../*/_options/*/_crawl?value.bool
+
+
+    /*
+     * Caller wants navbar to be "crawl SEO friendly".
+     */
+    set:x:/../*/return/*/*/_root-navbar?value
+      src:x:/../*/_options/*/_crawl-get-name?value
+
+
+    /*
+     * Checking if the current URL is an "unroll" URL.
+     */
+    get-http-get-param:x:/../*/_options/*/_crawl-get-name?value
+    if:x:/..if/*/get-http-get-param/*?value
+
+
+      /*
+       * We should unroll URL, we do this by invoking the [click] of the item with the ID from the URL during [oninit].
+       */
+      eval-x:x:/+/*/*/*/*/_item-id
+      add:x:/../*/return/*/container
+        src
+          oninit
+
+            /*
+             * Making sure we raise [onclick] for the item from the HTTP GET unroll parameter.
+             * Notice, [_item-id] is forward evaluated in the above [eval-x] invocation.
+             */
+            find-widget:x:/../*/_event?value
+              _item-id:x:/..if/..if/*/get-http-get-param/*?value
+            raise-widget-ajax-event:x:/-/*?value
+              onclick
+
+
+  /*
    * Returning menu to caller
    */
   return
     container
+      _root-navbar
       element:nav
       class:x:/../*/_options/*/_class?value
       widgets
@@ -121,7 +162,7 @@ create-event:sys42.widgets.navbar._create-items
     if:x:/..for-each/*/_dp/#/*/_items
 
       /*
-       * This item has nested shildren.
+       * This item has nested children.
        *
        * Forward evaluating [_items] collection in recursive invocation of "self" inside of [add], to make sure
        * we recursively add children [_items] of currently iterated [_items] item.
@@ -130,6 +171,8 @@ create-event:sys42.widgets.navbar._create-items
       add:x:/..if/*/add/[1,2]/*/*/*/widgets/*/ul/*/widgets
         sys42.widgets.navbar._create-items:x:/../*/_arg?value
           _items:x:/..for-each/*/_dp/#/*/_items
+          _crawl:x:/../*/_crawl?value
+          _crawl-get-name:x:/../*/_crawl-get-name?value
 
       /*
        * Setting properties for currently iterated item, and adding item into [return] below.
@@ -181,7 +224,18 @@ create-event:sys42.widgets.navbar._create-items
       /*
        * Setting properties for currently iterated item, and adding item into [return] below.
        */
-      eval-x:x:/..else/*/add/[1,2]/*/*/*/widgets/*/a/*/innerValue
+      eval-x:x:/..else/*/add/[1,2]/*/*/*/widgets/*/a/*(/innerValue|/_item-id)
+
+      /*
+       * Checking if caller wanted to have an SEO friendly navbar.
+       */
+      if:x:/../*/_crawl?value.bool
+        not
+
+        /*
+         * Removing [oninit], since it's only there to retrieve the SEO URL, and caller did not want an SEO navbar.
+         */
+        set:x:/..else/*/add/[1,2]/*/*/*/*/*/oninit
 
       /*
        * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
@@ -195,7 +249,12 @@ create-event:sys42.widgets.navbar._create-items
               a
                 href:#
                 role:button
+                _item-id:x:/..for-each/*/_dp/#?value
                 innerValue:x:/..for-each/*/_dp/#?name
+                oninit
+                  sys42.widgets.navbar._create-url:x:/../*/_event?value
+                  set-widget-property:x:/../*/_event?value
+                    href:x:/./-?value
                 onclick
 
                   /*
@@ -288,4 +347,59 @@ create-event:sys42.widgets.navbar._item-clicked
     send-javascript:@"p5.$('{0}').el.className = 'dropdown';p5.$('{1}').el.ariaExpanded = false;"
       :x:/../*/_cur?value
       :x:/./-/*/0?value
+
+
+/*
+ * Supporting Active Event, to create URL from given [_arg] hyperlink widget.
+ */
+create-event:sys42.widgets.navbar._create-url
+
+  /*
+   * First we get current location, without GET parameters, before we add the question mark to make sure we 
+   * "open" our GET params collection.
+   */
+  get-location-url
+  set:x:/../*/get-location-url?value
+    src:{0}?
+      :x:/../*/get-location-url?value
+
+  /*
+   * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
+   * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tree_unroll".
+   */
+  find-first-ancestor-widget:x:/../*/_arg?value
+    _root-navbar
+  get-widget-property:x:/-/*?value
+    _root-navbar
+  list-http-get-params
+  set:x:/-/*/{0}
+    :x:/../*/get-widget-property/*/*?value
+  if:x:/-2/*
+    get-http-get-param:x:/./-2/*?name
+    for-each:x:/-/*
+      url-encode:x:/./*/_dp/#?value
+      set:x:/../*/get-location-url?value
+        src:{0}{1}={2}&
+          :x:/../*/get-location-url?value
+          :x:/..for-each/*/_dp/#?name
+          :x:/..for-each/*/url-encode?value
+
+  /*
+   * Adding key for our "unroll" GET parameter.
+   */
+  set:x:/../*/get-location-url?value
+    src:{0}{1}=
+      :x:/../*/get-location-url?value
+      :x:/../*/get-widget-property/*/*?value
+
+  /*
+   * Then we can URL encode the parameter, and return URL to caller.
+   */
+  get-widget-property:x:/../*/_arg?value
+    _item-id
+  url-encode:x:/-/*/*?value
+
+  return:{0}{1}
+    :x:/../*/get-location-url?value
+    :x:/../*/url-encode?value
 
