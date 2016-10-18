@@ -1,0 +1,50 @@
+[
+  {
+    "outputFileName": "system42/components/tree-widget/media/skins/default/default.min.css",
+    "inputFiles": [
+      "system42/components/tree-widget/media/skins/default/default.css"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/tree-widget/media/skins/large/large.min.css",
+    "inputFiles": [
+      "system42/components/tree-widget/media/skins/large/large.css"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/tree-widget/media/skins/medium/medium.min.css",
+    "inputFiles": [
+      "system42/components/tree-widget/media/skins/medium/medium.css"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/tree-widget/media/skins/small/small.min.css",
+    "inputFiles": [
+      "system42/components/tree-widget/media/skins/small/small.css"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/codemirror-widget/media/mode/hyperlambda/hyperlambda.min.js",
+    "inputFiles": [
+      "system42/components/codemirror-widget/media/mode/hyperlambda/hyperlambda.js"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/codemirror-widget/media/theme/paraiso.min.css",
+    "inputFiles": [
+      "system42/components/codemirror-widget/media/theme/paraiso.css"
+    ]
+  },
+  {
+    "outputFileName": "system42/apps/CMS/media/css/main.min.css",
+    "inputFiles": [
+      "system42/apps/CMS/media/css/main.css"
+    ]
+  },
+  {
+    "outputFileName": "system42/apps/CMS/media/css/navbar-fix.min.css",
+    "inputFiles": [
+      "system42/apps/CMS/media/css/navbar-fix.css"
+    ]
+  }
+]

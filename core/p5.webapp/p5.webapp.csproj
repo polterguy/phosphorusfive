@@ -54,7 +54,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="system42\apps\CMS\media\css\main.min.css">
+      <DependentUpon>main.css</DependentUpon>
+    </Content>
     <Content Include="system42\apps\CMS\media\css\navbar-fix.css" />
+    <Content Include="system42\apps\CMS\media\css\navbar-fix.min.css">
+      <DependentUpon>navbar-fix.css</DependentUpon>
+    </Content>
     <Content Include="system42\components\ckeditor-widget\media\lang\af.js" />
     <Content Include="system42\components\ckeditor-widget\media\lang\ar.js" />
     <Content Include="system42\components\ckeditor-widget\media\lang\bg.js" />
@@ -279,14 +285,32 @@
     <Content Include="system42\components\codemirror-widget\media\addon\selection\selection-pointer.js" />
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.css" />
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.js" />
+    <Content Include="system42\components\codemirror-widget\media\mode\hyperlambda\hyperlambda.min.js">
+      <DependentUpon>hyperlambda.js</DependentUpon>
+    </Content>
+    <Content Include="system42\components\codemirror-widget\media\theme\paraiso.min.css">
+      <DependentUpon>paraiso.css</DependentUpon>
+    </Content>
     <Content Include="system42\components\datagrid-widget\media\skins\default\default.css" />
+    <Content Include="system42\components\tree-widget\media\skins\default\default.min.css">
+      <DependentUpon>default.css</DependentUpon>
+    </Content>
+    <Content Include="system42\components\tree-widget\media\skins\large\large.min.css">
+      <DependentUpon>large.css</DependentUpon>
+    </Content>
     <Content Include="system42\components\tree-widget\media\skins\medium\medium.css" />
+    <Content Include="system42\components\tree-widget\media\skins\medium\medium.min.css">
+      <DependentUpon>medium.css</DependentUpon>
+    </Content>
     <Content Include="system42\components\tree-widget\media\skins\small\small.css" />
     <Content Include="system42\components\tree-widget\media\skins\large\large.css" />
     <Content Include="system42\components\tree-widget\media\skins\default\tree-1.png" />
     <Content Include="system42\components\tree-widget\media\skins\default\tree-2.png" />
     <Content Include="system42\components\tree-widget\media\skins\default\tree-3.png" />
     <Content Include="system42\components\tree-widget\media\skins\default\default.css" />
+    <Content Include="system42\components\tree-widget\media\skins\small\small.min.css">
+      <DependentUpon>small.css</DependentUpon>
+    </Content>
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -486,6 +510,7 @@
     <Content Include="README.md" />
     <Content Include="common\README.md" />
     <Content Include="system42\apps\CMS\media\README.md" />
+    <None Include="bundleconfig.json" />
     <None Include="system42\application-startup.hl" />
     <Content Include="system42\apps\README.md" />
     <Content Include="system42\apps\CMS\initial-pages\1-landing-page.hl" />

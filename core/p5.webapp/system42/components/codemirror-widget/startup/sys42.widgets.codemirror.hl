@@ -12,7 +12,7 @@ create-event:sys42.widgets.codemirror
   _defaults
     _auto-focus:false
     _mode:hyperlambda
-    _theme:paraiso
+    _theme:paraiso.min
     _height:300px
   _options
   add:x:/../*/_options
@@ -27,7 +27,7 @@ create-event:sys42.widgets.codemirror
     /system42/components/codemirror-widget/media/addon/display/placeholder.js
     /system42/components/codemirror-widget/media/addon/display/fullscreen.js
     /system42/components/codemirror-widget/media/addon/hint/show-hint.js
-  include-javascript-file:/system42/components/codemirror-widget/media/mode/{0}/{0}.js
+  include-javascript-file:/system42/components/codemirror-widget/media/mode/{0}/{0}.min.js
     :x:/../*/_options/*/_mode?value
 
   /*

@@ -17,8 +17,8 @@
 sys42.jquery.include
 sys42.bootstrap.include-css
 sys42.bootstrap.include-javascript
-include-stylesheet-file:@CMS/media/css/main.css
-include-stylesheet-file:@CMS/media/css/navbar-fix.css
+include-stylesheet-file:@CMS/media/css/main.min.css
+include-stylesheet-file:@CMS/media/css/navbar-fix.min.css
 
 
 /*

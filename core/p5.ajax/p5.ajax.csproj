@@ -27,20 +27,6 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-Linux|AnyCPU' ">
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Release-Linux</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <CustomCommands>
-      <CustomCommands>
-        <Command type="AfterBuild" command="cp ${TargetFile} ${SolutionDir}/lib" />
-        <Command type="BeforeBuild" command="cp ${ProjectDir}/javascript/manager.js ${ProjectDir}/javascript/manager.backup.js" workingdir="" />
-        <Command type="BeforeBuild" command="uglifyjs -o ${ProjectDir}/javascript/manager.js ${ProjectDir}/javascript/manager.backup.js" />
-        <Command type="AfterBuild" command="cp ${ProjectDir}/javascript/manager.backup.js ${ProjectDir}/javascript/manager.js" />
-        <Command type="AfterBuild" command="rm ${ProjectDir}/javascript/manager.backup.js" />
-      </CustomCommands>
-    </CustomCommands>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Web" />
@@ -49,10 +35,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Content Include="README.md" />
+    <EmbeddedResource Include="javascript\manager.min.js">
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="javascript\manager.js" />
+    <None Include="javascript\manager.js" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

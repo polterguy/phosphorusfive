@@ -51,43 +51,22 @@ namespace p5
              */
             protected void Application_Start (object sender, EventArgs e)
             {
-                // Storing application base path for later usage, making sure we normalize path across operating systems
-                _applicationBasePath = Server.MapPath ("~");
-                _applicationBasePath = _applicationBasePath.Replace("\\", "/");
-                if (_applicationBasePath.EndsWith("/"))
-                    _applicationBasePath = _applicationBasePath.Substring(0, _applicationBasePath.Length - 1);
+                // Making sure we set the base path for app for later usage.
+                GetBasePath ();
 
-                // Adding up executing (this) assembly as Active Event handler
-                Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
-
-                // Adding all Active Event handler assemblies from web.config
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                if (configuration == null)
-                    throw new ConfigurationErrorsException ("No Phosphorus configuration section found in web.config");
-
-                // Looping through all assemblies from web.config
-                foreach (ActiveEventAssembly idxAssembly in configuration.Assemblies) {
-
-                    // Loading up and registering currently iterated assembly as Active Event handler assembly
-                    Loader.Instance.LoadAssembly (Server.MapPath (configuration.PluginDirectory), idxAssembly.Assembly);
-                }
+                // Loading our plugin assemblies.
+                LoadPluginAssemblies ();
 
                 // Creating our App Context
-                // Notice, the Application_Start's ApplicationContext is evaluated from within the context of "root"
-                var context = Loader.Instance.CreateApplicationContext (new ApplicationContext.ContextTicket("root", "root", false));
+                // Notice, the Application_Start's ApplicationContext is evaluated from within the context of "root" to have extended rights
+                // during startup.
+                var context = Loader.Instance.CreateApplicationContext (new ApplicationContext.ContextTicket ("root", "root", false));
 
                 // Raising the application start Active Event, making sure we do it with a "root" Context Ticket
                 context.Raise (".p5.core.application-start");
 
-                // Execute our "startup file", if there is one defined
-                var appStartupFiles = context.Raise (
-                    ".get-config-setting",
-                    new Node ("", ".p5.webapp.application-startup-file")) [0].Get<string>(context);
-                if (!string.IsNullOrEmpty (appStartupFiles)) {
-
-                    // There is an application-startup-file declared in web.config, executing it as a Hyperlambda file
-                    ExecuteHyperlispFile (context, appStartupFiles);
-                }
+                // Executing our startup files.
+                ExecuteStartupFiles (context);
             }
 
             /*
@@ -159,6 +138,55 @@ namespace p5
             #endregion
 
             #region [ -- Private helper methods -- ]
+
+            /*
+             * Executes any startup Hyperlambda files, if any, according to web.config settings.
+             */
+            private static void ExecuteStartupFiles (ApplicationContext context)
+            {
+                // Execute our "startup file", if there is one defined
+                var appStartupFiles = context.Raise (
+                    ".get-config-setting",
+                    new Node ("", ".p5.webapp.application-startup-file"))[0].Get<string> (context);
+                if (!string.IsNullOrEmpty (appStartupFiles)) {
+
+                    // There is an application-startup-file declared in web.config, executing it as a Hyperlambda file
+                    ExecuteHyperlispFile (context, appStartupFiles);
+                }
+            }
+
+            /*
+             * Loads plugin assemblies according to web.config.
+             */
+            private void LoadPluginAssemblies ()
+            {
+                // Adding up executing (this) assembly as Active Event handler
+                Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+
+                // Adding all Active Event handler assemblies from web.config
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                if (configuration == null)
+                    throw new ConfigurationErrorsException ("No Phosphorus configuration section found in web.config");
+
+                // Looping through all assemblies from web.config
+                foreach (ActiveEventAssembly idxAssembly in configuration.Assemblies) {
+
+                    // Loading up and registering currently iterated assembly as Active Event handler assembly
+                    Loader.Instance.LoadAssembly (Server.MapPath (configuration.PluginDirectory), idxAssembly.Assembly);
+                }
+            }
+
+            /*
+             * Sets the base path for later usage.
+             */
+            private void GetBasePath ()
+            {
+                // Storing application base path for later usage, making sure we normalize path across operating systems
+                _applicationBasePath = Server.MapPath ("~");
+                _applicationBasePath = _applicationBasePath.Replace ("\\", "/");
+                if (_applicationBasePath.EndsWith ("/"))
+                    _applicationBasePath = _applicationBasePath.Substring (0, _applicationBasePath.Length - 1);
+            }
 
             /*
              * Executes a Hyperlambda file

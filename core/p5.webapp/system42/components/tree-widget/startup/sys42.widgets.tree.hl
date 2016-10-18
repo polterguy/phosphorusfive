@@ -60,7 +60,7 @@ create-event:sys42.widgets.tree
   /*
    * Making sure we include our tree specific CSS file.
    */
-  include-stylesheet-file:/system42/components/tree-widget/media/skins/{0}/{0}.css
+  include-stylesheet-file:/system42/components/tree-widget/media/skins/{0}/{0}.min.css
     :x:/../*/_options/*/_skin?value
 
 
