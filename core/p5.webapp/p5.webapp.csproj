@@ -292,9 +292,13 @@
       <DependentUpon>paraiso.css</DependentUpon>
     </Content>
     <Content Include="system42\components\datagrid-widget\media\skins\default\default.css" />
+    <Content Include="system42\components\datagrid-widget\media\skins\default\default.min.css">
+      <DependentUpon>default.css</DependentUpon>
+    </Content>
     <Content Include="system42\components\tree-widget\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
     </Content>
+    <Content Include="system42\components\tree-widget\media\skins\default\tree-folders.png" />
     <Content Include="system42\components\tree-widget\media\skins\large\large.min.css">
       <DependentUpon>large.css</DependentUpon>
     </Content>

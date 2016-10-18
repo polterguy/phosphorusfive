@@ -46,5 +46,11 @@
     "inputFiles": [
       "system42/apps/CMS/media/css/navbar-fix.css"
     ]
+  },
+  {
+    "outputFileName": "system42/components/datagrid-widget/media/skins/default/default.min.css",
+    "inputFiles": [
+      "system42/components/datagrid-widget/media/skins/default/default.css"
+    ]
   }
 ]

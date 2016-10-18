@@ -46,9 +46,11 @@ create-event:sys42.widgets.codemirror
   vocabulary
 
   /*
-   * Then removing all operators, since they're probably not thought of as Active Events by users
+   * Then removing all operators, since they're probably not thought of as Active Events by users.
+   * In addition, we remove all events that contains "._" somehow, since they're considered "private events",
+   * or "internal events".
    */
-  set:x:/../*/vocabulary/*(/"=-"|/"=!~"|/"=!="|/=%|/=*|/"=/"|/"=^"|/"=\\~"|/=+|/=<|/=<=|/==|/=>|/=>=)
+  set:x:/../*/vocabulary/*(/"=-"|/"=!~"|/"=!="|/=%|/=*|/"=/"|/"=^"|/"=\\~"|/=+|/=<|/=<=|/==|/=>|/=>=|/=~._)
   join:x:/../*/vocabulary/*?value
     sep:,
     wrap:@""""
