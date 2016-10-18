@@ -11,14 +11,19 @@ select-data:x:/*/*/p5.page/"={0}"
 
 
 /*
- * Setting templates
+ * Setting templates, making sure we add the "empty" first.
  */
+add:x:/../*/create-widget/**/container/=page-template/*/widgets
+  src
+    literal
+      element:option
+      value:_empty
+      innerValue:No template
 list-files:@CMS/page-templates/
   filter:.hl
 for-each:x:/-/*?name
   _lit
     literal
-      parent:page-template
       element:option
       value
       innerValue

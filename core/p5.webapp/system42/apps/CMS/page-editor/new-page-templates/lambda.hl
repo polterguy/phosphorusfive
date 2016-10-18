@@ -6,7 +6,7 @@
 
 insert-before:x:/../0
   src
-    template:@CMS/page-templates/default.hl
+    template:/system42/apps/CMS/page-templates/default.hl
     lambda:@"/*
  * Default [lambda] type of page.
  * Edit this page to meet your own needs.

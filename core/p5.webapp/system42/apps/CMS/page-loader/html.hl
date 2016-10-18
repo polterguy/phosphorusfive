@@ -10,6 +10,13 @@ if
   sys42.verify-access:x:/../*/_args/*/role?value
 
   /*
+   * Checking if template is empty, which is not legal with an [html] type of page.
+   */
+  if:x:/../*/_args/*/template?value
+    =:_empty
+    throw:You must choose a template for your HTML pages!
+
+  /*
    * User has access, now loading template and exchanging {content} 
    * with HTML from database.
    */

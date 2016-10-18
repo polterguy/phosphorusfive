@@ -1,0 +1,48 @@
+
+/*
+ * Creates the datagrid widget Active Event, in addition to some helper Active Events.
+ */
+
+
+/*
+ * The actual datagrid widget Active Event.
+ * Creates a datagrid Ajax widget, which allows you to display and modify data in a table format.
+ */
+create-event:sys42.widgets.datagrid
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _skin:default
+    _no-items:int:10
+    _on-get-items
+      sys42.windows.info-top:You must provide an [_on-get-items] callback lambda!
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+
+  /*
+   * Making sure we include our datagrid specific skin CSS file.
+   */
+  include-stylesheet-file:/system42/components/datagrid-widget/media/skins/{0}/{0}.css
+    :x:/../*/_options/*/_skin?value
+
+
+  /*
+   * Forward evaluating class property.
+   */
+  eval-x:x:/../*/return/*/container/*/class
+
+
+  /*
+   * Returning the datagrid widget back to caller.
+   */
+  return
+    container
+      class:datagrid-widget-{0}
+        :x:/../*/_options/*/_skin?value
+      widgets
+        literal
+          innerValue:Foo bar

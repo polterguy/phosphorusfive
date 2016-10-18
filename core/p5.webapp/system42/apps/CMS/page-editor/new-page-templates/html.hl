@@ -8,6 +8,6 @@
  */
 insert-before:x:
   src
-    template:@CMS/page-templates/default.hl
+    template:/system42/apps/CMS/page-templates/default.hl
     content:@"<p>Foo, and then a dash of bar too, I guess ...?</p>"
 

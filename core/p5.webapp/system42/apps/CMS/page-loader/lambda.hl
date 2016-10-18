@@ -9,14 +9,18 @@
 if
   sys42.verify-access:x:/../*/_args/*/role?value
 
-  // Loading up our template
-  load-file:x:/../*/_args/*/template?value
-
   /*
-   * Removing literal:{content} altogether, and evaluating template just loaded.
+   * Loading up our template, unless it is "_empty".
    */
-  set:x:/-/*/*/create-widget/*/widgets/**/={content}/.
-  eval:x:/./*/load-file/*
+  if:x:/../*/_args/*/template?value
+    !=:_empty
+    load-file:x:/../*/_args/*/template?value
+
+    /*
+     * Removing literal:{content} altogether, and evaluating template just loaded.
+     */
+    set:x:/-/*/*/create-widget/*/widgets/**/={content}/.
+    eval:x:/./*/load-file/*
 
 
   /*
