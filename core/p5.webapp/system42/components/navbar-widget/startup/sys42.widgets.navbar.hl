@@ -6,7 +6,27 @@
 
 /*
  * The actual navbar widget Active Event.
- * Creates a navbar widget, which creates a navigation menu allowing for navigating your app.
+ * Creates a navbar widget, which allows you to create an Ajax "menu" or navigation for your page.
+ *
+ * The Navbar Widget is "SEO friendly", which means that it will allow spiders to crawl the nodes in your tree, as if they were hyperlinks,
+ * while  still remaining the single page app feeling for human users, through Ajax functionality. But only if you explicitly set
+ * the [_crawl] paremeter to true. If you do, you can override the default name of the HTTP GET parameter, by supplying it as [_crawl-get-name].
+ *
+ * Arguments;
+ * 
+ * [_items]           - Collection of menu items to show.
+ *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
+ *                      item, used to uniquely identify the item. The id is not necessary, unless you turn on [_crawl].
+ *                      Optionally you can supply child nodes for each item.
+ *                      All items can either have an [_onclick] lambda callback, which is invoked when an item is clicked, or
+ *                      its own children [_items] collection, but not both!
+ * [_class]           - Override the default CSS classes used to render the menu, the default value is "navbar navbar-default navbar-fixed-top".
+ *                      To create your menu attached to the bottom of the page instead for instance, use "navbar navbar-default navbar-fixed-bottom".
+ * [_crawl]           - If true, the menu will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
+ * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_menu_unroll".
+ *
+ * Notice, when creating this widget, you would probably want to consistently use the "cnt" as its [parent] argument, to make sure the menu
+ * is rendered outside of your main content. This is because it creates a "container-fluid" element from Bootstrap to display itself.
  */
 create-event:sys42.widgets.navbar
 

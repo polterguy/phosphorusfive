@@ -9,7 +9,7 @@
  * Creates a tree widget, which allows for hierarchically browsing relational tree structures, such as for instance a file
  * system, etc.
  *
- * Tree Widget is "SEO friendly", which means that it will allow spiders to crawl the nodes in your tree, as if they were hyperlinks,
+ * The Tree Widget is "SEO friendly", which means that it will allow spiders to crawl the nodes in your tree, as if they were hyperlinks,
  * while  still remaining the single page app feeling for human users, through Ajax functionality. But only if you explicitly set
  * the [_crawl] paremeter to true. If you do, you can override the default name of the HTTP GET parameter, by supplying it as [_crawl-get-name].
  *

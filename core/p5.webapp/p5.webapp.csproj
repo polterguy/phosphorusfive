@@ -279,6 +279,7 @@
     <Content Include="system42\components\codemirror-widget\media\addon\selection\selection-pointer.js" />
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.css" />
     <Content Include="system42\components\codemirror-widget\media\lib\codemirror.js" />
+    <Content Include="system42\components\datagrid-widget\media\skins\default\default.css" />
     <Content Include="system42\components\tree-widget\media\skins\medium\medium.css" />
     <Content Include="system42\components\tree-widget\media\skins\small\small.css" />
     <Content Include="system42\components\tree-widget\media\skins\large\large.css" />
@@ -582,6 +583,9 @@
     <Content Include="system42\components\navbar-widget\startup.hl" />
     <Content Include="system42\components\navbar-widget\README.md" />
     <Content Include="system42\components\navbar-widget\startup\sys42.widgets.navbar.hl" />
+    <Content Include="system42\components\datagrid-widget\startup.hl" />
+    <Content Include="system42\components\datagrid-widget\README.md" />
+    <Content Include="system42\components\datagrid-widget\startup\sys42.widgets.datagrid.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\css\bootstrap.css.map" />
     <None Include="system42\components\bootstrap\css\bootstrap-theme.css.map" />

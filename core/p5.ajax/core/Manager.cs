@@ -29,7 +29,7 @@ using p5.ajax.core.filters;
 /*
  * Making sure we include our "manager.js" JavaScript file as a WebResource
  */
-[assembly: WebResource ("p5.ajax.javascript.manager.js", "application/javascript")]
+[assembly: WebResource ("p5.ajax.javascript.manager.min.js", "application/javascript")]
 
 namespace p5.ajax.core {
     /// <summary>
@@ -63,7 +63,7 @@ namespace p5.ajax.core {
             Page.Load += delegate {
 
                 // Retrieving JavaScript file as WebResource
-                var coreScriptFileUrl = Page.ClientScript.GetWebResourceUrl (typeof (Manager), "p5.ajax.javascript.manager.js");
+                var coreScriptFileUrl = Page.ClientScript.GetWebResourceUrl (typeof (Manager), "p5.ajax.javascript.manager.min.js");
                 (Page as IAjaxPage).RegisterJavaScriptFile (coreScriptFileUrl);
             };
         }
