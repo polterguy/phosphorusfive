@@ -814,6 +814,9 @@ CodeMirror.defineMode("hyperlambda", function() {
         case '%':
         case '^':
         case 'lambda2hyper':
+        case 'lambda2csv':
+        case 'lambda2xml':
+        case 'html2xml':
         case 'create-event':
         case 'create-event':
         case 'login':
@@ -862,6 +865,7 @@ CodeMirror.defineMode("hyperlambda", function() {
         case 'find-first-ancestor-widget':
         case 'find-first-ancestor-widget-like':
         case 'find-first-descendant-widget':
+        case 'return':
 
           /*
            * This is a keyword that requires indentation
@@ -886,6 +890,9 @@ CodeMirror.defineMode("hyperlambda", function() {
         case '~':
         case '!~':
         case 'hyper2lambda':
+        case 'csv2lambda':
+        case 'xml2lambda':
+        case 'html2lambda':
         case 'sha256-hash':
         case 'widget-exist':
         case 'reload-location':
@@ -973,7 +980,6 @@ CodeMirror.defineMode("hyperlambda", function() {
         case 'length':
         case 'throw':
         case 'eval-x':
-        case 'return':
         case 'new-guid':
         case 'break':
         case 'continue':

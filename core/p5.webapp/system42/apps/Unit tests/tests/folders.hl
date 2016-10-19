@@ -227,21 +227,21 @@ list-files-throw
 list-folders-expressions
   if
     fetch:x:/0/0?value
-      folder-exist:~/foo/
-    delete-folder:~/foo/
+      folder-exist:~/temp/foo/
+    delete-folder:~/temp/foo/
   if
     fetch:x:/0/0?value
-      folder-exist:~/bar/
-    delete-folder:~/bar/
-  create-folder:~/foo/
-  create-folder:~/foo/bar1/
-  create-folder:~/foo/bar2/
-  create-folder:~/bar/
-  create-folder:~/bar/bar3/
-  create-folder:~/bar/bar4/
+      folder-exist:~/temp/bar/
+    delete-folder:~/temp/bar/
+  create-folder:~/temp/foo/
+  create-folder:~/temp/foo/bar1/
+  create-folder:~/temp/foo/bar2/
+  create-folder:~/temp/bar/
+  create-folder:~/temp/bar/bar3/
+  create-folder:~/temp/bar/bar4/
   _folders
-    no1:~/foo/
-    no1:~/bar/
+    no1:~/temp/foo/
+    no1:~/temp/bar/
   list-folders:x:/../*/_folders/*?value
   if:x:@/-/*/~bar1
     not

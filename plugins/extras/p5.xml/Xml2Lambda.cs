@@ -26,17 +26,17 @@ using p5.exp;
 using p5.core;
 
 /// <summary>
-///     Main namespace for handling HTML
+///     Main namespace for handling XML
 /// </summary>
 namespace p5.xml
 {
     /// <summary>
-    ///     Class to help transform HTML to a p5 lambda structure
+    ///     Class to help transform XML to a p5.lambda structure
     /// </summary>
     public static class Xml2Lambda
     {
         /// <summary>
-        ///     Parses an HTML document, and creates a p5 lambda node structure from the results
+        ///     Parses an XML document, and creates a p5.lambda node structure from the results
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -47,11 +47,11 @@ namespace p5.xml
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Loops through all documents we're supposed to transform
-                foreach (var idxHtmlDoc in XUtil.Iterate<string> (context, e.Args, true)) {
+                foreach (var idxXmlDoc in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Converting currently iterated document/fragment
                     var doc = new XmlDocument ();
-                    doc.LoadXml (idxHtmlDoc);
+                    doc.LoadXml (idxXmlDoc);
                     ParseXmlDocument (e.Args.Add ("result").LastChild, doc.DocumentElement);
                 }
             }

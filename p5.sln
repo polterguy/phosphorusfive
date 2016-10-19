@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.data", "plugins\p5.data\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.web", "plugins\p5.web\p5.web.csproj", "{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.csv", "plugins\extras\p5.csv\p5.csv.csproj", "{045D3D94-7A30-445D-B578-FEE5A5BE5C3B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -286,6 +288,12 @@ Global
 		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
 		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{045D3D94-7A30-445D-B578-FEE5A5BE5C3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{045D3D94-7A30-445D-B578-FEE5A5BE5C3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{045D3D94-7A30-445D-B578-FEE5A5BE5C3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{045D3D94-7A30-445D-B578-FEE5A5BE5C3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{045D3D94-7A30-445D-B578-FEE5A5BE5C3B}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{045D3D94-7A30-445D-B578-FEE5A5BE5C3B}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -323,6 +331,7 @@ Global
 		{C02D30A6-7DA2-4045-8644-9710AB40B629} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 		{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{045D3D94-7A30-445D-B578-FEE5A5BE5C3B} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

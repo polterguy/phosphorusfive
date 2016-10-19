@@ -298,7 +298,6 @@
     <Content Include="system42\components\tree-widget\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
     </Content>
-    <Content Include="system42\components\tree-widget\media\skins\default\tree-folders.png" />
     <Content Include="system42\components\tree-widget\media\skins\large\large.min.css">
       <DependentUpon>large.css</DependentUpon>
     </Content>
@@ -405,6 +404,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\..\plugins\extras\p5.csv\p5.csv.csproj">
+      <Project>{045d3d94-7a30-445d-b578-fee5a5be5c3b}</Project>
+      <Name>p5.csv</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\plugins\extras\p5.threading\p5.threading.csproj">
       <Project>{ef65c1fb-fcc8-43f0-90ac-39da931268e4}</Project>
       <Name>p5.threading</Name>

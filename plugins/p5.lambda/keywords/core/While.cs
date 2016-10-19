@@ -76,7 +76,7 @@ namespace p5.lambda.keywords.core
                     e.Args.Root.FirstChild.UnTie ();
 
                 // Checking if we're overflowing maximum number of iterations, unless [_unchecked] was true
-                if (!uncheck && iterations++ > 10000)
+                if (!uncheck && iterations++ > 5000)
                     throw new LambdaException (
                         "Possible infinite loop encountered, more than 10.000 iterations of [while] loop", 
                         e.Args, 

@@ -31,9 +31,16 @@ create-event:sys42.widgets.datagrid
 
 
   /*
-   * Forward evaluating class property.
+   * Forward evaluating class property, and [_end].
    */
-  eval-x:x:/../*/return/*/container/*/class
+  eval-x:x:/../*/return/*/container/*(/class|/oninit/*/sys42.widgets.datagrid._get-items/*/_end)
+
+
+  /*
+   * Adding [_on-get-items] callback into [sys42.widgets.datagrid._get-items]
+   */
+  add:x:/../*/return/*/*/events/*/sys42.widgets.datagrid._get-items
+    src:x:/../*/_options/*/_on-get-items/*
 
 
   /*
@@ -41,8 +48,274 @@ create-event:sys42.widgets.datagrid
    */
   return
     container
+      element:table
       class:datagrid-widget-{0}
         :x:/../*/_options/*/_skin?value
-      widgets
-        literal
-          innerValue:Foo bar
+
+
+      /*
+       * Making sure our [oninit] fetches the first items.
+       */
+      oninit
+
+        /*
+         * Fetching the initial items to display.
+         */
+        sys42.widgets.datagrid._get-items:x:/../*/_event?value
+          _start:int:0
+          _end:x:/../*/_options/*/_no-items?value.int
+
+        /*
+         * Applying the [_items] returned above to invocation that create table header and main body elements.
+         */
+        add:x:/+/*/_columns
+          src:x:/../*/sys42.widgets.datagrid._get-items/*/_items/0/*?name
+        sys42.widgets.datagrid._create-datagrid:x:/../*/_event?value
+          _columns
+
+        /*
+         * Applying the [_items] returned above to databind invocation.
+         */
+        add:x:/+
+          src:x:/../*/sys42.widgets.datagrid._get-items/*/_items
+        sys42.widgets.datagrid._append-items:x:/../*/_event?value
+
+
+      /*
+       * Events for datagrid widget.
+       */
+      events
+
+
+        /*
+         * Expects [_arg] being ID of datagrid and [_items] being items to append to datagrid.
+         */
+        sys42.widgets.datagrid._append-items
+
+          /*
+           * First we must make sure this is the tree requested by caller to toggle items within.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our datagrid.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Finds "tbody" widget in datagrid, and loops through all [_items] given, creating a "tr" widget for each item.
+           */
+          find-widget:x:/../*/_event?value
+            element:tbody
+          for-each:x:/../*/_items/*
+
+            /*
+             * [apply] all "td" widgets inside of currently iterated "tr" widget.
+             */
+            apply:x:/..for-each/*/create-widget/*/widgets
+              src:x:/..for-each/*/_dp/#/*
+              template
+                td
+                  widgets
+                    a
+                      href:#
+                      role:button
+                      {innerValue}:x:?value
+                      {_column}:x:?name
+                      onclick
+
+                        /*
+                         * Fetching column name and innerValue.
+                         */
+                        get-widget-property:x:/../*/_event?value
+                          _column
+                          innerValue
+
+                        /*
+                         * Fetching row ID by retrieving parent's parent widget's [_row] value.
+                         */
+                        get-parent-widget:x:/../*/_event?value
+                        get-parent-widget:x:/-/*/*?value
+                        get-widget-property:x:/-/*/*?value
+                          _row
+
+                        /*
+                         * Need to find main datagrid root widget (table element) to pass into [_edit-item].
+                         */
+                        find-first-ancestor-widget:x:/../*/_event?value
+                          element:table
+
+                        /*
+                         * Forward evaluating all arguments, before we invoke [_edit-item] event, responsible for creating
+                         * the edit widget UI.
+                         */
+                        eval-x:x:/+/*
+                        sys42.widgets.datagrid._edit-item:x:/-2/*?value
+                          _hyperlink:x:/../*/_event?value
+                          _row:x:/../*/get-widget-property/[1,2]/*/*?value
+                          _column:x:/../*/get-widget-property/[0,1]/*/0?value
+                          _value:x:/../*/get-widget-property/[0,1]/*/1?value
+
+            /*
+             * Checking if we should use name or value as id. If a value is given, we use value, otherwise we use name.
+             */
+            _id
+            if:x:/..for-each/*/_dp/#?value
+              set:x:/./-?value
+                src:x:/..for-each/*/_dp/#?value
+            else
+              set:x:/./-2?value
+                src:x:/..for-each/*/_dp/#?name
+
+            /*
+             * Forward evaluating [parent] and [_row] before we create "tr" widget.
+             */
+            eval-x:x:/+/*(/parent|/_row)
+            create-widget
+              parent:x:/../*/find-widget/*?value
+              _row:x:/..for-each/*/_id?value
+              element:tr
+              widgets
+
+
+        /*
+         * Expects [_arg] being ID of datagrid, [_column], [_row] and [_hyperlink].
+         */
+        sys42.widgets.datagrid._edit-item
+
+          /*
+           * First we must make sure this is the tree requested by caller to toggle items within.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our datagrid.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Figuring our parent of hyperlink, which is "td" cell, such that we can create our textbox as a child widget of that widget.
+           */
+          get-parent-widget:x:/../*/_hyperlink?value
+
+          /*
+           * Creating a textbox for editing value of entity.
+           */
+          eval-x:x:/+/*(/parent|/value)
+          create-void-widget
+            element:input
+            type:text
+            parent:x:/../*/get-parent-widget/*/*?value
+            value:x:/../*/_value?value
+            onkeydown:@"return p5.widgets_datagrid_keyPress(event);"
+            oninit
+
+              /*
+               * Making sure textbox gets initial focus.
+               */
+              send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
+                :x:/../*/_event?value
+            onblur
+
+              /*
+               * Raising [_onesc] to delete textbox.
+               */
+              raise-widget-ajax-event:x:/../*/_event?value
+                _onesc
+            _onesc
+
+              /*
+               * Deleting textbox, and showing hyperlink again.
+               */
+              get-parent-widget:x:/../*/_event?value
+              delete-widget:x:/../*/_event?value
+              find-widget:x:/../*/get-parent-widget/*/*?value
+                element:a
+
+          /*
+           * Passing in JavaScript to detect ESC and carriage return.
+           */
+          include-javascript:@"
+p5.widgets_datagrid_keyPress = function (e) {
+  if(e.keyCode == 27) {
+    p5.$(e.target.id).raise('_onesc');
+    return false;
+  }
+}"
+
+
+        /*
+         * Expects [_arg] being ID of datagrid and [_columns] being column names.
+         */
+        sys42.widgets.datagrid._create-datagrid
+
+          /*
+           * First we must make sure this is the tree requested by caller to toggle items within.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our datagrid.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Creating column headers, by [apply]'ing [_columns] to [create-widget] invocation below.
+           */
+          apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
+            src:x:/../*/_columns/*
+            template
+              th
+                {innerValue}:x:?name
+
+          /*
+           * Forward evaluating [parent] and creating table "thead" element.
+           */
+          eval-x:x:/+/*/parent
+          create-widget
+            parent:x:/../*/_event?value
+            element:thead
+            widgets
+              tr
+                widgets
+
+          /*
+           * Forward evaluating [parent] and creating table "tbody" element.
+           */
+          eval-x:x:/+/*/parent
+          create-widget
+            parent:x:/../*/_event?value
+            element:tbody
+            oninit
+            widgets
+
+
+        /*
+         * Invoked when datagrid needs to retrieve children items for a specific datagrid node.
+         * The lambda for this event, is created from the [_on-get-items] callback supplied during creation of datagrid.
+         */
+        sys42.widgets.datagrid._get-items
+
+          /*
+           * First we must make sure this is the datagrid requested by caller to toggle items within.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our datagrid.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Notice, the rest of this Active Event is dynamically created according to arguments supplied when
+           * creating the datagrid, by invoking [add] to append user supplied lambda callback into body of this lambda.
+           * Hence, it might appear to be empty, but it is probably not in fact.
+           */

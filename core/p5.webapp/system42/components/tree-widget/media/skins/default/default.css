@@ -87,7 +87,7 @@
 .tree-widget-default li.tree-expanded > ul.tree-item-children > li.tree-item,
 .tree-widget-default > ul.tree-item-children > li.tree-item > ul.tree-item-children li.tree-expanded {
     background-image:url(tree-1.png), url(tree-2.png);
-    background-position:0 -60px, 0 0;
+    background-position:0 -100px, 0 0;
     background-repeat:no-repeat, repeat-y;
 }
 
@@ -176,7 +176,7 @@
  * Making sure a leaf node item has no icon, but rather a single horizontal line.
  */
 .tree-widget-default li.tree-expanded > ul.tree-item-children > li.tree-leaf a.tree-item-label {
-    background-position:0 -40px;
+    background-position:0 -80px;
 }
 
 
@@ -188,7 +188,7 @@
 .tree-widget-default a.tree-item-label {
     padding-left:16px;
     background-image:url(tree-1.png);
-    background-position:0 0;
+    background-position:0 -40px;
     background-repeat:no-repeat;
     text-decoration:none;
     display:block;
@@ -200,7 +200,7 @@
  * Overriding the above "+" style, with a "-" icon for expanded items.
  */
 .tree-widget-default li.tree-expanded > a.tree-item-label {
-    background-position:0 -20px;
+    background-position:0 -60px;
 }
 
 
@@ -249,11 +249,11 @@
  * give room for the label's text that follows.
  */
 .tree-widget-default a.tree-item-label .glyphicon {
-    width:18px;
+    width:16px;
     height:14px;
     display:inline-block;
-    background-image:url(tree-folders.png);
-    margin-right:7px;
+    background-image:url(tree-1.png);
+    margin-right:3px;
     margin-top:2px;
     margin-bottom:-2px;
     animation-name:tree-item-animate-icon;
@@ -262,7 +262,7 @@
 }
 
 .tree-widget-default a.tree-item-label .glyphicon-folder-open {
-    background-position:0 -14px;
+    background-position:0 -20px;
 }
 
 

@@ -52,5 +52,12 @@ TODO before release
 
 * Minify JS and CSS upon release build.
 
+* Create [lambda2xml] and [lambda2csv] events.
+
+* Unit tests for XML/HTML and CSV files.
+
+* Clean up all of the above conversion projects.
+
+
 
 

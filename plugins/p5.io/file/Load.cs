@@ -98,8 +98,13 @@ namespace p5.io.file
 
                     // Automatically converting to Hyperlambda before returning
                     args.Add (fileName, null, Utilities.Convert<Node> (context, fileContent).Children);
-                }
-                else {
+                } else if (fileName.EndsWith (".csv") && args.GetExChildValue ("convert", context, true)) {
+
+                    // Automatically converting to Hyperlambda before returning
+                    var csvLambda = new Node ("", fileContent);
+                    context.Raise ("csv2lambda", csvLambda);
+                    args.Add (fileName, null, csvLambda["result"].Children);
+                } else {
 
                     // Adding file content as string
                     args.Add (fileName, fileContent);
