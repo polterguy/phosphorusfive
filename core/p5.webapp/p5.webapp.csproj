@@ -618,6 +618,9 @@
     <Content Include="system42\components\datagrid-widget\startup.hl" />
     <Content Include="system42\components\datagrid-widget\README.md" />
     <Content Include="system42\components\datagrid-widget\startup\sys42.widgets.datagrid.hl" />
+    <Content Include="system42\components\csv-helpers\README.md" />
+    <Content Include="system42\components\csv-helpers\startup\sys42.csv.import.hl" />
+    <Content Include="system42\components\csv-helpers\startup.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\css\bootstrap.css.map" />
     <None Include="system42\components\bootstrap\css\bootstrap-theme.css.map" />

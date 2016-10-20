@@ -1,0 +1,57 @@
+﻿
+/*
+ * Imports the given [_arg] CSV file, and puts into p5.data database.
+ */
+create-event:sys42.csv.import
+
+  /*
+   * Loading CSV file.
+   */
+  load-file:~/documents/private/sample.csv
+
+  /*
+   * Making sure filename is type of object to [insert-data].
+   */
+  split:x:/../*/load-file/*?name
+    =:/
+  add:x:/../*/for-each/*/insert-data
+    src:x:/../*/split/0/-?name
+
+  /*
+   * Adding column headers to [insert-data].
+   */
+  add:x:/../*/for-each/*/insert-data/*
+    src:x:/../*/load-file/0/0/*?name
+
+  /*
+   * Removing first row (column headers).
+   */
+  set:x:/../*/load-file/0/0
+
+  /*
+   * Looping through each row in file.
+   */
+  for-each:x:/../*/load-file/*/*
+
+    /*
+     * Looping through each column in row.
+     */
+    _no:int:0
+    while:x:/-?value
+      <:x:/..for-each/*/insert-data/*/*?count
+
+      /*
+       * Settings currently iterated column value for currently iterated row.
+       */
+      set:x:/..for-each/*/insert-data/*/{0}?value
+        :x:/..for-each/*/_no?value
+        src:x:/..for-each/*/_dp/#/{0}?name
+          :x:/..for-each/*/_no?value
+
+      /*
+       * Incrementing [while] iteration integer.
+       */
+      set:x:/..for-each/*/_no?value
+        +:x:/..for-each/*/_no?value
+          _:int:1
+    insert-data
