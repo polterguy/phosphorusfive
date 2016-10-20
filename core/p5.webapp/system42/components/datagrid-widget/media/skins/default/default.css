@@ -26,42 +26,51 @@
 
 
 /*
- * First the styles for the main datagrid div HTML element.
+ * Main datagrid class.
  */
-
-
-/*
- * Main datagrid classes.
- */
-table.datagrid-widget-default {
+.datagrid-widget-default {
     width:100%;
-    border-collapse: collapse;
+    background-color:rgba(0,0,0,.05);
+    border-radius:10px;
+    padding-top:25px;
+    padding-left:15px;
+    padding-right:15px;
 }
 
 
 /*
- * Table rows' and headers cells.
+ * Main table class.
  */
-table.datagrid-widget-default tr th,
-table.datagrid-widget-default tr td {
+.datagrid-widget-default table {
+    border-collapse:collapse;
+    width:100%;
+}
+
+
+/*
+ * Commonalities between cells in table headers and rows.
+ */
+.datagrid-widget-default th,
+.datagrid-widget-default td {
     text-align:left;
     padding:0;
+    white-space:nowrap;
 }
 
 
 /*
- * Table rows' header cells.
+ * Cells in table header.
  */
-table.datagrid-widget-default tr th {
+.datagrid-widget-default th {
     padding-bottom:5px;
     padding-left:10px;
 }
 
 
 /*
- * Table rows' cells.
+ * Cells in table rows.
  */
-table.datagrid-widget-default tr td {
+.datagrid-widget-default td {
     border-top:solid 1px rgba(0,0,0,.05);
     position:relative;
 }
@@ -70,58 +79,112 @@ table.datagrid-widget-default tr td {
 /*
  * Table rows when hovered.
  */
-table.datagrid-widget-default tr:hover td {
+.datagrid-widget-default tr:hover td {
     background-color:rgba(0,0,0,.03);
 }
 
 
 /*
- * Table cells hyperlinks (content).
+ * Table cells content (hyperlinks).
  */
-table.datagrid-widget-default tr td a {
+.datagrid-widget-default td a {
     text-decoration:none;
     color:rgba(0,0,128,1);
     display:block;
-    padding-top:5px;
-    padding-bottom:5px;
-    padding-left:10px;
-    padding-right:10px;
+    padding:5px 10px;
 }
 
 
 /*
- * Table cells hyperlinks when hovered.
+ * Table cells content (hyperlinks) when hovered, or having focus.
  */
-table.datagrid-widget-default tr td a:hover,
-table.datagrid-widget-default tr td a:focus,
-table.datagrid-widget-default tr td a:active {
+.datagrid-widget-default td a:hover,
+.datagrid-widget-default td a:focus {
     background-color:rgba(0,0,0,.07);
 }
 
 
 /*
- * Table cells hyperlkinks (content) when hidden.
+ * Editing textbox of cells.
  */
-table.datagrid-widget-default tr td a.invisible {
-    display:none;
-}
-
-
-/*
- * Editing textbox of cell.
- */
-table.datagrid-widget-default tr td input[type=text] {
+.datagrid-widget-default td input[type=text] {
     position:absolute;
     top:0;
     left:0;
     z-index:1;
-    padding:0;
-    padding-left:10px;
-    padding-right:10px;
-    padding-top:5px;
-    padding-bottom:5px;
+    padding:5px 10px;
     border:0;
     width:100%;
+    box-sizing:border-box;
+}
+
+
+/*
+ * Paging element.
+ */
+.datagrid-widget-default .datagrid-pager {
+    text-align:right;
+    padding-top:15px;
+    padding-right:25px;
+    padding-bottom:15px;
+    background-color:rgba(0,0,0,.06);
+    border-radius:0 0 5px 5px;
+    border-top:solid 1px rgba(0,0,0,.1);
+    font-size:1.4em;
+    margin-left:-15px;
+    margin-right:-15px;
+    margin-top:25px;
+}
+
+
+/*
+ * Paging buttons.
+ */
+.datagrid-widget-default .datagrid-pager a {
+    display:inline-block;
+    width:80px;
+    border:solid 1px rgba(0,0,0,.2);
+    text-align:center;
+    background-color:#fafafa;
+    text-decoration:none;
+    color:rgba(0,0,0,.3);
+}
+
+
+/*
+ * Paging buttons when hovered, being active, or having focus.
+ */
+.datagrid-widget-default .datagrid-pager a:hover,
+.datagrid-widget-default .datagrid-pager a:focus,
+.datagrid-widget-default .datagrid-pager a:active {
+    background-color:#f0f0f0;
+}
+
+
+/*
+ * Paging buttons when disabled.
+ */
+.datagrid-widget-default .datagrid-pager a.disabled {
+    pointer-events:none;
+    color:rgba(0,0,0,.1);
+}
+
+
+/*
+ * First paging button.
+ */
+.datagrid-widget-default .datagrid-pager a:first-child {
+    border-radius:7px 0 0 7px;
+    border-right:0;
+}
+
+
+/*
+ * Last paging button.
+ */
+.datagrid-widget-default .datagrid-pager a:last-child {
+    border-radius:0 7px 7px 0;
+    border-left:solid 1px rgba(0,0,0,.1);
 }
 
 
