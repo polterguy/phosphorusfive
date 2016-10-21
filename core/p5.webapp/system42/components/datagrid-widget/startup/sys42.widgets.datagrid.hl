@@ -38,12 +38,22 @@ create-event:sys42.widgets.datagrid
 
 
   /*
+   * Adding [_on-select-items] callback into [sys42.widgets.datagrid.select-items].
+   */
+  add:x:/../*/return/*/*/events/*/sys42.widgets.datagrid.select-items/*/_eval
+    src:x:/../*/_options/*/_on-select-items/*
+
+
+  /*
    * Checking if caller provided an [_on-edit-item] callback, and if so, making sure we use it, by adding it
    * into [sys42.widgets.datagrid._edit-item-callback].
    */
   if:x:/../*/_options/*/_on-edit-item/*
     add:x:/../*/return/*/*/events/*/sys42.widgets.datagrid._edit-item-callback
       src:x:/../*/_options/*/_on-edit-item/*
+  else
+    add:x:/../*/return/*
+      src:"_no-edit:true"
 
 
   /*
@@ -449,12 +459,12 @@ create-event:sys42.widgets.datagrid
 
 
         /*
-         * Expects [_arg] being ID of datagrid and [_items] being items to append to datagrid.
+         * Expects [_arg] being ID of datagrid and [_items] being items that are selected.
          */
-        sys42.widgets.datagrid._append-items
+        sys42.widgets.datagrid.select-items
 
           /*
-           * First we must make sure this is the tree requested by caller to toggle items within.
+           * First we must make sure this is the datagrid requested by caller.
            */
           if:x:/../*/_arg?value
             !=:x:/../*/_event?value
@@ -466,10 +476,115 @@ create-event:sys42.widgets.datagrid
             return
 
           /*
-           * Finds "tbody" widget in datagrid, and loops through all [_items] given, creating a "tr" widget for each item.
+           * Finding all previously selected items, and "un-selecting" them.
+           */
+          find-widget-like:x:/../*/_event?value
+            element:tr
+            class:selected
+          if:x:/-/*?value
+            sys42.delete-css-classes:x:/./-/*?value
+              _class:selected
+
+          /*
+           * Making sure all [_items] becomes "selected".
+           */
+          for-each:x:/../*/_items/*?name
+            find-widget-like:x:/../*/_event?value
+              _row:x:/..for-each/*/_dp?value
+            sys42.add-css-classes:x:/-/*?value
+              _class:selected
+
+          /*
+           * Isolating our "user callback lambda" for clarity.
+           */
+          add:x:/+
+            src:x:/../*/_items
+          _eval
+          eval:x:/-
+
+
+        /*
+         * Expects [_arg] being ID of datagrid and [_items] being items to append to datagrid.
+         */
+        sys42.widgets.datagrid._append-items
+
+          /*
+           * First we must make sure this is the datagrid requested by caller.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our datagrid.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Finds "tbody" widget in datagrid for later references, since we'll need to make sure "tr" widgets are children of "tbody".
            */
           find-widget:x:/../*/_event?value
             element:tbody
+
+          /*
+           * Finds root datagrid, to see if it contains [_no-edit] with value of "true", such that we can disable editing of items.
+           */
+          find-widget:x:/../*/_event?value
+            _root-datagrid
+          get-widget-property:x:/-/*?value
+            _no-edit
+          if:x:/-/*/*?value.bool
+
+            /*
+             * Removing "a" hyperlink, and injecting a "span" instead, since editing of items is disabled.
+             */
+            set:x:/../*/for-each/*/apply/*/template/*/*/*
+            add:x:/../*/for-each/*/apply/*/template/*/*
+              src
+                span
+                  {innerValue}:x:?value
+
+            /*
+             * Since in/place editing is disabled, we turn on "row selection", such that it becomes accessible for screen readers and such.
+             */
+            add:x:/../*/for-each/*/create-widget
+              src
+                role:button
+                class:clickable
+                tabindex:0
+                onkeypress:@"return p5.sys42_widgets_datagrid_on_row_keypress(event);"
+                onclick
+
+                  /*
+                   * Finding main datagrid widget, which is necessary to pass into [sys42.widgets.datagrid.select-row] as [_arg].
+                   */
+                  find-first-ancestor-widget:x:/../*/_event?value
+                    _root-datagrid
+
+                  /*
+                   * Figuring out "row id", and passsing it into [select-rows].
+                   */
+                  get-widget-property:x:/../*/_event?value
+                    _row
+                  add:x:/+/*
+                    src:x:/../*/get-widget-property/*/*?value
+                  sys42.widgets.datagrid.select-items:x:/../*/find-first-ancestor-widget/*?value
+                    _items
+
+            /*
+             * Making sure we include the necessary JavaScript to select row with carriage return.
+             */
+            include-javascript:@"
+p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
+  if(e.keyCode == 13) {
+    p5.$(e.target.id).raise('onclick');
+    return false;
+  }
+}"
+
+          /*
+           * Loops through each item in [_items] collection, creating a "tr" widget for each.
+           */
           for-each:x:/../*/_items/*
 
             /*
@@ -534,7 +649,7 @@ create-event:sys42.widgets.datagrid
              */
             eval-x:x:/+/*(/parent|/_row)
             create-widget
-              parent:x:/../*/find-widget/*?value
+              parent:x:/../*/find-widget/[0,1]/*?value
               _row:x:/..for-each/*/_id?value
               element:tr
               widgets

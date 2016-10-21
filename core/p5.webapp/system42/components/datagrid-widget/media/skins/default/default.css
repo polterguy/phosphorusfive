@@ -68,6 +68,22 @@
 
 
 /*
+ * Making sure a clickable "tr" row have visual clues demonstrating that fact.
+ */
+.datagrid-widget-default tr.clickable {
+    cursor:pointer;
+}
+
+
+/*
+ * Making sure a selected row ("tr") have visual clues demonstrating that fact.
+ */
+.datagrid-widget-default tr.selected {
+    background-color:rgba(0,0,0,.05);
+}
+
+
+/*
  * Cells in table header.
  */
 .datagrid-widget-default th {
@@ -94,11 +110,21 @@
 
 
 /*
- * Table cells content (hyperlinks).
+ * Table cells content (hyperlinks) when editing is enabled.
  */
 .datagrid-widget-default td a {
     text-decoration:none;
     color:rgba(0,0,128,1);
+    display:block;
+    padding:5px 10px;
+}
+
+
+/*
+ * Table cells content (span) when editing is disabled.
+ */
+.datagrid-widget-default td span {
+    color:rgba(0,0,0,.7);
     display:block;
     padding:5px 10px;
 }
