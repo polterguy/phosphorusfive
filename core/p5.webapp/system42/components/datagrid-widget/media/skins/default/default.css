@@ -89,6 +89,7 @@
 .datagrid-widget-default th {
     padding-bottom:5px;
     padding-left:10px;
+    text-transform:capitalize;
 }
 
 

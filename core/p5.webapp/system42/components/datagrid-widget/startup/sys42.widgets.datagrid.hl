@@ -31,6 +31,14 @@ create-event:sys42.widgets.datagrid
 
 
   /*
+   * Making sure user provided either [_on-edit-item] or [_on-select-items], and not both!
+   */
+  if:x:/../*/_options/*/_on-select-items
+    and:x:/../*/_options/*/_on-edit-item
+    throw:Sorry, either provide [_on-edit-item] or [_on-select-items] and not both!
+
+
+  /*
    * Adding [_on-get-items] callback into [sys42.widgets.datagrid._get-items].
    */
   add:x:/../*/return/*/*/events/*/sys42.widgets.datagrid._get-items

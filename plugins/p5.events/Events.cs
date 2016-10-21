@@ -159,7 +159,7 @@ namespace p5.events
             // Looping through each Active Event from IEnumerable
             foreach (var idx in source) {
 
-                if (!isNative && (idx.StartsWith (".") || idx.StartsWith ("_")))
+                if (!isNative && (idx.StartsWith (".") || idx.StartsWith ("_") || idx.Contains ("._")))
                     continue;
 
                 // Checking to see if we have any filter

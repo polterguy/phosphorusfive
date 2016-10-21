@@ -50,7 +50,7 @@ create-event:sys42.widgets.codemirror
    * In addition, we remove all events that contains "._" somehow, since they're considered "private events",
    * or "internal events".
    */
-  set:x:/../*/vocabulary/*(/"=-"|/"=!~"|/"=!="|/=%|/=*|/"=/"|/"=^"|/"=\\~"|/=+|/=<|/=<=|/==|/=>|/=>=|/=~._)
+  set:x:/../*/vocabulary/*(/"=-"|/"=!~"|/"=!="|/=%|/=*|/"=/"|/"=^"|/"=\\~"|/=+|/=<|/=<=|/==|/=>|/=>=)
   join:x:/../*/vocabulary/*?value
     sep:,
     wrap:@""""
