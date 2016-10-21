@@ -22,22 +22,22 @@ create-event:sys42.widgets.codemirror
    * Making sure necessary JavaScript files are included
    */
   include-javascript-file
-    /system42/components/codemirror-widget/media/lib/codemirror.js
-    /system42/components/codemirror-widget/media/addon/selection/active-line.js
-    /system42/components/codemirror-widget/media/addon/display/placeholder.js
-    /system42/components/codemirror-widget/media/addon/display/fullscreen.js
-    /system42/components/codemirror-widget/media/addon/hint/show-hint.js
-  include-javascript-file:/system42/components/codemirror-widget/media/mode/{0}/{0}.min.js
+    /system42/components/common-widgets/codemirror-widget/media/lib/codemirror.js
+    /system42/components/common-widgets/codemirror-widget/media/addon/selection/active-line.js
+    /system42/components/common-widgets/codemirror-widget/media/addon/display/placeholder.js
+    /system42/components/common-widgets/codemirror-widget/media/addon/display/fullscreen.js
+    /system42/components/common-widgets/codemirror-widget/media/addon/hint/show-hint.js
+  include-javascript-file:/system42/components/common-widgets/codemirror-widget/media/mode/{0}/{0}.min.js
     :x:/../*/_options/*/_mode?value
 
   /*
    * Making sure necessary Stylesheet files are included
    */
   include-stylesheet-file
-    /system42/components/codemirror-widget/media/lib/codemirror.css
-    /system42/components/codemirror-widget/media/addon/display/fullscreen.css
-    /system42/components/codemirror-widget/media/addon/hint/show-hint.css
-  include-stylesheet-file:/system42/components/codemirror-widget/media/theme/{0}.css
+    /system42/components/common-widgets/codemirror-widget/media/lib/codemirror.css
+    /system42/components/common-widgets/codemirror-widget/media/addon/display/fullscreen.css
+    /system42/components/common-widgets/codemirror-widget/media/addon/hint/show-hint.css
+  include-stylesheet-file:/system42/components/common-widgets/codemirror-widget/media/theme/{0}.css
     :x:/../*/_options/*/_theme?value
 
   /*
@@ -69,7 +69,7 @@ mode:'hyperlambda',
 theme:'paraiso',
 lineNumbers:true,
 styleActiveLine:true,
-path:'/system42/components/codemirror-widget/media/',
+path:'/system42/components/common-widgets/codemirror-widget/media/',
 autofocus:{1},
 tabSize:2,
 indentAuto:true,

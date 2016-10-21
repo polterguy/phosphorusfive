@@ -58,6 +58,8 @@ TODO before release
 
 * Clean up all of the above conversion projects.
 
+* Make sure [vocabulary] yields also widget lambda events.
+
 
 
 
