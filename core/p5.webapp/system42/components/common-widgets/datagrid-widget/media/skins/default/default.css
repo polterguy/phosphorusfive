@@ -132,6 +132,26 @@
 
 
 /*
+ * Custom buttons inside of cells.
+ */
+.datagrid-widget-default td button {
+    background-color:rgba(250,250,250,1);
+    border:solid 1px rgba(0,0,0,.1);
+    border-radius:5px;
+    padding-left:20px;
+    padding-right:20px;
+}
+
+
+/*
+ * Custom buttons inside of cells when hovered.
+ */
+.datagrid-widget-default td button:hover {
+    background-color:rgba(220,220,220,1);
+}
+
+
+/*
  * Table cells content (hyperlinks) when hovered, or having focus.
  */
 .datagrid-widget-default td a:hover,

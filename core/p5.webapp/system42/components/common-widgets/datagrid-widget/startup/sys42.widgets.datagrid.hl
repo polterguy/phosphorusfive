@@ -541,6 +541,78 @@ create-event:sys42.widgets.datagrid
 
 
         /*
+         * Returns the row id from a given widget inside of that row.
+         */
+        sys42.widgets.datagrid.get-selected-items
+
+          /*
+           * First we must make sure this is the datagrid requested by caller.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our datagrid.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Finding all "tr" widgets with the "selected" class.
+           */
+          find-widget-like:x:/../*/_arg?value
+            element:tr
+            class:selected
+
+          /*
+           * Looping through these widgets to retrieve their [_row].
+           */
+          for-each:x:/-/*
+            get-widget-property:x:/..for-each/*/_dp/#?value
+              _row
+            add:x:/../*/return/*/_items
+              src:x:/..for-each/*/get-widget-property/*/*?value
+          return
+            _items
+
+
+        /*
+         * Returns the row id from a given widget inside of that row.
+         */
+        sys42.widgets.datagrid.get-row-id
+
+          /*
+           * Sanity check!
+           */
+          if:x:/../*/_arg?value
+            not
+            throw:You have to supply a widget ID to this event!
+
+          /*
+           * Verifying that this is our datagrid.
+           */
+          find-first-ancestor-widget:x:/../*/_arg?value
+            _datagrid-page
+          if:x:/-/*?value
+            !=:x:/../*/_event?value
+
+            /*
+             * Not our datagrid, returning early.
+             */
+            return
+
+          /*
+           * Finding "tr" widget from given widget, and returning its [_row].
+           */
+          find-first-ancestor-widget:x:/../*/_arg?value
+            element:tr
+            _row
+          get-widget-property:x:/-/*?value
+            _row
+          return:x:/-/*/*?value
+
+
+        /*
          * Expects [_arg] being ID of datagrid and [_items] being items to append to datagrid.
          */
         sys42.widgets.datagrid._append-items
@@ -628,15 +700,30 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
              * Lambda object for [apply] determining if this is an editable hyperlink, or a non-editable span.
              */
             _apply-eval
-              _sys42.windows.show-lambda:x:/..
               if:x:/../*/_dn/#/*/_edit
                 and:x:/../*/_dn/#/*/_edit?value.bool
                   =:bool:false
+
+                /*
+                 * Non-editable item, returning "span" widget with static content.
+                 */
                 eval-x:x:/+/*/*/innerValue
                 return
                   span
                     innerValue:x:/../*/_dn/#?value
+              else-if:x:/../*/_dn/#/*/_widgets
+
+                /*
+                 * Custom column with widget content.
+                 */
+                add:x:/+
+                  src:x:/../*/_dn/#/*/_widgets/*
+                return
               else
+
+                /*
+                 * Editable item, returning "a" (hyperlink) widget with [onclick] allowing for editing cell.
+                 */
                 eval-x:x:/+/*/*(/innerValue|/_column)
                 return
                   a
