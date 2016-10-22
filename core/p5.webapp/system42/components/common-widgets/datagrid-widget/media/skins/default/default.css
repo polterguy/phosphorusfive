@@ -77,10 +77,25 @@
 
 
 /*
+ * Animation for making rows selected.
+ */
+@keyframes datagrid-widget-default-row-selected {
+    0% {
+        background-color:yellow;
+    }
+    100% {
+        background-color:rgba(0,0,0,.05);
+    }
+}
+
+
+/*
  * Making sure a selected row ("tr") have visual clues demonstrating that fact.
  */
 .datagrid-widget-default tr.selected {
-    background-color:rgba(0,0,0,.05);
+    animation-name:datagrid-widget-default-row-selected;
+    animation-fill-mode:forwards;
+    animation-duration:.3s;
 }
 
 
@@ -192,6 +207,21 @@
 
 
 /*
+ * Animation of editing cell textboxes.
+ */
+@keyframes datagrid-widget-default-edit-animation {
+    0% {
+        opacity:0;
+        background-color:yellow;
+    }
+    100% {
+        opacity:1;
+        background-color:white;
+    }
+}
+
+
+/*
  * Editing textbox of cells.
  */
 .datagrid-widget-default td input[type=text] {
@@ -203,6 +233,9 @@
     border:0;
     width:100%;
     box-sizing:border-box;
+    animation-name:datagrid-widget-default-edit-animation;
+    animation-fill-mode:forwards;
+    animation-duration:.3s;
 }
 
 
