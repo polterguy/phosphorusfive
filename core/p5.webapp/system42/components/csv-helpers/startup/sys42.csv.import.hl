@@ -4,10 +4,14 @@
  */
 create-event:sys42.csv.import
 
+  if:x:/../*/_arg?count
+    !=:int:1
+    throw:We can only import one CSV file at the time!
+
   /*
    * Loading CSV file.
    */
-  load-file:~/documents/private/sample.csv
+  load-file:x:/../*/_arg?value
 
   /*
    * Making sure filename is type of object to [insert-data].
