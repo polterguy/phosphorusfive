@@ -224,12 +224,43 @@ create-event:sys42.widgets.datagrid
             return
 
           /*
-           * Retrieving current page and number of items per page.
+           * Retrieving current page, number of items per page, and query (filter).
            */
           get-widget-property:x:/../*/_event?value
             _root-datagrid
             _no-items
             _query
+
+          /*
+           * Checking if we have a zero or negative value in current page, at which we disable previous button.
+           */
+          if:x:/../*/get-widget-property/*/*/_root-datagrid?value.int
+            <=:int:0
+            find-widget:x:/../*/_event?value
+              innerValue:&lt;
+              element:a
+            sys42.add-css-classes:x:/-/*?value
+              _class:disabled
+
+            /*
+             * Checking if value was negative, which might occur if user clicks many times, before Ajax requests
+             * are finished, at which we set it to zero, and return early.
+             */
+            if:x:/../*/get-widget-property/*/*/_root-datagrid?value.int
+              <:int:0
+              set-widget-property:x:/../*/_event?value
+                _root-datagrid:0
+              return:bool:false
+          else
+
+            /*
+             * Enabling previous button.
+             */
+            find-widget:x:/../*/_event?value
+              innerValue:&lt;
+              element:a
+            sys42.delete-css-classes:x:/-/*?value
+              _class:disabled
 
           /*
            * Multiplying current page number with number of items, and setting [_start] argument
@@ -263,6 +294,40 @@ create-event:sys42.widgets.datagrid
             _end
 
           /*
+           * Checking if we're at the end of our dataset.
+           */
+          if:x:/../*/sys42.widgets.datagrid._get-items/*/_items/*?count
+            !=:x:/../*/get-widget-property/*/1?value.int
+
+            /*
+             * No more items, disabling next button.
+             */
+            find-widget:x:/../*/_event?value
+              innerValue:&gt;
+              element:a
+            sys42.add-css-classes:x:/-/*?value
+              _class:disabled
+
+            /*
+             * Checking if this was an empty result set, which might occur if user clicks button several times, or 
+             * number of items is exact modulo of page size.
+             * If it is empty, we do not databind the grid again, since that would create an empty page.
+             */
+            if:x:/../*/sys42.widgets.datagrid._get-items/*/_items/*?count
+              =:int:0
+              return:bool:false
+          else
+
+            /*
+             * Enabling next button.
+             */
+            find-widget:x:/../*/_event?value
+              innerValue:&gt;
+              element:a
+            sys42.delete-css-classes:x:/-/*?value
+              _class:disabled
+
+          /*
            * Clearing out current items from datagrid (tbody widget)
            */
           find-widget:x:/../*/_event?value
@@ -277,10 +342,9 @@ create-event:sys42.widgets.datagrid
           sys42.widgets.datagrid._append-items:x:/../*/_event?value
 
           /*
-           * Updating current page to property of datagrid root widget.
+           * Returning success to caller, since datagrid was actually databound.
            */
-          set-widget-property:x:/../*/_event?value
-            _root-datagrid:x:/../*/get-widget-property/*/*/_root-datagrid?value
+          return:bool:true
 
 
         /*
@@ -317,83 +381,15 @@ create-event:sys42.widgets.datagrid
               _:1
 
           /*
-           * Checking if we're at the beginning of our dataset.
-           * If user clicks several times in a row, we might theoretically come in her, with a negative value.
-           */
-          if:x:/../*/get-widget-property/*/*/_root-datagrid?value
-            <:int:0
-            return
-
-          /*
-           * Multiplying current page number (decremented by one) with number of items, and setting [_start] argument
-           * of [sys42.widgets.datagrid._get-items] invocation.
-           */
-          set:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value
-            *:x:/../*/get-widget-property/*/*/_root-datagrid?value
-              _:x:/../*/get-widget-property/*/*/_no-items?value
-
-          /*
-           * Adding number of items to [_start] and setting [_end] argument of [sys42.widgets.datagrid._get-items] invocation.
-           */
-          set:x:/../*/sys42.widgets.datagrid._get-items/*/_end?value
-            +:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value
-              _:x:/../*/get-widget-property/*/*/_no-items?value
-
-          /*
-           * Checking if we have a query
-           */
-          if:x:/../*/get-widget-property/*/2?value
-            eval-x:x:/+/*/*
-            add:x:/../*/sys42.widgets.datagrid._get-items
-              src
-                _query:x:/../*/get-widget-property/*/2?value
-
-          /*
-           * Retrieving previous page's items.
-           */
-          sys42.widgets.datagrid._get-items:x:/../*/_event?value
-            _start
-            _end
-
-          /*
-           * Clearing out current items from datagrid (tbody widget)
-           */
-          find-widget:x:/../*/_event?value
-            element:tbody
-          clear-widget:x:/-/*?value
-
-          /*
-           * Applying the [_items] returned above to databind invocation.
-           */
-          add:x:/+
-            src:x:/../*/sys42.widgets.datagrid._get-items/*/_items
-          sys42.widgets.datagrid._append-items:x:/../*/_event?value
-
-          /*
            * Updating current page to property of datagrid root widget.
            */
           set-widget-property:x:/../*/_event?value
             _root-datagrid:x:/../*/get-widget-property/*/*/_root-datagrid?value
 
           /*
-           * Checking if we're at the beginning of our dataset, and if so, we disabled the previous button.
+           * Databinding grid.
            */
-          if:x:/../*/get-widget-property/*/*/_root-datagrid?value.int
-            =:int:0
-            find-widget-like:x:/../*/_event?value
-              element:a
-              innerValue:&lt;
-            sys42.add-css-classes:x:/-/*?value
-              _class:disabled
-
-          /*
-           * Enabling the next button.
-           */
-          find-widget-like:x:/../*/_event?value
-            element:a
-            innerValue:&gt;
-          sys42.delete-css-classes:x:/-/*?value
-            _class:disabled
+          sys42.widgets.datagrid.databind:x:/../*/_event?value
 
 
         /*
@@ -430,94 +426,22 @@ create-event:sys42.widgets.datagrid
               _:1
 
           /*
-           * Multiplying current page number (incremented by one) with number of items, and setting [_start] argument
-           * of [sys42.widgets.datagrid._get-items] invocation.
-           */
-          set:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value
-            *:x:/../*/get-widget-property/*/*/_root-datagrid?value
-              _:x:/../*/get-widget-property/*/*/_no-items?value
-
-          /*
-           * Adding number of items to [_start] and setting [_end] argument of [sys42.widgets.datagrid._get-items] invocation.
-           */
-          set:x:/../*/sys42.widgets.datagrid._get-items/*/_end?value
-            +:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value
-              _:x:/../*/get-widget-property/*/*/_no-items?value
-
-          /*
-           * Checking if we have a query
-           */
-          if:x:/../*/get-widget-property/*/2?value
-            eval-x:x:/+/*/*
-            add:x:/../*/sys42.widgets.datagrid._get-items
-              src
-                _query:x:/../*/get-widget-property/*/2?value
-
-          /*
-           * Retrieving next page's items.
-           */
-          sys42.widgets.datagrid._get-items:x:/../*/_event?value
-            _start
-            _end
-
-          /*
-           * Checking if we're at the end of our dataset.
-           * If there are exactly n number of items, where n is modulo of [_no-items] property when created, we might get an 
-           * "empty" result set above.
-           * This might also happen if user clicks button several times, not waiting for the previous HTTP request to finish.
-           */
-          if:x:/../*/sys42.widgets.datagrid._get-items/*/_items/*?count
-            =:int:0
-
-            /*
-             * No more items, disabling next button.
-             */
-            find-widget:x:/../*/_event?value
-              innerValue:&gt;
-              element:a
-            sys42.add-css-classes:x:/-/*?value
-              _class:disabled
-            return
-
-          /*
-           * Clearing out current items from datagrid (tbody widget)
-           */
-          find-widget:x:/../*/_event?value
-            element:tbody
-          clear-widget:x:/-/*?value
-
-          /*
-           * Applying the [_items] returned above to databind invocation.
-           */
-          add:x:/+
-            src:x:/../*/sys42.widgets.datagrid._get-items/*/_items
-          sys42.widgets.datagrid._append-items:x:/../*/_event?value
-
-          /*
            * Updating current page to property of datagrid root widget.
            */
           set-widget-property:x:/../*/_event?value
             _root-datagrid:x:/../*/get-widget-property/*/*/_root-datagrid?value
 
           /*
-           * Enabling previous button.
+           * Databinding grid, and if it was unsuccessful, we decrement current page back to what it was again.
            */
-          find-widget-like:x:/../*/_event?value
-            class:disabled
-            element:a
-          sys42.delete-css-classes:x:/-/*?value
-            _class:disabled
-
-          /*
-           * Checking if we're at the end of our dataset, and if so, we disabled the next button.
-           */
-          if:x:/../*/sys42.widgets.datagrid._get-items/*/_items/*?count
-            !=:x:/../*/get-widget-property/*/1?value.int
-            find-widget-like:x:/../*/_event?value
-              element:a
-              innerValue:&gt;
-            sys42.add-css-classes:x:/-/*?value
-              _class:disabled
+          if
+            sys42.widgets.datagrid.databind:x:/../*/_event?value
+            not
+            set:x:/../*/get-widget-property/*/*/_root-datagrid?value
+              -:x:/../*/get-widget-property/*/*/_root-datagrid?value.int
+                _:1
+            set-widget-property:x:/../*/_event?value
+              _root-datagrid:x:/../*/get-widget-property/*/*/_root-datagrid?value
 
 
         /*
