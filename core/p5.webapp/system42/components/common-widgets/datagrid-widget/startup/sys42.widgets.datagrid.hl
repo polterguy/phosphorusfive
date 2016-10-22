@@ -79,6 +79,15 @@ create-event:sys42.widgets.datagrid
 
 
   /*
+   * Checking if user wants to disabled the "pager footer" widget.
+   */
+  if:x:/../*/_options/*/_show-pager
+    and:x:/../*/_options/*/_show-pager?value.bool
+      =:bool:false
+    set:x:/../*/return/*/container/*/widgets/*/container/[1,2]
+
+
+  /*
    * Returning the datagrid widget back to caller.
    */
   return

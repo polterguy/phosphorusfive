@@ -44,6 +44,7 @@
 .datagrid-widget-default .datagrid-wrappper {
     width:100%;
     overflow-x:auto;
+    padding-bottom:25px;
 }
 
 
@@ -215,7 +216,7 @@
     border-top:solid 1px rgba(0,0,0,.1);
     margin-left:-15px;
     margin-right:-15px;
-    margin-top:25px;
+    margin-top:0;
     white-space:nowrap;
 }
 
