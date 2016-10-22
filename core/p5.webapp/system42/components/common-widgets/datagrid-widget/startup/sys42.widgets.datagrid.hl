@@ -232,6 +232,20 @@ create-event:sys42.widgets.datagrid
             _query
 
           /*
+           * Storing currently selected items, if there are any, to make sure we can make them selected again, 
+           * after having databound the grid again.
+           */
+          _selected
+          find-widget-like:x:/../*/_event?value
+            element:tr
+            class:selected
+          if:x:/-/*?value
+            get-widget-property:x:/../*/find-widget-like/*?value
+              _row
+            add:x:/../*/_selected
+              src:x:/./-/*/*?value
+
+          /*
            * Checking if we have a zero or negative value in current page, at which we disable previous button.
            */
           if:x:/../*/get-widget-property/*/*/_datagrid-page?value.int
@@ -344,6 +358,15 @@ create-event:sys42.widgets.datagrid
           add:x:/+
             src:x:/../*/sys42.widgets.datagrid._get-items/*/_items
           sys42.widgets.datagrid._append-items:x:/../*/_event?value
+
+          /*
+           * Making sure we set all previously selected items to selected again.
+           */
+          for-each:x:/../*/_selected/*?name
+            find-widget:x:/../*/_event?value
+              _row:x:/..for-each/*/_dp?value
+            sys42.add-css-classes:x:/-/*?value
+              _class:selected
 
           /*
            * Returning success to caller, since datagrid was actually databound.
@@ -602,6 +625,59 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
           for-each:x:/../*/_items/*
 
             /*
+             * Lambda object for [apply] determining if this is an editable hyperlink, or a non-editable span.
+             */
+            _apply-eval
+              _sys42.windows.show-lambda:x:/..
+              if:x:/../*/_dn/#/*/_edit
+                and:x:/../*/_dn/#/*/_edit?value.bool
+                  =:bool:false
+                eval-x:x:/+/*/*/innerValue
+                return
+                  span
+                    innerValue:x:/../*/_dn/#?value
+              else
+                eval-x:x:/+/*/*(/innerValue|/_column)
+                return
+                  a
+                    href:#
+                    innerValue:x:/../*/_dn/#?value
+                    _column:x:/../*/_dn/#?name
+                    onclick
+
+                      /*
+                        * Fetching column name and innerValue.
+                        */
+                      get-widget-property:x:/../*/_event?value
+                        _column
+                        innerValue
+
+                      /*
+                        * Fetching row ID by retrieving parent's parent widget's [_row] value.
+                        */
+                      get-parent-widget:x:/../*/_event?value
+                      get-parent-widget:x:/-/*/*?value
+                      get-widget-property:x:/-/*/*?value
+                        _row
+
+                      /*
+                        * Need to find main datagrid root widget (div element) to pass into [_edit-item].
+                        */
+                      find-first-ancestor-widget:x:/../*/_event?value
+                        _datagrid-page
+
+                      /*
+                        * Forward evaluating all arguments, before we invoke [_edit-item] event, responsible for creating
+                        * the edit widget UI.
+                        */
+                      eval-x:x:/+/*
+                      sys42.widgets.datagrid._edit-item:x:/-2/*?value
+                        _hyperlink:x:/../*/_event?value
+                        _row:x:/../*/get-widget-property/[1,2]/*/*?value
+                        _column:x:/../*/get-widget-property/[0,1]/*/0?value
+                        _value:x:/../*/get-widget-property/[0,1]/*/1?value
+
+            /*
              * [apply] all "td" widgets inside of currently iterated "tr" widget.
              */
             apply:x:/..for-each/*/create-widget/*/widgets
@@ -609,43 +685,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
               template
                 td
                   widgets
-                    a
-                      href:#
-                      {innerValue}:x:?value
-                      {_column}:x:?name
-                      onclick
-
-                        /*
-                         * Fetching column name and innerValue.
-                         */
-                        get-widget-property:x:/../*/_event?value
-                          _column
-                          innerValue
-
-                        /*
-                         * Fetching row ID by retrieving parent's parent widget's [_row] value.
-                         */
-                        get-parent-widget:x:/../*/_event?value
-                        get-parent-widget:x:/-/*/*?value
-                        get-widget-property:x:/-/*/*?value
-                          _row
-
-                        /*
-                         * Need to find main datagrid root widget (div element) to pass into [_edit-item].
-                         */
-                        find-first-ancestor-widget:x:/../*/_event?value
-                          _datagrid-page
-
-                        /*
-                         * Forward evaluating all arguments, before we invoke [_edit-item] event, responsible for creating
-                         * the edit widget UI.
-                         */
-                        eval-x:x:/+/*
-                        sys42.widgets.datagrid._edit-item:x:/-2/*?value
-                          _hyperlink:x:/../*/_event?value
-                          _row:x:/../*/get-widget-property/[1,2]/*/*?value
-                          _column:x:/../*/get-widget-property/[0,1]/*/0?value
-                          _value:x:/../*/get-widget-property/[0,1]/*/1?value
+                    {@eval}:x:/..for-each/*/_apply-eval
 
             /*
              * Checking if we should use name or value as id. If a value is given, we use value, otherwise we use name.

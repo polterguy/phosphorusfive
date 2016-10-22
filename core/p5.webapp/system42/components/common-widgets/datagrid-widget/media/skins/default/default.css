@@ -205,6 +205,8 @@
     background-color:#fafafa;
     text-decoration:none;
     color:rgba(0,0,0,.3);
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
 
