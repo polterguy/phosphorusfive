@@ -1,0 +1,68 @@
+
+/*
+ * Responsible for creating the Active Event that shows the user a modal window,
+ * allowing for the user to edit text items.
+ *
+ * Internally uses the [sys42.windows.modal], applying a textbox, for each element in the [_data] collection.
+ *
+ * [_header]         - Header of modal wizard window
+ * [_body]           - Explanatory text of dialogue
+ * [_data]           - List of data elements user wish to edit using textboxes.
+ * [_onok]           - Invoked when user clicks "OK" button after applying his edits.
+ *                     The new values are passed in as [_data].
+ */
+create-event:sys42.windows.wizard
+
+  /*
+   * Adding [_onok] lambda callback into [_eval].
+   */
+  add:x:/../**/_eval
+    src:x:/../*/_onok/*
+
+  /*
+   * Looping through each [_data] items, creating a textbox edit for each item.
+   */
+  for-each:x:/../*/_data/*
+    eval-x:x:/+/*/*/*/*/*/*/*
+    add:x:/../*/sys42.windows.modal/*/_widgets
+      src
+        container
+          class:form-group
+          widgets
+            container
+              class:input-group
+              widgets
+                label
+                  class:input-group-addon
+                  innerValue:x:/..for-each/*/_dp/#?name
+                input
+                  type:text
+                  class:form-control
+                  value:x:/..for-each/*/_dp/#?value
+                  _data-field-name:x:/..for-each/*/_dp/#?name
+        
+
+  /*
+   * Creates our modal widget, after making sure there's a textbox, for each value in our [_data] segment.
+   */
+  eval-x:x:/+/*
+  sys42.windows.modal
+    _header:x:/../*/_header?value
+    _body:x:/../*/_body?value
+    _widgets
+    _onok
+      get-widget-values:modal-window
+      get-widget-property:x:/-/*?name
+        _data-field-name
+        value
+      add:x:/../*/_data
+        src:x:/../*/get-widget-property/*/*/_data-field-name?value
+      set:x:/../*/_data/*?value
+        eval
+          return:x:/../*/_dn/#/../*/get-widget-property/*/*/={0}/+?value
+            :x:/../*/_dn/#?name
+      _data
+      _eval
+      add:x:/../*/_eval
+        src:x:/../*/_data
+      eval:x:/../*/_eval

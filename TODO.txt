@@ -60,6 +60,8 @@ TODO before release
 
 * Make sure [vocabulary] yields also widget lambda events.
 
+* Create event that lists all form widgets (kind of like [get-widget-values], except it doesn't return their values)
+
 
 
 

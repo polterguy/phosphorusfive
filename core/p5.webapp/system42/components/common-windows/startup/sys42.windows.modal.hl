@@ -118,7 +118,7 @@ create-event:sys42.windows.modal
        * Gives initial focus to a specific widget
        */
       sys42.windows.modal.initial-focus
-        send-javascript:@"$('#modal-window').on('shown.bs.modal', function () {{$('#{0}').focus();}})"
+        send-javascript:@"$('#modal-window').on('shown.bs.modal', function () {{$('#{0}').focus().select();}})"
           :x:/../*/_arg?value
 
     oninit

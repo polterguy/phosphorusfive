@@ -1,6 +1,6 @@
 
 /*
- * Creates the datagrid widget Active Event, in addition to some helper Active Events.
+ * Creates the datagrid custom widget Active Event.
  */
 
 
@@ -207,6 +207,84 @@ create-event:sys42.widgets.datagrid
 
         /*
          * Expects [_arg] being ID of datagrid.
+         * Databinds the datagrid again.
+         */
+        sys42.widgets.datagrid.databind
+
+          /*
+           * First we must make sure this is our datagrid.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our datagrid.
+             * Returning early.
+             */
+            return
+
+          /*
+           * Retrieving current page and number of items per page.
+           */
+          get-widget-property:x:/../*/_event?value
+            _root-datagrid
+            _no-items
+            _query
+
+          /*
+           * Multiplying current page number with number of items, and setting [_start] argument
+           * of [sys42.widgets.datagrid._get-items] invocation.
+           */
+          set:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value
+            *:x:/../*/get-widget-property/*/*/_root-datagrid?value.int
+              _:x:/../*/get-widget-property/*/*/_no-items?value
+
+          /*
+           * Adding number of items to [_start] and setting [_end] argument of [sys42.widgets.datagrid._get-items] invocation.
+           */
+          set:x:/../*/sys42.widgets.datagrid._get-items/*/_end?value
+            +:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value.int
+              _:x:/../*/get-widget-property/*/*/_no-items?value
+
+          /*
+           * Checking if we have a query
+           */
+          if:x:/../*/get-widget-property/*/2?value
+            eval-x:x:/+/*/*
+            add:x:/../*/sys42.widgets.datagrid._get-items
+              src
+                _query:x:/../*/get-widget-property/*/2?value
+
+          /*
+           * Retrieving current page's items.
+           */
+          sys42.widgets.datagrid._get-items:x:/../*/_event?value
+            _start
+            _end
+
+          /*
+           * Clearing out current items from datagrid (tbody widget)
+           */
+          find-widget:x:/../*/_event?value
+            element:tbody
+          clear-widget:x:/-/*?value
+
+          /*
+           * Applying the [_items] returned above to databind invocation.
+           */
+          add:x:/+
+            src:x:/../*/sys42.widgets.datagrid._get-items/*/_items
+          sys42.widgets.datagrid._append-items:x:/../*/_event?value
+
+          /*
+           * Updating current page to property of datagrid root widget.
+           */
+          set-widget-property:x:/../*/_event?value
+            _root-datagrid:x:/../*/get-widget-property/*/*/_root-datagrid?value
+
+
+        /*
+         * Expects [_arg] being ID of datagrid.
          * Pages the datagrid to its previous page.
          */
         sys42.widgets.datagrid.go-previous
@@ -247,7 +325,7 @@ create-event:sys42.widgets.datagrid
             return
 
           /*
-           * Multiplying current page number (incremented by one) with number of items, and setting [_start] argument
+           * Multiplying current page number (decremented by one) with number of items, and setting [_start] argument
            * of [sys42.widgets.datagrid._get-items] invocation.
            */
           set:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value
