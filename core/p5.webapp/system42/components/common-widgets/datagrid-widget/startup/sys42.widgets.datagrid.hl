@@ -46,6 +46,14 @@ create-event:sys42.widgets.datagrid
 
 
   /*
+   * Adding [_on-header-clicked] callback into [sys42.widgets.datagrid._create-datagrid] invocation inside of
+   * the [oninit] of main datagrid.
+   */
+  add:x:/../*/return/*/container/*/oninit/*/sys42.widgets.datagrid._create-datagrid
+    src:x:/../*/_options/*/_on-header-clicked
+
+
+  /*
    * Adding [_on-select-items] callback into [sys42.widgets.datagrid.select-items].
    */
   add:x:/../*/return/*/*/events/*/sys42.widgets.datagrid.select-items/*/_eval
@@ -723,7 +731,12 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
 
                 /*
                  * Editable item, returning "a" (hyperlink) widget with [onclick] allowing for editing cell.
+                 * Making sure content of hyperlink becomes "&nbsp;" if no text actually exist.
                  */
+                if:x:/../*/_dn/#?value
+                  =:
+                  set:x:/../*/_dn/#?value
+                    src:&nbsp;
                 eval-x:x:/+/*/*(/innerValue|/_column)
                 return
                   a
@@ -878,6 +891,14 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                 _row
               find-first-ancestor-widget:x:/../*/_event?value
                 _datagrid-page
+
+              /*
+               * Making sure content becomes "&nbsp;" if no new value was actually provided.
+               */
+              if:x:/../*/get-widget-property/*/0?value
+                =:
+                set:x:/../*/get-widget-property/*/0?value
+                  src:&nbsp;
               eval-x:x:/+/*
               sys42.widgets.datagrid._edit-item-callback:x:/../*/find-first-ancestor-widget/*?value
                 _value:x:/../*/get-widget-property/*/0?value
@@ -936,11 +957,30 @@ p5.widgets_datagrid_key = function (e) {
           /*
            * Creating column headers, by [apply]'ing [_columns] to [create-widget] invocation below.
            */
-          apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
-            src:x:/../*/_columns/*
-            template
-              th
-                {innerValue}:x:?name
+          if:x:/../*/_on-header-clicked/*
+
+            /*
+             * Caller supplied an [_on-header-clicked] lambda callback.
+             */
+            add:x:/+/**/onclick
+              src:x:/../*/_on-header-clicked/*
+            apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
+              src:x:/../*/_columns/*
+              template
+                th
+                  widgets
+                    a
+                      href:#
+                      {innerValue}:x:?name
+                      onclick
+          else
+            apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
+              src:x:/../*/_columns/*
+              template
+                th
+                  widgets
+                    span
+                      {innerValue}:x:?name
 
           /*
            * Finding table element inside of datagrid main wrapper.

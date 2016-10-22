@@ -87,9 +87,39 @@
  * Cells in table header.
  */
 .datagrid-widget-default th {
-    padding-bottom:5px;
-    padding-left:10px;
     text-transform:capitalize;
+    font-size:1.1em;
+}
+
+
+/*
+ * Hyperlink headers (if headers should be clickable).
+ */
+.datagrid-widget-default th a {
+    display:block;
+    width:100%;
+    text-decoration:none;
+    padding:10px 10px;
+    color:rgba(0,0,128,1);
+    border-radius:8px 8px 0 0;
+}
+
+
+/*
+ * Hyperlink headers (if headers should NOT be clickable).
+ */
+.datagrid-widget-default th span {
+    display:block;
+    width:100%;
+    padding:10px 10px;
+}
+
+
+/*
+ * Hyperlink headers (if headers should be clickable) when hovered.
+ */
+.datagrid-widget-default th a:hover {
+    background-color:rgba(0,0,0,.1);
 }
 
 
