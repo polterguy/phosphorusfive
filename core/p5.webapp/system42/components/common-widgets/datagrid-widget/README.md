@@ -2,7 +2,7 @@ The fastest Ajax Datagrid on the planet
 ========
 
 This folder contains, what is probably the fastest Ajax Datagrid on the planet. In its example implementation, it can be tweaked
-down to ~8KB of content in total, wwhich includes its CSS files, JavaScript and HTML. It renders HTML back to the client, which
+down to ~8KB of content in total, which includes its CSS files, JavaScript and HTML. It renders HTML back to the client, which
 means it is very "web friendly", compared to other similar widgets, that entirely builds their DOM, based upon some JSON callback,
 or similar technique.
 
@@ -14,9 +14,10 @@ sys42.csv.import:/sample.csv
 ```
 
 The above code, assumes you have a CSV file at the root of your [p5.webapp](/core/p5.webapp/) folder, who's name is _"sample.csv"_. You
-can really use any CSV file you wish, but the examples shown in this document, assumes its name is _"sample.csv"_. Some of the examples, 
-also assumes you have specific column names in your data too. Then create an Ajax Datagrid, by for instance putting the following code into
-a "lambda" page of System42's CMS.
+can really use any CSV file you wish, but the examples shown in this document, assumes its name is _"sample.csv"_.
+
+After having evaluated the above Hyperlambda in for instance the CMS/Executor, you can create an Ajax Datagrid, by for instance putting 
+the following code into a new _"lambda"_ page of System42's CMS.
 
 ```
 create-widget:datagrid-wrapper-1
@@ -47,20 +48,38 @@ create-widget:datagrid-wrapper-1
 
 The above code, creates an Ajax Datagrid with support for inline editing of items, paging and filtering (search).
 
-The Datagrid can be customized in many ways. If you wish to turn off editing of some of your rows, you can simply add a *[_edit]*
-child node, to your data, as you return it in your *[_on-get-items]* lambda callback. The *[_on-get-items]* callback, is invoked
-whenever your datagrid needs "items" to display. The items are expected to be returned like the following.
+The dataset the datagrid expects in your *[_on-get-items]* lambda callback, should look something like this.
 
 ```
-_items
-  item:some-id-1
-    name:John Doe
-      _edit:bool:false
-    email:john@doe.com
-  item:some-id-2
-    name:Jane Doe
-      _edit:bool:false
-    email:jane@doe.com
+return
+  _items
+    item:some-id-1
+      name:John Doe
+      email:john@doe.com
+    item:some-id-2
+      name:Jane Doe
+      email:jane@doe.com
+```
+
+The "some-id-n" is the ID of your data row, and its children nodes are the column names and values. In the above example, we have
+two rows, with two columns each, named; "name" and "email".
+
+## Turning off editing of cells and rows
+
+The Datagrid can be customized in many ways. If you wish to turn off editing of some of your rows, you can simply add an *[_edit]*
+child node, to your data, as you return it in your *[_on-get-items]* lambda callback.
+
+```
+return
+  _items
+    item:some-id-1
+      name:John Doe
+        _edit:bool:false
+      email:john@doe.com
+    item:some-id-2
+      name:Jane Doe
+        _edit:bool:false
+      email:jane@doe.com
 ```
 
 In the above example, we have two items, with two columns; _"name"_ and _"email"_. The names cannot be edited, because of the *[_edit]*
@@ -96,6 +115,9 @@ create-widget:datagrid-wrapper-2
         return:bool:true
 ```
 
+Notice, you can also turn off editing of specific cells this same way. The *[_edit]* argument, can be added to only cells with some specific
+values if you wish.
+
 The *[_on-edit-item]* lambda callback, is invoked when some cell of your datagrid has been successfully edited. This can be done, by
 clicking the cell, typing in a new value, and hitting carriage return. *[_on-edit-item]* will be given three important arguments;
 
@@ -111,16 +133,18 @@ The *[_on-get-items]* lambda callback, is given at least two arguments;
 The logic of the above two arguments, are "from and including start, to but not including end".
 
 In addition, your *[_on-get-items]* callback, _might_ get a *[_query]* argument, which is a filter condition, that your dataset
-somehow must match. By default, the "Search" textbox, if the user enters a value, will be this value passsed into your callback.
+somehow must match. By default, the "Search" textbox, if the user enters a value, will pass this value into your callback.
 
-You can also set the datagrid in "row selection" mode. In this mode, inline editing of items are disabled, and the user can instead 
+## Row selection
+
+You can also set the datagrid in _"row selection"_ mode. In this mode, inline editing of items are disabled, and the user can instead 
 choose to "select" entire rows. This is done by dropping the *[_on-edit-item]* callback, and instead supply an *[_on-select-items]*
 lambda callback. In addition, you can change the size of your pages by passing in *[_no-items]* with an integer value of how many
 records you wish to show for each page.
 
 In the example below, we have increased the page size to 20, and turned on "row selection" instead of inline editing, where we show
 a modal "wizard window", allowing the user to edit his items in a modal window instead. We have also commented this example, to
-show what goes on, at what part of our code.
+show what goes on, at which parts of our code.
 
 ```
 create-widget:datagrid-wrapper-3
@@ -198,13 +222,17 @@ create-widget:datagrid-wrapper-3
             sys42.widgets.datagrid.databind:my-datagrid-3
 ```
 
-If you wish, you can also create "template columns", which are columns where you have 100% control over what goes into every cell
+In our above example, we have completely dropped the *[_on-edit-item]* callback, and instead provided an *[_on-select-items]*. This
+ensures the user can select a row, instead of inline editing a cell's content. This lambda callback is mutually exclusive with 
+the *[_on-edit-item]* callback. Meaning, you must choose one of them, and not both!
+
+If you wish, you can also create _"template columns"_, which are columns where you have 100% control over what goes into every cell
 of your datagrid. Using this technique, you can put any other Ajax widgets you wish, into the cells of your datagrid. This is done
 by returning a row in your *[_on-get-items]* callback, which contains a child node named *[_widgets]*. The *[_widgets]* collection,
 is expected to be a collection with at least one, or more widgets, which will be appended into the *[widgets]* child collection of
 your "td" HTML widget.
 
-To create a static column, you could do something like this;
+To create a "template column", you could return something like the following from your *[_on-get-items]*;
 
 ```
 _on-get-items
@@ -232,7 +260,7 @@ _on-get-items
                 sys42.windows.info-tip:I was clicked!
 ```
 
-Notice, if you want to use "template columns", you can not use it in combination with "row selection", since this would confuse the
+Notice, if you want to use _"template columns"_, you cannot use it in combination with _"row selection"_, since this would confuse the
 datagrid rendering, having a clickable button, inside of a clickable row. Below is a complete example of how to create a more relevant
 template column datagrid, with two template columns. One row allowing you to delete your items, and the other row allowing you to
 select your items.
@@ -333,12 +361,12 @@ In the above example, we have also turned of the entire footer, effectively disa
 The Gaiasoul Ajax Datagrid has a relatively rich API, which allows you to create your own controls, where you replace its functionality,
 with your own logic and/or UI.
 
-Our last example above, also demonstrate how to turn on "header clicking". By default, the headers of your Datagrid are not clickable.
+Our last example above, also demonstrate how to turn on _"header clicking"_. By default, the headers of your Datagrid are not clickable.
 You can easily turn this on though, by adding your own *[_on-header-clicked]* lambda callback when creating your grid. This makes sure 
-your datagrid's headers becomes clickable, which you could use to for instance sort your data, filter according to column, etc, etc, etc.
+your datagrid's headers becomes clickable, which you could use to for instance sort your data, filter according to columns, etc, etc, etc.
 
 In our example above, we simply retrieve the name of the column that was clicked, before we show a *[sys42.windows.show-lambda]* window,
-showing the currently executed lambda of our app.
+showing the currently executed lambda of our app. You are free to implement any logic you wish here though.
 
 
 
