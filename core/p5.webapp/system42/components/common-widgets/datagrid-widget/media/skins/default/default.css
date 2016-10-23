@@ -29,12 +29,19 @@
  * Main datagrid class.
  */
 .datagrid-widget-default {
-    width:100%;
-    background-color:rgba(0,0,0,.05);
-    border-radius:10px;
-    padding-top:25px;
-    padding-left:15px;
-    padding-right:15px;
+    width: 100%;
+    background-color: rgba(0,0,0,.05);
+    border-radius: 10px;
+    padding-top: 25px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/*
+ * Making sure all children elemtns of datagrid has correct box-sizing mode.
+ */
+.datagrid-widget-default * {
+    box-sizing:border-box;
 }
 
 
