@@ -202,14 +202,14 @@ create-event:sys42.widgets.tree
              */
             find-widget-like:x:/../*/_event?value
               class:tree-selected
-            if:x:/-/*?count
+            if:x:/-/*/*?count
               !=:int:0
 
               /*
                * Tree has selected items.
                * Finding its parent "li" widget, and retrieving its [_item-id], and returning as [_items] collection to caller.
                */
-              get-parent-widget:x:/./-/*?value
+              get-parent-widget:x:/./-/*/*?value
               get-widget-property:x:/-/*/*?value
                 _item-id
               add:x:/+/*
@@ -240,13 +240,13 @@ create-event:sys42.widgets.tree
              */
             find-widget-like:x:/../*/_event?value
               class:tree-selected
-            if:x:/-/*?count
+            if:x:/-/*/*?count
               !=:int:0
 
               /*
                * Tree has previously selected items, making sure we un-select them.
                */
-              sys42.delete-css-classes:x:/./-/*?value
+              sys42.delete-css-classes:x:/./-/*/*?value
                 _class:tree-selected
 
             /*
@@ -255,9 +255,9 @@ create-event:sys42.widgets.tree
             for-each:x:/../*/_items/*?name
               find-widget:x:/../*/_event?value
                 _item-id:x:/..for-each/*/_dp?value
-              find-widget:x:/-/*?value
+              find-widget:x:/-/*/*?value
                 element:a
-              sys42.add-css-classes:x:/-/0?value
+              sys42.add-css-classes:x:/-/*/0?value
                 _class:tree-selected
 
             /*
@@ -296,7 +296,7 @@ create-event:sys42.widgets.tree
                */
               find-widget:x:/../*/_event?value
                 _item-id:x:/..for-each/*/_dp?value
-              if:x:/..for-each/*/find-widget/*?value
+              if:x:/..for-each/*/find-widget/*/*?value
                 not
 
                 /*
@@ -318,7 +318,7 @@ create-event:sys42.widgets.tree
                * If you do, it will only expand, regardless of if the item is expanded from before or not.
                * This feature is being used, among other things, while "unrolling" items (SEO friendly links).
                */
-              get-children-widgets:x:/..for-each/*/find-widget/*?value
+              get-children-widgets:x:/..for-each/*/find-widget/*/*?value
               if:x:/-/*/*/container/[1,2]
 
                 /*
@@ -341,7 +341,7 @@ create-event:sys42.widgets.tree
                    */
                   sys42.delete-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
                     _class:tree-hidden
-                  sys42.add-css-classes:x:/..for-each/*/find-widget/*?value
+                  sys42.add-css-classes:x:/..for-each/*/find-widget/*/*?value
                     _class:tree-expanded
 
                   /*
@@ -371,7 +371,7 @@ create-event:sys42.widgets.tree
                     /*
                      * Then we delete the "tree-expanded" CSS class to our main "li" HTML widget.
                      */
-                    sys42.delete-css-classes:x:/..for-each/*/find-widget/*?value
+                    sys42.delete-css-classes:x:/..for-each/*/find-widget/*/*?value
                       _class:tree-expanded
 
                     /*
@@ -424,7 +424,7 @@ create-event:sys42.widgets.tree
                 add:x:/..else/*/sys42.widgets.tree._create-items/0
                   src
                     element:ul
-                    parent:x:/..for-each/*/find-widget/*?value
+                    parent:x:/..for-each/*/find-widget/*/*?value
 
                 /*
                  * Making sure we add the "tree-item-children-animate" CSS class to our widget, since this is
@@ -444,7 +444,7 @@ create-event:sys42.widgets.tree
                 /*
                  * Adding the "expanded" CSS class in parent widget.
                  */
-                sys42.add-css-classes:x:/..for-each/*/find-widget/*?value
+                sys42.add-css-classes:x:/..for-each/*/find-widget/*/*?value
                   _class:tree-expanded
 
                 /*
@@ -616,9 +616,9 @@ create-event:sys42.widgets.tree._create-items
                  */
                 find-first-ancestor-widget:x:/../*/_event?value
                   _root-tree
-                sys42.widgets.tree.toggle-items:x:/../*/find-first-ancestor-widget/*?value
+                sys42.widgets.tree.toggle-items:x:/../*/find-first-ancestor-widget/*/*?value
                   _items
-                sys42.widgets.tree.select-items:x:/../*/find-first-ancestor-widget/*?value
+                sys42.widgets.tree.select-items:x:/../*/find-first-ancestor-widget/*/*?value
                   _items
 
               /*
@@ -635,7 +635,7 @@ create-event:sys42.widgets.tree._create-items
                  */
                 find-first-ancestor-widget:x:/../*/_event?value
                   _root-tree
-                get-widget-property:x:/-/*?value
+                get-widget-property:x:/-/*/*?value
                   _root-tree
 
                 /*
@@ -685,7 +685,7 @@ create-event:sys42.widgets.tree._create-url
    */
   find-first-ancestor-widget:x:/../*/_arg?value
     _root-tree
-  get-widget-property:x:/-/*?value
+  get-widget-property:x:/-/*/*?value
     _root-tree
   list-http-get-params
   set:x:/-/*/{0}

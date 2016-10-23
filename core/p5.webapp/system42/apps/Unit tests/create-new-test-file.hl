@@ -97,6 +97,6 @@ foo
             _file-button:{0}/tests/{1}
               :x:/././-?value
               :x:/../*/get-widget-property/*/*?value
-          raise-widget-ajax-event:x:/-/*?value
+          raise-widget-ajax-event:x:/-/*/*?value
             onclick
 

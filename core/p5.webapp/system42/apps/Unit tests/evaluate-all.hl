@@ -9,7 +9,7 @@ set-session-value:sys42.unit-test-count
   src:int:0
 find-widget
   innerValue:Evaluate
-raise-widget-ajax-event:x:/../*/find-widget/*?value
+raise-widget-ajax-event:x:/../*/find-widget/*/*?value
   onclick
 get-session-value:sys42.unit-test-count
 date-now

@@ -30,7 +30,7 @@ if:x:/-/*/_error
    */
   find-widget
     _file-row:x:/../*/_file?value
-  set-widget-property:x:/-/*?value
+  set-widget-property:x:/-/*/*?value
     class:error
   set-widget-property:x:/../*/_event?value
     class:btn btn-warning form-control
@@ -44,7 +44,7 @@ else
    */
   find-widget
     _file-row:x:/../*/_file?value
-  set-widget-property:x:/-/*?value
+  set-widget-property:x:/-/*/*?value
     class:success
   set-widget-property:x:/../*/_event?value
     class:btn btn-success form-control
@@ -71,7 +71,7 @@ find-widget
   _file-result:x:/../*/_file?value
 join:x:/../*/sys42.execute-lambda-file/*/_success?value
   sep:"]\r\n</li><li>["
-set-widget-property:x:/-2/*?value
+set-widget-property:x:/-2/*/*?value
   innerValue:@"{0}<pre><ol><li>[{1}]</li></ol></pre>"
     :x:/../*/_html?value
     :x:/././-?value

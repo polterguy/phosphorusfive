@@ -113,7 +113,7 @@ create-event:sys42.widgets.navbar
              */
             find-widget:x:/../*/_event?value
               _item-id:x:/..if/..if/*/get-http-get-param/*?value
-            raise-widget-ajax-event:x:/-/*?value
+            raise-widget-ajax-event:x:/-/*/*?value
               onclick
 
 
@@ -308,8 +308,8 @@ create-event:sys42.widgets.navbar._item-clicked
   find-widget-like:x:/../*/_root-tree?value
     class:active
     element:li
-  if:x:/../*/find-widget-like/*
-    sys42.delete-css-classes:x:/../*/find-widget-like/*?value
+  if:x:/../*/find-widget-like/*/*
+    sys42.delete-css-classes:x:/../*/find-widget-like/*/*?value
       _class:active
 
   /*
@@ -330,7 +330,7 @@ create-event:sys42.widgets.navbar._item-clicked
   find-first-ancestor-widget-like:x:/-3/*/*?value
     element:li
     class:dropdown
-  if:x:/-/*?value
+  if:x:/-/*/*?value
 
     /*
      * This is not a "root menu item".
@@ -345,7 +345,7 @@ create-event:sys42.widgets.navbar._item-clicked
       find-first-ancestor-widget-like:x:/../*/_cur?value
         element:li
         class:dropdown
-      if:x:/-/*?value
+      if:x:/-/*/*?value
         not
 
         /*
@@ -357,7 +357,7 @@ create-event:sys42.widgets.navbar._item-clicked
        * Continuing iteration.
        */
       set:x:/../*/_cur?value
-        src:x:/..while/*/find-first-ancestor-widget-like/*?value
+        src:x:/..while/*/find-first-ancestor-widget-like/*/*?value
 
     /*
      * Notice, since the adding of the CSS classes actually happens on the client side only, due to Bootstrap's
@@ -389,7 +389,7 @@ create-event:sys42.widgets.navbar._create-url
    */
   find-first-ancestor-widget:x:/../*/_arg?value
     _root-navbar
-  get-widget-property:x:/-/*?value
+  get-widget-property:x:/-/*/*?value
     _root-navbar
   list-http-get-params
   set:x:/-/*/{0}

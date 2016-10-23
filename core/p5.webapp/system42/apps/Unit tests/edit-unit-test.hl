@@ -106,5 +106,5 @@ create-widget:{0}_editor
                   */
                 find-first-ancestor-widget:x:/../*/_event?value
                   element:tr
-                delete-widget:x:/-/*?value
+                delete-widget:x:/-/*/*?value
 

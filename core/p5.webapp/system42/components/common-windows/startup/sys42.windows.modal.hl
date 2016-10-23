@@ -166,7 +166,7 @@ create-event:sys42.windows.modal
                     _onenterpressed
                       find-widget:modal-window-footer
                         element:button
-                      raise-widget-ajax-event:x:/-/*?value
+                      raise-widget-ajax-event:x:/-/*/*?value
                         onclick
                     oninit
 
@@ -186,9 +186,9 @@ create-event:sys42.windows.modal
                        */
                       find-widget-like:x:/../*/_event?value
                         class:form-control
-                      if:x:/../*/find-widget-like/*?count
+                      if:x:/../*/find-widget-like/*/*?count
                         >:int:0
-                        sys42.windows.modal.initial-focus:x:/../*/find-widget-like/0?value
+                        sys42.windows.modal.initial-focus:x:/../*/find-widget-like/*/0?value
 
 
                     /*

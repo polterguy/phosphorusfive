@@ -192,7 +192,7 @@ create-event:sys42.widgets.datagrid
            */
           find-widget:x:/../*/_event?value
             element:tbody
-          clear-widget:x:/-/*?value
+          clear-widget:x:/-/*/*?value
 
           /*
            * Disabling previous button.
@@ -200,7 +200,7 @@ create-event:sys42.widgets.datagrid
           find-widget:x:/../*/_event?value
             innerValue:&lt;
             element:a
-          sys42.add-css-classes:x:/-/*?value
+          sys42.add-css-classes:x:/-/*/*?value
             _class:disabled
 
           /*
@@ -218,7 +218,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&gt;
               element:a
-            sys42.delete-css-classes:x:/-/*?value
+            sys42.delete-css-classes:x:/-/*/*?value
               _class:disabled
 
 
@@ -256,8 +256,8 @@ create-event:sys42.widgets.datagrid
           find-widget-like:x:/../*/_event?value
             element:tr
             class:selected
-          if:x:/-/*?value
-            get-widget-property:x:/../*/find-widget-like/*?value
+          if:x:/-/*/*?value
+            get-widget-property:x:/../*/find-widget-like/*/*?value
               _row
             add:x:/../*/_selected
               src:x:/./-/*/*?value
@@ -270,7 +270,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&lt;
               element:a
-            sys42.add-css-classes:x:/-/*?value
+            sys42.add-css-classes:x:/-/*/*?value
               _class:disabled
 
             /*
@@ -290,7 +290,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&lt;
               element:a
-            sys42.delete-css-classes:x:/-/*?value
+            sys42.delete-css-classes:x:/-/*/*?value
               _class:disabled
 
           /*
@@ -336,7 +336,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&gt;
               element:a
-            sys42.add-css-classes:x:/-/*?value
+            sys42.add-css-classes:x:/-/*/*?value
               _class:disabled
 
             /*
@@ -359,7 +359,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&gt;
               element:a
-            sys42.delete-css-classes:x:/-/*?value
+            sys42.delete-css-classes:x:/-/*/*?value
               _class:disabled
 
           /*
@@ -367,7 +367,7 @@ create-event:sys42.widgets.datagrid
            */
           find-widget:x:/../*/_event?value
             element:tbody
-          clear-widget:x:/-/*?value
+          clear-widget:x:/-/*/*?value
 
           /*
            * Applying the [_items] returned above to databind invocation.
@@ -382,7 +382,7 @@ create-event:sys42.widgets.datagrid
           for-each:x:/../*/_selected/*?name
             find-widget:x:/../*/_event?value
               _row:x:/..for-each/*/_dp?value
-            sys42.add-css-classes:x:/-/*?value
+            sys42.add-css-classes:x:/-/*/*?value
               _class:selected
 
           /*
@@ -535,8 +535,8 @@ create-event:sys42.widgets.datagrid
           find-widget-like:x:/../*/_event?value
             element:tr
             class:selected
-          if:x:/-/*?value
-            sys42.delete-css-classes:x:/./-/*?value
+          if:x:/-/*/*?value
+            sys42.delete-css-classes:x:/./-/*/*?value
               _class:selected
 
           /*
@@ -545,7 +545,7 @@ create-event:sys42.widgets.datagrid
           for-each:x:/../*/_items/*?name
             find-widget-like:x:/../*/_event?value
               _row:x:/..for-each/*/_dp?value
-            sys42.add-css-classes:x:/-/*?value
+            sys42.add-css-classes:x:/-/*/*?value
               _class:selected
 
           /*
@@ -584,7 +584,7 @@ create-event:sys42.widgets.datagrid
           /*
            * Looping through these widgets to retrieve their [_row].
            */
-          for-each:x:/-/*
+          for-each:x:/-/*/*
             get-widget-property:x:/..for-each/*/_dp/#?value
               _row
             add:x:/../*/return/*/_items
@@ -610,7 +610,7 @@ create-event:sys42.widgets.datagrid
            */
           find-first-ancestor-widget:x:/../*/_arg?value
             _datagrid-page
-          if:x:/-/*?value
+          if:x:/-/*/*?value
             !=:x:/../*/_event?value
 
             /*
@@ -624,7 +624,7 @@ create-event:sys42.widgets.datagrid
           find-first-ancestor-widget:x:/../*/_arg?value
             element:tr
             _row
-          get-widget-property:x:/-/*?value
+          get-widget-property:x:/-/*/*?value
             _row
           return:x:/-/*/*?value
 
@@ -657,7 +657,7 @@ create-event:sys42.widgets.datagrid
            */
           find-widget:x:/../*/_event?value
             _datagrid-page
-          get-widget-property:x:/-/*?value
+          get-widget-property:x:/-/*/*?value
             _no-edit
           if:x:/-/*/*?value.bool
 
@@ -694,7 +694,7 @@ create-event:sys42.widgets.datagrid
                     _row
                   add:x:/+/*
                     src:x:/../*/get-widget-property/*/*?value
-                  sys42.widgets.datagrid.select-items:x:/../*/find-first-ancestor-widget/*?value
+                  sys42.widgets.datagrid.select-items:x:/../*/find-first-ancestor-widget/*/*?value
                     _items
 
             /*
@@ -780,7 +780,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                         * the edit widget UI.
                         */
                       eval-x:x:/+/*
-                      sys42.widgets.datagrid._edit-item:x:/-2/*?value
+                      sys42.widgets.datagrid._edit-item:x:/-2/*/*?value
                         _hyperlink:x:/../*/_event?value
                         _row:x:/../*/get-widget-property/[1,2]/*/*?value
                         _column:x:/../*/get-widget-property/[0,1]/*/0?value
@@ -812,7 +812,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
              */
             eval-x:x:/+/*(/parent|/_row)
             create-widget
-              parent:x:/../*/find-widget/[0,1]/*?value
+              parent:x:/../*/find-widget/[0,1]/*/*?value
               _row:x:/..for-each/*/_id?value
               element:tr
               widgets
@@ -883,7 +883,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
               find-widget:x:/-/*/*?value
                 element:a
               send-javascript:@"p5.$('{0}').el.focus();"
-                :x:/../*/find-widget/*?value
+                :x:/../*/find-widget/*/*?value
               delete-widget:x:/../*/_event?value
 
             /*
@@ -909,7 +909,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                 set:x:/../*/get-widget-property/*/0?value
                   src:&nbsp;
               eval-x:x:/+/*
-              sys42.widgets.datagrid._edit-item-callback:x:/../*/find-first-ancestor-widget/*?value
+              sys42.widgets.datagrid._edit-item-callback:x:/../*/find-first-ancestor-widget/*/*?value
                 _value:x:/../*/get-widget-property/*/0?value
                 _column:x:/../*/get-widget-property/*/1?value
                 _row:x:/../*/get-widget-property/*/2?value
@@ -926,8 +926,8 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                 find-widget:x:/-/*/*?value
                   element:a
                 send-javascript:@"p5.$('{0}').el.focus();"
-                  :x:/./-/*?value
-                set-widget-property:x:/-2/*?value
+                  :x:/./-/*/*?value
+                set-widget-property:x:/-2/*/*?value
                   innerValue:x:/../*/get-widget-property/*/0?value
                 delete-widget:x:/../*/_event?value
 
@@ -1002,7 +1002,7 @@ p5.widgets_datagrid_key = function (e) {
            */
           eval-x:x:/+/*/parent
           create-widget
-            parent:x:/../*/find-widget/*?value
+            parent:x:/../*/find-widget/*/*?value
             element:thead
             widgets
               tr
@@ -1013,7 +1013,7 @@ p5.widgets_datagrid_key = function (e) {
            */
           eval-x:x:/+/*/parent
           create-widget
-            parent:x:/../*/find-widget/*?value
+            parent:x:/../*/find-widget/*/*?value
             element:tbody
             widgets
 
@@ -1066,7 +1066,7 @@ p5.widgets_datagrid_key = function (e) {
                 find-first-ancestor-widget:x:/../*/_event?value
                   _datagrid-page
                 eval-x:x:/+/*
-                sys42.widgets.datagrid.search:x:/-2/*?value
+                sys42.widgets.datagrid.search:x:/-2/*/*?value
                   _query:x:/../*/get-widget-property/*/*?value
 
                 /*
@@ -1099,7 +1099,7 @@ p5.widgets_datagrid_search_key = function (e) {
                      */
                     find-first-ancestor-widget:x:/../*/_event?value
                       _datagrid-page
-                    sys42.widgets.datagrid.go-previous:x:/-/*?value
+                    sys42.widgets.datagrid.go-previous:x:/-/*/*?value
                 a
                   href:#
                   innerValue:&gt;
@@ -1110,4 +1110,4 @@ p5.widgets_datagrid_search_key = function (e) {
                      */
                     find-first-ancestor-widget:x:/../*/_event?value
                       _datagrid-page
-                    sys42.widgets.datagrid.go-next:x:/-/*?value
+                    sys42.widgets.datagrid.go-next:x:/-/*/*?value
