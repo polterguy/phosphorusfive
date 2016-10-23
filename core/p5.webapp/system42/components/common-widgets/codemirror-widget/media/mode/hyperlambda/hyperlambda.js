@@ -843,6 +843,7 @@ CodeMirror.defineMode("hyperlambda", function() {
         case 'return-response-object':
         case 'raise-widget-ajax-event':
         case 'get-widget-property':
+        case 'get-widget-properties':
         case 'zip':
         case 'unzip':
         case 'set-page-value':

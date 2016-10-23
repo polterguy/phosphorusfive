@@ -51,15 +51,14 @@ create-event:sys42.windows.wizard
     _body:x:/../*/_body?value
     _widgets
     _onok
-      get-widget-values:modal-window
-      get-widget-property:x:/-/*?name
+      get-widget-properties:modal-window
         _data-field-name
         value
       add:x:/../*/_data
-        src:x:/../*/get-widget-property/*/*/_data-field-name?value
+        src:x:/../*/get-widget-properties/*/*/_data-field-name?value
       set:x:/../*/_data/*?value
         eval
-          return:x:/../*/_dn/#/../*/get-widget-property/*/*/={0}/+?value
+          return:x:/../*/_dn/#/../*/get-widget-properties/*/*/={0}/+?value
             :x:/../*/_dn/#?name
       _data
       _eval

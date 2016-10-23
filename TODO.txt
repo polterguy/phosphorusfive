@@ -6,8 +6,6 @@ TODO before release
 
 * Clean up the p5.core Utilities class!
 
-* Fix bugs created during refactoring in "Controls" CMS and "Files"
-
 * Investigate the p5.threading, and find out why [fork] is not the root node, when using a [wait] invocation. Which MIGHT be the corrrect way to
   do things, but make sure!!
 
@@ -21,21 +19,11 @@ TODO before release
 
 * Check if [create-user], [edit-user], etc - Active Events should not check if Ticket is "root" account ...?
 
-* Consider allowing the [zip] Active Event work like [save-file], with a relative source, creating multiple archives in one go.
-  Do the same with [unzip]
-
-* Consider [memento] Active Event, that can serialize an execution tree into e.g. Session or something, for then to have it
-  recalled and continued evaluated using [recall] or something.
-  Allows for temporary "halting" server execution, to fetch data from end-user, before recalling execution, considering the
-  data from user, which is a really freaking *SICK* feature!! :D
-
-* Make sure none of the unrelated files are dependent upon CMS in any ways. Among other things, "installation" loads up a template.
-
 * Create some sort of "persistent login" (remember me functionality)
 
 * Make sure p5.data cannot access nodes from root or file nodes (minimum /*/* expressions)
 
-* Make sure the Hyperlisp CodeMirror editor uses the supplied JSON object for autocompletion, also to determine keywords
+* Make sure the Hyperlambda CodeMirror editor uses the supplied JSON object for autocompletion, also to determine keywords
 
 * Consider documenting all Active Events by adding a [_dox] node, allowing consumers to invoke them with [add] trickery to retrieve dox.
 
@@ -44,13 +32,9 @@ TODO before release
 
 *  Make sure all common dialogues optionally takes [parent] and [class] arguments
 
-* Make sure all widget retriever Active Events returns results in the same way. It's a freaking nightmare now, with different "APIs"
-
 * Create sample folder in System42, with some example lambda pages, showing of some feature for users.
 
 * Make tree view widget able to contain children widgets.
-
-* Minify JS and CSS upon release build.
 
 * Create [lambda2xml] and [lambda2csv] events.
 
@@ -60,7 +44,7 @@ TODO before release
 
 * Make sure [vocabulary] yields also widget lambda events.
 
-* Create event that lists all form widgets (kind of like [get-widget-values], except it doesn't return their values)
+* Fix [sys42.get-widget]
 
 
 

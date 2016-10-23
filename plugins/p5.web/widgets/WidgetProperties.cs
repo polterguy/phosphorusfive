@@ -201,23 +201,21 @@ namespace p5.web.widgets
         }
 
         /// <summary>
-        ///     Recursively retrieves all form input elements' values from given widget
+        ///     Recursively retrieves properties from widgets specified by caller.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-values")]
-        public void get_widget_values (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-widget-properties")]
+        public void get_widget_properties (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widget IDs given by caller
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-values")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-properties")) {
 
-                    // Serialize currently iterated widgets, and all descendants of given widget, adding [value] of
-                    // all widgets that are of type [textarea], [input] and [select]
-                    if (idxWidget.Visible && idxWidget.AreAncestorsVisible ())
-                        SerializeWidgetValuesRecursively (context, e.Args, idxWidget);
+                    // Serialize currently iterated widgets, and all descendants of given widget, yielding all properties requested by caller.
+                    SerializeWidgetPropertiesRecursively (context, e.Args, idxWidget);
                 }
             }
         }
@@ -229,24 +227,20 @@ namespace p5.web.widgets
         /*
          * Recursively retrieves all values from form element widget descendants from given widget
          */
-        private static void SerializeWidgetValuesRecursively (ApplicationContext context, Node args, Widget widget)
+        private static void SerializeWidgetPropertiesRecursively (ApplicationContext context, Node args, Widget widget)
         {
             // Checking if we even have a widget
             if (widget == null)
                 return;
 
-            // Checking if this is a "value type of widget", and if so, returning its value back to caller
-            switch (widget.Element) {
-            case "input":
-            case "select":
-            case "textarea":
-                CreatePropertyReturn (args, "value", widget);
-                break;
+            // Then looping through all additional properties requested by caller, making sure we don't invalidate our IEnumerable.
+            foreach (var idxNode in args.Children.Where (ix => ix.Name != "").ToList ()) {
+                CreatePropertyReturn (args, idxNode.Name, widget);
             }
 
             // Looping through all children widgets, recursively
             foreach (Control idxCtrl in widget.Controls) {
-                SerializeWidgetValuesRecursively (context, args, idxCtrl as Widget);
+                SerializeWidgetPropertiesRecursively (context, args, idxCtrl as Widget);
             }
         }
 

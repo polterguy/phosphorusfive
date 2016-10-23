@@ -485,16 +485,20 @@ Hint!
 There is also an event called *[list-widget-properties]*, which returns a list of _all_ properties, for one or more specified widget(s). This 
 Active Event can either be given an expression, leading to multiple IDs, or a constant, showing the properties of only one widget at the time.
 
-### Retrieving an entire hierarchy of widget values
+### Retrieving an entire hierarchy of widget properties
 
-Sometimes, you wish to retrieve every single "form element" widget value, from some specified starting widget. For these occassions, you have 
-the *[get-widget-values]* Active Event. This Active Event will return all "form element values" below one or more specified "root widget".
+Sometimes, you wish to retrieve every single widget property, recursively, from some specified root widget. For these occassions, you have 
+the *[get-widget-properties]* Active Event (plural form). This Active Event will return all properties of the requested name(s), below one or 
+more specified "root widget".
 
-To see all form element values on your form in one go, you could use something like this for instance.
+To see all form element values for instance, in your form, in one go, you could use something like this for instance.
 
 ```
-get-widget-values:cnt
+get-widget-properties:cnt
+  value
 ```
+
+The above is actually a "Ninja trick" to serialize all form elements from some specified widget recursively.
 
 ### Changing and retrieving a widget's Ajax events dynamically
 
@@ -608,7 +612,7 @@ and the *[get-widget-lambda-event]*. Both of these Active Events, works similarl
 Hint!
 You can also use *[list-widget-lambda-events]* and *[list-widget-ajax-events]* to inspect which events are declared for a specific widget.
 
-### [oninit], initializaing your widgets
+### [oninit], initializing your widgets
 
 The *[oninit]* is a special type of event, which is only raised when your widget is initially created. It is useful for initialization and such
 of your widget, but besides from its semantics, it works similarly to an Ajax event. Though none of its internals, not even its existence, is ever
@@ -662,6 +666,14 @@ then your entire page will go "blank".
 clear-widget:cnt
 ```
 
+If you wish to instead for instance delete the main menu, you could accomplish that with the following code.
+
+```
+delete-widget:main-navbar-wrapper
+```
+
+Yet again, don't panic, but refresh your page, and your menu is back!
+
 Just refresh the page afterwards, and you should be all right though ... ;)
 
 ### Retrieving widgets
@@ -671,12 +683,26 @@ There are also several helper Active Events to retrieve widgets, according to so
 * [get-parent-widget] - Returns the parent widget(s) of the specified widget(s)
 * [get-children-widgets] - Returns the children widgets of the specified widget(s)
 * [find-widget] - Returns the widgets that have the properties listed, with optionally, the values listed
-* [find-widget-like] - Same as above, but doesn't require an "exact match", but is happy if the value "contains" the requested value
+* [find-widget-like] - Same as above, but doesn't require an "exact match", only that the widget "contains" your value(s)
 * [find-first-ancestor-widget] - Returns the first ancestor widget with the specifed properties and values
 * [find-first-ancestor-widget-like] - Same as above, but is happy as long as the value "contains" the value(s) specified
 * [list-widgets] - List all widgets that have IDs containing the specified string(s)
 * [list-widgets-like] - Same as above, but is happy as long as the ID(s) "contains" the value(s) specified
 * [widget-exist] - Yields true for each widget that exists matching the specified ID(s)
+
+Notice, besides from *[list-widgets]*, *[list-widgets-like]* and *[widget-exist]*, all the above mentioned events, returns the same structure back to
+caller, which looks like the following;
+
+```
+some-widget-retrieval-event
+  bar1
+    container:foo
+  bar2
+    container:foo
+```
+
+The first level of children, are the currently iterated criteria passedin as *[_arg]*. Then comes one or more children nodes, having a name defining
+which type of widget this is, and a value being the ID of our widget. Have that in mind as we look at these Active Events and how they work.
 
 #### [get-parent-widget]
 
@@ -749,10 +775,10 @@ your *[get-children-widgets]* invocation for instance, it would throw an excepti
 
 #### [find-widget] and [find-widget-like]
 
-These widgets does not take any arguments like values, besides from (optionally) the "root widget from where to start your search",
-but require you to parametrize them with children nodes, having at least a name, and optionally a value. The name of the node, is some attribute 
-that must exist on your widget, for it be returned as a "match". The value, is an optionally "value" for that attribute, which the widget must 
-either have an exact match of (*[find-widget]*), or "contain" (for the *[find-widget-like]* event).
+These events takes (optionally) the "root widget from where to start your search", and require you to parametrize them with children nodes, 
+having at least a name, and optionally a value. The name of the node, is some attribute that must exist on your widget, for it be returned as 
+a "match". The value, is an optionally "value" for that attribute, which the widget must either have an exact match of (*[find-widget]*), 
+or "contain" (for the *[find-widget-like]* event).
 
 Let's see an example.
 
@@ -784,15 +810,16 @@ The result will look something like this.
 ```
 /* ... rest of code ... */
 find-widget
-  literal:bar1
+  foo
+    literal:bar1
 find-widget
 find-widget-like
-  literal:bar1
-  literal:bar2
+  foo
+    literal:bar1
+    literal:bar2
 ```
 
-Also these Active Events can take expressions as their arguments. However, the currently value iterated for the expression, will not be returned
-as previously mentioned. Consider this code.
+These Active Events can also take expressions as their arguments.
 
 ```
 create-container-widget:foo1
@@ -822,20 +849,17 @@ Which of course result in this result.
 ```
 /* ... rest of code ... */
 find-widget
-  literal:bar1
-  literal:bar3
+  foo1
+    literal:bar1
+  foo2
+    literal:bar3
 ```
-
-Notice, with the *[find-widget]* and the *[find-widget-like]* Active Events, the hierarchy is not as important as when you invoke *[get-parent-widget]*
-and *[get-children-widgets]*. Hence it does not yield an "additional node", like our first to widget retrieval events did. Notice also that you do not
-need to supply a value to these two Active Events. If you don't supply an value, they will both start searching at the "root system widget", which
-is the widget with the ID of "cnt", which you can find physically declared in the markup of your Default.aspx page.
 
 #### [find-first-ancestor-widget] and [find-first-ancestor-widget-like]
 
 These two Active Events are similar to the *[find-widget]* events, except of course, instead of searching "downwards" in the hierarchy from the root
 widget supplied, they search upwards in the ancestor chain for a match, from the currently iterated widget. These Active Events requires (for obvious 
-reasons) the caller to actually supply a value, and will not have a "default" value as our previously mentioned widget retrieval Active Events did.
+reasons) the caller to actually supply a value, and will not tolerate a "default" value as our previously mentioned widget retrieval Active Events did.
 Example code given below.
 
 ```
@@ -864,15 +888,12 @@ find-first-ancestor-widget-like:x:/../**/literal?value
 Which of course will yield the following result.
 
 ```
-/* ... rest of code ... */
 find-first-ancestor-widget-like
-  container:foo1
-  container:foo2
+  starting-widget-1
+    container:foo1
+  starting-widget-2
+    container:foo2
 ```
-
-Notice, that also here, there is no "injection node" for the currently iterated expression value, since it is not as important as in 
-the *[get-parent-widget]* and *[get-children-widgets]* events. If you for some reasons require to know the result, associated with the starting 
-widget, you should break your invocations up, into multiple invocations, using for instance a *[for-each]* loop, or something similar.
 
 #### [list-widgets] and [list-widgets-like]
 
@@ -904,10 +925,30 @@ _lit
 list-widgets:x:/-/*?name
 ```
 
-The above code should be fairly self explaining at this point ...
+The above code will yield something like this.
+
+```
+/* ... rest of code ... */
+list-widgets
+  literal:test-bar2
+list-widgets
+list-widgets-like
+  container:test-foo1
+  literal:test-bar1
+  literal:test-bar2
+_lit
+  test-bar1
+  test-bar2
+list-widgets
+  literal:test-bar1
+  literal:test-bar2
+```
 
 One point though, as in many of the other widget retrieval Active Events, is the fact that you are also getting the "type" of widget returned, as
-the name of the node - While you get the ID of the widget, returned as the value - Which might be useful sometimes ...
+the name of the node - While you get the ID of the widget, returned as the value - Which might be useful sometimes.
+
+Notice though that [list-widgets] foes not return an "injected node" for the widget you start out your search from, simply since there areno such
+node(s) or criteria given to it. This means it yields one level less than all other widget retrieval Active Events.
 
 #### [widget-exist]
 
