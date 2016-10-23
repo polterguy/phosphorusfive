@@ -686,7 +686,7 @@ There are also several helper Active Events to retrieve widgets, according to so
 * [find-widget-like] - Same as above, but doesn't require an "exact match", only that the widget "contains" your value(s)
 * [find-first-ancestor-widget] - Returns the first ancestor widget with the specifed properties and values
 * [find-first-ancestor-widget-like] - Same as above, but is happy as long as the value "contains" the value(s) specified
-* [list-widgets] - List all widgets that have IDs containing the specified string(s)
+* [list-widgets] - List all widgets that have IDs matching the specified string(s)
 * [list-widgets-like] - Same as above, but is happy as long as the ID(s) "contains" the value(s) specified
 * [widget-exist] - Yields true for each widget that exists matching the specified ID(s)
 
@@ -947,8 +947,9 @@ list-widgets
 One point though, as in many of the other widget retrieval Active Events, is the fact that you are also getting the "type" of widget returned, as
 the name of the node - While you get the ID of the widget, returned as the value - Which might be useful sometimes.
 
-Notice though that [list-widgets] foes not return an "injected node" for the widget you start out your search from, simply since there areno such
-node(s) or criteria given to it. This means it yields one level less than all other widget retrieval Active Events.
+Notice though that [list-widgets] does not return an "injected node" for the widget you start out your search from, simply since there are no such
+node(s) or criteria given to it. In addition, the same widget might match several criteria, making it impossible to put into one specific filter.
+This means it yields one level less than all other widget retrieval Active Events.
 
 #### [widget-exist]
 
@@ -981,30 +982,28 @@ For those developers out there whom are seasoned C#/ASP.NET developers, it is pr
 automatically, mirroring what goes on in server-land, automagically back to the client, and vice versa. In addition, there is no weird syntax, and 
 simply Hyperlambda, combined with expressions. The end result becoming that of, as long as you understand Hyperlambda, expressions, and have some few 
 Active Events in your knowledge belt, plus optionally some basic HTML and CSS - Then creating fairly complex web apps, actually becomes ridiculously 
-easy. And the Ajax parts, "simply happens". In such a way, it could be argued that Phosphorus Five, to some extent, is a "fifth generation programming
-language". Taking away all the nitty gritty details from your burdon, allowing you to focus solely on your domain problems.
+easy. And the Ajax parts, "simply happens". In such a way, it could be argued that Phosphorus Five, to some extent, is a _"fifth generation programming
+language"_. Taking away all the nitty gritty details from your burdon, allowing you to focus solely on your domain problems.
 
-And all of these features, simply are there for you, for free, without preventing you from rolling your own "cutting edge C# and/or ASP.NET" code ...
+And all of these features, simply are there for you, for free, without preventing you from rolling your own cutting edge C# and/or ASP.NET code.
 
-Although I tend to refer to P5 as a "web operating system", since it solves so many problems - At its core, it is actually nothing but a bunch 
-of "loosely coupled libraries", which can be used either as a combined product, or included in your own projects, to give you only some small
+Although I tend to refer to P5 as a web operating system, since it solves so many problems - At its core, it is actually nothing but a bunch 
+of loosely coupled libraries, which can be used either as a combined product, or included in your own projects, to give you only some small
 subset of functionality. p5.ajax is a primary example of this, being a "pure" C#/ASP.NET library, which you can consume completely alone, without
-having to bring in any other parts at all. Allowing you to create Web Controls, almost the same way as you would with "traditional ASP.NET".
+having to bring in any other parts at all. Allowing you to create Web Controls, almost the same way as you would with traditional ASP.NET.
 
-This creates a "ladder of transition" for you, which allows you to easily start using some smaller sub-sets of P5, without completely forcing unto
-you an entire "system development revolution" in any ways.
-
-Anyways, thought I'd just mention it ...
+This creates a ladder of transition for you, which allows you to easily start using some smaller sub-sets of P5, without completely forcing unto
+you an entirely new system development paradigm.
 
 ## Storing stuff and state in a web context
 
 In ASP.NET you have lots of different "storage objects" which you can use, such as the Session object, Application object, Cache, Cookies, 
-and so on. These same storage facilitates are mapped into Phosphorus Five, through the C# Active Events you can find in the "storage folder" 
-of this project.
+and so on. These same storage facilitates are mapped into Phosphorus Five, through the C# Active Events you can find in the [storage](storage/) 
+folder of this project.
 
 They all more or less obey by the same "API" (Active Event syntax), which allows you to easily change between any one of them, later in your project,
-as you see fit. This gives you an "Agile" environment for development, where you can easily move your data storage around, from different objects, 
-as you see fit.
+as you see fit. This gives you a flexible environment for development, where you can easily move your data storage around, from different objects, 
+as you see fit later.
 
 Below is a complete list of all of these Active Events.
 
@@ -1039,11 +1038,13 @@ then you are allowed to retrieve, list and modify "protected data", which is rea
 This ensures that you can store things into these objects, which is only accessible through C#. Which is an additional security feature, for things
 you do not wish some random piece of p5.lambda to access.
 
-Notice, there is also three Active Events defined in the p5.webapp project, which allows you to store "page values" (ViewState) called.
+Notice, there are also three Active Events defined in the [p5.webapp](/core/p5.webapp/) project, which allows you to store "page values" (ViewState).
 
 * [set-page-value] - Has private (.) alias
 * [get-page-value] - Has private (.) alias
 * [list-page-keys] - Has private (.) alias
+
+The above three mentioned events, also obeys by the same "API" as the once listed below.
 
 ### Accessing the ASP.NET Session object
 
