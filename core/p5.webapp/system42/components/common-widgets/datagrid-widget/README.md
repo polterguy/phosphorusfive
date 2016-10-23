@@ -361,6 +361,8 @@ In the above example, we have also turned of the entire footer, effectively disa
 The Gaiasoul Ajax Datagrid has a relatively rich API, which allows you to create your own controls, where you replace its functionality,
 with your own logic and/or UI.
 
+## Clickable headers
+
 Our last example above, also demonstrate how to turn on _"header clicking"_. By default, the headers of your Datagrid are not clickable.
 You can easily turn this on though, by adding your own *[_on-header-clicked]* lambda callback when creating your grid. This makes sure 
 your datagrid's headers becomes clickable, which you could use to for instance sort your data, filter according to columns, etc, etc, etc.

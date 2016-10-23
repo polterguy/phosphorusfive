@@ -267,33 +267,14 @@ create-widget
                       p5.page
                         name
                         template
-                  sys42.cms.create-navbar-menu
+                  if:x:/../*/sys42.cms.get-currently-edited-page?value
+                    !=:x:/../*/get-widget-property/*/page-url/0?value
 
-                  // Since URL of page (and hence ID) might have changed, we'll need to go through this again
-                  sys42.cms.set-currently-edited-page:x:/../*/get-widget-property/*/page-url/*?value
-                  sys42.cms.populate-select-page
-
-                  // Checking how many levels of nesting we have in page, to warn user of that more than two levels are BAD
-                  split:x:/../*/get-widget-property/*/page-url/*/value?value
-                    =:/
-                  if:x:/-/*?count
-                    >:int:2
-                    sys42.windows.info-tip:@"In general, it is considered bad practice to have more than two levels of nested menus! 
-Your page currently has {0} levels!"
-                      :x:/././-/*?count
-                      _class:info-window-warning info-window-longer
-                    set-widget-property:page-url
-                      style:"background-color:rgba(255,0,0,.2);"
-                      title:@"This is a bad idea!
-Try to avoid using more than two levels (/) in your URLs.
-Among other things, your page becomes inacessible on tablets and phones!"
-                    send-javascript:"$('#page-url').focus().select();"
+                    // If URL is changed, we reload location, making sure we change the currently edited page first.
+                    sys42.cms.set-currently-edited-page:x:/../*/get-widget-property/*/page-url/*?value
+                    reload-location
                   else
-                    sys42.windows.info-tip:Page '{0}' was successfully saved
-                      :x:/../*/get-widget-property/*/page-name/*?value
-                    set-widget-property:page-url
-                      style
-                      title
+                    sys42.windows.info-tip:Page was successfully saved.
 
 
             /*
