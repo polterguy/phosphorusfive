@@ -91,6 +91,8 @@ There are 17 basic iterators, each yielding different results
 * `/=xxx` - Value iterator, extracts all nodes with the specified "xxx" value
 * `/-n` - Younger sibling iterator, retreieves the younger sibling from previous result set. "n" must be an integer, if supplied. If no "n" is supplied, the value of "1" will be assumed
 * `/+n` - Elder sibling iterator, opposite of above
+* `/++` - Older iterator, yields all older nodes
+* `/--` - Younger iterator, yields all younger nodes
 * `/n` - Numbered child iterator, extracts the n'th child from the previous result set, where n must be an integer value
 * `/%n` - Modulo iterator, extracting every node matching the given (n) modulo, where n must be an integer number
 * `/[n1, n2]` - Range iterator, extracts a range of values from previous result set, where n1 and n2 must be numbers, n2 larger than n1
@@ -413,6 +415,94 @@ if:bool:true
 Logically, the named elder relative iterator, is the closest you come to easily refer to "variables" in P5. Simply because
 it will look for anything it has previously seen, which is a "named elder relative" you might think. Not considering parts
 of the tree, which does not also include an entire subset of the tree that the expression's node belongs to.
+
+### Extracting all younger or older nodes
+
+These iterators are allso pretty useful, in when looking for a specific node, either forward or backwards in your lambda 
+hierarchy. In isolation, they might seem not so very interesting, but when combining them with for instance a named iterator,
+or a value iterator, you can easily find a specific node either foward in your hierarchy (older iterator) or backwards (younger iterator).
+Consider this showing the "younger iterator".
+
+```
+_foo
+_bar
+_howdy
+set:x:/--?value
+  src:SUCCESS!
+_foo2
+_bar2
+_howdy2
+```
+
+The above code will result in the following lambda.
+
+```
+_foo:SUCCESS!
+_bar:SUCCESS!
+_howdy:SUCCESS!
+set:x:/--?value
+  src:SUCCESS!
+_foo2
+_bar2
+_howdy2
+```
+
+Then consider this code, showing the "older iterator".
+
+```
+_foo
+_bar
+_howdy
+set:x:/++?value
+  src:SUCCESS!
+_foo2
+_bar2
+_howdy2
+```
+
+Which results in the following results.
+
+```
+_foo
+_bar
+_howdy
+set:x:/++?value
+  src:SUCCESS!
+_foo2:SUCCESS!
+_bar2:SUCCESS!
+_howdy2:SUCCESS!
+```
+
+Often when you create Hyperlambda, you want to parametrize some node, before you invoke it, as an Active Event. When using
+the older or younger iterators, you can easily do so, and still allow for refactoring or changing your lambda structure later,
+since you do not depend upon a specific location for your nodes.
+
+Imagine this for instance.
+
+```
+set:x:/++/innerValue?value
+  src:Foo bar
+create-literal-widget
+  innerValue
+```
+
+If you later want to move your *[create-literal-widget]* invocation, to for instance an *[eval]* invocation or something, then
+you do not need to change your expression in your *[set]* invocation. Consider this.
+
+```
+set:x:/++/innerValue?value
+  src:Foo bar
+_eval
+  create-literal-widget
+    innerValue
+eval:x:/-
+```
+
+Notice, we did not have to update our original *[set]* destination expression, it still works.
+
+This give you more flexibility when refactoring, at the cost though. Realize though, that if you later create 
+another *[innerValue]*, behind your original *[set]* invocation, than also this innerValue node will have its value changed.
+Be alert for these types of scenarios when using these iterators!
 
 ### Extracting the previous or next sibling node
 

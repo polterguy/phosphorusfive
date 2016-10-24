@@ -42,6 +42,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="iterators\IteratorYounger.cs" />
+    <Compile Include="iterators\IteratorOlder.cs" />
     <Compile Include="iterators\IteratorNamedElderRelative.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Expression.cs" />
