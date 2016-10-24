@@ -37,6 +37,24 @@ _eval-name
 
 
 /*
+ * Callback invoked while [apply]'ing innerValue of unit test content.
+ */
+_eval-content
+  try
+    load-file:x:/../*/_dn/#?name
+    join:x:/-/*/*?name
+      sep:"]\r\n</li><li>["
+    eval-x:x:/..try/*/return/*
+    return
+      innerValue:<pre><ol><li>[{0}]</li></ol></pre>
+        :x:/..try/*/join?value
+  catch
+    return:Syntax error in Hyperlambda file
+  return
+    innerValue:Foo bar
+
+
+/*
  * Applying unit tests files to table widget
  */
 apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
@@ -94,11 +112,11 @@ apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
         /*
          * Result text from evaluation of file. Contains either one or more bugs, or the names of all
          * unit tests that was evaluated successfully. Value depends upon whether or not evaluation of 
-         * unit tests was a success or not. Before test is evaluated, "Undetermined" is its value.
+         * unit tests was a success or not.
          */
         td
           style:"width:60%;"
-          innerValue:Undetermined
+          {@eval}:x:/../*/_eval-content
           {_file-result}:x:?name
 
         /*
@@ -144,9 +162,9 @@ create-widget:unit-test-datagrid
         tr
           widgets
             th
-              innerValue:Unit test file
+              innerValue:File
             th
-              innerValue:Result
+              innerValue:Tests
             th
               class:text-right
               widgets
