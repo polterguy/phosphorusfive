@@ -40,117 +40,10 @@ create-widget:cms-page-editor
 
 
     /*
-     * The "Create new page" drop down.
-     */
-    container
-      class:col-md-3 col-xs-12 form-group
-      widgets
-        container
-          class:input-group
-          widgets
-            literal
-              class:input-group-addon
-              innerValue:Create
-            container:cms-create-new-page
-              element:select
-              class:form-control
-
-
-              /*
-               * Populates the "create new page" select drop down list.
-               */
-              oninit
-                sys42.cms.populate-create-new-page
-
-
-              /*
-               * Here we create a new page according to which option item was selected.
-               */
-              onchange
-                sys42.cms.create-new-page
-
-
-              /*
-               * Lambda events for "Create new page" widget.
-               */
-              events
-
-
-                /*
-                 * Here we loop through all files in "system42/cms/page-editor/editors",
-                 * and create one "create new page" option item for each of those files
-                 */
-                sys42.cms.populate-create-new-page
-
-                  /*
-                   * First we create our "information option value", simply displaying "New page ..."
-                   */
-                  create-literal-widget
-                    element:option
-                    parent:cms-create-new-page
-                    value:_default
-                    innerValue:New page ...
-
-                  /*
-                   * Then we create one "option" for each editor we have installed as a plugin 
-                   * in the "@CMS/page-editor/specialized-editors/" folder.
-                   */
-                  list-files:@CMS/page-editor/specialized-editors/
-                    filter:.hl
-                  for-each:x:/-/*?name
-
-                    /*
-                     * Removing folder name and ".hl" extension, before we set the [value] and [innerValue]
-                     * of our "option" HTML element for our "create new page drop down".
-                     */
-                    split:x:/./*/_dp?value
-                      =:/
-                      =:.
-                    add:x:/..for-each/*/create-literal-widget
-                      src:"value:{0}"
-                        :x:/..for-each/*/split/0/-2?name
-                    add:x:/..for-each/*/create-literal-widget
-                      src:"innerValue:{0}"
-                        :x:/..for-each/*/split/0/-2?name
-
-                    /*
-                     * Creating our "option" HTML element for currently iterated "specialized editor".
-                     */
-                    create-literal-widget
-                      element:option
-                      parent:cms-create-new-page
-
-
-                /*
-                 * Here we create a new page, according to what option user selected, by
-                 * executing "system42/cms/page-editor/new-page-templates/xxx.hl"
-                 * which is expected to create a new default page of selected type "xxx".
-                 */
-                sys42.cms.create-new-page
-
-                  /*
-                   * Figuring out which page type user wants to create ("html", "lambda", etc) before
-                   * firing up the "template" create page Hyperlambda script from our template folder.
-                   */
-                  get-widget-property:cms-create-new-page
-                    value
-                  eval-x:x:/+/*
-                  sys42.execute-lambda-file:@CMS/page-editor/create-new-page.hl
-                    _type:x:/../*/get-widget-property/*/*?value
-                    _template:x:/../*/get-widget-property/*/*?value
-
-                  /*
-                   * Resetting the "create new page" drop down to its [_default] value.
-                   */
-                  set-widget-property:cms-create-new-page
-                    value:_default
-
-
-    /*
      * The edit existing page select drop down.
      */
     container
-      class:col-md-9 col-xs-12 form-group
+      class:col-xs-9 col-md-10 form-group
       widgets
         container
           class:input-group
@@ -305,6 +198,100 @@ create-widget:cms-page-editor
                      * No page is being edited, simply clear the editor surface.
                      */
                     clear-widget:cms-page-editor-surface
+
+
+    container
+      class:col-xs-3 col-md-2 btn-group
+      widgets
+        button
+          type:button
+          style:"width:100%;display:block;"
+          class:btn btn-primary dropdown-toggle
+          data-toggle:dropdown
+          aria-haspopup:true
+          aria-expanded:false
+          innerValue:@"+"
+        ul:cms-create-new-page
+          class:dropdown-menu
+          widgets
+
+
+          /*
+            * Populates the "create new page" select drop down list.
+            */
+          oninit
+            sys42.cms.populate-create-new-page
+
+
+          /*
+            * Lambda events for "Create new page" widget.
+            */
+          events
+
+
+            /*
+              * Here we loop through all files in "system42/cms/page-editor/editors",
+              * and create one "create new page" page item for each of those files.
+              */
+            sys42.cms.populate-create-new-page
+
+              /*
+                * Then we create one "option" for each editor we have installed as a plugin 
+                * in the "@CMS/page-editor/specialized-editors/" folder.
+                */
+              list-files:@CMS/page-editor/specialized-editors/
+                filter:.hl
+              for-each:x:/-/*?name
+
+                /*
+                  * Removing folder name and ".hl" extension, before we set the [value] and [innerValue]
+                  * of our "option" HTML element for our "create new page drop down".
+                  */
+                split:x:/./*/_dp?value
+                  =:/
+                  =:.
+
+                /*
+                  * Creating our "button" HTML element for currently iterated "specialized editor".
+                  */
+                eval-x:x:/+/*/*/*
+                create-widget
+                  element:li
+                  parent:cms-create-new-page
+                  widgets
+                    a
+                      href:#
+                      innerValue:x:/..for-each/*/split/0/-2?name
+                      onclick
+
+                        /*
+                          * First toggling (closing) bootstrap's dropdown button.
+                          */
+                        find-first-ancestor-widget-like:x:/../*/_event?value
+                          class:btn-group
+                        find-widget:x:/-/*/*?value
+                          element:button
+                        send-javascript:@"$('#{0}').dropdown('toggle');"
+                          :x:/../*/find-widget/0/0?value
+
+                        /*
+                          * Then creating our new page.
+                          */
+                        get-widget-property:x:/../*/_event?value
+                          innerValue
+                        sys42.cms.create-new-page:x:/../*/get-widget-property/*/*?value
+
+
+            /*
+              * Here we create a new page, according to what option user selected, by
+              * executing "system42/cms/page-editor/new-page-templates/xxx.hl"
+              * which is expected to create a new default page of selected type "xxx".
+              */
+            sys42.cms.create-new-page
+              eval-x:x:/+/*
+              sys42.execute-lambda-file:@CMS/page-editor/create-new-page.hl
+                _type:x:/../*/_arg?value
+                _template:x:/../*/_arg?value
 
 
     /*

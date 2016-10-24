@@ -35,7 +35,7 @@ create-widget
   style:"display:inline-block;width:100%;"
   widgets
     sys42.widgets.ck-editor:ck-editor
-      _height:600
+      _height:451
       innerValue
 
 

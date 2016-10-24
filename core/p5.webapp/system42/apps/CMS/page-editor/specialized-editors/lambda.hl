@@ -34,8 +34,7 @@ create-widget
   class:col-xs-12
   widgets
     sys42.widgets.codemirror:editor_surface
-      _height:600px
-      _auto-focus:true
+      _height:555px
       innerValue
 
 
