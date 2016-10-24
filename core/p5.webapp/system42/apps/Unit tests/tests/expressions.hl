@@ -79,3 +79,23 @@ eval-x-formatted
     !=:foo-bar
     throw:@"Assert error, expected [foo-bar], got [{0}]!"
       :x:/../*/_result?value
+
+/*
+ * Tests the elder relative iterator
+ */
+elder-relative-iterator
+  _foo:SUCCESS
+  if:x:/@_foo?value
+    !=:SUCCESS
+    throw:@"Assert error, expected success"
+
+/*
+ * Tests the elder relative iterator
+ */
+elder-relative-iterator-2
+  _foo:SUCCESS
+  _bar
+    _foo
+  if:x:/@_foo?value
+    !=:SUCCESS
+    throw:@"Assert error, expected success"

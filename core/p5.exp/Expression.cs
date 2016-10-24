@@ -360,6 +360,10 @@ namespace p5.exp
 
                         // Sibling offset
                         SiblingToken (current, token);
+                    } else if (token.StartsWith ("@")) {
+
+                        // Sibling offset
+                        ElderRelativeToken (current, token);
                     } else {
 
                         if (Utilities.IsNumber (token)) {
@@ -499,7 +503,7 @@ namespace p5.exp
         private void SiblingToken (IteratorGroup current, string token)
         {
             var intValue = token.Substring (1);
-            var oper = token [0];
+            var oper = token[0];
             var value = 1;
             if (intValue.Length > 0 && !Utilities.IsNumber (intValue))
                 throw new ExpressionException (
@@ -507,7 +511,16 @@ namespace p5.exp
                     string.Format ("Syntax error in sibling token '{0}', expected integer value, found string", token));
             if (intValue.Length > 0)
                 value = int.Parse (intValue);
-            current.AddIterator (new IteratorSibling (value*(oper == '+' ? 1 : -1)));
+            current.AddIterator (new IteratorSibling (value * (oper == '+' ? 1 : -1)));
+        }
+
+        /*
+         * Creates an elder relative token
+         */
+        private void ElderRelativeToken (IteratorGroup current, string token)
+        {
+            var name = token.Substring (1);
+            current.AddIterator (new IteratorNamedElderRelative (name));
         }
 
         public int CompareTo (object rhs)

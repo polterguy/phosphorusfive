@@ -84,6 +84,7 @@ There are 17 basic iterators, each yielding different results
 * `/.` - Parent iterator, extracts parent nodes from previous result set
 * `/..` - Root node iterator, extracts the root node from previous result set
 * `/..xxx` - Named ancestor iterator, extracts all ancestor with the specified (xxx) name
+* `/@xxx` - Named elder relative iterator, extracts first elder relative with the specified (xxx) name
 * `/*` - Children iterator, extracts all children of previous result set
 * `/**` - Descendants iterator, extracts all descendents of previous result set (children and childrens' children, etc)
 * `/xxx` - Named iterator, extracts all nodes with the specified "xxx" name
@@ -351,6 +352,67 @@ set:x:/../*/_data/*/\*?value
 ```
 
 The above Hyperlambda would change the value of the node with the name of "*".
+
+### Extracting the first elder relative node
+
+This is possibly one of the most useful iterators in P5. First of all, it allows you to refactor
+your node hierarchy if you use it, later, without the same probability of you breaking your expressions.
+Secondly, it tends to replace a whole range of iterators due to its syntax and logic.
+
+Basically, it allows you to retrieve the first node with a specified name, from the dataset of previous siblings, 
+and/or parent nodes, until it finds a match, or yields a null result if no match is found. Example is given below.
+
+```
+_foo
+_foo
+_bar
+  _foo
+set:x:/@_foo?value
+  src:CHANGED!
+```
+
+The above code will result in the following.
+
+```
+_foo
+_foo:CHANGED!
+_bar
+  _foo
+set:x:/@_foo?value
+  src:CHANGED!
+```
+
+Notice how the iterator skips the second *[_foo]*, inside of our *[_bar]*. This is because it is neither an elder
+sibling, nor a parent of *[set]*. Notice also how only the second *[_foo]* is changed, and not the first. This iterator
+will always yield zero or one result, and only yield the first node matching the specified name.
+
+Consider this code.
+
+```
+_foo
+_bar
+if:true
+  if:true
+    set:x:/@_foo?value
+      src:CHANGED!
+```
+
+What happens above, is that the expression first evaluates our second *[if]*, which doesn't match the specified name of "_foo",
+then it moves on the its parent, to the first *[if]*. Neither this is a match, so it moves on to the *[_bar]*, which doesn't
+yield a match either. Therefor it moves on to *[_foo]*, which yields a match, and the result becomes.
+
+```
+_foo:CHANGED!
+_bar
+if:bool:true
+  if:bool:true
+    set:x:/@_foo?value
+      src:CHANGED!
+```
+
+Logically, the named elder relative iterator, is the closest you come to easily refer to "variables" in P5. Simply because
+it will look for anything it has previously seen, which is a "named elder relative" you might think. Not considering parts
+of the tree, which does not also include an entire subset of the tree that the expression's node belongs to.
 
 ### Extracting the previous or next sibling node
 
