@@ -10,10 +10,11 @@
  * [_class]          - Override the default CSS class
  * [_parent]         - Override the default parent widget
  * [_onok]           - Code to be evaluated if user clicks OK button
+ * [_onclose]        - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
  * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
  *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
  *                     provide your own logic in the onclick handler of these buttons instead.
- *                     To evaluate the [_onok] lambda, you can invoke [sys42.windows.confirm.evaluate-ok],
+ *                     To evaluate the [_onok] lambda, you can invoke [sys42.windows.confirm.ok],
  *                     To close dialogue, you can invoke [sys42.windows.confirm.close]
  *
  * If user closes modal dialogue, without clicking OK, then the given [_onok] is not evaluated.
@@ -32,6 +33,7 @@ create-event:sys42.windows.confirm
     _class:modal fade
     _parent:cnt
     _onok
+    _onclose
     _buttons
       literal
         element:button
@@ -41,7 +43,7 @@ create-event:sys42.windows.confirm
           sys42.windows.confirm.initial-focus:x:/../*/_event?value
         onclick
           sys42.windows.confirm.close
-          sys42.windows.confirm.evaluate-ok
+          sys42.windows.confirm.ok
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
@@ -65,10 +67,16 @@ create-event:sys42.windows.confirm
     src:x:/../*/_options/*/_buttons/*
 
   /*
-   * Appending [_onok] into [sys42.windows.confirm.evaluate-ok]
+   * Appending [_onok] into [sys42.windows.confirm.ok]
    */
-  add:x:/../*/create-widget/*/events/*/sys42.windows.confirm.evaluate-ok
+  add:x:/../*/create-widget/*/events/*/sys42.windows.confirm.ok
     src:x:/../*/_options/*/_onok/*
+
+  /*
+   * Appending [_onclose] into [sys42.windows.modal.close]
+   */
+  add:x:/++/sys42.windows.modal.close
+    src:x:/../*/_options/*/_onclose/*
 
   /*
    * Creating actual modal Widget, making sure we forward evaluate the [_header] and [_body]
@@ -77,7 +85,28 @@ create-event:sys42.windows.confirm
   create-widget:confirm-window
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
+    _onclose
+      sys42.windows.modal.close
+        _close-client:bool:false
     events
+
+      /*
+       * Closes dialogue
+       */
+      sys42.windows.modal.close
+
+        /*
+         * Closing modal dialogue.
+         */
+        if:x:/../*/_close-client
+          not
+          or:x:/../*/_close-client?value
+          send-javascript:@"$('#confirm-window').modal('toggle');"
+
+        /*
+         * Notice, the rest of this event might look empty, but above we are appending the [_onclose]
+         * lambda callback supplied by caller into this event.
+         */
 
       /*
        * Closes dialogue
@@ -89,7 +118,7 @@ create-event:sys42.windows.confirm
        * Evaluates OK lambda object.
        * Notice the [_onok] lambda, passed in from caller, will be appended into this event.
        */
-      sys42.windows.confirm.evaluate-ok
+      sys42.windows.confirm.ok
 
       /*
        * Gives initial focus to a specific widget
@@ -101,9 +130,11 @@ create-event:sys42.windows.confirm
     oninit
 
       /*
-       * Making sure dialog becomes initially visible
+       * Making sure dialog becomes initially visible, and that we trap "onclose"
        */
-      send-javascript:@"$('#confirm-window').modal('toggle');"
+      send-javascript:@"$('#confirm-window').modal('toggle').on('hide.bs.modal', function(){
+  p5.$('confirm-window').raise('_onclose');
+});"
 
     widgets
       container

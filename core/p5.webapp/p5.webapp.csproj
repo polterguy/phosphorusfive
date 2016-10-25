@@ -623,6 +623,7 @@
     <Content Include="system42\components\csv-helpers\startup.hl" />
     <Content Include="system42\components\common-widgets\startup.hl" />
     <Content Include="system42\components\common-windows\startup\sys42.windows.wizard.hl" />
+    <Content Include="system42\apps\CMS\page-editor\editor - Copy.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\css\bootstrap.css.map" />
     <None Include="system42\components\bootstrap\css\bootstrap-theme.css.map" />

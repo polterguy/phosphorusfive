@@ -12,6 +12,7 @@
  * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
  * [_parent]         - Override the default parent widget
  * [_onok]           - Lambda callback to evaluate upon user clicking "OK" button
+ * [_close]          - Lambda callback to evaluate is user closes dialogue without pressing "OK".
  * [_buttons]        - Buttons to use instead of the (default) "OK" button
  * [_widgets]        - List of widgets to append into the body parts of the modal window
  *
@@ -32,14 +33,14 @@ create-event:sys42.windows.modal
     _inner-class:modal-dialog
     _parent:cnt
     _onok
+    _onclose
     _buttons
-      literal
-        element:button
+      button
         class:btn btn-default
         innerValue:OK
         onclick
           if
-            sys42.windows.modal.evaluate-ok
+            sys42.windows.modal.ok
             !=:bool:false
             sys42.windows.modal.close
   _options
@@ -88,9 +89,15 @@ create-event:sys42.windows.modal
     src:x:/../*/_options/*/_widgets/*
 
   /*
-   * Appending [_onok] into [sys42.windows.modal.evaluate-ok]
+   * Appending [_onclose] into [sys42.windows.modal.close]
    */
-  add:x:/../*/create-widget/*/events/*/sys42.windows.modal.evaluate-ok
+  add:x:/++/sys42.windows.modal.close
+    src:x:/../*/_options/*/_onclose/*
+
+  /*
+   * Appending [_onok] into [sys42.windows.modal.ok]
+   */
+  add:x:/../*/create-widget/*/events/*/sys42.windows.modal.ok
     src:x:/../*/_options/*/_onok/*
 
   /*
@@ -100,19 +107,36 @@ create-event:sys42.windows.modal
   create-widget:modal-window
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
+    _onclose
+      sys42.windows.modal.close
+        _close-client:bool:false
     events
 
       /*
        * Closes dialogue
        */
       sys42.windows.modal.close
-        send-javascript:@"$('#modal-window').modal('toggle');"
+
+        /*
+         * Closing modal dialogue.
+         */
+        if:x:/../*/_close-client
+          not
+          or:x:/../*/_close-client?value
+          send-javascript:@"$('#modal-window').modal('toggle');"
+
+        /*
+         * Notice, the rest of this event might look empty, but above we are appending the [_onclose]
+         * lambda callback supplied by caller into this event.
+         */
+
 
       /*
        * Evaluates OK lambda object.
        * Notice the [_onok] lambda, passed in from caller, will be appended into this event.
        */
-      sys42.windows.modal.evaluate-ok
+      sys42.windows.modal.ok
+
 
       /*
        * Gives initial focus to a specific widget
@@ -124,9 +148,11 @@ create-event:sys42.windows.modal
     oninit
 
       /*
-       * Making sure dialog becomes initially visible
+       * Making sure dialog becomes initially visible, and that we trap "onclose"
        */
-      send-javascript:@"$('#modal-window').modal('toggle');"
+      send-javascript:@"$('#modal-window').modal('toggle').on('hide.bs.modal', function(){
+  p5.$('modal-window').raise('_onclose');
+});"
 
     widgets
       container
@@ -148,6 +174,8 @@ create-event:sys42.windows.modal
                     data-dismiss:modal
                     aria-label:Close
                     innerValue:&times;
+                    onclick
+                      sys42.windows.modal.close
                   literal:modal-window-header
                     element:h4
                     innerValue
@@ -155,7 +183,7 @@ create-event:sys42.windows.modal
               /*
                * Body of dialog, contains [_body] and dynamically created widgets
                */
-              container
+              container:modal-window-body
                 class:modal-body
                 widgets
                   literal:modal-window-body

@@ -79,7 +79,11 @@ Left associately means that the expression engine evaluate them from the left to
 
 ## Iterator types
 
-There are 17 basic iterators, each yielding different results
+Warning! This list might scare you, since there are 20 different iterators, each with its own unique algorithm for extraction.
+However, in 99% of the cases, you can get away with, and _should_ not use in fact, more than a handful of iterators in your code.
+The children iterator, named iterator, value iterator, named elder iterator should probably accommodate for most of your daily needs.
+
+However, there are 20 basic iterators, each yielding different results
 
 * `/.` - Parent iterator, extracts parent nodes from previous result set
 * `/..` - Root node iterator, extracts the root node from previous result set

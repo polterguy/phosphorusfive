@@ -439,6 +439,18 @@ namespace p5.security.helpers
          */
         public static void GetRoles (ApplicationContext context, Node args)
         {
+            // Making sure default role is added first.
+            string defaultRole = context.Raise (".p5.security.get-default-context-role").Get<string> (context);
+            if (!string.IsNullOrEmpty (defaultRole)) {
+
+                // There exist a default role, checking if it's already added
+                if (args.Children.FirstOrDefault (ix => ix.Name == defaultRole) == null) {
+
+                    // Default Role was not already added, therefor we add it to return lambda node
+                    args.Add (defaultRole);
+                }
+            }
+
             // Getting password file in Node format, such that we can traverse file for all roles
             Node pwdFile = AuthFile.GetAuthFile(context);
 
@@ -450,18 +462,6 @@ namespace p5.security.helpers
 
                 // Adding currently iterated role, unless already added, and incrementing user count for it
                 args.FindOrCreate (role).Value = args[role].Get<int> (context, 0) + 1;
-            }
-
-            // Making sure default role is added
-            string defaultRole = context.Raise (".p5.security.get-default-context-role").Get<string> (context);
-            if (!string.IsNullOrEmpty(defaultRole)) {
-
-                // There exist a default role, checking if it's already added
-                if (args.Children.FirstOrDefault(ix => ix.Name == defaultRole) == null) {
-
-                    // Default Role was not already added, therefor we add it to return lambda node
-                    args.Add(defaultRole);
-                }
             }
         }
 

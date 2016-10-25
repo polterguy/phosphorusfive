@@ -66,6 +66,12 @@ create-widget:cms-page-editor
                   sys42.cms.get-currently-edited-page
                   sys42.cms.edit-page
 
+                /*
+                 * Making sure we set focus to dropdown.
+                 */
+                send-javascript:@"$('#{0}').focus().select();"
+                  :x:/../*/_event?value
+
 
               /*
                * Here we start editing the selected page
@@ -159,10 +165,7 @@ create-widget:cms-page-editor
                       element:option
                       parent:cms-select-page
                       value:x:/..for-each/*/_dp/#?value
-                      innerValue:{0} [{1}] {2}
-                        :x:/..for-each/*/_dp/#/*/name?value
-                        :x:/..for-each/*/_dp/#/*/type?value
-                        :x:/..for-each/*/_dp/#?value
+                      innerValue:x:/..for-each/*/_dp/#/*/name?value
 
 
                 /*
@@ -200,6 +203,9 @@ create-widget:cms-page-editor
                     clear-widget:cms-page-editor-surface
 
 
+    /*
+     * The create new page button (dropdown).
+     */
     container
       class:col-xs-3 col-md-2 btn-group
       widgets
@@ -217,43 +223,43 @@ create-widget:cms-page-editor
 
 
           /*
-            * Populates the "create new page" select drop down list.
-            */
+           * Populates the "create new page" select dropdown button.
+           */
           oninit
             sys42.cms.populate-create-new-page
 
 
           /*
-            * Lambda events for "Create new page" widget.
-            */
+           * Lambda events for "Create new page" widget.
+           */
           events
 
 
             /*
-              * Here we loop through all files in "system42/cms/page-editor/editors",
-              * and create one "create new page" page item for each of those files.
-              */
+             * Here we loop through all files in "system42/cms/page-editor/editors",
+             * and create one "create new page" button dropdown item for each of those files.
+             */
             sys42.cms.populate-create-new-page
 
               /*
-                * Then we create one "option" for each editor we have installed as a plugin 
-                * in the "@CMS/page-editor/specialized-editors/" folder.
-                */
+               * Then we create one button dropdown item for each editor we have installed as a plugin 
+               * in the "@CMS/page-editor/specialized-editors/" folder.
+               */
               list-files:@CMS/page-editor/specialized-editors/
                 filter:.hl
               for-each:x:/-/*?name
 
                 /*
-                  * Removing folder name and ".hl" extension, before we set the [value] and [innerValue]
-                  * of our "option" HTML element for our "create new page drop down".
-                  */
+                 * Removing folder name and ".hl" extension, before we set the [value] and [innerValue]
+                 * of our "option" HTML element for our "create new page drop down".
+                 */
                 split:x:/./*/_dp?value
                   =:/
                   =:.
 
                 /*
-                  * Creating our "button" HTML element for currently iterated "specialized editor".
-                  */
+                 * Creating our "button" HTML element for currently iterated "specialized editor".
+                 */
                 eval-x:x:/+/*/*/*
                 create-widget
                   element:li
@@ -265,8 +271,8 @@ create-widget:cms-page-editor
                       onclick
 
                         /*
-                          * First toggling (closing) bootstrap's dropdown button.
-                          */
+                         * First toggling (closing) bootstrap's dropdown button.
+                         */
                         find-first-ancestor-widget-like:x:/../*/_event?value
                           class:btn-group
                         find-widget:x:/-/*/*?value
@@ -275,19 +281,25 @@ create-widget:cms-page-editor
                           :x:/../*/find-widget/0/0?value
 
                         /*
-                          * Then creating our new page.
-                          */
+                         * Then creating our new page.
+                         */
                         get-widget-property:x:/../*/_event?value
                           innerValue
                         sys42.cms.create-new-page:x:/../*/get-widget-property/*/*?value
 
 
             /*
-              * Here we create a new page, according to what option user selected, by
-              * executing "system42/cms/page-editor/new-page-templates/xxx.hl"
-              * which is expected to create a new default page of selected type "xxx".
-              */
+             * Here we create a new page, according to what option user selected, by
+             * executing "@CMS/page-editor/create-new-page.hl",
+             * which is expected to create a new default page.
+             */
             sys42.cms.create-new-page
+
+              /*
+               * Forward evaluating arguments, before invoking [sys42.execute-lambda-file] to 
+               * evaluate "@CMS/page-editor/create-new-page.hl", passing in which type of page,
+               * and which template to use
+               */
               eval-x:x:/+/*
               sys42.execute-lambda-file:@CMS/page-editor/create-new-page.hl
                 _type:x:/../*/_arg?value
@@ -315,8 +327,7 @@ create-widget:cms-page-editor
          * Clears the editor surface, in case another page is already being edited, and starts 
          * the editing process.
          *
-         * Which means that it loads up the "common toolbar" for common settings, such as page Name, URL, etc, 
-         * in addition to starting the "specialized editor", which depends upon the [type] of page, and can be 
+         * Which means that it loads up the "specialized editor", which depends upon the [type] of page, and can be 
          * found in the "@CMS/page-editor/specialized-editors/" folder.
          */
         sys42.cms.edit-page
@@ -336,7 +347,7 @@ create-widget:cms-page-editor
              * We are editing a page, hence we load [p5.page]'s [type] declaration from database, which is
              * needed to load "specialized editor".
              */
-            select-data:x:/*/*/p5.page/"={0}"/*/type?value
+            select-data:x:@"/*/*/p5.page/""={0}""/*/type?value"
               :x:/../*/sys42.cms.get-currently-edited-page?value
 
             /*
@@ -345,5 +356,5 @@ create-widget:cms-page-editor
              */
             eval-x:x:/+/*
             sys42.execute-lambda-file:@CMS/page-editor/editor.hl
-              _editor:x:/..if/*/select-data/*?value
-              _id:x:/../*/sys42.cms.get-currently-edited-page?value
+              _editor:x:/@select-data/*?value
+              _id:x:/@sys42.cms.get-currently-edited-page?value

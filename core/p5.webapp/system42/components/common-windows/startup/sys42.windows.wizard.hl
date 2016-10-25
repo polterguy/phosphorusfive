@@ -10,6 +10,7 @@
  * [_data]           - List of data elements user wish to edit using textboxes.
  * [_onok]           - Invoked when user clicks "OK" button after applying his edits.
  *                     The new values are passed in as [_data].
+ * [_onclose]        - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
  */
 create-event:sys42.windows.wizard
 
@@ -20,27 +21,83 @@ create-event:sys42.windows.wizard
     src:x:/../*/_onok/*
 
   /*
-   * Looping through each [_data] items, creating a textbox edit for each item.
+   * Adding [_onclose] lambda callback into [_onclose] of modal dialogue.
+   */
+  add:x:/++/_onclose
+    src:x:/../*/_onclose/*
+
+  /*
+   * Looping through each [_data] items, creating an edit widget for each item.
    */
   for-each:x:/../*/_data/*
-    eval-x:x:/+/*/*/*/*/*/*/*
-    add:x:/../*/sys42.windows.modal/*/_widgets
-      src
-        container
-          class:form-group
-          widgets
-            container
-              class:input-group
-              widgets
-                label
-                  class:input-group-addon
-                  innerValue:x:/..for-each/*/_dp/#?name
-                input
-                  type:text
-                  class:form-control
-                  value:x:/..for-each/*/_dp/#?value
-                  _data-field-name:x:/..for-each/*/_dp/#?name
-        
+
+    /*
+     * Checking what type of edit field this is.
+     */
+    if:x:/..for-each/*/_dp/#/*/_choices
+
+      /*
+       * Select dropdown choices.
+       */
+      set:x:/+/*/_selected?value
+        src:x:/..for-each/*/_dp/#?value
+      _eval-option
+        _selected
+        eval-x:x:/+/*/*
+        add:x:/../*/return
+          src
+            value:x:/../*/_dn/#?value
+            innerValue:x:/../*/_dn/#?name
+        if:x:/../*/_selected?value
+          =:x:/../*/_dn/#?value
+          add:x:/../*/return
+            src:selected
+        return
+      apply:x:/+2/*/*/*/*/*/*/*/widgets
+        src:x:/..for-each/*/_dp/#/*/_choices/*
+        template
+          option
+            {@eval}:x:/..if/*/_eval-option
+      eval-x:x:/+/*/*/*/*/*/*/*
+      add:x:/../*/sys42.windows.modal/*/_widgets
+        src
+          container
+            class:form-group
+            widgets
+              container
+                class:input-group
+                widgets
+                  label
+                    class:input-group-addon
+                    innerValue:x:/..for-each/*/_dp/#?name
+                  select
+                    class:form-control
+                    value:x:/..for-each/*/_dp/#?value
+                    _data-field-name:x:/..for-each/*/_dp/#?name
+                    widgets
+    else
+
+      /*
+       * Defaulting to "textbox".
+       */
+      eval-x:x:/+/*/*/*/*/*/*/*
+      add:x:/../*/sys42.windows.modal/*/_widgets
+        src
+          container
+            class:form-group
+            widgets
+              container
+                class:input-group
+                widgets
+                  label
+                    class:input-group-addon
+                    innerValue:x:/..for-each/*/_dp/#?name
+                  input
+                    type:text
+                    class:form-control
+                    value:x:/..for-each/*/_dp/#?value
+                    _data-field-name:x:/..for-each/*/_dp/#?name
+
 
   /*
    * Creates our modal widget, after making sure there's a textbox, for each value in our [_data] segment.
@@ -50,6 +107,7 @@ create-event:sys42.windows.wizard
     _header:x:/../*/_header?value
     _body:x:/../*/_body?value
     _widgets
+    _onclose
     _onok
       get-widget-properties:modal-window
         _data-field-name
@@ -65,3 +123,19 @@ create-event:sys42.windows.wizard
       add:x:/../*/_eval
         src:x:/../*/_data
       eval:x:/../*/_eval
+      if:x:/-?value
+        not
+
+        /*
+         * Caller supplied lambda returned "error", checking if lambda also supplied one 
+         * or more "data fields" that is in error state.
+         */
+        if:x:/@eval/*
+          find-widget
+            _data-field-name:x:/@eval/*?value
+          get-parent-widget:x:/-/*/*?value
+          sys42.add-css-classes:x:/-/*/*?value
+            _class:has-error
+          send-javascript:@"$('#{0}').focus().select();"
+            :x:/@find-widget/0/0?value
+      return:x:/@eval?value

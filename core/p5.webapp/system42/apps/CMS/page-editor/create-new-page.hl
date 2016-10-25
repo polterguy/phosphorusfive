@@ -85,17 +85,6 @@ insert-data
 sys42.cms.set-currently-edited-page:x:/../*/insert-data/0?value
 
 /*
- * Now we can start editing our page.
- * But first we need to re-populate our "select existing page" drop down.
+ * Simple version reloading location, to make sure we repopulate the "select page" dropdown, etc.
  */
-sys42.cms.populate-select-page
-sys42.cms.edit-page
-
-/*
- * Re-creating our "navbar" menu, such that page's link is immediately visible in navbar.
- * Before we give feedback to user about newly created page.
- */
-sys42.cms.create-navbar-menu
-sys42.windows.info-tip:@"Page is restricted such that only a 'root' account can see it"
-  _class:info-window-longer
-
+reload-location

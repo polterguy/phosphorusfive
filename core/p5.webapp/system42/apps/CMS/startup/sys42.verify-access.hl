@@ -17,7 +17,7 @@
 create-event:sys42.verify-access
 
   /*
-   * Defaulting return value to "hass access".
+   * Defaulting return value to "access granted".
    */
   set:x:/..?value
     src:bool:true
@@ -27,6 +27,8 @@ create-event:sys42.verify-access
    * which allows user to gain access.
    */
   if:x:/../*/_arg
+    and:x:/../*/_arg?value
+      !=:
 
     /*
      * Retrieving currently logged in user's role.

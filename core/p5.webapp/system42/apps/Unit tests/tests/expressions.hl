@@ -99,3 +99,37 @@ elder-relative-iterator-2
   if:x:/@_foo?value
     !=:SUCCESS
     throw:@"Assert error, expected success"
+
+/*
+ * Tests the younger iterator
+ */
+younger-iterator
+  _foo
+  _bar
+    _foo
+  set:x:/--?value
+    src:SUCCESS
+  if:x:/../0?value
+    !=:SUCCESS
+    or:x:/../1?value
+      !=:SUCCESS
+    or:x:/../1/0?value
+      !=:SUCCESS
+    throw:@"Assert error, expected success"
+
+/*
+ * Tests the elder iterator
+ */
+elder-iterator
+  set:x:/0/++?value
+    src:SUCCESS
+  _foo
+  _bar
+    _foo
+  if:x:/../1?value
+    !=:SUCCESS
+    or:x:/../2?value
+      !=:SUCCESS
+    or:x:/../2/0?value
+      !=:SUCCESS
+    throw:@"Assert error, expected success"

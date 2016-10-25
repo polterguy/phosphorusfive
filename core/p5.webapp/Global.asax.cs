@@ -76,13 +76,13 @@ namespace p5
             {
                 // Rewriting path such that "x.com/somefolder/somefile" becomes "x.com?file=somefolder/somefile"
                 // Notice, "ToLower"!
-                var localPath = HttpContext.Current.Request.Url.LocalPath.ToLower ();
+                var localPath = HttpContext.Current.Request.Url.LocalPath;
 
                 // Checking to see if we should rewrite the URL/path to page
-                if (localPath == "/default.aspx" || !localPath.Contains (".")) {
+                if (localPath.ToLower () == "/default.aspx" || !localPath.Contains (".")) {
 
                     // Rewriting path (URL) of request
-                    RewritePath(localPath);
+                    RewritePath (localPath);
                 }
             }
 
@@ -203,7 +203,7 @@ namespace p5
             private static void RewritePath (string url)
             {
                 // If file requested is Default.aspx, we change it to simply "?file=/"
-                if (url == "/default.aspx")
+                if (url.ToLower () == "/default.aspx")
                     url = "/";
 
                 // Storing original path

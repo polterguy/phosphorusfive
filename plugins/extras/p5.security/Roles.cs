@@ -39,7 +39,9 @@ namespace p5.security
         [ActiveEvent (Name = "list-roles")]
         public static void list_roles (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthenticationHelper.GetRoles (context, e.Args);
+            using (new Utilities.ArgsRemover (e.Args, true)) {
+                AuthenticationHelper.GetRoles (context, e.Args);
+            }
         }
     }
 }

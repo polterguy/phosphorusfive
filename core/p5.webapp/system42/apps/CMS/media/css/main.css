@@ -45,8 +45,6 @@ body {
 }
 
 
-
-
 /*
  * Info feedback popdown dialog animations, and CSS class
  */
@@ -72,7 +70,7 @@ body {
     }
     100% {
         opacity:0;
-        margin-top:-100px;
+        margin-top:-500px;
     }
 }
 
@@ -86,9 +84,9 @@ body {
     padding:5px 25px 0 25px;
     border-radius:0 0 15px 15px;
     z-index:1020;
-    animation-name: animate-info-feedback;
-    animation-duration: 3s;
-    margin-top:-100px;
+    animation-name:animate-info-feedback;
+    animation-duration:3s;
+    animation-fill-mode:forwards;
 }
 
 /*
@@ -197,6 +195,25 @@ body {
     border-top-style:none;
 }
 
+
+/*
+ * Styles for the [sys42.windows.modal] widget, and all widgets that indirectly uses this bugger.
+ */
+.modal-body {
+    position:relative;
+    overflow-y:hidden;
+}
+
+
+/*
+ * Styles for the [sys42.windows.info-tip] widget, when inside of a "modal window" of some sort.
+ */
+.modal-body .info-window {
+    border-radius:0 0 15px 15px;
+    position:absolute;
+    top:0;
+    right:25px;
+}
 
 
 /*

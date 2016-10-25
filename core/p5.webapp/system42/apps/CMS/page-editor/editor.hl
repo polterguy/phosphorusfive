@@ -1,189 +1,22 @@
 /*
- * Creates the toolbar for the Page editor
+ * Creates the toolbar for the Page editor.
+ *
+ * Expects [_editor] and [_id] being the specialized editor for page type, and the id of page edited.
  */
 
-
 /*
- * Needed further down
- */
-select-data:x:/*/*/p5.page/"={0}"
-  :x:/../*/_id?value
-
-
-/*
- * Setting templates, making sure we add the "empty" first.
- */
-add:x:/../*/create-widget/**/container/=page-template/*/widgets
-  src
-    literal
-      element:option
-      value:_empty
-      innerValue:No template
-list-files:@CMS/page-templates/
-  filter:.hl
-for-each:x:/-/*?name
-  _lit
-    literal
-      element:option
-      value
-      innerValue
-  split:x:/./*/_dp?value
-    =:/
-  split:x:/-/0/-?name
-    =:.
-  set:x:/..for-each/*/_lit/*/*/value?value
-    src:x:/..for-each/*/_dp?value
-  set:x:/..for-each/*/_lit/*/*/innerValue?value
-    src:x:/..for-each/*/split/[1,2]/0?name
-  if:x:/../*/select-data/[0,1]/*/*/template?value
-    =:x:/..for-each/*/_dp?value
-    add:x:/..for-each/*/_lit/*
-      src
-        selected
-  add:x:/../*/create-widget/**/container/=page-template/*/widgets
-    src:x:/..for-each/*/_lit/*
-
-
-/*
- * Setting roles
- */
-list-roles
-for-each:x:/-/*?name
-  _lit
-    literal
-      parent:page-role
-      element:option
-      value
-      innerValue
-  set:x:/..for-each/*/_lit/*/*/value?value
-    src:x:/..for-each/*/_dp?value
-  set:x:/..for-each/*/_lit/*/*/innerValue?value
-    src:x:/..for-each/*/_dp?value
-  if:x:/../*/select-data/[0,1]/*/*/role?value
-    =:x:/..for-each/*/_dp?value
-    add:x:/..for-each/*/_lit/*
-      src:selected
-  add:x:/../*/create-widget/**/container/=page-role/*/widgets
-    src:x:/..for-each/*/_lit/*
-
-
-/*
- * Making sure [oninit] event handler knows ID of page edited
- */
-set:x:/../*/create-widget/*/oninit/**/={_id}?value
-  src:x:/../*/_id?value
-
-/*
- * Creating actual toolbar
+ * Creating editing widget,which consists of our "specialized editor surface", in addition to some buttons,
+ * such as "Save", "View page", "Delete" etc ...
  */
 create-widget
   parent:cms-page-editor-surface
-
-
-  /*
-   * Ajax events for widget
-   */
-  oninit
-
-
-    /*
-     * Loading page from database, and setting widget values accordingly
-     */
-    select-data:x:/*/*/p5.page/"={0}"
-      :{_id}
-    set-widget-property:page-name
-      value:x:/../*/select-data/*/*/name?value
-    set-widget-property:page-url
-      value:x:/../*/select-data/*?value
-
-
   widgets
 
 
     /*
-     * Page Name
-     */
-    container
-      class:col-md-3 form-group
-      widgets
-        container:page-editor-name-textbox
-          class:input-group
-          widgets
-            literal
-              element:div
-              innerValue:Name
-              class:input-group-addon
-            void:page-name
-              element:input
-              type:text
-              class:form-control
-              placeholder:Page name ...
-
-
-    /*
-     * Page URL
-     */
-    container
-      class:col-md-3 form-group
-      widgets
-        container:page-editor-url-textbox
-          class:input-group
-          widgets
-            literal
-              element:div
-              innerValue:URL
-              class:input-group-addon
-            void:page-url
-              element:input
-              type:text
-              class:form-control
-              placeholder:URL ...
-
-
-    /*
-     * Page Template
-     */
-    container
-      class:col-md-3 form-group
-      widgets
-        container:page-editor-template-dropdown
-          class:input-group
-          widgets
-            literal
-              element:div
-              class:input-group-addon
-              innerValue:Template
-            container:page-template
-              element:select
-              class:form-control
-              widgets
-
-
-    /*
-     * Page Access Role
-     */
-    container
-      class:col-md-3 form-group
-      widgets
-        container:page-editor-access-role-dropdown
-          class:input-group
-          widgets
-            literal
-              element:div
-              class:input-group-addon
-              innerValue:Access Role
-            container:page-role
-              element:select
-              class:form-control
-              widgets
-                literal
-                  element:option
-                  value:_default
-                  innerValue:No restrictions ...
-
-
-    /*
-     * Custom editor surface
+     * Custom editor surface.
+     *
+     * This is where the "specialized editor" is loaded, which depends upoon what type of page this is.
      */
     container:cms-specialized-editor-surface
 
@@ -193,7 +26,7 @@ create-widget
       events
 
         /*
-         * Returns ID of specialized edditor surface widget.
+         * Returns ID of specialized editor surface widget.
          */
         sys42.cms.get-specialized-editor-surface
           return:x:/../*/_event?value
@@ -204,12 +37,6 @@ create-widget
      */
     container
       class:col-md-12 text-right prepend-top
-
-      /*
-       * Since we don't want page to "jump" up and down, as user is enabling feature
-       * in specialized editor, we provide an additional margin at the bottom of roughly "page height"
-       */
-      style:"margin-bottom:600px;"
       widgets
         container
           class:btn-group
@@ -219,9 +46,7 @@ create-widget
             /*
              * Save button
              */
-            literal:save-button
-              element:button
-              type:button
+            button
               innerValue:Save
               class:btn btn-default
               title:Alt + S
@@ -239,62 +64,59 @@ create-widget
                  * Saves currently edited page
                  */
                 sys42.save-edited-page
+
+                  /*
+                   * Retrieving currently edited page, and appending all "common values" into [update-data].
+                   */
                   sys42.cms.get-currently-edited-page
-                  _widgets
-                    page-url
-                    page-name
-                    page-role
-                    page-template
-                  get-widget-property:x:/-/*?name
-                    value
-                  set:x:/../*/update-data/*/*?value
-                    src:x:/../*/get-widget-property/*/page-url/*?value
-                  set:x:/../*/update-data/*/*/*/name?value
-                    src:x:/../*/get-widget-property/*/page-name/*?value
-                  set:x:/../*/update-data/*/*/*/template?value
-                    src:x:/../*/get-widget-property/*/page-template/*?value
-                  if:x:/../*/get-widget-property/*/page-role/*?value
-                    !=:"_default"
-                    add:x:/../*/update-data/*/*
-                      src:"role:{0}"
-                        :x:/../*/get-widget-property/*/page-role/*?value
+                  select-data:x:@"/*/*/p5.page/""={0}"""
+                    :x:/../*/sys42.cms.get-currently-edited-page?value
+                  add:x:/../*/update-data/*/*
+                    src:x:/../*/select-data/*/*(/name|/template|/role)
+
+                  /*
+                   * Retrieving specialized editor's data for page, and appending all 
+                   * "specialized page editor's values" into [update-data].
+                   */
                   sys42.get-page-editor-data
                   add:x:/../*/update-data/*/*
                     src:x:/../*/sys42.get-page-editor-data/*
-                  update-data:x:/*/*/p5.page/"={0}"
+
+                  /*
+                   * Updating page in p5.data database.
+                   */
+                  update-data:x:@"/*/*/p5.page/""={0}"""
                     :x:/../*/sys42.cms.get-currently-edited-page?value
                     src
                       p5.page
-                        name
-                        template
-                  if:x:/../*/sys42.cms.get-currently-edited-page?value
-                    !=:x:/../*/get-widget-property/*/page-url/0?value
 
-                    // If URL is changed, we reload location, making sure we change the currently edited page first.
-                    sys42.cms.set-currently-edited-page:x:/../*/get-widget-property/*/page-url/*?value
-                    reload-location
-                  else
-                    sys42.windows.info-tip:Page was successfully saved.
+                  /*
+                   * Providing feedback to user.
+                   */
+                  sys42.windows.info-tip:Page '{0}' was successfully saved.
+                    :x:/../*/select-data/*/*/name?value
+
+                  /*
+                    * Making sure we set focus to "select page dropdown" if user closes dialogue, without
+                    * pressing "OK".
+                    */
+                  send-javascript:@"$('#cms-select-page').focus().select();"
 
 
             /*
-             * "Save as" button
+             * "Save as" button.
              */
-            literal:save-as-button
-              element:button
-              type:button
+            button
               innerValue:Save as ...
               class:btn btn-default
               onclick
 
                 /*
-                 * Getting name and URL of page, 
-                 * such that we can use it as basis for new name and URL
+                 * Getting name and URL of page, such that we can use it as basis for new name and URL.
                  */
-                get-widget-property:page-name
-                  value
-                get-widget-property:page-url
-                  value
+                sys42.cms.get-currently-edited-page
+                select-data:x:@"/*/*/p5.page/""={0}"""
+                  :x:/../*/sys42.cms.get-currently-edited-page?value
 
                 /*
                  * Forward evaluating expressions inside of [_widgets] below
@@ -315,7 +137,7 @@ create-widget
                           class:form-control
                           placeholder:Name of page ...
                           value:{0} - copy
-                            :x:/../*/get-widget-property/[0,1]/*/*?value
+                            :x:/../*/select-data/*/*/name?value
                     div:new-page-url-wrp
                       class:form-group
                       widgets
@@ -328,13 +150,20 @@ create-widget
                           class:form-control
                           placeholder:URL of page ...
                           value:{0}-copy
-                            :x:/../*/get-widget-property/[1,2]/*/*?value
+                            :x:/../*/select-data/*?value
+                  _onclose
+
+                    /*
+                     * Making sure we set focus to "select page dropdown" if user closes dialogue, without
+                     * pressing "OK".
+                     */
+                    send-javascript:@"$('#cms-select-page').focus().select();"
                   _onok
 
                     /*
                      * Will contain the database id of old page
                      */
-                    _old-page:x:/../*/get-widget-property/[1,2]/*/*?value
+                    _old-page:x:/../*/select-data/*?value
 
                     /*
                      * Getting the new page's name and URL
@@ -353,16 +182,12 @@ create-widget
                       >:int:0
 
                       /*
-                       * Page exists from before, alerting user, and returning 
-                       * without setting the "close modal window flag"
+                       * Page exists from before, alerting user, and returning early, without setting 
+                       * the "close modal window flag".
                        */
                       sys42.add-css-classes:new-page-url-wrp
                         _class:has-error
                       send-javascript:@"$('#new-page-url').focus().select();"
-
-                      /*
-                       * Returning early
-                       */
                       return:bool:false
 
                     /*
@@ -379,7 +204,7 @@ create-widget
                       :x:/../*/_old-page?value
 
                     /*
-                     * Changing id (URL of page) to new URL, in addition to changing name of page
+                     * Changing id (URL of page) to new URL, in addition to changing name of page.
                      */
                     set:x:/../*/select-data/[1,2]/*?value
                       src:x:/../*/get-widget-property/[1,2]/*/*?value
@@ -387,17 +212,23 @@ create-widget
                       src:x:/../*/get-widget-property/[0,1]/*/*?value
 
                     /*
-                     * Then removing all items from [select-data] that also exists in [sys42.get-page-editor-data]
+                     * Then removing all items from [select-data] that also exists in [sys42.get-page-editor-data].
                      */
                     for-each:x:/../*/select-data/[1,2]/*/*
                       if:x:@"/../*/sys42.get-page-editor-data/*/""{0}"""
                         :x:/..for-each/*/_dp/#?name
                         set:x:/..for-each/*/_dp/#
+
+                    /*
+                     * Adding everything from [sys42.get-page-editor-data] into [select-data].
+                     */
                     add:x:/../*/select-data/[1,2]/*
                       src:x:/../*/sys42.get-page-editor-data/*
 
                     /*
-                     * Now we can save new page to database
+                     * Now we can save new page to database, which we do by simply adding everything from
+                     * [select-data] above into [insert-data], since [select-data] (second invocation) now
+                     * should contain all the page data for our new page, including the new URL and name.
                      */
                     add:x:/../*/insert-data
                       src:x:/../*/select-data/[1,2]/*
@@ -405,13 +236,15 @@ create-widget
 
                     /*
                      * Then we need to "refresh editor", but first, setting "edited page" to
-                     * the page we just saved
+                     * the page we just saved.
                      */
                     sys42.cms.set-currently-edited-page:x:/../*/get-widget-property/[1,2]/*/*?value
 
                     /*
                      * Simple version, refreshing page location.
-                     * No need to close dialogues or anything, simply reloading page, should do the trick
+                     * No need to close dialogues or anything, simply reloading page, should do the trick.
+                     * This we do, since the refreshing of the page, will automatically repopulate the select page
+                     * dropdown, and so on.
                      */
                     reload-location
 
@@ -419,30 +252,224 @@ create-widget
             /*
              * Preview button
              */
-            literal:preview-button
-              element:button
+            button
               innerValue:View page
               class:btn btn-default
               onclick
+
+                /*
+                 * Getting currently edited page, and showing it in a JavaScript popup window.
+                 */
                 sys42.cms.get-currently-edited-page
                 send-javascript:@"window.open('{0}', '_blank');"
                   :x:/./-?value
 
 
             /*
-             * Delete button
+             * Settings for page button.
              */
-            literal:delete-button
-              element:button
+            button
+              innerValue:Settings ...
+              class:btn btn-default
+              onclick
+
+                /*
+                 * Retrieving page properties, and using a wizard window to allow user to change them.
+                 */
+                sys42.cms.get-currently-edited-page
+                select-data:x:@"/*/*/""={0}"""
+                  :x:/@sys42.cms.get-currently-edited-page?value
+
+                /*
+                 * Making sure we first add [name], before we add [url] and the finally the last properties,
+                 * to have some intuitive order of [_data] according to "importance".
+                 */
+                add:x:/../*/sys42.windows.wizard/*/_data
+                  src:x:/@select-data/*/*/name
+                add:x:/../*/sys42.windows.wizard/*/_data
+                  src:@"url:{0}"
+                    :x:/../*/sys42.cms.get-currently-edited-page?value
+                add:x:/../*/sys42.windows.wizard/*/_data
+                  src:x:/@select-data/*/*(/template|/role)
+
+                /*
+                 * Making sure we change the [template] data segment to a "drop down selection" type
+                 * of [_data] segment, by appending our choices to it as [_choices].
+                 * This is done by fetching all files from "/system42/apps/CMS/page-templates/", and
+                 * using these as choices for user.
+                 */
+                list-files:@CMS/page-templates/
+                  filter:hl
+                for-each:x:/-/*?name
+                  split:x:/..for-each/*/_dp?value
+                    =:/
+                    =:.
+                  add:x:/./+/*/*
+                    src:@"{0}:{1}"
+                      :x:/..for-each/*/split/0/-2?name
+                      :x:/..for-each/*/_dp?value
+                add:x:/++/_data/*/template
+                  src
+                    _choices
+
+                /*
+                 * Making sure we change the [role] data segment to a "drop down selection" type
+                 * of [_data] segment, by appending our choices to it as [_choices].
+                 * This is done by fetching all distinct user roles, in addition to appending a 
+                 * static "empty" role (no restrictions for access).
+                 */
+                list-roles
+                for-each:x:/-/*?name
+                  add:x:/./+/*/*
+                    src:@"{0}:{0}"
+                      :x:/..for-each/*/_dp?value
+                add:x:/++/_data/*/role
+                  src
+                    _choices
+
+                /*
+                 * Showing actual wizard window.
+                 */
+                sys42.windows.wizard
+                  _header:Settings
+                  _data
+                  _onclose
+
+                    /*
+                     * Making sure we set focus to "select page dropdown" if user closes dialogue, without
+                     * pressing "OK".
+                     */
+                    send-javascript:@"$('#cms-select-page').focus().select();"
+                  _onok
+
+                    /*
+                     * Selecting currently edited page.
+                     */
+                    sys42.cms.get-currently-edited-page
+                    select-data:x:@"/*/*/""={0}"""
+                      :x:/@sys42.cms.get-currently-edited-page?value
+
+                    /*
+                     * Checking if user changed URL, at which point we must check that URL does not exist from before.
+                     */
+                    if:x:/../*/_data/*/url?value
+                      !=:x:/@sys42.cms.get-currently-edited-page?value
+
+                      /*
+                       * User changed URL, making sure new URL does not exist from before.
+                       */
+                      if
+                        select-data:x:@"/*/*/""={0}""?count"
+                          :x:/../*/_data/*/url?value
+                        !=:int:0
+
+                        /*
+                         * Oops, user chose a new URL that was already taken by another page.
+                         * Showing user some feedback, and returning early (with error).
+                         */
+                        sys42.windows.info-tip:That URL is already taken by another page ...
+                          _class:info-window info-window-error
+                          _parent:modal-window-body
+                        return:bool:false
+                          _error:url
+
+                      /*
+                       * Making sure we update "currently edited page".
+                       */
+                      sys42.cms.set-currently-edited-page:x:/../*/_data/*/url?value
+
+                    /*
+                     * If either name or URL changed, we reload location, to repopulate "select page dropdown".
+                     */
+                    if:x:/../*/_data/*/url?value
+                      !=:x:/../*/select-data/*?value
+                      or:x:/../*/_data/*/name?value
+                        !=:x:/../*/select-data/*/*/name?value
+
+                      /*
+                       * Simple version, repopulate "select page dropdown" by reloading page.
+                       * Notice, the rest of this lambda will still evaluate as if nothing happened ...
+                       */
+                      reload-location
+
+                    /*
+                     * Updating page properties, by first changing [select-data]'s result, for then to move [select-data]'s
+                     * result into an [update-data] invocation.
+                     */
+                    set:x:/../*/select-data/*/*/name?value
+                      src:x:/../*/_data/*/name?value
+                    set:x:/../*/select-data/*?value
+                      src:x:/../*/_data/*/url?value
+                    set:x:/../*/select-data/*/*/template?value
+                      src:x:/../*/_data/*/template?value
+                    set:x:/../*/select-data/*/*/role?value
+                      src:x:/../*/_data/*/role?value
+
+                    /*
+                     * Now we can move [p5.page] from [select-data] into [update-data].
+                     */
+                    add:x:/++/update-data/*/src
+                      src:x:/@select-data/*
+
+                    /*
+                     * Finally, updating properties for page, and providing feedback to user.
+                     */
+                    update-data:x:@"/*/*/p5.page/""={0}"""
+                      :x:/../*/sys42.cms.get-currently-edited-page?value
+                      src
+                    sys42.windows.info-tip:Page '{0}' was saved.
+                      :x:/../*/_data/*/name?value
+
+                    /*
+                     * Returning success to wizard modal window.
+                     */
+                    return:bool:true
+
+
+            /*
+             * Delete page button.
+             */
+            button
               innerValue:Delete
               class:btn btn-default
               onclick
+
+                /*
+                 * Making sure user doesn't accidentally delete one of our "special pages".
+                 */
+                sys42.cms.get-currently-edited-page
+                if:x:/@sys42.cms.get-currently-edited-page?value
+                  =:/app-loader
+                  or:x:/@sys42.cms.get-currently-edited-page?value
+                    =:/
+
+                  /*
+                   * Oops, user tried to delete "special page", warning user, and setting focus to "select page dropdown",
+                   * before we return early.
+                   */
+                  sys42.windows.info-tip:This page cannot be deleted!
+                  send-javascript:@"$('#cms-select-page').focus().select();"
+                  return
+
+                /*
+                 * Asking user to confirm deletion of page.
+                 */
                 sys42.windows.confirm
                   _header:Please confirm deletion
                   _body:Are you sure you want to delete this page? This action cannot be undone!
+                  _onclose
+
+                    /*
+                     * Making sure we set focus to "select page dropdown" if user closes dialogue, without
+                     * pressing "OK".
+                     */
+                    send-javascript:@"$('#cms-select-page').focus().select();"
                   _onok
+
+                    /*
+                     * Deleting page.
+                     */
                     sys42.delete-currently-edited-page
-                    sys42.windows.info-tip:Page was successfully deleted
 
 
               /*
@@ -455,9 +482,18 @@ create-widget
                  * Deletes the currently edited page
                  */
                 sys42.delete-currently-edited-page
+
+                  /*
+                   * Retrieving currently edited page, and deleting it.
+                   */
                   sys42.cms.get-currently-edited-page
-                  delete-data:x:/*/*/p5.page/"={0}"
-                    :x:/./-?value
+                  delete-data:x:@"/*/*/p5.page/""={0}"""
+                    :x:/@sys42.cms.get-currently-edited-page?value
+
+                  /*
+                   * Settings currently edited page to "nothing", before we simply reload location,
+                   * which will repopulate the "select page for editing" dropdown, etc.
+                   */
                   sys42.cms.set-currently-edited-page
                   reload-location
 
@@ -465,9 +501,8 @@ create-widget
 /*
  * Loading "specialized editor", depending upon which page type we're editing.
  */
-sys42.cms.get-currently-edited-page
 add:x:/../*/sys42.execute-lambda-file
   src:"_id:{0}"
-    :x:/../*/sys42.cms.get-currently-edited-page?value
+    :x:/../*/_id?value
 sys42.execute-lambda-file:@CMS/page-editor/specialized-editors/{0}.hl
   :x:/../*/_editor?value
