@@ -264,6 +264,12 @@ create-widget
                 send-javascript:@"window.open('{0}', '_blank');"
                   :x:/./-?value
 
+                /*
+                  * Making sure we set focus to "select page dropdown" if user closes dialogue, without
+                  * pressing "OK".
+                  */
+                send-javascript:@"$('#cms-select-page').focus().select();"
+
 
             /*
              * Settings for page button.
