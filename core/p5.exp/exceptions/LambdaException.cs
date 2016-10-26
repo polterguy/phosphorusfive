@@ -81,7 +81,7 @@ namespace p5.exp.exceptions
                     curPosCrLf = newLineIndex;
                     noCrLf += 1;
                 }
-                lisp = lisp.Substring (0, curPosCrLf) + "<<======================" + lisp.Substring (curPosCrLf);
+                lisp = lisp.Substring (0, curPosCrLf) + "<<====================== [ERROR!!]" + lisp.Substring (curPosCrLf);
                 return lisp;
             }
         }

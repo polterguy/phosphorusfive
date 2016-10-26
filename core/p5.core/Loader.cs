@@ -25,6 +25,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Security.Policy;
 
 namespace p5.core
 {
@@ -245,7 +246,7 @@ namespace p5.core
             }
 
             // We must dynamically load assembly and initialize it, since it is not registered in our current AppDomain
-            var assembly = Assembly.LoadFile (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, path + name));
+            var assembly = Assembly.LoadFrom (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, path + name));
             InitializeAssembly (assembly);
             _assemblies.Add (assembly);
         }

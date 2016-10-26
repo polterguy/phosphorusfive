@@ -36,9 +36,11 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="javascript\manager.min.js">
+      <DependentUpon>manager.js</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="bundleconfig.json" />
     <None Include="javascript\manager.js" />
     <None Include="README.md" />
   </ItemGroup>

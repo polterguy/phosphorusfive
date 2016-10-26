@@ -497,11 +497,11 @@
             // Creating a semi-transparent wrapper element, to stuff our error iframe into
             var err = document.createElement("div");
             err.id = "__p5_error";
-            err.style.cssText = "position:fixed;top:0;left:0;background-color:rgba(0,0,0,.7);height:100%;width:100%;z-index:10000;";
+            err.style.cssText = "position:fixed;top:0;left:0;background-color:rgba(0,0,0,.7);height:100%;width:100%;z-index:10000;box-sizing:border-box;";
 
             // Creating an iframe for simplicity, such that we can "dump" error HTML into it, without having to parsee anything
             var ifr = document.createElement("iframe");
-            ifr.style.cssText = "height:90%;width:90%;margin:2% 5% 2% 5%;";
+            ifr.style.cssText = "height:90%;width:90%;margin:2% 5% 2% 5%;box-sizing:border-box;overflow:auto;";
             err.appendChild(ifr);
 
             // Creating a button, such that we can close our error window
@@ -524,7 +524,18 @@
             var body = document.getElementsByTagName("body")[0];
             body.appendChild(err);
 
-            // We have to postpone this bugger till iframe is "attached"
+            // We have to postpone this bugger till iframe is "attached".
+            var tmp = responseHtml.substring(responseHtml.indexOf("</html>") + 7);
+
+            // Microsoft .Net tends to move our custom StackTrace AFTER the entire HTML for the document, and append it as a freakin' "comment"
+            // Need to do some parsing here, to make our stacktrace show nicely ...
+            if (tmp.indexOf("<!--") != -1) {
+                tmp = tmp.substring(8);
+                tmp = tmp.substring(0, tmp.indexOf("\r\n["));
+                responseHtml = "<pre style=\"margin:0;box-sizing:border-box;padding:25px;width:100%;height:100%;background-color:LightYellow;\"><h3>" +
+                    tmp.substring(0, tmp.indexOf("\r")) + "</h3>" +
+                    tmp.substring(tmp.indexOf("\r")) + "</pre>";
+            }
             ifr.contentDocument.documentElement.innerHTML = responseHtml;
             btn.focus();
         },

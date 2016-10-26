@@ -45,8 +45,19 @@ namespace p5.ajax.core.filters
         {
             Manager = manager;
             _stream = new MemoryStream ();
+            Manager.Page.Error += Page_Error;
             _next = Manager.Page.Response.Filter;
             ContentEncoding = Manager.Page.Response.ContentEncoding;
+        }
+
+        /// <summary>
+        ///    Handled to remove our custom filter, to make sure default filter is rendering the pure HTML back to client.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Page_Error (object sender, System.EventArgs e)
+        {
+            Manager.Page.Response.Filter = _next;
         }
 
         /// <summary>

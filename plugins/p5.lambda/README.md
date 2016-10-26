@@ -155,7 +155,7 @@ create-literal-widget
   innerValue:Foo bar 2
 ```
 
-For the record, the above ":x:" expression, is the *"identity expression"* in the p5 expression engine, and simply means the "current node". 
+For the record, the above `:x:` expression, is the *"identity expression"* in the p5 expression engine, and simply means the "current node". 
 This is where all expressions starts out.
 
 For a more thourough explanation of expressions, yet again, check out the documentation for the [p5.exp](/core/p5.exp/) project.

@@ -37,7 +37,7 @@ namespace p5.web.widgets.helpers
         private Dictionary<string, List<Node>> _events = new Dictionary<string, List<Node>>();
 
         /*
-         * Returns all items that matches "key1"
+         * Returns all items that matches "key1".
          */
         internal IEnumerable<Node> this [string key1]
         {
