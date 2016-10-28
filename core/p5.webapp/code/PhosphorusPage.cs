@@ -182,8 +182,40 @@ namespace p5.webapp.code
         [WebMethod]
         protected void common_event_handler (Widget sender, Widget.AjaxEventArgs e)
         {
-            var args = new Node(sender.ID, e.Name);
-            ApplicationContext.Raise("p5.web.raise-ajax-event", args);
+            var args = new Node (sender.ID, e.Name);
+
+            // Raising event, making sure we can handle any exceptions occuring.
+            try {
+                ApplicationContext.Raise ("p5.web.raise-ajax-event", args);
+            } catch (Exception err) {
+
+                // Notice, we rethrow exception if handler didn't return true.
+                if (!HandleException (err))
+                    throw;
+            }
+        }
+
+        /*
+         * Invoked when an exception occurs.
+         */
+        protected bool HandleException (Exception err)
+        {
+            var message = err.Message;
+            var trace = err.StackTrace;
+            var idxType = err.GetType ();
+            while (idxType != typeof (object)) {
+
+                // Checkng if we have exceptions handlers for current type of exception.
+                var idxTypeName = idxType.Name;
+                var args = new Node ();
+                args.Add ("_message", message);
+                args.Add ("_trace", trace);
+                ApplicationContext.Raise ("p5.error." + idxTypeName, args);
+                if (args.Get (ApplicationContext, false))
+                    return true;
+                idxType = idxType.BaseType;
+            }
+            return false;
         }
     }
 }

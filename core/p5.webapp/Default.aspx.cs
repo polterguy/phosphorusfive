@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -54,8 +55,17 @@ namespace p5.webapp
                     var args = new Node("p5.web.load-ui");
                     args.Add(new Node("_url", HttpContext.Current.Items["_p5_original_url"]));
 
-                    // Invoking the Active Event that actually loads our UI, now with a [_url] node being the URL of the requested page
-                    ApplicationContext.Raise("p5.web.load-ui", args);
+                    // Invoking the Active Event that actually loads our UI, now with a [_url] node being the URL of the requested page.
+                    // Making sure we do it, in such a way, that we can handle any exceptions that occurs.
+                    try {
+                        ApplicationContext.Raise ("p5.web.load-ui", args);
+                    } catch (Exception err) {
+
+                        // Oops, an exception occurred.
+                        // Passing it into PhosphorusPage for handling.
+                        if (!HandleException (err))
+                            throw;
+                    }
                 }
 
                 // Making sure base is set for page

@@ -1,0 +1,36 @@
+
+/*
+ * Handles an exception
+ */
+
+create-event:p5.error.Exception
+
+  /*
+   * Building up some HTML, passing in the exception message and stacktrace.
+   */
+  _ret:
+  set:x:/../*/_ret?value
+    src:@"<h1>{0}</h1>"
+      :x:/../*/_message?value
+  set:x:/../*/_ret?value
+    src:@"{0}<pre>{1}</pre>"
+      :x:/../*/_ret?value
+      :x:/../*/_trace?value
+
+  /*
+   * Changing status code.
+   */
+  set-http-status-code:500
+  set-http-status:500 Internal server error
+
+  /*
+   * Echoing HTML built above back to client, overriding the default rendering of page.
+   */
+  echo:x:/../*/_ret?value
+
+  /*
+   * Returning true to caller, indicating we have handled this exception, effectively
+   * preventing the default ASP.NET logic to run.
+   */
+  return:bool:true
+

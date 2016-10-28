@@ -82,7 +82,7 @@ namespace p5.security.helpers
             // Checking for match on specified username
             Node userNode = pwdFile["users"][username];
             if (userNode == null)
-                throw new SecurityException("Credentials not accepted");
+                throw new LambdaSecurityException ("Credentials not accepted", args, context);
 
             // Getting system salt
             var serverSalt = context.Raise (".p5.security.get-server-salt").Get<string> (context);
@@ -92,7 +92,7 @@ namespace p5.security.helpers
 
             // Checking for match on password
             if (userNode["password"].Get<string> (context) != cookiePasswordFingerprint)
-                throw new SecurityException("Credentials not accepted"); // Exact same wording as above! IMPORTANT!!
+                throw new LambdaSecurityException ("Credentials not accepted", args, context); // Exact same wording as above! IMPORTANT!!
 
             // Success, creating our ticket
             string role = userNode["role"].Get<string>(context);
@@ -171,11 +171,11 @@ namespace p5.security.helpers
         /*
          * Sets the server salt for application
          */
-        public static void SetServerSalt (ApplicationContext context, string salt)
+        public static void SetServerSalt (ApplicationContext context, Node args, string salt)
         {
             AuthFile.ModifyAuthFile (context, delegate (Node node) {
                 if (node.Children.Find (delegate (Node ix) { return ix.Name == "server-salt"; }) != null)
-                    throw new SecurityException ("Tried to change server salt after initial creation");
+                    throw new LambdaSecurityException ("Tried to change server salt after initial creation", args, context);
                 node.FindOrCreate ("server-salt").Value = salt;
             });
         }
@@ -474,7 +474,7 @@ namespace p5.security.helpers
             // Retrieving password given
             string password = args.GetExChildValue<string>("password", context);
             if (string.IsNullOrEmpty(password))
-                throw new SecurityException("You cannot set the root password to empty");
+                throw new LambdaSecurityException("You cannot set the root password to empty", args, context);
 
             // Creating root account
             Node rootAccountNode = new Node ();

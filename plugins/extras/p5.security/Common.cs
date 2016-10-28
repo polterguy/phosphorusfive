@@ -89,7 +89,7 @@ namespace p5.security
         [ActiveEvent (Name = "p5.security.set-server-salt")]
         private static void p5_security_set_server_salt(ApplicationContext context, ActiveEventArgs e)
         {
-            AuthenticationHelper.SetServerSalt (context, e.Args.GetExValue<string> (context));
+            AuthenticationHelper.SetServerSalt (context, e.Args, e.Args.GetExValue<string> (context));
         }
     }
 }

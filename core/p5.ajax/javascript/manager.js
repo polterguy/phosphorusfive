@@ -492,51 +492,29 @@
          * Default error handler, shows the 'blue (yellow on windows) screen of death', in a modal window
          */
         onerror: function(statusCode, statusText, responseHtml) {
-            var pAct = document.activeElement;
 
             // Creating a semi-transparent wrapper element, to stuff our error iframe into
             var err = document.createElement("div");
             err.id = "__p5_error";
-            err.style.cssText = "position:fixed;top:0;left:0;background-color:rgba(0,0,0,.7);height:100%;width:100%;z-index:10000;box-sizing:border-box;";
-
-            // Creating an iframe for simplicity, such that we can "dump" error HTML into it, without having to parsee anything
-            var ifr = document.createElement("iframe");
-            ifr.style.cssText = "height:90%;width:90%;margin:2% 5% 2% 5%;box-sizing:border-box;overflow:auto;";
-            err.appendChild(ifr);
+            err.className = "p5-exception";
 
             // Creating a button, such that we can close our error window
             var btn = document.createElement("button");
-            btn.innerHTML = "close";
-            btn.style.cssText = "position:absolute;top:5px;right:5px;z-index:10001;display:block;width:100px;height:36px;font-size:18px;";
+            btn.innerHTML = "Close";
             btn.onclick = function() {
                 var el = window.p5.$("__p5_error").el;
                 el.parentNode.removeChild(el);
-                pAct.focus();
             };
             btn.onkeyup = function(e) {
                 if (e.keyCode === 27) {
                     var el = window.p5.$("__p5_error").el;
                     el.parentNode.removeChild(el);
-                    pAct.focus();
                 }
             };
+            err.innerHTML = responseHtml;
             err.appendChild(btn);
             var body = document.getElementsByTagName("body")[0];
             body.appendChild(err);
-
-            // We have to postpone this bugger till iframe is "attached".
-            var tmp = responseHtml.substring(responseHtml.indexOf("</html>") + 7);
-
-            // Microsoft .Net tends to move our custom StackTrace AFTER the entire HTML for the document, and append it as a freakin' "comment"
-            // Need to do some parsing here, to make our stacktrace show nicely ...
-            if (tmp.indexOf("<!--") != -1) {
-                tmp = tmp.substring(8);
-                tmp = tmp.substring(0, tmp.indexOf("\r\n["));
-                responseHtml = "<pre style=\"margin:0;box-sizing:border-box;padding:25px;width:100%;height:100%;background-color:LightYellow;\"><h3>" +
-                    tmp.substring(0, tmp.indexOf("\r")) + "</h3>" +
-                    tmp.substring(tmp.indexOf("\r")) + "</pre>";
-            }
-            ifr.contentDocument.documentElement.innerHTML = responseHtml;
             btn.focus();
         },
 
