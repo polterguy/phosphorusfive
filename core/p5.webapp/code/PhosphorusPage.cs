@@ -166,12 +166,23 @@ namespace p5.webapp.code
         public void get_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover(e.Args)) {
+            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
 
                 // ViewState title has presedence, since it might have been changed, 
                 // and "Title" property of page is not serialized into ViewState
                 e.Args.Value = ViewState["_pf_title"] ?? Title;
             }
+        }
+
+        /// <summary>
+        ///     Returns true if this is an Ajax callback.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "is-callback")]
+        public void is_callback (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Manager.IsPhosphorusAjaxRequest;
         }
 
         #endregion
@@ -210,6 +221,7 @@ namespace p5.webapp.code
                 var args = new Node ();
                 args.Add ("_message", message);
                 args.Add ("_trace", trace);
+                args.Add ("_type", err.GetType ().Name);
                 ApplicationContext.Raise ("p5.error." + idxTypeName, args);
                 if (args.Get (ApplicationContext, false))
                     return true;

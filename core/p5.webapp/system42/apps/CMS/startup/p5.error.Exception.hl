@@ -1,8 +1,12 @@
 
 /*
- * Handles an exception
+ * Creates the Active Event that handles an exception.
+ * This event is invoked by the core P5 framework, whenever an exception of type "Exception" occurs,
+ * and it will be passed in [_trace] and [_message], in addition to [_type].
+ *
+ * To create your own handler, that handles a specific type of exception, create an Active Event named [p5.error.MyExceptionType],
+ * and it will override this guy for all exceptions of your specified type.
  */
-
 create-event:p5.error.Exception
 
   /*
@@ -10,10 +14,12 @@ create-event:p5.error.Exception
    */
   _ret:
   set:x:/../*/_ret?value
-    src:@"<h1>{0}</h1>"
+    src:@"<h1>[{0}] - {1}</h1>"
+      :x:/../*/_type?value
       :x:/../*/_message?value
   set:x:/../*/_ret?value
-    src:@"{0}<pre>{1}</pre>"
+    src:@"{0}
+<pre>{1}</pre>"
       :x:/../*/_ret?value
       :x:/../*/_trace?value
 
@@ -22,6 +28,26 @@ create-event:p5.error.Exception
    */
   set-http-status-code:500
   set-http-status:500 Internal server error
+
+  /*
+   * Checking if this is an Ajax callback, and if not, we surround the etire returned HTML in a <html><body></html></body> block.
+   */
+  if
+    is-callback
+    not
+    set:x:/../*/_ret?value
+      src:@"<html>
+  <head>
+    <link rel=""stylesheet"" type=""text/css"" href=""/system42/apps/CMS/media/css/main.min.css""></link>
+  </head>
+  <body>
+    <div class=""p5-exception"">
+      {0}
+    </div>
+  </body>
+</html>"
+        :x:/../*/_ret?value
+
 
   /*
    * Echoing HTML built above back to client, overriding the default rendering of page.

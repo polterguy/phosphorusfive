@@ -984,6 +984,7 @@ CodeMirror.defineMode("hyperlambda", function() {
         case 'new-guid':
         case 'break':
         case 'continue':
+        case 'is-callback':
         case 'url-encode':
         case 'url-decode':
         case 'html-encode':
