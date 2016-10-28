@@ -37,9 +37,12 @@ if
   set-title:x:/../*/_args/*/name?value
 
   /*
-   * Now we can evaluate [lambda] from database.
+   * Now we can evaluate [lambda] from database, making sure we provide "clue" to which URL is evaluated.
    */
-  eval:x:/../*/_args/*/lambda?value
+  hyper2lambda:x:/../*/_args/*/lambda?value
+  set:x:/-?name
+    src:x:/../*/_url?value
+  eval:x:/-2
 
 else
 

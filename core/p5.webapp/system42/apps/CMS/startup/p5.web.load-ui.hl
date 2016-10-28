@@ -39,7 +39,7 @@ create-event:p5.web.load-ui
       /*
        * Adding up all nodes from results of select-data into [execute-lisp-file], which is our [p5.page] object.
        */
-      add:x:/+2/*/_args
+      add:x:/+3/*/_args
         src:x:/..else/..else/*/select-data/*/*
 
       /*
@@ -48,8 +48,10 @@ create-event:p5.web.load-ui
        * in the system. These types of pages are extendible, and can be added to to create custom types of pages. 
        * If you extend them, you should probably also create an editor for your page type.
        */
-      set:x:/+?value
+      set:x:/+2?value
         src:@CMS/page-loader/{0}.hl
           :x:/..else/..else/*/select-data/*/*/type?value
+      eval-x:x:/+/*/_url
       sys42.execute-lambda-file
         _args
+        _url:x:/../*/_url?value
