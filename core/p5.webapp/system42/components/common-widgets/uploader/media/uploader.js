@@ -25,13 +25,16 @@
 (function () {
 
     // Constructor.
-    window.p5.uploader = function (widget, cssClass, hoverClass, dropClass) {
+    window.p5.uploader = function (widget, cssClass, hoverClass, dropClass, errorClass, filter, multiple) {
 
         // Initializing.
         this._widget      = p5.$(widget);
         this._cssClass    = cssClass;
         this._hoverClass  = hoverClass;
         this._dropClass   = dropClass;
+        this._errorClass  = errorClass;
+        this._filter      = (filter == '' ? [] : filter.split ('|'));
+        this._multiple    = multiple;
 
         // Making sure we handle our related DOM events here.
         var self = this;
@@ -51,18 +54,59 @@
         // Then the DOM event handler for what happens when a file is dropped unto widget.
         this._widget.el.addEventListener('drop', function (e) {
             e.preventDefault();
+            if (!self.checkFile(e)) {
+                self._widget.el.className = self._cssClass + " " + self._errorClass;
+            } else {
 
-            // Checking if we actually have any files to push, and if so ,starting the pushing, and changing the CSS class of widget.
-            if (e.dataTransfer.files.length > 0) {
-                self._widget.el.className = self._cssClass + " " + self._dropClass;
-                self._files = [];
-                for (var i = 0; i < e.dataTransfer.files.length; i++) {
-                    self._files.push(e.dataTransfer.files[i]);
+                // Checking if we actually have any files to push, and if so ,starting the pushing, and changing the CSS class of widget.
+                if (e.dataTransfer.files.length > 0) {
+                    self._widget.el.className = self._cssClass + " " + self._dropClass;
+                    self._files = [];
+                    for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                        self._files.push(e.dataTransfer.files[i]);
+                    }
+                    self._count = self._files.length;
+                    self.processNext(1);
                 }
-                self._count = self._files.length;
-                self.processNext(1);
             }
         }, false);
+    };
+
+    // Checks if all files are valid extensions according to initialization of object.
+    window.p5.uploader.prototype.checkFile = function (e) {
+
+        // Checking if current instance has a filter.
+        if (this._filter.length == 0) {
+
+            // No filters,accepting everything.
+            return true;
+        }
+
+        // Checking if user provided multiple files, and only one is allowed.
+        if (this._multiple === false && e.dataTransfer.files.length > 1) {
+
+            // Widget only allows uploading one file, and multiple files were provided.
+            return false;
+        }
+
+        // Looping through files, making sure they match at least one filter.
+        for (var idx = 0; idx < e.dataTransfer.files.length; idx++) {
+
+            // Filter were provided, looping through them all, to verify file extension can be found in at least one of the filters provided.
+            var splits = e.dataTransfer.files[idx].name.split('.');
+            var ext = splits[splits.length - 1];
+            var found = false;
+            for (var idxSplit = 0; idxSplit < this._filter.length; idxSplit++) {
+                if (this._filter [idxSplit] == ext) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
     };
 
     // Processing a single file, and recursively invokes self.

@@ -69,5 +69,24 @@
 }
 
 
+/*
+ * Animation for when an item is dragged over uploader, to give visual clues, about that this is an "active element".
+ */
+@keyframes animation-uploader-error {
+    0% {
+        background-color:rgba(255,0,0, 1);
+    }
+    100% {
+    background-color:rgba(255,255,0,0);
+    }
+}
 
 
+/*
+ * Styles for the default uploader widget when it is in an "error state" (wrong filetypes attempted to be uploaded, etc)
+ */
+.uploader-widget-error {
+    animation-name:animation-uploader-error;
+    animation-duration:.5s;
+    animation-fill-mode:forwards;
+}

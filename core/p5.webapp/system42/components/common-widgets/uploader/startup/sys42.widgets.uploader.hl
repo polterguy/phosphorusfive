@@ -16,6 +16,9 @@
  * [_css-file]            - A CSS file to automatically include into the page as the widget is instantiated.
  *                          Its default value is "uploader.css", which can be found in the "media" folder of the widget's
  *                          folder structure. If you set it to "" (empty string), then no CSS file will be included.
+ * [_filter]              - Pipe separated (|) list of  valid file extensions that the uploader accepts. Default value is empty, "", 
+ *                          which means "everything is accepted".
+ * [_allow-multiple]      - If false, then only one file is allowed being uploaded at the same time. The default value is true.
  * [_class]               - The CSS class for your widget. Default value is "uploader-widget", which corresponds with the class
  *                          inside of "uploader.css".
  * [_dragover-class]      - The CSS class to use whenever some file(s) is dragged over your widget. Useful to give the user hints that
@@ -40,6 +43,9 @@ create-event:sys42.widgets.uploader
     _class:uploader-widget
     _dragover-class:uploader-widget-dragover
     _drop-class:uploader-widget-drop
+    _error-class:uploader-widget-error
+    _allow-multiple:bool:true
+    _filter
     _onupload
       sys42.windows.info-tip:You should really have provided an [_onupload] lambda callback.
     _widgets
@@ -78,7 +84,7 @@ create-event:sys42.widgets.uploader
   /*
    * Forward evaluating some arguments to widget.
    */
-  eval-x:x:/++(/oninit/*(/_class|/_dragover-class|/_drop-class)|/return/*/container/*/class)
+  eval-x:x:/++(/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple)|/return/*/container/*/class|/_onupload/*(/_filter|/_allow-multiple))
 
 
   /*
@@ -90,22 +96,29 @@ create-event:sys42.widgets.uploader
       oninit
 
         /*
-         * These are forwards evaluated during construction of widget.
+         * These are forward evaluated during construction of widget.
          */
         _class:x:/../*/_options/*/_class?value
         _dragover-class:x:/../*/_options/*/_dragover-class?value
         _drop-class:x:/../*/_options/*/_drop-class?value
+        _error-class:x:/../*/_options/*/_error-class?value
+        _filter:x:/../*/_options/*/_filter?value
+        _allow-multiple:x:/../*/_options/*/_allow-multiple?value
+        to-lower:x:/-?value.string
 
         /*
          * Making sure we include our uploader JavaScript file, and our initialize uploader JavaScript.
          * Notice, we have to wait until widget is actually attached before we do this, since otherwise we won't know its ID,
          * unless an explicit ID was provided, which is not necessary the case.
          */
-        include-javascript:@"new window.p5.uploader ('{0}', '{1}', '{2}', '{3}');"
+        include-javascript:@"new window.p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6});"
           :x:/../*/_event?value
           :x:/../*/_class?value
           :x:/../*/_dragover-class?value
           :x:/../*/_drop-class?value
+          :x:/../*/_error-class?value
+          :x:/../*/_filter?value
+          :x:/../*/to-lower?value
 
       /*
        * Event raised when a file is uploaded.
@@ -119,6 +132,42 @@ create-event:sys42.widgets.uploader
         get-http-param:sys42.widgets.uploader.current
         get-http-param:sys42.widgets.uploader.filename
         get-http-param:sys42.widgets.uploader.content
+
+        /*
+         * Server side validation of filename's extension, to avoid client-side hacking of JS, to allow uploading of non-supported files!
+         */
+        _filter:x:/../*/_options/*/_filter?value
+        split:x:/-?value
+          =:|
+        split:x:/../*/get-http-param/*/sys42.widgets.uploader.filename?value
+          =:.
+        if:x:/@split/@split/*/{0}
+          :x:/@split/0/-?name
+          not
+
+          /*
+           * Illegal file extension!
+           * Providing some visual clues, and returning early.
+           */
+          sys42.windows.info-tip:Unsupported file extension!
+            _class:info-window info-window-error
+          return
+
+        /*
+         * Checking if multiple files were provided, and if this is legal according to widget's properties.
+         */
+        _allow-multiple:x:/../*/_options/*/_allow-multiple?value.bool
+        if:x:/../*/get-http-header/*/sys42.widgets.uploader.count?value.int
+          >:int:1
+          and:x:/@_allow-multiple?value.bool
+            =:bool:false
+          sys42.windows.info-tip:Please only upload one file at the time!
+            _class:info-window info-window-error
+          return
+
+        /*
+         * Decoding from base64 to byte[].
+         */
         p5.string.decode-base64:x:/../*/get-http-param/*/sys42.widgets.uploader.content?value
 
         /*

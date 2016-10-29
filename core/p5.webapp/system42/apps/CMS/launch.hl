@@ -43,6 +43,8 @@ create-widget:cms-page-editor
      * The uploader widget, notice, it wraps all other widgets on page!
      */
     sys42.widgets.uploader
+      _filter:hl
+      _allow-multiple:false
       _onupload
         hyper2lambda:x:/../*/_content?value
 
