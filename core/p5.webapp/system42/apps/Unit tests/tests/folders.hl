@@ -176,12 +176,12 @@ move-multiple-folders
 list-folders
   if
     fetch:x:/0/0?value
-      folder-exist:~/foo/
-    delete-folder:~/foo/
-  create-folder:~/foo/
-  create-folder:~/foo/bar1/
-  create-folder:~/foo/bar2/
-  list-folders:~/foo/
+      folder-exist:~/temp/foo/
+    delete-folder:~/temp/foo/
+  create-folder:~/temp/foo/
+  create-folder:~/temp/foo/bar1/
+  create-folder:~/temp/foo/bar2/
+  list-folders:~/temp/foo/
   if:x:@/-/*/~bar1
     not
     or:x:@/./-/*/~bar2

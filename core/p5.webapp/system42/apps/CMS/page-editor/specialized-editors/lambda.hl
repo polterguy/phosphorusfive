@@ -54,7 +54,7 @@ create-widget
               type:lambda
           get-widget-property:editor_surface
             innerValue
-          insert-before:x:/../0
+          insert-after:x:/../0
             src:lambda
-          set:x:/../0?value
+          set:x:/../1?value
             src:x:/../*/get-widget-property/*/*?value

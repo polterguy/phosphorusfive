@@ -39,7 +39,7 @@
         // First the DOM event handler for what happens when a file is dragged over it.
         this._widget.el.addEventListener('dragover', function (e) {
             e.preventDefault();
-            self._widget.el.className = self._hoverClass;
+            self._widget.el.className = self._cssClass + " " + self._hoverClass;
         }, false);
 
         // Then the DOM event handler for what happens when the user drags the file away from our widget.
@@ -54,7 +54,7 @@
 
             // Checking if we actually have any files to push, and if so ,starting the pushing, and changing the CSS class of widget.
             if (e.dataTransfer.files.length > 0) {
-                self._widget.el.className = self._dropClass;
+                self._widget.el.className = self._cssClass + " " + self._dropClass;
                 self._files = [];
                 for (var i = 0; i < e.dataTransfer.files.length; i++) {
                     self._files.push(e.dataTransfer.files[i]);

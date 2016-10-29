@@ -27,14 +27,14 @@ TODO before release
 
 * Consider documenting all Active Events by adding a [_dox] node, allowing consumers to invoke them with [add] trickery to retrieve dox.
 
-* Replace Hyperlambda parser, with option to preserve comments as [#comment] nodes, such that we canparse files, without loosing comments,
+* Replace Hyperlambda parser, with option to preserve comments as [#comment] nodes, such that we can parse files, without loosing comments,
   and create automated refactoring features, etc. Also make it more stable. It's not 100% today ...
 
-*  Make sure all common dialogues optionally takes [parent] and [class] arguments
+*  Make sure all common dialogues optionally takes [_parent] and [_class] arguments
 
 * Create sample folder in System42, with some example lambda pages, showing of some feature for users.
 
-* Make tree view widget able to contain children widgets.
+* Make support for children widgets in tree view widget.
 
 * Create [lambda2xml] and [lambda2csv] events.
 

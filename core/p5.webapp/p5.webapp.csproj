@@ -636,6 +636,7 @@
     <Content Include="system42\components\common-widgets\uploader\README.md" />
     <Content Include="system42\components\common-widgets\uploader\startup.hl" />
     <Content Include="system42\components\common-widgets\uploader\startup\sys42.widgets.uploader.hl" />
+    <Content Include="system42\apps\CMS\startup\sys42.cms.download-file.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\css\bootstrap.css.map" />
     <None Include="system42\components\bootstrap\css\bootstrap-theme.css.map" />

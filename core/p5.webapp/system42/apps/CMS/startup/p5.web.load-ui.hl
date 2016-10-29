@@ -21,6 +21,30 @@ create-event:p5.web.load-ui
   else
 
     /*
+     * Checking if we're currently downloading a file.
+     */
+    get-session-value:sys42.cms.download-filename
+    if:x:/-/*?value
+
+      /*
+       * We are currently downloading a file, passing it back to client, with given type (if any), and removing the session value,
+       * before returning early.
+       */
+      get-session-value:sys42.cms.download-filetype
+      if:x:/-/*?value
+        set-http-header:Content-Type
+          src:x:/@get-session-value/*?value
+      split:x:/./@get-session-value/*?value
+        =:/
+      set-http-header:Content-Disposition
+        src:@"attachment; filename={0}"
+          :x:/@split/0/-?name
+      set-session-value:sys42.cms.download-filename
+      set-session-value:sys42.cms.download-filetype
+      echo-file:x:/./@get-session-value/*?value
+      return
+
+    /*
      * Figuring out which page to load according to argument supplied in [_url].
      */
     select-data:x:@"/*/*/p5.page/""={0}"""

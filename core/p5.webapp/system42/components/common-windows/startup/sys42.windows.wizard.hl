@@ -8,6 +8,7 @@
  * [_header]         - Header of modal wizard window
  * [_body]           - Explanatory text of dialogue
  * [_data]           - List of data elements user wish to edit using textboxes.
+ * [_buttons]        - Buttons to use instead of the (default) "OK" button
  * [_onok]           - Invoked when user clicks "OK" button after applying his edits.
  *                     The new values are passed in as [_data].
  * [_onclose]        - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
@@ -25,6 +26,15 @@ create-event:sys42.windows.wizard
    */
   add:x:/++/_onclose
     src:x:/../*/_onclose/*
+
+  /*
+   * Adding [_buttons] into [_buttons] of modal dialogue.
+   */
+  if:x:/../*/_buttons
+    add:x:/++/sys42.windows.modal
+      src:_buttons
+    add:x:/++/_buttons
+      src:x:/../*/_buttons/*
 
   /*
    * Looping through each [_data] items, creating an edit widget for each item.

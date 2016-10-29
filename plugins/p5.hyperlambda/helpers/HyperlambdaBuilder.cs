@@ -64,7 +64,7 @@ namespace p5.hyperlambda.helpers
         }
 
         /*
-         * Recursively invoked for every "level" in node hierarchy
+         * Recursively invoked for each "level" in node hierarchy
          */
         private void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
         {

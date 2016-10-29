@@ -29,8 +29,23 @@
  * Styles for the default uploader widget.
  */
 .uploader-widget {
-    background-color:rgba(255,255,0,.1);
-    transition:background-color ease-in .5s;
+    background-color:rgba(255,255,0,0);
+    overflow:visible;
+    min-height:500px;
+    border-radius:15px;
+}
+
+
+/*
+ * Animation for when an item is dragged over uploader, to give visual clues, about that this is an "active element".
+ */
+@keyframes animation-uploader-dragover {
+    0% {
+        background-color:rgba(255,255,0, 0);
+    }
+    100% {
+        background-color:rgba(255,255,0, .5);
+    }
 }
 
 
@@ -38,8 +53,10 @@
  * Styles for the default uploader widget when a file is dragged over it.
  */
 .uploader-widget-dragover {
-    background-color:rgba(255,255,0,.5);
-    transition:background-color ease-in .3s;
+    animation-name:animation-uploader-dragover;
+    animation-iteration-count:infinite;
+    animation-duration:.5s;
+    animation-direction:alternate-reverse;
 }
 
 

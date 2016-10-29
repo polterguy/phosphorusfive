@@ -12,7 +12,7 @@
  * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
  * [_parent]         - Override the default parent widget
  * [_onok]           - Lambda callback to evaluate upon user clicking "OK" button
- * [_close]          - Lambda callback to evaluate is user closes dialogue without pressing "OK".
+ * [_onclose]        - Lambda callback to evaluate is user closes dialogue without pressing "OK".
  * [_buttons]        - Buttons to use instead of the (default) "OK" button
  * [_widgets]        - List of widgets to append into the body parts of the modal window
  *
@@ -137,6 +137,11 @@ create-event:sys42.windows.modal
        */
       sys42.windows.modal.ok
 
+        /*
+         * Notice, this guy may appear to be empty, but is highly likely not, since the [_onok] lambda callback
+         * passed in as an argument during construction, will be appended into this event.
+         */
+
 
       /*
        * Gives initial focus to a specific widget
@@ -194,8 +199,9 @@ create-event:sys42.windows.modal
                     _onenterpressed
                       find-widget:modal-window-footer
                         element:button
-                      raise-widget-ajax-event:x:/-/*/*?value
-                        onclick
+                      if:x:/-/*/0?value
+                        raise-widget-ajax-event:x:/./-/*/0?value
+                          onclick
                     oninit
 
                       /*

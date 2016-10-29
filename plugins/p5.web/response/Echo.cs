@@ -78,7 +78,7 @@ namespace p5.web.ui.response {
             var rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
 
             // Finding filename
-            var fileName = XUtil.Single<string> (context, e.Args);
+            var fileName = context.Raise (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, e.Args))).Get<string> (context);
 
             // Verifying user is authorized to reading from currently iterated file
             context.Raise (".p5.io.authorize.read-file", new Node ("", fileName).Add ("args", e.Args));

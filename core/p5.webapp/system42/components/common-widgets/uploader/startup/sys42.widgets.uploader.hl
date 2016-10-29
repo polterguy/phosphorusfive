@@ -19,9 +19,10 @@
  * [_class]               - The CSS class for your widget. Default value is "uploader-widget", which corresponds with the class
  *                          inside of "uploader.css".
  * [_dragover-class]      - The CSS class to use whenever some file(s) is dragged over your widget. Useful to give the user hints that
- *                          it accepts dropping of files.
+ *                          it accepts dropping of files. The default value is "uploader-widget-dragover".
  * [_drop-class]          - The CSS class to use whenever some file(s) are dropped unto the widget's surface. Useful to give
- *                          visual clues to the user that an uploading of one or more files is in progress.
+ *                          visual clues to the user that an uploading of one or more files is in progress. The default value
+ ~                          is "uploader-widget-drop".
  * [_onupload]            - Lambda callback which will be invoked whenever some file have been uploaded to the server. Will be given
  *                          a [_filename] and a [_content] argument.
  *                          In addition, for cases when the user is uploading multiple files at once, it will also be given the
