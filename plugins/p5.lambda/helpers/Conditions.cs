@@ -224,12 +224,16 @@ namespace p5.lambda.helpers
             // Then returning operators, until we find something that is NOT in our list of comparison/logical operators
             while (idxOperator != null) {
 
-                // Checking if currently iterated node's name is in list of operators
-                if (_operators.Children.Count (ix => ix.Name == idxOperator.Name) == 0)
-                    yield break;
+                // Verifying this is not a "foamtting node" for original conditional statement.
+                if (idxOperator.Name != "") {
 
-                // This is a comparison/logical operator
-                yield return idxOperator;
+                    // Checking if currently iterated node's name is in list of operators
+                    if (_operators.Children.Count (ix => ix.Name == idxOperator.Name) == 0)
+                        yield break;
+
+                    // This is a comparison/logical operator
+                    yield return idxOperator;
+                }
 
                 // Incrementing currently iterated node
                 idxOperator = idxOperator.NextSibling;
