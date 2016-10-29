@@ -58,5 +58,17 @@
     "inputFiles": [
       "system42/components/common-widgets/datagrid/media/skins/default/default.css"
     ]
+  },
+  {
+    "outputFileName": "system42/components/common-widgets/uploader/media/uploader.min.css",
+    "inputFiles": [
+      "system42/components/common-widgets/uploader/media/uploader.css"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/common-widgets/uploader/media/uploader.min.js",
+    "inputFiles": [
+      "system42/components/common-widgets/uploader/media/uploader.js"
+    ]
   }
 ]

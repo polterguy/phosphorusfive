@@ -314,12 +314,12 @@
     <Content Include="system42\components\common-widgets\tree\media\skins\small\small.min.css">
       <DependentUpon>small.css</DependentUpon>
     </Content>
-    <Content Include="system42\components\common-widgets\uploader\media\default.min - Copy.css">
-      <DependentUpon>uploader.css</DependentUpon>
-    </Content>
     <Content Include="system42\components\common-widgets\uploader\media\uploader.css" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.js" />
-    <Content Include="system42\components\common-widgets\uploader\media\default.min.css">
+    <Content Include="system42\components\common-widgets\uploader\media\uploader.min.css">
+      <DependentUpon>uploader.css</DependentUpon>
+    </Content>
+    <Content Include="system42\components\common-widgets\uploader\media\uploader.min.js">
       <DependentUpon>uploader.js</DependentUpon>
     </Content>
     <Content Include="web.config" />

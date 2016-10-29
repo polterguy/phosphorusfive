@@ -36,7 +36,7 @@ create-event:sys42.widgets.uploader
    * Applying options for widget, with default values.
    */
   _defaults
-    _css-file:/system42/components/common-widgets/uploader/media/uploader.css
+    _css-file:/system42/components/common-widgets/uploader/media/uploader.min.css
     _class:uploader-widget
     _dragover-class:uploader-widget-dragover
     _drop-class:uploader-widget-drop
@@ -58,7 +58,7 @@ create-event:sys42.widgets.uploader
   /*
    * Including JavaScript file that contains uploader widget's client-side JavaScript.
    */
-  include-javascript-file:/system42/components/common-widgets/uploader/media/uploader.js
+  include-javascript-file:/system42/components/common-widgets/uploader/media/uploader.min.js
 
 
   /*
