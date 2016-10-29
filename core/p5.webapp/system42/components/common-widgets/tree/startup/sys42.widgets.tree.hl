@@ -6,6 +6,7 @@
 
 /*
  * The actual tree widget Active Event.
+ *
  * Creates a tree widget, which allows for hierarchically browsing relational tree structures, such as for instance a file
  * system, etc.
  *
@@ -60,7 +61,7 @@ create-event:sys42.widgets.tree
   /*
    * Making sure we include our tree specific CSS file.
    */
-  include-stylesheet-file:/system42/components/common-widgets/tree-widget/media/skins/{0}/{0}.min.css
+  include-stylesheet-file:/system42/components/common-widgets/tree/media/skins/{0}/{0}.min.css
     :x:/../*/_options/*/_skin?value
 
 

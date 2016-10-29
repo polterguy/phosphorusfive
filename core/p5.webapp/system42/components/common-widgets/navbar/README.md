@@ -47,7 +47,7 @@ a lambda object of Hyperlambda, allowing you to do whatever you wish when users 
 
 If you set the [_crawl] argument to "true", as we have done above, then an "unrolling" HTTP GET parameter will be automatically created for you,
 to allow search engines to crawl your menu, and also users to bookmark them, by right clicking items, and choose "Open in new tab" for instance.
-See the [tree-widget](/../tree-widget/) to understand how this work.
+See the [tree widget](/../tree/) to understand how this work.
 
 The menu is built on Bootstrap CSS' navbar, and will therefor render responsively, allowing devices with smaller resolution to show a more friendly
 navigational widget. See [Bootstrap](http://getbootstrap.com/components/#navbar) to understand how this work. You can set most of the settings

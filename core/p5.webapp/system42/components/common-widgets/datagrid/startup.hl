@@ -1,0 +1,7 @@
+
+/*
+ * Startup script that is evaluated when server is started.
+ * Evaluates all Hyperlambda files in the "startup" folder.
+ */
+
+sys42.execute-lambda-folder:/system42/components/common-widgets/datagrid/startup/

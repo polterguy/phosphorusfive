@@ -1,38 +1,38 @@
 [
   {
-    "outputFileName": "system42/components/tree-widget/media/skins/default/default.min.css",
+    "outputFileName": "system42/components/tree/media/skins/default/default.min.css",
     "inputFiles": [
-      "system42/components/tree-widget/media/skins/default/default.css"
+      "system42/components/tree/media/skins/default/default.css"
     ]
   },
   {
-    "outputFileName": "system42/components/tree-widget/media/skins/large/large.min.css",
+    "outputFileName": "system42/components/tree/media/skins/large/large.min.css",
     "inputFiles": [
-      "system42/components/tree-widget/media/skins/large/large.css"
+      "system42/components/tree/media/skins/large/large.css"
     ]
   },
   {
-    "outputFileName": "system42/components/tree-widget/media/skins/medium/medium.min.css",
+    "outputFileName": "system42/components/tree/media/skins/medium/medium.min.css",
     "inputFiles": [
-      "system42/components/tree-widget/media/skins/medium/medium.css"
+      "system42/components/tree/media/skins/medium/medium.css"
     ]
   },
   {
-    "outputFileName": "system42/components/tree-widget/media/skins/small/small.min.css",
+    "outputFileName": "system42/components/tree/media/skins/small/small.min.css",
     "inputFiles": [
-      "system42/components/tree-widget/media/skins/small/small.css"
+      "system42/components/tree/media/skins/small/small.css"
     ]
   },
   {
-    "outputFileName": "system42/components/codemirror-widget/media/mode/hyperlambda/hyperlambda.min.js",
+    "outputFileName": "system42/components/codemirror/media/mode/hyperlambda/hyperlambda.min.js",
     "inputFiles": [
-      "system42/components/codemirror-widget/media/mode/hyperlambda/hyperlambda.js"
+      "system42/components/codemirror/media/mode/hyperlambda/hyperlambda.js"
     ]
   },
   {
-    "outputFileName": "system42/components/codemirror-widget/media/theme/paraiso.min.css",
+    "outputFileName": "system42/components/codemirror/media/theme/paraiso.min.css",
     "inputFiles": [
-      "system42/components/codemirror-widget/media/theme/paraiso.css"
+      "system42/components/codemirror/media/theme/paraiso.css"
     ]
   },
   {
@@ -48,15 +48,15 @@
     ]
   },
   {
-    "outputFileName": "system42/components/datagrid-widget/media/skins/default/default.min.css",
+    "outputFileName": "system42/components/datagrid/media/skins/default/default.min.css",
     "inputFiles": [
-      "system42/components/datagrid-widget/media/skins/default/default.css"
+      "system42/components/datagrid/media/skins/default/default.css"
     ]
   },
   {
-    "outputFileName": "system42/components/common-widgets/datagrid-widget/media/skins/default/default.min.css",
+    "outputFileName": "system42/components/common-widgets/datagrid/media/skins/default/default.min.css",
     "inputFiles": [
-      "system42/components/common-widgets/datagrid-widget/media/skins/default/default.css"
+      "system42/components/common-widgets/datagrid/media/skins/default/default.css"
     ]
   }
 ]

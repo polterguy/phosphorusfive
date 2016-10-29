@@ -40,14 +40,10 @@ namespace p5.types.types {
         private static void p5_string_decode_base64 (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, false)) {
 
-                // Looping through each argument given
-                foreach (var idxNode in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Decoding given value from base64 and returning to caller
-                    e.Args.Add ("", Convert.FromBase64String (XUtil.Single<string> (context, e.Args, true)));
-                }
+                // Decoding given value from base64 and returning to caller
+                e.Args.Value = Convert.FromBase64String (XUtil.Single<string> (context, e.Args, true));
             }
         }
     }

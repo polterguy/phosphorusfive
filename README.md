@@ -3,7 +3,7 @@ Phosphorus Five, simplifying the creation of web apps
 
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
 Its _"Hello World"_ can be evaluated by making sure you have the "p5.webapp" as your startup project, start your debugger, 
-click the "Apps/CMS" menu item, create a "New page ..." - Choose *[lambda]* page, and paste in the following code.
+click the "Apps/CMS" menu item, create a new page by clicking the _"+"_ - Choose *[lambda]* page, and paste in the following code.
 
 ```
 create-literal-widget
@@ -16,21 +16,16 @@ create-literal-widget
       innerValue:Hello World!
 ```
 
-If you get weird errors when debugging, thebn stop your debugger, _TURN OFF_ "Browser Link" in Visual Studio, and restart debugging.
+If you get weird errors when debugging, then stop your debugger, _TURN OFF_ "Browser Link" in Visual Studio, and restart your debugger.
 
 Save your page, and click "Preview". If you get a browser notification saying "a popup was blocked", you might
 have to change your browser settings for popups being allowed on localhost. If you do not have Visual Studio, P5
 works just as well on both Xamarin (Mac OS X) and MonoDevelop (Linux).
 
-Tip!
-A nice place to test out constructs shown in the documentation files for P5, is the menu item "Apps/Executor",
-which allows you to execute Hyperlambda and p5.lambda, directly from within your browser. Most examples here
-assumes you're using the "Executor" application to evaluate your code.
-
 ## What is that code ...?
 
 The above code, is called "Hyperlambda", and is simply a key/value/children tree-structure, allowing for you
-to declare something which P5 refers to as "p5.lambda". p5.lambda is the basis for an "execution tree", that is
+to declare something, that P5 refers to as "p5.lambda". p5.lambda is the basis for an "execution tree", that is
 a Turing complete opportunity to "declare" your apps, through a (very rich) "non-programming model".
 
 I say "non-programming", because really, there is no programming language in P5. Only a bunch of loosely
@@ -104,6 +99,6 @@ the "samples" folder.
 ## License
 
 Phosphorus Five is free and open source software, and licensed under the terms
-of the Affero GPL license, in addition to a commercial license. Read more about
+of the Gnu Public License, version 3, in addition to that commercially license are available for a fee. Read more about
 our Quid Pro Quo license terms at our website at [Gaiasoul](http://gaiasoul.com).
 

@@ -1,0 +1,56 @@
+/*
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * 
+ * This file is part of Phosphorus Five.
+ *
+ * Phosphorus Five is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ *
+ * Phosphorus Five is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Phosphorus Five.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * If you cannot for some reasons use the GPL license, Phosphorus
+ * Five is also commercially available under Quid Pro Quo terms. Check 
+ * out our website at http://gaiasoul.com for more details.
+ */
+
+
+
+
+
+/*
+ * Styles for the default uploader widget.
+ */
+.uploader-widget {
+    background-color:rgba(255,255,0,.1);
+    transition:background-color ease-in .5s;
+}
+
+
+/*
+ * Styles for the default uploader widget when a file is dragged over it.
+ */
+.uploader-widget-dragover {
+    background-color:rgba(255,255,0,.5);
+    transition:background-color ease-in .3s;
+}
+
+
+/*
+ * Styles for the default uploader widget when a file is dropped inside of it.
+ */
+.uploader-widget-drop {
+    background-color:rgba(128,255,0,.7);
+    transition:background-color ease-in .1s;
+}
+
+
+
+
