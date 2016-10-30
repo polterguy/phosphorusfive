@@ -46,6 +46,7 @@ TODO before release
 
 * Fix [sys42.get-widget]
 
+* Create [delete-from-row-id] for Datagrid widget.
 
 
 

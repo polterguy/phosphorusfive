@@ -210,13 +210,12 @@ create-widget:cms-page-editor
       class:col-xs-3 col-md-2 btn-group
       widgets
         button
-          type:button
           style:"width:100%;display:block;"
           class:btn btn-primary dropdown-toggle
           data-toggle:dropdown
           aria-haspopup:true
           aria-expanded:false
-          innerValue:@"+"
+          innerValue:+
         ul:cms-create-new-page
           class:dropdown-menu
           widgets

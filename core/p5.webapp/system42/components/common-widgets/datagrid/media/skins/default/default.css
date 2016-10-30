@@ -166,7 +166,7 @@
 /*
  * Table cells content (hyperlinks) when editing is enabled.
  */
-.datagrid-widget-default td a {
+.datagrid-widget-default td > a {
     text-decoration:none;
     color:rgba(0,0,128,1);
     display:block;
@@ -177,7 +177,7 @@
 /*
  * Table cells content (span) when editing is disabled.
  */
-.datagrid-widget-default td span {
+.datagrid-widget-default td > span {
     color:rgba(0,0,0,.7);
     display:block;
     padding:5px 10px;
@@ -207,8 +207,8 @@
 /*
  * Table cells content (hyperlinks) when hovered, or having focus.
  */
-.datagrid-widget-default td a:hover,
-.datagrid-widget-default td a:focus {
+.datagrid-widget-default td > a:hover,
+.datagrid-widget-default td > a:focus {
     background-color:rgba(0,0,0,.07);
 }
 

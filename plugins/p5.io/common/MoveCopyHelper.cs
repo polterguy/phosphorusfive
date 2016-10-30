@@ -98,7 +98,7 @@ namespace p5.io.common
                         context,
                         args,
                         rootFolder,
-                        Common.GetSystemPath (context, args.Get<string> (context)),
+                        Common.GetSystemPath (context, Utilities.Convert<string> (context, XUtil.FormatNode (context, args))),
                         Common.GetSystemPath (context, Utilities.Convert<string> (context, dest[0])),
                         sourceAuthorizeEvent,
                         destinationAuthorizeEvent,
