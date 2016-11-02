@@ -9,6 +9,9 @@
  * Creates the Active Event that includes Bootstrap's JavaScript files on your page.
  */
 create-event:sys42.bootstrap.include-javascript
+
+  // Bootstrap's CSS requires jQuery
+  sys42.jquery.include
   include-javascript-file:/system42/components/bootstrap/js/bootstrap.min.js
 
 

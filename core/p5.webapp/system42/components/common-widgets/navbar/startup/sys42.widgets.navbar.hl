@@ -120,6 +120,9 @@ create-event:sys42.widgets.navbar
   /*
    * Returning menu to caller
    */
+  if:x:/../*/_arg?value
+    set:x:/../*/return/*/container?value
+      src:x:/../*/_arg?value
   return
     container
       _root-navbar
@@ -238,7 +241,7 @@ create-event:sys42.widgets.navbar._create-items
        * This item does not have any nested children.
        * Adding the supplied [_onclick] to our currently iterated item.
        */
-      add:x:/..else/*/add/[1,2]/*/*/*/widgets/*/a/*/onclick/*/_lambda
+      add:x:/..else/*/add/[1,2]/*/*/*/widgets/*/a/*/onclick
         src:x:/..for-each/*/_dp/#/*/_onclick/*
 
       /*
@@ -261,7 +264,6 @@ create-event:sys42.widgets.navbar._create-items
        * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
        * to caller's request.
        */
-      eval-x:x:/+/**/_root-tree
       add:x:/../*/return
         src
           li
@@ -278,95 +280,20 @@ create-event:sys42.widgets.navbar._create-items
                 onclick
 
                   /*
-                   * First we evaluate our item click event, which sets the item as active, in additio to some other things.
+                   * This might look empty, but it contains the lambda callback supplied
+                   * by caller for [_onclick] of item, if any.
                    */
-                  eval-x:x:/+/*
-                  sys42.widgets.navbar._item-clicked
-                    _root-tree:x:/../*/_arg?value
-                    _event:x:/../*/_event?value
-
-                  /*
-                   * Then we evaluate the user provided lambda for item.
-                   */
-                  _lambda
-                  eval:x:/-
+                  find-first-ancestor-widget-like:x:/../*/_event?value
+                    element:ul
+                    class:dropdown-menu
+                  if:x:/-/*/*?value
+                    send-javascript:@"$('#{0}').dropdown('toggle');"
+                      :x:/@find-first-ancestor-widget-like/*/*?value
 
   /*
    * Returning widget collection to caller.
    */
   return
-
-
-/*
- * Helper active event invoked when an item is clicked.
- */
-create-event:sys42.widgets.navbar._item-clicked
-
-  /*
-   * Checking if there's a previous active menu item, and if so, removing the "active" CSS class from it.
-   */
-  find-widget-like:x:/../*/_root-tree?value
-    class:active
-    element:li
-  if:x:/../*/find-widget-like/*/*
-    sys42.delete-css-classes:x:/../*/find-widget-like/*/*?value
-      _class:active
-
-  /*
-   * Adding the "active" CSS class to clicked item.
-   */
-  get-parent-widget:x:/../*/_event?value
-  sys42.add-css-classes:x:/-/*/*?value
-    _class:active
-
-  /*
-   * Used to track which "li" item we should remove the "open" CSS class from.
-   */
-  _cur
-
-  /*
-   * Checking if this is a "root menu item", at which point it has no ancestor widgets of type "ul" with "dropdown-menu" class.
-   */
-  find-first-ancestor-widget-like:x:/-3/*/*?value
-    element:li
-    class:dropdown
-  if:x:/-/*/*?value
-
-    /*
-     * This is not a "root menu item".
-     */
-    set:x:/../*/_cur?value
-      src:x:/././-/*?value
-
-    /*
-     * Looping until we find the outer most "li" element that has the CSS class of "open".
-     */
-    while:bool:true
-      find-first-ancestor-widget-like:x:/../*/_cur?value
-        element:li
-        class:dropdown
-      if:x:/-/*/*?value
-        not
-
-        /*
-         * We have found the outer most "li" element, with the CSS class of "open".
-         */
-        break
-
-      /*
-       * Continuing iteration.
-       */
-      set:x:/../*/_cur?value
-        src:x:/..while/*/find-first-ancestor-widget-like/*/*?value
-
-    /*
-     * Notice, since the adding of the CSS classes actually happens on the client side only, due to Bootstrap's
-     * JavaScript file adding them in JS, we need to transfer JS to the client that removes the CSS class.
-     */
-    get-children-widgets:x:/../*/_cur?value
-    send-javascript:@"p5.$('{0}').el.className = 'dropdown';p5.$('{1}').el.ariaExpanded = false;"
-      :x:/../*/_cur?value
-      :x:/./-/*/0?value
 
 
 /*
