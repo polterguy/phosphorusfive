@@ -16,6 +16,12 @@ if:x:/-/*/role?value
 
 
 /*
+ * Including some nice background to visually indicate we're in "configuration mode".
+ */
+include-stylesheet-file:@CMS/media/css/backgrounds/cogs.min.css
+
+
+/*
  * Invoking custom control event, for later to transform its results, into a [create-container-widget] invocation.
  */
 sys42.widgets.codemirror-executor

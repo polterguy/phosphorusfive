@@ -47,9 +47,8 @@ create-widget
              * Save button
              */
             button
-              innerValue:Save
-              class:btn btn-default
-              title:Alt + S
+              innerValue:@"<span class=""glyphicon glyphicon-floppy-save""></span> Save"
+              class:btn btn-default diffuse
               onclick
                 sys42.save-edited-page
 
@@ -107,8 +106,8 @@ create-widget
              * "Save as" button.
              */
             button
-              innerValue:Save as ...
-              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-floppy-save""></span> Save as ..."
+              class:btn btn-default diffuse
               onclick
 
                 /*
@@ -253,8 +252,8 @@ create-widget
              * "Download" page button.
              */
             button
-              innerValue:Download
-              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-cloud-download""></span> Download"
+              class:btn btn-default diffuse
               onclick
                 sys42.cms.download-page
 
@@ -302,8 +301,8 @@ create-widget
              * Preview button
              */
             button
-              innerValue:View page
-              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-eye-open""></span> View page"
+              class:btn btn-default diffuse
               onclick
 
                 /*
@@ -324,8 +323,8 @@ create-widget
              * Settings for page button.
              */
             button
-              innerValue:Settings ...
-              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-wrench""></span> Settings ..."
+              class:btn btn-default diffuse
               onclick
 
                 /*
@@ -485,8 +484,8 @@ create-widget
              * Delete page button.
              */
             button
-              innerValue:Delete
-              class:btn btn-default
+              innerValue:@"<span class=""glyphicon glyphicon-trash""></span> Delete"
+              class:btn btn-default diffuse
               onclick
 
                 /*

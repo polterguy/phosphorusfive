@@ -56,8 +56,8 @@ create-event:sys42.windows.confirm
    */
   if
     fetch:x:/0/0?value
-      widget-exist:confirm-window
-    delete-widget:confirm-window
+      widget-exist:modal-window
+    delete-widget:modal-window
 
   /*
    * Appending buttons into footer of dialogue, which unless overridden through [_buttons], means
@@ -81,8 +81,8 @@ create-event:sys42.windows.confirm
   /*
    * Creating actual modal Widget, making sure we forward evaluate the [_header] and [_body]
    */
-  eval-x:x:/+/*|/+/**(/=confirm-window-body|/=confirm-window-header)/*/innerValue
-  create-widget:confirm-window
+  eval-x:x:/+/*|/+/**(/=modal-window-body|/=modal-window-header)/*/innerValue
+  create-widget:modal-window
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
     _onclose
@@ -101,7 +101,7 @@ create-event:sys42.windows.confirm
         if:x:/../*/_close-client
           not
           or:x:/../*/_close-client?value
-          send-javascript:@"$('#confirm-window').modal('toggle');"
+          send-javascript:@"$('#modal-window').modal('toggle');"
 
         /*
          * Notice, the rest of this event might look empty, but above we are appending the [_onclose]
@@ -112,7 +112,7 @@ create-event:sys42.windows.confirm
        * Closes dialogue
        */
       sys42.windows.confirm.close
-        send-javascript:@"$('#confirm-window').modal('toggle');"
+        send-javascript:@"$('#modal-window').modal('toggle');"
 
       /*
        * Evaluates OK lambda object.
@@ -124,7 +124,7 @@ create-event:sys42.windows.confirm
        * Gives initial focus to a specific widget
        */
       sys42.windows.confirm.initial-focus
-        send-javascript:@"$('#confirm-window').on('shown.bs.modal', function () {{$('#{0}').focus();}})"
+        send-javascript:@"$('#modal-window').on('shown.bs.modal', function () {{$('#{0}').focus();}})"
           :x:/../*/_arg?value
 
     oninit
@@ -132,8 +132,8 @@ create-event:sys42.windows.confirm
       /*
        * Making sure dialog becomes initially visible, and that we trap "onclose"
        */
-      send-javascript:@"$('#confirm-window').modal('toggle').on('hide.bs.modal', function(){
-  p5.$('confirm-window').raise('_onclose');
+      send-javascript:@"$('#modal-window').modal('toggle').on('hide.bs.modal', function(){
+  p5.$('modal-window').raise('_onclose');
 });"
 
     widgets
@@ -157,7 +157,7 @@ create-event:sys42.windows.confirm
                     data-dismiss:modal
                     aria-label:Close
                     innerValue:&times;
-                  literal:confirm-window-header
+                  literal:modal-window-header
                     element:h4
                     innerValue:x:/../*/_options/*/_header?value
 
@@ -167,7 +167,7 @@ create-event:sys42.windows.confirm
               container
                 class:modal-body
                 widgets
-                  literal:confirm-window-body
+                  literal:modal-window-body
                     element:div
                     innerValue:x:/../*/_options/*/_body?value
 

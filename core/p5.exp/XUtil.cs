@@ -69,8 +69,7 @@ namespace p5.exp
             // A formatted node is defined as having one or more children with "" as name
             // and a value which is of type string
             return evaluatedNode.Value is string && 
-                (evaluatedNode.Value as string).Contains ("{") && 
-                (evaluatedNode.Value as string).Contains ("}") && 
+                (evaluatedNode.Value as string).Contains ("{0}") && 
                 evaluatedNode.Children.Count (ix => ix.Name == "") > 0;
         }
 

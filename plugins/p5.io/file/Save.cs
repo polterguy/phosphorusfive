@@ -95,7 +95,7 @@ namespace p5.io.file
             foreach (var idxSrc in src) {
 
                 // Converting currenyl iterated source to blob, and appending into combined content
-                content.AddRange (Utilities.Convert<byte[]> (context, idxSrc, new byte[] { }));
+                content.AddRange (Utilities.Convert (context, idxSrc, new byte[] { }));
 
                 // Appending CR/LF after every lambda source, to make sure we preserve good Hyperlambda syntax, 
                 // created from multiple source nodes

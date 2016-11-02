@@ -14,40 +14,36 @@ create-event:sys42.csv.import
   load-file:x:/../*/_arg?value
 
   /*
-   * Making sure filename is type of object to [insert-data].
+   * Needed to make sure filename is type of object to [insert-data].
    */
   split:x:/../*/load-file/*?name
     =:/
-  add:x:/../*/for-each/*/insert-data
-    src:x:/../*/split/0/-?name
 
   /*
-   * Adding column headers to [insert-data].
+   * Looping through each row in file, except the first row, 
+   * which are column headers.
    */
-  add:x:/../*/for-each/*/insert-data/*
-    src:x:/../*/load-file/0/0/*?name
+  for-each:x:/../*/load-file/*/*/[1,]
 
-  /*
-   * Removing first row (column headers).
-   */
-  set:x:/../*/load-file/0/0
-
-  /*
-   * Looping through each row in file.
-   */
-  for-each:x:/../*/load-file/*/*
+    /*
+     * Adding database type and column headers to [insert-data].
+     */
+    add:x:/../*/insert-data
+      src:x:/../*/split/0/-?name
+    add:x:/../*/insert-data/0/-
+      src:x:/../*/load-file/0/0/*?name
 
     /*
      * Looping through each column in row.
      */
     _no:int:0
     while:x:/-?value
-      <:x:/..for-each/*/insert-data/*/*?count
+      <:x:/../*/insert-data/0/-/*?count
 
       /*
        * Settings currently iterated column value for currently iterated row.
        */
-      set:x:/..for-each/*/insert-data/*/{0}?value
+      set:x:/../*/insert-data/0/-/{0}?value
         :x:/..for-each/*/_no?value
         src:x:/..for-each/*/_dp/#/{0}?name
           :x:/..for-each/*/_no?value
@@ -58,4 +54,9 @@ create-event:sys42.csv.import
       set:x:/..for-each/*/_no?value
         +:x:/..for-each/*/_no?value
           _:int:1
-    insert-data
+
+  /*
+   * Making sure we insert all our data in "one go", to reduce the number of locks,
+   * and increase the speed of the operation.
+   */
+  insert-data

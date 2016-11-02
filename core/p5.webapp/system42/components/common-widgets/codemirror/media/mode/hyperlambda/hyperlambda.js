@@ -892,6 +892,7 @@ CodeMirror.defineMode("hyperlambda", function() {
         case '!~':
         case 'hyper2lambda':
         case 'csv2lambda':
+        case 'lambda2csv':
         case 'xml2lambda':
         case 'html2lambda':
         case 'sha256-hash':

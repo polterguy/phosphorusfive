@@ -70,5 +70,11 @@
     "inputFiles": [
       "system42/components/common-widgets/uploader/media/uploader.js"
     ]
+  },
+  {
+    "outputFileName": "system42/apps/CMS/media/css/backgrounds/cogs.min.css",
+    "inputFiles": [
+      "system42/apps/CMS/media/css/backgrounds/cogs.css"
+    ]
   }
 ]

@@ -290,7 +290,6 @@
  */
 .datagrid-widget-default .datagrid-pager a {
     display:inline-block;
-    width:40px;
     border:solid 1px rgba(0,0,0,.2);
     text-align:center;
     background-color:#fafafa;
@@ -298,6 +297,9 @@
     color:rgba(0,0,0,.3);
     -webkit-user-select: none;
     -moz-user-select: none;
+    padding-left:20px;
+    padding-right:20px;
+    padding-top:4px;
 }
 
 
@@ -332,7 +334,7 @@
 /*
  * Last paging button.
  */
-.datagrid-widget-default .datagrid-pager a:nth-child(2) {
+.datagrid-widget-default .datagrid-pager a:last-child {
     border-radius:0 14px 14px 0;
     border-left:0;
 }

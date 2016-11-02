@@ -23,14 +23,6 @@
 
 
 /*
- * Making sure we get some spacing at the bottom, to avoid having widgets
- * cluttered all the way to the end of the browser
- */
-body {
-    margin-bottom:150px;
-}
-
-/*
  * Helper to give some space before element begins
  */
 .prepend-top {
@@ -290,3 +282,17 @@ body {
     top:25px;
     right:25px;
 }
+
+
+/*
+ * Diffuses an element on screen, unless it is hovered.
+ */
+.diffuse {
+    transition:opacity ease-in .2s;
+    opacity:.3;
+}
+.diffuse:hover {
+    transition:opacity ease-in .2s;
+    opacity:1;
+}
+

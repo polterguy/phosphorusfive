@@ -44,6 +44,7 @@
  *                         Your lambda callback, will be evaluated from within the context of the header that was clicked, meaning the
  *                         [_event] argument of your header, will be passed into it, allowing you to use [get-widget-property] too figure
  *                         out which column was clicked.
+ * [_pager-widgets]      - Extra widgets, injected between previous and next page buttons.
  */
 create-event:sys42.widgets.datagrid
 
@@ -53,6 +54,7 @@ create-event:sys42.widgets.datagrid
   _defaults
     _skin:default
     _no-items:int:10
+    _pager-widgets
     _on-get-items
       sys42.windows.info-top:You must provide an [_on-get-items] callback lambda!
   _options
@@ -88,6 +90,13 @@ create-event:sys42.widgets.datagrid
    */
   add:x:/../*/return/*/container/*/oninit/*/sys42.widgets.datagrid._create-datagrid
     src:x:/../*/_options/*/_on-header-clicked
+
+
+  /*
+   * Adding [_pager-widgets] content inbetween previous and next pager buttons.
+   */
+  insert-after:x:/../*/return/*/container/*/widgets/**/class/=datagrid-pager/./*/widgets/*/div/*/widgets/*/a/[0,1]
+    src:x:/../*/_options/*/_pager-widgets/*
 
 
   /*
