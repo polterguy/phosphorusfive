@@ -41,7 +41,7 @@ namespace p5.types.types {
             if (e.Args.Value is int) {
                 return;
             } else {
-                e.Args.Value = int.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+                e.Args.Value = System.Convert.ToInt32 (e.Args.Value);
             }
         }
 

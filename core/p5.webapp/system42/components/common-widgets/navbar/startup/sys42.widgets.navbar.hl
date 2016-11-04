@@ -283,6 +283,7 @@ create-event:sys42.widgets.navbar._create-items
                    * This might look empty, but it contains the lambda callback supplied
                    * by caller for [_onclick] of item, if any.
                    */
+                  send-javascript:@"if ($(window).width() < 768) {$('.navbar-toggle').click();}"
                   find-first-ancestor-widget-like:x:/../*/_event?value
                     element:ul
                     class:dropdown-menu

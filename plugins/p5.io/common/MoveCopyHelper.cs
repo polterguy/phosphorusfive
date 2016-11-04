@@ -122,6 +122,10 @@ namespace p5.io.common
             MoveCopyDelegate functorMoveCopy,
             ObjectExistDelegate functorObjectExist)
         {
+            // Making sure we have a file, and not a folder for our destination.
+            if (destinationFile.EndsWith ("/"))
+                destinationFile += sourceFile.Substring (sourceFile.LastIndexOf ("/") + 1);
+
             // Making sure user is authorized to do file/folder operation
             Common.RaiseAuthorizeEvent (context, args, authorizeSourceEventName, sourceFile);
             Common.RaiseAuthorizeEvent (context, args, authorizeDestinationEventName, destinationFile);

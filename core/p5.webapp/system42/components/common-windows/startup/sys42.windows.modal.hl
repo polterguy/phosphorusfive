@@ -35,7 +35,7 @@ create-event:sys42.windows.modal
     _onok
     _onclose
     _buttons
-      button
+      button:modal-ok-button
         class:btn btn-default
         innerValue:OK
         onclick
@@ -101,7 +101,7 @@ create-event:sys42.windows.modal
     src:x:/../*/_options/*/_onok/*
 
   /*
-   * Creating actual modal Widget
+   * Creating actual modal Widget.
    */
   eval-x:x:/+/*|/+/*/widgets/*/container/*/class
   create-widget:modal-window

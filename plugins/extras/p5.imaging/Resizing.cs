@@ -80,34 +80,34 @@ namespace p5.imaging
                 int width = e.Args.GetExChildValue ("width", context, -1);
                 int height = e.Args.GetExChildValue ("height", context, -1);
                 string sourcePath = e.Args.GetExValue<string> (context);
-                string destPath = e.Args.GetExChildValue<string> ("destination-file", context);
+                string destPath = e.Args.GetExChildValue<string> ("dest", context);
 
                 // Figuring out detination file type
                 string destType = destPath.Substring (destPath.LastIndexOf (".") + 1);
                 ImageFormat format = null;
                 switch (destType) {
-                case "bmp":
-                    format = ImageFormat.Bmp;
-                    break;
-                case "gif":
-                    format = ImageFormat.Gif;
-                    break;
-                case "ico":
-                    format = ImageFormat.Icon;
-                    break;
-                case "png":
-                    format = ImageFormat.Png;
-                    break;
-                case "jpg":
-                case "jpeg":
-                    format = ImageFormat.Jpeg;
-                    break;
+                    case "bmp":
+                        format = ImageFormat.Bmp;
+                        break;
+                    case "gif":
+                        format = ImageFormat.Gif;
+                        break;
+                    case "ico":
+                        format = ImageFormat.Icon;
+                        break;
+                    case "png":
+                        format = ImageFormat.Png;
+                        break;
+                    case "jpg":
+                    case "jpeg":
+                        format = ImageFormat.Jpeg;
+                        break;
                 }
 
                 // Sanity check
                 if (string.IsNullOrEmpty (sourcePath) || string.IsNullOrEmpty (destPath) || width == -1 || height == -1)
                     throw new LambdaException (
-                        "[p5.imaging.resize] requires at least [width], [height], [destination-file] and value", 
+                        "[p5.imaging.resize] requires at least [width], [height], [dest] and value", 
                         e.Args, 
                         context);
 
