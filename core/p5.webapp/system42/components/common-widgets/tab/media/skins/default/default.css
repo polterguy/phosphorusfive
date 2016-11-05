@@ -26,6 +26,16 @@
 
 
 /*
+ * Helper (clearfix) CSS class
+ */
+.clearfix:after {
+    content:"";
+    display:block;
+    clear:both;
+}
+
+
+/*
  * First the styles for the main tab widget element.
  */
 .tab-widget-default {
@@ -49,9 +59,12 @@
 .tab-widget-default > ul.tab-header > li.tab-header-item {
     float:left;
     display:block;
-    border:solid 1px rgba(0,0,0,.2);
+    border:solid 1px #e0e0e0;
     border-radius:5px 5px 0 0;
     background-color:#f0f0f0;
+    margin-right:5px;
+    z-index:1;
+    position:relative;
 }
 
 
@@ -72,6 +85,7 @@
     animation-duration:.4s;
     animation-fill-mode:forwards;
     animation-timing-function:ease-out;
+    z-index:3;
 }
 
 
@@ -95,10 +109,11 @@
  * Then the styles for the content widgets, first the main "wrapper" around all items.
  */
 .tab-widget-default > div.tab-content-wrapper {
-    border:solid 1px rgba(0,0,0,.2);
-    padding:10px 10px 0 10px;
+    border:solid 1px #e0e0e0;
     margin-top:-1px;
     border-radius:0 5px 0 0;
+    z-index:2;
+    position:relative;
 }
 
 
@@ -108,9 +123,11 @@
 @keyframes animation-tab-phase-in {
     0% {
         opacity:0;
+        background-color:rgba(255,255,0,1);
     }
     100% {
         opacity:1;
+        background-color:rgba(255,255,255,1);
     }
 }
 .tab-widget-default > div.tab-content-wrapper > div.tab-content-item {
@@ -118,6 +135,8 @@
     animation-duration:.4s;
     animation-fill-mode:forwards;
     animation-timing-function:ease-out;
+    padding:20px 20px 10px 20px;
+    border-radius:0 5px 0 0;
 }
 
 
