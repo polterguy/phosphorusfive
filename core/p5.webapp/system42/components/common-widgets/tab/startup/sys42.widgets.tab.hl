@@ -33,7 +33,7 @@ create-event:sys42.widgets.tab
   /*
    * Making sure we include our tree specific CSS file.
    */
-  include-stylesheet-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.css
+  include-stylesheet-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
     :x:/../*/_options/*/_skin?value
 
 

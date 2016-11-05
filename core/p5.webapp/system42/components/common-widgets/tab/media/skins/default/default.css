@@ -50,6 +50,8 @@
     margin:0;
     padding:0;
     list-style:none;
+    position:relative;
+    z-index:2;
 }
 
 
@@ -63,8 +65,6 @@
     border-radius:5px 5px 0 0;
     background-color:#f0f0f0;
     margin-right:5px;
-    z-index:1;
-    position:relative;
 }
 
 
@@ -85,7 +85,8 @@
     animation-duration:.4s;
     animation-fill-mode:forwards;
     animation-timing-function:ease-out;
-    z-index:3;
+    border-bottom:solid 1px #ffffff;
+    font-weight:bold;
 }
 
 
@@ -96,6 +97,9 @@
     display:block;
     text-decoration:none;
     padding:5px 15px 5px 15px;
+}
+.tab-widget-default > ul.tab-header > li.tab-header-active-item a {
+    color:black;
 }
 .tab-widget-default > ul.tab-header > li.tab-header-item > a:hover {
     background-color:rgba(0,0,0,.1);
@@ -112,7 +116,7 @@
     border:solid 1px #e0e0e0;
     margin-top:-1px;
     border-radius:0 5px 0 0;
-    z-index:2;
+    z-index:1;
     position:relative;
 }
 
@@ -120,21 +124,7 @@
 /*
  * Then the individual content items
  */
-@keyframes animation-tab-phase-in {
-    0% {
-        opacity:0;
-        background-color:rgba(255,255,0,1);
-    }
-    100% {
-        opacity:1;
-        background-color:rgba(255,255,255,1);
-    }
-}
 .tab-widget-default > div.tab-content-wrapper > div.tab-content-item {
-    animation-name:animation-tab-phase-in;
-    animation-duration:.4s;
-    animation-fill-mode:forwards;
-    animation-timing-function:ease-out;
     padding:20px 20px 10px 20px;
     border-radius:0 5px 0 0;
 }
