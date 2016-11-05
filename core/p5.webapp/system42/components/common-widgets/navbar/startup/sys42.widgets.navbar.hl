@@ -96,7 +96,7 @@ create-event:sys42.widgets.navbar
      * Checking if the current URL is an "unroll" URL.
      */
     get-http-get-param:x:/../*/_options/*/_crawl-get-name?value
-    if:x:/..if/*/get-http-get-param/*?value
+    if:x:/@get-http-get-param/*?value
 
 
       /*
@@ -288,6 +288,8 @@ create-event:sys42.widgets.navbar._create-items
                     element:ul
                     class:dropdown-menu
                   if:x:/-/*/*?value
+                    and
+                      is-callback
                     send-javascript:@"$('#{0}').dropdown('toggle');"
                       :x:/@find-first-ancestor-widget-like/*/*?value
 

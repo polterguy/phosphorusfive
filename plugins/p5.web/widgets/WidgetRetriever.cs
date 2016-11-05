@@ -325,6 +325,11 @@ namespace p5.web.widgets
                         } else {
                             match = widget.Element == value;
                         }
+                    } else if (idxNode.Name == "visible") {
+                        if (idxNode.Value == null)
+                            throw new LambdaException ("You cannot query for 'visible exist', since all widgets have the 'visible' property.", args, context);
+                        var value = idxNode.GetExValue (context, true);
+                        match = widget.Visible == value;
                     } else if (!widget.HasAttribute (idxNode.Name)) {
                         match = false;
                         break;
@@ -333,10 +338,10 @@ namespace p5.web.widgets
                         if (value == null && widget.HasAttribute (idxNode.Name)) {
 
                             // Match, since caller just looked for existence of attribute
-                        } else if (!like && widget [idxNode.Name] != value) {
+                        } else if (!like && widget[idxNode.Name] != value) {
                             match = false;
                             break;
-                        } else if (like && !widget [idxNode.Name].Contains (value)) {
+                        } else if (like && !widget[idxNode.Name].Contains (value)) {
                             match = false;
                             break;
                         }

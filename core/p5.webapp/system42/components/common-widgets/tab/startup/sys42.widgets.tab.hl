@@ -1,0 +1,172 @@
+
+/*
+ * Creates the tab widget Active Event.
+ */
+
+
+/*
+ * The actual tab widget Active Event.
+ */
+create-event:sys42.widgets.tab
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _skin:default
+    _crawl-get-name:sys42_widgets_tab_unroll
+    _crawl:bool:false
+    _items
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+
+  /*
+   * Making sure caller supplied at the very least one item.
+   */
+  if:x:/../*/_options/*/_items/*/item
+    not
+    throw:You have to supply at the very least one root item when creating your tab widget.
+
+
+  /*
+   * Making sure we include our tree specific CSS file.
+   */
+  include-stylesheet-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.css
+    :x:/../*/_options/*/_skin?value
+
+
+  /*
+   * Looping through each [item] in [_items], and creating a tabview header item for each of them.
+   */
+  _index:int:0
+  for-each:x:/../*/_options/*/_items/*/item
+
+    /*
+     * Adding header item first.
+     */
+    _header
+      container
+        element:li
+        class:tab-header-item
+        widgets
+          a
+            href:#
+            innerValue:x:/@_dp/#/*/name?value
+            _index:x:/..for-each/-?value
+            onclick
+
+              /*
+               * Finding root tab widget, for then to find the visible widget, and making it invisible.
+               */
+              find-first-ancestor-widget:x:/../*/_event?value
+                _root-tab
+              find-widget:x:/-/*/*?value
+                class:tab-content-item
+                visible:true
+              set-widget-property:x:/-/*/*?value
+                visible:false
+
+              /*
+               * Now finding out which index the currently clicked tab header button is, and making sure
+               * we set that content widget to visible.
+               */
+              get-widget-property:x:/../*/_event?value
+                _index
+              find-widget:x:/@find-first-ancestor-widget/*/*?value
+                class:tab-content-item
+              set-widget-property:x:/-/*/{0}?value
+                :x:/@get-widget-property/*/*?value
+                visible:true
+
+              /*
+               * Now making sure we remove the "active" CSS class from the previously active button, and set the class for the currently clicked button
+               */
+              find-widget-like:x:/@find-first-ancestor-widget/*/*?value
+                class:tab-header-active-item
+              sys42.toggle-css-classes:x:/-/*/*?value
+                _class:tab-header-active-item
+              get-parent-widget:x:/../*/_event?value
+              sys42.toggle-css-classes:x:/-/*/*?value
+                _class:tab-header-active-item
+
+    eval-x:x:/@_header/*/*/*/*(/innerValue|/_index)
+    add:x:/../*/return/*/container/*/widgets/*/container/[0,1]/*/widgets
+      src:x:/@_header/*
+
+    /*
+     * Incrementing [_index].
+     */
+    set:x:/@_index?value
+      +:x:/@_index?value
+        _:1
+
+    /*
+     * Adding content [widgets] collection.
+     */
+    _content
+      container
+        visible:false
+        class:tab-content-item
+        widgets
+    add:x:/@_content/*/*/widgets
+      src:x:/@_dp/#/*/widgets/*
+    add:x:/../*/return/*/container/*/widgets/*/container/[1,2]/*/widgets
+      src:x:/@_content/*
+
+
+  /*
+   * Forward evaluating [class] to make sure we use [_options]/[_class] if supplied.
+   */
+  eval-x:x:/../*/return/*/*/class
+
+
+  /*
+   * Making sure our first tab item becomes "active".
+   */
+  set:x:/../*/return/*/container/*/widgets/*/container/[0,1]/*/widgets/*/[0,1]/*/class?value
+    src:tab-header-item tab-header-active-item
+
+
+  /*
+   * Making sure our first tab item content becomes visible.
+   */
+  set:x:/../*/return/*/container/*/widgets/*/container/[1,2]/*/widgets/*/[0,1]/*/visible
+
+
+  /*
+   * Checking if an explicit ID was given, and if so, making sure we use it.
+   */
+  if:x:/../*/_arg?value
+    set:x:/../*/return/*?value
+      src:x:/../*/_arg?value
+
+
+  /*
+   * Returning widget to caller.
+   */
+  return
+    container
+      _root-tab
+
+
+      /*
+       * Forward evaluated before [return] invocation, to [_options]/[_class] value.
+       */
+      class:tab-widget-{0}
+        :x:/../*/_options/*/_skin?value
+
+      /*
+       * Contains the tabs for widget
+       */
+      widgets
+        container
+          element:ul
+          class:tab-header clearfix
+          widgets
+        container
+          class:tab-content-wrapper
+          widgets
+
+

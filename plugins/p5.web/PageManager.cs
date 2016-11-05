@@ -322,6 +322,9 @@ namespace p5.web
 
             // Creating and registering our WidgetTypes as event listener
             context.RegisterListeningObject (new WidgetTypes (context, this));
+
+            // Creating and registering our WidgetMisc as event listener
+            context.RegisterListeningObject (new WidgetMisc (context, this));
         }
 
         #endregion

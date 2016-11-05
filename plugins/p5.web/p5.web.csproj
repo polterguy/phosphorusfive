@@ -60,6 +60,7 @@
     <Compile Include="storage\Context.cs" />
     <Compile Include="storage\Globals.cs" />
     <Compile Include="storage\Session.cs" />
+    <Compile Include="widgets\WidgetMisc.cs" />
     <Compile Include="widgets\WidgetTypes.cs" />
     <Compile Include="widgets\WidgetCreator.cs" />
     <Compile Include="widgets\WidgetRetriever.cs" />
