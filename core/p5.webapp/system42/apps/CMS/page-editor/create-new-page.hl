@@ -89,3 +89,4 @@ sys42.cms.set-currently-edited-page:x:/../*/insert-data/0?value
  */
 sys42.cms.populate-select-page
 sys42.cms.edit-page
+sys42.cms.create-navbar-menu

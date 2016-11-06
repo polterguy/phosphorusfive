@@ -418,6 +418,7 @@ create-widget:ajax-uploader
           sys42.cms.populate-select-page
           sys42.cms.edit-page
           send-javascript:@"$('#cms-select-page').focus();"
+          sys42.cms.create-navbar-menu
         else
 
           /*
@@ -487,6 +488,7 @@ create-widget:ajax-uploader
                   sys42.cms.populate-select-page
                   sys42.cms.edit-page
                   send-javascript:@"$('#cms-select-page').focus();"
+                  sys42.cms.create-navbar-menu
             _onok
 
               /*
@@ -530,6 +532,7 @@ create-widget:ajax-uploader
               sys42.cms.populate-select-page
               sys42.cms.edit-page
               send-javascript:@"$('#cms-select-page').focus();"
+              sys42.cms.create-navbar-menu
 
             _data
               url:{0}-{1}

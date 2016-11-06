@@ -245,6 +245,7 @@ create-widget
                      */
                     sys42.cms.populate-select-page
                     sys42.cms.edit-page
+                    sys42.cms.create-navbar-menu
 
 
             /*
@@ -470,9 +471,10 @@ create-widget
                         !=:x:/../*/_old-name?value
 
                       /*
-                       * Repopulating select page dropdown, and starts editor.
+                       * Repopulating select page dropdown.
                        */
                       sys42.cms.populate-select-page
+                      sys42.cms.create-navbar-menu
 
                     /*
                      * Returning success to wizard modal window.
@@ -551,6 +553,7 @@ create-widget
                   sys42.cms.set-currently-edited-page
                   sys42.cms.populate-select-page
                   sys42.cms.edit-page
+                  sys42.cms.create-navbar-menu
 
 
 /*
