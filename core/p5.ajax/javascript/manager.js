@@ -255,11 +255,6 @@
         },
 
 
-        _p5_del_selected: function() {
-            this.el.selected = false;
-        },
-
-
         _p5_del_checked: function() {
             this.el.checked = false;
         },

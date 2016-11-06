@@ -239,13 +239,12 @@ create-widget
                      */
                     sys42.cms.set-currently-edited-page:x:/../*/get-widget-property/[1,2]/*/*?value
 
+
                     /*
-                     * Simple version, refreshing page location.
-                     * No need to close dialogues or anything, simply reloading page, should do the trick.
-                     * This we do, since the refreshing of the page, will automatically repopulate the select page
-                     * dropdown, and so on.
+                     * Repopulating select page dropdown, and starts editor.
                      */
-                    reload-location
+                    sys42.cms.populate-select-page
+                    sys42.cms.edit-page
 
 
             /*
@@ -402,6 +401,8 @@ create-widget
                     sys42.cms.get-currently-edited-page
                     select-data:x:@"/*/*/""={0}"""
                       :x:/@sys42.cms.get-currently-edited-page?value
+                    _old-name:x:/-/*/*/name?value
+                    eval-x:x:/-
 
                     /*
                      * Checking if user changed URL, at which point we must check that URL does not exist from before.
@@ -433,20 +434,6 @@ create-widget
                       sys42.cms.set-currently-edited-page:x:/../*/_data/*/url?value
 
                     /*
-                     * If either name or URL changed, we reload location, to repopulate "select page dropdown".
-                     */
-                    if:x:/../*/_data/*/url?value
-                      !=:x:/../*/select-data/*?value
-                      or:x:/../*/_data/*/name?value
-                        !=:x:/../*/select-data/*/*/name?value
-
-                      /*
-                       * Simple version, repopulate "select page dropdown" by reloading page.
-                       * Notice, the rest of this lambda will still evaluate as if nothing happened ...
-                       */
-                      reload-location
-
-                    /*
                      * Updating page properties, by first changing [select-data]'s result, for then to move [select-data]'s
                      * result into an [update-data] invocation.
                      */
@@ -473,6 +460,19 @@ create-widget
                       src
                     sys42.windows.info-tip:Page '{0}' was saved.
                       :x:/../*/_data/*/name?value
+
+                    /*
+                     * If either name or URL changed, we reload select dropdown, and repopulate it.
+                     */
+                    if:x:/../*/_data/*/url?value
+                      !=:x:/../*/sys42.cms.get-currently-edited-page?value
+                      or:x:/../*/_data/*/name?value
+                        !=:x:/../*/_old-name?value
+
+                      /*
+                       * Repopulating select page dropdown, and starts editor.
+                       */
+                      sys42.cms.populate-select-page
 
                     /*
                      * Returning success to wizard modal window.
@@ -545,11 +545,12 @@ create-widget
                     :x:/@sys42.cms.get-currently-edited-page?value
 
                   /*
-                   * Settings currently edited page to "nothing", before we simply reload location,
-                   * which will repopulate the "select page for editing" dropdown, etc.
+                   * Settings currently edited page to "nothing", before we repopulate select dropdown, and invoke [edit-page], which
+                   * will simply clear the editor.
                    */
                   sys42.cms.set-currently-edited-page
-                  reload-location
+                  sys42.cms.populate-select-page
+                  sys42.cms.edit-page
 
 
 /*

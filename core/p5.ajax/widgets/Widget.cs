@@ -181,6 +181,21 @@ namespace p5.ajax.widgets
         {
             get { return _attributes.GetAttribute (name); }
             set {
+
+                // Special handling for "selected" attribute for "option" elements, to make sure
+                //  we remove the selected attribute on any sibling "option" elements.
+                if (Element == "option" && name == "selected") {
+                    foreach (var idxCtrl in Parent.Controls) {
+                        var idxWidget = idxCtrl as Widget;
+                        if (idxWidget != this && idxWidget.HasAttribute ("selected"))
+                            idxWidget.RemoveAttribute ("selected");
+                    }
+
+                    // Due to a bug in the way browsers handles the "selected" property on "option" elements, we need to re-render all
+                    // select widgets, every time an "option" element's "selected" attribute is changed.
+                    // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+                    (Parent as Widget).ReRender ();
+                }
                 if (!IsTrackingViewState) {
                     _attributes.SetAttributePreViewState (name, value);
                 } else {
@@ -472,6 +487,37 @@ namespace p5.ajax.widgets
                 }
             }
             base.OnLoad (e);
+        }
+
+        protected override void AddedControl (Control control, int index)
+        {
+            // Due to a bug in the way browsers handles the "selected" property on "option" elements, we need to re-render all
+            // select widgets, every time the "option" collection is changed.
+            // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+            if (IsTrackingViewState && Element == "select") {
+
+                // Making sure control added as a Widget, and that it has the "selected" attribute.
+                var curWidget = control as Widget;
+                if (curWidget != null && curWidget.HasAttribute ("selected")) {
+                    foreach (var idxCtrl in Controls) {
+
+                        // Making sure currently iterated child control is a Widget, and that it has the "selected" attribute.
+                        var idxWidget = idxCtrl as Widget;
+                        if (idxWidget != null && idxWidget.HasAttribute ("selected")) {
+
+                            // Removing the "selected" attribute from previously selected option element.
+                            idxWidget.RemoveAttribute ("selected");
+                        }
+                    }
+                }
+
+                // Since insertion of "option" elements, with the "selected" attribute set, does not behave correctly in browser, according
+                // to; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+                // We need to resort to partial (re) rendering of entire "select" element here ...
+                // *crap* ...!!
+                ReRender ();
+            }
+            base.AddedControl (control, index);
         }
 
         // Private methods for internal use in the class

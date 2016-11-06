@@ -85,6 +85,7 @@ insert-data
 sys42.cms.set-currently-edited-page:x:/../*/insert-data/0?value
 
 /*
- * Simple version reloading location, to make sure we repopulate the "select page" dropdown, etc.
+ * Repopulating select page dropdown, and starts editor.
  */
-reload-location
+sys42.cms.populate-select-page
+sys42.cms.edit-page

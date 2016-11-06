@@ -278,9 +278,9 @@ p5.loginUsernameKeyUp = function(e) {
                               persist:bool:true
 
                             /*
-                              * User was successfully logged in, reloading location to
-                              * make sure user sees page in context of his newly logged in credentials
-                              */
+                             * User was successfully logged in, reloading location to
+                             * make sure user sees page in context of his newly logged in credentials
+                             */
                             reload-location
                           else
 
@@ -356,10 +356,10 @@ else
         events
 
           /*
-            * Deleting all user's session items and emptying "tmp" folder, 
-            * before logging user out and reloading location, to make sure user
-            * sees page in context of default Context user
-            */
+           * Deleting all user's session items and emptying "tmp" folder, 
+           * before logging user out and reloading location, to make sure user
+           * sees page in context of default Context user
+           */
           sys42.logout
             list-session-keys
             set-session-value:x:/-/*?name
