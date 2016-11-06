@@ -302,10 +302,13 @@ namespace p5.ajax.core.internals
                 var name = idx.Name;
                 string value;
                 if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
+
+                    // This is an Ajax event.
                     value = "p5.e(event)";
                 } else {
                     value = idx.Value;
                 }
+
                 writer.Write (" ");
                 if (value == null) {
                     writer.Write (@"{0}", name);

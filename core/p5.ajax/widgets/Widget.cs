@@ -489,6 +489,22 @@ namespace p5.ajax.widgets
             base.OnLoad (e);
         }
 
+        protected override void RemovedControl (Control control)
+        {
+            // Due to a bug in the way browsers handles the "selected" property on "option" elements, we need to re-render all
+            // select widgets, every time the "option" collection is changed.
+            // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+            if (IsTrackingViewState && Element == "select") {
+
+                // Since insertion of "option" elements, with the "selected" attribute set, does not behave correctly in browser, according
+                // to; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+                // We need to resort to partial (re) rendering of entire "select" element here ...
+                // *crap* ...!!
+                ReRender ();
+            }
+            base.RemovedControl (control);
+        }
+
         protected override void AddedControl (Control control, int index)
         {
             // Due to a bug in the way browsers handles the "selected" property on "option" elements, we need to re-render all
@@ -586,7 +602,15 @@ namespace p5.ajax.widgets
         private void RenderHtmlResponse (HtmlTextWriter writer)
         {
             // Render opening tag
-            writer.Write (@"<{0} id=""{1}""", Element, ClientID);
+            if (Element == "option") {
+
+                // We do NOT render IDs of "option" elements, since there are few intelligent reasons why
+                // you would want to de-reference them, and if you change the "select" controls collection in any ways, you
+                // will still trigger a re-rendering of entire "select" widget.
+                writer.Write (@"<{0}", Element);
+            } else {
+                writer.Write (@"<{0} id=""{1}""", Element, ClientID);
+            }
 
             // Render attributes
             _attributes.Render (writer, this);
