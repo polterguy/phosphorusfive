@@ -111,7 +111,7 @@ create-event:sys42.widgets.uploader
          * Notice, we have to wait until widget is actually attached before we do this, since otherwise we won't know its ID,
          * unless an explicit ID was provided, which is not necessary the case.
          */
-        include-javascript:@"new window.p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6});"
+        send-javascript:@"new window.p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6});"
           :x:/../*/_event?value
           :x:/../*/_class?value
           :x:/../*/_dragover-class?value

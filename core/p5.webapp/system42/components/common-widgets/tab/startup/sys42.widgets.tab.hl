@@ -207,7 +207,7 @@ create-event:sys42.widgets.tab
           class:tab-header clearfix
           widgets
         container
-          class:tab-content-wrapper
+          class:tab-content-wrapper clearfix
           widgets
 
 
