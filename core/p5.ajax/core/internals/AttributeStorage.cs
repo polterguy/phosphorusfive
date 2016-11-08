@@ -316,7 +316,7 @@ namespace p5.ajax.core.internals
                 if (value == null) {
                     writer.Write (@"{0}", name);
                 } else {
-                    writer.Write (@"{0}=""{1}""", name, value);
+                    writer.Write (@"{0}=""{1}""", name, value.Replace("\"", "&quot;"));
                 }
             }
         }
@@ -345,9 +345,17 @@ namespace p5.ajax.core.internals
 
                 // Finding old value, if any
                 var oldAtr = FindAttribute (_originalValue, idx.Name);
+
                 if (oldAtr != null) {
-                    if (oldAtr.Value != idx.Value)
-                        manager.RegisterWidgetChanges (id, idx.Name, value, oldAtr.Value);
+                    if (oldAtr.Value != idx.Value) {
+
+                        // Notice, we force an entire re-render operation of "style" attributes, 
+                        // since there is no intelligent way to figure out offset of changes
+                        if (idx.Name == "style")
+                            manager.RegisterWidgetChanges (id, idx.Name, value);
+                        else
+                            manager.RegisterWidgetChanges (id, idx.Name, value, oldAtr.Value);
+                    }
                 } else {
                     manager.RegisterWidgetChanges (id, idx.Name, value);
                 }

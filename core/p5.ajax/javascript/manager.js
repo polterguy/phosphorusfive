@@ -226,8 +226,8 @@
         },
 
 
-        style: function(value) {
-            this.el.style.cssText = window.p5._getChange(this.el.style.cssText, value);
+        style: function (value) {
+            this.el.style.cssText = value;
         },
 
 
