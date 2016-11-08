@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
 using System.Web.UI;
 using System.Collections.Generic;
 using p5.ajax.widgets;
@@ -123,31 +122,31 @@ namespace p5.ajax.core.internals
                 foreach (var idx in _dynamicallyRemovedThisRequest) {
                     _alreadySen [idx.Name] = true;
                 }
-                foreach (var idx in this._dynamicallyAddedThisRequest) {
+                foreach (var idx in _dynamicallyAddedThisRequest) {
                     if (!_alreadySen.ContainsKey (idx.Name)) {
                         yield return idx.Name;
                         _alreadySen [idx.Name] = true;
                     }
                 }
-                foreach (var idx in this._formDataThisRequest) {
+                foreach (var idx in _formDataThisRequest) {
                     if (!_alreadySen.ContainsKey (idx.Name)) {
                         yield return idx.Name;
                         _alreadySen [idx.Name] = true;
                     }
                 }
-                foreach (var idx in this._originalValue) {
+                foreach (var idx in _originalValue) {
                     if (!_alreadySen.ContainsKey (idx.Name)) {
                         yield return idx.Name;
                         _alreadySen [idx.Name] = true;
                     }
                 }
-                foreach (var idx in this._preViewState) {
+                foreach (var idx in _preViewState) {
                     if (!_alreadySen.ContainsKey (idx.Name)) {
                         yield return idx.Name;
                         _alreadySen [idx.Name] = true;
                     }
                 }
-                foreach (var idx in this._viewStatePersisted) {
+                foreach (var idx in _viewStatePersisted) {
                     if (!_alreadySen.ContainsKey (idx.Name)) {
                         yield return idx.Name;
                         _alreadySen [idx.Name] = true;
@@ -225,7 +224,7 @@ namespace p5.ajax.core.internals
         ///     Returns an object intended to be put into the ViewState back to caller
         /// </summary>
         /// <returns>The attribute changes in ViewState format</returns>
-        internal object SaveToViewState ()
+        internal object SaveToViewState (Widget widget)
         {
             var atrs = new List<Attribute> ();
 
@@ -234,6 +233,10 @@ namespace p5.ajax.core.internals
 
             // Then add all that are already in the viewstate
             atrs.AddRange (_viewStatePersisted);
+
+            // Then if widget is not visible, we add the form data attributes, to make sure they don't disappear during next callback.
+            if (!widget.Visible)
+                atrs.AddRange (_formDataThisRequest);
 
             // Then removing all that has the same value as when they were created before viewstate was being tracked
             atrs.RemoveAll (

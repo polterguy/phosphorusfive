@@ -304,6 +304,8 @@ namespace p5.ajax.widgets
         /// </summary>
         protected virtual void LoadFormData ()
         {
+            if (!Visible)
+                return;
             if (!HasAttribute ("disabled")) {
                 if (!string.IsNullOrEmpty (this ["name"]) || Element == "option") {
                     switch (Element) {
@@ -466,7 +468,7 @@ namespace p5.ajax.widgets
         {
             var retVal = new object[3];
             retVal [0] = base.SaveViewState ();
-            retVal [1] = _attributes.SaveToViewState ();
+            retVal [1] = _attributes.SaveToViewState (this);
             retVal [2] = _attributes.SaveRemovedToViewState ();
             return retVal;
         }
