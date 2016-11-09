@@ -32,11 +32,31 @@ create-event:sys42.widgets.colorpicker
   include-javascript-file:/system42/components/common-widgets/colorpicker/media/js/bootstrap-colorpicker.js
   include-stylesheet-file:/system42/components/common-widgets/colorpicker/media/css/bootstrap-colorpicker.css
 
+
   /*
-   * Passing  in [_onchange] lambda callback such that it is evaluated upon change.
+   * Passing in [_onchange] lambda callback such that it is evaluated upon change, and making sure
+   * colorpicker is initialized knowing it has [_onchange].
    */
-  add:x:/../*/return/*/container/*/widgets/*/input/*/_onchange/*/_lambda
-    src:x:/../*/_options/*/_onchange/*
+  if:x:/../*/_options/*/_onchange/*
+
+    /*
+     * We have an [_onchange] lambda callback, making sure we initialize widget, such that it invokes
+     * it during "hidePicker", and adding the callback lambda into [_onchange] of "input" element.
+     */
+    add:x:/../*/return/*/container/*/widgets/*/input/*/_onchange/*/_onchange
+      src:x:/../*/_options/*/_onchange/*
+    set:x:/../*/return/*/container/*/widgets/*/input/*/oninit/*/_has-onchange?value
+      src:bool:true
+
+  else
+
+    /*
+     * We do not have an [_onchange] lambda callback. Making sure widget is initialized without
+     * the "hidePicker" event handled, and removing [_onchange] lambda callback of "input" element.
+     */
+    set:x:/../*/return/*/container/*/widgets/*/input/*/_onchange
+    set:x:/../*/return/*/widgets/*/input/*/oninit/*/_has-onchange?value
+      src:bool:false
 
   /*
    * Checking if [_label] was passed in,and if so,  making sure colorpicker gets a descriptive input-group-addon.
@@ -63,9 +83,30 @@ create-event:sys42.widgets.colorpicker
       events
 
         /*
-         * Changes the colorpicker's value
+         * Returns the widget's value.
          */
-        sys42.widgets.colorpicker.change-value
+        sys42.widgets.colorpicker.get-value
+
+          /*
+           * First we must make sure this is the widget requested by caller.
+           */
+          if:x:/../*/_arg?value
+            =:x:/../*/_event?value
+
+            /*
+             * Finding textbox, and returning value.
+             */
+            find-widget:x:/../*/_event?value
+              element:input
+              type:text
+            get-widget-property:x:/@find-widget/*/*?value
+              value
+            return:x:/-/*/*?value
+
+        /*
+         * Sets the colorpicker's value
+         */
+        sys42.widgets.colorpicker.set-value
 
           /*
            * First we must make sure this is the colorpicker requested by caller.
@@ -80,7 +121,7 @@ create-event:sys42.widgets.colorpicker
             return
 
           /*
-           * Changing value of both textbox and preview widget.
+           * Changing value of textbox.
            */
           find-widget:x:/../*/_event?value
             element:input
@@ -94,18 +135,42 @@ create-event:sys42.widgets.colorpicker
           class:form-control
           value:x:/../*/_options/*/_value?value
           oninit
+
+            /*
+             * This guys is set above, and is true if there's an [_onchange] lambda callback, otherwise false.
+             */
+            _has-onchange
             get-parent-widget:x:/../*/_event?value
-            include-javascript:@"$('#{0}').colorpicker({{component:'.add-on'}}).on('hidePicker', function() {{p5.$('{1}').raise('_onchange')}});"
-              :x:/../*/get-parent-widget/*/*?value
-              :x:/../*/_event?value
+            if:x:/@_has-onchange?value
+
+              /*
+               * We have an [_onchange] lambda callback, making sure it is evaluated when colorpicker is hidden.
+               */
+              include-javascript:@"$('#{0}').colorpicker({{component:'.add-on'}}).on('hidePicker', function() {{p5.$('{1}').raise('_onchange')}});"
+                :x:/../*/get-parent-widget/*/*?value
+                :x:/../*/_event?value
+            else
+
+              /*
+               * We do not have an [_onchange] lambda callback, initializing colorpicker without "hidePicker" event declared.
+               */
+              include-javascript:@"$('#{0}').colorpicker({{component:'.add-on'}});"
+                :x:/../*/get-parent-widget/*/*?value
 
           _onchange
+
+            /*
+             * Getting colorpicker's value, and invoking [_onchange]'s callback.
+             */
             get-widget-property:x:/../*/_event?value
               value
-            _lambda
+            get-parent-widget:x:/../*/_event?value
+            _onchange
             eval-x:x:/+/*
-            eval:x:/@_lambda
+            eval:x:/@_onchange
               _value:x:/@get-widget-property/*/*?value
+              _event:x:/@get-parent-widget/*/*?value
+
         span
           class:input-group-addon add-on
           widgets

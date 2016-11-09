@@ -666,7 +666,7 @@
     <Content Include="system42\components\common-widgets\colorpicker\startup.hl" />
     <Content Include="system42\components\common-widgets\colorpicker\README.md" />
     <Content Include="system42\components\common-widgets\colorpicker\startup\sys42.widgets.colorpicker.hl" />
-    <Content Include="system42\components\common-widgets\datetimepicker\startup\sys42.widgets.date.hl" />
+    <Content Include="system42\components\common-widgets\datetimepicker\startup\sys42.widgets.datetimepicker.hl" />
     <Content Include="system42\components\common-widgets\datetimepicker\README.md" />
     <Content Include="system42\components\common-widgets\datetimepicker\startup.hl" />
     <None Include="system42\README.md" />

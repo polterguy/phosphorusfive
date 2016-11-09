@@ -7,7 +7,7 @@
 /*
  * The actual datetimepicker widget Active Event.
  */
-create-event:sys42.widgets.date
+create-event:sys42.widgets.datetimepicker
 
   /*
    * Applying options for widget, with default values.
@@ -143,15 +143,26 @@ create-event:sys42.widgets.date
         :x:/@trim?value
 
   /*
-   * Passing  in [_onchange] lambda callback such that it is evaluated upon change, and making sure
+   * Passing in [_onchange] lambda callback such that it is evaluated upon change, and making sure
    * datetimepickker is initialized knowing it has [_onchange].
    */
   if:x:/../*/_options/*/_onchange/*
+
+    /*
+     * We have an [_onchange] lambda callback, making sure we initialize DateTimePicker such that it invokes
+     * it during "dp.hide", and adding the callback lambda into [_onchange] of "input" element.
+     */
     add:x:/../*/return/*/container/*/widgets/*/input/*/_onchange/*/_lambda
       src:x:/../*/_options/*/_onchange/*
     set:x:/../*/return/*/container/*/widgets/*/input/*/oninit/*/_has-onchange?value
       src:bool:true
+
   else
+
+    /*
+     * We do not have an [_onchange] lambda callback. Making sure datetimepicker is initialized without
+     * the "dp.hide" event handled, and removing [_onchange] lambda callback of "input" element.
+     */
     set:x:/../*/return/*/container/*/widgets/*/input/*/_onchange
     set:x:/../*/return/*/widgets/*/input/*/oninit/*/_has-onchange?value
       src:bool:false
@@ -170,9 +181,9 @@ create-event:sys42.widgets.date
       events
 
         /*
-         * Returns the widget's DateTime value.
+         * Returns the widget's value.
          */
-        sys42.widgets.date.get-value
+        sys42.widgets.datetimepicker.get-value
 
           /*
            * First we must make sure this is the widget requested by caller.
@@ -190,7 +201,38 @@ create-event:sys42.widgets.date
               value
             return:x:/-/*/*?value
 
+        /*
+         * Sets the datetimepicker's value
+         */
+        sys42.widgets.datetimepicker.set-value
+
+          /*
+           * First we must make sure this is the widget requested by caller.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our widget.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Changing value of textbox.
+           */
+          find-widget:x:/../*/_event?value
+            element:input
+            type:text
+          set-widget-property:x:/-/*/*?value
+            value:x:/../*/_value?value
+
+
       widgets
+
+        /*
+         * Textbox containing value of datetimepicker.
+         */
         input
           type:text
           class:form-control
@@ -240,6 +282,7 @@ create-event:sys42.widgets.date
                 :x:/../*/_init-widget?value
                 :x:/../*/_arguments?value
                 :x:/../*/_event?value
+
             else
 
               /*
@@ -262,6 +305,10 @@ create-event:sys42.widgets.date
             eval:x:/@_lambda
               _value:x:/@get-widget-property/*/*?value
               _event:x:/@get-parent-widget/*/*?value
+
+        /*
+         * Icon button for showing DateTimePicker
+         */
         span
           class:input-group-addon add-on
           innerValue:@"<span class=""{0}""></span>"
