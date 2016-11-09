@@ -295,6 +295,13 @@
     <Content Include="system42\components\common-widgets\codemirror\media\theme\paraiso.min.css">
       <DependentUpon>paraiso.css</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\colorpicker\media\css\bootstrap-colorpicker.css" />
+    <Content Include="system42\components\common-widgets\colorpicker\media\img\bootstrap-colorpicker\alpha-horizontal.png" />
+    <Content Include="system42\components\common-widgets\colorpicker\media\img\bootstrap-colorpicker\alpha.png" />
+    <Content Include="system42\components\common-widgets\colorpicker\media\img\bootstrap-colorpicker\hue-horizontal.png" />
+    <Content Include="system42\components\common-widgets\colorpicker\media\img\bootstrap-colorpicker\hue.png" />
+    <Content Include="system42\components\common-widgets\colorpicker\media\img\bootstrap-colorpicker\saturation.png" />
+    <Content Include="system42\components\common-widgets\colorpicker\media\js\bootstrap-colorpicker.js" />
     <Content Include="system42\components\common-widgets\datagrid\media\skins\default\default.css" />
     <Content Include="system42\components\common-widgets\datagrid\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
@@ -648,6 +655,9 @@
     <Content Include="system42\components\common-widgets\tab\startup\sys42.widgets.tab.hl" />
     <Content Include="system42\components\common-widgets\tab\README.md" />
     <Content Include="system42\components\common-widgets\tab\startup.hl" />
+    <Content Include="system42\components\common-widgets\colorpicker\startup.hl" />
+    <Content Include="system42\components\common-widgets\colorpicker\README.md" />
+    <Content Include="system42\components\common-widgets\colorpicker\startup\sys42.widgets.colorpicker.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\css\bootstrap.css.map" />
     <None Include="system42\components\bootstrap\css\bootstrap-theme.css.map" />

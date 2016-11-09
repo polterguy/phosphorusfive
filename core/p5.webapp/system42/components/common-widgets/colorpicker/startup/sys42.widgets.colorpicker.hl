@@ -1,0 +1,113 @@
+
+/*
+ * Creates the colorpicker widget
+ */
+
+
+/*
+ * The actual colorpicker widget Active Event.
+ */
+create-event:sys42.widgets.colorpicker
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _value:#000000
+    _onchange
+    _label
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+  /*
+   * Including Bootstrap (and jQuery)
+   */
+  sys42.bootstrap.include-javascript
+  sys42.bootstrap.include-css
+
+  /*
+   * Including Colorpicker's JavaScript and CSS
+   */
+  include-javascript-file:/system42/components/common-widgets/colorpicker/media/js/bootstrap-colorpicker.js
+  include-stylesheet-file:/system42/components/common-widgets/colorpicker/media/css/bootstrap-colorpicker.css
+
+  /*
+   * Passing  in [_onchange] lambda callback such that it is evaluated upon change.
+   */
+  add:x:/../*/return/*/container/*/widgets/*/input/*/_onchange/*/_lambda
+    src:x:/../*/_options/*/_onchange/*
+
+  /*
+   * Checking if [_label] was passed in,and if so,  making sure colorpicker gets a descriptive input-group-addon.
+   */
+  if:x:/../*/_options/*/_label?value
+    eval-x:x:/+/*/*/*
+    insert-before:x:/../*/return/*/container/*/widgets/*/input
+      src
+        label
+          class:input-group-addon
+          innerValue:x:/../*/_options/*/_label?value
+
+  /*
+   * Forward evaluating arguments.
+   */
+  eval-x:x:/../*/return/*/container/*/widgets/*/input/*/value
+
+  /*
+   * Returning color picker to caller.
+   */
+  return
+    container
+      class:input-group colorpicker-component colorpicker-element
+      events
+
+        /*
+         * Changes the colorpicker's value
+         */
+        sys42.widgets.colorpicker.change-value
+
+          /*
+           * First we must make sure this is the colorpicker requested by caller.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our colorpicker.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Changing value of both textbox and preview widget.
+           */
+          find-widget:x:/../*/_event?value
+            element:input
+            type:text
+          set-widget-property:x:/-/*/*?value
+            value:x:/../*/_value?value
+
+      widgets
+        input
+          type:text
+          class:form-control
+          value:x:/../*/_options/*/_value?value
+          oninit
+            get-parent-widget:x:/../*/_event?value
+            include-javascript:@"$('#{0}').colorpicker({{component:'.add-on'}}).on('hidePicker', function() {{p5.$('{1}').raise('_onchange')}});"
+              :x:/../*/get-parent-widget/*/*?value
+              :x:/../*/_event?value
+
+          _onchange
+            get-widget-property:x:/../*/_event?value
+              value
+            _lambda
+            eval-x:x:/+/*
+            eval:x:/@_lambda
+              _value:x:/@get-widget-property/*/*?value
+        span
+          class:input-group-addon add-on
+          widgets
+            i
+              innerValue:

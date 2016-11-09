@@ -297,3 +297,7 @@
     opacity:1;
 }
 
+.colorpicker-element span.input-group-addon:last-child {
+    width:auto;
+    min-width:inherit;
+}
