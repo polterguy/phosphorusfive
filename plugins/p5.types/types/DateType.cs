@@ -79,6 +79,8 @@ namespace p5.types.types {
                 if (strValue != null) {
                     if (strValue.Length == 10)
                         e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    else if (strValue.Length == 16)
+                        e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture);
                     else if (strValue.Length == 19)
                         e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
                     else if (strValue.Length == 23)

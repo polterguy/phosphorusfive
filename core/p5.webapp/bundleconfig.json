@@ -82,5 +82,11 @@
     "inputFiles": [
       "system42/components/common-widgets/tab/media/skins/default/default.css"
     ]
+  },
+  {
+    "outputFileName": "system42/components/common-widgets/datetimepicker/media/js/moment.min.js",
+    "inputFiles": [
+      "system42/components/common-widgets/datetimepicker/media/js/moment.js"
+    ]
   }
 ]

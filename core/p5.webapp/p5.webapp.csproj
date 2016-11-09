@@ -306,6 +306,12 @@
     <Content Include="system42\components\common-widgets\datagrid\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\datetimepicker\media\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="system42\components\common-widgets\datetimepicker\media\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="system42\components\common-widgets\datetimepicker\media\js\moment.js" />
+    <Content Include="system42\components\common-widgets\datetimepicker\media\js\moment.min.js">
+      <DependentUpon>moment.js</DependentUpon>
+    </Content>
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.css" />
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
@@ -426,7 +432,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="system42\components\common-widgets\datetimepicker\media\js\locale\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.csv\p5.csv.csproj">
       <Project>{045d3d94-7a30-445d-b578-fee5a5be5c3b}</Project>
@@ -658,6 +666,9 @@
     <Content Include="system42\components\common-widgets\colorpicker\startup.hl" />
     <Content Include="system42\components\common-widgets\colorpicker\README.md" />
     <Content Include="system42\components\common-widgets\colorpicker\startup\sys42.widgets.colorpicker.hl" />
+    <Content Include="system42\components\common-widgets\datetimepicker\startup\sys42.widgets.date.hl" />
+    <Content Include="system42\components\common-widgets\datetimepicker\README.md" />
+    <Content Include="system42\components\common-widgets\datetimepicker\startup.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\css\bootstrap.css.map" />
     <None Include="system42\components\bootstrap\css\bootstrap-theme.css.map" />

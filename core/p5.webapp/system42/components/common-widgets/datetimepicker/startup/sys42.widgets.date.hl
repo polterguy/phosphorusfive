@@ -1,0 +1,268 @@
+
+/*
+ * Creates the datetimepicker widget
+ */
+
+
+/*
+ * The actual datetimepicker widget Active Event.
+ */
+create-event:sys42.widgets.date
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _label
+    _icon:glyphicon glyphicon-calendar
+    _local
+    _format
+    _defaultDate
+    _onchange
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+  /*
+   * Including Bootstrap (and jQuery)
+   */
+  sys42.bootstrap.include-javascript
+  sys42.bootstrap.include-css
+
+  /*
+   * Including DateTimePicker's JavaScript and CSS
+   */
+  include-javascript-file:/system42/components/common-widgets/datetimepicker/media/js/moment.min.js
+  include-javascript-file:/system42/components/common-widgets/datetimepicker/media/js/bootstrap-datetimepicker.min.js
+  include-stylesheet-file:/system42/components/common-widgets/datetimepicker/media/css/bootstrap-datetimepicker.min.css
+
+  /*
+   * Checking if [_label] was passed in, and if so, making sure widget gets a descriptive input-group-addon.
+   */
+  if:x:/../*/_options/*/_label?value
+    eval-x:x:/+/*/*/*
+    insert-before:x:/../*/return/*/container/*/widgets/*/input
+      src
+        label
+          class:input-group-addon
+          innerValue:x:/../*/_options/*/_label?value
+
+  /*
+   * Checking if no [_icon] was passed in, and if not, deleting addon
+   */
+  if:x:/../*/_options/*/_icon?value
+    not
+    set:x:/../*/return/*/container/*/widgets/*/span
+
+  /*
+   * Becomes arguments to pass into JavaScript instantiation.
+   */
+  _arguments
+
+  /*
+   * Checking if [_locale] was passed in, and if so, making sure we use specified locale.
+   */
+  if:x:/../*/_options/*/_locale?value
+    include-javascript-file:@"/system42/components/common-widgets/datetimepicker/media/js/locale/{0}.js"
+      :x:/../*/_options/*/_locale?value
+    set:x:/@_arguments?value
+      src:@"{0},locale:'{1}'"
+        :x:/@_arguments?value
+        :x:/../*/_options/*/_locale?value
+
+  /*
+   * Checking if [_format] was passed in, and if so, making sure we use specified format.
+   */
+  if:x:/../*/_options/*/_format?value
+    set:x:/@_arguments?value
+      src:@"{0},format:'{1}'"
+        :x:/@_arguments?value
+        :x:/../*/_options/*/_format?value
+
+  /*
+   * Checking if [_default-date] was passed in, and if so, making sure we use it.
+   */
+  if:x:/../*/_options/*/_default-date?value
+    set:x:/@_arguments?value
+      src:@"{0},defaultDate:'{1}'"
+        :x:/@_arguments?value
+        :x:/../*/_options/*/_default-date?value.string
+
+  /*
+   * Checking if [_view-mode] was passed in, and if so, making sure we use it.
+   */
+  if:x:/../*/_options/*/_view-mode?value
+    set:x:/@_arguments?value
+      src:@"{0},viewMode:'{1}'"
+        :x:/@_arguments?value
+        :x:/../*/_options/*/_view-mode?value
+
+  /*
+   * Checking if [_format] was passed in, and if so, making sure we use it.
+   */
+  if:x:/../*/_options/*/_format?value
+    set:x:/@_arguments?value
+      src:@"{0},format:'{1}'"
+        :x:/@_arguments?value
+        :x:/../*/_options/*/_format?value
+
+  /*
+   * Checking if [_min-date] was passed in, and if so, making sure we use it.
+   */
+  if:x:/../*/_options/*/_min-date?value
+    set:x:/@_arguments?value
+      src:@"{0},minDate:'{1}'"
+        :x:/@_arguments?value
+        :x:/../*/_options/*/_min-date?value.string
+
+  /*
+   * Checking if [_max-date] was passed in, and if so, making sure we use it.
+   */
+  if:x:/../*/_options/*/_max-date?value
+    set:x:/@_arguments?value
+      src:@"{0},maxDate:'{1}'"
+        :x:/@_arguments?value
+        :x:/../*/_options/*/_max-date?value.string
+
+  /*
+   * Checking if [_show-today-button] was passed in, and if so, making sure we use it.
+   */
+  if:x:/../*/_options/*/_show-today-button?value
+    set:x:/@_arguments?value
+      src:@"{0},showTodayButton:true"
+        :x:/@_arguments?value
+
+  /*
+   * Making sure we nicely format arguments.
+   */
+  if:x:/../*/_arguments?value
+    trim:x:/../*/_arguments?value
+      chars:,
+    set:x:/../*/_arguments?value
+      src:"{{{0}}}"
+        :x:/@trim?value
+
+  /*
+   * Passing  in [_onchange] lambda callback such that it is evaluated upon change, and making sure
+   * datetimepickker is initialized knowing it has [_onchange].
+   */
+  if:x:/../*/_options/*/_onchange/*
+    add:x:/../*/return/*/container/*/widgets/*/input/*/_onchange/*/_lambda
+      src:x:/../*/_options/*/_onchange/*
+    set:x:/../*/return/*/container/*/widgets/*/input/*/oninit/*/_has-onchange?value
+      src:bool:true
+  else
+    set:x:/../*/return/*/container/*/widgets/*/input/*/_onchange
+    set:x:/../*/return/*/widgets/*/input/*/oninit/*/_has-onchange?value
+      src:bool:false
+
+  /*
+   * Forward evaluating arguments.
+   */
+  eval-x:x:/../*/return/*/container/*/widgets/*(/input/*(/value|/oninit/*/_arguments)|/span/*/innerValue)
+
+  /*
+   * Returning datetimepicker to caller.
+   */
+  return
+    container
+      class:input-group date
+      events
+
+        /*
+         * Returns the widget's DateTime value.
+         */
+        sys42.widgets.date.get-value
+
+          /*
+           * First we must make sure this is the widget requested by caller.
+           */
+          if:x:/../*/_arg?value
+            =:x:/../*/_event?value
+
+            /*
+             * Finding textbox, and returning value.
+             */
+            find-widget:x:/../*/_event?value
+              element:input
+              type:text
+            get-widget-property:x:/@find-widget/*/*?value
+              value
+            return:x:/-/*/*?value
+
+      widgets
+        input
+          type:text
+          class:form-control
+          value:x:/../*/_options/*/_value?value
+
+          oninit
+
+            /*
+             * Initializing widget with JavaScript client inclusion.
+             * Notice, which widget to use to initialize datetimepicker, depends upon how the picker is displayed.
+             * It can be either the main wrapper "div" element, or the "input" element itself, depending upon whether or not
+             * an "open icon" was supplied.
+             */
+            _init-widget
+            get-parent-widget:x:/../*/_event?value
+            if
+              fetch:x:/0/0/0?value
+                find-widget-like:x:/../*/get-parent-widget/*/*?value
+                  element:span
+                  class:add-on
+
+              /*
+               * Using parent widget ("div" element) to initialize datetimepicker.
+               */
+              set:x:/../*/_init-widget?value
+                src:x:/../*/get-parent-widget/*/*?value
+            else
+
+              /*
+               * Using textbox for intializing datetimepicker.
+               */
+              set:x:/../*/_init-widget?value
+                src:x:/../*/_event?value
+
+            /*
+             * This one is forward evaluated above, and contains the JavaScript initialization arguments.
+             */
+            _arguments:x:/../*/_arguments?value
+            _has-onchange
+            if:x:/@_has-onchange?value
+
+              /*
+               * We have an [_onchange] lambda callback, making sure we intialize datetimepicker such that it raises [_onchange] when 
+               * the widget is hidden.
+               */
+              include-javascript:@"$('#{0}').datetimepicker({1}).on('dp.hide',function(){{p5.$('{2}').raise('_onchange');}});"
+                :x:/../*/_init-widget?value
+                :x:/../*/_arguments?value
+                :x:/../*/_event?value
+            else
+
+              /*
+               * We do not have an [_onchange] lambda callback.
+               */
+              include-javascript:@"$('#{0}').datetimepicker({1});"
+                :x:/../*/_init-widget?value
+                :x:/../*/_arguments?value
+
+          _onchange
+
+            /*
+             * Getting datetimepicker's value, and invoking [_onchange]'s callback.
+             */
+            get-widget-property:x:/../*/_event?value
+              value
+            get-parent-widget:x:/../*/_event?value
+            _lambda
+            eval-x:x:/+/*
+            eval:x:/@_lambda
+              _value:x:/@get-widget-property/*/*?value
+              _event:x:/@get-parent-widget/*/*?value
+        span
+          class:input-group-addon add-on
+          innerValue:@"<span class=""{0}""></span>"
+            :x:/../*/_options/*/_icon?value
