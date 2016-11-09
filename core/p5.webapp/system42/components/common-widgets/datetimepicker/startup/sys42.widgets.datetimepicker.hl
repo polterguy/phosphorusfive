@@ -152,7 +152,7 @@ create-event:sys42.widgets.datetimepicker
      * We have an [_onchange] lambda callback, making sure we initialize DateTimePicker such that it invokes
      * it during "dp.hide", and adding the callback lambda into [_onchange] of "input" element.
      */
-    add:x:/../*/return/*/container/*/widgets/*/input/*/_onchange/*/_lambda
+    add:x:/../*/return/*/container/*/widgets/*/input/*/_onchange/*/_onchange
       src:x:/../*/_options/*/_onchange/*
     set:x:/../*/return/*/container/*/widgets/*/input/*/oninit/*/_has-onchange?value
       src:bool:true
@@ -300,9 +300,9 @@ create-event:sys42.widgets.datetimepicker
             get-widget-property:x:/../*/_event?value
               value
             get-parent-widget:x:/../*/_event?value
-            _lambda
+            _onchange
             eval-x:x:/+/*
-            eval:x:/@_lambda
+            eval:x:/@_onchange
               _value:x:/@get-widget-property/*/*?value
               _event:x:/@get-parent-widget/*/*?value
 
