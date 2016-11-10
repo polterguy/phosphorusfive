@@ -10,8 +10,12 @@ create-widget:foo
   parent:content
   class:col-xs-12
   widgets
+
+    // Will have its innerValue changed when dtp value changes.
     literal:my-lit
       innerValue:Watch me change!
+
+    // Actual DateTimePicker widget.
     sys42.widgets.datetimepicker:my-date
 
       // Norwegian "bokmål" locale.
@@ -42,5 +46,5 @@ In addition, the widget features the following Active Events;
 * [sys42.widgets.datetimepicker.get-value] - Retrieves its current value.
 * [sys42.widgets.datetimepicker.set-value] - Sets its current value.
 
-To understand the options above, please refer to the documentation for the [Bootstrap DateTimePicker](https://eonasdan.github.io/bootstrap-datetimepicker/Options/)
-since the DateTimcPicker actually is just a wrapper around this JavaScript component.
+To understand the options above, please refer to the documentation for the [Bootstrap DateTimePicker](https://eonasdan.github.io/bootstrap-datetimepicker/Options/),
+since the DateTimePicker is actually just a wrapper around this JavaScript component.
