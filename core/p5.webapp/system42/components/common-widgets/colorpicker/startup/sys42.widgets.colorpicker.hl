@@ -41,8 +41,8 @@ create-event:sys42.widgets.colorpicker
   /*
    * Including Colorpicker's JavaScript and CSS
    */
-  include-javascript-file:/system42/components/common-widgets/colorpicker/media/js/bootstrap-colorpicker.js
-  include-stylesheet-file:/system42/components/common-widgets/colorpicker/media/css/bootstrap-colorpicker.css
+  include-javascript-file:/system42/components/common-widgets/colorpicker/media/js/bootstrap-colorpicker.min.js
+  include-stylesheet-file:/system42/components/common-widgets/colorpicker/media/css/bootstrap-colorpicker.min.css
 
 
   /*

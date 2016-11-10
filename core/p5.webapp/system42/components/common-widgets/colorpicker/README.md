@@ -26,7 +26,7 @@ create-widget
 
 You can pass in the following arguments to the colorpicker.
 
-* [_value] - Initial value, can be either #xxyyzz, rgba(x,y,z,q) or named color (e.g. 'yellow').
+* [_value] - Initial value, can be either '#xxyyzz', 'rgba(x,y,z,q)' or named color (e.g. 'yellow').
 * [_onchange] - Lambda callback evaluated when value changes. [_value] and [_event] is passed into it.
 * [_label] - An optional descriptive label for your colorpicker.
 
