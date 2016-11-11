@@ -719,7 +719,6 @@
     <Content Include="system42\components\common-widgets\codemirror\startup.hl" />
     <Content Include="system42\components\common-widgets\ckeditor\startup.hl" />
     <Content Include="system42\components\app-settings\startup.hl" />
-    <Content Include="system42\components\common-windows\startup.hl" />
     <Content Include="system42\components\css-helpers\startup.hl" />
     <Content Include="system42\components\common-widgets\codemirror\README.md" />
     <Content Include="system42\components\README.md" />
@@ -807,8 +806,8 @@
     <None Include="system42\startup\sys42.get-widget.hl" />
     <None Include="system42\components\common-widgets\ckeditor\README.md" />
     <None Include="system42\components\common-widgets\ckeditor\media\skins\moono\readme.md" />
-    <None Include="system42\components\common-windows\startup\sys42.windows.info-tip.hl" />
-    <None Include="system42\components\common-windows\startup\sys42.windows.show-lambda.hl" />
+    <None Include="system42\components\common-widgets\info-tip\startup.hl" />
+    <None Include="system42\components\common-widgets\show-lambda\startup.hl" />
     <None Include="system42\apps\CMS\installation\install-server.hl" />
     <None Include="system42\apps\CMS\installation\set-root-password.hl" />
     <None Include="system42\apps\CMS\installation\system-finished.hl" />
