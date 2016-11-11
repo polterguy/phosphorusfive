@@ -260,6 +260,18 @@ namespace p5.web
         }
 
         /*
+         * Returns the page's base URL.
+         */
+        [ActiveEvent (Name = "get-application-location")]
+        private void get_application_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = 
+                AjaxPage.Request.Url.Scheme + "://" + 
+                AjaxPage.Request.Url.Authority + 
+                AjaxPage.Request.ApplicationPath.TrimEnd ('/') + "/";
+        }
+
+        /*
          * Initializes storage for ajax and lambda events
          */
         private void InitializeEventStorage (ApplicationContext context)

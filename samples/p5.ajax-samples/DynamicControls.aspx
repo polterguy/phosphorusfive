@@ -142,7 +142,7 @@
                         <p5:Literal
                             runat="server"
                             id="Literal6"
-                            value="Option1,cool,value"
+                            value="Option,with,comma"
                             Element="option">Option with comma value</p5:Literal>
                     </p5:Container>
                     <p5:Literal

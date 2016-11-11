@@ -380,9 +380,9 @@
         /*
          * Sends one request to the server.
          * 
-         * Creates one HTTTP Ajax request, and sends it to the server.
+         * Creates one HTTP Ajax request, and sends it to the server.
          */
-        _r: function(evt, options) {
+        _r: function(evt, opt) {
 
             // Finding form
             var form = this._form();
@@ -400,7 +400,7 @@
 
             // Serializing form before we call 'onbefore'.
             var pars = form.serialize();
-            options.onbefore.apply(this, [pars, evt]);
+            opt.onbefore.apply(this, [pars, evt]);
 
             // Sending request, making sure we pass in the widget that raised the event, and its event name.
             var body = "_p5_event=" + evt + "&_p5_widget=" + this.el.id;
@@ -455,10 +455,10 @@
          * initiating the request on behalf of, that have an event handler for the 'evt' you raise, 
          * otherwise an error will be returned.
          */
-        raise: function (evt, options) {
+        raise: function (evt, opt) {
 
             // Applying default options.
-            options = p5.extend({
+            opt = p5.extend({
 
                 // Invoked before HTTP request is sent, with parameters as object, and event name as evt.
                 onbefore: function( /*pars, evt*/) {},
@@ -470,13 +470,13 @@
                 // Invoked if an error occurs during the HTTP request, with status code, status text, server response, and event name.
                 onerror: this.onerror
 
-            }, options);
+            }, opt);
 
             // Adding to chain.
             p5._chain.push({
                 evt: evt,
                 el: this,
-                options: options
+                opt: opt
             });
 
             // Processing chain, but only if there's exactly one request in chain, since otherwise chain 
@@ -530,13 +530,13 @@
 
             // Removing current request from chain
             var cur = p5._chain[0];
-            var options = cur.options;
+            var opt = cur.opt;
 
             if (xhr.status >= 200 && xhr.status < 300) {
 
                 // Success, calling 'onsuccess' before response is evaluated.
                 var json = eval("(" + xhr.responseText + ")");
-                options.onsuccess.apply(this, [json, cur.evt]);
+                opt.onsuccess.apply(this, [json, cur.evt]);
 
                 // ORDER COUNTS!!
 
@@ -583,7 +583,7 @@
                 p5._chain.splice(0, 1);
             } else {
 
-                var cont = options.onerror.apply(this, [xhr.status, xhr.statusText, xhr.responseText, cur.evt]);
+                var cont = opt.onerror.apply(this, [xhr.status, xhr.statusText, xhr.responseText, cur.evt]);
                 if (cont === true) {
                     p5._chain.splice(0, 1);
                 } else {
@@ -637,29 +637,24 @@
 
 
     /*
-     * Holds our chain of http ajax requests
-     *
-     * For internal use only
+     * Holds our chain of HTTP Ajax requests.
      */
     p5._chain = [];
 
 
     /*
-     * Initiaties the next request in chain
+     * Initiaties the next request in chain.
      *
-     * Requests will be initiatied in 'first in, first out' order, 
-     * meaning the 0th request will be initiated before the 1st 
-     * request, and so on
-     *
-     * For internal use only
+     * Requests will be initiatied in 'first in, first out' order, meaning the 0th request will be initiated before 
+     * the 1st request, and so on.
      */
     p5._next = function() {
 
-        // Checking if we have anymore htttp requests in our chain
+        // Checking if we have anymore HTTP requests in our chain.
         if (p5._chain.length > 0) {
             var cur = p5._chain[0];
 
-            // Checking if dom element is still around, or if a previous request has removed it
+            // Checking if DOM element is still around, or if a previous request has removed it.
             var el = p5.$(cur.el.el.id);
             if (!el.el) {
 
@@ -668,7 +663,7 @@
                 p5._chain.splice(0, 1)[0];
                 p5._next();
             } else {
-                el._r(cur.evt, cur.options);
+                el._r(cur.evt, cur.opt);
             }
         }
     };

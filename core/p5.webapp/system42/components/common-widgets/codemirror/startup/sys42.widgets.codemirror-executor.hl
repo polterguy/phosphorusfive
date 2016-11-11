@@ -30,11 +30,11 @@ create-event:sys42.widgets.codemirror-executor
   /*
    * Making sure our "Evaluate" button is wired up.
    */
-  include-javascript:@"window._sys42_widgets_codemirror_executor = function (e) {
+  include-javascript:@"p5._sys42_widgets_codemirror_executor = function (e) {
     var el = p5.$((event.target || event.srcElement).id);
     el.raise('_onclick', {
       onsuccess:function(ret, evt) {
-        window.execute_output.getDoc().setValue(ret.code);
+        p5['execute_output'].getDoc().setValue(ret.code);
       }});
       e.preventDefault();
   }"
@@ -99,7 +99,7 @@ create-event:sys42.widgets.codemirror-executor
                * the executed code as a piece of string, named "code", which the JavaScript
                * again puts into the "execute_output" CodeMirror widget.
                */
-              onclick:"window._sys42_widgets_codemirror_executor(event);"
+              onclick:"p5._sys42_widgets_codemirror_executor(event);"
               _onclick
 
                 /*
@@ -164,4 +164,4 @@ create-event:sys42.widgets.codemirror-executor
               element:button
               class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
               innerValue:Clear
-              onclick:"window.execute_output.getDoc().setValue('');event.preventDefault();"
+              onclick:"p5['execute_output'].getDoc().setValue('');event.preventDefault();"

@@ -37,7 +37,7 @@ namespace p5.webapp
     {
         protected HtmlGenericControl baseElement;
 
-        protected override void OnInit(System.EventArgs e)
+        protected override void OnInit(EventArgs e)
         {
             // Rewriting path to what was actually requested, such that HTML form element's action doesn't become garbage.
             // This ensures that our HTML form element stays correct. Basically "undoing" what was done in Global.asax.cs
@@ -68,8 +68,8 @@ namespace p5.webapp
                     }
                 }
 
-                // Making sure base is set for page
-                var baseUrl = ApplicationContext.Raise("get-application-location").Get<string> (ApplicationContext);
+                // Making sure base is set for page.
+                var baseUrl = ApplicationContext.Raise("get-application-location").Get<string> (ApplicationContext, null);
                 ((IAttributeAccessor)baseElement).SetAttribute("href", baseUrl);
             };
             base.OnInit(e);
