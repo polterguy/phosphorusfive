@@ -2,7 +2,6 @@ HTML WYSIWYG editor for Phosphorus Five
 ==========
 
 Notice, this module is built on top of CKEditor, which is copyright (c) 2003-2016, CKSource - Frederico Knabben. 
-
 CKEditor is licensed under the following licenses (which you can choose from)
 
 * GPL
@@ -11,8 +10,8 @@ CKEditor is licensed under the following licenses (which you can choose from)
 
 Read more [here](http://ckeditor.com)
 
-This "app" creates a single Active Event for you, called *[sys42.widgets.ck-editor]*, which wraps CKEditor as a 
-"custom widget" on your page. To use it, you could use something like the code below.
+This component creates a single Active Event for you, called *[sys42.widgets.ck-editor]*, which wraps CKEditor as a 
+custom widget on your page. To use it, you could use something like the code below.
 
 ```
 create-widget
@@ -23,7 +22,7 @@ create-widget
     sys42.widgets.ck-editor:my-editor
 ```
 
-Notice, the *[style]* attribute above, is unfortunately necessary to make sure CKEditor doesn't render in a "funny way". Feel freeto play around
+Notice, the *[style]* attribute above, is unfortunately necessary to make sure CKEditor doesn't render in a "funny way". Feel free to play around
 with it, or add it into a CSS class in a stylesheet file, if you wish.
 
 To get to HTML created by it, simply use *[get-widget-property]*, and pass in *[value]* as the argument of what to retrieve.
@@ -36,6 +35,7 @@ create-widget
   style:"display:inline-block;width:100%;"
   widgets
     sys42.widgets.ck-editor:my-editor
+      _innerValue:"<p>Initial HTML</p>"
     button
       innerValue:Get HTML
       class:btn btn-default btn-attach-top
@@ -55,12 +55,7 @@ sys42.widgets.ck-editor
   return
 ```
 
-In addition to the "arguments" you can pass into it, you can also pass in the following.
-
-* [innerValue] - To set the initial Hyperlambda as the widget is loaded
-* [events] - To associate lambda events with the widget
-
-All other properties are ignored, and to the most parts, don't really give any sense, since the HTML "textarea" widget rendered, is actually
+All other properties are ignored, and to the most parts, don't really give any sense, since the HTML textarea widget rendered, is actually
 completely replaced at the client-side of things, by the CKEditor's internals.
 
 

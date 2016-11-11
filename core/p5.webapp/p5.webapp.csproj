@@ -292,6 +292,10 @@
     <Content Include="system42\components\common-widgets\codemirror\media\mode\hyperlambda\hyperlambda.min.js">
       <DependentUpon>hyperlambda.js</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\codemirror\media\theme\paraiso-dark.css" />
+    <Content Include="system42\components\common-widgets\codemirror\media\theme\paraiso-dark.min.css">
+      <DependentUpon>paraiso-dark.css</DependentUpon>
+    </Content>
     <Content Include="system42\components\common-widgets\codemirror\media\theme\paraiso.min.css">
       <DependentUpon>paraiso.css</DependentUpon>
     </Content>

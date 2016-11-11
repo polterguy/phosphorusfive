@@ -100,5 +100,29 @@
     "inputFiles": [
       "system42/components/common-widgets/colorpicker/media/js/bootstrap-colorpicker.js"
     ]
+  },
+  {
+    "outputFileName": "system42/components/common-widgets/codemirror/media/theme/3024-night.min.css",
+    "inputFiles": [
+      "system42/components/common-widgets/codemirror/media/theme/3024-night.css"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/common-widgets/codemirror/media/theme/paraiso-dark.min.css",
+    "inputFiles": [
+      "system42/components/common-widgets/codemirror/media/theme/paraiso-dark.css"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/common-widgets/codemirror/media/mode/hyperlambda/hyperlambda.min.js",
+    "inputFiles": [
+      "system42/components/common-widgets/codemirror/media/mode/hyperlambda/hyperlambda.js"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/common-widgets/codemirror/media/theme/paraiso.min.css",
+    "inputFiles": [
+      "system42/components/common-widgets/codemirror/media/theme/paraiso.css"
+    ]
   }
 ]

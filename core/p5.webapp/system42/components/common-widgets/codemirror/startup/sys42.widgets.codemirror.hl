@@ -1,8 +1,26 @@
 
 /*
  * Responsible for creating the CodeMirror Hyperlambda editor widget
+ *
+ * Arguments;
+ *
+ * [_auto-focus] - If true, CodeMirror editor will gain initial focus upon load. Defaults to false.
+ * [_mode] - Which language type to use. Defaults to 'hyperlambda'.
+ * [_theme]  - Which theme to use, defaults to 'paraiso'.
+ * [_height] - Height, add units, e.g. '250px'. Defaults to '300px'.
  */
 create-event:sys42.widgets.codemirror
+
+  /*
+   * Applying default Code-Mirror theme, if it is not already set.
+   */
+  sys42.get-app-setting:sys42.code-mirror-default-theme
+    _app:sys42
+  if:x:/-/*?value
+    not
+    sys42.set-app-setting:sys42.code-mirror-default-theme
+      _app:sys42
+      _src:paraiso
 
   /*
    * Applying options for widget, with default values.
@@ -12,9 +30,17 @@ create-event:sys42.widgets.codemirror
   _defaults
     _auto-focus:false
     _mode:hyperlambda
-    _theme:paraiso.min
+    _theme:paraiso
     _height:300px
   _options
+
+  /*
+   * Applying default theme from settings.
+   */
+  sys42.get-app-setting:sys42.code-mirror-default-theme
+    _app:sys42
+  set:x:/../*/_defaults/*/_theme?value
+    src:x:/@sys42.get-app-setting/*?value
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
 
@@ -37,7 +63,7 @@ create-event:sys42.widgets.codemirror
     /system42/components/common-widgets/codemirror/media/lib/codemirror.css
     /system42/components/common-widgets/codemirror/media/addon/display/fullscreen.css
     /system42/components/common-widgets/codemirror/media/addon/hint/show-hint.css
-  include-stylesheet-file:/system42/components/common-widgets/codemirror/media/theme/{0}.css
+  include-stylesheet-file:/system42/components/common-widgets/codemirror/media/theme/{0}.min.css
     :x:/../*/_options/*/_theme?value
 
   /*
@@ -66,7 +92,7 @@ create-event:sys42.widgets.codemirror
    */
   send-javascript:@"p5['{0}'] = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
 mode:'hyperlambda',
-theme:'paraiso',
+theme:'{2}',
 lineNumbers:true,
 styleActiveLine:true,
 path:'/system42/components/common-widgets/codemirror/media/',
@@ -85,6 +111,7 @@ CodeMirror.keyMap.default['Shift-Tab'] = 'indentLess';
 CodeMirror.keyMap.default['Tab'] = 'indentMore';"
     :x:/../*/_arg?value
     :x:/../*/_options/*/_auto-focus?value
+    :x:/../*/_options/*/_theme?value
 
   /*
    * Then setting height.

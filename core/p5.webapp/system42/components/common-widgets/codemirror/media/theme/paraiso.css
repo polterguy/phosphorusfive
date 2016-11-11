@@ -1,7 +1,7 @@
 /*
 
     Name:       Paraíso
-    Author:     Thomas Hansen, but inspired by Paraíso (Light) by Jan T. Sott
+    Author:     Thomas Hansen, but inspired by Paraíso (Light) by Jan T. Sott (http://github.com/idleberg)
 
 */
 
@@ -29,17 +29,17 @@
 /*
  * Used for values of nodes Hyperlambda, that are not necessarily string literals
  */
-.cm-s-paraiso span.cm-property, .cm-s-paraiso span.cm-attribute { color: #cea438; }
+.cm-s-paraiso span.cm-property, .cm-s-paraiso span.cm-attribute { color: #5e5438; }
 
 /*
  * Used for keywords in Hyperlambda, e.g. [while] and [if]
  */
-.cm-s-paraiso span.cm-keyword { color: #df7175; }
+.cm-s-paraiso span.cm-keyword { color: #ff0000; }
 
 /*
  * Used for "variables" in Hyperlambda, e.g. [_foo]
  */
-.cm-s-paraiso span.cm-variable { color: #36c6ef; }
+.cm-s-paraiso span.cm-variable { color: #36a69f; }
 
 /*
  * Used for Active Events in Hyperlambda, e.g. [sys42.windows.show-lambda]
@@ -55,21 +55,6 @@
  * Used for expressions in Hyperlambda, e.g. "/../0?value"
  */
 .cm-s-paraiso span.cm-number { color: #df7175; }
-
-/*
- * Used for widget creation and widget types in Hyperlambda, e.g. [a], [div], [container] and [create-widget], etc
- */
-.cm-s-paraiso span.cm-widget-type { color: #118f05; }
-
-/*
- * Used for widget properties in Hyperlambda, e.g. [parent], [element], [position], [before] etc
- */
-.cm-s-paraiso span.cm-widget-property { color: #51cf45; }
-
-/*
- * Used for widget attributes in Hyperlambda, e.g. [href], [title], [onclick] etc
- */
-.cm-s-paraiso span.cm-widget-attribute { color: #51cf45; }
 
 /*
  * Used for syntactic Hyperlambda errors

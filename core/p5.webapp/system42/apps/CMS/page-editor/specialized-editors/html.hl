@@ -14,7 +14,7 @@ select-data:x:/*/*/p5.page/"={0}"
 /*
  * Setting the value of textarea to [content] from database
  */
-set:x:/../*/create-widget/*/widgets/*/=ck-editor/*/innerValue?value
+set:x:/../*/create-widget/*/widgets/*/=ck-editor/*/_innerValue?value
   src:x:/../*/select-data/*/*/content?value
 
 
@@ -36,13 +36,13 @@ create-widget
   widgets
     sys42.widgets.ck-editor:ck-editor
       _height:451
-      innerValue
+      _innerValue
 
 
       /*
        * Lambda events for Editor Surface
        */
-      events
+      _events
 
 
         /*

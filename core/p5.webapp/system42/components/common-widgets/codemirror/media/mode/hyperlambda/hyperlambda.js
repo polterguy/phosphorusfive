@@ -33,17 +33,15 @@ CodeMirror.defineMode("hyperlambda", function() {
      *
      * Hyperlambda uses only these classes from a traditional CodeMirror theme;
      *
-     *  - comment      ==>  Used for comments and multiline comments
+     *  - comment      ==> Used for comments and multiline comments
      *  - string       ==> Used for strings and multiline strings
      *  - keyword      ==> Used for p5.lambda keywords, such as [while] and [if]
-     *  - atom         ==> Used for operators, such as "!=" and ">="
      *  - variable     ==> Used for "variables", meaning a node having a name starting with "_"
      *  - variable-2   ==> Used for Active Event invocations, meaning a node having a name containing "."
      *  - def          ==> Used for type declarations of a node's value
      *  - number       ==> Used for p5.lambda expressions
      *  - property     ==> Used for a node's value, unless it's an expression or a string literal value
      *  - error        ==> Used for syntactic Hyperlambda errors. Normally this means that the entire rest of the document goes into "error mode"
-     *  - tag          ==> Used for displaying widget types, among other things, such as [literal], [container] and [void], in addition to all HTML element names
      *
      * In addition, if you wish, you can give all attributes, properties and widget creation invocations of widgets 
      * (HTML elements) additional coloring, by creating the CSS classes "widget-attribute", "widget-property" and "widget-type" 
@@ -91,7 +89,7 @@ CodeMirror.defineMode("hyperlambda", function() {
       activeevent:'variable-2',
 
       /*
-       * Hyperlambda value type declaration, found inbetween name of node and value, e.g.
+       * Hyperlambda value type declaration, found in between name of node and value, e.g.
        * "foo:int:54" - "int" is here type declaration
        */
       type:'def',
@@ -100,21 +98,6 @@ CodeMirror.defineMode("hyperlambda", function() {
        * p5.lambda expression content, e.g. "/../[0,5]/_data?value"
        */
       expression:'number',
-
-      /*
-       * Widget property, for instance [events] and [widgets]
-       */
-      widget_property:'tag widget-property',
-
-      /*
-       * Widget attribute, for instance [href], [element], etc
-       */
-      widget_attribute:'tag widget-attribute',
-
-      /*
-       * Widget or HTML element name node, for instance [literal], [void], [div] etc
-       */
-      widget_type:'tag widget-type',
 
       /*
        * Displayed when there is a syntacic error in Hyperlambda, e.g. a space too much or little
@@ -779,524 +762,28 @@ CodeMirror.defineMode("hyperlambda", function() {
      * a "variable", etc, at which point the style of the element is overridden from its default
      */
     getNodeNameType: function (word, state) {
-      switch (word) {
-
-        /*
-         * First p5 lambda keywords that requires indentation
-         */
-        case 'and':
-        case 'or':
-        case 'xor':
-        case 'can-convert':
-        case 'eval':
-        case 'if':
-        case 'else-if':
-        case 'else':
-        case 'set':
-        case 'add':
-        case 'retrieve':
-        case 'fetch':
-        case 'while':
-        case 'for-each':
-        case 'insert-before':
-        case 'insert-after':
-        case 'lock':
-        case 'fork':
-        case 'wait':
-        case 'split':
-        case 'join':
-        case 'to-upper':
-        case 'to-lower':
-        case '+':
-        case '-':
-        case '/': // TODO: why doesn't this work ...?
-        case '*':
-        case '%':
-        case '^':
-        case 'lambda2hyper':
-        case 'lambda2csv':
-        case 'lambda2xml':
-        case 'html2xml':
-        case 'create-event':
-        case 'create-event':
-        case 'login':
-        case 'create-user':
-        case 'eval-mutable':
-        case 'move-file':
-        case 'copy-file':
-        case 'move-folder':
-        case 'copy-folder':
-        case 'save-file':
-        case 'list-files':
-        case 'update-data':
-        case 'insert-data':
-        case 'append-data':
-        case 'set-context-value':
-        case 'set-session-value':
-        case 'set-global-value':
-        case 'set-http-header':
-        case 'set-widget-property':
-        case 'set-cache-value':
-        case 'set-cookie-value':
-        case 'set-widget-ajax-event':
-        case 'set-widget-lambda-event':
-        case 'return-response-object':
-        case 'raise-widget-ajax-event':
-        case 'get-widget-property':
-        case 'get-widget-properties':
-        case 'zip':
-        case 'unzip':
-        case 'set-page-value':
-        case 'format-date':
-        case 'edit-user':
-        case 'match':
-        case 'index-of':
-        case 'replace':
-        case 'try':
-        case 'catch':
-        case 'finally':
-        case 'apply':
-        case 'template':
-        case 'sort':
-        case 'switch':
-        case 'case':
-        case 'default':
-        case 'find-widget':
-        case 'find-widget-like':
-        case 'find-first-ancestor-widget':
-        case 'find-first-ancestor-widget-like':
-        case 'find-first-descendant-widget':
-        case 'return':
-
-          /*
-           * This is a keyword that requires indentation
-           */
-          state.indent += 2;
-          return this.styles.keyword;
-
-
-
-        /*
-         * Afterwards checking against keywords that does NOT need indentation
-         */
-        case 'not':
-        case 'src':
-        case 'sleep':
-        case '=':
-        case '!=':
-        case '>':
-        case '<':
-        case '>=':
-        case '<=':
-        case '~':
-        case '!~':
-        case 'hyper2lambda':
-        case 'csv2lambda':
-        case 'lambda2csv':
-        case 'xml2lambda':
-        case 'html2lambda':
-        case 'sha256-hash':
-        case 'widget-exist':
-        case 'reload-location':
-        case 'whoami':
-        case 'logout':
-        case 'list-roles':
-        case 'sleep':
-        case 'clear-widget':
-        case 'delete-widget':
-        case 'get-parent-widget':
-        case 'get-children-widgets':
-        case 'list-widgets':
-        case 'get-widget-ajax-event':
-        case 'get-widget-lambda-event':
-        case 'list-widget-ajax-events':
-        case 'list-widget-lambda-events':
-        case 'include-javascript':
-        case 'send-javascript':
-        case 'include-javascript-file':
-        case 'include-stylesheet-file':
-        case 'set-title':
-        case 'get-title':
-        case 'set-location':
-        case 'get-location':
-        case 'get-base-location':
-        case 'file-exist':
-        case 'load-file':
-        case 'load-text-file':
-        case 'load-binary-file':
-        case 'delete-file':
-        case 'create-folder':
-        case 'folder-exist':
-        case 'list-folders':
-        case 'delete-folder':
-        case 'select-data':
-        case 'delete-data':
-        case 'get-context-value':
-        case 'get-session-value':
-        case 'list-context-keys':
-        case 'list-session-keys':
-        case 'get-application':
-        case 'list-global-keys':
-        case 'echo':
-        case 'echo-file':
-        case 'echo-mime':
-        case 'delete-widget-property':
-        case 'list-widget-properties':
-        case 'list-page-keys':
-        case 'get-page-value':
-        case 'get-cache-value':
-        case 'list-cache-keys':
-        case 'get-cookie-value':
-        case 'list-cookie-keys':
-        case 'get-http-header':
-        case 'list-http-headers':
-        case 'get-http-param':
-        case 'list-http-params':
-        case 'get-http-method':
-        case 'get-request-body':
-        case 'delete-event':
-        case 'vocabulary':
-        case 'set-http-status':
-        case 'set-http-status-code':
-        case 'date-now':
-        case 'create-cs-random':
-        case 'list-users':
-        case 'get-user':
-        case 'delete-user':
-        case 'abs':
-        case 'acos':
-        case 'asin':
-        case 'atan':
-        case 'ceiling':
-        case 'floor':
-        case 'cos':
-        case 'cosh':
-        case 'log':
-        case 'log10':
-        case 'round':
-        case 'sin':
-        case 'sinh':
-        case 'sqrt':
-        case 'tan':
-        case 'tanh':
-        case 'length':
-        case 'throw':
-        case 'eval-x':
-        case 'new-guid':
-        case 'break':
-        case 'continue':
-        case 'is-callback':
-        case 'url-encode':
-        case 'url-decode':
-        case 'html-encode':
-        case 'html-decode':
-        case 'request-is-mobile-device':
-        case 'what':
-
-          /*
-           * This is a keyword that does NOT require indentation
-           */
-          return this.styles.keyword;
-
-
-
-
-        /*
-         * Then checking for widget types, and create widget invocations, 
-         * that requires indentation
-         */
-        case 'create-widget':
-        case 'create-container-widget':
-        case 'create-literal-widget':
-        case 'create-void-widget':
-        case 'literal':
-        case 'void':
-        case 'container':
-        case 'address':
-        case 'article':
-        case 'aside':
-        case 'footer':
-        case 'header':
-        case 'h1':
-        case 'h2':
-        case 'h3':
-        case 'h4':
-        case 'h5':
-        case 'h6':
-        case 'nav':
-        case 'section':
-        case 'blockquote':
-        case 'dd':
-        case 'div':
-        case 'dl':
-        case 'dt':
-        case 'figcaption':
-        case 'figure':
-        case 'li':
-        case 'main':
-        case 'ol':
-        case 'p':
-        case 'pre':
-        case 'ul':
-        case 'abbr':
-        case 'b':
-        case 'bdi':
-        case 'bdo':
-        case 'cite':
-        case 'code':
-        case 'data':
-        case 'dfn':
-        case 'em':
-        case 'i':
-        case 'kbd':
-        case 'mark':
-        case 'q':
-        case 'rp':
-        case 'rt':
-        case 'rtc':
-        case 'ruby':
-        case 's':
-        case 'samp':
-        case 'small':
-        case 'span':
-        case 'strong':
-        case 'sub':
-        case 'sup':
-        case 'svg':
-        case 'time':
-        case 'u':
-        case 'var':
-        case 'wbr':
-        case 'a':
-        case 'math':
-        case 'iframe':
-        case 'area':
-        case 'audio':
-        case 'map':
-        case 'track':
-        case 'video':
-        case 'source':
-        case 'img':
-        case 'canvas':
-        case 'del':
-        case 'ins':
-        case 'caption':
-        case 'col':
-        case 'colgroup':
-        case 'table':
-        case 'tbody':
-        case 'td':
-        case 'tfoot':
-        case 'th':
-        case 'thead':
-        case 'tr':
-        case 'button':
-        case 'datalist':
-        case 'fieldset':
-        case 'input':
-        case 'textarea':
-        case 'keygen':
-        case 'label':
-        case 'legend':
-        case 'meter':
-        case 'optgroup':
-        case 'option':
-        case 'output':
-        case 'progress':
-        case 'select':
-        case 'details':
-        case 'dialog':
-        case 'menu':
-        case 'menuitem':
-        case 'summary':
-        case 'content':
-        //case 'element': Clashes with [element] property of widgets, prioritizing [element] children of widget creation invocations ...
-        case 'shadow':
-        case 'template':
-
-          /*
-           * This is a widget, or create-widget invocation, that requires indentation
-           */
-          state.indent += 2;
-          return this.styles.widget_type;
-
-
-
-
-        /*
-         * Then checking for widget types, which does NOT require indentation
-         */
-        case 'text':
-        case 'hr':
-        case 'br':
-
-          /*
-           * This is a widget type that does not require indentation
-           */
-          return this.styles.widget_type;
-
-
-
-
-        /*
-         * Then Widget properties, that requires indentation
-         */
-        case 'widgets':
-        case 'events':
-
-          /*
-           * This is a widget property that requires indentation
-           */
-          state.indent += 2;
-          return this.styles.widget_property;
-
-
-
-
-        /*
-         * Then Widget properties, that does NOT require indentation
-         */
-        case 'innerValue':
-        case 'parent':
-        case 'before':
-        case 'after':
-        case 'position':
-        case 'element':
-        case 'visible':
-        case 'render-type':
-
-          /*
-           * This is a widget property that does not require indentation
-           */
-          return this.styles.widget_property;
-
-
-
-
-        /*
-         * Then Widget attributes, that does NOT require indentation
-         */
-        case 'accesskey':
-        case 'class':
-        case 'contenteditable':
-        case 'contextmenu':
-        case 'dir':
-        case 'hidden':
-        case 'lang':
-        case 'style':
-        case 'tabindex':
-        case 'title':
-        case 'value':
-        case 'href':
-
-          /*
-           * This is a widget attribute that does not require indentation
-           */
-          return this.styles.widget_attribute;
-
-
-
-
-        /*
-         * Then HTML attributes, requiring indentation, mostly DOM event handlers
-         */
-        case 'onclick':
-        case 'ondblclick':
-        case 'onmouseover':
-        case 'onmouseout':
-        case 'onchange':
-        case 'oncontextmenu':
-        case 'onmouseenter':
-        case 'onmousedown':
-        case 'onmouseleave':
-        case 'onmousemove':
-        case 'onmouseover':
-        case 'onmouseup':
-        case 'onkeydown':
-        case 'onkeypress':
-        case 'onkeyup':
-        case 'onblur':
-        case 'onfocus':
-        case 'onfocusin':
-        case 'onfocusout':
-        case 'oninput':
-        case 'oninvalid':
-        case 'onsearch':
-        case 'onselect':
-        case 'ondrag':
-        case 'ondragend':
-        case 'ondragenter':
-        case 'ondragleave':
-        case 'ondragover':
-        case 'ondragstart':
-        case 'ondrop':
-        case 'oncopy':
-        case 'oncut':
-        case 'onpaste':
-        case 'onabort':
-        case 'oncanplay':
-        case 'oncanplaythrough':
-        case 'ondurationchange':
-        case 'onemptied':
-        case 'onended':
-        case 'onerror':
-        case 'onloadeddata':
-        case 'onloadedmetadata':
-        case 'onloadstart':
-        case 'onpause':
-        case 'onplay':
-        case 'onplaying':
-        case 'onprogress':
-        case 'onratechange':
-        case 'onseeked':
-        case 'onseeking':
-        case 'onstalled':
-        case 'onsuspend':
-        case 'ontimeupdate':
-        case 'onvolumechange':
-        case 'onwaiting':
-        case 'ontouchcancel':
-        case 'ontouchend':
-        case 'ontouchmove':
-        case 'ontouchstart':
-        case 'oninit':
-
-          /*
-           * This is an HTML element attribute that requires indentation
-           */
-          state.indent += 2;
-          return this.styles.widget_attribute;
-
 
         /*
          * Default handling, simply checks if current name is either a
          * "variable" (starts with "_") or an Active Event invocation (contains ".")
          */
-        default:
-          if (word[0] == '_') {
+        if (CodeMirror._hyperlispKeywords.indexOf (word) != -1) {
+
+            /*
+             * The name of the node starts with an underscore "_", and hence is a "variable" (data segment)
+             */
+            if (word.indexOf('.') == -1) {
+                return this.styles.keyword;
+            } else {
+                return this.styles.activeevent;
+            }
+        } else if (word[0] == '_') {
 
             /*
              * The name of the node starts with an underscore "_", and hence is a "variable" (data segment)
              */
             return this.styles.variable;
-          } else if (word.indexOf('.') != -1) {
-
-            /*
-             * The name of the node contains a period ".", and hence is considered to be an Active Event invocation
-             */
-            state.indent += 2;
-            return this.styles.activeevent;
-          } else if (word.indexOf('data-') == 0) {
-
-            /*
-             * The name of the node starts with "data-", and hence this is a custom HTML attribute.
-             * Returning as "widget attribute" type
-             */
-            state.indent += 2;
-            return this.styles.widget_attribute;
-          }
-          break;
-      }
+        }
     }
   };
 });
