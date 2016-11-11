@@ -36,6 +36,8 @@ namespace p5.samples
         protected p5.Container List;
         protected p5.Void Txt;
         protected p5.Void Update;
+        protected p5.Container Container2;
+        protected p5.Literal Literal5;
 
         private string CurrentEdit
         {
@@ -146,6 +148,29 @@ namespace p5.samples
             var liter = (p5.Literal) List.FindControl (CurrentEdit);
             liter.innerValue = Txt ["value"];
             CurrentEdit = null;
+        }
+
+        [WebMethod]
+        protected void select_change (p5.Container sender, EventArgs e)
+        {
+            Literal5.innerValue = "Selected value was; " + sender["value"];
+        }
+
+        [WebMethod]
+        protected void myBtn_onclick (p5.Literal sender, EventArgs e)
+        {
+            var lit1 = Container2.CreatePersistentControl<p5.Literal> ();
+            lit1.Element = "option";
+            lit1["value"] = "Option3";
+            lit1.innerValue = "Option 3";
+            lit1["selected"] = null;
+
+            var lit2 = Container2.CreatePersistentControl<p5.Literal> ();
+            lit2.Element = "option";
+            lit2["value"] = "Option4";
+            lit2.innerValue = "Option 4";
+
+            select_change (Container2, e);
         }
     }
 }

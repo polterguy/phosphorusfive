@@ -23,6 +23,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Web.UI;
 using System.Reflection;
 using System.Collections.Generic;
@@ -307,7 +308,7 @@ namespace p5.ajax.widgets
             if (!Visible)
                 return;
             if (!HasAttribute ("disabled")) {
-                if (!string.IsNullOrEmpty (this ["name"]) || Element == "option") {
+                if (!string.IsNullOrEmpty (this ["name"])) {
                     switch (Element) {
                         case "input":
                             switch (this ["type"]) {
@@ -344,23 +345,19 @@ namespace p5.ajax.widgets
                             else
                                 _attributes.RemoveAttribute ("innerValue");
                             break;
-                        case "option":
-                            if (Page.Request.Params [(this.Parent as Widget) ["name"]] != null) {
-                                var splits = Page.Request.Params [(this.Parent as Widget) ["name"]].Split (',');
-                                bool found = false;
-                                foreach (var idxSplit in splits) {
-                                    if (idxSplit == this ["value"]) {
-                                        found = true;
-                                        break;
+                        case "select":
+                            if (Page.Request.Params [this ["name"]] != null) {
+                                var splits = Page.Request.Params [this ["name"]].Split (',').Select(ix => Page.Server.UrlDecode (ix));
+                                foreach (var idxChild in Controls) {
+                                    var idxChildWidget = idxChild as Widget;
+                                    if (idxChildWidget != null) {
+                                        if (splits.Contains (idxChildWidget ["value"])) {
+                                            idxChildWidget._attributes.SetAttributeFormData ("selected", null);
+                                        } else {
+                                            idxChildWidget._attributes.RemoveAttribute ("selected", false);
+                                        }
                                     }
                                 }
-                                if (found) {
-                                    _attributes.SetAttributeFormData ("selected", null);
-                                } else {
-                                    _attributes.RemoveAttribute ("selected", false);
-                                }
-                            } else {
-                                _attributes.RemoveAttribute ("selected", false);
                             }
                             break;
                     }

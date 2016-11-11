@@ -25,87 +25,87 @@
 
 
     /*
-     * Main namespace
+     * Main namespace.
      * 
      * All javascript functionality in p5.ajax can be found in 
-     * the 'p5' namespace
+     * the 'p5' namespace.
      * 
      * As a general rule, all functions and properties starting with an 
      * underscore ('_') are not meant to be used directly, but are for 
      * internal use in the library. All other methods can be used for 
-     * your convenience as you wish
+     * your convenience as you wish.
      */
     window.p5 = {};
 
 
     /*
-     * Extends 'orig' with values from 'obj'
+     * Extends 's' with values from 'b'.
      * 
-     * Extends the 'orig' object with all values from the 'obj' object 
-     * and returns 'orig' back to caller
+     * Extends the 's' object with all values from the 'b' object 
+     * and returns 's' back to caller.
      */
-    window.p5.extend = function(orig, obj) {
-        for (var p in obj) {
-            if (obj.hasOwnProperty(p)) {
-                orig[p] = obj[p];
+    window.p5.extend = function(s, b) {
+        for (var i in b) {
+            if (b.hasOwnProperty(i)) {
+                s[i] = b[i];
             }
         }
-        return orig;
+        return s;
     };
 
 
     /*
-     * Returns a 'p5.element' wrapping a dom element
+     * Returns a 'p5.el' wrapping a dom element.
      * 
-     * Pass in the 'id' of the element you wish to wrap
-     * alternatively; pass in the dom element directly
+     * Pass in the 'id' (as 'i') of the element you wish to wrap.
      */
-    window.p5.$ = function(id) {
-        if (id.parentNode) {
-            return new window.p5.element(id);
+    window.p5.$ = function(i) {
+        if (i instanceof HTMLElement) {
+            return new window.p5.el(i);
         } else {
-            return new window.p5.element(document.getElementById(id));
+            return new window.p5.el(document.getElementById(i));
         }
     };
 
 
     /*
-     * Raise server side event
+     * Raise server side event.
      *
      * Raises a server side event for a dom element
-     * 'event' is the dom event
+     * 'e' is the dom event.
      */
-    window.p5.e = function(event) {
-        var el = window.p5.$(event.currentTarget);
-        el.raise("on" + event.type);
-        event.preventDefault();
-        event.stopPropagation();
+    window.p5.e = function(e) {
+        var el = window.p5.$(e.currentTarget);
+        el.raise('on' + e.type);
+        e.preventDefault();
+        e.stopPropagation();
     };
 
 
     /*
-     * Returns the new value for element property/attribute
+     * Returns the new value for element property/attribute.
      *
      * The server can return 5 possible different values for updating properties and attributes;
      * 
-     *   - string            Which contains the new value of the property/attribute)
+     *   - string            Which contains the new value of the property/attribute).
      * 
      *   - [number]          Which means the existing value is to have everything removed 
-     *                       starting from 'number' position
+     *                       starting from 'number' position.
      * 
      *   - [string]          Which means the existing value should have the given 'string' 
-     *                       concatenated to its existing value
+     *                       concatenated to its existing value.
      *
      *   - [number, string]  Which means the given string it to be shortened from 'number' 
-     *                       position and have 'string' concatenated to its existing value
+     *                       position and have 'string' concatenated to its existing value.
      *
-     *   - null              Property/attribute set to null
+     *   - null              Property/attribute set to null.
      *
      * This function returns the new value of the property/attribute according to the 'val'
-     * object given
+     * object given.
      */
     window.p5._getChange = function(old, val) {
         if (val !== null) {
+
             /*
              * Making sure we normalize carriage returns in old values before calculating offset
              */
@@ -136,15 +136,15 @@
     /*
      * Wraps a dom element
      *
-     * The p5.element type wraps a dom element with some handy 
+     * The p5.el type wraps a dom element with some handy 
      * helper functions for raising server side http ajax requests, 
      * and help handle the return from the server to update the dom
      */
-    window.p5.element = function(el) {
+    window.p5.el= function(el) {
         this.el = el;
     };
 
-    window.p5.element.prototype = {
+    window.p5.el.prototype = {
 
 
         /*
@@ -363,7 +363,9 @@
                     case "select":
                         for (var i2 = 0; i2 < el.options.length; i2++) {
                             if (el.options[i2].selected) {
-                                val.push ([el.name, el.options[i2].value]);
+
+                                // To support "," in values, we URI encode value.
+                                val.push ([el.name, encodeURIComponent (el.options[i2].value)]);
                             }
                         }
                         break;

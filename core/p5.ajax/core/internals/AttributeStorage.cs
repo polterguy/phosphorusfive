@@ -109,6 +109,7 @@ namespace p5.ajax.core.internals
                 RemoveAttributeInternal (_formDataThisRequest, name);
                 RemoveAttributeInternal (_viewStatePersistedRemoved, name);
                 RemoveAttributeInternal (_viewStatePersisted, name);
+                RemoveAttributeInternal (_preViewState, name);
             }
         }
 
