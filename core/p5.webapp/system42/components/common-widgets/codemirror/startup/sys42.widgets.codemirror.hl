@@ -8,19 +8,27 @@
  * [_mode] - Which language type to use. Defaults to 'hyperlambda'.
  * [_theme]  - Which theme to use, defaults to 'paraiso'.
  * [_height] - Height, add units, e.g. '250px'. Defaults to '300px'.
+ * [_innerValue] - Initial code to display.
+ * [_events] - Collection of associated widget lambda events.
  */
 create-event:sys42.widgets.codemirror
 
   /*
-   * Applying default Code-Mirror theme, if it is not already set.
+   * Check if default Code-Mirror theme setting exists, and if not, create it.
    */
   sys42.get-app-setting:sys42.code-mirror-default-theme
     _app:sys42
   if:x:/-/*?value
     not
+
+    /*
+     * Making sure default "paraiso" Code-Mirror theme is used by default.
+     */
     sys42.set-app-setting:sys42.code-mirror-default-theme
       _app:sys42
       _src:paraiso
+    add:x:/@sys42.get-app-setting
+      src:"sys42.code-mirror-default-theme:paraiso"
 
   /*
    * Applying options for widget, with default values.
@@ -32,13 +40,13 @@ create-event:sys42.widgets.codemirror
     _mode:hyperlambda
     _theme:paraiso
     _height:300px
+    _innerValue:
+    _events
   _options
 
   /*
-   * Applying default theme from settings.
+   * Applying default theme from settings, for then to finally apply arguments.
    */
-  sys42.get-app-setting:sys42.code-mirror-default-theme
-    _app:sys42
   set:x:/../*/_defaults/*/_theme?value
     src:x:/@sys42.get-app-setting/*?value
   add:x:/../*/_options
@@ -67,7 +75,7 @@ create-event:sys42.widgets.codemirror
     :x:/../*/_options/*/_theme?value
 
   /*
-   * Retrieving "vocabulary" of server, for auto complete to work
+   * Retrieving "vocabulary" of server, for auto complete to work, among other things.
    */
   vocabulary
 
@@ -92,7 +100,7 @@ create-event:sys42.widgets.codemirror
   /*
    * Making sure textarea input is replaced with the CodeMirror editor
    */
-  send-javascript:@"p5['{0}'] = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
+  include-javascript:@"p5['{0}'] = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
 mode:'hyperlambda',
 theme:'{2}',
 lineNumbers:true,
@@ -118,15 +126,21 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
   /*
    * Then setting height.
    */
-  send-javascript:@"p5['{0}'].setSize('100%', '{1}');"
+  include-javascript:@"p5['{0}'].setSize('100%', '{1}');"
     :x:/../*/_arg?value
     :x:/../*/_height?value
 
   /*
-   * Then returning our "textarea" widget to caller
+   * Then returning our "textarea" widget to caller, which becomes replaced with CodeMirror instance on client side.
    */
-  add:x:/+/*
-    src:x:/../*/innerValue|/../*/events
+  if:x:/../*/_options/*/_events/*
+    add:x:/+/*/*
+      src:x:/../*/_options/*/_events/*
+    add:x:/../*/return/*/literal
+      src
+        events
+  eval-x:x:/+/*/*/innerValue
   return
     literal
       element:textarea
+      innerValue:x:/../*/_options/*/_innerValue?value

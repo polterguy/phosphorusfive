@@ -20,3 +20,34 @@ create-event:sys42.bootstrap.include-javascript
  */
 create-event:sys42.bootstrap.include-css
   include-stylesheet-file:/system42/components/bootstrap/css/bootstrap.min.css
+
+
+/*
+ * Recursively creates all Bootstrap related extension widgets.
+ */
+_startup
+list-folders:/system42/components/bootstrap/widgets/
+for-each:x:/-/*?name
+
+  /*
+   * Checking if "startup.hl" file exists within currently iterated folder,
+   * and if so, adding it to [_startup], such that we can evaluate it later.
+   */
+  if
+    fetch:x:/0/0?value
+      file-exist:{0}startup.hl
+        :x:/..for-each/*/_dp?value
+    add:x:/../*/_startup
+      src:{0}startup.hl
+        :x:/..for-each/*/_dp?value
+
+/*
+ * Evaluating all files in [_startup] node.
+ */
+sys42.execute-lambda-file:x:/../*/_startup/*?name
+
+
+/*
+ * Invoking startup.hl file inside of "common-windows" folder.
+ */
+sys42.execute-lambda-file:/system42/components/bootstrap/windows/startup.hl

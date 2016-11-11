@@ -14,7 +14,7 @@ select-data:x:/*/*/p5.page/"={0}"
 /*
  * Setting the content of editor_surface to the [lambda] from database
  */
-set:x:/../*/create-widget/*/widgets/*/=editor_surface/*/innerValue?value
+set:x:/../*/create-widget/*/widgets/*/=editor_surface/*/_innerValue?value
   src:x:/../*/select-data/*/*/lambda?value
 
 
@@ -35,13 +35,13 @@ create-widget
   widgets
     sys42.widgets.codemirror:editor_surface
       _height:555px
-      innerValue
+      _innerValue
 
 
       /*
        * Lambda events for Editor Surface
        */
-      events
+      _events
 
 
         /*

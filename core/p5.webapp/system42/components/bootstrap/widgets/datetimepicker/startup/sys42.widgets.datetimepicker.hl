@@ -61,9 +61,9 @@ create-event:sys42.widgets.datetimepicker
   /*
    * Including DateTimePicker's JavaScript and CSS
    */
-  include-javascript-file:/system42/components/common-widgets/datetimepicker/media/js/moment.min.js
-  include-javascript-file:/system42/components/common-widgets/datetimepicker/media/js/bootstrap-datetimepicker.min.js
-  include-stylesheet-file:/system42/components/common-widgets/datetimepicker/media/css/bootstrap-datetimepicker.min.css
+  include-javascript-file:/system42/components/bootstrap/widgets/datetimepicker/media/js/moment.min.js
+  include-javascript-file:/system42/components/bootstrap/widgets/datetimepicker/media/js/bootstrap-datetimepicker.min.js
+  include-stylesheet-file:/system42/components/bootstrap/widgets/datetimepicker/media/css/bootstrap-datetimepicker.min.css
 
   /*
    * Checking if [_label] was passed in, and if so, making sure widget gets a descriptive input-group-addon.
@@ -96,7 +96,7 @@ create-event:sys42.widgets.datetimepicker
     /*
      * Including the necessary "locale" JS file, and setting the "locale" option for our JavaScript.
      */
-    include-javascript-file:@"/system42/components/common-widgets/datetimepicker/media/js/locale/{0}.js"
+    include-javascript-file:@"/system42/components/bootstrap/widgets/datetimepicker/media/js/locale/{0}.js"
       :x:/../*/_options/*/_locale?value
     set:x:/@_arguments?value
       src:@"{0},locale:'{1}'"
