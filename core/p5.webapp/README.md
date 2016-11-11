@@ -62,10 +62,6 @@ can neither modify the file, nor retrieve its content.
 This file is a normal ASP.NET web.config file, with some additional P5 specific settings.
 See the web.config example for an explanation of each of these settings.
 
-### The "media" folder
-
-Contains global images, JavaScript, and CSS files, which are an integral part of P5.
-
 ### The "common" folder
 
 Contains files common for all users, and does not belong to one specific user in general.

@@ -21,8 +21,7 @@ if:x:/../*/whoami/*/default?value
    * User is logged in, explaining that he does not have access to this URL
    */
   set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}?value
-    src:@"<img src=""/media/images/headshot.png"" style=""float:right;"" />
-<h2>Sorry!</h2>
+    src:@"<h2>Sorry!</h2>
 <p>I cannot give you access to that page!</p>"
 
 else
@@ -40,11 +39,6 @@ else
       container
         class:col-xs-12
         widgets
-          literal
-            element:img
-            class:hidden-xs
-            src:/media/images/headshot.png
-            style:"float:right;"
           literal
             element:h2
             innerValue:Sorry!
