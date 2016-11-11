@@ -82,9 +82,11 @@ create-event:sys42.widgets.codemirror
     wrap:@""""
 
   /*
-   * Sending JSON object containing full list of keywords to client
+   * Including JSON object containing full list of keywords to client.
+   *
+   * Notice, "include-javascript" in case we're having multiple Code-Mirror instances on page!
    */
-  send-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
+  include-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
     :x:/../*/join?value
 
   /*

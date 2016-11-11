@@ -49,6 +49,15 @@ namespace p5.web.widgets.helpers
         }
 
         /*
+         * Returns all Keys from dictionary
+         */
+        internal IEnumerable<string> Keys {
+            get {
+                return _events.Keys;
+            }
+        }
+
+        /*
          * Returns item that matches both "key1" and "key2"
          */
         internal Node this [string key1, string key2]

@@ -42,14 +42,9 @@ CodeMirror.defineMode("hyperlambda", function() {
      *  - number       ==> Used for p5.lambda expressions
      *  - property     ==> Used for a node's value, unless it's an expression or a string literal value
      *  - error        ==> Used for syntactic Hyperlambda errors. Normally this means that the entire rest of the document goes into "error mode"
-     *
-     * In addition, if you wish, you can give all attributes, properties and widget creation invocations of widgets 
-     * (HTML elements) additional coloring, by creating the CSS classes "widget-attribute", "widget-property" and "widget-type" 
-     * in your CodeMirror theme
-     *
+     *  - bracket      ==> Used for smaller error, such as Active Event invocation that was not found, etc.
      *
      * The following CodeMirror theme classes are NOT used by the Hyperlambda CodeMirror plugin
-     *  - bracket
      *  - link
      */
     styles: {
@@ -103,8 +98,13 @@ CodeMirror.defineMode("hyperlambda", function() {
        * Displayed when there is a syntacic error in Hyperlambda, e.g. a space too much or little
        * in front of name, or a string literal is not closed, etc.
        */
-      error:'error'
-    },
+      error: 'error',
+
+      /*
+       * Displayed when there is a small error, such as wrong name of Active Event.
+       */
+      small_error:'bracket'
+  },
 
 
 
@@ -783,6 +783,18 @@ CodeMirror.defineMode("hyperlambda", function() {
              * The name of the node starts with an underscore "_", and hence is a "variable" (data segment)
              */
             return this.styles.variable;
+        } else if (word[0] == '.' || word.indexOf('on') == 0) {
+
+            /*
+             * The name of the node starts with an underscore "_", and hence is a "variable" (data segment)
+             */
+            return this.styles.keyword;
+        } else if (word.indexOf('.') != -1) {
+
+            /*
+             * Syntax error in Active Event name!
+             */
+            return this.styles.small_error;
         }
     }
   };

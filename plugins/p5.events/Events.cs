@@ -92,18 +92,14 @@ namespace p5.events
         [ActiveEvent (Name = ".vocabulary")]
         public static void vocabulary (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            // Retrieving filter, if any
+            var filter = e.Args.Value == null ? new List<string> () : new List<string> (XUtil.Iterate<string> (context, e.Args));
 
-                // Retrieving filter, if any
-                var filter = new List<string> (XUtil.Iterate<string> (context, e.Args));
+            // Getting all dynamic Active Events
+            ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context, e.Name.StartsWith ("."));
 
-                // Getting all dynamic Active Events
-                ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context, e.Name.StartsWith ("."));
-
-                // Getting all core Active Events
-                ListActiveEvents (context.ActiveEvents, e.Args, filter, "static", context, e.Name.StartsWith ("."));
-            }
+            // Getting all core Active Events
+            ListActiveEvents (context.ActiveEvents, e.Args, filter, "static", context, e.Name.StartsWith ("."));
         }
 
         /*

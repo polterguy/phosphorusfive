@@ -22,6 +22,7 @@
  */
 
 using System.Linq;
+using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.ajax.widgets;
@@ -53,7 +54,7 @@ namespace p5.web.widgets
         public void get_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-lambda-event")) {
@@ -133,6 +134,22 @@ namespace p5.web.widgets
             }
         }
 
+        /// <summary>
+        ///     Lists all dynamically created Active Events.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "vocabulary")]
+        [ActiveEvent (Name = ".vocabulary")]
+        public void vocabulary (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving filter, if any
+            var filter = e.Args.Value == null ? new List<string>() : new List<string> (XUtil.Iterate<string> (context, e.Args));
+
+            // Getting all dynamic Active Events
+            ListActiveEvents (Manager.WidgetLambdaEventStorage.Keys, e.Args, filter, "dynamic", context, e.Name.StartsWith ("."));
+        }
+
         /*
          * Raises Widget specific lambda events
          */
@@ -176,6 +193,52 @@ namespace p5.web.widgets
                 e.Args.Clear ().AddRange (retVal.Children);
                 e.Args.Value = retVal.Value;
             }
+        }
+
+        #endregion
+
+        #region [ -- Private helper methods -- ]
+
+        /*
+         * Returns Active Events from source given, using name as type of Active Event
+         */
+        private static void ListActiveEvents (
+            IEnumerable<string> source,
+            Node node,
+            List<string> filter,
+            string eventTypeName,
+            ApplicationContext context,
+            bool isNative)
+        {
+            // Looping through each Active Event from IEnumerable
+            foreach (var idx in source) {
+
+                if (!isNative && (idx.StartsWith (".") || idx.StartsWith ("_") || idx.Contains ("._")))
+                    continue;
+
+                // Checking to see if we have any filter
+                if (filter.Count == 0) {
+
+                    // No filter(s) given, slurping up everything
+                    node.Add (new Node (eventTypeName, idx));
+                } else {
+
+                    // We have filter(s), checking to see if Active Event name matches at least one of our filters
+                    if (filter.Any (ix => idx.Contains (ix))) {
+                        node.Add (new Node (eventTypeName, idx));
+                    }
+                }
+            }
+
+            // Sorting such that keywords comes first
+            node.Sort (delegate (Node x, Node y) {
+                if (x.Get<string> (context).Contains (".") && !y.Get<string> (context).Contains ("."))
+                    return 1;
+                else if (!x.Get<string> (context).Contains (".") && y.Get<string> (context).Contains ("."))
+                    return -1;
+                else
+                    return x.Get<string> (context).CompareTo (y.Value);
+            });
         }
 
         #endregion
