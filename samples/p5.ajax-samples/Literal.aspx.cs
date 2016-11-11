@@ -30,10 +30,36 @@ namespace p5.samples
 
     public partial class Literal : AjaxPage
     {
+        protected p5.Literal txt;
+
         [WebMethod]
         protected void element_onclick (p5.Literal literal, EventArgs e)
         {
             literal.innerValue = "This is the updated text";
+        }
+
+        [WebMethod]
+        protected void btn_onclick (p5.Literal literal, EventArgs e)
+        {
+            txt.innerValue += @"
+Howdy world!";
+        }
+
+        [WebMethod]
+        protected void btn2_onclick (p5.Literal literal, EventArgs e)
+        {
+            txt.innerValue = @"Howdy world
+foo bar!";
+        }
+
+        [WebMethod]
+        protected void btn3_onclick (p5.Literal literal, EventArgs e)
+        {
+            txt.innerValue = @"Howdy World
+<strong>foo
+<em>THOMAS</em>
+sdf</strong> sdfoih
+sdfpih <i>TJOBING</i>";
         }
     }
 }

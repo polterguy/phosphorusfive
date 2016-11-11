@@ -114,6 +114,9 @@
                     If you wish to <em>"persistently remove"</em> a widget from a Container widget, you can have p5.ajax remember which widgets were dynamically
                     removed automatically for you, by using the <em>"RemoveControlPersistent"</em> method on your Container widget.
 
+                <p>
+                    Below is an example of how this would work with "select" HTML elements.
+
                 <p5:Literal
                     runat="server"
                     id="Literal5"
@@ -148,6 +151,12 @@
                         Element="button"
                         innerValue="Append options"
                         onclick="myBtn_onclick" />
+                    <p5:Literal
+                        runat="server"
+                        id="myBtn2"
+                        Element="button"
+                        innerValue="Select 2"
+                        onclick="myBtn2_onclick" />
 
                 <p>
                     Back to <a href="Default.aspx">landing page</a>

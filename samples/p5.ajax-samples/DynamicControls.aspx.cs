@@ -39,10 +39,9 @@ namespace p5.samples
         protected p5.Container Container2;
         protected p5.Literal Literal5;
 
-        private string CurrentEdit
-        {
-            get { return ViewState ["CurrentEdit"] as string; }
-            set { ViewState ["CurrentEdit"] = value; }
+        private string CurrentEdit {
+            get { return ViewState["CurrentEdit"] as string; }
+            set { ViewState["CurrentEdit"] = value; }
         }
 
         protected override void OnPreRender (EventArgs e)
@@ -50,7 +49,7 @@ namespace p5.samples
             if (CurrentEdit != null)
                 Update.RemoveAttribute ("disabled");
             else
-                Update ["disabled"] = null;
+                Update["disabled"] = null;
             base.OnPreRender (e);
         }
 
@@ -62,7 +61,7 @@ namespace p5.samples
                 CurrentEdit = null;
                 Txt["value"] = "";
             } else {
-                Txt ["value"] = sender.innerValue;
+                Txt["value"] = sender.innerValue;
                 CurrentEdit = sender.ID;
                 sender.innerValue = "Are you sure?";
             }
@@ -72,33 +71,33 @@ namespace p5.samples
         protected void append_onclick (p5.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next ++), List.Controls.Count);
+            var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next++), List.Controls.Count);
             widget.Element = "li";
             widget.RenderType = p5.Widget.RenderingType.open;
-            widget ["onclick"] = "item_onclick";
-            widget.innerValue = Txt ["value"];
+            widget["onclick"] = "item_onclick";
+            widget.innerValue = Txt["value"];
         }
 
         [WebMethod]
         protected void insert_top_onclick (p5.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next ++), 0);
+            var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next++), 0);
             widget.Element = "li";
             widget.RenderType = p5.Widget.RenderingType.open;
-            widget ["onclick"] = "item_onclick";
-            widget.innerValue = Txt ["value"];
+            widget["onclick"] = "item_onclick";
+            widget.innerValue = Txt["value"];
         }
 
         [WebMethod]
         protected void insert_at_random_onclick (p5.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next ++), new Random ().Next (0, List.Controls.Count));
+            var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next++), new Random ().Next (0, List.Controls.Count));
             widget.Element = "li";
             widget.RenderType = p5.Widget.RenderingType.open;
-            widget ["onclick"] = "item_onclick";
-            widget.innerValue = Txt ["value"];
+            widget["onclick"] = "item_onclick";
+            widget.innerValue = Txt["value"];
         }
 
         [WebMethod]
@@ -106,16 +105,16 @@ namespace p5.samples
         {
             CurrentEdit = null;
             if (List.Controls.Count == 0) {
-                Txt ["value"] = "Nothing to replace!!";
+                Txt["value"] = "Nothing to replace!!";
             } else {
                 var which = new Random ().Next (0, List.Controls.Count);
                 List.RemoveControlPersistentAt (which);
 
-                var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next ++), which);
+                var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next++), which);
                 widget.Element = "li";
                 widget.RenderType = p5.Widget.RenderingType.open;
-                widget ["onclick"] = "item_onclick";
-                widget.innerValue = Txt ["value"];
+                widget["onclick"] = "item_onclick";
+                widget.innerValue = Txt["value"];
             }
         }
 
@@ -127,7 +126,7 @@ namespace p5.samples
             foreach (var idx in List.GetChildControls<p5.Literal> ()) {
                 if (rnd.Next (0, 3) == 1) {
                     idx.innerValue = "I like turtles!";
-                    idx ["class"] = "turtles";
+                    idx["class"] = "turtles";
                 }
             }
         }
@@ -145,8 +144,8 @@ namespace p5.samples
         [WebMethod]
         protected void update_onclick (p5.Void btn, EventArgs e)
         {
-            var liter = (p5.Literal) List.FindControl (CurrentEdit);
-            liter.innerValue = Txt ["value"];
+            var liter = (p5.Literal)List.FindControl (CurrentEdit);
+            liter.innerValue = Txt["value"];
             CurrentEdit = null;
         }
 
@@ -171,6 +170,12 @@ namespace p5.samples
             lit2.innerValue = "Option 4";
 
             select_change (Container2, e);
+        }
+
+        [WebMethod]
+        protected void myBtn2_onclick (p5.Literal sender, EventArgs e)
+        {
+            Container2["value"] = "Option2";
         }
     }
 }
