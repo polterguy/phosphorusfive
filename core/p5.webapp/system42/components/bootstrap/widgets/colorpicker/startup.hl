@@ -1,7 +1,183 @@
 
 /*
- * Startup script that is evaluated when server is started.
- * Evaluates all Hyperlambda files in the "startup" folder.
+ * Creates a colorpicker widget, which allows the user to pick a color, including the opacity for the color.
+ *
+ * Arguments;
+ * 
+ * [_value]            - Initial value for widget. Can be either '#xxyyzz', 'rgba(x,y,z,q)' or a 'named color' such as 'yellow'.
+ * [_onchange]         - Lambda callback invoked when the value of the colorpicker changes.
+ * [_label]            - If declared, will create a descriptive input-group-addon label with the specified content.
+ *
+ * You can use either [sys42.widgets.colorpicker.get-value] or [sys42.widgets.colorpicker.set-value] to get and set the widget's value.
+ * Both Active Events requires you to pass in [_arg] being the ID to the colorpicker. The latter also expects a [_value] bwing a legal value
+ * for the widget, while the first will return the existing value, if any.
  */
+create-event:sys42.widgets.colorpicker
 
-sys42.utilities.execute-lambda-folder:@bootstrap/widgets/colorpicker/startup/
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _value:#000000
+    _onchange
+    _label
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+  /*
+   * Including Bootstrap (and jQuery)
+   */
+  sys42.bootstrap.include-javascript
+  sys42.bootstrap.include-css
+
+  /*
+   * Including Colorpicker's JavaScript and CSS
+   */
+  include-javascript-file:@bootstrap/widgets/colorpicker/media/js/bootstrap-colorpicker.min.js
+  include-stylesheet-file:@bootstrap/widgets/colorpicker/media/css/bootstrap-colorpicker.min.css
+
+
+  /*
+   * Passing in [_onchange] lambda callback such that it is evaluated upon change, and making sure
+   * colorpicker is initialized knowing it has [_onchange].
+   */
+  if:x:/../*/_options/*/_onchange/*
+
+    /*
+     * We have an [_onchange] lambda callback, making sure we initialize widget, such that it invokes
+     * it during "hidePicker", and adding the callback lambda into [_onchange] of "input" element.
+     */
+    add:x:/../*/return/*/container/*/widgets/*/input/*/_onchange/*/_onchange
+      src:x:/../*/_options/*/_onchange/*
+    set:x:/../*/return/*/container/*/widgets/*/input/*/oninit/*/_has-onchange?value
+      src:bool:true
+
+  else
+
+    /*
+     * We do not have an [_onchange] lambda callback. Making sure widget is initialized without
+     * the "hidePicker" event handled, and removing [_onchange] lambda callback of "input" element.
+     */
+    set:x:/../*/return/*/container/*/widgets/*/input/*/_onchange
+    set:x:/../*/return/*/widgets/*/input/*/oninit/*/_has-onchange?value
+      src:bool:false
+
+  /*
+   * Checking if [_label] was passed in,and if so,  making sure colorpicker gets a descriptive input-group-addon.
+   */
+  if:x:/../*/_options/*/_label?value
+    eval-x:x:/+/*/*/*
+    insert-before:x:/../*/return/*/container/*/widgets/*/input
+      src
+        label
+          class:input-group-addon
+          innerValue:x:/../*/_options/*/_label?value
+
+  /*
+   * Forward evaluating arguments.
+   */
+  eval-x:x:/../*/return/*/container/*/widgets/*/input/*/value
+
+  /*
+   * Returning color picker to caller.
+   */
+  return
+    container
+      class:input-group colorpicker-component colorpicker-element
+      events
+
+        /*
+         * Returns the widget's value.
+         */
+        sys42.widgets.colorpicker.get-value
+
+          /*
+           * First we must make sure this is the widget requested by caller.
+           */
+          if:x:/../*/_arg?value
+            =:x:/../*/_event?value
+
+            /*
+             * Finding textbox, and returning value.
+             */
+            find-widget:x:/../*/_event?value
+              element:input
+              type:text
+            get-widget-property:x:/@find-widget/*/*?value
+              value
+            return:x:/-/*/*?value
+
+        /*
+         * Sets the colorpicker's value
+         */
+        sys42.widgets.colorpicker.set-value
+
+          /*
+           * First we must make sure this is the colorpicker requested by caller.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our colorpicker.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Changing value of textbox.
+           */
+          find-widget:x:/../*/_event?value
+            element:input
+            type:text
+          set-widget-property:x:/-/*/*?value
+            value:x:/../*/_value?value
+
+      widgets
+        input
+          type:text
+          class:form-control
+          value:x:/../*/_options/*/_value?value
+          oninit
+
+            /*
+             * This guys is set above, and is true if there's an [_onchange] lambda callback, otherwise false.
+             */
+            _has-onchange
+            get-parent-widget:x:/../*/_event?value
+            if:x:/@_has-onchange?value
+
+              /*
+               * We have an [_onchange] lambda callback, making sure it is evaluated when colorpicker is hidden.
+               */
+              include-javascript:@"$('#{0}').colorpicker({{component:'.add-on'}}).on('hidePicker', function() {{p5.$('{1}').raise('_onchange')}});"
+                :x:/../*/get-parent-widget/*/*?value
+                :x:/../*/_event?value
+            else
+
+              /*
+               * We do not have an [_onchange] lambda callback, initializing colorpicker without "hidePicker" event declared.
+               */
+              include-javascript:@"$('#{0}').colorpicker({{component:'.add-on'}});"
+                :x:/../*/get-parent-widget/*/*?value
+
+          _onchange
+
+            /*
+             * Getting colorpicker's value, and invoking [_onchange]'s callback.
+             */
+            get-widget-property:x:/../*/_event?value
+              value
+            get-parent-widget:x:/../*/_event?value
+            _onchange
+            eval-x:x:/+/*
+            eval:x:/@_onchange
+              _value:x:/@get-widget-property/*/*?value
+              _event:x:/@get-parent-widget/*/*?value
+
+        span
+          class:input-group-addon add-on
+          widgets
+            i
+              innerValue:

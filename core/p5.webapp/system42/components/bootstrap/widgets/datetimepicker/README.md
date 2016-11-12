@@ -1,4 +1,4 @@
-An Ajax DateTimePicker
+The Bootstrap Ajax DateTimePicker
 ========
 
 This folder contains the Ajax DateTimePicker for Phosphorus Five. The widget is created on top of 

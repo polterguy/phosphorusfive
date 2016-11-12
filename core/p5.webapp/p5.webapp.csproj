@@ -755,7 +755,6 @@
     <Content Include="system42\components\common-widgets\codemirror\startup\sys42.widgets.codemirror.hl" />
     <Content Include="system42\components\bootstrap\widgets\navbar\startup.hl" />
     <Content Include="system42\components\bootstrap\widgets\navbar\README.md" />
-    <Content Include="system42\components\bootstrap\widgets\navbar\startup\sys42.widgets.navbar.hl" />
     <Content Include="system42\components\common-widgets\datagrid\startup.hl" />
     <Content Include="system42\components\common-widgets\datagrid\README.md" />
     <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.hl" />
@@ -773,8 +772,6 @@
     <Content Include="system42\components\common-widgets\tab\startup.hl" />
     <Content Include="system42\components\bootstrap\widgets\colorpicker\startup.hl" />
     <Content Include="system42\components\bootstrap\widgets\colorpicker\README.md" />
-    <Content Include="system42\components\bootstrap\widgets\colorpicker\startup\sys42.widgets.colorpicker.hl" />
-    <Content Include="system42\components\bootstrap\widgets\datetimepicker\startup\sys42.widgets.datetimepicker.hl" />
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\README.md" />
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\startup.hl" />
     <Content Include="system42\components\bootstrap\windows\startup.hl" />

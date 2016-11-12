@@ -1,8 +1,8 @@
-Ajax Colorpicker widget
+The Bootstrap Ajax Colorpicker widget
 ========
 
-This folder contains an Ajax colorpicker, built upon the [Bootstrap colorpicker](https://itsjavi.com/bootstrap-colorpicker/), that allows your users
-to pick a color. Below is an example of how to use it.
+This folder contains an Ajax colorpicker, built upon the [Bootstrap colorpicker](https://itsjavi.com/bootstrap-colorpicker/), that 
+allows your users to pick a color. Below is an example of how to use it.
 
 ```
 create-widget
@@ -12,6 +12,7 @@ create-widget
 
     // Changes bg-color when colorpicker value changes.
     literal:output-widget
+      class:prepend-bottom
       innerValue:Here comes color!
 
     // Actual colorpicker.
