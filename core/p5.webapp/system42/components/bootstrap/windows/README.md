@@ -172,10 +172,12 @@ sys42.windows.modal
 You can however add up any widgets you wish into your modal window. Besides from the above points, the modal window is more or less 
 identical to the *[sys42.windows.confirm]* window.
 
+### Input validation
+
 If you return the boolean value "false" from your *[.onok]* lambda callback, then the modal window will not close. This is true also for
 the *[sys42.windows.wizard]* window, and in fact also the *[sys42.windows.confirm]* windom. Although, for a simple confirm window, this
 feature probably makes no sense. In both the wizard window, and the modal window, this might be useful to validate the user's input, 
-and refuse closing of the window, if the input is not according to your app's expectations. Consider the following code.
+and refuse closing the window, if the input is not according to your app's expectations. Consider the following code.
 
 ```
 sys42.windows.modal
@@ -210,6 +212,11 @@ sys42.windows.modal
     sys42.windows.info-tip:Thanx for the email address; '{0}'
       :x:/@get-widget-property/*/*?value
 ```
+
+If you type something like "Foo bar" into the above textbox, you will get something like this, and the window will not accept your input, and
+hence it won't close.
+
+![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-modal-validation-error-screenshot.png)
 
 ## [sys42.windows.wizard] - Easily collect and update data
 
