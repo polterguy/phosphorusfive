@@ -193,8 +193,8 @@ The above code, will create something looking like this.
 
 ![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-wizard-screenshot.png)
 
-Each widget created this way, will have a hidden server-side property called *[_data-field-name]*. This means that you can easily retrieve
-all values that were supplied by the user, by for instance doing something like this.
+This modal window, creates an additional Active Events, named *[sys42.windows.wizard.get-values]*, which is a short hand for retrieving
+the values from its widgets. To use it, you can do something like the following.
 
 ```
 sys42.windows.wizard
@@ -203,13 +203,9 @@ sys42.windows.wizard
     name:Your name goes here
     email:Your email goes here
   .onok
-    find-widget:modal-window
-      _data-field-name
-    get-widget-property:x:/-/*/*?value
-      _data-field-name
-      value
+    sys42.windows.wizard.get-values
     sys42.windows.info-tip:Thanx for the data. Name was '{0}' and email was '{1}'
-      :x:/@get-widget-property/*/*/_data-field-name/=name/+?value
-      :x:/@get-widget-property/*/*/_data-field-name/=email/+?value
+      :x:/@sys42.windows.wizard.get-values/*/name?value
+      :x:/@sys42.windows.wizard.get-values/*/email?value
 ```
 

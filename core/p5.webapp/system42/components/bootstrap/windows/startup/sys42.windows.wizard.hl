@@ -133,3 +133,30 @@ create-event:sys42.windows.wizard
     sys42.windows.modal
       _widgets
   eval:x:/-
+
+  /*
+   * Making sure we create our data-retrieval Active Event, after creation of modal window, and associate it with our modal window.
+   */
+  set-widget-lambda-event:modal-window
+    sys42.windows.wizard.get-values
+
+      /*
+       * Finding all data-fields in modal window.
+       */
+      find-widget:modal-window
+        _data-field-name
+
+      /*
+       * Retrieving their data-field names and values.
+       */
+      get-widget-property:x:/-/*/*?value
+        _data-field-name
+        value
+      for-each:x:/-/*
+        add:x:/../*/return
+          src:@"{0}:@""{1}"""
+            :x:/..for-each/*/_dp/#/*/_data-field-name?value
+            :x:/..for-each/*/_dp/#/*/value?value
+      return
+
+
