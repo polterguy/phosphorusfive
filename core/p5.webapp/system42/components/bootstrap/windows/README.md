@@ -25,3 +25,5 @@ sys42.windows.confirm
 
 The above code, will display the following.
 
+![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-confirm-screenshot.png)
+
