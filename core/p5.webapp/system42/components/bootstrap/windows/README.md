@@ -304,40 +304,49 @@ sys42.windows.modal
     literal:my-text
       element:textarea
       placeholder:Please supply some text here ...
-      class:form-control
+      class:form-control prepend-bottom
       rows:3
       oninit
         sys42.windows.modal.initial-focus:x:/../*/_event?value
-    create-container-widget
-      parent:content
-      widgets
-        sys42.widgets.tree
+    sys42.widgets.tree:my-tree
+      _items
+        root:/
+      _on-get-items
+        list-folders:x:/../*/_item-id?value
+        for-each:x:/-/*?name
+          list-folders:x:/./*/_dp?value
+          split:x:/./*/_dp?value
+            =:/
+          add:x:/../*/return/*
+            src:@"{0}:{1}"
+              :x:/..for-each/*/split/0/-?name
+              :x:/..for-each/*/_dp?value
+          if:x:/./*/list-folders/*
+            not
+            add:x:/../*/return/*/_items/0/-
+              src
+                _class:tree-leaf
+        return
           _items
-            root:/
-          _on-get-items
-            list-folders:x:/../*/_item-id?value
-            for-each:x:/-/*?name
-              list-folders:x:/./*/_dp?value
-              split:x:/./*/_dp?value
-                =:/
-              add:x:/../*/return/*
-                src:@"{0}:{1}"
-                  :x:/..for-each/*/split/0/-?name
-                  :x:/..for-each/*/_dp?value
-              if:x:/./*/list-folders/*
-                not
-                add:x:/../*/return/*/_items/0/-
-                  src
-                    _class:tree-leaf
-            return
-              _items
   .onok
     get-widget-property:my-text
       value
-    sys42.windows.info-tip:Thanx for the data, which was '{0}'!
+    sys42.widgets.tree.get-selected-items:my-tree
+    sys42.windows.info-tip:Thanx for the data, which was '{0}' and '{1}'!
       :x:/@get-widget-property/*/*?value
+      :x:/@sys42.widgets.tree.get-selected-items/*/*?name
 ```
 
 The above would create something like this for you.
 
 ![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-modal-tree-view-screenshot.png)
+
+As you click OK in the above example, your *[.onok]* will even display the currently selected folder from your disc, 
+in addition to the text in your textarea. Pretty impressive from a small Ajax Modal Window, created with 37 lines of code I'd say ...
+
+Believing that the Phosphorus Five Modal Ajax Window, is just a simple wrapper around the modal Bootstrap windows, is probably a mistake.
+It goes far beyond Bootstrap's Modal windows. Among other things, I have successfully used it to create modal windows with drag'n'drop Ajax 
+uploader functionality, modals with multiple "pages", etc, etc, etc. Although the Bootstrap Modal window is responsible for rendering the
+actual modal window, it goes far beyon what you could normally do with a Bootstrap modal, due to the Ajax engine in P5.
+
+
