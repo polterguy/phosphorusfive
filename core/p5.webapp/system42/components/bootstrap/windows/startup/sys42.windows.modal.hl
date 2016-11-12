@@ -1,23 +1,27 @@
 
 /*
- * Responsible for creating the Active Event that shows the user a modal window,
- * allowing for the caller to supply his own set of widgets for the modal window.
+ * Responsible for creating the Active Event that shows the user a modal dialog,
+ * to ask user for some input.
  *
- * By default, it is created with on "OK" button, which can be overridden if caller
- * supplies his own set of [_buttons].
- *
- * [_header]         - Header of modal wizard window
+ * Arguments;
+ * 
+ * [_header]         - Header of modal dialogue
  * [_body]           - Explanatory text of dialogue
  * [_class]          - Override the default CSS class
  * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
- * [_parent]         - Override the default parent widget
- * [_onok]           - Lambda callback to evaluate upon user clicking "OK" button
- * [_onclose]        - Lambda callback to evaluate is user closes dialogue without pressing "OK".
- * [_buttons]        - Buttons to use instead of the (default) "OK" button
- * [_widgets]        - List of widgets to append into the body parts of the modal window
+ * [.onok]           - Code to be evaluated if user clicks OK button
+ * [.oncancel]       - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
+ * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
+ *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
+ *                     provide your own logic in the onclick handler of these buttons instead.
+ *                     To evaluate the [.onok] lambda, you can invoke [sys42.windows.modal.ok],
+ *                     To close dialogue, you can invoke [sys42.windows.modal.destroy]. If you wish to
+ *                     make sure your [.oncancel] lambda is evaluated, you should use [sys42.windows.modal.cancel]
+ *                     instead. [sys42.windows.modal.destroy] will not evaluate your [.oncancel] lambda callback.
+ * [_widgets]        - Widget collection to append into the body parts of the modal window.
  *
- * Notice, if the user clicks enter while any of the [_widgets] widgets have focus, then
- * the first button in the [_buttons] list will be clicked (alternatively the "OK" button)
+ * If user closes modal dialogue, without clicking OK, then the given [.onok] is not evaluated.
+ * There can be only one instance of this dialogue at the same time in your page.
  */
 create-event:sys42.windows.modal
 
@@ -27,53 +31,35 @@ create-event:sys42.windows.modal
    * up prioritizing specified argument, resorting to [_default] value if not given
    */
   _defaults
-    _header:Supply info
-    _body:
+    _header:Please supply input!
+    _body
     _class:modal fade
     _inner-class:modal-dialog
     _parent:cnt
-    _onok
-    _onclose
     _buttons
-      button:modal-ok-button
+      literal
+        element:button
         class:btn btn-default
         innerValue:OK
         onclick
-          if
-            sys42.windows.modal.ok
-            !=:bool:false
-            sys42.windows.modal.close
+          sys42.windows.modal.ok
+    .onok
+    .oncancel
+    _widgets
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"(/../*/"":regex:/^_/""|/../*/"":regex:/^\\./""|/../*/_defaults/*)(!/_defaults!/_options)/$"
 
   /*
-   * Making sure we delete any previously created dialogs
-   * Notice that since we only hide the dialog when it is closed, we need
+   * Making sure we delete any previously created dialogs.
+   * Notice that sice we only hide the dialog when it is closed, we need
    * to check if any previous dialogs exist, and if so, delete them, before 
-   * we create this one
+   * we create this one.
    */
   if
     fetch:x:/0/0?value
       widget-exist:modal-window
     delete-widget:modal-window
-
-  /*
-   * Setting [_header] of modal window
-   */
-  set:x:/../*/create-widget/**/literal/=modal-window-header/*/innerValue?value
-    src:x:/../*/_options/*/_header?value
-
-  /*
-   * Setting [_body] of modal window.
-   * Notice, if no [_body] is provided, the [_body] widget is entirely removed
-   */
-  if:x:/../*/_options/*/_body?value
-    !=:
-    set:x:/../*/create-widget/**/literal/=modal-window-body/*/innerValue?value
-      src:x:/../*/_options/*/_body?value
-  else
-    set:x:/../*/create-widget/**/literal/=modal-window-body
 
   /*
    * Appending buttons into footer of dialogue, which unless overridden through [_buttons], means
@@ -83,92 +69,142 @@ create-event:sys42.windows.modal
     src:x:/../*/_options/*/_buttons/*
 
   /*
-   * Appending [_widgets] into body of dialogue
+   * Appending [_widgets] into body of dialogue, if there are any, otherwise we remove the modal-window-widgets widget entirely.
    */
-  add:x:/../*/create-widget/**/=modal-window-widgets/*/widgets
-    src:x:/../*/_options/*/_widgets/*
+  if:x:/../*/_options/*/_widgets/*
+    add:x:/../*/create-widget/**/=modal-window-widgets/*/widgets
+      src:x:/../*/_options/*/_widgets/*
+  else
+    set:x:/../*/create-widget/**/=modal-window-widgets
 
   /*
-   * Appending [_onclose] into [sys42.windows.modal.close]
+   * Checking if no [_body] was supplied, and if not, we entirely remove the "body content" widget.
    */
-  add:x:/++/sys42.windows.modal.close
-    src:x:/../*/_options/*/_onclose/*
+  if:x:/../*/_options/*/_body?value
+    not
+    or:x:/../*/_options/*/_body?value
+      =:
+    set:x:/../*/create-widget/**/=modal-window-body
 
   /*
-   * Appending [_onok] into [sys42.windows.modal.ok]
+   * Appending [.onok] into [sys42.windows.modal.ok]
    */
-  add:x:/../*/create-widget/*/events/*/sys42.windows.modal.ok
-    src:x:/../*/_options/*/_onok/*
+  add:x:/../*/create-widget/*/events/*/sys42.windows.modal.ok/*/.lambda
+    src:x:/../*/_options/*/.onok/*
 
   /*
-   * Creating actual modal Widget.
+   * Appending [.oncancel] into [sys42.windows.modal.cancel]
    */
-  eval-x:x:/+/*|/+/*/widgets/*/container/*/class
+  add:x:/++/events/*/sys42.windows.modal.cancel/*/.lambda
+    src:x:/../*/_options/*/.oncancel/*
+
+  /*
+   * Creating actual modal Widget, making sure we forward evaluate the [_header] and [_body]
+   */
+  eval-x:x:/../*/create-widget/*|/../*/create-widget/**(/=modal-window-body|/=modal-window-header)/*/innerValue|/../*/create-widget/*/widgets/*/container/*/class
   create-widget:modal-window
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
-    _onclose
-      sys42.windows.modal.close
-        _close-client:bool:false
-    events
+    .oncancel
 
       /*
-       * Closes dialogue
+       * We evaluate our [.oncancel], but we do it in such a way, that we do not transfer the closing JavaScript to
+       * the client, since modal window was already closed on the client, if this event was raised.
        */
-      sys42.windows.modal.close
+      sys42.windows.modal.cancel
+        _close-client:bool:false
+
+    events
+
+
+      /*
+       * Evaluates OK lambda object.
+       * Notice the [.onok] lambda, passed in from caller, will be appended into this event.
+       */
+      sys42.windows.modal.ok
+
+        /*
+         * Making sure we close window without evaluating [.oncancel].
+         *
+         * Notice, the rest of this Active Event may seem empty, but actually contains the specified
+         * [.onok] lambda callback, which will be evaluated when event is invoked.
+         */
+        sys42.windows.modal.destroy
+
+        /*
+         * Contains the [.onok] lambda callback passed into when instantiated.
+         */
+        .lambda
+        eval:x:/-
+
+
+      /*
+       * Closes dialogue, evaluating the [.oncancel] lambda callback.
+       *
+       * If you pass in [_close-client], and it is "true", then the JavaScript necessary to close the
+       * modal window on the client will be transferred.
+       */
+      sys42.windows.modal.cancel
 
         /*
          * Closing modal dialogue.
          */
         if:x:/../*/_close-client
           not
-          or:x:/../*/_close-client?value
-          send-javascript:@"$('#modal-window').modal('toggle');"
+          or:x:/../*/_close-client?value.bool
+          sys42.windows.modal.destroy
 
         /*
-         * Notice, the rest of this event might look empty, but above we are appending the [_onclose]
-         * lambda callback supplied by caller into this event.
+         * Contains the [.oncancel] lambda callback passed into when instantiated.
          */
+        .lambda
+        eval:x:/-
 
 
       /*
-       * Evaluates OK lambda object.
-       * Notice the [_onok] lambda, passed in from caller, will be appended into this event.
+       * Closes dialogue, without evaluating [.oncancel].
        */
-      sys42.windows.modal.ok
+      sys42.windows.modal.destroy
 
         /*
-         * Notice, this guy may appear to be empty, but is highly likely not, since the [_onok] lambda callback
-         * passed in as an argument during construction, will be appended into this event.
+         * Turning OFF the hide handler, to avoid an additional Ajax request towards server, to evaluate [.oncancel],
+         * before we hide modal window.
          */
+        send-javascript:@"$('#modal-window').off('hide.bs.modal');"
+        send-javascript:@"$('#modal-window').modal('hide');"
 
 
       /*
-       * Gives initial focus to a specific widget
+       * Gives initial focus to a specific widget.
        */
       sys42.windows.modal.initial-focus
+
+        /*
+         * Here we make sure we give focus to the specified [_arg] widget, such that it is not given focus, before
+         * after the modal window has been shown.
+         */
         send-javascript:@"$('#modal-window').on('shown.bs.modal', function () {{$('#{0}').focus().select();}})"
           :x:/../*/_arg?value
 
     oninit
 
       /*
-       * Making sure dialog becomes initially visible, and that we trap "onclose"
+       * Making sure dialog becomes initially visible, and that we trap "hide", from where we invoke the .oncancel Ajax event, 
+       * to make sure we evaluate the specified [.oncancel] lambda callback.
        */
-      send-javascript:@"$('#modal-window').modal('toggle').on('hide.bs.modal', function(){
-  p5.$('modal-window').raise('_onclose');
-});"
+      send-javascript:@"$('#modal-window').modal('toggle').on('hide.bs.modal', function(){p5.$('modal-window').raise('.oncancel');});"
 
     widgets
       container
         class:x:/../*/_options/*/_inner-class?value
+        role:document
         widgets
           container
             class:modal-content
             widgets
 
               /*
-               * Header of dialog
+               * Header of modal window.
                */
               container
                 class:modal-header
@@ -179,34 +215,42 @@ create-event:sys42.windows.modal
                     data-dismiss:modal
                     aria-label:Close
                     innerValue:&times;
-                    onclick
-                      sys42.windows.modal.close
                   literal:modal-window-header
                     element:h4
-                    innerValue
+                    innerValue:x:/../*/_options/*/_header?value
 
               /*
-               * Body of dialog, contains [_body] and dynamically created widgets
+               * Body of modal window.
                */
-              container:modal-window-body
+              container
                 class:modal-body
                 widgets
                   literal:modal-window-body
-                    innerValue
+                    element:div
+                    innerValue:x:/../*/_options/*/_body?value
                   container:modal-window-widgets
                     class:form
-                    onkeypress:"return p5.modalWindowKeyPress(event);"
+                    widgets
                     _onenterpressed
+
+                      /*
+                       * Finds the first button widget in the footer of the window, and raises the [onclick] Ajax event on it.
+                       */
                       find-widget:modal-window-footer
                         element:button
                       if:x:/-/*/0?value
                         raise-widget-ajax-event:x:/./-/*/0?value
                           onclick
+
                     oninit
 
                       /*
-                       * Including JavaScript to help handle carriage return key in dialogue
+                       * Including JavaScript to help handle carriage return key in window.
                        */
+                      find-widget:x:/../*/_event?value
+                        element:input
+                      set-widget-property:x:/-/*/*?value
+                        onkeypress:"return p5.modalWindowKeyPress(event);"
                       include-javascript:@"p5.modalWindowKeyPress = function(e) {
   if(e.keyCode == 13) {
     p5.$('modal-window-widgets').raise('_onenterpressed');
@@ -214,26 +258,9 @@ create-event:sys42.windows.modal
   }
 }"
 
-                      /*
-                       * Settings focus to first child widget passed in as [_widgets] argument,
-                       * if there are any children widgets
-                       */
-                      find-widget-like:x:/../*/_event?value
-                        class:form-control
-                      if:x:/../*/find-widget-like/*/*?count
-                        >:int:0
-                        sys42.windows.modal.initial-focus:x:/../*/find-widget-like/*/0?value
-
-
-                    /*
-                     * This is where our [_widgets] are appended
-                     */
-                    widgets
-
               /*
-               * Footer of dialog, contains [_buttons]
+               * Footer of dialog, contains [_buttons], which by default means only "OK" button.
                */
               container:modal-window-footer
                 class:modal-footer
                 widgets
-

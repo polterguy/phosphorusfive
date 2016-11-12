@@ -1,40 +1,48 @@
 
 /*
- * Responsible for creating the Active Event that shows the user a modal window,
- * allowing for the user to edit text items.
+ * Responsible for creating the Active Event that shows the user a modal dialog,
+ * to asl user to update some existing, or supply some new input.
  *
- * Internally uses the [sys42.windows.modal], applying a textbox, for each element in the [_data] collection.
- *
- * [_header]         - Header of modal wizard window
+ * Arguments;
+ * 
+ * [_header]         - Header of modal dialogue
  * [_body]           - Explanatory text of dialogue
- * [_data]           - List of data elements user wish to edit using textboxes.
- * [_buttons]        - Buttons to use instead of the (default) "OK" button
- * [_onok]           - Invoked when user clicks "OK" button after applying his edits.
- *                     The new values are passed in as [_data].
- * [_onclose]        - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
+ * [_class]          - Override the default CSS class
+ * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
+ * [.onok]           - Code to be evaluated if user clicks OK button
+ * [.oncancel]       - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
+ * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
+ *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
+ *                     provide your own logic in the onclick handler of these buttons instead.
+ *                     To evaluate the [.onok] lambda, you can invoke [sys42.windows.modal.ok],
+ *                     To close dialogue, you can invoke [sys42.windows.modal.destroy]. If you wish to
+ *                     make sure your [.oncancel] lambda is evaluated, you should use [sys42.windows.modal.cancel]
+ *                     instead. [sys42.windows.modal.destroy] will not evaluate your [.oncancel] lambda callback.
+ * [_data]           - Will automatically create a widget collection, according to the type of data supplied.
+ *                     The default widget type to use, is a normal textbox. However, if you supply a child node with the name of
+ *                     [_choices], it will create a select HTML element instead, with the option elements supplied as children of [_choices].
+ *
+ * If user closes modal dialogue, without clicking OK, then the given [.onok] is not evaluated.
+ * There can be only one instance of this dialogue at the same time in your page.
  */
 create-event:sys42.windows.wizard
 
   /*
-   * Adding [_onok] lambda callback into [_eval].
+   * Simply using the [sys42.windows.modal] to create our confirm window
    */
-  add:x:/../**/_eval
-    src:x:/../*/_onok/*
-
-  /*
-   * Adding [_onclose] lambda callback into [_onclose] of modal dialogue.
-   */
-  add:x:/++/_onclose
-    src:x:/../*/_onclose/*
-
-  /*
-   * Adding [_buttons] into [_buttons] of modal dialogue.
-   */
-  if:x:/../*/_buttons
-    add:x:/++/sys42.windows.modal
-      src:_buttons
-    add:x:/++/_buttons
-      src:x:/../*/_buttons/*
+  add:x:/../*/.lambda/*
+    src:x:/../*!/.!/./++
+  if:x:/../*/_buttons/*
+    not
+    add:x:/../*/.lambda/*
+      src
+        _buttons
+          literal
+            element:button
+            class:btn btn-default
+            innerValue:OK
+            onclick
+              sys42.windows.modal.ok
 
   /*
    * Looping through each [_data] items, creating an edit widget for each item.
@@ -69,7 +77,7 @@ create-event:sys42.windows.wizard
           option
             {@eval}:x:/..if/*/_eval-option
       eval-x:x:/+/*/*/*/*/*/*/*
-      add:x:/../*/sys42.windows.modal/*/_widgets
+      add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets
         src
           container
             class:form-group
@@ -91,7 +99,7 @@ create-event:sys42.windows.wizard
        * Defaulting to "textbox".
        */
       eval-x:x:/+/*/*/*/*/*/*/*
-      add:x:/../*/sys42.windows.modal/*/_widgets
+      add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets
         src
           container
             class:form-group
@@ -108,44 +116,20 @@ create-event:sys42.windows.wizard
                     value:x:/..for-each/*/_dp/#?value
                     _data-field-name:x:/..for-each/*/_dp/#?name
 
+    /*
+     * Making sure we set initial focus to the first widget in our [_widgets] collection.
+     */
+    if:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/*?count
+      =:int:1
+      add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/0/*/widgets/0/*/widgets/1
+        src
+          oninit
+            sys42.windows.modal.initial-focus:x:/../*/_event?value
 
   /*
-   * Creates our modal widget, after making sure there's a textbox, for each value in our [_data] segment.
+   * Now we can evaluate our modal window.
    */
-  eval-x:x:/+/*
-  sys42.windows.modal
-    _header:x:/../*/_header?value
-    _body:x:/../*/_body?value
-    _widgets
-    _onclose
-    _onok
-      get-widget-properties:modal-window
-        _data-field-name
-        value
-      add:x:/../*/_data
-        src:x:/../*/get-widget-properties/*/*/_data-field-name?value
-      set:x:/../*/_data/*?value
-        eval
-          return:x:/../*/_dn/#/../*/get-widget-properties/*/*/={0}/+?value
-            :x:/../*/_dn/#?name
-      _data
-      _eval
-      add:x:/../*/_eval
-        src:x:/../*/_data
-      eval:x:/../*/_eval
-      if:x:/-?value
-        not
-
-        /*
-         * Caller supplied lambda returned "error", checking if lambda also supplied one 
-         * or more "data fields" that is in error state.
-         */
-        if:x:/@eval/*
-          find-widget
-            _data-field-name:x:/@eval/*?value
-          get-parent-widget:x:/-/*/*?value
-          sys42.add-css-classes:x:/-/*/*?value
-            _class:has-error
-          send-javascript:@"$('#{0}').focus().select();"
-            :x:/@find-widget/0/0?value
-      return:x:/@eval?value
+  .lambda
+    sys42.windows.modal
+      _widgets
+  eval:x:/-

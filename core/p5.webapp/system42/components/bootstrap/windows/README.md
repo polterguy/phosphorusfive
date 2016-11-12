@@ -9,7 +9,7 @@ display modal windows to your users. There are three basic windows, which are ki
 * [sys42.windows.wizard] - Automatically creates widgets from its [_data] segment for you.
 
 
-## [sys42.windows.confirm] a modal confirmation window
+## [sys42.windows.confirm] - A modal confirmation window
 
 This Active Event, creates a modal confirmation window, which by default simply contains a simple "OK" button, which once clicked,
 can (optionally) evaluate some piece of lambda, declared through its *[.onok]* lambda callback. An example is show below.
@@ -46,9 +46,9 @@ sys42.windows.confirm
 
 Your *[.oncancel]* lambda callback will also evaluate if the user clicks anywhere outside of the modal window.
 
-### Customizing your buttons.
+### Customizing your buttons
 
-In addition to simply using the default "OK" button, you can also supply your own collection of buttons that will be used instead
+In addition to simply using the default "OK" button, you can also supply your own collection of buttons, that will be used instead
 of the "OK" button. This is done by adding any buttons you wish inside of a *[_buttons]* argument. Consider the following.
 
 ```
@@ -60,34 +60,38 @@ sys42.windows.confirm
       class:btn btn-default
       innerValue:Yup
       oninit
-        sys42.windows.confirm.initial-focus:x:/../*/_event?value
+        sys42.windows.modal.initial-focus:x:/../*/_event?value
       onclick
-        sys42.windows.confirm.ok
+        sys42.windows.modal.ok
     button
       class:btn btn-default
       innerValue:Nope
       onclick
-        sys42.windows.confirm.cancel
+        sys42.windows.modal.cancel
   .onok
     sys42.windows.info-tip:Something dangerous just happened!!
   .oncancel
     sys42.windows.info-tip:Puuh, you just avoided the dangerous stuff!!
 ```
 
-Notice the invocations to *[sys42.windows.confirm.ok]*, *[sys42.windows.confirm.cancel]* and *[sys42.windows.confirm.initial-focus]* above.
-The *[sys42.windows.confirm.ok]* Active Event will evaluate your *[.onok]* lambda callback, while the *[sys42.windows.confirm.cancel]*
+Notice the invocations to *[sys42.windows.modal.ok]*, *[sys42.windows.modal.cancel]* and *[sys42.windows.modal.initial-focus]* above.
+The *[sys42.windows.modal.ok]* Active Event will evaluate your *[.onok]* lambda callback, while the *[sys42.windows.modal.cancel]*
 will evaluate your *[.oncancel]* callback. You could of course entirely bypass these if you wish, if you provide your own *[_buttons]*
 collection, by simply providing your own lambda in these buttons' *[onclick]* event handlers. However, these Active Events are there for 
 your convenience, to allow you to create more explicit, and more understandable code.
 
-Notice also the invocation to *[sys42.windows.confirm.initial-focus]* in the *[oninit]* event of your "Yup" button. This makes sure the
+If you do not wish to use the *[sys42.windows.modal.ok]* or *[sys42.windows.modal.cancel]* Active Events, due to for instance having
+triolean logic or something similar, you can explicitly destroy the modal window on the client side, by invoking *[sys42.windows.modal.destroy]*,
+which will close the window on the client side once invoked.
+
+Notice also the invocation to *[sys42.windows.modal.initial-focus]* in the *[oninit]* event of your "Yup" button. This makes sure the
 button gains focus initially when displayed. Since the modal window is shown hidden initially, you cannot simply give focus to your
 buttons, by attaching some custom JavaScript, since your JavaScript would fissle, unless it is attached such that it evaluates after your
 modal window has been displayed. This Active Event ensures that the focus JavaScript sent to the client, is not evaluated before the window
 has been shown.
 
 Notice also that you can put any type of widget into the *[_buttons]* argument, but since they will be appended into the footer of your modal,
-it will probably look pretty unintuitive if you add something else besides buttons into it. If you wish to create more complex modal windows,
+it will probably look stupid if you add something else besides buttons into it. If you wish to create more complex modal windows,
 with support for your own widgets, you should probably rather use the *[sys42.windows.modal]* or the *[sys42.windows.wizard]* Active Events.
 
 You can also override the default CSS class for your modal window, by explicitly changing it through *[_class]*. The default value for this
@@ -101,13 +105,107 @@ Below is a list of all arguments the modal window accepts, together with a short
 * [_class] - Main CSS class for your modal window.
 * [_inner-class] - Secondary, or "inner" CSS class for your modal window.
 * [_buttons] - Override the default buttons, or widgets in fact, that are rendered in its footer.
-* [.onok] - Lambda callback evaluated when *[sys42.windows.confirm.ok]* is invoked.
-* [.oncancel] - Lambda callback evaluated when *[sys42.windows.confirm.cancel]* is invoked.
+* [.onok] - Lambda callback evaluated when *[sys42.windows.modal.ok]* is invoked.
+* [.oncancel] - Lambda callback evaluated when *[sys42.windows.modal.cancel]* is invoked.
 
 In addition, the modal window creates these Active Events which you can consume.
 
-* [sys42.windows.confirm.ok] - Closes the window, and evaluates the *[.onok]* lambda callback.
-* [sys42.windows.confirm.cancel] - Closes the window, and evaluates the *[.oncancel]* lambda callback.
-* [sys42.windows.confirm.destroy] - Destroys (hides) the window on the client side, without invoking the *[.oncancel]* callback.
-* [sys42.windows.confirm.initial-focus] - If invoked during e.g. *[oninit]* of some widget, it will set the initial focus to some widget of your desire.
+* [sys42.windows.modal.ok] - Closes the window, and evaluates the *[.onok]* lambda callback.
+* [sys42.windows.modal.cancel] - Closes the window, and evaluates the *[.oncancel]* lambda callback.
+* [sys42.windows.modal.destroy] - Destroys (hides) the window on the client side, without invoking the *[.oncancel]*.
+* [sys42.windows.modal.initial-focus] - If invoked during e.g. *[oninit]* of some widget, it will set the initial focus.
+
+The modal window also traps the escape keyboard key, which will invoke the *[sys42.windows.modal.cancel]* Active Event.
+
+## [sys42.windows.modal] - A generic modal window
+
+This Active Event creates a modal window, where you can entirely bypass the entire content of the window, to add up your own set of widgets.
+It takes the exact same parameters as the *[sys42.windows.confirm]*, except it also accepts a *[_widgets]* collection. These are any widgets
+you wish, which are appended into the body of the window, beneath the *[_body]* content.
+
+This active event, will not render a body HTML content, unless you explicitly supply it. Instead, it will add every widget you supply in
+its *[_widgets]* collection into the body. This allows you to collect information from the user, in a modal window. Consider the following.
+
+```
+sys42.windows.modal
+  _header:Please supply input!
+  _widgets
+    literal:my-text
+      element:textarea
+      placeholder:Please supply some text here ...
+      class:form-control
+      rows:7
+      oninit
+        sys42.windows.modal.initial-focus:x:/../*/_event?value
+  .onok
+    get-widget-property:my-text
+      value
+    sys42.windows.info-tip:Thanx for the data, which was '{0}'!
+      :x:/@get-widget-property/*/*?value
+```
+
+If you add "input" HTML elements inside of your modal window, then they will automatically trap carriage return, and raise the *[onclick]*
+Ajax event, of the first button inside of your footer. Run this code, and try to click carriage return, as the textbox has focus.
+
+```
+sys42.windows.modal
+  _header:Please supply input!
+  _widgets
+    literal:my-text
+      element:input
+      type:text
+      placeholder:Please supply some text here ...
+      class:form-control
+      oninit
+        sys42.windows.modal.initial-focus:x:/../*/_event?value
+  .onok
+    get-widget-property:my-text
+      value
+    sys42.windows.info-tip:Thanx for the data, which was '{0}'!
+      :x:/@get-widget-property/*/*?value
+```
+
+You can however add up any widgets you wish into your modal window. Besides from the above points, the modal window is more or less 
+identical to the *[sys42.windows.confirm]* window.
+
+## [sys42.windows.wizard] - Easily collect and update data
+
+This Active Event allows you to even more easily than by using the *[sys42.windows.modal]* Active Event collect data from the user.
+Instead of a *[_widgets]* collection, this Active Event expects you to provide a *[_data]* collection. Each entry you put into your *[_data]*
+collection, will have its own widget, of some type, which depends upon how your data segment looks like. To collect for instance two text
+values, with the name of "name" and "email", you could do something like this.
+
+```
+sys42.windows.wizard
+  _header:Please supply input!
+  _data
+    name:Your name goes here
+    email:Your email goes here
+  .onok
+    sys42.windows.info-tip:Thanx for the data.
+```
+
+The above code, will create something looking like this.
+
+![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-wizard-screenshot.png)
+
+Each widget created this way, will have a hidden server-side property called *[_data-field-name]*. This means that you can easily retrieve
+all values that were supplied by the user, by for instance doing something like this.
+
+```
+sys42.windows.wizard
+  _header:Please supply input!
+  _data
+    name:Your name goes here
+    email:Your email goes here
+  .onok
+    find-widget:modal-window
+      _data-field-name
+    get-widget-property:x:/-/*/*?value
+      _data-field-name
+      value
+    sys42.windows.info-tip:Thanx for the data. Name was '{0}' and email was '{1}'
+      :x:/@get-widget-property/*/*/_data-field-name/=name/+?value
+      :x:/@get-widget-property/*/*/_data-field-name/=email/+?value
+```
 
