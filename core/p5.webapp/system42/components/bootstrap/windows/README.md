@@ -46,6 +46,8 @@ sys42.windows.confirm
 
 Your *[.oncancel]* lambda callback will also evaluate if the user clicks anywhere outside of the modal window.
 
+### Customizing your buttons.
+
 In addition to simply using the default "OK" button, you can also supply your own collection of buttons that will be used instead
 of the "OK" button. This is done by adding any buttons you wish inside of a *[_buttons]* argument. Consider the following.
 
@@ -74,12 +76,12 @@ sys42.windows.confirm
 
 Notice the invocations to *[sys42.windows.confirm.ok]*, *[sys42.windows.confirm.cancel]* and *[sys42.windows.confirm.initial-focus]* above.
 The *[sys42.windows.confirm.ok]* Active Event will evaluate your *[.onok]* lambda callback, while the *[sys42.windows.confirm.cancel]*
-will evaluate your *[.oncancel]* callback. You could of course entirely bypass these if you wish, by simply providing your own lambda
-in the *[onclick]* event handler for your buttons. However, these Active Events are there for your convenience, to allow you to create
-more explicit, and more understandable code.
+will evaluate your *[.oncancel]* callback. You could of course entirely bypass these if you wish, if you provide your own *[_buttons]*
+collection, by simply providing your own lambda in these buttons' *[onclick]* event handlers. However, these Active Events are there for 
+your convenience, to allow you to create more explicit, and more understandable code.
 
-Notive also the invocation to *[sys42.windows.confirm.initial-focus]* in the *[oninit]* event of your "Yup" button. This makes sure the
-button gains focus initially, when displayed. Since the modal window is shown hidden initially, you cannot simply give focus to your
+Notice also the invocation to *[sys42.windows.confirm.initial-focus]* in the *[oninit]* event of your "Yup" button. This makes sure the
+button gains focus initially when displayed. Since the modal window is shown hidden initially, you cannot simply give focus to your
 buttons, by attaching some custom JavaScript, since your JavaScript would fissle, unless it is attached such that it evaluates after your
 modal window has been displayed. This Active Event ensures that the focus JavaScript sent to the client, is not evaluated before the window
 has been shown.
@@ -88,9 +90,9 @@ Notice also that you can put any type of widget into the *[_buttons]* argument, 
 it will probably look pretty unintuitive if you add something else besides buttons into it. If you wish to create more complex modal windows,
 with support for your own widgets, you should probably rather use the *[sys42.windows.modal]* or the *[sys42.windows.wizard]* Active Events.
 
-You can also override the default CSS class for your modal window, by explicitly changing it through *[class]*. The default value for this
+You can also override the default CSS class for your modal window, by explicitly changing it through *[_class]*. The default value for this
 is "modal fade", which creates a default bootstrap modal window, which fades into view on the client side of things. If you wish, you can 
-also create a widget modal window, by changing your *[_inner-class]* to "modal-dialog modal-lg".
+also create a wider modal window, by changing your *[_inner-class]* to "modal-dialog modal-lg".
 
 Below is a list of all arguments the modal window accepts, together with a short explanation.
 
