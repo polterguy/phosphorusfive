@@ -208,7 +208,7 @@ create-widget:datagrid-wrapper-3
           _header:Editing item
           _body:Please supply new values for record
           _data
-          _onok
+          .onok
             get-page-value:sys42.samples.datagrid-editing-record
             select-data:x:@"/*/*/sample.csv/""=:guid:{0}"""
               :x:/../*/get-page-value/*?value
@@ -319,7 +319,7 @@ create-widget:datagrid-wrapper-4
                     sys42.windows.confirm
                       _header:Confirm deletion
                       _body:Are you sure you wish to delete this item?
-                      _onok
+                      .onok
                         delete-data:x:@"/*/*/""=:guid:{0}"""
                           :x:/../*/sys42.widgets.datagrid.get-row-id?value
                         sys42.widgets.datagrid.databind:my-datagrid

@@ -591,7 +591,7 @@ create-container-widget
       sys42.windows.confirm
         _header:Howdy foo world
         _body:Watch the other label as you click OK!
-        _onok
+        .onok
           set-widget-property:the-other-guy
             innerValue:The other guy was clicked!
   widgets

@@ -457,7 +457,7 @@ create-widget:ajax-uploader
                 onclick
 
                   /*
-                   * This bugger, we simply forward to [_onok], since it'll retrieve our data field values.
+                   * This bugger, we simply forward to [.onok], since it'll retrieve our data field values.
                    */
                   sys42.windows.modal.ok
               button
@@ -489,7 +489,7 @@ create-widget:ajax-uploader
                   sys42.cms.edit-page
                   send-javascript:@"$('#cms-select-page').focus();"
                   sys42.cms.create-navbar-menu
-            _onok
+            .onok
 
               /*
                * Checking if user provided a URL to a page that already exists, which is not kosher.
@@ -504,8 +504,14 @@ create-widget:ajax-uploader
                  * Informing user, and returning early.
                  */
                 sys42.windows.info-tip:That page already exists
-                  _parent:modal-window-body
+                  _parent:modal-window-body-wrapper
                   _class:info-window info-window-error
+                find-widget:modal-window-body-wrapper
+                  _data-field-name:url
+                get-parent-widget:x:/-/*/*?value
+                sys42.add-css-classes:x:/-/*/*?value
+                  _class:has-error
+                sys42.windows.show-lambda:x:/..
                 return:bool:false
 
               /*

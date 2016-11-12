@@ -82,7 +82,7 @@ create-widget:{0}_editor
                 sys42.windows.confirm
                   _header:Confirm deletion!
                   _body:Are you sure you wish to delete this file?
-                  _onok
+                  .onok
                     _file:x:/../*/_file?value
                     delete-file:x:/../*/_file?value
                     sys42.windows.info-tip:File was deleted

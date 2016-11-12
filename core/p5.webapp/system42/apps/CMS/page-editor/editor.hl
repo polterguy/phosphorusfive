@@ -120,7 +120,7 @@ create-widget
                 /*
                  * Forward evaluating expressions inside of [_widgets] below
                  */
-                eval-x:x:/+/*/*/*/*/*/value|/+/*/_onok/*/_old-page
+                eval-x:x:/+/*/*/*/*/*/value|/+/*/.onok/*/_old-page
                 sys42.windows.modal
                   _header:Supply name and URL of new page
                   _widgets
@@ -150,14 +150,14 @@ create-widget
                           placeholder:URL of page ...
                           value:{0}-copy
                             :x:/../*/select-data/*?value
-                  _onclose
+                  .oncancel
 
                     /*
                      * Making sure we set focus to "select page dropdown" if user closes dialogue, without
                      * pressing "OK".
                      */
                     send-javascript:@"$('#cms-select-page').focus().select();"
-                  _onok
+                  .onok
 
                     /*
                      * Will contain the database id of old page
@@ -348,7 +348,7 @@ create-widget
 
                 /*
                  * Making sure we change the [template] data segment to a "drop down selection" type
-                 * of [_data] segment, by appending our choices to it as [_choices].
+                 * of [_data] segment, by appending our choices to it as [_options].
                  * This is done by fetching all files from "/system42/apps/CMS/page-templates/", and
                  * using these as choices for user.
                  */
@@ -364,11 +364,11 @@ create-widget
                       :x:/..for-each/*/_dp?value
                 add:x:/++/_data/*/template
                   src
-                    _choices
+                    _options
 
                 /*
                  * Making sure we change the [role] data segment to a "drop down selection" type
-                 * of [_data] segment, by appending our choices to it as [_choices].
+                 * of [_data] segment, by appending our choices to it as [_options].
                  * This is done by fetching all distinct user roles, in addition to appending a 
                  * static "empty" role (no restrictions for access).
                  */
@@ -379,7 +379,7 @@ create-widget
                       :x:/..for-each/*/_dp?value
                 add:x:/++/_data/*/role
                   src
-                    _choices
+                    _options
 
                 /*
                  * Showing actual wizard window.
@@ -387,17 +387,22 @@ create-widget
                 sys42.windows.wizard
                   _header:Settings
                   _data
-                  _onclose
+                  .oncancel
 
                     /*
                      * Making sure we set focus to "select page dropdown" if user closes dialogue, without
                      * pressing "OK".
                      */
                     send-javascript:@"$('#cms-select-page').focus().select();"
-                  _onok
+                  .onok
 
                     /*
-                     * Selecting currently edited page.
+                     * Getting wizard window's values.
+                     */
+                    sys42.windows.wizard.get-values
+
+                    /*
+                     * Retrieving currently edited page.
                      */
                     sys42.cms.get-currently-edited-page
                     select-data:x:@"/*/*/""={0}"""
@@ -408,7 +413,7 @@ create-widget
                     /*
                      * Checking if user changed URL, at which point we must check that URL does not exist from before.
                      */
-                    if:x:/../*/_data/*/url?value
+                    if:x:/../*/sys42.windows.wizard.get-values/*/url?value
                       !=:x:/@sys42.cms.get-currently-edited-page?value
 
                       /*
@@ -416,7 +421,7 @@ create-widget
                        */
                       if
                         select-data:x:@"/*/*/""={0}""?count"
-                          :x:/../*/_data/*/url?value
+                          :x:/../*/sys42.windows.wizard.get-values/*/url?value
                         !=:int:0
 
                         /*
@@ -425,27 +430,33 @@ create-widget
                          */
                         sys42.windows.info-tip:That URL is already taken by another page ...
                           _class:info-window info-window-error
-                          _parent:modal-window-body
+                          _parent:modal-window-body-wrapper
+                        find-widget:modal-window-body-wrapper
+                          _data-field-name:url
+                        get-parent-widget:x:/-/*/*?value
+                        sys42.add-css-classes:x:/-/*/*?value
+                          _class:has-error
+                        send-javascript:@"$('#{0}').focus().select();"
+                          :x:/./-3/*/*?value
                         return:bool:false
-                          _error:url
 
                       /*
                        * Making sure we update "currently edited page".
                        */
-                      sys42.cms.set-currently-edited-page:x:/../*/_data/*/url?value
+                      sys42.cms.set-currently-edited-page:x:/../*/sys42.windows.wizard.get-values/*/url?value
 
                     /*
                      * Updating page properties, by first changing [select-data]'s result, for then to move [select-data]'s
                      * result into an [update-data] invocation.
                      */
                     set:x:/../*/select-data/*/*/name?value
-                      src:x:/../*/_data/*/name?value
+                      src:x:/../*/sys42.windows.wizard.get-values/*/name?value
                     set:x:/../*/select-data/*?value
-                      src:x:/../*/_data/*/url?value
+                      src:x:/../*/sys42.windows.wizard.get-values/*/url?value
                     set:x:/../*/select-data/*/*/template?value
-                      src:x:/../*/_data/*/template?value
+                      src:x:/../*/sys42.windows.wizard.get-values/*/template?value
                     set:x:/../*/select-data/*/*/role?value
-                      src:x:/../*/_data/*/role?value
+                      src:x:/../*/sys42.windows.wizard.get-values/*/role?value
 
                     /*
                      * Now we can move [p5.page] from [select-data] into [update-data].
@@ -460,14 +471,14 @@ create-widget
                       :x:/../*/sys42.cms.get-currently-edited-page?value
                       src
                     sys42.windows.info-tip:Page '{0}' was saved.
-                      :x:/../*/_data/*/name?value
+                      :x:/../*/sys42.windows.wizard.get-values/*/name?value
 
                     /*
                      * If either name or URL changed, we reload select dropdown, and repopulate it.
                      */
-                    if:x:/../*/_data/*/url?value
+                    if:x:/../*/sys42.windows.wizard.get-values/*/url?value
                       !=:x:/../*/sys42.cms.get-currently-edited-page?value
-                      or:x:/../*/_data/*/name?value
+                      or:x:/../*/sys42.windows.wizard.get-values/*/name?value
                         !=:x:/../*/_old-name?value
 
                       /*
@@ -513,19 +524,25 @@ create-widget
                 sys42.windows.confirm
                   _header:Please confirm deletion
                   _body:Are you sure you want to delete this page? This action cannot be undone!
-                  _onclose
+                  .oncancel
 
                     /*
                      * Making sure we set focus to "select page dropdown" if user closes dialogue, without
                      * pressing "OK".
                      */
                     send-javascript:@"$('#cms-select-page').focus().select();"
-                  _onok
+                  .onok
 
                     /*
                      * Deleting page.
                      */
                     sys42.delete-currently-edited-page
+
+                    /*
+                     * Making sure we set focus to "select page dropdown" if user closes dialogue, without
+                     * pressing "OK".
+                     */
+                    send-javascript:@"$('#cms-select-page').focus().select();"
 
 
               /*
