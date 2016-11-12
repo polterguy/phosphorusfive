@@ -8,7 +8,7 @@
  * [_header]         - Header of modal dialogue
  * [_body]           - Explanatory text of dialogue
  * [_class]          - Override the default CSS class
- * [_parent]         - Override the default parent widget
+ * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
  * [.onok]           - Code to be evaluated if user clicks OK button
  * [.oncancel]       - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
  * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
@@ -33,6 +33,7 @@ create-event:sys42.windows.confirm
     _header:Please confirm action!
     _body:You should really have supplied something intelligent here in the [_body] argument ...
     _class:modal fade
+    _inner-class:modal-dialog
     _parent:cnt
     _buttons
       literal
@@ -82,7 +83,7 @@ create-event:sys42.windows.confirm
   /*
    * Creating actual modal Widget, making sure we forward evaluate the [_header] and [_body]
    */
-  eval-x:x:/+/*|/+/**(/=modal-window-body|/=modal-window-header)/*/innerValue
+  eval-x:x:/../*/create-widget/*|/../*/create-widget/**(/=modal-window-body|/=modal-window-header)/*/innerValue|/../*/create-widget/*/widgets/*/container/*/class
   create-widget:modal-window
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
@@ -177,7 +178,7 @@ create-event:sys42.windows.confirm
 
     widgets
       container
-        class:modal-dialog
+        class:x:/../*/_options/*/_inner-class?value
         role:document
         widgets
           container

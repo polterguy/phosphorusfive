@@ -88,3 +88,24 @@ Notice also that you can put any type of widget into the *[_buttons]* argument, 
 it will probably look pretty unintuitive if you add something else besides buttons into it. If you wish to create more complex modal windows,
 with support for your own widgets, you should probably rather use the *[sys42.windows.modal]* or the *[sys42.windows.wizard]* Active Events.
 
+You can also override the default CSS class for your modal window, by explicitly changing it through *[class]*. The default value for this
+is "modal fade", which creates a default bootstrap modal window, which fades into view on the client side of things. If you wish, you can 
+also create a widget modal window, by changing your *[_inner-class]* to "modal-dialog modal-lg".
+
+Below is a list of all arguments the modal window accepts, together with a short explanation.
+
+* [_header] - Header of modal window.
+* [_body] - Content of modal window. Feel free to pass in HTML here, though realize it's rendered as a "div" HTML element.
+* [_class] - Main CSS class for your modal window.
+* [_inner-class] - Secondary, or "inner" CSS class for your modal window.
+* [_buttons] - Override the default buttons, or widgets in fact, that are rendered in its footer.
+* [.onok] - Lambda callback evaluated when *[sys42.windows.confirm.ok]* is invoked.
+* [.oncancel] - Lambda callback evaluated when *[sys42.windows.confirm.cancel]* is invoked.
+
+In addition, the modal window creates these Active Events which you can consume.
+
+* [sys42.windows.confirm.ok] - Closes the window, and evaluates the *[.onok]* lambda callback.
+* [sys42.windows.confirm.cancel] - Closes the window, and evaluates the *[.oncancel]* lambda callback.
+* [sys42.windows.confirm.destroy] - Destroys (hides) the window on the client side, without invoking the *[.oncancel]* callback.
+* [sys42.windows.confirm.initial-focus] - If invoked during e.g. *[oninit]* of some widget, it will set the initial focus to some widget of your desire.
+
