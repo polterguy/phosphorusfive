@@ -124,18 +124,25 @@ create-event:sys42.windows.modal
       sys42.windows.modal.ok
 
         /*
-         * Making sure we close window without evaluating [.oncancel].
-         *
-         * Notice, the rest of this Active Event may seem empty, but actually contains the specified
-         * [.onok] lambda callback, which will be evaluated when event is invoked.
-         */
-        sys42.windows.modal.destroy
-
-        /*
          * Contains the [.onok] lambda callback passed into when instantiated.
          */
         .lambda
         eval:x:/-
+        if:x:/-?value
+          =:bool:false
+          or:x:/./-?value
+            and:x:/././-?value.bool
+              =:bool:false
+
+          /*
+           * Returning early before we destroy the window on the client side.
+           */
+          return
+
+        /*
+         * Making sure we close window without evaluating [.oncancel].
+         */
+        sys42.windows.modal.destroy
 
 
       /*
@@ -222,7 +229,7 @@ create-event:sys42.windows.modal
               /*
                * Body of modal window.
                */
-              container
+              container:modal-window-body-wrapper
                 class:modal-body
                 widgets
                   literal:modal-window-body

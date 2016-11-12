@@ -1,12 +1,12 @@
-Common Bootstrap Modal Windows
+Bootstrap Modal Ajax Windows
 ===============
 
 This folder contains the most commonly used Bootstrap modal windows, allowing for most common scenarios when you need to
-display modal windows to your users. There are three basic windows, which are kind of incrementally built on top of each other.
+display modal windows to your users. There are three basic windows, which are incrementally built on top of each other.
 
-* [sys42.windows.confirm] - The most basic window, allowing for letting user to confirm some action.
-* [sys42.windows.modal] - Slightly more advanced version, allowing for you to inject custom widgets into its modal body.
+* [sys42.windows.confirm] - The most basic window, allowing for user to confirm some action.
 * [sys42.windows.wizard] - Automatically creates widgets from its [_data] segment for you.
+* [sys42.windows.modal] - Advanced version, allows you to inject custom widgets into its modal body.
 
 
 ## [sys42.windows.confirm] - A modal confirmation window
@@ -30,8 +30,8 @@ Your *[.onok]* lambda callback, will only be evaluated if the user clicks the "O
 clicking the "X" or clicking outside of the modal window's main surface, then the window will simply close, without evaluating
 the associated lambda callback.
 
-In addition to an *[.onok]* lambda callback, you can also supply an *[.oncancel]* lambda, which will evaluate only if the window
-is closed _without_ user clicking the "OK" button. Below is en example showing this. Try to close the window, both by clicking
+In addition to an *[.onok]* lambda callback, you can also supply an *[.oncancel]* lambda callback, which will evaluate only if the window
+is closed _without_ the user clicking the "OK" button. Below is en example showing this. Try to close the window, both by clicking
 the "OK" button, and by clicking the "X" in the top right corner, and watch the difference.
 
 ```
@@ -92,10 +92,10 @@ has been shown.
 
 Notice also that you can put any type of widget into the *[_buttons]* argument, but since they will be appended into the footer of your modal,
 it will probably look stupid if you add something else besides buttons into it. If you wish to create more complex modal windows,
-with support for your own widgets, you should probably rather use the *[sys42.windows.modal]* or the *[sys42.windows.wizard]* Active Events.
+with support for your own widgets, you should probably rather use the *[sys42.windows.modal]* or the *[sys42.windows.wizard]* modal windows.
 
 You can also override the default CSS class for your modal window, by explicitly changing it through *[_class]*. The default value for this
-is "modal fade", which creates a default bootstrap modal window, which fades into view on the client side of things. If you wish, you can 
+is "modal fade", which creates a default bootstrap modal window, which fades into view on the client when shown. If you wish, you can 
 also create a wider modal window, by changing your *[_inner-class]* to "modal-dialog modal-lg".
 
 Below is a list of all arguments the modal window accepts, together with a short explanation.
@@ -171,6 +171,45 @@ sys42.windows.modal
 
 You can however add up any widgets you wish into your modal window. Besides from the above points, the modal window is more or less 
 identical to the *[sys42.windows.confirm]* window.
+
+If you return the boolean value "false" from your *[.onok]* lambda callback, then the modal window will not close. This is true also for
+the *[sys42.windows.wizard]* window, and in fact also the *[sys42.windows.confirm]* windom. Although, for a simple confirm window, this
+feature probably makes no sense. In both the wizard window, and the modal window, this might be useful to validate the user's input, 
+and refuse closing of the window, if the input is not according to your app's expectations. Consider the following code.
+
+```
+sys42.windows.modal
+  _header:Please supply a valid email address!
+  _widgets
+    literal:my-email
+      element:input
+      type:text
+      placeholder:Please supply an email address here ...
+      class:form-control
+      oninit
+        sys42.windows.modal.initial-focus:x:/../*/_event?value
+  .onok
+    get-widget-property:my-email
+      value
+    match:x:/-/*/*?value
+      src:regex:@"/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i"
+    if:x:/-/*/result/*?name
+      not
+
+      // Not a valid email address!
+      get-parent-widget:my-email
+      sys42.add-css-classes:x:/-/*/*?value
+        _class:has-error
+      sys42.windows.info-tip:Not a valid email address!
+        _parent:modal-window-body-wrapper
+        _class:info-window info-window-error
+      send-javascript:@"$('#my-email').focus().select();"
+      return:bool:false
+
+    // Address was valid.
+    sys42.windows.info-tip:Thanx for the email address; '{0}'
+      :x:/@get-widget-property/*/*?value
+```
 
 ## [sys42.windows.wizard] - Easily collect and update data
 
