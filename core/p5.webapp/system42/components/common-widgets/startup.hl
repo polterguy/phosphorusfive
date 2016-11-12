@@ -25,6 +25,6 @@ for-each:x:/-/*?name
 /*
  * Evaluating all files in [_startup] node.
  */
-sys42.execute-lambda-file:x:/../*/_startup/*?name
+sys42.utilities.execute-lambda-file:x:/../*/_startup/*?name
 
 

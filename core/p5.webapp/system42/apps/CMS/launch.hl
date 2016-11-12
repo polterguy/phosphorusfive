@@ -301,12 +301,12 @@ create-widget:cms-page-editor
             sys42.cms.create-new-page
 
               /*
-               * Forward evaluating arguments, before invoking [sys42.execute-lambda-file] to 
+               * Forward evaluating arguments, before invoking [sys42.utilities.execute-lambda-file] to 
                * evaluate "@CMS/page-editor/create-new-page.hl", passing in which type of page,
                * and which template to use
                */
               eval-x:x:/+/*
-              sys42.execute-lambda-file:@CMS/page-editor/create-new-page.hl
+              sys42.utilities.execute-lambda-file:@CMS/page-editor/create-new-page.hl
                 _type:x:/../*/_arg?value
                 _template:x:/../*/_arg?value
 
@@ -360,7 +360,7 @@ create-widget:cms-page-editor
              * letting it load up the "specialized editor".
              */
             eval-x:x:/+/*
-            sys42.execute-lambda-file:@CMS/page-editor/editor.hl
+            sys42.utilities.execute-lambda-file:@CMS/page-editor/editor.hl
               _editor:x:/@select-data/*?value
               _id:x:/@sys42.cms.get-currently-edited-page?value
 

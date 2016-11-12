@@ -559,8 +559,8 @@ create-widget
 /*
  * Loading "specialized editor", depending upon which page type we're editing.
  */
-add:x:/../*/sys42.execute-lambda-file
+add:x:/../*/sys42.utilities.execute-lambda-file
   src:"_id:{0}"
     :x:/../*/_id?value
-sys42.execute-lambda-file:@CMS/page-editor/specialized-editors/{0}.hl
+sys42.utilities.execute-lambda-file:@CMS/page-editor/specialized-editors/{0}.hl
   :x:/../*/_editor?value

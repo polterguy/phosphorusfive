@@ -44,7 +44,7 @@ TODO before release
 
 * Make sure [vocabulary] yields also widget lambda events.
 
-* Fix [sys42.get-widget]
+* Fix [sys42.utilities.get-widget]
 
 * Create [delete-from-row-id] for Datagrid widget.
 

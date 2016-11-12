@@ -4,7 +4,7 @@ Dynamically creating Active Events in p5.lambda
 In Phosphorus Five, you can either create static Active Events in C#, by adding the *ActiveEvent* attribute to your C# methods. As
 you can see an example of [here](/samples/p5.active-event-sample-plugin/). You can also use any p5.lambda object as an "anonymous function". 
 In addition, you can also easily execute Hyperlambda files, the same way you'd invoke a function or method, passing in arguments, 
-and returning values, just like you would with a normal function. The latter could be accomplished using e.g. *[sys42.execute-lambda-file]*.
+and returning values, just like you would with a normal function. The latter could be accomplished using e.g. *[sys42.utilities.execute-lambda-file]*.
 
 However, there is also the possibility of dynamically creating globally accessible Active Events, through the *[create-event]*
 Active Event. This Active Event, allows you to modify the underlaying Active Event dictionary directly, by either modifying existing, 
@@ -168,7 +168,7 @@ End result being that you get the entire lambda object for the original Active E
 This is true, regardless of how complex an Active Event is. It only works for dynamically created Active Events though, and not C# declared 
 events (for obvious reasons).
 
-Notice, System42 implements an Active Event helper, that does exactly the above, called *[sys42.get-event]*.
+Notice, System42 implements an Active Event helper, that does exactly the above, called *[sys42.utilities.get-event]*.
 
 Other things you can do with this, is "monitor the complexity" of your Active Events. For instance, it could very well be argued, that the 
 more lambda nodes an event has, the more complex it is. By counting the nodes within an Active Event, we can at least to some extent, evaluate

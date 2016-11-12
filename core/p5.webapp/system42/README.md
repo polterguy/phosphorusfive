@@ -60,11 +60,11 @@ some helper Active Events you should consider keeping.
 
 Some of them are mentioned below.
 
-* [sys42.execute-lambda-file] - Executes one or more Hyperlambda files
-* [sys42.execute-lambda-folder] - Executes all Hyperlambda files in a folder, recursively
-* [sys42.get-event] - Returns the p5.lambda code for one or more dynamically created Active Events
-* [sys42.get-widget] - Returns all p5.lambda associated with a widget, including events
-* [sys42.empty-user-tmp-folder] - Which empties a user's "temp" folder
+* [sys42.utilities.execute-lambda-file] - Executes one or more Hyperlambda files
+* [sys42.utilities.execute-lambda-folder] - Executes all Hyperlambda files in a folder, recursively
+* [sys42.utilities.get-event] - Returns the p5.lambda code for one or more dynamically created Active Events
+* [sys42.utilities.get-widget] - Returns all p5.lambda associated with a widget, including events
+* [sys42.utilities.empty-user-temp-folder] - Which empties a user's "temp" folder
 
 In addition, System42 contains a web based Hyperlambda editor, built on top of CodeMirror, an HTML editor,
 built on top of CKEditor, and other things, that might help you out, when creating your own apps.

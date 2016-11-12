@@ -50,4 +50,4 @@ create-widget:template-root
 /*
  * Creating our menu
  */
-sys42.execute-lambda-file:@CMS/page-templates/common/create-menu.hl
+sys42.utilities.execute-lambda-file:@CMS/page-templates/common/create-menu.hl

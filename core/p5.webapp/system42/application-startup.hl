@@ -3,20 +3,25 @@
  * File responsible for initializing System42.
  * Invoked by the P5 core, due to setting in web.config.
  *
- * Creates two helper Active Events, before evaluating all startup scripts.
+ * Creates two helper Active Events, before evaluating all startup Hyperlambda files inside of "startup" folder.
+ *
+ * Active events this file creates are as follows;
+ *
+ * [sys42.utilities.execute-lambda-file] - Evaluates one or more Hyperlambda files.
+ * [sys42.utilities.execute-lambda-folder] - Evaluates all Hyperlambda files inside all specified folders.
  */
 
 
 /*
  * Creates the Active Event that allows you to execute Hyperlambda p5 lambda files. 
  *
- * The Hyperlambda file(s) you wish to execute is given as value of [sys42.execute-lambda-file], and all nodes benath
- * [sys42.execute-lambda-file] when invoked, will be passed into your p5 lambda file execution.
+ * The Hyperlambda file(s) you wish to execute is given as value of [sys42.utilities.execute-lambda-file], and all nodes benath
+ * [sys42.utilities.execute-lambda-file] when invoked, will be passed into your p5 lambda file execution.
  *
  * File to exeute can be given either as an expression, or a constant. Multiple files can be executed at the same time, 
  * by providing an expression that leads to multiple results.
  */
-create-event:sys42.execute-lambda-file
+create-event:sys42.utilities.execute-lambda-file
 
   /*
    * Loading up all files given as [_arg] arguments.
@@ -46,11 +51,11 @@ create-event:sys42.execute-lambda-file
 /*
  * Evaluates all Hyperlambda files within the specified directory(ies) recursively.
  *
- * The directory you wish to evaluate, is given as the value of the [sys42.execute-lambda-folder] node, 
+ * The directory you wish to evaluate, is given as the value of the [sys42.utilities.execute-lambda-folder] node, 
  * which might be either an expression, or a constant. You can pass in multiple folders in one go, 
  * by using an expression leading to multiple folders as your argument.
  */
-create-event:sys42.execute-lambda-folder
+create-event:sys42.utilities.execute-lambda-folder
 
   /*
    * Listing all Hyperlambda files in directories we're given.
@@ -61,7 +66,7 @@ create-event:sys42.execute-lambda-folder
   /*
    * Evaluating all Hyperlambda files from that folder.
    */
-  sys42.execute-lambda-file:x:/-/*?name
+  sys42.utilities.execute-lambda-file:x:/-/*?name
 
   /*
    * Listing all folders recursively, within the folder(s) we've just evaluated.
@@ -72,14 +77,14 @@ create-event:sys42.execute-lambda-folder
    * If the above [list-folder] gave us any result(s), we recursively invoke self.
    */
   if:x:/-/*
-    sys42.execute-lambda-folder:x:/./-/*?name
+    sys42.utilities.execute-lambda-folder:x:/./-/*?name
 
 
 /*
  * After creating the above Active Events, this file will execute all files in the "/system42/startup/" 
  * folder recursively, by using the Active Events above.
  */
-sys42.execute-lambda-folder:/system42/startup/
+sys42.utilities.execute-lambda-folder:/system42/startup/
 
 
 /*
@@ -108,6 +113,6 @@ for-each:x:/-/*?name
 /*
  * Evaluating all files in [_startup] node.
  */
-sys42.execute-lambda-file:x:/../*/_startup/*?name
+sys42.utilities.execute-lambda-file:x:/../*/_startup/*?name
 
 

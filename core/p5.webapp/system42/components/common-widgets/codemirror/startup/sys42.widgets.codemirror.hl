@@ -16,7 +16,7 @@ create-event:sys42.widgets.codemirror
   /*
    * Check if default Code-Mirror theme setting exists, and if not, create it.
    */
-  sys42.get-app-setting:sys42.code-mirror-default-theme
+  sys42.utilities.get-app-setting:sys42.code-mirror-default-theme
     _app:sys42
   if:x:/-/*?value
     not
@@ -24,10 +24,10 @@ create-event:sys42.widgets.codemirror
     /*
      * Making sure default "paraiso" Code-Mirror theme is used by default.
      */
-    sys42.set-app-setting:sys42.code-mirror-default-theme
+    sys42.utilities.set-app-setting:sys42.code-mirror-default-theme
       _app:sys42
       _src:paraiso
-    add:x:/@sys42.get-app-setting
+    add:x:/@sys42.utilities.get-app-setting
       src:"sys42.code-mirror-default-theme:paraiso"
 
   /*
@@ -48,7 +48,7 @@ create-event:sys42.widgets.codemirror
    * Applying default theme from settings, for then to finally apply arguments.
    */
   set:x:/../*/_defaults/*/_theme?value
-    src:x:/@sys42.get-app-setting/*?value
+    src:x:/@sys42.utilities.get-app-setting/*?value
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
 

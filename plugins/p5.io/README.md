@@ -442,8 +442,8 @@ loaded this way. The end result, is that all files in some specific folder is au
 System42 contains helper Active Events, both for evaluating single Hyperlambda files, in addition to recursively evaluating all Hyperlambda
 files within some specified folder. These are listed below.
 
-* sys42.execute-lambda-file - Evaluates one or more Hyperlambda files. Pass in either a constant, or an expression leading to one or more files.
-* sys42.execute-lambda-folder - Evaluates all Hyperlambda files within one or more specified folders.
+* sys42.utilities.execute-lambda-file - Evaluates one or more Hyperlambda files. Pass in either a constant, or an expression leading to one or more files.
+* sys42.utilities.execute-lambda-folder - Evaluates all Hyperlambda files within one or more specified folders.
 
 #### Additional helper Active Events
 

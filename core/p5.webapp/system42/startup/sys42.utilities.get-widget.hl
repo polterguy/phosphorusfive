@@ -1,38 +1,38 @@
 
 /*
- * Responsible for creating the Active Event that returns the code necessary to create
+ * Responsible for creating the Active Event that returns the lambda necessary to create
  * a specific widget existing on page. Basically "reverse engineers" an existing Widget
  * on page, returning the Hyperlambda/lambda necessary to re-create it in its entirety.
  *
- * Pass in ID of widget to recursively iterate as value, expression or [_arg]
+ * Pass in ID of widget(s) to recursively iterate as constant value, or expression in [_arg].
  */
 
-create-event:sys42.get-widget
+create-event:sys42.utilities.get-widget
 
   /*
    * Used as "position node", to make sure all return values are
-   * returned "in order"
+   * returned "in order".
    */
   _return-value
 
   /*
-   * Figuring out type of widget
+   * Figuring out type of widget.
    */
   list-widgets:x:/../*/_arg?value
 
   /*
-   * Looping through all widgets requested by caller
+   * Looping through all widgets requested by caller.
    */
   while:x:/-/0
 
     /*
-     * Adding widget to root active event node as "return value"
+     * Adding widget to root active event node as "return value".
      */
     insert-before:x:/../*/_return-value
       src:x:/../*/list-widgets/0
 
     /*
-     * Fetching properties, and adding to return value
+     * Fetching properties, and adding to return value.
      */
     list-widget-properties:x:/../*/list-widgets/0?value
     add:x:/../*/_return-value/-
@@ -40,7 +40,7 @@ create-event:sys42.get-widget
 
     /*
      * Checking if this was an automatically generated ID,
-     * and if it was, we remove the automatically assigned ID
+     * and if it was, we remove the automatically assigned ID.
      */
     match:x:/../*/list-widgets/0?value
       src:regex:/x[abcdef0-9]{7}/c
@@ -51,7 +51,7 @@ create-event:sys42.get-widget
 
     /*
      * Checking if this was an automatically generated name attribute,
-     * and if it was, we remove the "name" attribute entirely
+     * and if it was, we remove the "name" attribute entirely.
      */
     match:x:/../*/_return-value/-/*/name
       src:regex:/x[abcdef0-9]{7}/c
@@ -70,12 +70,12 @@ create-event:sys42.get-widget
         =:
 
       /*
-       * Removing [value] entirely
+       * Removing [value] entirely.
        */
       set:x:/../*/_return-value/-/*/value
 
     /*
-     * Widget ajax events
+     * Widget ajax events.
      */
     list-widget-ajax-events:x:/../*/list-widgets/0?value
     add:x:/+
@@ -86,7 +86,7 @@ create-event:sys42.get-widget
      * Removing all root node children of ajax event nodes who's names are "_event", before 
      * adding ajax events into "return collection", since these are automatically
      * injected into events as the events are created, and are referencing the ID of the widget,
-     * which might change
+     * which might change.
      */
     set:x:/-/*/*/*/_event
     add:x:/../*/_return-value/-
@@ -95,7 +95,7 @@ create-event:sys42.get-widget
     /*
      * Making sure all [container] widgets have the [widgets] child,
      * even if they're not supposed to fetch their children, to create a
-     * more "consistent" return value from invocation
+     * more "consistent" return value from invocation.
      */
     if:x:/../*/list-widgets/0?name
       =:container
@@ -106,7 +106,7 @@ create-event:sys42.get-widget
     /*
      * Looping through all children, recursively invoking self, but only if we should,
      * and this is not a [data-usercontrol] type of widget, and it is not a [_dynamic]
-     * type of control
+     * type of control.
      */
     if:x:/../*/_no-children?value.bool
       !=:bool:true
@@ -118,7 +118,7 @@ create-event:sys42.get-widget
           =:bool:true
 
       /*
-       * Looping through all children widgets recursively
+       * Looping through all children widgets recursively.
        */
       get-children-widgets:x:/../*/list-widgets/0?value
       for-each:x:/-/*/*?value
@@ -127,42 +127,42 @@ create-event:sys42.get-widget
          * Dynamically creating recursive invocation, 
          * passing in id of currently iterated children widget
          */
-        set:x:/..for-each/*/sys42.get-widget?value
+        set:x:/..for-each/*/sys42.utilities.get-widget?value
           src:x:/..for-each/*/_dp?value
 
         /*
-         * Making sure recursive invocation get the arguments [_flatten] and [_keep-empty-ids]
+         * Making sure recursive invocation get the arguments [_flatten] and [_keep-empty-ids].
          */
-        add:x:/..for-each/*/sys42.get-widget
+        add:x:/..for-each/*/sys42.utilities.get-widget
           src:x:/../*(/_flatten|/_keep-empty-ids|/_no-wash-usercontrols)
 
         /*
-         * Recursively invocing "self", now with arguments correctly setup
+         * Recursively invocing "self", now with arguments correctly setup.
          */
-        sys42.get-widget
+        sys42.utilities.get-widget
 
         /*
          * Checking if we're supposed to "flatten" hierarchy, and if wo, add widget which
          * is a result of recursive invocation to "root", instead of as child widget of 
-         * currently iterated widget
+         * currently iterated widget.
          */
         if:x:/../*/_flatten?value.bool
 
           /*
-           * Returning widget as flat hierarchy
+           * Returning widget as flat hierarchy.
            */
           insert-before:x:/../*/_return-value
-            src:x:/..for-each/*/sys42.get-widget/*
+            src:x:/..for-each/*/sys42.utilities.get-widget/*
         else
 
           /*
-           * Returning widget as relational hierarchy
+           * Returning widget as relational hierarchy.
            */
           add:x:/../*/_return-value/-/*/widgets
-            src:x:/..for-each/*/sys42.get-widget/*
+            src:x:/..for-each/*/sys42.utilities.get-widget/*
 
     /*
-     * Widget lambda events, first retrieving list of all events, then retrieving content
+     * Widget lambda events, first retrieving list of all events, then retrieving content.
      */
     list-widget-lambda-events:x:/../*/list-widgets/0?value
     add:x:/+
@@ -171,13 +171,13 @@ create-event:sys42.get-widget
 
     /*
      * Checking if we have any lambda events, and if so, add an [events] node to
-     * currently iterated widget
+     * currently iterated widget.
      */
     if:x:/-3/*/*
 
       /*
        * We have lambda events, adding [events] node, for then to add all events into
-       * this node. But first, we remove all [_event] nodes inside of lambda events
+       * this node. But first, we remove all [_event] nodes inside of lambda events.
        */
       set:x:/./-/*/*/*/_event
       add:x:/../*/_return-value/-
@@ -186,7 +186,7 @@ create-event:sys42.get-widget
         src:x:/././-/*/*
 
     /*
-     * Removing zeroth item of list-widget, to "decrement" while loop condition
+     * Removing zeroth item of list-widget, to "decrement" while loop condition.
      */
     set:x:/../*/list-widgets/0
 

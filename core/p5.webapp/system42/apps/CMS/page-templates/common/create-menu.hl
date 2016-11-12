@@ -55,7 +55,7 @@ if
                     * Creates the menu of our page
                     */
                   sys42.cms.create-navbar-menu
-                    sys42.execute-lambda-file:@CMS/page-templates/common/create-menu.hl
+                    sys42.utilities.execute-lambda-file:@CMS/page-templates/common/create-menu.hl
                       _extra-css-classes:{_extra-css-classes}
 else
 
@@ -363,6 +363,6 @@ else
           sys42.logout
             list-session-keys
             set-session-value:x:/-/*?name
-            sys42.empty-user-tmp-folder
+            sys42.utilities.empty-user-temp-folder
             logout
             reload-location

@@ -1,0 +1,28 @@
+
+/*
+ * Empties the currently logged in user's "temp" folder.
+ *
+ * Invoked when user is logging out of system.
+ */
+create-event:sys42.utilities.empty-user-temp-folder
+
+  /*
+   * Retrieving currently logged in user, and verifying user is not "default user" (has no folder).
+   */
+  whoami
+  if:x:/-/*/default?value
+    not
+
+    /*
+     * User is not default user, hence deleting all files in user's "temp" folder.
+     */
+    list-files:~/temp/
+    set:x:@"/-/*/""~/temp/README.md"""
+    delete-file:x:/-2/*?name
+
+    /*
+     * Then deleting all folders in user's "temp" folder.
+     */
+    list-folders:~/temp/
+    delete-folder:x:/-/*?name
+

@@ -4,4 +4,4 @@
  * Evaluates all Hyperlambda files in the "startup" folder.
  */
 
-sys42.execute-lambda-folder:/system42/components/common-widgets/datagrid/startup/
+sys42.utilities.execute-lambda-folder:/system42/components/common-widgets/datagrid/startup/

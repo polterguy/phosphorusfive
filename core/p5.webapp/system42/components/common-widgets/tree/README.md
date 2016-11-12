@@ -118,7 +118,7 @@ The widget is not dependent upon [Bootstrap CSS](http://getbootstrap.com/compone
 the default classes for icons, unless overridden. This means you'll need to include the Bootstrap component on your page, unless you override
 the [_class-close] and [_class-open] values of each item in your [_items] collection.
 
-To see how to do this, check out the documentation for the [Bootstrap CSS](/core/p5.webapp/system42/components/bootstrap/) module.
+To see how to do this, check out the documentation for the [Bootstrap CSS](/core/p5.webapp@bootstrap/) module.
 
 Notice, all arguments are optional, except the *[_items]* collection, that must have, at the very least, minimum _one_ item. Making the
 smallest possible code to use the Tree view look something like this.
@@ -307,7 +307,7 @@ of available icons at the [Bootstrap CSS website](http://getbootstrap.com/compon
 of the glyphicons from Bootstrap, at which case you no longer need to include Bootstrap.
 
 If you use the glyphicons, you are yourself responsible for making sure you include Bootstrap CSS, which can be done, by reading the 
-documentation for the System42 [Bootstrap CSS module](/core/p5.webapp/system42/components/bootstrap/). You only need to include the CSS file
+documentation for the System42 [Bootstrap CSS module](/core/p5.webapp@bootstrap/). You only need to include the CSS file
 though, and not any of the JavaScript files.
 
 Below is the exact same example we started out with, except with a different skin, which creates a larger TreeView, more suitable for

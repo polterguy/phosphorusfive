@@ -48,5 +48,5 @@ create-widget:set-server-salt
               value
             p5.security.set-server-salt:x:/../*/get-widget-property/*/*?value
             delete-widget:set-server-salt
-            sys42.execute-lambda-file:/system42/apps/CMS/installation/set-root-password.hl
+            sys42.utilities.execute-lambda-file:/system42/apps/CMS/installation/set-root-password.hl
 

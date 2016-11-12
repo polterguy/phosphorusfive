@@ -10,3 +10,10 @@
 create-event:p5.io.unroll-path.@apps
   return:/system42/apps
 
+
+/*
+ * Maps up "@components" to "/system42/components"
+ */
+create-event:p5.io.unroll-path.@components
+  return:/system42/components
+

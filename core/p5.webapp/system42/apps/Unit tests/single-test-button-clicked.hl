@@ -5,7 +5,7 @@
  */
 _html
 eval-x:x:/+/*
-sys42.execute-lambda-file:@tests/evaluate-single-test.hl
+sys42.utilities.execute-lambda-file:@tests/evaluate-single-test.hl
   _file:x:/../*/_file?value
 if:x:/-/*/_error
 
@@ -15,7 +15,7 @@ if:x:/-/*/_error
    * and making sure we signal in context value that error 
    * occurred
    */
-  for-each:x:/../*/sys42.execute-lambda-file/*/_error?value
+  for-each:x:/../*/sys42.utilities.execute-lambda-file/*/_error?value
     html-encode:x:/./*/_dp?value
     set:x:/../*/_html?value
       src:@"{0}<pre class=""error"">{1}</pre>"
@@ -57,7 +57,7 @@ else
 get-session-value:sys42.unit-test-count
 if:x:/-/*?value
   +:x:/./-/*?value
-    _:x:/../*/sys42.execute-lambda-file/*(/_success|/_error)?count
+    _:x:/../*/sys42.utilities.execute-lambda-file/*(/_success|/_error)?count
   set-session-value:sys42.unit-test-count
     src:x:/./-?value
 
@@ -69,7 +69,7 @@ if:x:/-/*?value
  */
 find-widget
   _file-result:x:/../*/_file?value
-join:x:/../*/sys42.execute-lambda-file/*/_success?value
+join:x:/../*/sys42.utilities.execute-lambda-file/*/_success?value
   sep:"]\r\n</li><li>["
 set-widget-property:x:/-2/*/*?value
   innerValue:@"{0}<pre><ol><li>[{1}]</li></ol></pre>"

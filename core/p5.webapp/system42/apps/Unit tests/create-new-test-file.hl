@@ -87,7 +87,7 @@ foo
            */
           delete-widget:unit-test-bottom-toolbar
           delete-widget:unit-test-datagrid
-          sys42.execute-lambda-file:@tests/launch.hl
+          sys42.utilities.execute-lambda-file:@tests/launch.hl
 
           /*
            * Making sure our newly created test is edited

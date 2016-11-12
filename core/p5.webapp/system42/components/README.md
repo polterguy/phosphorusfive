@@ -11,3 +11,8 @@ This allows you to distribute your System42 using x-copy deployment. By default,
 components. If you wish to remove these, simply delete the folder containing your component. Preferably _before_ you 
 start your server the first time, such that the component's initialization logic does not run.
 
+To see the documentation for your specific components, please refer to the folders inside of this project.
+
+A component can either be a piece of "logic", or a reusable widget of some sort, or some other piece of reusable block that
+you can utilize in your own projects.
+

@@ -2,14 +2,15 @@
 /*
  * Sets application specific setting(s).
  *
- * Pass in name of app to set setting for as [_app], setting to set as [_arg], and new value of setting as [_src].
+ * Pass in the name of your app to set setting for as [_app], setting to set as [_arg], and new value of setting as [_src].
  * Will update app setting according to which user is currently logged in. If currently logged in user is
  * a "root account", optionally you can update (or set) settings for a specific user, by supplying user to set setting
  * for as [_username].
  *
- * [_src] can either contain a single value, be a node hierarchy, or both.
+ * [_src] can either contain a single value, be a node hierarchy, or both. Regardless, everything in [_src] will be stored as
+ * your setting(s) values/nodes.
  */
-create-event:sys42.set-app-setting
+create-event:sys42.utilities.set-app-setting
 
   /*
    * Sanity check

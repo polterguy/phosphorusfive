@@ -17,7 +17,7 @@ create-event:p5.web.load-ui
     /*
      * There are no users in system, making sure we run through the installation process.
      */
-    sys42.execute-lambda-file:@CMS/installation/install-server.hl
+    sys42.utilities.execute-lambda-file:@CMS/installation/install-server.hl
   else
 
     /*
@@ -56,7 +56,7 @@ create-event:p5.web.load-ui
     if:x:/-/*?count
       =:int:0
 
-      sys42.execute-lambda-file:@CMS/page-loader/special-page/not-found.hl
+      sys42.utilities.execute-lambda-file:@CMS/page-loader/special-page/not-found.hl
         _template:@CMS/page-templates/default.hl
     else
 
@@ -76,6 +76,6 @@ create-event:p5.web.load-ui
         src:@CMS/page-loader/{0}.hl
           :x:/..else/..else/*/select-data/*/*/type?value
       eval-x:x:/+/*/_url
-      sys42.execute-lambda-file
+      sys42.utilities.execute-lambda-file
         _args
         _url:x:/../*/_url?value

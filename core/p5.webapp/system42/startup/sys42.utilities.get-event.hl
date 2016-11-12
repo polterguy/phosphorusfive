@@ -1,12 +1,10 @@
 
 /*
- * Responsible for creating the Active Event that returns the p5.lambda object
- * belonging to a dynamically created Active Event.
+ * Responsible for creating the Active Event that returns the p5.lambda object belonging to a dynamically created Active Event.
  *
- * Pass in ID of widget to recursively iterate as a constant value or expression in [_arg]
+ * Pass in name of Active Event as a constant value, or expression in [_arg].
  */
-
-create-event:sys42.get-event
+create-event:sys42.utilities.get-event
   _invocations
   add:x:/-
     src:x:/../*/_arg?value

@@ -6,27 +6,41 @@
 
 
 /*
+ * Maps up "@bootstrap" to "/system42/components/bootstrap"
+ */
+create-event:p5.io.unroll-path.@bootstrap
+  return:/system42/components/bootstrap
+
+
+/*
  * Creates the Active Event that includes Bootstrap's JavaScript files on your page.
+ *
+ * Notice, Bootstrap's JavaScript is dependent upon jQuery, hence we make sure jQuery is also included here.
  */
 create-event:sys42.bootstrap.include-javascript
 
   // Bootstrap's CSS requires jQuery
   sys42.jquery.include
-  include-javascript-file:/system42/components/bootstrap/js/bootstrap.min.js
+  include-javascript-file:@bootstrap/js/bootstrap.min.js
 
 
 /*
  * Creates the Active Event that includes Bootstrap's CSS files on your page.
+ *
+ * Notice, by default, we also include the "bootstrap-theme" CSS file, unless [_no-theme] is set to true.
  */
 create-event:sys42.bootstrap.include-css
-  include-stylesheet-file:/system42/components/bootstrap/css/bootstrap.min.css
+  include-stylesheet-file:@bootstrap/css/bootstrap.min.css
+  if:x:/../*/_no-theme?value
+    not
+    include-stylesheet-file:@bootstrap/css/bootstrap-theme.min.css
 
 
 /*
  * Recursively creates all Bootstrap related extension widgets.
  */
 _startup
-list-folders:/system42/components/bootstrap/widgets/
+list-folders:@bootstrap/widgets/
 for-each:x:/-/*?name
 
   /*
@@ -44,10 +58,10 @@ for-each:x:/-/*?name
 /*
  * Evaluating all files in [_startup] node.
  */
-sys42.execute-lambda-file:x:/../*/_startup/*?name
+sys42.utilities.execute-lambda-file:x:/../*/_startup/*?name
 
 
 /*
- * Invoking startup.hl file inside of "common-windows" folder.
+ * Invoking startup.hl file inside of "windows" folder.
  */
-sys42.execute-lambda-file:/system42/components/bootstrap/windows/startup.hl
+sys42.utilities.execute-lambda-file:@bootstrap/windows/startup.hl
