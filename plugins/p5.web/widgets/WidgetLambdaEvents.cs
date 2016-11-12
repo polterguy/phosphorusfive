@@ -213,7 +213,7 @@ namespace p5.web.widgets
             // Looping through each Active Event from IEnumerable
             foreach (var idx in source) {
 
-                if (!isNative && (idx.StartsWith (".") || idx.StartsWith ("_") || idx.Contains ("._")))
+                if (!isNative && (idx.StartsWith (".") || idx.StartsWith ("_") || idx.Contains (".")))
                     continue;
 
                 // Checking to see if we have any filter

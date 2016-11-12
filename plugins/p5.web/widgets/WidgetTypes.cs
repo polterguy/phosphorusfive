@@ -308,7 +308,7 @@ namespace p5.web.widgets
         private void HandleDefaultProperty (ApplicationContext context, Widget widget, Node node)
         {
             // Checking if this is a declaration of an event handler, either "visible" or "invisible server-side"
-            if (node.Name.StartsWith ("on") || node.Name.StartsWith ("_on")) {
+            if (node.Name.StartsWith ("on") || node.Name.StartsWith ("_on") || node.Name.StartsWith(".on")) {
 
                 // This is an event, creating it
                 CreateEventHandler (context, widget, node);

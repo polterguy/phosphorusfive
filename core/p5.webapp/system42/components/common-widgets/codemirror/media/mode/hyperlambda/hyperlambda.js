@@ -783,7 +783,7 @@ CodeMirror.defineMode("hyperlambda", function() {
              * The name of the node starts with an underscore "_", and hence is a "variable" (data segment)
              */
             return this.styles.variable;
-        } else if (word[0] == '.' || word.indexOf('on') == 0) {
+        } else if (word[0] == '.' || word.indexOf('on') == 0 || word.indexOf('_on') == 0) {
 
             /*
              * The name of the node starts with an underscore "_", and hence is a "variable" (data segment)

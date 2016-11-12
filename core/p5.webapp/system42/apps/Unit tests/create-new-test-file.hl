@@ -80,7 +80,7 @@ foo
           /*
            * Making sure we close our modal window
            */
-          sys42.windows.modal.close
+          sys42.windows.confirm.cancel
 
           /*
            * Deleting widgets and re-creating datagrid (and other widgets) by invoking "self"

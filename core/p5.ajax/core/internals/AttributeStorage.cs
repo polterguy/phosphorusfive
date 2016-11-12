@@ -299,7 +299,7 @@ namespace p5.ajax.core.internals
 
             // Removing stuff that's not actually attributes, but still persisted here for convenience,
             // in addition to all "private attributes", meaning server-side only attributes
-            lst.RemoveAll (ix => ix.Name == "outerHTML" || ix.Name == "innerValue" || ix.Name == "Element" || ix.Name.StartsWith ("_"));
+            lst.RemoveAll (ix => ix.Name == "outerHTML" || ix.Name == "innerValue" || ix.Name == "Element" || ix.Name.StartsWith ("_") || ix.Name.StartsWith ("."));
 
             // Rendering to html writer
             foreach (var idx in lst) {
@@ -339,7 +339,7 @@ namespace p5.ajax.core.internals
 
                 // Checking if this is an invisible attribute, at which case it 
                 // is never rendered to client
-                if (idx.Name.IndexOf ("_") == 0)
+                if (idx.Name.IndexOf ("_") == 0 || idx.Name.IndexOf(".") == 0)
                     continue;
 
                 var value = idx.Value;

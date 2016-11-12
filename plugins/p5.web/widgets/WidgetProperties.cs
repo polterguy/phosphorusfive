@@ -192,7 +192,7 @@ namespace p5.web.widgets
                         // Dropping the Tag property and all events, except events that are "JavaScript declarations"
                         if (idxAtr == "Element" || 
                             idxAtr == "id" ||
-                            ((idxAtr.StartsWith ("on") || idxAtr.StartsWith ("_on")) && widget [idxAtr] == "common_event_handler"))
+                            ((idxAtr.StartsWith ("on") || idxAtr.StartsWith ("_on") || idxAtr.StartsWith(".on")) && widget [idxAtr] == "common_event_handler"))
                             continue;
                         curNode.Add (idxAtr, widget [idxAtr]);
                     }
@@ -256,7 +256,7 @@ namespace p5.web.widgets
             if (value == null && !widget.HasAttribute (propertyName))
                 return;
 
-            if ((propertyName.StartsWith ("on") || propertyName.StartsWith ("_on")) && widget [propertyName] == "common_event_handler")
+            if ((propertyName.StartsWith ("on") || propertyName.StartsWith ("_on") || propertyName.StartsWith(".on")) && widget [propertyName] == "common_event_handler")
                 return; // Skipping these guys
 
             node.FindOrCreate (widget.ID).Add (name).LastChild.Value = value == null ? 
