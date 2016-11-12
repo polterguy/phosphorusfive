@@ -218,6 +218,8 @@ hence it won't close.
 
 ![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-modal-validation-error-screenshot.png)
 
+You can of course still close the window by clicking the "X", or outside of the modal window, to evaluate its *[sys42.windows.modal.cancel]*.
+
 ## [sys42.windows.wizard] - Easily collect and update data
 
 This Active Event allows you to even more easily than by using the *[sys42.windows.modal]* Active Event collect data from the user.
@@ -254,4 +256,31 @@ sys42.windows.wizard
       :x:/@sys42.windows.wizard.get-values/*/name?value
       :x:/@sys42.windows.wizard.get-values/*/email?value
 ```
+
+This version of our modal window, also accepts "select option" type of data, which allows the user to select a single item from a list
+of options. Imagine the following code.
+
+```
+sys42.windows.wizard
+  _header:Please supply input!
+  _data
+    name:Your name goes here
+    gender:trans
+      _options
+        Man:male
+        Woman:female
+        Transgender:trans
+        Foo bar:foo-bar
+  .onok
+    sys42.windows.wizard.get-values
+    sys42.windows.info-tip:Thanx for the data. Name was '{0}' and gender was '{1}'
+      :x:/@sys42.windows.wizard.get-values/*/name?value
+      :x:/@sys42.windows.wizard.get-values/*/gender?value
+```
+
+The above will result in something like the following.
+
+![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-wizard-select-option.png)
+
+
 

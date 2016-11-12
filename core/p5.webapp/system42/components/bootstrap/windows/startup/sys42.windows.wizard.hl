@@ -20,7 +20,7 @@
  *                     instead. [sys42.windows.modal.destroy] will not evaluate your [.oncancel] lambda callback.
  * [_data]           - Will automatically create a widget collection, according to the type of data supplied.
  *                     The default widget type to use, is a normal textbox. However, if you supply a child node with the name of
- *                     [_choices], it will create a select HTML element instead, with the option elements supplied as children of [_choices].
+ *                     [_options], it will create a select HTML element instead, with the option elements supplied as children of [_options].
  *
  * If user closes modal dialogue, without clicking OK, then the given [.onok] is not evaluated.
  * There can be only one instance of this dialogue at the same time in your page.
@@ -52,7 +52,7 @@ create-event:sys42.windows.wizard
     /*
      * Checking what type of edit field this is.
      */
-    if:x:/..for-each/*/_dp/#/*/_choices
+    if:x:/..for-each/*/_dp/#/*/_options
 
       /*
        * Select dropdown choices.
@@ -72,7 +72,7 @@ create-event:sys42.windows.wizard
             src:selected
         return
       apply:x:/+2/*/*/*/*/*/*/*/widgets
-        src:x:/..for-each/*/_dp/#/*/_choices/*
+        src:x:/..for-each/*/_dp/#/*/_options/*
         template
           option
             {@eval}:x:/..if/*/_eval-option
