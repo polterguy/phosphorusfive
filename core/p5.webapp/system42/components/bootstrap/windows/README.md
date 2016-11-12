@@ -144,6 +144,10 @@ sys42.windows.modal
       :x:/@get-widget-property/*/*?value
 ```
 
+The above code will produce something like the following.
+
+![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-wizard-screenshot.png)
+
 If you add "input" HTML elements inside of your modal window, then they will automatically trap carriage return, and raise the *[onclick]*
 Ajax event, of the first button inside of your footer. Run this code, and try to click carriage return, as the textbox has focus.
 
