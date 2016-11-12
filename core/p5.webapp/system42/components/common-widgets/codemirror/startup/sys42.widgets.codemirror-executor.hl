@@ -46,7 +46,7 @@ create-event:sys42.widgets.codemirror-executor
    */
   get-session-value:sys42.widgets.codemirror-executor.current-code
   if:x:/-/0?value
-    set:x:/../**/=execute_input/*/innerValue?value
+    set:x:/../**/=execute_input/*/_innerValue?value
       src:x:/../*/get-session-value/0?value
 
 
