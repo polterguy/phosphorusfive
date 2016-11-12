@@ -280,7 +280,7 @@ sys42.windows.wizard
 
 The above will result in something like the following.
 
-![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-wizard-select-option.png)
+![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-wizard-select-option-screenshot.png)
 
 
 
