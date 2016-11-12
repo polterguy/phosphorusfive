@@ -282,5 +282,62 @@ The above will result in something like the following.
 
 ![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-wizard-select-option-screenshot.png)
 
+Notice in the above, that the *[_options]* collection above, is a name/value collection, where the name becomes the friendly displayed
+name, and the value becomes the value for that option element. Also notice that the value of the _"gender"_ above, which is _"trans"_,
+becomes the initially selected options element.
 
+If you need more control than what the above can give you, feel free to resort to the *[sys42.windows.modal]* modal Ajax window, which
+allows you to entirely take control over its *[_widgets]* collection. This modal window is documented further up on this page.
 
+### Ninja tricks
+
+Hint, you can use *[get-widget-properties]* to serialize all values from your *[_widgets]* collection, inside of your modal Ajax window,
+if you use the *[sys42.windows.modal]* modal Ajax window.
+
+Below is an eample of how to dynamically inject an Ajax TreeView widget, into a modal Ajax window, just to demonstrate some of the powers
+this widget actually gives you.
+
+```
+sys42.windows.modal
+  _header:Please supply input!
+  _widgets
+    literal:my-text
+      element:textarea
+      placeholder:Please supply some text here ...
+      class:form-control
+      rows:3
+      oninit
+        sys42.windows.modal.initial-focus:x:/../*/_event?value
+    create-container-widget
+      parent:content
+      widgets
+        sys42.widgets.tree
+          _items
+            root:/
+          _on-get-items
+            list-folders:x:/../*/_item-id?value
+            for-each:x:/-/*?name
+              list-folders:x:/./*/_dp?value
+              split:x:/./*/_dp?value
+                =:/
+              add:x:/../*/return/*
+                src:@"{0}:{1}"
+                  :x:/..for-each/*/split/0/-?name
+                  :x:/..for-each/*/_dp?value
+              if:x:/./*/list-folders/*
+                not
+                add:x:/../*/return/*/_items/0/-
+                  src
+                    _class:tree-leaf
+            return
+              _items
+  .onok
+    get-widget-property:my-text
+      value
+    sys42.windows.info-tip:Thanx for the data, which was '{0}'!
+      :x:/@get-widget-property/*/*?value
+```
+
+The above would create something like this for you.
+
+![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/sys42-windows-modal-tree-view-screenshot.png)
