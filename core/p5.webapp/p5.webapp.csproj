@@ -438,6 +438,7 @@
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\media\js\moment.min.js">
       <DependentUpon>moment.js</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\datagrid\screenshots\ajax-datagrid-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.css" />
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
@@ -810,7 +811,6 @@
     <Content Include="system42\components\app-settings\startup\sys42.utilities.list-app-settings.hl" />
     <Content Include="system42\components\app-settings\startup\sys42.utilities.set-app-setting.hl" />
     <Content Include="system42\components\common-widgets\codemirror\startup\sys42.widgets.codemirror-executor.hl" />
-    <Content Include="system42\components\common-widgets\ckeditor\startup\sys42.widgets.ck-editor.hl" />
     <None Include="system42\apps\CMS\startup\p5.web.load-ui.hl" />
     <Content Include="system42\startup\README.md" />
     <Content Include="system42\startup\p5.io.unroll-path.hl" />

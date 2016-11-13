@@ -5,7 +5,7 @@ Notice, this module is built on top of CodeMirror, which is copyright (C) 2016 b
 
 CodeMirror is licensed under an MIT license. Read more [here](https://codemirror.net)
 
-This "app" creates a single Active Event for you, called *[sys42.widgets.codemirror]*, which wraps CodeMirror as a 
+This component creates an Active Event for you, called *[sys42.widgets.codemirror]*, which wraps CodeMirror as a 
 "custom widget" on your page, in "Hyperlambda mode". To use it, you could use something like the code below.
 
 ```

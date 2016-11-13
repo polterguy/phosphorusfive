@@ -46,6 +46,10 @@ create-widget:datagrid-wrapper-1
         return:bool:true
 ```
 
+Assuming you've imported som CSV file, the above code will create somethin resembling the following for you.
+
+![alt tag](screenshots/ajax-datagrid-example-screenshot.png)
+
 The above code, creates an Ajax Datagrid with support for inline editing of items, paging and filtering (search).
 
 The dataset the datagrid expects in your *[_on-get-items]* lambda callback, should look something like this.
