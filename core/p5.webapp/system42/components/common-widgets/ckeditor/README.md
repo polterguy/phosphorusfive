@@ -22,6 +22,10 @@ create-widget
     sys42.widgets.ck-editor:my-editor
 ```
 
+The above will render something like the following.
+
+![alt tag](screenshots/ck-editor-screenshot-example.png)
+
 Notice, the *[style]* attribute above, is unfortunately necessary to make sure CKEditor doesn't render in a "funny way". Feel free to play around
 with it, or add it into a CSS class in a stylesheet file, if you wish.
 

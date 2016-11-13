@@ -353,7 +353,7 @@ The above example will render something like the following.
 ## Bandwidth usage
 
 The Ajax TreeView widget actually does not itself use any custom JavaScript, besides the core JavaScript from p5.ajax, which in its
-minified and GZipped version, is roughly 5KB of JavaScript. In addition, it uses only three tiny images by default, and one tiny CSS
+minified version, is roughly 2.8KB of JavaScript. In addition, it uses only three tiny images by default, and one tiny CSS
 file. So in its absolutely minimum version, without Bootstrap included, the entire download for your clients, is less than 10KB for the
 initial loading. And as you expand items, it loads an addition ~1KB for each Ajax request, depending upon how many items you fetch.
 
