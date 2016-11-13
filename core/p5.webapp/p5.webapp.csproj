@@ -282,6 +282,7 @@
     <Content Include="system42\components\common-widgets\ckeditor\media\plugins\wsc\dialogs\wsc.css" />
     <Content Include="system42\components\common-widgets\ckeditor\media\plugins\wsc\dialogs\wsc.js" />
     <Content Include="system42\components\common-widgets\ckeditor\media\plugins\wsc\dialogs\wsc_ie.js" />
+    <Content Include="system42\components\common-widgets\ckeditor\screenshots\ck-editor-screenshot-example.png" />
     <Content Include="system42\components\common-widgets\codemirror\media\addon\display\autorefresh.js" />
     <Content Include="system42\components\common-widgets\codemirror\media\addon\display\fullscreen.css" />
     <Content Include="system42\components\common-widgets\codemirror\media\addon\display\fullscreen.js" />
@@ -322,6 +323,7 @@
     <Content Include="system42\components\bootstrap\widgets\colorpicker\media\js\bootstrap-colorpicker.min.js">
       <DependentUpon>bootstrap-colorpicker.js</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\codemirror\screenshots\codemirror-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\datagrid\media\skins\default\default.css" />
     <Content Include="system42\components\common-widgets\datagrid\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
@@ -460,6 +462,7 @@
       <DependentUpon>small.css</DependentUpon>
     </Content>
     <Content Include="system42\components\common-widgets\tree\screenshots\ajax-treeview-widget-example-screenshot-custom-icons.png" />
+    <Content Include="system42\components\common-widgets\tree\screenshots\ajax-treeview-widget-example-screenshot-large-skin.png" />
     <Content Include="system42\components\common-widgets\tree\screenshots\ajax-treeview-widget-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.css" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.js" />

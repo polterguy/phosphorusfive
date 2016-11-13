@@ -49,12 +49,47 @@ sys42.widgets.ck-editor
   return
 ```
 
-In addition to the "arguments" you can pass into it, you can also pass in the following.
+The "arguments" you can pass into it are as follows.
 
-* [innerValue] - To set the initial Hyperlambda as the widget is loaded
-* [events] - To associate lambda events with the widget
+* [_innerValue] - To set the initial Hyperlambda as the widget is loaded
+* [_events] - To associate lambda events with the widget
 
 All other properties are ignored, and to the most parts, don't really give any sense, since the HTML "textarea" widget rendered, is actually
 completely replaced at the client-side of things, by the CodeMirror's internals.
 
+## Skinning your CodeMirror widget
 
+You can skin your CodeMirror widget with the following setting; _"sys42.code-mirror-default-theme"_. The setting is expected to be found in the "sys42"
+app. To change youur CodeMirror's skin to something darker, you can evaluate the following code for instance, in your Hyperlambda Executor.
+
+```
+sys42.utilities.set-app-setting:sys42.code-mirror-default-theme
+  _app:sys42
+  _src:paraiso-dark
+```
+
+Refresh your System42/Executor after evaluating the above code, to see the "dark" skin.
+
+There are only two skins distributed with P5 by default, these are;
+
+* "paraiso" - A light skin
+* "paraiso-dark" - A dark skin
+
+But you can use any of the CodeMirror skins you wish. Check out the different skins you can use at the [CodeMirror](https://codemirror.net/demo/theme.html) website.
+
+## Creating a Hyperlambda Executor
+
+In addition to the above CodeMirror widget, there is also another codemirror widget, which allows you to inject the entire System42's 
+Hyperlambda Executor into your page. This is sometimes useful for debugging purposes, since it allows you to change your page, as it 
+is being executed, from within the page's context.
+
+This widget is created by the *[sys42.widgets.codemirror-executor]* Active Event.
+
+To see an example of it, create a new CMS "lambda" page, and paste in the following code.
+
+```
+create-widget
+  parent:content
+  widgets
+    sys42.widgets.codemirror-executor
+```
