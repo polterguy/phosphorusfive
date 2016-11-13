@@ -313,7 +313,7 @@ of available icons at the [Bootstrap CSS website](http://getbootstrap.com/compon
 of the glyphicons from Bootstrap, at which case you no longer need to include Bootstrap.
 
 If you use the glyphicons, you are yourself responsible for making sure you include Bootstrap CSS, which can be done, by reading the 
-documentation for the System42 [Bootstrap CSS module](/core/p5.webapp@bootstrap/). You only need to include the CSS file
+documentation for the System42 [Bootstrap CSS module](../../bootstrap/). You only need to include the CSS file
 though, and not any of the JavaScript files.
 
 Below is the exact same example we started out with, except with a different skin, which creates a larger TreeView, more suitable for
@@ -345,6 +345,10 @@ create-container-widget
         return
           _items
 ```
+
+The above example will render something like the following.
+
+![alt tag](screenshots/ajax-treeview-widget-example-screenshot-large-skin.png)
 
 ## Bandwidth usage
 
