@@ -16,3 +16,9 @@ To see the documentation for your specific components, please refer to the folde
 A component can either be a piece of "logic", or a reusable widget of some sort, or some other piece of reusable block that
 you can utilize in your own projects.
 
+## Ajax Widgets
+
+Many of the components here are reusable Ajax widgets, such as the [DateTimePickers](bootstrap/widgets/datetimepicker) widget, 
+the Ajax [TreeView](common-widgets/tree) widget, and so on. This is probably one of the more interesting places to browse around,
+if you intend to use Phosphorus Five for creating your own Ajax apps.
+
