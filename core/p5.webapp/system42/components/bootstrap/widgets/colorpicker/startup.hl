@@ -5,6 +5,7 @@
  * Arguments;
  * 
  * [_value]            - Initial value for widget. Can be either '#xxyyzz', 'rgba(x,y,z,q)' or a 'named color' such as 'yellow'.
+ * [_class]            - CSS class to use. Defaults to "input-group colorpicker-component colorpicker-element".
  * [_onchange]         - Lambda callback invoked when the value of the colorpicker changes.
  * [_label]            - If declared, will create a descriptive input-group-addon label with the specified content.
  *
@@ -19,6 +20,7 @@ create-event:sys42.widgets.colorpicker
    */
   _defaults
     _value:#000000
+    _class:input-group colorpicker-component colorpicker-element
     _onchange
     _label
   _options
@@ -77,14 +79,14 @@ create-event:sys42.widgets.colorpicker
   /*
    * Forward evaluating arguments.
    */
-  eval-x:x:/../*/return/*/container/*/widgets/*/input/*/value
+  eval-x:x:/../*/return/*/container/*/widgets/*/input/*/value|/+/*/*/class
 
   /*
    * Returning color picker to caller.
    */
   return
     container
-      class:input-group colorpicker-component colorpicker-element
+      class:x:/../*/_options/*/_class?value
       events
 
         /*

@@ -100,8 +100,15 @@ namespace p5.web.widgets
                 foreach (var valueNode in e.Args.Children.Where (ix => ix.Name != "")) {
                     switch (valueNode.Name) {
                     case "visible":
-                        idxWidget.Visible = valueNode.GetExValue<bool> (context);
-                        break;
+                            var newValue = valueNode.GetExValue<bool> (context);
+                            var oldValue = idxWidget.Visible;
+                            idxWidget.Visible = newValue;
+                            if (newValue && !oldValue) {
+
+                                // Evaluating [oninit] recursively for widget, and all children widgets.
+                                EnsureOnInit (context, idxWidget);
+                            }
+                            break;
                     case "element":
                         idxWidget.Element = valueNode.GetExValue<string> (context);
                         idxWidget.ReRender ();
@@ -128,6 +135,31 @@ namespace p5.web.widgets
                         idxWidget [valueNode.Name.StartsWith ("\\") ? valueNode.Name.Substring(1) : valueNode.Name] = valueNode.GetExValue<string> (context);
                         break;
                     }
+                }
+            }
+        }
+
+        /*
+         * Ensures [oninit] is evaluated for widget, and all children widgets.
+         */
+        private void EnsureOnInit (ApplicationContext context, Widget widget)
+        {
+            // Making sure this is a widget.
+            if (widget != null) {
+
+                // Checking if widget has an [oninit].
+                var onInitNode = Manager.WidgetAjaxEventStorage[widget.ID, "oninit"];
+                if (onInitNode != null) {
+
+                    // [oninit] should be evaluated now!
+                    var clone = onInitNode.Clone ();
+                    clone.Insert (0, new Node ("_event", widget.ID));
+                    context.Raise ("eval", clone.Clone ());
+                }
+
+                // Recursively ensuring [oninit] for children widgets.
+                foreach (var idxCtrl in widget.Controls) {
+                    EnsureOnInit (context, idxCtrl as Widget);
                 }
             }
         }

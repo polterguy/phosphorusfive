@@ -5,7 +5,7 @@ This folder contains the Ajax TabControl widget in Phosphorus Five. This widget,
 showing some aspecct of your page. Kind of like the TabControl in for instance windows. Below is an example.
 
 ```
-create-widget:foo
+create-widget:my-tabs
   parent:content
   class:col-xs-8
   widgets
@@ -25,8 +25,8 @@ The above example, produces the following.
 
 ![alt tag](screenshots/ajax-tabcontrol-widget-example-screenshot.png)
 
-As you switch the tab in the above TabControl widget, the tabview you switch to,becomes visible. Each node beneath the *[_items]* collection,
-becomes one _"TabView"_. Each item inside of your *[_items]* collection, is expected to have its own set of *[widgets]* again. You can really put
+As you switch the tab in the above TabControl widget, the tabview you switch to, becomes visible. Each node beneath the *[_items]* collection,
+becomes one _"TabView"_. Each item inside of your *[_items]* collection, is expected to have its own set of *[widgets]*. You can really put
 any widget you wish into these, including complex widgets.
 
 The TabControl has the following arguments.
@@ -59,9 +59,75 @@ create-widget:foo
 ```
 
 Create a "lambda" page in your CMS, and paste in the code above, and then when you view your page, click the second tab, and choose "Open in new window".
-If you do, you will see that it opens up with the URL being something like the following `http://localhost:1176/change-this-5?tab-view=item-2`.
+If you do, you will see that it opens up with the URL being something like the following `http://localhost:1176/change-this-5?tab-view=item-2`
 
 This ensures that the TabControl is crawlable, since search engines, and other crawlers, will simply see your TabControl header buttons as hyperlinks.
-While still preserving the Ajax functionality when a TabView slector is clicked.
+While still preserving the Ajax functionality when a TabView button is clicked.
 
+## Ninja tricks
+
+The TabControl widget, does not in any ways show the children *[widgets]* collection of its tabviews, before these are actually shown, by for
+instance clicking on the tabview button, that shows it. This means that you can inject complex widgets into it, and not pay the penalty for
+them, before they're actually shown. Consider this code.
+
+```
+create-widget:foo
+  parent:content
+  class:col-xs-8
+  widgets
+    sys42.widgets.tab
+      _crawl:true
+      _crawl-get-name:tab-view
+      _items
+        Simple HTML:item-1
+          widgets
+            literal
+              innerValue:@"<h3>Simple literal</h3><p>This is a paragraph</p>"
+        Widgets:item-2
+          widgets
+            container
+              class:col-xs-6 prepend-bottom
+              widgets
+                sys42.widgets.datetimepicker:my-date
+                  _label:My date
+            container
+              class:col-xs-6 prepend-bottom
+              widgets
+                sys42.widgets.colorpicker
+                  _label:My color
+            container
+              class:col-xs-12
+              widgets
+                sys42.widgets.tree
+                  _items
+                    root:/
+                  _on-get-items
+                    list-folders:x:/../*/_item-id?value
+                    for-each:x:/-/*?name
+                      list-folders:x:/./*/_dp?value
+                      split:x:/./*/_dp?value
+                        =:/
+                      add:x:/../*/return/*
+                        src:@"{0}:{1}"
+                          :x:/..for-each/*/split/0/-?name
+                          :x:/..for-each/*/_dp?value
+                      if:x:/./*/list-folders/*
+                        not
+                        add:x:/../*/return/*/_items/0/-
+                          src
+                            _class:tree-leaf
+                    return
+                      _items
+```
+
+The above code, in its default, and visible tab, only shows some static HTML widget. However, in its second tabview, it shows a complex
+widget hierarchy, with an Ajax TreeView, an Ajax DateTimePicker and an Ajax Colorpicker. These complex widgets, requires a lot of JavaScript
+to be downloaded to the client. However, this JavaScript, and the rest of the initialization for these widgets, are not in any ways included
+on the page, before the user actually physically clicks the TabView that displays them. This means, that even though our page, as a total,
+includes tons of complex widgets, with additional JavaScript pages, the user does not pay for these complex widgets, before he or she actually
+clicks on the TabView that displays these.
+
+The above code, when you click the second tabview, will show something resembling this for the record.
+
+![alt tag](screenshots/ajax-tabcontrol-widget-complex-example-screenshot.png)
 

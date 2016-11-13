@@ -35,6 +35,7 @@ The above code will create something like the following.
 It features the following options.
 
 * [_label] - Descriptive label.
+* [_class] - Optional CSS classes to use. Defaults to "input-group date".
 * [_icon] - CSS class for the icon rendered, defaults to "glyphicon-calendar".
 * [_locale] - Locale to use. Basically a reference to the JS files in the "media/js/locale/" folder.
 * [_format] - Format for displaying date.

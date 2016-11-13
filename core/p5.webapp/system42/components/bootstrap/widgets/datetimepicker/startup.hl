@@ -5,6 +5,7 @@
  * Arguments;
  * 
  * [_label]             - If declared, will create a descriptive input-group-addon label, with the specified content.
+ * [_class]             - The CSS class to use for your DateTimePicker. Defaults to "input-group date".
  * [_onchange]          - Lambda callback invoked when the value of the DateTimePicker changes.
  * [_icon]              - A CSS class, which is used instead of the default 'glyphicon-calendar' class for the 'dropdown button'.
  * [_locale]            - Which locale to use, is basically a reference to the JS files in the 'media/js/locale/' folder, and are helpers
@@ -32,6 +33,7 @@ create-event:sys42.widgets.datetimepicker
    */
   _defaults
     _label
+    _class:input-group date
     _icon:glyphicon glyphicon-calendar
     _locale
     _format
@@ -196,14 +198,14 @@ create-event:sys42.widgets.datetimepicker
   /*
    * Forward evaluating arguments.
    */
-  eval-x:x:/../*/return/*/container/*/widgets/*(/input/*(/value|/oninit/*/_arguments)|/span/*/innerValue)
+  eval-x:x:/../*/return/*/container/*/widgets/*(/input/*(/value|/oninit/*/_arguments)|/span/*/innerValue)|/+/*/*/class
 
   /*
    * Returning datetimepicker to caller.
    */
   return
     container
-      class:input-group date
+      class:x:/../*/_options/*/_class?value
       events
 
         /*
@@ -313,7 +315,7 @@ create-event:sys42.widgets.datetimepicker
                * We have an [_onchange] lambda callback, making sure we intialize datetimepicker such that it raises [_onchange] when 
                * the widget is hidden.
                */
-              include-javascript:@"$('#{0}').datetimepicker({1}).on('dp.hide',function(){{p5.$('{2}').raise('_onchange');}});"
+              send-javascript:@"$('#{0}').datetimepicker({1}).on('dp.hide',function(){{p5.$('{2}').raise('_onchange');}});"
                 :x:/../*/_init-widget?value
                 :x:/../*/_arguments?value
                 :x:/../*/_event?value
@@ -323,7 +325,7 @@ create-event:sys42.widgets.datetimepicker
               /*
                * We do not have an [_onchange] lambda callback.
                */
-              include-javascript:@"$('#{0}').datetimepicker({1});"
+              send-javascript:@"$('#{0}').datetimepicker({1});"
                 :x:/../*/_init-widget?value
                 :x:/../*/_arguments?value
 

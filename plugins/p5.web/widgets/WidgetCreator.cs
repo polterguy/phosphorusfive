@@ -173,12 +173,17 @@ namespace p5.web.widgets
             // Notice that since this is done AFTER creation of entire hierarchy, then each [oninit] can invoke dynamically 
             // created widget lambda events, declared in completely different widgets, both up and down hierarchy. Which
             // completely eliminates any "cohesion" problems, besides remembering that all [oninit] events are raised in 
-            // "breadth first" order though. FUCK THE PAGE LIFECYCLE! :D
+            // "breadth first" order though. FUCK THE PAGE LIFECYCLE!
+            // Notice, we only run [oninit] if the widget is actually visible.
+            // Otherwise, we defer [oninit] until the widget becomes visible.
             foreach (var idxOnInit in GetInitMethods (createNode)) {
 
                 // Invoking currently iterated [oninit] lambda event
-                idxOnInit.Insert (0, new Node ("_event", idxOnInit.Parent.Get<Widget> (context).ID));
-                context.Raise ("eval", idxOnInit.Clone ());
+                var widget = idxOnInit.Parent.Get<Widget> (context);
+                if (widget.Visible) {
+                    idxOnInit.Insert (0, new Node ("_event", widget.ID));
+                    context.Raise ("eval", idxOnInit.Clone ());
+                }
             }
 
             // Making sure we return ID of control

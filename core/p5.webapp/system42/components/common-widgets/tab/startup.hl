@@ -38,7 +38,7 @@ create-event:sys42.widgets.tab
 
 
   /*
-   * Making sure we include our tree specific CSS file.
+   * Making sure we include our tab specific CSS file.
    */
   include-stylesheet-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
     :x:/../*/_options/*/_skin?value
@@ -233,8 +233,8 @@ create-event:sys42.widgets.tab._create-url
       :x:/../*/get-location-url?value
 
   /*
-   * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
-   * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tree_unroll".
+   * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tab_unroll" params,
+   * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tab_unroll".
    */
   list-http-get-params
   set:x:/-/*/{0}
