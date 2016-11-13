@@ -48,6 +48,6 @@ TODO before release
 
 * Create [delete-from-row-id] for Datagrid widget.
 
-
+* Complex widgets inside of TabControl doesn't work, due to [oninit] including JavaScript, which fissles, since widget is iinvisible ...
 
 

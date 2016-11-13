@@ -1,7 +1,261 @@
 
 /*
- * Startup script that is evaluated when server is started.
- * Evaluates all Hyperlambda files in the "startup" folder.
+ * Creates the tab widget Active Event.
  */
 
-sys42.utilities.execute-lambda-folder:/system42/components/common-widgets/tab/startup/
+
+/*
+ * The actual tab widget Active Event.
+ */
+create-event:sys42.widgets.tab
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _skin:default
+    _crawl-get-name:sys42_widgets_tab_unroll
+    _crawl:bool:false
+    _items
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+
+  /*
+   * Making sure caller supplied at the very least one item.
+   */
+  if:x:/../*/_options/*/_items/*
+    not
+    throw:You have to supply at the very least one root item when creating your tab widget.
+
+
+  /*
+   * Making sure we include our tree specific CSS file.
+   */
+  include-stylesheet-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
+    :x:/../*/_options/*/_skin?value
+
+
+  /*
+   * Retrieving the value of the HTTP GET crawl parameter, if any.
+   */
+  get-http-get-param:x:/../*/_options/*/_crawl-get-name?value
+
+
+  /*
+   * Looping through each [item] in [_items], and creating a tabview header item for each of them.
+   */
+  _index:int:0
+  for-each:x:/../*/_options/*/_items/*
+
+    /*
+     * Adding header item first.
+     */
+    _header
+      container
+        element:li
+        class:tab-header-item
+        widgets
+          a
+            href:#
+            innerValue:x:/@_dp/#?name
+            _index:x:/..for-each/-?value
+            onclick
+
+              /*
+               * Finding root tab widget, for then to find the visible widget, and making it invisible.
+               */
+              find-first-ancestor-widget:x:/../*/_event?value
+                _root-tab
+              find-widget:x:/-/*/*?value
+                class:tab-content-item
+                visible:true
+              set-widget-property:x:/-/*/*?value
+                visible:false
+
+              /*
+               * Now finding out which index the currently clicked tab header button is, and making sure
+               * we set that content widget to visible.
+               */
+              get-widget-property:x:/../*/_event?value
+                _index
+              find-widget:x:/@find-first-ancestor-widget/*/*?value
+                class:tab-content-item
+              set-widget-property:x:/-/*/{0}?value
+                :x:/@get-widget-property/*/*?value
+                visible:true
+
+              /*
+               * Now making sure we remove the "active" CSS class from the previously active button, and set the class for the currently clicked button
+               */
+              find-widget-like:x:/@find-first-ancestor-widget/*/*?value
+                class:tab-header-active-item
+              sys42.toggle-css-classes:x:/-/*/*?value
+                _class:tab-header-active-item
+              get-parent-widget:x:/../*/_event?value
+              sys42.toggle-css-classes:x:/-/*/*?value
+                _class:tab-header-active-item
+
+
+    /*
+     * Checking if caller wants tab control to be crawlable by search engines.
+     */
+    if:x:/../*/_options/*/_crawl?value.bool
+
+      /*
+       * Tab control should be crawlable by search engines.
+       * Checking if there was an HTTTP GET argument matching the "crawl URL", and if it
+       * matches the currently iterated item.
+       */
+      if:x:/../*/get-http-get-param/*?value
+        and:x:/../*/get-http-get-param/*?value
+          =:x:/@_dp/#?value
+
+        /*
+         * Tab control is in "crawl mode", we have a "crawl URL", and it matches the ID of the currently iterated item.
+         */
+        add:x:/..for-each/*/_header/*/container/*/widgets/*/a
+          src
+            oninit
+              raise-widget-ajax-event:x:/../*/_event?value
+                onclick
+
+      /*
+       * Adding the crawl URL to our hyperlink href attribute above.
+       */
+      eval-x:x:/+/*/*
+      set:x:/..for-each/*/_header/*/container/*/widgets/*/a/*/href?value
+        sys42.widgets.tab._create-url:x:/@_dp/#?value
+          _crawl-get-name:x:/../*/_options/*/_crawl-get-name?value
+
+    /*
+     * Forward evaluating innerValue and _index of header widget, and adding to returned container.
+     */
+    eval-x:x:/@_header/*/*/*/*(/innerValue|/_index)
+    add:x:/../*/return/*/container/*/widgets/*/container/[0,1]/*/widgets
+      src:x:/@_header/*
+
+    /*
+     * Incrementing [_index].
+     */
+    set:x:/@_index?value
+      +:x:/@_index?value
+        _:1
+
+    /*
+     * Adding content [widgets] collection.
+     */
+    _content
+      container
+        visible:false
+        class:tab-content-item
+        widgets
+    add:x:/@_content/*/*/widgets
+      src:x:/@_dp/#/*/widgets/*
+    add:x:/../*/return/*/container/*/widgets/*/container/[1,2]/*/widgets
+      src:x:/@_content/*
+
+
+  /*
+   * Forward evaluating [class] to make sure we use [_options]/[_class] if supplied.
+   */
+  eval-x:x:/../*/return/*/*/class
+
+
+  /*
+   * Making sure our first tab item becomes "active".
+   */
+  set:x:/../*/return/*/container/*/widgets/*/container/[0,1]/*/widgets/*/[0,1]/*/class?value
+    src:tab-header-item tab-header-active-item
+
+
+  /*
+   * Making sure our first tab item content becomes visible.
+   */
+  set:x:/../*/return/*/container/*/widgets/*/container/[1,2]/*/widgets/*/[0,1]/*/visible
+
+
+  /*
+   * Checking if an explicit ID was given, and if so, making sure we use it.
+   */
+  if:x:/../*/_arg?value
+    set:x:/../*/return/*?value
+      src:x:/../*/_arg?value
+
+
+  /*
+   * Returning widget to caller.
+   */
+  return
+    container
+      _root-tab
+
+
+      /*
+       * Forward evaluated before [return] invocation, to [_options]/[_class] value.
+       */
+      class:tab-widget-{0}
+        :x:/../*/_options/*/_skin?value
+
+      /*
+       * Contains the tabs for widget
+       */
+      widgets
+        container
+          element:ul
+          class:tab-header clearfix
+          widgets
+        container
+          class:tab-content-wrapper clearfix
+          widgets
+
+
+/*
+ * Supporting Active Event, to create URL from given [_arg] value, with the given [_crawl-get-name] as the HTTP argument name.
+ */
+create-event:sys42.widgets.tab._create-url
+
+  /*
+   * First we get current location, without GET parameters, before we add the question mark to make sure we 
+   * "open" our GET params collection.
+   */
+  get-location-url
+  set:x:/../*/get-location-url?value
+    src:{0}?
+      :x:/../*/get-location-url?value
+
+  /*
+   * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
+   * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tree_unroll".
+   */
+  list-http-get-params
+  set:x:/-/*/{0}
+    :x:/../*/_crawl-get-name?value
+  if:x:/-2/*
+    get-http-get-param:x:/./-2/*?name
+    for-each:x:/-/*
+      url-encode:x:/./*/_dp/#?value
+      set:x:/../*/get-location-url?value
+        src:{0}{1}={2}&
+          :x:/../*/get-location-url?value
+          :x:/..for-each/*/_dp/#?name
+          :x:/..for-each/*/url-encode?value
+
+  /*
+   * Adding key for our "unroll" GET parameter.
+   */
+  set:x:/../*/get-location-url?value
+    src:{0}{1}=
+      :x:/../*/get-location-url?value
+      :x:/../*/_crawl-get-name?value
+
+  /*
+   * Then we can URL encode the parameter, and return URL to caller.
+   */
+  url-encode:x:/../*/_arg?value
+
+  return:{0}{1}
+    :x:/../*/get-location-url?value
+    :x:/../*/url-encode?value
+

@@ -41,7 +41,7 @@ create-widget:foo
     sys42.widgets.datetimepicker
 ```
 
-Notice, instead of adding a "literal", "container" or "void" into your widgets collection - We add a reference to our DateTimePicker 
+Notice, instead of adding a *[literal]*, *[container]* or *[void]* into your *[widgets]* collection - We add a reference to our DateTimePicker 
 through *[sys42.widgets.datetimepicker]* instead. The above code will resemble someething like the following.
 
 ![alt tag](../bootstrap/widgets/datetimepicker/screenshots/datetimepicker-example-screenshot.png)
@@ -81,6 +81,8 @@ create-widget:foo
 Then your result will look something like the following.
 
 ![alt tag](screenshots/example-custom-ajax-widget-screenshot.png)
+
+Assuming you've got bootstrap included on your page ...
 
 This makes it very easy to stay _"DRY"_ in your Ajax apps - DRY means Don't Repeat Yourself - Simply by creating reusable Ajax widgets, for the HTML
 and Widget hierarchies you tend to write over again.
