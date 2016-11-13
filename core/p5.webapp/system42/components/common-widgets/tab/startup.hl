@@ -1,11 +1,18 @@
 
 /*
- * Creates the tab widget Active Event.
- */
-
-
-/*
- * The actual tab widget Active Event.
+ * Creates a TabControl widget.
+ *
+ * The TabControl widget, allows you to display multiple tabs, each with its own unique set of [widgets] collection.
+ *
+ * Arguments;
+ * 
+ * [_skin]            - Skin file and class to use. Default value is "default".
+ * [_items]           - Collection of "TabViews" in your TabControl.
+ *                      Each item beneath here, should have a name, and a [widgets] collection. The [widgets] collection, only becomes
+ *                      visible, as the user clicks the tabview to show it. The name of the children nodes beneath [_items], becomes the
+ *                      friendly displayed name for your TabView.
+ * [_crawl]           - If true, the widget will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
+ * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tab_unroll".
  */
 create-event:sys42.widgets.tab
 

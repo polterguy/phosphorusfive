@@ -446,6 +446,7 @@
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\tab\screenshots\ajax-tabcontrol-widget-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\tree\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
     </Content>
@@ -765,7 +766,6 @@
     <Content Include="system42\components\common-widgets\ckeditor\media\plugins\wsc\LICENSE.md" />
     <Content Include="system42\components\common-widgets\ckeditor\media\plugins\wsc\README.md" />
     <Content Include="system42\components\common-widgets\tree\startup.hl" />
-    <Content Include="system42\components\common-widgets\tree\startup\sys42.widgets.tree.hl" />
     <Content Include="system42\components\bootstrap\README.md" />
     <Content Include="system42\components\bootstrap\startup.hl" />
     <Content Include="system42\components\jquery\README.md" />
@@ -786,7 +786,6 @@
     <Content Include="system42\components\common-widgets\uploader\startup.hl" />
     <Content Include="system42\components\common-widgets\uploader\startup\sys42.widgets.uploader.hl" />
     <Content Include="system42\apps\CMS\startup\sys42.cms.download-file.hl" />
-    <Content Include="system42\components\common-widgets\tab\startup\sys42.widgets.tab.hl" />
     <Content Include="system42\components\common-widgets\tab\README.md" />
     <Content Include="system42\components\common-widgets\tab\startup.hl" />
     <Content Include="system42\components\bootstrap\widgets\colorpicker\startup.hl" />
