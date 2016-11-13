@@ -50,5 +50,44 @@ In addition, the widget features the following Active Events;
 * [sys42.widgets.datetimepicker.get-value] - Retrieves its current value.
 * [sys42.widgets.datetimepicker.set-value] - Sets its current value.
 
+Both of the two above Active Events requires you to pass in the ID of your DateTimePicker as *[_arg]*. The setter above, also requires you to
+pass in the new value as *[_value]*. An example of how to change the date, and retrieve it, by the click of a button, can be found beneath.
+
+```
+create-widget:foo
+  parent:content
+  class:col-xs-12
+  widgets
+
+    // Will have its innerValue changed when dtp value changes.
+    literal:my-lit
+      innerValue:Watch me change!
+
+    // Actual DateTimePicker widget.
+    sys42.widgets.datetimepicker:my-date
+
+      // Norwegian "bokmål" locale.
+      _locale:nb
+
+      // Invoked when widget is closed.
+      _onchange
+        sys42.widgets.datetimepicker.get-value:my-date
+        set-widget-property:my-lit
+          innerValue:x:/@sys42.widgets.datetimepicker.get-value?value
+    button
+      class:btn btn-primary
+      innerValue:Set date
+      onclick
+        sys42.widgets.datetimepicker.set-value:my-date
+          _value:"24.11.2016 09:43"
+    button
+      class:btn btn-primary
+      innerValue:Get date
+      onclick
+        sys42.widgets.datetimepicker.get-value:my-date
+        sys42.windows.info-tip:Date was '{0}'
+          :x:/@sys42.widgets.datetimepicker.get-value?value
+```
+
 To understand the options above, please refer to the documentation for the [Bootstrap DateTimePicker](https://eonasdan.github.io/bootstrap-datetimepicker/Options/),
 since the DateTimePicker is actually just a wrapper around this JavaScript component.

@@ -253,6 +253,15 @@ create-event:sys42.widgets.datetimepicker
           set-widget-property:x:/-/*/*?value
             value:x:/../*/_value?value
 
+          /*
+           * Due to "funny DOM event manipulations" in DateTimePicker, we need to explicitly pass in the
+           * new value to our textbox like the following, in addition to using [set-widget-property].
+           * Othherwise, value of textbox won't actually change!!
+           */
+          send-javascript:@"$('#{0}').val('{1}').change();"
+            :x:/@find-widget/*/*?value
+            :x:/../*/_value?value
+
 
       widgets
 
