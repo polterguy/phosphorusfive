@@ -103,5 +103,12 @@ create-widget:foo
             sys42.windows.info-tip:View was clicked
 ```
 
+## Responsive rendering
 
+Below is a screenshot of how the first Ajax menu will look like on an iPhone 6.
+
+![alt tag](/core/p5.webapp/system42/components/bootstrap/widgets/navbar/screenshots/ajax-navbar-menu-example-screenshot-responsive.png)
+
+The menu will automatically "re-arrange" itself, and become a responsive popdown menu, if the screen resolution is smaller than some specific
+threshold. This allows it to render on smaller devices, without forcing vertical scrolling.
 

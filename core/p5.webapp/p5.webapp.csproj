@@ -65,6 +65,10 @@
     <Content Include="system42\apps\CMS\media\css\navbar-fix.min.css">
       <DependentUpon>navbar-fix.css</DependentUpon>
     </Content>
+    <Content Include="system42\components\bootstrap\widgets\colorpicker\screenshots\colorpicker-example-screenshot.png" />
+    <Content Include="system42\components\bootstrap\widgets\datetimepicker\screenshots\datetimepicker-example-screenshot.png" />
+    <Content Include="system42\components\bootstrap\widgets\navbar\screenshots\ajax-navbar-menu-example-screenshot-responsive.png" />
+    <Content Include="system42\components\bootstrap\widgets\navbar\screenshots\ajax-navbar-menu-example-screenshot.png" />
     <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-confirm-screenshot.png" />
     <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-modal-screenshot.png" />
     <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-modal-tree-view-screenshot.png" />
@@ -551,10 +555,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="system42\components\bootstrap\widgets\colorpicker\screenshots\" />
-    <Folder Include="system42\components\bootstrap\widgets\datetimepicker\screenshots\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.csv\p5.csv.csproj">
       <Project>{045d3d94-7a30-445d-b578-fee5a5be5c3b}</Project>
