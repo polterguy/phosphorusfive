@@ -28,6 +28,10 @@ create-widget:foo
           innerValue:x:/@sys42.widgets.datetimepicker.get-value?value
 ```
 
+The above code will create something like the following.
+
+![alt tag](/core/p5.webapp/system42/components/bootstrap/widgets/datetimepicker/screenshots/datetimepicker-example-screenshot.png)
+
 It features the following options.
 
 * [_label] - Descriptive label.

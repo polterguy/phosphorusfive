@@ -551,7 +551,10 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="system42\components\bootstrap\widgets\colorpicker\screenshots\" />
+    <Folder Include="system42\components\bootstrap\widgets\datetimepicker\screenshots\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.csv\p5.csv.csproj">
       <Project>{045d3d94-7a30-445d-b578-fee5a5be5c3b}</Project>
