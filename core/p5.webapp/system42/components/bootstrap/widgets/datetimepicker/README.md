@@ -91,3 +91,11 @@ create-widget:foo
 
 To understand the options above, please refer to the documentation for the [Bootstrap DateTimePicker](https://eonasdan.github.io/bootstrap-datetimepicker/Options/),
 since the DateTimePicker is actually just a wrapper around this JavaScript component.
+
+The arguments to the P5 DateTimePicker are slightly differently written though. For instance, the argument *[_max-date]* wraps the argument to
+the Bootstrap DateTimePicker which is called _"maxDate"_. Basically, we eliminate camel-casing, removing capital letters, injecting a hyphen "-"
+between words, and prepends a slash "_" in front of argument.
+
+If you have the above in mind while looking through the documentation for Eonasdan's DateTimePicker, you can easily figure out which argument in
+the P5 DateTimePicker, refers to which argument in Eonasdan's DateTimePicker.
+
