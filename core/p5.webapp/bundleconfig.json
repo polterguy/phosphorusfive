@@ -130,5 +130,17 @@
     "inputFiles": [
       "system42/components/common-widgets/tree/media/skins/default/default.css"
     ]
+  },
+  {
+    "outputFileName": "system42/components/bootstrap/widgets/datetimepicker/media/js/bootstrap-datetimepicker.min.js",
+    "inputFiles": [
+      "system42/components/bootstrap/widgets/datetimepicker/media/js/bootstrap-datetimepicker.js"
+    ]
+  },
+  {
+    "outputFileName": "system42/components/bootstrap/widgets/datetimepicker/media/js/moment.min.js",
+    "inputFiles": [
+      "system42/components/bootstrap/widgets/datetimepicker/media/js/moment.js"
+    ]
   }
 ]

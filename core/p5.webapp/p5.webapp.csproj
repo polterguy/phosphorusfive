@@ -66,6 +66,9 @@
       <DependentUpon>navbar-fix.css</DependentUpon>
     </Content>
     <Content Include="system42\components\bootstrap\widgets\colorpicker\screenshots\colorpicker-example-screenshot.png" />
+    <Content Include="system42\components\bootstrap\widgets\datetimepicker\media\js\bootstrap-datetimepicker.min.js">
+      <DependentUpon>bootstrap-datetimepicker.js</DependentUpon>
+    </Content>
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\screenshots\datetimepicker-example-screenshot.png" />
     <Content Include="system42\components\bootstrap\widgets\navbar\screenshots\ajax-navbar-menu-example-screenshot-responsive.png" />
     <Content Include="system42\components\bootstrap\widgets\navbar\screenshots\ajax-navbar-menu-example-screenshot.png" />
@@ -329,7 +332,7 @@
       <DependentUpon>default.css</DependentUpon>
     </Content>
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\media\css\bootstrap-datetimepicker.min.css" />
-    <Content Include="system42\components\bootstrap\widgets\datetimepicker\media\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="system42\components\bootstrap\widgets\datetimepicker\media\js\bootstrap-datetimepicker.js" />
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\media\js\locale\af.js" />
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\media\js\locale\ar-ly.js" />
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\media\js\locale\ar-ma.js" />
@@ -446,6 +449,7 @@
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\tab\screenshots\ajax-tabcontrol-widget-complex-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\tab\screenshots\ajax-tabcontrol-widget-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\tree\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>

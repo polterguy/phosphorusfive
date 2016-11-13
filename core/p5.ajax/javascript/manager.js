@@ -575,7 +575,7 @@
                 }
 
                 // Inserting all JavaScript objects sent from server.
-                // This can be both files and javascript inline inclusions.
+                // This can be both files and JavaScript inline inclusions.
                 // After this is done, we execute the results from 'send-script'.
                 this._incScr(json._p5_js_objects || [], json._p5_script || []);
 

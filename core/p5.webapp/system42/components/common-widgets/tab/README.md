@@ -131,3 +131,11 @@ The above code, when you click the second tabview, will show something resemblin
 
 ![alt tag](screenshots/ajax-tabcontrol-widget-complex-example-screenshot.png)
 
+To understand what this means, please use the _"Inspect"_ feature of e.g. Google Chrome, to see what goes over the wire, as you click the
+second tab. In fact, if you go even further, and use the _"empty"_ CMS template when creating the above TabControl in a CMS "lambda" page,
+not even Bootstrap or jQuery will be included, before you actually show the second TabView, by clicking the "Widgets" TabView button.
+
+This means that the initial bandwidth usage of the page as a whole, becomes no more than 26.8KB in total. While when you click the second TabView,
+an additional 124KB will be downloaded, and the JavaScript and CSS necessary to show these complex widgets, will be automatically downloaded
+and included on your page.
+

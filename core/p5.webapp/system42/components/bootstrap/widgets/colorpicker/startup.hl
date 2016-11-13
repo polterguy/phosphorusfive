@@ -27,18 +27,6 @@ create-event:sys42.widgets.colorpicker
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
 
-  /*
-   * Including Bootstrap (and jQuery)
-   */
-  sys42.bootstrap.include-javascript
-  sys42.bootstrap.include-css
-
-  /*
-   * Including Colorpicker's JavaScript and CSS
-   */
-  include-javascript-file:@bootstrap/widgets/colorpicker/media/js/bootstrap-colorpicker.min.js
-  include-stylesheet-file:@bootstrap/widgets/colorpicker/media/css/bootstrap-colorpicker.min.css
-
 
   /*
    * Passing in [_onchange] lambda callback such that it is evaluated upon change, and making sure
@@ -142,6 +130,18 @@ create-event:sys42.widgets.colorpicker
           class:form-control
           value:x:/../*/_options/*/_value?value
           oninit
+
+            /*
+             * Including Bootstrap (and jQuery)
+             */
+            sys42.bootstrap.include-javascript
+            sys42.bootstrap.include-css
+
+            /*
+             * Including Colorpicker's JavaScript and CSS
+             */
+            include-javascript-file:@bootstrap/widgets/colorpicker/media/js/bootstrap-colorpicker.min.js
+            include-stylesheet-file:@bootstrap/widgets/colorpicker/media/css/bootstrap-colorpicker.min.css
 
             /*
              * This guys is set above, and is true if there's an [_onchange] lambda callback, otherwise false.

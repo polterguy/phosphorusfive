@@ -48,19 +48,6 @@ create-event:sys42.widgets.datetimepicker
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
 
   /*
-   * Including Bootstrap (and jQuery)
-   */
-  sys42.bootstrap.include-javascript
-  sys42.bootstrap.include-css
-
-  /*
-   * Including DateTimePicker's JavaScript and CSS
-   */
-  include-javascript-file:@bootstrap/widgets/datetimepicker/media/js/moment.min.js
-  include-javascript-file:@bootstrap/widgets/datetimepicker/media/js/bootstrap-datetimepicker.min.js
-  include-stylesheet-file:@bootstrap/widgets/datetimepicker/media/css/bootstrap-datetimepicker.min.css
-
-  /*
    * Checking if [_label] was passed in, and if so, making sure widget gets a descriptive input-group-addon.
    */
   if:x:/../*/_options/*/_label?value
@@ -198,7 +185,12 @@ create-event:sys42.widgets.datetimepicker
   /*
    * Forward evaluating arguments.
    */
-  eval-x:x:/../*/return/*/container/*/widgets/*(/input/*(/value|/oninit/*/_arguments)|/span/*/innerValue)|/+/*/*/class
+  eval-x:x:/../*/return/*/container/*/widgets/*(/input/*(/value|/oninit/*/_arguments)|/span/*/innerValue)|/../*/return/*/*/class
+
+  /*
+   * For weird reasons, we need to include Moment.js
+   */
+  include-javascript-file:@bootstrap/widgets/datetimepicker/media/js/moment.min.js
 
   /*
    * Returning datetimepicker to caller.
@@ -276,6 +268,18 @@ create-event:sys42.widgets.datetimepicker
           value:x:/../*/_options/*/_value?value
 
           oninit
+
+            /*
+             * Including Bootstrap (and jQuery)
+             */
+            sys42.bootstrap.include-javascript
+            sys42.bootstrap.include-css
+
+            /*
+             * Including DateTimePicker's JavaScript and CSS
+             */
+            include-javascript-file:@bootstrap/widgets/datetimepicker/media/js/bootstrap-datetimepicker.min.js
+            include-stylesheet-file:@bootstrap/widgets/datetimepicker/media/css/bootstrap-datetimepicker.min.css
 
             /*
              * Initializing widget with JavaScript client inclusion.
