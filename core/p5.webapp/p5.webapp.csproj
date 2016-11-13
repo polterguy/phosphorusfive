@@ -786,6 +786,7 @@
     <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.wizard.hl" />
     <Content Include="system42\components\app-settings\startup\sys42.utilities.get-app-setting.hl" />
     <Content Include="system42\components\bootstrap\windows\README.md" />
+    <Content Include="system42\components\bootstrap\widgets\README.md" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

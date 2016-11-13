@@ -25,6 +25,11 @@ create-widget
             :x:/../*/_value?value
 ```
 
+The above code will create something like the following.
+
+![alt tag](/core/p5.webapp/system42/components/bootstrap/widgets/colorpicker/screenshots/colorpicker-example-screenshot.png)
+
+
 You can pass in the following arguments to the colorpicker.
 
 * [_value] - Initial value, can be either '#xxyyzz', 'rgba(x,y,z,q)' or named color (e.g. 'yellow').
