@@ -235,6 +235,8 @@ The above code, will create something looking like the following, asssuming you'
 
 ![alt tag](screenshots/ajax-datagrid-example-screenshot-selection.png)
 
+## Template columns
+
 If you wish, you can also create _"template columns"_, which are columns where you have 100% control over what goes into every cell
 of your datagrid. Using this technique, you can put any other Ajax widgets you wish, into the cells of your datagrid. This is done
 by returning a row in your *[_on-get-items]* callback, which contains a child node named *[_widgets]*. The *[_widgets]* collection,
@@ -366,6 +368,10 @@ create-widget:datagrid-wrapper-4
 ```
 
 In the above example, we have also turned of the entire footer, effectively disabling paging and searching/filtering your items.
+
+The above example, will produce something resembling the following.
+
+![alt tag](screenshots/ajax-datagrid-example-screenshot-template.png)
 
 The Gaiasoul Ajax Datagrid has a relatively rich API, which allows you to create your own controls, where you replace its functionality,
 with your own logic and/or UI.

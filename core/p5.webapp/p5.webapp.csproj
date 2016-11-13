@@ -438,6 +438,8 @@
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\media\js\moment.min.js">
       <DependentUpon>moment.js</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\datagrid\screenshots\ajax-datagrid-example-screenshot-selection.png" />
+    <Content Include="system42\components\common-widgets\datagrid\screenshots\ajax-datagrid-example-screenshot-template.png" />
     <Content Include="system42\components\common-widgets\datagrid\screenshots\ajax-datagrid-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.css" />
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.min.css">
