@@ -441,6 +441,7 @@
     <Content Include="system42\components\common-widgets\datagrid\screenshots\ajax-datagrid-example-screenshot-selection.png" />
     <Content Include="system42\components\common-widgets\datagrid\screenshots\ajax-datagrid-example-screenshot-template.png" />
     <Content Include="system42\components\common-widgets\datagrid\screenshots\ajax-datagrid-example-screenshot.png" />
+    <Content Include="system42\components\common-widgets\screenshots\example-custom-ajax-widget-screenshot.png" />
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.css" />
     <Content Include="system42\components\common-widgets\tab\media\skins\default\default.min.css">
       <DependentUpon>default.css</DependentUpon>
@@ -799,6 +800,9 @@
     <Content Include="system42\components\app-settings\startup\sys42.utilities.get-app-setting.hl" />
     <Content Include="system42\components\bootstrap\windows\README.md" />
     <Content Include="system42\components\bootstrap\widgets\README.md" />
+    <Content Include="system42\components\common-windows\info-tip\README.md" />
+    <Content Include="system42\components\common-windows\startup.hl" />
+    <Content Include="system42\components\common-widgets\README.md" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />
@@ -819,8 +823,8 @@
     <None Include="system42\startup\sys42.utilities.get-widget.hl" />
     <None Include="system42\components\common-widgets\ckeditor\README.md" />
     <None Include="system42\components\common-widgets\ckeditor\media\skins\moono\readme.md" />
-    <None Include="system42\components\common-widgets\info-tip\startup.hl" />
-    <None Include="system42\components\common-widgets\show-lambda\startup.hl" />
+    <None Include="system42\components\common-windows\info-tip\startup.hl" />
+    <None Include="system42\components\common-windows\show-lambda\startup.hl" />
     <None Include="system42\apps\CMS\installation\install-server.hl" />
     <None Include="system42\apps\CMS\installation\set-root-password.hl" />
     <None Include="system42\apps\CMS\installation\system-finished.hl" />

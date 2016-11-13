@@ -1,0 +1,30 @@
+
+/*
+ * File responsible for initializing all "common windows".
+ *
+ * Invokes all "startup.hl" files inside all folders inside of this folder.
+ */
+
+
+_startup
+list-folders:/system42/components/common-windows/
+for-each:x:/-/*?name
+
+  /*
+   * Checking if "startup.hl" file exists within currently iterated folder,
+   * and if so, adding it to [_startup], such that we can evaluate it later.
+   */
+  if
+    fetch:x:/0/0?value
+      file-exist:{0}startup.hl
+        :x:/..for-each/*/_dp?value
+    add:x:/../*/_startup
+      src:{0}startup.hl
+        :x:/..for-each/*/_dp?value
+
+/*
+ * Evaluating all files in [_startup] node.
+ */
+sys42.utilities.execute-lambda-file:x:/../*/_startup/*?name
+
+
