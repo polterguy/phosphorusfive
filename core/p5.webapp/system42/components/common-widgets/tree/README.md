@@ -38,7 +38,6 @@ like the following.
 
 ![alt tag](screenshots/ajax-treeview-widget-example-screenshot.png)
 
-
 Notice if you right click an item, and choose "Open in new tab" for instance, then the URL opened, will "unroll" the tree view,
 to whatever item you choose. This is due to the [_crawl] parameter being set to true. This works by adding an HTTP GET parameter to
 the current URL, which contains the IDs of every single item, separated by "|", necessary to toggle, to open up the tree, to the point
@@ -114,6 +113,10 @@ create-container-widget
               _class-close:glyphicon glyphicon-fast-backward
               _class:tree-leaf
 ```
+
+The above example, will produce something like the following.
+
+![alt tag](screenshots/ajax-treeview-widget-example-screenshot-custom-icons.png)
 
 The default icons used if no CSS class is explicitly added is "glyphicon glyphicon-folder-close" and "glyphicon glyphicon-folder-open" from 
 Bootstrap CSS.

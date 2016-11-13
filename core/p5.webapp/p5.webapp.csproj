@@ -459,6 +459,8 @@
     <Content Include="system42\components\common-widgets\tree\media\skins\small\small.min.css">
       <DependentUpon>small.css</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\tree\screenshots\ajax-treeview-widget-example-screenshot-custom-icons.png" />
+    <Content Include="system42\components\common-widgets\tree\screenshots\ajax-treeview-widget-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.css" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.js" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.min.css">

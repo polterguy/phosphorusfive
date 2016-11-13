@@ -124,5 +124,11 @@
     "inputFiles": [
       "system42/components/common-widgets/codemirror/media/theme/paraiso.css"
     ]
+  },
+  {
+    "outputFileName": "system42/components/common-widgets/tree/media/skins/default/default.min.css",
+    "inputFiles": [
+      "system42/components/common-widgets/tree/media/skins/default/default.css"
+    ]
   }
 ]

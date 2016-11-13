@@ -252,13 +252,16 @@
     width:16px;
     height:14px;
     display:inline-block;
-    background-image:url(tree-1.png);
     margin-right:3px;
     margin-top:2px;
     margin-bottom:-2px;
     animation-name:tree-item-animate-icon;
     animation-duration: 1s;
     animation-fill-mode:forwards;
+}
+
+.tree-widget-default a.tree-item-label .folder {
+    background-image: url(tree-1.png);
 }
 
 .tree-widget-default a.tree-item-label .glyphicon-folder-open {

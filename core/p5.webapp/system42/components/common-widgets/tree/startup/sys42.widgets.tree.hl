@@ -509,8 +509,8 @@ create-event:sys42.widgets.tree._create-items
    * These are the default CSS classes used for icon items, if no explicit override is supplied by caller.
    */
   _options
-    _class-close:glyphicon glyphicon-folder-close
-    _class-open:glyphicon glyphicon-folder-open
+    _class-close:glyphicon glyphicon-folder-close folder
+    _class-open:glyphicon glyphicon-folder-open folder
 
   /*
    * Checking if we have items, and if not, returning early.
