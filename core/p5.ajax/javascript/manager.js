@@ -606,7 +606,7 @@
                     xhr2.onload = function() {
                         if (xhr2.readyState === 4) {
                             if (xhr2.status === 200) {
-                                eval(xhr2.responseText);
+                                eval.call(window, xhr2.responseText);
                                 arr.splice(0, 1);
                                 T._incScr(arr, sent);
                             } else {
@@ -621,7 +621,7 @@
                 } else {
 
                     // JavaScript object inclusion.
-                    eval(arr[0]['Item1']);
+                    eval.call(window, arr[0]['Item1']);
                     arr.splice(0, 1);
                     this._incScr(arr, sent);
                 }

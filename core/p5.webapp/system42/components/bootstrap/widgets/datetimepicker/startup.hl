@@ -45,7 +45,7 @@ create-event:sys42.widgets.datetimepicker
     _onchange
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options!/_parent)/$"
 
   /*
    * Checking if [_label] was passed in, and if so, making sure widget gets a descriptive input-group-addon.
@@ -64,98 +64,6 @@ create-event:sys42.widgets.datetimepicker
   if:x:/../*/_options/*/_icon?value
     not
     set:x:/../*/return/*/container/*/widgets/*/span
-
-  /*
-   * Becomes arguments to pass into JavaScript instantiation.
-   */
-  _arguments
-
-  /*
-   * Checking if [_locale] was passed in, and if so, making sure we use specified locale.
-   */
-  if:x:/../*/_options/*/_locale?value
-
-    /*
-     * Including the necessary "locale" JS file, and setting the "locale" option for our JavaScript.
-     */
-    include-javascript-file:@"@bootstrap/widgets/datetimepicker/media/js/locale/{0}.js"
-      :x:/../*/_options/*/_locale?value
-    set:x:/@_arguments?value
-      src:@"{0},locale:'{1}'"
-        :x:/@_arguments?value
-        :x:/../*/_options/*/_locale?value
-
-  /*
-   * Checking if [_format] was passed in, and if so, making sure we use specified format.
-   */
-  if:x:/../*/_options/*/_format?value
-    set:x:/@_arguments?value
-      src:@"{0},format:'{1}'"
-        :x:/@_arguments?value
-        :x:/../*/_options/*/_format?value
-
-  /*
-   * Checking if [_default-date] was passed in, and if so, making sure we use it.
-   */
-  if:x:/../*/_options/*/_default-date?value
-    set:x:/@_arguments?value
-      src:@"{0},defaultDate:'{1}'"
-        :x:/@_arguments?value
-        :x:/../*/_options/*/_default-date?value.string
-
-  /*
-   * Checking if [_view-mode] was passed in, and if so, making sure we use it.
-   */
-  if:x:/../*/_options/*/_view-mode?value
-    set:x:/@_arguments?value
-      src:@"{0},viewMode:'{1}'"
-        :x:/@_arguments?value
-        :x:/../*/_options/*/_view-mode?value
-
-  /*
-   * Checking if [_format] was passed in, and if so, making sure we use it.
-   */
-  if:x:/../*/_options/*/_format?value
-    set:x:/@_arguments?value
-      src:@"{0},format:'{1}'"
-        :x:/@_arguments?value
-        :x:/../*/_options/*/_format?value
-
-  /*
-   * Checking if [_min-date] was passed in, and if so, making sure we use it.
-   */
-  if:x:/../*/_options/*/_min-date?value
-    set:x:/@_arguments?value
-      src:@"{0},minDate:'{1}'"
-        :x:/@_arguments?value
-        :x:/../*/_options/*/_min-date?value.string
-
-  /*
-   * Checking if [_max-date] was passed in, and if so, making sure we use it.
-   */
-  if:x:/../*/_options/*/_max-date?value
-    set:x:/@_arguments?value
-      src:@"{0},maxDate:'{1}'"
-        :x:/@_arguments?value
-        :x:/../*/_options/*/_max-date?value.string
-
-  /*
-   * Checking if [_show-today-button] was passed in, and if so, making sure we use it.
-   */
-  if:x:/../*/_options/*/_show-today-button?value
-    set:x:/@_arguments?value
-      src:@"{0},showTodayButton:true"
-        :x:/@_arguments?value
-
-  /*
-   * Making sure we nicely format arguments.
-   */
-  if:x:/../*/_arguments?value
-    trim:x:/../*/_arguments?value
-      chars:,
-    set:x:/../*/_arguments?value
-      src:"{{{0}}}"
-        :x:/@trim?value
 
   /*
    * Passing in [_onchange] lambda callback such that it is evaluated upon change, and making sure
@@ -183,14 +91,15 @@ create-event:sys42.widgets.datetimepicker
       src:bool:false
 
   /*
-   * Forward evaluating arguments.
+   * Passing in arguments to [oninit].
    */
-  eval-x:x:/../*/return/*/container/*/widgets/*(/input/*(/value|/oninit/*/_arguments)|/span/*/innerValue)|/../*/return/*/*/class
+  add:x:/../*/return/**/oninit
+    src:x:/../*/_options
 
   /*
-   * For weird reasons, we need to include Moment.js
+   * Forward evaluating arguments.
    */
-  include-javascript-file:@bootstrap/widgets/datetimepicker/media/js/moment.min.js
+  eval-x:x:/../*/return/*/container/*/widgets/*/span/*/innerValue|/../*/return/*/*/class|/../*/return/*/*/widgets/*/input/*/value
 
   /*
    * Returning datetimepicker to caller.
@@ -276,10 +185,107 @@ create-event:sys42.widgets.datetimepicker
             sys42.bootstrap.include-css
 
             /*
+             * The DateTimePicker is dependent upon Moment.js.
+             */
+            include-javascript-file:@bootstrap/widgets/datetimepicker/media/js/moment.min.js
+
+            /*
              * Including DateTimePicker's JavaScript and CSS
              */
             include-javascript-file:@bootstrap/widgets/datetimepicker/media/js/bootstrap-datetimepicker.min.js
             include-stylesheet-file:@bootstrap/widgets/datetimepicker/media/css/bootstrap-datetimepicker.min.css
+
+            /*
+             * Becomes arguments to pass into JavaScript instantiation.
+             */
+            _arguments
+
+            /*
+             * Checking if [_locale] was passed in, and if so, making sure we use specified locale.
+             */
+            if:x:/../*/_options/*/_locale?value
+
+              /*
+               * Including the necessary "locale" JS file, and setting the "locale" option for our JavaScript.
+               */
+              include-javascript-file:@"@bootstrap/widgets/datetimepicker/media/js/locale/{0}.js"
+                :x:/../*/_options/*/_locale?value
+              set:x:/@_arguments?value
+                src:@"{0},locale:'{1}'"
+                  :x:/@_arguments?value
+                  :x:/../*/_options/*/_locale?value
+
+            /*
+             * Checking if [_format] was passed in, and if so, making sure we use specified format.
+             */
+            if:x:/../*/_options/*/_format?value
+              set:x:/@_arguments?value
+                src:@"{0},format:'{1}'"
+                  :x:/@_arguments?value
+                  :x:/../*/_options/*/_format?value
+
+            /*
+             * Checking if [_default-date] was passed in, and if so, making sure we use it.
+             */
+            if:x:/../*/_options/*/_default-date?value
+              set:x:/@_arguments?value
+                src:@"{0},defaultDate:'{1}'"
+                  :x:/@_arguments?value
+                  :x:/../*/_options/*/_default-date?value.string
+
+            /*
+             * Checking if [_view-mode] was passed in, and if so, making sure we use it.
+             */
+            if:x:/../*/_options/*/_view-mode?value
+              set:x:/@_arguments?value
+                src:@"{0},viewMode:'{1}'"
+                  :x:/@_arguments?value
+                  :x:/../*/_options/*/_view-mode?value
+
+            /*
+             * Checking if [_format] was passed in, and if so, making sure we use it.
+             */
+            if:x:/../*/_options/*/_format?value
+              set:x:/@_arguments?value
+                src:@"{0},format:'{1}'"
+                  :x:/@_arguments?value
+                  :x:/../*/_options/*/_format?value
+
+            /*
+             * Checking if [_min-date] was passed in, and if so, making sure we use it.
+             */
+            if:x:/../*/_options/*/_min-date?value
+              set:x:/@_arguments?value
+                src:@"{0},minDate:'{1}'"
+                  :x:/@_arguments?value
+                  :x:/../*/_options/*/_min-date?value.string
+
+            /*
+             * Checking if [_max-date] was passed in, and if so, making sure we use it.
+             */
+            if:x:/../*/_options/*/_max-date?value
+              set:x:/@_arguments?value
+                src:@"{0},maxDate:'{1}'"
+                  :x:/@_arguments?value
+                  :x:/../*/_options/*/_max-date?value.string
+
+            /*
+             * Checking if [_show-today-button] was passed in, and if so, making sure we use it.
+             */
+            if:x:/../*/_options/*/_show-today-button?value
+              set:x:/@_arguments?value
+                src:@"{0},showTodayButton:true"
+                  :x:/@_arguments?value
+
+            /*
+             * Making sure we nicely format arguments.
+             */
+            if:x:/../*/_arguments?value
+              trim:x:/../*/_arguments?value
+                chars:,
+              set:x:/../*/_arguments?value
+                src:"{{{0}}}"
+                  :x:/@trim?value
 
             /*
              * Initializing widget with JavaScript client inclusion.
@@ -309,9 +315,8 @@ create-event:sys42.widgets.datetimepicker
                 src:x:/../*/_event?value
 
             /*
-             * This one is forward evaluated above, and contains the JavaScript initialization arguments.
+             * This one is forward evaluated above, and is true if we have an [_onchange] lambda callback.
              */
-            _arguments:x:/../*/_arguments?value
             _has-onchange
             if:x:/@_has-onchange?value
 

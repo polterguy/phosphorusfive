@@ -142,5 +142,11 @@
     "inputFiles": [
       "system42/components/bootstrap/widgets/datetimepicker/media/js/moment.js"
     ]
+  },
+  {
+    "outputFileName": "system42/components/bootstrap/widgets/datetimepicker/media/js/locale/nb.min.js",
+    "inputFiles": [
+      "system42/components/bootstrap/widgets/datetimepicker/media/js/locale/nb.js"
+    ]
   }
 ]
