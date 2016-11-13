@@ -46,11 +46,12 @@ create-widget:datagrid-wrapper-1
         return:bool:true
 ```
 
-Assuming you've imported som CSV file, the above code will create somethin resembling the following for you.
+The above code, creates an Ajax Datagrid with support for inline editing of items, paging and filtering (search).
+
+Assuming you've imported som CSV file, the above code will create something resembling the following for you, depending upon how your CSV file
+looks like.
 
 ![alt tag](screenshots/ajax-datagrid-example-screenshot.png)
-
-The above code, creates an Ajax Datagrid with support for inline editing of items, paging and filtering (search).
 
 The dataset the datagrid expects in your *[_on-get-items]* lambda callback, should look something like this.
 
@@ -65,8 +66,8 @@ return
       email:jane@doe.com
 ```
 
-The "some-id-n" is the ID of your data row, and its children nodes are the column names and values. In the above example, we have
-two rows, with two columns each, named; "name" and "email".
+The _"some-id-XX"_ is the ID of your data row, and its children nodes are the column names and values. In the above example, we have
+two rows, with two columns each, named; _"name"_ and _"email"_.
 
 ## Turning off editing of cells and rows
 
@@ -229,6 +230,10 @@ create-widget:datagrid-wrapper-3
 In our above example, we have completely dropped the *[_on-edit-item]* callback, and instead provided an *[_on-select-items]*. This
 ensures the user can select a row, instead of inline editing a cell's content. This lambda callback is mutually exclusive with 
 the *[_on-edit-item]* callback. Meaning, you must choose one of them, and not both!
+
+The above code, will create something looking like the following, asssuming you've got some CSV file in your database.
+
+![alt tag](screenshots/ajax-datagrid-example-screenshot-selection.png)
 
 If you wish, you can also create _"template columns"_, which are columns where you have 100% control over what goes into every cell
 of your datagrid. Using this technique, you can put any other Ajax widgets you wish, into the cells of your datagrid. This is done
