@@ -1,7 +1,190 @@
 
 /*
- * Startup script that is evaluated when server is started.
- * Evaluates all Hyperlambda files in the "startup" folder.
+ * Creates the Ajax uploader widget Active Event.
  */
 
-sys42.utilities.execute-lambda-folder:/system42/components/common-widgets/uploader/startup/
+
+/*
+ * The actual uloader widget Active Event.
+ *
+ * Creates an Ajax uploader widget, which serves as a "drop point" for dragging and dropping files from your desktop, and unto
+ * your browser's surface. Provide atthe very least an [_onupload] lambda callback handler, which will be invoked with [_filename]
+ * and [_content] whenever user drops one or more files unto its surface.
+ *
+ * Arguments;
+ *
+ * [_css-file]            - A CSS file to automatically include into the page as the widget is instantiated.
+ *                          Its default value is "uploader.css", which can be found in the "media" folder of the widget's
+ *                          folder structure. If you set it to "" (empty string), then no CSS file will be included.
+ * [_filter]              - Pipe separated (|) list of  valid file extensions that the uploader accepts. Default value is empty, "", 
+ *                          which means "everything is accepted".
+ * [_allow-multiple]      - If false, then only one file is allowed being uploaded at the same time. The default value is true.
+ * [_class]               - The CSS class for your widget. Default value is "uploader-widget", which corresponds with the class
+ *                          inside of "uploader.css".
+ * [_dragover-class]      - The CSS class to use whenever some file(s) is dragged over your widget. Useful to give the user hints that
+ *                          it accepts dropping of files. The default value is "uploader-widget-dragover".
+ * [_drop-class]          - The CSS class to use whenever some file(s) are dropped unto the widget's surface. Useful to give
+ *                          visual clues to the user that an uploading of one or more files is in progress. The default value
+ ~                          is "uploader-widget-drop".
+ * [_onupload]            - Lambda callback which will be invoked whenever some file have been uploaded to the server. Will be given
+ *                          a [_filename] and a [_content] argument.
+ *                          In addition, for cases when the user is uploading multiple files at once, it will also be given the
+ *                          arguments [_count] and [_current], which are the total number of files, and the currently uploaded file.
+ * [_widgets]             - Children widgets collection for your widget. This allows you to create children widgets inside of your
+ *                          uploader widget, such you can modify its content, anyways you see fit.
+ */
+create-event:sys42.widgets.uploader
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _css-file:/system42/components/common-widgets/uploader/media/uploader.css
+    _class:uploader-widget
+    _dragover-class:uploader-widget-dragover
+    _drop-class:uploader-widget-drop
+    _error-class:uploader-widget-error
+    _allow-multiple:bool:true
+    _filter
+    _onupload
+      sys42.windows.info-tip:You should really have provided an [_onupload] lambda callback.
+    _widgets
+  _options
+  add:x:/../*/_options
+    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+
+
+  /*
+   * Checking if a CSS file is specified, and if so, including it.
+   */
+  if:x:/../*/_options/*/_css-file?value
+    include-stylesheet-file:x:/../*/_options/*/_css-file?value
+
+
+  /*
+   * Including JavaScript file that contains uploader widget's client-side JavaScript.
+   */
+  include-javascript-file:/system42/components/common-widgets/uploader/media/uploader.js
+
+
+  /*
+   * Adding [_onupload] lambda callback argument given into [_onupload] Ajax event below
+   */
+  add:x:/../*/return/*/container/*/_onupload/*/_onupload
+    src:x:/../*/_options/*/_onupload/*
+
+
+  /*
+   * Adding children widgets to uploader.
+   */
+  add:x:/../*/return/*/container/*/widgets
+    src:x:/../*/_options/*/_widgets/*
+
+
+  /*
+   * Forward evaluating some arguments to widget.
+   */
+  eval-x:x:/++(/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple)|/return/*/container/*/class|/_onupload/*(/_filter|/_allow-multiple))
+
+
+  /*
+   * Returning the uploader widget to caller.
+   */
+  return
+    container
+      class:x::/../*/_options/*/_class?value
+      oninit
+
+        /*
+         * These are forward evaluated during construction of widget.
+         */
+        _class:x:/../*/_options/*/_class?value
+        _dragover-class:x:/../*/_options/*/_dragover-class?value
+        _drop-class:x:/../*/_options/*/_drop-class?value
+        _error-class:x:/../*/_options/*/_error-class?value
+        _filter:x:/../*/_options/*/_filter?value
+        _allow-multiple:x:/../*/_options/*/_allow-multiple?value
+        to-lower:x:/-?value.string
+
+        /*
+         * Making sure we include our uploader JavaScript file, and our initialize uploader JavaScript.
+         * Notice, we have to wait until widget is actually attached before we do this, since otherwise we won't know its ID,
+         * unless an explicit ID was provided, which is not necessary the case.
+         */
+        send-javascript:@"new window.p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6});"
+          :x:/../*/_event?value
+          :x:/../*/_class?value
+          :x:/../*/_dragover-class?value
+          :x:/../*/_drop-class?value
+          :x:/../*/_error-class?value
+          :x:/../*/_filter?value
+          :x:/../*/to-lower?value
+
+      /*
+       * Event raised when a file is uploaded.
+       */
+      _onupload
+
+        /*
+         * Retrieving content, filename, count and current index that was uploaded.
+         */
+        get-http-param:sys42.widgets.uploader.count
+        get-http-param:sys42.widgets.uploader.current
+        get-http-param:sys42.widgets.uploader.filename
+        get-http-param:sys42.widgets.uploader.content
+
+        /*
+         * Server side validation of filename's extension, to avoid client-side hacking of JS, to allow uploading of non-supported files!
+         */
+        _filter:x:/../*/_options/*/_filter?value
+        if:x:/-?value
+          split:x:/./-?value
+            =:|
+          split:x:/../*/get-http-param/*/sys42.widgets.uploader.filename?value
+            =:.
+          if:x:/@split/@split/*/{0}
+            :x:/@split/0/-?name
+            not
+
+            /*
+             * Illegal file extension!
+             * Providing some visual clues, and returning early.
+             */
+            sys42.windows.info-tip:Unsupported file extension!
+              _class:info-window info-window-error
+            return
+
+        /*
+         * Checking if multiple files were provided, and if this is legal according to widget's properties.
+         */
+        _allow-multiple:x:/../*/_options/*/_allow-multiple?value.bool
+        if:x:/../*/get-http-header/*/sys42.widgets.uploader.count?value.int
+          >:int:1
+          and:x:/@_allow-multiple?value.bool
+            =:bool:false
+          sys42.windows.info-tip:Please only upload one file at the time!
+            _class:info-window info-window-error
+          return
+
+        /*
+         * Decoding from base64 to byte[].
+         */
+        p5.string.decode-base64:x:/../*/get-http-param/*/sys42.widgets.uploader.content?value
+
+        /*
+         * Making sure we "isolate" lambda callback supplied during instantiation of widget.
+         */
+        _onupload
+        eval-x:x:/+/*
+        eval:x:/../*/_onupload
+          _count:x:/../*/get-http-param/[0,1]/*?value
+          _current:x:/../*/get-http-param/[1,2]/*?value
+          _filename:x:/../*/get-http-param/[2,3]/*?value
+          _content:x:/../*/p5.string.decode-base64?value
+          _event:x:/../*/_event?value
+
+      /*
+       * Children widget collection.
+       */
+      widgets
+

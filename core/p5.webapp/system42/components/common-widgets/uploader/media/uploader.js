@@ -28,13 +28,13 @@
     window.p5.uploader = function (widget, cssClass, hoverClass, dropClass, errorClass, filter, multiple) {
 
         // Initializing.
-        this._widget      = p5.$(widget);
-        this._cssClass    = cssClass;
-        this._hoverClass  = hoverClass;
-        this._dropClass   = dropClass;
-        this._errorClass  = errorClass;
-        this._filter      = (filter == '' ? [] : filter.split ('|'));
-        this._multiple    = multiple;
+        this._widget = p5.$(widget);
+        this._cssClass = cssClass;
+        this._hoverClass = hoverClass;
+        this._dropClass = dropClass;
+        this._errorClass = errorClass;
+        this._filter = (filter == '' ? [] : filter.split('|'));
+        this._multiple = multiple;
 
         // Making sure we handle our related DOM events here.
         var self = this;
@@ -97,7 +97,7 @@
             var ext = splits[splits.length - 1];
             var found = false;
             for (var idxSplit = 0; idxSplit < this._filter.length; idxSplit++) {
-                if (this._filter [idxSplit] == ext) {
+                if (this._filter[idxSplit] == ext) {
                     found = true;
                     break;
                 }
@@ -113,14 +113,14 @@
     window.p5.uploader.prototype.processNext = function (currentIdx) {
 
         // Retrieving next file in queue, removing it out of our queue, and pushing it to server.
-        var f = this._files.splice (0,1)[0];
+        var f = this._files.splice(0, 1)[0];
         var reader = new FileReader();
         var self = this;
         reader.onload = function (e) {
             self._widget.raise('_onupload', {
                 onsuccess: function (serverReturn, evt) {
                     if (self._files.length > 0) {
-                        self.processNext (++currentIdx);
+                        self.processNext(++currentIdx);
                     } else {
                         self._widget.el.className = self._cssClass;
                     }

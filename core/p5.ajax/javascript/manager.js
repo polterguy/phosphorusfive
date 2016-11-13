@@ -629,7 +629,7 @@
 
                 // Finally, in the end, executing all the JavaScript sent from server
                 for (var idxScript = 0; idxScript < sent.length; idxScript++) {
-                    eval(sent[idxScript]);
+                    eval.call(window, sent[idxScript]);
                 }
             }
         }
