@@ -118,14 +118,13 @@ The above example, will produce something like the following.
 
 ![alt tag](screenshots/ajax-treeview-widget-example-screenshot-custom-icons.png)
 
-The default icons used if no CSS class is explicitly added is "glyphicon glyphicon-folder-close" and "glyphicon glyphicon-folder-open" from 
-Bootstrap CSS.
+The default icons used if no CSS class is explicitly added is "glyphicon glyphicon-folder-close folder" and "glyphicon glyphicon-folder-open folder"
+from Bootstrap CSS. The "folder" CSS class, simply adds the default background image, if Bootstrap is not included. Although the TreeView
+renders with more icon types if you include Bootstrap CSS, it is not dependent upon it in any ways. If you do not include Bootstrap, and
+you do not override its CSS classes, it will render a folder open/close background image, with fixed width and height. If this does not fit
+your needs, feel free to either include Bootstrap, or override the default CSS classes as the above example illustrates.
 
-The widget is not dependent upon [Bootstrap CSS](http://getbootstrap.com/components/) in any ways, but will use the glyphicon classes as
-the default classes for icons, unless overridden. This means you'll need to include the Bootstrap component on your page, unless you override
-the [_class-close] and [_class-open] values of each item in your [_items] collection.
-
-To see how to do this, check out the documentation for the [Bootstrap CSS](/core/p5.webapp@bootstrap/) module.
+To see how to do include Bootstrap, check out the documentation for the [Bootstrap CSS](../../bootstrap/) module.
 
 Notice, all arguments are optional, except the *[_items]* collection, that must have, at the very least, minimum _one_ item. Making the
 smallest possible code to use the Tree view look something like this.
