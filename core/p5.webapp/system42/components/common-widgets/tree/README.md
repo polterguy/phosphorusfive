@@ -33,7 +33,11 @@ create-container-widget
           _items
 ```
 
-The above example allows you to traverse your folders in your Phosphorus Five installation, using the Ajax tree widget.
+The above example allows you to traverse your folders in your Phosphorus Five installation, using the Ajax tree widget. It will look something
+like the following.
+
+![alt tag](screenshots/ajax-treeview-widget-example-screenshot.png)
+
 
 Notice if you right click an item, and choose "Open in new tab" for instance, then the URL opened, will "unroll" the tree view,
 to whatever item you choose. This is due to the [_crawl] parameter being set to true. This works by adding an HTTP GET parameter to
