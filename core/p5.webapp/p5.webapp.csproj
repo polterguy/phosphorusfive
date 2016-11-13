@@ -65,12 +65,12 @@
     <Content Include="system42\apps\CMS\media\css\navbar-fix.min.css">
       <DependentUpon>navbar-fix.css</DependentUpon>
     </Content>
-    <Content Include="system42\components\bootstrap\windows\sys42-windows-confirm-screenshot.png" />
-    <Content Include="system42\components\bootstrap\windows\sys42-windows-modal-screenshot.png" />
-    <Content Include="system42\components\bootstrap\windows\sys42-windows-modal-tree-view-screenshot.png" />
-    <Content Include="system42\components\bootstrap\windows\sys42-windows-modal-validation-error-screenshot.png" />
-    <Content Include="system42\components\bootstrap\windows\sys42-windows-wizard-screenshot.png" />
-    <Content Include="system42\components\bootstrap\windows\sys42-windows-wizard-select-option-screenshot.png" />
+    <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-confirm-screenshot.png" />
+    <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-modal-screenshot.png" />
+    <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-modal-tree-view-screenshot.png" />
+    <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-modal-validation-error-screenshot.png" />
+    <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-wizard-screenshot.png" />
+    <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-wizard-select-option-screenshot.png" />
     <Content Include="system42\components\common-widgets\ckeditor\media\lang\af.js" />
     <Content Include="system42\components\common-widgets\ckeditor\media\lang\ar.js" />
     <Content Include="system42\components\common-widgets\ckeditor\media\lang\bg.js" />

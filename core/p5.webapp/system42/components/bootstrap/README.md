@@ -14,4 +14,7 @@ to include the JavaScript from Bootstrap. (hint; The menu uses JavaScript for in
 If you choose to include the Bootstrap CSS' JavaScript, then jQuery will be automatically included, since Bootstrap's JavaScript
 depends upon jQuery.
 
+## Bootstrap widgets
 
+In addition to the core Bootstrap framework, there are also several widgets, and other types of components in this folder, that are created 
+around Bootstrap. These can be found in [widgets](widgets/) and [windows](windows/).
