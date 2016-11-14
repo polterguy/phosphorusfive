@@ -54,7 +54,7 @@ will look like the following.
 
 ![alt tag](screenshots/ajax-uploader-example-screenshot-fullscreen.png)
 
-In the above example, which has a *[_class]* of "uploader-widget uploader-full-screen uploader-faded", your entire page will become a "dropzone".
+In the above example, which has a *[_class]* of _"uploader-widget uploader-full-screen uploader-faded"_, your entire page will become a dropzone.
 
 ## Receiving your files on your server
 
