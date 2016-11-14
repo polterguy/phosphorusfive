@@ -11,13 +11,17 @@ create-widget:foo
   parent:content
   class:col-xs-12
   widgets
-    literal:bar
-      innerValue:Uploader example
-      element:h1
-    sys42.widgets.uploader
+    container
+      class:col-xs-8
+      widgets
+        sys42.widgets.uploader
+          _onupload
+            sleep:5000
+            sys42.windows.info-tip:File '{0}' uploaded
+              :x:/../*/_filename?value
 ```
 
-The above would produce something like the following.
+The above would produce something like the following, when a file is dragged onto your page.
 
 ![alt tag](screenshots/ajax-uploader-example-screenshot.png)
 

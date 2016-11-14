@@ -1,0 +1,8 @@
+﻿<svg xmlns='http://www.w3.org/2000/svg' width='70' height='70'>
+  <rect width='70' height='70' fill='rgba(255,255,255,.2)'/>
+    <g transform='rotate(45)'>
+      <rect width='99' height='25' fill='rgba(255,255,0,.8)'/>
+      <rect y='-50' width='99' height='25' fill='rgba(255,255,0,.8)'/>
+  </g>
+  <text x="0%" y="60%" fill="rgba(0,0,0,.4)" font-size="12px" font-family="Helvetica" transform="rotate(45 18,45)">Dropzone</text>
+</svg>

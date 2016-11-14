@@ -29,14 +29,14 @@
  * Styles for the default uploader widget.
  */
 .uploader-widget {
-    background-color:rgba(255,255,0,0);
-    overflow:visible;
-    position:fixed;
-    top:0;
-    left:0;
+    background-color:rgba(255,255,0,.2);
+    background-image: url(bg.svg);
+    position:relative;
     width:100%;
-    height:100%;
-    z-index:-1;
+    height:120px;
+    border-radius:10px;
+    border:dashed 1px rgba(0,0,0,.7);
+    opacity:1;
 }
 
 
@@ -45,10 +45,12 @@
  */
 @keyframes animation-uploader-dragover {
     0% {
-        background-color:rgba(255,255,0, 0);
+        background-color:rgba(255,255,0,0);
+        opacity:1;
     }
     100% {
-        background-color:rgba(255,255,0, .5);
+        background-color:rgba(255,255,0,.5);
+        opacity:1;
     }
 }
 
@@ -61,6 +63,25 @@
     animation-iteration-count:infinite;
     animation-duration:.5s;
     animation-direction:alternate-reverse;
+    opacity:1;
+}
+
+
+/*
+ * Animation for when an item is dropped in uploader, to give visual clues, about that this is currently uploading.
+ */
+@keyframes animation-uploader-dropped {
+    0% {
+        background-color:rgba(0,255,0, 0);
+        background-position-x:-70px;
+    }
+    50% {
+        background-color:rgba(0,255,0, .3);
+    }
+    100% {
+        background-color:rgba(0,255,0, 0);
+        background-position-x:0;
+    }
 }
 
 
@@ -68,8 +89,13 @@
  * Styles for the default uploader widget when a file is dropped inside of it.
  */
 .uploader-widget-drop {
-    background-color:rgba(128,255,0,.7);
-    transition:background-color ease-in .1s;
+    animation-name:animation-uploader-dropped;
+    animation-iteration-count:infinite;
+    animation-duration:1s;
+    animation-direction:normal;
+    animation-timing-function:linear;
+    background-image: url(bg-uploading.svg);
+    opacity:1;
 }
 
 
@@ -94,3 +120,29 @@
     animation-duration:.5s;
     animation-fill-mode:forwards;
 }
+
+
+/*
+ * Helper classes to further style uploader
+ */
+.uploader-footer {
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    width:calc(100% -40px);
+}
+.uploader-faded {
+    opacity:.4;
+}
+.uploader-large {
+    height:300px;
+}
+.uploader-full-screen {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+

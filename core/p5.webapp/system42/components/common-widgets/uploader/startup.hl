@@ -14,13 +14,13 @@
  * Arguments;
  *
  * [_css-file]            - A CSS file to automatically include into the page as the widget is instantiated.
- *                          Its default value is "uploader.css", which can be found in the "media" folder of the widget's
+ *                          Its default value is "uploader.min.css", which can be found in the "media" folder of the widget's
  *                          folder structure. If you set it to "" (empty string), then no CSS file will be included.
  * [_filter]              - Pipe separated (|) list of  valid file extensions that the uploader accepts. Default value is empty, "", 
  *                          which means "everything is accepted".
  * [_allow-multiple]      - If false, then only one file is allowed being uploaded at the same time. The default value is true.
  * [_class]               - The CSS class for your widget. Default value is "uploader-widget", which corresponds with the class
- *                          inside of "uploader.css".
+ *                          inside of "uploader.min.css".
  * [_dragover-class]      - The CSS class to use whenever some file(s) is dragged over your widget. Useful to give the user hints that
  *                          it accepts dropping of files. The default value is "uploader-widget-dragover".
  * [_drop-class]          - The CSS class to use whenever some file(s) are dropped unto the widget's surface. Useful to give
@@ -30,8 +30,6 @@
  *                          a [_filename] and a [_content] argument.
  *                          In addition, for cases when the user is uploading multiple files at once, it will also be given the
  *                          arguments [_count] and [_current], which are the total number of files, and the currently uploaded file.
- * [_widgets]             - Children widgets collection for your widget. This allows you to create children widgets inside of your
- *                          uploader widget, such you can modify its content, anyways you see fit.
  */
 create-event:sys42.widgets.uploader
 
@@ -39,7 +37,7 @@ create-event:sys42.widgets.uploader
    * Applying options for widget, with default values.
    */
   _defaults
-    _css-file:/system42/components/common-widgets/uploader/media/uploader.css
+    _css-file:/system42/components/common-widgets/uploader/media/uploader.min.css
     _class:uploader-widget
     _dragover-class:uploader-widget-dragover
     _drop-class:uploader-widget-drop
@@ -48,23 +46,9 @@ create-event:sys42.widgets.uploader
     _filter
     _onupload
       sys42.windows.info-tip:You should really have provided an [_onupload] lambda callback.
-    _widgets
   _options
   add:x:/../*/_options
     src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
-
-
-  /*
-   * Checking if a CSS file is specified, and if so, including it.
-   */
-  if:x:/../*/_options/*/_css-file?value
-    include-stylesheet-file:x:/../*/_options/*/_css-file?value
-
-
-  /*
-   * Including JavaScript file that contains uploader widget's client-side JavaScript.
-   */
-  include-javascript-file:/system42/components/common-widgets/uploader/media/uploader.js
 
 
   /*
@@ -75,16 +59,9 @@ create-event:sys42.widgets.uploader
 
 
   /*
-   * Adding children widgets to uploader.
-   */
-  add:x:/../*/return/*/container/*/widgets
-    src:x:/../*/_options/*/_widgets/*
-
-
-  /*
    * Forward evaluating some arguments to widget.
    */
-  eval-x:x:/++(/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple)|/return/*/container/*/class|/_onupload/*(/_filter|/_allow-multiple))
+  eval-x:x:/++(/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple|/_css-file)|/return/*/container/*/class|/_onupload/*(/_filter|/_allow-multiple))
 
 
   /*
@@ -94,6 +71,18 @@ create-event:sys42.widgets.uploader
     container
       class:x::/../*/_options/*/_class?value
       oninit
+
+        /*
+         * Including CSS file, this one is forward evaluated above.
+         */
+        _css-file:x:/../*/_options/*/_css-file?value
+        if:x:/@_css-file?value
+          include-stylesheet-file:x:/@_css-file?value
+
+        /*
+         * Including JavaScript file that contains uploader widget's client-side JavaScript.
+         */
+        include-javascript-file:/system42/components/common-widgets/uploader/media/uploader.min.js
 
         /*
          * These are forward evaluated during construction of widget.
@@ -111,7 +100,7 @@ create-event:sys42.widgets.uploader
          * Notice, we have to wait until widget is actually attached before we do this, since otherwise we won't know its ID,
          * unless an explicit ID was provided, which is not necessary the case.
          */
-        send-javascript:@"new window.p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6});"
+        send-javascript:@"new p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6});"
           :x:/../*/_event?value
           :x:/../*/_class?value
           :x:/../*/_dragover-class?value
@@ -182,9 +171,4 @@ create-event:sys42.widgets.uploader
           _filename:x:/../*/get-http-param/[2,3]/*?value
           _content:x:/../*/p5.string.decode-base64?value
           _event:x:/../*/_event?value
-
-      /*
-       * Children widget collection.
-       */
-      widgets
 

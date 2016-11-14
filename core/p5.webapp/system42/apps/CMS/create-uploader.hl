@@ -1,0 +1,182 @@
+
+/*
+ * Creating our uploader widget, such that user can drag and drop upload pages to the CMS.
+ */
+create-widget:ajax-uploader
+  parent:cnt
+  visible:false
+  widgets
+
+
+    /*
+     * The uploader widget, notice, it wraps all other widgets on page!
+     */
+    sys42.widgets.uploader:uploader-widget
+      _filter:hl
+      _allow-multiple:false
+      _class:uploader-widget uploader-faded uploader-full-screen
+      _onupload
+        hyper2lambda:x:/../*/_content?value
+
+        /*
+         * Sanity check.
+         */
+        if:x:/@hyper2lambda/*?count
+          !=:int:1
+          or:x:/@hyper2lambda/*?name
+            !=:p5.page
+
+          /*
+           * Oops, error. Showing user clues about error, and returning early.
+           */
+          sys42.windows.info-tip:Sorry, we can only handle one root element, and it must be of type [p5.page].
+            _class:info-window-error info-window info-window-longer
+          return
+
+        /*
+         * Making sure URL of page is unique, and if not, we ask user if he wants to overwrite existing URL, or
+         * create a new URL.
+         */
+        select-data:x:@"/*/*/p5.page/""={0}"""
+          :x:/../*/hyper2lambda/*?value
+        if:x:/@select-data/*?count
+          =:int:0
+
+          /*
+           * Page did not exist from before, simply inserting as is, and start editing it.
+           */
+          add:x:/..if/*/insert-data
+            src:x:/../*/hyper2lambda/*
+          insert-data
+          sys42.cms.set-currently-edited-page:x:/../*/hyper2lambda/*?value
+          sys42.cms.populate-select-page
+          sys42.cms.edit-page
+          send-javascript:@"$('#cms-select-page').focus();"
+          sys42.cms.create-navbar-menu
+        else
+
+          /*
+           * Oops, page exist from before.
+           * Figuring out next available URL that at least partially resembles the specified URL, 
+           * and using that as the "default value", asking user if he wants to overwrite, or create a new page.
+           */
+          set-session-value:sys42.cms.uploaded-page
+            src:x:/../*/hyper2lambda/*
+          select-data:x:/*/*/p5.page/"=~{0}"
+            :x:/../*/hyper2lambda/*?value
+          _high:int:2
+          for-each:x:/@select-data/*?value
+            split:x:/./*/_dp?value
+              =:-
+            if
+              can-convert:x:/./-/0/-?name
+                type:int
+              and:x:/./-/0/-?name.int
+                >=:x:/@_high?value
+              set:x:/@_high?value
+                +:x:/..for-each/*/split/0/-?name.int
+                  _:1
+
+          /*
+           * Forward evaluate [_url] inside of wizard window.
+           */
+          eval-x:x:/++/_data/*/url
+          sys42.windows.wizard
+            _header:Page exist from before
+            _body:@"There is already a page in your CMS with the same URL. Do you wish to overwrite it, or create a new page?"
+            _buttons
+              button
+                class:btn btn-default
+                innerValue:Save as new page
+                onclick
+
+                  /*
+                   * This bugger, we simply forward to [.onok], since it'll retrieve our data field values.
+                   */
+                  sys42.windows.modal.ok
+              button
+                class:btn btn-default
+                innerValue:Overwrite old page
+                onclick
+
+                  /*
+                   * Here we simply use the original values, to overwrite the existing page from database.
+                   */
+                  get-session-value:sys42.cms.uploaded-page
+                  add:x:/++/update-data/*/src
+                    src:x:/@get-session-value/*/*
+
+                  /*
+                   * Inserts the page into database, populated from above logic.
+                   */
+                  update-data:x:@"/*/*/p5.page/""={0}"""
+                    :x:/../*/get-session-value/*/*?value
+                    src
+
+                  /*
+                   * Sets currently edited page, before we close dialogue, and repopulate select dropdown, and start
+                   * editing page.
+                   */
+                  sys42.cms.set-currently-edited-page:x:/../*/get-session-value/*/*?value
+                  sys42.windows.modal.close
+                  sys42.cms.populate-select-page
+                  sys42.cms.edit-page
+                  send-javascript:@"$('#cms-select-page').focus();"
+                  sys42.cms.create-navbar-menu
+            .onok
+
+              /*
+               * Checking if user provided a URL to a page that already exists, which is not kosher.
+               */
+              select-data:x:@"/*/*/p5.page/""={0}"""
+                :x:/../*/_data/*/url?value
+              if:x:/-/*?count
+                !=:int:0
+
+                /*
+                 * User supplied a page that was already existing.
+                 * Informing user, and returning early.
+                 */
+                sys42.windows.info-tip:That page already exists
+                  _parent:modal-window-body-wrapper
+                  _class:info-window info-window-error
+                find-widget:modal-window-body-wrapper
+                  _data-field-name:url
+                get-parent-widget:x:/-/*/*?value
+                sys42.add-css-classes:x:/-/*/*?value
+                  _class:has-error
+                sys42.windows.show-lambda:x:/..
+                return:bool:false
+
+              /*
+               * Now we know user provided a unique URL, fetching page from session, updating URL, saving page to database with new URL,
+               * before we finally close window, and reload location to repopulate select dropdown and allow user to edit page.
+               */
+              get-session-value:sys42.cms.uploaded-page
+              set:x:/@get-session-value/*/*?value
+                src:x:/../*/_data/*/url?value
+              add:x:/++/insert-data
+                src:x:/@get-session-value/*/*
+
+              /*
+               * Inserts the page into database, populated from above logic.
+               */
+              insert-data
+
+              /*
+               * Sets currently edited page, before we close dialogue, and repopulate select dropdown, and start
+               * editing page.
+               */
+              sys42.cms.set-currently-edited-page:x:/../*/_data/*/url?value
+              sys42.windows.modal.close
+              sys42.cms.populate-select-page
+              sys42.cms.edit-page
+              send-javascript:@"$('#cms-select-page').focus();"
+              sys42.cms.create-navbar-menu
+
+            _data
+              url:{0}-{1}
+                :x:/../*/hyper2lambda/*?value
+                :x:/@_high?value
+
+      _widgets

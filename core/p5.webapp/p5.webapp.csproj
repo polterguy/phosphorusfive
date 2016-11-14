@@ -473,10 +473,15 @@
     <Content Include="system42\components\common-widgets\tree\screenshots\ajax-treeview-widget-example-screenshot-custom-icons.png" />
     <Content Include="system42\components\common-widgets\tree\screenshots\ajax-treeview-widget-example-screenshot-large-skin.png" />
     <Content Include="system42\components\common-widgets\tree\screenshots\ajax-treeview-widget-example-screenshot.png" />
+    <Content Include="system42\components\common-widgets\uploader\media\bg-uploading.svg" />
+    <Content Include="system42\components\common-widgets\uploader\media\bg.svg" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.css" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.js" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.min.css">
       <DependentUpon>uploader.css</DependentUpon>
+    </Content>
+    <Content Include="system42\components\common-widgets\uploader\media\uploader.min.js">
+      <DependentUpon>uploader.js</DependentUpon>
     </Content>
     <Content Include="system42\components\common-widgets\uploader\screenshots\ajax-uploader-example-screenshot.png" />
     <Content Include="web.config" />
@@ -803,6 +808,7 @@
     <Content Include="system42\components\common-windows\info-tip\README.md" />
     <Content Include="system42\components\common-windows\startup.hl" />
     <Content Include="system42\components\common-widgets\README.md" />
+    <Content Include="system42\apps\CMS\create-uploader.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

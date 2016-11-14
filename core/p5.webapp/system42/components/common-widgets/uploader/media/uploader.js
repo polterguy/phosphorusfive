@@ -25,7 +25,7 @@
 (function () {
 
     // Constructor.
-    window.p5.uploader = function (widget, cssClass, hoverClass, dropClass, errorClass, filter, multiple) {
+    p5.uploader = function (widget, cssClass, hoverClass, dropClass, errorClass, filter, multiple) {
 
         // Initializing.
         this._widget = p5.$(widget);
@@ -73,7 +73,7 @@
     };
 
     // Checks if all files are valid extensions according to initialization of object.
-    window.p5.uploader.prototype.checkFile = function (e) {
+    p5.uploader.prototype.checkFile = function (e) {
 
         // Checking if current instance has a filter.
         if (this._filter.length == 0) {
@@ -110,7 +110,7 @@
     };
 
     // Processing a single file, and recursively invokes self.
-    window.p5.uploader.prototype.processNext = function (currentIdx) {
+    p5.uploader.prototype.processNext = function (currentIdx) {
 
         // Retrieving next file in queue, removing it out of our queue, and pushing it to server.
         var f = this._files.splice(0, 1)[0];
