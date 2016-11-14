@@ -66,7 +66,7 @@
                         self._files.push(e.dataTransfer.files[i]);
                     }
                     self._count = self._files.length;
-                    self.processNext(1);
+                    self.processNext(0);
                 }
             }
         }, false);
@@ -117,7 +117,7 @@
         var reader = new FileReader();
         var self = this;
         reader.onload = function (e) {
-            self._widget.raise('_onupload', {
+            self._widget.raise('.onupload', {
                 onsuccess: function (serverReturn, evt) {
                     if (self._files.length > 0) {
                         self.processNext(++currentIdx);

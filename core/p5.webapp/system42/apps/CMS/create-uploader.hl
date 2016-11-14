@@ -15,7 +15,7 @@ create-widget:ajax-uploader
       _filter:hl
       _allow-multiple:false
       _class:uploader-widget uploader-faded uploader-full-screen
-      _onupload
+      .onupload
         hyper2lambda:x:/../*/_content?value
 
         /*

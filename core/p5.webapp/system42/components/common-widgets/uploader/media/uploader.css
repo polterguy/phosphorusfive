@@ -132,10 +132,13 @@
     width:calc(100% -40px);
 }
 .uploader-faded {
-    opacity:.4;
+    opacity:.2;
 }
 .uploader-large {
     height:300px;
+}
+.uploader-small {
+    height:60px;
 }
 .uploader-full-screen {
     position:fixed;

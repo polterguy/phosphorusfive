@@ -8,7 +8,7 @@
  * The actual uloader widget Active Event.
  *
  * Creates an Ajax uploader widget, which serves as a "drop point" for dragging and dropping files from your desktop, and unto
- * your browser's surface. Provide atthe very least an [_onupload] lambda callback handler, which will be invoked with [_filename]
+ * your browser's surface. Provide atthe very least an [.onupload] lambda callback handler, which will be invoked with [_filename]
  * and [_content] whenever user drops one or more files unto its surface.
  *
  * Arguments;
@@ -25,8 +25,8 @@
  *                          it accepts dropping of files. The default value is "uploader-widget-dragover".
  * [_drop-class]          - The CSS class to use whenever some file(s) are dropped unto the widget's surface. Useful to give
  *                          visual clues to the user that an uploading of one or more files is in progress. The default value
- ~                          is "uploader-widget-drop".
- * [_onupload]            - Lambda callback which will be invoked whenever some file have been uploaded to the server. Will be given
+ *                          is "uploader-widget-drop".
+ * [.onupload]            - Lambda callback which will be invoked whenever some file have been uploaded to the server. Will be given
  *                          a [_filename] and a [_content] argument.
  *                          In addition, for cases when the user is uploading multiple files at once, it will also be given the
  *                          arguments [_count] and [_current], which are the total number of files, and the currently uploaded file.
@@ -44,24 +44,24 @@ create-event:sys42.widgets.uploader
     _error-class:uploader-widget-error
     _allow-multiple:bool:true
     _filter
-    _onupload
-      sys42.windows.info-tip:You should really have provided an [_onupload] lambda callback.
+    .onupload
+      sys42.windows.info-tip:You should really have provided an [.onupload] lambda callback.
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"(/../*/"":regex:/^_/""|/../*/"":regex:/^./""|/../*/_defaults/*)(!/_defaults!/_options)/$"
 
 
   /*
-   * Adding [_onupload] lambda callback argument given into [_onupload] Ajax event below
+   * Adding [.onupload] lambda callback argument given into [_onupload] Ajax event below
    */
-  add:x:/../*/return/*/container/*/_onupload/*/_onupload
-    src:x:/../*/_options/*/_onupload/*
+  add:x:/../*/return/*/container/*/.onupload/*/.onupload
+    src:x:/../*/_options/*/.onupload/*
 
 
   /*
    * Forward evaluating some arguments to widget.
    */
-  eval-x:x:/++(/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple|/_css-file)|/return/*/container/*/class|/_onupload/*(/_filter|/_allow-multiple))
+  eval-x:x:/++(/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple|/_css-file)|/return/*/container/*/class|/.onupload/*(/_filter|/_allow-multiple))
 
 
   /*
@@ -112,7 +112,7 @@ create-event:sys42.widgets.uploader
       /*
        * Event raised when a file is uploaded.
        */
-      _onupload
+      .onupload
 
         /*
          * Retrieving content, filename, count and current index that was uploaded.
@@ -163,12 +163,11 @@ create-event:sys42.widgets.uploader
         /*
          * Making sure we "isolate" lambda callback supplied during instantiation of widget.
          */
-        _onupload
+        .onupload
         eval-x:x:/+/*
-        eval:x:/../*/_onupload
+        eval:x:/../*/.onupload
           _count:x:/../*/get-http-param/[0,1]/*?value
           _current:x:/../*/get-http-param/[1,2]/*?value
           _filename:x:/../*/get-http-param/[2,3]/*?value
           _content:x:/../*/p5.string.decode-base64?value
-          _event:x:/../*/_event?value
 
