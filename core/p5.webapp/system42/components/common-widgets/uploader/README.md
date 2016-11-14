@@ -16,6 +16,9 @@ create-widget:foo
       widgets
         sys42.widgets.uploader
           _onupload
+
+            // Sleeping the current thread, just 
+            // to make sure user can see animation.
             sleep:5000
             sys42.windows.info-tip:File '{0}' uploaded
               :x:/../*/_filename?value
