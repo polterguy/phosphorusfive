@@ -49,6 +49,13 @@ The default CSS file, contains some confuration classes, which allows you to con
 * "uploader-small" - Makes your widget becomes smaller, 60px tall.
 * "uploader-full-screen" - Makes your widget fill the entire screen, though behind your other widgets.
 
+If you use "uploader-full-screen" and "uploader-faded", in addition to of course, the default CSS class of "uploader-widget", then your uploader
+will look like the following.
+
+![alt tag](screenshots/ajax-uploader-example-screenshot-fullscreen.png)
+
+In the above example, which has a *[_class]* of "uploader-widget uploader-full-screen uploader-faded", your entire page will become a "dropzone".
+
 ## Receiving your files on your server
 
 Your *[.onupload]* lambda callback, will be invoked with the following arguments.
