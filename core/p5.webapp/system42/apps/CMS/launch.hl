@@ -61,6 +61,7 @@ create-widget:cms-page-editor
           class:input-group
           widgets
             literal
+              element:span
               class:input-group-addon
               innerValue:Edit
             container:cms-select-page
@@ -153,6 +154,7 @@ create-widget:cms-page-editor
                    */
                   create-literal-widget
                     element:option
+                    render-type:open
                     parent:cms-select-page
                     value:_default
                     innerValue:Choose existing page to edit ...
@@ -186,6 +188,7 @@ create-widget:cms-page-editor
                     eval-x:x:/+/*
                     create-literal-widget
                       element:option
+                      render-type:open
                       parent:cms-select-page
                       value:x:/..for-each/*/_dp/#?value
                       innerValue:x:/..for-each/*/_dp/#/*/name?value
@@ -291,6 +294,7 @@ create-widget:cms-page-editor
                 eval-x:x:/+/*/*/*
                 create-widget
                   element:li
+                  render-type:open
                   parent:cms-create-new-page
                   widgets
                     a

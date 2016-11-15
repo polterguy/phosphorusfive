@@ -93,8 +93,24 @@ namespace p5.ajax.core.filters
                 builder.Append (string.Format ("\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>\r\n", idxFile));
             }
 
-            // Adding back up again the "</html>" parts
-            builder.Append (content.Substring (idxPosition));
+            // Adding back up again the rest of HTML.
+            var indexOfBody = content.IndexOf ("<body>", idxPosition);
+            var headerContent = content.Substring (idxPosition, indexOfBody - idxPosition).Trim ().Replace ("\r\n", "");
+            var index = 0;
+            while (true) {
+                index = headerContent.IndexOf ("<", 1);
+                if (index == -1)
+                    break;
+                if (headerContent[index + 1] == '/')
+                    index = headerContent.IndexOf ("<", index + 1);
+                var tagCnt = headerContent.Substring (0, index);
+                if (tagCnt.StartsWith ("<title>")) {
+                    tagCnt = "<title>" + tagCnt.Replace ("<title>", "").Replace ("</title>", "").Trim () + "</title>";
+                }
+                builder.Append ("\t\t" + tagCnt + "\r\n");
+                headerContent = headerContent.Substring (index);
+            }
+            builder.Append ("\t</head>\r\n\t" + content.Substring (indexOfBody));
             return builder.ToString ();
         }
 

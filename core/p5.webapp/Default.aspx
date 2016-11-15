@@ -2,9 +2,7 @@
     Language="C#"
     Inherits="p5.webapp.Default"
     ValidateRequest="false"
-    Codebehind="Default.aspx.cs" %>
-
-<!DOCTYPE html>
+    Codebehind="Default.aspx.cs" %><!DOCTYPE html>
 <html>
     <head runat="server">
         <meta charset="utf-8" />
