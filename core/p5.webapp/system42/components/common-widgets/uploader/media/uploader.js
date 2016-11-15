@@ -50,8 +50,9 @@
 
         // Onchange on file input element.
         this._file.addEventListener('change', function (e) {
-            if (!self.checkFile(e)) {
+            if (!self.checkFile(self._file.files)) {
                 self._widget.el.className = self._cssClass + " " + self._errorClass;
+                setTimeout(function () { self._widget.el.className = self._cssClass;}, 1000);
             } else {
 
                 // Checking if we actually have any files to push, and if so ,starting the pushing, and changing the CSS class of widget.
@@ -84,11 +85,12 @@
         // Then the DOM event handler for what happens when a file is dropped unto widget.
         this._widget.el.addEventListener('drop', function (e) {
             e.preventDefault();
-            if (!self.checkFile(e)) {
+            if (!self.checkFile(e.dataTransfer.files)) {
                 self._widget.el.className = self._cssClass + " " + self._errorClass;
+                setTimeout(function () { self._widget.el.className = self._cssClass; }, 1000);
             } else {
 
-                // Checking if we actually have any files to push, and if so ,starting the pushing, and changing the CSS class of widget.
+                // Checking if we actually have any files to push, and if so, starting the pushing, and changing the CSS class of widget.
                 if (e.dataTransfer.files.length > 0) {
                     self.addPreview(e.dataTransfer.files);
                     self._widget.el.className = self._cssClass + " " + self._dropClass;
@@ -104,7 +106,7 @@
     };
 
     // Checks if all files are valid extensions according to initialization of object.
-    p5.uploader.prototype.checkFile = function (e) {
+    p5.uploader.prototype.checkFile = function (files) {
 
         // Checking if current instance has a filter.
         if (this._filter.length == 0) {
@@ -114,17 +116,17 @@
         }
 
         // Checking if user provided multiple files, and only one is allowed.
-        if (this._multiple === false && (e.dataTransfer.files || e.files).length > 1) {
+        if (this._multiple === false && files.length > 1) {
 
             // Widget only allows uploading one file, and multiple files were provided.
             return false;
         }
 
         // Looping through files, making sure they match at least one filter.
-        for (var idx = 0; idx < (e.dataTransfer.files || e.files).length; idx++) {
+        for (var idx = 0; idx < files.length; idx++) {
 
             // Filter were provided, looping through them all, to verify file extension can be found in at least one of the filters provided.
-            var splits = (e.dataTransfer.files || e.files)[idx].name.split('.');
+            var splits = files[idx].name.split('.');
             var ext = splits[splits.length - 1];
             var found = false;
             for (var idxSplit = 0; idxSplit < this._filter.length; idxSplit++) {
