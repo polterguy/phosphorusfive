@@ -17,11 +17,11 @@
  *                      and [_class-open]. Their default values are "glyphicon glyphicon-folder-close" and "glyphicon glyphicon-folder-open".
  * [_crawl]           - If true, the tree will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
  * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tree_unroll".
- * [_on-get-items]    - Callback lambda evaluated when the tree need more items.
+ * [.on-get-items]    - Callback lambda evaluated when the tree need more items.
  *                      Callback will be given [_item-id] for which item to retrieve children of.
  *                      Callback is expected to return an [_items] collection, similarly to when the tree is initially created.
  *                      See [_items] below to understand the collection the tree widget expects.
- * [_on-select]       - Callback lambda to invoke when an item is selected.
+ * [.on-select]       - Callback lambda to invoke when an item is selected.
  */
 create-event:sys42.widgets.tree
 
@@ -30,11 +30,11 @@ create-event:sys42.widgets.tree
    */
   _defaults
     _skin:default
-    _on-get-items
-      sys42.windows.info-top:You should really have supplied an [_on-get-items] callback! If not for anything else, than to make it empty!
+    .on-get-items
+      sys42.windows.info-top:You should really have supplied an [.on-get-items] callback! If not for anything else, than to make it empty!
         _class:info-window info-window-longer info-window-error
-    _on-select
-      sys42.windows.info-top:You should really have supplied an [_on-select] callback! If not for anything else, than to make it empty!
+    .on-select
+      sys42.windows.info-top:You should really have supplied an [.on-select] callback! If not for anything else, than to make it empty!
         _class:info-window info-window-longer info-window-error
     _crawl-get-name:sys42_widgets_tree_unroll
     _crawl:bool:false
@@ -68,17 +68,17 @@ create-event:sys42.widgets.tree
 
 
   /*
-   * Adding [_on-get-items] callback into [sys42.widgets.tree._get-items]
+   * Adding [.on-get-items] callback into [sys42.widgets.tree._get-items]
    */
   add:x:/../*/return/*/*/events/*/sys42.widgets.tree._get-items
-    src:x:/../*/_options/*/_on-get-items/*
+    src:x:/../*/_options/*/.on-get-items/*
 
 
   /*
-   * Adding [_on-select] callback into [sys42.widgets.tree._select]
+   * Adding [.on-select] callback into [sys42.widgets.tree._select]
    */
   add:x:/../*/return/*/*/events/*/sys42.widgets.tree._select
-    src:x:/../*/_options/*/_on-select/*
+    src:x:/../*/_options/*/.on-select/*
 
 
   /*
@@ -127,7 +127,7 @@ create-event:sys42.widgets.tree
 
         /*
          * Invoked when tree needs to retrieve children items for a specific tree node.
-         * The lambda for this event, is created from the [_on-get-items] callback supplied during creation of tree.
+         * The lambda for this event, is created from the [.on-get-items] callback supplied during creation of tree.
          */
         sys42.widgets.tree._get-items
 
@@ -255,7 +255,7 @@ create-event:sys42.widgets.tree
                 _class:tree-selected
 
             /*
-             * Making sure [_on-select] lambda callback is invoked.
+             * Making sure [.on-select] lambda callback is invoked.
              */
             add:x:/+
               src:x:/../*/_items

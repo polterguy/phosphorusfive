@@ -311,7 +311,7 @@ sys42.windows.modal
     sys42.widgets.tree:my-tree
       _items
         root:/
-      _on-get-items
+      .on-get-items
         list-folders:x:/../*/_item-id?value
         for-each:x:/-/*?name
           list-folders:x:/./*/_dp?value

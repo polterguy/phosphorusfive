@@ -112,7 +112,7 @@ create-widget:ajax-dropbox
     void
       element:hr
     sys42.widgets.datagrid:datagrid
-      _on-get-items
+      .on-get-items
         list-files:~/documents/private/
           filter:x:/../*/_query?value
         for-each:x:/-/*?name
@@ -127,7 +127,7 @@ create-widget:ajax-dropbox
               file:x:/@_dp?value
         return
           _items
-      _on-select-items
+      .on-select-items
         eval-x:x:/+/**(/delete-file|/~download)
         sys42.windows.confirm
           _header:Choose action
@@ -154,4 +154,5 @@ The above piece of Hyperlambda, will result in something resembling this.
 
 ![alt tag](screenshots/ajax-dropbox-example-screenshot.png)
 
-
+When you click an item in the above DataGrid, a Modal Ajax window will ask you if you wish to delete or download the file. Not too bad for 52 
+lines of Hyperlambda ...

@@ -14,7 +14,7 @@ create-container-widget
       _crawl:true
       _items
         root:/
-      _on-get-items
+      .on-get-items
         list-folders:x:/../*/_item-id?value
         for-each:x:/-/*?name
           list-folders:x:/./*/_dp?value
@@ -137,9 +137,9 @@ create-container-widget
         Foo:foo
 ```
 
-Of course, unless you supply an *[_on-get-items]* callback lambda, then no new items can possibly be appended to your tree view, and it will
+Of course, unless you supply an *[.on-get-items]* callback lambda, then no new items can possibly be appended to your tree view, and it will
 only show the items you initially feed it with. If you wish to being able to dynamically feed your widget with new items, you must add
-the *[_on-get-items]* lambda callback, where you are expected to return an *[_items]* collection, resembling the *[_items]* collection you
+the *[.on-get-items]* lambda callback, where you are expected to return an *[_items]* collection, resembling the *[_items]* collection you
 initially gave it when the widget was created.
 
 You can also toggle multiple items at the same time, by returning a nested *[_items]* collection, as the following demonstrates.
@@ -151,7 +151,7 @@ create-container-widget
     sys42.widgets.tree
       _items
         Root:root
-      _on-get-items
+      .on-get-items
         if:x:/../*/_item-id?value
           =:root
           return
@@ -174,7 +174,7 @@ create-container-widget
 
 ## Handling selected event
 
-If you wish, you can supply an *[_on-select]* lambda callback, which will be invoked when the user is selecting items in your tree.
+If you wish, you can supply an *[.on-select]* lambda callback, which will be invoked when the user is selecting items in your tree.
 Your lambda callback will be given a collection of *[_items]*, where the name property of the node, is the ID of the item selected.
 
 Below is an example of a tree widget that simply shows an "info tip box" as the user selects items.
@@ -185,7 +185,7 @@ create-container-widget
   class:col-xs-12
   widgets
     sys42.widgets.tree
-      _on-select
+      .on-select
         sys42.windows.info-tip:You selected '{0}'
           :x:/../*/_items/0?name
       _items
@@ -327,7 +327,7 @@ create-container-widget
       _skin:large
       _items
         root:/
-      _on-get-items
+      .on-get-items
         list-folders:x:/../*/_item-id?value
         for-each:x:/-/*?name
           list-folders:x:/./*/_dp?value
@@ -362,7 +362,7 @@ expanding two items with 3 and 2 children items each, becomes 1.2KB of JSON tran
 
 ## Server resource consumption
 
-The widget will only request new items when an item is initially expanded through your supplied *[_on-get-items]* lambda callback. On consecutive
+The widget will only request new items when an item is initially expanded through your supplied *[.on-get-items]* lambda callback. On consecutive
 expansions for the same items, it will simply remove a "hide" CSS class on the client, never invoking your get items lambda callback.
 
 This means it is also very cheap in regards to server resource usage, if the user is expanding and hiding the same items, looking for 

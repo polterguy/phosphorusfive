@@ -786,7 +786,6 @@
     <Content Include="system42\components\bootstrap\widgets\navbar\README.md" />
     <Content Include="system42\components\common-widgets\datagrid\startup.hl" />
     <Content Include="system42\components\common-widgets\datagrid\README.md" />
-    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.hl" />
     <Content Include="system42\components\csv-helpers\README.md" />
     <Content Include="system42\components\csv-helpers\startup\sys42.csv.import.hl" />
     <Content Include="system42\components\csv-helpers\startup.hl" />
