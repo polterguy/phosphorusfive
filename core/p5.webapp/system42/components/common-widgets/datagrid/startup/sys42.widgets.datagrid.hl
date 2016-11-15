@@ -779,7 +779,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                 /*
                  * Custom column with widget content.
                  */
-                add:x:/+
+                add:x:/./*/return
                   src:x:/../*/_dn/#/*/_widgets/*
                 return
               else

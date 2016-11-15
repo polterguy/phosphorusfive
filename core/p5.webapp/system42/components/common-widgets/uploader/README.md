@@ -32,10 +32,10 @@ process of being uploaded.
 The uploader has the following arguments.
 
 * [_css-file] - A CSS file to include when widget is displayed. Defaults to "uploader.min.css".
-* [_filter] - Filter for file types to accept.
+* [_filter] - Filter for file types to accept. Separete extensions with pipe (|), e.g. "png|jpg|gif".
 * [_allow-multiple] - If true, multiple files can be uploaded at the same time.
 * [_class] - Default CSS class to use. Defaults to "uploader-widget".
-* [_dragover-class] - CSS class to add when files are dragged unto the surface of the uploader. Defaults to "uploader-widget-dragover".
+* [_dragover-class] - CSS class to add when files are dragged unto its surface. Defaults to "uploader-widget-dragover".
 * [_drop-class] - CSS class to use when a file is dropped in the widget. Defaults to "uploader-widget-drop".
 * [.onupload] - Lambda callback to invoke when a file has been uploaded.
 
@@ -64,8 +64,8 @@ Your *[.onupload]* lambda callback, will be invoked with the following arguments
 * [_filename] - Filename as supplied by client.
 * [_content] - Content of file.
 
-Below is an example of how to create a fullscreen uploader, that saves one or more files, to the currently logged in 
-user's documents/private folder.
+Below is an example of how to create a fullscreen image uploader, that saves one or more image files, to the currently logged in 
+user's _"documents/private/"_ folder.
 
 ```
 create-widget:foo
@@ -98,14 +98,10 @@ Below is a small application that uses the Ajax uploader dropzone widget, and th
 ```
 create-widget:ajax-dropbox
   parent:content
+  class:col-xs-12
   widgets
-
-
-    // Ajax uploader widget
     sys42.widgets.uploader:uploader
       .onupload
-
-        // Saving file, and notifying user of success.
         save-file:~/documents/private/{0}
           :x:/../*/_filename?value
           src:x:/../*/_content?value
@@ -115,8 +111,6 @@ create-widget:ajax-dropbox
 
     void
       element:hr
-
-    // Datagrid
     sys42.widgets.datagrid:datagrid
       _on-get-items
         list-files:~/documents/private/
@@ -134,9 +128,26 @@ create-widget:ajax-dropbox
         return
           _items
       _on-select-items
-        sys42.cms.download-file:x:/../*/_items/*?name
-
-
+        eval-x:x:/+/**(/delete-file|/~download)
+        sys42.windows.confirm
+          _header:Choose action
+          _body:Choose if you wish to download file, or delete it
+          _buttons
+            button
+              class:btn btn-default
+              innerValue:Download
+              oninit
+                sys42.windows.modal.initial-focus:x:/../*/_event?value
+              onclick
+                sys42.cms.download-file:x:/../*/_items/*?name
+                sys42.windows.modal.destroy
+            button
+              class:btn btn-default
+              innerValue:Delete
+              onclick
+                delete-file:x:/../*/_items/*?name
+                sys42.windows.modal.destroy
+                sys42.widgets.datagrid.databind:datagrid
 ```
 
 The above piece of Hyperlambda, will result in something resembling this.
