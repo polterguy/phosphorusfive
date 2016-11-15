@@ -706,7 +706,7 @@
     <Content Include="system42\apps\CMS\page-loader\special-page\not-found.hl" />
     <Content Include="system42\apps\CMS\page-loader\special-page\no-access.hl" />
     <Content Include="system42\apps\CMS\startup.hl" />
-    <Content Include="system42\apps\CMS\startup\sys42.verify-access.hl" />
+    <Content Include="system42\apps\CMS\startup\sys42.cms.verify-access.hl" />
     <Content Include="system42\apps\CMS\page-templates\common\create-menu.hl" />
     <Content Include="system42\apps\CMS\page-templates\default.hl" />
     <Content Include="system42\apps\CMS\page-templates\empty.hl" />

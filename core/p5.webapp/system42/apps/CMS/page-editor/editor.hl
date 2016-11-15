@@ -365,6 +365,7 @@ create-widget
                 add:x:/++/_data/*/template
                   src
                     _options
+                      none:
 
                 /*
                  * Making sure we change the [role] data segment to a "drop down selection" type

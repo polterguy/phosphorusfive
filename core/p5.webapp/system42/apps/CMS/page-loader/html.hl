@@ -7,7 +7,7 @@
  * Verifying user has access to [p5.page] object first.
  */
 if
-  sys42.verify-access:x:/../*/_args/*/role?value
+  sys42.cms.verify-access:x:/../*/_args/*/role?value
 
   /*
    * Checking if template is empty, which is not legal with an [html] type of page.

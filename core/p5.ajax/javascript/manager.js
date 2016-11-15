@@ -403,13 +403,17 @@
             opt.onbefore.apply(this, [pars, evt]);
 
             // Sending request, making sure we pass in the widget that raised the event, and its event name.
+            // Also making sure we put our __VIEWSTATE back into business, since it was (highly likely) removed when page was rendered.
             var body = "_p5_event=" + evt + "&_p5_widget=" + this.el.id;
+            var vs = false;
             for (var idx = 0; idx < pars.length; idx++) {
                 body += "&";
                 var val = pars[idx];
                 body += val[0] + "=" + encodeURIComponent(val[1]);
+                if (val[0] == '__VIEWSTATE')
+                    vs = true;
             }
-            xhr.send(body);
+            xhr.send(vs ? body : '__VIEWSTATE=&' + body);
         },
 
 

@@ -52,11 +52,25 @@ namespace p5.ajax.core.filters
             content = IncludeStylesheetFiles (content);
             content = IncludeJavaScript (content);
             content = SendJavaScriptContent (content);
+            content = RemoveViewState (content);
             return content;
         }
 
         /*
-         * includes the CSS stylesheet files we should include for this response
+         * Removes the ViewState wrapper div.
+         */
+        private string RemoveViewState (string content)
+        {
+            var startOffset = content.IndexOf (@"<div class=""aspNetHidden"">");
+            var endOffset = content.IndexOf ("</div>", startOffset) + 6;
+            StringBuilder buffer = new StringBuilder ();
+            buffer.Append (content.Substring (0, startOffset).TrimEnd() + "\r\n");
+            buffer.Append ("\r\n" + content.Substring (endOffset).TrimStart ('\r', '\n'));
+            return buffer.ToString ();
+        }
+
+        /*
+         * Includes the CSS stylesheet files we should include for this response
          */
         private string IncludeStylesheetFiles (string content)
         {
@@ -74,9 +88,9 @@ namespace p5.ajax.core.filters
             }
             var builder = new StringBuilder (endBuffer + "\r\n");
 
-            // Including javascript files
+            // Including CSS files.
             foreach (var idxFile in (Manager.Page as IAjaxPage).StylesheetFilesToPush) {
-                builder.Append (string.Format ("        <link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>\r\n", idxFile));
+                builder.Append (string.Format ("\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>\r\n", idxFile));
             }
 
             // Adding back up again the "</html>" parts
@@ -101,25 +115,19 @@ namespace p5.ajax.core.filters
                 if (endBuffer.StartsWith ("<") && endBuffer.StartsWith ("</body>", StringComparison.InvariantCultureIgnoreCase))
                     break;
             }
-            var builder = new StringBuilder (content.Substring (0, idxPosition));
+            var builder = new StringBuilder (content.Substring (0, idxPosition).TrimEnd(' '));
 
             // Including javascript files
             foreach (var idxFile in (Manager.Page as IAjaxPage).JavaScriptToPush) {
                 if (idxFile.Item2) {
 
                     // This is a file
-                    builder.Append (string.Format (@"    <script type=""text/javascript"" src=""{0}""></script>
-    ", idxFile.Item1.Replace ("&", "&amp;")));
-                } else {
-
-                    // This is a simple inline inclusion
-                    builder.Append (string.Format (@"    <script type=""text/javascript"">{0}</script>
-    ", idxFile.Item1));
+                    builder.Append (string.Format ("\t\t<script type=\"text/javascript\" src=\"{0}\"></script>\r\n", idxFile.Item1.Replace ("&", "&amp;")));
                 }
             }
 
             // Adding back up again the "</html>" parts
-            builder.Append (endBuffer);
+            builder.Append ("\t" + endBuffer);
             return builder.ToString ();
         }
 
@@ -140,20 +148,27 @@ namespace p5.ajax.core.filters
                 if (endBuffer.StartsWith ("<") && endBuffer.StartsWith ("</body>", StringComparison.InvariantCultureIgnoreCase))
                     break;
             }
-            var builder = new StringBuilder (content.Substring (0, idxPosition));
+            var builder = new StringBuilder (content.Substring (0, idxPosition).TrimEnd());
 
             // Including javascript
-            builder.Append (@"    <script type=""text/javascript"">window.onload = function() {
-");
+            builder.Append ("\r\n\t\t<script type=\"text/javascript\">\r\nwindow.onload = function() {\r\n");
             foreach (var idxScript in Manager.Changes ["_p5_script"] as List<string>) {
-                builder.Append (idxScript);
+                builder.Append ("  " + idxScript.Trim().Replace ("\r\n", "\r\n  "));
                 builder.Append ("\r\n");
             }
-            builder.Append (@"}    </script>
-");
+
+            // Including javascript files
+            foreach (var idxFile in (Manager.Page as IAjaxPage).JavaScriptToPush) {
+                if (!idxFile.Item2) {
+
+                    // This is a simple inline inclusion
+                    builder.Append ("  " + idxFile.Item1.Trim().Replace("\r\n", "\r\n  ") + "\r\n");
+                }
+            }
+            builder.Append ("};\r\n\t\t</script>\r\n");
 
             // Adding back up again the "</html>" parts
-            builder.Append (endBuffer);
+            builder.Append ("\t" + endBuffer);
             return builder.ToString ();
         }
     }

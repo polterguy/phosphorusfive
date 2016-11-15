@@ -600,6 +600,18 @@ namespace p5.ajax.widgets
 
         private void RenderHtmlResponse (HtmlTextWriter writer)
         {
+            var noTabs = 0;
+            if (!IsPhosphorusRequest) {
+                writer.Write ("\r\n\t");
+                noTabs = 1;
+                Control idxCtrl = this;
+                while (idxCtrl != Page) {
+                    writer.Write ("\t");
+                    idxCtrl = idxCtrl.Parent;
+                    noTabs += 1;
+                }
+            }
+
             // Render opening tag
             if (Element == "option") {
 
@@ -617,8 +629,16 @@ namespace p5.ajax.widgets
             if (HasContent) {
                 writer.Write (">");
                 RenderChildren (writer);
-                if (RenderType == RenderingType.normal)
+                if (RenderType == RenderingType.normal) {
+                    if (this is Container) {
+                        writer.Write ("\r\n");
+                        while (noTabs != 0) {
+                            writer.Write ("\t");
+                            noTabs -= 1;
+                        }
+                    }
                     writer.Write ("</{0}>", Element);
+                }
             } else {
                 // No content in widget
                 switch (RenderType) {

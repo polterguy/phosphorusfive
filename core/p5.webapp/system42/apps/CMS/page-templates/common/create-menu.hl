@@ -97,11 +97,12 @@ for-each:x:/../*/select-data/[0,1]/*
     create-literal-widget
       parent:main-menu
       element:li
+      render-type:open
       innerValue
 
   // Verifying user has access to currently iterated [p5.page] object
   if
-    sys42.verify-access:x:/..for-each/*/_dp/#/*/role?value
+    sys42.cms.verify-access:x:/..for-each/*/_dp/#/*/role?value
 
     // Creating menu item, settings properties first
     set:x:/..for-each/*/_create-item/*/create-literal-widget/*/innerValue?value
@@ -138,6 +139,7 @@ for-each:x:/../*/select-data/[0,1]/*
             :x:/..for-each/./*/_cur?value
             parent:x:/..for-each/./*/_last?value
             element:li
+            render-type:open
             class:dropdown
             widgets
               literal
@@ -177,6 +179,7 @@ if:x:/../*/whoami/*/default?value
   create-widget:login-menu-button
     parent:main-menu
     element:li
+    render-type:open
     widgets
       literal
         element:a
@@ -315,6 +318,7 @@ else
       eval-x:x:/+/*/*/*/*
       return
         li
+          render-type:open
           widgets
             a
               href:/app-loader?app={0}
@@ -327,6 +331,7 @@ else
     create-container-widget
       parent:main-menu
       element:li
+      render-type:open
       widgets
         a
           href:#
@@ -346,6 +351,7 @@ else
   create-widget
     parent:main-menu
     element:li
+    render-type:open
     widgets
       literal
         element:a
