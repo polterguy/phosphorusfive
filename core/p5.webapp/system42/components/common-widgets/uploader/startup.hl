@@ -69,7 +69,9 @@ create-event:sys42.widgets.uploader
    */
   return
     container
+      element:div
       class:x::/../*/_options/*/_class?value
+      role:button
       oninit
 
         /*
@@ -96,11 +98,18 @@ create-event:sys42.widgets.uploader
         to-lower:x:/-?value.string
 
         /*
+         * Making sure we pass in file element to uploader instantiation.
+         */
+        find-widget:x:/../*/_event?value
+          element:input
+          type:file
+
+        /*
          * Making sure we include our uploader JavaScript file, and our initialize uploader JavaScript.
          * Notice, we have to wait until widget is actually attached before we do this, since otherwise we won't know its ID,
          * unless an explicit ID was provided, which is not necessary the case.
          */
-        send-javascript:@"new p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6});"
+        send-javascript:@"new p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}');"
           :x:/../*/_event?value
           :x:/../*/_class?value
           :x:/../*/_dragover-class?value
@@ -108,6 +117,7 @@ create-event:sys42.widgets.uploader
           :x:/../*/_error-class?value
           :x:/../*/_filter?value
           :x:/../*/to-lower?value
+          :x:/@find-widget/*/*?value
 
       /*
        * Event raised when a file is uploaded.
@@ -171,3 +181,9 @@ create-event:sys42.widgets.uploader
           _filename:x:/../*/get-http-param/[2,3]/*?value
           _content:x:/../*/p5.string.decode-base64?value
 
+      widgets
+        void
+          element:input
+          type:file
+          multiple
+          style:"opacity:0;position:absolute;"

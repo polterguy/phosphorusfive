@@ -41,6 +41,30 @@
 
 
 /*
+ * Previewing of images.
+ */
+.uploader-widget img {
+    max-width:100px;
+    max-height:100px;
+    margin:15px;
+}
+@keyframes animation-uploader-preview {
+    0% {
+        opacity:.8;
+    }
+    100% {
+        opacity:.2;
+    }
+}
+.uploader-widget img:nth-child(2) {
+    animation-name:animation-uploader-preview;
+    animation-iteration-count:infinite;
+    animation-duration:.5s;
+    animation-direction:alternate-reverse;
+}
+
+
+/*
  * Animation for when an item is dragged over uploader, to give visual clues, about that this is an "active element".
  */
 @keyframes animation-uploader-dragover {
@@ -117,7 +141,7 @@
  */
 .uploader-widget-error {
     animation-name:animation-uploader-error;
-    animation-duration:.5s;
+    animation-duration:1s;
     animation-fill-mode:forwards;
 }
 

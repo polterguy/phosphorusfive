@@ -25,7 +25,7 @@
 (function () {
 
     // Constructor.
-    p5.uploader = function (widget, cssClass, hoverClass, dropClass, errorClass, filter, multiple) {
+    p5.uploader = function (widget, cssClass, hoverClass, dropClass, errorClass, filter, multiple, file) {
 
         // Initializing.
         this._widget = p5.$(widget);
@@ -35,11 +35,41 @@
         this._errorClass = errorClass;
         this._filter = (filter == '' ? [] : filter.split('|'));
         this._multiple = multiple;
+        this._file = p5.$(file).el;
 
         // Making sure we handle our related DOM events here.
         var self = this;
 
-        // First the DOM event handler for what happens when a file is dragged over it.
+        // First the DOM event handler for what happens when widget is clicked.
+        this._widget.el.addEventListener('click', function (e) {
+            self._file.click();
+        }, false);
+        this._file.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Onchange on file input element.
+        this._file.addEventListener('change', function (e) {
+            if (!self.checkFile(e)) {
+                self._widget.el.className = self._cssClass + " " + self._errorClass;
+            } else {
+
+                // Checking if we actually have any files to push, and if so ,starting the pushing, and changing the CSS class of widget.
+                if (self._file.files.length > 0) {
+                    self.addPreview(self._file.files);
+                    self._widget.el.className = self._cssClass + " " + self._dropClass;
+                    self._files = [];
+                    for (var i = 0; i < self._file.files.length; i++) {
+                        self._files.push(self._file.files[i]);
+                    }
+                    self._count = self._files.length;
+                    self.processNext(0);
+                }
+            }
+            self._file.value = null;
+        });
+
+        // Then the DOM event handler for what happens when a file is dragged over it.
         this._widget.el.addEventListener('dragover', function (e) {
             e.preventDefault();
             self._widget.el.className = self._cssClass + " " + self._hoverClass;
@@ -60,6 +90,7 @@
 
                 // Checking if we actually have any files to push, and if so ,starting the pushing, and changing the CSS class of widget.
                 if (e.dataTransfer.files.length > 0) {
+                    self.addPreview(e.dataTransfer.files);
                     self._widget.el.className = self._cssClass + " " + self._dropClass;
                     self._files = [];
                     for (var i = 0; i < e.dataTransfer.files.length; i++) {
@@ -83,17 +114,17 @@
         }
 
         // Checking if user provided multiple files, and only one is allowed.
-        if (this._multiple === false && e.dataTransfer.files.length > 1) {
+        if (this._multiple === false && (e.dataTransfer.files || e.files).length > 1) {
 
             // Widget only allows uploading one file, and multiple files were provided.
             return false;
         }
 
         // Looping through files, making sure they match at least one filter.
-        for (var idx = 0; idx < e.dataTransfer.files.length; idx++) {
+        for (var idx = 0; idx < (e.dataTransfer.files || e.files).length; idx++) {
 
             // Filter were provided, looping through them all, to verify file extension can be found in at least one of the filters provided.
-            var splits = e.dataTransfer.files[idx].name.split('.');
+            var splits = (e.dataTransfer.files || e.files)[idx].name.split('.');
             var ext = splits[splits.length - 1];
             var found = false;
             for (var idxSplit = 0; idxSplit < this._filter.length; idxSplit++) {
@@ -109,6 +140,23 @@
         return true;
     };
 
+    p5.uploader.prototype.addPreview = function (files) {
+        for (var idx = 0; idx < files.length; idx++) {
+            var splits = files[idx].name.split('.');
+            var ext = splits[splits.length - 1];
+            var img = document.createElement('img');
+            if (ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png") {
+                var objectURL = URL.createObjectURL(files[idx]);
+                img.src = objectURL;
+            } else {
+                img.src = '/system42/components/common-widgets/uploader/media/preview.png';
+            }
+            img.alt = files[idx].name;
+            img.title = files[idx].name;
+            this._widget.el.appendChild(img);
+        }
+    };
+
     // Processing a single file, and recursively invokes self.
     p5.uploader.prototype.processNext = function (currentIdx) {
 
@@ -119,6 +167,12 @@
         reader.onload = function (e) {
             self._widget.raise('.onupload', {
                 onsuccess: function (serverReturn, evt) {
+                    for (var idx = 0; idx < self._widget.el.childNodes.length; idx++) {
+                        if (self._widget.el.childNodes[idx].tagName == 'IMG') {
+                            self._widget.el.removeChild (self._widget.el.children[idx]);
+                            break;
+                        }
+                    }
                     if (self._files.length > 0) {
                         self.processNext(++currentIdx);
                     } else {

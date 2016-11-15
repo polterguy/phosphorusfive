@@ -11,17 +11,14 @@ create-widget:foo
   parent:content
   class:col-xs-12
   widgets
-    container
-      class:col-xs-8
-      widgets
-        sys42.widgets.uploader
-          .onupload
+    sys42.widgets.uploader
+      .onupload
 
-            // Sleeping the current thread, just 
-            // to make sure user can see animation.
-            sleep:5000
-            sys42.windows.info-tip:File '{0}' uploaded
-              :x:/../*/_filename?value
+        // Sleeping the current thread, just 
+        // to make sure user can see animation.
+        sleep:5000
+        sys42.windows.info-tip:File '{0}' uploaded
+          :x:/../*/_filename?value
 ```
 
 The above would produce something like the following.
@@ -54,7 +51,7 @@ will look like the following.
 
 ![alt tag](screenshots/ajax-uploader-example-screenshot-fullscreen.png)
 
-In the above example, which has a *[_class]* of _"uploader-widget uploader-full-screen uploader-faded"_, your entire page will become a dropzone.
+In the above screenshot, which has a *[_class]* of _"uploader-widget uploader-full-screen uploader-faded"_, your entire page will become a dropzone.
 
 ## Receiving your files on your server
 
@@ -65,4 +62,30 @@ Your *[.onupload]* lambda callback, will be invoked with the following arguments
 * [_filename] - Filename as supplied by client.
 * [_content] - Content of file.
 
+Below is an example of how to create a fullscreen uploader, that saves one or more files, to the currently logged in 
+user's documents/private folder.
+
+```
+create-widget:foo
+  parent:cnt
+  widgets
+    sys42.widgets.uploader
+      _class:uploader-widget uploader-full-screen uploader-faded
+      _filter:jpg|jpeg|gif|png
+      .onupload
+
+        // Saving file, and notifying user of success.
+        save-file:~/documents/private/{0}
+          :x:/../*/_filename?value
+          src:x:/../*/_content?value
+        sys42.windows.info-tip:File '{0}' was uploaded and saved
+          :x:/../*/_filename?value
+```
+
+Notice, the *[_filter]* above, restricts the filetypes to image types of either .png, .jpeg, .jpg or .gif. If 
+you try to drag and drop files of types not supported by the above uploader unto its surface, it will refuse
+to upload them, and show a "red warning" CSS class to the user.
+
+Notice also, that from a semantic point of view, if you use the _"uploader-full-screen"_ class, it is probably
+better if you append the uploader widget directly into the _"cnt"_ parent container.
 
