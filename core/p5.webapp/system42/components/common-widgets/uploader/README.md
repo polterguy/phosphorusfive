@@ -139,3 +139,8 @@ create-widget:ajax-dropbox
 
 ```
 
+The above piece of Hyperlambda, will result in something resembling this.
+
+![alt tag](screenshots/ajax-dropbox-example-screenshot.png)
+
+

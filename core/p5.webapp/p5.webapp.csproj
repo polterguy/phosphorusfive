@@ -484,6 +484,7 @@
     <Content Include="system42\components\common-widgets\uploader\media\uploader.min.js">
       <DependentUpon>uploader.js</DependentUpon>
     </Content>
+    <Content Include="system42\components\common-widgets\uploader\screenshots\ajax-dropbox-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\uploader\screenshots\ajax-uploader-example-screenshot-fullscreen.png" />
     <Content Include="system42\components\common-widgets\uploader\screenshots\ajax-uploader-example-screenshot.png" />
     <Content Include="web.config" />
