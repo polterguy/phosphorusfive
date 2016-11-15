@@ -475,6 +475,7 @@
     <Content Include="system42\components\common-widgets\tree\screenshots\ajax-treeview-widget-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\uploader\media\bg-uploading.svg" />
     <Content Include="system42\components\common-widgets\uploader\media\bg.svg" />
+    <Content Include="system42\components\common-widgets\uploader\media\preview.png" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.css" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.js" />
     <Content Include="system42\components\common-widgets\uploader\media\uploader.min.css">

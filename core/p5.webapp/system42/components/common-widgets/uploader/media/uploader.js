@@ -142,10 +142,10 @@
 
     p5.uploader.prototype.addPreview = function (files) {
         for (var idx = 0; idx < files.length; idx++) {
+            var img = document.createElement('img');
             var splits = files[idx].name.split('.');
             var ext = splits[splits.length - 1];
-            var img = document.createElement('img');
-            if (ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png") {
+            if (splits.length > 1 && (ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png")) {
                 var objectURL = URL.createObjectURL(files[idx]);
                 img.src = objectURL;
             } else {
