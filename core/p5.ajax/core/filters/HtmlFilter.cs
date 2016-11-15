@@ -49,24 +49,52 @@ namespace p5.ajax.core.filters
         {
             TextReader reader = new StreamReader (this, ContentEncoding);
             var content = reader.ReadToEnd ();
+            content = RemoveViewState (content);
+            content = CleanHead (content);
             content = IncludeStylesheetFiles (content);
             content = IncludeJavaScript (content);
             content = SendJavaScriptContent (content);
-            content = RemoveViewState (content);
             return content;
         }
 
         /*
-         * Removes the ViewState wrapper div.
+         * Cleans up head section.
          */
-        private string RemoveViewState (string content)
+        private string CleanHead (string content)
         {
-            var startOffset = content.IndexOf (@"<div class=""aspNetHidden"">");
-            var endOffset = content.IndexOf ("</div>", startOffset) + 6;
-            StringBuilder buffer = new StringBuilder ();
-            buffer.Append (content.Substring (0, startOffset).TrimEnd() + "\r\n");
-            buffer.Append ("\r\n" + content.Substring (endOffset).TrimStart ('\r', '\n'));
-            return buffer.ToString ();
+            // Buffer
+            var builder = new StringBuilder ();
+            builder.Append ("<!DOCTYPE html>\r\n<html>\r\n\t<head>" + "\r\n");
+
+            // Figuring out head start and end.
+            var indexOfHeadStart = content.IndexOf ("<head>") + 6;
+            var indexOfHeadEnd = content.IndexOf ("</head>");
+
+            // Retrieving entire <head></head> section, trimming, and removing every single CR/LF sequence.
+            var headerContent = content.Substring (indexOfHeadStart, indexOfHeadEnd - indexOfHeadStart).Trim ().Replace ("\r\n", "");
+            var indexEnd = 0;
+            var indexStart = 0;
+            while (true) {
+                indexEnd = headerContent.IndexOf ("<", indexStart + 1);
+                if (indexEnd == -1)
+                    break; /// Done!
+                if (headerContent[indexEnd + 1] == '/')
+                    indexEnd = headerContent.IndexOf ("<", indexEnd + 1);
+                if (indexEnd == -1) {
+                    var tagCnt = headerContent.Substring (indexStart);
+                    builder.Append ("\t\t" + tagCnt + "\r\n");
+                    break;
+                } else {
+                    var tagCnt = headerContent.Substring (indexStart, indexEnd - indexStart);
+                    if (tagCnt.StartsWith ("<title>")) {
+                        tagCnt = "<title>" + tagCnt.Replace ("<title>", "").Replace ("</title>", "").Trim () + "</title>";
+                    }
+                    builder.Append ("\t\t" + tagCnt + "\r\n");
+                    indexStart = indexEnd;
+                }
+            }
+            builder.Append ("\t</head>\r\n\t<body>\r\n\t\t" + content.Substring (content.IndexOf ("<form", indexOfHeadEnd)));
+            return builder.ToString ();
         }
 
         /*
@@ -79,39 +107,30 @@ namespace p5.ajax.core.filters
 
             // Stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" 
             // parts to concatenate into result after inserting all JavaScript files inbetween
-            var endBuffer = "";
-            var idxPosition = 0;
-            for (; idxPosition < content.Length; idxPosition ++) {
-                if (endBuffer.EndsWith ("<head>"))
-                    break;
-                endBuffer += content [idxPosition];
-            }
-            var builder = new StringBuilder (endBuffer + "\r\n");
+            var builder = new StringBuilder ();
+            var indexOfHeadEnd = content.IndexOf ("</head>");
+            var cnt = content.Substring (0, indexOfHeadEnd).Trim ();
+            builder.Append (cnt);
 
             // Including CSS files.
             foreach (var idxFile in (Manager.Page as IAjaxPage).StylesheetFilesToPush) {
-                builder.Append (string.Format ("\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>\r\n", idxFile));
+                builder.Append (string.Format ("\r\n\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>", idxFile));
             }
-
-            // Adding back up again the rest of HTML.
-            var indexOfBody = content.IndexOf ("<body>", idxPosition);
-            var headerContent = content.Substring (idxPosition, indexOfBody - idxPosition).Trim ().Replace ("\r\n", "");
-            var index = 0;
-            while (true) {
-                index = headerContent.IndexOf ("<", 1);
-                if (index == -1)
-                    break;
-                if (headerContent[index + 1] == '/')
-                    index = headerContent.IndexOf ("<", index + 1);
-                var tagCnt = headerContent.Substring (0, index);
-                if (tagCnt.StartsWith ("<title>")) {
-                    tagCnt = "<title>" + tagCnt.Replace ("<title>", "").Replace ("</title>", "").Trim () + "</title>";
-                }
-                builder.Append ("\t\t" + tagCnt + "\r\n");
-                headerContent = headerContent.Substring (index);
-            }
-            builder.Append ("\t</head>\r\n\t" + content.Substring (indexOfBody));
+            builder.Append ("\r\n\t" + content.Substring (indexOfHeadEnd));
             return builder.ToString ();
+        }
+
+        /*
+         * Removes the ViewState wrapper div.
+         */
+        private string RemoveViewState (string content)
+        {
+            var startOffset = content.IndexOf (@"<div class=""aspNetHidden"">");
+            var endOffset = content.IndexOf ("</div>", startOffset) + 6;
+            StringBuilder buffer = new StringBuilder ();
+            buffer.Append (content.Substring (0, startOffset).Trim());
+            buffer.Append ("\r\n\t\t\t" + content.Substring (endOffset).TrimStart ());
+            return buffer.ToString ();
         }
 
         /*
