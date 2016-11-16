@@ -22,6 +22,7 @@
  */
 
 using p5.core;
+using p5.exp.exceptions;
 using p5.security.helpers;
 
 namespace p5.security
@@ -39,6 +40,8 @@ namespace p5.security
         [ActiveEvent (Name = "create-user")]
         public static void create_user (ApplicationContext context, ActiveEventArgs e)
         {
+            if (context.Ticket.IsDefault || context.Ticket.Role != "root")
+                throw new LambdaSecurityException ("Non-root user tried to create new user", e.Args, context);
             AuthenticationHelper.CreateUser (context, e.Args);
         }
 
@@ -50,6 +53,8 @@ namespace p5.security
         [ActiveEvent (Name = "edit-user")]
         public static void edit_user (ApplicationContext context, ActiveEventArgs e)
         {
+            if (context.Ticket.IsDefault || context.Ticket.Role != "root")
+                throw new LambdaSecurityException ("Non-root user tried to edit existing user", e.Args, context);
             AuthenticationHelper.EditUser (context, e.Args);
         }
 
@@ -61,6 +66,8 @@ namespace p5.security
         [ActiveEvent (Name = "list-users")]
         public static void list_users (ApplicationContext context, ActiveEventArgs e)
         {
+            if (context.Ticket.IsDefault || context.Ticket.Role != "root")
+                throw new LambdaSecurityException ("Non-root user tried to list all users", e.Args, context);
             AuthenticationHelper.ListUsers (context, e.Args);
         }
 
@@ -72,6 +79,8 @@ namespace p5.security
         [ActiveEvent (Name = "get-user")]
         public static void get_user (ApplicationContext context, ActiveEventArgs e)
         {
+            if (context.Ticket.IsDefault || context.Ticket.Role != "root")
+                throw new LambdaSecurityException ("Non-root user tried to retrieve existing user", e.Args, context);
             using (new Utilities.ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.GetUser (context, e.Args);
             }
@@ -85,6 +94,8 @@ namespace p5.security
         [ActiveEvent (Name = "delete-user")]
         public static void delete_user (ApplicationContext context, ActiveEventArgs e)
         {
+            if (context.Ticket.IsDefault || context.Ticket.Role != "root")
+                throw new LambdaSecurityException ("Non-root user tried to delete existing user", e.Args, context);
             AuthenticationHelper.DeleteUser (context, e.Args);
         }
     }

@@ -10,6 +10,8 @@ Below is the list of the plugins that should be considered stable, and ready for
 * [p5.threading](p5.threading) - Threading supporting Active Events *stable*
 * [p5.csv](p5.csv) - Handling CSV files in P5 *stable*
 
+## BETA plugins (not stable)
+
 The next plugins, should _not_ be considered stable, and are not ready for production use.
 
 * [p5.crypto](p5.crypto) - Cryptography helper Active Events *BETA*

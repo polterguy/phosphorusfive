@@ -71,8 +71,8 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "user-settings")]
-        public static void user_settings (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-my-user-settings")]
+        public static void get_my_user_settings (ApplicationContext context, ActiveEventArgs e)
         {
             using (new Utilities.ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.GetSettings (context, e.Args);
@@ -84,8 +84,8 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "change-user-settings")]
-        public static void change_user_settings (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-my-user-settings")]
+        public static void set_my_user_settings (ApplicationContext context, ActiveEventArgs e)
         {
             using (new Utilities.ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.ChangeSettings (context, e.Args);

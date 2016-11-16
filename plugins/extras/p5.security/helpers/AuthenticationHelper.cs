@@ -122,6 +122,14 @@ namespace p5.security.helpers
                 cookie.Value = username + " " + cookiePasswordFingerprint;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
+
+            // Making sure we invoke an [.onlogin] lambda callbacks for user.
+            var onLogin = new Node ();
+            GetSettings (context, onLogin);
+            if (onLogin [".onlogin"] != null) {
+                var lambda = onLogin[".onlogin"].Clone ();
+                context.Raise ("eval", lambda);
+            }
         }
 
         /*
@@ -129,6 +137,14 @@ namespace p5.security.helpers
          */
         public static void Logout (ApplicationContext context)
         {
+            // Making sure we invoke an [.onlogin] lambda callbacks for user.
+            var onLogout = new Node ();
+            GetSettings (context, onLogout);
+            if (onLogout[".onlogout"] != null) {
+                var lambda = onLogout[".onlogout"].Clone ();
+                context.Raise ("eval", lambda);
+            }
+
             // By destroying Ticket, default user will be used for current session, until user logs in again
             SetTicket (null);
 
@@ -308,6 +324,8 @@ namespace p5.security.helpers
             string username = args.GetExValue<string>(context);
             string password = args.GetExChildValue<string>("password", context);
             string userRole = args.GetExChildValue<string>("role", context);
+            if (args["username"] != null)
+                throw new LambdaSecurityException ("Cannot change username for user", args, context);
 
             // Locking access to password file as we edit user object
             AuthFile.ModifyAuthFile (
@@ -334,13 +352,15 @@ namespace p5.security.helpers
                     }
 
                     // Updating user's role
-                    authFile ["users"][username]["role"].Value = userRole;
+                    if (userRole != null) {
+                        authFile["users"][username]["role"].Value = userRole;
+                    }
 
                     // Removing old settings
                     authFile["users"][username].Children.RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
 
                     // Adding all other specified objects to user
-                    foreach (var idxNode in args.Children.Where (ix => ix.Name != "username" && ix.Name != "password" && ix.Name != "role")) {
+                    foreach (var idxNode in args.Children.Where (ix => ix.Name != "password" && ix.Name != "role")) {
 
                         authFile["users"][username].Add (idxNode.Clone ());
                     }
@@ -382,7 +402,6 @@ namespace p5.security.helpers
 
                     // Changing all settings for user
                     foreach (var idxNode in args.Children) {
-
                         authFile["users"][username].Add (idxNode.Clone ());
                     }
                 });
@@ -419,7 +438,11 @@ namespace p5.security.helpers
          */
         public static void DeleteMyUser (ApplicationContext context, Node args)
         {
+            // Retrieving username to delete.
             string username = context.Ticket.Username;
+
+            // Deleting user's home directory
+            context.Raise ("delete-folder", new Node ("", "/users/" + username + "/"));
 
             // Locking access to password file as we delete user object
             AuthFile.ModifyAuthFile (
@@ -430,8 +453,9 @@ namespace p5.security.helpers
                     authFile["users"][username].UnTie ();
                 });
 
-            // Deleting user's home directory
-            context.Raise ("delete-folder", new Node ("", "/users/" + username + "/"));
+            var def = CreateDefaultTicket (context);
+            SetTicket (def);
+            context.UpdateTicket (def);
         }
 
         /*

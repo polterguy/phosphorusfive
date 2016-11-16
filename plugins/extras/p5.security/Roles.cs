@@ -22,6 +22,7 @@
  */
 
 using p5.core;
+using p5.exp.exceptions;
 using p5.security.helpers;
 
 namespace p5.security
@@ -39,6 +40,8 @@ namespace p5.security
         [ActiveEvent (Name = "list-roles")]
         public static void list_roles (ApplicationContext context, ActiveEventArgs e)
         {
+            if (context.Ticket.IsDefault || context.Ticket.Role != "root")
+                throw new LambdaSecurityException ("Non-root user tried to list all roles in system", e.Args, context);
             using (new Utilities.ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.GetRoles (context, e.Args);
             }

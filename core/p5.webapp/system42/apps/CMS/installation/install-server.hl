@@ -29,12 +29,10 @@ create-widget:content
 
 /*
  * Checking if user is logged in, and that there are more than 0 users in the system,
- * to determine what to do, and which GUI to show user
+ * to determine what to do, and which GUI to show user.
  */
-whoami
-list-users
-if:x:/-/*?count
-  =:int:0
+if
+  p5.security.root-password-is-null
 
   if
     p5.security.has-salt
