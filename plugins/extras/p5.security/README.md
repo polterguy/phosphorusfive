@@ -1,4 +1,4 @@
-Authorization and authentication
+Users and roles
 ===============
 
 This folder contains the Active Events related to users and roles management. It allows you to create new users, associate roles with them, and 
@@ -50,12 +50,14 @@ the _"~/documents/public/"_ folder(s), while protected files, into the _"~/docum
 If you wish to create files that are accessible to all users of your system, you should put these files in your _"/p5.webapp/common/"_ folder, which is
 accessible to all users in your system.
 
+## Adding to the system "PATH" variable
+
 You can also create your own _"path unroll"_ active events, leading to for instance some specific folder on your server. This is done by creating an
 Active Event named *[p5.io.unroll-path.@XXX]*, returning for instance _"/my-cool-folder/xxx"_. An example is given below.
 
 ```
-create-event:p5.io.unroll-path.@FOO-BAR
-  return:/foo-bar
+create-event:p5.io.unroll-path.@XXX
+  return:/my-cool-folder/xxx
 ```
 
 Notice, do _not_ end the path, as returned from your Active Event with a slash "/". If you create unrolling Active Events, you can also create them 
@@ -66,6 +68,9 @@ the _"public home folder"_.
 create-event:p5.io.unroll-path.@PUBLIC
   return:~/documents/public
 ```
+
+All IO Active Events in Phosphorus Five, will try to unroll the path, if necessary, according to the above logic. Meaning, you can use for instance 
+also *[list-folders]*, *[copy-file]*, etc, with path modifiers as our examples above shows you.
 
 ## Editing users
 
@@ -86,11 +91,11 @@ The complete list of operations you can perform on your user objects, are as fol
 * [edit-user] - Edits existing user (changes his or her password, settings, role)
 * [list-users] - List all usernames, and their roles, in your system
 * [get-user] - Returns one or more named user(s)
-* [delete-user] - Deletes a user (WARNING! This will delete all his files!)
+* [delete-user] - Deletes one or more user(s) (WARNING! This will delete all files for user(s)!)
 
 The above Active Events, can only be evaluated by a root account.
 
-### User settings
+## User settings
 
 In addition to *[role]* and *[password]*, you can associate any data you wish with your user, such as a user's personal settings, by simply adding these 
 as nodes beneath you *[edit-user]* and *[create-user]* invocations. Consider this for instance.
@@ -106,8 +111,8 @@ edit-user:john-doe
 ```
 
 If you evaluate tha above Hyperlambda, then both *[some-data]* and *[some-complex-data]* will be associated with the _"john-doe"_ user, as settings. To
-retrieve the settings for the currently logged in user, you can use the *[user-settings]* Active Event. The user's settings are a convenient place to
-store small pieces of user related data, which are unique to each user in your system.
+retrieve the settings for the currently logged in user, you can use the *[get-my-user-settings]* Active Event. The user's settings are a convenient place to
+store small pieces of user related data, which are unique to each user in your system, such as name, email address, twitter handler, etc.
 
 You can also change your currently logged in user's settings, with the following code.
 
