@@ -41,14 +41,14 @@ All this, while retaining your ability to create C#/VB/F# code, exactly as you'r
 
 Phosphorus Five consists of three basic innovations.
 
-* A managed Ajax library
+* Managed Ajax
 * Active Events
 * Hyperlambda
 
 The Ajax library is created on top of ASP.NET's Web Forms, allowing you to use them the same way you would create a web forms website.
 Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind. We say _"managed"_, because
 it takes care of all state, Ajax serialization, and dynamic JavaScript inclusion automatically. In fact, when you use the Ajax library, you can
-create your web apps, the same way as you would normally create a desktop application.
+create your web apps, the same way you would normally create a desktop application.
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them. Active Events is the _"heart"_ of
 Phosphorus Five, allowing for the rich plugin nature in P5. You can easily create your own Active Events, either in Hyperlambda, or in C# if you wish.
@@ -70,8 +70,8 @@ its *[innerValue]* property to; _"Hello World!"_.
 The paradox is, that due to neither using OOP nor inheritance, in any ways, Hyperlambda facilitates for perfect encapsulation, and polymorphism,
 without even as much as a trace of inheritance, OOP or objects.
 
-You can easily create your own Active Events, that creates much more  complex widgets than what's shown above. Below is a piece of 
-Hyperlambda that creates an Ajax TreeView, which allows you to browse your folders on disc.
+You can easily create your own Active Events, incrementally, building on top of your previously created Active Events, that creates much richer
+Ajax widgets than what's shown above. Below is a piece of Hyperlambda that creates an Ajax TreeView, which allows you to browse your folders on disc.
 
 ```
 create-container-widget
@@ -102,7 +102,7 @@ create-container-widget
 
 Below is a screenshot of how the above piece of Hyperlambda might look like, if you paste it into a CMS/lambda page.
 
-![alt tag](/core/p5.webapp/system42/components/common-widgets/tree/ajax-treeview-widget-example-screenshot.png)
+![alt tag](/core/p5.webapp/system42/components/common-widgets/tree/screenshots/ajax-treeview-widget-example-screenshot.png)
 
 ## Documentation
 
