@@ -1,4 +1,4 @@
-Handling CSV files
+Authorization and authentication
 ===============
 
 This folder contains the Active Events related to users and roles management. It allows you to create new users, associate roles with them, and 
