@@ -240,7 +240,7 @@ create-event:sys42.widgets.tree
               /*
                * Tree has previously selected items, making sure we un-select them.
                */
-              sys42.delete-css-classes:x:/./-/*/*?value
+              sys42.utilities.delete-css-classes:x:/./-/*/*?value
                 _class:tree-selected
 
             /*
@@ -251,7 +251,7 @@ create-event:sys42.widgets.tree
                 _item-id:x:/..for-each/*/_dp?value
               find-widget:x:/-/*/*?value
                 element:a
-              sys42.add-css-classes:x:/-/*/0?value
+              sys42.utilities.add-css-classes:x:/-/*/0?value
                 _class:tree-selected
 
             /*
@@ -333,9 +333,9 @@ create-event:sys42.widgets.tree
                    * add the "tree-expanded" CSS class to main "li" HTML widget, before finally updating the "icon CSS class"
                    * to the [_class-open] value.
                    */
-                  sys42.delete-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
+                  sys42.utilities.delete-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
                     _class:tree-hidden
-                  sys42.add-css-classes:x:/..for-each/*/find-widget/*/*?value
+                  sys42.utilities.add-css-classes:x:/..for-each/*/find-widget/*/*?value
                     _class:tree-expanded
 
                   /*
@@ -359,13 +359,13 @@ create-event:sys42.widgets.tree
                      * "ul" HTML widget is visible, and caller did not supply [_force-expand] as true,
                      * hence we hide it, by applying the "tree-hidden" class to the main "ul" HTML widget.
                      */
-                    sys42.add-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
+                    sys42.utilities.add-css-classes:x:/..for-each/*/get-children-widgets/*/*/container/[1,2]?value
                       _class:tree-hidden
 
                     /*
                      * Then we delete the "tree-expanded" CSS class to our main "li" HTML widget.
                      */
-                    sys42.delete-css-classes:x:/..for-each/*/find-widget/*/*?value
+                    sys42.utilities.delete-css-classes:x:/..for-each/*/find-widget/*/*?value
                       _class:tree-expanded
 
                     /*
@@ -438,7 +438,7 @@ create-event:sys42.widgets.tree
                 /*
                  * Adding the "expanded" CSS class in parent widget.
                  */
-                sys42.add-css-classes:x:/..for-each/*/find-widget/*/*?value
+                sys42.utilities.add-css-classes:x:/..for-each/*/find-widget/*/*?value
                   _class:tree-expanded
 
                 /*

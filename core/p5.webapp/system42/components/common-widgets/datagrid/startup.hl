@@ -240,7 +240,7 @@ create-event:sys42.widgets.datagrid
           find-widget:x:/../*/_event?value
             innerValue:&lt;
             element:a
-          sys42.add-css-classes:x:/-/*/*?value
+          sys42.utilities.add-css-classes:x:/-/*/*?value
             _class:disabled
 
           /*
@@ -258,7 +258,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&gt;
               element:a
-            sys42.delete-css-classes:x:/-/*/*?value
+            sys42.utilities.delete-css-classes:x:/-/*/*?value
               _class:disabled
 
 
@@ -310,7 +310,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&lt;
               element:a
-            sys42.add-css-classes:x:/-/*/*?value
+            sys42.utilities.add-css-classes:x:/-/*/*?value
               _class:disabled
 
             /*
@@ -330,7 +330,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&lt;
               element:a
-            sys42.delete-css-classes:x:/-/*/*?value
+            sys42.utilities.delete-css-classes:x:/-/*/*?value
               _class:disabled
 
           /*
@@ -376,7 +376,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&gt;
               element:a
-            sys42.add-css-classes:x:/-/*/*?value
+            sys42.utilities.add-css-classes:x:/-/*/*?value
               _class:disabled
 
             /*
@@ -399,7 +399,7 @@ create-event:sys42.widgets.datagrid
             find-widget:x:/../*/_event?value
               innerValue:&gt;
               element:a
-            sys42.delete-css-classes:x:/-/*/*?value
+            sys42.utilities.delete-css-classes:x:/-/*/*?value
               _class:disabled
 
           /*
@@ -422,7 +422,7 @@ create-event:sys42.widgets.datagrid
           for-each:x:/../*/_selected/*?name
             find-widget:x:/../*/_event?value
               _row:x:/..for-each/*/_dp?value
-            sys42.add-css-classes:x:/-/*/*?value
+            sys42.utilities.add-css-classes:x:/-/*/*?value
               _class:selected
 
           /*
@@ -576,7 +576,7 @@ create-event:sys42.widgets.datagrid
             element:tr
             class:selected
           if:x:/-/*/*?value
-            sys42.delete-css-classes:x:/./-/*/*?value
+            sys42.utilities.delete-css-classes:x:/./-/*/*?value
               _class:selected
 
           /*
@@ -585,7 +585,7 @@ create-event:sys42.widgets.datagrid
           for-each:x:/../*/_items/*?name
             find-widget-like:x:/../*/_event?value
               _row:x:/..for-each/*/_dp?value
-            sys42.add-css-classes:x:/-/*/*?value
+            sys42.utilities.add-css-classes:x:/-/*/*?value
               _class:selected
 
           /*

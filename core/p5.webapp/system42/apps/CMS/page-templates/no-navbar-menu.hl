@@ -10,7 +10,7 @@
  * Including only bootstrap and jQuery, and not the "default" stylesheets,
  * besides from those
  */
-sys42.jquery.include
+sys42.utilities.include-jquery
 sys42.bootstrap.include-css
 sys42.bootstrap.include-javascript
 include-stylesheet-file:@CMS/media/css/main.min.css

@@ -1,13 +1,13 @@
 
 /*
- * Responsible for creating the Active Event that adds a CSS class(es) to a widget. This Active Event
- * takes a CSS class(es) as [_class], and will append that CSS class to the widget defined as [_arg] if
- * the class does not already exist on widget.
+ * Responsible for creating the Active Event that removes a CSS class(es) from a widget. This Active Event
+ * takes a CSS class(es) as [_class], and will remove those CSS class(es) from the widget defined as [_arg] if
+ * the class already exist on widget.
  *
- * Pass in the ID of the widget to add class on as [_arg], and the class to add as [_class]
+ * Pass in the ID of the widget to remove class on as [_arg], and the class to remove as [_class]
  */
 
-create-event:sys42.add-css-classes
+create-event:sys42.utilities.delete-css-classes
 
   /*
    * Splitting upon every given CSS class caller wants to add
@@ -40,14 +40,12 @@ create-event:sys42.add-css-classes
      */
     if:x:/../*/split/[1,2]/*/{0}
       :x:/..for-each/*/_dp/#?name
-      // do nothing ...
-    else
 
       /*
-       * Class does NOT exist, adding it
+       * Class exists, removing it
        */
-      add:x:/../*/split/[1,2]
-        src:x:/..for-each/*/_dp/#?name
+      set:x:/../*/split/[1,2]/*/{0}
+        :x:/..for-each/*/_dp/#?name
 
   /*
    * Invoking [join] on split results, before settings new class value

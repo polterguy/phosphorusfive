@@ -20,7 +20,7 @@ create-event:p5.io.unroll-path.@bootstrap
 create-event:sys42.bootstrap.include-javascript
 
   // Bootstrap's CSS requires jQuery
-  sys42.jquery.include
+  sys42.utilities.include-jquery
   include-javascript-file:@bootstrap/js/bootstrap.min.js
 
 

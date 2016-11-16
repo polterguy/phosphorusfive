@@ -98,10 +98,10 @@ create-event:sys42.widgets.tab
                */
               find-widget-like:x:/@find-first-ancestor-widget/*/*?value
                 class:tab-header-active-item
-              sys42.toggle-css-classes:x:/-/*/*?value
+              sys42.utilities.toggle-css-classes:x:/-/*/*?value
                 _class:tab-header-active-item
               get-parent-widget:x:/../*/_event?value
-              sys42.toggle-css-classes:x:/-/*/*?value
+              sys42.utilities.toggle-css-classes:x:/-/*/*?value
                 _class:tab-header-active-item
 
 

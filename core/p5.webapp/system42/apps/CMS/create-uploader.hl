@@ -143,7 +143,7 @@ create-widget:ajax-uploader
                 find-widget:modal-window-body-wrapper
                   _data-field-name:url
                 get-parent-widget:x:/-/*/*?value
-                sys42.add-css-classes:x:/-/*/*?value
+                sys42.utilities.add-css-classes:x:/-/*/*?value
                   _class:has-error
                 sys42.windows.show-lambda:x:/..
                 return:bool:false

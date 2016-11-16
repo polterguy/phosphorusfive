@@ -184,7 +184,7 @@ create-widget
                        * Page exists from before, alerting user, and returning early, without setting 
                        * the "close modal window flag".
                        */
-                      sys42.add-css-classes:new-page-url-wrp
+                      sys42.utilities.add-css-classes:new-page-url-wrp
                         _class:has-error
                       send-javascript:@"$('#new-page-url').focus().select();"
                       return:bool:false
@@ -435,7 +435,7 @@ create-widget
                         find-widget:modal-window-body-wrapper
                           _data-field-name:url
                         get-parent-widget:x:/-/*/*?value
-                        sys42.add-css-classes:x:/-/*/*?value
+                        sys42.utilities.add-css-classes:x:/-/*/*?value
                           _class:has-error
                         send-javascript:@"$('#{0}').focus().select();"
                           :x:/./-3/*/*?value

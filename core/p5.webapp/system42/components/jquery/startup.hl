@@ -1,12 +1,7 @@
 ﻿
 /*
  * Startup script that is evaluated when server is started.
- * Creates the Active Event necessary to include Bootstrap CSS in page.
+ * Creates the Active Event necessary to include jQuery in page.
  */
-
-
-/*
- * Creates the Active Event that includes Bootstrap's JavaScript files on your page.
- */
-create-event:sys42.jquery.include
+create-event:sys42.utilities.include-jquery
   include-javascript-file:/system42/components/jquery/js/jquery-2.1.4.min.js

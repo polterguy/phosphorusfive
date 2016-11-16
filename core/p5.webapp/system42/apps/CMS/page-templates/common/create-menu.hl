@@ -71,7 +71,7 @@ else
  */
 if:x:/../*/_extra-css-classes?value
   eval-x:x:/+/*
-  sys42.add-css-classes:main-navbar-wrapper
+  sys42.utilities.add-css-classes:main-navbar-wrapper
     _class:x:/../*/_extra-css-classes?value
 
 /*

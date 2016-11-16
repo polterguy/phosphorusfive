@@ -22,3 +22,7 @@ Many of the components here are reusable Ajax widgets, such as the [DateTimePick
 the Ajax [TreeView](common-widgets/tree) widget, and so on. This is probably one of the more interesting places to browse around,
 if you intend to use Phosphorus Five for creating your own Ajax apps.
 
+## jQuery and Bootstrap CSS
+
+Phosphorus Five included jQuery, which can be, at your convenience, included on your page, in addition to Bootstrap CSS. These
+components can be found in this folder.

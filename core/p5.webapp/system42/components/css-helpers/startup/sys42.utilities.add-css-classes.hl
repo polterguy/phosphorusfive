@@ -1,17 +1,16 @@
 
 /*
- * Responsible for creating the Active Event that toggles a CSS class(es) on widget. This Active Event
+ * Responsible for creating the Active Event that adds a CSS class(es) to a widget. This Active Event
  * takes a CSS class(es) as [_class], and will append that CSS class to the widget defined as [_arg] if
- * the class does not already exist on widget, or remove the class from widget if it already exist 
- * from before.
+ * the class does not already exist on widget.
  *
- * Pass in the ID of the widget to toggle class on as [_arg], and the class to toggle as [_class]
+ * Pass in the ID of the widget to add class on as [_arg], and the class to add as [_class]
  */
 
-create-event:sys42.toggle-css-classes
+create-event:sys42.utilities.add-css-classes
 
   /*
-   * Splitting upon every given CSS class caller wants to toggle
+   * Splitting upon every given CSS class caller wants to add
    */
   split:x:/../*/_class?value
     =:,
@@ -26,7 +25,7 @@ create-event:sys42.toggle-css-classes
 
   /*
    * Splitting each CSS class already in widget, such that we can figure out if class(es)
-   * caller wants to toggle already exists or not
+   * caller wants to add already exists or not
    */
   split:x:/../*/get-widget-property/*/*?value
     =:" "
@@ -37,16 +36,11 @@ create-event:sys42.toggle-css-classes
   for-each:x:/../*/split/[0,1]/*/$
 
     /*
-     * Checking if currently iterated CSS class is in [split] result
+     * Checking if currently iterated CSS class is not already in [split] result
      */
     if:x:/../*/split/[1,2]/*/{0}
       :x:/..for-each/*/_dp/#?name
-
-      /*
-       * Class exists, removing it
-       */
-      set:x:/../*/split/[1,2]/*/{0}
-        :x:/..for-each/*/_dp/#?name
+      // do nothing ...
     else
 
       /*

@@ -487,6 +487,8 @@
     <Content Include="system42\components\common-widgets\uploader\screenshots\ajax-dropbox-example-screenshot.png" />
     <Content Include="system42\components\common-widgets\uploader\screenshots\ajax-uploader-example-screenshot-fullscreen.png" />
     <Content Include="system42\components\common-widgets\uploader\screenshots\ajax-uploader-example-screenshot.png" />
+    <Content Include="system42\components\common-windows\info-tip\screenshots\example-ajax-info-window-screenshot.png" />
+    <Content Include="system42\components\common-windows\show-lambda\screenshots\example-ajax-debug-hyperlambda-window-screenshot.png" />
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -787,7 +789,6 @@
     <Content Include="system42\components\common-widgets\datagrid\startup.hl" />
     <Content Include="system42\components\common-widgets\datagrid\README.md" />
     <Content Include="system42\components\csv-helpers\README.md" />
-    <Content Include="system42\components\csv-helpers\startup\sys42.csv.import.hl" />
     <Content Include="system42\components\csv-helpers\startup.hl" />
     <Content Include="system42\components\common-widgets\startup.hl" />
     <Content Include="system42\apps\CMS\startup\p5.error.Exception.hl" />
@@ -811,15 +812,16 @@
     <Content Include="system42\components\common-windows\startup.hl" />
     <Content Include="system42\components\common-widgets\README.md" />
     <Content Include="system42\apps\CMS\create-uploader.hl" />
+    <Content Include="system42\components\common-windows\show-lambda\README.md" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="system42\components\css-helpers\startup\sys42.add-css-classes.hl" />
-    <Content Include="system42\components\css-helpers\startup\sys42.delete-css-classes.hl" />
-    <Content Include="system42\components\css-helpers\startup\sys42.toggle-css-classes.hl" />
+    <Content Include="system42\components\css-helpers\startup\sys42.utilities.add-css-classes.hl" />
+    <Content Include="system42\components\css-helpers\startup\sys42.utilities.delete-css-classes.hl" />
+    <Content Include="system42\components\css-helpers\startup\sys42.utilities.toggle-css-classes.hl" />
     <Content Include="system42\components\app-settings\README.md" />
     <Content Include="system42\startup\sys42.utilities.get-event.hl" />
     <Content Include="system42\components\app-settings\startup\sys42.utilities.list-app-settings.hl" />

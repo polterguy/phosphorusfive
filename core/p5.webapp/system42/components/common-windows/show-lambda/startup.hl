@@ -6,7 +6,7 @@
  *
  * Arguments;
  *
- * [_arg] or value   - Expression leading to lambda you wish to inspect
+ * [_arg]            - Expression leading to lambda you wish to inspect
  * [_class]          - Override the default CSS class
  * [_parent]         - Override the default parent widget
  *
