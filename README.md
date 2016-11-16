@@ -1,4 +1,4 @@
-Phosphorus Five, simplifying the creation of web apps
+Phosphorus Five, making it dead simple to create web apps
 ===============
 
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
