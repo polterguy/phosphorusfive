@@ -66,8 +66,11 @@ namespace p5.io.common
             // Checking if path contains variables
             if (path.StartsWith ("~")) {
 
-                // Returning user's folder
-                return "/users/" + context.Ticket.Username + path.Substring (1);
+                // Returning user's folder.
+                if (context.Ticket.IsDefault)
+                    return "/common" + path.Substring (1);
+                else
+                    return "/users/" + context.Ticket.Username + path.Substring (1);
             } else if (path.StartsWith ("@")) {
 
                 // Returning variable path according to results of Active Event invocation

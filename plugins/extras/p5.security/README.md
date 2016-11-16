@@ -14,17 +14,21 @@ create-user
 
 The above code will create "john-doe" as a user in your system, and store him into your _"auth.hl"_ file.
 
-Notice, only _"root"_ accounts can create new, edit or delete users in your systems. Notice, we say root accounts in plural form. Contrary to on Linux,
-where there in general terms only exist one root account, in P5 you can have as many root accounts as you wish. Though, I encourage you to keep your
-root accounts to a minimum. Preferably, only one!
+Notice, only _"root"_ accounts can create new, edit or delete users in your systems. Notice also, that we say root accounts in plural form. Contrary to on Linux,
+where there in general terms only can exist one root account, in P5 you can have as many root accounts as you wish. I encourage you to keep your root accounts 
+to a minimum though. Preferably, only one!
 
 Also notice, that only the root account(s) can actually read or modify your _"auth.hl"_ file in your system directly, using for instance *[load-file]*
-or *[save-file]* etc.
+or *[save-file]* etc. Your _"auth.hl"_ file, or if you choose to use another filename for it, is in general terms, the by far most protected file
+in your file system.
 
-When you create a new user, a new folder structure will automatically be created for your user, beneath the p5.webapp/users/ folder. This is the user's
-personal files, and is in general terms, protected such that only that user, and a root account, can actually control these files. Each user has a
-"public" and a "private" folder. The public folder, is for files which the user doesn't care about is protected or not. The private folder, can only
-be accessed by the user himself, and/or a root account.
+When you create a new user, a new folder structure will automatically be created for your user, beneath the _"p5.webapp/users/"_ folder. This is the user's
+personal files, and is in general terms, protected such that only that user, and root accounts, can modify or read these files. Each user has a
+"public" and a "private" folder. The public folder, is for files which the user doesn't care about is protected or not, and anyone with a direct URL
+to the file, can easily download it. The private folder, can only be accessed by the user himself, and/or a root account.
+
+If you wish to create files that are accessible to all users of your system, you should put these files in your _"p5.webapp/common/"_ folder, which is
+accessible to all users in your system.
 
 In addition, each user gets a "temp" folder, which are used for temporary files, used whenever a temporary file needs to be created. To access the 
 currently logged in user's folder, use the tilde "~". To load the _"foo.txt"_ file from a user's folder, you can use for instance.
@@ -33,7 +37,9 @@ currently logged in user's folder, use the tilde "~". To load the _"foo.txt"_ fi
 load-file:~/foo.txt
 ```
 
-The tilde above (~), will be substituded with _"/users/john-doe"_, if the user attempting to evaluate the above code is our _"john-doe"_ user from above.
+The tilde above (~), will be substituded with _"/users/john-doe"_, if the user attempting to evaluate the above code is our _"john-doe"_ user from the 
+above Hyperlambda. If your user is a "guest" account (not loggedd in), the tilde "~" will evaluate to the "/common/" folder. The common folder, has a similar
+file structure, as the _"/users/"_ folder.
 
 Notice, the above *[load-file]* Hyperlambda, will throw an exception, unless you actually have a "foo.txt" file in your user's folder.
 
