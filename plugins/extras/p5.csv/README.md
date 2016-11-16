@@ -15,7 +15,7 @@ load-file:~/documents/private/sample.csv
 
 The above code, assumes you have a CSV file in your private documents folder.
 
-The *[lambda2csv]* Active Event, reverses the process, and creates a piece of CSV text, which you can save or do whatever you wish with, after invocation.
+The *[lambda2csv]* Active Event, will reverse the process, and creates a piece of CSV text, which you can save or do whatever you wish with, after invocation.
 Example are given below.
 
 ```
