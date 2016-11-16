@@ -20,15 +20,15 @@ If you get weird errors when debugging, then stop your debugger, _TURN OFF_ "Bro
 
 Save your page, and click "View page". If you get a browser notification saying "a popup was blocked", you might
 have to change your browser settings for popups being allowed on localhost. If you do not have Visual Studio, P5
-works just as well on both Xamarin (Mac OS X), and MonoDevelop (Linux).
+works just as well on Xamarin (Mac OS X), and MonoDevelop (Linux).
 
 ## What is that code ...?
 
-The above code, is called "Hyperlambda", and is simply a key/value/children tree-structure, allowing for you
-to declare something, that P5 refers to as _"lambda"_ or _"Hyperlambda"_. lambda is the basis for an execution tree, or graph,
-that is a Turing complete opportunity to declare your apps, through a (very rich) "non-programming model".
+The above code, is called _"Hyperlambda"_, and is simply a key/value/children tree-structure, allowing for you
+to declare something, that P5 refers to as _"lambda"_ or _"Hyperlambda"_. Lambda is the basis for an execution tree, or graph,
+that is a Turing complete opportunity to declare your apps, through a (very rich) _"non-programming model"_.
 
-I say "non-programming", because really, there is no programming language in P5. Only a bunch of loosely
+I say _"non-programming"_, because really, there is no programming language in P5. Only a bunch of loosely
 coupled Active Events, that happens to, in their combined result, create a Turing complete execution
 engine, allowing you to orchestrate your components together, as if they were _"LEGO bricks"_.
 
@@ -42,25 +42,33 @@ All this, while retaining your ability to create C#/VB/F# code, exactly as you'r
 Phosphorus Five consists of three basic innovations.
 
 * A managed Ajax library
-* A design pattern called Active Events
-* Hyperlambda or p5.lambda
+* Active Events
+* Hyperlambda
 
 The Ajax library is created on top of ASP.NET's Web Forms, allowing you to use them the same way you would create a web forms website.
-Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind.
+Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind. We say _"managed"_, because
+it takes care of all state, Ajax serialization, and dynamic JavaScript inclusion automatically. In fact, when you use the Ajax library, you can
+create your web apps, the same way as you would normally create a desktop application.
 
-Active Events allows you to loosely couple your modules together, without having any dependencies between them.
+Active Events allows you to loosely couple your modules together, without having any dependencies between them. Active Events is the _"heart"_ of
+Phosphorus Five, allowing for the rich plugin nature in P5. You can easily create your own Active Events, either in Hyperlambda, or in C# if you wish.
 
 Hyperlambda, and p5.lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
 together, as shown above in the Hello World example.
 
+## Perfect encapsulation and polymorphism
+
 The 3 USPs mentioned above, facilitates for a development model, which allows you to combine your existing C# skills,
 creating plugins, where you can assemble your apps, in a loosely coupled architecture. This is in stark
-contrast to the traditional way of "carving out" apps, using interfaces for plugins, which often creates a much higher degree of
+contrast to the traditional way of _"carving out"_ apps, using interfaces for plugins, which often creates a much higher degree of
 dependencies between your app's different components.
 
 In fact, the above Hello World example, is simply an invocation to an Active Event, who's name is *[create-literal-widget]*, which
 happens to take a set of arguments, that allows you to create an Ajax control on your page, which once clicked, changes 
-its *[innerValue]* property to; "Hello World!".
+its *[innerValue]* property to; _"Hello World!"_.
+
+The paradox is, that due to neither using OOP nor inheritance, in any ways, Hyperlambda facilitates for perfect encapsulation, and polymorphism,
+without even as much as a trace of inheritance, OOP or objects.
 
 You can easily create your own Active Events, that creates much more  complex widgets than what's shown above. Below is a piece of 
 Hyperlambda that creates an Ajax TreeView, which allows you to browse your folders on disc.
