@@ -13,12 +13,12 @@ create-user:john-doe
 
 The above code will create "john-doe" as a user in your system, and store him into your _"auth.hl"_ file.
 
-Notice, only _"root"_ accounts can create new, edit or delete users in your systems. Notice also, that we say root accounts in plural form. Contrary to on Linux,
-where there in general terms can only exist one root account - In P5 you can have as many root accounts as you wish. I encourage you to keep your root accounts 
-to a minimum though. Preferably, only one!
+Notice, only _"root"_ accounts can create new, edit, or delete users in your systems. Notice also, that we say root accounts in plural form. Contrary to on Linux,
+where there in general terms can only exist one root account - In P5 you can have as many root accounts as you wish, with different usernames. I encourage 
+you to keep your root accounts to a minimum though. Preferably, only one!
 
 Also notice, that only the root account(s) can actually read or modify your _"auth.hl"_ file in your system directly, using for instance *[load-file]*
-or *[save-file]* etc. Your _"auth.hl"_ file, or if you choose to use another filename for it, is in general terms, the by far most protected file
+or *[save-file]* etc. Your _"auth.hl"_ file, or if you choose to use another filename for it, is in general terms, the by far best protected file
 in your file system.
 
 ## Users and your filesystem
@@ -28,8 +28,9 @@ personal files, and is in general terms, protected such that only that user, and
 _"public"_ and a _"private"_ folder. The public folder, is for files which the user doesn't care about is protected or not, and anyone with a direct URL
 to the file, can easily download it. The private folder, can only be accessed by the user himself, and/or a root account.
 
-In addition, each user gets a "temp" folder, which are used for temporary files, used whenever a temporary file needs to be created. To access the 
-currently logged in user's folder, use the tilde "~". To load the _"foo.txt"_ file from a user's folder, you can use for instance.
+In addition, each user gets his own personal _"temp"_ folder, which is used for temporary files, used whenever a temporary file needs to be created. 
+
+To access the currently logged in user's folder, use the tilde "~". To load the _"foo.txt"_ file from a user's folder, you can use for instance.
 
 ```
 load-file:~/foo.txt
@@ -37,16 +38,34 @@ load-file:~/foo.txt
 
 The tilde above (~), will be substituded with _"/users/john-doe"_, if the user attempting to evaluate the above code is our _"john-doe"_ user from the 
 above Hyperlambda. If your user is a _"guest"_ account (not loggedd in), the tilde "~" will evaluate to the _"/common/"_ folder. The common folder, has a 
-similar file structure, as the _"/users/"_ folder, and this folder substitution can be used trsnaparently if you wish, without caring who is logged in, 
-or whether or not any user is logged in at all. Tilde "~" basically means the "home folder".
+similar file structure, as the _"/users/"_ folder, and this folder substitution can be used transparently if you wish, without caring who is logged in, 
+or whether or not any user is logged in at all. Tilde "~" basically means the _"home folder"_. The _"home folder"_ for guests, who are not logged in, is
+the _"/common/"_ folder.
 
-Notice, the above *[load-file]* Hyperlambda, will throw an exception, unless you actually have a "foo.txt" file in your user's home folder. 
+Notice, the above *[load-file]* Hyperlambda, will throw an exception, unless you actually have a _"foo.txt"_ file in your user's home folder. 
 
 In general, you should put files you want for everyone to see, but that still belongs to a specific user, including guests visitors, into 
 the _"~/documents/public/"_ folder(s), while protected files, into the _"~/documents/private/"_ folder.
 
 If you wish to create files that are accessible to all users of your system, you should put these files in your _"/p5.webapp/common/"_ folder, which is
 accessible to all users in your system.
+
+You can also create your own _"path unroll"_ active events, leading to for instance some specific folder on your server. This is done by creating an
+Active Event named *[p5.io.unroll-path.@XXX]*, returning for instance _"/my-cool-folder/xxx"_. An example is given below.
+
+```
+create-event:p5.io.unroll-path.@FOO-BAR
+  return:/foo-bar
+```
+
+Notice, do _not_ end the path, as returned from your Active Event with a slash "/". If you create unrolling Active Events, you can also create them 
+recursively, meaning that your Active Event returns a user-specific folder. Consider the following for instance, that will always return 
+the _"public home folder"_.
+
+```
+create-event:p5.io.unroll-path.@PUBLIC
+  return:~/documents/public
+```
 
 ## Editing users
 
