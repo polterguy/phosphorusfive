@@ -59,8 +59,15 @@ namespace p5.web.ui.request {
                 return; // Nothing to do here ...
             }
 
-            if (RequestIsText (e.Args, context)) {
-                
+            if (RequestIsHyperlambda (e.Args, context)) {
+
+                // Some sort of "textual" based type of request
+                StreamReader reader = new StreamReader (HttpContext.Current.Request.InputStream);
+                var code = Utilities.Convert<Node> (context, reader.ReadToEnd ());
+                e.Args.Value = null;
+                e.Args.AddRange (code.Children);
+            } else if (RequestIsText (e.Args, context)) {
+
                 // Some sort of "textual" based type of request
                 StreamReader reader = new StreamReader (HttpContext.Current.Request.InputStream);
                 e.Args.Value = reader.ReadToEnd ();
@@ -125,6 +132,19 @@ namespace p5.web.ui.request {
                 // This "might" be a mobile device, checking the .Net Framework's property
                 e.Args.Value = HttpContext.Current.Request.Browser.IsMobileDevice;
             }
+        }
+
+        /*
+         * Determines if current request is "text"
+         */
+        private static bool RequestIsHyperlambda (Node node, ApplicationContext context)
+        {
+            // Checking if Content-Type starts with "text/" ...
+            if (HttpContext.Current.Request.ContentType == "application/x-hyperlambda")
+                return true;
+
+            // Not text type
+            return false;
         }
 
         /*
