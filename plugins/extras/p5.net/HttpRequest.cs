@@ -270,7 +270,7 @@ namespace p5.net
                     context);
 
             // Getting file to post or put, verifying expression does not lead into oblivion
-            var filename = XUtil.Single<string> (context, args ["filename"]);
+            var filename = context.Raise (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, args["filename"]))).Get<string> (context);
 
             // Making sure user is authorized to read the file request should send
             context.Raise (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", args));
@@ -458,7 +458,7 @@ namespace p5.net
             Node args)
         {
             // Getting filename user wants to save response as
-            var filename = XUtil.Single<string> (context, args ["filename"]);
+            var filename = context.Raise (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, args ["filename"]))).Get<string>(context);
 
             // Making sure user is authorized to write/overwrite the file response should be saved to
             context.Raise (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));

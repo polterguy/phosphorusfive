@@ -80,7 +80,7 @@ p5.net.http-post:"https://httpbin.org/post"
       no2:John
 ```
 
-## Posting and putting files
+## POSTing and PUTting files
 
 If you have a big file you wish to POST or PUT, you can achieve it using the following syntax.
 
@@ -95,6 +95,18 @@ Exchange the above invocation to *[p5.net.http-put-file]* if you wish to use PUT
 
 The above _"put-file"_ and _"post-file"_ invocations, will not read the files into memory, before they're transmitted to your REST endpoint. But rather,
 copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources.
+
+## GETting files
+
+If you instead want to retrieve a document using HTTP GET, and save it directly to file, without loading it into memory,you can use *[p5.net.http-get-file]*.
+Consider the following code.
+
+```
+p5.net.http-get-file:"https://google.com"
+  filename:~/documents/private/foo-google.txt
+```
+
+The above code will download google.com's index document, and save it to your private documents folder.
 
 ## Ninja tricks (Hyperlambda Web Services)
 
