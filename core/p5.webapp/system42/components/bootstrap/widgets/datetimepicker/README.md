@@ -22,7 +22,7 @@ create-widget:foo
       _locale:nb
 
       // Invoked when widget is closed.
-      _onchange
+      .onchange
         sys42.widgets.datetimepicker.get-value:my-date
         set-widget-property:my-lit
           innerValue:x:/@sys42.widgets.datetimepicker.get-value?value
@@ -44,7 +44,7 @@ It features the following options.
 * [_min-date] - Minimum valid date for selecting new dates.
 * [_max-date] - Maximum valid date for selecting new dates.
 * [_show-today-button] - If true, will show the "select today date button".
-* [_onchange] - Lambda callback invoked when the DateTimePicker is hidden.
+* [.onchange] - Lambda callback invoked when the DateTimePicker is hidden.
 
 In addition, the widget features the following Active Events;
 
@@ -71,7 +71,7 @@ create-widget:foo
       _locale:nb
 
       // Invoked when widget is closed.
-      _onchange
+      .onchange
         sys42.widgets.datetimepicker.get-value:my-date
         set-widget-property:my-lit
           innerValue:x:/@sys42.widgets.datetimepicker.get-value?value

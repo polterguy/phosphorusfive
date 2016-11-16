@@ -19,7 +19,7 @@ create-widget
     sys42.widgets.colorpicker:my-color-picker
       _value:#ff00ff
       _label:My color
-      _onchange
+      .onchange
         set-widget-property:output-widget
           style:"background-color:{0};"
             :x:/../*/_value?value
@@ -33,7 +33,7 @@ The above code will create something like the following.
 You can pass in the following arguments to the colorpicker.
 
 * [_value] - Initial value, can be either '#xxyyzz', 'rgba(x,y,z,q)' or named color (e.g. 'yellow').
-* [_onchange] - Lambda callback evaluated when value changes. [_value] and [_event] is passed into it.
+* [.onchange] - Lambda callback evaluated when value changes. [_value] and [_event] is passed into it.
 * [_label] - An optional descriptive label for your colorpicker.
 * [_class] - Optional CSS classes to use. Defaults to "input-group colorpicker-component colorpicker-element".
 

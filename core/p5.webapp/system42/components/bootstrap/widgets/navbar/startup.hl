@@ -12,7 +12,7 @@
  *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
  *                      item, used to uniquely identify the item. The id is not necessary, unless you turn on [_crawl].
  *                      Optionally you can supply child nodes for each item.
- *                      All items can either have an [_onclick] lambda callback, which is invoked when an item is clicked, or
+ *                      All items can either have an [.onclick] lambda callback, which is invoked when an item is clicked, or
  *                      its own children [_items] collection, but not both!
  * [_class]           - Override the default CSS classes used to render the menu, the default value is "navbar navbar-default navbar-fixed-top".
  *                      To create your menu attached to the bottom of the page instead for instance, use "navbar navbar-default navbar-fixed-bottom".
@@ -33,7 +33,7 @@ create-event:sys42.widgets.navbar
     _crawl:bool:false
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"(/../*/"":regex:/^_/""|/../*/"":regex:/^\\./""|/../*/_defaults/*)(!/_defaults!/_options)/$"
 
 
   /*
@@ -235,10 +235,10 @@ create-event:sys42.widgets.navbar._create-items
 
       /*
        * This item does not have any nested children.
-       * Adding the supplied [_onclick] to our currently iterated item.
+       * Adding the supplied [.onclick] to our currently iterated item.
        */
       add:x:/..else/*/add/[1,2]/*/*/*/widgets/*/a/*/onclick
-        src:x:/..for-each/*/_dp/#/*/_onclick/*
+        src:x:/..for-each/*/_dp/#/*/.onclick/*
 
       /*
        * Setting properties for currently iterated item, and adding item into [return] below.
@@ -278,7 +278,7 @@ create-event:sys42.widgets.navbar._create-items
 
                   /*
                    * This might look empty, but it contains the lambda callback supplied
-                   * by caller for [_onclick] of item, if any.
+                   * by caller for [.onclick] of item, if any.
                    */
                   if
                     is-callback

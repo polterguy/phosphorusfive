@@ -6,7 +6,6 @@
  * 
  * [_label]             - If declared, will create a descriptive input-group-addon label, with the specified content.
  * [_class]             - The CSS class to use for your DateTimePicker. Defaults to "input-group date".
- * [_onchange]          - Lambda callback invoked when the value of the DateTimePicker changes.
  * [_icon]              - A CSS class, which is used instead of the default 'glyphicon-calendar' class for the 'dropdown button'.
  * [_locale]            - Which locale to use, is basically a reference to the JS files in the 'media/js/locale/' folder, and are helpers
  *                        to format the dates according to whatever is common in whatever language you want your DateTimePicker rendered with.
@@ -16,6 +15,7 @@
  * [_min-date]          - Declares the minimum valid date. Expected to be a date type, or date formatted string.
  * [_max-date]          - Declares the maximum valid date. Expected to be a date type, or date formatted string.
  * [_show-today-button] - If true, will show the "select today button".
+ * [.onchange]          - Lambda callback invoked when the value of the DateTimePicker changes.
  *
  * In addition, the DateTimePicker contains the following Active Events.
  *
@@ -42,10 +42,10 @@ create-event:sys42.widgets.datetimepicker
     _min-date
     _max-date
     _show-today-button
-    _onchange
+    .onchange
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options!/_parent)/$"
+    src:x:@"(/../*/"":regex:/^_/""|/../*/"":regex:/^\\./""|/../*/_defaults/*)(!/_defaults!/_options!/_parent)/$"
 
   /*
    * Checking if [_label] was passed in, and if so, making sure widget gets a descriptive input-group-addon.
@@ -66,27 +66,27 @@ create-event:sys42.widgets.datetimepicker
     set:x:/../*/return/*/container/*/widgets/*/span
 
   /*
-   * Passing in [_onchange] lambda callback such that it is evaluated upon change, and making sure
-   * datetimepickker is initialized knowing it has [_onchange].
+   * Passing in [.onchange] lambda callback such that it is evaluated upon change, and making sure
+   * datetimepickker is initialized knowing it has [.onchange].
    */
-  if:x:/../*/_options/*/_onchange/*
+  if:x:/../*/_options/*/.onchange/*
 
     /*
-     * We have an [_onchange] lambda callback, making sure we initialize DateTimePicker such that it invokes
-     * it during "dp.hide", and adding the callback lambda into [_onchange] of "input" element.
+     * We have an [.onchange] lambda callback, making sure we initialize DateTimePicker such that it invokes
+     * it during "dp.hide", and adding the callback lambda into [.onchange] of "input" element.
      */
-    add:x:/../*/return/*/container/*/widgets/*/input/*/_onchange/*/_onchange
-      src:x:/../*/_options/*/_onchange/*
+    add:x:/../*/return/*/container/*/widgets/*/input/*/.onchange/*/.onchange
+      src:x:/../*/_options/*/.onchange/*
     set:x:/../*/return/*/container/*/widgets/*/input/*/oninit/*/_has-onchange?value
       src:bool:true
 
   else
 
     /*
-     * We do not have an [_onchange] lambda callback. Making sure datetimepicker is initialized without
-     * the "dp.hide" event handled, and removing [_onchange] lambda callback of "input" element.
+     * We do not have an [.onchange] lambda callback. Making sure datetimepicker is initialized without
+     * the "dp.hide" event handled, and removing [.onchange] lambda callback of "input" element.
      */
-    set:x:/../*/return/*/container/*/widgets/*/input/*/_onchange
+    set:x:/../*/return/*/container/*/widgets/*/input/*/.onchange
     set:x:/../*/return/*/widgets/*/input/*/oninit/*/_has-onchange?value
       src:bool:false
 
@@ -315,16 +315,16 @@ create-event:sys42.widgets.datetimepicker
                 src:x:/../*/_event?value
 
             /*
-             * This one is forward evaluated above, and is true if we have an [_onchange] lambda callback.
+             * This one is forward evaluated above, and is true if we have an [.onchange] lambda callback.
              */
             _has-onchange
             if:x:/@_has-onchange?value
 
               /*
-               * We have an [_onchange] lambda callback, making sure we intialize datetimepicker such that it raises [_onchange] when 
+               * We have an [.onchange] lambda callback, making sure we intialize datetimepicker such that it raises [.onchange] when 
                * the widget is hidden.
                */
-              send-javascript:@"$('#{0}').datetimepicker({1}).on('dp.hide',function(){{p5.$('{2}').raise('_onchange');}});"
+              send-javascript:@"$('#{0}').datetimepicker({1}).on('dp.hide',function(){{p5.$('{2}').raise('.onchange');}});"
                 :x:/../*/_init-widget?value
                 :x:/../*/_arguments?value
                 :x:/../*/_event?value
@@ -332,23 +332,23 @@ create-event:sys42.widgets.datetimepicker
             else
 
               /*
-               * We do not have an [_onchange] lambda callback.
+               * We do not have an [.onchange] lambda callback.
                */
               send-javascript:@"$('#{0}').datetimepicker({1});"
                 :x:/../*/_init-widget?value
                 :x:/../*/_arguments?value
 
-          _onchange
+          .onchange
 
             /*
-             * Getting datetimepicker's value, and invoking [_onchange]'s callback.
+             * Getting datetimepicker's value, and invoking [.onchange]'s callback.
              */
             get-widget-property:x:/../*/_event?value
               value
             get-parent-widget:x:/../*/_event?value
-            _onchange
+            .onchange
             eval-x:x:/+/*
-            eval:x:/@_onchange
+            eval:x:/@.onchange
               _value:x:/@get-widget-property/*/*?value
               _event:x:/@get-parent-widget/*/*?value
 

@@ -23,6 +23,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
@@ -52,8 +53,8 @@ namespace p5.ajax.core.filters
             content = RemoveViewState (content);
             content = CleanHead (content);
             content = IncludeStylesheetFiles (content);
-            content = IncludeJavaScript (content);
-            content = SendJavaScriptContent (content);
+            content = IncludeJavaScriptFiles (content);
+            content = SendAndIncludeJavaScriptContent (content);
             return content;
         }
 
@@ -134,9 +135,9 @@ namespace p5.ajax.core.filters
         }
 
         /*
-         * Includes the JavaScript files/content we should include for this response
+         * Includes the JavaScript files/content we should include for this response.
          */
-        private string IncludeJavaScript (string content)
+        private string IncludeJavaScriptFiles (string content)
         {
             if ((Manager.Page as IAjaxPage).JavaScriptToPush.Count == 0)
                 return content; // nothing to do here
@@ -152,7 +153,7 @@ namespace p5.ajax.core.filters
             }
             var builder = new StringBuilder (content.Substring (0, idxPosition).TrimEnd(' '));
 
-            // Including javascript files
+            // Including javascript files.
             foreach (var idxFile in (Manager.Page as IAjaxPage).JavaScriptToPush) {
                 if (idxFile.Item2) {
 
@@ -169,9 +170,9 @@ namespace p5.ajax.core.filters
         /*
          * Includes the JavaScript content we should include for this response
          */
-        private string SendJavaScriptContent (string content)
+        private string SendAndIncludeJavaScriptContent (string content)
         {
-            if (!Manager.Changes.Contains ("_p5_script"))
+            if (!Manager.Changes.Contains ("_p5_script") && (Manager.Page as IAjaxPage).JavaScriptToPush.Count (ix => !ix.Item2) == 0)
                 return content; // nothing to do here
 
             // Stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
@@ -185,19 +186,23 @@ namespace p5.ajax.core.filters
             }
             var builder = new StringBuilder (content.Substring (0, idxPosition).TrimEnd());
 
-            // Including javascript
             builder.Append ("\r\n\t\t<script type=\"text/javascript\">\r\nwindow.onload = function() {\r\n");
-            foreach (var idxScript in Manager.Changes ["_p5_script"] as List<string>) {
-                builder.Append ("  " + idxScript.Trim().Replace ("\r\n", "\r\n  "));
-                builder.Append ("\r\n");
-            }
 
-            // Including javascript files
+            // Including JavaScript inclusion declarations (first, since send-javascript might depend upon it).
+            // Inclusions have presedence, since they're logically almost like "JS files".
             foreach (var idxFile in (Manager.Page as IAjaxPage).JavaScriptToPush) {
                 if (!idxFile.Item2) {
 
-                    // This is a simple inline inclusion
-                    builder.Append ("  " + idxFile.Item1.Trim().Replace("\r\n", "\r\n  ") + "\r\n");
+                    // This is a simple inline inclusion, and not a file inclusion.
+                    builder.Append ("  " + idxFile.Item1.Trim ().Replace ("\r\n", "\r\n  ") + "\r\n");
+                }
+            }
+
+            // Then sending JavaScript content (last, after including files).
+            if (Manager.Changes.Contains ("_p5_script")) {
+                foreach (var idxScript in Manager.Changes["_p5_script"] as List<string>) {
+                    builder.Append ("  " + idxScript.Trim ().Replace ("\r\n", "\r\n  "));
+                    builder.Append ("\r\n");
                 }
             }
             builder.Append ("};\r\n\t\t</script>\r\n");

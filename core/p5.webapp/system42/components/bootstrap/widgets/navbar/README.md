@@ -23,31 +23,31 @@ create-widget:foo
           // have children menu items of its own.
           _items
             Open:open
-              _onclick
+              .onclick
                 sys42.windows.info-tip:You tried to open a file
             Close:close
-              _onclick
+              .onclick
                 sys42.windows.info-tip:Closing file
 
             // If you add a menu item with the name of [_separator], it will
             // create a horizonat separator between your items.
             _separator
             Save:save
-              _onclick
+              .onclick
                 sys42.windows.info-tip:And we're going to save ...
         Edit:edit
-          _onclick
+          .onclick
             sys42.windows.info-tip:Edit was clicked
         Windows
           _items
             First Window:first-window
-              _onclick
+              .onclick
                 sys42.windows.info-tip:First window clicked
             Second Window:second-window
-              _onclick
+              .onclick
                 sys42.windows.info-tip:Second window clicked
         View:view
-          _onclick
+          .onclick
             sys42.windows.info-tip:View was clicked
 ```
 
@@ -56,7 +56,7 @@ The above code will produce something like the following.
 ![alt tag](/core/p5.webapp/system42/components/bootstrap/widgets/navbar/screenshots/ajax-navbar-menu-example-screenshot.png)
 
 The [_items] collection above is the most important argument, and declares your menu items in an hierarchically "Name"/"id" structure.
-You can nest items, by having items contain their own [_items] collection, which will dropdown menus for you. The [_onclick] above, is
+You can nest items, by having items contain their own [_items] collection, which will dropdown menus for you. The [.onclick] above, is
 a lambda object of Hyperlambda, allowing you to do whatever you wish when users are clicking your items.
 
 If you set the [_crawl] argument to "true", as we have done above, then an "unrolling" HTTP GET parameter will be automatically created for you,
@@ -78,28 +78,28 @@ create-widget:foo
         Files
           _items
             Open:open
-              _onclick
+              .onclick
                 sys42.windows.info-tip:You tried to open a file
             Close:close
-              _onclick
+              .onclick
                 sys42.windows.info-tip:Closing file
             _separator
             Save:save
-              _onclick
+              .onclick
                 sys42.windows.info-tip:And we're going to save ...
         Edit:edit
-          _onclick
+          .onclick
             sys42.windows.info-tip:Edit was clicked
         Windows
           _items
             First Window:first-window
-              _onclick
+              .onclick
                 sys42.windows.info-tip:First window clicked
             Second Window:second-window
-              _onclick
+              .onclick
                 sys42.windows.info-tip:Second window clicked
         View:view
-          _onclick
+          .onclick
             sys42.windows.info-tip:View was clicked
 ```
 

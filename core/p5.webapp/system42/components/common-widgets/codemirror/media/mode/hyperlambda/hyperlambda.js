@@ -767,7 +767,7 @@ CodeMirror.defineMode("hyperlambda", function() {
          * Default handling, simply checks if current name is either a
          * "variable" (starts with "_") or an Active Event invocation (contains ".")
          */
-        if (CodeMirror._hyperlispKeywords.indexOf (word) != -1) {
+        if (CodeMirror._hyperlispKeywords != null && CodeMirror._hyperlispKeywords.indexOf(word) != -1) {
 
             /*
              * The name of the node starts with an underscore "_", and hence is a "variable" (data segment)

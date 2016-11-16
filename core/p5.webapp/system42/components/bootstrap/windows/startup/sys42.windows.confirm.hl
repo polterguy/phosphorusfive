@@ -9,8 +9,6 @@
  * [_body]           - Explanatory text of dialogue
  * [_class]          - Override the default CSS class
  * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
- * [.onok]           - Code to be evaluated if user clicks OK button
- * [.oncancel]       - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
  * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
  *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
  *                     provide your own logic in the onclick handler of these buttons instead.
@@ -18,6 +16,8 @@
  *                     To close dialogue, you can invoke [sys42.windows.modal.destroy]. If you wish to
  *                     make sure your [.oncancel] lambda is evaluated, you should use [sys42.windows.modal.cancel]
  *                     instead. [sys42.windows.modal.destroy] will not evaluate your [.oncancel] lambda callback.
+ * [.onok]           - Code to be evaluated if user clicks OK button
+ * [.oncancel]       - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
  *
  * If user closes modal dialogue, without clicking OK, then the given [.onok] is not evaluated.
  * There can be only one instance of this dialogue at the same time in your page.

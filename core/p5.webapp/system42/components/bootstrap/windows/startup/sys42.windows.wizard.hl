@@ -9,8 +9,6 @@
  * [_body]           - Explanatory text of dialogue
  * [_class]          - Override the default CSS class
  * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
- * [.onok]           - Code to be evaluated if user clicks OK button
- * [.oncancel]       - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
  * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
  *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
  *                     provide your own logic in the onclick handler of these buttons instead.
@@ -21,6 +19,8 @@
  * [_data]           - Will automatically create a widget collection, according to the type of data supplied.
  *                     The default widget type to use, is a normal textbox. However, if you supply a child node with the name of
  *                     [_options], it will create a select HTML element instead, with the option elements supplied as children of [_options].
+ * [.onok]           - Code to be evaluated if user clicks OK button
+ * [.oncancel]       - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
  *
  * If user closes modal dialogue, without clicking OK, then the given [.onok] is not evaluated.
  * There can be only one instance of this dialogue at the same time in your page.
