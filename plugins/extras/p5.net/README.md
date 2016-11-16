@@ -40,7 +40,14 @@ _urls
 p5.net.http-get:x:/-/*?value
 ```
 
-You will have one *[result]* node returned, for each URL you supply to it.
+You will have one *[result]* node returned, for each URL you supply to it. You can also supply any HTTP headers you wish, as illustrated below.
+
+```
+p5.net.http-get:"https://httpbin.org/get"
+  Foo-Bar:Some data goes here
+set:x:?value
+  src:x:/../**/content?value.string
+```
 
 There are 4 basic Active Events in this project.
 
