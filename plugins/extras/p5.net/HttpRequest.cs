@@ -193,7 +193,7 @@ namespace p5.net
                             using (TextWriter writer = new StreamWriter (stream)) {
 
                                 // Converting to string before we write
-                                writer.Write (Utilities.Convert<string> (context, content, ""));
+                                writer.Write (Utilities.Convert (context, content, ""));
                             }
                         }
                     }

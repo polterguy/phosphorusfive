@@ -69,7 +69,7 @@ And if you are using C#, you can find 3 additional _"protected"_ events.
 * [.p5.net.http-put-native]
 
 The three latter events, are exclusively for C# invocations, and beyond the scope of this documentation. The POST and PUT events, automatically recognize
-Hyperlambda, and alloas you to transmit a lambda node structure, without first creating text from it. To transmit a piece of code to another server, you could
+Hyperlambda, and allows you to transmit a lambda node structure, without first creating text from it. To transmit a piece of code to another server, you could
 use something like the following for instance.
 
 ```
@@ -80,11 +80,27 @@ p5.net.http-post:"https://httpbin.org/post"
       no2:John
 ```
 
+## Posting and putting files
+
+If you have a big file you wish to POST or PUT, you can achieve it using the following syntax.
+
+```
+p5.net.http-post-file:"https://httpbin.org/post"
+  filename:/system42/application-startup.hl
+set:x:?value
+  src:x:/../**/content?value.string
+```
+
+Exchange the above invocation to *[p5.net.http-put-file]* if you wish to use PUT the file instead.
+
+The above _"put-file"_ and _"post-file"_ invocations, will not read the files into memory, before they're transmitted to your REST endpoint. But rather,
+copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources.
+
 ## Ninja tricks (Hyperlambda Web Services)
 
 Due to the extreme dynamic nature of Hyperlambda, you can easily transmit Hyperlambda, over for instance an HTTP POST request, to have it evaluated on 
 another server, and then return it to caller as Hyperlambda. Consider creating the following CMS/lambda page, that reads the body of your request, 
-and evaluates it as Hyperlambda, for the to return the result to caller. To create such a page, you could do something like the following.
+and evaluates it as Hyperlambda, for then to return the result to caller. To create such a page, you could do something like the following.
 
 ```
 // Retrieves the HTTP POST request body.
@@ -138,15 +154,9 @@ p5.net.http-post
     status:OK
     Status-Description:OK
     Content-Type:application/x-hyperlambda; charset=utf-8
-    Last-Modified:date:"2016-11-16T14:32:50.047"
-    Server:Microsoft-IIS/10.0
-    Transfer-Encoding:chunked
-    X-SourceFiles:=?UTF-8?B?QzpccHJvamVjdHNccGhvc3Bob3J1c2ZpdmVcY29yZVxwNS53ZWJhcHBcaW52aXNpYmxlLW15LXNlcnZpY2U=?=
-    Cache-Control:private
-    Date:"Wed, 16 Nov 2016 12:32:50 GMT"
-    Set-Cookie:ASP.NET_SessionId=r35jzc0j4iepthtravit4pxv; path=/; HttpOnly
-    X-AspNet-Version:4.0.30319
-    X-Powered-By:ASP.NET
+
+    /* ... more HTTP headers ... */
+
     content
       create-literal-widget
         parent:content
@@ -165,7 +175,8 @@ To understand the beauty of the above construct, realize that what we actually d
 that server evaluate the Hyperlambda, allowing the caller's code to decide what to return after evaluation. In theory, this makes it possible for you
 to create _one single Web Service endpoint_, for every single Web Service needs you can possibly have.
 
-Warning!
+### Warning!!
+
 The above construct, allows anyone to evaluate any piece of Hyperlambda on your server, which of course is an extremely dangerous security risk, effectively
 opening up your server entirely for any arbitrary piece of code, anyone wants to execute on it.
 
@@ -175,6 +186,6 @@ to cryptographically sign their MIME messages in a PGP mime/multipart. Still, yo
 not somehow been compromised, and that you can trust the client transmitting the Hyperlambda.
 
 There are ways to further refine this, by whitewashing the Hyperlambda, only allowing a subset of keywords/events to be evaluated, and so on. But this
-is beyond the scope of this documentation. For server you trust though, the above Web Service logic, is really quite spectacular, and something I think
-Hyperlambda is the only programming language on the planet that can easily achieve.
+is beyond the scope of this documentation. For servers you trust though, such as your own servers, the above Web Service logic, is really quite spectacular,
+and something I think Hyperlambda is the only programming language on the planet that can actually easily achieve.
 
