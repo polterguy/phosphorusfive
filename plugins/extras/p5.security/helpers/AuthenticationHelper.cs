@@ -201,7 +201,7 @@ namespace p5.security.helpers
          */
         public static void CreateUser (ApplicationContext context, Node args)
         {
-            string username = args.GetExChildValue<string>("username", context);
+            string username = args.GetExValue<string>(context);
             string password = args.GetExChildValue<string>("password", context);
             string role = args.GetExChildValue<string>("role", context);
 

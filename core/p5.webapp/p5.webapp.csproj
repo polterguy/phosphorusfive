@@ -525,7 +525,7 @@
     <Content Include="system42\components\common-widgets\codemirror\media\addon\hint\show-hint.css" />
     <Content Include="system42\components\common-widgets\codemirror\media\addon\hint\show-hint.js" />
     <Content Include="system42\components\common-widgets\codemirror\media\theme\paraiso.css" />
-    <Content Include="common\private\web.config" />
+    <Content Include="common\documents\private\web.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -577,7 +577,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="common\temp\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.csv\p5.csv.csproj">
       <Project>{045d3d94-7a30-445d-b578-fee5a5be5c3b}</Project>
@@ -844,8 +846,8 @@
     <None Include="users\root\documents\public\README.md" />
     <None Include="users\root\documents\private\README.md" />
     <None Include="users\root\temp\README.md" />
-    <None Include="common\private\README.md" />
-    <None Include="common\public\README.md" />
+    <None Include="common\documents\private\README.md" />
+    <None Include="common\documents\public\README.md" />
   </ItemGroup>
   <ItemGroup />
 </Project>
