@@ -7,9 +7,9 @@ click the "Apps/CMS" menu item, create a new page by clicking the _"+"_ - Choose
 
 ```
 create-literal-widget
-  element:h3
+  element:button
   parent:content
-  class:col-xs-12
+  class:btn btn-default
   innerValue:Click me!
   onclick
     set-widget-property:x:/../*/_event?value
@@ -18,19 +18,19 @@ create-literal-widget
 
 If you get weird errors when debugging, then stop your debugger, _TURN OFF_ "Browser Link" in Visual Studio, and restart your debugger.
 
-Save your page, and click "Preview". If you get a browser notification saying "a popup was blocked", you might
+Save your page, and click "View page". If you get a browser notification saying "a popup was blocked", you might
 have to change your browser settings for popups being allowed on localhost. If you do not have Visual Studio, P5
-works just as well on both Xamarin (Mac OS X) and MonoDevelop (Linux).
+works just as well on both Xamarin (Mac OS X), and MonoDevelop (Linux).
 
 ## What is that code ...?
 
 The above code, is called "Hyperlambda", and is simply a key/value/children tree-structure, allowing for you
-to declare something, that P5 refers to as "p5.lambda". p5.lambda is the basis for an "execution tree", that is
-a Turing complete opportunity to "declare" your apps, through a (very rich) "non-programming model".
+to declare something, that P5 refers to as _"lambda"_ or _"Hyperlambda"_. lambda is the basis for an execution tree, or graph,
+that is a Turing complete opportunity to declare your apps, through a (very rich) "non-programming model".
 
 I say "non-programming", because really, there is no programming language in P5. Only a bunch of loosely
 coupled Active Events, that happens to, in their combined result, create a Turing complete execution
-engine, allowing you to orchestrate your components together as if they were _"LEGO bricks"_.
+engine, allowing you to orchestrate your components together, as if they were _"LEGO bricks"_.
 
 In fact, if you wish, you could in theory declare your execution trees, by using XML or JSON. Although I recommend
 using Hyperlambda, due to its much more condens syntax, and lack of overhead, compared to XML and JSON.
@@ -45,15 +45,15 @@ Phosphorus Five consists of three basic innovations.
 * A design pattern called Active Events
 * Hyperlambda or p5.lambda
 
-The Ajax library is created on top of ASP.NET's web controls, allowing you to use them the same way you would create a web forms website.
+The Ajax library is created on top of ASP.NET's Web Forms, allowing you to use them the same way you would create a web forms website.
 Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind.
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them.
 
 Hyperlambda, and p5.lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
-together, almost as if they were LEGO bricks.
+together, as shown above in the Hello World example.
 
-The three USPs mentioned above, facilitates for a development model, which allows you to combine your existing C# skills,
+The 3 USPs mentioned above, facilitates for a development model, which allows you to combine your existing C# skills,
 creating plugins, where you can assemble your apps, in a loosely coupled architecture. This is in stark
 contrast to the traditional way of "carving out" apps, using interfaces for plugins, which often creates a much higher degree of
 dependencies between your app's different components.
@@ -61,6 +61,40 @@ dependencies between your app's different components.
 In fact, the above Hello World example, is simply an invocation to an Active Event, who's name is *[create-literal-widget]*, which
 happens to take a set of arguments, that allows you to create an Ajax control on your page, which once clicked, changes 
 its *[innerValue]* property to; "Hello World!".
+
+You can easily create your own Active Events, that creates much more  complex widgets than what's shown above. Below is a piece of 
+Hyperlambda that creates an Ajax TreeView, which allows you to browse your folders on disc.
+
+```
+create-container-widget
+  parent:content
+  widgets
+    sys42.widgets.tree
+      _crawl:true
+      _items
+        root:/
+      .on-get-items
+        list-folders:x:/../*/_item-id?value
+        for-each:x:/-/*?name
+          list-folders:x:/./*/_dp?value
+          split:x:/./*/_dp?value
+            =:/
+          add:x:/../*/return/*
+            src:@"{0}:{1}"
+              :x:/..for-each/*/split/0/-?name
+              :x:/..for-each/*/_dp?value
+          if:x:/./*/list-folders/*
+            not
+            add:x:/../*/return/*/_items/0/-
+              src
+                _class:tree-leaf
+        return
+          _items
+```
+
+Below is a screenshot of how the above piece of Hyperlambda might look like, if you paste it into a CMS/lambda page.
+
+![alt tag](/core/p5.webapp/system42/components/common-widgets/tree/ajax-treeview-widget-example-screenshot.png)
 
 ## Documentation
 
