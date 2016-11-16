@@ -21,8 +21,8 @@ Below is a list of all the plugins in the system as of today. Each plugin is doc
 In addition, there are several [more plugins in the extras](/plugins/extras/) folder.
 
 To create your own plugins for P5, is actually ridiculously easy, due to the Active Event design pattern. If you
-wish, you can easily extend p5.lambda, creating your own "programming instructions", or more specifically Active Events,
-which you can access easily, either from Hyperlambda and p5.lambda, from C# or both.
+wish, you can easily extend Hyperlambda, creating your own _"programming keywords"_, or more specifically Active Events,
+which you can easily consume, either from Hyperlambda, or from C#.
 
 To see an example of how to create your own Active Event plugin in C#, check out the C# example 
 called [p5.active-event-sample-plugin](/samples/p5.active-event-sample-plugin/)
