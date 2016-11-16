@@ -203,6 +203,7 @@ create-event:sys42.widgets.navbar._create-items
       add:x:/../*/return
         src
           li
+            render-type:open
             class:dropdown
             widgets
               a
@@ -226,6 +227,7 @@ create-event:sys42.widgets.navbar._create-items
       add:x:/../*/return
         src
           li
+            render-type:open
             class:divider
             role:separator
 
@@ -261,6 +263,7 @@ create-event:sys42.widgets.navbar._create-items
       add:x:/../*/return
         src
           li
+            render-type:open
             widgets
               a
                 href:#
