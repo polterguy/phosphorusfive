@@ -111,8 +111,7 @@ To understand the difference, realize that this image.
 
 ![alt tag](screenshots/thomas.jpg)
 
-Was reduced from 13 KB on disc, to 3 KB after reducing its quality with a value of "5". However, the result becamse pretty bad, as you can see below. A value
-of 20 however, still reduces the image size significantly, to 6KB, while still retaining a relatively hig quality for your image.
+Was reduced from 13 KB on disc, to 3 KB after reducing its quality with a *[quality]* value of _"5"_. However, the result became pretty bad, as you can see below.
 
 ![alt tag](screenshots/thomas-compact.jpg)
 
@@ -125,4 +124,4 @@ if your image contains a lot of the same colors, and big surfaces. The opposite 
 more _"organic"_ content.
 
 The above image of your truly for instance, is probably much better to display as a JPG image. If it had lots of big surfaces, with similar colors though, 
-it would probably be more compact as a PNG image.
+it would probably be smaller as a PNG image.

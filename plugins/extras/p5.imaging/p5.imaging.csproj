@@ -50,4 +50,9 @@
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="screenshots\thomas-compact.jpg" />
+    <Content Include="screenshots\thomas-less.jpg" />
+    <Content Include="screenshots\thomas.jpg" />
+  </ItemGroup>
 </Project>
