@@ -111,6 +111,15 @@ To understand the difference, realize that this image.
 
 ![alt tag](screenshots/thomas.jpg)
 
-Was reduced from 13 KB on disc, to 3 KB after reducing its size. However, the result becamse pretty bad, as you can see below.
+Was reduced from 13 KB on disc, to 3 KB after reducing its quality with a value of "5". However, the result becamse pretty bad, as you can see below. A value
+of 20 however, still reduces the image size significantly, to 6KB, while still retaining a relatively hig quality for your image.
 
 ![alt tag](screenshots/thomas-compact.jpg)
+
+A value of 20 however, still reduces the image size significantly, to 6KB, while still retaining a relatively "OK" quality for your image.
+
+![alt tag](screenshots/thomas-less.jpg)
+
+Notice, sometimes, depending upon how your image looks like, you can also drastically reduce your image size, by going from JPG to PNG for instance, 
+if your image contains a lot of the same colors, and big surfaces. The opposite is true if your image contains a log of different colors, with 
+more _"organic"_ content.
