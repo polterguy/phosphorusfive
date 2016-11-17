@@ -65,9 +65,11 @@ into your destination, making it become 500x100 pixels in size. The result will 
 Below is an example of before and after, having transformed an image of 326x294 pixels.
 
 Before image.
+
 ![alt tag](screenshots/thomas.jpg)
 
 After image.
+
 ![alt tag](screenshots/thomas-new.jpg)
 
 Notice, your *[src-rect]* must be within the boundaries of the size of your source image. All arguments beneath *[src-rect]* are also optional, and if not supplied, 
