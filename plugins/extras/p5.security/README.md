@@ -110,7 +110,7 @@ edit-user:john-doe
     value:bar
 ```
 
-If you evaluate tha above Hyperlambda, then both *[some-data]* and *[some-complex-data]* will be associated with the _"john-doe"_ user, as settings. To
+If you evaluate the above Hyperlambda, then both *[some-data]* and *[some-complex-data]* will be associated with the _"john-doe"_ user, as settings. To
 retrieve the settings for the currently logged in user, you can use the *[get-my-user-settings]* Active Event. The user's settings are a convenient place to
 store small pieces of user related data, which are unique to each user in your system, such as name, email address, twitter handler, etc.
 
@@ -227,7 +227,7 @@ list-roles
 ```
 
 The integer number behind the role's name, is the number of users belonging to that role. Besides from that, there's not really much to say about the
-rrole system in Phosphorus Five. If you wish, you can roll your own, much more complex role system though. This is easily done, by exchanging this entire
+role system in Phosphorus Five. If you wish, you can roll your own, much more complex role system though. This is easily done, by exchanging this entire
 project. If you do, you will still probably want to at least provide all Active Events, following at least as close to as possible, the same rough API
 as this project does, to make sure you don't break existing code.
 
