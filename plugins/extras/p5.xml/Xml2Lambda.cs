@@ -52,7 +52,7 @@ namespace p5.xml
                     // Converting currently iterated document/fragment
                     var doc = new XmlDocument ();
                     doc.LoadXml (idxXmlDoc);
-                    ParseXmlDocument (e.Args.Add ("result").LastChild, doc.DocumentElement);
+                    ParseXmlNode (e.Args.Add ("result").LastChild, doc.DocumentElement);
                 }
             }
         }
@@ -60,12 +60,12 @@ namespace p5.xml
         /*
          * Helper for above, recursively parses HTML node given
          */
-        private static void ParseXmlDocument (Node resultNode, XmlNode xmlNode)
+        private static void ParseXmlNode (Node resultNode, XmlNode xmlNode)
         {
             // Adding all attributes
             if (xmlNode.Attributes != null) {
                 foreach (XmlAttribute ix in xmlNode.Attributes) {
-                    resultNode.Add (new Node (ix.LocalName, ix.Value));
+                    resultNode.Add (new Node ("@" + ix.LocalName, ix.Value));
                 }
             }
 
@@ -83,7 +83,7 @@ namespace p5.xml
                     // We don't add comments or empty elements
                     if (idxChild.LocalName != "#comment") {
                         resultNode.Add (new Node ());
-                        ParseXmlDocument (resultNode.LastChild, idxChild);
+                        ParseXmlNode (resultNode.LastChild, idxChild);
                     }
                 }
             }
