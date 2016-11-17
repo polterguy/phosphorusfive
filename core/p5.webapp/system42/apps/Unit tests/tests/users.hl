@@ -21,6 +21,7 @@ create-and-delete-user
 
   // Checking that user exist, and that folder structure is coorectly applied.
   list-users
+  list-roles
   get-user:foo-bar
   if:x:/-
     !=:node:@"get-user
@@ -40,7 +41,9 @@ create-and-delete-user
       fetch:x:/0/0?value
         folder-exist:/users/foo-bar/documents/public/
       not
-    throw:@"Assert error, user folder structure was not created correctly!"
+    or:x:/@list-roles/*/foo-bar-role
+      not
+    throw:@"Assert error, user folder structure was not created correctly, or role was not correctly retrieved!"
 
   // Deletes user, and verifies that disc is cleaned up.
   delete-user:foo-bar

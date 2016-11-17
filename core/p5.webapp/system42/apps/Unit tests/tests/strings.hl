@@ -1,0 +1,36 @@
+/*
+ * Contains unit tests for testing generic string events in system.
+ */
+
+/*
+ * Test that trimming a string works.
+ */
+trim
+  _data:@" foo bar "
+  trim:x:/-?value
+  if:x:/-?value
+    !=:foo bar
+    throw:@"Assert error, [trim] misbehaved!"
+
+
+/*
+ * Test that [to-upper] behaves.
+ */
+to-upper
+  _data:@"foo bar"
+  to-upper:x:/-?value
+  if:x:/-?value
+    !=:FOO BAR
+    throw:@"Assert error, [to-upper] misbehaved!"
+
+
+/*
+ * Test that [to-lower] behaves.
+ */
+to-lower
+  _data:@"Foo Bar"
+  to-lower:x:/-?value
+  if:x:/-?value
+    !=:foo bar
+    throw:@"Assert error, [to-lower] misbehaved!"
+

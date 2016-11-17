@@ -1,7 +1,9 @@
+
 /*
  * Contains unit tests for testing creation, deletion and so on
  * of files in your system
  */
+
 
 /*
  * Tests that creating a file behaves
@@ -62,4 +64,83 @@ delete-multiple-files
       fetch:x:/0/0?value
         file-exist:~/temp/bar2.txt
     throw:@"Assert error, expected files to have been deleted"
+
+
+/*
+ * Tests that copying a file behaves
+ */
+copy-file
+  save-file:~/temp/foo.txt
+    src:Foo bar
+  if
+    fetch:x:/0/0?value
+      file-exist:~/temp/foo-copy.txt
+    delete-file:~/temp/foo-copy.txt
+  copy-file:~/temp/foo.txt
+    dest:~/temp/foo-copy.txt
+  load-file:~/temp/foo-copy.txt
+  if:x:/-/*?value
+    !=:Foo bar
+    throw:@"Assert error, expected 'Foo bar' in file!"
+
+
+/*
+ * Tests that moving a file behaves
+ */
+move-file
+  save-file:~/temp/foo-orig.txt
+    src:Foo bar
+  if
+    fetch:x:/0/0?value
+      file-exist:~/temp/foo-dest.txt
+    delete-file:~/temp/foo-dest.txt
+  move-file:~/temp/foo-orig.txt
+    dest:~/temp/foo-dest.txt
+  load-file:~/temp/foo-dest.txt
+  if:x:/-/*?value
+    !=:Foo bar
+    or
+      fetch:x:/0/0?value
+        file-exist:~/temp/foo-orig.txt
+    throw:@"Assert error, file wasnt't correctly moved!"
+
+
+/*
+ * Tests that renaming a file behaves
+ */
+rename-file
+  save-file:~/temp/foo-orig.txt
+    src:Foo bar
+  if
+    fetch:x:/0/0?value
+      file-exist:~/temp/foo-dest.txt
+    delete-file:~/temp/foo-dest.txt
+  rename-file:~/temp/foo-orig.txt
+    dest:~/temp/foo-dest.txt
+  load-file:~/temp/foo-dest.txt
+  if:x:/-/*?value
+    !=:Foo bar
+    or
+      fetch:x:/0/0?value
+        file-exist:~/temp/foo-orig.txt
+    throw:@"Assert error, file wasnt't correctly renamed!"
+
+
+/*
+ * Tests that listing files behaves
+ */
+list-files
+  if
+    fetch:x:/0/0?value
+      folder-exist:~/temp/list-files/
+    delete-folder:~/temp/list-files/
+  create-folder:~/temp/list-files/
+  save-file:~/temp/list-files/foo-orig.txt
+    src:Foo bar
+  list-files:~/temp/list-files/
+  if:x:/-/*?count
+    !=:int:1
+    or:x:/./-/*/~foo-orig.txt
+      not
+    throw:@"Assert error, file wasnt't correctly renamed!"
 
