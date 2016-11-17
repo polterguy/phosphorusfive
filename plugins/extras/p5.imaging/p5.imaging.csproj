@@ -56,6 +56,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="screenshots\colorized.jpg" />
+    <Content Include="screenshots\donald-gray.png" />
+    <Content Include="screenshots\donald-red.png" />
+    <Content Include="screenshots\donald.png" />
+    <Content Include="screenshots\flip-rotate.jpg" />
     <Content Include="screenshots\thomas-compact.jpg" />
     <Content Include="screenshots\thomas-less.jpg" />
     <Content Include="screenshots\thomas-new.jpg" />

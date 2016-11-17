@@ -167,21 +167,40 @@ p5.imaging.transform:~/donald.png
   transformations
     colorize
       matrix
-        _:1,0,0,0,0
-        _:0,1,1,0,0
-        _:0,0,1,0,0
-        _:0,0,0,1,0
-        _:0,0,0.5,0,1
+        _:1,   0,   0,   0,   0
+        _:0,   1,   1,   0,   0
+        _:0,   0,   1,   0,   0
+        _:0,   0,   0,   1,   0
+        _:0,   0,   0.5, 0,   1
 ```
 
-The *[colorize]* transformation, require you to supply a 5x5 dimensional color transformation matrix, which is used to transform each pixel in
+The *[colorize]* transformation, requires you to supply a 5x5 dimensional color transformation matrix, which is used to transform each pixel in
 your image. Exactly how this is done, is beyond the scope of this article, but the above color matrix, will make your image appear _"blue'ish"_,
-by applying additional blue multiplications to each pixel in your original image. Think _"bluescale"_ tounderstand the above *[colorize]* invocation.
+by applying additional blue multiplications to each pixel in your original image. Think _"bluescale"_ to understand the above *[colorize]* invocation.
 
 An example of the results of the above, can be seen below. Image is taken from wikipedia.org. To the left is the original, and to the right is the
 same image, after being colorized.
 
 ![alt tag](screenshots/colorized.jpg)
+
+Some useful *[colorize]* matrixes can be found below.
+
+##### Doubling the intensity of red
+
+```
+p5.imaging.transform:~/donald.png
+  destination:~/donald-red.png
+  transformations
+    colorize
+      matrix
+        _:2,   0,   0,   0,   0
+        _:0,   1,   0,   0,   0
+        _:0,   0,   1,   0,   0
+        _:0,   0,   0,   1,   0
+        _:0,   0,   0,   0,   1
+```
+
+![alt tag](screenshots/donald-red.png)
 
 ### Converting an image
 
