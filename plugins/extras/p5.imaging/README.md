@@ -236,6 +236,23 @@ p5.imaging.transform:~/donald.png
 
 ![alt tag](screenshots/donald-semi-transparent.png)
 
+##### Sepia matrix
+
+```
+p5.imaging.transform:~/donald.png
+  destination:~/donald-sepia.png
+  transformations
+    colorize
+      matrix
+        _:.393,.394,.272,   0,   0
+        _:.769,.686,.534,   0,   0
+        _:.189,.168,.131,   0,   0
+        _:0,   0,   0,   1,   0
+        _:0,   0,   0,   0,   1
+```
+
+![alt tag](screenshots/donald-sepia.png)
+
 ### Converting an image
 
 If you wish, you can use the *[p5.imaging.resize]* Active Event to convert between image types, without resizing your image. In such a case, you only
