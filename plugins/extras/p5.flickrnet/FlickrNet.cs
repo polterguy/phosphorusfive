@@ -47,8 +47,8 @@ namespace p5.flickrnet
                     ".get-config-setting",
                     new Node ("", ".p5.flickr.api-key"))[0].Get<string> (context);
                 var options = new PhotoSearchOptions { 
-                    Tags = e.Args.GetExChildValue<string> ("tags", context), 
-                    Text = e.Args.GetExChildValue<string> ("text", context), 
+                    Text = e.Args.GetExChildValue<string> ("text", context),
+                    Tags = e.Args.GetExChildValue<string> ("tags", context),
                     Username = e.Args.GetExChildValue<string> ("username", context), 
                     PerPage = e.Args.GetExChildValue ("per-page", context, 50), 
                     Page = e.Args.GetExChildValue<int> ("page", context, 0) + 1, 
@@ -80,6 +80,8 @@ namespace p5.flickrnet
                     e.Args.Add ("result");
                     e.Args.LastChild.Add ("title", idxRes.Title);
                     e.Args.LastChild.Add ("description", idxRes.Description);
+                    e.Args.LastChild.Add ("web-url", idxRes.WebUrl);
+                    e.Args.LastChild.Add ("user-id", idxRes.UserId);
                     e.Args.LastChild.Add ("thumb", idxRes.SquareThumbnailUrl);
                     e.Args.LastChild.Add ("medium", idxRes.Medium640Url);
                     e.Args.LastChild.LastChild.Add ("width", idxRes.Medium640Width);
