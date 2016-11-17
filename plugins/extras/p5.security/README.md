@@ -137,6 +137,8 @@ change-password:bar
 
 The above Hyperlambda will change the passsword for the currentlylogged in user to _"bar"_.
 
+## [whoami], figuring out who you are
+
 To see who you are, you can invoke *[whoami]*, like the following code illustrates.
 
 ```

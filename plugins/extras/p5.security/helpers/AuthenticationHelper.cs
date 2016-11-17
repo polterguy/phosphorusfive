@@ -269,10 +269,6 @@ namespace p5.security.helpers
             // Iterating all users requested by caller
             foreach (var idxUsername in XUtil.Iterate<string> (context, args, true)) {
 
-                // Since this method can take expressions, we need to check if currently iterated user has been added before
-                if (args [idxUsername] != null)
-                    continue;
-
                 // Checking if user exist
                 if (authFile ["users"] [idxUsername] == null)
                     throw new LambdaException (

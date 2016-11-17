@@ -815,6 +815,8 @@
     <Content Include="system42\components\common-widgets\README.md" />
     <Content Include="system42\apps\CMS\create-uploader.hl" />
     <Content Include="system42\components\common-windows\show-lambda\README.md" />
+    <Content Include="system42\apps\Unit tests\tests\math.hl" />
+    <Content Include="system42\apps\Unit tests\tests\users.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

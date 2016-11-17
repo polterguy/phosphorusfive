@@ -1,0 +1,145 @@
+/*
+ * Contains unit tests for testing users creationg and deletion
+ */
+
+
+/*
+ * Creates a user, and verifies creation is successful.
+ * Then deletes the user, and verifies disc is cleaned up.
+ */
+create-and-delete-user
+
+  // Checking if our testing user already exist, and if so, deleting him.
+  list-users
+  if:x:/-/*/foo-bar
+    delete-user:foo-bar
+
+  // Creating our user.
+  create-user:foo-bar
+    role:foo-bar-role
+    password:foo
+
+  // Checking that user exist, and that folder structure is coorectly applied.
+  list-users
+  get-user:foo-bar
+  if:x:/-
+    !=:node:@"get-user
+  foo-bar
+    role:foo-bar-role"
+    or:x:/@list-users/*/foo-bar
+      not
+    or
+      fetch:x:/0/0?value
+        folder-exist:/users/foo-bar/temp/
+      not
+    or
+      fetch:x:/0/0?value
+        folder-exist:/users/foo-bar/documents/private/
+      not
+    or
+      fetch:x:/0/0?value
+        folder-exist:/users/foo-bar/documents/public/
+      not
+    throw:@"Assert error, user folder structure was not created correctly!"
+
+  // Deletes user, and verifies that disc is cleaned up.
+  delete-user:foo-bar
+  list-users
+  if:x:/-/*/foo-bar
+    or
+      fetch:x:/0/0?value
+        folder-exist:/users/foo-bar/
+    throw:@"Assert error, user wasn't correctly deleted!"
+
+
+/*
+ * Creates a user, with settings, and verifies that settings is correctly applied.
+ */
+create-user-with-settings
+
+  // Checking if our testing user already exist, and if so, deleting him.
+  list-users
+  if:x:/-/*/foo-bar
+    delete-user:foo-bar
+
+  // Creating our user.
+  create-user:foo-bar
+    role:foo-bar-role
+    password:foo
+    foo1:bar1
+      foo2:bar2
+
+  // Checking that user exist, and that settings was correctly applied.
+  get-user:foo-bar
+  if:x:/-
+    !=:node:@"get-user
+  foo-bar
+    role:foo-bar-role
+    foo1:bar1
+      foo2:bar2"
+    throw:@"Assert error, user settings was not correctly applied!"
+
+  // Deletes user.
+  delete-user:foo-bar
+
+
+/*
+ * Creates a user, modifies user's settings, and verifies that settings is correctly changed.
+ */
+modify-user-settings
+
+  // Checking if our testing user already exist, and if so, deleting him.
+  list-users
+  if:x:/-/*/foo-bar
+    delete-user:foo-bar
+
+  // Creating our user.
+  create-user:foo-bar
+    role:foo-bar-role
+    password:foo
+
+  // Modifying user's settings.
+  edit-user:foo-bar
+    foo1:bar1
+      foo2:bar2
+    howdy
+      world
+
+  // Checking that user exist, and that settings was correctly applied.
+  get-user:foo-bar
+  if:x:/-
+    !=:node:@"get-user
+  foo-bar
+    role:foo-bar-role
+    foo1:bar1
+      foo2:bar2
+    howdy
+      world"
+    throw:@"Assert error, user settings was not correctly applied!"
+
+  // Modifying user's settings.
+  edit-user:foo-bar
+    foo1:bar1
+
+  // Checking that user exist, and that settings was correctly applied.
+  get-user:foo-bar
+  if:x:/-
+    !=:node:@"get-user
+  foo-bar
+    role:foo-bar-role
+    foo1:bar1"
+    throw:@"Assert error, user settings was not correctly applied!"
+
+  // Modifying user's settings, removing all settings.
+  edit-user:foo-bar
+  get-user:foo-bar
+  if:x:/-
+    !=:node:@"get-user
+  foo-bar
+    role:foo-bar-role"
+    throw:@"Assert error, user settings was not correctly deleted!"
+
+  // Deletes user.
+  delete-user:foo-bar
+
+
