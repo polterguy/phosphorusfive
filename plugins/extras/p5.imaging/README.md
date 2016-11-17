@@ -100,6 +100,8 @@ applied after creating your destination image, but before it is saved to disc. T
 * [grayscale] - No arguments. Creates a grayscale version.
 * [colorize] - Requires a [matrix] argument, with 5 children, containing a comma separated value with 5 integers between 0 and 1.
 
+#### Rotating and flipping your image
+
 An example of how to transform an image, applying an additional rotate and flip transformation, is shown below.
 
 ```
@@ -112,8 +114,12 @@ p5.imaging.transform:~/thomas.jpg
       degrees:90
 ```
 
-The above tranformation will not resize the image in any ways, but simply flip it in the x direction, and rotate it 90 degrees. You can also resize the image in the
-same operation, such as the following illustrates.
+If you start out with the _"thomas.jpg"_ image from above, your result will look like the following, after having applied the above transformations.
+
+![alt tag](screenshots/flip-rotate.jpg)
+
+The above tranformation will not resize the image in any ways, but simply flip it in the x direction, and rotate it 90 degrees. You can also 
+resize the image in the same operation, such as the following illustrates.
 
 ```
 p5.imaging.transform:~/thomas.jpg
