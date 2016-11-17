@@ -123,3 +123,6 @@ A value of 20 however, still reduces the image size significantly, to 6KB, while
 Notice, sometimes, depending upon how your image looks like, you can also drastically reduce your image size, by going from JPG to PNG for instance, 
 if your image contains a lot of the same colors, and big surfaces. The opposite is true if your image contains a log of different colors, with 
 more _"organic"_ content.
+
+The above image of your truly for instance, is probably much better to display as a JPG image. If it had lots of big surfaces, with similar colors though, 
+it would probably be more compact as a PNG image.
