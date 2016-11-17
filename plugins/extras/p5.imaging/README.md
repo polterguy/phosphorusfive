@@ -102,7 +102,7 @@ applied after creating your destination image, but before it is saved to disc. T
 
 #### Rotating and flipping your image
 
-An example of how to transform an image, applying an additional rotate and flip transformation, is shown below.
+An example of how to transform an image, applying an additional *[rotate]* and *[flip]* transformation, is shown below.
 
 ```
 p5.imaging.transform:~/thomas.jpg
@@ -138,6 +138,8 @@ p5.imaging.transform:~/thomas.jpg
 
 Tranformations will be applied sequentially, in the order they appear in your Hyperlambda.
 
+#### Creating a grayscale of your image
+
 To create a grayscale version of your original image, consider this code, assuming you've got an image called _"donald.png"_ in your home folder.
 
 ```
@@ -146,6 +148,16 @@ p5.imaging.transform:~/donald.png
   transformations
     grayscale
 ```
+
+The above will transform the following image.
+
+![alt tag](screenshots/donald.png)
+
+Into this.
+
+![alt tag](screenshots/donald-gray.png)
+
+#### Colorizing an image
 
 To colorize an image, you can use something such as the following, assuming you've got the _"donald.png"_ image in your home folder.
 
