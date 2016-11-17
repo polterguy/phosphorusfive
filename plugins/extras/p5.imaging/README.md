@@ -106,3 +106,11 @@ p5.imaging.resize:~/thomas.jpg
 
 The above level for your *[quality]* argument will significantly reduce the quality of your image. A better value, yet still an agressive value, would probably
 be somewhere between 15 and 25, depending upon your source image.
+
+To understand the difference, realize that this image.
+
+![alt tag](screenshots/thomas.jpg)
+
+Was reduced from 13 KB on disc, to 3 KB after reducing its size. However, the result becamse pretty bad, as you can see below.
+
+![alt tag](screenshots/thomas-compact.jpg)
