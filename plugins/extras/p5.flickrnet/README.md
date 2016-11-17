@@ -46,8 +46,8 @@ The *[p5.flickr.search]* takes the following arguments.
 * [sort-order] - How to sort the results. Legal values are 'None', 'DatePostedAscending', 'DatePostedDescending', 'DateTakenAscending', 'DateTakenDescending', 'InterestingnessAscending', 'InterestingnessDescending' and 'Relevance'.
 * [tag-mode] - Tag mode. Legal values are 'None', 'AnyTags', 'AllTags' and 'Boolean'.
 
-Internally *[p5.flickr.search]* is using [FlickrNet](https://github.com/samjudson/flickr-net), where you can find the documentation for what the different options and 
-arguments signifies. FlickrNet is licensed under the Apache License, Version 2.0.
+Internally *[p5.flickr.search]* is using [FlickrNet](https://github.com/samjudson/flickr-net), where you can find the documentation for what the different 
+options and arguments signifies. FlickrNet is licensed under the Apache License, Version 2.0, and the copyright of Sam Judson.
 
 The Active Event *[p5.flickr.search]*, will by default, only return _"free"_ images, which are images under the following licenses.
 
