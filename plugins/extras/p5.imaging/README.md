@@ -98,7 +98,7 @@ applied after creating your destination image, but before it is saved to disc. T
 * [rotate] - Requires a [degrees] argument, with the legal values of "90", "180" or "270".
 * [flip] - Requires a [direction] argument, with the legal values of "x", "y" or "both".
 * [grayscale] - No arguments. Creates a grayscale version.
-* [colorize] - Requires a [matrix] argument, with 5 children, containing a comma separated value with 5 integers between 0 and 1.
+* [colorize] - Requires a [matrix] argument, with 5 children, containing a comma separated value, with 5 numbers.
 
 #### Rotating and flipping your image
 
@@ -119,7 +119,11 @@ If you start out with the _"thomas.jpg"_ image from above, your result will look
 ![alt tag](screenshots/flip-rotate.jpg)
 
 The above tranformation will not resize the image in any ways, but simply flip it in the x direction, and rotate it 90 degrees. You can also 
-resize the image in the same operation, such as the following illustrates.
+resize the image in the same operation, such as the following illustrates. Realize though, that the width and the height of the image, after
+rotating it 90 degrees, will have changed. The width after rotating your image 90 degrees will be its former height, and vice versa.
+
+Notice, at the current time, only angles of 90, 180 and 270 are supported for rotating the image. In the future, we might add up support for
+any angles, depending upon the needs from our users.
 
 ```
 p5.imaging.transform:~/thomas.jpg
@@ -244,9 +248,9 @@ p5.imaging.transform:~/donald.png
   transformations
     colorize
       matrix
-        _:.393,.394,.272,   0,   0
-        _:.769,.686,.534,   0,   0
-        _:.189,.168,.131,   0,   0
+        _:.393,.394,.272,0,   0
+        _:.769,.686,.534,0,   0
+        _:.189,.168,.131,0,   0
         _:0,   0,   0,   1,   0
         _:0,   0,   0,   0,   1
 ```

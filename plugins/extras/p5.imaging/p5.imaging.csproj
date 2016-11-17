@@ -57,7 +57,10 @@
   <ItemGroup>
     <Content Include="screenshots\colorized.jpg" />
     <Content Include="screenshots\donald-gray.png" />
+    <Content Include="screenshots\donald-negative.png" />
     <Content Include="screenshots\donald-red.png" />
+    <Content Include="screenshots\donald-semi-transparent.png" />
+    <Content Include="screenshots\donald-sepia.png" />
     <Content Include="screenshots\donald.png" />
     <Content Include="screenshots\flip-rotate.jpg" />
     <Content Include="screenshots\thomas-compact.jpg" />
