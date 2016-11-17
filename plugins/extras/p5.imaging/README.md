@@ -202,6 +202,40 @@ p5.imaging.transform:~/donald.png
 
 ![alt tag](screenshots/donald-red.png)
 
+##### Negating colors
+
+```
+p5.imaging.transform:~/donald.png
+  destination:~/donald-negative.png
+  transformations
+    colorize
+      matrix
+        _:-1,  0,   0,   0,   0
+        _:0,  -1,   0,   0,   0
+        _:0,   0,  -1,   0,   0
+        _:0,   0,   0,   1,   0
+        _:1,   1,   1,   0,   1
+```
+
+![alt tag](screenshots/donald-negative.png)
+
+##### Creating a semi-transparent image
+
+```
+p5.imaging.transform:~/donald.png
+  destination:~/donald-semi-transparent.png
+  transformations
+    colorize
+      matrix
+        _:1,   0,   0,   0,   0
+        _:0,   1,   0,   0,   0
+        _:0,   0,   1,   0,   0
+        _:0,   0,   0, 0.5,   0
+        _:0,   0,   0,   0,   1
+```
+
+![alt tag](screenshots/donald-semi-transparent.png)
+
 ### Converting an image
 
 If you wish, you can use the *[p5.imaging.resize]* Active Event to convert between image types, without resizing your image. In such a case, you only
