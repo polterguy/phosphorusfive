@@ -55,8 +55,10 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="screenshots\colorized.jpg" />
     <Content Include="screenshots\thomas-compact.jpg" />
     <Content Include="screenshots\thomas-less.jpg" />
+    <Content Include="screenshots\thomas-new.jpg" />
     <Content Include="screenshots\thomas.jpg" />
   </ItemGroup>
 </Project>

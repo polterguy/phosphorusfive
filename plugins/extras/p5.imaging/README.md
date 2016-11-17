@@ -8,7 +8,7 @@ This folder contains Active Events that allows you to manipulate images in Phosp
 
 The *[p5.imaging.transform]* Active Event, has an alias, which is *[p5.imaging.resize]*.
 
-## Retrieving an image's size
+## Retrieving the size of an image
 
 To retrieve the size of an image, you can use the following code.
 
@@ -50,7 +50,7 @@ you've got our first _"thomas.jpg"_ example image, from our first example, and t
 
 ```
 p5.imaging.transform:~/thomas.jpg
-  destination:~/new.jpg
+  destination:~/thomas-new.jpg
   dest-width:500
   dest-height:100
   src-rect
@@ -62,6 +62,13 @@ p5.imaging.transform:~/thomas.jpg
 
 The above code, will first of all cut your image, from the top left corner, removing all but the first 200x300 pixels. Then it will stretch that result,
 into your destination, making it become 500x100 pixels in size. The result will probably look _"weird"_, and highly skewed, depending upon your source image.
+Below is an example of before and after, having transformed an image of 326x294 pixels.
+
+Before image.
+![alt tag](screenshots/thomas.jpg)
+
+After image.
+![alt tag](screenshots/thomas-new.jpg)
 
 Notice, your *[src-rect]* must be within the boundaries of the size of your source image. All arguments beneath *[src-rect]* are also optional, and if not supplied, 
 will be default to either 0, 0, _"rest-of-source-image-width"_, _"rest-of-source-image-height"_.
