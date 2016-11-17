@@ -34,7 +34,11 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Size.cs" />
+    <Compile Include="Transform.cs" />
+    <Compile Include="transformations\Colorize.cs" />
+    <Compile Include="transformations\Grayscale.cs" />
+    <Compile Include="transformations\Rotate.cs" />
+    <Compile Include="transformations\Flip.cs" />
     <Compile Include="Helpers\Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
