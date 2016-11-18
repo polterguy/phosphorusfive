@@ -53,27 +53,27 @@ namespace p5.lambda.keywords.core
             var value = e.Args.GetExValue<object> (context, null);
 
             // Finding out what to evaluate, defaulting to [default] block
-            var eval = e.Args.Children.FirstOrDefault (ix => ix.Name == "default");
+            var lambda = e.Args.Children.FirstOrDefault (ix => ix.Name == "default");
 
-            // Special case for "null value"
+            // Special case for "null value".
             if (value == null) {
 
                 // Finding first [case] with null value, defaulting to existing [default]
-                eval = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && ix.GetExValue<object> (context, null) == null) ?? eval;
+                lambda = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && ix.GetExValue<object> (context, null) == null) ?? lambda;
             } else {
 
-                // Special case for node comparison
+                // Special case for node value.
                 if (value is Node) {
 
                     // Doing CompareTo
-                    eval = e.Args.Children.FirstOrDefault (ix => 
-                        ix.Name == "case" && (value as Node).CompareTo (ix.GetExValue<object> (context)) == 0) ?? eval;
+                    lambda = e.Args.Children.FirstOrDefault (ix => 
+                        ix.Name == "case" && (value as Node).CompareTo (ix.GetExValue<object> (context)) == 0) ?? lambda;
                     
                 } else {
 
                     // Finding first [case] that matches value, defaulting to existing [default]
-                    eval = e.Args.Children.FirstOrDefault (ix => 
-                        ix.Name == "case" && value.Equals (ix.GetExValue<object> (context))) ?? eval;
+                    lambda = e.Args.Children.FirstOrDefault (ix => 
+                        ix.Name == "case" && value.Equals (ix.GetExValue<object> (context))) ?? lambda;
                 }
             }
 
@@ -81,14 +81,14 @@ namespace p5.lambda.keywords.core
             foreach (var idxChild in e.Args.Children) {
                 idxChild.Value = false;
             }
-            if (eval != null) {
+            if (lambda != null) {
 
                 // Supporting "fallthrough"
-                while (eval != null && eval.Children.Count == 0)
-                    eval = eval.NextSibling;
-                if (eval != null) {
-                    eval.Value = true;
-                    context.Raise ("eval-mutable", eval);
+                while (lambda != null && lambda.Children.Count == 0)
+                    lambda = lambda.NextSibling;
+                if (lambda != null) {
+                    lambda.Value = true;
+                    context.Raise ("eval-mutable", lambda);
                 }
             }
         }
