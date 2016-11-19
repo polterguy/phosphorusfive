@@ -3,11 +3,11 @@ Bootstrap Modal Ajax Windows
 
 This folder contains the most commonly used Bootstrap modal windows, allowing for most common scenarios when you need to
 display modal windows to your users. There are three basic windows, which are incrementally built on top of each other. The "base" window
-used, is always *[sys42.windows.modal]*, which is the window all the others are built upon.
+used, is always *[sys42.windows.modal]*, which is the window the others are built upon.
 
 * [sys42.windows.confirm] - The most basic window, allowing for user to confirm some action.
 * [sys42.windows.wizard] - Automatically creates widgets from its [_data] segment for you.
-* [sys42.windows.modal] - Advanced version, allows you to inject custom widgets into its modal body.
+* [sys42.windows.modal] - Advanced version, allows you to inject any custom widgets into its modal body.
 
 
 ## [sys42.windows.confirm] - A modal confirmation window
@@ -136,9 +136,8 @@ that is starting out with _"sys42-windows-modal"_. To see them, you can use some
 
 ```
 sys42.windows.confirm
-  .onok
-    list-widgets-like:sys42-windows-modal
-    sys42.windows.show-lambda:x:/..
+list-widgets-like:sys42-windows-modal
+sys42.windows.show-lambda:x:/-/*
 ```
 
 ## [sys42.windows.modal] - A generic modal window
@@ -356,7 +355,7 @@ sys42.windows.modal
     get-widget-property:my-text
       value
     sys42.widgets.tree.get-selected-items:my-tree
-    sys42.windows.info-tip:Thanx for the data, which was '{0}' and '{1}'!
+    sys42.windows.info-tip:Thanx for the data, which was '{0}' and '{1}'
       :x:/@get-widget-property/*/*?value
       :x:/@sys42.widgets.tree.get-selected-items/*/*?name
 ```
@@ -378,5 +377,3 @@ uploader functionality, modals with multiple "pages", etc, etc, etc. Although th
 actual modal window, it goes far beyond what you could normally do with a Bootstrap modal, due to the Ajax engine in P5.
 
 _"With great powers, comes greater ability to imagine!"_
-
-
