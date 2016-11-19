@@ -30,10 +30,13 @@ create-event:p5.io.unroll-path.@SYS42-COMPONENTS
  *
  * Any path you supply here, will be checked for all folders inside of them, that contains a file called
  * "startup.hl". If it does, then this "startup.hl" file will be evaluated.
+ *
+ * Notice, we evaluate all component startup Hyperlambda files before we evaluate any apps startup Hyperlambda files.
+ * This is done, such that the apps can rely on the components having been initialized first, during their startup.
  */
 _paths
-  @SYS42-APPS/
   @SYS42-COMPONENTS/
+  @SYS42-APPS/
 
 
 /*

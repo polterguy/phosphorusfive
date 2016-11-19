@@ -1,13 +1,13 @@
 ﻿
 /*
- * Returns all application specific settings.
+ * Returns application specific setting(s).
  *
- * Pass in name of app to retrieve setting for as [_app].
- * Will return all app settings according to which user is currently logged in. If currently logged in user is
+ * Pass in the name of your app to retrieve setting for as [_app] and setting(s) to retrieve as [_arg].
+ * Will return app setting according to which user is currently logged in. If currently logged in user is
  * a "root account", optionally you can retrieve settings for a specific user, by supplying user to retrieve setting
  * for as [_username]
  */
-create-event:sys42.utilities.list-app-settings
+create-event:sys42.utilities.get-setting
 
   /*
    * Sanity check
@@ -37,14 +37,15 @@ create-event:sys42.utilities.list-app-settings
      */
     throw:Only root accounts can retrieve settings for other users than the currently logged in identity user
 
-  select-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*"
+  select-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}"""
     :x:/../*/whoami/*/username?value
     :x:/../*/_app?value
+    :x:/../*/_arg?value
 
   /*
    * Returning setting value(s)
    */
   insert-before:x:/../0
-    src:x:/../*/select-data/*(!/username!/app-name)
+    src:x:/../*/select-data/*
 
 
