@@ -50,8 +50,6 @@ create-event:sys42.utilities.get-event
    *
    * The end result, becomes that of that [eval] afterwards, will contain all lambda object(s), from all Active Events caller wanted to inspect,
    * which we again return from the invocation of this event.
-   *
-   * Pretty unfucking spectacularily nifty if I may say so ... ;)
    */
   eval:x:/@_invocations
   insert-before:x:

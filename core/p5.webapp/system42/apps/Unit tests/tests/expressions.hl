@@ -103,7 +103,7 @@ elder-relative-iterator-2
 /*
  * Tests the younger iterator
  */
-younger-iterator
+younger-sibling-iterator
   _foo
   _bar
     _foo
@@ -114,14 +114,14 @@ younger-iterator
     or:x:/../1?value
       !=:SUCCESS
     or:x:/../1/0?value
-      !=:SUCCESS
+      =:SUCCESS
     throw:@"Assert error, expected success"
 
 /*
  * Tests the elder iterator
  */
-elder-iterator
-  set:x:/0/++?value
+elder-sibling-iterator
+  set:x:/++?value
     src:SUCCESS
   _foo
   _bar
@@ -131,5 +131,5 @@ elder-iterator
     or:x:/../2?value
       !=:SUCCESS
     or:x:/../2/0?value
-      !=:SUCCESS
+      =:SUCCESS
     throw:@"Assert error, expected success"

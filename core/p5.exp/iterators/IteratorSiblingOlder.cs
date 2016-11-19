@@ -28,18 +28,18 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns all nodes older than current
+    ///     Returns all sibling nodes older than current
     /// </summary>
     [Serializable]
-    public class IteratorOlder : Iterator
+    public class IteratorSiblingOlder : Iterator
     {
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
             foreach (var idxCur in Left.Evaluate (context)) {
-                var idxCurInner = idxCur.NextNode;
+                var idxCurInner = idxCur.NextSibling;
                 while (idxCurInner != null) {
                     yield return idxCurInner;
-                    idxCurInner = idxCurInner.NextNode;
+                    idxCurInner = idxCurInner.NextSibling;
                 }
             }
         }

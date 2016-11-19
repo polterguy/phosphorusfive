@@ -1,7 +1,9 @@
 
 /*
- * Responsible for creating the Active Event that shows the user a modal dialog,
- * to make user confirm some action, before action is evaluated.
+ * Creates the Active Event that shows the user a modal dialog.
+ *
+ * Asks the user to confirm some action, before action is evaluated. Pass in action as [.onok]. Optionally, pass in
+ * an [.oncancel] lambda.
  *
  * Arguments;
  * 
@@ -25,10 +27,16 @@
 create-event:sys42.windows.confirm
 
   /*
-   * Simply using the [sys42.windows.modal] to create our confirm window
+   * Simply using the [sys42.windows.modal] to create our confirm window.
+   * First applying all arguments into [.lambda], which contains our [sys42.windows.modal] invocation.
    */
   add:x:/../*/.lambda/*
-    src:x:/../*!/.!/./++
+    src:x:/./--
+
+  /*
+   * Checking if caller supplied a [_buttons] collection, and if not, we create a default "OK" button, which
+   * has initial focus, and simply invokes [sys42.windows.modal.ok] when clicked.
+   */
   if:x:/../*/_buttons/*
     not
     add:x:/../*/.lambda/*
@@ -39,9 +47,9 @@ create-event:sys42.windows.confirm
             class:btn btn-default
             innerValue:OK
             oninit
-              sys42.windows.modal.initial-focus:x:/../*/_event?value
+              sys42.windows.modal.initial-focus:x:/@_event?value
             onclick
               sys42.windows.modal.ok
   .lambda
     sys42.windows.modal
-  eval:x:/-
+  eval:x:/@.lambda

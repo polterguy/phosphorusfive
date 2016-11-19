@@ -31,7 +31,7 @@ create-event:sys42.windows.wizard
    * Simply using the [sys42.windows.modal] to create our confirm window
    */
   add:x:/../*/.lambda/*
-    src:x:/../*!/.!/./++
+    src:x:/./--
   if:x:/../*/_buttons/*
     not
     add:x:/../*/.lambda/*

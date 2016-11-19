@@ -340,7 +340,7 @@ namespace p5.exp
                         throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
                     // Right shift token
-                    current.AddIterator (new IteratorOlder ());
+                    current.AddIterator (new IteratorSiblingOlder ());
                     break;
                 case "--":
 
@@ -349,7 +349,7 @@ namespace p5.exp
                         throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
                     // Right shift token
-                    current.AddIterator (new IteratorYounger ());
+                    current.AddIterator (new IteratorSiblingYounger ());
                     break;
                 default:
 

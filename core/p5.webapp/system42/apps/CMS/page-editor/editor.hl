@@ -362,7 +362,7 @@ create-widget
                     src:@"{0}:{1}"
                       :x:/..for-each/*/split/0/-2?name
                       :x:/..for-each/*/_dp?value
-                add:x:/++/_data/*/template
+                add:x:/../*/sys42.windows.wizard/*/_data/*/template
                   src
                     _options
                       none:
@@ -378,7 +378,7 @@ create-widget
                   add:x:/./+/*/*
                     src:@"{0}:{0}"
                       :x:/..for-each/*/_dp?value
-                add:x:/++/_data/*/role
+                add:x:/../*/sys42.windows.wizard/*/_data/*/role
                   src
                     _options
 
@@ -462,7 +462,7 @@ create-widget
                     /*
                      * Now we can move [p5.page] from [select-data] into [update-data].
                      */
-                    add:x:/++/update-data/*/src
+                    add:x:/../*/update-data/*/src
                       src:x:/@select-data/*
 
                     /*

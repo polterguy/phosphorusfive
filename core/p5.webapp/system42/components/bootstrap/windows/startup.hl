@@ -1,10 +1,9 @@
 
 /*
- * Startup script that is evaluated when server is started.
+ * Startup Hyperlambda that is evaluated when server is started.
  *
  * Evaluates all Hyperlambda files in the "startup" folder, which again are responsible for creating the most commonly
- * used Bootstrap windows, such as a modal confirm window, modal window allowing you to create your own widgets collection
- * inside of it, and the wizard window, automatically creating widgets for your [_data] segment.
+ * used Bootstrap windows, such as the modal window, etc.
  */
 
-sys42.utilities.execute-lambda-folder:@bootstrap/windows/startup/
+sys42.utilities.execute-lambda-folder:@BOOTSTRAP/windows/startup/

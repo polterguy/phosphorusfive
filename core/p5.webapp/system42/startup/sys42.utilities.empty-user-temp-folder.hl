@@ -10,19 +10,18 @@ create-event:sys42.utilities.empty-user-temp-folder
    * Retrieving currently logged in user, and verifying user is not "default user" (has no folder).
    */
   whoami
-  if:x:/-/*/default?value
-    not
+  if:x:/@whoami/*/default?value.bool
+    =:bool:false
 
     /*
      * User is not default user, hence deleting all files in user's "temp" folder, except the README.md file.
      */
     list-files:~/temp/
-    set:x:@"/-/*/""~/temp/README.md"""
-    delete-file:x:/-2/*?name
+    delete-file:x:@"/@list-files/*(!/""~/temp/README.md"")?name"
 
     /*
      * Then deleting all folders in user's "temp" folder.
      */
     list-folders:~/temp/
-    delete-folder:x:/-/*?name
+    delete-folder:x:/@list-folders/*?name
 

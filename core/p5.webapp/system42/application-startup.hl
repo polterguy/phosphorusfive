@@ -44,12 +44,12 @@ create-event:sys42.utilities.execute-lambda-file
    * passed into event invocation, except [_arg], which is the file to evaluate.
    */
   add:x:/+
-    src:x:/./-/--!/..!/../*/_arg
+    src:x:/./-/--!/../*/_arg
 
   /*
    * Evaluating [load-file]'s children, with the arguments applied in the above [add] invocation.
    */
-  eval:x:/-2/*
+  eval:x:/@load-file/*
 
   /*
    * Returning the results of the above evaluation to caller.
@@ -95,7 +95,7 @@ create-event:sys42.utilities.execute-lambda-folder
    * If the above [list-folder] gave us any result(s), we recursively invoke self.
    */
   if:x:/-/*
-    sys42.utilities.execute-lambda-folder:x:/./-/*?name
+    sys42.utilities.execute-lambda-folder:x:/@list-folders/*?name
 
 
 /*

@@ -140,8 +140,8 @@ create-event:sys42.widgets.colorpicker
             /*
              * Including Colorpicker's JavaScript and CSS
              */
-            include-javascript-file:@bootstrap/widgets/colorpicker/media/js/bootstrap-colorpicker.min.js
-            include-stylesheet-file:@bootstrap/widgets/colorpicker/media/css/bootstrap-colorpicker.min.css
+            include-javascript-file:@BOOTSTRAP/widgets/colorpicker/media/js/bootstrap-colorpicker.min.js
+            include-stylesheet-file:@BOOTSTRAP/widgets/colorpicker/media/css/bootstrap-colorpicker.min.css
 
             /*
              * This guys is set above, and is true if there's an [.onchange] lambda callback, otherwise false.

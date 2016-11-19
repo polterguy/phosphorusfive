@@ -1,15 +1,17 @@
 ﻿
 /*
- * Startup script that is evaluated when server is started.
- * Creates the Active Event necessary to include Bootstrap CSS in page.
+ * Startup Hyperlambda that is evaluated when server is started.
+ *
+ * Creates the Active Event necessary to include Bootstrap CSS in page, in addition to that it initializes any Bootstrap specific
+ * widgets and windows. Also add @BOOTSTRAP to the PATH environment variable.
  */
 
 
 /*
- * Maps up "@bootstrap" to "/system42/components/bootstrap"
+ * Maps up "@BOOTSTRAP" to "/@SYS42-COMPONENTS/bootstrap"
  */
-create-event:p5.io.unroll-path.@bootstrap
-  return:/system42/components/bootstrap
+create-event:p5.io.unroll-path.@BOOTSTRAP
+  return:@SYS42-COMPONENTS/bootstrap
 
 
 /*
@@ -19,9 +21,8 @@ create-event:p5.io.unroll-path.@bootstrap
  */
 create-event:sys42.bootstrap.include-javascript
 
-  // Bootstrap's CSS requires jQuery
   sys42.utilities.include-jquery
-  include-javascript-file:@bootstrap/js/bootstrap.min.js
+  include-javascript-file:@BOOTSTRAP/js/bootstrap.min.js
 
 
 /*
@@ -30,38 +31,19 @@ create-event:sys42.bootstrap.include-javascript
  * Notice, by default, we also include the "bootstrap-theme" CSS file, unless [_no-theme] is set to true.
  */
 create-event:sys42.bootstrap.include-css
-  include-stylesheet-file:@bootstrap/css/bootstrap.min.css
+  include-stylesheet-file:@BOOTSTRAP/css/bootstrap.min.css
   if:x:/../*/_no-theme?value
     not
-    include-stylesheet-file:@bootstrap/css/bootstrap-theme.min.css
-
-
-/*
- * Recursively creates all Bootstrap related extension widgets.
- */
-_startup
-list-folders:@bootstrap/widgets/
-for-each:x:/-/*?name
-
-  /*
-   * Checking if "startup.hl" file exists within currently iterated folder,
-   * and if so, adding it to [_startup], such that we can evaluate it later.
-   */
-  if
-    fetch:x:/0/0?value
-      file-exist:{0}startup.hl
-        :x:/..for-each/*/_dp?value
-    add:x:/../*/_startup
-      src:{0}startup.hl
-        :x:/..for-each/*/_dp?value
-
-/*
- * Evaluating all files in [_startup] node.
- */
-sys42.utilities.execute-lambda-file:x:/../*/_startup/*?name
+    include-stylesheet-file:@BOOTSTRAP/css/bootstrap-theme.min.css
 
 
 /*
  * Invoking startup.hl file inside of "windows" folder.
  */
-sys42.utilities.execute-lambda-file:@bootstrap/windows/startup.hl
+sys42.utilities.execute-lambda-file:@BOOTSTRAP/windows/startup.hl
+
+
+/*
+ * Invoking startup.hl file inside of "widgets" folder.
+ */
+sys42.utilities.execute-lambda-file:@BOOTSTRAP/widgets/startup.hl

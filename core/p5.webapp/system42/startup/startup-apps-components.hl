@@ -59,13 +59,13 @@ for-each:x:/-/*?name
   if
     fetch:x:/0/0?value
       file-exist:{0}startup.hl
-        :x:/..for-each/*/_dp?value
+        :x:/@_dp?value
     add:x:/../*/_startup
       src:{0}startup.hl
-        :x:/..for-each/*/_dp?value
+        :x:/@_dp?value
 
 
 /*
  * Evaluating all files in [_startup] node above.
  */
-sys42.utilities.execute-lambda-file:x:/../*/_startup/*?name
+sys42.utilities.execute-lambda-file:x:/@_startup/*?name

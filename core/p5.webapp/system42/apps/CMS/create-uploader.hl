@@ -80,7 +80,7 @@ create-widget:ajax-uploader
           /*
            * Forward evaluate [_url] inside of wizard window.
            */
-          eval-x:x:/++/_data/*/url
+          eval-x:x:/+/**/_data/*/url
           sys42.windows.wizard
             _header:Page exist from before
             _body:@"There is already a page in your CMS with the same URL. Do you wish to overwrite it, or create a new page?"
@@ -103,7 +103,7 @@ create-widget:ajax-uploader
                    * Here we simply use the original values, to overwrite the existing page from database.
                    */
                   get-session-value:sys42.cms.uploaded-page
-                  add:x:/++/update-data/*/src
+                  add:x:/../*/update-data/*/src
                     src:x:/@get-session-value/*/*
 
                   /*
@@ -154,7 +154,7 @@ create-widget:ajax-uploader
               get-session-value:sys42.cms.uploaded-page
               set:x:/@get-session-value/*/*?value
                 src:x:/../*/_data/*/url?value
-              add:x:/++/insert-data
+              add:x:/../*/insert-data
                 src:x:/@get-session-value/*/*
 
               /*

@@ -95,7 +95,7 @@ create-event:sys42.windows.modal
   /*
    * Appending [.oncancel] into [sys42.windows.modal.cancel]
    */
-  add:x:/++/events/*/sys42.windows.modal.cancel/*/.lambda
+  add:x:/../*/create-widget/*/events/*/sys42.windows.modal.cancel/*/.lambda
     src:x:/../*/_options/*/.oncancel/*
 
   /*

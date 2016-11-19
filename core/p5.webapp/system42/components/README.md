@@ -1,8 +1,8 @@
 Components
 ========
 
-This folder contains all of your System42 "components". A component is a reusable piece of logic, written in Hyperlambda, 
-which you can reuse across multiple apps. Think "COM, the Hyperlambda version".
+This folder contains all of your System42 components. A component is a reusable piece of logic, written in Hyperlambda, 
+which you can reuse across multiple apps.
 
 There is one file which most components would declare, which is "startup.hl", expected to do the initialization of your 
 component. Usually, if this file exists, it will create the Active Events necessary to consume your component.
@@ -13,7 +13,7 @@ start your server the first time, such that the component's initialization logic
 
 To see the documentation for your specific components, please refer to the folders inside of this project.
 
-A component can either be a piece of "logic", or a reusable widget of some sort, or some other piece of reusable block that
+A component can either be a piece of logic, or a reusable widget of some sort, or some other piece of reusable block that
 you can utilize in your own projects.
 
 ## Ajax Widgets
