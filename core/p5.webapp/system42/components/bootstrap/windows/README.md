@@ -98,14 +98,16 @@ Notice also that you can put any type of widget into the *[_buttons]* argument, 
 it will probably look stupid if you add something else besides buttons into it. If you wish to create more complex modal windows,
 with support for your own widgets, you should probably rather use the *[sys42.windows.modal]* or the *[sys42.windows.wizard]* modal windows.
 
+### Creating a wider modal window
+
 You can also override the default CSS class for your modal window, by explicitly changing it through *[_class]*. The default value for this
 is _"modal fade"_, which creates a default bootstrap modal window, which fades into view on the client when shown. If you wish, you can 
 also create a wider modal window, by changing your *[_inner-class]* to for instance _"modal-dialog modal-lg"_.
 
-Below is a list of all arguments the confirm window accepts.
+### Arguments to [sys42.windows.confirm]
 
 * [_header] - Header of modal window.
-* [_body] - Content of modal window. Feel free to pass in HTML here. The body widget is rendered as a _"div"_ HTML element.
+* [_body] - Content of modal window. Feel free to pass in HTML here. The body widget is rendered as a *"div"* HTML element.
 * [_class] - Main CSS class for your confirm window.
 * [_inner-class] - Secondary, or "inner" CSS class for your confirm window.
 * [_buttons] - Override the default buttons, or widgets in fact, that are rendered in its footer.
