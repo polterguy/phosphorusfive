@@ -114,7 +114,7 @@ also create a wider modal window, by changing your *[_inner-class]* to for insta
 * [.onok] - Lambda callback evaluated when *[sys42.windows.modal.ok]* is invoked. When "OK" button clicked, for instance.
 * [.oncancel] - Lambda callback evaluated when *[sys42.windows.modal.cancel]* is invoked. When window is closed with the "X" for instance.
 
-In addition, the modal window creates these Active Events which you can invoke yourself.
+In addition, the confirmation window creates these Active Events which you can invoke yourself.
 
 * [sys42.windows.modal.ok] - Closes the window, and evaluates the *[.onok]* lambda callback.
 * [sys42.windows.modal.cancel] - Closes the window, and evaluates the *[.oncancel]* lambda callback.
@@ -124,7 +124,7 @@ In addition, the modal window creates these Active Events which you can invoke y
 The confirmation window also traps the escape keyboard key, which will invoke *[sys42.windows.modal.cancel]*. Meaning, it will evaluate your *[.oncancel]* 
 lambda callback.
 
-Notice, both the *[_header]*  and the *[_body]* arguments are optional, and ifnot supplied, will default to some sane values. Try the
+Notice, both the *[_header]*  and the *[_body]* arguments are optional, and if not supplied, will default to some sane values. Try the
 following to see them.
 
 ```
@@ -134,7 +134,7 @@ sys42.windows.confirm
 ```
 
 All the relevant widgets in the *[sys42.windows.confirm]* widget that are automatically created as a consequence of invoking it, have an ID
-that is starting out with _"sys42-windows-modal"_. To see them, you can use something such the following.
+that starts out with _"sys42-windows-modal"_. To see them, you can use something such the following.
 
 ```
 sys42.windows.confirm
@@ -225,7 +225,7 @@ sys42.windows.modal
 
       // Not a valid email address!
       get-parent-widget:my-email
-      sys42.add-css-classes:x:/-/*/*?value
+      sys42.utilities.add-css-classes:x:/-/*/*?value
         _class:has-error
       sys42.windows.info-tip:Not a valid email address!
         _parent:sys42-windows-modal-body-wrapper

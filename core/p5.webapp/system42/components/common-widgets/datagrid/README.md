@@ -341,7 +341,7 @@ create-widget:datagrid-wrapper-4
                   onclick
                     find-first-ancestor-widget:x:/../*/_event?value
                       _row
-                    sys42.toggle-css-classes:x:/-/*/*?value
+                    sys42.utilities.toggle-css-classes:x:/-/*/*?value
                       _class:selected
         return
           _items
