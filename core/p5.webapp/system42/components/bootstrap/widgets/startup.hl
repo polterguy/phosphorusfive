@@ -8,15 +8,14 @@
 
 
 /*
- * This will contains all "startup.hl" files, inside of each folder, inside of this folder after the [for-each] is done
- * iterating.
+ * This will contains all "startup.hl" files, inside of each folder, inside of this folder, after the [for-each] is done iterating.
  */
 _startup
 
 
 /*
- * Listing all folders inside of this folder, and iterates through each folder, checking if there exists a "startup.hl"
- * file, and if so, add the path to that file to the above [_startup].
+ * Lists all folders inside of this folder, and iterates through each folder, checking if there exists a "startup.hl"
+ * file, and if so, add the path to that "startup.hl" file to the above [_startup] node.
  */
 list-folders:@BOOTSTRAP/widgets/
 for-each:x:/@list-folders/*?name

@@ -94,6 +94,7 @@ create-widget:ajax-uploader
                    * This bugger, we simply forward to [.onok], since it'll retrieve our data field values.
                    */
                   sys42.windows.modal.ok
+
               button
                 class:btn btn-default
                 innerValue:Overwrite old page
@@ -123,6 +124,7 @@ create-widget:ajax-uploader
                   sys42.cms.edit-page
                   send-javascript:@"$('#cms-select-page').focus();"
                   sys42.cms.create-navbar-menu
+
             .onok
 
               /*
@@ -138,9 +140,9 @@ create-widget:ajax-uploader
                  * Informing user, and returning early.
                  */
                 sys42.windows.info-tip:That page already exists
-                  _parent:modal-window-body-wrapper
+                  _parent:sys42-windows-modal-body-wrapper
                   _class:info-window info-window-error
-                find-widget:modal-window-body-wrapper
+                find-widget:sys42-windows-modal-body-wrapper
                   _data-field-name:url
                 get-parent-widget:x:/-/*/*?value
                 sys42.utilities.add-css-classes:x:/-/*/*?value

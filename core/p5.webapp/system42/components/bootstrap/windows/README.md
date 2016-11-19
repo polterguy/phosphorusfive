@@ -2,7 +2,8 @@ Bootstrap Modal Ajax Windows
 ===============
 
 This folder contains the most commonly used Bootstrap modal windows, allowing for most common scenarios when you need to
-display modal windows to your users. There are three basic windows, which are incrementally built on top of each other.
+display modal windows to your users. There are three basic windows, which are incrementally built on top of each other. The "base" window
+used, is always *[sys42.windows.modal]*, which is the window all the others are built upon.
 
 * [sys42.windows.confirm] - The most basic window, allowing for user to confirm some action.
 * [sys42.windows.wizard] - Automatically creates widgets from its [_data] segment for you.
@@ -24,11 +25,11 @@ sys42.windows.confirm
 
 The above code, will display the following.
 
-![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/screenshots/sys42-windows-confirm-screenshot.png)
+![alt tag](screenshots/sys42-windows-confirm-screenshot.png)
 
 Your *[.onok]* lambda callback, will only be evaluated if the user clicks the "OK" button. If he closes the window, by for instance
-clicking the "X" or clicking outside of the modal window's main surface, then the window will simply close, without evaluating
-the associated lambda callback.
+clicking the "X", or clicking outside of the modal window's main surface, then the window will simply close, without evaluating
+the associated *[.onok]* lambda callback.
 
 In addition to an *[.onok]* lambda callback, you can also supply an *[.oncancel]* lambda callback, which will evaluate only if the window
 is closed _without_ the user clicking the "OK" button. Below is en example showing this. Try to close the window, both by clicking
@@ -49,7 +50,7 @@ Your *[.oncancel]* lambda callback will also evaluate if the user clicks anywher
 ### Customizing your buttons
 
 In addition to simply using the default "OK" button, you can also supply your own collection of buttons, that will be used instead
-of the "OK" button. This is done by adding any buttons you wish inside of a *[_buttons]* argument. Consider the following.
+of the "OK" button. This is done by adding any buttons you wish inside a *[_buttons]* argument. Consider the following.
 
 ```
 sys42.windows.confirm
@@ -74,11 +75,11 @@ sys42.windows.confirm
     sys42.windows.info-tip:Puuh, you just avoided the dangerous stuff!!
 ```
 
-Notice the invocations to *[sys42.windows.modal.ok]*, *[sys42.windows.modal.cancel]* and *[sys42.windows.modal.initial-focus]* above.
-The *[sys42.windows.modal.ok]* Active Event will evaluate your *[.onok]* lambda callback, while the *[sys42.windows.modal.cancel]*
+Notice the invocations to *[sys42.windows.modal.ok]*, *[sys42.windows.modal.cancel]*, and *[sys42.windows.modal.initial-focus]* above.
+The *[sys42.windows.modal.ok]* Active Event will evaluate your *[.onok]* lambda callback, while the *[sys42.windows.modal.cancel]*,
 will evaluate your *[.oncancel]* callback. You could of course entirely bypass these if you wish, if you provide your own *[_buttons]*
 collection, by simply providing your own lambda in these buttons' *[onclick]* event handlers. However, these Active Events are there for 
-your convenience, to allow you to create more explicit, and more understandable code.
+your convenience, to allow you to create more explicit, more readable, and more understandable code.
 
 If you do not wish to use the *[sys42.windows.modal.ok]* or *[sys42.windows.modal.cancel]* Active Events, due to for instance having
 triolean logic or something similar, you can explicitly destroy the modal window on the client side, by invoking *[sys42.windows.modal.destroy]*,
@@ -86,36 +87,59 @@ which will close the window on the client side once invoked.
 
 Notice also the invocation to *[sys42.windows.modal.initial-focus]* in the *[oninit]* event of your "Yup" button. This makes sure the
 button gains focus initially when displayed. Since the modal window is shown hidden initially, you cannot simply give focus to your
-buttons, by attaching some custom JavaScript, since your JavaScript would fissle, unless it is attached such that it evaluates after your
-modal window has been displayed. This Active Event ensures that the focus JavaScript sent to the client, is not evaluated before the window
-has been shown.
+buttons, by sending some custom JavaScript to the client, since your JavaScript would fissle, unless it is attached such that it evaluates 
+after your modal window has been displayed. This Active Event ensures that the focus JavaScript sent to the client, is not evaluated before 
+the window has been shown.
+
+Notice also, that if you provide an *[.onok]* and an *[.oncancel]* lambda callback, you should in general terms not 
+invoke *[sys42.windows.modal.destroy]* from these callbacks.
 
 Notice also that you can put any type of widget into the *[_buttons]* argument, but since they will be appended into the footer of your modal,
 it will probably look stupid if you add something else besides buttons into it. If you wish to create more complex modal windows,
 with support for your own widgets, you should probably rather use the *[sys42.windows.modal]* or the *[sys42.windows.wizard]* modal windows.
 
 You can also override the default CSS class for your modal window, by explicitly changing it through *[_class]*. The default value for this
-is "modal fade", which creates a default bootstrap modal window, which fades into view on the client when shown. If you wish, you can 
-also create a wider modal window, by changing your *[_inner-class]* to "modal-dialog modal-lg".
+is _"modal fade"_, which creates a default bootstrap modal window, which fades into view on the client when shown. If you wish, you can 
+also create a wider modal window, by changing your *[_inner-class]* to for instance _"modal-dialog modal-lg"_.
 
-Below is a list of all arguments the modal window accepts, together with a short explanation.
+Below is a list of all arguments the confirm window accepts.
 
 * [_header] - Header of modal window.
-* [_body] - Content of modal window. Feel free to pass in HTML here, though realize it's rendered as a "div" HTML element.
-* [_class] - Main CSS class for your modal window.
-* [_inner-class] - Secondary, or "inner" CSS class for your modal window.
+* [_body] - Content of modal window. Feel free to pass in HTML here. The body widget is rendered as a _"div"_ HTML element.
+* [_class] - Main CSS class for your confirm window.
+* [_inner-class] - Secondary, or "inner" CSS class for your confirm window.
 * [_buttons] - Override the default buttons, or widgets in fact, that are rendered in its footer.
-* [.onok] - Lambda callback evaluated when *[sys42.windows.modal.ok]* is invoked.
-* [.oncancel] - Lambda callback evaluated when *[sys42.windows.modal.cancel]* is invoked.
+* [.onok] - Lambda callback evaluated when *[sys42.windows.modal.ok]* is invoked. When "OK" button clicked, for instance.
+* [.oncancel] - Lambda callback evaluated when *[sys42.windows.modal.cancel]* is invoked. When window is closed with the "X" for instance.
 
-In addition, the modal window creates these Active Events which you can consume.
+In addition, the modal window creates these Active Events which you can invoke yourself.
 
 * [sys42.windows.modal.ok] - Closes the window, and evaluates the *[.onok]* lambda callback.
 * [sys42.windows.modal.cancel] - Closes the window, and evaluates the *[.oncancel]* lambda callback.
-* [sys42.windows.modal.destroy] - Destroys (hides) the window on the client side, without invoking the *[.oncancel]*.
-* [sys42.windows.modal.initial-focus] - If invoked during e.g. *[oninit]* of some widget, it will set the initial focus.
+* [sys42.windows.modal.destroy] - Destroys (hides) the window on the client side, without invoking any of the lambda callbacks mentioned above.
+* [sys42.windows.modal.initial-focus] - Will set the initial focus. Must be invoked during creation of window.In an *[oninit]* of a custom button for instance.
 
-The modal window also traps the escape keyboard key, which will invoke the *[sys42.windows.modal.cancel]* Active Event.
+The confirmation window also traps the escape keyboard key, which will invoke *[sys42.windows.modal.cancel]*. Meaning, it will evaluate your *[.oncancel]* 
+lambda callback.
+
+Notice, both the *[_header]*  and the *[_body]* arguments are optional, and ifnot supplied, will default to some sane values. Try the
+following to see them.
+
+```
+sys42.windows.confirm
+  .onok
+    sys42.windows.info-tip:Something dangerous just happened!!
+```
+
+All the relevant widgets in the *[sys42.windows.confirm]* widget that are automatically created as a consequence of invoking it, have an ID
+that is starting out with _"sys42-windows-modal"_. To see them, you can use something such the following.
+
+```
+sys42.windows.confirm
+  .onok
+    list-widgets-like:sys42-windows-modal
+    sys42.windows.show-lambda:x:/..
+```
 
 ## [sys42.windows.modal] - A generic modal window
 
@@ -203,7 +227,7 @@ sys42.windows.modal
       sys42.add-css-classes:x:/-/*/*?value
         _class:has-error
       sys42.windows.info-tip:Not a valid email address!
-        _parent:modal-window-body-wrapper
+        _parent:sys42-windows-modal-body-wrapper
         _class:info-window info-window-error
       send-javascript:@"$('#my-email').focus().select();"
       return:bool:false

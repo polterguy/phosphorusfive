@@ -431,8 +431,8 @@ create-widget
                          */
                         sys42.windows.info-tip:That URL is already taken by another page ...
                           _class:info-window info-window-error
-                          _parent:modal-window-body-wrapper
-                        find-widget:modal-window-body-wrapper
+                          _parent:sys42-windows-modal-body-wrapper
+                        find-widget:sys42-windows-modal-body-wrapper
                           _data-field-name:url
                         get-parent-widget:x:/-/*/*?value
                         sys42.utilities.add-css-classes:x:/-/*/*?value

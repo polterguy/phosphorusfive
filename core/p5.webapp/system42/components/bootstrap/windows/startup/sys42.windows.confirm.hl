@@ -1,6 +1,6 @@
 
 /*
- * Creates the Active Event that shows the user a modal dialog.
+ * Creates the Active Event that shows the user a modal confirmatiom window.
  *
  * Asks the user to confirm some action, before action is evaluated. Pass in action as [.onok]. Optionally, pass in
  * an [.oncancel] lambda.
@@ -32,6 +32,22 @@ create-event:sys42.windows.confirm
    */
   add:x:/../*/.lambda/*
     src:x:/./--
+
+  /*
+   * Sanity checking arguments.
+   */
+  if:x:/../*/_header?value
+    not
+    add:x:/../*/.lambda/*
+      src
+        _header:Please confirm action!
+  if:x:/../*/_body?value
+    not
+    add:x:/../*/.lambda/*
+      src
+        _body:Please confirm you really want to do this.
+  if:x:/../*/_widgets
+    throw:You cannot supply a [_widgets] collection to [sys42.windows.confirm]. Use [sys42.windows.modal] instead.
 
   /*
    * Checking if caller supplied a [_buttons] collection, and if not, we create a default "OK" button, which
