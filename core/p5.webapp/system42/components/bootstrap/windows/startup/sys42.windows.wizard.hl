@@ -1,7 +1,6 @@
 
 /*
- * Responsible for creating the Active Event that shows the user a modal dialog,
- * to asl user to update some existing, or supply some new input.
+ * Creates the Active Event that shows the user a modal window, asking user for some input.
  *
  * Arguments;
  * 
@@ -23,60 +22,97 @@
  * [.oncancel]       - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
  *
  * If user closes modal dialogue, without clicking OK, then the given [.onok] is not evaluated.
- * There can be only one instance of this dialogue at the same time in your page.
+ * There can be only one instance of this window at the same time in your page.
  */
 create-event:sys42.windows.wizard
 
   /*
-   * Simply using the [sys42.windows.modal] to create our confirm window
+   * Simply using the [sys42.windows.modal] to create our wizard window.
+   * First applying all arguments into [.lambda], which contains our [sys42.windows.modal] invocation.
    */
   add:x:/../*/.lambda/*
     src:x:/./--
-  if:x:/../*/_buttons/*
+
+  /*
+   * Sanity checking arguments.
+   */
+  if:x:/../*/_header?value
     not
     add:x:/../*/.lambda/*
       src
-        _buttons
-          literal
-            element:button
-            class:btn btn-default
-            innerValue:OK
-            onclick
-              sys42.windows.modal.ok
+        _header:Please supply input!
+  if:x:/../*/_body
+    not
+    add:x:/../*/.lambda/*
+      src
+        _body:<p>Please supply me with some input</p>
+  if:x:/../*/_widgets
+    throw:You cannot supply a [_widgets] collection to [sys42.windows.wizard]. Use [sys42.windows.modal] instead.
 
   /*
    * Looping through each [_data] items, creating an edit widget for each item.
+   *
+   * Notice, by default, this creates a textbox "input" HTML widget for each child node of [_data], unless the node contains an [_options] child,
+   * at which case it will create a "select" HTML widget instead, with the currently active value, being the value of the currently iterated
+   * [_data] child.
    */
   for-each:x:/../*/_data/*
 
     /*
      * Checking what type of edit field this is.
      */
-    if:x:/..for-each/*/_dp/#/*/_options
+    if:x:/@_dp/#/*/_options
 
       /*
        * Select dropdown choices.
+       * Creating our "option" widgets through a lambda callback, which will return the [value] and [innerValue] for the currently
+       * iterated "option" element. Making sure we set the [_selected] value for our "select" widget, inside of our lambda, such that
+       * it can check if currently iterated "option" element is the initially selected option.
        */
       set:x:/+/*/_selected?value
-        src:x:/..for-each/*/_dp/#?value
+        src:x:/@_dp/#?value
+
+      /*
+       * Used as a lambda callback for our [apply] invocation below.
+       */
       _eval-option
         _selected
+
+        /*
+         * Returning [value] and [innerValue] to caller.
+         */
         eval-x:x:/+/*/*
         add:x:/../*/return
           src
-            value:x:/../*/_dn/#?value
-            innerValue:x:/../*/_dn/#?name
+            value:x:/@_dn/#?value
+            innerValue:x:/@_dn/#?name
+
+        /*
+         * Checking if currently iterated "option" element is selected, and if so, adding [selected] attribute to return lambda.
+         */
         if:x:/../*/_selected?value
           =:x:/../*/_dn/#?value
           add:x:/../*/return
             src:selected
+
+        /*
+         * Returning [value], [innerValue] and possibly also [selected] to caller, which is our [apply] below.
+         */
         return
-      apply:x:/+2/*/*/*/*/*/*/*/widgets
-        src:x:/..for-each/*/_dp/#/*/_options/*
+
+      /*
+       * Using [apply] to create our "option" HTML widgets, and append into [widgets] of [select] below.
+       */
+      apply:x:/+2/**/select/*/widgets
+        src:x:/@_dp/#/*/_options/*
         template
           option
             {@eval}:x:/..if/*/_eval-option
-      eval-x:x:/+/*/*/*/*/*/*/*
+
+      /*
+       * Forward evaluating other arguments.
+       */
+      eval-x:x:/+/**(/label|/select)/*
       add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets
         src
           container
@@ -87,18 +123,19 @@ create-event:sys42.windows.wizard
                 widgets
                   label
                     class:input-group-addon
-                    innerValue:x:/..for-each/*/_dp/#?name
+                    innerValue:x:/@_dp/#?name
                   select
                     class:form-control
-                    value:x:/..for-each/*/_dp/#?value
-                    _data-field-name:x:/..for-each/*/_dp/#?name
+                    value:x:/@_dp/#?value
+                    _data-field-name:x:/@_dp/#?name
                     widgets
+
     else
 
       /*
        * Defaulting to "textbox".
        */
-      eval-x:x:/+/*/*/*/*/*/*/*
+      eval-x:x:/+/**(/label|/input)/*
       add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets
         src
           container
@@ -109,35 +146,45 @@ create-event:sys42.windows.wizard
                 widgets
                   label
                     class:input-group-addon
-                    innerValue:x:/..for-each/*/_dp/#?name
+                    innerValue:x:/@_dp/#?name
                   input
                     type:text
                     class:form-control
-                    value:x:/..for-each/*/_dp/#?value
-                    _data-field-name:x:/..for-each/*/_dp/#?name
+                    value:x:/@_dp/#?value
+                    _data-field-name:x:/@_dp/#?name
 
     /*
      * Making sure we set initial focus to the first widget in our [_widgets] collection.
      */
     if:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/*?count
-      =:int:1
+      >:int:0
+
+      /*
+       * There exists a [_widgets] collection in invocation to [sys42.windows.modal].
+       *
+       * Making sure we give initial focus to first widget automatically.
+       */
       add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/0/*/widgets/0/*/widgets/1
         src
           oninit
             sys42.windows.modal.initial-focus:x:/../*/_event?value
 
   /*
-   * Now we can evaluate our modal window.
+   * Now we can evaluate our modal window, with a dynamically built [_widgets] collection, created above.
    */
   .lambda
     sys42.windows.modal
       _widgets
-  eval:x:/-
+  eval:x:/@.lambda
 
   /*
    * Making sure we create our data-retrieval Active Event, after creation of modal window, and associate it with our modal window.
    */
   set-widget-lambda-event:sys42-windows-modal
+
+    /*
+     * This becomes an easy way to retrieve the supplied values from our wizard window.
+     */
     sys42.windows.wizard.get-values
 
       /*
@@ -149,14 +196,12 @@ create-event:sys42.windows.wizard
       /*
        * Retrieving their data-field names and values.
        */
-      get-widget-property:x:/-/*/*?value
+      get-widget-property:x:/@find-widget/*/*?value
         _data-field-name
         value
-      for-each:x:/-/*
+      for-each:x:/@get-widget-property/*
         add:x:/../*/return
           src:@"{0}:@""{1}"""
-            :x:/..for-each/*/_dp/#/*/_data-field-name?value
-            :x:/..for-each/*/_dp/#/*/value?value
+            :x:/@_dp/#/*/_data-field-name?value
+            :x:/@_dp/#/*/value?value
       return
-
-

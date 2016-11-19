@@ -45,7 +45,7 @@ create-event:sys42.windows.confirm
     not
     add:x:/../*/.lambda/*
       src
-        _body:Please confirm you really want to do this.
+        _body:<p>Please confirm you really want to do this</p>
   if:x:/../*/_widgets
     throw:You cannot supply a [_widgets] collection to [sys42.windows.confirm]. Use [sys42.windows.modal] instead.
 

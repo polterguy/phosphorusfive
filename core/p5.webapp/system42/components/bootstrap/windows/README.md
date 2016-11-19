@@ -170,7 +170,7 @@ sys42.windows.modal
 
 The above code will produce something like the following.
 
-![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/screenshots/sys42-windows-modal-screenshot.png)
+![alt tag](screenshots/sys42-windows-modal-screenshot.png)
 
 If you add "input" HTML elements inside of your modal window, then they will automatically trap carriage return, and raise the *[onclick]*
 Ajax event, of the first button inside of your footer. Run this code, and try to click carriage return, as the textbox has focus.
@@ -240,7 +240,7 @@ sys42.windows.modal
 If you type something like "Foo bar" into the above textbox, you will get something like this, and the window will not accept your input, and
 hence it won't close.
 
-![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/screenshots/sys42-windows-modal-validation-error-screenshot.png)
+![alt tag](screenshots/sys42-windows-modal-validation-error-screenshot.png)
 
 You can of course still close the window by clicking the "X", or outside of the modal window, to evaluate its *[sys42.windows.modal.cancel]*.
 
@@ -263,7 +263,7 @@ sys42.windows.wizard
 
 The above code, will create something looking like this.
 
-![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/screenshots/sys42-windows-wizard-screenshot.png)
+![alt tag](screenshots/sys42-windows-wizard-screenshot.png)
 
 This modal window, creates an additional Active Events, named *[sys42.windows.wizard.get-values]*, which is a short hand for retrieving
 the values from its widgets. To use it, you can do something like the following.
@@ -304,7 +304,7 @@ sys42.windows.wizard
 
 The above will result in something like the following.
 
-![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/screenshots/sys42-windows-wizard-select-option-screenshot.png)
+![alt tag](screenshots/sys42-windows-wizard-select-option-screenshot.png)
 
 Notice in the above, that the *[_options]* collection above, is a name/value collection, where the name becomes the friendly displayed
 name, and the value becomes the value for that option element. Also notice that the value of the _"gender"_ above, which is _"trans"_,
@@ -363,7 +363,7 @@ sys42.windows.modal
 
 The above would create something like this for you.
 
-![alt tag](/core/p5.webapp/system42/components/bootstrap/windows/screenshots/sys42-windows-modal-tree-view-screenshot.png)
+![alt tag](screenshots/sys42-windows-modal-tree-view-screenshot.png)
 
 As you click OK in the above example, your *[.onok]* will even display the currently selected folder from your disc, 
 in addition to the text in your textarea. Pretty impressive from a small Ajax Modal Window, created with 37 lines of code I'd say ...
