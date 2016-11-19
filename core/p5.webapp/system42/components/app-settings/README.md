@@ -1,47 +1,45 @@
-System42 settings helpers
+Application settings supporting Active Events
 ===============
 
 This directory contains Hyperlambda files that creates "application specific settings" Active Events. These
 Active Events gives you easily access to store settings for your own System42 applications, that will persist in 
 the [p5.data](/plugins/p5.data/) database. There are three basic Active Events defined in this directory.
 
-* [sys42.utilities.get-app-setting] - Returns a setting
+* [sys42.utilities.get-app-setting] - Returns a setting.
 * [sys42.utilities.set-app-setting] - Creates or changes an existing setting.
-* [sys42.utilities.list-app-settings] - List all settings for a specific application.
+* [sys42.utilities.list-app-settings] - List all settings, and the values.
 
-All three Active Events must be given an application name through [_app]. This
-must be a string literal that is unique for your app.
+All three Active Events must be given an application name as *[_app]*. This must be a string literal that is 
+unique for your app, and serves as a _"namespace"_ for your app. Examples of a good namespace is _"my-company.my-product"_.
 
-All three Active Events can also optionally take a [_username] argument, which if provided,
+All three Active Events can also optionally take a *[_username]* argument, which if provided,
 will return the settings for the specified username, instead of the currently logged in
-user. Notice, if you provide an explicit [_username], you must be logged in as root.
-Otherwise, the Active Event(s) will throw an exception.
+user. Notice, if you provide an explicit *[_username]*, you must be logged in as root.
 
 ## [sys42.utilities.get-app-setting]
 
-Returns the setting named in [_arg] to the caller. The following code for instance
+Returns the [_arg] setting to caller. Example code below.
 
 ```
 sys42.utilities.get-app-setting:my-setting-key
   _app:my-app
 ```
 
-Would return something like this
+The above invocation, would return something similar to the following.
 
 ```
 sys42.utilities.get-app-setting
   my-setting-key:my-setting-value
 ```
 
-Active Event can also return "composite setting values", where the setting instead of
-being a single value, could be a complex graph object (node structure).
+The Active Event can also return composite setting values, where the setting instead of being a single value, 
+could be a hierarchical lambda object by itself.
 
 ## [sys42.utilities.set-app-setting]
 
-Works similar to [sys42.utilities.get-app-setting], except it updates or creates a setting value
-for the given [_app] and the key given through [_arg]. The new value of your setting,
-is provided as [_src], which might either contain a single value, or be a complex graph
-object (node hierarchy).
+Works similar to *[sys42.utilities.get-app-setting]*, except it updates or creates a setting value
+for the given *[_app]*, and the key given through *[_arg]*. The new value of your setting, is provided as *[_src]*,
+which might either contain a single value, or a hierarchical lambda object.
 
 ```
 sys42.utilities.set-app-setting:my-setting-key
@@ -49,10 +47,31 @@ sys42.utilities.set-app-setting:my-setting-key
   _src:Some value for key
 ```
 
+To create more complex settings, which are graph/lambda objects by themselves, you could do something such as the following.
+
+```
+sys42.utilities.set-app-setting:my-setting-key
+  _app:my-app
+  _src
+    name:John
+    address
+      adr1:Foo Bar st. 23
+      state:CA
+```
+
+Then to retrieve the above setting, you could do something such as the following.
+
+```
+sys42.utilities.get-app-setting:my-setting-key
+  _app:my-app
+```
+
+Which would return the above created lambda object setting.
+
 ## [sys42.utilities.list-app-settings]
 
-Works similar to [sys42.utilities.get-app-setting], except it doesn't take an [_arg] argument, and 
-will return _all_ settings for the specified application.
+Works similar to *[sys42.utilities.get-app-setting]*, except it doesn't take any *[_arg]* arguments, and will return _all_ 
+settings for the specified application, and their values.
 
 ```
 sys42.utilities.list-app-settings
@@ -61,8 +80,8 @@ sys42.utilities.list-app-settings
 
 These Active Events combined, creates a nifty shortcut for storing application specific settings and data.
 Internally it relies upon [pd.data](/plugins/p5.data/), which means it is _not_ a general storage for 
-_all_ data in your application, since p5.data is a memory based database storage. However, for the smaller
-settings you've got in your app, these Active Events provides an excellent shortcut for you to store "settings".
+_all_ data in your application, since p5.data is a memory based database storage. However, for the settings you've got in your app, 
+these Active Events provides an excellent shortcut for you.
 
 
 
