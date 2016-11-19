@@ -2,7 +2,7 @@
 /*
  * Empties the currently logged in user's "temp" folder.
  *
- * Invoked when user is logging out of system.
+ * Normally invoked when user is logging out of system.
  */
 create-event:sys42.utilities.empty-user-temp-folder
 
@@ -14,7 +14,7 @@ create-event:sys42.utilities.empty-user-temp-folder
     not
 
     /*
-     * User is not default user, hence deleting all files in user's "temp" folder.
+     * User is not default user, hence deleting all files in user's "temp" folder, except the README.md file.
      */
     list-files:~/temp/
     set:x:@"/-/*/""~/temp/README.md"""

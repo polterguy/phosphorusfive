@@ -9,8 +9,8 @@ specific startup folder, and not into this folder, which are for "globally" nece
 
 The core Active Events created by evaluating the files in this folder are as following;
 
-* [p5.io.unroll-path.@apps] - Makes sure "@apps" becomes an alias usable for file IO operations towards "/system42/apps/".
-* [p5.io.unroll-path.@components] - Makes sure "@components" becomes an alias usable for file IO operations towards "/system42/components/".
+* [p5.io.unroll-path.@SYS42-APPS] - Makes sure "@SYS42-APPS" becomes an alias usable for file IO operations towards "/system42/apps/".
+* [p5.io.unroll-path.@SYS42-COMPONENTS] - Makes sure "@SYS42-COMPONENTS" becomes an alias usable for file IO operations towards "/system42/components/".
 * [sys42.utilities.empty-user-temp-folder] - Empties user's temporary folder for temporary files.
 * [sys42.utilities.get-event] - Returns the lambda object for one or more dyncamically created Active Event(s).
 * [sys42.utilities.get-widget] - Returns the entire lambda object necessary to re-create one or more widgets.

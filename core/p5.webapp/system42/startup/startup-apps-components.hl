@@ -1,0 +1,68 @@
+
+/*
+ * Initializes all apps and components in System42, and set some path variables.
+ *
+ * Evaluates all "startup.hl" files, inside of all folders in "@SYSTEM42/apps/" and "@SYSTEM42/components/".
+ *
+ * Example;
+ *
+ * If you provide a "startup.hl" file in a folder as follows; "@SYSTEM42/apps/foo/startup.hl" - Then this file will be evaluated by this logic.
+ * It will not evaluate any "startup.hl" files directly inside of "@SYSTEM42/apps/" though, only in folders inside of the given [_paths].
+ */
+
+
+/*
+ * Maps up "@SYS42-APPS" to "@SYSTEM42/apps"
+ */
+create-event:p5.io.unroll-path.@SYS42-APPS
+  return:@SYSTEM42/apps
+
+
+/*
+ * Maps up "@SYS42-COMPONENTS" to "@SYSTEM42/components"
+ */
+create-event:p5.io.unroll-path.@SYS42-COMPONENTS
+  return:@SYSTEM42/components
+
+
+/*
+ * Paths to inspect for all folders containing a "startup.hl" file.
+ *
+ * Any path you supply here, will be checked for all folders inside of them, that contains a file called
+ * "startup.hl". If it does, then this "startup.hl" file will be evaluated.
+ */
+_paths
+  @SYS42-APPS/
+  @SYS42-COMPONENTS/
+
+
+/*
+ * This will contains a list of "startup.hl" files, after having evaluated the [for-each] below.
+ */
+_startup
+
+
+/*
+ * Listing all folders in all paths provided in the above [_paths] node, and iterating through the folders,
+ * checking if a "startup.hl" file exists within this folder. If it does, we add that file's path to [_startup] above.
+ */
+list-folders:x:/../*/_paths/*?name
+for-each:x:/-/*?name
+
+  /*
+   * Checking if "startup.hl" file exists within currently iterated folder,
+   * and if so, adding it to [_startup], such that we can evaluate it later.
+   */
+  if
+    fetch:x:/0/0?value
+      file-exist:{0}startup.hl
+        :x:/..for-each/*/_dp?value
+    add:x:/../*/_startup
+      src:{0}startup.hl
+        :x:/..for-each/*/_dp?value
+
+
+/*
+ * Evaluating all files in [_startup] node above.
+ */
+sys42.utilities.execute-lambda-file:x:/../*/_startup/*?name

@@ -1,17 +1,19 @@
 
 /*
- * Responsible for creating the Active Event that returns the lambda necessary to create
- * a specific widget existing on page. Basically "reverse engineers" an existing Widget
- * on page, returning the Hyperlambda/lambda necessary to re-create it in its entirety.
+ * Creates the Active Event that returns the lambda necessary to re-create a specific widget existing on page.
  *
- * Pass in ID of widget(s) to recursively iterate as constant value, or expression in [_arg].
+ * Basically reverse engineers any existing Widget(s) in your page, returning the lambda necessary to re-create it in its entirety.
+ * Pass in ID(s) of widget(s) to recursively iterate as [_arg], being either a constant value, or an expression.
+ * Will return all widget Ajax events, and widget lambda events, in addition to each property widget contains.
+ *
+ * Arguments;
+ *
+ * [_keep-auto-ids] - If true, will keep all automatically generated IDs, otherwise all auto IDs will be removed.
  */
-
 create-event:sys42.utilities.get-widget
 
   /*
-   * Used as "position node", to make sure all return values are
-   * returned "in order".
+   * Used as "position node", to make sure all return values are returned in order of appearance, among other things.
    */
   _return-value
 
@@ -23,172 +25,176 @@ create-event:sys42.utilities.get-widget
   /*
    * Looping through all widgets requested by caller.
    */
-  while:x:/-/0
+  while:x:/@list-widgets/0
 
     /*
      * Adding widget to root active event node as "return value".
      */
-    insert-before:x:/../*/_return-value
-      src:x:/../*/list-widgets/0
+    insert-before:x:/@_return-value
+      src:x:/@list-widgets/0
 
     /*
      * Fetching properties, and adding to return value.
      */
-    list-widget-properties:x:/../*/list-widgets/0?value
-    add:x:/../*/_return-value/-
-      src:x:/./-/*/*
+    list-widget-properties:x:/@list-widgets/0?value
+    add:x:/@_return-value/-
+      src:x:/@list-widget-properties/*/*
 
     /*
-     * Checking if this was an automatically generated ID,
-     * and if it was, we remove the automatically assigned ID.
+     * Checking if this was an automatically generated ID, and if it was, we remove the automatically assigned ID.
+     * But only if caller did not explicitly inform us that he wanted to keep the automatically generated IDs.
      */
-    match:x:/../*/list-widgets/0?value
-      src:regex:/x[abcdef0-9]{7}/c
-    if:x:/-/*/*?name
-      and:x:/../*/_keep-empty-ids?value.bool
-        !=:bool:true
-      set:x:/../*/_return-value/-?value
+    if:x:/../*/_keep-auto-ids?value.bool
+      !=:bool:true
+
+      /*
+       * Checking if widget's ID matches an automatically generated ID, with a regular expression.
+       * 
+       * Notice, all automatically generated IDs are exactly 8 characters long, starts with an "x", and continues with 7 hex numbers.
+       * There are no capital letters in an automatically created ID.
+       */
+      match:x:/@list-widgets/0?value
+        src:regex:/x[abcdef0-9]{7}/c
+      if:x:/@match/*/*?name
+        set:x:/@_return-value/-?value
 
     /*
-     * Checking if this was an automatically generated name attribute,
-     * and if it was, we remove the "name" attribute entirely.
+     * Checking if this was an automatically generated name attribute, and if it was, we remove the name property entirely.
+     * Notice, contrary to the above removal of automatically generated IDs, caller cannot explicitly inform us that he does not want to remove
+     * the automatcally generated ID. Any automatically generated IDs are ALWAYS removed!
      */
-    match:x:/../*/_return-value/-/*/name
+    match:x:/@_return-value/-/*/name?value
       src:regex:/x[abcdef0-9]{7}/c
-    if:x:/-/*/*?name
-      set:x:/../*/_return-value/-/*/name
+    if:x:/@match/*/*?name
+      set:x:/@_return-value/-/*/name
 
     /*
      * Checking if this is an "input" HTML widget, and has an "empty" value, 
      * and if it matches those conditions, we remove the [value] node altogether.
      */
-    if:x:/../*/_return-value/-?name
+    if:x:/@_return-value/-?name
       =:void
-      and:x:/../*/_return-value/-/*/element?value
+      and:x:/@_return-value/-/*/element?value
         =:input
-      and:x:/../*/_return-value/-/*/value?value
+      and:x:/@_return-value/-/*/value?value
         =:
 
       /*
        * Removing [value] entirely.
        */
-      set:x:/../*/_return-value/-/*/value
+      set:x:/@_return-value/-/*/value
 
     /*
-     * Widget ajax events.
+     * Now retrieving widgets' ajax events.
+     * First simply listing them, which will only return their names.
      */
-    list-widget-ajax-events:x:/../*/list-widgets/0?value
+    list-widget-ajax-events:x:/@list-widgets/0?value
     add:x:/+
-      src:x:/./-/*/*
-    get-widget-ajax-event:x:/-2/*?name
+      src:x:/@list-widget-ajax-events/*/*
 
     /*
-     * Removing all root node children of ajax event nodes who's names are "_event", before 
-     * adding ajax events into "return collection", since these are automatically
-     * injected into events as the events are created, and are referencing the ID of the widget,
+     * Then retrieving widgets' Ajax events lambda object(s).
+     */
+    get-widget-ajax-event:x:/@list-widget-ajax-events/*?name
+
+    /*
+     * Removing all [_event] children of Ajax events, before adding the Ajax events into lambda return value for widget,
+     * since these are automatically injected into the events, as the events are created, and are referencing the ID of the widget,
      * which might change.
      */
-    set:x:/-/*/*/*/_event
-    add:x:/../*/_return-value/-
-      src:x:/..while/*/get-widget-ajax-event/*/*
+    set:x:/@get-widget-ajax-event/*/*/*/_event
 
     /*
-     * Making sure all [container] widgets have the [widgets] child,
-     * even if they're not supposed to fetch their children, to create a
-     * more "consistent" return value from invocation.
+     * Then adding lambda content of Ajax event into returned widget.
      */
-    if:x:/../*/list-widgets/0?name
-      =:container
+    add:x:/@_return-value/-
+      src:x:/@get-widget-ajax-event/*/*
+
+    /*
+     * Widget lambda events, first retrieving list of all events, then retrieving lambda content.
+     */
+    list-widget-lambda-events:x:/@list-widgets/0?value
+
+    /*
+     * Checking if we have any lambda events, and if so, add an [events] node to our currently iterated widget,
+     * before we retrieve events lambda.
+     */
+    if:x:/@list-widget-lambda-events/*/*
+
+      /*
+       * We have lambda events, adding [events] node, for then to add all events into this node. 
+       * But before we add event lambda, we remove all [_event] nodes inside of all events.
+       */
       add:x:/../*/_return-value/-
+        src:events
+
+      /*
+       * Retrieving lambda event's lambda.
+       */
+      add:x:/+
+        src:x:/@list-widget-lambda-events/*/*
+      get-widget-lambda-event:x:/@list-widget-lambda-events/*?name
+
+      /*
+       * Removing [_events] node, which is an automatically generated ID, created during event creation.
+       */
+      set:x:/@get-widget-lambda-event/*/*/*/_event
+
+      /*
+       * Adding lambda events to return value for currently iterated widget.
+       */
+      add:x:/../*/_return-value/-/*/events
+        src:x:/@get-widget-lambda-event/*/*
+
+    /*
+     * Making sure all [container] widgets have the [widgets] child, even if they're not supposed to fetch their children, to create a
+     * more "consistent" return value from invocation.
+     *
+     * This is done, to make it easier for caller to add widgets into [container] widgets, after event has evaluated.
+     */
+    if:x:/@list-widgets/0?name
+      =:container
+      add:x:/@_return-value/-
         src
           widgets
 
     /*
-     * Looping through all children, recursively invoking self, but only if we should,
-     * and this is not a [data-usercontrol] type of widget, and it is not a [_dynamic]
-     * type of control.
+     * Looping through all children, recursively invoking self, unless caller explicitly declared he had no interest in children widgets.
      */
     if:x:/../*/_no-children?value.bool
       !=:bool:true
-      and:x:/../*/_return-value/-/*/_dynamic?value.bool
-        !=:bool:true
-      and:x:/../*/_return-value/-/*/data-usercontrol
-        not
-        or:x:/../*/_no-wash-usercontrols?value.bool
-          =:bool:true
 
       /*
-       * Looping through all children widgets recursively.
+       * Looping through all children widgets recursively, invoking self, adding returned value(s) to [widgets] collection for 
+       * currently iterated widget.
        */
-      get-children-widgets:x:/../*/list-widgets/0?value
-      for-each:x:/-/*/*?value
+      get-children-widgets:x:/@list-widgets/0?value
+      for-each:x:/@get-children-widgets/*/*?value
 
         /*
-         * Dynamically creating recursive invocation, 
-         * passing in id of currently iterated children widget
+         * Dynamically creating recursive invocation, passing in id of currently iterated children widget.
          */
         set:x:/..for-each/*/sys42.utilities.get-widget?value
-          src:x:/..for-each/*/_dp?value
+          src:x:/@_dp?value
 
         /*
-         * Making sure recursive invocation get the arguments [_flatten] and [_keep-empty-ids].
+         * Making sure recursive invocation get the argument [_keep-auto-ids].
          */
         add:x:/..for-each/*/sys42.utilities.get-widget
-          src:x:/../*(/_flatten|/_keep-empty-ids|/_no-wash-usercontrols)
+          src:x:/../*/_keep-auto-ids
 
         /*
-         * Recursively invocing "self", now with arguments correctly setup.
+         * Recursively invoking "self", now with arguments correctly applied.
          */
         sys42.utilities.get-widget
 
         /*
-         * Checking if we're supposed to "flatten" hierarchy, and if wo, add widget which
-         * is a result of recursive invocation to "root", instead of as child widget of 
-         * currently iterated widget.
+         * Returning widget as relational hierarchy.
          */
-        if:x:/../*/_flatten?value.bool
-
-          /*
-           * Returning widget as flat hierarchy.
-           */
-          insert-before:x:/../*/_return-value
-            src:x:/..for-each/*/sys42.utilities.get-widget/*
-        else
-
-          /*
-           * Returning widget as relational hierarchy.
-           */
-          add:x:/../*/_return-value/-/*/widgets
-            src:x:/..for-each/*/sys42.utilities.get-widget/*
+        add:x:/@_return-value/-/*/widgets
+          src:x:/@sys42.utilities.get-widget/*
 
     /*
-     * Widget lambda events, first retrieving list of all events, then retrieving content.
+     * Removing zeroth item of list-widget, to "decrement" [while] loop condition.
      */
-    list-widget-lambda-events:x:/../*/list-widgets/0?value
-    add:x:/+
-      src:x:/./-/*/*
-    get-widget-lambda-event:x:/-2/*?name
-
-    /*
-     * Checking if we have any lambda events, and if so, add an [events] node to
-     * currently iterated widget.
-     */
-    if:x:/-3/*/*
-
-      /*
-       * We have lambda events, adding [events] node, for then to add all events into
-       * this node. But first, we remove all [_event] nodes inside of lambda events.
-       */
-      set:x:/./-/*/*/*/_event
-      add:x:/../*/_return-value/-
-        src:events
-      add:x:/../*/_return-value/-/*/events
-        src:x:/././-/*/*
-
-    /*
-     * Removing zeroth item of list-widget, to "decrement" while loop condition.
-     */
-    set:x:/../*/list-widgets/0
-
-
-
+    set:x:/@list-widgets/0

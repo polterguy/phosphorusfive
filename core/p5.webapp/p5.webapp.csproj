@@ -834,7 +834,7 @@
     <Content Include="system42\components\common-widgets\codemirror\startup\sys42.widgets.codemirror-executor.hl" />
     <None Include="system42\apps\CMS\startup\p5.web.load-ui.hl" />
     <Content Include="system42\startup\README.md" />
-    <Content Include="system42\startup\p5.io.unroll-path.hl" />
+    <Content Include="system42\startup\startup-apps-components.hl" />
     <None Include="system42\startup\sys42.utilities.get-widget.hl" />
     <None Include="system42\components\common-widgets\ckeditor\README.md" />
     <None Include="system42\components\common-widgets\ckeditor\media\skins\moono\readme.md" />

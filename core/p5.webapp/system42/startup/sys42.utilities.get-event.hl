@@ -1,23 +1,58 @@
 
 /*
- * Responsible for creating the Active Event that returns the p5.lambda object belonging to a dynamically created Active Event.
+ * Creates the Active Event that returns the p5.lambda object belonging to a dynamically created Active Event.
  *
- * Pass in name of Active Event as a constant value, or expression in [_arg].
+ * Pass in name of Active Event(s) as a constant value, or expression in [_arg].
+ * Multiple events can be inspected in one go, by providing an expression leading to multiple results, being the names of the events
+ * you wish to inspect.
  */
 create-event:sys42.utilities.get-event
+
+  /*
+   * This one, will contain the invocation lambda, necessary to invoke, and inspect, all events caller provided.
+   */
   _invocations
-  add:x:/-
-    src:x:/../*/_arg?value
-  add:x:/-2/*
+
+  /*
+   * Adding all events caller wants to inspect to the above [_invocations] node.
+   * Notice, we make sure we only add distinct values into [_invocations] here, in case the same event was liste twice in any expressions
+   * given to this invocation.
+   */
+  add:x:/@_invocations
+    src:x:/../*/_arg/=$?value
+
+  /*
+   * Adding the code necessary to "short circuit" the event invocations inside of [_invocations].
+   *
+   * Basically, what this lambda does, it injects code at the top of the event invocation(s), that instead of evaluating the event,
+   * retreieves the entire lambda object from the event, minus our injected lambda, and adds it into a [return] invocation.
+   *
+   * The end result, becomes that the original lambda object from our inspected event, is returned, instead of having the event evaluated.
+   */
+  add:x:/@_invocations/*
     src
       add:x:/+
         src:x:/../*/[2,]
       return
-  add:x:/-3
+
+  /*
+   * Adding the lambda necessary to have our [eval] invocation below being able to return the lambda(s) returned from our inspect invocation(s).
+   */
+  add:x:/@_invocations
     src
       insert-before:x:/../0
         src:x:/../*!/../*/insert-before
-  eval:x:/-4
-  insert-before:x:
-    src:x:/./-/*
 
+  /*
+   * At this point, [_invocations] above, contains a lambda object, that first of all evaluates all [_arg] Active Events with a lambda argument,
+   * necessary to inspect the event, and have the event return its "self lambda". In addition, it contains the lambda necessary to return these
+   * lambda object(s) from [_invocations] itself.
+   *
+   * The end result, becomes that of that [eval] afterwards, will contain all lambda object(s), from all Active Events caller wanted to inspect,
+   * which we again return from the invocation of this event.
+   *
+   * Pretty unfucking spectacularily nifty if I may say so ... ;)
+   */
+  eval:x:/@_invocations
+  insert-before:x:
+    src:x:/@eval/*
