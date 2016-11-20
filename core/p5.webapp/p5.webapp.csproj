@@ -72,6 +72,7 @@
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\screenshots\datetimepicker-example-screenshot.png" />
     <Content Include="system42\components\bootstrap\widgets\navbar\screenshots\ajax-navbar-menu-example-screenshot-responsive.png" />
     <Content Include="system42\components\bootstrap\widgets\navbar\screenshots\ajax-navbar-menu-example-screenshot.png" />
+    <Content Include="system42\components\bootstrap\widgets\navbar\screenshots\ajax-navbar-menu-in-modal-window-example-screenshot.png" />
     <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-confirm-screenshot.png" />
     <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-modal-screenshot.png" />
     <Content Include="system42\components\bootstrap\windows\screenshots\sys42-windows-modal-tree-view-screenshot.png" />

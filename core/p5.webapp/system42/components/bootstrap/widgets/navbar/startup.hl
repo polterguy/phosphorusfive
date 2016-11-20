@@ -14,8 +14,6 @@
  *                      Optionally you can supply child nodes for each item.
  *                      All items can either have an [.onclick] lambda callback, which is invoked when an item is clicked, or
  *                      its own children [_items] collection, but not both!
- * [_class]           - Override the default CSS classes used to render the menu, the default value is "navbar navbar-default navbar-fixed-top".
- *                      To create your menu attached to the bottom of the page instead for instance, use "navbar navbar-default navbar-fixed-bottom".
  * [_crawl]           - If true, the menu will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
  * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_menu_unroll".
  *
@@ -28,7 +26,6 @@ create-event:sys42.widgets.navbar
    * Applying options for widget, with default values.
    */
   _defaults
-    _class:navbar navbar-default navbar-fixed-top
     _crawl-get-name:sys42_widgets_navbar_unroll
     _crawl:bool:false
   _options
@@ -45,32 +42,14 @@ create-event:sys42.widgets.navbar
 
 
   /*
-   * Making sure we include Boootstrap.
-   *
-   * Notice, the navbar depends upon the Bootstrap JavaScript when it is collapsed.
-   * In addition we must include our navbar.css file, which creates some padding for our body, in addition to creating
-   * the hack to allow Boostrap's navbar to have multiple levels of inner menus.
-   */
-  sys42.bootstrap.include-css
-  sys42.bootstrap.include-javascript
-  include-stylesheet-file:@CMS/media/css/navbar-fix.min.css
-
-
-  /*
    * Adding items recursively to return widget.
    */
   eval-x:x:/+/*/*
-  add:x:/../*/return/*/container/*/widgets/*/container/*/widgets/*/container/=navbar-main/*/widgets/*/ul/*/widgets
+  add:x:/../*/return/**/ul/*/widgets
     sys42.widgets.navbar._create-items:x:/../*/_arg?value
       _items:x:/../*/_options/*/_items
       _crawl:x:/../*/_options/*/_crawl?value
       _crawl-get-name:x:/../*/_options/*/_crawl-get-name?value
-
-
-  /*
-   * Forward evaluating properties inside of [return].
-   */
-  eval-x:x:/../*/return/*/*/class
 
 
   /*
@@ -112,48 +91,65 @@ create-event:sys42.widgets.navbar
 
 
   /*
-   * Returning menu to caller
+   * Returning Navbar to caller.
    */
-  if:x:/../*/_arg?value
-    set:x:/../*/return/*/container?value
-      src:x:/../*/_arg?value
   return
     container
       _root-navbar
-      element:nav
-      class:x:/../*/_options/*/_class?value
+      class:container-fluid
       widgets
         container
-          class:container-fluid
-          widgets
-            container
-              class:navbar-header
-              widgets
-
-                /*
-                 * Toggles visibility of navbar, only visible in small screen resolutions.
-                 */
-                button:toggle-navbar
-                  type:button
-                  class:navbar-toggle collapsed
-                  data-toggle:collapse
-                  data-target:#navbar-main
-                  aria-expanded:false
-                  innerValue:@"<span class=""icon-bar""></span><span class=""icon-bar""></span><span class=""icon-bar""></span>"
+          class:navbar-header
+          oninit
 
             /*
-             * Main menu items wrapper
+             * Making sure we include Boootstrap.
+             *
+             * Notice, the navbar depends upon the Bootstrap JavaScript when it is collapsed.
+             * In addition we must include our navbar.css file, which creates some padding for our body, in addition to creating
+             * the hack to allow Boostrap's navbar to have multiple levels of inner menus.
              */
-            container:navbar-main
-              class:collapse navbar-collapse
-              widgets
-                ul
-                  class:nav navbar-nav
+            sys42.bootstrap.include-css
+            sys42.bootstrap.include-javascript
+            include-stylesheet-file:@CMS/media/css/navbar-fix.min.css
 
-                  /*
-                   *This part will be dynamically populated from your [_items] collection.
-                   */
-                  widgets
+          widgets
+
+            /*
+             * Toggles visibility of navbar, only visible in small screen resolutions.
+             */
+            button
+              type:button
+              class:navbar-toggle collapsed
+              data-toggle:collapse
+              aria-expanded:false
+              innerValue:@"<span class=""icon-bar""></span><span class=""icon-bar""></span><span class=""icon-bar""></span>"
+              oninit
+
+                /*
+                 * Making sure we attach our [data-target] property
+                 */
+                find-first-ancestor-widget:x:/../*/_event?value
+                  _root-navbar
+                find-widget:x:/@find-first-ancestor-widget/*/*?value
+                  class:collapse navbar-collapse
+                set-widget-property:x:/../*/_event?value
+                  data-target:#{0}
+                    :x:/@find-widget/*/*?value
+
+        /*
+         * Main menu items wrapper
+         */
+        container
+          class:collapse navbar-collapse
+          widgets
+            ul
+              class:nav navbar-nav
+
+              /*
+               *This part will be dynamically populated from your [_items] collection.
+               */
+              widgets
 
 
 /*

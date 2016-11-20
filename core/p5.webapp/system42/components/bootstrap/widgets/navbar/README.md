@@ -2,19 +2,29 @@ The Bootstrap Ajax Navbar widget
 ========
 
 This folder contains the Bootstrap Ajax Navbar widget, that allows you to create an Ajax menu, to allow your users to navigate your app.
-Even though the widget is 100% Ajax based, it still allows you to create a navigation menu, where the items are visible to search engines, 
-and items can be bookmarked.
+Even though the widget is 100% Ajax based, it still allows you to create a navigation menu, where the items are visible to search engines.
+Items can also be bookmarked.
 
-To use it, simply add it to a container widget collection, through its widget creational Active Event *[sys42.widgets.navbar]*. Example below.
+To use it, add it to a container widget collection, through its widget creational Active Event *[sys42.widgets.navbar]*. Example below.
 
 ```
-create-widget:foo
-  parent:cnt
+/*
+ * Notice, the appearance of the Navbar is actually controlled by the
+ * parent widget's CSS class. In addition, you should also make sure
+ * you create its parent widget as a 'nav' HTML element, to ensure the
+ * correct semantics for your Navbar.
+ */
+create-widget:my-navbar
   position:0
+  parent:cnt
+  element:nav
+  class:navbar navbar-default navbar-fixed-top
   widgets
-    sys42.widgets.navbar:my-navbar
 
-      // Settings the navbar into "SEO" mode.
+    // Notice, no [_class] property on Navbar, see above comment.
+    sys42.widgets.navbar
+
+      // Setting the navbar into "SEO"/crawler-friendly mode.
       _crawl:true
 
       // These are the root menu items.
@@ -34,9 +44,12 @@ create-widget:foo
             // If you add a menu item with the name of [_separator], it will
             // create a horizonat separator between your items.
             _separator
+
+            // This one is shown after the separator.
             Save:save
               .onclick
                 sys42.windows.info-tip:And we're going to save ...
+
         Edit:edit
           .onclick
             sys42.windows.info-tip:Edit was clicked
@@ -57,64 +70,72 @@ The above code will produce something like the following.
 
 ![alt tag](screenshots/ajax-navbar-menu-example-screenshot.png)
 
-Notice, if you are using the Ajax Navbar in the System42/CMS, you must make sure that you use a template which is not including another menu
-or Navbar. This can be done by changing the template in the settings to for instance _"no-navbar-menu"_. Otherwise, you will ge an exception,
-telling you that you've already got another widget on your page, with the same ID.
+Notice, if you create the above Hyperlambda as a lambda page in your CMS, you must make sure you use a template without a navbar menu. Otherwise,
+the two menus will be rendered at the same position, and only one of them will be visible. The _"no-navbar-menu"_ template for instance, is perfect.
 
-Also notice, that when you create your Navbar,the semantical correct way of doing this, is by adding it into your _"cnt"_ container widget, 
-preferably at *[position]* 0.
-
-The [_items] collection above is the most important argument, and declares your menu items in an hierarchically "Name"/"id" structure.
-You can nest items, by having items contain their own [_items] collection, which will dropdown menus for you. The [.onclick] above, is
-a lambda object of Hyperlambda, allowing you to do whatever you wish when users are clicking your items.
-
-If you set the [_crawl] argument to "true", as we have done above, then an "unrolling" HTTP GET parameter will be automatically created for you,
-to allow search engines to crawl your menu, and also users to bookmark them, by right clicking items, and choose "Open in new tab" for instance.
-See the [tree widget](/../tree/) to understand how this work.
-
-The menu is built on Bootstrap CSS' navbar, and will therefor render responsively, allowing devices with smaller resolution to show a more friendly
-navigational widget. See [Bootstrap](http://getbootstrap.com/components/#navbar) to understand how this work. You can set most of the settings
-from the Bootstrap Navbar throughchanging its *[_class]* property. For instance, to create a navbar that is attached to the bottom, instead of
-fixed at the top, you could simply add the following *[_class]* properties to it when creating it.
+Notice also, that you actually control the Navbar's appearance on the CSS classes you use for its parent widget. The Navbar itself, actually has 
+no *[_class]* property. The above Hyperlambda for instance, creates a Navbar attached to the top of your screen. If you wish to attach it to the 
+bottom of your screen for instance, you could use something like the following.
 
 ```
-create-widget:foo
-  widgets
-    sys42.widgets.navbar:my-navbar
-      _class:navbar navbar-default navbar-fixed-bottom
-      _crawl:true
-      _items
-        Files
-          _items
-            Open:open
-              .onclick
-                sys42.windows.info-tip:You tried to open a file
-            Close:close
-              .onclick
-                sys42.windows.info-tip:Closing file
-            _separator
-            Save:save
-              .onclick
-                sys42.windows.info-tip:And we're going to save ...
-        Edit:edit
-          .onclick
-            sys42.windows.info-tip:Edit was clicked
-        Windows
-          _items
-            First Window:first-window
-              .onclick
-                sys42.windows.info-tip:First window clicked
-            Second Window:second-window
-              .onclick
-                sys42.windows.info-tip:Second window clicked
-        View:view
-          .onclick
-            sys42.windows.info-tip:View was clicked
+create-widget:my-navbar
+  position:0
+  parent:cnt
+  element:nav
+  class:navbar navbar-default navbar-fixed-bottom
+
+  /* ... the rest of your code goes here ... */
 ```
+
+## Ninja tricks
+
+Since the Navbar is just another widget, you can actually stuff it anywhere you wish. Although, I do definitely not recommend this, you could for instance
+put a Navbar inside your Modal Windows. Below is an example of such a thing.
+
+```
+sys42.windows.modal
+  _header:Modal with Navbar
+  _widgets
+    container:my-navbar
+      element:nav
+      class:navbar navbar-default
+      widgets
+        sys42.widgets.navbar
+          _items
+            Files
+              _items
+                Open:open
+                  .onclick
+                    sys42.windows.info-tip:You tried to open a file
+                      _parent:sys42-windows-modal-body-wrapper
+                Close:close
+                  .onclick
+                    sys42.windows.info-tip:Closing file
+                      _parent:sys42-windows-modal-body-wrapper
+            Edit:edit
+              .onclick
+                sys42.windows.info-tip:Edit was clicked
+                  _parent:sys42-windows-modal-body-wrapper
+    literal
+      element:p
+      innerValue:Here is an example of a Navbar rendered inside a Modal Ajax Window.
+    literal
+      element:p
+      innerValue:I don't recommend this, but it does illustrate the flexibility of the Navbar!
+    literal
+      element:p
+      innerValue:@"You can really stuff a Navbar, any place you can stuff a widget, 
+but the smartest place to stuff is, it at the top of your screens, and to make sure you only use one!"
+```
+
+The above Hyperlambda will result in something like the following.
+
+![alt tag](screenshots/ajax-navbar-menu-in-modal-window-example-screenshot.png)
 
 ## Responsive rendering
 
-Below is a screenshot of how the first Ajax menu will look like on an iPhone 6.
+The Navbar is created with Bootstrap's responsive rendering at its heart. This means that it will also work 100% perfectly on devices
+with smaller screens, such as phones for instance. Below is a screenshot of how the above Ajax Navbar will look like on an iPhone 6.
 
 ![alt tag](screenshots/ajax-navbar-menu-example-screenshot-responsive.png)
 
