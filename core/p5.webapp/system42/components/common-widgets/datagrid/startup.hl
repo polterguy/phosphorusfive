@@ -26,9 +26,9 @@
  *                         Each child node of your item, becomes a column in the datagrid.
  *                         If you wish, you can turn off editing of specific columns and/or cells, by making
  *                         sure your specific cell item contains an [_edit] child, with the value of "false".
- *                         You can also return "template columns" here, passing in a [_widgets] child, being a widgets
+ *                         You can also return "template columns" here, passing in a [widgets] child, being a widgets
  *                         collection, allowing you to innject any Ajax widget you wish, into any cell of your datagrid.
- *                         The [_widgets] feature of cells, is only possible to use, if you use the datagrid in "inline editing" mode.
+ *                         The [widgets] feature of cells, is only possible to use, if you use the datagrid in "inline editing" mode.
  *                         The [.on-get-items] is given at least two argument; [_start] and [_end], in addition to an optional
  *                         argument [_query], being some "filter/search" criteria for your datagrid.
  * [.on-edit-item]       - Callback lambda evaluated whenever some cell's content has been edited.
@@ -768,13 +768,13 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                 return
                   span
                     innerValue:x:/../*/_dn/#?value
-              else-if:x:/../*/_dn/#/*/_widgets
+              else-if:x:/../*/_dn/#/*/widgets
 
                 /*
                  * Custom column with widget content.
                  */
                 add:x:/./*/return
-                  src:x:/../*/_dn/#/*/_widgets/*
+                  src:x:/../*/_dn/#/*/widgets/*
                 return
               else
 

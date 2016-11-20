@@ -19,7 +19,7 @@ The above will render something like the following.
 
 ![alt tag](screenshots/codemirror-example-screenshot.png)
 
-To get to Hyperlambda created by it, simply use *[get-widget-property]*, and pass in *[value]* as the argument of what to retrieve.
+To get to the Hyperlambda code, simply use *[get-widget-property]*, and pass in *[value]* as the argument of what to retrieve.
 Example code given below.
 
 ```
