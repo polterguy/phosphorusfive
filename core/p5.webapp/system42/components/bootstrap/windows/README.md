@@ -344,8 +344,8 @@ sys42.windows.modal
 sys42.windows.modal.initial-focus:your-name
 ```
 
-Below is an eample of how to dynamically inject an Ajax TreeView widget, into a modal Ajax window, just to demonstrate some of the powers
-this widget actually gives you.
+You can also insert any _"complex"_ widgets you wish into your Modal window. Below is an eample of how to dynamically inject an Ajax TreeView 
+widget, into a modal Ajax window, just to demonstrate some of the powers this widget actually gives you.
 
 ```
 sys42.windows.modal
@@ -391,16 +391,5 @@ The above would create something like this for you.
 
 ![alt tag](screenshots/sys42-windows-modal-tree-view-screenshot.png)
 
-As you click OK in the above example, your *[.onok]* will even display the currently selected folder from your disc, 
-in addition to the text in your textarea. Pretty impressive from a small Ajax Modal Window, created with 37 lines of code I'd say ...
-
-Hint, in case you don't "get it", when it comes to what the point about something like the above Ajax TreeView inside of a modal Ajax window
-would serve, realize that the above "Ninja trick", actually allows you to select a folder, on disc, from your Phosphorus Five installation,
-by using an Ajax TreeView. Which I think is a pretty nifty feature in fact ...
-
-Believing that the Phosphorus Five Modal Ajax Window, is just a simple wrapper around the modal Bootstrap windows, is probably a mistake.
-It goes far beyond Bootstrap's Modal windows. Among other things, I have successfully used it to create modal windows with drag'n'drop Ajax 
-uploader functionality, modals with multiple "pages", etc, etc, etc. Although the Bootstrap Modal window is responsible for rendering the
-actual modal window, it goes far beyond what you could normally do with a Bootstrap modal, due to the Ajax engine in P5.
-
-_"With great powers, comes greater ability to imagine!"_
+As you click OK in the above example, your *[.onok]* will display the currently selected folder from your disc, in addition to the text in 
+your textarea. Pretty impressive from a small Ajax Modal Window, created with 37 lines of code I'd say ...

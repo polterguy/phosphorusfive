@@ -9,4 +9,4 @@ as follows.
 * [DateTimePicker](datetimepicker/) - Allows the user to pick a date, and optionally a time.
 * [Navbar](navbar/) - Creates a navigational "menu" with Ajax support.
 
-
+To understand how these are built, please check out the documentation for the [common-widgets](../../common-widgets/).
