@@ -1,7 +1,8 @@
-The Bootstrap Ajax Colorpicker widget
+The Bootstrap Ajax ColorPicker widget
 ========
 
-This folder contains an Ajax colorpicker, built upon the [Bootstrap colorpicker](https://itsjavi.com/bootstrap-colorpicker/), that 
+This folder contains an Ajax ColorPicker widget, built upon [Stefan Petre](https://twitter.com/stefanpetre/)'s 
+and [Javi Aguilar](https://itsjavi.com/)'s [Bootstrap ColorPicker](https://itsjavi.com/bootstrap-colorpicker/), that 
 allows your users to pick a color. Below is an example of how to use it.
 
 ```
