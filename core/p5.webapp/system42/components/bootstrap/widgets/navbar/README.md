@@ -1,14 +1,16 @@
-An Ajax navbar widget
+The Bootstrap Ajax Navbar widget
 ========
 
-This folder contains the navbar Ajax widget, that allows you to create an Ajax menu, to allow your users to navigate your app. Even though the 
-widget is 100% Ajax based, it still allows you to create a navigation menu, where the items are visible to search engines, and items are 
-possible to bookmark.
+This folder contains the Bootstrap Ajax Navbar widget, that allows you to create an Ajax menu, to allow your users to navigate your app.
+Even though the widget is 100% Ajax based, it still allows you to create a navigation menu, where the items are visible to search engines, 
+and items can be bookmarked.
 
 To use it, simply add it to a container widget collection, through its widget creational Active Event *[sys42.widgets.navbar]*. Example below.
 
 ```
 create-widget:foo
+  parent:cnt
+  position:0
   widgets
     sys42.widgets.navbar:my-navbar
 
@@ -53,7 +55,14 @@ create-widget:foo
 
 The above code will produce something like the following.
 
-![alt tag](/core/p5.webapp/system42/components/bootstrap/widgets/navbar/screenshots/ajax-navbar-menu-example-screenshot.png)
+![alt tag](screenshots/ajax-navbar-menu-example-screenshot.png)
+
+Notice, if you are using the Ajax Navbar in the System42/CMS, you must make sure that you use a template which is not including another menu
+or Navbar. This can be done by changing the template in the settings to for instance _"no-navbar-menu"_. Otherwise, you will ge an exception,
+telling you that you've already got another widget on your page, with the same ID.
+
+Also notice, that when you create your Navbar,the semantical correct way of doing this, is by adding it into your _"cnt"_ container widget, 
+preferably at *[position]* 0.
 
 The [_items] collection above is the most important argument, and declares your menu items in an hierarchically "Name"/"id" structure.
 You can nest items, by having items contain their own [_items] collection, which will dropdown menus for you. The [.onclick] above, is
@@ -107,7 +116,7 @@ create-widget:foo
 
 Below is a screenshot of how the first Ajax menu will look like on an iPhone 6.
 
-![alt tag](/core/p5.webapp/system42/components/bootstrap/widgets/navbar/screenshots/ajax-navbar-menu-example-screenshot-responsive.png)
+![alt tag](screenshots/ajax-navbar-menu-example-screenshot-responsive.png)
 
 The menu will automatically "re-arrange" itself, and become a responsive popdown menu, if the screen resolution is smaller than some specific
 threshold. This allows it to render on smaller devices, without forcing vertical scrolling.
