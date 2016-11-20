@@ -2,7 +2,7 @@ The Bootstrap Ajax DateTimePicker
 ========
 
 This folder contains the Ajax DateTimePicker for Phosphorus Five. The widget is created on top of 
-the [Bootstrap DateTimePicker](https://eonasdan.github.io/bootstrap-datetimepicker/) as an extension widget.
+[Eonasdan](https://twitter.com/Eonasdan)'s [Bootstrap DateTimePicker](https://eonasdan.github.io/bootstrap-datetimepicker/), as an extension widget.
 Below is an example of how to use it.
 
 ```
