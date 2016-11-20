@@ -238,7 +238,7 @@ sys42.windows.modal
       :x:/@get-widget-property/*/*?value
 ```
 
-If you type something like "Foo bar" into the above textbox, you will get something like this, and the window will not accept your input, and
+If you type something like _"Foo bar"_ into the above textbox, you will get something like this, and the window will not accept your input, and
 hence it won't close.
 
 ![alt tag](screenshots/sys42-windows-modal-validation-error-screenshot.png)
@@ -250,7 +250,7 @@ You can of course still close the window by clicking the "X", or outside of the 
 This Active Event allows you to even more easily than by using the *[sys42.windows.modal]* Active Event collect data from the user.
 Instead of a *[_widgets]* collection, this Active Event expects you to provide a *[_data]* collection. Each entry you put into your *[_data]*
 collection, will have its own widget, of some type, which depends upon how your data segment looks like. To collect for instance two text
-values, with the name of "name" and "email", you could do something like this.
+values, with the name of _"name"_ and _"email"_, you could do something like this.
 
 ```
 sys42.windows.wizard
@@ -282,7 +282,7 @@ sys42.windows.wizard
       :x:/@sys42.windows.wizard.get-values/*/email?value
 ```
 
-This version of our modal window, also accepts "select option" type of data, which allows the user to select a single item from a list
+This version of our modal window, also accepts select option type of data, which allows the user to select a single item from a list
 of options. Imagine the following code.
 
 ```
@@ -316,8 +316,33 @@ allows you to entirely take control over its *[_widgets]* collection. This modal
 
 ### Ninja tricks
 
-Hint, you can use *[get-widget-properties]* to serialize all values from your *[_widgets]* collection, inside of your modal Ajax window,
-if you use the *[sys42.windows.modal]* modal Ajax window.
+Hint, you can use *[get-widget-properties]* to serialize all values from your *[_widgets]* collection in one go, if you use 
+the *[sys42.windows.modal]* modal Ajax window. Consider the following.
+
+```
+sys42.windows.modal
+  _widgets
+    void:your-name
+      element:input
+      type:text
+      placeholder:Name ...
+      class:form-control prepend-bottom
+    void:your-age
+      element:input
+      type:number
+      min:5
+      max:100
+      value:20
+      placeholder:Age ...
+      class:form-control prepend-bottom
+  .onok
+    get-widget-properties:sys42-windows-modal
+      value
+    sys42.windows.info-tip:Hi '{0}', so you're {1} years old ...?
+      :x:/@get-widget-properties/*/your-name/*?value
+      :x:/@get-widget-properties/*/your-age/*?value
+sys42.windows.modal.initial-focus:your-name
+```
 
 Below is an eample of how to dynamically inject an Ajax TreeView widget, into a modal Ajax window, just to demonstrate some of the powers
 this widget actually gives you.
