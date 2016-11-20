@@ -72,7 +72,7 @@ create-event:sys42.widgets.datetimepicker
 
     /*
      * We have an [.onchange] lambda callback, making sure we initialize DateTimePicker such that it invokes
-     * it during "dp.hide", and adding the callback lambda into [.onchange] of "input" element.
+     * it during "dp.hide", by adding the callback lambda into [.onchange] of "input" element.
      */
     add:x:/../*/return/*/container/*/widgets/*/input/*/.onchange/*/.lambda
       src:x:/../*/_options/*/.onchange/*
@@ -81,7 +81,7 @@ create-event:sys42.widgets.datetimepicker
 
     /*
      * We do not have an [.onchange] lambda callback. Making sure datetimepicker is initialized without
-     * the "dp.hide" event handled, and removing [.onchange] lambda callback of "input" element.
+     * the "dp.hide" event handled, by removing [.onchange] lambda callback of "input" element.
      */
     set:x:/../*/return/*/container/*/widgets/*/input/*/.onchange
 
@@ -94,7 +94,7 @@ create-event:sys42.widgets.datetimepicker
   /*
    * Forward evaluating arguments.
    */
-  eval-x:x:/../*/return/*/container/*/widgets/*/span/*/innerValue|/../*/return/*/*/class|/../*/return/*/*/widgets/*/input/*/value
+  eval-x:x:/../*/return/*/container/*(/class|/widgets/*/span/*/innerValue|/widgets/*/input/*/value)
 
   /*
    * Returning datetimepicker to caller.
@@ -103,6 +103,7 @@ create-event:sys42.widgets.datetimepicker
     container
       class:x:/../*/_options/*/_class?value
       events
+
 
         /*
          * Returns the widget's value.
@@ -125,8 +126,9 @@ create-event:sys42.widgets.datetimepicker
               value
             return:x:/-/*/*?value
 
+
         /*
-         * Sets the datetimepicker's value
+         * Sets the widget's value.
          */
         sys42.widgets.datetimepicker.set-value
 
@@ -154,7 +156,7 @@ create-event:sys42.widgets.datetimepicker
           /*
            * Due to "funny DOM event manipulations" in DateTimePicker, we need to explicitly pass in the
            * new value to our textbox like the following, in addition to using [set-widget-property].
-           * Othherwise, value of textbox won't actually change!!
+           * Otherwise, the value of our textbox won't actually change!!
            */
           send-javascript:@"$('#{0}').val('{1}').change();"
             :x:/@find-widget/*/*?value
@@ -191,7 +193,8 @@ create-event:sys42.widgets.datetimepicker
             include-stylesheet-file:@BOOTSTRAP/widgets/datetimepicker/media/css/bootstrap-datetimepicker.min.css
 
             /*
-             * Becomes arguments to pass into JavaScript instantiation.
+             * Becomes the arguments to pass into JavaScript instantiation.
+             * This is dynamically modified, to become a JavaScript option object, according to the logic below.
              */
             _arguments
 
@@ -201,7 +204,7 @@ create-event:sys42.widgets.datetimepicker
             if:x:/../*/_options/*/_locale?value
 
               /*
-               * Including the necessary "locale" JS file, and setting the "locale" option for our JavaScript.
+               * Including the necessary "locale" JS file, and setting the "locale" option for our [_argument] above.
                */
               include-javascript-file:@"@BOOTSTRAP/widgets/datetimepicker/media/js/locale/{0}.js"
                 :x:/../*/_options/*/_locale?value
@@ -274,6 +277,8 @@ create-event:sys42.widgets.datetimepicker
 
             /*
              * Making sure we nicely format arguments.
+             * Notice, at this point, the [_arguments] are starting with an additional ",".
+             * Hence, here we are making sure we remove this additional comma.
              */
             if:x:/../*/_arguments?value
               trim:x:/../*/_arguments?value
@@ -284,6 +289,7 @@ create-event:sys42.widgets.datetimepicker
 
             /*
              * Initializing widget with JavaScript client inclusion.
+             *
              * Notice, which widget to use to initialize datetimepicker, depends upon how the picker is displayed.
              * It can be either the main wrapper "div" element, or the "input" element itself, depending upon whether or not
              * an "open icon" was supplied.
@@ -294,7 +300,7 @@ create-event:sys42.widgets.datetimepicker
               fetch:x:/0/0/0?value
                 find-widget-like:x:/../*/get-parent-widget/*/*?value
                   element:span
-                  class:add-on
+                  class:datetimepicker-dropdown
 
               /*
                * Using parent widget ("div" element) to initialize datetimepicker.
@@ -351,6 +357,6 @@ create-event:sys42.widgets.datetimepicker
          * Icon button for showing DateTimePicker
          */
         span
-          class:input-group-addon add-on
+          class:input-group-addon datetimepicker-dropdown
           innerValue:@"<span class=""{0}""></span>"
             :x:/../*/_options/*/_icon?value

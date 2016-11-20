@@ -9,7 +9,7 @@ TODO before release
 * Investigate the p5.threading, and find out why [fork] is not the root node, when using a [wait] invocation. Which MIGHT be the corrrect way to
   do things, but make sure!!
 
-* Also investigate why a "shared reference node" won't have its reference node updated for multiple [fork] inside of a single [wait]
+* Investigate why a "shared reference node" won't have its reference node updated for multiple [fork] inside of a single [wait]
 
 * Simplify p5.mail and p5.mime
 
@@ -17,20 +17,14 @@ TODO before release
 
 * Consider moving "PGP key" Active Events into p5.crypto ...?
 
-* Check if [create-user], [edit-user], etc - Active Events should not check if Ticket is "root" account ...?
-
 * Create some sort of "persistent login" (remember me functionality)
 
 * Make sure p5.data cannot access nodes from root or file nodes (minimum /*/* expressions)
-
-* Make sure the Hyperlambda CodeMirror editor uses the supplied JSON object for autocompletion, also to determine keywords
 
 * Consider documenting all Active Events by adding a [_dox] node, allowing consumers to invoke them with [add] trickery to retrieve dox.
 
 * Replace Hyperlambda parser, with option to preserve comments as [#comment] nodes, such that we can parse files, without loosing comments,
   and create automated refactoring features, etc. Also make it more stable. It's not 100% today ...
-
-*  Make sure all common dialogues optionally takes [_parent] and [_class] arguments
 
 * Create sample folder in System42, with some example lambda pages, showing of some feature for users.
 
@@ -42,12 +36,7 @@ TODO before release
 
 * Clean up all of the above conversion projects.
 
-* Make sure [vocabulary] yields also widget lambda events.
-
-* Fix [sys42.utilities.get-widget]
-
 * Create [delete-from-row-id] for Datagrid widget.
 
-* Complex widgets inside of TabControl doesn't work, due to [oninit] including JavaScript, which fissles, since widget is iinvisible ...
-
+* Create [trim-left], [trim-right] and [concatenate] events for string manipulation.
 

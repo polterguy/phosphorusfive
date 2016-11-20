@@ -93,3 +93,10 @@ between words, and prepend a slash "_" in front of argument.
 If you have the above in mind while looking through the documentation for Eonasdan's DateTimePicker, you can easily figure out which argument in
 the P5 DateTimePicker, refers to which argument in Eonasdan's DateTimePicker.
 
+### Setting its value and its [_locale]
+
+Notice, if you set the DateTimePicker's value, either initially through the *[_value]* argument, or by invoking *[sys42.widgets.datetimepicker.set-value]*,
+then you must set it in accordance to its *[_locale]*. Meaning, if you are using a *[_locale]*, then when you set its value, the value you initialize
+it with, or set it to, must be conforming to the *[_locale]* property of your DateTimePicker. You can use the *[format-date]* to create a localized
+string from a date Hyperlambda value.
+

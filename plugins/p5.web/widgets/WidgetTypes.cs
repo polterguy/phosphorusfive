@@ -267,6 +267,7 @@ namespace p5.web.widgets
 
                             // This is a "custom widget", which means we invoke its name and arguments as an Active Event, and use the returned
                             // lambda object as the currently iterated child widget.
+                            // Notice, we do NOT pass in [_parent] when invoking custom creation Active Event!
                             context.Raise (idxChild.Name, idxChild);
                             if (idxChild.Children.Count != 1)
                                 throw new LambdaException ("Custom widget event did not return exactly one child value", idxChild, context);
