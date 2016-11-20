@@ -49,7 +49,7 @@ It features the following options.
 In addition, the widget features the following Active Events;
 
 * [sys42.widgets.datetimepicker.get-value] - Retrieves its current value.
-* [sys42.widgets.datetimepicker.set-value] - Sets its current value.
+* [sys42.widgets.datetimepicker.set-value] - Sets its current value. Pass in new value as [_value].
 
 Both of the two above Active Events requires you to pass in the ID of your DateTimePicker as *[_arg]*. The setter above, also requires you to
 pass in the new value as *[_value]*. An example of how to change the date, and retrieve it, by the click of a button, can be found beneath.
@@ -59,22 +59,8 @@ create-widget:foo
   parent:content
   class:col-xs-12
   widgets
-
-    // Will have its innerValue changed when dtp value changes.
-    literal:my-lit
-      innerValue:Watch me change!
-
-    // Actual DateTimePicker widget.
     sys42.widgets.datetimepicker:my-date
-
-      // Norwegian "bokmål" locale.
       _locale:nb
-
-      // Invoked when widget is closed.
-      .onchange
-        sys42.widgets.datetimepicker.get-value:my-date
-        set-widget-property:my-lit
-          innerValue:x:/@sys42.widgets.datetimepicker.get-value?value
     button
       class:btn btn-primary
       innerValue:Set date
