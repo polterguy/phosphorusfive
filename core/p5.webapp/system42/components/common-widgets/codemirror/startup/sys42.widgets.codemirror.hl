@@ -50,7 +50,7 @@ create-event:sys42.widgets.codemirror
   set:x:/../*/_defaults/*/_theme?value
     src:x:/@sys42.utilities.get-setting/*?value
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
 
   /*
    * Making sure necessary JavaScript files are included

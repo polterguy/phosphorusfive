@@ -27,6 +27,10 @@ create-event:sys42.widgets.ck-editor
    * Checking if lambda events were given, and if so, making sure we associate them with widget.
    */
   if:x:/../*/_options/*/_events/*
+
+    /*
+     * Caller supplied widget specific lambda events, making sure we associate them with the widget.
+     */
     add:x:/+/*/*
       src:x:/../*/_options/*/_events/*
     add:x:/../*/return/*/literal
@@ -35,7 +39,7 @@ create-event:sys42.widgets.ck-editor
   /*
    * Returning textarea widget that CKEditor should wrap on client side, making sure we forward evaluate arguments first.
    */
-  eval-x:x:/+/*/*|/+/*/*/oninit/*/_height
+  eval-x:x:/+/*/*(/innerValue|/oninit/*/_height)
   return
     literal
       element:textarea
