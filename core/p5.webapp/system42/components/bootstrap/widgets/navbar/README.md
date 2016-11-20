@@ -140,5 +140,5 @@ with smaller screens, such as phones for instance. Below is a screenshot of how 
 ![alt tag](screenshots/ajax-navbar-menu-example-screenshot-responsive.png)
 
 The menu will automatically "re-arrange" itself, and become a responsive popdown menu, if the screen resolution is smaller than some specific
-threshold. This allows it to render on smaller devices, without forcing vertical scrolling.
+threshold. This allows it to render on smaller devices, without ending up adding vertical scrolling constraints.
 

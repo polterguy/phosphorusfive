@@ -165,12 +165,12 @@ create-event:sys42.widgets.navbar._create-items
     return
 
   /*
-   * Looping through all [_items]
+   * Looping through all [_items].
    */
   for-each:x:/../*/_items/#/*
 
     /*
-     * Checking if this item is nested
+     * Checking if this item is nested.
      */
     if:x:/..for-each/*/_dp/#/*/_items
 
@@ -304,9 +304,9 @@ create-event:sys42.widgets.navbar._create-url
    * "open" our GET params collection.
    */
   get-location-url
-  set:x:/../*/get-location-url?value
+  set:x:/@get-location-url?value
     src:{0}?
-      :x:/../*/get-location-url?value
+      :x:/@get-location-url?value
 
   /*
    * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
@@ -314,37 +314,36 @@ create-event:sys42.widgets.navbar._create-url
    */
   find-first-ancestor-widget:x:/../*/_arg?value
     _root-navbar
-  get-widget-property:x:/-/*/*?value
+  get-widget-property:x:/@find-first-ancestor-widget/*/*?value
     _root-navbar
   list-http-get-params
-  set:x:/-/*/{0}
-    :x:/../*/get-widget-property/*/*?value
-  if:x:/-2/*
-    get-http-get-param:x:/./-2/*?name
-    for-each:x:/-/*
-      url-encode:x:/./*/_dp/#?value
-      set:x:/../*/get-location-url?value
+  set:x:/@list-http-get-params/*/{0}
+    :x:/@get-widget-property/*/*?value
+  if:x:/@list-http-get-params/*
+    get-http-get-param:x:/@list-http-get-params/*?name
+    for-each:x:/@get-http-get-param/*
+      url-encode:x:/@_dp/#?value
+      set:x:/@get-location-url?value
         src:{0}{1}={2}&
-          :x:/../*/get-location-url?value
-          :x:/..for-each/*/_dp/#?name
-          :x:/..for-each/*/url-encode?value
+          :x:/@get-location-url?value
+          :x:/@_dp/#?name
+          :x:/@url-encode?value
 
   /*
    * Adding key for our "unroll" GET parameter.
    */
-  set:x:/../*/get-location-url?value
+  set:x:/@get-location-url?value
     src:{0}{1}=
-      :x:/../*/get-location-url?value
-      :x:/../*/get-widget-property/*/*?value
+      :x:/@get-location-url?value
+      :x:/@get-widget-property/*/*?value
 
   /*
    * Then we can URL encode the parameter, and return URL to caller.
    */
   get-widget-property:x:/../*/_arg?value
     _item-id
-  url-encode:x:/-/*/*?value
+  url-encode:x:/@get-widget-property/*/*?value
 
   return:{0}{1}
-    :x:/../*/get-location-url?value
-    :x:/../*/url-encode?value
-
+    :x:/@get-location-url?value
+    :x:/@url-encode?value
