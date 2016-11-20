@@ -1,13 +1,13 @@
 
 /*
- * Creates a DateTimePicker widget, which allows the user to pick a date, and optionally a time.
+ * Creates an Ajax DateTimePicker widget, which allows the user to pick a date, and optionally a time.
  *
  * Arguments;
  * 
  * [_label]             - If declared, will create a descriptive input-group-addon label, with the specified content.
  * [_class]             - The CSS class to use for your DateTimePicker. Defaults to "input-group date".
  * [_icon]              - A CSS class, which is used instead of the default 'glyphicon-calendar' class for the 'dropdown button'.
- * [_locale]            - Which locale to use, is basically a reference to the JS files in the 'media/js/locale/' folder, and are helpers
+ * [_locale]            - Which locale to use. Is basically a reference to the JS files in the 'media/js/locale/' folder, and are helpers
  *                        to format the dates according to whatever is common in whatever language you want your DateTimePicker rendered with.
  * [_format]            - Declares how to format the date in the textbox.
  * [_defaultDate]       - Which date to use by default.
@@ -45,7 +45,7 @@ create-event:sys42.widgets.datetimepicker
     .onchange
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/"":regex:/^\\./""|/../*/_defaults/*)(!/_defaults!/_options!/_parent)/$"
+    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
 
   /*
    * Checking if [_label] was passed in, and if so, making sure widget gets a descriptive input-group-addon.
@@ -59,15 +59,14 @@ create-event:sys42.widgets.datetimepicker
           innerValue:x:/../*/_options/*/_label?value
 
   /*
-   * Checking if no [_icon] was passed in, and if not, deleting addon
+   * Checking if no [_icon] was passed in, and if not, deleting addon entirely, making input element itself clickable.
    */
   if:x:/../*/_options/*/_icon?value
     not
     set:x:/../*/return/*/container/*/widgets/*/span
 
   /*
-   * Passing in [.onchange] lambda callback such that it is evaluated upon change, and making sure
-   * datetimepickker is initialized knowing it has [.onchange].
+   * Passing in [.onchange] lambda callback, such that it is evaluated upon change.
    */
   if:x:/../*/_options/*/.onchange/*
 
@@ -75,10 +74,8 @@ create-event:sys42.widgets.datetimepicker
      * We have an [.onchange] lambda callback, making sure we initialize DateTimePicker such that it invokes
      * it during "dp.hide", and adding the callback lambda into [.onchange] of "input" element.
      */
-    add:x:/../*/return/*/container/*/widgets/*/input/*/.onchange/*/.onchange
+    add:x:/../*/return/*/container/*/widgets/*/input/*/.onchange/*/.lambda
       src:x:/../*/_options/*/.onchange/*
-    set:x:/../*/return/*/container/*/widgets/*/input/*/oninit/*/_has-onchange?value
-      src:bool:true
 
   else
 
@@ -87,8 +84,6 @@ create-event:sys42.widgets.datetimepicker
      * the "dp.hide" event handled, and removing [.onchange] lambda callback of "input" element.
      */
     set:x:/../*/return/*/container/*/widgets/*/input/*/.onchange
-    set:x:/../*/return/*/widgets/*/input/*/oninit/*/_has-onchange?value
-      src:bool:false
 
   /*
    * Passing in arguments to [oninit].
@@ -315,10 +310,10 @@ create-event:sys42.widgets.datetimepicker
                 src:x:/../*/_event?value
 
             /*
-             * This one is forward evaluated above, and is true if we have an [.onchange] lambda callback.
+             * Checking if we have an [.onchange] lambda callback.
              */
-            _has-onchange
-            if:x:/@_has-onchange?value
+            list-widget-ajax-events:x:/../*/_event?value
+            if:x:/@list-widget-ajax-events/*/*/.onchange
 
               /*
                * We have an [.onchange] lambda callback, making sure we intialize datetimepicker such that it raises [.onchange] when 
@@ -346,9 +341,9 @@ create-event:sys42.widgets.datetimepicker
             get-widget-property:x:/../*/_event?value
               value
             get-parent-widget:x:/../*/_event?value
-            .onchange
+            .lambda
             eval-x:x:/+/*
-            eval:x:/@.onchange
+            eval:x:/@.lambda
               _value:x:/@get-widget-property/*/*?value
               _event:x:/@get-parent-widget/*/*?value
 

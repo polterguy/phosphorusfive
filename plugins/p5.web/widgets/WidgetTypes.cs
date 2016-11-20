@@ -130,9 +130,13 @@ namespace p5.web.widgets
                 position = parent.Controls.IndexOf (after) + 1;
             }
 
-            // Creating control as persistent control, and setting HTML element type
+            // Creating control as persistent control, and setting HTML element type, making sure a widget with the same ID does not exist from before.
+            var id = args.Get<string> (context);
+            if (!string.IsNullOrEmpty (id) && FindControl<Control> (id, Manager.AjaxPage) != null)
+                throw new LambdaException ("A widget with the same ID already exist on page!", args, context);
+
             var widget = parent.CreatePersistentControl<T> (
-                args.Get<string> (context),
+                id,
                 position);
             widget.Element = elementType;
 
@@ -242,8 +246,7 @@ namespace p5.web.widgets
             // Looping through all child widgets declared in lambda object
             foreach (var idxChild in children.Children) {
 
-                // Passing in parent widget, when invoking creational Active Event for currently iterated widget
-                idxChild.Insert (0, new Node ("_parent", widget));
+                // Passing in parent widget, when invoking creational Active Event for currently iterated widget.
                 switch (idxChild.Name) {
                     case "literal":
                     case "container":
@@ -251,6 +254,7 @@ namespace p5.web.widgets
                     case "text":
 
                         // "Native" widget
+                        idxChild.Insert (0, new Node ("_parent", widget));
                         context.Raise ("p5.web.widgets." + idxChild.Name, idxChild);
                         break;
                     default:
@@ -275,6 +279,7 @@ namespace p5.web.widgets
                         } else {
 
                             // This is the "HTML element" helper syntax, declaring the element of the widget as the node's name
+                            idxChild.Insert (0, new Node ("_parent", widget));
                             idxChild.Add ("element", idxChild.Name);
                             if (idxChild["innerValue"] != null) {
                                 context.Raise ("p5.web.widgets.literal", idxChild);

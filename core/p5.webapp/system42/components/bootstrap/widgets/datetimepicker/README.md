@@ -55,12 +55,17 @@ Both of the two above Active Events requires you to pass in the ID of your DateT
 pass in the new value as *[_value]*. An example of how to change the date, and retrieve it, by the click of a button, can be found beneath.
 
 ```
-create-widget:foo
+create-widget
   parent:content
-  class:col-xs-12
+  class:col-xs-4
   widgets
     sys42.widgets.datetimepicker:my-date
+      _label:My date
       _locale:nb
+create-widget
+  parent:content
+  class:col-xs-8
+  widgets
     button
       class:btn btn-primary
       innerValue:Set date
