@@ -8,7 +8,7 @@
  * [_mode] - Which language type to use. Defaults to 'hyperlambda'.
  * [_theme]  - Which theme to use, defaults to 'paraiso'.
  * [_height] - Height, add units, e.g. '250px'. Defaults to '300px'.
- * [_innerValue] - Initial code to display.
+ * [_value] - Initial code to display.
  * [_events] - Collection of associated widget lambda events.
  */
 create-event:sys42.widgets.codemirror
@@ -40,7 +40,7 @@ create-event:sys42.widgets.codemirror
     _mode:hyperlambda
     _theme:paraiso
     _height:300px
-    _innerValue:
+    _value:
     _events
   _options
 
@@ -143,4 +143,4 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
   return
     literal
       element:textarea
-      innerValue:x:/../*/_options/*/_innerValue?value
+      innerValue:x:/../*/_options/*/_value?value

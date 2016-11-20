@@ -40,3 +40,5 @@ TODO before release
 
 * Create [trim-left], [trim-right] and [concatenate] events for string manipulation.
 
+* Icon support for Navbar through _class on items. Also add support for other types of widgets, such as textbox search, buttons, etc...
+

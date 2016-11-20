@@ -16,7 +16,7 @@ load-file:x:/../*/_file?value
   * Then creating a new "tr" row, after that one, which contains only one column, containing the content
   * of our currently edited test file
   */
-eval-x:x:/+/*|/+|/+/**(/~codemirror|/_file)|/+/*/*/*/*/*/_innerValue
+eval-x:x:/+/*|/+|/+/**(/~codemirror|/_file)|/+/*/*/*/*/*/_value
 create-widget:{0}_editor
   :x:/../*/_widget?value
   after:x:/../*/get-parent-widget/[1,2]/*/*?value
@@ -34,7 +34,7 @@ create-widget:{0}_editor
           :x:/../*/_widget?value
           _auto-focus:true
           _height:700px
-          _innerValue:x:/../*/load-file/*?value
+          _value:x:/../*/load-file/*?value
         container
           class:btn-group col-xs-3 col-xs-push-9
           widgets
