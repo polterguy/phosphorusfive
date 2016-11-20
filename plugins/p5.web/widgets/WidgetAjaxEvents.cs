@@ -136,7 +136,7 @@ namespace p5.web.widgets
         public void list_widget_ajax_events (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
+            using (new Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all widgets supplied
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "list-widget-ajax-events")) {
