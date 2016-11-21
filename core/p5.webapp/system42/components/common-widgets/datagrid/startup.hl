@@ -73,7 +73,7 @@ create-event:sys42.widgets.datagrid
   /*
    * Adding [.on-get-items] callback into [sys42.widgets.datagrid._get-items].
    */
-  add:x:/../*/return/*/*/events/*/sys42.widgets.datagrid._get-items
+  add:x:/../*/return/*/*/events/*/sys42.widgets.datagrid._get-items/*/.lambda
     src:x:/../*/_options/*/.on-get-items/*
 
 
@@ -220,120 +220,8 @@ create-event:sys42.widgets.datagrid
 
 
         /*
-         * Expects [_arg] being ID of datagrid and [_query] being text to search for.
-         */
-        sys42.widgets.datagrid.search
-
-          /*
-           * First we must make sure this is our datagrid.
-           */
-          if:x:/../*/_arg?value
-            !=:x:/../*/_event?value
-
-            /*
-             * This is NOT our datagrid.
-             * Returning early.
-             */
-            return
-
-          /*
-           * Making sure we update pager to display the first page.
-           */
-          set-widget-property:x:/../*/_event?value
-            _current-page:0
-
-          /*
-           * Storing query in datagrid root widget, if we are given a query.
-           * Otherwise, we entirely delete [_query] property on widget.
-           */
-          if:x:/../*/_query?value
-            and:x:/../*/_query?value
-              !=:
-
-            /*
-             * We have a query, making sure we store query in datagrid main widget.
-             */
-            set-widget-property:x:/../*/_event?value
-              _query:x:/../*/_query?value
-
-          else
-
-            /*
-             * We no not have a query, deleting [_query] property from datagrid, and making sure our [_get-items] 
-             * invocation does not specify any [_query] parameter.
-             */
-            delete-widget-property:x:/../*/_event?value
-              _query
-            set:x:/../*/sys42.widgets.datagrid._get-items/*/_query
-
-          /*
-           * Retrieving page size.
-           */
-          get-widget-property:x:/../*/_event?value
-            _page-size
-
-          /*
-           * Retrieving previous page's items.
-           */
-          eval-x:x:/+/*
-          sys42.widgets.datagrid._get-items:x:/../*/_event?value
-            _start:int:0
-            _end:x:/@get-widget-property/*/*?value.int
-            _query:x:/../*/_query?value
-
-          /*
-           * Clearing out current items from datagrid (tbody widget).
-           */
-          find-widget:x:/../*/_event?value
-            element:tbody
-          clear-widget:x:/@find-widget/*/*?value
-
-          /*
-           * Disabling previous button.
-           */
-          find-widget:x:/../*/_event?value
-            innerValue:&lt;
-            element:a
-          sys42.utilities.add-css-classes:x:/@find-widget/*/*?value
-            _class:disabled
-
-          /*
-           * Applying the [_items] returned above to databind invocation.
-           */
-          add:x:/+
-            src:x:/@sys42.widgets.datagrid._get-items/*/_items
-          sys42.widgets.datagrid._append-items:x:/../*/_event?value
-
-          /*
-           * Enabling next button, but only if [sys42.widgets.datagrid._get-items] returned a full page.
-           */
-          if:x:/@sys42.widgets.datagrid._get-items/*/_items/*?count
-            =:x:/@get-widget-property/*/*?value.int
-
-            /*
-             * Enabling our "next page" widget.
-             */
-            find-widget:x:/../*/_event?value
-              innerValue:&gt;
-              element:a
-            sys42.utilities.delete-css-classes:x:/@find-widget/*/*?value
-              _class:disabled
-
-          else
-
-            /*
-             * Disabling our "next page" widget.
-             */
-            find-widget:x:/../*/_event?value
-              innerValue:&gt;
-              element:a
-            sys42.utilities.add-css-classes:x:/@find-widget/*/*?value
-              _class:disabled
-
-
-        /*
-         * Expects [_arg] being ID of datagrid.
          * Databinds the datagrid again.
+         * Expects [_arg] being ID of datagrid.
          */
         sys42.widgets.datagrid.databind
 
@@ -435,7 +323,7 @@ create-event:sys42.widgets.datagrid
               _:x:/@get-widget-property/*/*/_page-size?value
 
           /*
-           * Checking if we have a query
+           * Checking if we have a query.
            */
           if:x:/@get-widget-property/*/*/_query?value
             eval-x:x:/+/*/*
@@ -519,14 +407,67 @@ create-event:sys42.widgets.datagrid
            */
           for-each:x:/../*/_selected/*?name
             find-widget:x:/../*/_event?value
-              _row:x:/..for-each/*/_dp?value
-            sys42.utilities.add-css-classes:x:/-/*/*?value
+              _row:x:/@_dp?value
+            sys42.utilities.add-css-classes:x:/@find-widget/*/*?value
               _class:selected
 
           /*
            * Returning success to caller, since datagrid was actually databound.
            */
           return:bool:true
+
+
+        /*
+         * Expects [_arg] being ID of datagrid, and [_query] being text to search for.
+         */
+        sys42.widgets.datagrid.search
+
+          /*
+           * First we must make sure this is our datagrid.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our datagrid.
+             * Returning early.
+             */
+            return
+
+          /*
+           * Making sure we update pager, such that the first page is displayed.
+           */
+          set-widget-property:x:/../*/_event?value
+            _current-page:0
+
+          /*
+           * Storing query in datagrid root widget, if we are given a query.
+           * Otherwise, we entirely delete [_query] property on widget.
+           */
+          if:x:/../*/_query?value
+            and:x:/../*/_query?value
+              !=:
+
+            /*
+             * We have a query, making sure we store query in datagrid main widget.
+             */
+            set-widget-property:x:/../*/_event?value
+              _query:x:/../*/_query?value
+
+          else
+
+            /*
+             * We no not have a query, deleting [_query] property from datagrid, and making sure our [_get-items] 
+             * invocation does not specify any [_query] parameter.
+             */
+            delete-widget-property:x:/../*/_event?value
+              _query
+            set:x:/../*/sys42.widgets.datagrid._get-items/*/_query
+
+          /*
+           * Databind DataGrid again.
+           */
+          sys42.widgets.datagrid.databind:x:/../*/_event?value
 
 
         /*
@@ -570,6 +511,8 @@ create-event:sys42.widgets.datagrid
 
           /*
            * Databinding grid.
+           * Notice, databind takes care of negative values for current page automatically.
+           * Hence, we need not consider that in this event.
            */
           sys42.widgets.datagrid.databind:x:/../*/_event?value
 
@@ -614,7 +557,7 @@ create-event:sys42.widgets.datagrid
             _current-page:x:/@get-widget-property/*/*/_current-page?value
 
           /*
-           * Databinding grid, and if it was unsuccessful, we decrement current page back to what it was again.
+           * Databinding grid, and if it was unsuccessful, we decrement current page back to what it was previously.
            */
           if
             sys42.widgets.datagrid.databind:x:/../*/_event?value
@@ -745,6 +688,9 @@ create-event:sys42.widgets.datagrid
 
         /*
          * Expects [_arg] being ID of datagrid, [_column] being name of column, [_row] being id of record, and [_value] being new value.
+         *
+         * Invoked when the user has edited a cell's content, and tried to push it, by e.g. pressing carriage return.
+         * Contains the [.on-edit-item] lambda callback supplied when creating datagrid.
          */
         sys42.widgets.datagrid._edit-item-callback
 
@@ -767,14 +713,17 @@ create-event:sys42.widgets.datagrid
           add:x:/+
             src:x:/../*(/_column|/_row|/_value)
           eval:x:/@.lambda
-          return:x:/-?value
+          return:x:/@eval?value
 
 
         /*
          * Starts editing of a single cell in a DataGrid.
-         * Expects [_event] being the ID of the widget (hyperlink) that was actually clicked.
+         *
+         * Invoked when a cell's hyperlink (button) is clicked.
+         * Expects [_hyperlink] being the ID of the widget (hyperlink) that was actually clicked, in addition to [_arg] being
+         * the ID of the datagrid.
          */
-        sys42.widgets.datagrid._edit-cell-content
+        sys42.widgets.datagrid._start-editing-cell
 
           /*
            * First we must make sure this is the datagrid requested by caller to edit items in.
@@ -816,7 +765,10 @@ create-event:sys42.widgets.datagrid
 
 
         /*
-         * Expects [_arg] being ID of datagrid and [_items] being items to append to datagrid.
+         * Expects [_arg] being ID of datagrid, and [_items] being items to append to datagrid.
+         *
+         * Invoked by e.g. [sys42.widgets.datagrid.databind] and [oninit].
+         * Creates the actual datagrid table, according to arguments supplied during creation of widget.
          */
         sys42.widgets.datagrid._append-items
 
@@ -955,7 +907,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                       find-first-ancestor-widget:x:/../*/_event?value
                         _page-size
                       eval-x:x:/+/*
-                      sys42.widgets.datagrid._edit-cell-content:x:/@find-first-ancestor-widget/*/*?value
+                      sys42.widgets.datagrid._start-editing-cell:x:/@find-first-ancestor-widget/*/*?value
                         _hyperlink:x:/../*/_event?value
 
             /*
@@ -1019,11 +971,11 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
           create-void-widget
             element:input
             type:text
-            parent:x:/../*/get-parent-widget/*/*?value
+            parent:x:/@get-parent-widget/*/*?value
             value:x:/../*/_value?value
             _column:x:/../*/_column?value
             _row:x:/../*/_row?value
-            onkeydown:@"return p5.widgets_datagrid_key(event);"
+            onkeydown:@"return p5.sys42_widgets_datagrid_onkeydown(event);"
             oninit
 
               /*
@@ -1052,10 +1004,10 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                * Deleting textbox, and setting focus to hyperlink.
                */
               get-parent-widget:x:/../*/_event?value
-              find-widget:x:/-/*/*?value
+              find-widget:x:/@get-parent-widget/*/*?value
                 element:a
               send-javascript:@"p5.$('{0}').el.focus();"
-                :x:/../*/find-widget/*/*?value
+                :x:/@find-widget/*/*?value
               delete-widget:x:/../*/_event?value
 
             /*
@@ -1064,7 +1016,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
             _onenter
 
               /*
-               * Fetching new value, and notifying [_on-edit] that item has been edited.
+               * Fetching new value, and notifying [.on-edit-item] lambda callback supplied during creation that item has been edited.
                */
               get-widget-property:x:/../*/_event?value
                 value
@@ -1076,18 +1028,23 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
               /*
                * Making sure content becomes "&nbsp;" if no new value was actually provided.
                */
-              if:x:/../*/get-widget-property/*/0?value
+              if:x:/@get-widget-property/*/*/value?value
                 =:
-                set:x:/../*/get-widget-property/*/0?value
+
+                /*
+                 * User provided empty ("") value.
+                 * Making sure hyperlink doesn't disappear, by adding up "&nbsp;" as content.
+                 */
+                set:x:/@get-widget-property/*/*/value?value
                   src:&nbsp;
               eval-x:x:/+/*
               sys42.widgets.datagrid._edit-item-callback:x:/../*/find-first-ancestor-widget/*/*?value
-                _value:x:/../*/get-widget-property/*/0?value
-                _column:x:/../*/get-widget-property/*/1?value
-                _row:x:/../*/get-widget-property/*/2?value
+                _value:x:/@get-widget-property/*/*/value?value
+                _column:x:/@get-widget-property/*/*/_column?value
+                _row:x:/@get-widget-property/*/*/_row?value
 
               /*
-               * Checking if callback accepted new value
+               * Checking if callback accepted new value.
                */
               if:x:/../*/sys42.widgets.datagrid._edit-item-callback?value
 
@@ -1095,19 +1052,19 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                  * Deleting textbox, setting focus to hyperlink, and updating value of hyperlink.
                  */
                 get-parent-widget:x:/../*/_event?value
-                find-widget:x:/-/*/*?value
+                find-widget:x:/@get-parent-widget/*/*?value
                   element:a
                 send-javascript:@"p5.$('{0}').el.focus();"
-                  :x:/./-/*/*?value
-                set-widget-property:x:/-2/*/*?value
-                  innerValue:x:/../*/get-widget-property/*/0?value
+                  :x:/@find-widget/*/*?value
+                set-widget-property:x:/@find-widget/*/*?value
+                  innerValue:x:/@get-widget-property/*/0?value
                 delete-widget:x:/../*/_event?value
 
           /*
            * Passing in JavaScript to detect ESC and carriage return.
            */
           include-javascript:@"
-p5.widgets_datagrid_key = function (e) {
+p5.sys42_widgets_datagrid_onkeydown = function (e) {
   if(e.keyCode == 27) {
     p5.$(e.target.id).raise('_onesc');
     return false;
@@ -1119,7 +1076,7 @@ p5.widgets_datagrid_key = function (e) {
 
 
         /*
-         * Expects [_arg] being ID of datagrid and [_columns] being column names.
+         * Expects [_arg] being ID of datagrid, and [_columns] being column names.
          */
         sys42.widgets.datagrid._create-datagrid
 
@@ -1142,6 +1099,7 @@ p5.widgets_datagrid_key = function (e) {
 
             /*
              * Caller supplied an [.on-header-clicked] lambda callback.
+             * Creating column headers as hyperlinks, passing in the specified [.on-header-clicked] lambda to [onclick].
              */
             add:x:/+/**/onclick
               src:x:/../*/.on-header-clicked/*
@@ -1152,9 +1110,15 @@ p5.widgets_datagrid_key = function (e) {
                   widgets
                     a
                       href:#
+                      role:button
                       {innerValue}:x:?name
                       onclick
+
           else
+
+            /*
+             * Caller did not specify [.on-header-clicked], hence simply creating header columns as span elements.
+             */
             apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
               src:x:/../*/_columns/*
               template
@@ -1209,25 +1173,38 @@ p5.widgets_datagrid_key = function (e) {
             return
 
           /*
-           * Notice, the rest of this Active Event is dynamically created according to arguments supplied when
-           * creating the datagrid, by invoking [add] to append user supplied lambda callback into body of this lambda.
-           * Hence, it might appear to be empty, but it is probably not in fact.
+           * This contains the [.on-get-items] lambda callback, supplied during creation of DataGrid.
            */
+          .lambda
+          add:x:/+
+            src:x:/../*(/_start|/_end|/_query)
+          eval:x:/@.lambda
+          add:x:/+
+            src:x:/@eval/*
+          return
 
 
       widgets
+
+        /*
+         * This is our actual datagrid table widget.
+         */
         container
           class:datagrid-wrappper
           widgets
             container
               element:table
+
+        /*
+         * The widget that wraps the "paging" (bottom) parts of our datagrid.
+         */
         container
           class:datagrid-pager
           widgets
             input
               type:search
               placeholder:Search ...
-              onkeydown:@"return p5.widgets_datagrid_search_key(event);"
+              onkeydown:@"return p5.sys42_widgets_datagrid_search_onkeydown(event);"
               _onenter
 
                 /*
@@ -1238,21 +1215,22 @@ p5.widgets_datagrid_key = function (e) {
                 find-first-ancestor-widget:x:/../*/_event?value
                   _current-page
                 eval-x:x:/+/*
-                sys42.widgets.datagrid.search:x:/-2/*/*?value
-                  _query:x:/../*/get-widget-property/*/*?value
+                sys42.widgets.datagrid.search:x:/@find-first-ancestor-widget/*/*?value
+                  _query:x:/@get-widget-property/*/*?value
 
                 /*
                  * Selecting all text in search textbox, and setting focus to it.
                  */
                 send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
                   :x:/../*/_event?value
+
               oninit
 
                 /*
                  * Passing in JavaScript to detect carriage return in search textbox.
                  */
                 include-javascript:@"
-p5.widgets_datagrid_search_key = function (e) {
+p5.sys42_widgets_datagrid_search_onkeydown = function (e) {
   if(e.keyCode == 13) {
     p5.$(e.target.id).raise('_onenter');
     return false;
@@ -1260,8 +1238,13 @@ p5.widgets_datagrid_search_key = function (e) {
 }"
             div
               widgets
+
+                /*
+                 * Our "Previous page" button.
+                 */
                 a
                   href:#
+                  role:button
                   class:disabled
                   innerValue:&lt;
                   onclick
@@ -1272,8 +1255,13 @@ p5.widgets_datagrid_search_key = function (e) {
                     find-first-ancestor-widget:x:/../*/_event?value
                       _current-page
                     sys42.widgets.datagrid.go-previous:x:/-/*/*?value
+
+                /*
+                 * Our "Next page" button.
+                 */
                 a
                   href:#
+                  role:button
                   innerValue:&gt;
                   onclick
 
