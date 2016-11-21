@@ -971,6 +971,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
           create-void-widget
             element:input
             type:text
+            class:form-control
             parent:x:/@get-parent-widget/*/*?value
             value:x:/../*/_value?value
             _column:x:/../*/_column?value
@@ -1046,7 +1047,7 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
               /*
                * Checking if callback accepted new value.
                */
-              if:x:/../*/sys42.widgets.datagrid._edit-item-callback?value
+              if:x:/@sys42.widgets.datagrid._edit-item-callback?value
 
                 /*
                  * Deleting textbox, setting focus to hyperlink, and updating value of hyperlink.
@@ -1059,6 +1060,21 @@ p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
                 set-widget-property:x:/@find-widget/*/*?value
                   innerValue:x:/@get-widget-property/*/0?value
                 delete-widget:x:/../*/_event?value
+
+              else
+
+                /*
+                 * Setting textbox in "error mode".
+                 */
+                get-parent-widget:x:/../*/_event?value
+                sys42.utilities.add-css-classes:x:/@get-parent-widget/*/*?value
+                  _class:has-error
+
+                /*
+                 * Selecting all text, and giving focus to textbox, trying to avoid jQuery dependency, if we can.
+                 */
+                send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
+                  :x:/../*/_event?value
 
           /*
            * Passing in JavaScript to detect ESC and carriage return.
