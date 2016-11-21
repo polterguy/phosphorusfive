@@ -78,10 +78,10 @@ create-event:sys42.widgets.datagrid
 
 
   /*
-   * Adding [.on-header-clicked] callback into [sys42.widgets.datagrid._create-datagrid] invocation inside of
+   * Adding [.on-header-clicked] callback into [sys42.widgets.datagrid._create-table-widgets] invocation inside of
    * the [oninit] of main datagrid.
    */
-  add:x:/../*/return/*/container/*/oninit/*/sys42.widgets.datagrid._create-datagrid
+  add:x:/../*/return/*/container/*/oninit/*/sys42.widgets.datagrid._create-table-widgets
     src:x:/../*/_options/*/.on-header-clicked
 
 
@@ -202,7 +202,7 @@ create-event:sys42.widgets.datagrid
          */
         add:x:/+/*/_columns
           src:x:/../*/sys42.widgets.datagrid._get-items/*/_items/0/*?name
-        sys42.widgets.datagrid._create-datagrid:x:/../*/_event?value
+        sys42.widgets.datagrid._create-table-widgets:x:/../*/_event?value
           _columns
 
         /*
@@ -1092,9 +1092,11 @@ p5.sys42_widgets_datagrid_onkeydown = function (e) {
 
 
         /*
+         * Invoked only once, during initialization of datagrid.
+         *
          * Expects [_arg] being ID of datagrid, and [_columns] being column names.
          */
-        sys42.widgets.datagrid._create-datagrid
+        sys42.widgets.datagrid._create-table-widgets
 
           /*
            * First we must make sure this is the tree requested by caller to toggle items within.

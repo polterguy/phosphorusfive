@@ -28,7 +28,11 @@ create-widget:datagrid-wrapper-1
   parent:content
   class:col-xs-12
   widgets
+
+    // Creates our datagrid.
     sys42.widgets.datagrid
+
+      // Lambda invoked when datagrid needs items.
       .on-get-items
         if:x:/../*/_query?value
           select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
@@ -43,6 +47,8 @@ create-widget:datagrid-wrapper-1
           src:x:/../**/select-data/*/sample.csv
         return
           _items
+
+      // Lambda invoked when an item has beeen in-place edited.
       .on-edit-item
         update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
           :x:/../*/_row?value
@@ -58,7 +64,7 @@ looks like.
 
 ![alt tag](screenshots/ajax-datagrid-example-screenshot.png)
 
-The dataset the datagrid expects in your *[.on-get-items]* lambda callback, should look something like this.
+The *[_items]* collection the datagrid expects in your *[.on-get-items]* lambda callback, should look something like this.
 
 ```
 return
@@ -114,6 +120,8 @@ create-widget:datagrid-wrapper-2
             :x:/../*/_end?value
         add:x:/../*/return/*/_items
           src:x:/../**/select-data/*/sample.csv
+
+        // Here we make sure that the zero'th column is not editable.
         add:x:/../*/return/*/*/0
           src:"_edit:bool:false"
         return
@@ -156,8 +164,7 @@ In addition, you can change the size of your pages by passing in *[_page-size]* 
 show for each page.
 
 In the example below, we have increased the page size to 5, and turned on row selection instead of inline editing, where we show
-a modal wizard window, allowing the user to edit his items in a modal window instead. We have also commented this example, to
-show what goes on, at which parts of our code.
+a modal wizard window, allowing the user to edit his items in a modal window instead.
 
 ```
 create-widget:datagrid-wrapper-3
@@ -262,6 +269,60 @@ The above code, will create something looking like the following, asssuming you'
 
 ![alt tag](screenshots/ajax-datagrid-example-screenshot-selection.png)
 
+## Adding additional pager widgets
+
+If you wish, you can inject your own additional widgets in between the _"previous"_ and _"next"_ buttons in the pager. This is done through adding
+your own *[_pager-widgets]* collection, which becomes a *[widget]* collection stuffed in between the previous and next buttons. Consider the 
+following.
+
+```
+create-widget:datagrid-wrapper-4
+  parent:content
+  class:col-xs-12
+  widgets
+
+    // Creates our datagrid.
+    sys42.widgets.datagrid
+
+      _pager-widgets
+        a
+          href:#
+          role:button
+          innerValue:Foo bar
+          onclick
+            sys42.windows.info-tip:Foo bar was clicked
+
+      // Lambda invoked when datagrid needs items.
+      .on-get-items
+        if:x:/../*/_query?value
+          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+            :x:/../*/_query?value
+            :x:/../*/_start?value
+            :x:/../*/_end?value
+        else
+          select-data:x:/*/*/sample.csv/[{0},{1}]
+            :x:/../*/_start?value
+            :x:/../*/_end?value
+        add:x:/../*/return/*/_items
+          src:x:/../**/select-data/*/sample.csv
+        return
+          _items
+
+      // Lambda invoked when an item has beeen in-place edited.
+      .on-edit-item
+        update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
+          :x:/../*/_row?value
+          :x:/../*/_column?value
+          src:x:/../*/_value?value
+        return:bool:true
+```
+
+The above Hyperlambda, simply injects a hyperlink, button type of widget, which once clicked, shows an _"info-tip"_ window. Feel free to add 
+anything you wish in here though.
+
+Although you could technically put any type of widgets you wish in the *[_pager-widgets]* collection, you'd probably have to style them, in your
+own CSS, unless you add a hyperlink _"a"_ element type of widget, to not mess up the layoutof the datagrid.
+
 ## Template columns
 
 If you wish, you can also create _"template columns"_, which are columns where you have 100% control over what goes into every cell
@@ -304,7 +365,7 @@ template column datagrid, with two template columns. One row allowing you to del
 select your items.
 
 ```
-create-widget:datagrid-wrapper-4
+create-widget:datagrid-wrapper-5
   parent:content
   class:col-xs-12
   widgets
@@ -313,7 +374,7 @@ create-widget:datagrid-wrapper-4
      * Creating our Ajax datagrid, as a child of our "host widget".
      */
     sys42.widgets.datagrid:my-datagrid
-      
+
       // If false, then no paging or searching bar at the bottom will be created.
       _show-pager:false
 
