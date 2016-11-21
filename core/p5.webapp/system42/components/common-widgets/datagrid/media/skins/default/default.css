@@ -231,7 +231,9 @@
 /*
  * Editing textbox of cells.
  */
-.datagrid-widget-default td input[type=text] {
+.datagrid-widget-default td input[type=text],
+.datagrid-widget-default td input[type=number],
+.datagrid-widget-default td input[type=email] {
     position:absolute;
     top:0;
     left:0;

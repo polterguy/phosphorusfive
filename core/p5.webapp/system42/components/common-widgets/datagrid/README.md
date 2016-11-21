@@ -473,3 +473,102 @@ your datagrid's headers becomes clickable, which you could use to for instance s
 In our example above, we simply retrieve the name of the column that was clicked, before we show a *[sys42.windows.info-tip]* window,
 showing the name of the column that was clicked. You are free to implement any logic you wish here though, including sorting, deletion of column,
 etc, etc, etc.
+
+## Not accepting input
+
+If you have the datagrid in _"in-place editing mode"_, you can choose to not accept the values from the user, for any reasons you wish.
+This is simply done by return _"false"_ from your *[.on-edit-item]* lambda callback. Consider the following, that accepts all input, except
+if your input is _"error"_, at which point it does not accept your new value.
+
+```
+create-widget:datagrid-wrapper-6
+  parent:content
+  class:col-xs-12
+  widgets
+
+    // Creates our datagrid.
+    sys42.widgets.datagrid
+
+      // Lambda invoked when datagrid needs items.
+      .on-get-items
+        if:x:/../*/_query?value
+          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+            :x:/../*/_query?value
+            :x:/../*/_start?value
+            :x:/../*/_end?value
+        else
+          select-data:x:/*/*/sample.csv/[{0},{1}]
+            :x:/../*/_start?value
+            :x:/../*/_end?value
+        add:x:/../*/return/*/_items
+          src:x:/../**/select-data/*/sample.csv
+        return
+          _items
+
+      // Lambda invoked when an item has beeen in-place edited.
+      .on-edit-item
+
+        // Checking if user types in "error" as new value, and if so, rejecting new value.
+        if:x:/../*/_value?value
+          =:error
+          return:bool:false
+        update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
+          :x:/../*/_row?value
+          :x:/../*/_column?value
+          src:x:/../*/_value?value
+        return:bool:true
+```
+
+If you type _"error"_ into any cell in the above datagrid, then the datagrid will not close the textbox, and add some error classes, that shows 
+your textbox with some red border.
+
+## Alternative types of in-place editors
+
+If you wish, you can also override the default type of textbox, used for editing an item, by return a *[_type]* child from 
+your *[.on-get-items]* callback. Below we are for instance using a number type of textbox, for editing the 5th column in our datagrid.
+
+Notice, this requires that the data for your 5th column actually is a number, and not some plain text.
+
+```
+create-widget:datagrid-wrapper-6
+  parent:content
+  class:col-xs-12
+  widgets
+
+    // Creates our datagrid.
+    sys42.widgets.datagrid
+
+      // Lambda invoked when datagrid needs items.
+      .on-get-items
+        if:x:/../*/_query?value
+          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+            :x:/../*/_query?value
+            :x:/../*/_start?value
+            :x:/../*/_end?value
+        else
+          select-data:x:/*/*/sample.csv/[{0},{1}]
+            :x:/../*/_start?value
+            :x:/../*/_end?value
+        add:x:/../*/return/*/_items
+          src:x:/../**/select-data/*/sample.csv
+
+        // Here we make sure that the 5th column in-place editor becomes a number
+        // type of textbox.
+        add:x:/../*/return/*/_items/*/5
+          src
+            _type:number
+        return
+          _items
+
+      // Lambda invoked when an item has beeen in-place edited.
+      .on-edit-item
+
+        update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
+          :x:/../*/_row?value
+          :x:/../*/_column?value
+          src:x:/../*/_value?value
+        return:bool:true
+```
+
+If you want more advanved type of in-place editors, you're going to have to create a *[template]* column. See above how to do this.
+
