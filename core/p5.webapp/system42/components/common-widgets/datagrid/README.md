@@ -150,7 +150,7 @@ You can also set the datagrid in _"row selection"_ mode. In this mode, inline ed
 choose to select an entire row. This is done by dropping the *[.on-edit-item]* callback, and instead supply an *[.on-select-items]*
 lambda callback.
 
-In addition, you can change the size of your pages by passing in *[_no-items]* with an integer value of how many records you wish to 
+In addition, you can change the size of your pages by passing in *[_page-size]* with an integer value of how many records you wish to 
 show for each page.
 
 In the example below, we have increased the page size to 20, and turned on row selection instead of inline editing, where we show
@@ -169,7 +169,7 @@ create-widget:datagrid-wrapper-3
     sys42.widgets.datagrid:my-datagrid-3
       
       // Number of items to show per page.
-      _no-items:20
+      _page-size:20
       
       /*
        * User specific callback lambda, invoked when our datagrid needs
