@@ -26,6 +26,7 @@ the following code into a new _"lambda"_ page of System42's CMS.
 ```
 create-widget:datagrid-wrapper-1
   parent:content
+  class:col-xs-12
   widgets
     sys42.widgets.datagrid
       .on-get-items
@@ -98,6 +99,7 @@ that eliminates editing of the first column, but allows editing of all other col
 ```
 create-widget:datagrid-wrapper-2
   parent:content
+  class:col-xs-12
   widgets
     sys42.widgets.datagrid
       .on-get-items
@@ -153,7 +155,7 @@ lambda callback.
 In addition, you can change the size of your pages by passing in *[_page-size]* with an integer value of how many records you wish to 
 show for each page.
 
-In the example below, we have increased the page size to 20, and turned on row selection instead of inline editing, where we show
+In the example below, we have increased the page size to 5, and turned on row selection instead of inline editing, where we show
 a modal wizard window, allowing the user to edit his items in a modal window instead. We have also commented this example, to
 show what goes on, at which parts of our code.
 
@@ -169,7 +171,7 @@ create-widget:datagrid-wrapper-3
     sys42.widgets.datagrid:my-datagrid-3
       
       // Number of items to show per page.
-      _page-size:20
+      _page-size:5
       
       /*
        * User specific callback lambda, invoked when our datagrid needs
