@@ -570,5 +570,5 @@ create-widget:datagrid-wrapper-6
         return:bool:true
 ```
 
-If you want more advanved type of in-place editors, you're going to have to create a *[template]* column. See above how to do this.
+If you want more advanced type of in-place editors, you're going to have to create a *[template]* column. See above how to do this.
 

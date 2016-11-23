@@ -1,8 +1,12 @@
 
 /*
- * Creates a TabControl widget.
+ * Creates an Ajax TabControl type of widget.
  *
  * The TabControl widget, allows you to display multiple tabs, each with its own unique set of [widgets] collection.
+ * Notice, the TabControl widget, does not render its non-active items as visible. This means, that there are neither any HTML, nor any
+ * server-side [oninit] event invoked for anything inside its tabviews, that is not initially visible, due to being in the initially active 
+ * tabview. Still it allows for search engines to crawl its tabviews, due to them seeing the switch active tabview buttons, merely as hyperlinks.
+ * This creates nice markup, spends little server resources, while still making it highly accessible.
  *
  * Arguments;
  * 
@@ -21,12 +25,12 @@ create-event:sys42.widgets.tab
    */
   _defaults
     _skin:default
-    _crawl-get-name:sys42_widgets_tab_unroll
-    _crawl:bool:false
     _items
+    _crawl:bool:false
+    _crawl-get-name:sys42_widgets_tab_unroll
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
 
 
   /*
@@ -35,13 +39,6 @@ create-event:sys42.widgets.tab
   if:x:/../*/_options/*/_items/*
     not
     throw:You have to supply at the very least one root item when creating your tab widget.
-
-
-  /*
-   * Making sure we include our tab specific CSS file.
-   */
-  include-stylesheet-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
-    :x:/../*/_options/*/_skin?value
 
 
   /*
@@ -67,7 +64,7 @@ create-event:sys42.widgets.tab
           a
             href:#
             innerValue:x:/@_dp/#?name
-            _index:x:/..for-each/-?value
+            _index:x:/@_index?value
             onclick
 
               /*
@@ -75,10 +72,10 @@ create-event:sys42.widgets.tab
                */
               find-first-ancestor-widget:x:/../*/_event?value
                 _root-tab
-              find-widget:x:/-/*/*?value
+              find-widget:x:/@find-first-ancestor-widget/*/*?value
                 class:tab-content-item
                 visible:true
-              set-widget-property:x:/-/*/*?value
+              set-widget-property:x:/@find-widget/*/*?value
                 visible:false
 
               /*
@@ -89,7 +86,7 @@ create-event:sys42.widgets.tab
                 _index
               find-widget:x:/@find-first-ancestor-widget/*/*?value
                 class:tab-content-item
-              set-widget-property:x:/-/*/{0}?value
+              set-widget-property:x:/@find-widget/*/{0}?value
                 :x:/@get-widget-property/*/*?value
                 visible:true
 
@@ -98,10 +95,10 @@ create-event:sys42.widgets.tab
                */
               find-widget-like:x:/@find-first-ancestor-widget/*/*?value
                 class:tab-header-active-item
-              sys42.utilities.toggle-css-classes:x:/-/*/*?value
+              sys42.utilities.toggle-css-classes:x:/@find-widget-like/*/*?value
                 _class:tab-header-active-item
               get-parent-widget:x:/../*/_event?value
-              sys42.utilities.toggle-css-classes:x:/-/*/*?value
+              sys42.utilities.toggle-css-classes:x:/@get-parent-widget/*/*?value
                 _class:tab-header-active-item
 
 
@@ -112,7 +109,7 @@ create-event:sys42.widgets.tab
 
       /*
        * Tab control should be crawlable by search engines.
-       * Checking if there was an HTTTP GET argument matching the "crawl URL", and if it
+       * Checking if there was an HTTP GET argument matching the "crawl URL", and if it
        * matches the currently iterated item.
        */
       if:x:/../*/get-http-get-param/*?value
@@ -121,6 +118,8 @@ create-event:sys42.widgets.tab
 
         /*
          * Tab control is in "crawl mode", we have a "crawl URL", and it matches the ID of the currently iterated item.
+         *
+         * Hence, we simply add up an [oninit] for the currently iterated tabview header button, and clicks it during [oninit].
          */
         add:x:/..for-each/*/_header/*/container/*/widgets/*/a
           src
@@ -165,12 +164,6 @@ create-event:sys42.widgets.tab
 
 
   /*
-   * Forward evaluating [class] to make sure we use [_options]/[_class] if supplied.
-   */
-  eval-x:x:/../*/return/*/*/class
-
-
-  /*
    * Making sure our first tab item becomes "active".
    */
   set:x:/../*/return/*/container/*/widgets/*/container/[0,1]/*/widgets/*/[0,1]/*/class?value
@@ -178,17 +171,15 @@ create-event:sys42.widgets.tab
 
 
   /*
-   * Making sure our first tab item content becomes visible.
+   * Making sure our first TabView content becomes visible, and only our first.
    */
   set:x:/../*/return/*/container/*/widgets/*/container/[1,2]/*/widgets/*/[0,1]/*/visible
 
 
   /*
-   * Checking if an explicit ID was given, and if so, making sure we use it.
+   * Forward evaluating [class] and [_skin] inside of [oninit] to make sure we use [_options]/[_class] if supplied, and specified skin file.
    */
-  if:x:/../*/_arg?value
-    set:x:/../*/return/*?value
-      src:x:/../*/_arg?value
+  eval-x:x:/../*/return/*/*(/class|/oninit/*/_skin)
 
 
   /*
@@ -197,13 +188,16 @@ create-event:sys42.widgets.tab
   return
     container
       _root-tab
-
-
-      /*
-       * Forward evaluated before [return] invocation, to [_options]/[_class] value.
-       */
       class:tab-widget-{0}
         :x:/../*/_options/*/_skin?value
+      oninit
+
+        /*
+         * Making sure we include our tab specific CSS file.
+         */
+        _skin:x:/../*/_options/*/_skin?value
+        include-stylesheet-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
+          :x:/../*/_skin?value
 
       /*
        * Contains the tabs for widget
@@ -228,26 +222,26 @@ create-event:sys42.widgets.tab._create-url
    * "open" our GET params collection.
    */
   get-location-url
-  set:x:/../*/get-location-url?value
+  set:x:/@get-location-url?value
     src:{0}?
-      :x:/../*/get-location-url?value
+      :x:/@get-location-url?value
 
   /*
    * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tab_unroll" params,
    * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tab_unroll".
    */
   list-http-get-params
-  set:x:/-/*/{0}
+  set:x:/@list-http-get-params/*/{0}
     :x:/../*/_crawl-get-name?value
-  if:x:/-2/*
-    get-http-get-param:x:/./-2/*?name
-    for-each:x:/-/*
-      url-encode:x:/./*/_dp/#?value
-      set:x:/../*/get-location-url?value
+  if:x:/@list-http-get-params/*
+    get-http-get-param:x:/@list-http-get-params/*?name
+    for-each:x:/@get-http-get-param/*
+      url-encode:x:/@_dp/#?value
+      set:x:/@get-location-url?value
         src:{0}{1}={2}&
-          :x:/../*/get-location-url?value
-          :x:/..for-each/*/_dp/#?name
-          :x:/..for-each/*/url-encode?value
+          :x:/@get-location-url?value
+          :x:/@_dp/#?name
+          :x:/@url-encode?value
 
   /*
    * Adding key for our "unroll" GET parameter.
@@ -264,5 +258,5 @@ create-event:sys42.widgets.tab._create-url
 
   return:{0}{1}
     :x:/../*/get-location-url?value
-    :x:/../*/url-encode?value
+    :x:/@url-encode?value
 

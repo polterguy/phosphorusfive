@@ -61,7 +61,7 @@ create-event:sys42.widgets.uploader
   /*
    * Forward evaluating some arguments to widget.
    */
-  eval-x:x:/../*/return/**(/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple|/_css-file)|/return/*/container/*/class|/.onupload/*(/_filter|/_allow-multiple))
+  eval-x:x:/../*/return/**(/container/*/class|/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple|/_css-file)|/return/*/container/*/class|/.onupload/*(/_filter|/_allow-multiple))
 
 
   /*
@@ -70,7 +70,7 @@ create-event:sys42.widgets.uploader
   return
     container
       element:div
-      class:x::/../*/_options/*/_class?value
+      class:x:/../*/_options/*/_class?value
       role:button
       oninit
 

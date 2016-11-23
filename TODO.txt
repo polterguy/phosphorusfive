@@ -42,3 +42,9 @@ TODO before release
 
 * Icon support for Navbar through _class on items. Also add support for other types of widgets, such as textbox search, buttons, etc...
 
+* Make sure all widgets that are crawlable use the same "get URL" logic, if we can ...
+
+* Also, make all extension widgets lambda events become global active events. This allows us to get intellisense, in addition to that it is stupid
+  repeating the same active event for each object of widget type. (eats up more resources)
+
+
