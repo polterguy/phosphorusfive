@@ -193,25 +193,26 @@
         // Looping through all files supplied, and creating an image for each of them, appending it into main widget's surface as a child element.
         for (var idx = 0; idx < files.length; idx++) {
 
-            // Creating our iimage preview element.
-            var img = document.createElement('img');
-
             // Checking if file is an image type.
             var splits = files[idx].name.split('.');
             var ext = splits[splits.length - 1];
             if (splits.length > 1 && (ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png")) {
 
                 // File was an image, displaying actual image as preview.
+                var img = document.createElement('img');
                 var objectURL = URL.createObjectURL(files[idx]);
                 img.src = objectURL;
+                img.alt = files[idx].name;
+                img.title = files[idx].name;
+                img.className = 'uploader-widget-preview';
+                this._widget.el.appendChild(img);
             } else {
 
-                // File was not an image, displaying the "generic" image instead.
-                img.src = '/system42/components/common-widgets/uploader/media/preview.png';
+                // File was not an image, displaying the "generic" preview span element instead.
+                var span = document.createElement('span');
+                span.className = 'uploader-widget-preview';
+                this._widget.el.appendChild(span);
             }
-            img.alt = files[idx].name;
-            img.title = files[idx].name;
-            this._widget.el.appendChild(img);
         }
     };
 
@@ -247,7 +248,7 @@
                     var w = self._widget.el;
                     for (var idx = 0; idx < w.childNodes.length; idx++) {
                         var ix = w.childNodes[idx];
-                        if (ix.tagName == 'IMG') {
+                        if (ix.tagName == 'IMG' || ix.tagName == 'SPAN') {
                             w.removeChild(ix);
                             break;
                         }

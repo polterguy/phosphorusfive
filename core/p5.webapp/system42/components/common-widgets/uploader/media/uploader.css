@@ -43,20 +43,29 @@
 /*
  * Previewing of images.
  */
-.uploader-widget img {
-    max-width:100px;
-    max-height:100px;
+.uploader-widget .uploader-widget-preview {
+    max-width:90px;
+    max-height:90px;
     margin:15px;
+    display:block;
+    float:left;
+}
+.uploader-widget span.uploader-widget-preview {
+    background-image:url(preview.png);
+    background-repeat:no-repeat;
+    background-size:contain;
+    width:90px;
+    height:90px;
 }
 @keyframes animation-uploader-preview {
     0% {
-        opacity:.8;
+        opacity:1;
     }
     100% {
-        opacity:.2;
+        opacity:.5;
     }
 }
-.uploader-widget img:nth-child(2) {
+.uploader-widget .uploader-widget-preview:nth-child(2) {
     animation-name:animation-uploader-preview;
     animation-iteration-count:infinite;
     animation-duration:.5s;
@@ -97,7 +106,7 @@
 @keyframes animation-uploader-dropped {
     0% {
         background-color:rgba(0,255,0, 0);
-        background-position-x:-70px;
+        background-position-x:70px;
     }
     50% {
         background-color:rgba(0,255,0, .3);
