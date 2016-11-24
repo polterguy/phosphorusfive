@@ -32,17 +32,19 @@ process of being uploaded.
 The uploader has the following arguments.
 
 * [_css-file] - A CSS file to include when widget is displayed. Defaults to "uploader.min.css".
-* [_filter] - Filter for file types to accept. Separete extensions with pipe (|), e.g. "png|jpg|gif".
-* [_allow-multiple] - If true, multiple files can be uploaded at the same time.
 * [_class] - Default CSS class to use. Defaults to "uploader-widget".
 * [_dragover-class] - CSS class to add when files are dragged unto its surface. Defaults to "uploader-widget-dragover".
 * [_drop-class] - CSS class to use when a file is dropped in the widget. Defaults to "uploader-widget-drop".
+* [_error-class] - CSS class to use when an unsupported file type, or something similar, is dragged unto its surface.
+* [_allow-multiple] - If true, multiple files can be uploaded at the same time.
+* [_filter] - Filter for file types to accept. Separete extensions with pipe (|), e.g. "png|jpg|gif".
 * [.onupload] - Lambda callback to invoke when a file has been uploaded.
 
 The default CSS file, contains some configuration classes, which allows you to control the positioning of your uploader widget. These are listed below.
 
+* "uploader-widget" - The default CSS class to use for the uploader.
 * "uploader-footer" - Makes sure the uploader is absolutely positioned at the bottom of your screen, in a fixed position.
-* "uploader-faded" - Makes your widget semi-transparent, to not be so prominent on your form.
+* "uploader-faded" - Makes your widget semi-transparent, to not be so prominent on your page.
 * "uploader-large" - Makes your widget become 300px tall.
 * "uploader-small" - Makes your widget becomes smaller, 60px tall.
 * "uploader-full-screen" - Makes your widget fill the entire screen, though behind your other widgets.
@@ -86,7 +88,7 @@ create-widget:foo
 
 Notice, the *[_filter]* above, restricts the filetypes to image types of either .png, .jpeg, .jpg or .gif. If 
 you try to drag and drop files of types not supported by the above uploader unto its surface, it will refuse
-to upload them, and show a "red warning" CSS class to the user.
+to upload them, and show a "red error" CSS class to the user.
 
 Notice also, that from a semantic point of view, if you use the _"uploader-full-screen"_ class, it is probably
 better if you append the uploader widget directly into the _"cnt"_ parent container.
