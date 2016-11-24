@@ -1,6 +1,6 @@
 ﻿
 /*
- * Returns application specific setting(s).
+ * Creates the Active Event that returns application specific setting(s).
  *
  * Pass in the name of your app to retrieve setting for as [_app] and setting(s) to retrieve as [_arg].
  * Will return app setting according to which user is currently logged in. If currently logged in user is
@@ -20,7 +20,7 @@ create-event:sys42.utilities.get-setting
    * Retrieving currently logged in user, checking if user is "root", and if a specific user was supplied.
    */
   whoami
-  if:x:/../*/whoami/*/role?value
+  if:x:/@whoami/*/role?value
     =:root
     and:x:/../*/_username?value
 
@@ -38,7 +38,7 @@ create-event:sys42.utilities.get-setting
     throw:Only root accounts can retrieve settings for other users than the currently logged in identity user
 
   select-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}"""
-    :x:/../*/whoami/*/username?value
+    :x:/@whoami/*/username?value
     :x:/../*/_app?value
     :x:/../*/_arg?value
 
@@ -46,6 +46,6 @@ create-event:sys42.utilities.get-setting
    * Returning setting value(s)
    */
   insert-before:x:/../0
-    src:x:/../*/select-data/*
+    src:x:/@select-data/*
 
 

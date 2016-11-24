@@ -1,4 +1,4 @@
-jQuery JavaScript framework
+jQuery helpers
 ===============
 
 This directory contains the jQuery JavaScript framework, together with some supporting Active Events.
@@ -8,4 +8,3 @@ Some components and apps in System42 are dependent upon this module to work corr
 for your specific components, before attempting to remove it.
 
 To include jQuery on your page, invoke *[sys42.utilities.include-jquery]*.
-

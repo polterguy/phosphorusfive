@@ -4,4 +4,4 @@
  * Creates the Active Event necessary to include jQuery in page.
  */
 create-event:sys42.utilities.include-jquery
-  include-javascript-file:/system42/components/jquery/js/jquery-2.1.4.min.js
+  include-javascript-file:@SYS42-COMPONENTS/jquery/js/jquery-2.1.4.min.js
