@@ -1,24 +1,14 @@
 
 /*
- * Creates the Ajax uploader widget Active Event.
- */
-
-
-/*
- * The actual uloader widget Active Event.
- *
- * Creates an Ajax uploader widget, which serves as a "drop point" for dragging and dropping files from your desktop, and unto
- * your browser's surface. Provide atthe very least an [.onupload] lambda callback handler, which will be invoked with [_filename]
- * and [_content] whenever user drops one or more files unto its surface.
+ * Creates an Ajax uploader widget, which serves as a "dropzone" for dragging and dropping files from your desktop, and unto
+ * your browser's surface. Provide at the very least an [.onupload] lambda callback handler, which will be invoked whenever the 
+ * user drops one or more files unto its surface.
  *
  * Arguments;
  *
  * [_css-file]            - A CSS file to automatically include into the page as the widget is instantiated.
  *                          Its default value is "uploader.min.css", which can be found in the "media" folder of the widget's
  *                          folder structure. If you set it to "" (empty string), then no CSS file will be included.
- * [_filter]              - Pipe separated (|) list of  valid file extensions that the uploader accepts. Default value is empty, "", 
- *                          which means "everything is accepted".
- * [_allow-multiple]      - If false, then only one file is allowed being uploaded at the same time. The default value is true.
  * [_class]               - The CSS class for your widget. Default value is "uploader-widget", which corresponds with the class
  *                          inside of "uploader.min.css".
  * [_dragover-class]      - The CSS class to use whenever some file(s) is dragged over your widget. Useful to give the user hints that
@@ -26,6 +16,11 @@
  * [_drop-class]          - The CSS class to use whenever some file(s) are dropped unto the widget's surface. Useful to give
  *                          visual clues to the user that an uploading of one or more files is in progress. The default value
  *                          is "uploader-widget-drop".
+ * [_error-class]         - CSS class used for the widget when there is some sort of error, due to for instance trying to upload a file
+ *                          with the wrong extension, or trying to upload multiple files, when the uploader only accepts a single file.
+ * [_allow-multiple]      - If false, then only one file is allowed being uploaded at the same time. The default value is true.
+ * [_filter]              - Pipe separated (|) list of  valid file extensions that the uploader accepts. Default value is empty, "", 
+ *                          which means "everything is accepted".
  * [.onupload]            - Lambda callback which will be invoked whenever some file have been uploaded to the server. Will be given
  *                          a [_filename] and a [_content] argument.
  *                          In addition, for cases when the user is uploading multiple files at once, it will also be given the
@@ -45,16 +40,15 @@ create-event:sys42.widgets.uploader
     _allow-multiple:bool:true
     _filter
     .onupload
-      sys42.windows.info-tip:You should really have provided an [.onupload] lambda callback.
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/"":regex:/^./""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
 
 
   /*
    * Adding [.onupload] lambda callback argument given into [_onupload] Ajax event below
    */
-  add:x:/../*/return/*/container/*/.onupload/*/.onupload
+  add:x:/../*/return/*/container/*/.onupload/*/.lambda
     src:x:/../*/_options/*/.onupload/*
 
 
@@ -75,7 +69,8 @@ create-event:sys42.widgets.uploader
       oninit
 
         /*
-         * Including CSS file, this one is forward evaluated above.
+         * Including CSS file, if a CSS file was specified.
+         * This one is forward evaluated above.
          */
         _css-file:x:/../*/_options/*/_css-file?value
         if:x:/@_css-file?value
@@ -136,8 +131,8 @@ create-event:sys42.widgets.uploader
          * Server side validation of filename's extension, to avoid client-side hacking of JS, to allow uploading of non-supported files!
          */
         _filter:x:/../*/_options/*/_filter?value
-        if:x:/-?value
-          split:x:/./-?value
+        if:x:/@_filter?value
+          split:x:/@_filter?value
             =:|
           split:x:/../*/get-http-param/*/sys42.widgets.uploader.filename?value
             =:.
@@ -173,9 +168,9 @@ create-event:sys42.widgets.uploader
         /*
          * Making sure we "isolate" lambda callback supplied during instantiation of widget.
          */
-        .onupload
+        .lambda
         eval-x:x:/+/*
-        eval:x:/../*/.onupload
+        eval:x:/@.lambda
           _count:x:/../*/get-http-param/[0,1]/*?value
           _current:x:/../*/get-http-param/[1,2]/*?value
           _filename:x:/../*/get-http-param/[2,3]/*?value
@@ -186,4 +181,4 @@ create-event:sys42.widgets.uploader
           element:input
           type:file
           multiple
-          style:"opacity:0;position:absolute;"
+          style:"opacity:0 !important;position:absolute !important;"
