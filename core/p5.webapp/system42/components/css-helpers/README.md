@@ -1,9 +1,9 @@
-System42 CSS helper Active Events
+CSS helper Active Events
 ===============
 
-This directory contains Hyperlambda that creates "CSS helper" Active Events.
+This directory contains Hyperlambda that creates some CSS helper Active Events.
 These events, allows you to add, remove or toggle a CSS class to one or more widgets.
-The events are listed below.
+The events created are listed below.
 
 * [sys42.utilities.add-css-classes] - Adds one or more CSS classes to one or more widgets, unless the class(es) exists from before
 * [sys42.utilities.delete-css-classes] - Deletes one or more CSS classes from one or more widgets
