@@ -1,7 +1,8 @@
 Showing the current Hyperlambda
 ========
 
-This folder creates a small debug helper window, that displays the currently evaluated Hyperlambda stack - Or, parts of it.
+This folder creates a small debug helper window, that displays the currently evaluated Hyperlambda stack, or parts of it it you wish. Example of usage
+can be found below.
 
 ```
 _foo
@@ -29,7 +30,7 @@ sys42.windows.show-lambda:x:/../*/_foo
 
 Due to the nature of Hyperlambda, being an input/output language, changing as you execute parts of it, this window is actually highly
 useful, for watching parts of your code, at the point you invoke your window. If you don't know what a piece of code looks like, at some
-specific point in your execution, then this is easily viewed, by invoking the show-lambda window, at the point in your code, where
+specific point in your execution, then this is easy to see, by invoking the show-lambda window, at the point in your code, where
 you wish to inspect the code, and its data.
 
-You can create multiple windows of this type, during one request. The last window you create though, will be shown at the top, and so on.
+You can create multiple windows of this type, during one request. The last window you create, will be shown above the previous window you created.

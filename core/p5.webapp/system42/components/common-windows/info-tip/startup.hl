@@ -1,7 +1,6 @@
 
 /*
- * Responsible for creating the Active Event that shows the user a small
- * informational window, providing feedback to user
+ * Creates the Active Event that shows the user a small informational dropdown window, providing feedback to user.
  *
  * Arguments;
  *
@@ -24,13 +23,13 @@ create-event:sys42.windows.info-tip
     _parent:cnt
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
 
   /*
    * Making sure we delete any previously created windows
    * Notice that sice we only hide the window when it is closed, we need
    * to check if any previous windows exist, and if so, delete them, before 
-   * we create any new ones
+   * we create any new ones.
    */
   if
     fetch:x:/0/0?value
@@ -38,18 +37,12 @@ create-event:sys42.windows.info-tip
     delete-widget:info-window
 
   /*
-   * Setting properties of window
+   * Creating actual info window, making sure we forward evaluate all arguments first.
    */
-  set:x:/../*/create-widget/**/literal/*/innerValue?value
-    src:x:/../*/_options/*/_arg?value
-
-  /*
-   * Creating actual info window
-   */
-  eval-x:x:/+/*
+  eval-x:x:/+/*|/+/*/*/*
   create-widget:info-window
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
     widgets
       literal
-        innerValue
+        innerValue:x:/../*/_options/*/_arg?value

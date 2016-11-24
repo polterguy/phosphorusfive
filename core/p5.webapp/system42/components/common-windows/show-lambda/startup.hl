@@ -1,8 +1,7 @@
 
 /*
- * Responsible for creating the Active Event that allows the user to view a piece of
- * lambda code in a "debug window" during execution. Pass in an expression leading to
- * whatever piece of code you'd like to study
+ * Creates the Active Event that allows the user to view a piece of lambda code in a "debug window" during execution.
+ * Pass in an expression leading to whatever piece of lambda you'd like to study.
  *
  * Arguments;
  *
@@ -18,42 +17,46 @@ create-event:sys42.windows.show-lambda
   /*
    * Applying options for widget, with default values.
    * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
-   * up prioritizing specified argument, resorting to [_default] value if not given
+   * up prioritizing specified argument, resorting to [_default] value if no argument is given.
    */
   _defaults
     _class:col-xs-12 show-code-window
     _parent:content
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
 
   /*
    * Checking if user supplied an expression, and if not, showing error message
    */
   if:x:/../*/_arg
     not
+
+    /*
+     * User provided no expression, showing some helper text.
+     */
     set:x:/../**/literal/*/element/=pre/./*/innerValue?value
       src:"No input given to [sys42.windows.show-lambda]. Supply an expression as value of event invocation, for instance; 'sys42.windows.show-lambda:x:/../*'"
   else
 
     /*
-     * Converting lambda to lisp
+     * Converting lambda to Hyperlambda.
      */
     lambda2hyper:x:/../*/_arg/*
 
     /*
-     * HTML-encoding result, in case there are angle brackets, etc in the resulting Hyperlambda
+     * HTML-encoding result, in case there are angle brackets, etc in the resulting Hyperlambda.
      */
-    html-encode:x:/-?value
+    html-encode:x:/@lambda2hyper?value
 
     /*
      * Setting the literal's content to the nodes converted to Hyperlambda
      */
     set:x:/../**/literal/*/element/=pre/./*/innerValue?value
-      src:x:/./-?value
+      src:x:/@html-encode?value
 
   /*
-   * Creating a widget showing the Hyperlambda code created from the given p5 lambda tree
+   * Creating a widget showing the Hyperlambda code created from the given p5 lambda tree.
    */
   eval-x:x:/+/*
   create-widget
@@ -75,6 +78,4 @@ create-event:sys42.windows.show-lambda
            * Removing entire debug window
            */
           get-parent-widget:x:/../*/_event?value
-          delete-widget:x:/-/*/*?value
-
-
+          delete-widget:x:/@get-parent-widget/*/*?value
