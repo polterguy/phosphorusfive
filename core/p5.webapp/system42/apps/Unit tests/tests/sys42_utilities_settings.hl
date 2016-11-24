@@ -1,0 +1,92 @@
+
+/*
+ * Unit tests for the [sys42.utilities.xxx-setting] Active Events.
+ */
+
+
+/*
+ * Tests that insertion of simple setting behaves.
+ */
+insert-simple-setting
+  sys42.utilities.set-setting:foo-bar
+    _app:sys42.unit-tests
+    _src:Foo Bar
+  sys42.utilities.get-setting:foo-bar
+    _app:sys42.unit-tests
+  if:x:/@sys42.utilities.get-setting/*/foo-bar?value
+    !=:Foo Bar
+    throw:@"Assert error, wrong value returned from settings!"
+
+
+/*
+ * Tests that insertion of complex setting behaves.
+ */
+insert-complex-setting
+  sys42.utilities.set-setting:foo-bar
+    _app:sys42.unit-tests
+    _src
+      name:Foo
+      value:Bar
+  sys42.utilities.get-setting:foo-bar
+    _app:sys42.unit-tests
+  if:x:/@sys42.utilities.get-setting/*/foo-bar/*/name?value
+    !=:Foo
+    or:x:/@sys42.utilities.get-setting/*/foo-bar/*/value?value
+      !=:Bar
+    or:x:/@sys42.utilities.get-setting/*?value
+    throw:@"Assert error, wrong value returned from settings!"
+
+
+/*
+ * Tests that deletion of simple setting behaves.
+ */
+delete-simple-setting
+  sys42.utilities.set-setting:foo-bar
+    _app:sys42.unit-tests
+    _src:Foo Bar
+  sys42.utilities.set-setting:foo-bar
+    _app:sys42.unit-tests
+  if:x:/@sys42.utilities.get-setting/*/foo-bar
+    throw:@"Assert error, wrong value returned from settings!"
+
+
+/*
+ * Tests that updating of complex setting behaves.
+ */
+update-complex-setting
+  sys42.utilities.set-setting:foo-bar
+    _app:sys42.unit-tests
+    _src
+      name:Foo
+      value:Bar
+  sys42.utilities.set-setting:foo-bar
+    _app:sys42.unit-tests
+    _src
+      name:Foo2
+      value:Bar2
+  sys42.utilities.get-setting:foo-bar
+    _app:sys42.unit-tests
+  if:x:/@sys42.utilities.get-setting/*/foo-bar/*/name?value
+    !=:Foo2
+    or:x:/@sys42.utilities.get-setting/*/foo-bar/*/value?value
+      !=:Bar2
+    throw:@"Assert error, wrong value returned from settings!"
+
+
+/*
+ * Tests that listing settings behaves.
+ */
+list-settings
+  sys42.utilities.set-setting:foo-bar1
+    _app:sys42.unit-tests-list
+    _src:Foo1
+  sys42.utilities.set-setting:foo-bar2
+    _app:sys42.unit-tests-list
+    _src:Foo2
+  sys42.utilities.list-settings
+    _app:sys42.unit-tests-list
+  if:x:/@sys42.utilities.list-settings/*/foo-bar1?value
+    !=:Foo1
+    or:x:/@sys42.utilities.list-settings/*/foo-bar2?value
+      !=:Foo2
+    throw:@"Assert error, wrong value returned from settings!"

@@ -10,7 +10,7 @@
  * Lists all static Active Events in system that doesn't contain a "." in their names
  */
 vocabulary
-set:x:/-/*/dynamic|/-/*/=|/-/*/=~.
+set:x:/-/*/=
 
 /*
  * Then loading up all unit test files, making sure we remove the "launch.hl" file
