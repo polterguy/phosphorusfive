@@ -1,4 +1,4 @@
-Components
+System42 components
 ========
 
 This folder contains all of your System42 components. A component is a reusable piece of logic, written in Hyperlambda, 

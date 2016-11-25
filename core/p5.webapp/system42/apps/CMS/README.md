@@ -1,14 +1,17 @@
-The System42 CMS
+System42's CMS
 ========
 
 The CMS application is a pretty nifty Content Management System, allowing you to create and publish your own websites and pages.
-In addition to being able to create HTML in a WYSIWYG environment, it also allows for you to create "lambda pages".
+In addition to being able to create HTML in a WYSIWYG environment, it also allows for you to create _"lambda"_ pages.
 
 A lambda page, is a page that instead of passing raw HTML to the client, allows you to create Hyperlambda that is evaluated
-on the server. Ususally, you would want to create some wort of Ajax Widget hierarchy when creating your lambda pages.
+on the server. Ususally, you would want to create some sort of Ajax Widget hierarchy when creating your lambda pages. But you can
+also create for instance web service pages, and pages without GUI in any ways if you wish.
 
-Below is an example of content you might want to put into your lambda page, that creates a simple "literal" widget for you,
-which once clicked, changes its innerHTML to "Hello World!".
+To run the CMS, you need to be logged in as root.
+
+Below is an example of content you might want to put into your lambda page, that creates a simple literal widget for you,
+which once clicked, changes its innerHTML to _"Hello World!"_.
 
 ```
 create-literal-widget
@@ -20,8 +23,6 @@ create-literal-widget
     set-widget-property:x:/../*/_event?value
       innerValue:Hello World!
 ```
-
-To run the CMS, you need to be logged in as "root".
 
 When you create a page, it is stored in the [p5.data](/plugins/p5.data/) database as a *[p5.page]* object.
 
