@@ -821,6 +821,9 @@
     <Content Include="system42\apps\Unit tests\tests\strings.hl" />
     <Content Include="system42\components\bootstrap\widgets\startup.hl" />
     <Content Include="system42\apps\Unit tests\tests\sys42_utilities_settings.hl" />
+    <Content Include="system42\components\bootstrap\widgets\colorpicker\startup\sys42.widgets.colorpicker.hl" />
+    <Content Include="system42\components\bootstrap\widgets\colorpicker\startup\sys42.widgets.colorpicker.get-value.hl" />
+    <Content Include="system42\components\bootstrap\widgets\colorpicker\startup\sys42.widgets.colorpicker.set-value.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

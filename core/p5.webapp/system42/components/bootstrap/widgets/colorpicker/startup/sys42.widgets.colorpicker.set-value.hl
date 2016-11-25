@@ -1,0 +1,22 @@
+
+/*
+ * Creates the Active Event that sets the value of an Ajax ColorPicker.
+ * Pass in the ID to the ColorPicker you wish to set the value of as [_arg], and its new value as [_value].
+ */
+create-event:sys42.widgets.colorpicker.set-value
+
+  /*
+   * Changing the value of our textbox.
+   */
+  find-widget:x:/../*/_arg?value
+    element:input
+    type:text
+  set-widget-property:x:/@find-widget/*/*?value
+    value:x:/../*/_value?value
+
+  /*
+   * Making sure we pass JavaScript to client, such that ColorPicker widget actually is updated.
+   */
+  send-javascript:@"$('#{0}').colorpicker('setValue', '{1}');"
+    :x:/../*/_arg?value
+    :x:/../*/_value?value
