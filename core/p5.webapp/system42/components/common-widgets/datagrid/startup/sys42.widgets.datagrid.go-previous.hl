@@ -1,0 +1,33 @@
+
+/*
+ * Pages the specified [_arg] datagrid to its previous page.
+ */
+create-event:sys42.widgets.datagrid.go-previous
+
+  /*
+   * Retrieving current page and number of items per page.
+   */
+  get-widget-property:x:/../*/_arg?value
+    _current-page
+    _page-size
+    _query
+
+  /*
+   * Decrementing page by 1, and storing result in [get-widget-property]'s return value above.
+   */
+  set:x:/@get-widget-property/*/*/_current-page?value
+    -:x:/@get-widget-property/*/*/_current-page?value.int
+      _:1
+
+  /*
+   * Updating current page, by setting the [_current-page] property on root DataGrid widget.
+   */
+  set-widget-property:x:/../*/_arg?value
+    _current-page:x:/@get-widget-property/*/*/_current-page?value
+
+  /*
+   * Databinding grid.
+   * Notice, databind takes care of negative values for current page automatically.
+   * Hence, we need not consider that in this event.
+   */
+  sys42.widgets.datagrid.databind:x:/../*/_arg?value

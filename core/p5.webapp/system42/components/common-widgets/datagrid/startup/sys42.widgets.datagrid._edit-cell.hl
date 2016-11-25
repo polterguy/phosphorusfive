@@ -1,0 +1,148 @@
+
+/*
+ * Expects [_arg] being ID of datagrid, [_column], [_row] and [_hyperlink].
+ *
+ * Creates an input type of control, according to cell's type.
+ */
+create-event:sys42.widgets.datagrid._edit-cell
+
+  /*
+   * Figuring our parent of hyperlink, which is "td" cell, such that we can create our textbox as a child widget of that widget.
+   */
+  get-parent-widget:x:/../*/_hyperlink?value
+
+  /*
+   * Figuring out type of textbox to use for editing.
+   */
+  get-widget-property:x:/../*/_hyperlink?value
+    _type
+  if:x:/@get-widget-property/*/*?value
+    set:x:/../*/create-void-widget/*/type?value
+      src:x:/@get-widget-property/*/*?value
+
+
+  /*
+   * Creating a textbox for editing value of entity.
+   */
+  eval-x:x:/+/*(/parent|/value|/_column|/_row)
+  create-void-widget
+    element:input
+    type:text
+    class:form-control
+    parent:x:/@get-parent-widget/*/*?value
+    value:x:/../*/_value?value
+    _column:x:/../*/_column?value
+    _row:x:/../*/_row?value
+    onkeydown:@"return p5.sys42_widgets_datagrid_onkeydown(event);"
+    oninit
+
+      /*
+       * Making sure textbox gets initial focus.
+       */
+      send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
+        :x:/../*/_event?value
+
+    /*
+     * Making sure we trap [onblur] such that we can delete textbox again.
+     */
+    onblur
+
+      /*
+       * Deleting textbox.
+       * Notice, we do not set focus here, since user probably blurred item by setting focus to something else.
+       */
+      delete-widget:x:/../*/_event?value
+
+    /*
+     * Invisible Ajax event, referenced from JavaScript, to delete textbox.
+     */
+    _onesc
+
+      /*
+       * Deleting textbox, and setting focus to hyperlink.
+       */
+      get-parent-widget:x:/../*/_event?value
+      find-widget:x:/@get-parent-widget/*/*?value
+        element:a
+      send-javascript:@"p5.$('{0}').el.focus();"
+        :x:/@find-widget/*/*?value
+      delete-widget:x:/../*/_event?value
+
+    /*
+     * Invisible Ajax event, referenced from JavaScript, to delete textbox, and update edited item.
+     */
+    _onenter
+
+      /*
+       * Fetching new value, and notifying [.on-edit-item] lambda callback supplied during creation that item has been edited.
+       */
+      get-widget-property:x:/../*/_event?value
+        value
+        _column
+        _row
+      find-first-ancestor-widget:x:/../*/_event?value
+        _current-page
+
+      /*
+       * Making sure content becomes "&nbsp;" if no new value was actually provided.
+       */
+      if:x:/@get-widget-property/*/*/value?value
+        =:
+
+        /*
+         * User provided empty ("") value.
+         * Making sure hyperlink doesn't disappear, by adding up "&nbsp;" as content.
+         */
+        set:x:/@get-widget-property/*/*/value?value
+          src:&nbsp;
+      eval-x:x:/+/*
+      sys42.widgets.datagrid._edit-cell-callback:x:/../*/find-first-ancestor-widget/*/*?value
+        _value:x:/@get-widget-property/*/*/value?value
+        _column:x:/@get-widget-property/*/*/_column?value
+        _row:x:/@get-widget-property/*/*/_row?value
+
+      /*
+       * Checking if callback accepted new value.
+       */
+      if:x:/@sys42.widgets.datagrid._edit-cell-callback?value
+
+        /*
+         * Deleting textbox, setting focus to hyperlink, and updating value of hyperlink.
+         */
+        get-parent-widget:x:/../*/_event?value
+        find-widget:x:/@get-parent-widget/*/*?value
+          element:a
+        send-javascript:@"p5.$('{0}').el.focus();"
+          :x:/@find-widget/*/*?value
+        set-widget-property:x:/@find-widget/*/*?value
+          innerValue:x:/@get-widget-property/*/0?value
+        delete-widget:x:/../*/_event?value
+
+      else
+
+        /*
+         * Setting textbox in "error mode".
+         */
+        get-parent-widget:x:/../*/_event?value
+        sys42.utilities.add-css-classes:x:/@get-parent-widget/*/*?value
+          _class:has-error
+
+        /*
+         * Selecting all text, and giving focus to textbox, trying to avoid jQuery dependency, if we can.
+         */
+        send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
+          :x:/../*/_event?value
+
+  /*
+   * Passing in JavaScript to detect ESC and carriage return.
+   */
+  include-javascript:@"
+p5.sys42_widgets_datagrid_onkeydown = function (e) {
+if(e.keyCode == 27) {
+p5.$(e.target.id).raise('_onesc');
+return false;
+} else if(e.keyCode == 13) {
+p5.$(e.target.id).raise('_onenter');
+return false;
+}
+}"

@@ -835,6 +835,17 @@
     <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.modal\sys42.windows.modal.destroy.hl" />
     <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.modal\sys42.windows.modal.initial-focus.hl" />
     <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.wizard\sys42.windows.wizard.get-values.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.databind.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.filter.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.go-previous.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.go-next.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.select-items.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.get-selected-items.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid.get-row-id.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid._cell-clicked.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid._edit-cell.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid._append-items.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

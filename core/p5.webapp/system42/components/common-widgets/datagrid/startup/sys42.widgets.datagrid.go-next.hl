@@ -1,0 +1,38 @@
+
+/*
+ * Pages the specified [_arg] datagrid to its next page.
+ */
+create-event:sys42.widgets.datagrid.go-next
+
+  /*
+   * Retrieving current page and number of items per page.
+   */
+  get-widget-property:x:/../*/_arg?value
+    _current-page
+    _page-size
+    _query
+
+  /*
+   * Incrementing page by 1, and storing results in above [get-widget-property]'s result.
+   */
+  set:x:/@get-widget-property/*/*/_current-page?value
+    +:x:/@get-widget-property/*/*/_current-page?value.int
+      _:1
+
+  /*
+   * Updating current page to property of datagrid root widget.
+   */
+  set-widget-property:x:/../*/_arg?value
+    _current-page:x:/@get-widget-property/*/*/_current-page?value
+
+  /*
+   * Databinding grid, and if it was unsuccessful, we decrement current page back to what it was previously.
+   */
+  if
+    sys42.widgets.datagrid.databind:x:/../*/_arg?value
+    not
+    set:x:/@get-widget-property/*/*/_current-page?value
+      -:x:/@get-widget-property/*/*/_current-page?value.int
+        _:1
+    set-widget-property:x:/../*/_arg?value
+      _current-page:x:/@get-widget-property/*/*/_current-page?value

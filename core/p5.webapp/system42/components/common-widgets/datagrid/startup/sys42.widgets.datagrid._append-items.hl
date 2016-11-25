@@ -1,0 +1,167 @@
+
+/*
+ * Expects [_arg] being ID of datagrid, and [_items] being items to append to datagrid.
+ *
+ * Invoked by e.g. [sys42.widgets.datagrid.databind] and [oninit].
+ * Creates the actual datagrid table, according to arguments supplied during creation of widget.
+ */
+create-event:sys42.widgets.datagrid._append-items
+
+  /*
+   * Finds "tbody" widget in datagrid for later references, since we'll need to make sure "tr" widgets are children of "tbody".
+   */
+  find-widget:x:/../*/_arg?value
+    element:tbody
+
+  /*
+   * Set during initialization, defines whether or not editing of items is allowed.
+   */
+  get-widget-property:x:/../*/_arg?value
+    _edit-items
+  if:x:/@get-widget-property/*/*?value
+    not
+
+    /*
+     * Editing of items is disabled.
+     * Removing "a" hyperlink, and injecting a "span" instead.
+     * This is done by removing the {@eval} [apply] template, and injecting a static {innerValue} template child instead.
+     */
+    set:x:/../*/for-each/*/apply/*/template/*/*/*/{@eval}
+    add:x:/../*/for-each/*/apply/*/template/*/*
+      src
+        span
+          {innerValue}:x:?value
+
+    /*
+     * Since in-place editing is disabled, we turn on "row selection", in such a way, that it becomes accessible for screen 
+     * readers and similar technologies.
+     */
+    add:x:/../*/for-each/*/create-widget
+      src
+        role:button
+        class:clickable
+        tabindex:0
+        onkeypress:@"return p5.sys42_widgets_datagrid_on_row_keypress(event);"
+        onclick
+
+          /*
+           * Finding main datagrid widget, which is necessary to pass into [sys42.widgets.datagrid.select-row] as [_arg].
+           */
+          find-first-ancestor-widget:x:/../*/_event?value
+            _current-page
+
+          /*
+           * Figuring out "row id", and passsing it into [select-items].
+           */
+          get-widget-property:x:/../*/_event?value
+            _row
+          add:x:/+/*
+            src:x:/@get-widget-property/*/*?value
+          sys42.widgets.datagrid.select-items:x:/@find-first-ancestor-widget/*/*?value
+            _items
+
+    /*
+     * Making sure we include the necessary JavaScript to select row with carriage return.
+     */
+    include-javascript:@"
+p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
+if(e.keyCode == 13) {
+p5.$(e.target.id).raise('onclick');
+return false;
+}
+}"
+
+  /*
+   * Loops through each item in [_items] collection, creating a "tr" widget for each.
+   */
+  for-each:x:/../*/_items/*
+
+    /*
+     * Lambda object for [apply], determining if this is an editable cell, which gets a hyperlink, or a non-editable cell, 
+     * resulting in a span.
+     */
+    _apply-eval
+      if:x:/@_dn/#/*/_edit
+        and:x:/@_dn/#/*/_edit?value.bool
+          =:bool:false
+
+        /*
+         * Non-editable cell, returning "span" widget with static content.
+         */
+        eval-x:x:/+/*/*/innerValue
+        return
+          span
+            innerValue:x:/@_dn/#?value
+
+      else-if:x:/@_dn/#/*/widgets
+
+        /*
+         * Custom template column with [widgets] declaration.
+         */
+        add:x:/+
+          src:x:/@_dn/#/*/widgets/*
+        return
+
+      else
+
+        /*
+         * Editable item, returning "a" (hyperlink) widget with [onclick], allowing for editing cell.
+         * Making sure content of hyperlink becomes "&nbsp;" if no text actually exist.
+         */
+        if:x:/../*/_dn/#?value
+          =:
+
+          /*
+           * Empty content of cell, making sure we default its value to "&nbsp;".
+           */
+          set:x:/@_dn/#?value
+            src:&nbsp;
+
+        eval-x:x:/+/*/*(/innerValue|/_column|/_type)
+        return
+          a
+            href:#
+            innerValue:x:/@_dn/#?value
+            _column:x:/@_dn/#?name
+            _type:x:/@_dn/#/*/_type?value
+            onclick
+
+              /*
+               * Using global helper active event to actually invoke editing of item.
+               */
+              find-first-ancestor-widget:x:/../*/_event?value
+                _page-size
+              eval-x:x:/+/*
+              sys42.widgets.datagrid._cell-clicked:x:/@find-first-ancestor-widget/*/*?value
+                _hyperlink:x:/../*/_event?value
+
+    /*
+     * [apply] all "td" widgets inside of currently iterated "tr" widget.
+     */
+    apply:x:/..for-each/*/create-widget/*/widgets
+      src:x:/..for-each/*/_dp/#/*
+      template
+        td
+          widgets
+            {@eval}:x:/..for-each/*/_apply-eval
+
+    /*
+     * Checking if we should use name or value as id. If a value is given, we use value, otherwise we use name.
+     */
+    _id
+    if:x:/..for-each/*/_dp/#?value
+      set:x:/./-?value
+        src:x:/..for-each/*/_dp/#?value
+    else
+      set:x:/./-2?value
+        src:x:/..for-each/*/_dp/#?name
+
+    /*
+     * Forward evaluating [parent] and [_row] before we create "tr" widget.
+     */
+    eval-x:x:/+/*(/parent|/_row)
+    create-widget
+      parent:x:/../*/find-widget/[0,1]/*/*?value
+      _row:x:/..for-each/*/_id?value
+      element:tr
+      widgets

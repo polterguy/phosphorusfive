@@ -1,0 +1,39 @@
+
+/*
+ * Filters specified [_arg] datagrid according to specified [_query].
+ */
+create-event:sys42.widgets.datagrid.filter
+
+  /*
+   * Making sure we update pager, such that the first page is displayed.
+   */
+  set-widget-property:x:/../*/_arg?value
+    _current-page:0
+
+  /*
+   * Storing query in datagrid root widget, if we are given a query.
+   * Otherwise, we entirely delete [_query] property on widget.
+   */
+  if:x:/../*/_query?value
+    and:x:/../*/_query?value
+      !=:
+
+    /*
+     * We have a query, making sure we store query in datagrid main widget.
+     */
+    set-widget-property:x:/../*/_arg?value
+      _query:x:/../*/_query?value
+
+  else
+
+    /*
+     * We no not have a query, deleting [_query] property from datagrid, and making sure our [_get-items] 
+     * invocation does not specify any [_query] parameter.
+     */
+    delete-widget-property:x:/../*/_arg?value
+      _query
+
+  /*
+   * Databind datagrid.
+   */
+  sys42.widgets.datagrid.databind:x:/../*/_arg?value
