@@ -65,6 +65,6 @@ create-event:sys42.widgets.datagrid._create-table-widgets
    */
   eval-x:x:/+/*/parent
   create-widget
-    parent:x:/../*/find-widget/*/*?value
+    parent:x:/@find-widget/*/*?value
     element:tbody
     widgets

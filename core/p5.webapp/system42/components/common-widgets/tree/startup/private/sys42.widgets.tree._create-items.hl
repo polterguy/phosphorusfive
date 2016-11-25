@@ -1,0 +1,167 @@
+
+/*
+ * Supporting Active Event, to create items.
+ * Used both during initial creation of tree widget, to create initially shown nodes, and during 
+ * "toggling" (creation of new items).
+ */
+create-event:sys42.widgets.tree._create-items
+
+  /*
+   * These are the default CSS classes used for icon items, if no explicit override is supplied by caller.
+   */
+  _options
+    _class-close:glyphicon glyphicon-folder-close folder
+    _class-open:glyphicon glyphicon-folder-open folder
+
+  /*
+   * Checking if we have items, and if not, returning early.
+   */
+  if:x:/../*/_items/#/*
+    not
+    return
+
+  /*
+   * Looping through all [_items]
+   */
+  for-each:x:/../*/_items/#/*
+
+    /*
+     * Forward evaluating [_items] collection in recursive invocation of "self" inside of [add], to make sure
+     * we recursively add children [_items] of currently iterated [_items].
+     *
+     * This allows us to create hierarchies of items, both during initial creation, and during toggling/expanding of items.
+     */
+    eval-x:x:/+/*/*
+    add:x:/..for-each/*/add/[1,2]/*/*/*/widgets
+      sys42.widgets.tree._create-items
+        _items:x:/..for-each/*/_dp/#/*/_items
+
+    /*
+     * Checking if this item has children, at which case, we should add the "tree-expanded" CSS class to "li" HTML widget,
+     * and the "icon open" CSS class to the nested icon "span" HTML element.
+     */
+    if:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/ul
+
+      /*
+       * Adding the CSS class of "tree-expanded" to our "li" HTML element.
+       */
+      set:x:/..for-each/*/add/[1,2]/*/*/*/class?value
+        src:{0} tree-expanded
+          :x:/..for-each/*/add/[1,2]/*/*/*/class?value
+
+      /*
+       * Applying the [_class-open] CSS class to the "icon" span HTML element.
+       */
+      set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/class?value
+        src:x:(/..for-each/*/_dp/#/*/_class-open|/../*/_options/*/_class-open)/$?value
+    else
+
+      /*
+       * Applying the [_class-close] CSS class to the "icon" span HTML element.
+       */
+      set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/class?value
+        src:x:(/..for-each/*/_dp/#/*/_class-close|/../*/_options/*/_class-close)/$?value
+
+    /*
+     * Storing the "close icon CSS class" and "open icon CSS class" in widget as invisible property, 
+     * such that we can retrieve it later when item  is toggled.
+     */
+    set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/_class-close?value
+      src:x:(/..for-each/*/_dp/#/*/_class-close|/../*/_options/*/_class-close)/$?value
+    set:x:/..for-each/*/add/[1,2]/*/*/*/widgets/*/a/*/widgets/*/span/[0,1]/*/_class-open?value
+      src:x:(/..for-each/*/_dp/#/*/_class-open|/../*/_options/*/_class-open)/$?value
+
+    /*
+     * Setting properties for currently iterated item, and adding item into [return] below.
+     *
+     * These are simply [innerValue] on hyperlink, in addition to [_item-id] on "li", which is a server-side hidden property
+     * for the item, allowing us to figure out the "id" of which item was clicked, among other things.
+     */
+    eval-x:x:/..for-each/*/add/[1,2]/*/*/*(/_item-id|/*/a/*/widgets/*/span/[1,2]/*/innerValue)
+
+    /*
+     * Adding any custom CSS classes caller supplied to currently iterated widget.
+     */
+    if:x:/..for-each/*/_dp/#/*/_class?value
+      set:x:/..for-each/*/add/[1,2]/*/*/*/class?value
+        src:tree-item {0}
+          :x:/..for-each/*/_dp/#/*/_class?value
+
+    /*
+     * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
+     * to caller's request.
+     */
+    add:x:/../*/return/*/*
+      src
+        li
+          class:tree-item
+          _item-id:x:/..for-each/*/_dp/#?value
+          widgets
+            a
+              href:#
+              role:button
+              class:tree-item-label
+              onclick
+
+                /*
+                 * Getting id of item, and passing into [toggle-items] and [select-items] as [_items] collection.
+                 */
+                get-parent-widget:x:/../*/_event?value
+                get-widget-property:x:/-/*/*?value
+                  _item-id
+                add:x:/../*/sys42.widgets.tree.toggle-items/*|/../*/sys42.widgets.tree.select-items/*
+                  src:x:/../*/get-widget-property/*/*?value
+
+                /*
+                 * Then finding "root tree" widget for currently clicked item, such that we can pass it
+                 * into [toggle-items] and [select-items].
+                 */
+                find-first-ancestor-widget:x:/../*/_event?value
+                  _root-tree
+                sys42.widgets.tree.toggle-items:x:/../*/find-first-ancestor-widget/*/*?value
+                  _items
+                sys42.widgets.tree.select-items:x:/../*/find-first-ancestor-widget/*/*?value
+                  _items
+
+              /*
+               * To make sure we are able to create our SEO URL in hyperlink, we handle [oninit],
+               * since at that point, the widget is "rooted", and we can traverse all "li" elements
+               * upwards in hierarchy, all the way to the "root" widget, to retrieve all IDs of elements.
+               */
+              oninit
+
+                /*
+                 * Retrieving parent "li" HTML widget, and passing it into [_create-url], which will
+                 * traverse the hierarchy upwards, adding all necessary IDs, and creating a URL that will
+                 * expand all items leading to "current item".
+                 */
+                find-first-ancestor-widget:x:/../*/_event?value
+                  _root-tree
+                get-widget-property:x:/-/*/*?value
+                  _root-tree
+
+                /*
+                 * Notice, if the [_root-tree] hidden property on root widget contains something, it means we should
+                 * create an SEO friendly tree, and use the value of [_root-tree] as the HTTP GET parameter name while doing.
+                 */
+                if:x:/-/*/*?value
+                  get-parent-widget:x:/../*/_event?value
+                  sys42.widgets.tree._create-url:x:/-/*/*?value
+                  set-widget-property:x:/../*/_event?value
+                    href:x:/..if/*/sys42.widgets.tree._create-url?value
+              widgets
+                span
+                  _class-close
+                  _class-open
+                  class
+                  innerValue:
+                span
+                  innerValue:x:/..for-each/*/_dp/#?name
+
+  /*
+   * Returning widget hierarchy.
+   */
+  return
+    ul
+      class:tree-item-children
+      widgets

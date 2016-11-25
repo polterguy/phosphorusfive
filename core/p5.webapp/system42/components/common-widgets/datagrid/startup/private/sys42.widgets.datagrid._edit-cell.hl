@@ -1,8 +1,8 @@
 
 /*
- * Expects [_arg] being ID of datagrid, [_column], [_row] and [_hyperlink].
- *
  * Creates an input type of control, according to cell's type.
+ *
+ * Expects [_arg] being ID of datagrid, [_column], [_row] and [_hyperlink] being the hyperlink that was actually clicked.
  */
 create-event:sys42.widgets.datagrid._edit-cell
 
@@ -17,6 +17,10 @@ create-event:sys42.widgets.datagrid._edit-cell
   get-widget-property:x:/../*/_hyperlink?value
     _type
   if:x:/@get-widget-property/*/*?value
+
+    /*
+     * An explicit type declaration for our input widget was declared when item was fetched, making sure we use it.
+     */
     set:x:/../*/create-void-widget/*/type?value
       src:x:/@get-widget-property/*/*?value
 
@@ -56,7 +60,7 @@ create-event:sys42.widgets.datagrid._edit-cell
     /*
      * Invisible Ajax event, referenced from JavaScript, to delete textbox.
      */
-    _onesc
+    .onesc
 
       /*
        * Deleting textbox, and setting focus to hyperlink.
@@ -71,7 +75,7 @@ create-event:sys42.widgets.datagrid._edit-cell
     /*
      * Invisible Ajax event, referenced from JavaScript, to delete textbox, and update edited item.
      */
-    _onenter
+    .onenter
 
       /*
        * Fetching new value, and notifying [.on-edit-item] lambda callback supplied during creation that item has been edited.
@@ -95,8 +99,9 @@ create-event:sys42.widgets.datagrid._edit-cell
          */
         set:x:/@get-widget-property/*/*/value?value
           src:&nbsp;
+
       eval-x:x:/+/*
-      sys42.widgets.datagrid._edit-cell-callback:x:/../*/find-first-ancestor-widget/*/*?value
+      sys42.widgets.datagrid._edit-cell-callback:x:/@find-first-ancestor-widget/*/*?value
         _value:x:/@get-widget-property/*/*/value?value
         _column:x:/@get-widget-property/*/*/_column?value
         _row:x:/@get-widget-property/*/*/_row?value
@@ -107,6 +112,7 @@ create-event:sys42.widgets.datagrid._edit-cell
       if:x:/@sys42.widgets.datagrid._edit-cell-callback?value
 
         /*
+         * Success, input was acccepted.
          * Deleting textbox, setting focus to hyperlink, and updating value of hyperlink.
          */
         get-parent-widget:x:/../*/_event?value
@@ -139,10 +145,10 @@ create-event:sys42.widgets.datagrid._edit-cell
   include-javascript:@"
 p5.sys42_widgets_datagrid_onkeydown = function (e) {
 if(e.keyCode == 27) {
-p5.$(e.target.id).raise('_onesc');
+p5.$(e.target.id).raise('.onesc');
 return false;
 } else if(e.keyCode == 13) {
-p5.$(e.target.id).raise('_onenter');
+p5.$(e.target.id).raise('.onenter');
 return false;
 }
 }"

@@ -45,7 +45,7 @@ create-event:sys42.widgets.datagrid._append-items
         onclick
 
           /*
-           * Finding main datagrid widget, which is necessary to pass into [sys42.widgets.datagrid.select-row] as [_arg].
+           * Finding main datagrid widget, which is necessary to pass into [sys42.widgets.datagrid.select-items] as [_arg].
            */
           find-first-ancestor-widget:x:/../*/_event?value
             _current-page

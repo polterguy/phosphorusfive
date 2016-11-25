@@ -1,0 +1,208 @@
+
+/*
+ * Creates an Ajax TreeView widget, which allows for hierarchically browsing relational tree structures, such as for instance a file
+ * system, etc.
+ *
+ * The TreeView is "SEO friendly", which means that it will allow spiders to crawl the nodes in your tree, as if they were hyperlinks,
+ * while still retaining the single page app feeling for human users, through Ajax functionality. But only if you explicitly set
+ * the [_crawl] paremeter to true. If you do, you can override the default name of the HTTP GET parameter, by supplying it as [_crawl-get-name].
+ *
+ * Arguments;
+ * 
+ * [_skin]            - Skin file and class to use. Default value is "default".
+ * [_items]           - Collection of items to show initially as "root items".
+ *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
+ *                      item, used to uniquely identify the item, when the item is clicked for instance, etc.
+ *                      Optionally you can supply child nodes for each item, declaring the CSS classes used to display it as [_class-close]
+ *                      and [_class-open]. Their default values are "glyphicon glyphicon-folder-close" and "glyphicon glyphicon-folder-open".
+ * [_crawl]           - If true, the tree will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
+ * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tree_unroll".
+ * [.on-get-items]    - Callback lambda evaluated when the tree need more items.
+ *                      Callback will be given [_item-id] for which item to retrieve children of.
+ *                      Callback is expected to return an [_items] collection, similarly to when the tree is initially created.
+ *                      See [_items] above to understand the collection the tree widget expects.
+ * [.on-select]       - Callback lambda to invoke when an item is selected.
+ */
+create-event:sys42.widgets.tree
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _skin:default
+    .on-get-items
+    .on-select
+    _crawl-get-name:sys42_widgets_tree_unroll
+    _crawl:bool:false
+  _options
+  add:x:/../*/_options
+    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+
+  /*
+   * Making sure caller supplied at the very least one item.
+   */
+  if:x:/../*/_options/*/_items/*
+    not
+    throw:You have to supply at the very least one root item when creating your tree widget.
+
+
+  /*
+   * Adding initial items recursively to return widget.
+   */
+  eval-x:x:/+/*/*
+  add:x:/../*/return/*/container/*/widgets
+    sys42.widgets.tree._create-items
+      _items:x:/../*/_options/*/_items
+
+
+  /*
+   * Adding [.on-get-items] callback into [sys42.widgets.tree._get-items]
+   */
+  add:x:/../*/return/*/*/events/*/sys42.widgets.tree._get-items/*/.lambda
+    src:x:/../*/_options/*/.on-get-items/*
+
+
+  /*
+   * Adding [.on-select] callback into [sys42.widgets.tree._select]
+   */
+  add:x:/../*/return/*/*/events/*/sys42.widgets.tree._select/*/.lambda
+    src:x:/../*/_options/*/.on-select/*
+
+
+  /*
+   * Checking if crawling is enabled.
+   */
+  if:x:/../*/_options/*/_crawl?value.bool
+    set:x:/../*/return/*/*/_root-tree?value
+      src:x:/../*/_options/*/_crawl-get-name?value
+
+
+  /*
+   * Forward evaluating [class] and [oninit]/[_skin] to make sure we use the [_skin] supplied during creation.
+   */
+  eval-x:x:/../*/return/*/*(/class|/oninit/*/_skin)
+
+
+  /*
+   * Returning widget to caller.
+   */
+  return
+    container
+      _root-tree
+      class:tree-widget-{0}
+        :x:/../*/_options/*/_skin?value
+      oninit
+
+        /*
+         * Making sure we include our tree specific CSS file.
+         */
+        _skin:x:/../*/_options/*/_skin?value
+        include-stylesheet-file:/system42/components/common-widgets/tree/media/skins/{0}/{0}.min.css
+          :x:/@_skin?value
+
+        /*
+         * Checking URL to determine if we should "unroll" items.
+         */
+        get-widget-property:x:/../*/_event?value
+          _root-tree
+        if:x:/@get-widget-property/*/*?value
+          not
+
+          /*
+           * Tree is not in SEO mode.
+           */
+          return
+
+        get-http-get-param:x:/@get-widget-property/*/*?value
+        if:x:/@get-http-get-param/*?value
+          not
+
+          /*
+           * No "unroll URL" specified.
+           */
+          return
+
+        /*
+         * Splitting up every ID from URL, and adding every ID to invocation of [toggle-items],
+         * while forcing an "unrolling" through [_force-expand].
+         */
+        split:x:/@get-http-get-param/*?value
+          =:|
+        add:x:/+/*/_items
+          src:x:/@split/*?name
+        sys42.widgets.tree.toggle-items:x:/../*/_event?value
+          _items
+          _force-expand:bool:true
+
+        /*
+         * Making sure we select outer most item.
+         */
+        add:x:/../*/sys42.widgets.tree.select-items/*
+          src:x:/@split/0/-?name
+        sys42.widgets.tree.select-items:x:/../*/_event?value
+          _items
+
+
+      /*
+       * Events for tree widget.
+       */
+      events
+
+
+        /*
+         * Invoked when tree needs to retrieve children items for a specific tree node.
+         * The lambda for this event, is created from the [.on-get-items] callback supplied during creation of tree.
+         */
+        sys42.widgets.tree._get-items
+
+          /*
+           * First we must make sure this is the tree requested by caller to toggle items within.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our tree.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Lambda callback supplied during creation of widget.
+           */
+          .lambda
+          add:x:/+
+            src:x:/../*/_item-id
+          eval:x:/@.lambda
+          insert-before:x:
+            src:x:/@eval/*
+
+
+        /*
+         * Invoked when items are selected in tree widget.
+         */
+        sys42.widgets.tree._select
+
+          /*
+           * First we must make sure this is the tree requested by caller to toggle items within.
+           */
+          if:x:/../*/_arg?value
+            !=:x:/../*/_event?value
+
+            /*
+             * This is NOT our tree.
+             * Returning early, before callback lambda is evaluated.
+             */
+            return
+
+          /*
+           * Lambda callback supplied during creation of widget.
+           */
+          .lambda
+          add:x:/+
+            src:x:/../*/_items
+          eval:x:/@.lambda
+          insert-before:x:
+            src:x:/@eval/*
+
+      widgets

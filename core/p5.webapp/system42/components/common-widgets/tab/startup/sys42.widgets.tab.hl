@@ -1,0 +1,216 @@
+
+/*
+ * Creates an Ajax TabControl type of widget.
+ *
+ * The TabControl widget, allows you to display multiple tabs, each with its own unique set of [widgets] collection.
+ * Notice, the TabControl widget, does not render its non-active items as visible. This means, that there are neither any HTML, nor any
+ * server-side [oninit] event invoked for anything inside its tabviews, that is not initially visible, due to being in the initially active 
+ * tabview. Still it allows for search engines to crawl its tabviews, due to them seeing the switch active tabview buttons, merely as hyperlinks.
+ * This creates nice markup, spends little server resources, while still making it highly accessible.
+ *
+ * Arguments;
+ * 
+ * [_skin]            - Skin file and class to use. Default value is "default".
+ * [_items]           - Collection of "TabViews" in your TabControl.
+ *                      Each item beneath here, should have a name, and a [widgets] collection. The [widgets] collection, only becomes
+ *                      visible, as the user clicks the tabview to show it. The name of the children nodes beneath [_items], becomes the
+ *                      friendly displayed name for your TabView.
+ * [_crawl]           - If true, the widget will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
+ * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tab_unroll".
+ */
+create-event:sys42.widgets.tab
+
+  /*
+   * Applying options for widget, with default values.
+   */
+  _defaults
+    _skin:default
+    _items
+    _crawl:bool:false
+    _crawl-get-name:sys42_widgets_tab_unroll
+  _options
+  add:x:/../*/_options
+    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+
+
+  /*
+   * Making sure caller supplied at the very least one item.
+   */
+  if:x:/../*/_options/*/_items/*
+    not
+
+    /*
+     * No initial items provided.
+     */
+    throw:You have to supply at the very least one root item when creating your tab widget.
+
+
+  /*
+   * Retrieving the value of the HTTP GET crawl parameter, if any.
+   */
+  get-http-get-param:x:/../*/_options/*/_crawl-get-name?value
+
+
+  /*
+   * Looping through each [item] in [_items], and creating a tabview header item for each of them.
+   */
+  _index:int:0
+  for-each:x:/../*/_options/*/_items/*
+
+    /*
+     * Adding header item first.
+     */
+    _header
+      container
+        element:li
+        class:tab-header-item
+        widgets
+          a
+            href:#
+            innerValue:x:/@_dp/#?name
+            _index:x:/@_index?value
+            onclick
+
+              /*
+               * Finding root tab widget, for then to find the visible widget, and making it invisible.
+               */
+              find-first-ancestor-widget:x:/../*/_event?value
+                _root-tab
+              find-widget:x:/@find-first-ancestor-widget/*/*?value
+                class:tab-content-item
+                visible:true
+              set-widget-property:x:/@find-widget/*/*?value
+                visible:false
+
+              /*
+               * Now finding out which index the currently clicked tab header button is, and making sure
+               * we set that content widget to visible.
+               */
+              get-widget-property:x:/../*/_event?value
+                _index
+              find-widget:x:/@find-first-ancestor-widget/*/*?value
+                class:tab-content-item
+              set-widget-property:x:/@find-widget/*/{0}?value
+                :x:/@get-widget-property/*/*?value
+                visible:true
+
+              /*
+               * Now making sure we remove the "active" CSS class from the previously active button, and set the class for the currently clicked button
+               */
+              find-widget-like:x:/@find-first-ancestor-widget/*/*?value
+                class:tab-header-active-item
+              sys42.utilities.toggle-css-classes:x:/@find-widget-like/*/*?value
+                _class:tab-header-active-item
+              get-parent-widget:x:/../*/_event?value
+              sys42.utilities.toggle-css-classes:x:/@get-parent-widget/*/*?value
+                _class:tab-header-active-item
+
+
+    /*
+     * Checking if caller wants tab control to be crawlable by search engines.
+     */
+    if:x:/../*/_options/*/_crawl?value.bool
+
+      /*
+       * Tab control should be crawlable by search engines.
+       * Checking if there was an HTTP GET argument matching the "crawl URL", and if it
+       * matches the currently iterated item.
+       */
+      if:x:/@get-http-get-param/*?value
+        and:x:/@get-http-get-param/*?value
+          =:x:/@_dp/#?value
+
+        /*
+         * Tab control is in "crawl mode", we have a "crawl URL", and it matches the ID of the currently iterated item.
+         *
+         * Hence, we simply add up an [oninit] for the currently iterated tabview header button, and clicks it during [oninit].
+         */
+        add:x:/@_header/*/container/*/widgets/*/a
+          src
+            oninit
+              raise-widget-ajax-event:x:/../*/_event?value
+                onclick
+
+      /*
+       * Adding the crawl URL to our hyperlink href attribute above.
+       */
+      eval-x:x:/+/*/*
+      set:x:/@_header/*/container/*/widgets/*/a/*/href?value
+        sys42.widgets.tab._create-url:x:/@_dp/#?value
+          _crawl-get-name:x:/../*/_options/*/_crawl-get-name?value
+
+    /*
+     * Forward evaluating innerValue and _index of header widget, and adding to returned container.
+     */
+    eval-x:x:/@_header/*/*/*/*(/innerValue|/_index)
+    add:x:/../*/return/*/container/*/widgets/*/container/[0,1]/*/widgets
+      src:x:/@_header/*
+
+    /*
+     * Incrementing [_index].
+     */
+    set:x:/@_index?value
+      +:x:/@_index?value
+        _:1
+
+    /*
+     * Adding content [widgets] collection.
+     */
+    _content
+      container
+        visible:false
+        class:tab-content-item
+        widgets
+    add:x:/@_content/*/*/widgets
+      src:x:/@_dp/#/*/widgets/*
+    add:x:/../*/return/*/container/*/widgets/*/container/[1,2]/*/widgets
+      src:x:/@_content/*
+
+
+  /*
+   * Making sure our first tab item becomes "active".
+   */
+  set:x:/../*/return/*/container/*/widgets/*/container/[0,1]/*/widgets/*/[0,1]/*/class?value
+    src:tab-header-item tab-header-active-item
+
+
+  /*
+   * Making sure our first TabView content becomes visible, and only our first.
+   */
+  set:x:/../*/return/*/container/*/widgets/*/container/[1,2]/*/widgets/*/[0,1]/*/visible
+
+
+  /*
+   * Forward evaluating [class] and [_skin] inside of [oninit] to make sure we use [_options]/[_class] if supplied, and specified skin file.
+   */
+  eval-x:x:/../*/return/*/*(/class|/oninit/*/_skin)
+
+
+  /*
+   * Returning widget to caller.
+   */
+  return
+    container
+      _root-tab
+      class:tab-widget-{0}
+        :x:/../*/_options/*/_skin?value
+      oninit
+
+        /*
+         * Making sure we include our tab specific CSS file.
+         */
+        _skin:x:/../*/_options/*/_skin?value
+        include-stylesheet-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
+          :x:/../*/_skin?value
+
+      /*
+       * Contains the tabs for widget
+       */
+      widgets
+        container
+          element:ul
+          class:tab-header clearfix
+          widgets
+        container
+          class:tab-content-wrapper clearfix
+          widgets

@@ -1,0 +1,87 @@
+
+/*
+ * Supporting Active Event, to create URL from given [_arg] "li" widget.
+ */
+create-event:sys42.widgets.tree._create-url
+
+  /*
+   * First we get current location, without GET parameters, before we add the question mark to make sure we 
+   * "open" our GET params collection.
+   */
+  get-location-url
+  set:x:/../*/get-location-url?value
+    src:{0}?
+      :x:/../*/get-location-url?value
+
+  /*
+   * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
+   * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tree_unroll".
+   */
+  find-first-ancestor-widget:x:/../*/_arg?value
+    _root-tree
+  get-widget-property:x:/-/*/*?value
+    _root-tree
+  list-http-get-params
+  set:x:/-/*/{0}
+    :x:/../*/get-widget-property/*/*?value
+  if:x:/-2/*
+    get-http-get-param:x:/./-2/*?name
+    for-each:x:/-/*
+      url-encode:x:/./*/_dp/#?value
+      set:x:/../*/get-location-url?value
+        src:{0}{1}={2}&
+          :x:/../*/get-location-url?value
+          :x:/..for-each/*/_dp/#?name
+          :x:/..for-each/*/url-encode?value
+
+  /*
+   * Adding key for our "unroll" GET parameter.
+   */
+  set:x:/../*/get-location-url?value
+    src:{0}{1}=
+      :x:/../*/get-location-url?value
+      :x:/../*/get-widget-property/*/*?value
+
+  /*
+   * Then we need to recursively iterate from current widget, and upwards in hierarchy, until
+   * we reach "main root tree widget", and append all IDs to the URL separated by a pipe sign (|).
+   * Making sure we url-encode the whole thing, before adding it.
+   */
+  set:x:/+?value
+    src:x:/../*/_arg?value
+  _cur
+  _param
+  while:bool:true
+    get-widget-property:x:/../*/_cur?value
+      _item-id
+    set:x:/../*/_param?value
+      src:{0}|{1}
+        :x:/..while/*/get-widget-property/[0,1]/*/*?value
+        :x:/../*/_param?value
+    get-parent-widget:x:/../*/_cur?value
+    get-parent-widget:x:/-/*/*?value
+
+    /*
+     * Checking if we're done. Unless current widget is an "li" widget, we're at the
+     * root widget for our tree widget.
+     */
+    get-widget-property:x:/-/*/*?value
+      element
+    if:x:/-/*/*?value
+      !=:li
+
+      // This is main root tree widget, which is "div" and not "li".
+      break
+    set:x:/../*/_cur?value
+      src:x:/..while/*/get-parent-widget/[1,2]/*/*?value
+
+  /*
+   * Now we URL encode entire parameter, before we return it concatenated with base URL to caller.
+   */
+  trim:x:/../*/_param?value
+    chars:|
+  url-encode:x:/../*/trim?value
+
+  return:{0}{1}
+    :x:/../*/get-location-url?value
+    :x:/../*/url-encode?value
