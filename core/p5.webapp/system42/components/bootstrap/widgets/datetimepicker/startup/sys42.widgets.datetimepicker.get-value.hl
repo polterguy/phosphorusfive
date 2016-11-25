@@ -1,0 +1,16 @@
+
+/*
+ * Creates the Active Event that retrieves the value of an Ajax DateTimePicker.
+ * Pass in the ID to the DateTimePicker you wish to retrieve the value of as [_arg].
+ */
+create-event:sys42.widgets.datetimepicker.get-value
+
+  /*
+   * Finding textbox, and returning value.
+   */
+  find-widget:x:/../*/_arg?value
+    element:input
+    type:text
+  get-widget-property:x:/@find-widget/*/*?value
+    value
+  return:x:/@get-widget-property/*/*?value

@@ -824,6 +824,9 @@
     <Content Include="system42\components\bootstrap\widgets\colorpicker\startup\sys42.widgets.colorpicker.hl" />
     <Content Include="system42\components\bootstrap\widgets\colorpicker\startup\sys42.widgets.colorpicker.get-value.hl" />
     <Content Include="system42\components\bootstrap\widgets\colorpicker\startup\sys42.widgets.colorpicker.set-value.hl" />
+    <Content Include="system42\components\bootstrap\widgets\datetimepicker\startup\sys42.widgets.datetimepicker.hl" />
+    <Content Include="system42\components\bootstrap\widgets\datetimepicker\startup\sys42.widgets.datetimepicker.set-value.hl" />
+    <Content Include="system42\components\bootstrap\widgets\datetimepicker\startup\sys42.widgets.datetimepicker.get-value.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />
