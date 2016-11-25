@@ -1,0 +1,24 @@
+
+/*
+ * Creates the event that retrieves all values from a modal wizard window.
+ */
+create-event:sys42.windows.wizard.get-values
+
+  /*
+   * Finding all data-fields in modal window.
+   */
+  find-widget:sys42-windows-modal
+    _data-field-name
+
+  /*
+   * Retrieving their data-field names and values.
+   */
+  get-widget-property:x:/@find-widget/*/*?value
+    _data-field-name
+    value
+  for-each:x:/@get-widget-property/*
+    add:x:/../*/return
+      src:@"{0}:@""{1}"""
+        :x:/@_dp/#/*/_data-field-name?value
+        :x:/@_dp/#/*/value?value
+  return

@@ -165,7 +165,7 @@ sys42.windows.modal
   .onok
     get-widget-property:my-text
       value
-    sys42.windows.info-tip:Thanx for the data, which was '{0}'!
+    sys42.windows.info-tip:Thanx for the data, which was '{0}'
       :x:/@get-widget-property/*/*?value
 ```
 
@@ -190,7 +190,7 @@ sys42.windows.modal
   .onok
     get-widget-property:my-text
       value
-    sys42.windows.info-tip:Thanx for the data, which was '{0}'!
+    sys42.windows.info-tip:Thanx for the data, which was '{0}'
       :x:/@get-widget-property/*/*?value
 ```
 

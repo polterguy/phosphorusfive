@@ -1,0 +1,28 @@
+
+/*
+ * Closes dialogue, evaluating the [.oncancel] lambda callback provided during creation of modal window.
+ *
+ * If you pass in [_close-client], and it is "false", then the JavaScript necessary to close the
+ * modal window on the client will not be transferred. Otherwise, the JavaScript necessary to close the window
+ * on the client will be automatically transferred.
+ */
+create-event:sys42.windows.modal.cancel
+
+  /*
+   * Closing modal dialogue.
+   * Notice, we default to closing on client, and only avoids closing client, if [_close-client] is false.
+   */
+  if:x:/../*/_close-client
+    not
+    or:x:/../*/_close-client?value.bool
+      =:bool:true
+
+    /*
+     * Caller wants client-side closing script to be evaluated.
+     */
+    sys42.windows.modal.destroy
+
+  /*
+   * Invokes the hidden lambda event on widget.
+   */
+  sys42.windows.modal._cancel

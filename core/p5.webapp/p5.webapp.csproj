@@ -805,9 +805,9 @@
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\README.md" />
     <Content Include="system42\components\bootstrap\widgets\datetimepicker\startup.hl" />
     <Content Include="system42\components\bootstrap\windows\startup.hl" />
-    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.confirm.hl" />
-    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.modal.hl" />
-    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.wizard.hl" />
+    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.confirm\sys42.windows.confirm.hl" />
+    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.modal\sys42.windows.modal.hl" />
+    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.wizard\sys42.windows.wizard.hl" />
     <Content Include="system42\components\settings\startup\sys42.utilities.get-setting.hl" />
     <Content Include="system42\components\bootstrap\windows\README.md" />
     <Content Include="system42\components\bootstrap\widgets\README.md" />
@@ -830,6 +830,11 @@
     <Content Include="system42\components\bootstrap\widgets\navbar\startup\sys42.widgets.navbar.hl" />
     <Content Include="system42\components\bootstrap\widgets\navbar\startup\sys42.widgets.navbar._create-items.hl" />
     <Content Include="system42\components\bootstrap\widgets\navbar\startup\sys42.widgets.navbar._create-url.hl" />
+    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.modal\sys42.windows.modal.ok.hl" />
+    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.modal\sys42.windows.modal.cancel.hl" />
+    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.modal\sys42.windows.modal.destroy.hl" />
+    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.modal\sys42.windows.modal.initial-focus.hl" />
+    <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.wizard\sys42.windows.wizard.get-values.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

@@ -153,21 +153,21 @@ create-event:sys42.windows.wizard
                     value:x:/@_dp/#?value
                     _data-field-name:x:/@_dp/#?name
 
-    /*
-     * Making sure we set initial focus to the first widget in our [_widgets] collection.
-     */
-    if:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/*?count
-      >:int:0
+  /*
+   * Making sure we set initial focus to the first widget in our [_widgets] collection.
+   */
+  if:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/*?count
+    >:int:0
 
-      /*
-       * There exists a [_widgets] collection in invocation to [sys42.windows.modal].
-       *
-       * Making sure we give initial focus to first widget automatically.
-       */
-      add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/0/*/widgets/0/*/widgets/1
-        src
-          oninit
-            sys42.windows.modal.initial-focus:x:/../*/_event?value
+    /*
+     * There exists a [_widgets] collection in invocation to [sys42.windows.modal].
+     *
+     * Making sure we give initial focus to first widget automatically.
+     */
+    add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/0/*/widgets/0/*/widgets/1
+      src
+        oninit
+          sys42.windows.modal.initial-focus:x:/../*/_event?value
 
   /*
    * Now we can evaluate our modal window, with a dynamically built [_widgets] collection, created above.
@@ -176,32 +176,3 @@ create-event:sys42.windows.wizard
     sys42.windows.modal
       _widgets
   eval:x:/@.lambda
-
-  /*
-   * Making sure we create our data-retrieval Active Event, after creation of modal window, and associate it with our modal window.
-   */
-  set-widget-lambda-event:sys42-windows-modal
-
-    /*
-     * This becomes an easy way to retrieve the supplied values from our wizard window.
-     */
-    sys42.windows.wizard.get-values
-
-      /*
-       * Finding all data-fields in modal window.
-       */
-      find-widget:sys42-windows-modal
-        _data-field-name
-
-      /*
-       * Retrieving their data-field names and values.
-       */
-      get-widget-property:x:/@find-widget/*/*?value
-        _data-field-name
-        value
-      for-each:x:/@get-widget-property/*
-        add:x:/../*/return
-          src:@"{0}:@""{1}"""
-            :x:/@_dp/#/*/_data-field-name?value
-            :x:/@_dp/#/*/value?value
-      return

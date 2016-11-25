@@ -98,15 +98,15 @@ create-event:sys42.windows.modal
     set:x:/../*/create-widget/**/=sys42-windows-modal-body
 
   /*
-   * Appending [.onok] lambda callback into [sys42.windows.modal.ok].
+   * Appending [.onok] lambda callback into [sys42.windows.modal._ok].
    */
-  add:x:/../*/create-widget/*/events/*/sys42.windows.modal.ok/*/.lambda
+  add:x:/../*/create-widget/*/events/*/sys42.windows.modal._ok/*/.lambda
     src:x:/../*/_options/*/.onok/*
 
   /*
-   * Appending [.oncancel] lambda callback into [sys42.windows.modal.cancel].
+   * Appending [.oncancel] lambda callback into [sys42.windows.modal._cancel].
    */
-  add:x:/../*/create-widget/*/events/*/sys42.windows.modal.cancel/*/.lambda
+  add:x:/../*/create-widget/*/events/*/sys42.windows.modal._cancel/*/.lambda
     src:x:/../*/_options/*/.oncancel/*
 
   /*
@@ -133,7 +133,7 @@ create-event:sys42.windows.modal
        * Evaluates [.onok] lambda object.
        * Notice the [.onok] lambda, passed in from caller, will be appended into this event, inside of [.lambda].
        */
-      sys42.windows.modal.ok
+      sys42.windows.modal._ok
 
         /*
          * Contains the [.onok] lambda callback supplied when widget was created.
@@ -142,26 +142,9 @@ create-event:sys42.windows.modal
         eval:x:/@.lambda
 
         /*
-         * Checking if [eval] above returned false, and if so, returning early, before we invoke [sys42.windows.modal.destroy].
-         * Notice, the funny [or] logic here, creates support for lambda callback to supply "false" as a string, in addition to not returning
-         * anything. If a string "false" is returned, it will be evaluated as a boolean false (don't close).
-         * If nothing is returned, it will be evaluated as a "true".
+         * Returning results to caller.
          */
-        if:x:/@eval?value
-          =:bool:false
-          or:x:/@eval?value
-            and:x:/@eval?value.bool
-              =:bool:false
-
-          /*
-           * Returning early before we destroy the window on the client side.
-           */
-          return
-
-        /*
-         * Making sure we close window without evaluating [.oncancel].
-         */
-        sys42.windows.modal.destroy
+        return:x:/@eval?value
 
 
       /*
@@ -173,53 +156,13 @@ create-event:sys42.windows.modal
        *
        * Notice, the [.oncancel] lambda callback, supplied when creating widget, will be passed into [.lambda] in this event.
        */
-      sys42.windows.modal.cancel
-
-        /*
-         * Closing modal dialogue.
-         * Notice, we default to closing on client, and only avoids closing client, if [_close-client] is false.
-         */
-        if:x:/../*/_close-client
-          not
-          or:x:/../*/_close-client?value.bool
-            =:bool:true
-
-          /*
-           * Caller wants client-side closing script to be evaluated.
-           */
-          sys42.windows.modal.destroy
+      sys42.windows.modal._cancel
 
         /*
          * Contains the [.oncancel] lambda callback passed into when instantiated.
          */
         .lambda
         eval:x:/@.lambda
-
-
-      /*
-       * Closes dialogue, without evaluating [.oncancel].
-       */
-      sys42.windows.modal.destroy
-
-        /*
-         * Turning OFF the hide handler, to avoid an additional Ajax request towards server, which would have evaluated [.oncancel],
-         * before we hide modal window.
-         */
-        send-javascript:@"$('#sys42-windows-modal').off('hide.bs.modal');"
-        send-javascript:@"$('#sys42-windows-modal').modal('hide');"
-
-
-      /*
-       * Gives initial focus to a specific widget.
-       */
-      sys42.windows.modal.initial-focus
-
-        /*
-         * Here we make sure we give focus to the specified [_arg] widget, such that it is not given focus, before
-         * after the modal window has been shown.
-         */
-        send-javascript:@"$('#sys42-windows-modal').on('shown.bs.modal', function () {{$('#{0}').focus().select();}})"
-          :x:/../*/_arg?value
 
     oninit
 
