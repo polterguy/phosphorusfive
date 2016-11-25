@@ -84,8 +84,8 @@ create-event:sys42.widgets.codemirror
    * In addition, we remove all events that contains "._" somehow, since they're considered "private events",
    * or "internal events".
    */
-  set:x:/../*/vocabulary/*(/"=-"|/"=!~"|/"=!="|/=%|/=*|/"=/"|/"=^"|/"=\\~"|/=+|/=<|/=<=|/==|/=>|/=>=)
-  join:x:/../*/vocabulary/*?value
+  set:x:/@vocabulary/*(/"=-"|/"=!~"|/"=!="|/=%|/=*|/"=/"|/"=^"|/"=\\~"|/=+|/=<|/=<=|/==|/=>|/=>=)
+  join:x:/@vocabulary/*?value
     sep:,
     wrap:@""""
 
@@ -95,7 +95,7 @@ create-event:sys42.widgets.codemirror
    * Notice, "include-javascript" in case we're having multiple Code-Mirror instances on page!
    */
   include-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
-    :x:/../*/join?value
+    :x:/@join?value
 
   /*
    * Making sure textarea input is replaced with the CodeMirror editor

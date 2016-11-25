@@ -24,7 +24,7 @@ create-event:sys42.widgets.codemirror-executor
     _class:col-xs-12
   _options
   add:x:/../*/_options
-    src:x:@"(/../*/"":regex:/^_/""|/../*/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
 
 
   /*
@@ -45,9 +45,9 @@ create-event:sys42.widgets.codemirror-executor
    * and if so, we stuff it into our editor.
    */
   get-session-value:sys42.widgets.codemirror-executor.current-code
-  if:x:/-/0?value
+  if:x:/@get-session-value/0?value
     set:x:/../**/=execute_input/*/_value?value
-      src:x:/../*/get-session-value/0?value
+      src:x:/@get-session-value/0?value
 
 
   /*
@@ -107,13 +107,13 @@ create-event:sys42.widgets.codemirror-executor
                  */
                 get-widget-property:execute_input
                   innerValue
-                hyper2lambda:x:/-/*/*?value
+                hyper2lambda:x:/@get-widget-property/*/*?value
 
                 /*
                  * Then storing current code in session such that code editor remembers content
                  */
                 set:x:/../*/set-session-value/*/src?value
-                  src:x:/../*/get-widget-property/+/<?value
+                  src:x:/@get-widget-property/+/<?value
                 set-session-value:sys42.widgets.codemirror-executor.current-code
                   src
 
@@ -129,14 +129,14 @@ create-event:sys42.widgets.codemirror-executor
                 /*
                  * Notice, [eval-mutable], since we want to retrieve transformed code after execution!
                  */
-                eval-mutable:x:/../*/_exe/#
+                eval-mutable:x:/@_exe/#
 
                 /*
                  * Then converting lambda result to Hyperlambda, and returning back to client as JSON
                  */
-                lambda2hyper:x:/../*/_exe/#/*
+                lambda2hyper:x:/@_exe/#/*
                 return-response-object:code
-                  src:x:/./-?value
+                  src:x:/@lambda2hyper?value
 
 
         /*

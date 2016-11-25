@@ -4,6 +4,6 @@
  * Evaluates all Hyperlambda files in the "startup" folder.
  */
 
-sys42.utilities.execute-lambda-folder:/system42/components/common-widgets/codemirror/startup/
+sys42.utilities.execute-lambda-folder:@SYS42-COMPONENTS/common-widgets/codemirror/startup/
 
 
