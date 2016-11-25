@@ -234,7 +234,10 @@ create-event:sys42.widgets.datagrid
 
 
         /*
-         * Expects [_arg] being ID of datagrid and [_items] being items that are selected.
+         * Select rows in your datagrid.
+         *
+         * Expects [_arg] being ID of datagrid and [_items] being items that are to be selected.
+         * The [.lambda] for this event, is created from the [.on-select-items] lambda callback, specified during creation of datagrid.
          */
         sys42.widgets.datagrid._select-items
 
@@ -260,9 +263,9 @@ create-event:sys42.widgets.datagrid
 
 
         /*
-         * Expects [_arg] being ID of datagrid, [_column] being name of column, [_row] being id of record, and [_value] being new value.
+         * Invoked when the user has edited a cell's content, and tried to push it to database, by e.g. pressing carriage return.
          *
-         * Invoked when the user has edited a cell's content, and tried to push it, by e.g. pressing carriage return.
+         * Expects [_arg] being ID of datagrid, [_column] being name of column, [_row] being id of record, and [_value] being new value.
          * Contains the [.on-edit-item] lambda callback supplied when creating datagrid.
          */
         sys42.widgets.datagrid._edit-cell-callback
@@ -286,11 +289,16 @@ create-event:sys42.widgets.datagrid
           add:x:/+
             src:x:/../*(/_column|/_row|/_value)
           eval:x:/@.lambda
+
+          /*
+           * Returning value from above [eval], to signal acceptance or denial of new value to caller.
+           */
           return:x:/@eval?value
 
 
         /*
-         * Invoked when datagrid needs to retrieve children items for a specific datagrid node.
+         * Invoked when datagrid needs to retrieve rows/items for its data table.
+         *
          * The lambda for this event, is created from the [.on-get-items] callback supplied during creation of datagrid.
          */
         sys42.widgets.datagrid._get-items
@@ -321,6 +329,7 @@ create-event:sys42.widgets.datagrid
 
       widgets
 
+
         /*
          * This is our actual datagrid table widget.
          */
@@ -330,8 +339,9 @@ create-event:sys42.widgets.datagrid
             container
               element:table
 
+
         /*
-         * The widget that wraps the "paging" (bottom) parts of our datagrid.
+         * This widget wraps the paging and filtering parts of our datagrid at the bottom.
          */
         container
           class:datagrid-pager
@@ -355,6 +365,7 @@ create-event:sys42.widgets.datagrid
 
                 /*
                  * Selecting all text in search textbox, and setting focus to it.
+                 * Avoiding jQuery dependencies.
                  */
                 send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
                   :x:/../*/_event?value
