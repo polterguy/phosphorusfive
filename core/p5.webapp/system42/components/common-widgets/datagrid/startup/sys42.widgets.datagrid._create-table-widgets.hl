@@ -1,0 +1,70 @@
+
+/*
+ * Invoked only once, during initialization of datagrid.
+ *
+ * Expects [_arg] being ID of datagrid, and [_columns] being column names.
+ * Optionally, it might also be given an [.on-header-clicked] lambda callback, which if supplied, 
+ * will be invoked when a header is clicked.
+ */
+create-event:sys42.widgets.datagrid._create-table-widgets
+
+  /*
+   * Creating column headers, by [apply]'ing [_columns] to [create-widget] invocation below.
+   */
+  if:x:/../*/.on-header-clicked/*
+
+    /*
+     * Caller supplied an [.on-header-clicked] lambda callback.
+     * Creating column headers as hyperlinks, passing in the specified [.on-header-clicked] lambda to [onclick].
+     */
+    add:x:/+/**/onclick
+      src:x:/../*/.on-header-clicked/*
+    apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
+      src:x:/../*/_columns/*
+      template
+        th
+          widgets
+            a
+              href:#
+              role:button
+              {innerValue}:x:?name
+              onclick
+
+  else
+
+    /*
+     * Caller did not specify [.on-header-clicked], hence simply creating header columns as span elements.
+     */
+    apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
+      src:x:/../*/_columns/*
+      template
+        th
+          widgets
+            span
+              {innerValue}:x:?name
+
+  /*
+   * Finding table element inside of datagrid main wrapper.
+   */
+  find-widget:x:/../*/_arg?value
+    element:table
+
+  /*
+   * Forward evaluating [parent], and creating table "thead" element.
+   */
+  eval-x:x:/+/*/parent
+  create-widget
+    parent:x:/../*/find-widget/*/*?value
+    element:thead
+    widgets
+      tr
+        widgets
+
+  /*
+   * Forward evaluating [parent] and creating table "tbody" element.
+   */
+  eval-x:x:/+/*/parent
+  create-widget
+    parent:x:/../*/find-widget/*/*?value
+    element:tbody
+    widgets

@@ -69,7 +69,7 @@ create-event:sys42.widgets.datagrid
         not
 
     /*
-     * Oops, user provided either both [.on-edit-item] and [.on-select-items] or none of them.
+     * Oops, user provided either both [.on-edit-item] and [.on-select-items], or none of them.
      */
     throw:Sorry, either provide [.on-edit-item] or [.on-select-items] and not both!
 
@@ -99,6 +99,7 @@ create-event:sys42.widgets.datagrid
   /*
    * Checking if caller provided an [.on-select-items] callback, and if so, making sure we use it, by adding it
    * into [sys42.widgets.datagrid._select-items].
+   *
    * Otherwise, we entirely remove our [sys42.widgets.datagrid._select-items] lambda event.
    */
   if:x:/../*/_options/*/.on-select-items/*
@@ -130,6 +131,11 @@ create-event:sys42.widgets.datagrid
      */
     add:x:/../*/return/*/*/events/*/sys42.widgets.datagrid._edit-cell-callback/*/.lambda
       src:x:/../*/_options/*/.on-edit-item/*
+
+    /*
+     * This property on our main datagrid widget, allows our [sys42.widgets.datagrid._append-items] event, to know it
+     * should create inplace edit hyperlinks, and not simply spans.
+     */
     add:x:/../*/return/*
       src
         _edit-items:true
@@ -137,7 +143,7 @@ create-event:sys42.widgets.datagrid
   else
 
     /*
-     * Editing of items is turned off.
+     * Editing of items is turned off, removing widget lambda event entirely.
      */
     set:x:/../*/return/*/*/events/*/sys42.widgets.datagrid._edit-cell-callback
 
@@ -156,7 +162,7 @@ create-event:sys42.widgets.datagrid
 
 
   /*
-   * Forward evaluating class property, [_end], [_skin] inside [oninit], [_page-size] and [_current-page].
+   * Forward evaluating class property, [_end] and [_skin] inside of [oninit], in addition to [_page-size] and [class].
    */
   eval-x:x:/../*/return/*/container/*(/class|/_page-size|/oninit/*(/_skin|/sys42.widgets.datagrid._get-items/*/_end))
 
@@ -206,6 +212,10 @@ create-event:sys42.widgets.datagrid
          */
         add:x:/+/*/_columns
           src:x:/../*/sys42.widgets.datagrid._get-items/*/_items/0/*?name
+
+        /*
+         * Notice, this might include [.on-header-clicked] if supplied during creation.
+         */
         sys42.widgets.datagrid._create-table-widgets:x:/../*/_event?value
           _columns
 
@@ -277,87 +287,6 @@ create-event:sys42.widgets.datagrid
             src:x:/../*(/_column|/_row|/_value)
           eval:x:/@.lambda
           return:x:/@eval?value
-
-
-        /*
-         * Invoked only once, during initialization of datagrid.
-         *
-         * Expects [_arg] being ID of datagrid, and [_columns] being column names.
-         */
-        sys42.widgets.datagrid._create-table-widgets
-
-          /*
-           * First we must make sure this is the tree requested by caller to toggle items within.
-           */
-          if:x:/../*/_arg?value
-            !=:x:/../*/_event?value
-
-            /*
-             * This is NOT our datagrid.
-             * Returning early, before callback lambda is evaluated.
-             */
-            return
-
-          /*
-           * Creating column headers, by [apply]'ing [_columns] to [create-widget] invocation below.
-           */
-          if:x:/../*/.on-header-clicked/*
-
-            /*
-             * Caller supplied an [.on-header-clicked] lambda callback.
-             * Creating column headers as hyperlinks, passing in the specified [.on-header-clicked] lambda to [onclick].
-             */
-            add:x:/+/**/onclick
-              src:x:/../*/.on-header-clicked/*
-            apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
-              src:x:/../*/_columns/*
-              template
-                th
-                  widgets
-                    a
-                      href:#
-                      role:button
-                      {innerValue}:x:?name
-                      onclick
-
-          else
-
-            /*
-             * Caller did not specify [.on-header-clicked], hence simply creating header columns as span elements.
-             */
-            apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
-              src:x:/../*/_columns/*
-              template
-                th
-                  widgets
-                    span
-                      {innerValue}:x:?name
-
-          /*
-           * Finding table element inside of datagrid main wrapper.
-           */
-          find-widget:x:/../*/_event?value
-            element:table
-
-          /*
-           * Forward evaluating [parent], and creating table "thead" element.
-           */
-          eval-x:x:/+/*/parent
-          create-widget
-            parent:x:/../*/find-widget/*/*?value
-            element:thead
-            widgets
-              tr
-                widgets
-
-          /*
-           * Forward evaluating [parent] and creating table "tbody" element.
-           */
-          eval-x:x:/+/*/parent
-          create-widget
-            parent:x:/../*/find-widget/*/*?value
-            element:tbody
-            widgets
 
 
         /*
@@ -460,7 +389,7 @@ p5.sys42_widgets_datagrid_search_onkeydown = function (e) {
                      */
                     find-first-ancestor-widget:x:/../*/_event?value
                       _current-page
-                    sys42.widgets.datagrid.go-previous:x:/-/*/*?value
+                    sys42.widgets.datagrid.go-previous:x:/@find-first-ancestor-widget/*/*?value
 
                 /*
                  * Our "Next page" button.

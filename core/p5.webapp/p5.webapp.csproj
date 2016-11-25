@@ -846,6 +846,7 @@
     <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid._cell-clicked.hl" />
     <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid._edit-cell.hl" />
     <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid._append-items.hl" />
+    <Content Include="system42\components\common-widgets\datagrid\startup\sys42.widgets.datagrid._create-table-widgets.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />
