@@ -103,6 +103,17 @@ button
                   {innerValue}:x:?value.string
 
         /*
+         * Then our widgets created by page.
+         */
+        apply:x:/..try/*/sys42.windows.modal/*/_widgets/*/table/[2,3]/*/widgets/*/tbody/*/widgets
+          src:x:/@hyper2lambda/**(/create-widget|/create-literal-widget|/create-container-widget|/create-void-widget|/widgets/*|/_widgets/*|/_buttons/*)/$
+          template
+            tr
+              widgets
+                td
+                  {innerValue}:x:?name
+
+        /*
          * Checking of page contains loops.
          */
         if:x:/@_active-events/*(/for-each|/while)
@@ -116,6 +127,12 @@ button
             src
               li
                 innerValue:Your page does not seem to contain loops
+        if:x:/@hyper2lambda/**?count
+          >:int:100
+          add:x:/..try/*/sys42.windows.modal/*/_widgets/*/ul/*/widgets
+            src
+              li
+                innerValue:<mark>Your page is too complex</mark>, and would benefit from being split up into an 'app'.
 
         /*
          * Forward evaluating "li" HTML widgets below, and creating our modal window.
@@ -160,6 +177,13 @@ button
               widgets
                 thead
                   innerValue:@"<tr><th>Extension events raised by page</th><th>Hit count</th></tr>"
+                tbody
+                  widgets
+            table
+              class:table table-hover
+              widgets
+                thead
+                  innerValue:@"<tr><th>Widgets created by page</th></tr>"
                 tbody
                   widgets
             p
