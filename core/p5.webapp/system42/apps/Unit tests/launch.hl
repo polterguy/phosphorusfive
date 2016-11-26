@@ -15,6 +15,12 @@ if:x:/-/*/role?value
 
 
 /*
+ * Loads the default template.
+ */
+sys42.cms.load-template
+
+
+/*
  * Including some nice background to visually indicate we're in "configuration mode".
  */
 include-stylesheet-file:@CMS/media/css/backgrounds/cogs.min.css

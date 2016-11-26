@@ -1,0 +1,10 @@
+
+/*
+ * Creates the Active Event that loads up the default template.
+ */
+create-event:sys42.cms.load-template
+
+  /*
+   * Assumes the default template exists.
+   */
+  sys42.utilities.execute-lambda-file:@CMS/page-templates/default.hl

@@ -38,9 +38,14 @@ if
     p5.security.has-salt
     not
 
-    // Need to create server dynamic salt
+    /*
+     * Need to create server dynamic salt.
+     */
     sys42.utilities.execute-lambda-file:@CMS/installation/create-server-salt.hl
+
   else
 
-    // Need to set root password, and do other types of installation setup things
+    /*
+     * Need to set root password.
+     */
     sys42.utilities.execute-lambda-file:@CMS/installation/set-root-password.hl

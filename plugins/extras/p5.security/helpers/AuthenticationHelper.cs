@@ -497,8 +497,7 @@ namespace p5.security.helpers
                 throw new LambdaSecurityException("You cannot set the root password to empty", args, context);
 
             // Creating root account
-            Node rootAccountNode = new Node ();
-            rootAccountNode.Add ("username", "root");
+            Node rootAccountNode = new Node ("", "root");
             rootAccountNode.Add ("password", password);
             rootAccountNode.Add ("role", "root");
             CreateUser (context, rootAccountNode);

@@ -1,12 +1,6 @@
 
 /*
- * Executed after server has been initially installed. Guides the 
- * user through setting up a secure root password, etc
- */
-
-
-/*
- * Creating actual guide form
+ * Creating our set server salt main widget.
  */
 create-widget:set-server-salt
   parent:guide
@@ -32,6 +26,10 @@ create-widget:set-server-salt
     container
       class:form-group
       widgets
+
+        /*
+         * Textarea where user can provide a server salt.
+         */
         literal:server-salt
           element:textarea
           class:form-control
@@ -39,14 +37,26 @@ create-widget:set-server-salt
           placeholder:Random server salt, e.g. 'sdiug45%/{huDSHJU3q796(!d'
           oninit
             send-javascript:@"$('#server-salt').focus().select();"
+
+        /*
+         * Button which user can click to submit server salt.
+         */
         literal:update-salt
           element:button
           class:col-xs-4 col-xs-push-8 col-sm-2 col-sm-push-10 btn btn-default btn-attach-top
           innerValue:Save
           onclick
+
+            /*
+             * Retrieving salt from above textarea, and storing it.
+             */
             get-widget-property:server-salt
               value
             p5.security.set-server-salt:x:/../*/get-widget-property/*/*?value
+
+            /*
+             * Deleting main server-salt widget, and moving on to the setting of the root password.
+             */
             delete-widget:set-server-salt
             sys42.utilities.execute-lambda-file:/system42/apps/CMS/installation/set-root-password.hl
 

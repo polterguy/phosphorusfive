@@ -1,23 +1,16 @@
 
 /*
- * Declaration of our "app loader page"
+ * Declaration of our "app loader page".
  */
 p5.page:/app-loader
   type:lambda
   name:App loader
-  template:/system42/apps/CMS/page-templates/default.hl
   role:root
   lambda:@"
 /*
  * Loads up the specified app according to the given HTTP parameter.
  */
 get-http-param:app
-sys42.utilities.execute-lambda-file:/system42/apps/{0}/launch.hl
-  :x:/../*/get-http-param/0?value
-if
-  fetch:x:/0/0?value
-    widget-exist:header
-  set-widget-property:header
-    innerValue:x:/../*/get-http-param/0?value
-set-title:x:/../*/get-http-param/0?value
+sys42.utilities.execute-lambda-file:@SYS42-APPS/{0}/launch.hl
+  :x:/@get-http-param/0?value
 "

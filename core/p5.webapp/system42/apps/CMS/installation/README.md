@@ -1,9 +1,8 @@
-Installation scripts
+Installation Hyperlambda
 ========
 
-This folder contains the Hyperlambda scripts, necessary to install your server, the first time. Typically, it will
-allow you to create a unique random server-salt, which is used to hash passwords and such for users. In addition, 
-it will allow you to create a "root account passsword".
+This folder contains the Hyperlambda, necessary to install your server, the first time you start your system. Typically, it will
+allow you to create a unique random server-salt, which is used to hash passwords and such for users. In addition, it will allow 
+you to create a root account passsword.
 
-These scripts will only be evaluated once, during the first startup of your server.
-
+These files will only be evaluated once, during the first startup and initial setup of your server.

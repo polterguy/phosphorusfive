@@ -855,6 +855,7 @@
     <Content Include="system42\components\common-widgets\tree\startup\public\sys42.widgets.tree.get-selected-items.hl" />
     <Content Include="system42\components\common-widgets\tree\startup\public\sys42.widgets.tree.select-items.hl" />
     <Content Include="system42\components\common-widgets\tree\startup\public\sys42.widgets.tree.toggle-items.hl" />
+    <Content Include="system42\apps\CMS\startup\sys42.cms.load-template.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />
