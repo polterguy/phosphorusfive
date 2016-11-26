@@ -3,7 +3,7 @@
  * Supporting Active Event, to create URL from given [_arg] hyperlink widget.
  * Creates the "unroll URL" for a Navbar, which once opened, will automatically click the Navbar item.
  */
-create-event:sys42.widgets.navbar._create-url
+create-event:sys42.widgets.navbar._create-item-url
 
   /*
    * First we get current location, without GET parameters, before we add the question mark to make sure we 

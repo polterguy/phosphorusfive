@@ -50,13 +50,12 @@ server salt, root password, and other things necessary to "initialize" your serv
 
 ### The "media" folder
 
-This folder contains CSS and JavaScript files, that System42 is dependent upon. System42 is built upon Bootstrap CSS, and uses
-jQuery some places. The files for these libraries can be found in the media folder.
+This folder contains CSS and other resource files, that System42 is dependent upon.
 
 ### The "page-editor" folder
 
 This folder contains the actual CMS editor, and all of the plugins for the different types of pages that are in the system.
-By default, there are only two types of pages in System42; HTML pages and "lambda" pages. Lambda pages allows the user to instead
+By default, there are only two types of pages in System42; HTML pages and _"lambda"_ pages. Lambda pages allows the user to instead
 of loading up some static HTML, evaluate his own lambda script, to entirely create the page himself as he see fit. 
 
 It still utilizes the templates, URL system, name, and so on. Unless you explicitly override these in your lambda page. You would
@@ -65,7 +64,7 @@ you load into your page, using lambda scripts, should be loaded within the "cont
 for your CMS.
 
 If you wish to create your own page type, you'll need to add up a "specialized editor", "new page template", in addition to creating
-your own "loader logic" in a script within the "page-loader" folder.
+your own "loader logic" in a script within the "/page-loader/" folder.
 
 ### The "page-loader" folder
 
@@ -74,8 +73,8 @@ understand how it works.
 
 ### The "page-templates" folder
 
-This folder contains the "skins" for your pages, or "templates" for your page objects. Whenever you create a new page in the CMS,
-you can choose which "template" to use. Some templates have menus, some black, others white, others are completely empty, etc.
+This folder contains the skins, or templates if you wish, for your page objects. Whenever you create a new page in the CMS,
+you can choose which template to use. Some templates have menus, some black, others white, others are completely empty, etc.
 Exactly what templates your system has, dependes upon your installation, and how it is modified.
 
 ### The "startup" folder
@@ -83,11 +82,11 @@ Exactly what templates your system has, dependes upon your installation, and how
 All files inside of this folder, are automatically evaluated during startup of your server, and typically creates Active Events, 
 and does other types of initialization the system is dependent upon to function accurately.
 
-The most important file in this folder is the "p5.web.load-ui.hl". This file creates an Active Event, which is raised by the
-P5 core, and expected to serve documents according to URLs. It is given a single argument *[_url]*, which is the relative URL to the
-page requested by the client.
+The most important file in this folder is the _"p5.web.load-ui.hl"_. This file creates an Active Event, which is raised by the
+Phosphorus Five core or kernel, and is expected to serve documents according to URLs. It is given a single argument *[_url]*, 
+which is the relative URL to the page requested by the client.
 
-If you wish to create your own system, entirely deleting System42, you need to make sure you have the *[p5.web.load-ui]* event
+If you wish to create your own system, entirely deleting System42, you need to make sure you handle the *[p5.web.load-ui]* event
 yourself, somehow.
 
 

@@ -5,8 +5,8 @@
  * which it does through invoking the "@CMS/page-editor/editor-toolbar.hl", when
  * a new page is created, or an existing page is edited.
  *
- * The rest is done by "Specialized editors", found in "system42/apps/cms/page-editor/specialized-editors/", 
- * in addition to the templates for new pages, found in "system42/cms/page-editor/new-page-templates/", which
+ * The rest is done by "Specialized editors", found in "/page-editor/specialized-editors/", 
+ * in addition to the templates for new pages, found in "/page-editor/new-page-templates/", which
  * are used create a "default starting point" for your new page.
  *
  * About creating your own page type.
@@ -18,17 +18,17 @@
  * dependencies between your own custom page types, and the rest of the system, what so ever.
  *
  * Notice, if you do, you will also need a Hyperlambda script to load up and display your page 
- * in "system42/apps/cms/page-loader/", who's name should match the "page type".
+ * in "/page-loader/", who's name should match the "page type".
  */
 
 
 /*
- * Verifying user is authorized to access this application
+ * Verifying user is authorized to access this application.
  */
 whoami
-if:x:/-/*/role?value
+if:x:/@whoami/*/role?value
   !=:root
-  throw:@"Sorry, this page is only accessible to ""root acounts"""
+  throw:Sorry, this page is only accessible to root acounts
 
 
 /*
@@ -67,27 +67,30 @@ create-widget:cms-page-editor
             container:cms-select-page
               element:select
               class:form-control
-
-
-              /*
-               * Here we populate the drop down list for "select existing page", checks if there are any pages
-               * currently beeing edited, and if so, fire up our specialized editor and start editing page.
-               */
               oninit
+
+                /*
+                 * Making sure we populate the dropdown select widget with all pages from database.
+                 */
                 sys42.cms.populate-select-page
+
+                /*
+                 * Then checking if there's an existing page currently being edited.
+                 */
                 if
                   sys42.cms.get-currently-edited-page
 
                   /*
-                   * Editing page
+                   * Editing page.
                    */
                   sys42.cms.edit-page
+
                 else
 
                   /*
                    * Showing uploader.
                    */
-                  set-widget-property:ajax-uploader
+                  set-widget-property:cms-ajax-uploader
                     visible:true
 
                 /*
@@ -96,17 +99,14 @@ create-widget:cms-page-editor
                 send-javascript:@"$('#{0}').focus().select();"
                   :x:/../*/_event?value
 
-
-              /*
-               * Here we start editing the selected page
-               */
               onchange
+
+                /*
+                 * Here we start the editing of the selected page, if any.
+                 * Otherwise, we simply destroy any existing editors.
+                 */
                 sys42.cms.selected-page-changed
 
-
-              /*
-               * Lambda events for "Select existing page to edit" widget
-               */
               events
 
 
@@ -134,13 +134,11 @@ create-widget:cms-page-editor
                    * or go to other apps, and come back, and continue editing the page he previously edited.
                    */
                   get-session-value:sys42.currently-edited-page
-                  set:x:/..?value
-                    src:x:/./-/*?value
+                  return:x:/@get-session-value/*?value
 
 
                 /*
-                 * Retrieves all pages from database, and creates
-                 * one option item for each of them, to allow editing
+                 * Retrieves all pages from database, and creates one option item for each of them, to allow editing pages.
                  */
                 sys42.cms.populate-select-page
 
@@ -160,8 +158,8 @@ create-widget:cms-page-editor
                     innerValue:Choose existing page to edit ...
 
                   /*
-                   * Retrieves the currently selected page, if any, such that we can set its
-                   * associated "option" HTML element to "selected".
+                   * Retrieves the currently selected page, if any, such that we can set its associated "option" HTML 
+                   * element to "selected".
                    */
                   sys42.cms.get-currently-edited-page
 
@@ -170,14 +168,14 @@ create-widget:cms-page-editor
                    * that we can create one "option" HTML element for each.
                    */
                   select-data:x:/*/*/p5.page
-                  for-each:x:/-/*
+                  for-each:x:/@select-data/*
 
                     /*
                      * Checking if currently iterated [p5.page] is being edited, and if so, making sure the
                      * "option" HTML element for it is selected.
                      */
-                    if:x:/../*/sys42.cms.get-currently-edited-page?value
-                      =:x:/..for-each/*/_dp/#?value
+                    if:x:/@sys42.cms.get-currently-edited-page?value
+                      =:x:/@_dp/#?value
                       add:x:/..for-each/*/create-literal-widget
                         src
                           selected
@@ -190,14 +188,14 @@ create-widget:cms-page-editor
                       element:option
                       render-type:open
                       parent:cms-select-page
-                      value:x:/..for-each/*/_dp/#?value
-                      innerValue:x:/..for-each/*/_dp/#/*/name?value
+                      value:x:/@_dp/#?value
+                      innerValue:x:/@_dp/#/*/name?value
 
 
                 /*
                  * Invoked when user selects a page for editing. 
-                 * Retrieves which page user wants to edit, and starts the correct page editor 
-                 * according to what type of page it is.
+                 * Retrieves which page user wants to edit, and starts the correct page editor according to what 
+                 * type of page it is.
                  */
                 sys42.cms.selected-page-changed
 
@@ -208,19 +206,20 @@ create-widget:cms-page-editor
                     value
 
                   /*
-                   * Setting the selected page into our session, such that we can remember it, across refresh,
-                   * and so on.
+                   * Setting the selected page into our session, such that we can remember it, across refresh.
+                   *
                    * Notice, our little boolean algebra trick here, makes sure the value become "null" (no [_arg]),
                    * if the selected "page" was [_default], which is the informational piece of text, explaining
-                   * what the drop down's purpose is.
+                   * what the dropdown's purpose is.
                    */
-                  sys42.cms.set-currently-edited-page:x:/-/*/*(!/=_default)?value
-                  if:x:/../*/get-widget-property/*/*(!/=_default)?value
+                  sys42.cms.set-currently-edited-page:x:/@get-widget-property/*/*(!/=_default)?value
+                  if:x:/@get-widget-property/*/*(!/=_default)?value
 
                     /*
-                     * Editing page
+                     * Editing page.
                      */
                     sys42.cms.edit-page
+
                   else
 
                     /*
@@ -231,7 +230,7 @@ create-widget:cms-page-editor
                     /*
                      * Showing uploader widget.
                      */
-                    set-widget-property:ajax-uploader
+                    set-widget-property:cms-ajax-uploader
                       visible:true
 
 
@@ -251,23 +250,18 @@ create-widget:cms-page-editor
         ul:cms-create-new-page
           class:dropdown-menu
           widgets
-
-
-          /*
-           * Populates the "create new page" select dropdown button.
-           */
           oninit
+
+            /*
+             * Populates the "create new page" select dropdown button.
+             */
             sys42.cms.populate-create-new-page
 
-
-          /*
-           * Lambda events for "Create new page" widget.
-           */
           events
 
 
             /*
-             * Here we loop through all files in "system42/cms/page-editor/editors",
+             * Here we loop through all files in "/page-editor/specialized-editors/",
              * and create one "create new page" button dropdown item for each of those files.
              */
             sys42.cms.populate-create-new-page
@@ -278,13 +272,13 @@ create-widget:cms-page-editor
                */
               list-files:@CMS/page-editor/specialized-editors/
                 filter:.hl
-              for-each:x:/-/*?name
+              for-each:x:/@list-files/*?name
 
                 /*
                  * Removing folder name and ".hl" extension, before we set the [value] and [innerValue]
                  * of our "option" HTML element for our "create new page drop down".
                  */
-                split:x:/./*/_dp?value
+                split:x:/@_dp?value
                   =:/
                   =:.
 
@@ -299,7 +293,7 @@ create-widget:cms-page-editor
                   widgets
                     a
                       href:#
-                      innerValue:x:/..for-each/*/split/0/-2?name
+                      innerValue:x:/@split/0/-2?name
                       onclick
 
                         /*
@@ -307,30 +301,29 @@ create-widget:cms-page-editor
                          */
                         find-first-ancestor-widget-like:x:/../*/_event?value
                           class:btn-group
-                        find-widget:x:/-/*/*?value
+                        find-widget:x:/@find-first-ancestor-widget-like/*/*?value
                           element:button
                         send-javascript:@"$('#{0}').dropdown('toggle');"
-                          :x:/../*/find-widget/0/0?value
+                          :x:/@find-widget/0/0?value
 
                         /*
                          * Then creating our new page.
                          */
                         get-widget-property:x:/../*/_event?value
                           innerValue
-                        sys42.cms.create-new-page:x:/../*/get-widget-property/*/*?value
+                        sys42.cms.create-new-page:x:/@get-widget-property/*/*?value
 
 
             /*
              * Here we create a new page, according to what option user selected, by
-             * executing "@CMS/page-editor/create-new-page.hl",
-             * which is expected to create a new default page.
+             * executing "/page-editor/create-new-page.hl", which is expected to create a new default page, of whatever
+             * type was selected.
              */
             sys42.cms.create-new-page
 
               /*
                * Forward evaluating arguments, before invoking [sys42.utilities.execute-lambda-file] to 
-               * evaluate "@CMS/page-editor/create-new-page.hl", passing in which type of page,
-               * and which template to use
+               * evaluate "/page-editor/create-new-page.hl", passing in which type of page, and which template to use.
                */
               eval-x:x:/+/*
               sys42.utilities.execute-lambda-file:@CMS/page-editor/create-new-page.hl
@@ -344,11 +337,6 @@ create-widget:cms-page-editor
      * property, etc, in addition to the custom editor, which depends upon the type of page user is editing.
      */
     container:cms-page-editor-surface
-
-
-      /*
-       * Lambda events for "Page Editor main surface" widget.
-       */
       events
 
 
@@ -360,7 +348,7 @@ create-widget:cms-page-editor
          * the editing process.
          *
          * Which means that it loads up the "specialized editor", which depends upon the [type] of page, and can be 
-         * found in the "@CMS/page-editor/specialized-editors/" folder.
+         * found in the "/page-editor/specialized-editors/" folder.
          */
         sys42.cms.edit-page
 
@@ -373,14 +361,14 @@ create-widget:cms-page-editor
            * Figuring out which page we're editing, if any.
            */
           sys42.cms.get-currently-edited-page
-          if:x:/-?value
+          if:x:/@sys42.cms.get-currently-edited-page?value
 
             /*
              * We are editing a page, hence we load [p5.page]'s [type] declaration from database, which is
              * needed to load "specialized editor".
              */
             select-data:x:@"/*/*/p5.page/""={0}""/*/type?value"
-              :x:/../*/sys42.cms.get-currently-edited-page?value
+              :x:/@sys42.cms.get-currently-edited-page?value
 
             /*
              * Creating actual page editor, passing in ID and page type to common editor,
@@ -394,12 +382,13 @@ create-widget:cms-page-editor
             /*
              * Hiding uploader widget.
              */
-            set-widget-property:ajax-uploader
+            set-widget-property:cms-ajax-uploader
               visible:false
+
           else
 
             /*
              * Showing uploader widget.
              */
-            set-widget-property:ajax-uploader
+            set-widget-property:cms-ajax-uploader
               visible:true

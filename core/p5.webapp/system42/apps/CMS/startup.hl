@@ -8,17 +8,21 @@
  * of "initial-pages", and saves them to the database.
  */
 
-sys42.utilities.execute-lambda-folder:/system42/apps/CMS/startup/
+sys42.utilities.execute-lambda-folder:@SYS42-APPS/CMS/startup/
 
 
 /*
  * Checking to see if we should create our "initial pages"
  */
 select-data:x:/*/*/p5.page?count
-if:x:/-?value
+if:x:/@select-data?value
   =:int:0
 
-  // Yup, create the initial pages
+  /*
+   * No pages in database, hence we need to create the initial pages in our CMS.
+   *
+   * This we do by loading all pages in our "initial-pages" folder, and inserting them directly into our database.
+   */
   list-files:@CMS/initial-pages/
-  load-file:x:/-/*?name
-  insert-data:x:/-/*/*
+  load-file:x:/@list-files/*?name
+  insert-data:x:/@load-file/*/*

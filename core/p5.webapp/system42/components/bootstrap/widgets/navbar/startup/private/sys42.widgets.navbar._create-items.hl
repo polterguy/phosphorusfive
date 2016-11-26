@@ -1,6 +1,7 @@
 
 /*
- * Supporting Active Event, to create items.
+ * Supporting Active Event for the Navbar widget, to create items.
+ *
  * This Active Event creates the Navbar items, for your menu, recursively.
  */
 create-event:sys42.widgets.navbar._create-items
@@ -115,9 +116,9 @@ create-event:sys42.widgets.navbar._create-items
                 _item-id:x:/@_dp/#?value
                 innerValue:x:/@_dp/#?name
                 oninit
-                  sys42.widgets.navbar._create-url:x:/../*/_event?value
+                  sys42.widgets.navbar._create-item-url:x:/../*/_event?value
                   set-widget-property:x:/../*/_event?value
-                    href:x:/@sys42.widgets.navbar._create-url?value
+                    href:x:/@sys42.widgets.navbar._create-item-url?value
                 onclick
 
                   /*

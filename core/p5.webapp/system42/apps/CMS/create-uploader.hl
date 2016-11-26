@@ -1,8 +1,10 @@
 
 /*
  * Creating our uploader widget, such that user can drag and drop upload pages to the CMS.
+ *
+ * Notice, we default its visibility to false, and change its visibility, whenever a page is edited, or editing is stopped.
  */
-create-widget:ajax-uploader
+create-widget:cms-ajax-uploader
   parent:cnt
   visible:false
   widgets
@@ -11,16 +13,17 @@ create-widget:ajax-uploader
     /*
      * The uploader widget, notice, it wraps all other widgets on page!
      */
-    sys42.widgets.uploader:uploader-widget
+    sys42.widgets.uploader:cms-uploader-widget
       _filter:hl
       _allow-multiple:false
       _class:uploader-widget uploader-faded uploader-full-screen
       .onupload
-        hyper2lambda:x:/../*/_content?value
 
         /*
-         * Sanity check.
+         * Sanity ckecking page definition file just uploaded, by converting to lambda, to see if exception occurs, and
+         * verify it contains the correct root nodes.
          */
+        hyper2lambda:x:/../*/_content?value
         if:x:/@hyper2lambda/*?count
           !=:int:1
           or:x:/@hyper2lambda/*?name
@@ -46,13 +49,14 @@ create-widget:ajax-uploader
            * Page did not exist from before, simply inserting as is, and start editing it.
            */
           add:x:/..if/*/insert-data
-            src:x:/../*/hyper2lambda/*
+            src:x:/@hyper2lambda/*
           insert-data
-          sys42.cms.set-currently-edited-page:x:/../*/hyper2lambda/*?value
+          sys42.cms.set-currently-edited-page:x:/@hyper2lambda/*?value
           sys42.cms.populate-select-page
           sys42.cms.edit-page
           send-javascript:@"$('#cms-select-page').focus();"
           sys42.cms.create-navbar-menu
+
         else
 
           /*
@@ -61,20 +65,20 @@ create-widget:ajax-uploader
            * and using that as the "default value", asking user if he wants to overwrite, or create a new page.
            */
           set-session-value:sys42.cms.uploaded-page
-            src:x:/../*/hyper2lambda/*
+            src:x:/@hyper2lambda/*
           select-data:x:/*/*/p5.page/"=~{0}"
-            :x:/../*/hyper2lambda/*?value
+            :x:/@hyper2lambda/*?value
           _high:int:2
           for-each:x:/@select-data/*?value
-            split:x:/./*/_dp?value
+            split:x:/@_dp?value
               =:-
             if
-              can-convert:x:/./-/0/-?name
+              can-convert:x:/@split/0/-?name
                 type:int
-              and:x:/./-/0/-?name.int
+              and:x:/@split/0/-?name.int
                 >=:x:/@_high?value
               set:x:/@_high?value
-                +:x:/..for-each/*/split/0/-?name.int
+                +:x:/@split/0/-?name.int
                   _:1
 
           /*
@@ -111,14 +115,14 @@ create-widget:ajax-uploader
                    * Inserts the page into database, populated from above logic.
                    */
                   update-data:x:@"/*/*/p5.page/""={0}"""
-                    :x:/../*/get-session-value/*/*?value
+                    :x:/@get-session-value/*/*?value
                     src
 
                   /*
                    * Sets currently edited page, before we close dialogue, and repopulate select dropdown, and start
                    * editing page.
                    */
-                  sys42.cms.set-currently-edited-page:x:/../*/get-session-value/*/*?value
+                  sys42.cms.set-currently-edited-page:x:/@get-session-value/*/*?value
                   sys42.windows.modal.close
                   sys42.cms.populate-select-page
                   sys42.cms.edit-page
@@ -132,7 +136,7 @@ create-widget:ajax-uploader
                */
               select-data:x:@"/*/*/p5.page/""={0}"""
                 :x:/../*/_data/*/url?value
-              if:x:/-/*?count
+              if:x:/@select-data/*?count
                 !=:int:0
 
                 /*
@@ -144,8 +148,8 @@ create-widget:ajax-uploader
                   _class:info-window info-window-error
                 find-widget:sys42-windows-modal-body-wrapper
                   _data-field-name:url
-                get-parent-widget:x:/-/*/*?value
-                sys42.utilities.add-css-classes:x:/-/*/*?value
+                get-parent-widget:x:/@find-widget/*/*?value
+                sys42.utilities.add-css-classes:x:/@get-parent-widget/*/*?value
                   _class:has-error
                 return:bool:false
 
@@ -177,7 +181,7 @@ create-widget:ajax-uploader
 
             _data
               url:{0}-{1}
-                :x:/../*/hyper2lambda/*?value
+                :x:/@hyper2lambda/*?value
                 :x:/@_high?value
 
       _widgets

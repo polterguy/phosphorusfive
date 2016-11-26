@@ -9,9 +9,11 @@
  * [_label]            - If declared, will create a descriptive input-group-addon label, with the specified text.
  * [.onchange]         - Lambda callback invoked when the value of the colorpicker changes.
  *
- * You can use either [sys42.widgets.colorpicker.get-value] or [sys42.widgets.colorpicker.set-value] to get and set the widget's value.
- * Both Active Events requires you to pass in [_arg] being the ID to the colorpicker. The latter also expects a [_value] bwing a legal value
- * for the widget, while the first will return the existing value, if any.
+ * In addition, the ColorPicker contains the following Active Events.
+ *
+ * [sys42.widgets.colorpicker.get-value]     - Retrieves the value of the widget. Expects the ID of the widget as its [_arg].
+ * [sys42.widgets.colorpicker.set-value]     - Sets the value of the widget. Expects the ID of the widget as its [_arg], in addition
+ *                                             to a [_value] being the new value.
  */
 create-event:sys42.widgets.colorpicker
 
@@ -45,12 +47,13 @@ create-event:sys42.widgets.colorpicker
 
     /*
      * We do not have an [.onchange] lambda callback.
-     * Making sure widget is initialized without the "hidePicker" event handled.
+     * Making sure widget is initialized without the "hidePicker" event handler.
      */
     set:x:/../*/return/*/container/*/widgets/*/input/*/.onchange
 
   /*
-   * Checking if [_label] was passed in,and if so,  making sure colorpicker gets a descriptive input-group-addon.
+   * Checking if [_label] was passed in, and if so, making sure colorpicker gets a descriptive input-group-addon, 
+   * with the specified [_label].
    */
   if:x:/../*/_options/*/_label?value
     eval-x:x:/+/*/*/*
@@ -63,7 +66,7 @@ create-event:sys42.widgets.colorpicker
   /*
    * Forward evaluating arguments.
    */
-  eval-x:x:/../*/return/*/container/*/widgets/*/input/*/value|/../*/return/*/*/class
+  eval-x:x:/../*/return/*/container/*(/class|/widgets/*/input/*/value)
 
   /*
    * Returning color picker to caller.
@@ -105,7 +108,7 @@ create-event:sys42.widgets.colorpicker
                * We have an [.onchange] lambda callback, making sure it is evaluated when colorpicker is hidden.
                */
               include-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}}).on('hidePicker', function() {{p5.$('{1}').raise('.onchange')}});"
-                :x:/../*/get-parent-widget/*/*?value
+                :x:/@get-parent-widget/*/*?value
                 :x:/../*/_event?value
             else
 
@@ -113,12 +116,12 @@ create-event:sys42.widgets.colorpicker
                * We do not have an [.onchange] lambda callback, initializing colorpicker without "hidePicker" event declared.
                */
               include-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}});"
-                :x:/../*/get-parent-widget/*/*?value
+                :x:/@get-parent-widget/*/*?value
 
           .onchange
 
             /*
-             * Getting colorpicker's value, and invoking [.onchange]'s callback.
+             * Getting colorpicker's value, and invoking [.lambda] callback.
              */
             get-widget-property:x:/../*/_event?value
               value

@@ -4,5 +4,5 @@
  */
 
 create-event:p5.io.unroll-path.@CMS
-  return:/system42/apps/CMS
+  return:@SYS42-APPS/CMS
 
