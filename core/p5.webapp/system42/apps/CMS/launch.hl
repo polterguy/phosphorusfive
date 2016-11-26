@@ -84,7 +84,7 @@ create-widget:cms-page-editor
                  * Then checking if there's an existing page currently being edited.
                  */
                 if
-                  sys42.cms.get-currently-edited-page
+                  sys42.cms.get-edited-page-id
 
                   /*
                    * Editing page.
@@ -133,7 +133,7 @@ create-widget:cms-page-editor
                 /*
                  * Returns the currently edited page.
                  */
-                sys42.cms.get-currently-edited-page
+                sys42.cms.get-edited-page-id
 
                   /*
                    * We store the currently edited page in session, such that user can refresh page,
@@ -167,7 +167,7 @@ create-widget:cms-page-editor
                    * Retrieves the currently selected page, if any, such that we can set its associated "option" HTML 
                    * element to "selected".
                    */
-                  sys42.cms.get-currently-edited-page
+                  sys42.cms.get-edited-page-id
 
                   /*
                    * Selecting all [p5.page] objects from database, and iterating through them all, such
@@ -180,7 +180,7 @@ create-widget:cms-page-editor
                      * Checking if currently iterated [p5.page] is being edited, and if so, making sure the
                      * "option" HTML element for it is selected.
                      */
-                    if:x:/@sys42.cms.get-currently-edited-page?value
+                    if:x:/@sys42.cms.get-edited-page-id?value
                       =:x:/@_dp/#?value
                       add:x:/..for-each/*/create-literal-widget
                         src
@@ -336,6 +336,11 @@ create-widget:cms-page-editor
                 _type:x:/../*/_arg?value
                 _template:x:/../*/_arg?value
 
+              /*
+               * Making sure we set focus to select page dropdown.
+               */
+              send-javascript:@"$('#cms-select-page').focus().select();"
+
 
     /*
      * This is the widget where the actual editing occurs. 
@@ -366,15 +371,15 @@ create-widget:cms-page-editor
           /*
            * Figuring out which page we're editing, if any.
            */
-          sys42.cms.get-currently-edited-page
-          if:x:/@sys42.cms.get-currently-edited-page?value
+          sys42.cms.get-edited-page-id
+          if:x:/@sys42.cms.get-edited-page-id?value
 
             /*
              * We are editing a page, hence we load [p5.page]'s [type] declaration from database, which is
              * needed to load "specialized editor".
              */
             select-data:x:@"/*/*/p5.page/""={0}""/*/type?value"
-              :x:/@sys42.cms.get-currently-edited-page?value
+              :x:/@sys42.cms.get-edited-page-id?value
 
             /*
              * Creating actual page editor, passing in ID and page type to common editor,
@@ -383,7 +388,7 @@ create-widget:cms-page-editor
             eval-x:x:/+/*
             sys42.utilities.execute-lambda-file:@CMS/page-editor/editor.hl
               _editor:x:/@select-data/*?value
-              _page-id:x:/@sys42.cms.get-currently-edited-page?value
+              _page-id:x:/@sys42.cms.get-edited-page-id?value
 
             /*
              * Hiding uploader widget.

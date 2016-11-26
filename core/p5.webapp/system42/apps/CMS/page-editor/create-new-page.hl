@@ -1,77 +1,98 @@
 
 /*
- * Responsible for creating a new CMS page in our system.
- * Pass in type of page as [_type] and the template to create it from as [_template] 
- * ([_template] is only filename from "/page-editor/new-page-templates/", and not full path of file)
+ * Creates a new CMS page in your system.
+ *
+ * Pass in type of page as [_type], and the template to create it from as [_template].
+ * [_template] is only filename from "/page-editor/new-page-templates/", and not full path of file, nor extension.
+ *
+ * Notice, this file will invoke the [sys42.cms.get-page-extra-data], which you can choose to handle, to associate additional
+ * global data with your page, if you wish.
+ *
+ * This file will also invoke any x.hl files in "/new-page-templates/", where x is the [_template] specified, if any files
+ * matching criteria exists, and append results into the [p5.page] stored to your database.
  */
 
-sys42.utilities.execute-lambda-file:@CMS/page-editor/new-page-templates/{0}.hl
-  :x:/../*/_template?value
 
 /*
  * Adding the "type of page" property to our [insert-data] invocation.
  */
-add:x:/../*/insert-data/0
+add:x:/../*/insert-data/*
   src:"type:{0}"
     :x:/../*/_type?value
 
-/*
- * Adding the return values from our "template" file invocation.
- */
-add:x:/../*/insert-data/0
-  src:x:/../*/sys42.utilities.execute-lambda-file/*
 
 /*
- * Figuring out next available "/change-this-" default URL for our page.
- * In case user creates multiple pages, without changing the URL of them, this might
- * be "change-this-2", "change-this-3", etc ...
+ * Invoking [sys42.cms.get-page-extra-data] to add global extra data with our page.
+ */
+add:x:/../*/insert-data/0
+  sys42.cms.get-page-extra-data
+
+
+/*
+ * Invoking specialized template new default page file, if it exists, and appending result value
+ * into [insert-data] invocation below.
+ */
+if
+  fetch:x:/0/0?value
+    file-exist:@CMS/page-editor/new-page-templates/{0}.hl
+      :x:/../*/_template?value
+
+  /*
+   * New default page of type of page specified during invocation exists, making sure we invoke it, as a lambda object,
+   * and add up the returned value(s) from it into [insert-data] invocation below.
+   */
+  sys42.utilities.execute-lambda-file:@CMS/page-editor/new-page-templates/{0}.hl
+    :x:/../*/_template?value
+  add:x:/../*/insert-data/0
+    src:x:/@sys42.utilities.execute-lambda-file/*
+
+
+/*
+ * Figuring out next available "/change-this-" default URL for our page, in case user creates multiple pages, 
+ * without changing the URL of them.
+ * This might be "change-this-1", "change-this-2", etc, depending upon what our next available URL is.
  */
 select-data:x:/*/*/p5.page/"=~/change-this-"
 _high:int:1
 
 /*
- * Looping through each [p5.page] selected above, finding the next 
- * available "change-this-N" URL for our page.
+ * Looping through each [p5.page] selected above, finding the next available "change-this-n" URL for our page.
  */
-for-each:x:/../*/select-data/*?value
+for-each:x:/@select-data/*?value
 
   /*
-   * Splitting upon "-" such that we can get to number, 
-   * which should be the last entity in our split.
+   * Splitting upon "-" such that we can get to number, which should be the last entity in our split.
    */
-  split:x:/./*/_dp?value
+  split:x:/@_dp?value
     =:-
   if
 
     /*
-     * Making sure it's actually an integer, before we figure out if it's higher 
-     * than our currentl [_high] value.
+     * Making sure it's actually an integer, before we figure out if it's higher than our currentl [_high] value.
      */
-    can-convert:x:/./-/0/-?name
+    can-convert:x:/@split/0/-?name
       type:int
-    and:x:/./-/0/-?name.int
-      >=:x:/../*/_high?value
+    and:x:/@split/0/-?name.int
+      >=:x:/@_high?value.int
 
     /*
      * Last entity from [split] was an integer, and it was higher than our previous [_high] value.
-     * Making sure we set our current [_high] value to +1 more than currently iterated [p5.page]'s
-     * "change-thix-N" value.
+     * Making sure we set our current [_high] value to +1 more than currently iterated [p5.page]'s "change-thix-N" value.
      */
-    set:x:/../*/_high?value
-      +:x:/..for-each/*/split/0/-?name.int
+    set:x:/@_high?value
+      +:x:/@split/0/-?name.int
         _:1
 
 /*
  * Setting the URL of our newly created page to "change-this-n", where "n" is [_high]'s value.
- * Which should guarantee that this page has the "next available integer value" for its URL in regards
- * to "change-this-n".
+ * Which should guarantee that this page has the "next available integer value" for its URL in regards to "change-this-n".
  */
 set:x:/../*/insert-data/0?value
   src:/change-this-{0}
-    :x:/../*/_high?value
+    :x:/@_high?value
 
 /*
- * Now, finally, we can actually insert our page into our database.
+ * Now, finally, we can actually insert our page into our database, defaulting access rights to root.
  */
 insert-data
   p5.page
@@ -79,13 +100,12 @@ insert-data
     name:Change this
 
 /*
- * Setting currently edited page to return value (ID) from [insert-data], 
- * which should be URL of page.
+ * Setting currently edited page to return value (ID) from [insert-data], which should be URL of page.
  */
-sys42.cms.set-currently-edited-page:x:/../*/insert-data/0?value
+sys42.cms.set-currently-edited-page:x:/@insert-data/0?value
 
 /*
- * Repopulating select page dropdown, and starts editor.
+ * Repopulating select page dropdown, and starts editor, in addition to re-creating navbar, since navbar hierarchy now has changed.
  */
 sys42.cms.populate-select-page
 sys42.cms.edit-page

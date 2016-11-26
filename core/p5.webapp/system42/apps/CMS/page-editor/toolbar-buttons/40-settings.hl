@@ -10,9 +10,9 @@ button
     /*
      * Retrieving page properties, and using a wizard window to allow user to change them.
      */
-    sys42.cms.get-currently-edited-page
+    sys42.cms.get-edited-page-id
     select-data:x:@"/*/*/""={0}"""
-      :x:/@sys42.cms.get-currently-edited-page?value
+      :x:/@sys42.cms.get-edited-page-id?value
 
     /*
      * Making sure we first add [name], before we add [url] and the finally the last properties,
@@ -22,7 +22,7 @@ button
       src:x:/@select-data/*/*/name
     add:x:/../*/sys42.windows.wizard/*/_data
       src:@"url:{0}"
-        :x:/../*/sys42.cms.get-currently-edited-page?value
+        :x:/../*/sys42.cms.get-edited-page-id?value
     add:x:/../*/sys42.windows.wizard/*/_data
       src:x:/@select-data/*/*(/template|/role)
 
@@ -85,9 +85,9 @@ button
         /*
          * Retrieving currently edited page.
          */
-        sys42.cms.get-currently-edited-page
+        sys42.cms.get-edited-page-id
         select-data:x:@"/*/*/""={0}"""
-          :x:/@sys42.cms.get-currently-edited-page?value
+          :x:/@sys42.cms.get-edited-page-id?value
         _old-name:x:/-/*/*/name?value
         eval-x:x:/-
 
@@ -95,7 +95,7 @@ button
          * Checking if user changed URL, at which point we must check that URL does not exist from before.
          */
         if:x:/../*/sys42.windows.wizard.get-values/*/url?value
-          !=:x:/@sys42.cms.get-currently-edited-page?value
+          !=:x:/@sys42.cms.get-edited-page-id?value
 
           /*
            * User changed URL, making sure new URL does not exist from before.
@@ -149,7 +149,7 @@ button
          * Finally, updating properties for page, and providing feedback to user.
          */
         update-data:x:@"/*/*/p5.page/""={0}"""
-          :x:/../*/sys42.cms.get-currently-edited-page?value
+          :x:/../*/sys42.cms.get-edited-page-id?value
           src
         sys42.windows.info-tip:Page '{0}' was saved.
           :x:/../*/sys42.windows.wizard.get-values/*/name?value
@@ -158,7 +158,7 @@ button
          * If either name or URL changed, we reload select dropdown, and repopulate it.
          */
         if:x:/../*/sys42.windows.wizard.get-values/*/url?value
-          !=:x:/../*/sys42.cms.get-currently-edited-page?value
+          !=:x:/../*/sys42.cms.get-edited-page-id?value
           or:x:/../*/sys42.windows.wizard.get-values/*/name?value
             !=:x:/../*/_old-name?value
 

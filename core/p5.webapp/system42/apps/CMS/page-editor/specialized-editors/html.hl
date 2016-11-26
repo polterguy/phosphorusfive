@@ -12,10 +12,10 @@ select-data:x:/*/*/p5.page/"={0}"
 
 
 /*
- * Setting the value of textarea to [content] from database
+ * Setting the value of textarea to [html] from database
  */
 set:x:/../*/create-widget/*/widgets/*/=ck-editor/*/_value?value
-  src:x:/../*/select-data/*/*/content?value
+  src:x:/../*/select-data/*/*/html?value
 
 
 /*
@@ -41,13 +41,13 @@ create-widget
          * "Sink" event required by main editor to retrieve data
          * from specialized editor during saving process
          */
-        sys42.get-page-editor-data
+        sys42.cms.get-specialized-editor-data
           insert-before:x:/../0
             src
               type:html
           get-widget-property:ck-editor
             innerValue
           insert-before:x:/../0
-            src:content
+            src:html
           set:x:/../0?value
             src:x:/../*/get-widget-property/*/*?value

@@ -10,7 +10,7 @@ button
     /*
      * Getting currently edited page, and showing it in a JavaScript popup window.
      */
-    sys42.cms.get-currently-edited-page
+    sys42.cms.get-edited-page-id
     send-javascript:@"window.open('{0}', '_blank');"
       :x:/./-?value
 

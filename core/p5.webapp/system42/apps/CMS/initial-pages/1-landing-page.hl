@@ -7,7 +7,7 @@ p5.page:/
   name:Home
   template:/system42/apps/CMS/page-templates/default.hl
   role:
-  content:@"<h2>Welcome</h2>
+  html:@"<h2>Welcome</h2>
 
 <p>Phosphorus Five is a collection of plugin libraries for C# and ASP.NET, that helps you create rich web apps. 
 System42 is a sample use-case, utilizing P5, to create a minimalistic CMS. For more information, check out the 

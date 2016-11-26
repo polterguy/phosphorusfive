@@ -862,7 +862,7 @@
     <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\30-view-page.hl" />
     <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\40-settings.hl" />
     <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\99-delete-page.hl" />
-    <Content Include="system42\apps\CMS\page-editor\specialized-editors\lambda\toolbar-buttons\syntax-check.hl" />
+    <Content Include="system42\apps\CMS\page-editor\specialized-editors\lambda\toolbar-buttons\meta-info.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

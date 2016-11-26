@@ -36,7 +36,7 @@ create-event:sys42.windows.modal
     _class:modal fade
     _inner-class:modal-dialog
     _buttons
-      literal
+      literal:sys42-modal-window-default-ok-button
         element:button
         class:btn btn-default
         innerValue:OK

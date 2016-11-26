@@ -1,13 +1,12 @@
 
 /*
- * Default [lambda] type of page
+ * Returns a default [lambda] type of page.
  */
 
 
-insert-before:x:/../0
-  src
-    template:/system42/apps/CMS/page-templates/default.hl
-    lambda:@"/*
+return
+  template:/system42/apps/CMS/page-templates/default.hl
+  lambda:@"/*
  * Default [lambda] type of page.
  * Edit this page to meet your own needs.
  */

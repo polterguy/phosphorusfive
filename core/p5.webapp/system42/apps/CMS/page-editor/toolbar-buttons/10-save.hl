@@ -1,17 +1,12 @@
 
 /*
- * Save button.
+ * Save toolbar button for page editor.
  */
 button
   innerValue:@"<span class=""glyphicon glyphicon-floppy-save""></span> Save"
   class:btn btn-default diffuse btn-attach-top
   onclick
     sys42.save-edited-page
-
-
-  /*
-   * Lambda events for "Save" button
-   */
   events
 
 
@@ -21,27 +16,38 @@ button
     sys42.save-edited-page
 
       /*
-       * Retrieving currently edited page, and appending all "common values" into [update-data].
+       * Retrieving currently edited page.
        */
-      sys42.cms.get-currently-edited-page
+      sys42.cms.get-edited-page-id
       select-data:x:@"/*/*/p5.page/""={0}"""
-        :x:/../*/sys42.cms.get-currently-edited-page?value
-      add:x:/../*/update-data/*/*
-        src:x:/../*/select-data/*/*(/name|/template|/role)
+        :x:/@sys42.cms.get-edited-page-id?value
 
       /*
-       * Retrieving specialized editor's data for page, and appending all 
-       * "specialized page editor's values" into [update-data].
+       * Retrieving specialized editor's data for page.
        */
-      sys42.get-page-editor-data
+      sys42.cms.get-specialized-editor-data
+
+      /*
+       * Then removing all items from [select-data] that also exists in [sys42.cms.get-specialized-editor-data].
+       */
+      for-each:x:/@select-data/*/*
+        if:x:@"/@sys42.cms.get-specialized-editor-data/*/""{0}"""
+          :x:/@_dp/#?name
+          set:x:/@_dp/#
+
+      /*
+       * Then we can append all items from [select-data] and [sys42.cms.get-specialized-editor-data] into [update-data] below.
+       */
       add:x:/../*/update-data/*/*
-        src:x:/../*/sys42.get-page-editor-data/*
+        src:x:/@select-data/*/*
+      add:x:/../*/update-data/*/*
+        src:x:/@sys42.cms.get-specialized-editor-data/*
 
       /*
        * Updating page in p5.data database.
        */
       update-data:x:@"/*/*/p5.page/""={0}"""
-        :x:/../*/sys42.cms.get-currently-edited-page?value
+        :x:/@sys42.cms.get-edited-page-id?value
         src
           p5.page
 
@@ -49,10 +55,9 @@ button
        * Providing feedback to user.
        */
       sys42.windows.info-tip:Page '{0}' was successfully saved.
-        :x:/../*/select-data/*/*/name?value
+        :x:/@select-data/*/*/name?value
 
       /*
-       * Making sure we set focus to "select page dropdown" if user closes dialogue, without
-       * pressing "OK".
+       * Making sure we set focus to select page dropdown.
        */
       send-javascript:@"$('#cms-select-page').focus().select();"

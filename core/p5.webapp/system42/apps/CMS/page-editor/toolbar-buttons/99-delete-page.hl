@@ -10,10 +10,10 @@ button
     /*
      * Making sure user doesn't accidentally delete one of our "special pages".
      */
-    sys42.cms.get-currently-edited-page
-    if:x:/@sys42.cms.get-currently-edited-page?value
+    sys42.cms.get-edited-page-id
+    if:x:/@sys42.cms.get-edited-page-id?value
       =:/app-loader
-      or:x:/@sys42.cms.get-currently-edited-page?value
+      or:x:/@sys42.cms.get-edited-page-id?value
         =:/
 
       /*
@@ -65,9 +65,9 @@ button
       /*
        * Retrieving currently edited page, and deleting it.
        */
-      sys42.cms.get-currently-edited-page
+      sys42.cms.get-edited-page-id
       delete-data:x:@"/*/*/p5.page/""={0}"""
-        :x:/@sys42.cms.get-currently-edited-page?value
+        :x:/@sys42.cms.get-edited-page-id?value
 
       /*
        * Settings currently edited page to "nothing", before we repopulate select dropdown, and invoke [edit-page], which

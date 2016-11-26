@@ -26,7 +26,7 @@ if
    * Exchanging literal:{content}'s value with HTML from database.
    */
   set:x:/-/*/*/create-widget/*/widgets/**/={content}?value
-    src:x:/../*/_args/*/content?value
+    src:x:/../*/_args/*/html?value
 
   /*
    * Evaluating template which now has its {content} replaced with HTML from database.

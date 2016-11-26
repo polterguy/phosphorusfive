@@ -1,0 +1,179 @@
+
+/*
+ * Syntax checks Hyperlambda.
+ */
+button
+  innerValue:@"<span class=""glyphicon glyphicon-sunglasses""></span> Meta"
+  class:btn btn-default diffuse btn-attach-top
+  onclick
+    sys42.cms.lambda.syntax-check-hyperlambda
+
+
+  /*
+   * Lambda events for "Syntax check" button.
+   */
+  events
+
+
+    /*
+     * Saves currently edited page
+     */
+    sys42.cms.lambda.syntax-check-hyperlambda
+
+      /*
+       * Retrieving lambda object for page, and syntax checks it, by simply trying to convert it into a lambda object,
+       * and if successful, showing an info tip window, otherwise, showing stacktrace of exception that occurred.
+       */
+      sys42.cms.get-specialized-editor-data
+      try
+        hyper2lambda:x:/@sys42.cms.get-specialized-editor-data/*/lambda?value
+
+        /*
+         * Success, Hyperlambda was successfully converted to a lambda object.
+         * Making sure we display a modal window to user, with meta info about his page.
+         */
+        vocabulary
+        set:x:/@vocabulary/*(/=|/=-|/=\!~|/=\!=|/=%|/=*|/=\/|/=\^|/=\~|/=+|/=<|/=<=|/==|/=>|/=>=)
+        _active-event-no:int:0
+        _active-events
+        for-each:x:/@hyper2lambda/**?name
+          if:x:@"/@vocabulary/*/""=\\{0}"""
+            :x:/@_dp?value
+
+            /*
+             * Incrementing total Active Event no.
+             */
+            set:x:/@_active-event-no?value
+              +:x:/@_active-event-no?value
+                _:int:1
+
+            /*
+             * Incrementing hit count for currently iterated event.
+             */
+            if:x:@"/@_active-events/*/""{0}"""
+              :x:/@_dp?value
+
+              /*
+               * Incrementing existing value.
+               */
+              set:x:@"/@_active-events/*/""{0}""?value"
+                :x:/@_dp?value
+                +:x:@"/@_active-events/*/""{0}""?value"
+                  :x:/@_dp?value
+                  _:int:1
+            else
+
+              /*
+               * Creating initial value.
+               */
+              add:x:/@_active-events
+                src:@"{0}:int:1"
+                  :x:/@_dp?value
+
+        /*
+         * Sorting [_active-events] descending, to make sure the one with the most hit counts comes first.
+         */
+        sort-desc:x:/@_active-events/*
+
+        /*
+         * Adding one table row for each item in [_active-events] collection.
+         * First our "system events" (events not containing a ".").
+         */
+        apply:x:/..try/*/sys42.windows.modal/*/_widgets/*/table/[0,1]/*/widgets/*/tbody/*/widgets
+          src:x:/@sort-desc/*(!/~.)
+          template
+            tr
+              widgets
+                td
+                  {innerValue}:x:?name
+                td
+                  {innerValue}:x:?value.string
+
+        /*
+         * Then our "extension events" (events containing a ".").
+         */
+        apply:x:/..try/*/sys42.windows.modal/*/_widgets/*/table/[1,2]/*/widgets/*/tbody/*/widgets
+          src:x:/@sort-desc/*(/~.)
+          template
+            tr
+              widgets
+                td
+                  {innerValue}:x:?name
+                td
+                  {innerValue}:x:?value.string
+
+        /*
+         * Checking of page contains loops.
+         */
+        if:x:/@_active-events/*(/for-each|/while)
+          add:x:/..try/*/sys42.windows.modal/*/_widgets/*/ul/*/widgets
+            src
+              li
+                innerValue:{0} loop(s)
+                  :x:/@_active-events/*(/for-each|/while)?count
+        else
+          add:x:/..try/*/sys42.windows.modal/*/_widgets/*/ul/*/widgets
+            src
+              li
+                innerValue:Your page does not seem to contain loops
+
+        /*
+         * Forward evaluating "li" HTML widgets below, and creating our modal window.
+         */
+        eval-x:x:/..try/*/sys42.windows.modal/*/_widgets/*/ul/*/widgets/*/li/*/innerValue
+        sys42.windows.modal
+          _header:Meta data about your page
+          _widgets
+            p
+              innerValue:Below is a rough estimate of the complexity of your page
+            ul
+              widgets
+                li
+                  innerValue:No Hyperlambda syntactic errors
+                li
+                  innerValue:{0} lambda nodes in total
+                    :x:/@hyper2lambda/**?count
+                li
+                  innerValue:{0} unique lambda node names
+                    :x:/@hyper2lambda/**/$?count
+                li
+                  innerValue:{0} Active Event invocations
+                    :x:/@_active-event-no?value
+                li
+                  innerValue:{0} widget creation events
+                    :x:/@hyper2lambda/**(/create-widget|/create-literal-widget|/create-container-widget|/create-void-widget|/widgets/*|/_widgets/*|/_buttons/*)?count
+                li
+                  innerValue:{0} lambda callbacks
+                    :x:@"/@hyper2lambda/**/"":regex:/^\\./""?count"
+                li
+                  innerValue:{0} Ajax event(s)
+                    :x:@"/@hyper2lambda/**/"":regex:/^on/""?count"
+            table
+              class:table table-hover
+              widgets
+                thead
+                  innerValue:@"<tr><th>System events raised by page</th><th>Hit count</th></tr>"
+                tbody
+                  widgets
+            table
+              class:table table-hover
+              widgets
+                thead
+                  innerValue:@"<tr><th>Extension events raised by page</th><th>Hit count</th></tr>"
+                tbody
+                  widgets
+            p
+              innerValue:Note, due to the extreme dynamic nature of Hyperlambda, the above report might not necessarily be 100% accurate.
+      catch
+
+        /*
+         * Oops, exception occurred, hence there's a syntax error in Hyperlambda.
+         * Displaying the stacktrace to user in a modal window, to help him find the error.
+         */
+        eval-x:x:/+/*
+        sys42.windows.confirm
+          _header:Syntax error in page
+          _inner-class:modal-dialog modal-lg
+          _body:@"<h5>{0}</h5><pre>{1}</pre>"
+            :x:/@message?value
+            :x:/@stack-trace?value

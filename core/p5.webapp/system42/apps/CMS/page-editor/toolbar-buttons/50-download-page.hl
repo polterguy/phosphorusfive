@@ -23,9 +23,9 @@ button
       /*
        * Getting currently edited page from database.
        */
-      sys42.cms.get-currently-edited-page
+      sys42.cms.get-edited-page-id
       select-data:x:@"/*/*/p5.page/""={0}"""
-        :x:/../*/sys42.cms.get-currently-edited-page?value
+        :x:/../*/sys42.cms.get-edited-page-id?value
 
       /*
        * Used temporary to hold lambda content for page.
@@ -37,7 +37,7 @@ button
        */
       eval-x:x:/+/*/*
       set:x:/@_page?value
-        src:x:/../*/sys42.cms.get-currently-edited-page?value
+        src:x:/../*/sys42.cms.get-edited-page-id?value
       add:x:/@_page
         src:x:/../*/select-data/*/*
       set:x:/@_page?name

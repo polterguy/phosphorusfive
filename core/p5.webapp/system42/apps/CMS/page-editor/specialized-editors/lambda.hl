@@ -40,7 +40,7 @@ create-widget
          * "Sink" event required by main editor to retrieve data
          * from specialized editor during saving process
          */
-        sys42.get-page-editor-data
+        sys42.cms.get-specialized-editor-data
           insert-before:x:/../0
             src
               type:lambda

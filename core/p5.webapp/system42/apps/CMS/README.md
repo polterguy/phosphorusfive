@@ -60,11 +60,31 @@ of loading up some static HTML, evaluate his own lambda script, to entirely crea
 
 It still utilizes the templates, URL system, name, and so on. Unless you explicitly override these in your lambda page. You would
 probably want to take advantage of these features, if you create your own lambda pages, which means making sure whatever widgets
-you load into your page, using lambda scripts, should be loaded within the "container" widget - Which is the default "root widget"
+you load into your page, using Hyperlambda, should be loaded within the "container" widget - Which is the default "root widget"
 for your CMS.
 
-If you wish to create your own page type, you'll need to add up a "specialized editor", "new page template", in addition to creating
-your own "loader logic" in a script within the "/page-loader/" folder.
+If you wish to create your own page type, you'll need to add up a _"/page-editor/specialized-editor/"_ file, 
+a _"/page-editor/new-page-templates/"_ file, in addition to creating your own _"/page-loader/"_ file. These files have the same name,
+as your page *[type]* from its *[p5.page]* object in the database, and are automatically plugged into the CMS, as an entirely new
+type of page.
+
+You can use this logic to create your own custom blog engine, web service creation pages, etc, etc, etc.
+
+You must have a specialized editor file, within _"/page-editor/specialized-editor/"_ and a page loader file, within 
+the _"/page-loader/"_ folder. However, the default new page template, within the _"/page-editor/new-page-templates/"_ folder is optional,
+and if not supplied, no default properties for your page will be created.
+
+#### Extendibility
+
+In general, as you can see above, the CMS in System42 is super extendible, allowing you to create your own custom pages, completely
+taking control over all aspects of your page, from editing to loading. In addition, you can also both globally modify the toolbar,
+by adding your own toolbar button(s) inside of the _"/page-editors/toolbar-buttons/"_ folder, or local toolbar buttons, for your 
+specialized editor inside of the _"/page-editor/specialized-editor/xxx/toolbar-buttons/"_ folder, where _"xxx"_ is the *[type]* of
+page you wish to create.
+
+The _"lambda"_ page *[type]* for instance, have a specialized toobar button, allowing you to verify, and view meta information about 
+your *[lambda]* page. See the _"meta-info.hl"_ file inside of the _"/specialized-editors/lambda/toolbar-buttons/"_ folder to see an 
+example of a page type specialized toolbar button.
 
 ### The "page-loader" folder
 

@@ -6,8 +6,7 @@
 /*
  * Returning page to caller.
  */
-insert-before:x:
-  src
-    template:/system42/apps/CMS/page-templates/default.hl
-    content:@"<p>Foo, and then a dash of bar too, I guess ...?</p>"
+return
+  template:/system42/apps/CMS/page-templates/default.hl
+  html:@"<p>Foo, and then a dash of bar too, I guess ...?</p>"
 

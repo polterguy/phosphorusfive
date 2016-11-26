@@ -1,6 +1,6 @@
 
 /*
- * "Save as" button.
+ * Save as toolbar button for page editor.
  */
 button
   innerValue:@"<span class=""glyphicon glyphicon-floppy-save""></span> Save as ..."
@@ -10,9 +10,9 @@ button
     /*
      * Getting name and URL of page, such that we can use it as basis for new name and URL.
      */
-    sys42.cms.get-currently-edited-page
+    sys42.cms.get-edited-page-id
     select-data:x:@"/*/*/p5.page/""={0}"""
-      :x:/../*/sys42.cms.get-currently-edited-page?value
+      :x:/@sys42.cms.get-edited-page-id?value
 
     /*
      * Forward evaluating expressions inside of [_widgets] below
@@ -33,7 +33,7 @@ button
               class:form-control
               placeholder:Name of page ...
               value:{0} - copy
-                :x:/../*/select-data/*/*/name?value
+                :x:/@select-data/*/*/name?value
         div:new-page-url-wrp
           class:form-group
           widgets
@@ -46,23 +46,23 @@ button
               class:form-control
               placeholder:URL of page ...
               value:{0}-copy
-                :x:/../*/select-data/*?value
+                :x:/@select-data/*?value
       .oncancel
 
         /*
-         * Making sure we set focus to "select page dropdown" if user closes dialogue, without
-         * pressing "OK".
+         * Making sure we set focus to select page dropdown if user closes dialogue, without pressing "OK".
          */
         send-javascript:@"$('#cms-select-page').focus().select();"
+
       .onok
 
         /*
-         * Will contain the database id of old page
+         * Will contain the database id of old page.
          */
-        _old-page:x:/../*/select-data/*?value
+        _old-page:x:/@select-data/*?value
 
         /*
-         * Getting the new page's name and URL
+         * Getting the new page's name and URL.
          */
         get-widget-property:new-page-name
           value
@@ -70,16 +70,15 @@ button
           value
 
         /*
-         * Making sure supplied name does not exist from before
+         * Making sure supplied name does not exist from before.
          */
         select-data:x:@"/*/*/p5.page/""={0}"""
-          :x:/../*/get-widget-property/[1,2]/*/*?value
-        if:x:/../*/select-data/[0,1]/*?count
+          :x:/@get-widget-property/*/*?value
+        if:x:/@select-data/*?count
           >:int:0
 
           /*
-           * Page exists from before, alerting user, and returning early, without setting 
-           * the "close modal window flag".
+           * Page exists from before, alerting user, and returning false early, to make sure window is not closed.
            */
           sys42.utilities.add-css-classes:new-page-url-wrp
             _class:has-error
@@ -89,56 +88,49 @@ button
         /*
          * Getting page data, and saving as a new object in database
          */
-        sys42.get-page-editor-data
+        sys42.cms.get-specialized-editor-data
 
         /*
-         * Then making sure we select old page, and replace [name] and 
-         * [url] (which is ID of database object), in addition to new data,
-         * before saving as new object in database
+         * Then making sure we select old page, and replace [name] and [url] (which is ID of database object), 
+         * in addition to new data, before saving page as a new [p5.page] object in database.
          */
         select-data:x:@"/*/*/p5.page/""={0}"""
-          :x:/../*/_old-page?value
+          :x:/@_old-page?value
 
         /*
          * Changing id (URL of page) to new URL, in addition to changing name of page.
          */
-        set:x:/../*/select-data/[1,2]/*?value
-          src:x:/../*/get-widget-property/[1,2]/*/*?value
-        set:x:/../*/select-data/[1,2]/*/*/name?value
-          src:x:/../*/get-widget-property/[0,1]/*/*?value
+        set:x:/@select-data/*?value
+          src:x:/@get-widget-property/*/*?value
+        set:x:/@select-data/*/*/name?value
+          src:x:/@get-widget-property/@get-widget-property/*/*?value
 
         /*
-         * Then removing all items from [select-data] that also exists in [sys42.get-page-editor-data].
+         * Then removing all items from [select-data] that also exists in [sys42.cms.get-specialized-editor-data].
          */
-        for-each:x:/../*/select-data/[1,2]/*/*
-          if:x:@"/../*/sys42.get-page-editor-data/*/""{0}"""
-            :x:/..for-each/*/_dp/#?name
-            set:x:/..for-each/*/_dp/#
+        for-each:x:/@select-data/*/*
+          if:x:@"/@sys42.cms.get-specialized-editor-data/*/""{0}"""
+            :x:/@_dp/#?name
+            set:x:/@_dp/#
 
         /*
-         * Adding everything from [sys42.get-page-editor-data] into [select-data].
-         */
-        add:x:/../*/select-data/[1,2]/*
-          src:x:/../*/sys42.get-page-editor-data/*
-
-        /*
-         * Now we can save new page to database, which we do by simply adding everything from
-         * [select-data] above into [insert-data], since [select-data] (second invocation) now
-         * should contain all the page data for our new page, including the new URL and name.
+         * Then we can append all items from [select-data] and [sys42.cms.get-specialized-editor-data] into [insert-data] below.
          */
         add:x:/../*/insert-data
-          src:x:/../*/select-data/[1,2]/*
+          src:x:/@select-data/*
+        add:x:/../*/insert-data/*
+          src:x:/@sys42.cms.get-specialized-editor-data/*
         insert-data
 
         /*
-         * Then we need to "refresh editor", but first, setting "edited page" to
-         * the page we just saved.
+         * Then we need to refresh editor, and other widgets, but first we set edited page to the page we just saved.
          */
-        sys42.cms.set-currently-edited-page:x:/../*/get-widget-property/[1,2]/*/*?value
+        sys42.cms.set-currently-edited-page:x:/@get-widget-property/*/*?value
 
 
         /*
          * Repopulating select page dropdown, and starts editor.
+         * In addition, we need to re-create our navbar, since our navigation hierarchy has changed.
          */
         sys42.cms.populate-select-page
         sys42.cms.edit-page
