@@ -1,0 +1,145 @@
+
+/*
+ * "Save as" button.
+ */
+button
+  innerValue:@"<span class=""glyphicon glyphicon-floppy-save""></span> Save as ..."
+  class:btn btn-default diffuse btn-attach-top
+  onclick
+
+    /*
+     * Getting name and URL of page, such that we can use it as basis for new name and URL.
+     */
+    sys42.cms.get-currently-edited-page
+    select-data:x:@"/*/*/p5.page/""={0}"""
+      :x:/../*/sys42.cms.get-currently-edited-page?value
+
+    /*
+     * Forward evaluating expressions inside of [_widgets] below
+     */
+    eval-x:x:/+/*/*/*/*/*/value|/+/*/.onok/*/_old-page
+    sys42.windows.modal
+      _header:Supply name and URL of new page
+      _widgets
+        div:new-page-name-wrp
+          class:form-group
+          widgets
+            label
+              for:new-page-name
+              class:control-label
+              innerValue:Page name
+            input:new-page-name
+              type:text
+              class:form-control
+              placeholder:Name of page ...
+              value:{0} - copy
+                :x:/../*/select-data/*/*/name?value
+        div:new-page-url-wrp
+          class:form-group
+          widgets
+            label
+              for:new-page-url
+              class:control-label
+              innerValue:Page URL
+            input:new-page-url
+              type:url
+              class:form-control
+              placeholder:URL of page ...
+              value:{0}-copy
+                :x:/../*/select-data/*?value
+      .oncancel
+
+        /*
+         * Making sure we set focus to "select page dropdown" if user closes dialogue, without
+         * pressing "OK".
+         */
+        send-javascript:@"$('#cms-select-page').focus().select();"
+      .onok
+
+        /*
+         * Will contain the database id of old page
+         */
+        _old-page:x:/../*/select-data/*?value
+
+        /*
+         * Getting the new page's name and URL
+         */
+        get-widget-property:new-page-name
+          value
+        get-widget-property:new-page-url
+          value
+
+        /*
+         * Making sure supplied name does not exist from before
+         */
+        select-data:x:@"/*/*/p5.page/""={0}"""
+          :x:/../*/get-widget-property/[1,2]/*/*?value
+        if:x:/../*/select-data/[0,1]/*?count
+          >:int:0
+
+          /*
+           * Page exists from before, alerting user, and returning early, without setting 
+           * the "close modal window flag".
+           */
+          sys42.utilities.add-css-classes:new-page-url-wrp
+            _class:has-error
+          send-javascript:@"$('#new-page-url').focus().select();"
+          return:bool:false
+
+        /*
+         * Getting page data, and saving as a new object in database
+         */
+        sys42.get-page-editor-data
+
+        /*
+         * Then making sure we select old page, and replace [name] and 
+         * [url] (which is ID of database object), in addition to new data,
+         * before saving as new object in database
+         */
+        select-data:x:@"/*/*/p5.page/""={0}"""
+          :x:/../*/_old-page?value
+
+        /*
+         * Changing id (URL of page) to new URL, in addition to changing name of page.
+         */
+        set:x:/../*/select-data/[1,2]/*?value
+          src:x:/../*/get-widget-property/[1,2]/*/*?value
+        set:x:/../*/select-data/[1,2]/*/*/name?value
+          src:x:/../*/get-widget-property/[0,1]/*/*?value
+
+        /*
+         * Then removing all items from [select-data] that also exists in [sys42.get-page-editor-data].
+         */
+        for-each:x:/../*/select-data/[1,2]/*/*
+          if:x:@"/../*/sys42.get-page-editor-data/*/""{0}"""
+            :x:/..for-each/*/_dp/#?name
+            set:x:/..for-each/*/_dp/#
+
+        /*
+         * Adding everything from [sys42.get-page-editor-data] into [select-data].
+         */
+        add:x:/../*/select-data/[1,2]/*
+          src:x:/../*/sys42.get-page-editor-data/*
+
+        /*
+         * Now we can save new page to database, which we do by simply adding everything from
+         * [select-data] above into [insert-data], since [select-data] (second invocation) now
+         * should contain all the page data for our new page, including the new URL and name.
+         */
+        add:x:/../*/insert-data
+          src:x:/../*/select-data/[1,2]/*
+        insert-data
+
+        /*
+         * Then we need to "refresh editor", but first, setting "edited page" to
+         * the page we just saved.
+         */
+        sys42.cms.set-currently-edited-page:x:/../*/get-widget-property/[1,2]/*/*?value
+
+
+        /*
+         * Repopulating select page dropdown, and starts editor.
+         */
+        sys42.cms.populate-select-page
+        sys42.cms.edit-page
+        sys42.cms.create-navbar-menu

@@ -1,0 +1,174 @@
+
+/*
+ * Settings for page button.
+ */
+button
+  innerValue:@"<span class=""glyphicon glyphicon-wrench""></span> Settings ..."
+  class:btn btn-default diffuse btn-attach-top
+  onclick
+
+    /*
+     * Retrieving page properties, and using a wizard window to allow user to change them.
+     */
+    sys42.cms.get-currently-edited-page
+    select-data:x:@"/*/*/""={0}"""
+      :x:/@sys42.cms.get-currently-edited-page?value
+
+    /*
+     * Making sure we first add [name], before we add [url] and the finally the last properties,
+     * to have some intuitive order of [_data] according to "importance".
+     */
+    add:x:/../*/sys42.windows.wizard/*/_data
+      src:x:/@select-data/*/*/name
+    add:x:/../*/sys42.windows.wizard/*/_data
+      src:@"url:{0}"
+        :x:/../*/sys42.cms.get-currently-edited-page?value
+    add:x:/../*/sys42.windows.wizard/*/_data
+      src:x:/@select-data/*/*(/template|/role)
+
+    /*
+     * Making sure we change the [template] data segment to a "drop down selection" type
+     * of [_data] segment, by appending our choices to it as [_options].
+     * This is done by fetching all files from "/system42/apps/CMS/page-templates/", and
+     * using these as choices for user.
+     */
+    list-files:@CMS/page-templates/
+      filter:hl
+    for-each:x:/-/*?name
+      split:x:/..for-each/*/_dp?value
+        =:/
+        =:.
+      add:x:/./+/*/*
+        src:@"{0}:{1}"
+          :x:/..for-each/*/split/0/-2?name
+          :x:/..for-each/*/_dp?value
+    add:x:/../*/sys42.windows.wizard/*/_data/*/template
+      src
+        _options
+          none:
+
+    /*
+     * Making sure we change the [role] data segment to a "drop down selection" type
+     * of [_data] segment, by appending our choices to it as [_options].
+     * This is done by fetching all distinct user roles, in addition to appending a 
+     * static "empty" role (no restrictions for access).
+     */
+    list-roles
+    for-each:x:/-/*?name
+      add:x:/./+/*/*
+        src:@"{0}:{0}"
+          :x:/..for-each/*/_dp?value
+    add:x:/../*/sys42.windows.wizard/*/_data/*/role
+      src
+        _options
+
+    /*
+     * Showing actual wizard window.
+     */
+    sys42.windows.wizard
+      _header:Settings
+      _data
+      .oncancel
+
+        /*
+         * Making sure we set focus to "select page dropdown" if user closes dialogue, without
+         * pressing "OK".
+         */
+        send-javascript:@"$('#cms-select-page').focus().select();"
+      .onok
+
+        /*
+         * Getting wizard window's values.
+         */
+        sys42.windows.wizard.get-values
+
+        /*
+         * Retrieving currently edited page.
+         */
+        sys42.cms.get-currently-edited-page
+        select-data:x:@"/*/*/""={0}"""
+          :x:/@sys42.cms.get-currently-edited-page?value
+        _old-name:x:/-/*/*/name?value
+        eval-x:x:/-
+
+        /*
+         * Checking if user changed URL, at which point we must check that URL does not exist from before.
+         */
+        if:x:/../*/sys42.windows.wizard.get-values/*/url?value
+          !=:x:/@sys42.cms.get-currently-edited-page?value
+
+          /*
+           * User changed URL, making sure new URL does not exist from before.
+           */
+          if
+            select-data:x:@"/*/*/""={0}""?count"
+              :x:/../*/sys42.windows.wizard.get-values/*/url?value
+            !=:int:0
+
+            /*
+             * Oops, user chose a new URL that was already taken by another page.
+             * Showing user some feedback, and returning early (with error).
+             */
+            sys42.windows.info-tip:That URL is already taken by another page ...
+              _class:info-window info-window-error
+              _parent:sys42-windows-modal-body-wrapper
+            find-widget:sys42-windows-modal-body-wrapper
+              _data-field-name:url
+            get-parent-widget:x:/-/*/*?value
+            sys42.utilities.add-css-classes:x:/-/*/*?value
+              _class:has-error
+            send-javascript:@"$('#{0}').focus().select();"
+              :x:/./-3/*/*?value
+            return:bool:false
+
+          /*
+           * Making sure we update "currently edited page".
+           */
+          sys42.cms.set-currently-edited-page:x:/../*/sys42.windows.wizard.get-values/*/url?value
+
+        /*
+         * Updating page properties, by first changing [select-data]'s result, for then to move [select-data]'s
+         * result into an [update-data] invocation.
+         */
+        set:x:/../*/select-data/*/*/name?value
+          src:x:/../*/sys42.windows.wizard.get-values/*/name?value
+        set:x:/../*/select-data/*?value
+          src:x:/../*/sys42.windows.wizard.get-values/*/url?value
+        set:x:/../*/select-data/*/*/template?value
+          src:x:/../*/sys42.windows.wizard.get-values/*/template?value
+        set:x:/../*/select-data/*/*/role?value
+          src:x:/../*/sys42.windows.wizard.get-values/*/role?value
+
+        /*
+         * Now we can move [p5.page] from [select-data] into [update-data].
+         */
+        add:x:/../*/update-data/*/src
+          src:x:/@select-data/*
+
+        /*
+         * Finally, updating properties for page, and providing feedback to user.
+         */
+        update-data:x:@"/*/*/p5.page/""={0}"""
+          :x:/../*/sys42.cms.get-currently-edited-page?value
+          src
+        sys42.windows.info-tip:Page '{0}' was saved.
+          :x:/../*/sys42.windows.wizard.get-values/*/name?value
+
+        /*
+         * If either name or URL changed, we reload select dropdown, and repopulate it.
+         */
+        if:x:/../*/sys42.windows.wizard.get-values/*/url?value
+          !=:x:/../*/sys42.cms.get-currently-edited-page?value
+          or:x:/../*/sys42.windows.wizard.get-values/*/name?value
+            !=:x:/../*/_old-name?value
+
+          /*
+           * Repopulating select page dropdown.
+           */
+          sys42.cms.populate-select-page
+          sys42.cms.create-navbar-menu
+
+        /*
+         * Returning success to wizard modal window.
+         */
+        return:bool:true

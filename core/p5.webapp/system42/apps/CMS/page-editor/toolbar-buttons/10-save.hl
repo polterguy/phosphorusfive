@@ -1,0 +1,58 @@
+
+/*
+ * Save button.
+ */
+button
+  innerValue:@"<span class=""glyphicon glyphicon-floppy-save""></span> Save"
+  class:btn btn-default diffuse btn-attach-top
+  onclick
+    sys42.save-edited-page
+
+
+  /*
+   * Lambda events for "Save" button
+   */
+  events
+
+
+    /*
+     * Saves currently edited page
+     */
+    sys42.save-edited-page
+
+      /*
+       * Retrieving currently edited page, and appending all "common values" into [update-data].
+       */
+      sys42.cms.get-currently-edited-page
+      select-data:x:@"/*/*/p5.page/""={0}"""
+        :x:/../*/sys42.cms.get-currently-edited-page?value
+      add:x:/../*/update-data/*/*
+        src:x:/../*/select-data/*/*(/name|/template|/role)
+
+      /*
+       * Retrieving specialized editor's data for page, and appending all 
+       * "specialized page editor's values" into [update-data].
+       */
+      sys42.get-page-editor-data
+      add:x:/../*/update-data/*/*
+        src:x:/../*/sys42.get-page-editor-data/*
+
+      /*
+       * Updating page in p5.data database.
+       */
+      update-data:x:@"/*/*/p5.page/""={0}"""
+        :x:/../*/sys42.cms.get-currently-edited-page?value
+        src
+          p5.page
+
+      /*
+       * Providing feedback to user.
+       */
+      sys42.windows.info-tip:Page '{0}' was successfully saved.
+        :x:/../*/select-data/*/*/name?value
+
+      /*
+       * Making sure we set focus to "select page dropdown" if user closes dialogue, without
+       * pressing "OK".
+       */
+      send-javascript:@"$('#cms-select-page').focus().select();"

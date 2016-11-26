@@ -856,6 +856,12 @@
     <Content Include="system42\components\common-widgets\tree\startup\public\sys42.widgets.tree.select-items.hl" />
     <Content Include="system42\components\common-widgets\tree\startup\public\sys42.widgets.tree.toggle-items.hl" />
     <Content Include="system42\apps\CMS\startup\sys42.cms.load-template.hl" />
+    <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\10-save.hl" />
+    <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\20-save-as.hl" />
+    <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\50-download-page.hl" />
+    <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\30-view-page.hl" />
+    <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\40-settings.hl" />
+    <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\99-delete-page.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

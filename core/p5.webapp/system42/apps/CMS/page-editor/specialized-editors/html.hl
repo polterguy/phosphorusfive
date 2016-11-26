@@ -8,7 +8,7 @@
  * Loading page from database
  */
 select-data:x:/*/*/p5.page/"={0}"
-  :x:/../*/_id?value
+  :x:/../*/_page-id?value
 
 
 /*
@@ -19,18 +19,10 @@ set:x:/../*/create-widget/*/widgets/*/=ck-editor/*/_value?value
 
 
 /*
- * Making sure editor is loaded with correct parent widget.
- */
-sys42.cms.get-specialized-editor-surface
-set:x:/../*/create-widget/*/parent?value
-  src:x:/./-?value
-
-
-/*
  * Creates the editor widget
  */
 create-widget
-  parent
+  parent:cms-specialized-editor-surface
   class:col-xs-12
   style:"display:inline-block;width:100%;"
   widgets

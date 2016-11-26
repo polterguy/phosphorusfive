@@ -383,7 +383,7 @@ create-widget:cms-page-editor
             eval-x:x:/+/*
             sys42.utilities.execute-lambda-file:@CMS/page-editor/editor.hl
               _editor:x:/@select-data/*?value
-              _id:x:/@sys42.cms.get-currently-edited-page?value
+              _page-id:x:/@sys42.cms.get-currently-edited-page?value
 
             /*
              * Hiding uploader widget.
