@@ -17,6 +17,20 @@ add:x:/../*/create-widget/**/container/=cms-editor-toolbar-buttons/*/widgets/*/c
 
 
 /*
+ * Loads all specialized toolbar buttons, if there are any, as plugins, and appends into toolbar button widget below.
+ */
+if
+  fetch:x:/0/0?value
+    folder-exist:@CMS/page-editor/specialized-editors/{0}/toolbar-buttons/
+      :x:/../*/_editor?value
+  list-files:@CMS/page-editor/specialized-editors/{0}/toolbar-buttons/
+    :x:/../*/_editor?value
+  load-file:x:/@list-files/*?name
+  add:x:/../*/create-widget/**/container/=cms-editor-toolbar-buttons/*/widgets/*/container/*/widgets
+    src:x:/@load-file/*/*
+
+
+/*
  * Creating toolbar wrapper widget.
  */
 create-widget
@@ -33,7 +47,8 @@ create-widget
 
     /*
      * Bottom toolbar widget.
-     * This is dynamically populated by loading all files in "/toolbar-buttons/" folder.
+     *
+     * This widget is dynamically populated by loading all files in "/toolbar-buttons/" folder.
      */
     container:cms-editor-toolbar-buttons
       class:col-md-12 text-right
@@ -41,6 +56,10 @@ create-widget
         container
           class:btn-group
           widgets
+
+            /*
+             * This is where the toolbar buttons actually ends up.
+             */
 
 
 /*

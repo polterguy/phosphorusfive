@@ -1,0 +1,38 @@
+
+/*
+ * Syntax checks Hyperlambda.
+ */
+button
+  innerValue:@"<span class=""glyphicon glyphicon-sunglasses""></span> Verify"
+  class:btn btn-default diffuse btn-attach-top
+  onclick
+    sys42.cms.lambda.syntax-check-hyperlambda
+
+
+  /*
+   * Lambda events for "Syntax check" button.
+   */
+  events
+
+
+    /*
+     * Saves currently edited page
+     */
+    sys42.cms.lambda.syntax-check-hyperlambda
+
+      /*
+       * Retrieving lambda object for page, and syntax checks it, by simply trying to convert it into a lambda object,
+       * and if successful, showing an info tip window, otherwise, showing stacktrace of exception that occurred.
+       */
+      sys42.get-page-editor-data
+      try
+        hyper2lambda:x:/@sys42.get-page-editor-data/*/lambda?value
+        sys42.windows.info-tip:Everything seems to be fine with your page
+      catch
+        eval-x:x:/+/*
+        sys42.windows.confirm
+          _header:Errors!!
+          _inner-class:modal-dialog modal-lg
+          _body:@"<h5>{0}</h5><pre>{1}</pre>"
+            :x:/@message?value
+            :x:/@stack-trace?value
