@@ -49,3 +49,6 @@ TODO before release
 
 * Make sure datagrid can be set into "read only" mode, without neither [.on-edit-item] nor [.on-select-items]
 
+* Use ReaderWriteLockSlim in p5.data, and other places where we create locks.
+
+

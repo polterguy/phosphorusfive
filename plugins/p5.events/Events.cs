@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
+using System.Threading;
 
 namespace p5.events
 {
@@ -38,12 +39,12 @@ namespace p5.events
         private static readonly Dictionary<string, Node> _events = new Dictionary<string, Node> ();
 
         // Used to create lock when creating, deleting and consuming events
-        private static readonly object Lock;
+        private static readonly ReaderWriterLockSlim _lock;
 
         // Necessary to make sure we have a global "lock" object
         static Events ()
         {
-            Lock = new object ();
+            _lock = new ReaderWriterLockSlim ();
         }
 
         /// <summary>
@@ -55,15 +56,25 @@ namespace p5.events
         [ActiveEvent (Name = ".create-event")]
         public static void create_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // Checking to see if this event has no lambda objects, and is not protected, at which case it is a "delete event" invocation
-            if (e.Args.Children.Count (ix => ix.Name != "") == 0) {
+            // Acquire write lock, since we're consuming object shared amongst more than one thread (_events).
+            _lock.EnterWriteLock ();
+            try {
 
-                // Deleting event, if existing, since it doesn't have any lambda objects associated with it
-                DeleteEvent (XUtil.Single<string> (context, e.Args), context, e.Args, e.Name.StartsWith ("."));
-            } else {
+                // Checking to see if this event has no lambda objects, and is not protected, at which case it is a "delete event" invocation
+                if (e.Args.Children.Count (ix => ix.Name != "") == 0) {
 
-                // Creating new event
-                CreateEvent (XUtil.Single<string> (context, e.Args), e.Args, context, e.Name.StartsWith ("."));
+                    // Deleting event, if existing, since it doesn't have any lambda objects associated with it
+                    DeleteEvent (XUtil.Single<string> (context, e.Args), context, e.Args, e.Name.StartsWith ("."));
+
+                } else {
+
+                    // Creating new event
+                    CreateEvent (XUtil.Single<string> (context, e.Args), e.Args, context, e.Name.StartsWith ("."));
+                }
+            } finally {
+
+                // Making sure we release lock in a finally, such that we can never exit method, without releasing our lock.
+                _lock.ExitWriteLock ();
             }
         }
 
@@ -75,11 +86,20 @@ namespace p5.events
         [ActiveEvent (Name = "delete-event")]
         public static void delete_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // Iterating through all events to delete
-            foreach (var idxName in XUtil.Iterate<string> (context, e.Args)) {
+            // Acquire write lock, since we're consuming object shared amongst more than one thread (_events).
+            _lock.EnterWriteLock ();
+            try {
 
-                // Deleting event
-                DeleteEvent (idxName, context, e.Args, e.Name.StartsWith ("."));
+                // Iterating through all events to delete
+                foreach (var idxName in XUtil.Iterate<string> (context, e.Args)) {
+
+                    // Deleting event
+                    DeleteEvent (idxName, context, e.Args, e.Name.StartsWith ("."));
+                }
+            } finally {
+
+                // Making sure we release lock in a finally, such that we can never exit method, without releasing our lock.
+                _lock.ExitWriteLock ();
             }
         }
 
@@ -95,11 +115,68 @@ namespace p5.events
             // Retrieving filter, if any
             var filter = e.Args.Value == null ? new List<string> () : new List<string> (XUtil.Iterate<string> (context, e.Args));
 
-            // Getting all dynamic Active Events
-            ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context, e.Name.StartsWith ("."));
+            // Acquire read lock, since we're consuming object shared amongst more than one thread (_events).
+            _lock.EnterReadLock ();
+            try {
+
+                // Getting all dynamic Active Events
+                ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context, e.Name.StartsWith ("."));
+
+            } finally {
+
+                // Making sure we release lock in a finally, such that we can never exit method, without releasing our lock.
+                _lock.ExitReadLock ();
+            }
 
             // Getting all core Active Events
             ListActiveEvents (context.ActiveEvents, e.Args, filter, "static", context, e.Name.StartsWith ("."));
+
+            // Sorting such that static events comes first, and then having keywords coming.
+            e.Args.Sort (delegate (Node lhs, Node rhs) {
+                if (lhs.Name == "static" && rhs.Name == "dynamic")
+                    return -1;
+                else if (lhs.Name == "dynamic" && rhs.Name == "static")
+                    return 1;
+                if (!lhs.Get<string> (context).Contains (".") && rhs.Get<string> (context).Contains ("."))
+                    return -1;
+                else if (lhs.Get<string> (context).Contains (".") && !rhs.Get<string> (context).Contains ("."))
+                    return 1;
+                else
+                    return lhs.Get<string> (context).CompareTo (rhs.Value);
+            });
+        }
+
+        /*
+         * Responsible for executing all dynamically created Active Events or lambda objects
+         */
+        [ActiveEvent (Name = "")]
+        private static void _p5_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Acquire read lock, since we're consuming object shared amongst more than one thread (_events).
+            // This lock must be released before event is invoked, and is only here since we're consuming
+            Node lambda = null;
+            _lock.EnterReadLock ();
+            try {
+
+                // Checking if there's an event with given name in dynamically created events.
+                // To avoid creating a lock on every single event invocation in system, we create a "double check"
+                // here, first checking for existance of key, then to create lock, for then to re-check again, which
+                // should significantly improve performance of event invocations in the system
+                if (_events.ContainsKey (e.Name)) {
+
+                    // Keep a reference to all lambda objects in current event, such that we can later delete them
+                    lambda = _events[e.Name].Clone ();
+                }
+
+            } finally {
+
+                // Making sure we release lock in a finally, such that we can never exit method, without releasing our lock.
+                _lock.ExitReadLock ();
+            }
+
+            // Raising Active Event, if it exists.
+            if (lambda != null)
+                XUtil.RaiseEvent (context, e.Name, lambda, e.Args);
         }
 
         /*
@@ -111,15 +188,11 @@ namespace p5.events
             if (!isNative && (name.StartsWith ("_") || name.StartsWith (".")))
                 throw new LambdaException ("Tried to create a 'protected event'", args, context);
 
-            // Acquire lock since we're consuming object shared amongst more than one thread (_events)
-            lock (Lock) {
+            // Making sure we have a key for Active Event name.
+            _events [name] = new Node (name);
 
-                // Making sure we have a key for Active Event name
-                _events [name] = new Node ("");
-
-                // Adding event to dictionary
-                _events [name].AddRange (args.Clone ().Children);
-            }
+            // Adding event to dictionary.
+            _events [name].AddRange (args.Clone ().Children);
         }
 
         /*
@@ -129,15 +202,11 @@ namespace p5.events
         {
             // Sanity check
             if (!isNative && (name.StartsWith ("_") || name.StartsWith (".")))
-                throw new LambdaException ("Tried to create a 'protected event'", args, context);
+                throw new LambdaException ("Tried to delete a 'protected event'", args, context);
 
-            // Acquire lock since we're consuming object shared amongst more than one thread (_events)
-            lock (Lock) {
-
-                // Removing event, if it exists
-                if (_events.ContainsKey (name)) {
-                    _events.Remove (name);
-                }
+            // Removing event, if it exists.
+            if (_events.ContainsKey (name)) {
+                _events.Remove (name);
             }
         }
 
@@ -169,59 +238,6 @@ namespace p5.events
                     if (filter.Any (ix => ix.StartsWith ("~") ? idx.Contains (ix.Substring (1)) : idx == ix)) {
                         node.Add (new Node (eventTypeName, idx));
                     }
-                }
-            }
-
-            // Sorting such that keywords comes first
-            node.Sort (delegate (Node x, Node y) {
-                if (x.Get<string> (context).Contains (".") && !y.Get<string> (context).Contains ("."))
-                    return 1;
-                else if (!x.Get<string> (context).Contains (".") && y.Get<string> (context).Contains ("."))
-                    return -1;
-                else
-                    return x.Get<string> (context).CompareTo (y.Value);
-            });
-        }
-
-        /*
-         * Responsible for executing all dynamically created Active Events or lambda objects
-         */
-        [ActiveEvent (Name = "")]
-        private static void _p5_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Checking if there's an event with given name in dynamically created events.
-            // To avoid creating a lock on every single event invocation in system, we create a "double check"
-            // here, first checking for existance of key, then to create lock, for then to re-check again, which
-            // should significantly improve performance of event invocations in the system
-            if (_events.ContainsKey (e.Name)) {
-
-                // Keep a reference to all lambda objects in current event, such that we can later delete them
-                Node lambda = null;
-
-                // Acquire lock to make sure we're thread safe.
-                // This lock must be released before event is invoked, and is only here since we're consuming
-                // an object shared among different threads (_events)
-                lock (Lock) {
-
-                    // Then re-checking after lock is acquired, to make sure event is still around.
-                    // Note, we could acquire lock before checking first time, but that would impose
-                    // a significant overhead on all Active Event invocations, since "" (null Active Events)
-                    // are invoked for every single Active Event raised in system.
-                    // In addition, by releasing the lock before we invoke the Active Event, we further
-                    // avoid deadlocks by dynamically created Active Events invoking other dynamically
-                    // created Active Events
-                    if (_events.ContainsKey (e.Name)) {
-
-                        // Adding event into execution lambda
-                        lambda = _events [e.Name];
-                    }
-                }
-
-                // Executing if lambda is around
-                if (lambda != null) {
-
-                    // Raising Active Event
-                    XUtil.RaiseEvent (context, e.Args, lambda.Clone (), e.Name);
                 }
             }
         }

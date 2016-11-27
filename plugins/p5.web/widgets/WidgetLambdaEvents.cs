@@ -175,7 +175,7 @@ namespace p5.web.widgets
 
                     // Creating a clone of args, such that we can make sure each invocation have the same set of parameters
                     var argsClone = e.Args.Clone ();
-                    XUtil.RaiseEvent (context, e.Args, idxLambdaClone, e.Name);
+                    XUtil.RaiseEvent (context, e.Name, idxLambdaClone, e.Args);
 
                     // Moving stuff returned from invocation into retVal, which holds return values from all invocations
                     retVal.AddRange (e.Args.Children);

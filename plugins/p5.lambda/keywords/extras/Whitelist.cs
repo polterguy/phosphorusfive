@@ -50,7 +50,7 @@ namespace p5.lambda.keywords.extras
 
                 // Sanity check.
                 if (whitelist == null || lambda == null)
-                    throw new LambdaException ("[whitelist] needs both an [events] node and a [.lambda] callback.", e.Args, context);
+                    throw new LambdaException ("[whitelist] requires you to supply both an [events] definition and a [.lambda] callback.", e.Args, context);
 
                 // Making sure we evaluate our [.lambda] such that we set back the previous whitelast afterwards, if any.
                 var oldWhitelist = context.Whitelist;
@@ -60,9 +60,8 @@ namespace p5.lambda.keywords.extras
                     context.Whitelist = MergeWhitelist (context, e.Args, oldWhitelist, whitelist);
 
                     // Evaluating [.lambda] now with our [whitelist] definition.
-                    var oldLambdaNode = new List<Node> (lambda.Children);
                     context.Raise ("eval", lambda);
-                    e.Args.AddRange (lambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
+                    e.Args.AddRange (lambda.Children);
                     e.Args.Value = lambda.Value;
 
                 } finally {

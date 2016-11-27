@@ -605,68 +605,50 @@ namespace p5.exp
         ///     Raises a dynamically created Active Events or lambda objects
         /// </summary>
         /// <param name="context">Application Context</param>
-        /// <param name="args">Arguments to pass into event</param>
+        /// <param name="eventNode">Arguments to pass into event</param>
         /// <param name="lambda">Lambda object to evaluate</param>
         /// <param name="eventName">Name of Active Event to raise</param>
         public static void RaiseEvent (
-            ApplicationContext context, 
-            Node args, 
-            Node lambda, 
-            string eventName)
+            ApplicationContext context,
+            string eventName,
+            Node lambda,
+            Node eventNode)
         {
-            // Creating an "executable" lambda node, which becomes the node that is finally executed, after 
-            // arguments is passed in and such. This is because we want the arguments at the TOP of the lambda node
-            var exeLambda = new Node (eventName);
-
-            // Adding up arguments, no need to clone, they should be gone after execution anyway.
-            // But skipping all "empty name" arguments, since they're formatting parameters
-            exeLambda.AddRange (args.Children.Where (ix => ix.Name != ""));
-
             // Applying "value argument"
-            if (args.Value is Expression) {
+            if (eventNode.Value is Expression) {
 
                 // Evaluating node, and stuffing results into arguments
-                foreach (var idx in XUtil.Iterate<object> (context, args)) {
+                foreach (var idx in Iterate<object> (context, eventNode)) {
 
                     // Adding currently iterated results into execution object
-                    var idxNode = idx as Node;
-                    if (idxNode != null) {
-
-                        // Appending node into execution object
-                        exeLambda.Add ("_arg", null, new Node [] { idxNode.Clone () });
-                    } else {
-
-                        // Appending simple value into execution object with [_arg] name
-                        exeLambda.Add ("_arg", idx);
-                    }
+                    lambda.Add ("_arg", idx);
                 }
-            } else if (args.Value != null) {
+            } else if (eventNode.Value != null) {
 
                 // Simple value argument
-                exeLambda.Add ("_arg", FormatNode (context, args));
+                lambda.Add ("_arg", FormatNode (context, eventNode));
             }
 
-            // Removing all empty nodes of args, to be sure we don't keeo garbage around
-            // Notice, we do this AFTER evaluating expressions in value! To make sure formatting parameters
-            // are kept around during evaluation!
-            args.Clear ();
+            // Adding up other arguments, no need to clone, they should be gone after execution anyway.
+            // But skipping all "empty name" arguments, since they're formatting parameters.
+            // Notice the ToList invocation, which is necessary, since foreach changes args' Children collection.
+            // Also notice that we insert arguments at the top of lambda object evaluated, in order of appearance.
+            int idxNo = 0;
+            foreach (var idxArg in eventNode.Children.Where (ix => ix.Name != "").ToList ()) {
+                lambda.Insert (idxNo++, idxArg);
+            }
 
-            // Then adding actual Active Event code, to make sure lambda event is at the END of entire node structure, after arguments
-            exeLambda.AddRange (lambda.Children);
+            // Removing all nodes from eventNode, since there might be ampty formatting nodes remaining,
+            // to be sure we don't keep garbage around after evaluation.
+            eventNode.Clear ();
 
-            // Storing lambda block and value, such that we can "diff" after execution, 
-            // and only return the nodes added during execution, and the value if it was changed
-            var oldLambdaNode = new List<Node> (exeLambda.Children);
-            args.Value = null; // To make sure we don't return what we came in with!
+            // Evaluating lambda object now, by invoking [eval], which does the heavy lifting.
+            context.Raise ("eval", lambda);
 
-            // Executing lambda children, and not evaluating any expression in evaluated node!
-            context.Raise ("eval", exeLambda);
-
-            // Making sure we return all nodes that was created during execution of event back to caller
-            // in addition to value
-            args.AddRange (exeLambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
-            if (exeLambda.Value != null)
-                args.Value = exeLambda.Value;
+            // Making sure we return all nodes that was created during evaluation of event back to caller,
+            // in addition to any values returned.
+            eventNode.AddRange (lambda.Children);
+            eventNode.Value = lambda.Value;
         }
     }
 }

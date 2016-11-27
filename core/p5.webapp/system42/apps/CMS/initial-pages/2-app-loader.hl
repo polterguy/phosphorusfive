@@ -13,4 +13,5 @@ p5.page:/app-loader
 get-http-param:app
 sys42.utilities.execute-lambda-file:@SYS42-APPS/{0}/launch.hl
   :x:/@get-http-param/0?value
+set-title:x:/@get-http-param/0?value
 "
