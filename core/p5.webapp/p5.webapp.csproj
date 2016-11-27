@@ -863,6 +863,7 @@
     <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\40-settings.hl" />
     <Content Include="system42\apps\CMS\page-editor\toolbar-buttons\99-delete-page.hl" />
     <Content Include="system42\apps\CMS\page-editor\specialized-editors\lambda\toolbar-buttons\meta-info.hl" />
+    <Content Include="system42\apps\Unit tests\tests\vocabulary.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />
@@ -880,6 +881,7 @@
     <None Include="system42\apps\CMS\startup\p5.web.load-ui.hl" />
     <Content Include="system42\startup\README.md" />
     <Content Include="system42\startup\startup-apps-components.hl" />
+    <Content Include="system42\startup\sys42.utilities.get-event-vocabulary.hl" />
     <None Include="system42\startup\sys42.utilities.get-widget.hl" />
     <None Include="system42\components\common-widgets\ckeditor\README.md" />
     <None Include="system42\components\common-widgets\ckeditor\media\skins\moono\readme.md" />

@@ -1,6 +1,6 @@
 
 /*
- * Creates the Active Event that returns the p5.lambda object belonging to a dynamically created Active Event.
+ * Creates the Active Event that returns the lambda object belonging to one or more dynamically created Active Event(s).
  *
  * Pass in name of Active Event(s) as a constant value, or expression in [_arg].
  * Multiple events can be inspected in one go, by providing an expression leading to multiple results, being the names of the events

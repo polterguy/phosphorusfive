@@ -1,0 +1,25 @@
+
+/*
+ * Creates the Active Event that returns the [vocabulary] of one or more dyncamically created Active Events.
+ *
+ * Basically reverse engineers one or more existing dynamically created Active Event(s), returning every single Active Event these
+ * Active Events are raising internally.
+ */
+create-event:sys42.utilities.get-event-vocabulary
+
+  /*
+   * First we retrieve events' entire lambda object(s).
+   */
+  sys42.utilities.get-event:x:/../*/_arg?value
+
+  /*
+   * The we retrieve the [vocabulary], with a filter pointing to all above event(s) unique node names.
+   */
+  vocabulary:x:/@sys42.utilities.get-event/*/**/$?name
+
+  /*
+   * Then we return the results of the above [vocabulary] invocation.
+   */
+  add:x:/+
+    src:x:/@vocabulary/*?value
+  return

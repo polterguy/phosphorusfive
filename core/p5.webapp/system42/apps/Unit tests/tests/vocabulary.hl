@@ -1,0 +1,47 @@
+/*
+ * Contains unit tests for testing the [vocabulary] Active Event.
+ */
+
+
+/*
+ * Checks a simple vocabulary invocation, with no filter.
+ */
+no-filter
+  vocabulary
+  if:x:/-/*?count
+    <:int:1
+    throw:Assert error, [vocabulary] returned no active events.
+
+
+/*
+ * Checks if providing a constant filter to vocabulary behaves as expected.
+ */
+static-filter
+  vocabulary:add
+  if:x:/-/*?count
+    <:int:1
+    throw:Assert error, [vocabulary] returned no active events.
+
+
+/*
+ * Checks if providing a constant "like" filter to vocabulary behaves as expected.
+ */
+static-like-filter
+  vocabulary:~create
+  if:x:/-/*?count
+    <:int:1
+    throw:Assert error, [vocabulary] returned no active events.
+
+
+/*
+ * Checks if providing an expression filter to vocabulary behaves as expected.
+ */
+expression-filter
+  _filter
+    add
+    if
+    else
+  vocabulary:x:/-/*?name
+  if:x:/-/*?count
+    !=:int:3
+    throw:Assert error, [vocabulary] returned no active events.

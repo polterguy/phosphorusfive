@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
+using System;
 
 /// <summary>
 ///     Main namespace for p5 lambda keywords
@@ -193,11 +194,17 @@ namespace p5.lambda
                 // Storing "next execution node" as fallback, to support "delete this node" logic
                 var nextFallback = idxExe.NextSibling;
 
-                // We don't execute nodes that start with an underscore "_" since these are considered "data segments".
-                // Also we don't execute nodes with no name, since these interfers with "null Active Event handlers"
+                // We don't execute nodes that start with an underscore "_" since these are considered "data segments", in addition
+                // to nodes starting with ".", since these are considered lambda callbacks.
+                // In addition, we don't execute nodes with no name, since these interfers with "null Active Event handlers"
                 if (!idxExe.Name.StartsWith ("_") && !idxExe.Name.StartsWith (".") && idxExe.Name != "") {
 
-                    // Raising the given Active Event normally, taking inheritance chain into account
+                    // Checking if there exists a Whitelist with context, and if so, verify Active Event can be legally raised.
+                    if (context.Whitelist != null && !IsLegalWhitelistEvent (context, idxExe))
+                        throw new LambdaSecurityException (
+                            string.Format ("Caller tried to invoke illegal Active Event [{0}] according to [whitelist] definition", idxExe.Name), idxExe, context);
+
+                    // Raising the given Active Event.
                     context.Raise (idxExe.Name, idxExe);
                 }
 
@@ -211,6 +218,16 @@ namespace p5.lambda
                 // But in case nextFallback also was removed, we set idxExe to null, breaking the while loop
                 idxExe = idxExe.NextSibling ?? (nextFallback != null && nextFallback.Parent != null ? nextFallback : null);
             }
+        }
+
+        /*
+         * Verifies Active Event can be legally raised according to whitelist definition.
+         */
+        private static bool IsLegalWhitelistEvent (ApplicationContext context, Node exe)
+        {
+            if (context.Whitelist[exe.Name] == null)
+                return false;
+            return true;
         }
     }
 }

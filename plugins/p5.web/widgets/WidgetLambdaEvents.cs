@@ -213,7 +213,7 @@ namespace p5.web.widgets
             // Looping through each Active Event from IEnumerable
             foreach (var idx in source) {
 
-                if (!isNative && (idx.StartsWith (".") || idx.StartsWith ("_") || idx.Contains (".")))
+                if (!isNative && (idx.StartsWith (".") || idx.StartsWith ("_") || idx.Contains ("._")))
                     continue;
 
                 // Checking to see if we have any filter
@@ -224,7 +224,7 @@ namespace p5.web.widgets
                 } else {
 
                     // We have filter(s), checking to see if Active Event name matches at least one of our filters
-                    if (filter.Any (ix => idx.Contains (ix))) {
+                    if (filter.Any (ix => ix.StartsWith ("~") ? idx.Contains (ix.Substring (1)) : idx == ix)) {
                         node.Add (new Node (eventTypeName, idx));
                     }
                 }

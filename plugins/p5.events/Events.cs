@@ -166,17 +166,17 @@ namespace p5.events
                 } else {
 
                     // We have filter(s), checking to see if Active Event name matches at least one of our filters
-                    if (filter.Any (ix => idx.Contains (ix))) {
+                    if (filter.Any (ix => ix.StartsWith ("~") ? idx.Contains (ix.Substring (1)) : idx == ix)) {
                         node.Add (new Node (eventTypeName, idx));
                     }
                 }
             }
 
             // Sorting such that keywords comes first
-            node.Sort (delegate(Node x, Node y) {
-                if (x.Get<string>(context).Contains (".") && !y.Get<string>(context).Contains ("."))
+            node.Sort (delegate (Node x, Node y) {
+                if (x.Get<string> (context).Contains (".") && !y.Get<string> (context).Contains ("."))
                     return 1;
-                else if (!x.Get<string>(context).Contains (".") && y.Get<string>(context).Contains ("."))
+                else if (!x.Get<string> (context).Contains (".") && y.Get<string> (context).Contains ("."))
                     return -1;
                 else
                     return x.Get<string> (context).CompareTo (y.Value);

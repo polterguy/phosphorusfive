@@ -84,6 +84,7 @@ namespace p5.core
         private readonly ActiveEvents _registeredActiveEvents = new ActiveEvents();
         private readonly Loader.ActiveEventTypes _typesInstanceActiveEvents;
         private ContextTicket _ticket;
+        private Node _whitelist;
 
         internal ApplicationContext (
             Loader.ActiveEventTypes instanceEvents, 
@@ -102,6 +103,14 @@ namespace p5.core
         public ContextTicket Ticket
         {
             get { return _ticket; }
+        }
+
+        /// <summary>
+        ///     Gets or sets the whitelist of legal Active Events for the current context.
+        /// </summary>
+        public Node Whitelist {
+            get { return _whitelist; }
+            set { _whitelist = value; }
         }
 
         /// <summary>
