@@ -25,7 +25,7 @@ create-event:sys42.utilities.evaluate-web-service-invocation
   else
 
     /*
-     * Regardless of what happens, from this point, we return lambda to caller
+     * Regardless of what happens, from this point, we return lambda to caller.
      */
     set-http-header
       Content-Type:application/x-hyperlambda
@@ -79,7 +79,7 @@ create-event:sys42.utilities.evaluate-web-service-invocation
     catch
 
       /*
-       * Returning exception to caller.
+       * Returning the ghist of our exception to caller.
        */
       set-http-status-code:500
       _error

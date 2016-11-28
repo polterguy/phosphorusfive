@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
-using System;
 
 /// <summary>
 ///     Main namespace for p5 lambda keywords
@@ -199,7 +198,7 @@ namespace p5.lambda
                 // In addition, we don't execute nodes with no name, since these interfers with "null Active Event handlers"
                 if (!idxExe.Name.StartsWith ("_") && !idxExe.Name.StartsWith (".") && idxExe.Name != "") {
 
-                    // Checking if there exists a Whitelist with context, and if so, verify Active Event can be legally raised.
+                    // Checking if there is a Whitelist associated with context, and if so, verify Active Event can be legally raised.
                     if (context.Whitelist != null && !IsLegalWhitelistEvent (context, idxExe))
                         throw new LambdaSecurityException (
                             string.Format ("Caller tried to invoke illegal Active Event [{0}] according to [whitelist] definition", idxExe.Name), idxExe, context);
