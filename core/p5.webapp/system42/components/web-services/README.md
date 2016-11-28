@@ -124,27 +124,11 @@ as its HTTP *[status]*, instead of _"OK"_, which it returns if invocation is suc
 ## Ninja tricks
 
 The above *[_whitelist]*, puts much trust in that your p5.data database exclusively contains things you'd like to share with the entire world. If you wish,
-you could instead of whitelisting *[select-data]*, whitelist a custom Active Event, which restricts the types of objects to select from the database, to whatever 
+you could create a *[post-condition]* to your *[select-data]* whitelist entry, which restricts the types of objects to select from the database, to whatever 
 you would like to share with the entire world.
 
-Below is an example of creating an Active Event, that exclusively allows the user to select *[p5.page]* objects, in addition to *[sys42.app-settings]*.
-
-```
-create-event:sys42.samples.select-data
-  switch:x:/../*/_arg?value
-    case:p5.page
-      select-data:x:/*/*/p5.page
-      insert-before:x:/../0
-        src:x:/@select-data/*
-    case:sys42.app-settings
-      select-data:x:/*/*/sys42.app-settings
-      insert-before:x:/../0
-        src:x:/@select-data/*
-    default
-      throw:Sorry, I can't allow you to do that ...
-```
-
-If you evaluate the above Hyperlambda in your Executor, and then create another web service, and give it the URL of _"ws2"_, with the following code.
+Below is an example of a web service endpoint that exclusivly allows the caller to select objects of type *[p5.page]*. Paste it into another lambda page, 
+and make sure its URL becomes _"ws2"_.
 
 ```
 sys42.utilities.evaluate-web-service-invocation
@@ -155,49 +139,37 @@ sys42.utilities.evaluate-web-service-invocation
     insert-after
     eval-x
     return
-    sys42.samples.select-data
-      select-data
-      switch
-      case
-      default
+    select-data
+      post-condition:children-are-one-of
+        p5.page
 ```
 
-Then you would end up with a safer version of our original web service, that only allows the user to select either *[p5.page]* objects, and/or *[sys42.app-settings]*
-objects form the database.
-
-Notice, the above *[_whitelist]* definition, allows the *[select-data]* event to be raised, in addition to some other events, but exclusively from inside 
-your *[sys42.samples.select-data]* Active Event. This has to be done, since the *[whitelist]* that your web service is being evaluated from within, changes your 
-ApplicationContext, and will be passed into also Active Events. Meaning, unless we explicitly allow for *[select-data]* to be allowed inside of *[sys42.samples.select-data]*, 
-then as we reach our *[select-data]* inside our *[sys42.samples.select-data]* invocation, then this will raise an exception.
-
-To invoke the above web service, you could use something resembling the following.
+Then you would end up with a safer version of our original web service, that only allows the user to select *[p5.page]* objects from the database. To invoke 
+the above web service, you could use something resembling the following.
 
 ```
 p5.net.http-post:"http://localhost:1176/ws2"
   Content-Type:application/x-hyperlambda
   content
-    sys42.samples.select-data:p5.page
-    set:x:/@sys42.samples.select-data/*/*(/lambda|/html)
+    select-data:x:/*/*/p5.page
+    set:x:/@select-data/*/*(/lambda|/html)
     insert-before:x:
-      src:x:/@sys42.samples.select-data/*
+      src:x:/@select-data/*
 ```
 
 The latter web service example would probably be highly more safe than the example we started out with, since it restricts the objects clients can select from the database,
-to only two different types of objects. Notice, if you completely trust a specific Active Event, you can whitelist its entire body, with the following code instead. Replace
-the lambda content of your _"ws2"_ page with the following.
+to only *[p5.page]* types of objects.
+
+If you try to invoke your web service, to select another type of object, it will throw an exception. Try the following to see it in action.
 
 ```
-sys42.utilities.evaluate-web-service-invocation
-  _whitelist
-    set
-    add
-    insert-before
-    insert-after
-    eval-x
-    return
-    sys42.samples.select-data
-      *
+p5.net.http-post:"http://localhost:1176/ws2"
+  Content-Type:application/x-hyperlambda
+  content
+    select-data:x:/*/*/sys42.app-settings
+    insert-before:x:
+      src:x:/@select-data/*
 ```
 
-The above two examples will still restrict injection of lambda nodes into your invocation.
-
+Notice, the result of the above *[select-data]* is removed before the exception is thrown, to make sure the act of throwing the exception, does not yield sensitive data 
+back to a malicious client.

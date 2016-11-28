@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
+using System;
 
 /// <summary>
 ///     Main namespace for p5 lambda keywords
@@ -198,49 +199,8 @@ namespace p5.lambda
                 // In addition, we don't execute nodes with no name, since these interfers with "null Active Event handlers"
                 if (!idxExe.Name.StartsWith ("_") && !idxExe.Name.StartsWith (".") && idxExe.Name != "") {
 
-                    // Checking if there is a Whitelist associated with context, and if so, verify Active Event can be legally raised.
-                    if (context.Whitelist != null) {
-
-                        // Whitelist provided, making sure event is legal.
-                        if (!IsLegalWhitelistEvent (context, idxExe))
-                            throw new LambdaSecurityException (
-                                string.Format ("Caller tried to invoke illegal Active Event [{0}] according to [whitelist] definition", idxExe.Name), idxExe, context);
-
-                        // Creating a new local whitelist, if we should.
-                        if (context.Whitelist[idxExe.Name] != null && context.Whitelist[idxExe.Name].Children.Count > 0) {
-
-                            // Checking for "lambda injection attack".
-                            if (idxExe.Children.Count (ix => ix.Name.StartsWith ("_") || ix.Name.StartsWith (".")) != idxExe.Children.Count)
-                                throw new LambdaSecurityException (
-                                    string.Format ("Lambda injection attack encountered, Active Event [{0}] invocation tried to inject lambda code to its evaluation", idxExe.Name), idxExe, context);
-
-                            // Stacking up a new whitelist, safe-guarding against "lambda injection attack".
-                            var oldWhitelist = context.Whitelist.Clone ();
-                            try {
-
-                                context.Whitelist.AddRange (context.Whitelist[idxExe.Name].Children);
-                                context.Whitelist[idxExe.Name].UnTie ();
-
-                                // Raising the given Active Event, with our new whitelist.
-                                context.Raise (idxExe.Name, idxExe);
-
-                            } finally {
-
-                                // Setting back whitelist to what it was.
-                                context.Whitelist = oldWhitelist;
-                            }
-
-                        } else {
-
-                            // Raising the given Active Event, without a new whitelist.
-                            context.Raise (idxExe.Name, idxExe);
-                        }
-                    } else {
-
-                        // Raising the given Active Event.
-                        context.Raise (idxExe.Name, idxExe);
-
-                    }
+                    // Moving on to execution of event.
+                    ExecuteSingleEvent (context, idxExe);
                 }
 
                 // Checking if we're supposed to return from evaluation
@@ -256,15 +216,53 @@ namespace p5.lambda
         }
 
         /*
-         * Verifies Active Event can be legally raised according to whitelist definition.
+         * Executes a single Active Event.
          */
-        private static bool IsLegalWhitelistEvent (ApplicationContext context, Node exe)
+        private static void ExecuteSingleEvent (ApplicationContext context, Node idxExe)
         {
-            if (context.Whitelist["*"] != null)
-                return true;
-            if (context.Whitelist[exe.Name] == null)
-                return false;
-            return true;
+            // Checking if there is a Whitelist associated with context, and if so, verify Active Event can be legally raised.
+            if (context.Whitelist != null) {
+
+                // Whitelist execution.
+                ExecuteSingleEventWithWhitelist (context, idxExe);
+
+            } else {
+
+                // Raising the given Active Event, without any whitelist definition.
+                context.Raise (idxExe.Name, idxExe);
+            }
+        }
+
+        /*
+         * Executes a single event according to whitelist definition.
+         */
+        private static void ExecuteSingleEventWithWhitelist (ApplicationContext context, Node exe)
+        {
+            // Whitelist provided, making sure event is legal.
+            var definition = context.Whitelist[exe.Name];
+            if (definition == null) {
+
+                // Active Event invocation did not exist in Whitelist definition.
+                throw new LambdaSecurityException (
+                    string.Format ("Caller tried to invoke illegal Active Event [{0}] according to [whitelist] definition", exe.Name), exe, context);
+            }
+
+            // Raising the given Active Event, using the existing whitelist.
+            context.Raise (exe.Name, exe);
+
+            // Checking if there exists one or more [post-condition] objects with our definition.
+            if (definition["post-condition"] != null) {
+
+                // Looping through all [post-conditions] for Active Event.
+                foreach (var idxCondition in definition.Children.Where (ix => ix.Name == "post-condition")) {
+
+                    // Raising [post-condition] Active Event, which will throw if condition is not met.
+                    var args = new Node ();
+                    args.Add ("post-condition", idxCondition);
+                    args.Add ("lambda", exe);
+                    context.Raise (".p5.lambda.whitelist.post-condition." + idxCondition.Get<string>(context), args);
+                }
+            }
         }
     }
 }
