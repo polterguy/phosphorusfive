@@ -199,12 +199,43 @@ namespace p5.lambda
                 if (!idxExe.Name.StartsWith ("_") && !idxExe.Name.StartsWith (".") && idxExe.Name != "") {
 
                     // Checking if there is a Whitelist associated with context, and if so, verify Active Event can be legally raised.
-                    if (context.Whitelist != null && !IsLegalWhitelistEvent (context, idxExe))
-                        throw new LambdaSecurityException (
-                            string.Format ("Caller tried to invoke illegal Active Event [{0}] according to [whitelist] definition", idxExe.Name), idxExe, context);
+                    if (context.Whitelist != null) {
 
-                    // Raising the given Active Event.
-                    context.Raise (idxExe.Name, idxExe);
+                        // Whitelist provided, making sure event is legal.
+                        if (!IsLegalWhitelistEvent (context, idxExe))
+                            throw new LambdaSecurityException (
+                                string.Format ("Caller tried to invoke illegal Active Event [{0}] according to [whitelist] definition", idxExe.Name), idxExe, context);
+
+                        // Creating a new local whitelist, if we should.
+                        if (context.Whitelist[idxExe.Name] != null && context.Whitelist[idxExe.Name].Children.Count > 0) {
+
+                            // Stacking up a new whitelist.
+                            var oldWhitelist = context.Whitelist.Clone ();
+                            try {
+
+                                context.Whitelist.AddRange (context.Whitelist[idxExe.Name].Children);
+                                context.Whitelist[idxExe.Name].UnTie ();
+
+                                // Raising the given Active Event, with our new whitelist.
+                                context.Raise (idxExe.Name, idxExe);
+
+                            } finally {
+
+                                // Setting back whitelist to what it was.
+                                context.Whitelist = oldWhitelist;
+                            }
+
+                        } else {
+
+                            // Raising the given Active Event, without a new whitelist.
+                            context.Raise (idxExe.Name, idxExe);
+                        }
+                    } else {
+
+                        // Raising the given Active Event.
+                        context.Raise (idxExe.Name, idxExe);
+
+                    }
                 }
 
                 // Checking if we're supposed to return from evaluation
@@ -224,6 +255,8 @@ namespace p5.lambda
          */
         private static bool IsLegalWhitelistEvent (ApplicationContext context, Node exe)
         {
+            if (context.Whitelist["*"] != null)
+                return true;
             if (context.Whitelist[exe.Name] == null)
                 return false;
             return true;

@@ -866,6 +866,7 @@
     <Content Include="system42\apps\Unit tests\tests\vocabulary.hl" />
     <Content Include="system42\components\web-services\startup.hl" />
     <Content Include="system42\components\web-services\startup\sys42.utilities.evaluate-web-service-invocation.hl" />
+    <Content Include="system42\components\web-services\README.md" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />
