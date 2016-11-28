@@ -618,10 +618,11 @@ namespace p5.exp
             if (eventNode.Value is Expression) {
 
                 // Evaluating node, and stuffing results into arguments
+                int idxNo = 0;
                 foreach (var idx in Iterate<object> (context, eventNode)) {
 
                     // Adding currently iterated results into execution object
-                    lambda.Add ("_arg", idx);
+                    lambda.Insert (idxNo++, new Node ("_arg", idx));
                 }
             } else if (eventNode.Value != null) {
 
@@ -633,9 +634,9 @@ namespace p5.exp
             // But skipping all "empty name" arguments, since they're formatting parameters.
             // Notice the ToList invocation, which is necessary, since foreach changes args' Children collection.
             // Also notice that we insert arguments at the top of lambda object evaluated, in order of appearance.
-            int idxNo = 0;
+            int idxNo2 = 0;
             foreach (var idxArg in eventNode.Children.Where (ix => ix.Name != "").ToList ()) {
-                lambda.Insert (idxNo++, idxArg);
+                lambda.Insert (idxNo2++, idxArg);
             }
 
             // Removing all nodes from eventNode, since there might be ampty formatting nodes remaining,

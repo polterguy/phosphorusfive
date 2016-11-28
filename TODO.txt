@@ -51,4 +51,6 @@ TODO before release
 
 * Use ReaderWriteLockSlim in p5.data, and other places where we create locks.
 
+* Fix HTML filter, it sometimes chokes.
+
 

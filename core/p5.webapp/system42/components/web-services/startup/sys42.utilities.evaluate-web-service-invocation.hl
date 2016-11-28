@@ -1,0 +1,92 @@
+﻿
+/*
+ * Creates the Active Event that evaluates a Web Service invocation.
+ *
+ * Will parse the incoming request HTTP POST request body, evaluate it, and [echo] its result back to client.
+ * Requires the request to be of type POST, and Hyperlambda to be evaluated to be found in the POST body.
+ */
+create-event:sys42.utilities.evaluate-web-service-invocation
+
+  /*
+   * Sanity check.
+   */
+  get-http-method
+  get-http-header:Content-Type
+  if:x:/@get-http-method?value
+    !=:POST
+    or:x:/@get-http-header/*/Content-Type?value
+      !=:application/x-hyperlambda
+
+    /*
+     * Echoing feedback to client, explaining that we expect an HTTP POST Web Service invocation here, with a Hyperlambda body.
+     */
+    echo:@"This is a Web Service endpoint, where we expect Hyperlambda to be found in the request body."
+
+  else
+
+    /*
+     * Regardless of what happens, from this point, we return lambda to caller
+     */
+    set-http-header
+      Content-Type:application/x-hyperlambda
+
+    /*
+     * Making sure we wrap the entire execution of page inside a [try]/[catch] block.
+     */
+    try
+
+      /*
+       * Both of the above criteria were met, and we can continue evaluating Web Service request.
+       * First we retrieve the HTTP POST body.
+       */
+      get-request-body
+
+      /*
+       * Then we check if a [_whitelist] argument was supplied during invocation, and if so, we make sure we use it.
+       */
+      if:x:/../*/_whitelist
+
+        /*
+         * Caller specified a [_whitelist] argument, appending body of HTTP request into a [whitelist] invocation, with [events] being the
+         * specified [_whitelist] collection's content, anda [.lambda] being the HTTP request body.
+         */
+        add:x:/..if/*/whitelist/*/events
+          src:x:/../*/_whitelist/*
+        add:x:/..if/*/whitelist/*/.lambda
+          src:x:/@get-request-body/*
+        whitelist
+          events
+          .lambda
+
+        /*
+         * Returning results of above [whitelist] invocation to caller, before we return results to caller.
+         * Notice, we return it as [_result] node being the root node of invocation.
+         */
+        set:x:/@whitelist?name
+          src:_success
+        echo:x:/@_success
+
+      else
+
+        /*
+         * No [_whitelist] argument was supplied, simply evaluating body as is.
+         */
+        eval:x:/@get-request-body
+        set:x:/@eval?name
+          src:_result
+        echo:x:/@_result
+
+    catch
+
+      /*
+       * Returning exception to caller.
+       */
+      set-http-status-code:500
+      _error
+      add:x:/@_error
+        src:x:/@message
+      add:x:/@_error
+        src:x:/@type
+      add:x:/@_error
+        src:x:/@stack-trace
+      echo:x:/@_error

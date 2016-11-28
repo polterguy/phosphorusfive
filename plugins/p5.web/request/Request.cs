@@ -64,7 +64,6 @@ namespace p5.web.ui.request {
                 // Some sort of "textual" based type of request
                 StreamReader reader = new StreamReader (HttpContext.Current.Request.InputStream);
                 var code = Utilities.Convert<Node> (context, reader.ReadToEnd ());
-                e.Args.Value = null;
                 e.Args.AddRange (code.Children);
             } else if (RequestIsText (e.Args, context)) {
 
