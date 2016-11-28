@@ -124,7 +124,7 @@ as its HTTP *[status]*, instead of _"OK"_, which it returns if invocation is suc
 ## Ninja tricks
 
 The above *[_whitelist]*, puts much trust in that your p5.data database exclusively contains things you'd like to share with the entire world. If you wish,
-you could instead of whitelisting *[delete-data]*, whitelist a custom Active Event, which restricts the types of objects to select from the database, to whatever 
+you could instead of whitelisting *[select-data]*, whitelist a custom Active Event, which restricts the types of objects to select from the database, to whatever 
 you would like to share with the entire world.
 
 Below is an example of creating an Active Event, that exclusively allows the user to select *[p5.page]* objects, in addition to *[sys42.app-settings]*.
@@ -183,7 +183,7 @@ p5.net.http-post:"http://localhost:1176/ws2"
 ```
 
 The latter web service example would probably be highly more safe than the example we started out with, since it restricts the objects clients can select from the database,
-to only two different types of objects. Notice,if you completely trust a specific Active Event, you can whitelist its entire body, with the following code instead. Replace
+to only two different types of objects. Notice, if you completely trust a specific Active Event, you can whitelist its entire body, with the following code instead. Replace
 the lambda content of your _"ws2"_ page with the following.
 
 ```
@@ -198,4 +198,6 @@ sys42.utilities.evaluate-web-service-invocation
     sys42.samples.select-data
       *
 ```
+
+The above two examples will still restrict injection of lambda nodes into your invocation.
 

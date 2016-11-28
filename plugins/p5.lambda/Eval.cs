@@ -209,7 +209,12 @@ namespace p5.lambda
                         // Creating a new local whitelist, if we should.
                         if (context.Whitelist[idxExe.Name] != null && context.Whitelist[idxExe.Name].Children.Count > 0) {
 
-                            // Stacking up a new whitelist.
+                            // Checking for "lambda injection attack".
+                            if (idxExe.Children.Count (ix => ix.Name.StartsWith ("_") || ix.Name.StartsWith (".")) != idxExe.Children.Count)
+                                throw new LambdaSecurityException (
+                                    string.Format ("Lambda injection attack encountered, Active Event [{0}] invocation tried to inject lambda code to its evaluation", idxExe.Name), idxExe, context);
+
+                            // Stacking up a new whitelist, safe-guarding against "lambda injection attack".
                             var oldWhitelist = context.Whitelist.Clone ();
                             try {
 
