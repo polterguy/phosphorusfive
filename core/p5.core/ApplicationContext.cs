@@ -23,6 +23,7 @@
 
 using System;
 using System.Linq;
+using System.Security;
 using System.Collections.Generic;
 
 /// <summary>
@@ -203,7 +204,43 @@ namespace p5.core
         /// <param name="pars">arguments to pass into the Active Event</param>
         public Node Raise (string name, Node pars = null)
         {
-            return _registeredActiveEvents.Raise (name, pars, this, _ticket);
+            if (Whitelist != null && !name.StartsWith (".") && !name.StartsWith ("_")) {
+                return ExecuteSingleEventWithWhitelist (name, pars);
+            } else {
+                return _registeredActiveEvents.Raise (name, pars, this, _ticket);
+            }
+        }
+
+        /*
+         * Executes a single event according to whitelist definition.
+         */
+        private Node ExecuteSingleEventWithWhitelist (string name, Node pars)
+        {
+            // Whitelist provided, making sure event is legal.
+            var definition = Whitelist[name];
+            if (definition == null) {
+
+                // Active Event invocation did not exist in Whitelist definition.
+                throw new SecurityException (string.Format ("Caller tried to invoke illegal Active Event [{0}] according to [whitelist] definition", name));
+            }
+
+            // Raising the given Active Event, using the existing whitelist.
+            var retVal = _registeredActiveEvents.Raise (name, pars, this, _ticket);
+
+            // Checking if there exists one or more [post-condition] objects with our definition.
+            if (definition["post-condition"] != null) {
+
+                // Looping through all [post-conditions] for Active Event.
+                foreach (var idxCondition in definition.Children.Where (ix => ix.Name == "post-condition")) {
+
+                    // Raising [post-condition] Active Event, which will throw if condition is not met.
+                    var args = new Node ();
+                    args.Add ("post-condition", idxCondition);
+                    args.Add ("lambda", pars);
+                    Raise (".p5.lambda.whitelist.post-condition." + idxCondition.Get<string> (this), args);
+                }
+            }
+            return retVal;
         }
 
         /*
