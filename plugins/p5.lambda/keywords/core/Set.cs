@@ -27,26 +27,22 @@ using p5.lambda.helpers;
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping the [set] keyword in p5 lambda
+    ///     Class wrapping the [set] Active Event.
     /// </summary>
     public static class Set
     {
         /// <summary>
-        ///     The [set] keyword, allows you to change nodes through p5 lambda
+        ///     The [set] keyword, allows you to change nodes, values and names of nodes.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set")]
         public static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
-            // Asserting destination is expression.
-            var destEx = Helper.GetDestinationExpression (context, e.Args, "set");
-
-            // Finding source node, and invoking source event to retrieve source for operation.
             var src = Helper.GetSourceValue (context, e.Args);
 
             // Updating destination(s) with value of source.
-            foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
+            foreach (var idxDestination in Helper.GetDestinationMatch (context, e.Args, "set", false)) {
 
                 // Single source, or null source.
                 idxDestination.Value = src;

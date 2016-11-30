@@ -28,12 +28,12 @@ using p5.lambda.helpers;
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping conditional p5 lambda keywords, such as [if], [else-if] and [else]
+    ///     Class wrapping conditional Active Events, such as [if], [else-if] and [else]
     /// </summary>
     public static class Branching
     {
         /// <summary>
-        ///     The [if] keyword allows for conditional execution of p5 lambda nodes
+        ///     The [if] Active Event allows for conditional execution of a lambda object.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -50,7 +50,7 @@ namespace p5.lambda.keywords.core
         }
 
         /// <summary>
-        ///     The [else-if] keyword allows for conditional execution of p5 lambda nodes
+        ///     The [else-if] Active Event allows for conditional execution of a lambda object.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -58,103 +58,79 @@ namespace p5.lambda.keywords.core
         public static void lambda_else_if (ApplicationContext context, ActiveEventArgs e)
         {
             // Syntax checking statement, making sure it has either an [if] or [else-if] as previous sibling
-            VerifyElseSyntax (e.Args, context, "else-if");
+            VerifyElseSyntax (e.Args, context);
 
             // Checking if previous [if] or [else-if] returned true, and if not, evaluating current node
-            if (PreviousConditionEvaluatedTrue (e.Args, context)) {
+            if (!PreviousConditionEvaluatedTrue (e.Args, context)) {
 
-                // Clearing entire scope, setting value of [else-if] to false, 
-                // before returning, without even evaluating condition
-                e.Args.Clear ();
-                e.Args.Value = false;
-                return;
-            }
+                // Evaluating condition
+                var condition = new Conditions ();
+                if (condition.Evaluate (context, e.Args)) {
 
-            // Evaluating condition
-            var condition = new Conditions ();
-            if (condition.Evaluate (context, e.Args)) {
-
-                // Executing current scope since evaluation of condition yielded true
-                condition.ExecuteCurrentScope (context, e.Args);
+                    // Executing current scope since evaluation of condition yielded true
+                    condition.ExecuteCurrentScope (context, e.Args);
+                }
             }
         }
 
         /// <summary>
-        ///     The [else] keyword allows for conditional execution of p5 lambda nodes
+        ///     The [else] Active Event allows for conditional execution of a lambda object.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "else")]
         public static void lambda_else (ApplicationContext context, ActiveEventArgs e)
         {
-            // Basic syntax checking
-            if (e.Args.Value != null)
-                throw new LambdaException ("[else] does not take any arguments", e.Args, context);
-
             // Syntax checking statement, making sure it has either an [if] or [else-if] as its previous sibling
-            VerifyElseSyntax (e.Args, context, "else");
+            VerifyElseSyntax (e.Args, context);
             
             // Checking if previous conditional statement yielded true, and if not, evaluating current node
-            if (PreviousConditionEvaluatedTrue (e.Args, context)) {
+            if (!PreviousConditionEvaluatedTrue (e.Args, context)) {
 
-                // Not executing [else], since previous conditional statement evaluated to true!
-                return;
-            }
-
-            // Since no previous conditions evaluated to true, we simply execute this scope, 
-            // without checking any conditions, since there are none!
-            e.Args.Value = true;
-            var condition = new Conditions ();
-            condition.ExecuteCurrentScope (context, e.Args);
-        }
-
-        /*
-         * Checks if previous conditional statement ([if] or [else-if]) evaluated to true, and if so
-         * return true, else return false to caller
-         */
-        private static bool PreviousConditionEvaluatedTrue (Node args, ApplicationContext context)
-        {
-            // Retrieving previous sibling
-            Node curIdx = args.PreviousSibling;
-
-            // Looping until we reach [if], or true as value of [else-if]
-            while (true) {
-
-                // Finding evaluation value of currently iterated conditional statement
-                var val = curIdx.Get<bool> (context);
-                if (val) {
-
-                    // Currently iterated conditional statement yielded true
-                    return true;
-                } else if (curIdx.Name == "if") {
-
-                    // No previous conditional statements evaluated to true, returning false to caller
-                    return false;
-                }
-
-                // Finding previous statement
-                curIdx = curIdx.PreviousSibling;
+                // Since no previous conditions evaluated to true, we simply execute this scope, without checking any conditions, 
+                // since there are none!
+                context.Raise ("eval-mutable", e.Args);
             }
         }
 
         /*
-         * Verifies that an [else] or [else-if] has a previous [if]
+         * Verifies that an [else] or [else-if] has a previous [if].
          */
-        private static void VerifyElseSyntax (Node node, ApplicationContext context, string statement)
+        private static void VerifyElseSyntax (Node args, ApplicationContext context)
         {
             /*
              * Note, we are taking advantage of that [if] never verifies its syntax here, such that
              * all [else] and [else-if] statements that runs through this, verifies their previous
              * statements are either [else-if] or [else], which means that it becomes impossible to
-             * start a conditional chain with anything but an [if] statement
+             * start a conditional chain with anything but an [if] statement.
              */
 
             // Retrieving previous node
-            var previous = node.PreviousSibling;
+            var previous = args.PreviousSibling;
 
-            // Making sure previous statement is of type [if] or [else-if]
+            // Making sure previous statement is of type [if] or [else-if].
             if (previous == null || (previous.Name != "if" && previous.Name != "else-if"))
-                throw new LambdaException ("[" + statement + "] must have a matching [if] and/or [else-if] as its previous sibling", node, context);
+                throw new LambdaException ("[" + args.Name + "] must have a matching [if] as its previous sibling", args, context);
+        }
+
+        /*
+         * Checks if a previous conditional statement ([if] or [else-if]) evaluated to true, and if so return true, otherwise return false.
+         */
+        private static bool PreviousConditionEvaluatedTrue (Node args, ApplicationContext context)
+        {
+            // Looping as long as we have conditional statements as previous siblings.
+            for (var ix = args.PreviousSibling; ix != null && (ix.Name == "if" || ix.Name == "else-if"); ix = ix.PreviousSibling) {
+
+                // Checking if currently iterated conditional Active Event evaluated to true.
+                if (ix.Value is bool && (bool)ix.Value) {
+
+                    // Currently iterated conditional statement yielded true.
+                    return true;
+                }
+            }
+
+            // No previous conditional Active Event(s) evaluated to true.
+            return false;
         }
     }
 }

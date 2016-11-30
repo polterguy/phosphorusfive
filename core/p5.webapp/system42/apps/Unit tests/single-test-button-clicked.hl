@@ -70,9 +70,9 @@ if:x:/-/*?value
 find-widget
   _file-result:x:/../*/_file?value
 join:x:/../*/sys42.utilities.execute-lambda-file/*/_success?value
-  sep:"]\r\n</li><li>["
+  sep:"\r\n</li><li>"
 set-widget-property:x:/-2/*/*?value
-  innerValue:@"{0}<pre><ol><li>[{1}]</li></ol></pre>"
+  innerValue:@"{0}<pre><ol><li>{1}</li></ol></pre>"
     :x:/../*/_html?value
     :x:/././-?value
 

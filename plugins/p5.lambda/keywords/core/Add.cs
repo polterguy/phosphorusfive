@@ -28,7 +28,7 @@ using p5.lambda.helpers;
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping the [add] Active Event
+    ///     Class wrapping the [add] Active Event.
     /// </summary>
     public static class Add
     {
@@ -42,11 +42,11 @@ namespace p5.lambda.keywords.core
         {
             // Finding source nodes, and returning early if no source is given.
             var src = Helper.GetSourceNodes (context, e.Args);
-            if (src == null || src.Count == 0)
+            if (src == null)
                 return;
 
             // Looping through each destination, adding all source nodes to it, cloning them before adding them.
-            foreach (var idxDestination in Helper.GetDestinationNodeMatch (context, e.Args, "add")) {
+            foreach (var idxDestination in Helper.GetDestinationMatch (context, e.Args, "add", true)) {
 
                 idxDestination.Node.AddRange (src.Select (ix => ix.Clone ()));
             }

@@ -55,10 +55,10 @@ _eval-content
   try
     load-file:x:/../*/_dn/#?name
     join:x:/-/*/*?name
-      sep:"]\r\n</li><li>["
+      sep:"\r\n</li><li>"
     eval-x:x:/..try/*/return/*
     return
-      innerValue:<pre><ol><li>[{0}]</li></ol></pre>
+      innerValue:<pre><ol><li>{0}</li></ol></pre>
         :x:/..try/*/join?value
   catch
     return:Syntax error in Hyperlambda file

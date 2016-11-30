@@ -397,6 +397,20 @@ namespace p5.core
         }
 
         /// <summary>
+        ///     Inserts a child node to the current node's children collection
+        /// </summary>
+        /// <param name="node">node to add</param>
+        /// <param name="index">where to add</param>
+        public Node InsertRange (int index, IEnumerable<Node> nodes)
+        {
+            foreach (var idxNode in nodes) {
+                idxNode.Parent = this;
+                _children.Insert (index++, idxNode);
+            }
+            return this;
+        }
+
+        /// <summary>
         ///     Adds a range of nodes
         /// </summary>
         /// <param name="nodes">nodes to add</param>

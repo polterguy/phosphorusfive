@@ -21,11 +21,11 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.Linq;
+using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
-using System.Collections.Generic;
-using System;
 
 /// <summary>
 ///     Contains helper classes for lambda Active Events.
@@ -38,37 +38,18 @@ namespace p5.lambda.helpers
     public class Helper
     {
         /// <summary>
-        ///     Verifies node's value is an expression, and returns that expression to caller.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="expNode"></param>
-        /// <param name="activeEventName"></param>
-        /// <returns></returns>
-        static public Expression GetDestinationExpression (ApplicationContext context, Node expNode, string activeEventName)
-        {
-            // Asserting destination is expression.
-            var exp = expNode.Value as Expression;
-            if (exp == null)
-                throw new LambdaException (
-                    string.Format ("Not a valid destination expression given to [{0}], value was '{1}', expected expression", activeEventName, expNode.Value),
-                    expNode,
-                    context);
-            return exp;
-        }
-
-        /// <summary>
         ///     Retrieves a node match object.
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="expNode"></param>
+        /// <param name="expressionNode"></param>
         /// <param name="activeEventName"></param>
         /// <returns></returns>
-        static public Match GetDestinationNodeMatch (ApplicationContext context, Node expNode, string activeEventName)
+        static public Match GetDestinationMatch (ApplicationContext context, Node expressionNode, string activeEventName, bool mustBeNodeTypeExpression)
         {
-            var ex = GetDestinationExpression (context, expNode, activeEventName);
-            var match = ex.Evaluate (context, expNode, expNode);
-            if (match.TypeOfMatch != Match.MatchType.node)
-                throw new LambdaException (string.Format ("Destination for [{0}] was not a node type of expression", activeEventName), expNode, context);
+            var ex = GetDestinationExpression (context, expressionNode, activeEventName);
+            var match = ex.Evaluate (context, expressionNode, expressionNode);
+            if (mustBeNodeTypeExpression && match.TypeOfMatch != Match.MatchType.node)
+                throw new LambdaException (string.Format ("Destination for [{0}] was not a node type of expression", activeEventName), expressionNode, context);
             return match;
         }
 
@@ -95,24 +76,53 @@ namespace p5.lambda.helpers
         /// <returns></returns>
         static public List<Node> GetSourceNodes (ApplicationContext context, Node args)
         {
-            // Retrieving first node with a legal Active Event name.
-            var srcNode = args.Children.Find (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_"));
+            // Retrieving all source nodes with a legal Active Event name.
+            var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_")).ToList ();
 
-            // If no source node was given, we assume no source was given.
-            if (srcNode == null)
+            // If no source nodes was given, we return no source early.
+            if (srcNodes.Count == 0)
                 return null;
 
-            // Raising source Active Event and returning results.
-            context.Raise (srcNode.Name, srcNode);
+            // Looping through all source nodes, invoking Active Events, and adding into return value.
+            var retVal = new List<Node> ();
+            foreach (var idxSrc in srcNodes) {
 
-            // We prioritize value if it is existing after source Active Event invocation.
-            // Fallback is children of invocation node.
-            // Notice, if value alread is a node, we add it as it is, otherwise we convert it, and adds its children, since conversion will create a root node for us.
-            return new List<Node> (srcNode.Value != null 
-                ? (srcNode.Value is Node 
-                    ? new List<Node> (new Node[] { srcNode.Value as Node }) 
-                    : srcNode.Get<Node> (context).Children) 
-                : srcNode.Children);
+                // Raising source Active Event.
+                context.Raise (idxSrc.Name, idxSrc);
+
+                // We prioritize value if it is existing after source Active Event invocation.
+                // Fallback is children of invocation node.
+                // Notice, if value alread is a node, we add it as it is, otherwise we convert it, and adds its children, since conversion will create a root node for us.
+                if (idxSrc.Value != null) {
+                    if (idxSrc.Value is Node) {
+                        retVal.Add (idxSrc.Value as Node);
+                    } else {
+                        retVal.AddRange (idxSrc.Get<Node> (context).Children);
+                    }
+                } else {
+                    retVal.AddRange (idxSrc.Children);
+                }
+            }
+            return retVal.Count > 0 ? retVal : null;
+        }
+
+        /// <summary>
+        ///     Verifies node's value is an expression, and returns that expression to caller.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="expressionNode"></param>
+        /// <param name="activeEventName"></param>
+        /// <returns></returns>
+        static private Expression GetDestinationExpression (ApplicationContext context, Node expressionNode, string activeEventName)
+        {
+            // Asserting destination is expression.
+            var ex = expressionNode.Value as Expression;
+            if (ex == null)
+                throw new LambdaException (
+                    string.Format ("Not a valid destination expression given to [{0}], value was '{1}', expected expression", activeEventName, expressionNode.Value),
+                    expressionNode,
+                    context);
+            return ex;
         }
     }
 }

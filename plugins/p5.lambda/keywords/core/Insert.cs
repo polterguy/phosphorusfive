@@ -33,7 +33,7 @@ namespace p5.lambda.keywords.core
     public static class Insert
     {
         /// <summary>
-        ///     The [insert-before] event allows you to insert nodes before another node.
+        ///     The [insert-before] event allows you to insert nodes before any specified node(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -42,9 +42,9 @@ namespace p5.lambda.keywords.core
         {
             InsertNodes (context, e.Args, false);
         }
-        
+
         /// <summary>
-        ///     The [insert-after] keyword allows you to insert nodes after another node
+        ///     The [insert-after] event allows you to insert nodes after any specified node(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -65,11 +65,11 @@ namespace p5.lambda.keywords.core
                 return;
 
             // Looping through each destination, and inserting all source node at specified position, in order of appearance.
-            foreach (var idxDestination in Helper.GetDestinationNodeMatch (context, args, "add")) {
+            foreach (var idxDestination in Helper.GetDestinationMatch (context, args, after ? "insert-after" : "insert-before", true)) {
 
                 // Figuring out insertion point before we insert nodes.
                 var index = idxDestination.Node.Parent.IndexOf (idxDestination.Node) + (after ? 1 : 0);
-                idxDestination.Node.Parent.Children.InsertRange (index, src.Select (ix => ix.Clone ()));
+                idxDestination.Node.Parent.InsertRange (index, src.Select (ix => ix.Clone ()));
             }
         }
     }

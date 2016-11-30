@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using p5.exp;
@@ -34,29 +33,36 @@ using p5.exp.exceptions;
 namespace p5.lambda.helpers
 {
     /// <summary>
-    ///     Class wrapping commonalities for conditional statements
+    ///     Class wrapping commonalities for conditional Active Events, such as [if], [else-if] and [while].
     /// </summary>
     public class Conditions
     {
-        // Used as buffer for all comparison operators and logical operators in system
+        // Used as buffer for all comparison operators and logical operators in system, such as [or], [and], [=] and [!=] etc.
+        // Only retreieved once, and cached for the duration of application life cycle.
         private static Node _operators;
 
-        // Used to hold the number of operators used to evaluate the root condition
-        // This is used to calculate [offset] if condition evaluates to true, such that we
-        // do not raise conditional operator Active Events as part of the execution process
-        // of current conditional scope
+        // Used to hold the number of operators used to evaluate the root conditional node.
+        // This is used to calculate [offset] if condition evaluates to true, such that we do not raise conditional operator Active Events 
+        // as part of the execution process of the current conditional scope.
         private int _noRootConditions = -1;
 
         /*
-         * Recursively run through conditions
+         * Recursively run through conditions.
          */
+        /// <summary>
+        ///     Evaluate a conditional Active Event node, and returns either true if condition yields true, otherwise false.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public bool Evaluate (ApplicationContext context, Node args)
         {
-            // Looping through all conditional children nodes
+            // Retrieving all conditional children nodes.
             var conditions = GetConditionalEventNodes (context, args).ToList ();
 
-            // Storing how many operators are part of our conditional statement, such that we can now the offset we should use later
-            // But we only store this number on the "root condition node", which means our first run-through
+            // Storing how many operators are part of our root conditional node, such that we can now the offset we should use later.
+            // We only store this number on the "root condition node", which means our first run-through, and since this method recursively invokes
+            // itself indirectly multiple times, we check if value is -1 before we decide if we should set it or not.
             if (_noRootConditions == -1)
                 _noRootConditions = conditions.Count;
 
@@ -126,30 +132,16 @@ namespace p5.lambda.helpers
          */
         public void ExecuteCurrentScope (ApplicationContext context, Node args)
         {
-            // Removing any "formatting string" children nodes used as part of "simple exists" evaluation
-            var curIdx = args.FirstChild;
-            while (curIdx != null && curIdx.Name == "") {
-                curIdx.UnTie ();
-                curIdx = args.FirstChild;
-            }
-
-            // Making sure there actually is something to evaluate
+            // Making sure there actually is something to evaluate.
             if (args.Children.Count == 0)
                 return;
 
-            // Storing offset temporary in args, making sure we clean up afterwards
-            // TODO: Fix [else] logic, which seems to be the reason why we need Math.Max ...!! :P
-            args.Insert (0, new Node ("offset", Math.Max (0, _noRootConditions )+ 1 /* Remember [offset] node itself */));
-            try
-            {
-                // Evaluating body of conditional statement, now with offset at first non-comparison operator event
-                context.Raise ("eval-mutable", args);
-            }
-            finally
-            {
-                // Making sure we clean up, and remove our [offset], also in the case of exceptions being thrown
-                args[0].UnTie ();
-            }
+            // Storing offset temporary in args, such that [eval-mutable] knows where to start execution.
+            if (_noRootConditions > 0)
+                args.Insert (0, new Node ("offset", _noRootConditions + 1 /* Remember [offset] node itself */));
+
+            // Evaluating body of conditional statement, now with [offset] pointing to first non-comparison/non-formatting node.
+            context.Raise ("eval-mutable", args);
         }
 
         /*
@@ -190,54 +182,51 @@ namespace p5.lambda.helpers
         /*
          * Returns all nodes that either comparison operators or logical operators, and hence should be evaluated
          */
-        private static IEnumerable<Node> GetConditionalEventNodes (
-            ApplicationContext context,
-            Node args)
+        private static IEnumerable<Node> GetConditionalEventNodes (ApplicationContext context, Node args)
         {
-            // Checking if we have retrieved operators, and if not, retrieving them
+            // Checking if we have retrieved operators, and if not, retrieving them.
             if (_operators == null) {
             
-                // Retrieving all comparison operators and logical operators in system
+                // Retrieving all comparison operators and logical operators in system.
                 _operators = context.Raise ("operators");
 
-                // Then adding all logical operators
+                // Then adding all logical operators.
                 _operators.Add ("or");
                 _operators.Add ("xor");
                 _operators.Add ("and");
                 _operators.Add ("not");
+
+                // Then adding empty node.
+                _operators.Add ("");
             }
 
-            // Checking if value of args is null, and if so, we use the first child of it as
-            // an "active event" operator, which simply will be checked for existence
+            // Checking if value of args is null, and if so, we use the first child of it as an Active Event operator, 
+            // which simply will be evaluated, and its value checked for true afterwards, during evaluation of conditional nodes.
             Node idxOperator = args.FirstChild;
             if (args.Value == null) {
 
-                // Basic syntax checking
+                // Basic syntax checking.
                 if (args.Children.Count == 0)
-                    throw new LambdaException ("Nothing to conditionally use for branching in conditional statement", args, context);
+                    throw new LambdaException ("Nothing to use as a condition for your branching Active Event", args, context);
 
-                // Retrieving first child as Active Event operator, but making sure we do NOT return "" events!
-                yield return args.Children.First (ix => ix.Name != "");
+                // Returning first child as Active Event condition.
+                yield return args.FirstChild;
 
-                // Incrementing our idxOperator node
+                // Incrementing our idxOperator node.
                 idxOperator = idxOperator.NextSibling;
             }
 
-            // Then returning operators, until we find something that is NOT in our list of comparison/logical operators
+            // Then returning operators, until we find something that is NOT in our list of comparison/logical operators.
             while (idxOperator != null) {
 
-                // Verifying this is not a "foamtting node" for original conditional statement.
-                if (idxOperator.Name != "") {
+                // Checking if currently iterated node's name is in list of operators.
+                if (!_operators.Children.Exists (ix => ix.Name == idxOperator.Name))
+                    yield break; // This is not an "operator" node, stopping further iteration.
 
-                    // Checking if currently iterated node's name is in list of operators
-                    if (_operators.Children.Count (ix => ix.Name == idxOperator.Name) == 0)
-                        yield break;
+                // This is a comparison/logical operator, or an empty formatting node.
+                yield return idxOperator;
 
-                    // This is a comparison/logical operator
-                    yield return idxOperator;
-                }
-
-                // Incrementing currently iterated node
+                // Incrementing currently iterated node.
                 idxOperator = idxOperator.NextSibling;
             }
         }

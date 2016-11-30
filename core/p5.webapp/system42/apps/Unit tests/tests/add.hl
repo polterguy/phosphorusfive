@@ -1,12 +1,18 @@
+
 /*
  * Unit tests for [add].
  */
 
 
 /*
- * Tests that [add] behaves correctly with a single static source.
+ * Static source tests.
  */
-static-source
+
+
+/*
+ * Tests that [add] behaves correctly with a single static source returning one node.
+ */
+Static source returning one node
   _data
   add:x:/-
     src
@@ -18,9 +24,9 @@ static-source
 
 
 /*
- * Tests that [add] behaves correctly with multiple static sources.
+ * Tests that [add] behaves correctly with a single static source returning multiple nodes.
  */
-static-multiple-sources
+Static source returning multiple nodes
   _data
   add:x:/-
     src
@@ -34,9 +40,138 @@ static-multiple-sources
 
 
 /*
+ * Tests that [add] behaves correctly with a single static node source value.
+ */
+Static source returning node value by reference
+  _data
+  add:x:/-
+    src:node:"foo:bar"
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with a single static string source.
+ */
+Static source returning single string value
+  _data
+  add:x:/-
+    src:"foo:bar"
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with a single static string source.
+ */
+Static source returning single string value, converted into multiple nodes
+  _data
+  add:x:/-
+    src:@"foo1:bar1
+foo2:bar2"
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with a single static string source which is formatted.
+ */
+Static source returning single formatted string value
+  _data
+  add:x:/-
+    src:"foo:{0}"
+      :bar
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with a single static string source which is formatted, from an expression.
+ */
+Static source returning single formatted string expression value
+  _bar:bar
+  _data
+  add:x:/-
+    src:"foo:{0}"
+      :x:/@_bar?value
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with a single static string source which is formatted, from an expression.
+ */
+Static source returning single formatted string relative expression value
+  _bar:bar
+  _data
+  add:x:/-
+    src:"foo:{0}"
+      :x:/0?value
+        _foo:bar
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with multiple static sources returning one node each.
+ */
+Static sources returning one node each
+  _data
+  add:x:/-
+    src
+      foo1:bar1
+    src
+      foo2:bar2
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with multiple static sources returning multiple nodes each.
+ */
+Static sources returning multiple nodes each
+  _data
+  add:x:/-
+    src
+      foo1:bar1
+      foo2:bar2
+    src
+      foo3:bar3
+      foo4:bar4
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2
+  foo3:bar3
+  foo4:bar4"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Expression source tests.
+ */
+
+
+/*
  * Tests that [add] behaves correctly with an expression leading to a single node result.
  */
-expression-source
+Expression source returning single node
   _data
   _src
     foo:bar
@@ -49,9 +184,26 @@ expression-source
 
 
 /*
+ * Tests that [add] behaves correctly with an expression leading to multiple nodes.
+ */
+Expression source returning multiple nodes
+  _data
+  _src
+    foo1:bar1
+    foo2:bar2
+  add:x:/@_data
+    src:x:/@_src/*
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [add] misbehaved
+
+
+/*
  * Tests that [add] behaves correctly with an expression leading to multiple node results.
  */
-expression-multiple-source
+Expression source returning multiple nodes, from cross-section of lambda
   _data
   _src
     foo1:bar1
@@ -67,9 +219,232 @@ expression-multiple-source
 
 
 /*
+ * Tests that [add] behaves correctly with an expression leading to a single node result.
+ */
+Expression source leading to single node constant value by reference
+  _data
+  _src:node:"foo:bar"
+  add:x:/@_data
+    src:x:/@_src?value
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with an expression leading to a single string result.
+ */
+Expression source leading to a single string value, converted into node
+  _data
+  _src:"foo:bar"
+  add:x:/@_data
+    src:x:/@_src?value
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with an expression leading to a single string result returning multiple nodes.
+ */
+Expression source leading to a single string, converted to multiple nodes
+  _data
+  _src:@"foo1:bar1
+foo2:bar2"
+  add:x:/@_data
+    src:x:/@_src?value
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with two sources leading to a single node result each.
+ */
+Expression sources leading to a single node each
+  _data
+  _src1
+    foo1:bar1
+  _src2
+    foo2:bar2
+  add:x:/@_data
+    src:x:/@_src1/*
+    src:x:/@_src2/*
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with two sources leading to multiple node results.
+ */
+Expression sources leading to multiple nodes each
+  _data
+  _src1
+    foo1:bar1
+    foo2:bar2
+  _src2
+    foo3:bar3
+    foo4:bar4
+  add:x:/@_data
+    src:x:/@_src1/*
+    src:x:/@_src2/*
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2
+  foo3:bar3
+  foo4:bar4"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Active Event source.
+ */
+
+
+/*
+ * Tests that [add] behaves correctly with an Active Event source that returns a single node.
+ */
+Active event returning constant node
+  _data
+  add:x:/-
+    eval
+      return:node:"foo:bar"
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with an Active Event source that returns multiple nodes.
+ */
+Active event returning multiple constant nodes
+  _data
+  add:x:/-
+    eval
+      return
+        foo1:bar1
+        foo2:bar2
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with an Active Event source that returns a single node from expression.
+ */
+Active event returning single node from expression
+  _data
+  add:x:/-
+    eval
+      _ret
+        foo:bar
+      return:x:/-/*
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with an Active Event source that returns a single node from expression.
+ */
+Active event returning multiple nodes from expression
+  _data
+  add:x:/-
+    eval
+      _ret
+        foo1:bar1
+        foo2:bar2
+      return:x:/-/*
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with an Active Event source that returns a string.
+ */
+Active event returning single constant string
+  _data
+  add:x:/-
+    eval
+      return:"foo:bar"
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with an Active Event source that is dynamically created and that returns nodes.
+ */
+Active event returning single constant node
+  create-event:sys42.tests.add.return-node
+    return:node:"foo:bar"
+  _data
+  add:x:/-
+    sys42.tests.add.return-node
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with an Active Event source that is dynamically created and that returns nodes.
+ */
+Active event returning multiple constant nodes
+  create-event:sys42.tests.add.return-nodes
+    return
+      foo1:bar1
+      foo2:bar2
+  _data
+  add:x:/-
+    sys42.tests.add.return-nodes
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests that [add] behaves correctly with an Active Event source that is dynamically created and that returns a string.
+ */
+Active event returning string that converts into single node
+  create-event:sys42.tests.add.return-string
+    return:"foo:bar"
+  _data
+  add:x:/-
+    sys42.tests.add.return-string
+  if:x:/@_data
+    !=:node:@"_data
+  foo:bar"
+    throw:Assert error, [add] misbehaved
+
+
+/*
+ * Tests expecting exceptions to be raised
+ */
+
+
+/*
  * Tests that [add] throws an exception when not given a destination.
  */
-no-destination-throws
+Throws on no destination
   _result
   try
     add
@@ -84,9 +459,26 @@ no-destination-throws
 
 
 /*
+ * Tests that [add] throws an exception when not given a destination.
+ */
+Throws on bad destination
+  _result
+  try
+    add:foo-bar
+      src
+        foo:bar
+  catch
+    set:x:/@_result?value
+      src:success
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, [add] misbehaved
+
+
+/*
  * Tests that [add] throws an exception when given a value expression.
  */
-value-expression-throws
+Throws when destination is value type
   _result
   try
     add:x:/@_result?value
@@ -103,7 +495,7 @@ value-expression-throws
 /*
  * Tests that [add] throws an exception when given a name expression.
  */
-name-expression-throws
+Throws when destination is name type
   _result
   try
     add:x:/@_result?name
@@ -120,7 +512,7 @@ name-expression-throws
 /*
  * Tests that [add] throws an exception when given a count expression.
  */
-count-expression-throws
+Throws when destination is count type
   _result
   try
     add:x:/@_result?count
@@ -135,9 +527,14 @@ count-expression-throws
 
 
 /*
+ * Misc. tests.
+ */
+
+
+/*
  * Tests that [add] does not throw or malfunction when given a destination expression leading to nothing.
  */
-oblivion-destination-expression
+Misc, no throw on non-existing destination
   add:x:/@_non-existing
     src
       foo:bar
@@ -146,7 +543,7 @@ oblivion-destination-expression
 /*
  * Tests that [add] does not throw or malfunction when not given a source.
  */
-no-source
+Misc, no throw on no source
   _result
   add:x:/@_result
   if:x:/@_result
@@ -157,7 +554,7 @@ no-source
 /*
  * Tests that [add] does not throw or malfunction when given a source expression leading to nothing.
  */
-no-source-expression
+Misc, no throw when source leads to nothing
   _result
   add:x:/@_result
     src:x:/@_nothing
@@ -169,7 +566,7 @@ no-source-expression
 /*
  * Tests that [add] clones its source expression nodes.
  */
-verify-source-nodes-are-cloned
+Misc, source nodes are cloned
   _result
   _src
     foo:bar
@@ -180,110 +577,5 @@ verify-source-nodes-are-cloned
   foo:bar"
     or:x:/@_src
       !=:node:@"_src
-  foo:bar"
-    throw:Assert error, [add] misbehaved
-
-
-/*
- * Tests that [add] behaves correctly with a single static node source.
- */
-static-node-value-source
-  _data
-  add:x:/-
-    src:node:"foo:bar"
-  if:x:/@_data
-    !=:node:@"_data
-  foo:bar"
-    throw:Assert error, [add] misbehaved
-
-
-/*
- * Tests that [add] behaves correctly with a single static string source.
- */
-static-string-value-source
-  _data
-  add:x:/-
-    src:"foo:bar"
-  if:x:/@_data
-    !=:node:@"_data
-  foo:bar"
-    throw:Assert error, [add] misbehaved
-
-
-/*
- * Tests that [add] behaves correctly with an Active Event source that returns a string.
- */
-active-event-source-returning-string
-  _data
-  add:x:/-
-    eval
-      return:"foo:bar"
-  if:x:/@_data
-    !=:node:@"_data
-  foo:bar"
-    throw:Assert error, [add] misbehaved
-
-
-/*
- * Tests that [add] behaves correctly with an Active Event source that returns nodes.
- */
-active-event-source-returning-nodes
-  _data
-  add:x:/-
-    eval
-      return
-        foo1:bar1
-        foo2:bar2
-  if:x:/@_data
-    !=:node:@"_data
-  foo1:bar1
-  foo2:bar2"
-    throw:Assert error, [add] misbehaved
-
-
-/*
- * Tests that [add] behaves correctly with an Active Event source that is dynamically created and that returns nodes.
- */
-dynamic-active-event-source-returning-nodes
-  create-event:sys42.tests.add.return-nodes
-    return
-      foo1:bar1
-      foo2:bar2
-  _data
-  add:x:/-
-    sys42.tests.add.return-nodes
-  if:x:/@_data
-    !=:node:@"_data
-  foo1:bar1
-  foo2:bar2"
-    throw:Assert error, [add] misbehaved
-
-
-/*
- * Tests that [add] behaves correctly with an Active Event source that is dynamically created and that returns a static node as value.
- */
-dynamic-active-event-source-returning-static-node
-  create-event:sys42.tests.add.return-static-node
-    return:node:"foo:bar"
-  _data
-  add:x:/-
-    sys42.tests.add.return-static-node
-  if:x:/@_data
-    !=:node:@"_data
-  foo:bar"
-    throw:Assert error, [add] misbehaved
-
-
-/*
- * Tests that [add] behaves correctly with an Active Event source that is dynamically created and that returns a string.
- */
-dynamic-active-event-source-returning-string
-  create-event:sys42.tests.add.return-string
-    return:"foo:bar"
-  _data
-  add:x:/-
-    sys42.tests.add.return-string
-  if:x:/@_data
-    !=:node:@"_data
   foo:bar"
     throw:Assert error, [add] misbehaved
