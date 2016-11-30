@@ -39,6 +39,7 @@ namespace p5.lambda.keywords.core
         [ActiveEvent (Name = "set")]
         public static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
+            // Finding source value, notice that if we have no source, we still iterate each destination, such that we can set it to a "null value".
             var src = Helper.GetSourceValue (context, e.Args);
 
             // Updating destination(s) with value of source.

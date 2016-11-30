@@ -44,11 +44,8 @@ namespace p5.lambda.helpers
         // Used to hold the number of operators used to evaluate the root conditional node.
         // This is used to calculate [offset] if condition evaluates to true, such that we do not raise conditional operator Active Events 
         // as part of the execution process of the current conditional scope.
-        private int _noRootConditions = -1;
+        private int _numberOfConditions;
 
-        /*
-         * Recursively run through conditions.
-         */
         /// <summary>
         ///     Evaluate a conditional Active Event node, and returns either true if condition yields true, otherwise false.
         /// </summary>
@@ -58,67 +55,26 @@ namespace p5.lambda.helpers
         public bool Evaluate (ApplicationContext context, Node args)
         {
             // Retrieving all conditional children nodes.
-            var conditions = GetConditionalEventNodes (context, args).ToList ();
+            var conditions = GetConditionalNodes (context, args).ToList ();
 
             // Storing how many operators are part of our root conditional node, such that we can now the offset we should use later.
             // We only store this number on the "root condition node", which means our first run-through, and since this method recursively invokes
             // itself indirectly multiple times, we check if value is -1 before we decide if we should set it or not.
-            if (_noRootConditions == -1)
-                _noRootConditions = conditions.Count;
+            _numberOfConditions = conditions.Count;
 
-            // Looping through each condition
+            // Looping through each condition.
             foreach (var idx in conditions) {
 
-                switch (idx.Name) {
+                // Raising comparison operator Active Event, logical operator event, or any other event currently part of conditional operators.
+                context.Raise (idx.Name, idx);
 
-                case "or":
-                    TryEvaluateSimpleExist (context, args);
-                    if (args.Get<bool> (context)) {
+                // Moving results of Active Event invocation up from conditional Active Event invocation result node's value,
+                // to the result of conditional statement, to "bubble" results up to the top-most branching Active Event result.
+                args.Value = idx.Value;
 
-                        // Evaluated to true! Aborting the rest of conditional checks, since condition before [or] evaluated to true!
-                        return true;
-                    }
-
-                    // Recursively loop through next condition, if previous condition did NOT evaluate to true!
-                    args.Value = Evaluate (context, idx);
-                    break;
-
-                case "and":
-                    TryEvaluateSimpleExist (context, args);
-
-                    // Recursively loop through, but only if previous statements are true! If previous condition evaluated to false, we abort!
-                    args.Value = args.Get<bool> (context) && Evaluate (context, idx);
-                    break;
-
-                case "xor":
-                    TryEvaluateSimpleExist (context, args);
-
-                    // Only evaluates to true if conditions are NOT EQUAL
-                    args.Value = args.Get<bool> (context) != Evaluate (context, idx);
-                    break;
-
-                case "not":
-                    TryEvaluateSimpleExist (context, args);
-
-                    // Basic syntax checking
-                    if (idx.Value != null || idx.Children.Count != 0)
-                        throw new LambdaException ("Operator [not] cannot have neither any value, nor any children", idx, context);
-
-                    // Simply "negates" the previously evaluated condition
-                    args.Value = !args.Get<bool> (context);
-                    break;
-
-                default:
-
-                    // Raising comparison operator Active Event, 
-                    // or any other Active Event currently part of conditional operators
-                    context.Raise (idx.Name, idx);
-
-                    // Moving results of Active Event invocation up from conditional Active Event invocation result node's value,
-                    // to the result of conditional statement, to "bubble" results up to the top-most branching Active Event result
-                    args.Value = idx.Value;
-                    break;
-                }
+                // Checking if conditional event created the [_abort] flag for us.
+                if (idx.Children.Count > 0 && idx[0].Name == "_abort" && idx[0].Get<bool> (context))
+                    return idx.Get (context, false);
             }
 
             // If condition had no operator active event children, then we must evaluate a "simple exist" condition
@@ -133,12 +89,12 @@ namespace p5.lambda.helpers
         public void ExecuteCurrentScope (ApplicationContext context, Node args)
         {
             // Making sure there actually is something to evaluate.
-            if (args.Children.Count == 0)
+            if (args.Children.Count == _numberOfConditions)
                 return;
 
             // Storing offset temporary in args, such that [eval-mutable] knows where to start execution.
-            if (_noRootConditions > 0)
-                args.Insert (0, new Node ("offset", _noRootConditions + 1 /* Remember [offset] node itself */));
+            if (_numberOfConditions > 0)
+                args.Insert (0, new Node ("offset", _numberOfConditions + 1 /* Remember [offset] node itself */));
 
             // Evaluating body of conditional statement, now with [offset] pointing to first non-comparison/non-formatting node.
             context.Raise ("eval-mutable", args);
@@ -182,7 +138,7 @@ namespace p5.lambda.helpers
         /*
          * Returns all nodes that either comparison operators or logical operators, and hence should be evaluated
          */
-        private static IEnumerable<Node> GetConditionalEventNodes (ApplicationContext context, Node args)
+        private static IEnumerable<Node> GetConditionalNodes (ApplicationContext context, Node args)
         {
             // Checking if we have retrieved operators, and if not, retrieving them.
             if (_operators == null) {
@@ -190,13 +146,7 @@ namespace p5.lambda.helpers
                 // Retrieving all comparison operators and logical operators in system.
                 _operators = context.Raise ("operators");
 
-                // Then adding all logical operators.
-                _operators.Add ("or");
-                _operators.Add ("xor");
-                _operators.Add ("and");
-                _operators.Add ("not");
-
-                // Then adding empty node.
+                // Then adding empty node, since it can be used to formatted expressions, etc.
                 _operators.Add ("");
             }
 

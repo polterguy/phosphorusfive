@@ -44,6 +44,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="helpers\LogicalOperators.cs" />
     <Compile Include="helpers\Helper.cs" />
     <Compile Include="keywords\core\Src.cs" />
     <Compile Include="keywords\extras\Whitelist.cs" />
