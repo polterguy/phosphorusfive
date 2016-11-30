@@ -97,4 +97,97 @@ reference-argument
 no-eval-dot
   .p5.core.application-folder
   if:x:/-?value
-    throw:Eval evaluated an Active Event starting with a .
+    throw:Eval evaluated an Active Event starting with a '.'
+
+/*
+ * Tests that [eval-whitelist] behaves correctly when given a lambda with a whitelist definition it should execute.
+ */
+eval-whitelist-success
+  _input
+  set:x:/@_input?value
+    eval-whitelist
+      _events
+        return
+      return:success
+  if:x:/@_input?value
+    !=:success
+    throw:@"Assert error, [eval-whitelist] misbehaved"
+
+/*
+ * Tests that [eval-whitelist] behaves correctly when given a lambda with a whitelist definition it should execute.
+ */
+eval-whitelist-failure
+  _input
+  try
+    set:x:/@_input?value
+      eval-whitelist
+        _events
+          add
+        set:x:/..?value
+  catch
+    set:x:/@_input?value
+      src:success
+  if:x:/@_input?value
+    !=:success
+    throw:@"Assert error, [eval-whitelist] misbehaved"
+
+/*
+ * Tests that [eval-whitelist] behaves correctly when given a lambda with a whitelist definition it should execute.
+ */
+eval-whitelist-empty-failure
+  _input
+  try
+    set:x:/@_input?value
+      eval-whitelist
+        set:x:/..?value
+  catch
+    set:x:/@_input?value
+      src:success
+  if:x:/@_input?value
+    !=:success
+    throw:@"Assert error, [eval-whitelist] misbehaved"
+
+/*
+ * Tests that [eval-whitelist] behaves correctly when given a lambda with a whitelist definition it should execute.
+ */
+eval-whitelist-empty-success
+  _input:failure
+  set:x:/@_input?value
+    eval-whitelist
+  if:x:/@_input?value
+    =:failure
+    throw:@"Assert error, [eval-whitelist] misbehaved"
+
+/*
+ * Tests that [eval-whitelist] behaves correctly when given an expression with a whitelist definition it should execute.
+ */
+eval-whitelist-expression-success
+  _input
+  _eval
+    return:success
+  set:x:/@_input?value
+    eval-whitelist:x:/@_eval
+      _events
+        return
+  if:x:/@_input?value
+    !=:success
+    throw:@"Assert error, [eval-whitelist] misbehaved"
+
+/*
+ * Tests that [eval-whitelist] behaves correctly when given an expression with a whitelist definition it should not execute.
+ */
+eval-whitelist-expression-failure
+  _input
+  _eval
+    return:failure
+  try
+    set:x:/@_input?value
+      eval-whitelist:x:/@_eval
+        _events
+          set
+  catch
+    set:x:/@_input?value
+      src:success
+  if:x:/@_input?value
+    !=:success
+    throw:@"Assert error, [eval-whitelist] misbehaved"

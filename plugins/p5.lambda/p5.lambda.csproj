@@ -44,6 +44,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="helpers\Helper.cs" />
     <Compile Include="keywords\core\Src.cs" />
     <Compile Include="keywords\extras\Whitelist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

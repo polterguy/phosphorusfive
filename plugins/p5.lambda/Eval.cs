@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -26,71 +26,104 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
+using System;
 
 /// <summary>
-///     Main namespace for p5 lambda keywords
+///     Main namespace for p5.lambda "keywords".
 /// </summary>
 namespace p5.lambda
 {
     /// <summary>
-    ///     Class wrapping all [eval] keywords in p5 lambda
+    ///     Class wrapping all [eval] keywords.
     /// </summary>
     public static class Eval
     {
         // Used to extract commonalities for eval Active Events
         private delegate void ExecuteFunctor (
-            ApplicationContext context, 
-            Node exe, 
-            Node evalNode, 
-            IEnumerable<Node> args,
-            bool isFirst);
+            ApplicationContext context,
+
+            // Lambda block to evaluate.
+            Node lambda,
+
+            // Node that is currently being evaluated, might contain the lambda block as children, 
+            // or have an expression leading to lambda block(s) we should evaluate.
+            Node evalNode,
+            IEnumerable<Node> args);
 
         /// <summary>
-        ///     Executes a specified piece of p5 lambda block as a copied lambda object
+        ///     Executes a specified lambda block.
+        ///     Actually creates a copy of the specified lambda block, passsing in any arguments, and returning whatever it returns, if anything.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "eval")]
         public static void eval (ApplicationContext context, ActiveEventArgs e)
         {
-            Executor (ExecuteBlockCopy, context, e.Args, e.Args.Name != "eval");
+            Executor (ExecuteBlockCopy, context, e.Args);
         }
         
         /// <summary>
-        ///     Executes a specified piece of p5 lambda block as mutable
+        ///     Executes a specified lambda block as mutable, meaning it has access to entire tree.
+        ///     Useful when creating keywords and such, but should very rarely be directly used from Hyperlambda!
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "eval-mutable")]
         public static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
         {
-            Executor (ExecuteBlockMutable, context, e.Args, e.Args.Name != "eval-mutable");
+            Executor (ExecuteBlockMutable, context, e.Args);
+        }
+
+        /// <summary>
+        ///     Executes a specified lambda block with the specified whitelist.
+        ///     Besides from creating a whitelist, it evaluates the exact same way as [eval].
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "eval-whitelist")]
+        public static void eval_whitelist (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure no existing whitelist has been applied earlier.
+            if (context.Whitelist != null)
+                throw new LambdaSecurityException ("Whitelist was previously applied.", e.Args, context);
+
+            // Setting whitelist for context, making sure we by default deny everything, unless an explicit [_events] node is specified.
+            context.Whitelist = e.Args["_events"]?.Clone () ?? new Node ();
+
+            // Making sure that whitelist is reset after exiting current scope.
+            try {
+
+                // Executing scope.
+                Executor (ExecuteBlockCopy, context, e.Args);
+
+            } finally {
+
+                // Resetting whitelist.
+                context.Whitelist = null;
+            }
         }
 
         /*
-         * Worker method for [eval]
+         * Worker method for [eval] and [eval-mutable].
          */
         private static void Executor (
             ExecuteFunctor functor, 
             ApplicationContext context, 
-            Node args, 
-            bool forceChildren)
+            Node args)
         {
             // Checking if we should foce execution of children nodes, and not evaluate expressions in main node
-            if (forceChildren || args.Value == null) {
+            if (args.Value == null || !args.Name.StartsWith ("eval")) {
 
                 // Evaluating current scope
-                functor (context, args, args, new Node[] {}, true);
+                functor (context, args, args, null);
+
             } else {
 
-                // Evaluating a value object or an expression, making sure we let functor know which
-                // was the first invocation
-                bool isFirst = true;
-                foreach (var idxSource in XUtil.Iterate<Node> (context, args)) {
+                // Evaluating a value object or an expression.
+                foreach (var idxLambda in XUtil.Iterate<Node> (context, args)) {
 
                     // Evaluating currently iterated source
-                    functor (context, idxSource, args, args.Children, isFirst);
-                    isFirst = false;
+                    functor (context, idxLambda, args, args.Children);
                 }
             }
         }
@@ -101,37 +134,37 @@ namespace p5.lambda
          */
         private static void ExecuteBlockCopy (
             ApplicationContext context, 
-            Node exe, 
+            Node lambda, 
             Node evalNode, 
-            IEnumerable<Node> args,
-            bool isFirst)
+            IEnumerable<Node> args)
         {
-            // Making sure lambda is executed on copy of execution nodes,
-            // without access to nodes outside of its own scope
-            Node exeCopy = exe.Clone ();
+            // Making sure lambda is executed on copy of execution nodes, without access to nodes outside of its own scope.
+            Node lambdaClone = lambda.Clone ();
 
-            // Passing in arguments, if there are any
-            foreach (var idx in args.Reverse ()) {
-                exeCopy.Insert (0, idx.Clone ());
+            // Passing in arguments, in order of appearance, if there are any arguments.
+            if (args != null) {
+                var index = evalNode["offset"] != null ? evalNode.IndexOf (evalNode["offset"]) + 1 : 0;
+                foreach (var idx in args.Reverse ()) {
+                    lambdaClone.Insert (index, idx.Clone ());
+                }
             }
 
             // Storing the original nodes before execution, such that we can "diff" against nodes after execution,
             // to make it possible to return ONLY added nodes after execution
-            List<Node> originalNodes = new List<Node> (exeCopy.Children);
+            List<Node> originalNodes = new List<Node> (lambdaClone.Children);
 
             // Actual execution of nodes
-            ExecuteAll (exeCopy, context);
+            ExecuteAll (lambdaClone, context);
 
             // Checking if we returned prematurely due to [return] invocation
-            if (exeCopy.FirstChild != null && exeCopy.FirstChild.Name == "_return")
-                exeCopy.FirstChild.UnTie ();
+            if (lambdaClone.FirstChild != null && lambdaClone.FirstChild.Name == "_return")
+                lambdaClone.FirstChild.UnTie ();
 
             // Returning all nodes created inside of execution block, and ONLY these nodes, plus value of lambda block.
-            // Notice, this means clearing the evalNode's children collection ONLY the first time we execute it
-            if (isFirst)
-                evalNode.Clear ();
-            evalNode.AddRange (exeCopy.Children.Where (ix => originalNodes.IndexOf (ix) == -1));
-            evalNode.Value = exeCopy.Value;
+            // Notice, this means clearing the evalNode's children collection.
+            evalNode.Clear ();
+            evalNode.AddRange (lambdaClone.Children.Where (ix => originalNodes.IndexOf (ix) == -1));
+            evalNode.Value = lambdaClone.Value;
         }
         
         /*
@@ -139,79 +172,92 @@ namespace p5.lambda
          */
         private static void ExecuteBlockMutable (
             ApplicationContext context, 
-            Node exe, 
+            Node lambda, 
             Node evalNode, 
-            IEnumerable<Node> args,
-            bool isFirst)
+            IEnumerable<Node> args)
         {
-            // Passing in arguments, if there are any
-            foreach (var idx in args) {
-                exe.Add (idx.Clone ());
+            // Passing in arguments, in order of appearance, if there are any arguments.
+            if (args != null) {
+                var index = evalNode["offset"] != null ? evalNode.IndexOf (evalNode["offset"]) + 1 : 0;
+                foreach (var idx in args.Reverse ()) {
+                    lambda.Insert (index, idx.Clone ());
+                }
             }
 
             // Actual execution of block
-            ExecuteAll (exe, context);
+            ExecuteAll (lambda, context);
 
             // Checking if we returned prematurely due to [return] invocation
-            if (exe.FirstChild != null && exe.FirstChild.Name == "_return")
-                exe.FirstChild.UnTie ();
+            if (lambda.FirstChild != null && lambda.FirstChild.Name == "_return")
+                lambda.FirstChild.UnTie ();
         }
 
         /*
          * Executes one execution statement
          */
-        private static void ExecuteAll (Node exe, ApplicationContext context)
+        private static void ExecuteAll (Node lambda, ApplicationContext context)
         {
-            // Iterating through all nodes in execution scope, unless [offset] is given, and raising these as Active Events
-            Node idxExe = null;
+            // Retrieving first node to be evaluated, if any.
+            Node current = GetFirstExecutionNode (context, lambda);
 
-            // Checking if we have an [offset]
-            if (exe ["offset"] != null) {
-
-                // Retrieving offset
-                int offset = exe ["offset"].Get<int> (context);
-
-                // Checking if execution block is "empty"
-                if (offset == exe.Children.Count)
-                    return;
-
-                // Checking offset is not larger than number of children in current lambda
-                if (offset > exe.Children.Count)
-                    throw new LambdaException ("[offset] was too large for lambda block, couldn't find that many children", exe, context);
-
-                // Setting first execution statement as the offset node
-                idxExe = exe [offset];
-            } else {
-
-                // No [offset] given, executing everything
-                idxExe = exe.FirstChild;
-            }
-
-            // Looping as long as we've got more nodes in scope
-            while (idxExe != null) {
-
-                // Storing "next execution node" as fallback, to support "delete this node" logic
-                var nextFallback = idxExe.NextSibling;
+            // Looping as long as we've got more nodes in scope.
+            while (current != null) {
 
                 // We don't execute nodes that start with an underscore "_" since these are considered "data segments", in addition
                 // to nodes starting with ".", since these are considered lambda callbacks.
-                // In addition, we don't execute nodes with no name, since these interfers with "null Active Event handlers"
-                if (!idxExe.Name.StartsWith ("_") && !idxExe.Name.StartsWith (".") && idxExe.Name != "") {
+                // In addition, we don't execute nodes with no names ("", empty names), since these interfers with "null Active Event handlers".
+                // Besides, they're also exlusively used as formatting nodes anyways.
+                if (!current.Name.StartsWith ("_") && !current.Name.StartsWith (".") && current.Name != "") {
 
                     // Raising the given Active Event.
-                    context.Raise (idxExe.Name, idxExe);
+                    context.Raise (current.Name, current);
+
+                    // Checking if we're supposed to return from evaluation.
+                    var rootChildName = lambda.Root.FirstChild?.Name;
+                    switch (rootChildName) {
+                        case "_return":
+                        case "_break":
+                        case "_continue":
+                            return;
+                    }
                 }
 
-                // Checking if we're supposed to return from evaluation
-                var rootChildName = exe.Root.FirstChild != null ? exe.Root.FirstChild.Name : null;
-                if (rootChildName == "_return" || rootChildName == "_break" || rootChildName == "_continue")
-                    return; // Breaking evaluation of any further code
-
-                // Prioritizing "NextSibling", in case this node created new nodes, while having
-                // nextFallback as "fallback node", in case current execution node removed current execution node.
-                // But in case nextFallback also was removed, we set idxExe to null, breaking the while loop
-                idxExe = idxExe.NextSibling ?? (nextFallback != null && nextFallback.Parent != null ? nextFallback : null);
+                // Finding our next execution node.
+                // Notice, by postponing this until after execution of "current", we support the execution of "current" injecting a new node after itself, 
+                // and have that newly injected node executed as well, immediately after the execution of "current".
+                current = current.NextSibling;
             }
+        }
+
+        /*
+         * Retrieves the first lambda node that should be evaluates, calculating any [offset} arguments, if there are any.
+         */
+        private static Node GetFirstExecutionNode (ApplicationContext context, Node lambda)
+        {
+            Node retVal = null;
+
+            // Checking if we have an [offset]
+            if (lambda["offset"] != null) {
+
+                // Retrieving offset
+                int offset = lambda["offset"].Get<int> (context);
+
+                // Checking if execution block is "empty"
+                if (offset == lambda.Children.Count)
+                    return null;
+
+                // Checking offset is not larger than number of children in current lambda
+                if (offset > lambda.Children.Count)
+                    throw new LambdaException ("[offset] was too large for lambda block, couldn't find that many children", lambda, context);
+
+                // Setting first execution statement as the offset node
+                retVal = lambda[offset];
+            } else {
+
+                // No [offset] given, executing everything
+                retVal = lambda.FirstChild;
+            }
+            return retVal;
         }
     }
 }

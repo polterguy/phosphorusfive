@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -39,9 +39,6 @@ namespace p5.exp
     [Serializable]
     public class Expression : IComparable
     {
-        // If expression is referencing other expressions, this field is true
-        private bool _isReferenceExpression;
-
         // Type of expression (node, value, name, count)
         private Match.MatchType _expressionType;
 
@@ -92,7 +89,7 @@ namespace p5.exp
             var iteratorGroup = BuildExpression (context, evaluatedNode, exNode, formattingNode);
 
             // Creating a Match object, and returning to caller.
-            return new Match (iteratorGroup.Evaluate (context), _expressionType, context, _convertResultsType, _isReferenceExpression);
+            return new Match (iteratorGroup.Evaluate (context), _expressionType, context, _convertResultsType);
         }
 
         /*
@@ -109,11 +106,6 @@ namespace p5.exp
 
             // Checking to see if we should run formatting logic on expression before parsing iterators
             var expression = FormatExpression (context, exNode, formattingNode);
-
-            if (expression.StartsWith ("@")) {
-                expression = expression.Substring (1);
-                _isReferenceExpression = true;
-            }
 
             string previousToken = null; // Needed to keep track of previous token
             var current = retVal; // Used as index iterator during tokenizing process
@@ -553,8 +545,6 @@ namespace p5.exp
         {
             if (_expressionType != rhs._expressionType)
                 return _expressionType.CompareTo (rhs._expressionType);
-            if (_isReferenceExpression != rhs._isReferenceExpression)
-                return _isReferenceExpression.CompareTo (rhs._isReferenceExpression);
             if (_convertResultsType != rhs._convertResultsType)
                 return _convertResultsType.CompareTo (rhs._convertResultsType);
             return Value.CompareTo (rhs.Value);

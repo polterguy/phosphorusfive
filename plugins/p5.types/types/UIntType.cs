@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -36,7 +36,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.uint")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.uint")]
         private static void p5_hyperlisp_get_object_value_uint (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is uint) {
@@ -51,7 +51,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.System.UInt32")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.UInt32")]
         private static void p5_hyperlisp_get_type_name_System_UInt32 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "uint";

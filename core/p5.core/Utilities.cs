@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -281,7 +281,7 @@ namespace p5.core
                         builder.Append ("\r\n");
                     }
                     builder.Append (context.Raise (
-                        "p5.hyperlambda.get-string-value." +
+                        ".p5.hyperlambda.get-string-value." +
                         idx.GetType ().FullName, new Node ("", idx)).Value);
                 }
                 return builder.ToString ();
@@ -290,7 +290,7 @@ namespace p5.core
             if (encode && value is byte[])
                 node.Add ("encode", true);
             return context.Raise (
-                "p5.hyperlambda.get-string-value." +
+                ".p5.hyperlambda.get-string-value." +
                 value.GetType ().FullName, node).Value as string;
         }
 
@@ -300,11 +300,11 @@ namespace p5.core
         private static T Convert2Object<T> (object value, ApplicationContext context, T defaultValue = default (T))
         {
             var typeName = context.Raise (
-                "p5.hyperlambda.get-type-name." + typeof (T).FullName).Get<string> (context);
+                ".p5.hyperlambda.get-type-name." + typeof (T).FullName).Get<string> (context);
             if (typeName == null)
                 return defaultValue;
             return context.Raise (
-                "p5.hyperlambda.get-object-value." +
+                ".p5.hyperlambda.get-object-value." +
                 typeName, new Node ("", value)).Get<T> (context);
         }
     }

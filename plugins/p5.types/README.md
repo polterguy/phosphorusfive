@@ -7,9 +7,9 @@ for your objects, and vice versa.
 
 To extend the typing system, you will normally have to implement three different Active Events
 
-* p5.hyperlambda.get-object-value.my-type
-* p5.hyperlambda.get-string-value.MyTypeNamespace.MyTypeClassName
-* p5.hyperlambda.get-type-name.MyTypeNamespace.MyTypeClassName
+* .p5.hyperlambda.get-object-value.my-type
+* .p5.hyperlambda.get-string-value.MyTypeNamespace.MyTypeClassName
+* .p5.hyperlambda.get-type-name.MyTypeNamespace.MyTypeClassName
 
 The first Active Event above, is supposed to convert a string representation to the object version of your type.
 

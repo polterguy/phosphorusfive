@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -37,7 +37,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.regex")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.regex")]
         private static void p5_hyperlisp_get_object_value_regex (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is Regex) {
@@ -71,7 +71,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-string-value.System.Text.RegularExpressions.Regex")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.System.Text.RegularExpressions.Regex")]
         private static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             var value = e.Args.Get<Regex> (context);
@@ -85,7 +85,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.System.Text.RegularExpressions.Regex")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.Text.RegularExpressions.Regex")]
         private static void p5_hyperlisp_get_type_name_System_Text_RegularExpressions_Regex (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "regex";

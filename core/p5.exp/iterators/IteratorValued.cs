@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -71,7 +71,7 @@ namespace p5.exp.iterators
                     throw new ExpressionException ("Cannot use 'like' addition to value iterator when value is not of type string");
 
                 // converting given value to specified type
-                value = context.Raise ("p5.hyperlambda.get-object-value." + _type, new Node ("", value)).Value;
+                value = context.Raise (".p5.hyperlambda.get-object-value." + _type, new Node ("", value)).Value;
             }
 
             // Filtering away all previous matches that does not match the specified value

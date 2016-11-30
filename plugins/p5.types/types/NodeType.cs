@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -35,7 +35,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.node")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.node")]
         private static void p5_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is Node)
@@ -51,7 +51,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.abs.node")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.abs.node")]
         private static void p5_hyperlisp_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
         {
             var code = e.Args.Get<string> (context);
@@ -82,7 +82,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-string-value.p5.core.Node")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.p5.core.Node")]
         private static void p5_hyperlisp_get_string_value_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             var tmp = new Node ("", e.Args.Value);
@@ -95,7 +95,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.p5.core.Node")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.p5.core.Node")]
         private static void p5_hyperlisp_get_type_name_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "node";

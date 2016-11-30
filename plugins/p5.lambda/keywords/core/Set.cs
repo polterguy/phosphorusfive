@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -21,9 +21,8 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
+using p5.lambda.helpers;
 
 namespace p5.lambda.keywords.core
 {
@@ -40,27 +39,17 @@ namespace p5.lambda.keywords.core
         [ActiveEvent (Name = "set")]
         public static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
-            // Asserting destination is expression
-            var destEx = e.Args.Value as Expression;
-            if (destEx == null)
-                throw new LambdaException (
-                    string.Format ("Not a valid destination expression given to [set], value was '{0}', expected expression", e.Args.Value),
-                    e.Args,
-                    context);
+            // Asserting destination is expression.
+            var destEx = Helper.GetDestinationExpression (context, e.Args, "set");
 
-            // Updating destination(s) with value of source
+            // Finding source node, and invoking source event to retrieve source for operation.
+            var src = Helper.GetSourceValue (context, e.Args);
+
+            // Updating destination(s) with value of source.
             foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
-                // Raising "src" Active Event. Notice, this must be done once, for each destination, in case the source event is expecting
-                // the relative destination to evaluate
-                var src = XUtil.Source (context, e.Args, idxDestination.Node);
-
-                // Checking how many values source returned, and throwing if there's more than one
-                if (src.Count > 1)
-                    throw new LambdaException ("Multiple sources for [set]", e.Args, context);
-
-                // Single source, or null source
-                idxDestination.Value = src.Count == 1 ? src [0] : null;
+                // Single source, or null source.
+                idxDestination.Value = src;
             }
         }
     }

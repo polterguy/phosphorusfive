@@ -45,8 +45,8 @@ node
   _data
   set:x:/-
     src:"_foo:success"
-  if:x:/../0?node.string
-    !=:"_foo:success"
+  if:x:/../0
+    !=:node:"_foo:success"
     throw:@"Assert error, expected [_foo:success], got [{0}]!"
       :x:/../0?node.string
 
@@ -110,28 +110,5 @@ multiple-destinations
     or:x:/../0/1?value
       !=:success
     throw:@"Assert error, expected [success] and [success], got [{0}] and [{1}]!"
-      :x:/../0/0?value
-      :x:/../0/1?value
-
-/*
- * Tests that "set" behaves correctly with event source,
- * referencing [_dn] or data node of Active Event
- */
-event-src
-  _data
-    foo1
-    foo2
-  _x
-    set:x:/..?value
-      src:{0}{1}
-        :XX
-        :x:/../*/_dn/#?name
-  set:x:/-2/*?value
-    eval:x:/./-
-  if:x:/../0/0?value
-    !=:XXfoo1
-    or:x:/../0/1?value
-      !=:XXfoo2
-    throw:@"Assert error, expected [XXfoo1] and [XXfoo2], got [{0}] and [{1}]!"
       :x:/../0/0?value
       :x:/../0/1?value

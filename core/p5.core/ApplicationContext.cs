@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -221,7 +221,7 @@ namespace p5.core
             if (definition == null) {
 
                 // Active Event invocation did not exist in Whitelist definition.
-                throw new SecurityException (string.Format ("Caller tried to invoke illegal Active Event [{0}] according to [whitelist] definition", name));
+                throw new SecurityException (string.Format ("Caller tried to invoke illegal Active Event [{0}] according to whitelist definition", name));
             }
 
             // Raising the given Active Event, using the existing whitelist.

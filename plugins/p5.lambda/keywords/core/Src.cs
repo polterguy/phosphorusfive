@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -34,7 +34,7 @@ namespace p5.lambda.keywords.core
     public static class Src
     {
         /// <summary>
-        ///     The [src] event evaluates an expression, constant or children nodes, and returns the results as list in value of node
+        ///     The [src] event evaluates an expression, constant or children nodes, and returns the results normalized.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -42,36 +42,45 @@ namespace p5.lambda.keywords.core
         [ActiveEvent (Name = "dest")]
         public static void lambda_src_dest (ApplicationContext context, ActiveEventArgs e)
         {
-            // House cleaning
-            using (new Utilities.ArgsRemover (e.Args)) {
+            // Figuring out type of source.
+            Expression exp = e.Args.Value as Expression;
+            if (exp != null) {
 
-                // Figuring out type of source
-                Expression exp = e.Args.Value as Expression;
-                if (exp != null) {
+                // Source is an expression, evaluating it, and returning results back to caller.
+                var match = exp.Evaluate (context, e.Args, e.Args);
+                if (match.TypeOfMatch == Match.MatchType.count) {
 
-                    // Source is an expression, evaluating it, and returning results back to caller
-                    var match = exp.Evaluate (context, e.Args, e.Args);
-                    e.Args.Value = match.TypeOfMatch == Match.MatchType.count 
-                        ? (object)match.Count 
-                        : match.Select (ix => ix.Value is Node ? (ix.Value as Node).Clone () : ix.Value).ToList ();
-                } else if (e.Args.Value != null) {
+                    // Simple count expression.
+                    e.Args.Value = match.Count;
+                } else if (match.TypeOfMatch == Match.MatchType.node) {
 
-                    // Still there's a value, checking type of value
-                    if (XUtil.IsFormatted (e.Args)) {
+                    // Node values, single or multiple is irrelevant, still need to clone them.
+                    e.Args.AddRange (match.Select (ix => ix.Node.Clone ()));
+                    e.Args.Value = null;
+                } else if (match.Count == 1) {
 
-                        // Returning formatted value
-                        e.Args.Value = new List<object> (new object[] { XUtil.FormatNode (context, e.Args) });
-                    } else {
+                    // Single value, name or value type of value is irrelevant, adding to value anyways.
+                    e.Args.Value = match [0].Value;
+                } else if (match.TypeOfMatch == Match.MatchType.name) {
 
-                        // Returning constant, making sure output of event is list
-                        e.Args.Value = new List<object> (new object[] { e.Args.Value });
-                    }
+                    // Multiple name values.
+                    e.Args.AddRange (match.Select (ix => new Node (ix.Node.Name)));
+                    e.Args.Value = null;
                 } else {
 
-                    // Returning all children nodes
-                    e.Args.Value = e.Args.Children.Where (ix => ix.Name != "_dn").Select (ix => ix.Clone ()).ToList<object> ();
+                    // Multiple value values.
+                    e.Args.AddRange (match.Select (ix => new Node ("", ix.Value)));
+                    e.Args.Value = null;
                 }
-            }
+            } else if (e.Args.Value != null) {
+
+                // Still there's a value, checking type of value.
+                if (XUtil.IsFormatted (e.Args)) {
+
+                    // Returning formatted value.
+                    e.Args.Value = XUtil.FormatNode (context, e.Args);
+                } // else, returning value of node as is
+            } // else, returning children nodes as is
         }
     }
 }

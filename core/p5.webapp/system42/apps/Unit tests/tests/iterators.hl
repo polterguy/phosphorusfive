@@ -365,9 +365,9 @@ distinct-name
     src:x:/./-/*/$?value
   if:x:/-3
     !=:node:@"_out
-  su
-  cc
-  ess"
+  :su
+  :cc
+  :ess"
     throw:@"Assert error, expected [success], got [{0}]!"
       :x:/././-3?node.string
 

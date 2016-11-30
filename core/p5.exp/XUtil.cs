@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -133,11 +133,7 @@ namespace p5.exp
 
                 // Building up our return value(s)
                 var retVal = new List<object> ();
-                if (srcList[0].Value != null && srcList[0].Value is List<object>) {
-
-                    // Value is a list of objects
-                    retVal.AddRange (srcList[0].Value as List<object>);
-                } else if (srcList[0].Value != null) {
+                if (srcList[0].Value != null) {
 
                     // Adding value into return values
                     retVal.Add (srcList[0].Value);

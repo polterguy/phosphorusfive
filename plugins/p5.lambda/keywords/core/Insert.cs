@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -22,26 +22,25 @@
  */
 
 using System.Linq;
-using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
+using p5.lambda.helpers;
 
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping execution engine keyword [insert-before] and [insert-after]
+    ///     Class wrapping the [insert-before] and [insert-after] Active Events.
     /// </summary>
     public static class Insert
     {
         /// <summary>
-        ///     The [insert-before] keyword allows you to insert nodes before another node
+        ///     The [insert-before] event allows you to insert nodes before another node.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "insert-before")]
         public static void lambda_insert_before (ApplicationContext context, ActiveEventArgs e)
         {
-            InsertNodes (e.Args, context, false);
+            InsertNodes (context, e.Args, false);
         }
         
         /// <summary>
@@ -52,53 +51,25 @@ namespace p5.lambda.keywords.core
         [ActiveEvent (Name = "insert-after")]
         public static void lambda_insert_after (ApplicationContext context, ActiveEventArgs e)
         {
-            InsertNodes (e.Args, context, true);
+            InsertNodes (context, e.Args, true);
         }
 
         /*
-         * Commonalities for both Active Events
+         * Common insertion method for both of the above Active Events.
          */
-        private static void InsertNodes (Node args, ApplicationContext context, bool after)
+        private static void InsertNodes (ApplicationContext context, Node args, bool after)
         {
-            var destEx = args.Value as Expression;
-            if (destEx == null)
-                throw new LambdaException ("Not a valid destination expression given, make sure you set [" + args.Name + "]'s value to an expression using :x:", args, context);
+            // Finding source nodes, and returning early if no source is given.
+            var src = Helper.GetSourceNodes (context, args);
+            if (src == null || src.Count == 0)
+                return;
 
-            // Updating destination(s) with value of source
-            foreach (var idxDestination in destEx.Evaluate (context, args, args)) {
+            // Looping through each destination, and inserting all source node at specified position, in order of appearance.
+            foreach (var idxDestination in Helper.GetDestinationNodeMatch (context, args, "add")) {
 
-                // Raising source Active Event
-                var src = XUtil.Source (context, args, idxDestination.Node);
-
-                // Inseting source nodes to destination
-                var tmpNodeIdxDest = idxDestination.Value as Node;
-                if (tmpNodeIdxDest == null)
-                    throw new LambdaException ("Destination for [" + args.Name + "] was not a node", args, context);
-
-                // Figuring out insertion point
+                // Figuring out insertion point before we insert nodes.
                 var index = idxDestination.Node.Parent.IndexOf (idxDestination.Node) + (after ? 1 : 0);
-
-                // Iterating each source, inserting into currently iterated destination
-                foreach (var idxSource in src) {
-
-                    // Checking if currently iterated source is a node, and if not, we convert it into a node, which will
-                    // result in a "root node", which we remove, and only insert its children, into currently iterated destination
-                    if (idxSource is Node) {
-
-                        // Currently iterated source is already a node
-                        tmpNodeIdxDest.Parent.Insert (index++, (idxSource as Node).Clone ());
-                    } else {
-
-                        // Currently iterated source is not a node, hence we convert it into such, which creates a "wrapper" node, which
-                        // we ignore, and only add its children. Making sure we "extract the list of insertion nodes" first, since
-                        // inserting the nodex, will change the Children collection, untying the currently iterated source node, changing
-                        // the collection
-                        var list = Utilities.Convert<Node> (context, idxSource).Children.ToList ();
-                        foreach (var idxSourceInner in list) {
-                            tmpNodeIdxDest.Parent.Insert (index++, idxSourceInner);
-                        }
-                    }
-                }
+                idxDestination.Node.Parent.Children.InsertRange (index, src.Select (ix => ix.Clone ()));
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -73,7 +73,7 @@ namespace p5.exp
         /*
          * Internal ctor, to make sure only Expression class can instantiate instances of Match class
          */
-        internal Match (IEnumerable<Node> nodes, MatchType type, ApplicationContext context, string convert, bool reference)
+        internal Match (IEnumerable<Node> nodes, MatchType type, ApplicationContext context, string convert)
         {
             TypeOfMatch = type;
             _context = context;
@@ -84,14 +84,7 @@ namespace p5.exp
                     _matchEntities.Add (new MatchNameEntity (idx, this));
                     break;
                 case MatchType.value:
-                    if (reference && idx.Value is Expression) {
-                        var innerMatch = (idx.Value as Expression).Evaluate (context, idx, idx);
-                        foreach (var idxInner in innerMatch) {
-                            _matchEntities.Add (idxInner);
-                        }
-                    } else {
-                        _matchEntities.Add (new MatchValueEntity (idx, this));
-                    }
+                    _matchEntities.Add (new MatchValueEntity (idx, this));
                     break;
                 case MatchType.node:
                     _matchEntities.Add (new MatchNodeEntity (idx, this));
@@ -125,7 +118,7 @@ namespace p5.exp
         /// <summary>
         ///     Type to convert values retrieved from match to
         /// </summary>
-        /// <value>Type to convert to, can be any of your Hyperlambda types, defined through your [p5.hyperlambda.get-type-name.xxx] 
+        /// <value>Type to convert to, can be any of your Hyperlambda types, defined through your [.p5.hyperlambda.get-type-name.xxx] 
         /// Active Events</value>
         public string Convert
         {

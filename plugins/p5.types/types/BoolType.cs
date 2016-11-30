@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -34,7 +34,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.bool")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.bool")]
         private static void p5_hyperlisp_get_object_value_bool (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is bool) {
@@ -52,7 +52,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-string-value.System.Boolean")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.System.Boolean")]
         private static void p5_hyperlisp_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = e.Args.Get<bool> (context).ToString ().ToLower ();
@@ -63,7 +63,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.System.Boolean")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.Boolean")]
         private static void p5_hyperlisp_get_type_name_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "bool";

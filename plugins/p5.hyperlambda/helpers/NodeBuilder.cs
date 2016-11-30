@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -164,7 +164,7 @@ namespace p5.hyperlambda.helpers
 
             // Converting our string to the actual object, and returning back to caller
             return _context.Raise (
-                "p5.hyperlambda.get-object-value." + (typeInfo == "node" ? "abs.node" : typeInfo), 
+                ".p5.hyperlambda.get-object-value." + (typeInfo == "node" ? "abs.node" : typeInfo), 
                 new Node ("", value, new Node [] { new Node ("decode", true) })).Value;
         }
     }

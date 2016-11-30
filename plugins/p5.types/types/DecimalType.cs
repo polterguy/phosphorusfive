@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -35,7 +35,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.decimal")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.decimal")]
         private static void p5_hyperlisp_get_object_value_decimal (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is decimal) {
@@ -50,7 +50,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.System.Decimal")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.Decimal")]
         private static void p5_hyperlisp_get_type_name_System_Decimal (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "decimal";

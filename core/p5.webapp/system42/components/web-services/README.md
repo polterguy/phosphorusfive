@@ -13,7 +13,7 @@ needs, all possible clients could possibly have.
 This has, as far as I know, never been implemented before. Simply because of that allowing some arbitrary client, to execute some arbitrary piece of code,
 on your server, simply creates too many security risks. A client could for instance delete your entire database, or inject some piece of malware function
 into your server, etc. However, when you implement lambda web services with Hyperlambda, you can evaluate the specified lambda object, within the context
-of a *[whitelist]* invocation. This allows you to create a sub-vocabulary of Active Events, which is a whitelist of Active Events, the client is allowed
+of a *[eval-whitelist]* invocation. This allows you to create a sub-vocabulary of Active Events, which is a whitelist of Active Events, the client is allowed
 to execute on your server.
 
 If you create your whitelist, in such a way that you exclusively allow safe Active Events to be invoked, then this is just as secure as any other web services.
@@ -111,7 +111,7 @@ p5.net.http-post
 
     content
       _error
-        message:Caller tried to invoke illegal Active Event [delete-data] according to [whitelist] definition
+        message:Caller tried to invoke illegal Active Event [delete-data] according to whitelist definition
         type:p5.exp.exceptions.LambdaSecurityException
         stack-trace:@".lambda
   delete-data:x:/*/*<<====================== [ERROR!!]"

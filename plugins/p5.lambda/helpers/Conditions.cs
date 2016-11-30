@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using p5.exp;
@@ -137,7 +138,8 @@ namespace p5.lambda.helpers
                 return;
 
             // Storing offset temporary in args, making sure we clean up afterwards
-            args.Insert (0, new Node ("offset", _noRootConditions + 1 /* Remember [offset] node itself */));
+            // TODO: Fix [else] logic, which seems to be the reason why we need Math.Max ...!! :P
+            args.Insert (0, new Node ("offset", Math.Max (0, _noRootConditions )+ 1 /* Remember [offset] node itself */));
             try
             {
                 // Evaluating body of conditional statement, now with offset at first non-comparison operator event

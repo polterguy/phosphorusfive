@@ -50,18 +50,18 @@ create-event:sys42.utilities.evaluate-web-service-invocation
          * Caller specified a [_whitelist] argument, appending body of HTTP request into a [whitelist] invocation, with [events] being the
          * specified [_whitelist] collection's content, anda [.lambda] being the HTTP request body.
          */
-        add:x:/..if/*/whitelist/*/_events
+        add:x:/..if/*/eval-whitelist/*/_events
           src:x:/../*/_whitelist/*
-        add:x:/..if/*/whitelist
+        add:x:/..if/*/eval-whitelist
           src:x:/@get-request-body/*
-        whitelist
+        eval-whitelist
           _events
 
         /*
-         * Returning results of above [whitelist] invocation to caller, before we return results to caller.
+         * Returning results of above [eval-whitelist] invocation to caller, before we return results to caller.
          * Notice, we return it as [_result] node being the root node of invocation.
          */
-        set:x:/@whitelist?name
+        set:x:/@eval-whitelist?name
           src:_success
         echo:x:/@_success
 

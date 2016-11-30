@@ -43,7 +43,7 @@ regex
 /*
  * Tests that [replace] behaves as expected when given Active Event source and destination
  */
-active-event-sources
+active-event-sources-1
   _data:Thomas Hansen is a stupid guy
   replace:x:/-?value
     eval
@@ -58,13 +58,13 @@ active-event-sources
 /*
  * Tests that [replace] behaves as expected when given multiple sources
  */
-active-event-sources
+active-event-sources-2
   _data:Thomas Hansen is a retarded and a stupid man
   _src
-    no1:a stupid
-    no2:a retarded
+    a stupid
+    a retarded
   replace:x:/-2?value
-    src:x:/../*/_src/*?value
+    src:x:/../*/_src/*?name
     eval
       return:an intelligent
   if:x:/../*/replace?value

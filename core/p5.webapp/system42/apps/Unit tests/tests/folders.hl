@@ -220,9 +220,9 @@ list-folders
   create-folder:~/temp/foo/bar1/
   create-folder:~/temp/foo/bar2/
   list-folders:~/temp/foo/
-  if:x:@/-/*/~bar1
+  if:x:/-/*/~bar1
     not
-    or:x:@/./-/*/~bar2
+    or:x:/./-/*/~bar2
       not
     or:x:/./-/*?count
       !=:int:2
@@ -281,13 +281,13 @@ list-folders-expressions
     no1:~/temp/foo/
     no1:~/temp/bar/
   list-folders:x:/../*/_folders/*?value
-  if:x:@/-/*/~bar1
+  if:x:/-/*/~bar1
     not
-    or:x:@/./-/*/~bar2
+    or:x:/./-/*/~bar2
       not
-    or:x:@/./-/*/~bar3
+    or:x:/./-/*/~bar3
       not
-    or:x:@/./-/*/~bar4
+    or:x:/./-/*/~bar4
       not
     or:x:/./-/*?count
       !=:int:4

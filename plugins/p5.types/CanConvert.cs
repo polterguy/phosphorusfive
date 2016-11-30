@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -57,7 +57,7 @@ namespace p5.types {
 
                     // Looping through all arguments supplied
                     foreach (var idx in XUtil.Iterate<object> (context, e.Args, true)) {
-                        var objValue = context.Raise ("p5.hyperlambda.get-object-value." + type, new Node ("", idx)).Value;
+                        var objValue = context.Raise (".p5.hyperlambda.get-object-value." + type, new Node ("", idx)).Value;
                     }
 
                     // No exception occurred, conversion is possible

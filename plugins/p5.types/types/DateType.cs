@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -69,7 +69,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.date")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.date")]
         private static void p5_hyperlisp_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is DateTime) {
@@ -101,7 +101,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-string-value.System.DateTime")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.System.DateTime")]
         private static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             var value = e.Args.Get<DateTime> (context);
@@ -118,7 +118,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.System.DateTime")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.DateTime")]
         private static void p5_hyperlisp_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "date";

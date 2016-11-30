@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -111,7 +111,7 @@ namespace p5.hyperlambda.helpers
             builder.Append (
                 string.Format (":{0}",
                     _context.Raise (
-                        "p5.hyperlambda.get-type-name." + node.Value.GetType (),
+                        ".p5.hyperlambda.get-type-name." + node.Value.GetType (),
                         new Node ()).Get<string> (_context)));
         }
 

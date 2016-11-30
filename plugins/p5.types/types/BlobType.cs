@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, mr.gaia@gaiasoul.com
+ * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -36,7 +36,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-object-value.blob")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.blob")]
         private static void p5_hyperlisp_get_object_value_blob (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is byte[]) {
@@ -59,7 +59,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-string-value.System.Byte[]")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.System.Byte[]")]
         private static void p5_hyperlisp_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.GetChildValue ("encode", context, false))
@@ -73,7 +73,7 @@ namespace p5.types.types {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlambda.get-type-name.System.Byte[]")]
+        [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.Byte[]")]
         private static void p5_hyperlisp_get_type_name_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "blob";
