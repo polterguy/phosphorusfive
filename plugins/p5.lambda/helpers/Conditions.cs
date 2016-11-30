@@ -46,90 +46,113 @@ namespace p5.lambda.helpers
         // as part of the execution process of the current conditional scope.
         private int _numberOfConditions;
 
+        private ApplicationContext _context;
+        private Node _args;
+
+        /// <summary>
+        ///     Creates an instance of condition class.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        public Conditions (ApplicationContext context, Node args)
+        {
+            _context = context;
+            _args = args;
+        }
+
         /// <summary>
         ///     Evaluate a conditional Active Event node, and returns either true if condition yields true, otherwise false.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public bool Evaluate (ApplicationContext context, Node args)
+        public bool Evaluate ()
         {
             // Retrieving all conditional children nodes.
-            var conditions = GetConditionalNodes (context, args).ToList ();
+            var conditions = GetConditionalNodes ().ToList ();
 
             // Storing how many operators are part of our root conditional node, such that we can now the offset we should use later.
             // We only store this number on the "root condition node", which means our first run-through, and since this method recursively invokes
             // itself indirectly multiple times, we check if value is -1 before we decide if we should set it or not.
             _numberOfConditions = conditions.Count;
 
-            // Looping through each condition.
-            foreach (var idx in conditions) {
+            // If condition had no operator Active Events, we must evaluate a "simple exist" condition.
+            if (conditions.Count == 0) {
 
-                // Raising comparison operator Active Event, logical operator event, or any other event currently part of conditional operators.
-                context.Raise (idx.Name, idx);
+                // No conditions, evaluating simple "exists" condition.
+                TryEvaluateSimpleExist ();
 
-                // Moving results of Active Event invocation up from conditional Active Event invocation result node's value,
-                // to the result of conditional statement, to "bubble" results up to the top-most branching Active Event result.
-                args.Value = idx.Value;
+            } else {
 
-                // Checking if conditional event created the [_abort] flag for us.
-                if (idx.Children.Count > 0 && idx[0].Name == "_abort" && idx[0].Get<bool> (context))
-                    return idx.Get (context, false);
+                // Looping through each condition.
+                foreach (var idx in conditions) {
+
+                    // Raising comparison operator Active Event, logical operator event, or any other event currently part of conditional operators.
+                    _context.Raise (idx.Name, idx);
+
+                    // Moving results of Active Event invocation up from conditional Active Event invocation result node's value,
+                    // to the result of conditional statement, to "bubble" results up to the top-most branching Active Event branching node.
+                    _args.Value = idx.Value;
+
+                    // Checking if conditional event created the [_abort] flag for us.
+                    if (idx.Children.Count > 0 && idx[0].Name == "_abort" && idx[0].Get<bool> (_context))
+                        return idx.Get (_context, false);
+                }
             }
 
-            // If condition had no operator active event children, then we must evaluate a "simple exist" condition
-            TryEvaluateSimpleExist (context, args);
-
-            return args.Get<bool> (context);
+            // Returning results of evaluation of conditional chain.
+            return _args.Get<bool> (_context);
         }
 
-        /*
-         * Executes current scope
-         */
-        public void ExecuteCurrentScope (ApplicationContext context, Node args)
+        /// <summary>
+        ///     Executes the current scope of branching.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        public void ExecuteCurrentScope ()
         {
             // Making sure there actually is something to evaluate.
-            if (args.Children.Count == _numberOfConditions)
+            if (_args.Children.Count == _numberOfConditions)
                 return;
 
             // Storing offset temporary in args, such that [eval-mutable] knows where to start execution.
             if (_numberOfConditions > 0)
-                args.Insert (0, new Node ("offset", _numberOfConditions + 1 /* Remember [offset] node itself */));
+                _args.Insert (0, new Node ("offset", _numberOfConditions + 1 /* Remember [offset] node itself */));
 
             // Evaluating body of conditional statement, now with [offset] pointing to first non-comparison/non-formatting node.
-            context.Raise ("eval-mutable", args);
+            _context.Raise ("eval-mutable", _args);
         }
 
         /*
          * Will evaluate the given condition to true, if it is anything but a false boolean, null, 
          * or an expression returning anything but null or false
          */
-        private void TryEvaluateSimpleExist (ApplicationContext context, Node args)
+        private void TryEvaluateSimpleExist ()
         {
             // If value is not boolean type, we evaluate value, and set its value to true, if evaluation did not
             // result in "null" or "false"
-            if (args.Value == null) {
+            if (_args.Value == null) {
 
                 // Null evaluates to false
-                args.Value = false;
+                _args.Value = false;
             } else {
 
                 // Checking if value already is boolean, at which case we don't evaluate any further, since it is already evaluated
-                if (!(args.Value is bool)) {
+                if (!(_args.Value is bool)) {
 
-                    var obj = XUtil.Single<object> (context, args, false, null);
+                    var obj = XUtil.Single<object> (_context, _args, false, null);
                     if (obj == null) {
 
                         // Result of evaluated expression yields null, hence evaluation result is false
-                        args.Value = false;
+                        _args.Value = false;
                     } else if (obj is bool) {
 
                         // Result of evaluated expression yields boolean, using this boolean as result
-                        args.Value = obj;
+                        _args.Value = obj;
                     } else {
 
                         // Anything but null and boolean, existence is true, hence evaluation becomes true!
-                        args.Value = true;
+                        _args.Value = true;
                     }
                 }
             }
@@ -138,13 +161,13 @@ namespace p5.lambda.helpers
         /*
          * Returns all nodes that either comparison operators or logical operators, and hence should be evaluated
          */
-        private static IEnumerable<Node> GetConditionalNodes (ApplicationContext context, Node args)
+        private IEnumerable<Node> GetConditionalNodes ()
         {
             // Checking if we have retrieved operators, and if not, retrieving them.
             if (_operators == null) {
             
                 // Retrieving all comparison operators and logical operators in system.
-                _operators = context.Raise ("operators");
+                _operators = _context.Raise ("operators");
 
                 // Then adding empty node, since it can be used to formatted expressions, etc.
                 _operators.Add ("");
@@ -152,15 +175,15 @@ namespace p5.lambda.helpers
 
             // Checking if value of args is null, and if so, we use the first child of it as an Active Event operator, 
             // which simply will be evaluated, and its value checked for true afterwards, during evaluation of conditional nodes.
-            Node idxOperator = args.FirstChild;
-            if (args.Value == null) {
+            Node idxOperator = _args.FirstChild;
+            if (_args.Value == null) {
 
                 // Basic syntax checking.
-                if (args.Children.Count == 0)
-                    throw new LambdaException ("Nothing to use as a condition for your branching Active Event", args, context);
+                if (_args.Children.Count == 0)
+                    throw new LambdaException ("Nothing to use as a condition for your branching Active Event", _args, _context);
 
                 // Returning first child as Active Event condition.
-                yield return args.FirstChild;
+                yield return _args.FirstChild;
 
                 // Incrementing our idxOperator node.
                 idxOperator = idxOperator.NextSibling;

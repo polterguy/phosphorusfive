@@ -53,7 +53,7 @@ namespace p5.lambda.helpers
             } else {
 
                 // Previous condition yielded false, try to evaluate this one, and returning results.
-                e.Args.Value = new Conditions ().Evaluate (context, e.Args);
+                e.Args.Value = new Conditions (context, e.Args).Evaluate ();
             }
         }
 
@@ -71,7 +71,7 @@ namespace p5.lambda.helpers
             if (previous.Get<bool> (context)) {
 
                 // Previous condition yielded true, now checking this one.
-                e.Args.Value = new Conditions ().Evaluate (context, e.Args);
+                e.Args.Value = new Conditions (context, e.Args).Evaluate ();
 
             } else {
 
@@ -92,7 +92,7 @@ namespace p5.lambda.helpers
             var previous = EnsureParentFindPreviousCondition (context, e.Args);
 
             // Evaluate this one to true, only if previous evaluation, and this evaluation are note equal.
-            e.Args.Value = new Conditions ().Evaluate (context, e.Args) != previous.Get<bool> (context);
+            e.Args.Value = new Conditions (context, e.Args).Evaluate () != previous.Get<bool> (context);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace p5.lambda.helpers
         }
 
         /// <summary>
-        ///     Returns all comparison operators in Phosphorus Five
+        ///     Returns all logical operators.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
