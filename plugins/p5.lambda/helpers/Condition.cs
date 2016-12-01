@@ -86,13 +86,10 @@ namespace p5.lambda.helpers
                     // Moving results of Active Event invocation up from conditional Active Event invocation result node's value,
                     // to the result of conditional statement, to "bubble" results up to the top-most branching Active Event branching node.
                     _args.Value = idx.Value;
-
-                    // Checking if conditional event created the [_abort] flag for us.
-                    if (idx.Children.Count > 0 && idx[0].Name == "_abort" && idx[0].Get<bool> (_context)) {
-                        idx[0].UnTie ();
-                        break;
-                    }
                 }
+
+                // House cleaning.
+                _args["_p5_conditions_state_"]?.UnTie ();
             }
 
             // Returning results of evaluation of conditional chain.
@@ -112,15 +109,10 @@ namespace p5.lambda.helpers
 
             // Storing offset temporary in args, such that [eval-mutable] knows where to start execution.
             if (_conditions.Count > 0)
-                _args.Insert (0, new Node ("offset", _conditions.Count + 1 /* Remember [offset] node itself */));
+                _args.Insert (0, new Node ("offset", _conditions.Count));
 
             // Evaluating body of conditional statement, now with [offset] pointing to first non-comparison/non-formatting node.
-            // Making sure we clean up after ourselves afterwards.
-            try {
-                _context.Raise ("eval-mutable", _args);
-            } finally {
-                _args["offset"]?.UnTie ();
-            }
+            _context.Raise ("eval-mutable", _args);
         }
 
         /*
@@ -129,30 +121,29 @@ namespace p5.lambda.helpers
          */
         private void TryEvaluateSimpleExist ()
         {
-            // If value is not boolean type, we evaluate value, and set its value to true, if evaluation did not
-            // result in "null" or "false"
+            // If value is not boolean type, we evaluate value, and set its value to true, if evaluation did not result in "null" or "false".
             if (_args.Value == null) {
 
-                // Null evaluates to false
+                // Null evaluates to false.
                 _args.Value = false;
 
             } else {
 
-                // Checking if value already is boolean, at which case we don't evaluate any further, since it is already evaluated
+                // Checking if value already is boolean, at which case we don't evaluate any further, since it is already evaluated.
                 if (!(_args.Value is bool)) {
 
                     var obj = XUtil.Single<object> (_context, _args, false, null);
                     if (obj == null) {
 
-                        // Result of evaluated expression yields null, hence evaluation result is false
+                        // Result of evaluated expression yields null, hence evaluation result is false.
                         _args.Value = false;
                     } else if (obj is bool) {
 
-                        // Result of evaluated expression yields boolean, using this boolean as result
+                        // Result of evaluated expression yields boolean, using this boolean as result.
                         _args.Value = obj;
                     } else {
 
-                        // Anything but null and boolean, existence is true, hence evaluation becomes true!
+                        // Anything but null and boolean, existence is true, hence evaluation becomes true
                         _args.Value = true;
                     }
                 }

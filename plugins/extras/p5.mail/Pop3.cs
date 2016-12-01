@@ -255,7 +255,7 @@ namespace p5.mail
                 Node exe = args ["functor"].Clone ();
 
                 // Making sure we avoid raising the message node as an Active Event
-                exe.Insert (0, new Node ("offset", 2 /* Remember the [offset] node itself! */));
+                exe.Insert (0, new Node ("offset", 1));
 
                 // Adding currently iterated message to [functor] and evaluating using [eval]
                 exe.Insert (1, msgNode);

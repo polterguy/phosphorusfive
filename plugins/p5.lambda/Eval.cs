@@ -143,7 +143,7 @@ namespace p5.lambda
 
             // Passing in arguments, in order of appearance, if there are any arguments.
             if (args != null) {
-                var index = evalNode["offset"] != null ? evalNode.IndexOf (evalNode["offset"]) + 1 : 0;
+                var index = evalNode["offset"] != null ? evalNode.IndexOf (evalNode["offset"]) : 0;
                 foreach (var idx in args.Reverse ()) {
                     lambdaClone.Insert (index, idx.Clone ());
                 }
@@ -178,7 +178,7 @@ namespace p5.lambda
         {
             // Passing in arguments, in order of appearance, if there are any arguments.
             if (args != null) {
-                var index = evalNode["offset"] != null ? evalNode.IndexOf (evalNode["offset"]) + 1 : 0;
+                var index = evalNode["offset"] != null ? evalNode.IndexOf (evalNode["offset"]) : 0;
                 foreach (var idx in args.Reverse ()) {
                     lambda.Insert (index, idx.Clone ());
                 }
@@ -240,7 +240,7 @@ namespace p5.lambda
             if (lambda["offset"] != null) {
 
                 // Retrieving offset
-                int offset = lambda["offset"].Get<int> (context);
+                int offset = lambda["offset"].UnTie ().Get<int> (context);
 
                 // Checking if execution block is "empty"
                 if (offset == lambda.Children.Count)

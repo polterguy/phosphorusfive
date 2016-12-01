@@ -49,7 +49,7 @@
     <Compile Include="keywords\core\Src.cs" />
     <Compile Include="keywords\extras\Whitelist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="helpers\Conditions.cs" />
+    <Compile Include="helpers\Condition.cs" />
     <Compile Include="keywords\core\Add.cs" />
     <Compile Include="keywords\core\Branching.cs" />
     <Compile Include="keywords\core\Set.cs" />

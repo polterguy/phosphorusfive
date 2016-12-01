@@ -1,499 +1,736 @@
-/*
- * Contains unit tests for testing [if], 
- * [else-if] and [else] in system
- */
 
 /*
- * Tests that "if" behaves correctly with two static sources
+ * Contains unit tests for [if], [else-if] and [else] Active Events.
  */
-static-if
+
+
+/*
+ * Simple if exists
+ */
+
+
+If with constant string
   if:success
-    !=:success
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-/*
- * Tests that "if" behaves correctly with two static 
- * sources of integer types
- */
-static-int-if
-  if:int:5
-    !=:int:5
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-/*
- * Tests that "if" behaves correctly with two static 
- * sources of different types
- */
-static-different-types
-  if:5
-    =:int:5
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-/*
- * Tests that "if" behaves correctly with two expression 
- * sources of different types
- */
-expression-different-types
-  _data
-    foo1:int:5
-    foo2:5
-  if:x:/../*/_data/0?value
-    =:x:/../*/_data/1?value
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-/*
- * Tests that "if" behaves correctly with two expressions 
- * leading to nodes evaluation
- */
-expression-nodes
-  _data
-    foo1
-      foo2:bar2
-      foo3:int:5
-    foo1
-      foo2:bar2
-      foo3:int:5
-  if:x:/../*/_data/0
-    !=:x:/../*/_data/1
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-/*
- * Tests that "if" behaves correctly with two expressions 
- * leading to nodes evaluation that should yield false
- */
-expression-nodes-deep-false
-  _data
-    foo1
-      foo2:bar2
-        error:5
-      foo3:int:5
-    foo1
-      foo2:bar2
-        error:int:5
-      foo3:int:5
-  if:x:/../*/_data/0
-    =:x:/../*/_data/1
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-/*
- * Tests that "if" behaves correctly with logical AND
- */
-and-if
-  _data
-    foo1:bar1
-    foo2:bar2
-  if:x:/../*/_data/0?name
-    =:foo1
-    and:x:/../*/_data/1?name
-      =:foo2
-      // success
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
-/*
- * Tests that "if" behaves correctly with logical OR
- */
-or-if
-  _data
-    foo1:bar1
-    foo2:bar2
-  if:x:/../*/_data/0?name
-    =:error
-    or:x:/../*/_data/1?name
-      =:foo2
-      // success
+
+If with constant true boolean
+  if:bool:true
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
-/*
- * Tests that "if" behaves correctly with logical OR 
- * combined with logical AND
- */
-or-if-and
-  _data
-    foo1:bar1
-    foo2:bar2
-  if:x:/../*/_data/0?name
-    =:error
-    or:x:/../*/_data/1?name
-      =:foo2
-      // success
-      and:x:/../*/_data/1?value
-        =:bar2
+
+If with constant false boolean
+  if:bool:false
+    throw:Assert error, [if] misbehaved
+
+
+If with constant 1 integer
+  if:int:1
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
-/*
- * Tests that "if" behaves correctly with logical OR 
- * combined with logical AND, that should yield false
- */
-or-if-and-false
-  _data
-    foo1:bar1
-    foo2:bar2
-  if:x:/../*/_data/0?name
-    =:error
-    or:x:/../*/_data/1?name
-      =:foo2
-      // success
-      and:x:/../*/_data/1?value
-        =:bar1
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
 
-/*
- * Tests that "if" behaves correctly and gives logical
- * AND precedence in condition evaluation
- */
-and-precedence
-  _data
-    foo1:bar1
-    foo2:bar2
-  if:x:/../*/_data/0?name
-    =:foo1
-    and:x:/../*/_data/0?value
-      =:error
+If with constant 0 integer
 
-    /*
-     * The next three parts should evaluate to true,
-     * making the entire [if] evaluate to true, due
-     * to AND having precedence in conditions
-     */
-    or:x:/../*/_data/1?name
-      =:foo2
-    and:x:/../*/_data/1?value
-      =:bar2
-    and:x:/../*/_data/0?name
-      =:foo1
-
-    /*
-     * Evaluates to false
-     */
-    or:error1
-      =:error2
-    and:error3
-      =:error4
-    // success
+  // Notice, the integer value of 0 actually yields true in conditional Active Events, since there "exists" an object, 
+  // and the object is not boolean false. Only null and false objects yields a false result.
+  if:int:0
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
-/*
- * Tests that "else" behaves correctly and evaluates 
- * if [if] evaluates to false
- */
-else
-  _data
-  if:x:/../*/_data?name
-    =:error
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+If with value expression, yielding null
+  if:x:/@_nothing?value
+    throw:Assert error, [if] misbehaved
+
+
+If with name expression, yielding null
+  if:x:/@_nothing?name
+    throw:Assert error, [if] misbehaved
+
+
+If with node expression, yielding null
+  if:x:/@_nothing
+    throw:Assert error, [if] misbehaved
+
+
+If with count expression, yielding 0
+
+  // Notice, a count expression always returns an object, even if the count is zero, hence [if] evaluates to true, due to having returned an "something".
+  // There is no automatic conversion between types in Phosphorus Five (such as zero) to booleans, except for "null" (nothing becomes false) 
+  // and "non-null" (something becomes true).
+  if:x:/@_nothing?count
   else
-    set:x:/../0?value
-      src:success
-  if:x:/../*/_data?value
-    !=:success
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
-/*
- * Tests that "else-if" behaves correctly and evaluates 
- * if [if] evaluates to false
- */
-else-if
-  _data
-  if:x:/../*/_data?name
-    =:error
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-  else-if:x:/../*/_data?name
-    =:_data
-    set:x:/../0?value
-      src:success
-  if:x:/../*/_data?value
-    !=:success
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
 
-/*
- * Tests that a deep comparison is grouping and ordering its
- * conditions correctly
- */
-deep-comparison-equals
-  _data
-    foo1:bar1
-    foo2:bar2
-  if:x:/../*/_data?name
-    !=:_data
-    or:x:/../*/_data/0?name
-      =:foo1
-      and:x:/../*/_data/0?value
-        =:bar1
-        and:x:/../*/_data/1?name
-          =:foo2
-          and:x:/../*/_data/1?value
-            =:bar2
-    // Do nothing
+If with count expression, yielding 1
+  _something
+  if:x:/@_something?count
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
+
+
+If with value expression, yielding single string
+  _something:x
+  if:x:/@_something?value
+  else
+    throw:Assert error, [if] misbehaved
+
+
+If with value expression, yielding single 1 integer
+  _something:int:1
+  if:x:/@_something?value
+  else
+    throw:Assert error, [if] misbehaved
+
+
+If with value expression, yielding single 0 integer
+  _something:int:0
+  if:x:/@_something?value
+  else
+    throw:Assert error, [if] misbehaved
+
+
+If with value expression, yielding single true boolean
+  _something:bool:true
+  if:x:/@_something?value
+  else
+    throw:Assert error, [if] misbehaved
+
+
+If with value expression, yielding single false boolean
+
+  // Notice, since expression in [if] below, yields one single value, and this value is a boolean, having the value of "false", the [if] condition
+  // will yield false too. This is the only exception in regards to "exists" that exists in Phosphorus Five.
+  // All other object types, will exclusively be checked for existence, including multiple boolean false values.
+  _something:bool:false
+  if:x:/@_something?value
+    throw:Assert error, [if] misbehaved
+
+
+If with value expression, yielding multiple true booleans
+  _something
+    _data1:bool:true
+    _data2:bool:true
+  if:x:/@_something/*?value
+  else
+    throw:Assert error, [if] misbehaved
+
+
+If with value expression, yielding multiple false booleans
+
+  // Notice, even though the expression in our [if] yields exclusively boolean values, and they're all false, the [if] will still not 
+  // yield false, since there are multiple results. Only a single boolean value of "false" in an expression will be automatically onverted into false
+  // on behalf of the condition.
+  _something
+    _data1:bool:false
+    _data2:bool:false
+  if:x:/@_something/*?value
+  else
+    throw:Assert error, [if] misbehaved
+
 
 /*
- * Tests that a deep comparison is grouping and ordering its
- * conditions correctly
+ * Comparisons.
  */
-deep-comparison-not-equals
-  _data
-    foo1:bar1
-    foo2:bar2
-  if:x:/../*/_data?name
-    !=:_data
-    or:x:/../*/_data/0?name
-      =:foo1
-      and:x:/../*/_data/0?value
-        =:bar1
-        and:x:/../*/_data/1?name
-          =:foo2
-          and:x:/../*/_data/1?value
-            =:ERROR
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
 
-    
-    
-/*
- * Tests that [offset] behaves as expected in branching
- */
-offset-test
-  _foo:data
-  if:x:/../*/_foo?value
-    and:x:/../*/_foo?value
-      =:data
-      or:x:/../*/_foo?name
-    set:x:/../*/_foo?value
-      src:success
-  if:x:/../*/_foo?value
-    !=:success
-    throw:If [offset] misbehaved
-    
-    
-/*
- * Tests that false compared to false yields true
- */
-false-equals-false-expressions
-  _foo1:bool:false
-  _foo2:bool:false
-  if:x:/../*/_foo1?value
-    =:x:/../*/_foo2?value
-    set:x:/../*/_foo1?value
-      src:success
-  if:x:/../*/_foo1?value
-    !=:success
-    throw:If false comparison misbehaved
-    
-    
-/*
- * Tests that false compared to false yields true
- */
-false-equals-false-constant
-  _foo1:bool:false
-  if:x:/../*/_foo1?value
+
+Compare constant string = constant string, values equal
+  if:something
+    =:something
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string = constant string, values not-equal
+  if:something1
+    =:something
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant integer = constant integer, values equal
+  if:int:1
+    =:int:1
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant integer = constant integer, values not equal
+  if:int:2
+    =:int:1
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean = constant boolean, values true
+  if:bool:true
+    =:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean = constant boolean, values false
+  if:bool:false
     =:bool:false
-    set:x:/../*/_foo1?value
-      src:success
-  if:x:/../*/_foo1?value
-    !=:success
-    throw:If false comparison misbehaved
-/*
- * Tests that false compared to false yields true
- */
-false-equals-false-expressions-convert
-  _foo1:bool:false
-  _foo2:bool:false
-  if:x:/../*/_foo1?value.bool
-    =:x:/../*/_foo2?value
-    set:x:/../*/_foo1?value
-      src:success
-  if:x:/../*/_foo1?value
-    !=:success
-    throw:If false comparison misbehaved
-    
-    
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean = constant boolean, values not-equal
+  if:bool:false
+    =:bool:true
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean = constant boolean, values not-equal, reversed
+  if:bool:true
+    =:bool:false
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean = constant string
+  if:true
+    =:bool:true
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean = constant string, reversed
+  if:bool:true
+    =:true
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant integer = constant string
+  if:int:1
+    =:1
+    throw:Assert error, [if] misbehaved
+
+
+Compare expression boolean = constant boolean, values equal
+  _data:bool:true
+  if:x:/-?value
+    =:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare expression boolean = constant boolean, values equal, reversed
+  _data:bool:true
+  if:bool:true
+    =:x:/@_data?value
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare expression boolean = constant string, converted, yields true
+  _data:true
+  if:bool:true
+    =:x:/@_data?value.bool
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare expression boolean = constant string, converted, yields false
+  _data:false
+  if:bool:true
+    =:x:/@_data?value.bool
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string != constant string, values equal
+  if:something
+    !=:something
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string != constant string, values not-equal
+  if:something1
+    !=:something
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant integer != constant integer, values equal
+  if:int:1
+    !=:int:1
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant integer != constant integer, values equal
+  if:int:2
+    !=:int:1
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean != constant boolean, values true
+  if:bool:true
+    !=:bool:true
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean != constant boolean, values false
+  if:bool:false
+    !=:bool:false
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean != constant boolean, values not-equal
+  if:bool:false
+    !=:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean != constant boolean, values not-equal, reversed
+  if:bool:true
+    !=:bool:false
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean != constant string
+  if:true
+    !=:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant boolean != constant string, reversed
+  if:bool:true
+    !=:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare expression boolean value != constant boolean, values equal
+  _data:bool:true
+  if:x:/-?value
+    !=:bool:true
+    throw:Assert error, [if] misbehaved
+
+
+Compare expression boolean value != constant boolean, values equal, expression reversed
+  _data:bool:true
+  if:bool:true
+    !=:x:/@_data?value
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string > constant string, yields false
+  if:a
+    >:b
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string > constant string, yields true
+  if:b
+    >:a
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant bool > constant bool, yields false
+  if:bool:false
+    >:bool:true
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant bool > constant bool, yields true
+  if:bool:true
+    >:bool:false
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant int > constant int, yields false
+  if:int:1
+    >:int:2
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant int > constant int, yields true
+  if:int:2
+    >:int:1
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string < constant string, yields false
+  if:b
+    <:a
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string < constant string, yields true
+  if:a
+    <:b
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant bool < constant bool, yields false
+  if:bool:true
+    <:bool:false
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant bool < constant bool, yields true
+  if:bool:false
+    <:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant int < constant int, yields false
+  if:int:2
+    <:int:1
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant int < constant int, yields true
+  if:int:1
+    <:int:2
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string >= constant string, yields false
+  if:a
+    >=:b
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string >= constant string, yields true
+  if:b
+    >=:a
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string <= constant string, yields false
+  if:b
+    <=:a
+    throw:Assert error, [if] misbehaved
+
+
+Compare constant string <= constant string, yields true
+  if:a
+    <=:b
+  else
+    throw:Assert error, [if] misbehaved
+
 
 /*
- * Tests that "not" behaves correctly with an expression that should yield false
+ * Logical operators
  */
-not-failure
-  _foo:success
-  if:x:/-?value
-    =:success
+
+
+Or, evaluates to true
+  if:bool:false
+    or:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Or, evaluates to true, reversed
+  if:bool:true
+    or:bool:false
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Or, double up, evaluates to true
+  if:bool:false
+    or:bool:false
+    or:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Or, double up, evaluates to true, reversed
+  if:bool:true
+    or:bool:false
+    or:bool:false
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Or, double up, evaluates to true, reversed, true in middle
+  if:bool:false
+    or:bool:true
+    or:bool:false
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Or, exists constant
+  if:bool:false
+    or:something
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Or, exists constant, reversed
+  if:something
+    or:bool:false
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Or, not, exists constant
+  if:bool:false
+    or:something
     not
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
-    
-    
 
-/*
- * Tests that "not" behaves correctly with an expression that should yield true
- */
-not-success
-  _foo:success
-  if:x:/-?value
-    =:error
+Or, not, exists constant, reversed
+  if:something
+    or:bool:false
     not
-    // Success
-  else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
 
-
-
-
-/*
- * Tests that "not" behaves correctly when an "and" statement is "not"'ed
- */
-not-and-failure
-  _foo:success
-  if:x:/-?value
-    =:success
-    and:x:/../0?name
-      =:_foo
-      not
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-
-
-
-
-
-/*
- * Tests that "not" behaves correctly when an "and" statement is "not"'ed
- */
-not-and-success
-  _foo:success
-  if:x:/-?value
-    =:success
-    and:x:/../0?name
-      =:_foo-error
-      not
-    // Success
-  else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-
-
-
-
-
-
-/*
- * Tests that "not" behaves correctly when given a non-existing expression value,
- * and expression "exists" is "not"'ed
- */
-not-exists-failure
-  _foo
-  if:x:/-?value
+Or, not, double up, evaluates to true, reversed, true in middle
+  if:bool:false
+    or:bool:true
+    or:bool:false
     not
-    // Success
+    throw:Assert error, [if] misbehaved
+
+
+And, yields false
+  if:bool:false
+    and:bool:true
+    throw:Assert error, [if] misbehaved
+
+
+And, yields true
+  if:bool:true
+    and:bool:true
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
 
-
-
-
-
-
-
-/*
- * Tests that "not" behaves correctly when given an existing expression value,
- * and expression "exists" is "not"'ed
- */
-not-exists-success
-  _foo:success
-  if:x:/-?value
+And, not, yields false
+  if:bool:false
+    and:bool:true
     not
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-
-
-
-
-
-
-
-
-/*
- * Tests that "not" behaves correctly when given an existing expression value,
- * and expression "exists" is "not"'ed
- */
-not-and-exists-failure
-  _foo
-  if:x:/-?name
-    =:_foo
-    and:x:/../0?value
-      not
-    // Success
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
 
-
-
-
-
-
-
-
-
-/*
- * Tests that "not" behaves correctly when given an existing expression value,
- * and expression "exists" is "not"'ed
- */
-not-and-exists-success
-  _foo:success
-  if:x:/-?name
-    =:_foo
-    and:x:/../0?value
-      not
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
-
-
-
-
-
-
-
-
-
+And, not, yields true
+  if:bool:true
+    and:bool:true
+    not
+    throw:Assert error, [if] misbehaved
 
 
 /*
- * Tests that "not" behaves correctly when given an existing expression value,
- * and expression "exists" is "not"'ed
+ * Complex composite conditions.
  */
-not-and-bool-failure
-  _foo:bool:false
-  if:x:/-?name
-    =:_foo
-    and:x:/../0?value
-      not
-    // Success
+
+
+Complex, and or, yields true
+  if:bool:true
+    and:bool:false
+    or:x
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, [if] misbehaved
 
 
+Complex, and or, yields false
+  if:bool:true
+    and:bool:false
+    or:bool:false
+    throw:Assert error, [if] misbehaved
 
 
+Complex, and or, not, yields true
+  if:bool:true
+    and:bool:false
+    or:x
+    not
+    throw:Assert error, [if] misbehaved
 
 
+Complex, and or, not, yields false
+  if:bool:true
+    and:bool:false
+    or:bool:false
+    not
+  else
+    throw:Assert error, [if] misbehaved
 
 
+Complex, and or, and presedence, yields true
+  if:bool:false
+    and:bool:false
+    or:bool:true
+    and:bool:true
+  else
+    throw:Assert error, [if] misbehaved
 
 
+Complex, and or, and presedence, yields false
+  if:bool:false
+    and:bool:false
+    or:bool:true
+    and:bool:false
+    throw:Assert error, [if] misbehaved
+
+
+Complex, and or, not, and presedence, yields true
+  if:bool:false
+    and:bool:false
+    or:bool:true
+    and:bool:true
+    not
+    throw:Assert error, [if] misbehaved
+
+
+Complex, and or, not, and presedence, yields false
+  if:bool:false
+    and:bool:false
+    or:bool:true
+    and:bool:false
+    not
+  else
+    throw:Assert error, [if] misbehaved
 
 
 /*
- * Tests that "not" behaves correctly when given an existing expression value,
- * and expression "exists" is "not"'ed
+ * Nested complex composite conditions.
  */
-not-and-bool-success
-  _foo:bool:true
-  if:x:/-?name
-    =:_foo
-    and:x:/../0?value
-      not
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
 
+
+Nested, scope test, yields true
+  if:bool:false
+    or:bool:false
+      or:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Nested, scope test, not, yields false
+  if:bool:false
+    or:bool:false
+      or:bool:true
+      not
+    throw:Assert error, [if] misbehaved
+
+
+Nested, scope test, not one up, yields false
+  if:bool:false
+    or:bool:false
+      or:bool:true
+    not
+    throw:Assert error, [if] misbehaved
+
+
+Nested, scope test, not one up, yields true
+  if:bool:false
+    or:bool:false
+      or:bool:false
+    not
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Nested, scope test, and, not, yields true
+  if:bool:false
+    or:bool:true
+    and:bool:false
+    not
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Nested, scope test, and, not, yields false
+  if:bool:false
+    or:bool:true
+    and:bool:true
+    not
+    throw:Assert error, [if] misbehaved
+
+
+/*
+ * Misc.
+ */
+
+
+Misc, not in middle
+  if:bool:false
+    or:bool:false
+    not
+    and:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, not in middle, notted
+  if:bool:false
+    or:bool:false
+    not
+    and:bool:true
+    not
+    throw:Assert error, [if] misbehaved
+
+
+Misc, rich composite example 1
+  _data1:foo
+  _data2:int:5
+  _data3:bool:false
+  if:x:/@_data1?value
+    =:foo
+    and:x:/@_data2?value
+      =:int:5
+      and:x:/@_data3?value
+      not
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, rich composite example 2
+  _data1:foo
+  _data2:int:5
+  _data3:bool:false
+  if:x:/@_data1?value
+    =:foo
+    and:x:/@_data2?value
+      =:int:5
+      and:x:/@_data3?value
+      not
+      not
+    throw:Assert error, [if] misbehaved
+
+
+Misc, rich composite example 3
+  _data1:foo
+  _data2:int:5
+  _data3:bool:true
+  if:x:/@_data1?value
+    =:foo
+    and:x:/@_data2?value
+      =:int:5
+      and:x:/@_data3?value
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, rich composite example 3
+  _data1:foo
+  _data2:int:5
+  _data3:bool:true
+  if:x:/@_data1?value
+    =:bar
+    or:x:/@_data2?value
+      =:int:4
+      or:x:/@_data3?value.string
+        =:true
+  else
+    throw:Assert error, [if] misbehaved

@@ -87,8 +87,7 @@ namespace p5.lambda.keywords.core
             // Checking if previous conditional statement yielded true, and if not, evaluating current node
             if (!PreviousConditionEvaluatedTrue (e.Args, context)) {
 
-                // Since no previous conditions evaluated to true, we simply execute this scope, without checking any conditions, 
-                // since there are none!
+                // Since no previous conditions evaluated to true, we simply execute this scope, without checking any conditions, since there are none.
                 context.Raise ("eval-mutable", e.Args);
             }
         }

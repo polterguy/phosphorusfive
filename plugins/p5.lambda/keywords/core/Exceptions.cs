@@ -77,7 +77,7 @@ namespace p5.lambda.keywords.core
                 e.Args.Insert (0, new Node ("message", (e.Args.Parent [0].Value as Exception).Message));
                 e.Args.Insert (1, new Node ("stack-trace", (e.Args.Parent [0].Value as Exception).StackTrace));
                 e.Args.Insert (2, new Node ("type", (e.Args.Parent [0].Value as Exception).GetType ().FullName));
-                e.Args.Insert (3, new Node ("offset", 4));
+                e.Args.Insert (3, new Node ("offset", 3));
                 e.Args.Parent ["_exception"].UnTie ();
 
                 // Evaluating [catch] lambda block

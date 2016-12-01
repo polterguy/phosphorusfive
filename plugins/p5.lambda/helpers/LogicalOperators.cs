@@ -43,17 +43,28 @@ namespace p5.lambda.helpers
             // Retrieving previous node, and making sure parent has evaluated "exists" condition, if any, and doing some basical sanity check.
             var previous = EnsureParentFindPreviousCondition (context, e.Args);
 
-            // If previous condition evaluates to true, then [or] also evaluates to true, and aborts the rest of the conditional checks altogether.
+            // If previous condition evaluated to true, then [or] also evaluates to true, and aborts the rest of the conditional checks altogether.
             if (previous.Get<bool> (context)) {
 
                 // Previous condition yielded true, no needs to continue checks, or even evaluate this one, since it's true anyways.
                 e.Args.Value = true;
-                e.Args.Insert (0, new Node ("_abort", true));
 
             } else {
 
+                // Figuring out results of condition.
+                var result = new Condition (context, e.Args).Evaluate ();
+
+                // To make sure [and] has presedence, we need to store a "maybe" flag in parent's state, which is only negated, if a [not] is encountered later.
+                // This ensures that [and] gets presedence over [or].
+                if (result) {
+
+                    // Checking if there already exists a "state" node in condition, and if not, creating one, and inserting "maybe" results.
+                    // "maybe" results is the result of previously evaluated condition.
+                    e.Args.Parent.FindOrCreate ("_p5_conditions_state_", 0).Add ("_or_maybe_", previous.Get<bool> (context));
+                }
+
                 // Previous condition yielded false, try to evaluate this one, and returning results.
-                e.Args.Value = new Condition (context, e.Args).Evaluate ();
+                e.Args.Value = result;
             }
         }
 
@@ -68,34 +79,28 @@ namespace p5.lambda.helpers
             // Retrieving previous node, and making sure parent has evaluated "exists" condition, if any, and doing some basical sanity check.
             var previous = EnsureParentFindPreviousCondition (context, e.Args);
 
-            // We only evaluate [and] if previous condition evaluated to true.
-            if (previous.Get<bool> (context)) {
+            // Checking if we've previously seen an [or], to make sure [and] has presedence.
+            if (e.Args.Parent ["_p5_conditions_state_"]?["_or_maybe_"]?.Get (context, false) ?? false) {
 
-                // Previous condition yielded true, now checking this one.
-                e.Args.Value = new Condition (context, e.Args).Evaluate ();
+                // No need to evaluate this condition.
+                e.Args.Value = true;
 
             } else {
 
-                // No needs to evaluate this one, since previous condition yielded false, this one also yields false.
-                // Notice however, we do NOT [_abort], to make sure [and] has presedence over [or], and there might theoretically come another
-                // [or] later down in our scope.
-                e.Args.Value = false;
+                // We only evaluate [and] if previous condition evaluated to true.
+                if (previous.Get<bool> (context)) {
+
+                    // Previous condition yielded true, now checking this one.
+                    e.Args.Value = new Condition (context, e.Args).Evaluate ();
+
+                } else {
+
+                    // No needs to evaluate this one, since previous condition yielded false, this one also yields false.
+                    // Notice however, we do NOT [_abort], to make sure [and] has presedence over [or], and there might theoretically come another
+                    // [or] later down in our scope.
+                    e.Args.Value = false;
+                }
             }
-        }
-
-        /// <summary>
-        ///     Logical [xor] conditional Active Event.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "xor")]
-        public static void xor (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Retrieving previous node, and making sure parent has evaluated "exists" condition, if any, and doing some basical sanity check.
-            var previous = EnsureParentFindPreviousCondition (context, e.Args);
-
-            // Evaluate this one to true, only if previous evaluation, and this evaluation are note equal.
-            e.Args.Value = new Condition (context, e.Args).Evaluate () != previous.Get<bool> (context);
         }
 
         /// <summary>
@@ -113,6 +118,9 @@ namespace p5.lambda.helpers
             // Retrieving previous node, and making sure parent has evaluated "exists" condition, if any, and doing some basical sanity check.
             var previous = EnsureParentFindPreviousCondition (context, e.Args);
 
+            // Removing "maybe" condition, if it exists.
+            e.Args.Parent["_p5_conditions_state_"]?["_or_maybe_"]?.UnTie ();
+
             // Negate the previous condition's results.
             e.Args.Value = !previous.Get<bool> (context);
         }
@@ -127,7 +135,6 @@ namespace p5.lambda.helpers
         {
             e.Args.Add ("or");
             e.Args.Add ("and");
-            e.Args.Add ("xor");
             e.Args.Add ("not");
         }
 

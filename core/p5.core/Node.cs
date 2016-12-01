@@ -298,12 +298,15 @@ namespace p5.core
         ///     Finds, or creates, the first node having the given name
         /// </summary>
         /// <param name="name">Name of node to return or create</param>
-        public Node FindOrCreate (string name)
+        public Node FindOrCreate (string name, int index = -1)
         {
             var retVal = _children.Find (idx => idx.Name == name);
             if (retVal != null)
                 return retVal;
-            return Add (new Node (name)).LastChild;
+            if (index == -1)
+                return Add (new Node (name)).LastChild;
+            else
+                return Insert (index, new Node (name))[index];
         }
 
         /// <summary>
