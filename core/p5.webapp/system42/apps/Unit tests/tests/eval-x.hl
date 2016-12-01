@@ -1,0 +1,45 @@
+
+/*
+ * Unit tests for [eval-x].
+ */
+
+
+Evaluate multiple expressions
+  _data
+    foo1:x:?name
+    foo2:x:?name
+  eval-x:x:/-/*
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:foo1
+  foo2:foo2"
+    throw:Assert error, [eval-x] misbehaved
+
+
+Evaluate multiple expressions, and constant
+  _data
+    foo1:x:?name
+    foo2:x:?name
+    foo3:x
+  eval-x:x:/-/*
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:foo1
+  foo2:foo2
+  foo3:x"
+    throw:Assert error, [eval-x] misbehaved
+
+
+Evaluate multiple expressions, and formatted node
+  _data
+    foo1:x:?name
+    foo2:x:?name
+    foo3:{0}
+      :x:/@_data?name
+  eval-x:x:/-/*
+  if:x:/@_data
+    !=:node:@"_data
+  foo1:foo1
+  foo2:foo2
+  foo3:_data"
+    throw:Assert error, [eval-x] misbehaved
