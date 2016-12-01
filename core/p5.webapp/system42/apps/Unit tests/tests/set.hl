@@ -1,114 +1,195 @@
-/*
- * Contains unit tests for testing [set] in system
- */
 
 /*
- * Tests that "set" behaves correctly with value
+ * Unit tests for [set]
  */
-value
+
+
+Set single value to constant
   _data
   set:x:/-?value
     src:success
-  if:x:/../0?value
+  if:x:/@_data?value
     !=:success
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, [set] misbehaved
 
-/*
- * Tests that "set" behaves correctly with [src] being expression
- */
-expression-source
+
+Set single value to expression result
   _data
   set:x:/-?value
-    src:x:/../0?name
-  if:x:/../0?value
+    src:x:/@_data?name
+  if:x:/@_data?value
     !=:_data
-    throw:@"Assert error, expected [_data], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, [set] misbehaved
 
-/*
- * Tests that "set" behaves correctly with name
- */
-name
+
+Set single name to constant
   _data
   set:x:/-?name
     src:success
   if:x:/../0?name
     !=:success
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/../0?name
+    throw:Assert error, [set] misbehaved
 
-/*
- * Tests that "set" behaves correctly with node
- */
-node
+
+Set single node to constant string
   _data
   set:x:/-
     src:"_foo:success"
   if:x:/../0
     !=:node:"_foo:success"
-    throw:@"Assert error, expected [_foo:success], got [{0}]!"
-      :x:/../0?node.string
+    throw:Assert error, [set] misbehaved
 
-/*
- * Tests that "set" behaves correctly when setting value to node
- */
-node-source
+
+Set single node to constant node
+  _data
+  set:x:/-
+    src:node:"_foo:success"
+  if:x:/../0
+    !=:node:"_foo:success"
+    throw:Assert error, [set] misbehaved
+
+
+Set single value to constant node
   _data
   set:x:/-?value
     src:node:"_foo:success"
   if:x:/../0?value
     !=:node:"_foo:success"
-    throw:@"Assert error, expected [_foo:success], got [{0}]!"
-      :x:/../0?value.string
+    throw:Assert error, [set] misbehaved
 
-/*
- * Tests that "set" behaves correctly when setting name to null
- */
-null-name
+
+Set node's name to null
   _data
   set:x:/-?name
   if:x:/../0?name
     !=:
-    throw:@"Assert error, expected [], got [{0}]!"
-      :x:/../0?name
+    throw:Assert error, [set] misbehaved
 
-/*
- * Tests that "set" behaves correctly when setting value to null
- */
-null-value
-  _data
+
+Set node's value to null
+  _data:failure
   set:x:/-?value
-  if:x:/../0?value
-    !=
-    throw:@"Assert error, expected null, got [{0}]!"
-      :x:/../0?value
+  if:x:/@_data?value
+    throw:Assert error, [set] misbehaved
 
-/*
- * Tests that "set" behaves correctly when setting node to null
- */
-null-node
+
+Set node to null
   _data
   set:x:/-
   if:x:/../0?name
     !=:set
-    throw:@"Assert error, expected null-node, got [{0}]!"
-      :x:/../0?node.string
+    throw:Assert error, [set] misbehaved
 
-/*
- * Tests that "set" behaves correctly when setting multiple values
- * to static string
- */
-multiple-destinations
+
+Set multiple value destinations
   _data
     foo1
     foo2
   set:x:/-/*?value
     src:success
-  if:x:/../0/0?value
+  if:x:/@_data/0
+    !=:node:"foo1:success"
+    or:x:/@_data/1
+      !=:node:"foo2:success"
+    throw:Assert error, [set] misbehaved
+
+
+Set with Active Event source
+  _data
+  set:x:/-?value
+    eval
+      return:success
+  if:x:/@_data?value
     !=:success
-    or:x:/../0/1?value
-      !=:success
-    throw:@"Assert error, expected [success] and [success], got [{0}] and [{1}]!"
-      :x:/../0/0?value
-      :x:/../0/1?value
+    throw:Assert error, [set] misbehaved
+
+
+Set with dynamic Active Event source
+  create-event:sys42.tests.set-single-source
+    return:success
+  _data
+  set:x:/-?value
+    sys42.tests.set-single-source
+  if:x:/@_data?value
+    !=:success
+    throw:Assert error, [set] misbehaved
+
+
+Set with multiple sources, throws
+  _success
+  try
+    set:x:/@_data?value
+      src:foo
+      src:bar
+  catch
+    set:x:/@_success?value
+      src:success
+  if:x:/@_success?value
+    !=:success
+    throw:Assert error, [set] misbehaved
+
+
+Set without destination
+  _success
+  try
+    set
+  catch
+    set:x:/@_success?value
+      src:success
+  if:x:/@_success?value
+    !=:success
+    throw:Assert error, [set] misbehaved
+
+
+Set with string destination
+  _success
+  try
+    set:foo
+  catch
+    set:x:/@_success?value
+      src:success
+  if:x:/@_success?value
+    !=:success
+    throw:Assert error, [set] misbehaved
+
+
+Set with formatted expression and source
+  _input:success
+  _success
+  set:x:/@{0}?value
+    :x:/@_success?name
+    src:x:/@{0}?value
+      :x:/@_input?name
+  if:x:/@_success?value
+    !=:success
+    throw:Assert error, [set] misbehaved
+
+
+Set with destination expression leading nowhere
+  _data
+  set:x:/@foo
+
+
+Set with source expression leading nowhere
+  _data:failure
+  set:x:/@_data?value
+    src:x:/@_nothing
+  if:x:/@_data?value
+    throw:Assert error, [set] misbehaved
+
+
+Set with expression leading to multiple sources
+  _input
+    fa
+    il
+    ure
+  _data
+  try
+    set:x:/@_data?value
+      src:x:/@_input/*?name
+  catch
+    set:x:/@_data?value
+      src:success
+  if:x:/@_data?value
+    !=:success
+    throw:Assert error, [set] misbehaved

@@ -61,11 +61,25 @@ namespace p5.lambda.helpers
         /// <returns></returns>
         static public object GetSourceValue (ApplicationContext context, Node args)
         {
-            var srcNode = args.Children.Find (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_"));
-            if (srcNode == null)
+            var srcNode = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_")).ToList ();
+
+            // Sanity check.
+            if (srcNode.Count > 1)
+                throw new LambdaException ("Multiple source found for [" + args.Name + "]", args, context);
+
+            // Checking if there was any source.
+            if (srcNode.Count == 0)
                 return null;
-            context.Raise (srcNode.Name, srcNode);
-            return srcNode.Value ?? srcNode.FirstChild;
+
+            // Raising source Active Event, and returning results.
+            context.Raise (srcNode[0].Name, srcNode[0]);
+
+            // Sanity check
+            if (srcNode[0].Value == null && srcNode[0].Children.Count > 1)
+                throw new LambdaException ("Source Active Event returned multiple source", args, context);
+
+            // Returning value
+            return srcNode[0].Value ?? srcNode[0].FirstChild;
         }
 
         /// <summary>

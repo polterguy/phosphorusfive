@@ -1,6 +1,6 @@
 
 /*
- * Contains unit tests for [if], [else-if] and [else] Active Events.
+ * Contains unit tests for [if], [else-if] and [else].
  */
 
 
@@ -732,5 +732,272 @@ Misc, rich composite example 3
       =:int:4
       or:x:/@_data3?value.string
         =:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, rich composite example 4
+  _data1:foo
+  _data2:int:5
+  _data3:bool:true
+  if:x:/@_data1?value
+    =:bar
+    or:x:/@_data2?value
+      =:int:4
+      or:x:/@_data3?value.string
+        =:true
+      and:x:/@_nothing
+    throw:Assert error, [if] misbehaved
+
+
+Misc, rich composite example 5
+  _data1:foo
+  _data2:int:5
+  _data3:bool:true
+  if:x:/@_data1?value
+    =:bar
+    or:x:/@_data2?value
+      =:int:4
+      or:x:/@_data3?value.string
+        =:true
+      and:x:/@_nothing
+        not
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, rich composite example 6
+  _data1:foo
+  _data2:int:5
+  _data3:bool:true
+  if:x:/@_data1?value
+    =:foo
+    and:x:/@_data2?value
+      =:int:4
+      or:x:/@_data3?value.string
+        =:true
+
+
+Misc, rich composite example 7
+  _data1:foo
+  _data2:int:5
+  _data3:bool:true
+  if:x:/@_data1?value
+    =:foo
+    and:x:/@_data2?value
+      =:int:4
+      or:x:/@_data3?value.string
+        =:true
+        not
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare nodes, yields true
+  _data1:howdy
+    foo:bar
+  _data1:howdy
+    foo:bar
+  if:x:/../*/_data1/[0,1]
+    =:x:/../*/_data1/[1,2]
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare nodes, yields false
+  _data1:howdy
+    foo:bar
+  _data1:howdy
+    foo:bar1
+  if:x:/../*/_data1/[0,1]
+    =:x:/../*/_data1/[1,2]
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare nodes, types, yields true
+  _data1:howdy
+    foo:int:5
+  _data1:howdy
+    foo:int:5
+  if:x:/../*/_data1/[0,1]
+    =:x:/../*/_data1/[1,2]
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare nodes, wrong type, yields false
+  _data1:howdy
+    foo:int:5
+  _data1:howdy
+    foo:5
+  if:x:/../*/_data1/[0,1]
+    =:x:/../*/_data1/[1,2]
+    throw:Assert error, [if] misbehaved
+
+
+Misc, else-if
+  _data1:howdy
+    foo:int:5
+  _data1:howdy
+    foo:5
+  if:x:/../*/_data1/[0,1]
+    =:x:/../*/_data1/[1,2]
+    throw:Assert error, [if] misbehaved
+  else-if:x:/../*/_data1/[0,1]
+    =:node:@"_data1:howdy
+  foo:int:5"
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare lists nodes
+  _data1
+    foo1:bar1
+    foo2:bar2
+  _data2
+    foo1:bar1
+    foo2:bar2
+  if:x:/@_data1/*
+    =:x:/@_data2/*
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare lists values
+  _data1
+    foo1:bar1
+    foo2:bar2
+  _data2
+    foo1:bar1
+    foo2:bar2
+  if:x:/@_data1/*?value
+    =:x:/@_data2/*?value
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare lists count
+  _data1
+    foo1:bar1
+    foo2:bar2
+  _data2
+    foo1:bar1
+    foo2:bar2
+  if:x:/@_data1/*?count
+    =:x:/@_data2/*?count
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare lists count, yields false
+  _data1
+    foo1:bar1
+    foo2:bar2
+    foo3:bar3
+  _data2
+    foo1:bar1
+    foo2:bar2
+  if:x:/@_data1/*?count
+    =:x:/@_data2/*?count
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare lists nodes, yields false
+  _data1
+    foo1:bar1
+    foo2:bar2
+    foo3:bar3
+  _data2
+    foo1:bar1
+    foo2:bar2
+  if:x:/@_data1/*
+    =:x:/@_data2/*
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare lists values, yields false
+  _data1
+    foo1:bar1
+    foo2:bar2
+    foo3:bar3
+  _data2
+    foo1:bar1
+    foo2:bar2
+  if:x:/@_data1/*?value
+    =:x:/@_data2/*?value
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare > lists values counts
+  _data1
+    foo1:bar1
+    foo2:bar2
+    foo3:bar3
+  _data2
+    foo1:bar1
+    foo2:bar2
+  if:x:/@_data1/*?value
+    >:x:/@_data2/*?value
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, compare < lists values counts
+  _data1
+    foo1:bar1
+    foo2:bar2
+    foo3:bar3
+  _data2
+    foo1:bar1
+    foo2:bar2
+  if:x:/@_data1/*?value
+    <:x:/@_data2/*?value
+    throw:Assert error, [if] misbehaved
+
+
+Misc, event condition, yields false
+  if
+    eval
+      return:bool:false
+    throw:Assert error, [if] misbehaved
+
+
+Misc, event condition, yields true
+  if
+    eval
+      return:bool:true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, dynamic event condition, yields false
+  create-event:sys42.tests.branching-yields-false
+    return:bool:false
+  if
+    sys42.tests.branching-yields-false
+    throw:Assert error, [if] misbehaved
+
+
+Misc, dynamic event condition, yields true
+  create-event:sys42.tests.branching-yields-true
+    return:bool:true
+  if
+    sys42.tests.branching-yields-true
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, with formatted string
+  if:{0}
+    :x
+    =:x
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Misc, with formatted expression
+  _x:x
+  if:x:/@{0}?value
+    :_x
+    =:x
   else
     throw:Assert error, [if] misbehaved
