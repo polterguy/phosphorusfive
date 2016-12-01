@@ -43,3 +43,7 @@ Evaluate multiple expressions, and formatted node
   foo2:foo2
   foo3:_data"
     throw:Assert error, [eval-x] misbehaved
+
+
+Expression yields nothing
+  eval-x:x:/@_nothing
