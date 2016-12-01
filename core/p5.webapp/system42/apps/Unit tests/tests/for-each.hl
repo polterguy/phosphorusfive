@@ -1,122 +1,156 @@
-/*
- * Contains [for-each] unit tests in system
- */
 
 /*
- * Tests a simple value type of [for-each]
+ * Unit tests for [for-each].
  */
-value
+
+
+Iterate multiple values
   _data
     foo1:bar1
     foo2:bar2
-  for-each:x:/../*/_data/*?value
-    set:x:/./-?value
+  for-each:x:/@_data/*?value
+    set:x:/@_data?value
       src:{0}{1}
-        :x:/../0?value
-        :x:/..for-each/*/_dp?value
+        :x:/@_data?value
+        :x:/@_dp?value
   if:x:/../0?value
     !=:bar1bar2
-    throw:@"Assert error, expected [bar1bar2], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, [for-each] misbehaved
 
-/*
- * Tests a simple name type of [for-each]
- */
-name
+
+Iterate multiple names
   _data
     foo1:bar1
     foo2:bar2
-  for-each:x:/../*/_data/*?name
-    set:x:/./-?value
+  for-each:x:/@_data/*?name
+    set:x:/@_data?value
       src:{0}{1}
-        :x:/../0?value
-        :x:/..for-each/*/_dp?value
+        :x:/@_data?value
+        :x:/@_dp?value
   if:x:/../0?value
     !=:foo1foo2
-    throw:@"Assert error, expected [foo1foo2], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, [for-each] misbehaved
 
-/*
- * Tests a simple node type of [for-each]
- */
-node
+
+Iterate multiple nodes
   _data
     foo1:bar1
     foo2:bar2
-  for-each:x:/../*/_data/*
-    set:x:/./-?value
+  for-each:x:/@_data/*
+    set:x:/@_data?value
       src:{0}{1}
-        :x:/../0?value
-        :x:/..for-each/*/_dp/#?node.string
-  if:x:/../0?value
+        :x:/@_data?value
+        :x:/@_dp/#?node.string
+  if:x:/@_data?value
     !=:@"foo1:bar1foo2:bar2"
-    throw:@"Assert error, expected [foo1:bar1foo2:bar2], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, [for-each] misbehaved
 
-/*
- * Tests that [for-each] behaves correctly when break'ed
- */
-break
+
+Break iteration
   _data
     foo1:bar1
     foo2:bar2
-  for-each:x:/../*/_data/*
-    set:x:/./-?value
+  for-each:x:/@_data/*
+    set:x:/@_data?value
       src:{0}{1}
-        :x:/../0?value
-        :x:/..for-each/*/_dp/#?node.string
+        :x:/@_data?value
+        :x:/@_dp/#?node.string
     break
-    set:x:/./-?value
+    set:x:/@_data?value
       src:error
-  if:x:/../0?value
+  if:x:/@_data?value
     !=:@"foo1:bar1"
-    throw:@"Assert error, expected [foo1:bar1], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, [for-each] misbehaved
 
-/*
- * Tests that [for-each] behaves correctly when break'ed inside nested [for-each]
- */
-nested-break
+
+Continue iteration
   _data
-    foo1:su
-    foo2:cc
-    foo3:ess
-  for-each:x:/../*/_data/*
-    if:x:/./*/_dp/#?name
-      =:foo2
+    foo1:bar1
+    foo2:bar2
+  for-each:x:/@_data/*
+    if:x:/@_dp/#?value
+      =:bar1
       continue
-    set:x:/./-?value
+    set:x:/@_data?value
       src:{0}{1}
-        :x:/../0?value
-        :x:/..for-each/*/_dp/#?value
-    for-each:x:/../*/_data/*/[1,]
-      set:x:/././-?value
+        :x:/@_data?value
+        :x:/@_dp/#?node.string
+  if:x:/@_data?value
+    !=:@"foo2:bar2"
+    throw:Assert error, [for-each] misbehaved
+
+
+Break nested iteration
+  _data
+    foo1:bar1
+    foo2:bar2
+  for-each:x:/@_data/*?value
+    set:x:/@_data?value
+      src:{0}{1}
+        :x:/@_data?value
+        :x:/@_dp?value
+    for-each:x:/@_data/*?value
+      set:x:/@_data?value
         src:{0}{1}
-          :x:/../0?value
-          :x:/..for-each/*/_dp/#?value
+          :x:/@_data?value
+          :x:/@_dp?value
       break
-  if:x:/../0?value
-    !=:@"successcc"
-    throw:@"Assert error, expected [successcc], got [{0}]!"
-      :x:/../0?value
+      set:x:/@_data?value
+        src:error
+  if:x:/@_data?value
+    !=:bar1bar1bar2bar1
+    throw:Assert error, [for-each] misbehaved
 
-/*
- * Tests that [for-each] behaves correctly when continue'd
- */
-continue
+
+Continue nested iteration
   _data
-    foo1:succ
-    foo2:error
-    foo3:ess
-  for-each:x:/../*/_data/*
-    if:x:/./*/_dp/#?name
-      =:foo2
-      continue
-    set:x:/./-?value
+    foo1:bar1
+    foo2:bar2
+  for-each:x:/@_data/*?value
+    set:x:/@_data?value
       src:{0}{1}
-        :x:/../0?value
-        :x:/..for-each/*/_dp/#?value
-  if:x:/../0?value
-    !=:@"success"
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/../0?value
+        :x:/@_data?value
+        :x:/@_dp?value
+    for-each:x:/@_data/*?value
+      continue
+      set:x:/@_data?value
+        src:{0}{1}
+          :x:/@_data?value
+          :x:/@_dp?value
+  if:x:/@_data?value
+    !=:bar1bar2
+    throw:Assert error, [for-each] misbehaved
+
+
+Return from iteration
+  try
+    eval
+      _data
+        foo1:bar1
+        foo2:bar2
+      for-each:x:/@_data/*?value
+        return:x:/@_dp?value
+
+        // Should never be evaluated due to above [return].
+        throw:Assert error, [for-each] misbehaved
+
+      // Should never be evaluated due to above [return].
+      throw:Assert error, [for-each] misbehaved
+  finally
+    if:x:/@try/*/eval?value
+      !=:bar1
+      throw:Assert error, [for-each] misbehaved
+
+
+Iterate reference nodes
+  _data:node:@"_foo
+  foo1:bar1
+  foo2:bar2"
+  for-each:x:/@_data/#/*
+    set:x:/@_dp/#?value
+      src:success
+  if:x:/@_data?value
+    !=:node:@"_foo
+  foo1:success
+  foo2:success"
+    throw:Assert error, [for-each] misbehaved

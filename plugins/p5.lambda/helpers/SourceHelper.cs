@@ -35,21 +35,25 @@ namespace p5.lambda.helpers
     /// <summary>
     ///     Class wrapping commonalities for lambda Active Events
     /// </summary>
-    public class Helper
+    public class SourceHelper
     {
         /// <summary>
-        ///     Retrieves a node match object.
+        ///     Returns a node match object, optionally restricted to node type.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="expressionNode"></param>
         /// <param name="activeEventName"></param>
         /// <returns></returns>
-        static public Match GetDestinationMatch (ApplicationContext context, Node expressionNode, string activeEventName, bool mustBeNodeTypeExpression)
+        static public Match GetDestinationMatch (ApplicationContext context, Node expressionNode, bool mustBeNodeTypeExpression = false)
         {
-            var ex = GetDestinationExpression (context, expressionNode, activeEventName);
+            var ex = GetDestinationExpression (context, expressionNode);
             var match = ex.Evaluate (context, expressionNode, expressionNode);
+
+            // Checking if caller retricted type of expression, and if so, verifying it conforms.
             if (mustBeNodeTypeExpression && match.TypeOfMatch != Match.MatchType.node)
-                throw new LambdaException (string.Format ("Destination for [{0}] was not a node type of expression", activeEventName), expressionNode, context);
+                throw new LambdaException (string.Format ("Destination for [{0}] was not a node type of expression", expressionNode.Name), expressionNode, context);
+
+            // Success, returning match object to caller.
             return match;
         }
 
@@ -127,13 +131,13 @@ namespace p5.lambda.helpers
         /// <param name="expressionNode"></param>
         /// <param name="activeEventName"></param>
         /// <returns></returns>
-        static private Expression GetDestinationExpression (ApplicationContext context, Node expressionNode, string activeEventName)
+        static private Expression GetDestinationExpression (ApplicationContext context, Node expressionNode)
         {
             // Asserting destination is expression.
             var ex = expressionNode.Value as Expression;
             if (ex == null)
                 throw new LambdaException (
-                    string.Format ("Not a valid destination expression given to [{0}], value was '{1}', expected expression", activeEventName, expressionNode.Value),
+                    string.Format ("Not a valid destination expression given to [{0}], value was '{1}', expected expression", expressionNode.Name, expressionNode.Value),
                     expressionNode,
                     context);
             return ex;

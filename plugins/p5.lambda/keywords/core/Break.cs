@@ -26,20 +26,19 @@ using p5.core;
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping the [break] keyword in p5 lambda.
+    ///     Class wrapping the [break] Active Event.
     /// </summary>
     public static class Break
     {
         /// <summary>
-        ///     The [break] keyword, allows you to break out of a loop, such as [while] or [for-each]
+        ///     The [break] event, allows you to break out of a loop, such as [while] or [for-each].
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "break")]
         public static void lambda_break (ApplicationContext context, ActiveEventArgs e)
         {
-            // Inserting "return signaling node", such that [eval] and similar constructs will break out
-            // of their current execution
+            // Inserting "break flag", such that [for-each] and [while] type of Active Events knows to stop iteration.
             e.Args.Root.Insert (0, new Node ("_break"));
         }
     }

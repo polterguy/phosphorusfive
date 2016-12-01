@@ -141,7 +141,7 @@ Set without destination
     throw:Assert error, [set] misbehaved
 
 
-Set with string destination
+Set with string destination, throws
   _success
   try
     set:foo
@@ -178,7 +178,7 @@ Set with source expression leading nowhere
     throw:Assert error, [set] misbehaved
 
 
-Set with expression leading to multiple sources
+Set with expression leading to multiple sources, throws
   _input
     fa
     il

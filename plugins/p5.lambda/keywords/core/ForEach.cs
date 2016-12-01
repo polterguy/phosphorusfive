@@ -21,127 +21,72 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.Linq;
-using System.Collections;
-using p5.exp;
 using p5.core;
+using p5.lambda.helpers;
 
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping the p5 lambda [for-each] keyword.
+    ///     Class wrapping the [for-each] Active Event.
     /// </summary>
     public static class ForEach
     {
         /// <summary>
-        ///     The [for-each] keyword allows you to iterate over the results of expressions.
+        ///     The [for-each] event, allows you to iterate over the results of expressions.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "for-each")]
         public static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
-            // storing old for-each "body"
-            Node oldForEach = e.Args.Clone ();
+            // Storing old [for-each] lambda, such that we can make sure each iteration becomes "locally immutable".
+            Node originalLambda = e.Args.Clone ();
 
-            var nodeValue = e.Args.Value as Node;
-            if (nodeValue != null) {
+            // Retrieving what to iterate.
+            var match = SourceHelper.GetDestinationMatch (context, e.Args);
 
-                // Value of node is a Node in itself, iterating its children
-                foreach (var idxSource in nodeValue.Children) {
+            // Evaluating lambda, until either all iterations are done, or stop flag condition tells us we're done, due to some condition stopping loop early.
+            var first = true;
+            foreach (var idx in match) {
 
-                    if (!IterateForEach (context, idxSource, e.Args, oldForEach))
-                        break;
-                }
-            } else {
-
-                var strValue = e.Args.Value as string;
-                if (strValue != null) {
-
-                    // Value of node is a string, converting to node and iterating the converted node's children
-                    foreach (var idxSource in Utilities.Convert<Node> (context, strValue).Children) {
-
-                        if (!IterateForEach (context, idxSource, e.Args, oldForEach))
-                            break;
-                    }
+                // Making sure we reset back lambda block, each consecutive time, after the initial iteration.
+                // Notice, this logic first of all preserves some CPU cycles, not having to excessively clone the original lambda, but also actually makes
+                // sure we can view the last iteration, if an exception or something similar occurs during execution.
+                if (first) {
+                    first = false;
                 } else {
-
-                    var expValue = e.Args.Value as Expression;
-                    if (expValue != null) {
-
-                        // Value of node is an expression, evaluating that expression, and iterating the evaluated results
-                        foreach (var idxSource in e.Args.Get<Expression> (context).Evaluate (context, e.Args, e.Args)) {
-
-                            if (!IterateForEach (context, idxSource.Value, e.Args, oldForEach))
-                                break;
-                        }
-                    } else {
-
-                        var enumerableValue = e.Args as IEnumerable;
-                        if (enumerableValue != null) {
-
-                            // Value is a "list of something", iterating each value in the list
-                            foreach (var idxSource in enumerableValue) {
-
-                                if (!IterateForEach (context, idxSource, e.Args, oldForEach))
-                                    break;
-                            }
-                        } else {
-
-                            if (e.Args.Value != null) {
-
-                                // value of for-each is "any type of single item object", invoking for-each once and once only on that value
-                                IterateForEach (context, e.Args.Value, e.Args, oldForEach);
-                            } else if (e.Args.Children.Where (ix => ix.Name != "").GetEnumerator ().MoveNext ()) {
-
-                                // Assuming first non-empty name child node of for-each is "source",
-                                // raising that node's name as Active Event, and iterating on the resulting
-                                // children from that Event invocation
-                                Node sourceNode = e.Args.Children.First(ix=>ix.Name != "");
-                                var oldSourceValue = sourceNode.Value;
-                                context.Raise (sourceNode.Name, sourceNode);
-                                sourceNode.UnTie (); // removing node that was used as source
-
-                                // Value has presedence
-                                if (sourceNode.Value == null || oldSourceValue == sourceNode.Value) {
-
-                                    // Source was returned as nodes
-                                    foreach (var idxSource in sourceNode.Children) {
-
-                                        // Iterating on the values returned from Active Event invocation
-                                        if (!IterateForEach (context, idxSource, e.Args, oldForEach))
-                                            break;
-                                    }
-                                } else {
-
-                                    // Source was returned as object in value of Active Event invocation
-                                    IterateForEach (context, sourceNode.Value, e.Args, oldForEach);
-                                }
-                            }
-                        }
-                    }
+                    e.Args.Clear ().AddRange (originalLambda.Clone().Children);
                 }
+
+                // Perform a single iteration.
+                if (!IterateForEach (context, idx.Value, e.Args))
+                    break;
             }
         }
 
         /*
-         * Invokes [for-each] scope once, setting the [_dp] correctly and resetting the for-each scope afterwards.
-         * Returns true if iteration should continue
+         * Invokes [for-each] lambda, setting the [_dp] to the currently iterated value, and returns true if iteration should continue.
+         * If it returns false, then iteration has for some reasons been stopped early ...
          */
-        private static bool IterateForEach (ApplicationContext context, object source, Node args, Node oldForEach)
+        private static bool IterateForEach (ApplicationContext context, object dataPointerObject, Node lambda)
         {
-            var dp = new Node ("_dp", source);
-            args.Insert (0, dp);
+            // Inserting data pointer for current iteration.
+            lambda.Insert (0, new Node ("_dp", dataPointerObject));
 
-            context.Raise ("eval-mutable", args);
-            var rootChildName = args.Root.FirstChild != null ? args.Root.FirstChild.Name : null;
-            bool shouldStop = rootChildName == "_return" || rootChildName == "_break";
-            if (rootChildName == "_break" || rootChildName == "_continue") {
-                args.Root.FirstChild.UnTie ();
+            // Evaluating (mutably) [for-each] lambda object.
+            context.Raise ("eval-mutable", lambda);
+
+            // Checking if we have a "stop condition".
+            var stopNode = lambda.Root.FirstChild;
+            bool proceed = stopNode.Name != "_return" && stopNode.Name != "_break";
+
+            // Checking if this is a "local stop" node, at which case, we simply untie it to clean up after ourselves.
+            // Notice, we do NOT untie any [_return] nodes, only the ones which we might be locally interested in, inside of our [for-each].
+            // We still however, stop further iteration if [_return] is supplied.
+            if (stopNode.Name == "_break" || stopNode.Name == "_continue") {
+                stopNode.UnTie ();
             }
-            args.Clear ();
-            args.AddRange (oldForEach.Clone ().Children);
-            return !shouldStop;
+            return proceed;
         }
     }
 }

@@ -51,6 +51,7 @@ namespace p5.lambda.keywords.core
 
         /// <summary>
         ///     The [else-if] Active Event allows for conditional execution of a lambda object.
+        ///     Must be preceeded by an [if] or another [else-if].
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -75,6 +76,7 @@ namespace p5.lambda.keywords.core
 
         /// <summary>
         ///     The [else] Active Event allows for conditional execution of a lambda object.
+        ///     Must be preceeded by an [if] or an [else-if].
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

@@ -22,7 +22,6 @@
  */
 
 using System.Linq;
-using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 
@@ -79,6 +78,9 @@ namespace p5.lambda.keywords.core
 
                     // Returning formatted value.
                     e.Args.Value = XUtil.FormatNode (context, e.Args);
+
+                    // Making sure we remove all formatting parameters for clarity.
+                    e.Args.Children.RemoveAll (ix => ix.Name == "");
                 } // else, returning value of node as is
             } // else, returning children nodes as is
         }
