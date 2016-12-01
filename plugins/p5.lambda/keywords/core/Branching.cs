@@ -41,7 +41,7 @@ namespace p5.lambda.keywords.core
         public static void lambda_if (ApplicationContext context, ActiveEventArgs e)
         {
             // Evaluating condition
-            var condition = new Conditions (context, e.Args);
+            var condition = new Condition (context, e.Args);
             if (condition.Evaluate ()) {
 
                 // Executing current scope since evaluation of condition yielded true
@@ -64,7 +64,7 @@ namespace p5.lambda.keywords.core
             if (!PreviousConditionEvaluatedTrue (e.Args, context)) {
 
                 // Evaluating condition
-                var condition = new Conditions (context, e.Args);
+                var condition = new Condition (context, e.Args);
                 if (condition.Evaluate ()) {
 
                     // Executing current scope since evaluation of condition yielded true

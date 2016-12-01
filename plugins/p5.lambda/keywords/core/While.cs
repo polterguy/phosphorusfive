@@ -52,7 +52,7 @@ namespace p5.lambda.keywords.core
             bool uncheck = e.Args.GetExChildValue ("_unchecked", context, false);
 
             // Actual [while] loop
-            var condition = new Conditions (context, e.Args);
+            var condition = new Condition (context, e.Args);
             while (condition.Evaluate ()) {
 
                 // Changing value back to what it was, to support things like "while:int:5" and so on

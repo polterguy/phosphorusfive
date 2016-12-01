@@ -184,12 +184,16 @@ namespace p5.events
          */
         internal static void CreateEvent (string name, Node args, ApplicationContext context, bool isNative)
         {
-            // Sanity check
-            if (!isNative && (name.StartsWith ("_") || name.StartsWith (".")))
-                throw new LambdaException ("Tried to create a 'protected event'", args, context);
+            // Sanity checks.
+            if (!isNative && (name.StartsWith ("_") || name.StartsWith (".") || name == ""))
+                throw new LambdaException ("Tried to create a 'protected' event", args, context);
+
+            // Cannot create an event which is already a native event.
+            if (context.ActiveEvents.Count (ix => ix == name) > 0)
+                throw new LambdaException ("Tried to create an event that is already a system event", args, context);
 
             // Making sure we have a key for Active Event name.
-            _events [name] = new Node (name);
+            _events[name] = new Node (name);
 
             // Adding event to dictionary.
             _events [name].AddRange (args.Clone ().Children);

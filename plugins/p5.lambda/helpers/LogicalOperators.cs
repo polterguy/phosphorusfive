@@ -53,7 +53,7 @@ namespace p5.lambda.helpers
             } else {
 
                 // Previous condition yielded false, try to evaluate this one, and returning results.
-                e.Args.Value = new Conditions (context, e.Args).Evaluate ();
+                e.Args.Value = new Condition (context, e.Args).Evaluate ();
             }
         }
 
@@ -68,14 +68,17 @@ namespace p5.lambda.helpers
             // Retrieving previous node, and making sure parent has evaluated "exists" condition, if any, and doing some basical sanity check.
             var previous = EnsureParentFindPreviousCondition (context, e.Args);
 
+            // We only evaluate [and] if previous condition evaluated to true.
             if (previous.Get<bool> (context)) {
 
                 // Previous condition yielded true, now checking this one.
-                e.Args.Value = new Conditions (context, e.Args).Evaluate ();
+                e.Args.Value = new Condition (context, e.Args).Evaluate ();
 
             } else {
 
-                // No needs to evaluate this one, since previous condition yielded false, this one yields also false.
+                // No needs to evaluate this one, since previous condition yielded false, this one also yields false.
+                // Notice however, we do NOT [_abort], to make sure [and] has presedence over [or], and there might theoretically come another
+                // [or] later down in our scope.
                 e.Args.Value = false;
             }
         }
@@ -92,7 +95,7 @@ namespace p5.lambda.helpers
             var previous = EnsureParentFindPreviousCondition (context, e.Args);
 
             // Evaluate this one to true, only if previous evaluation, and this evaluation are note equal.
-            e.Args.Value = new Conditions (context, e.Args).Evaluate () != previous.Get<bool> (context);
+            e.Args.Value = new Condition (context, e.Args).Evaluate () != previous.Get<bool> (context);
         }
 
         /// <summary>
@@ -103,6 +106,10 @@ namespace p5.lambda.helpers
         [ActiveEvent (Name = "not")]
         public static void not (ApplicationContext context, ActiveEventArgs e)
         {
+            // Making sure [not] has no children.
+            if (e.Args.Children.Count > 0 || e.Args.Value != null)
+                throw new LambdaException ("Logical [not] cannot have children or a value, it simply negates previous conditions", e.Args, context);
+
             // Retrieving previous node, and making sure parent has evaluated "exists" condition, if any, and doing some basical sanity check.
             var previous = EnsureParentFindPreviousCondition (context, e.Args);
 
@@ -116,7 +123,7 @@ namespace p5.lambda.helpers
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "operators")]
-        private static void operators (ApplicationContext context, ActiveEventArgs e)
+        public static void operators (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("or");
             e.Args.Add ("and");
@@ -143,7 +150,7 @@ namespace p5.lambda.helpers
 
             } else {
 
-                // Checking if value already is boolean, at which case we don't evaluate any further, since it is already evaluated.
+                // Checking if value already is boolean, at which case we don't continue, since it is already evaluated.
                 if (!(args.Parent.Value is bool)) {
 
                     var obj = XUtil.Single<object> (context, args.Parent, false, null);
