@@ -29,58 +29,61 @@ using p5.lambda.helpers;
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping the [while] keyword in p5 lambda
+    ///     Class wrapping the [while] Active Event.
     /// </summary>
     public static class While
     {
         /// <summary>
-        ///     The [while] keyword allows you to loop for as long as some condition is true
+        ///     The [while] event, allows you to loop, for as long as some condition is true.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "while")]
         public static void lambda_while (ApplicationContext context, ActiveEventArgs e)
         {
-            // Storing old while "body" such that we can evaluate [while] immutably for each iteration
-            Node oldWhile = e.Args.Clone ();
+            // Storing original lambda and value, such that we can evaluate [while] immutably for each iteration.
+            Node originalLambda = e.Args.Clone ();
+            var originalValue = e.Args.Value;
 
-            // Storing old while value, since Evaluate changes it to either true or false
-            var oldWhileValue = e.Args.Value;
-
-            // Trying to prevent infinite loops
-            int iterations = 0;
+            // We prevent infinite loops, unless [_unchecked] is true.
+            int noIterations = 0;
             bool uncheck = e.Args.GetExChildValue ("_unchecked", context, false);
 
-            // Actual [while] loop
+            // Looping for as long as condition is true.
             var condition = new Condition (context, e.Args);
             while (condition.Evaluate ()) {
 
-                // Changing value back to what it was, to support things like "while:int:5" and so on
-                e.Args.Value = oldWhileValue;
-
-                // Executing current scope as long as while evaluates to true
+                // Executing current scope, since condition evaluated to true.
                 condition.ExecuteCurrentScope ();
 
-                // Making sure each iteration is immutable
-                e.Args.Clear ();
-                e.Args.AddRange (oldWhile.Clone ().Children);
-
                 // Checking if we got a [return] invocation during evaluation
-                var rootChildName = e.Args.Root.FirstChild != null ? e.Args.Root.FirstChild.Name : null;
-                if (rootChildName == "_break") {
-                    e.Args.Root.FirstChild.UnTie ();
-                    return;
-                } else if (rootChildName == "_return") {
-                    return;
-                } else if (rootChildName == "_continue")
-                    e.Args.Root.FirstChild.UnTie ();
+                var rootChild = e.Args.Root.FirstChild;
+                if (rootChild.Name == "_break") {
 
-                // Checking if we're overflowing maximum number of iterations, unless [_unchecked] was true
-                if (!uncheck && iterations++ > 5000)
-                    throw new LambdaException (
-                        "Possible infinite loop encountered, more than 10.000 iterations of [while] loop", 
-                        e.Args, 
-                        context);
+                    // [break] invocation, returning from method to avoid further iteration, while making sure we also clean up after ourselves.
+                    rootChild.UnTie ();
+                    return;
+
+                } else if (rootChild.Name == "_return") {
+
+                    // [return] invocation, stopping execution of loop entirely.
+                    // Notice, it is not up to us to clean up this signal node, but rather [eval], or the outer execution lambda's responsibility.
+                    return;
+
+                } else if (rootChild.Name == "_continue") {
+
+                    // [continue] instruction, simply cleaning up, to make sure we evaluate the nest iteration normally.
+                    rootChild.UnTie ();
+
+                }
+
+                // Checking if we're overflowing maximum number of iterations, unless [_unchecked] was true.
+                if (!uncheck && noIterations++ > 5000)
+                    throw new LambdaException ("Possible infinite loop encountered, more than 5.000 iterations of [while] loop", e.Args, context);
+
+                // Making sure each iteration is immutable, and that the next condition is evaluated correctly.
+                e.Args.Value = originalValue;
+                e.Args.Clear ().AddRange (originalLambda.Clone ().Children);
             }
         }
     }
