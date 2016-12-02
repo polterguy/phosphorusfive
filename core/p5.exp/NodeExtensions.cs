@@ -66,7 +66,7 @@ namespace p5.exp
         {
             if (node.Value == null)
                 return defaultValue;
-            return XUtil.Single<T> (context, node, node, false, defaultValue);
+            return XUtil.Single (context, node, node, false, defaultValue);
         }
     }
 }

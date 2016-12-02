@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.Linq;
 using p5.exp;
 using p5.core;
@@ -29,68 +30,122 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping the [switch] keyword in p5 lambda
+    ///     Class wrapping the [switch] Active Event.
     /// </summary>
     public static class Switch
     {
         /// <summary>
-        ///     The [switch] keyword, allows you to create matches for value with [case] children
+        ///     The [switch] event, allows you to create matches for values within [case] lambda children.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "switch")]
         public static void lambda_switch (ApplicationContext context, ActiveEventArgs e)
         {
-            // Sanity check
-            if (e.Args.Children.Count (ix => ix.Name != "" && ix.Name != "case" && ix.Name != "default") > 0)
-                throw new LambdaException ("Only [case] and [default] children are legal beneath [switch]", e.Args, context);
+            // Sanity check syntax of invocation.
+            ForwardEvaluateValuesAndSanityCheck (context, e.Args);
 
-            // Sanity check
-            if (e.Args.Children.Count (ix => ix.Name == "default") > 1)
-                throw new LambdaException ("[switch] can only have one [default] block", e.Args, context);
-
-            // Retrieving value
+            // Retrieving value of switch,and sanity checking it.
             var value = e.Args.GetExValue<object> (context, null);
+            if (value is Node)
+                throw new LambdaException ("[switch] cannot act upon nodes, only other types of values", e.Args, context);
 
-            // Finding out what to evaluate, defaulting to [default] block
-            var lambda = e.Args.Children.FirstOrDefault (ix => ix.Name == "default");
+            // Our lambda evaluation object.
+            Node lambda = null;
 
-            // Special case for "null value".
-            if (value == null) {
+            // Retrieving correct lambda, if there are any.
+            // Notice, due to that [default] are now syntax checked, and we have confirmed it has no value, then default will be returned if no [case] with
+            // a null value exists, if [default] exists.
+            // Notice also that all [case] values should be forward evaluated at this point, hence we can simply compare against its value, and there is no need
+            // to evaluate expressions or snything like that in them.
+            if (value == null)
+                lambda = e.Args.Children.FirstOrDefault (ix => ix.Value == null);
+            else
+                lambda = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && value.Equals (ix.Value)) ?? e.Args["default"];
 
-                // Finding first [case] with null value, defaulting to existing [default]
-                lambda = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && ix.GetExValue<object> (context, null) == null) ?? lambda;
-            } else {
-
-                // Special case for node value.
-                if (value is Node) {
-
-                    // Doing CompareTo
-                    lambda = e.Args.Children.FirstOrDefault (ix => 
-                        ix.Name == "case" && (value as Node).CompareTo (ix.GetExValue<object> (context)) == 0) ?? lambda;
-                    
-                } else {
-
-                    // Finding first [case] that matches value, defaulting to existing [default]
-                    lambda = e.Args.Children.FirstOrDefault (ix => 
-                        ix.Name == "case" && value.Equals (ix.GetExValue<object> (context))) ?? lambda;
-                }
-            }
-
-            // Evaluating eval, unless it is null, but before we do, we set all [case] and [default] to boolean false
-            foreach (var idxChild in e.Args.Children) {
-                idxChild.Value = false;
-            }
+            // Checking if we have a match, and if so, evaluate lambda belonging to match.
             if (lambda != null) {
 
-                // Supporting "fallthrough"
-                while (lambda != null && lambda.Children.Count == 0)
+                // Finding first non-empty [case] lambda, in case of fallthrough.
+                // Notice, formatting parameters are removed at this point.
+                while (lambda != null && lambda.Children.Count == 0) {
                     lambda = lambda.NextSibling;
-                if (lambda != null) {
-                    lambda.Value = true;
-                    context.Raise ("eval-mutable", lambda);
                 }
+
+                // Evaluating [case] lambda.
+                if (lambda != null)
+                    context.Raise (lambda.Name, lambda);
             }
+        }
+
+        /*
+         * Notice, these next two events might look like they're not necessary.
+         * However, we want to as much as possible, make sure one "keyword" equals one Active Event, for among other things due to [voocabulary] 
+         * and [eval-whitelist] concepts, hence we simply wrap [eval-mutable], and create an "empty" Active Event for each "keyword" below.
+         */
+
+        /// <summary>
+        ///     Supporting Active Event for [switch].
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "case")]
+        public static void lambda_case (ApplicationContext context, ActiveEventArgs e)
+        {
+            context.Raise ("eval-mutable", e.Args);
+        }
+
+        /// <summary>
+        ///     Supporting Active Event for [switch].
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "default")]
+        public static void lambda_default (ApplicationContext context, ActiveEventArgs e)
+        {
+            context.Raise ("eval-mutable", e.Args);
+        }
+
+        /*
+         * Forward evaluates values of [case] lambdas, and sanity checks syntax of [switch].
+         */
+        private static void ForwardEvaluateValuesAndSanityCheck (ApplicationContext context, Node args)
+        {
+            // Sanity check, only [case], [default], and formatting parameters are legal as children nodes.
+            if (args.Children.Count (ix => ix.Name != "" && ix.Name != "case" && ix.Name != "default") > 0)
+                throw new LambdaException ("Only [case] and [default] lambdas are legal beneath [switch]", args, context);
+
+            // Sanity check, only one [default] lambda is allowed.
+            if (args.Children.Count (ix => ix.Name == "default") > 1)
+                throw new LambdaException ("[switch] can only have one [default] lambda", args, context);
+
+            // Sanity check, at least one [case] or [default] exists.
+            if (args.Children.Count (ix => ix.Name == "default" || ix.Name == "case") == 0)
+                throw new LambdaException ("[switch] must have at least one [default] or [case] lambda", args, context);
+
+            // Sanity check, [default], if given, has null value.
+            if ((args["default"]?.Value ?? null) != null)
+                throw new LambdaException ("[default] cannot have a value", args, context);
+
+            // Sanity checking that [default], if provided, is our last lambda.
+            if (args["default"] != null && args.IndexOf (args["default"]) != args.Children.Count - 1)
+                throw new LambdaException ("[default] must be the last lambda in a [switch]", args, context);
+
+            // Unrolling case values, and sanity checking them, that each [case] holds a unique value, after having evaluated their values.
+            foreach (var idx in args.Children.Where (ix => ix.Name == "case")) {
+
+                // Forward evaluating value of currently iterated [case], and making sure we remove any formatting parameters.
+                idx.Value = idx.GetExValue<object> (context, null);
+                idx.Children.RemoveAll (ix => ix.Name == "");
+
+                // Making sure there's only one [case] in the children collection with the given value.
+                if (args.Children.Count (ix => (ix.Value == null && idx.Value == null) || (ix.Value != null && ix.Value.Equals (idx.Value) )) > 1)
+                    throw new LambdaException ("All your [case] lambdas must have unique values within your [switch]", idx, context);
+            }
+
+            // More sanity check, to make sure the last [case] or [default] lambda is not empty, which would signify fallthrough into "nothing".
+            if (args.LastChild.Children.Count == 0)
+                throw new LambdaException ("Your last lambda in a [switch] cannot be a fallthrough lambda block", args.LastChild, context);
         }
     }
 }
