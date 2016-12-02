@@ -1,0 +1,90 @@
+
+/*
+ * Unit tests for [src].
+ */
+
+
+Static source returning single value
+  src:foo
+  if:x:/@src?value
+    !=:foo
+    or:x:/@src/*?count
+      !=:int:0
+    throw:Assert error, [src] misbehaved
+
+
+Static source returning single formatted value
+  src:fo{0}
+    :o
+  if:x:/@src?value
+    !=:foo
+    or:x:/@src/*?count
+      !=:int:0
+    throw:Assert error, [src] misbehaved
+
+
+Static source returning multiple nodes
+  src
+    foo1:bar1
+    foo2:bar2
+  if:x:/@src
+    !=:node:@"src
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [src] misbehaved
+
+
+Expression source returning single value
+  _data:success
+  src:x:/@_data?value
+  if:x:/@src?value
+    !=:success
+    or:x:/@src/*?count
+      !=:int:0
+    throw:Assert error, [src] misbehaved
+
+
+Expression source returning multiple values
+  _data
+    foo1:bar1
+    foo2:bar2
+  src:x:/@_data/*?value
+  if:x:/@src
+    !=:node:@"src
+  :bar1
+  :bar2"
+    throw:Assert error, [src] misbehaved
+
+
+Expression source returning multiple names
+  _data
+    foo1:bar1
+    foo2:bar2
+  src:x:/@_data/*?name
+  if:x:/@src
+    !=:node:@"src
+  foo1
+  foo2"
+    throw:Assert error, [src] misbehaved
+
+
+Expression source returning multiple nodes
+  _data
+    foo1:bar1
+    foo2:bar2
+  src:x:/@_data/*
+  if:x:/@src
+    !=:node:@"src
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [src] misbehaved
+
+
+Expression source returning count
+  _data
+    foo1:bar1
+    foo2:bar2
+  src:x:/@_data/*?count
+  if:x:/@src
+    !=:node:"src:int:2"
+    throw:Assert error, [src] misbehaved

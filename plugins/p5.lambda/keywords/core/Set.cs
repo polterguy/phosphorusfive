@@ -32,7 +32,7 @@ namespace p5.lambda.keywords.core
     public static class Set
     {
         /// <summary>
-        ///     The [set] keyword, allows you to change nodes, values and names of nodes.
+        ///     The [set] event, allows you to change nodes, values, and names of nodes.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
