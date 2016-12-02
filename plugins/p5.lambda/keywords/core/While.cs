@@ -43,7 +43,6 @@ namespace p5.lambda.keywords.core
         {
             // Storing original lambda and value, such that we can evaluate [while] immutably for each iteration.
             Node originalLambda = e.Args.Clone ();
-            var originalValue = e.Args.Value;
 
             // We prevent infinite loops, unless [_unchecked] is true.
             int noIterations = 0;
@@ -82,7 +81,7 @@ namespace p5.lambda.keywords.core
                     throw new LambdaException ("Possible infinite loop encountered, more than 5.000 iterations of [while] loop", e.Args, context);
 
                 // Making sure each iteration is immutable, and that the next condition is evaluated correctly.
-                e.Args.Value = originalValue;
+                e.Args.Value = originalLambda.Value;
                 e.Args.Clear ().AddRange (originalLambda.Clone ().Children);
             }
         }

@@ -92,10 +92,15 @@ namespace p5.lambda.helpers
         /// <param name="context"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        static public List<Node> GetSourceNodes (ApplicationContext context, Node args)
+        static public List<Node> GetSourceNodes (
+            ApplicationContext context, 
+            Node args, 
+            params string[] avoidNodes)
         {
             // Retrieving all source nodes with a legal Active Event name.
             var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_")).ToList ();
+            if (avoidNodes != null)
+                srcNodes.RemoveAll (ix => avoidNodes.Contains (ix.Name));
 
             // If no source nodes was given, we return no source early.
             if (srcNodes.Count == 0)

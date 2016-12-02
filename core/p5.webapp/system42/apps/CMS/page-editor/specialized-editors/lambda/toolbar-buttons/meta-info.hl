@@ -157,7 +157,7 @@ button
                   innerValue:{0} Active Event invocations
                     :x:/@_active-event-no?value
                 li
-                  innerValue:{0} widget creation events
+                  innerValue:{0} widgets created
                     :x:/@hyper2lambda/**(/create-widget|/create-literal-widget|/create-container-widget|/create-void-widget|/widgets/*|/_widgets/*|/_buttons/*)?count
                 li
                   innerValue:{0} lambda callbacks

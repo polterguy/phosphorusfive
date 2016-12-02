@@ -1,22 +1,21 @@
-/*
- * Contains unit tests for [apply]
- */
 
 /*
- * Tests simple [apply]
+ * Unit tests for [apply].
  */
-simple
+
+
+Simple databound name and value
   _data
     foo1:bar1
     foo2:bar2
   _dest
-  apply:x:/-
-    src:x:/../*/_data/*
+  apply:x:/@_dest
+    src:x:/@_data/*
     template
       result
         {name}:x:?name
         {value}:x:?value
-  if:x:/../*/_dest
+  if:x:/@_dest
     !=:node:@"_dest
   result
     name:foo1
@@ -24,12 +23,10 @@ simple
   result
     name:foo2
     value:bar2"
-    throw:@"Assert error, result not as expected!"
+    throw:Assert error, [apply] misbehaved
 
-/*
- * Tests recursive [apply]
- */
-recursive
+
+Nested templates
   _data
     foo1
       name:John Doe
@@ -39,29 +36,67 @@ recursive
     foo2
       name:Jane Doe
   _dest
-  apply:x:/-
-    src:x:/../*/_data/*
+  apply:x:/@_dest
+    src:x:/@_data/*
     template
       result
         {name}:x:/*/name?value
-        {adr}:x:/*/adr
-          {str}:x:/*/str?value
-          {zip}:x:/*/zip?value
-  if:x:/../*/_dest
+        {adr-x}:x:/*/adr
+          {str-x}:x:/*/str?value
+          {zip-x}:x:/*/zip?value
+  if:x:/@_dest
     !=:node:@"_dest
   result
     name:John Doe
-    adr
-      str:Dunbar
-      zip:987654
+    adr-x
+      str-x:Dunbar
+      zip-x:987654
   result
     name:Jane Doe"
-    throw:@"Assert error, result not as expected!"
+    throw:Assert error, [apply] misbehaved
 
-/*
- * Tests event source [apply]
- */
-event-source
+
+Event source returning string
+  _data
+    foo1
+    foo2
+  _dest
+  _x
+    return:{0}-bar
+      :x:/@_dn/#?name
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {@eval}:x:/@_x
+  if:x:/@_dest
+    !=:node:@"_dest
+  foo1-bar
+  foo2-bar"
+    throw:Assert error, [apply] misbehaved
+
+
+Event source returning node
+  _data
+    foo1
+    foo2
+  _dest
+  _x
+    add:x:/+
+      src:{0}-bar
+        :x:/@_dn/#?name
+    return
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {@eval}:x:/@_x
+  if:x:/@_dest
+    !=:node:@"_dest
+  foo1-bar
+  foo2-bar"
+    throw:Assert error, [apply] misbehaved
+
+
+Complex multiple event template with argument
   _data
     foo1
       name:John Doe
@@ -71,34 +106,43 @@ event-source
     foo2
       name:Jane Doe
   _dest
-  apply:x:/-
-    src:x:/../*/_data/*
+
+  // Lambda callbacks for [apply] below.
+  _x
+    if:x:/@_dn/#/*/adr
+      insert-before:x:/../0
+        src:@"adr:{0}, {1}, {2}"
+          :x:/@_static-arg?value
+          :x:/@_dn/#/*/adr/*/str?value
+          :x:/@_dn/#/*/adr/*/zip?value
+      insert-before:x:/../1
+        src:"has:address"
+    else
+      insert-before:x:/../1
+        src:"no:address"
+  _x2
+    set:x:/..?value
+      src:"second:eval-{0}"
+        :x:/@_dn/#?name
+
+  // Notice, we have two [eval] invocations below, one with argument, another without.
+  apply:x:/@_dest
+    src:x:/@_data/*
     template
       result
         {name}:x:/*/name?value
-        {@eval}:x:/../*/_x
-          _static-arg:static
-        {@eval}:x:/../*/_x2
-  _x
-    if:x:/../*/_dn/#/*/adr
-      insert-before:x:/../0
-        src:@"adr:{0}, {1}, {2}"
-          :x:/../*/_static-arg?value
-          :x:/../*/_dn/#/*/adr/*/str?value
-          :x:/../*/_dn/#/*/adr/*/zip?value
-      insert-before:x:/../1
-        src:"foo:bar"
-  _x2
-    set:x:/..?value
-      src:node:"foo2:bar2"
-  if:x:/../*/_dest
+        {@eval}:x:/@_x
+          _static-arg:Some address
+        {@eval}:x:/@_x2
+  if:x:/@_dest
     !=:node:@"_dest
   result
     name:John Doe
-    adr:static, Dunbar, 987654
-    foo:bar
-    foo2:bar2
+    adr:Some address, Dunbar, 987654
+    has:address
+    second:eval-foo1
   result
     name:Jane Doe
-    foo2:bar2"
-    throw:@"Assert error, result not as expected!"
+    no:address
+    second:eval-foo2"
+    throw:Assert error, [apply] misbehaved

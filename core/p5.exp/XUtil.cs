@@ -93,28 +93,30 @@ namespace p5.exp
             List<string> excludeNodes = null,
             int sourceIsOffsetChild = 0)
         {
-            // For simplicity, avoiding null reference exceptions inside of Linq later down
+            // For simplicity, avoiding null reference exceptions inside of Linq later down.
             if (excludeNodes == null)
                 excludeNodes = new List<string> ();
 
-            // Retrieving source nodes, making sure we do not add up "formatting nodes"
+            // Retrieving source nodes, making sure we do not add up "formatting nodes".
             var srcList = parent.Children.Where (ix => ix.Name != "" && !excludeNodes.Contains (ix.Name)).ToList ();
 
             if (srcList.Count == 0) {
 
-                // No source, making sure we never return null
+                // No source, making sure we never return null.
                 return new List<object> ();
+
             } else {
 
-                // Making sure we remove up until offset, for cases where the same Active Event contains multiple invocation nodes to this method
+                // Making sure we remove up until offset, for cases where the same Active Event contains multiple invocation nodes to this method.
                 while (sourceIsOffsetChild > 0) {
+
                     srcList.RemoveAt (0);
                     sourceIsOffsetChild -= 1;
                 }
 
                 // Making sure we obey by the declared "restriction" for Active Event name. Either user should use "src" or "dest".
                 // These two cannot be interchanged, to further clarify the language, such that no occurrency of "dest" is being used,
-                // where the logic is actually "source", vice versa. 
+                // where the logic is actually source, vice versa.
                 switch (srcList[0].Name) {
                     case "src":
                     case "dest":
@@ -123,30 +125,30 @@ namespace p5.exp
                         break;
                 }
 
-                // Active Event source invocation
-                // Storing original children,  to make each invocation immutable, before we pass in "destination node"
+                // Active Event source invocation.
+                // Storing original children,  to make each invocation immutable, before we pass in "destination node".
                 var originalParentNode = parent.Clone ();
                 srcList[0].Insert (0, new Node ("_dn", destination ?? srcList[0]));
 
-                // Raising source Active Event
+                // Raising source Active Event.
                 context.Raise (srcList[0].Name, srcList[0]);
 
-                // Building up our return value(s)
+                // Building up our return value(s).
                 var retVal = new List<object> ();
                 if (srcList[0].Value != null) {
 
-                    // Adding value into return values
+                    // Adding value into return values.
                     retVal.Add (srcList[0].Value);
                 } else {
 
-                    // Fallback to children
+                    // Fallback to children.
                     retVal.AddRange (srcList[0].Children.Where (ix => ix.Name != "_dn").Select (ix => ix.Clone ()));
                 }
 
-                // Making sure we reset original source node baack to what it was
+                // Making sure we reset original source node baack to what it was.
                 parent.Clear ().AddRange (originalParentNode.Children);
 
-                // Returning list to caller
+                // Returning list to caller.
                 return retVal;
             }
         }
