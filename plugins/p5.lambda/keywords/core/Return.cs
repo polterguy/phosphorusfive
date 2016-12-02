@@ -21,34 +21,80 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.Linq;
 using p5.exp;
 using p5.core;
 
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping the [return] keyword in p5 lambda.
+    ///     Class wrapping the [return] Active Event.
     /// </summary>
     public static class Return
     {
         /// <summary>
-        ///     The [return] keyword, allows you to return immediately from the evaluation of your code
+        ///     The [return] event, allows you to return immediately from the evaluation of some lambda, with or without a return value/lambda.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "return")]
         public static void lambda_return (ApplicationContext context, ActiveEventArgs e)
         {
-            // Inserting "return signaling node", such that [eval] and similar constructs will break out
-            // of their current execution
-            e.Args.Root.Insert (0, new Node ("_return"));
-            e.Args.Root.Value = e.Args.GetExValue<object> (context);
+            // Retrieving root for efficiency reasons, since everything we do from here, we do to root.
+            var root = e.Args.Root;
 
-            // Adding all children of [return] as result value to evaluation
-            int idxNo = 1;
-            foreach (var idxRetNode in e.Args.Children) {
-                e.Args.Root.Insert (idxNo++, idxRetNode.Clone ());
+            // Inserting "return signaling node", such that [eval] and similar constructs will break out of their current execution.
+            root.Insert (0, new Node ("_return"));
+
+            // Checking value of return, and acting accordingly, making sure we return simple values as such, and node expression results as nodes.
+            Expression exp = e.Args.Value as Expression;
+            if (exp != null) {
+
+                // Source is an expression, evaluating it, and returning results back to caller.
+                var match = exp.Evaluate (context, e.Args, e.Args);
+                if (match.TypeOfMatch == Match.MatchType.count) {
+
+                    // Simple count expression.
+                    root.Value = match.Count;
+
+                } else if (match.TypeOfMatch == Match.MatchType.node) {
+
+                    // Node values, single or multiple is irrelevant, still need to clone them, and insert them into root.
+                    root.AddRange (match.Select (ix => ix.Node.Clone ()));
+
+                } else if (match.Count == 1) {
+
+                    // Single value, name or value type of value is irrelevant, adding to value anyways.
+                    root.Value = match[0].Value;
+
+                } else if (match.TypeOfMatch == Match.MatchType.name) {
+
+                    // Multiple name values.
+                    root.AddRange (match.Select (ix => new Node (ix.Node.Name)));
+
+                } else {
+
+                    // Multiple value values.
+                    root.AddRange (match.Select (ix => new Node ("", ix.Value)));
+
+                }
+            } else if (e.Args.Value != null) {
+
+                // Still there's a value, checking type of value.
+                if (XUtil.IsFormatted (e.Args)) {
+
+                    // Returning formatted value.
+                    root.Value = XUtil.FormatNode (context, e.Args);
+
+                } else {
+
+                    // Returning simple value.
+                    root.Value = e.Args.Value;
+                }
             }
+
+            // Adding all children of [return] as result to evaluated rooot node, no need to clone.
+            root.InsertRange (1, e.Args.Children);
         }
     }
 }

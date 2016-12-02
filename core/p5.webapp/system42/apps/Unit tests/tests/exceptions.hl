@@ -85,6 +85,18 @@ Throw and catch exception, verifying finally executes
     throw:Assert error, exceptions misbehaved
 
 
+Throw on try but no catch-finally
+  _result
+  try
+    try
+  catch
+    set:x:/@_result?value
+      src:success
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, exceptions misbehaved
+
+
 Throw on wrong catch-finally order
   _result
   try
@@ -115,18 +127,6 @@ Throw on finally but no try
   _result
   try
     finally
-  catch
-    set:x:/@_result?value
-      src:success
-  if:x:/@_result?value
-    !=:success
-    throw:Assert error, exceptions misbehaved
-
-
-Throw on try but no catch-finally
-  _result
-  try
-    try
   catch
     set:x:/@_result?value
       src:success

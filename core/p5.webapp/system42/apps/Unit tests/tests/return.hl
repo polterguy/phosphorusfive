@@ -1,191 +1,224 @@
-/*
- * Contains unit tests for testing [return] in system
- */
 
 /*
- * Tests that return behaves correctly and immediately returns
- * from an evaluation
+ * Unit tests for [return]
  */
-simple
+
+
+Stop further execution
   return
-  throw:@"Assert error, code that should never have been evaluated was evaluated!"
+    throw:Assert error, [return] misbehaved
 
-/*
- * Tests that return behaves correctly and can return 
- * values from evaluations
- */
-return-value
+
+Return constant value
   _x
     return:success
   if
-    eval:x:/../*/_x
+    eval:x:/@_x
     !=:success
-    throw:@"Assert error, expected [success],got {0}!"
-      :x:/..if/*/eval?value
+    throw:Assert error, [return] misbehaved
 
-/*
- * Tests that return behaves correctly when evaluation returning
- * from is inside an if
- */
-return-nodes
+
+Return formatted value
   _x
-    if:x:/..?name
-      =:_x
-      return
-        foo:bar
-    throw:Code that was never suppoed to be evaluated was evaluated
+    return:succ{0}
+      :ess
   if
-    fetch:x:/0/0
-      eval:x:/../*/_x
-    !=:node:"foo:bar"
-    throw:@"Assert error, expected [success],got {0}!"
-      :x:/..if/*/eval?value
+    eval:x:/@_x
+    !=:success
+    throw:Assert error, [return] misbehaved
 
-/*
- * Tests that return behaves correctly when evaluation returning
- * from is a nested evaluation
- */
-nested-eval
+
+Return nodes
+  _x
+    return
+      foo:bar
+  if
+    fetch:x:/0
+      eval:x:/@_x
+    !=:node:@"eval
+  foo:bar"
+    throw:Assert error, [return] misbehaved
+
+
+Return expression single value
+  _x
+    _ret:success
+    return:x:/@_ret?value
+  if
+    eval:x:/@_x
+    !=:success
+    throw:Assert error, [return] misbehaved
+
+
+Return expression single name
+  _x
+    _ret
+    return:x:/@_ret?name
+  if
+    eval:x:/@_x
+    !=:_ret
+    throw:Assert error, [return] misbehaved
+
+
+Return expression count
+  _x
+    _data
+      foo1
+      foo2
+    return:x:/@_data/*?count
+  if
+    eval:x:/@_x
+    !=:int:2
+    throw:Assert error, [return] misbehaved
+
+
+Return expression single node
+  _x
+    _data
+      foo1:bar1
+    return:x:/@_data/*
+  eval:x:/@_x
+  if:x:/@eval/*?count
+    !=:int:1
+    or:x:/@eval/*
+      !=:node:"foo1:bar1"
+    throw:Assert error, [return] misbehaved
+
+
+Return expression multiple nodes
+  _x
+    _data
+      foo1:bar1
+      foo2:bar2
+    return:x:/@_data/*
+  eval:x:/@_x
+  if:x:/@eval/*?count
+    !=:int:2
+    or:x:/@eval
+      !=:node:@"eval
+  foo1:bar1
+  foo2:bar2"
+    throw:Assert error, [return] misbehaved
+
+
+Nested returns
   _x
     _x2
       return:success1
-      throw:Code that was never suppoed to be evaluated was evaluated
     if
-      eval:x:/./-
+      eval:x:/@_x2
       !=:success1
-      throw:Assertion error, expected [success1]
+      return:failure
     return:success2
-    throw:Code that was never suppoed to be evaluated was evaluated
   if
-    eval:x:/../*/_x
+    eval:x:/@_x
     !=:success2
-    throw:@"Assert error, expected [success],got {0}!"
-      :x:/..if/*/eval?value
+    throw:Assert error, [return] misbehaved
 
-/*
- * Tests that return behaves correctly when evaluation returning
- * from is inside an if
- */
-inside-if
+
+Inside if
   _x
     if:x:/..?name
       =:_x
       return:success
-    throw:Code that was never suppoed to be evaluated was evaluated
+    return:failure
   if
-    eval:x:/../*/_x
+    eval:x:/@_x
     !=:success
-    throw:@"Assert error, expected [success],got {0}!"
-      :x:/..if/*/eval?value
+    throw:Assert error, [return] misbehaved
 
-/*
- * Tests that return behaves correctly when returning from inside a [while]
- */
-inside-while
+
+Inside while
   _x
     _data:int:5
-    while:x:/../*/_data?value
-      !=:int:0
-      set:x:/../*/_data?value
-        -:x:/../*/_data?value
+    while:bool:true
+      set:x:/@_data?value
+        -:x:/@_data?value
           _:int:1
       insert-before:x:/../0
         src:"foo:{0}"
-          :x:/../*/_data?value
-      return:x:/../*/_data?value
+          :x:/@_data?value
+      return:x:/@_data?value
   if
-    eval:x:/./-
+    eval:x:/@_x
     !=:int:4
-    or:x:/-2/*?count
+    or:x:/@eval/*?count
       !=:int:1
-    or:x:/-3/0
+    or:x:/@eval/0
       !=:node:"foo:4"
-    throw:@"Assert error, expected [while] to have prematurely stopped evaluation!"
+    throw:Assert error, [return] misbehaved
 
-/*
- * Tests that return behaves correctly when returning from inside a [for-each]
- */
-inside-for-each
+
+Inside for-each
   _x
     _data
       foo1:success
       foo2:error
-    for-each:x:/-/*?value
+    for-each:x:/@_data/*?value
       insert-before:x:/../0
-        src:x:/././*/_dp?value
-      return:x:/./*/_dp?value
+        src:x:/@_dp?value
+      return:x:/@_dp?value
   if
-    eval:x:/./-
+    eval:x:/@_x
     !=:success
-    or:x:/-2/0
+    or:x:/@eval/0
       !=:node:success
-    or:x:/-3/*?count
+    or:x:/@eval/*?count
       !=:int:1
-    throw:@"Assert error, expected [for-each] to have prematurely stopped evaluation!"
+    throw:Assert error, [return] misbehaved
 
-/*
- * Tests that return behaves correctly when evaluation returning
- * from is inside an if, which again is inside an if
- */
-inside-nested-if
+
+Inside nested if
   _x
     if:x:/..?name
       =:_x
       if:x:/..?name
         =:_x
         return:success
-    throw:Code that was never suppoed to be evaluated was evaluated
+    throw:Code that was never supposed to be evaluated was evaluated
   if
-    eval:x:/../*/_x
+    eval:x:/@_x
     !=:success
-    throw:@"Assert error, expected [success],got {0}!"
-      :x:/..if/*/eval?value
+    throw:Assert error, [return] misbehaved
 
-/*
- * Tests that return behaves correctly when returning from inside a [while],
- * which again is inside another [while]
- */
-inside-nested-while
+
+Inside nested while
   _x
     _data:int:5
-    while:x:/../*/_data?value
-      !=:int:0
-      while:x:/../*/_data
-        set:x:/../*/_data?value
-          -:x:/../*/_data?value
+    while:bool:true
+      while:bool:true
+        set:x:/@_data?value
+          -:x:/@_data?value
             _:int:1
         insert-before:x:/../0
           src:"foo:{0}"
-            :x:/../*/_data?value
-        return:x:/../*/_data?value
+            :x:/@_data?value
+        return:x:/@_data?value
   if
-    eval:x:/./-
+    eval:x:/@_x
     !=:int:4
-    or:x:/-2/*?count
+    or:x:/@eval/*?count
       !=:int:1
-    or:x:/-3/0
+    or:x:/@eval/0
       !=:node:"foo:4"
-    throw:@"Assert error, expected [while] to have prematurely stopped evaluation!"
+    throw:Assert error, [return] misbehaved
 
-/*
- * Tests that return behaves correctly when returning from inside a [for-each],
- * which again is inside another nested [for-each]
- */
-inside-nested-for-each
+
+Inside nested for-each
   _x
     _data
       foo1:success
       foo2:error
-    for-each:x:/-/*?value
+    for-each:x:/@_data/*?value
       for-each:x:/./*
         insert-before:x:/../0
-          src:x:/./././*/_dp?value
-        return:x:/././*/_dp?value
+          src:x:/..for-each/@_dp?value
+        return:x:/..for-each/@_dp?value
   if
-    eval:x:/./-
+    eval:x:/@_x
     !=:success
-    or:x:/-2/0
+    or:x:/@eval/0
       !=:node:success
-    or:x:/-3/*?count
+    or:x:/@eval/*?count
       !=:int:1
-    throw:@"Assert error, expected [for-each] to have prematurely stopped evaluation!"
+    throw:Assert error, [return] misbehaved

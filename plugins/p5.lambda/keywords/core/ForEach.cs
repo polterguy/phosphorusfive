@@ -59,7 +59,7 @@ namespace p5.lambda.keywords.core
                 }
 
                 // Perform a single iteration.
-                if (!IterateForEach (context, idx.Value, e.Args))
+                if (!Iterate (context, idx.Value, e.Args))
                     break;
             }
         }
@@ -68,15 +68,15 @@ namespace p5.lambda.keywords.core
          * Invokes [for-each] lambda, setting the [_dp] to the currently iterated value, and returns true if iteration should continue.
          * If it returns false, then iteration has for some reasons been stopped early ...
          */
-        private static bool IterateForEach (ApplicationContext context, object dataPointerObject, Node lambda)
+        private static bool Iterate (ApplicationContext context, object dp, Node lambda)
         {
             // Inserting data pointer for current iteration.
-            lambda.Insert (0, new Node ("_dp", dataPointerObject));
+            lambda.Insert (0, new Node ("_dp", dp));
 
-            // Evaluating (mutably) [for-each] lambda object.
+            // Evaluating (mutably) [for-each] lambda object, such that loop has access to entire tree.
             context.Raise ("eval-mutable", lambda);
 
-            // Checking if we have a "stop condition".
+            // Checking if we have some sort of stop condition.
             var stopNode = lambda.Root.FirstChild;
             bool proceed = stopNode.Name != "_return" && stopNode.Name != "_break";
 
