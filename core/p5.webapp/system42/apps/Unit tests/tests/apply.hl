@@ -26,6 +26,69 @@ Simple databound name and value
     throw:Assert error, [apply] misbehaved
 
 
+Nested databound expressions
+  _data
+    foo1:bar1
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      result
+        {name}:x:?name
+          {value}:x:?value
+  if:x:/@_dest
+    !=:node:@"_dest
+  result
+    name:foo1
+      value:bar1"
+    throw:Assert error, [apply] misbehaved
+
+
+Multiple sources
+  _data1
+    foo1:bar1
+  _data2
+    foo2:bar2
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data1/*
+    src:x:/@_data2/*
+    template
+      result
+        {name}:x:?name
+        {value}:x:?value
+  if:x:/@_dest
+    !=:node:@"_dest
+  result
+    name:foo1
+    value:bar1
+  result
+    name:foo2
+    value:bar2"
+    throw:Assert error, [apply] misbehaved
+
+
+Multiple destinations
+  _data
+    foo:bar
+  _dest1
+  _dest2
+  apply:x:/@_dest1|/@_dest2
+    src:x:/@_data/*
+    template
+      {name}:x:?name
+      {value}:x:?value
+  if:x:/@_dest1
+    !=:node:@"_dest1
+  name:foo
+  value:bar"
+    or:x:/@_dest2
+      !=:node:@"_dest2
+  name:foo
+  value:bar"
+    throw:Assert error, [apply] misbehaved
+
+
 Nested templates
   _data
     foo1
@@ -96,6 +159,74 @@ Event source returning node
     throw:Assert error, [apply] misbehaved
 
 
+Dynamic event source returning multiple nodes
+  create-event:sys42.tests.dynamic-apply-source
+    eval-x:x:/+/*
+    return
+      name:x:/@_dn/#?name
+  _data
+    foo1
+    foo2
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {@sys42.tests.dynamic-apply-source}
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo1
+  name:foo2"
+    throw:Assert error, [apply] misbehaved
+
+
+Dynamic event source returning multiple nodes with arg
+  create-event:sys42.tests.dynamic-apply-source
+    eval-x:x:/+/*
+    return
+      name:x:/@_dn/#?name
+      static:x:/@_arg?value
+  _data
+    foo1
+    foo2
+  _dest
+  _static:some-arg
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {@sys42.tests.dynamic-apply-source}:x:/@_static?value
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo1
+  static:some-arg
+  name:foo2
+  static:some-arg"
+    throw:Assert error, [apply] misbehaved
+
+
+Dynamic event source returning multiple nodes with children arg
+  create-event:sys42.tests.dynamic-apply-source
+    eval-x:x:/+/*
+    return
+      name:x:/@_dn/#?name
+      static:x:/@_foo?value
+  _data
+    foo1
+    foo2
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {@sys42.tests.dynamic-apply-source}
+        _foo:some-arg
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo1
+  static:some-arg
+  name:foo2
+  static:some-arg"
+    throw:Assert error, [apply] misbehaved
+
+
 Complex multiple event template with argument
   _data
     foo1
@@ -124,6 +255,9 @@ Complex multiple event template with argument
     set:x:/..?value
       src:"second:eval-{0}"
         :x:/@_dn/#?name
+  _x3
+    set:x:/..?value
+      src:node:"third:eval"
 
   // Notice, we have two [eval] invocations below, one with argument, another without.
   apply:x:/@_dest
@@ -134,6 +268,7 @@ Complex multiple event template with argument
         {@eval}:x:/@_x
           _static-arg:Some address
         {@eval}:x:/@_x2
+        {@eval}:x:/@_x3
   if:x:/@_dest
     !=:node:@"_dest
   result
@@ -141,8 +276,10 @@ Complex multiple event template with argument
     adr:Some address, Dunbar, 987654
     has:address
     second:eval-foo1
+    third:eval
   result
     name:Jane Doe
     no:address
-    second:eval-foo2"
+    second:eval-foo2
+    third:eval"
     throw:Assert error, [apply] misbehaved
