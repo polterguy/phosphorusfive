@@ -606,47 +606,25 @@ namespace p5.exp
         /// <param name="eventNode">Arguments to pass into event</param>
         /// <param name="lambda">Lambda object to evaluate</param>
         /// <param name="eventName">Name of Active Event to raise</param>
-        public static void RaiseEvent (
+        public static void EvaluateLambda (
             ApplicationContext context,
             string eventName,
             Node lambda,
             Node eventNode)
         {
-            // Applying "value argument"
-            int idxNo = 0;
-            if (eventNode.Value is Expression) {
-
-                // Evaluating node, and stuffing results into arguments
-                foreach (var idx in Iterate<object> (context, eventNode)) {
-
-                    // Adding currently iterated results into execution object
-                    lambda.Insert (idxNo++, new Node ("_arg", idx));
-                }
-            } else if (eventNode.Value != null) {
-
-                // Simple value argument
-                lambda.Add ("_arg", FormatNode (context, eventNode));
-            }
-
-            // Adding up other arguments, no need to clone, they should be gone after execution anyway.
+            // Adding up children arguments, no need to clone, they should be gone after execution anyway.
             // But skipping all "empty name" arguments, since they're formatting parameters.
-            // Notice the ToList invocation, which is necessary, since foreach changes args' Children collection.
-            // Also notice that we insert arguments at the top of lambda object evaluated, in order of appearance.
-            idxNo = 0;
-            foreach (var idxArg in eventNode.Children.Where (ix => ix.Name != "").ToList ()) {
-                lambda.Insert (idxNo++, idxArg);
-            }
+            lambda.InsertRange (0, eventNode.Children.Where (ix => ix.Name != ""));
 
-            // Removing all nodes from eventNode, since there might be ampty formatting nodes remaining,
-            // to be sure we don't keep garbage around after evaluation.
-            eventNode.Clear ();
+            // Applying "value arguments" last, meaning they'll end up first.
+            lambda.InsertRange (0, Iterate<object> (context, eventNode).Select (ix => new Node ("_arg", ix)));
 
             // Evaluating lambda object now, by invoking [eval], which does the heavy lifting.
             context.Raise ("eval", lambda);
 
-            // Making sure we return all nodes that was created during evaluation of event back to caller,
-            // in addition to any values returned.
-            eventNode.AddRange (lambda.Children);
+            // Making sure we return all nodes that was created during evaluation of event back to caller, in addition to value.
+            // Notice Clear invocation, since eventNode still might contain formatting parameters.
+            eventNode.Clear ().AddRange (lambda.Children);
             eventNode.Value = lambda.Value;
         }
     }

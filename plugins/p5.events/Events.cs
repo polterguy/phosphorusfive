@@ -176,7 +176,7 @@ namespace p5.events
 
             // Raising Active Event, if it exists.
             if (lambda != null)
-                XUtil.RaiseEvent (context, e.Name, lambda, e.Args);
+                XUtil.EvaluateLambda (context, e.Name, lambda, e.Args);
         }
 
         /*
