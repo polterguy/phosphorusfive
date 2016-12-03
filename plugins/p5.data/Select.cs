@@ -50,7 +50,8 @@ namespace p5.data
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Acquiring lock on database
-                lock (Common.Lock) {
+                Common.Locker.EnterReadLock ();
+                try {
 
                     // Iterating through each result from database node tree
                     var match = ex.Evaluate (context, Common.Database, e.Args);
@@ -78,6 +79,8 @@ namespace p5.data
                         // Removing argument
                         e.Args.Value = null;
                     }
+                } finally {
+                    Common.Locker.ExitReadLock ();
                 }
             }
         }

@@ -48,7 +48,8 @@ namespace p5.data
                 throw new LambdaException ("[update-data] requires an expression to select items from database", e.Args, context);
 
             // Acquiring lock on database
-            lock (Common.Lock) {
+            Common.Locker.EnterWriteLock ();
+            try {
 
                 // Used for storing all affected database nodes, such that we know which files to update
                 var changed = new List<Node> ();
@@ -104,6 +105,8 @@ namespace p5.data
             
                 // Saving all affected files
                 Common.SaveAffectedFiles (context, changed);
+            } finally {
+                Common.Locker.ExitWriteLock ();
             }
         }
     }

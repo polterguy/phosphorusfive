@@ -59,7 +59,8 @@ namespace p5.data
              */
 
             // Acquiring lock on database
-            lock (Common.Lock) {
+            Common.Locker.EnterWriteLock ();
+            try {
 
                 var forceAppend = e.Name == "append-data";
 
@@ -99,6 +100,8 @@ namespace p5.data
 
                 // Returning number of affected items
                 e.Args.Value = affectedItems;
+            } finally {
+                Common.Locker.ExitWriteLock ();
             }
         }
 

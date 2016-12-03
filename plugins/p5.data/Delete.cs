@@ -50,7 +50,8 @@ namespace p5.data
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Acquiring lock on database
-                lock (Common.Lock) {
+                Common.Locker.EnterWriteLock ();
+                try {
 
                     // Used to store how many items are actually affected
                     int affectedItems = 0;
@@ -75,6 +76,8 @@ namespace p5.data
 
                     // Returning number of affected items
                     e.Args.Value = affectedItems;
+                } finally {
+                    Common.Locker.ExitWriteLock ();
                 }
             }
         }

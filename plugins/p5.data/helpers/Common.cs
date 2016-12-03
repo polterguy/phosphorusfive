@@ -23,6 +23,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 using p5.core;
 
@@ -36,29 +37,8 @@ namespace p5.data.helpers
     /// </summary>
     public static class Common
     {
-        /// <summary>
-        ///     Initializes the database
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="e">E</param>
-        [ActiveEvent (Name = ".p5.core.application-start")]
-        private static void _p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Acquiring lock on database
-            lock (Common.Lock) {
-
-                // Making sure database is initialized
-                Common.Initialize (context);
-            }
-        }
-
         // Contains full path to database folder
         private static string _dbFullPath;
-
-        static Common ()
-        {
-            Lock = new object ();
-        }
 
         /// <summary>
         ///     This is your actual Database
@@ -70,7 +50,29 @@ namespace p5.data.helpers
         ///     Used to lock database access
         /// </summary>
         /// <value>lock object</value>
-        public static object Lock { get; private set; }
+        public static ReaderWriterLockSlim Locker { get; private set; }
+
+        static Common ()
+        {
+            Locker = new ReaderWriterLockSlim ();
+        }
+
+        /// <summary>
+        ///     Initializes the database
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="e">E</param>
+        [ActiveEvent (Name = ".p5.core.application-start")]
+        private static void _p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Acquiring lock on database, before we initialize database.
+            Locker.EnterWriteLock ();
+            try {
+                Initialize (context);
+            } finally {
+                Locker.ExitWriteLock ();
+            }
+        }
 
         /// <summary>
         ///     Make sure database is properly initialized
