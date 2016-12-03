@@ -60,7 +60,7 @@ namespace p5.lambda.helpers
 
                     // Checking if there already exists a "state" node in condition, and if not, creating one, and inserting "maybe" results.
                     // "maybe" results is the result of previously evaluated condition.
-                    e.Args.Parent.FindOrCreate ("_p5_conditions_state_", 0).Add ("_or_maybe_", previous.Get<bool> (context));
+                    e.Args.Parent.FindOrInsert ("_p5_conditions_state_", 0).Add ("_or_maybe_", previous.Get<bool> (context));
                 }
 
                 // Previous condition yielded false, try to evaluate this one, and returning results.

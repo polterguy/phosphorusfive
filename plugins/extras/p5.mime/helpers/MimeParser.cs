@@ -377,7 +377,7 @@ namespace p5.mime.helpers
             foreach (var idxSignature in signatures) {
 
                 // Making sure we return email of PGP key used to sign, and true as value of node if signature is valid
-                var signatureNode = entityNode.FindOrCreate ("signature").Add (idxSignature.SignerCertificate.Email, idxSignature.Verify ()).LastChild;
+                var signatureNode = entityNode.FindOrInsert ("signature").Add (idxSignature.SignerCertificate.Email, idxSignature.Verify ()).LastChild;
 
                 // Adding fingerprint of PGP key used to sign entity
                 signatureNode.Add ("fingerprint", idxSignature.SignerCertificate.Fingerprint);

@@ -62,7 +62,7 @@ namespace p5.web.widgets
 
                         // Returning lambda object for Widget Ajax event
                         if (Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] != null)
-                            e.Args.FindOrCreate(idxWidget.ID).Add(Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name].Clone());
+                            e.Args.FindOrInsert(idxWidget.ID).Add(Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name].Clone());
                     }
                 }
             }

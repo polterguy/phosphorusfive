@@ -40,20 +40,16 @@ namespace p5.core
         ///     Initializes a new instance of the <see cref="phosphorus.core.Node"/> class
         /// </summary>
         public Node ()
-        {
-            _children = new List<Node> ();
-            Name = "";
-        }
+            : this ("")
+        { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.core.Node"/> class
         /// </summary>
         /// <param name="name">Name of node. Cannot be null</param>
         public Node (string name)
-            : this ()
-        {
-            Name = name;
-        }
+            : this (name, null)
+        { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.core.Node"/> class
@@ -61,10 +57,8 @@ namespace p5.core
         /// <param name="name">Name of node. Cannot be null</param>
         /// <param name="value">Value of node. Can be any object, including null</param>
         public Node (string name, object value)
-            : this (name)
-        {
-            Value = value;
-        }
+            : this (name, value, null)
+        { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.core.Node"/> class
@@ -75,12 +69,12 @@ namespace p5.core
         /// belongs to another Node's children collection, then they will be UnTied from the other node, and ReTied 
         /// into currently created node</param>
         public Node (string name, object value, IEnumerable<Node> children)
-            : this (name, value)
         {
-            var collection = children as Node[] ?? children.ToArray ();
-            _children = new List<Node> (collection);
-            foreach (var idx in collection) {
-                idx.Parent = this;
+            Name = name;
+            Value = value;
+            _children = new List<Node> ();
+            if (children != null) {
+                _children.AddRange (children);
             }
         }
 
@@ -175,10 +169,9 @@ namespace p5.core
             get {
                 if (Parent == null)
                     return null;
-                var idxNo = Parent._children.TakeWhile (idxNode => idxNode != this).Count ();
-                idxNo -= 1;
-                if (idxNo >= 0)
-                    return Parent._children [idxNo];
+                var idx = Parent.IndexOf (this) - 1;
+                if (idx >= 0)
+                    return Parent._children [idx];
                 return null;
             }
         }
@@ -191,10 +184,9 @@ namespace p5.core
             get {
                 if (Parent == null)
                     return null;
-                var idxNo = Parent._children.IndexOf (this);
-                idxNo += 1;
-                if (idxNo < Parent._children.Count)
-                    return Parent._children [idxNo];
+                var idx = Parent._children.IndexOf (this) + 1;
+                if (idx < Parent._children.Count)
+                    return Parent._children [idx];
                 return null;
             }
         }
@@ -260,8 +252,7 @@ namespace p5.core
             get {
                 int idxNo = 0;
                 var tmpIdx = this;
-                var root = Root;
-                while (tmpIdx != root) {
+                while (tmpIdx.Parent != null) {
                     tmpIdx = tmpIdx.Parent;
                     idxNo += 1;
                 }
@@ -274,8 +265,10 @@ namespace p5.core
         /// </summary>
         public Node UnTie ()
         {
-            Parent._children.Remove (this);
-            Parent = null;
+            if (Parent != null) {
+                Parent._children.Remove (this);
+                Parent = null;
+            }
             return this;
         }
 
@@ -288,17 +281,24 @@ namespace p5.core
             if (node == null) {
                 throw new ArgumentException ("Cannot replace a node with null");
             }
+
+            // To make sure we detach it from its previous parent, if any.
+            node.UnTie ();
             node.Parent = Parent;
             Parent._children [Parent._children.IndexOf (this)] = node;
+
+            // Making sure we remove current node's Parent.
             Parent = null;
+
+            // Notice, returning NEW node, and not "this".
             return node;
         }
 
         /// <summary>
-        ///     Finds, or creates, the first node having the given name
+        ///     Finds, or inserts, the first node having the given name, and returns that node to caller.
         /// </summary>
         /// <param name="name">Name of node to return or create</param>
-        public Node FindOrCreate (string name, int index = -1)
+        public Node FindOrInsert (string name, int index = -1)
         {
             var retVal = _children.Find (idx => idx.Name == name);
             if (retVal != null)
@@ -310,50 +310,14 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Returns the Value of the first Children node, matching the given name, as type T
-        /// </summary>
-        /// <param name="name">Name of node to return</param>
-        /// <param name="context">Application Context</param>
-        /// <param name="defaultValue">Default value to use, if no child with the given name is found</param>
-        public T GetChildValue<T> (string name, ApplicationContext context, T defaultValue = default (T))
-        {
-            var child = _children.Find (idx => idx.Name == name);
-            return child == null ? defaultValue : child.Get (context, defaultValue);
-        }
-
-        /// <summary>
-        ///     Removes the specified node
+        ///     Removes the specified child node
         /// </summary>
         /// <param name="node">Node</param>
         public Node Remove (Node node)
         {
             if (!_children.Remove (node))
                 throw new ArgumentException ("Node doesn't belong to collection");
-            return this;
-        }
-
-        /// <summary>
-        ///     Sorts the children of the current node
-        /// </summary>
-        /// <param name="functor">Comparison delegate</param>
-        public Node Sort (Comparison<Node> functor)
-        {
-            _children.Sort (functor);
-            return this;
-        }
-
-        /// <summary>
-        ///     Adds a child node to the current node's children collection
-        /// </summary>
-        /// <param name="node">node to add</param>
-        public Node Add (Node node)
-        {
-            if (node == null)
-                return this;
-            if (node.Parent != null)
-                node.Parent.Remove (node);
-            node.Parent = this;
-            _children.Add (node);
+            node.Parent = null;
             return this;
         }
 
@@ -379,6 +343,20 @@ namespace p5.core
         /// <summary>
         ///     Adds a child node to the current node's children collection
         /// </summary>
+        /// <param name="node">node to add</param>
+        public Node Add (Node node)
+        {
+            if (node == null)
+                throw new ArgumentException ("Tried to add null node to another node");
+            node.UnTie ();
+            node.Parent = this;
+            _children.Add (node);
+            return this;
+        }
+
+        /// <summary>
+        ///     Adds a child node to the current node's children collection, with the specified name, value and children collection.
+        /// </summary>
         /// <param name="name">name of node to add</param>
         /// <param name="value">value of node to add</param>
         /// <param name="nodes">initial child collection of node</param>
@@ -388,12 +366,26 @@ namespace p5.core
         }
 
         /// <summary>
+        ///     Adds a range of nodes
+        /// </summary>
+        /// <param name="nodes">nodes to add</param>
+        public Node AddRange (IEnumerable<Node> nodes)
+        {
+            // TODO: Optimize
+            foreach (var idx in nodes.ToList ()) {
+                Add (idx);
+            }
+            return this;
+        }
+
+        /// <summary>
         ///     Inserts a child node to the current node's children collection
         /// </summary>
         /// <param name="node">node to add</param>
         /// <param name="index">where to add</param>
         public Node Insert (int index, Node node)
         {
+            node.UnTie ();
             node.Parent = this;
             _children.Insert (index, node);
             return this;
@@ -406,22 +398,9 @@ namespace p5.core
         /// <param name="index">where to add</param>
         public Node InsertRange (int index, IEnumerable<Node> nodes)
         {
-            foreach (var idxNode in nodes) {
-                idxNode.Parent = this;
-                _children.Insert (index++, idxNode);
-            }
-            return this;
-        }
-
-        /// <summary>
-        ///     Adds a range of nodes
-        /// </summary>
-        /// <param name="nodes">nodes to add</param>
-        public Node AddRange (IEnumerable<Node> nodes)
-        {
-            foreach (var idxNode in nodes.ToList ()) {
-                Add (idxNode);
-            }
+            // TODO: Optimize
+            foreach (var idx in nodes.ToList ())
+                Insert (index++, idx);
             return this;
         }
 
@@ -430,7 +409,32 @@ namespace p5.core
         /// </summary>
         public Node Clear ()
         {
+            foreach (var idx in _children) {
+                idx.Parent = null;
+            }
             _children.Clear ();
+            return this;
+        }
+
+        /// <summary>
+        ///     Returns the Value of the first Children node, matching the given name, as type T
+        /// </summary>
+        /// <param name="name">Name of node to return</param>
+        /// <param name="context">Application Context</param>
+        /// <param name="defaultValue">Default value to use, if no child with the given name is found</param>
+        public T GetChildValue<T> (string name, ApplicationContext context, T defaultValue = default (T))
+        {
+            var child = _children.Find (idx => idx.Name == name);
+            return child == null ? defaultValue : child.Get (context, defaultValue);
+        }
+
+        /// <summary>
+        ///     Sorts the children of the current node
+        /// </summary>
+        /// <param name="functor">Comparison delegate</param>
+        public Node Sort (Comparison<Node> functor)
+        {
+            _children.Sort (functor);
             return this;
         }
 
@@ -545,7 +549,7 @@ namespace p5.core
             if (value == null && rhsValue == null)
                 return 0;
             if (value.GetType () != rhsValue.GetType ()) {
-                return String.Compare(value.GetType ().ToString (), rhsValue.GetType ().ToString (), StringComparison.Ordinal);
+                return string.Compare(value.GetType ().ToString (), rhsValue.GetType ().ToString (), StringComparison.Ordinal);
             }
             var thisValue = value as IComparable;
             if (thisValue == null)

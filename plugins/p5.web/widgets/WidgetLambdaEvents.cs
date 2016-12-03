@@ -68,7 +68,7 @@ namespace p5.web.widgets
                             // We found a Lambda event with that name for that widget
                             var evtNode = Manager.WidgetLambdaEventStorage[idxEventNameNode.Name, idxWidget.ID].Clone();
                             evtNode.Name = idxEventNameNode.Name;
-                            e.Args.FindOrCreate(idxWidget.ID).Add(evtNode);
+                            e.Args.FindOrInsert(idxWidget.ID).Add(evtNode);
                         }
                     }
                 }

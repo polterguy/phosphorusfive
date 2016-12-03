@@ -190,7 +190,7 @@ namespace p5.mime
             string userSeed = args.GetExChildValue<string> ("seed", context, "foobar");
 
             // Then we change the given seed by hashing it, such that each pass through this method creates a different user provided seed
-            args.FindOrCreate ("seed").Value = context.Raise ("sha512-hash", new Node ("", userSeed)).Get<string> (context);
+            args.FindOrInsert ("seed").Value = context.Raise ("sha512-hash", new Node ("", userSeed)).Get<string> (context);
 
             // Then we retrieve a cryptographically secure random number of 128 bytes
             var rndBytes = context.Raise (

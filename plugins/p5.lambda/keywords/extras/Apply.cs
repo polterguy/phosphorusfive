@@ -27,7 +27,6 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 using p5.lambda.helpers;
-using System;
 
 namespace p5.lambda.keywords.extras
 {
@@ -37,50 +36,52 @@ namespace p5.lambda.keywords.extras
     public static class Apply
     {
         /// <summary>
-        ///     The [apply] event, allows you to braid together the results of a destination expression, with the results of one or more sources,
-        ///     applying a [template] for each iteration into the destination.
+        ///     The [apply] event, allows you to braid together the results of one or more sources, with one template, 
+        ///     and append the results into one or more destinations.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "apply")]
-        public static void lambda_apply (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "braid")]
+        public static void lambda_apply_braid (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving [template], and performing basic sanity check.
-            var template = e.Args.Children.Where (ix => ix.Name == "template").ToList ();
-            if (template.Count != 1 || template[0].NextSibling != null)
-                throw new LambdaException ("You must supply exactly one [template], and it must be the last argument", e.Args, context);
+            var templates = e.Args.Children.Where (ix => ix.Name == "template");
+            if (templates.Count () != 1)
+                throw new LambdaException ("You must provide exactly one [template] to [apply]", e.Args, context);
+            var template = templates.First ();
 
-            // Retrieving source, and making sure it's not null, before we start iterating destinations.
-            // Also making sure we ignore [template], to make sure it's not used as a source.
+            // Retrieving source, ignoring [template], and making sure source is not null, before we start braiding source(s) and template into destination.
             var source = SourceHelper.GetSourceNodes (context, e.Args, "template");
             if (source != null) {
 
-                // Looping through each destination, and applying all sources according to [template] definition, making sure destination is node result.
+                // Looping through each destination, and braiding source(s) and template, before appending into destination node, 
+                // assuming destination is node type of expression.
                 foreach (var idxDest in SourceHelper.GetDestinationMatch (context, e.Args, true)) {
 
-                    // We have one or more sources, iterating through each, applying to template, appending results into destination.
-                    foreach (var idxSrc in source) {
+                    // Iterating through each source, braiding with template, and appending to destination node.
+                    foreach (var idxSource in source) {
 
-                        // Applying the results of currently iterated source to the destination, according to [template] definition.
-                        idxDest.Node.AddRange (ApplySourceToTemplate (context, idxSrc, template[0]));
+                        // Braiding template and source, appending into destination.
+                        idxDest.Node.AddRange (BraidTemplateWithSource (context, template, idxSource));
                     }
                 }
             }
         }
 
         /*
-         * Parses the supplied template, according to specified source, and returns a list of nodes to insert.
+         * Braids the specified template with the specified source, and returns a bunch of nodes.
          */
-        private static IEnumerable<Node> ApplySourceToTemplate (
+        private static IEnumerable<Node> BraidTemplateWithSource (
             ApplicationContext context,
-            Node source, 
-            Node template)
+            Node template,
+            Node source)
         {
             // Looping through each child node of template, returning parsed node object instance to caller.
             foreach (var idxTemplate in template.Children) {
 
                 // Processing template child
-                foreach (var idxResult in ProcessTemplate (context, idxTemplate, source)) {
+                foreach (var idxResult in ProcessTemplateItem (context, idxTemplate, source)) {
 
                     // Returning currently processed template instance.
                     yield return idxResult;
@@ -91,96 +92,87 @@ namespace p5.lambda.keywords.extras
         /*
          * Processes a single template child node, by applying entire node, and children of node, recursively.
          */
-        private static IEnumerable<Node> ProcessTemplate (
+        private static IEnumerable<Node> ProcessTemplateItem (
             ApplicationContext context, 
-            Node template, 
+            Node child, 
             Node source)
         {
-            // Checking if node is an event invocation.
-            if (template.Name.StartsWith ("{@") && template.Name.EndsWith ("}")) {
+            // Checking type of template node.
+            if (child.Name.StartsWith ("{@") && child.Name.EndsWith ("}")) {
 
-                // Event apply invocation.
-                foreach (var idx in ProcessEventInvocation (context, template, source)) {
+                // Event invocation.
+                foreach (var idx in ProcessEventItem (context, child, source)) {
                     yield return idx;
                 }
 
-            } else if (template.Name.StartsWith ("{") && template.Name.EndsWith ("}")) {
+            } else if (child.Name.StartsWith ("{") && child.Name.EndsWith ("}")) {
 
-                // Normal databound value, retrieving match and checking if template is an inner template, at which case we don't recursively process children.
-                Match match = null;
-                var ex = template.Value as Expression;
-                if (ex != null)
-                    match = (template.Value as Expression).Evaluate (context, source, template);
-                foreach (var idx in ProcessDataboundExpression (context, match, template, source)) {
-
-                    // Checking if we should apply children.
-                    if (match != null && match.TypeOfMatch != Match.MatchType.node && match.Convert != "node")
-                        ProcessTemplateChildren (context, template, source, idx);
+                // A databound expression, which might be either a single databound value, or a sub-template definition.
+                foreach (var idx in ProcessDataItem (context, child, source)) {
                     yield return idx;
                 }
 
             } else {
 
                 // This is not a databound node at all, but a static node.
-                // Creating our default return value, making sure we support "escaped names", which among other things is necessary to
-                // support nested [apply] invocations, where one [apply] creates another [apply].
-                var retVal = new Node (template.Name.StartsWith ("\\") ? template.Name.Substring (1) : template.Name, template.Value);
-
-                // Looping through all children of template, processing recursively.
-                ProcessTemplateChildren (context, template, source, retVal);
-                yield return retVal;
-            }
-        }
-
-        /*
-         * Process children of template recusrsively.
-         */
-        private static void ProcessTemplateChildren (ApplicationContext context, Node template, Node source, Node idx)
-        {
-            foreach (var idxTemplate in template.Children) {
-
-                // Recursively databinding children of template node.
-                idx.AddRange (ProcessTemplate (context, idxTemplate, source));
+                // Creating our default return value, making sure we support escaping node names, which among other things is necessary to
+                // support creating one [apply] from within another [apply].
+                yield return new Node (
+                    child.Name.StartsWith ("\\") ? child.Name.Substring (1) : child.Name, 
+                    child.Value, 
+                    ProcessItemChildren (context, child, source));
             }
         }
 
         /*
          * Processing a single event invocation template.
          */
-        private static IEnumerable<Node> ProcessEventInvocation (
-            ApplicationContext context, 
-            Node template, 
+        private static IEnumerable<Node> ProcessEventItem (
+            ApplicationContext context,
+            Node template,
             Node source)
         {
             // Figuring out Active Event to raise, making sure we remove initial "{@" and trailing "}".
-            var eventName = template.Name.Substring (2, template.Name.Length - 3);
+            var name = template.Name.Substring (2, template.Name.Length - 3);
+
+            // Sanity check.
+            if (name.StartsWith (".") || name.StartsWith ("_") || name == "")
+                throw new LambdaException ("[apply] tried to invoke protected event", template, context);
 
             // Keeping original node around, such that we can reset template, after invocation of Active Event.
             // This is done since the same template node might be reused for another source.
             var originalLambda = template.Clone ();
 
-            // Setting accurate name for node, adding datasource as [_dn], and invoking Active Event.
-            template.Name = eventName;
+            // Setting accurate name for node, adding datasource as [_dn], and invoking event.
+            template.Name = name;
             template.Insert (0, new Node ("_dn", source));
             context.Raise (template.Name, template);
 
-            // Returning result, prioritizing value.
+            // Returning results of event invocation, prioritizing value.
             if (template.Value != null) {
 
                 // Returning value of invocation as result, making sure we convert result to a node.
                 if (template.Value is Node) {
+
+                    // Returning a node that's already a node.
+                    // Notice the Clone invocation, which is necessary, to support events returning "static nodes" by value.
                     yield return (template.Value as Node).Clone ();
                 } else {
-                    foreach (var idxChild in template.Get<Node> (context).Children) {
-                        yield return idxChild.Clone ();
+
+                    // Converting possibly a string, or something else to a node, which creates a "wrapper node", and returning that wrapper node's children.
+                    // Notice the ToList invocation, which is necessary, since we're attaching the Children nodes, to another node within the caller of this method.
+                    // If we hadn't Cloned, then IEnumerable would change during iteration, which is a severe .Net logical error.
+                    foreach (var idxChild in template.Get<Node> (context).Children.ToList ()) {
+                        yield return idxChild;
                     }
                 }
 
             } else {
 
                 // Looping through result of Active Event invocation, and returning result to caller.
-                foreach (var idx in template.Children) {
-                    yield return idx.Clone ();
+                // Notice the ToList invocation, since we're attaching the nodes from Children to another node in the caller of this method.
+                foreach (var idx in template.Children.ToList ()) {
+                    yield return idx;
                 }
             }
 
@@ -191,37 +183,66 @@ namespace p5.lambda.keywords.extras
         }
 
         /*
-         * Invoked for a normal databound expression template node.
+         * Processing a single data item, which might be a single data value, constant, null, or a sub-template.
          */
-        private static IEnumerable<Node> ProcessDataboundExpression (ApplicationContext context, Match match, Node template, Node source)
+        private static IEnumerable<Node> ProcessDataItem (ApplicationContext context, Node template, Node source)
         {
-            // Checking if we were given a match, at which case we iterate over match.
-            if (match != null) {
+            // Retrieving node's name
+            var name = template.Name.Substring (1, template.Name.Length - 2);
 
-                // Checking if this is an "inner apply operation", meaning a "sub template".
-                if (match.TypeOfMatch == Match.MatchType.node || match.Convert == "node") {
+            // Checking type of template.
+            if (XUtil.IsExpression (template.Value)) {
 
-                    // Inner apply expression type, meaning an "inner template", using result of expression as new source
-                    // Notice we do NOT return "retVal" here, but rather one node for each result
-                    // in inner datasource expression, treating the children nodes as "inner templates"
-                    foreach (var idx in XUtil.Iterate<Node> (context, template, source)) {
+                // Expression type, checking if this is a single value template definition, or a sub-template definition.
+                var match = template.Get<Expression> (context).Evaluate (context, source, template);
+                if (match.TypeOfMatch == Match.MatchType.node) {
 
-                        // Creating return value databound to inner databound expression
-                        // Notice we ABORT the yielding of return values after this loop, to avoid returning the "retVal" itself,
-                        // but rather only return the results of this loop
-                        var idxRet = new Node (template.Name.Substring (1, template.Name.Length - 2));
-                        idxRet.AddRange (ApplySourceToTemplate (context, idx, template));
-                        yield return idxRet;
+                    // Sanity check, before applying sub-template, ignoring children, since they're arguments to sub-template, and not current template.
+                    if (name != "template")
+                        throw new LambdaException ("A node expression can only be supplied to a sub [{template}] definition", template, context);
+
+                    // Processing sub-template, returning one node for each item braided with source.
+                    foreach (var idxResult in ProcessSubTemplate (context, template, source)) {
+                        yield return idxResult;
                     }
-                } else {
 
-                    // Node is databound as simple value, using Single implementation on value, and returning applied node.
-                    yield return new Node (template.Name.Substring (1, template.Name.Length - 2), XUtil.Single<object> (context, template, source));
+                    // Preventing execution of default logic below.
+                    yield break;
+                } // Notice the fallthrough to final yield return in method, instead of else logic.
+            }
+
+            // Databound simple value, making sure we process children.
+            yield return new Node (name, XUtil.Single<object> (context, template, source), ProcessItemChildren (context, template, source));
+        }
+
+        /*
+         * Processing a sub-template.
+         */
+        private static IEnumerable<Node> ProcessSubTemplate (ApplicationContext context, Node template, Node source)
+        {
+            // This is a sub-template, which we treat as a new template definition, evaluating its expression relatively to the current source,
+            // and braids together, before returning results to caller.
+            foreach (var idxSource in XUtil.Iterate<Node> (context, template, source)) {
+
+                // Braiding source with template, and returning to caller.
+                foreach (var idx in BraidTemplateWithSource (context, template, idxSource)) {
+                    yield return idx;
                 }
-            } else {
+            }
+        }
 
-                // Node was possibly databound, but not as an expression, but rather a formatting expression, or it was a constant.
-                yield return new Node (template.Name.Substring (1, template.Name.Length - 2), XUtil.FormatNode (context, template));
+        /*
+         * Process children of template items recusrsively.
+         */
+        private static IEnumerable<Node> ProcessItemChildren (ApplicationContext context, Node template, Node source)
+        {
+            // Looping through children of template, avoiding formatted expressions and values.
+            foreach (var idxTemplate in template.Children.Where (ix => ix.Name != "")) {
+
+                // Recursively databinding children of template node.
+                foreach (var idx in ProcessTemplateItem (context, idxTemplate, source)) {
+                    yield return idx;
+                }
             }
         }
     }

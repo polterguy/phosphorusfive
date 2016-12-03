@@ -126,7 +126,7 @@ namespace p5.web.widgets
                     foreach (var idxWidget in FindWidgetsBy (e.Args, parentControl, context, e.Name == "find-widget-like")) {
 
                         // Adding type of widget as name, and ID as value
-                        retVal.FindOrCreate(idxId).Add (GetTypeName (idxWidget), idxWidget.ID);
+                        retVal.FindOrInsert(idxId).Add (GetTypeName (idxWidget), idxWidget.ID);
                     }
                 }
                 e.Args.AddRange (retVal.Children);
@@ -216,7 +216,7 @@ namespace p5.web.widgets
                             if (found) {
 
                                 // We found our first matching ancestor widget!
-                                retVal.FindOrCreate(idxId).Add (GetTypeName (curIdxWidget), curIdxWidget.ID);
+                                retVal.FindOrInsert(idxId).Add (GetTypeName (curIdxWidget), curIdxWidget.ID);
                                 break;
                             }
                         }

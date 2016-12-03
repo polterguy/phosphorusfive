@@ -291,7 +291,7 @@ namespace p5.web.widgets
             if ((propertyName.StartsWith ("on") || propertyName.StartsWith ("_on") || propertyName.StartsWith(".on")) && widget [propertyName] == "common_event_handler")
                 return; // Skipping these guys
 
-            node.FindOrCreate (widget.ID).Add (name).LastChild.Value = value == null ? 
+            node.FindOrInsert (widget.ID).Add (name).LastChild.Value = value == null ? 
                 widget [propertyName] : 
                 value;
         }

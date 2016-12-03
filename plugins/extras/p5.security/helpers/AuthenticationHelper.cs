@@ -192,7 +192,7 @@ namespace p5.security.helpers
             AuthFile.ModifyAuthFile (context, delegate (Node node) {
                 if (node.Children.Find (delegate (Node ix) { return ix.Name == "server-salt"; }) != null)
                     throw new LambdaSecurityException ("Tried to change server salt after initial creation", args, context);
-                node.FindOrCreate ("server-salt").Value = salt;
+                node.FindOrInsert ("server-salt").Value = salt;
             });
         }
 
@@ -206,7 +206,7 @@ namespace p5.security.helpers
             string role = args.GetExChildValue<string>("role", context);
 
             // Making sure [password] never leaves method, in case of exceptions
-            args.FindOrCreate ("password").Value = "xxx";
+            args.FindOrInsert ("password").Value = "xxx";
 
             // Basic syntax checking
             if (string.IsNullOrEmpty (username) || string.IsNullOrEmpty (password) || string.IsNullOrEmpty (role))
@@ -481,7 +481,7 @@ namespace p5.security.helpers
                 var role = idxUserNode["role"].Get<string>(context);
 
                 // Adding currently iterated role, unless already added, and incrementing user count for it
-                args.FindOrCreate (role).Value = args[role].Get<int> (context, 0) + 1;
+                args.FindOrInsert (role).Value = args[role].Get<int> (context, 0) + 1;
             }
         }
 

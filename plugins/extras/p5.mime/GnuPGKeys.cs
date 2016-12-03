@@ -171,7 +171,7 @@ namespace p5.mime
                                 e.Args.Add ("expires", expires);
                                 e.Args.Add ("fingerprint", BitConverter.ToString (idxPublicKey.GetFingerprint ()).Replace ("-", ""));
                                 foreach (var idxUserId in idxPublicKey.GetUserIds()) {
-                                    e.Args.FindOrCreate ("user-ids").Add ("", idxUserId);
+                                    e.Args.FindOrInsert ("user-ids").Add ("", idxUserId);
                                 }
                                 return;
                             }

@@ -600,7 +600,7 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Raises a dynamically created Active Events or lambda objects
+        ///     Raises a dynamically created Active Event or lambda object.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="eventNode">Arguments to pass into event</param>
@@ -613,10 +613,10 @@ namespace p5.exp
             Node eventNode)
         {
             // Applying "value argument"
+            int idxNo = 0;
             if (eventNode.Value is Expression) {
 
                 // Evaluating node, and stuffing results into arguments
-                int idxNo = 0;
                 foreach (var idx in Iterate<object> (context, eventNode)) {
 
                     // Adding currently iterated results into execution object
@@ -632,9 +632,9 @@ namespace p5.exp
             // But skipping all "empty name" arguments, since they're formatting parameters.
             // Notice the ToList invocation, which is necessary, since foreach changes args' Children collection.
             // Also notice that we insert arguments at the top of lambda object evaluated, in order of appearance.
-            int idxNo2 = 0;
+            idxNo = 0;
             foreach (var idxArg in eventNode.Children.Where (ix => ix.Name != "").ToList ()) {
-                lambda.Insert (idxNo2++, idxArg);
+                lambda.Insert (idxNo++, idxArg);
             }
 
             // Removing all nodes from eventNode, since there might be ampty formatting nodes remaining,

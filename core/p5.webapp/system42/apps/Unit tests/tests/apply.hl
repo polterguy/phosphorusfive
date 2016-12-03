@@ -104,18 +104,50 @@ Nested templates
     template
       result
         {name}:x:/*/name?value
-        {adr-x}:x:/*/adr
+        {template}:x:/*/adr
           {str-x}:x:/*/str?value
           {zip-x}:x:/*/zip?value
   if:x:/@_dest
     !=:node:@"_dest
   result
     name:John Doe
-    adr-x
-      str-x:Dunbar
-      zip-x:987654
+    str-x:Dunbar
+    zip-x:987654
   result
     name:Jane Doe"
+    throw:Assert error, [apply] misbehaved
+
+
+Nested templates, multiple source values
+  _data
+    foo1
+      name:John Doe
+      adr
+        str:Dunbar-1
+        zip:987654-1
+      adr
+        str:Dunbar-2
+        zip:987654-2
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      result
+        {name}:x:/*/name?value
+        {template}:x:/*/adr
+          adr-x
+            {str-x}:x:/*/str?value
+            {zip-x}:x:/*/zip?value
+  if:x:/@_dest
+    !=:node:@"_dest
+  result
+    name:John Doe
+    adr-x
+      str-x:Dunbar-1
+      zip-x:987654-1
+    adr-x
+      str-x:Dunbar-2
+      zip-x:987654-2"
     throw:Assert error, [apply] misbehaved
 
 
@@ -259,7 +291,8 @@ Complex multiple event template with argument
     set:x:/..?value
       src:node:"third:eval"
 
-  // Notice, we have two [eval] invocations below, one with argument, another without.
+  // Notice, we have three [eval] invocations below, one with argument, two without.
+  // One returning a list of nodes, another returning a static string, and a third returning a single node.
   apply:x:/@_dest
     src:x:/@_data/*
     template

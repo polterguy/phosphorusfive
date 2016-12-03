@@ -211,14 +211,14 @@ namespace p5.mail
             foreach (var id in message.References) {
 
                 // Adding currently iterated References ID back to caller
-                msgNode.FindOrCreate ("References").Add (id);
+                msgNode.FindOrInsert ("References").Add (id);
             }
 
             // Non-standard headers
             foreach (var idxHeader in message.Headers.Where (ix => _excludedHeaders.IndexOf (ix.Id) == -1)) {
 
                 // Retrieving currently iterated header
-                msgNode.FindOrCreate ("X-Headers").Add (idxHeader.Field, idxHeader.Value);
+                msgNode.FindOrInsert ("X-Headers").Add (idxHeader.Field, idxHeader.Value);
             }
         }
 
@@ -235,7 +235,7 @@ namespace p5.mail
             foreach (MailboxAddress idxAdr in list) {
 
                 // Appending currently iterated address to args
-                msgNode.FindOrCreate (name).Add (idxAdr.Name, idxAdr.Address);
+                msgNode.FindOrInsert (name).Add (idxAdr.Name, idxAdr.Address);
             }
         }
 

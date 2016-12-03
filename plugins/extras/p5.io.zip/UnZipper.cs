@@ -51,7 +51,7 @@ namespace p5.io.zip
             // Retrieving password, if there is one, and untying it, 
             // to make sure it never leaves method, in case of an exception, etc
             string password = e.Args.GetExChildValue<string>("password", context, null);
-            e.Args.FindOrCreate ("password").UnTie (); // Making sure password NEVER LEAVES METHOD!!
+            e.Args.FindOrInsert ("password").UnTie (); // Making sure password NEVER LEAVES METHOD!!
 
             // Basic syntax checking
             if (e.Args.Value == null)
