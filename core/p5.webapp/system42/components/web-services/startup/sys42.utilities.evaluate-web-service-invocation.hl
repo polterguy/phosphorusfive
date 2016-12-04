@@ -3,7 +3,9 @@
  * Creates the Active Event that evaluates a Web Service invocation.
  *
  * Will parse the incoming request HTTP POST request body, evaluate it, and [echo] its result back to client.
- * Requires the request to be of type POST, and Hyperlambda to be evaluated to be found in the POST body.
+ * If the request is a POST request, and has a Content-Type of "application/x-hyperlambda", the request will be treated as a web service invocation,
+ * otherwise a GUI will be loaded, to allow the user to play around with the web service endpoint, evaluating Hyperlambda in a CodeMirror instance,
+ * according to which Active Events is whitelisted.
  */
 create-event:sys42.utilities.evaluate-web-service-invocation
 
@@ -18,9 +20,11 @@ create-event:sys42.utilities.evaluate-web-service-invocation
       !=:application/x-hyperlambda
 
     /*
-     * Echoing feedback to client, explaining that we expect an HTTP POST Web Service invocation here, with a Hyperlambda body.
+     * Loading up UI for playing around with web service.
      */
-    echo:@"This is a Web Service endpoint, where we expect Hyperlambda to be found in the request body."
+    add:x:/+
+      src:x:/../*/_whitelist
+    sys42.utilities.load-web-service-ui
 
   else
 
@@ -47,15 +51,15 @@ create-event:sys42.utilities.evaluate-web-service-invocation
       if:x:/../*/_whitelist
 
         /*
-         * Caller specified a [_whitelist] argument, appending body of HTTP request into a [whitelist] invocation, with [events] being the
+         * Caller specified a [_whitelist] argument, appending body of HTTP request into an [eval-whitelist] invocation, with [events] being the
          * specified [_whitelist] collection's content, anda [.lambda] being the HTTP request body.
          */
-        add:x:/..if/*/eval-whitelist/*/_events
+        add:x:/..if/*/eval-whitelist/*/events
           src:x:/../*/_whitelist/*
         add:x:/..if/*/eval-whitelist
           src:x:/@get-request-body/*
         eval-whitelist
-          _events
+          events
 
         /*
          * Returning results of above [eval-whitelist] invocation to caller, before we return results to caller.

@@ -112,14 +112,14 @@ namespace p5.events
         [ActiveEvent (Name = ".vocabulary")]
         public static void vocabulary (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving filter, if any
+            // Retrieving filter, if any.
             var filter = e.Args.Value == null ? new List<string> () : new List<string> (XUtil.Iterate<string> (context, e.Args));
 
             // Acquire read lock, since we're consuming object shared amongst more than one thread (_events).
             _lock.EnterReadLock ();
             try {
 
-                // Getting all dynamic Active Events
+                // Getting all dynamic Active Events.
                 ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context, e.Name.StartsWith ("."));
 
             } finally {
@@ -128,8 +128,12 @@ namespace p5.events
                 _lock.ExitReadLock ();
             }
 
-            // Getting all core Active Events
+            // Getting all core Active Events.
             ListActiveEvents (context.ActiveEvents, e.Args, filter, "static", context, e.Name.StartsWith ("."));
+
+            // Checking if there exists a whitelist, and if so, removing everything not in our whitelist.
+            if (context.Whitelist != null)
+                e.Args.Children.RemoveAll (ix => context.Whitelist[ix.Get<string> (context)] == null);
 
             // Sorting such that static events comes first, and then having keywords coming.
             e.Args.Sort (delegate (Node lhs, Node rhs) {

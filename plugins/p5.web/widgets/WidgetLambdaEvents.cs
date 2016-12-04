@@ -148,6 +148,10 @@ namespace p5.web.widgets
 
             // Getting all dynamic Active Events
             ListActiveEvents (Manager.WidgetLambdaEventStorage.Keys, e.Args, filter, "dynamic", context, e.Name.StartsWith ("."));
+
+            // Checking if there exists a whitelist, and if so, removing everything not in our whitelist.
+            if (context.Whitelist != null)
+                e.Args.Children.RemoveAll (ix => context.Whitelist[ix.Get<string> (context)] == null);
         }
 
         /*

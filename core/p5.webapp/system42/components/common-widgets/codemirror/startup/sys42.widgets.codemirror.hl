@@ -13,6 +13,7 @@
  */
 create-event:sys42.widgets.codemirror
 
+
   /*
    * Check if default Code-Mirror theme setting exists, and if not, create it.
    */
@@ -30,6 +31,7 @@ create-event:sys42.widgets.codemirror
     add:x:/@sys42.utilities.get-setting
       src:"sys42.code-mirror-default-theme:paraiso"
 
+
   /*
    * Applying options for widget, with default values.
    * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
@@ -43,14 +45,11 @@ create-event:sys42.widgets.codemirror
     _value:
     _events
   _options
-
-  /*
-   * Applying default theme from settings, for then to finally apply arguments.
-   */
   set:x:/../*/_defaults/*/_theme?value
     src:x:/@sys42.utilities.get-setting/*?value
   add:x:/../*/_options
     src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+
 
   /*
    * Making sure necessary JavaScript files are included
@@ -64,6 +63,7 @@ create-event:sys42.widgets.codemirror
   include-javascript-file:/system42/components/common-widgets/codemirror/media/mode/{0}/{0}.min.js
     :x:/../*/_options/*/_mode?value
 
+
   /*
    * Making sure necessary Stylesheet files are included
    */
@@ -74,20 +74,67 @@ create-event:sys42.widgets.codemirror
   include-stylesheet-file:/system42/components/common-widgets/codemirror/media/theme/{0}.min.css
     :x:/../*/_options/*/_theme?value
 
-  /*
-   * Retrieving "vocabulary" of server, for auto complete to work, among other things.
-   */
-  vocabulary
 
   /*
-   * Then removing all operators, since they're probably not thought of as Active Events by users.
-   * In addition, we remove all events that contains "._" somehow, since they're considered "private events",
-   * or "internal events".
+   * Retrieving vocabulary of server, for auto complete to work, among other things, making sure we accommodate for any whitelist definitions.
    */
-  set:x:/@vocabulary/*(/"=-"|/"=!~"|/"=!="|/=%|/=*|/"=/"|/"=^"|/"=\\~"|/=+|/=<|/=<=|/==|/=>|/=>=)
-  join:x:/@vocabulary/*?value
+  _vocabulary
+  sys42.widgets.codemirror._whitelist
+  if:x:/@sys42.widgets.codemirror._whitelist/*
+    not
+
+    /*
+     * No whitelist, adding everything.
+     */
+    vocabulary
+    add:x:/@_vocabulary
+      src:x:/@vocabulary/*
+
+  else
+
+    /*
+     * Whitelist defined, making sure we only retrieve the legal vocabulary sub-set.
+     * First we add the results of "get whitelist invocation" above to our temporary [eval-whitelist].
+     */
+    add:x:/+/*/events
+      src:x:/@sys42.widgets.codemirror._whitelist/*
+
+    /*
+     * Then creating a whitelist lambda, from where we invoke [vocabulary], to retrieve the legal sub-set of events.
+     */
+    eval-whitelist
+      events
+
+        // Notice, to make sure our [vocabulary] invocation can even be evaluated, we need to add [vocabulary] and [return] to whitelist, while retrieving vocabulary.
+        vocabulary
+        return
+      vocabulary
+      return:x:/@vocabulary/*
+
+    /*
+     * Then we check if [vocabulary] and [return] are whitelisted, and if not, removing them.
+     */
+    if:x:/@sys42.widgets.codemirror._whitelist/*/vocabulary
+      not
+      set:x:/@eval-whitelist/*/vocabulary
+    if:x:/@sys42.widgets.codemirror._whitelist/*/return
+      not
+      set:x:/@eval-whitelist/*/return
+
+    /*
+     * Adding results of above [eval-whitelist] invocation to above [_vocabulary] result node, which later is used to create our JSON.
+     */
+    add:x:/@_vocabulary
+      src:x:/@eval-whitelist/*
+
+
+  /*
+   * Creating our JSON vocabulary object to return to client.
+   */
+  join:x:/@_vocabulary/*?value
     sep:,
     wrap:@""""
+
 
   /*
    * Including JSON object containing full list of keywords to client.
@@ -97,8 +144,9 @@ create-event:sys42.widgets.codemirror
   include-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
     :x:/@join?value
 
+
   /*
-   * Making sure textarea input is replaced with the CodeMirror editor
+   * Making sure textarea input is replaced with our CodeMirror instance.
    */
   send-javascript:@"p5['{0}'] = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
 mode:'hyperlambda',
@@ -123,6 +171,7 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
     :x:/../*/_options/*/_auto-focus?value
     :x:/../*/_options/*/_theme?value
 
+
   /*
    * Then setting height.
    */
@@ -130,8 +179,9 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
     :x:/../*/_arg?value
     :x:/../*/_height?value
 
+
   /*
-   * Then returning our "textarea" widget to caller, which becomes replaced with CodeMirror instance on client side.
+   * Applying any custom widget events to widget.
    */
   if:x:/../*/_options/*/_events/*
     add:x:/+/*/*
@@ -139,6 +189,12 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
     add:x:/../*/return/*/literal
       src
         events
+
+
+  /*
+   * Then returning our textarea widget to caller, which becomes replaced with a CodeMirror instance on client side, making sure we forward evaluate
+   * its [innerValue], which becomes its initial value.
+   */
   eval-x:x:/+/*/*/innerValue
   return
     literal

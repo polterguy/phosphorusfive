@@ -12,6 +12,7 @@
  * Arguments;
  *
  * [_class]            - Sets the CSS class of your widget.
+ * [_whitelist]        - Optional list of events that can be legally invoked.
  */
 create-event:sys42.widgets.codemirror-executor
 
@@ -22,6 +23,7 @@ create-event:sys42.widgets.codemirror-executor
    */
   _defaults
     _class:col-xs-12
+    _whitelist
   _options
   add:x:/../*/_options
     src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
@@ -41,6 +43,25 @@ create-event:sys42.widgets.codemirror-executor
 
 
   /*
+   * Checking if an explicit whitelist was given, and if so, making sure the rest of our page has access to it.
+   */
+  if:x:/../*/_whitelist/*
+
+    /*
+     * Appending whitelist definition into widget lambda event below.
+     */
+    add:x:/../**/sys42.widgets.codemirror._whitelist/*/return
+      src:x:/../*/_whitelist/*
+
+  else
+
+    /*
+     * Removing whitelist lambda event altogether.
+     */
+    set:x:/../**/sys42.widgets.codemirror._whitelist
+
+
+  /*
    * Then checking to see if we've got some code stored in session, 
    * and if so, we stuff it into our editor.
    */
@@ -56,6 +77,16 @@ create-event:sys42.widgets.codemirror-executor
   eval-x:x:/+/*/*/class
   return
     container
+      events
+
+        /*
+         * Return whitelist definition.
+         * Notice, our [return] invocation, is populated above.
+         */
+        sys42.widgets.codemirror._whitelist
+          return
+
+
       class:x:/../*/_options/*/_class?value
       widgets
 
@@ -84,7 +115,7 @@ create-event:sys42.widgets.codemirror-executor
 
           widgets
             literal
-              class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
+              class:btn btn-default btn-attach-top col-lg-2 col-lg-offset-10 col-md-3 col-md-offset-9 col-xs-4 col-xs-offset-8
               element:button
               innerValue:Evaluate
 
@@ -103,6 +134,11 @@ create-event:sys42.widgets.codemirror-executor
               _onclick
 
                 /*
+                 * Retrieving whitelist definition, if any.
+                 */
+                sys42.widgets.codemirror._whitelist
+
+                /*
                  * First retrieving text from execute_input textarea and converting to lambda
                  */
                 get-widget-property:execute_input
@@ -118,25 +154,59 @@ create-event:sys42.widgets.codemirror-executor
                   src
 
                 /*
-                 * Then executing lambda, in such a way that our converted hyperlambda 
-                 * becomes the "root node", while still reachable after execution is done!
+                 * Checking if we have a whitelist.
                  */
-                set:x:/../*/_exe/#/*
-                add:x:/../*/_exe/#
-                  src:x:/../*/hyper2lambda/*
-                _exe:node:"exe"
+                if:x:/@sys42.widgets.codemirror._whitelist_value/*
 
-                /*
-                 * Notice, [eval-mutable], since we want to retrieve transformed code after execution!
-                 */
-                eval-mutable:x:/@_exe/#
+                  /*
+                   * Then executing lambda, in such a way that our converted hyperlambda becomes the "root node", 
+                   * while still reachable after execution is done.
+                   */
+                  set:x:/..if/*/eval-whitelist/*/_exe/#/*
+                  add:x:/..if/*/eval-whitelist/*/_exe/#
+                    src:x:/@hyper2lambda/*
 
-                /*
-                 * Then converting lambda result to Hyperlambda, and returning back to client as JSON
-                 */
-                lambda2hyper:x:/@_exe/#/*
-                return-response-object:code
-                  src:x:/@lambda2hyper?value
+                  /*
+                   * Notice, whitelist defined, in addition to using [eval-mutable], since we want to retrieve transformed code after execution.
+                   */
+                  add:x:/..if/*/eval-whitelist/*/events
+                    src:x:/@sys42.widgets.codemirror._whitelist/*
+                    src:eval-mutable
+                  eval-whitelist
+                    events
+                    _exe:node:"exe"
+                    eval-mutable:x:/@_exe/#
+                    return:x:/@_exe
+
+                  /*
+                   * Then converting lambda result to Hyperlambda, and returning back to client as JSON
+                   */
+                  lambda2hyper:x:/@eval-whitelist/*/_exe/#/*
+                  return-response-object:code
+                    src:x:/@lambda2hyper?value
+
+                else
+
+                  /*
+                   * Then executing lambda, in such a way that our converted hyperlambda becomes the "root node", 
+                   * while still reachable after execution is done.
+                   */
+                  _exe:node:"exe"
+                  set:x:/@_exe/#/*
+                  add:x:/@_exe/#
+                    src:x:/@hyper2lambda/*
+
+                  /*
+                   * Notice, [eval-mutable], since we want to retrieve transformed code after execution.
+                   */
+                  eval-mutable:x:/@_exe/#
+
+                  /*
+                   * Then converting lambda result to Hyperlambda, and returning back to client as JSON
+                   */
+                  lambda2hyper:x:/@_exe/#/*
+                  return-response-object:code
+                    src:x:/@lambda2hyper?value
 
 
         /*
