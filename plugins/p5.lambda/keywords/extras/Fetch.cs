@@ -32,7 +32,7 @@ namespace p5.lambda.keywords.extras
     public static class Fetch
     {
         /// <summary>
-        ///     The [fetch] event, allows you to forward retrieve value(s), resulting of evaluation of a lambda object.
+        ///     The [fetch] event, allows you to forward retrieve a single value, resulting of evaluation of a lambda object.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -42,7 +42,7 @@ namespace p5.lambda.keywords.extras
             // Evaluating [fetch] lambda block.
             context.Raise ("eval-mutable", e.Args);
 
-            // Now we can fetch expression value, and clear body.
+            // Now we can fetch expression value, and clear body, making sure we remove formatting parameters first.
             e.Args.Value = XUtil.Single<object> (context, e.Args, true);
             e.Args.Clear ();
         }

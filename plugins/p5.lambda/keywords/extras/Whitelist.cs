@@ -28,7 +28,7 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords.extras
 {
     /// <summary>
-    ///     Class wrapping the [eval-whitelist] keyword in p5 lambda.
+    ///     Class wrapping helper Active Events for the [eval-whitelist] Active Event.
     /// </summary>
     public static class Whitelist
     {

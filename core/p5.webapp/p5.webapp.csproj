@@ -846,6 +846,7 @@
     <Content Include="system42\apps\Unit tests\tests\eval-x.hl" />
     <Content Include="system42\apps\Unit tests\tests\exceptions.hl" />
     <Content Include="system42\apps\Unit tests\tests\src.hl" />
+    <Content Include="system42\apps\Unit tests\tests\eval-whitelist.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

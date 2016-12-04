@@ -1,0 +1,113 @@
+
+/*
+ * Unit tests for [eval-whitelist].
+ */
+
+
+Allow evaluation of legal events
+  eval-whitelist
+    events
+      set
+      src
+    set:x:/..eval-whitelist?value
+      src:success
+  if:x:/@eval-whitelist
+    !=:node:"eval-whitelist:success"
+    throw:Assert error, [eval-whitelist] misbehaved
+
+
+Verify whitelist is root
+  eval-whitelist
+    events
+      set
+      src
+    set:x:/..?value
+      src:success
+  if:x:/@eval-whitelist
+    !=:node:"eval-whitelist:success"
+    throw:Assert error, [eval-whitelist] misbehaved
+
+
+Throw on illegal event
+  _result
+  try
+    eval-whitelist
+      events
+        set
+
+      // Illegal event invocation
+      foo
+  catch
+    set:x:/@_result?value
+      src:success
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, [eval-whitelist] misbehaved
+
+
+Throw on illegal sub-event
+  _result
+  try
+    eval-whitelist
+      events
+        set
+      set:x:/..?Value
+
+        // Illegal event invocation
+        src:failure
+  catch
+    set:x:/@_result?value
+      src:success
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, [eval-whitelist] misbehaved
+
+
+Throw on any event with empty definition
+  _result
+  try
+    eval-whitelist
+      set:x:/..?value
+  catch
+    set:x:/@_result?value
+      src:success
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, [eval-whitelist] misbehaved
+
+
+No-throw on empty lambda and events
+  _result:failure
+  set:x:/@_result?value
+    eval-whitelist
+  if:x:/@_result?value
+    =:failure
+    throw:Assert error, [eval-whitelist] misbehaved
+
+
+Evaluate expression lambda success
+  _result
+  _eval
+    return:success
+  set:x:/@_result?value
+    eval-whitelist:x:/@_eval
+      events
+        return
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, [eval-whitelist] misbehaved
+
+
+Evaluate expression lambda failure
+  _result:success
+  _eval
+    return:failure
+  try
+    set:x:/@_result?value
+      eval-whitelist:x:/@_eval
+        events
+          set
+  catch
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, [eval-whitelist] misbehaved

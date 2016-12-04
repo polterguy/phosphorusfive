@@ -1,45 +1,44 @@
-/*
- * Contains unit tests for testing [fetch] in system
- */
 
 /*
- * Tests that [fetch] behaves as expected when given constant node hierarchy
+ * Unit tests for [fetch].
  */
-constant
-  fetch:x:/0/**/success-node?value
+
+
+Lambda is not executed
+  fetch:x:/0/0/0?value
     _foo
       _bar
-        success-node:success
-  if:x:/-
+        success-value:success
+  if:x:/@fetch
     !=:node:@"fetch:success"
-    throw:@"Assert error, [fetch] misbehaved"
+    throw:Assert error, [fetch] misbehaved
 
-/*
- * Tests that [fetch] behaves as expected when given code to evaluate
- */
-evaluation
-  fetch:x:/**/success-node?value
+
+Lambda is executed
+  fetch:x:/0?value
     insert-before:x:
-      src:@"{0}-{1}:{2}{3}"
-        :success
-        :node
-        :succ
-        :ess
-  if:x:/../*/fetch
+      src
+        value:success
+  if:x:/@fetch
     !=:node:@"fetch:success"
-    throw:@"Assert error, [fetch] misbehaved"
+    throw:Assert error, [fetch] misbehaved
 
-/*
- * Tests that [fetch] behaves as expected when fetching a node
- */
-node-result
-  fetch:x:/**/success-node
+
+Lambda contains formatting parameters
+  fetch:x:/*/{0}?value
+    :value
     insert-before:x:
-      src:@"{0}-{1}:{2}{3}"
-        :success
-        :node
-        :succ
-        :ess
-  if:x:/../*/fetch/#
-    !=:node:@"success-node:success"
-    throw:@"Assert error, [fetch] misbehaved"
+      src
+        value:success
+  if:x:/@fetch
+    !=:node:@"fetch:success"
+    throw:Assert error, [fetch] misbehaved
+
+
+Lambda returns a node
+  fetch:x:/0
+    return
+      value:success
+  if:x:/@fetch/#
+    !=:node:@"value:success"
+    throw:Assert error, [fetch] misbehaved

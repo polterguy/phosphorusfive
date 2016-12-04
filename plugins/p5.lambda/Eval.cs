@@ -26,15 +26,11 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
-using System;
 
-/// <summary>
-///     Main namespace for p5.lambda "keywords".
-/// </summary>
 namespace p5.lambda
 {
     /// <summary>
-    ///     Class wrapping all [eval] keywords.
+    ///     Class wrapping all [eval] type of keywords.
     /// </summary>
     public static class Eval
     {
@@ -45,9 +41,10 @@ namespace p5.lambda
             // Lambda block to evaluate.
             Node lambda,
 
-            // Node that is currently being evaluated, might contain the lambda block as children, 
-            // or have an expression leading to lambda block(s) we should evaluate.
+            // Node that is currently being evaluated, might contain the lambda block as children, or have an expression leading to lambda block(s) we should evaluate.
             Node evalNode,
+
+            // Arguments to lambda block.
             IEnumerable<Node> args);
 
         /// <summary>
@@ -87,10 +84,10 @@ namespace p5.lambda
             if (context.Whitelist != null)
                 throw new LambdaSecurityException ("Whitelist was previously applied.", e.Args, context);
 
-            // Setting whitelist for context, making sure we by default deny everything, unless an explicit [_events] node is specified.
-            context.Whitelist = e.Args["_events"]?.Clone () ?? new Node ();
+            // Setting whitelist for context, making sure we by default deny everything, unless an explicit [events] node is specified.
+            context.Whitelist = e.Args["events"]?.UnTie () ?? new Node ();
 
-            // Making sure that whitelist is reset after exiting current scope.
+            // Making sure that whitelist is reset after evaluating its lambda.
             try {
 
                 // Executing scope.
