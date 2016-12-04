@@ -56,5 +56,29 @@ namespace p5.lambda.keywords.extras
                 }
             }
         }
+
+        /// <summary>
+        ///     [pre-condition] which evaluates the specified [lambda], and ensures it yields true.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = ".p5.lambda.whitelist.pre-condition.evaluates-to-true")]
+        public static void _p5_lambda_whitelist_pre_condition_evaluates_to_true (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving condition and lambda node from args, cloning it since we'll evaluate it using [eval].
+            var condition = e.Args["pre-condition"].Get<Node> (context).Clone ();
+            var lambda = e.Args["lambda"].Get<Node> (context);
+
+            // Evaluating [pre-condition], asserting it yields true, detaching whitelist first, making sure we attach it afterwards.
+            var old = context.Whitelist;
+            context.Whitelist = null;
+            try {
+                context.Raise ("eval", condition);
+            } finally {
+                context.Whitelist = old;
+            }
+            if (!condition.Get<bool> (context))
+                throw new LambdaSecurityException ("[pre-condition] of whitelist not met", lambda, context);
+        }
     }
 }

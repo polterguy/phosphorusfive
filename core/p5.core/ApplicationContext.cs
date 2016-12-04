@@ -224,6 +224,20 @@ namespace p5.core
                 throw new SecurityException (string.Format ("Caller tried to invoke illegal Active Event [{0}] according to whitelist definition", name));
             }
 
+            // Checking if there exists one or more [pre-condition] objects with our definition.
+            if (definition["pre-condition"] != null) {
+
+                // Looping through all [post-conditions] for Active Event.
+                foreach (var idxCondition in definition.Children.Where (ix => ix.Name == "pre-condition")) {
+
+                    // Raising [post-condition] Active Event, which will throw if condition is not met.
+                    var args = new Node ();
+                    args.Add ("pre-condition", idxCondition);
+                    args.Add ("lambda", pars);
+                    Raise (".p5.lambda.whitelist.pre-condition." + idxCondition.Get<string> (this), args);
+                }
+            }
+
             // Raising the given Active Event, using the existing whitelist.
             var retVal = _registeredActiveEvents.Raise (name, pars, this, _ticket);
 

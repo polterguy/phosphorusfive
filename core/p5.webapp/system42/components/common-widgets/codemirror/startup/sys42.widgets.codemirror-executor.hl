@@ -156,7 +156,7 @@ create-event:sys42.widgets.codemirror-executor
                 /*
                  * Checking if we have a whitelist.
                  */
-                if:x:/@sys42.widgets.codemirror._whitelist_value/*
+                if:x:/@sys42.widgets.codemirror._whitelist/*
 
                   /*
                    * Then executing lambda, in such a way that our converted hyperlambda becomes the "root node", 
