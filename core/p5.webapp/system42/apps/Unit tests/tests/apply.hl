@@ -4,7 +4,112 @@
  */
 
 
-Simple databound name and value
+Single name
+  _data
+    foo
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {name}:x:?name
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo"
+    throw:Assert error, [apply] misbehaved
+
+
+Data item is static
+  _data
+    foo
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {name}:static
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:static"
+    throw:Assert error, [apply] misbehaved
+
+
+Single formatted name
+  _data
+    foo
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {name}:{0}-bar
+        :x:?name
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo-bar"
+    throw:Assert error, [apply] misbehaved
+
+
+Value of data item is expression
+  _data
+    foo:x:?node
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {value}:x:?value
+  if:x:/@_dest
+    !=:node:@"_dest
+  value:x:?node"
+    throw:Assert error, [apply] misbehaved
+
+
+Single name and value
+  _data
+    foo:bar
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {name}:x:?name
+      {value}:x:?value
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo
+  value:bar"
+    throw:Assert error, [apply] misbehaved
+
+
+Multiple names in source
+  _data
+    foo1
+    foo2
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {name}:x:?name
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo1
+  name:foo2"
+    throw:Assert error, [apply] misbehaved
+
+
+Nested template datanodes
+  _data
+    foo:bar
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {name}:x:?name
+        {value}:x:?value
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo
+    value:bar"
+    throw:Assert error, [apply] misbehaved
+
+
+Nested template datanodes with multiple sources
   _data
     foo1:bar1
     foo2:bar2
@@ -12,35 +117,87 @@ Simple databound name and value
   apply:x:/@_dest
     src:x:/@_data/*
     template
-      result
-        {name}:x:?name
+      {name}:x:?name
         {value}:x:?value
   if:x:/@_dest
     !=:node:@"_dest
-  result
-    name:foo1
+  name:foo1
     value:bar1
-  result
-    name:foo2
+  name:foo2
     value:bar2"
     throw:Assert error, [apply] misbehaved
 
 
-Nested databound expressions
+Template with static children
   _data
-    foo1:bar1
+    foo
   _dest
   apply:x:/@_dest
     src:x:/@_data/*
     template
-      result
+      static1:static-value-1
         {name}:x:?name
-          {value}:x:?value
+          static2:static-value-2
+
   if:x:/@_dest
     !=:node:@"_dest
-  result
-    name:foo1
-      value:bar1"
+  static1:static-value-1
+    name:foo
+      static2:static-value-2"
+    throw:Assert error, [apply] misbehaved
+
+
+Template with sub-template
+  _data
+    foo
+      bar
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {name}:x:?name
+      {template}:x:/*
+        {name}:x:?name
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo
+  name:bar"
+    throw:Assert error, [apply] misbehaved
+
+
+Template with sub-template having static values
+  _data
+    foo
+      bar
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {name}:x:?name
+      {template}:x:/*
+        static1
+        {name}:x:?name
+          static2
+  if:x:/@_dest
+    !=:node:@"_dest
+  name:foo
+  static1
+  name:bar
+    static2"
+    throw:Assert error, [apply] misbehaved
+
+
+Verify source is untouched
+  _data
+    foo
+  _dest
+  apply:x:/@_dest
+    src:x:/@_data/*
+    template
+      {name}:x:?name
+  if:x:/@_data
+    !=:node:@"_data
+  foo"
     throw:Assert error, [apply] misbehaved
 
 
@@ -89,35 +246,6 @@ Multiple destinations
     throw:Assert error, [apply] misbehaved
 
 
-Nested templates
-  _data
-    foo1
-      name:John Doe
-      adr
-        str:Dunbar
-        zip:987654
-    foo2
-      name:Jane Doe
-  _dest
-  apply:x:/@_dest
-    src:x:/@_data/*
-    template
-      result
-        {name}:x:/*/name?value
-        {template}:x:/*/adr
-          {str-x}:x:/*/str?value
-          {zip-x}:x:/*/zip?value
-  if:x:/@_dest
-    !=:node:@"_dest
-  result
-    name:John Doe
-    str-x:Dunbar
-    zip-x:987654
-  result
-    name:Jane Doe"
-    throw:Assert error, [apply] misbehaved
-
-
 Nested templates, multiple source values
   _data
     foo1
@@ -153,8 +281,7 @@ Nested templates, multiple source values
 
 Event source returning string
   _data
-    foo1
-    foo2
+    foo
   _dest
   _x
     return:{0}-bar
@@ -165,15 +292,13 @@ Event source returning string
       {@eval}:x:/@_x
   if:x:/@_dest
     !=:node:@"_dest
-  foo1-bar
-  foo2-bar"
+  foo-bar"
     throw:Assert error, [apply] misbehaved
 
 
 Event source returning node
   _data
-    foo1
-    foo2
+    foo
   _dest
   _x
     add:x:/+
@@ -186,19 +311,17 @@ Event source returning node
       {@eval}:x:/@_x
   if:x:/@_dest
     !=:node:@"_dest
-  foo1-bar
-  foo2-bar"
+  foo-bar"
     throw:Assert error, [apply] misbehaved
 
 
-Dynamic event source returning multiple nodes
+Dynamic event source returning node as children
   create-event:sys42.tests.dynamic-apply-source
     eval-x:x:/+/*
     return
       name:x:/@_dn/#?name
   _data
-    foo1
-    foo2
+    foo
   _dest
   apply:x:/@_dest
     src:x:/@_data/*
@@ -206,20 +329,18 @@ Dynamic event source returning multiple nodes
       {@sys42.tests.dynamic-apply-source}
   if:x:/@_dest
     !=:node:@"_dest
-  name:foo1
-  name:foo2"
+  name:foo"
     throw:Assert error, [apply] misbehaved
 
 
-Dynamic event source returning multiple nodes with arg
+Dynamic event source returning multiple nodes with static arg
   create-event:sys42.tests.dynamic-apply-source
     eval-x:x:/+/*
     return
       name:x:/@_dn/#?name
       static:x:/@_arg?value
   _data
-    foo1
-    foo2
+    foo
   _dest
   _static:some-arg
   apply:x:/@_dest
@@ -228,22 +349,19 @@ Dynamic event source returning multiple nodes with arg
       {@sys42.tests.dynamic-apply-source}:x:/@_static?value
   if:x:/@_dest
     !=:node:@"_dest
-  name:foo1
-  static:some-arg
-  name:foo2
+  name:foo
   static:some-arg"
     throw:Assert error, [apply] misbehaved
 
 
-Dynamic event source returning multiple nodes with children arg
+Dynamic event with arg source returning multiple nodes
   create-event:sys42.tests.dynamic-apply-source
     eval-x:x:/+/*
     return
       name:x:/@_dn/#?name
       static:x:/@_foo?value
   _data
-    foo1
-    foo2
+    foo
   _dest
   apply:x:/@_dest
     src:x:/@_data/*
@@ -252,9 +370,7 @@ Dynamic event source returning multiple nodes with children arg
         _foo:some-arg
   if:x:/@_dest
     !=:node:@"_dest
-  name:foo1
-  static:some-arg
-  name:foo2
+  name:foo
   static:some-arg"
     throw:Assert error, [apply] misbehaved
 

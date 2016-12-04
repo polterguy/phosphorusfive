@@ -21,28 +21,28 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using p5.core;
 using p5.exp;
+using p5.core;
 
 namespace p5.lambda.keywords.extras
 {
     /// <summary>
-    ///     Class wrapping the [fetch] keyword in p5 lambda
+    ///     Class wrapping the [fetch] Active Event.
     /// </summary>
     public static class Fetch
     {
         /// <summary>
-        ///     The [fetch] keyword, allows you to forward retrieve value results of evaluation of its body
+        ///     The [fetch] event, allows you to forward retrieve value(s), resulting of evaluation of a lambda object.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "fetch")]
         public static void lambda_fetch (ApplicationContext context, ActiveEventArgs e)
         {
-            // Evaluating [fetch] lambda block
+            // Evaluating [fetch] lambda block.
             context.Raise ("eval-mutable", e.Args);
 
-            // Now we can fetch expression value, and clear body
+            // Now we can fetch expression value, and clear body.
             e.Args.Value = XUtil.Single<object> (context, e.Args, true);
             e.Args.Clear ();
         }
