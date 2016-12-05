@@ -88,6 +88,14 @@ namespace p5.lambda.helpers
                     _args.Value = idx.Value;
                 }
 
+                // Notice, in case this was some generic event condition, without a comparison operator, such as a dynamically created Active Event, 
+                // we need to run the same logic here, as we do in our comparison operators, which is to check if value is boolean, at which case we 
+                // use the existing boolean value, or if it is not boolean, check for "simple exists" of "any type of object".
+                // The point is that the value of our conditional node, should never leave this method, as anything else but either a true or a false value!
+                // This is done because a dynamically created Active Event, used as a condition for a condition, might yield something which is not a boolean value.
+                if (!(_args.Value is bool))
+                    _args.Value = _args.Value != null;
+
                 // House cleaning.
                 _args["_p5_conditions_state_"]?.UnTie ();
             }

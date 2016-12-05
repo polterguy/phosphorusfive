@@ -133,6 +133,19 @@ If with value expression, yielding multiple false booleans
     throw:Assert error, [if] misbehaved
 
 
+Else not evaluated on event condition returning string
+  if
+    foo-bar-non-existing:some-text
+  else
+    throw:Assert error, [if] misbehaved
+
+
+Else evaluated on event condition returning null
+  if
+    foo-bar-non-existing
+    throw:Assert error, [if] misbehaved
+
+
 /*
  * Comparisons.
  */
