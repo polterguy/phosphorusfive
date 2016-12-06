@@ -24,13 +24,10 @@
 using System.IO;
 using System.Text;
 
-/// <summary>
-///     Contains all the HTTP response filters in p5.ajax
-/// </summary>
 namespace p5.ajax.core.filters
 {
     /// <summary>
-    ///     Base class for all http response filters in p5.ajax
+    ///     Base class for all HTTP response filters in p5.ajax.
     /// </summary>
     public abstract class Filter : Stream
     {
@@ -38,7 +35,7 @@ namespace p5.ajax.core.filters
         private readonly MemoryStream _stream;
 
         /// <summary>
-        ///     Initializes a new instance of the Filter class
+        ///     Initializes a new instance of the Filter class.
         /// </summary>
         /// <param name="manager">The manager for this filter</param>
         protected Filter (Manager manager)
@@ -61,7 +58,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Returns the manager for this filter
+        ///     Returns the manager for this filter.
         /// </summary>
         /// <value>the manager</value>
         protected Manager Manager
@@ -71,7 +68,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Gets the encoding used when rendering the response
+        ///     Gets the encoding used when rendering the response.
         /// </summary>
         /// <value>The encoding</value>
         protected Encoding ContentEncoding
@@ -81,7 +78,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Returns a value indicating whether this instance can read
+        ///     Returns a value indicating whether this instance can read.
         /// </summary>
         /// <value><c>true</c> if this instance can read; otherwise, <c>false</c></value>
         public override bool CanRead
@@ -90,7 +87,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Returns a value indicating whether this instance can seek
+        ///     Returns a value indicating whether this instance can seek.
         /// </summary>
         /// <value><c>true</c> if this instance can seek; otherwise, <c>false</c></value>
         public override bool CanSeek
@@ -99,7 +96,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Returns a value indicating whether this instance can write
+        ///     Returns a value indicating whether this instance can write.
         /// </summary>
         /// <value><c>true</c> if this instance can write; otherwise, <c>false</c></value>
         public override bool CanWrite
@@ -108,7 +105,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Returns the length of the stream
+        ///     Returns the length of the stream.
         /// </summary>
         /// <value>The length</value>
         public override long Length
@@ -117,7 +114,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Gets or sets the position of the stream
+        ///     Gets or sets the position of the stream.
         /// </summary>
         /// <value>The position</value>
         public override long Position
@@ -127,7 +124,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Returns a value indicating whether this instance can timeout
+        ///     Returns a value indicating whether this instance can timeout.
         /// </summary>
         /// <value><c>true</c> if this instance can timeout; otherwise, <c>false</c></value>
         public override bool CanTimeout
@@ -136,7 +133,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Gets or sets the read timeout
+        ///     Gets or sets the read timeout.
         /// </summary>
         /// <value>The read timeout</value>
         public override int ReadTimeout
@@ -146,7 +143,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Gets or sets the write timeout
+        ///     Gets or sets the write timeout.
         /// </summary>
         /// <value>The write timeout</value>
         public override int WriteTimeout
@@ -156,13 +153,13 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Renders the response
+        ///     Renders the response.
         /// </summary>
         /// <returns>The response rendered back to the client</returns>
         protected abstract string RenderResponse ();
 
         /// <summary>
-        ///     Closes the stream and renders its content to the next filter in the chain of filters
+        ///     Closes the stream and renders its content to the next filter in the chain of filters.
         /// </summary>
         public override void Close ()
         {

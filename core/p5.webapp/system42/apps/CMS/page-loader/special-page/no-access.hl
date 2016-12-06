@@ -134,8 +134,7 @@ set-http-status:403 Marvin cannot give you access to that page
 /*
  * Including JavaScript to help handle carriage return key in login box.
  */
-include-javascript:@"
-p5.keyLoginPress = function(e) {
+include-javascript:@"p5.keyLoginPress = function(e) {
   if(e.keyCode == 13) {
     p5.$('login-user').raise('onclick');
     return false;
