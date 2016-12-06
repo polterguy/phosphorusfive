@@ -82,9 +82,9 @@ namespace p5.ajax
             /// <param name="url">url to JavaScript to register</param>
             public void RegisterJavaScriptFile (string url)
             {
-                if (ViewState ["_p5_js_objects"] == null)
-                    ViewState ["_p5_js_objects"] = new List<Tuple<string, bool>> ();
-                var lst = ViewState ["_p5_js_objects"] as List<Tuple<string, bool>>;
+                if (ViewState ["__p5_js_objects"] == null)
+                    ViewState ["__p5_js_objects"] = new List<Tuple<string, bool>> ();
+                var lst = ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>;
                 if (lst.Find (delegate (Tuple<string, bool> idx) { return idx.Item1 == url; }) == null) {
                     lst.Add (new Tuple<string, bool>(url, true));
                     _newJavaScriptObjects.Add (new Tuple<string, bool>(url, true));
@@ -97,9 +97,9 @@ namespace p5.ajax
             /// <param name="url">url to JavaScript to register</param>
             public void RegisterJavaScript (string script)
             {
-                if (ViewState ["_p5_js_objects"] == null)
-                    ViewState ["_p5_js_objects"] = new List<Tuple<string, bool>> ();
-                var lst = ViewState ["_p5_js_objects"] as List<Tuple<string, bool>>;
+                if (ViewState ["__p5_js_objects"] == null)
+                    ViewState ["__p5_js_objects"] = new List<Tuple<string, bool>> ();
+                var lst = ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>;
                 if (lst.Find (delegate (Tuple<string, bool> idx) { return idx.Item1 == script; }) == null) {
                     lst.Add (new Tuple<string, bool>(script, false));
                     _newJavaScriptObjects.Add (new Tuple<string, bool>(script, false));
@@ -124,7 +124,7 @@ namespace p5.ajax
              */
             List<Tuple<string, bool>> IAjaxPage.JavaScriptToPush
             {
-                get { return ViewState ["_p5_js_objects"] as List<Tuple<string, bool>>; }
+                get { return ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>; }
             }
 
             /*
@@ -141,9 +141,9 @@ namespace p5.ajax
             List<string> IAjaxPage.StylesheetFilesToPush
             {
                 get {
-                    if (ViewState["_p5_css_files"] == null)
-                        ViewState["_p5_css_files"] = new List<string> ();
-                    return ViewState ["_p5_css_files"] as List<string>;
+                    if (ViewState["__p5_css_files"] == null)
+                        ViewState["__p5_css_files"] = new List<string> ();
+                    return ViewState ["__p5_css_files"] as List<string>;
                 }
             }
 

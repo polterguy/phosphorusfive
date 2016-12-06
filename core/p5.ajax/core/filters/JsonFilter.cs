@@ -32,8 +32,6 @@ namespace p5.ajax.core.filters
     /// </summary>
     public class JsonFilter : Filter
     {
-        private readonly string _oldViewState;
-
         /// <summary>
         ///     Initializes a new instance of the JsonFilter class.
         /// </summary>
@@ -42,7 +40,6 @@ namespace p5.ajax.core.filters
             : base (manager)
         {
             Manager.Page.Response.Headers ["Content-Type"] = "application/json";
-            _oldViewState = Manager.Page.Request.Params ["__VIEWSTATE"];
         }
 
         /// <summary>
@@ -54,36 +51,18 @@ namespace p5.ajax.core.filters
             TextReader reader = new StreamReader (this, ContentEncoding);
             var content = reader.ReadToEnd ();
 
-            // Registering viewstate for change.
-            var viewstate = GetViewState (content);
-            if (!string.IsNullOrEmpty (viewstate)) {
-                if (viewstate != _oldViewState) {
-                    Manager.RegisterWidgetChanges ("__VIEWSTATE", "value", viewstate, _oldViewState);
-                }
-            }
-
             // JavaScript files.
             if ((Manager.Page as IAjaxPage).NewJavaScriptToPush.Count > 0) {
-                Manager.SendObject ("_p5_js_objects", (Manager.Page as IAjaxPage).NewJavaScriptToPush);
+                Manager.SendObject ("__p5_js_objects", (Manager.Page as IAjaxPage).NewJavaScriptToPush);
             }
 
             // Stylesheet files.
             if ((Manager.Page as IAjaxPage).NewStylesheetFilesToPush.Count > 0) {
-                Manager.SendObject ("_p5_css_files", (Manager.Page as IAjaxPage).NewStylesheetFilesToPush);
+                Manager.SendObject ("__p5_css_files", (Manager.Page as IAjaxPage).NewStylesheetFilesToPush);
             }
 
             // Returning JSON.
             return new JavaScriptSerializer ().Serialize (Manager.Changes);
-        }
-
-        /*
-         * Helper for above
-         */
-        private string GetViewState (string html)
-        {
-            var regex = new Regex (@"<input[\s\n]+type=""hidden""[\s\n]+name=""__VIEWSTATE""[\s\n]+id=""__VIEWSTATE""[\s\n]+value=""(.+[^""])""[\s\n]*/>", RegexOptions.Compiled);
-            var match = regex.Match (html);
-            return match.Groups [1].Value;
         }
     }
 }
