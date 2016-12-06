@@ -206,7 +206,7 @@ namespace p5.ajax.core.filters
             // Then including inline JavaScript inclusions, and [send-javascript] inclusions, if there is any.
             if (Manager.Changes.Contains ("_p5_script") || (Manager.Page as IAjaxPage).JavaScriptToPush.Count (ix => !ix.Item2) > 0) {
 
-                builder.Append ("\r\n\t\t<script type=\"text/javascript\">\r\n(window.onload = function() {\r\n\r\n");
+                builder.Append ("\r\n\t\t<script type=\"text/javascript\">\r\nwindow.onload = function() {\r\n\r\n");
 
                 // Inclusions have presedence, since they're logically almost like "JS files".
                 foreach (var idxInclusion in (Manager.Page as IAjaxPage).JavaScriptToPush.Where (ix => !ix.Item2)) {
@@ -225,7 +225,7 @@ namespace p5.ajax.core.filters
                         builder.Append ("\r\n\r\n");
                     }
                 }
-                builder.Append ("})();\r\n\t\t</script>");
+                builder.Append ("};\r\n\t\t</script>");
             }
 
             // Adding back up again the "</body></html>" parts as they originally appeared in HTML.

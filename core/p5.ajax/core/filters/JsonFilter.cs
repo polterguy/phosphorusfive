@@ -28,14 +28,14 @@ using System.Web.Script.Serialization;
 namespace p5.ajax.core.filters
 {
     /// <summary>
-    ///     Http response filter for rendering json back to client during ajax requests
+    ///     HTTP response filter for rendering JSON back to client during ajax requests.
     /// </summary>
     public class JsonFilter : Filter
     {
         private readonly string _oldViewState;
 
         /// <summary>
-        ///     Initializes a new instance of the JsonFilter class
+        ///     Initializes a new instance of the JsonFilter class.
         /// </summary>
         /// <param name="manager">The manager this instance is rendering for</param>
         public JsonFilter (Manager manager)
@@ -46,7 +46,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Renders the JSON response back to the client
+        ///     Renders the JSON response back to the client.
         /// </summary>
         /// <returns>The response returned back to client</returns>
         protected override string RenderResponse ()
@@ -54,7 +54,7 @@ namespace p5.ajax.core.filters
             TextReader reader = new StreamReader (this, ContentEncoding);
             var content = reader.ReadToEnd ();
 
-            // Registering viewstate for change
+            // Registering viewstate for change.
             var viewstate = GetViewState (content);
             if (!string.IsNullOrEmpty (viewstate)) {
                 if (viewstate != _oldViewState) {
@@ -62,17 +62,17 @@ namespace p5.ajax.core.filters
                 }
             }
 
-            // JavaScript files
+            // JavaScript files.
             if ((Manager.Page as IAjaxPage).NewJavaScriptToPush.Count > 0) {
                 Manager.SendObject ("_p5_js_objects", (Manager.Page as IAjaxPage).NewJavaScriptToPush);
             }
 
-            // Stylesheet files
+            // Stylesheet files.
             if ((Manager.Page as IAjaxPage).NewStylesheetFilesToPush.Count > 0) {
                 Manager.SendObject ("_p5_css_files", (Manager.Page as IAjaxPage).NewStylesheetFilesToPush);
             }
 
-            // Returning json
+            // Returning JSON.
             return new JavaScriptSerializer ().Serialize (Manager.Changes);
         }
 
