@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.Linq;
 using p5.exp;
 using p5.core;
 using p5.data.helpers;
@@ -29,57 +30,60 @@ using p5.exp.exceptions;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [select-data]
+    ///     Class wrapping [select-data].
     /// </summary>
     public static class Select
     {
         /// <summary>
-        ///     Selects nodes from your database
+        ///     [select-data] selects nodes, names or values from your database.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "select-data")]
         public static void select_data (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving expression and doing basic syntax checking
+            // Retrieving expression and doing basic syntax checking.
             var ex = e.Args.Value as Expression;
             if (ex == null)
                 throw new LambdaException ("[select-data] requires an expression to select items from database", e.Args, context);
 
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
+            // In case this is a select count operation though, we return the count as the value of [select-data], hence we cannot remove value of e.Args.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Acquiring lock on database
+                // Acquiring read lock on database.
                 Common.Locker.EnterReadLock ();
                 try {
 
-                    // Iterating through each result from database node tree
+                    // Retrieving match object, and checking what type of match it was.
                     var match = ex.Evaluate (context, Common.Database, e.Args);
                     if (match.TypeOfMatch == Match.MatchType.count) {
 
-                        // Returning number of items found as main value of node if expression was of type 'count'
+                        // Returning number of items found as main value of node.
                         e.Args.Value = match.Count;
+
+                    } else if (match.TypeOfMatch == Match.MatchType.node) {
+
+                        // Node match, returning cloned version of each node found.
+                        e.Args.AddRange (match.Select (ix => ix.Node.Clone ()));
+
+                    } else if (match.TypeOfMatch == Match.MatchType.name) {
+
+                        // Name match, returning only names of nodes.
+                        e.Args.AddRange (match.Select (ix => new Node (ix.Node.Name)));
+
                     } else {
 
-                        // Looping through each match in expression result
-                        foreach (var idxMatch in match) {
-
-                            // Dependent upon type of expression, we either return a bunch of nodes, flat, with
-                            // name being "", and value being matched value, or we append node itself back
-                            // to caller. This allows us to select using expressions which are not of type 'node'
-                            if (match.Convert == "node") {
-                                e.Args.AddRange ((idxMatch.Value as Node).Clone ().Children);
-                            } else {
-                                e.Args.Add (idxMatch.TypeOfMatch != Match.MatchType.node ? 
-                                    new Node ("", idxMatch.Value) : 
-                                    idxMatch.Node.Clone ());
-                            }
-                        }
-
-                        // Removing argument
-                        e.Args.Value = null;
+                        // Value match, returning all values of nodes.
+                        e.Args.AddRange (match.Select (ix => new Node ("", ix.Value)));
                     }
+
+                    // Removing value of [select-data] node.
+                    e.Args.Value = null;
+
                 } finally {
+
+                    // Releasing write lock.
                     Common.Locker.ExitReadLock ();
                 }
             }

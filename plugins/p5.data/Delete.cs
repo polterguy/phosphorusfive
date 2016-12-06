@@ -49,7 +49,7 @@ namespace p5.data
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Acquiring lock on database.
+                // Acquiring write lock on database.
                 Common.Locker.EnterWriteLock ();
                 try {
 
@@ -57,6 +57,7 @@ namespace p5.data
                     int affectedItems = 0;
 
                     // Looping through database matches and removing nodes while storing which files have been changed as a result of deletion.
+                    // Notice, we evaluate our expression with "Common.Database" being our DataSource node.
                     var changed = new List<Node> ();
                     foreach (var idxDest in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
 
@@ -67,8 +68,8 @@ namespace p5.data
                         // Figuring out which file Node updated belongs to, and storing in changed list.
                         Common.AddNodeToChanges (idxDest.Node, changed);
 
-                        // Setting value to null, which works if user chooses to delete "value", "name" and/or "node".
-                        // Path and count though will throw an exception.
+                        // Setting value to null, which works if user chooses to delete "value", "name" or "node".
+                        // Count though will throw an exception though.
                         idxDest.Value = null;
 
                         // Incrementing affected items.
@@ -80,7 +81,10 @@ namespace p5.data
 
                     // Returning number of affected items.
                     e.Args.Value = affectedItems;
+
                 } finally {
+
+                    // Releasing write lock.
                     Common.Locker.ExitWriteLock ();
                 }
             }

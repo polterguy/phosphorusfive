@@ -4,7 +4,7 @@
  */
 
 
-Insert simple item
+Insert simple static item
   delete-data:x:/*/*/sys42.tests.insert
   insert-data
     sys42.tests.insert
@@ -13,6 +13,32 @@ Insert simple item
     fetch:x:/0/0?value
       select-data:x:/*/*/sys42.tests.insert/*/name?value
     !=:Thomas Hansen
+    throw:Assert error, [insert-data] misbehaved
+
+
+Insert items resulting from an expression
+  delete-data:x:/*/*/sys42.tests.insert
+  _items
+    sys42.tests.insert
+      name:Thomas Hansen
+  insert-data:x:/@_items/*
+  if
+    fetch:x:/0/0?value
+      select-data:x:/*/*/sys42.tests.insert/*/name?value
+    !=:Thomas Hansen
+    throw:Assert error, [insert-data] misbehaved
+
+
+Insert items returns affected items
+  delete-data:x:/*/*/sys42.tests.insert
+  _items
+    sys42.tests.insert
+      name:Thomas Hansen
+    sys42.tests.insert
+      name:John Doe
+  insert-data:x:/@_items/*
+  if:x:/@insert-data?value
+    !=:int:2
     throw:Assert error, [insert-data] misbehaved
 
 
@@ -75,7 +101,7 @@ Update simple data name
   update-data:x:/*/*/sys42.tests.insert/*/name?name
     src:bar
   if
-    fetch:x:/0/0?value
+    fetch:x:/0/0?name
       select-data:x:/*/*/sys42.tests.insert/0?name
     !=:bar
     throw:Assert error, [update-data] misbehaved
@@ -195,3 +221,40 @@ Update data with event source
     first-name:John
     surname:Doe"
     throw:Assert error, [update-data] misbehaved
+
+
+Delete data returns affected items
+  delete-data:x:/*/*/sys42.tests.insert
+  insert-data
+    sys42.tests.insert
+      name:Thomas Hansen
+    sys42.tests.insert
+      name:John Doe
+  delete-data:x:/*/*/sys42.tests.insert
+  if:x:/@delete-data?value
+    !=:int:2
+    throw:Assert error, [delete-data] misbehaved
+
+
+Delete data on file nodes throws
+  _success:bool:false
+  try
+    delete-data:x:/*
+  catch
+    set:x:/@_success?value
+      bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, [delete-data] misbehaved
+
+
+Delete entire database throws
+  _success:bool:false
+  try
+    delete-data:x:
+  catch
+    set:x:/@_success?value
+      bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, [delete-data] misbehaved

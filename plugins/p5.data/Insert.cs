@@ -25,21 +25,19 @@ using System;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
 using p5.data.helpers;
+using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for all p5.data Active Events
-/// </summary>
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [insert-data]
+    ///     Class wrapping [insert-data].
     /// </summary>
     public static class Insert
     {
         /// <summary>
-        ///     Inserts or appends nodes into database
+        ///     [insert-data] and [append-data] inserts or appends data nodes into your p5.data database.
+        ///     The former chooses the first available file node, the latter always appends at the end.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -48,59 +46,45 @@ namespace p5.data
         public static void insert_data (ApplicationContext context, ActiveEventArgs e)
         {
             /*
-             * Note, since [insert-data] creates an ID for items not explicitly giving an ID,
-             * we do NOT remove arguments in this Active Event, since sometimes caller needs to
-             * know the ID of the node inserted into database, and is not ready to create an ID
-             * for it himself. Therefor the generated ID is returned as the value of each item inserted,
-             * and hence we cannot remove all arguments passed into Active Event
-             * 
-             * However, we DO remove children of each root node inserted, unless string is submitted 
-             * as source somehow ...
+             * Note, since [insert-data] creates an ID for items not explicitly giving an ID, we do NOT remove arguments in this Active Event, 
+             * since sometimes caller needs to know the ID of the node inserted into database, and is not ready to create an ID himself.
+             * Therefor the generated ID is returned as the value of each item inserted, and hence we cannot remove all arguments passed into this event.
              */
 
-            // Acquiring lock on database
+            // Acquiring write lock on database.
             Common.Locker.EnterWriteLock ();
             try {
 
+                // Checking if we should force insertion at the end or not.
                 var forceAppend = e.Name == "append-data";
 
                 // Used to store how many items are actually affected
                 int affectedItems = 0;
 
-                // Looping through all nodes given as children, value, or as result from expression
+                // Looping through all nodes given as children, value, or as the result of an expression.
                 var changed = new List<Node> ();
-                foreach (var idx in XUtil.Iterate<Node> (context, e.Args, false, false, true)) {
+                foreach (var idx in XUtil.Iterate<Node> (context, e.Args)) {
 
-                    // Inserting node
-                    if (e.Args.Value is string) {
+                    // Making sure we clean up and remove all arguments of inserted node passed in after execution.
+                    using (new Utilities.ArgsRemover (idx)) {
 
-                        // Source is a string, and not an expression, making sure we add children of converted
-                        // string, since conversion routine creates a root node wrapping actual nodes in string
-                        foreach (var idxInner in idx.Children) {
-
-                            // Inserting node
-                            InsertNode (idxInner, context, changed, forceAppend);
-                        }
-                    } else {
-
-                        // Making sure we clean up and remove all arguments of inserted node passed in after execution
-                        using (new Utilities.ArgsRemover (idx)) {
-
-                            // Inserting node
-                            InsertNode (idx, context, changed, forceAppend);
-                        }
+                        // Inserting node
+                        InsertNode (idx, context, changed, forceAppend);
                     }
 
-                    // Incrementing affected items
+                    // Incrementing affected items.
                     affectedItems += 1;
                 }
 
-                // Saving all affected files
+                // Saving all affected files.
                 Common.SaveAffectedFiles (context, changed);
 
-                // Returning number of affected items
+                // Returning number of affected items.
                 e.Args.Value = affectedItems;
+
             } finally {
+
+                // Releasing database write lock.
                 Common.Locker.ExitWriteLock ();
             }
         }
