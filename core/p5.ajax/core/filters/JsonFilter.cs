@@ -22,7 +22,6 @@
  */
 
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
 
 namespace p5.ajax.core.filters

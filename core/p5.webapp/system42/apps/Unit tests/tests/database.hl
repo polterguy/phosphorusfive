@@ -1,281 +1,197 @@
+
 /*
- * Contains unit tests for testing the p5.data project
+ * Unit tests for p5.data events, such as [delete-data], [insert-data] and [select-data].
  */
 
 
-/*
- * Tests that checks that [insert-data] behaves
- */
-insert-data
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+Insert simple item
+  delete-data:x:/*/*/sys42.tests.insert
   insert-data
-    test.foo
+    sys42.tests.insert
       name:Thomas Hansen
   if
     fetch:x:/0/0?value
-      select-data:x:/*/*/test.foo/*/name?value
+      select-data:x:/*/*/sys42.tests.insert/*/name?value
     !=:Thomas Hansen
-    throw:@"Assert error, expected [something], got [something-else]!"
+    throw:Assert error, [insert-data] misbehaved
 
 
-/*
- * Tests that checks that [insert-data] behaves and throws if you try to insert two items with the same ID
- */
-insert-data-same-id-throws
+Insert same ID throws
   _success:bool:false
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+  delete-data:x:/*/*/sys42.tests.insert-1
+  delete-data:x:/*/*/sys42.tests.insert-2
   try
     insert-data
-      test.foo:THIS_IS_ID
+      sys42.tests.insert-1:THIS_IS_THE_SAME_ID
         name:Thomas Hansen
-      test.foo2:THIS_IS_ID
+      sys42.tests.insert-2:THIS_IS_THE_SAME_ID
         name:John Doe
   catch
-    set:x:/../*/_success?value
-      src:boool:true
-  if:x:/../*/_success?value
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
     not
-    throw:@"Assert error, insert-data didn't throw when given two similar IDs"
+    throw:Assert error, [insert-data] misbehaved
 
 
-/*
- * Tests that checks that [insert-data] behaves and throws if you try to insert two items with the same ID
- */
-insert-data-twice-same-id-throws
+Insert same ID in different invocations throws
   _success:bool:false
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+  delete-data:x:/*/*/sys42.tests.insert-1
+  delete-data:x:/*/*/sys42.tests.insert-2
   insert-data
-    test.foo:THIS_IS_ID
+    sys42.tests.insert-1:THIS_IS_THE_SAME_ID
       name:Thomas Hansen
   try
     insert-data
-      test.foo2:THIS_IS_ID
+      sys42.tests.insert-2:THIS_IS_THE_SAME_ID
         name:John Doe
   catch
-    set:x:/../*/_success?value
+    set:x:/@_success?value
       src:boool:true
-  if:x:/../*/_success?value
+  if:x:/@_success?value
     not
-    throw:@"Assert error, insert-data didn't throw when given two similar IDs"
+    throw:Assert error, [insert-data] misbehaved
 
 
-/*
- * Tests that checks that [update-data] behaves while updating values
- */
-update-data-value
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+Update simple data value
+  delete-data:x:/*/*/sys42.tests.insert
   insert-data
-    test.foo
+    sys42.tests.insert
       name:foo
-  update-data:x:/*/*/test.foo/*/name?value
+  update-data:x:/*/*/sys42.tests.insert/*/name?value
     src:bar
   if
     fetch:x:/0/0?value
-      select-data:x:/*/*/test.foo/*/name?value
+      select-data:x:/*/*/sys42.tests.insert/*/name?value
     !=:bar
-    throw:@"Assert error, expected [something], got [something-else]!"
+    throw:Assert error, [update-data] misbehaved
 
 
-/*
- * Tests that checks that [update-data] behaves while updating names
- */
-update-data-name
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+Update simple data name
+  delete-data:x:/*/*/sys42.tests.insert
   insert-data
-    test.foo
+    sys42.tests.insert
       name:foo
-  update-data:x:/*/*/test.foo/*/name?name
-    src:bar22
+  update-data:x:/*/*/sys42.tests.insert/*/name?name
+    src:bar
   if
     fetch:x:/0/0?value
-      select-data:x:/*/*/test.foo/0?name
-    !=:bar22
-    throw:@"Assert error, expected [something], got [something-else]!"
+      select-data:x:/*/*/sys42.tests.insert/0?name
+    !=:bar
+    throw:Assert error, [update-data] misbehaved
 
 
-/*
- * Tests that checks that [update-data] behaves and keeps id when root node is updated
- */
-update-data-keep-id
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+Update data does not change root node ID
+  delete-data:x:/*/*/sys42.tests.insert
   insert-data
-    test.foo
+    sys42.tests.insert
       name:foo
-  select-data:x:/*/*/test.foo
-  update-data:x:/*/*/test.foo
+  select-data:x:/*/*/sys42.tests.insert
+  update-data:x:/*/*/sys42.tests.insert
     src
-      test.foo
+      sys42.tests.insert
         name:bar
-  select-data:x:/*/*/test.foo
+  select-data:x:/*/*/sys42.tests.insert
   if:x:/../*/select-data/[0,1]/*?value
     !=:x:/../*/select-data/[1,2]/*?value
     or:x:/../*/select-data/[0,1]/*?value
-      !=:x:/../*/insert-data/*?value
-    throw:@"Assert error, expected [something], got [something-else]!"
+      !=:x:/@insert-data/*?value
+    throw:Assert error, [update-data] misbehaved
 
 
-/*
- * Tests that checks that [update-data] behaves and updates ID when given explicit new ID
- */
-update-data-new-id
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+Update data can change root node ID
+  delete-data:x:/*/*/sys42.tests.insert
   insert-data
-    test.foo
+    sys42.tests.insert
       name:foo
-  select-data:x:/*/*/test.foo
-  update-data:x:/*/*/test.foo
+  select-data:x:/*/*/sys42.tests.insert
+  update-data:x:/*/*/sys42.tests.insert
     src
-      test.foo:THIS_IS_NEW_ID
+      sys42.tests.insert:THIS_IS_A_BRAND_NEW_ID
         name:bar
-  select-data:x:/*/*/test.foo
-  if:THIS_IS_NEW_ID
+  select-data:x:/*/*/sys42.tests.insert
+  if:THIS_IS_A_BRAND_NEW_ID
     !=:x:/../*/select-data/[1,2]/*?value
-    throw:@"Assert error, expected [something], got [something-else]!"
+    throw:Assert error, [update-data] misbehaved
 
 
-/*
- * Tests that checks that [update-data] behaves and throw when given explicit new ID that already exists in database
- */
-update-data-new-id-exists-throws
+Update data throws when ID exists
   _success:bool:false
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+  delete-data:x:/*/*/=THIS_IS_THE_SAME_ID
   insert-data
-    test.foo
+    sys42.tests.insert
       name:foo
-  insert-data
-    test.foo2:THIS_IS_NEW_ID
-      name:foo2
-  try
-    update-data:x:/*/*/test.foo
-      src
-        test.foo:THIS_IS_NEW_ID
-          name:bar
-  catch
-    set:x:/../*/_success?value
-      src:bool:true
-  if:x:/../*/_success?value
-    not
-    throw:@"Assert error, update-data didn't throw when it was expected to throw"
-
-
-/*
- * Tests that checks that [update-data] behaves and throw when given explicit new ID that already exists in database
- */
-update-data-new-id-exists-no-throws
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
-  insert-data
-    test.foo:THIS_IS_ID
-      name:foo
-  update-data:x:/*/*/test.foo
-    src
-      test.foo:THIS_IS_ID
-        name:bar
-  select-data:x:/*/*/test.foo
-  if:x:/-/*?value
-    !=:THIS_IS_ID
-    throw:@"Oops, something went wrong"
-
-
-/*
- * Tests that checks that [update-data] behaves and throw when given explicit new ID that already exists in database
- */
-update-data-new-id-exists-throws-second
-  _success:bool:false
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
-  insert-data
-    test.foo:THIS_IS_ID
-      name:foo
-  insert-data
-    test.foo:THIS_IS_ALSO_ID
+    sys42.tests.insert:THIS_IS_THE_SAME_ID
       name:foo
   try
-    update-data:x:/*/*/test.foo
+    update-data:x:/*/*/sys42.tests.insert/[0,1]
       src
-        test.foo:THIS_IS_ID
+        test.foo:THIS_IS_THE_SAME_ID
           name:bar
   catch
-    set:x:/../*/_success?value
+    set:x:/@_success?value
       src:bool:true
-  if:x:/../*/_success?value
+  if:x:/@_success?value
     not
-    throw:@"Oops, something went wrong"
+    throw:Assert error, [update-data] misbehaved
 
 
-/*
- * Tests that checks that [update-data] behaves and keeps id when root node is updated, and we're doing multiple updates
- */
-update-multiple-data-keep-id
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+Update data with explicit same ID no throw
+  delete-data:x:/*/*/sys42.tests.insert
   insert-data
-    test.foo
+    sys42.tests.insert:THIS_IS_THE_SAME_ID
       name:foo
-    test.foo
-      name:foo
-  select-data:x:/*/*/test.foo
-  update-data:x:/*/*/test.foo
+  update-data:x:/*/*/sys42.tests.insert
     src
-      test.foo
+      sys42.tests.insert:THIS_IS_THE_SAME_ID
         name:bar
-  select-data:x:/*/*/test.foo
-  if:x:/../*/select-data/[0,1]/0?value
-    !=:x:/../*/select-data/[1,2]/0?value
-    or:x:/../*/select-data/[0,1]/0?value
-      !=:x:/../*/insert-data/0?value
-    or:x:/../*/select-data/[0,1]/1?value
-      !=:x:/../*/select-data/[1,2]/1?value
-    or:x:/../*/select-data/[0,1]/1?value
-      !=:x:/../*/insert-data/1?value
-    or:x:/../*/select-data/[1,2]/0/*?value
-      !=:bar
-    or:x:/../*/select-data/[1,2]/1/*?value
-      !=:bar
-    throw:@"Assert error, expected [something], got [something-else]!"
+  select-data:x:/*/*/sys42.tests.insert
+  if:x:/@select-data/*?value
+    !=:THIS_IS_THE_SAME_ID
+    throw:Assert error, [update-data] misbehaved
 
 
-/*
- * Tests that checks that [update-data] behaves when given an Active Event source
- */
-update-data-event-source
-  delete-data:x:/*/*/test.foo
-  delete-data:x:/*/*/test.foo2
+Update multiple records keeps ID
+  delete-data:x:/*/*/sys42.tests.insert
   insert-data
-    test.foo
+    sys42.tests.insert
+      name:foo
+    sys42.tests.insert
+      name:foo
+  update-data:x:/*/*/sys42.tests.insert
+    src
+      sys42.tests.insert
+        name:bar
+  select-data:x:/*/*/sys42.tests.insert
+  if:x:/@insert-data/*?value
+    !=:x:/@select-data/*?value
+    throw:Assert error, [update-data] misbehaved
+
+
+Update data with event source
+  delete-data:x:/*/*/sys42.tests.insert
+  insert-data
+    sys42.tests.insert
       name:Thomas Hansen
-    test.foo
+    sys42.tests.insert
       name:John Doe
-  update-data:x:/*/*/test.foo
+  update-data:x:/*/*/sys42.tests.insert
     eval
-      split:x:/../*/_dn/#/*/name?value
+      split:x:/@_dn/#/*/name?value
         =:" "
       eval-x:x:/+/*/*
       return
-        test.foo
-          first-name:x:/../*/split/0?name
-          surname:x:/../*/split/1?name
-  select-data:x:/*/*/test.foo
-  if:x:/-/0/*/first-name?value
-    !=:Thomas
-    or:x:/./-/0/*/surname?value
-      !=:Hansen
-    or:x:/./-/1/*/first-name?value
-      !=:John
-    or:x:/./-/1/*/surname?value
-      !=:Doe
-    or:x:/./-/0/*/name
-    or:x:/./-/1/*/name
-    or:x:/./-/0?value
-      !=:x:/../*/insert-data/0?value
-    or:x:/./-/1?value
-      !=:x:/../*/insert-data/1?value
-    throw:@"Unexpected results from update-data"
+        sys42.tests.insert
+          first-name:x:/@split/0?name
+          surname:x:/@split/1?name
+  select-data:x:/*/*/sys42.tests.insert
+  set:x:/@select-data/*?value
+  if:x:/@select-data
+    !=:node:@"select-data
+  sys42.tests.insert
+    first-name:Thomas
+    surname:Hansen
+  sys42.tests.insert
+    first-name:John
+    surname:Doe"
+    throw:Assert error, [update-data] misbehaved
