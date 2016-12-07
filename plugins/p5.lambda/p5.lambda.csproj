@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="helpers\LogicalOperators.cs" />
-    <Compile Include="helpers\SourceHelper.cs" />
     <Compile Include="keywords\core\Src.cs" />
     <Compile Include="keywords\extras\Whitelist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

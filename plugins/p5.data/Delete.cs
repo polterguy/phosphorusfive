@@ -49,16 +49,14 @@ namespace p5.data
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Acquiring write lock on database.
+                // Acquiring write lock on database, and making sure we keep track of nodes that are changed,andhow many items were deleted.
                 Common.Locker.EnterWriteLock ();
+                var changed = new List<Node> ();
+                int affectedItems = 0;
                 try {
-
-                    // Used to store how many items are actually affected.
-                    int affectedItems = 0;
 
                     // Looping through database matches and removing nodes while storing which files have been changed as a result of deletion.
                     // Notice, we evaluate our expression with "Common.Database" being our DataSource node.
-                    var changed = new List<Node> ();
                     foreach (var idxDest in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
 
                         // Sanity check.
@@ -75,16 +73,14 @@ namespace p5.data
                         // Incrementing affected items.
                         affectedItems += 1;
                     }
-
-                    // Saving all affected files.
-                    Common.SaveAffectedFiles (context, changed);
-
-                    // Returning number of affected items.
-                    e.Args.Value = affectedItems;
-
                 } finally {
 
-                    // Releasing write lock.
+                    // Saving all affected files.
+                    // Notice, we do this even though an exception has occurred, since exception is thrown before node not legal to delete are deleted.
+                    // This means that if you delete several nodes, some might become deleted though, while others are not deleted.
+                    // Hence, [delete-data] does not feature any sorts of "transactional delete support" at the moment.
+                    Common.SaveAffectedFiles (context, changed);
+                    e.Args.Value = affectedItems;
                     Common.Locker.ExitWriteLock ();
                 }
             }

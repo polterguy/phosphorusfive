@@ -22,8 +22,8 @@
  */
 
 using System.Linq;
+using p5.exp;
 using p5.core;
-using p5.lambda.helpers;
 
 namespace p5.lambda.keywords.core
 {
@@ -60,12 +60,12 @@ namespace p5.lambda.keywords.core
         private static void InsertNodes (ApplicationContext context, Node args, bool after)
         {
             // Finding source nodes, and returning early if no source is given.
-            var src = SourceHelper.GetSourceNodes (context, args);
+            var src = XUtil.GetSourceNodes (context, args);
             if (src == null || src.Count == 0)
                 return;
 
             // Looping through each destination, and inserting all source node at specified position, in order of appearance.
-            foreach (var idxDestination in SourceHelper.GetDestinationMatch (context, args, true)) {
+            foreach (var idxDestination in XUtil.GetDestinationMatch (context, args, true)) {
 
                 // Figuring out insertion point before we insert nodes.
                 var index = idxDestination.Node.Parent.IndexOf (idxDestination.Node) + (after ? 1 : 0);

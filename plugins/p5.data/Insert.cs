@@ -45,52 +45,37 @@ namespace p5.data
         [ActiveEvent (Name = "append-data")]
         public static void insert_data (ApplicationContext context, ActiveEventArgs e)
         {
-            /*
-             * Note, since [insert-data] creates an ID for items not explicitly giving an ID, we do NOT remove arguments in this Active Event, 
-             * since sometimes caller needs to know the ID of the node inserted into database, and is not ready to create an ID himself.
-             * Therefor the generated ID is returned as the value of each item inserted, and hence we cannot remove all arguments passed into this event.
-             */
-
-            // Acquiring write lock on database.
+            // Acquiring write lock on database, and making sure we keep track of which files are changed, and how many items were affected.
             Common.Locker.EnterWriteLock ();
+            var changed = new List<Node> ();
+            int affectedItems = 0;
             try {
 
                 // Checking if we should force insertion at the end or not.
                 var forceAppend = e.Name == "append-data";
 
-                // Used to store how many items are actually affected
-                int affectedItems = 0;
-
                 // Looping through all nodes given as children, value, or as the result of an expression.
-                var changed = new List<Node> ();
                 foreach (var idx in XUtil.Iterate<Node> (context, e.Args)) {
 
-                    // Making sure we clean up and remove all arguments of inserted node passed in after execution.
-                    using (new Utilities.ArgsRemover (idx)) {
-
-                        // Inserting node
-                        InsertNode (idx, context, changed, forceAppend);
-                    }
-
-                    // Incrementing affected items.
+                    // Inserting node, clearing children, and incrementing number of affected items.
+                    InsertNode (idx, context, changed, forceAppend);
+                    idx.Clear ();
                     affectedItems += 1;
                 }
-
-                // Saving all affected files.
-                Common.SaveAffectedFiles (context, changed);
-
-                // Returning number of affected items.
-                e.Args.Value = affectedItems;
-
             } finally {
 
-                // Releasing database write lock.
+                // Saving all affected files.
+                // Notice, we do this even though an exception has occurred, since exception is thrown before any illegal nodes are attempted to insert.
+                // This means that if you insert several nodes, some might become inserted though, while others are not inserted.
+                // Hence, [insert-data] does not feature any sorts of "transactional insert support" at the moment.
+                Common.SaveAffectedFiles (context, changed);
+                e.Args.Value = affectedItems;
                 Common.Locker.ExitWriteLock ();
             }
         }
 
         /*
-         * Inserts one node into database
+         * Inserts one node into database.
          */
         private static void InsertNode (
             Node node, 
@@ -98,45 +83,41 @@ namespace p5.data
             List<Node> changed,
             bool forceAppend)
         {
-            // Syntax checking insert node
+            // Syntax checking insert node.
             SyntaxCheckInsertNode (node, context);
 
-            // Finding next available database file node
+            // Finding next available database file node.
             var fileNode = Common.GetAvailableFileNode (context, forceAppend);
 
-            // Figuring out which file Node updated belongs to, and storing in changed list
+            // Figuring out which file Node updated belongs to, and storing it in changed list.
             if (!changed.Contains (fileNode))
                 changed.Add (fileNode);
 
-            // Actually appending node into database
+            // Actually appending node into database.
             fileNode.Add (node.Clone ());
         }
 
         /*
-         * Syntax checks node before insertion is allowed
+         * Syntax checks node before insertion is allowed.
          */
         private static void SyntaxCheckInsertNode (Node node, ApplicationContext context)
         {
-            // Making sure it is impossible to insert items without a name into database
+            // Making sure it is impossible to insert items without a name into database.
             if (string.IsNullOrEmpty (node.Name))
                 throw new LambdaException ("[insert-data] requires that each item you insert has a name", node, context);
 
-            // Making sure insert node gets an ID, unless one is explicitly given
+            // Making sure insert node gets an ID, unless one is explicitly given.
             if (node.Value == null) {
 
-                // Automatically generating an ID for item, since no ID was supplied by caller
+                // Automatically generating an ID for item, since no ID was supplied by caller.
                 node.Value = Guid.NewGuid ();
             } else {
 
-                // User gave us an "explicit new ID", making sure that it does not exist from before
-                foreach (var fileNodeIdx in Common.Database.Children) {
-                    foreach (var rootNodeIdx in fileNodeIdx.Children) {
-                        if (rootNodeIdx.Value.Equals (node.Value)) {
+                // User gave us an "explicit new ID", making sure that it does not exist from before.
+                if (Common.Database.Children.Exists (ix => ix.Children.Exists (ix2 => ix2.Value.Equals (node.Value)))) {
 
-                            // Explicit new ID exists from before!
-                            throw new LambdaException ("Sorry, your new node needs to have a unique ID, or use the ID it already had from before", node, context);
-                        }
-                    }
+                    // Explicit new ID exists from before.
+                    throw new LambdaException ("Sorry, your new node needs to have a unique ID, or use the ID it already had from before", node, context);
                 }
             }
         }

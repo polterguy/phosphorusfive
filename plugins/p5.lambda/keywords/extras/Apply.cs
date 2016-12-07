@@ -52,12 +52,12 @@ namespace p5.lambda.keywords.extras
             var template = templates.First ();
 
             // Retrieving source, ignoring [template], and making sure source is not null, before we start braiding source(s) and template into destination.
-            var source = SourceHelper.GetSourceNodes (context, e.Args, "template");
+            var source = XUtil.GetSourceNodes (context, e.Args, "template");
             if (source != null) {
 
                 // Looping through each destination, and braiding source(s) and template, before appending into destination node, 
                 // assuming destination is node type of expression.
-                foreach (var idxDest in SourceHelper.GetDestinationMatch (context, e.Args, true)) {
+                foreach (var idxDest in XUtil.GetDestinationMatch (context, e.Args, true)) {
 
                     // Iterating through each source, braiding with template, and appending to destination node.
                     foreach (var idxSource in source) {

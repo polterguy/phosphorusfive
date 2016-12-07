@@ -21,8 +21,8 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using p5.exp;
 using p5.core;
-using p5.lambda.helpers;
 
 namespace p5.lambda.keywords.core
 {
@@ -43,7 +43,7 @@ namespace p5.lambda.keywords.core
             Node originalLambda = e.Args.Clone ();
 
             // Retrieving what to iterate.
-            var match = SourceHelper.GetDestinationMatch (context, e.Args);
+            var match = XUtil.GetDestinationMatch (context, e.Args);
 
             // Evaluating lambda, until either all iterations are done, or stop flag condition tells us we're done, due to some condition stopping loop early.
             var first = true;

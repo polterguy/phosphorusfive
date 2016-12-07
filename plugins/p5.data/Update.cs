@@ -30,84 +30,94 @@ using p5.exp.exceptions;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [update-data]
+    ///     Class wrapping [update-data].
     /// </summary>
     public static class Update
     {
         /// <summary>
-        ///     Updates lambda objects in your database
+        ///     [update-data] updates nodes, values or names in your database.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "update-data")]
         public static void update_data (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving expression and doing some basic syntax checking
-            var ex = e.Args.Value as Expression;
-            if (ex == null)
-                throw new LambdaException ("[update-data] requires an expression to select items from database", e.Args, context);
+            // Retrieving expression and doing some basic sanity checks.
+            if (!XUtil.IsExpression (e.Args.Value))
+                throw new LambdaException ("[update-data] requires an expression leading to whatever you want to be updated in your database", e.Args, context);
 
-            // Acquiring lock on database
-            Common.Locker.EnterWriteLock ();
-            try {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Used for storing all affected database nodes, such that we know which files to update
+                // Acquiring write lock on database, and making sure we keep track of which files are changed, and how many items were affected.
+                Common.Locker.EnterWriteLock ();
                 var changed = new List<Node> ();
+                int affectedItems = 0;
+                try {
 
-                // Iterating through each destinations, updating with source
-                foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
+                    // Retrieving source, and iterating through each destination, updating with source value.
+                    var source = XUtil.GetSourceValue (context, e.Args);
+                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
 
-                    // Figuring out source, possibly relative to destination
-                    var source = XUtil.Source (context, e.Args, idxDestination.Node);
-
-                    // Making sure we're only given ONE source!
-                    if (source.Count != 1)
-                        throw new LambdaException ("[update-data] requires exactly one source", e.Args, context);
-
-                    // Figuring out which file Node updated belongs to, and storing in changed list
-                    Common.AddNodeToChanges (idxDestination.Node, changed);
-
-                    // Doing actual update, which depends upon whether or not update is updating an entire node hierarchy, or only a single value
-                    Node newNode = source[0] as Node;
-                    if (newNode != null) {
-
-                        // Checking if this is a "root node" update, and if so, make sure we keep the old ID, unless a new one is
-                        // explicitly given
-                        if (idxDestination.Node.Parent.Parent.Parent == null) {
-
-                            // "Root node" update, making sure node keep old ID, or if a new ID is explicitly given, make sure it is UNIQUE
-                            if (newNode.Value == null) {
-
-                                // We're keeping our old ID, no need to check for unique ID
-                                newNode.Value = idxDestination.Node.Value;
-                            } else {
-
-                                // User gave us an "explicit new ID", making sure that if it exists from before, then it is the node we are
-                                // updating that has it, an no OTHER nodes in our database!
-                                foreach (var fileNodeIdx in Common.Database.Children) {
-                                    foreach (var rootNodeIdx in fileNodeIdx.Children) {
-                                        if (rootNodeIdx != idxDestination.Node && rootNodeIdx.Value.Equals (newNode.Value)) {
-
-                                            // Explicit new ID exists from before, and it is NOT the node we're currently updating!
-                                            // This is an error!
-                                            throw new LambdaException ("Sorry, your new node needs to have a unique ID, or use the ID it already had from before", e.Args, context);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        // Updates the destination with the source, making sure we can keep track of files that are changed, and that we throw is update is unsuccessful.
+                        if (!UpdateDestination (context, source, idxDestination))
+                            throw new LambdaException ("[update-data] requires your new node needs to have a unique ID, or use its old ID by not providing one", e.Args, context);
+                        Common.AddNodeToChanges (idxDestination.Node, changed);
+                        affectedItems += 1;
                     }
+                } finally {
 
-                    // Since we only consumed source [0] by reference above, in our ID check, we simply use it directly, since the above logic correctly 
-                    // (possibly) changed the underlaying reference
-                    idxDestination.Value = source [0];
+                    // Saving all affected files.
+                    // Notice, we do this even though an exception has occurred, since exception is thrown before nodes are updated with any "bad data".
+                    // This means that if you update several nodes, some might become updated though, while others are not updated.
+                    // Hence, [update-data] does not feature any sorts of "transactional update support" at the moment.
+                    Common.SaveAffectedFiles (context, changed);
+                    e.Args.Value = affectedItems;
+                    Common.Locker.ExitWriteLock ();
                 }
-            
-                // Saving all affected files
-                Common.SaveAffectedFiles (context, changed);
-            } finally {
-                Common.Locker.ExitWriteLock ();
             }
+        }
+
+        /*
+         * Updates a single destination with the given source.
+         */
+        private static bool UpdateDestination (
+            ApplicationContext context, 
+            object source, 
+            exp.matchentities.MatchEntity destination)
+        {
+            // Figuring out if source is a Node.
+            if (source is Node) {
+
+                // Checking if this is a "root node" update, and if so, make sure we keep the old ID, unless a new one is explicitly given.
+                Node newNode = source as Node;
+                if (destination.Node.OffsetToRoot == 2) {
+
+                    // "Root node" update, making sure node keep old ID, or if a new ID is explicitly given, make sure it is unique.
+                    if (newNode.Value == null) {
+
+                        // We're keeping our old ID, no need to check for unique ID.
+                        newNode.Value = destination.Node.Value;
+                        destination.Value = newNode;
+                        newNode.Value = null;
+
+                    } else {
+
+                        // User gave us an explicit ID, making sure it is either the same, or a new unique ID.
+                        if (Common.Database.Children.Exists (ix => ix.Children.Exists (ix2 => ix2 != destination.Node && ix2.Value.Equals (newNode.Value)))) {
+
+                            // Explicit new ID exists from before, and it is not the node we're currently updating.
+                            return false;
+                        }
+                        destination.Value = newNode;
+                    }
+                } else {
+                    destination.Value = newNode;
+                }
+            } else {
+                destination.Value = source;
+            }
+            return true;
         }
     }
 }

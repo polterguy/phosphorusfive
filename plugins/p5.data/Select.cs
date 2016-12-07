@@ -61,17 +61,14 @@ namespace p5.data
 
                         // Returning number of items found as main value of node.
                         e.Args.Value = match.Count;
-
                     } else if (match.TypeOfMatch == Match.MatchType.node) {
 
                         // Node match, returning cloned version of each node found.
                         e.Args.AddRange (match.Select (ix => ix.Node.Clone ()));
-
                     } else if (match.TypeOfMatch == Match.MatchType.name) {
 
                         // Name match, returning only names of nodes.
                         e.Args.AddRange (match.Select (ix => new Node (ix.Node.Name)));
-
                     } else {
 
                         // Value match, returning all values of nodes.

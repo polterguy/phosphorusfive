@@ -4,6 +4,11 @@
  */
 
 
+/*
+ * Insert data tests.
+ */
+
+
 Insert simple static item
   delete-data:x:/*/*/sys42.tests.insert
   insert-data
@@ -79,6 +84,24 @@ Insert same ID in different invocations throws
     throw:Assert error, [insert-data] misbehaved
 
 
+Insert empty name throws
+  _success:bool:false
+  try
+    insert-data
+      ""
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, [insert-data] misbehaved
+
+
+/*
+ * Update data tests.
+ */
+
+
 Update simple data value
   delete-data:x:/*/*/sys42.tests.insert
   insert-data
@@ -107,7 +130,21 @@ Update simple data name
     throw:Assert error, [update-data] misbehaved
 
 
-Update data does not change root node ID
+Update returns affected items
+  delete-data:x:/*/*/sys42.tests.insert
+  insert-data
+    sys42.tests.insert
+      name:foo
+    sys42.tests.insert
+      name:foo
+  update-data:x:/*/*/sys42.tests.insert/*/name?value
+    src:bar
+  if:x:/@update-data?value
+    !=:int:2
+    throw:Assert error, [update-data] misbehaved
+
+
+Update data does not change root node ID by default
   delete-data:x:/*/*/sys42.tests.insert
   insert-data
     sys42.tests.insert
@@ -194,33 +231,9 @@ Update multiple records keeps ID
     throw:Assert error, [update-data] misbehaved
 
 
-Update data with event source
-  delete-data:x:/*/*/sys42.tests.insert
-  insert-data
-    sys42.tests.insert
-      name:Thomas Hansen
-    sys42.tests.insert
-      name:John Doe
-  update-data:x:/*/*/sys42.tests.insert
-    eval
-      split:x:/@_dn/#/*/name?value
-        =:" "
-      eval-x:x:/+/*/*
-      return
-        sys42.tests.insert
-          first-name:x:/@split/0?name
-          surname:x:/@split/1?name
-  select-data:x:/*/*/sys42.tests.insert
-  set:x:/@select-data/*?value
-  if:x:/@select-data
-    !=:node:@"select-data
-  sys42.tests.insert
-    first-name:Thomas
-    surname:Hansen
-  sys42.tests.insert
-    first-name:John
-    surname:Doe"
-    throw:Assert error, [update-data] misbehaved
+/*
+ * Delete data tests.
+ */
 
 
 Delete data returns affected items
