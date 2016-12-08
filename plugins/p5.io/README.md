@@ -257,35 +257,35 @@ copy-file:~/foo.txt
 The *[dest]* node argument above, which is the child node of *[copy-file]*, is of course the destination filepath, for your copy. Here too, you
 could have copied several files at once, like we did with *[move-file]*.
 
-### [file-size], [file-is-read-only], [file-creation-time] and [file-access-time]
+### [p5.io.file.length], [p5.io.file.is-read-only], [p5.io.file.creation-time] and [p5.io.file.last-access-time]
 
-The *[file-size]*, *[file-is-read-only]*, *[file-creation-time]* and *[file-access-time]* Active Events, returns the size, read-only state,
+The *[p5.io.file.length]*, *[p5.io.file.is-read-only]*, *[p5.io.file.creation-time]* and *[p5.io.file.last-access-time]* Active Events, returns the size, read-only state,
 creation time, and access time of each file you supply to them.
 
 ```
-file-size:/web.config
-file-is-read-only:/web.config
-file-creation-time:/web.config
-file-access-time:/web.config
+p5.io.file.length:/web.config
+p5.io.file.is-read-only:/web.config
+p5.io.file.creation-time:/web.config
+p5.io.file.last-access-time:/web.config
 ```
 
 After evaluating the above code, your result will look something like this.
 
 ```
-file-size
+p5.io.file.length
   /web.config:long:8084
-file-is-read-only
+p5.io.file.is-read-only
   /web.config:bool:false
-file-creation-time
+p5.io.file.creation-time
   /web.config:date:"2016-09-07T15:25:22.285"
-file-access-time
+p5.io.file.last-access-time
   /web.config:date:"2016-09-18T23:18:41.166"
 ```
 
 #### Changing the read-only state of a file
 
-You can set one or more files to "read-only" with the *[file-set-read-only]* Active Event. In addition, you can remove the "read-only" attribute,
-using the *[file-delete-read-only]* Active Event. Both of these Active Events takes either a constant or an expression, leading to multiple files.
+You can set one or more files to "read-only" with the *[p5.io.file.set-read-only]* Active Event. In addition, you can remove the "read-only" attribute,
+using the *[p5.io.file.delete-read-only]* Active Event. Both of these Active Events takes either a constant or an expression, leading to multiple files.
 
 ## How to handle folders in your system
 

@@ -28,21 +28,20 @@ using p5.io.common;
 namespace p5.io.file.file_state
 {
     /// <summary>
-    ///     Class to help check the access time of a file
+    ///     Class to help check the access time of one or more file(s).
     /// </summary>
-    public static class AccessTime
+    public static class LastAccessTime
     {
         /// <summary>
-        ///     Returns the access date of the specified file(s)
+        ///     Returns the last access date of the specified file(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "file-access-time")]
-        public static void file_access_time (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.last-access-time")]
+        public static void p5_io_file_last_access_time (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
-                FileInfo info = new FileInfo (fullpath);
-                e.Args.Add (filename, info.LastAccessTime);
+                e.Args.Add (filename, new FileInfo (fullpath).LastAccessTime);
             });
         }
     }

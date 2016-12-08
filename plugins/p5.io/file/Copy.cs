@@ -28,12 +28,12 @@ using p5.io.common;
 namespace p5.io.file
 {
     /// <summary>
-    ///     Class to help copy and/or rename a file
+    ///     Class to help copy and/or rename a file.
     /// </summary>
     public static class Copy
     {
         /// <summary>
-        ///     Copies a file
+        ///     Copies a file.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

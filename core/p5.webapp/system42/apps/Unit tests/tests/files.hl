@@ -108,3 +108,70 @@ Rename a single file
         file-exist:~/temp/foo-orig.txt
     throw:Assert error, p5.io misbehaved
 
+
+Delete single read-only file throws
+  _success:bool:false
+  save-file:~/temp/foo.txt
+    src:Foo bar
+  p5.io.file.set-read-only:~/temp/foo.txt
+  try
+    delete-file:~/temp/foo.txt
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  p5.io.file.delete-read-only:~/temp/foo.txt
+  delete-file:~/temp/foo.txt
+  if:x:/@_success?value
+    not
+    throw:Assert error, p5.io misbehaved
+
+
+Retrieve single read-only file value
+  save-file:~/temp/foo.txt
+    src:Foo bar
+  p5.io.file.set-read-only:~/temp/foo.txt
+  p5.io.file.is-read-only:~/temp/foo.txt
+  p5.io.file.delete-read-only:~/temp/foo.txt
+  delete-file:~/temp/foo.txt
+  if:x:/@p5.io.file.is-read-only/*?value
+    not
+    throw:Assert error, p5.io misbehaved
+
+
+Retrieve multiple read-only file values
+  save-file:~/temp/foo-1.txt
+    src:Foo bar
+  save-file:~/temp/foo-2.txt
+    src:Foo bar
+  p5.io.file.set-read-only:x:/../*/save-file?value
+  p5.io.file.is-read-only:x:/../*/save-file?value
+  p5.io.file.delete-read-only:x:/../*/save-file?value
+  delete-file:x:/../*/save-file?value
+  if:x:/@p5.io.file.is-read-only/0?value
+    not
+    or:x:/@p5.io.file.is-read-only/1?value
+      not
+    throw:Assert error, p5.io misbehaved
+
+
+Retrieve multiple read-only file values where file is not read-only
+  save-file:~/temp/foo-1.txt
+    src:Foo bar
+  save-file:~/temp/foo-2.txt
+    src:Foo bar
+  p5.io.file.set-read-only:x:/../*/save-file?value
+  p5.io.file.delete-read-only:x:/../*/save-file?value
+  p5.io.file.is-read-only:x:/../*/save-file?value
+  delete-file:x:/../*/save-file?value
+  if:x:/@p5.io.file.is-read-only/0?value
+    or:x:/@p5.io.file.is-read-only/1?value
+    throw:Assert error, p5.io misbehaved
+
+
+Retrieve single file length
+  save-file:~/temp/foo.txt
+    src:Foo bar
+  p5.io.file.length:~/temp/foo.txt
+  if:x:/@p5.io.file.length/0?value
+    !=:long:7
+    throw:Assert error, p5.io misbehaved

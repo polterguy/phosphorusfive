@@ -28,21 +28,20 @@ using p5.io.common;
 namespace p5.io.file.file_state
 {
     /// <summary>
-    ///     Class to help check the creation date of a file
+    ///     Class to help check the creation date of one or more file(s).
     /// </summary>
     public static class CreationTime
     {
         /// <summary>
-        ///     Returns the creation time of the specified file(s)
+        ///     Returns the creation time of the specified file(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "file-creation-time")]
-        public static void file_creation_time (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.creation-time")]
+        public static void p5_io_file_creation_time (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
-                FileInfo info = new FileInfo (fullpath);
-                e.Args.Add (filename, info.CreationTime);
+                e.Args.Add (filename, new FileInfo (fullpath).CreationTime);
             });
         }
     }

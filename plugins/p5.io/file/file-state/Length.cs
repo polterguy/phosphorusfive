@@ -28,21 +28,20 @@ using p5.io.common;
 namespace p5.io.file.file_state
 {
     /// <summary>
-    ///     Class to help check the size of a file
+    ///     Class to help check the size of one or more file(s).
     /// </summary>
-    public static class Size
+    public static class Length
     {
         /// <summary>
-        ///     Returns the size of the specified file(s)
+        ///     Returns the size of the specified file(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "file-size")]
-        public static void file_size (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.length")]
+        public static void p5_io_file_length (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
-                FileInfo info = new FileInfo (fullpath);
-                e.Args.Add (filename, info.Length);
+                e.Args.Add (filename, new FileInfo (fullpath).Length);
             });
         }
     }
