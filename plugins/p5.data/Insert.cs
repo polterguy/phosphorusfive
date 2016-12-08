@@ -31,7 +31,7 @@ using p5.exp.exceptions;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [insert-data].
+    ///     Class wrapping [insert-data] and [append-data] Active Events.
     /// </summary>
     public static class Insert
     {
@@ -46,9 +46,9 @@ namespace p5.data
         public static void insert_data (ApplicationContext context, ActiveEventArgs e)
         {
             // Acquiring write lock on database, and making sure we keep track of which files are changed, and how many items were affected.
-            Common.Locker.EnterWriteLock ();
             var changed = new List<Node> ();
             int affectedItems = 0;
+            Common.Locker.EnterWriteLock ();
             try {
 
                 // Checking if we should force insertion at the end or not.

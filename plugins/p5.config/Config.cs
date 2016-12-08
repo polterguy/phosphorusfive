@@ -24,17 +24,16 @@
 using System.Configuration;
 using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
 
 namespace p5.events
 {
     /// <summary>
-    ///     Active Events for retrieving configuration settings
+    ///     Active Events for retrieving configuration settings.
     /// </summary>
     public static class Config
     {
         /// <summary>
-        ///     Retrieves an app.config/web.config setting
+        ///     Retrieves an app.config/web.config setting.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -46,7 +45,7 @@ namespace p5.events
         }
 
         /// <summary>
-        ///     Retrieves an app.config/web.config setting
+        ///     Lists all configuration settings for application, optionally matching specified filter.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

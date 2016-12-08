@@ -271,3 +271,21 @@ Delete entire database throws
   if:x:/@_success?value
     not
     throw:Assert error, [delete-data] misbehaved
+
+
+/*
+ * Misc.
+ */
+
+
+Select count from database
+  delete-data:x:/*/*/sys42.tests.insert
+  insert-data
+    sys42.tests.insert
+      name:Thomas Hansen
+    sys42.tests.insert
+      name:Thomas Hansen
+  select-data:x:/*/*/sys42.tests.insert?count
+  if:x:/@select-data?value
+    !=:int:2
+    throw:Assert error, [select-data] misbehaved

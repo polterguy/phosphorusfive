@@ -57,6 +57,11 @@ namespace p5.data
 
                     // Retrieving match object, and checking what type of match it was.
                     var match = ex.Evaluate (context, Common.Database, e.Args);
+
+                    // Removing value of [select-data] node by default.
+                    e.Args.Value = null;
+
+                    // Checking type of select, and acting accordingly.
                     if (match.TypeOfMatch == Match.MatchType.count) {
 
                         // Returning number of items found as main value of node.
@@ -74,10 +79,6 @@ namespace p5.data
                         // Value match, returning all values of nodes.
                         e.Args.AddRange (match.Select (ix => new Node ("", ix.Value)));
                     }
-
-                    // Removing value of [select-data] node.
-                    e.Args.Value = null;
-
                 } finally {
 
                     // Releasing write lock.

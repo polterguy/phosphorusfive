@@ -50,9 +50,9 @@ namespace p5.data
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Acquiring write lock on database, and making sure we keep track of nodes that are changed,andhow many items were deleted.
-                Common.Locker.EnterWriteLock ();
                 var changed = new List<Node> ();
                 int affectedItems = 0;
+                Common.Locker.EnterWriteLock ();
                 try {
 
                     // Looping through database matches and removing nodes while storing which files have been changed as a result of deletion.
