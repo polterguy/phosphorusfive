@@ -58,13 +58,7 @@
     <Compile Include="types\IntType.cs" />
     <Compile Include="types\LongType.cs" />
     <Compile Include="types\NodeType.cs" />
-    <Compile Include="types\SByteType.cs" />
-    <Compile Include="types\ShortType.cs" />
     <Compile Include="types\TimeType.cs" />
-    <Compile Include="types\UIntType.cs" />
-    <Compile Include="types\ULongType.cs" />
-    <Compile Include="types\UShortType.cs" />
-    <Compile Include="types\BigIntType.cs" />
     <Compile Include="types\StringType.cs" />
     <Compile Include="types\RegexType.cs" />
   </ItemGroup>

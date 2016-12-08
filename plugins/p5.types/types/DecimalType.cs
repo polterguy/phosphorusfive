@@ -24,7 +24,8 @@
 using System.Globalization;
 using p5.core;
 
-namespace p5.types.types {
+namespace p5.types.types
+{
     /// <summary>
     ///     Class helps converts from decimal to string, and vice versa
     /// </summary>

@@ -25,7 +25,8 @@ using System;
 using p5.exp;
 using p5.core;
 
-namespace p5.types.types {
+namespace p5.types.types
+{
     /// <summary>
     ///     Class contains helper methods for string type
     /// </summary>

@@ -26,7 +26,8 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-namespace p5.types.types {
+namespace p5.types.types
+{
     /// <summary>
     ///     Class helps converts from Regex to string, and vice versa
     /// </summary>

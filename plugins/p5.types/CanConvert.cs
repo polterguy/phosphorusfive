@@ -25,10 +25,8 @@ using System;
 using p5.exp;
 using p5.core;
 
-/// <summary>
-///     Main namespace for types and type-conversions in Phosphorus Five
-/// </summary>
-namespace p5.types {
+namespace p5.types
+{
     /// <summary>
     ///     Class helps figuring out if some value(s) can be converted to another type
     /// </summary>
