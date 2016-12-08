@@ -105,7 +105,7 @@ namespace p5.web.widgets
         }
 
         /// <summary>
-        ///     Lists all existing lambda events for given widget(s)
+        ///     Lists all existing lambda events for given widget(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -113,7 +113,7 @@ namespace p5.web.widgets
         public void list_widget_lambda_events (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
+            using (new Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all widgets
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "list-widget-lambda-events")) {
@@ -132,6 +132,25 @@ namespace p5.web.widgets
                         e.Args.Add(curNode);
                 }
             }
+        }
+
+        /// <summary>
+        ///     Lists all dynamically created Active Events.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "list-all-widget-lambda-events")]
+        public void list_all_widget_lambda_events (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving filter, if any
+            var filter = new List<string> (XUtil.Iterate<string> (context, e.Args));
+
+            // Getting all dynamic Active Events
+            ListActiveEvents (Manager.WidgetLambdaEventStorage.Keys, e.Args, filter, "dynamic", context);
+
+            // Checking if there exists a whitelist, and if so, removing everything not in our whitelist.
+            if (context.Whitelist != null)
+                e.Args.Children.RemoveAll (ix => context.Whitelist[ix.Get<string> (context)] == null);
         }
 
         /*
@@ -188,34 +207,33 @@ namespace p5.web.widgets
          */
         private static void ListActiveEvents (
             IEnumerable<string> source,
-            Node node,
+            Node args,
             List<string> filter,
             string eventTypeName,
-            ApplicationContext context,
-            bool isNative)
+            ApplicationContext context)
         {
             // Looping through each Active Event from IEnumerable
             foreach (var idx in source) {
 
-                if (!isNative && (idx.StartsWith (".") || idx.StartsWith ("_") || idx.Contains ("._")))
+                if (!args.Name.StartsWith (".") && (idx.StartsWith (".") || idx.StartsWith ("_") || idx.Contains ("._")))
                     continue;
 
                 // Checking to see if we have any filter
                 if (filter.Count == 0) {
 
                     // No filter(s) given, slurping up everything
-                    node.Add (new Node (eventTypeName, idx));
+                    args.Add (new Node (eventTypeName, idx));
                 } else {
 
                     // We have filter(s), checking to see if Active Event name matches at least one of our filters
                     if (filter.Any (ix => ix.StartsWith ("~") ? idx.Contains (ix.Substring (1)) : idx == ix)) {
-                        node.Add (new Node (eventTypeName, idx));
+                        args.Add (new Node (eventTypeName, idx));
                     }
                 }
             }
 
             // Sorting such that keywords comes first
-            node.Sort (delegate (Node x, Node y) {
+            args.Sort (delegate (Node x, Node y) {
                 if (x.Get<string> (context).Contains (".") && !y.Get<string> (context).Contains ("."))
                     return 1;
                 else if (!x.Get<string> (context).Contains (".") && y.Get<string> (context).Contains ("."))
