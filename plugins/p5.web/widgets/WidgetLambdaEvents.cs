@@ -134,26 +134,6 @@ namespace p5.web.widgets
             }
         }
 
-        /// <summary>
-        ///     Lists all dynamically created Active Events.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "vocabulary")]
-        [ActiveEvent (Name = ".vocabulary")]
-        public void vocabulary (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Retrieving filter, if any
-            var filter = e.Args.Value == null ? new List<string>() : new List<string> (XUtil.Iterate<string> (context, e.Args));
-
-            // Getting all dynamic Active Events
-            ListActiveEvents (Manager.WidgetLambdaEventStorage.Keys, e.Args, filter, "dynamic", context, e.Name.StartsWith ("."));
-
-            // Checking if there exists a whitelist, and if so, removing everything not in our whitelist.
-            if (context.Whitelist != null)
-                e.Args.Children.RemoveAll (ix => context.Whitelist[ix.Get<string> (context)] == null);
-        }
-
         /*
          * Raises Widget specific lambda events
          */

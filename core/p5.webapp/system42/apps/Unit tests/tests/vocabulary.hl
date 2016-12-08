@@ -1,47 +1,65 @@
+
 /*
- * Contains unit tests for testing the [vocabulary] Active Event.
+ * Unit tests for [vocabulary].
  */
 
 
-/*
- * Checks a simple vocabulary invocation, with no filter.
- */
-no-filter
+No filter
   vocabulary
-  if:x:/-/*?count
-    <:int:1
-    throw:Assert error, [vocabulary] returned no active events.
+  if:x:/@vocabulary/*?count
+    <:int:10
+    throw:Assert error, [vocabulary] misbehaved
 
 
-/*
- * Checks if providing a constant filter to vocabulary behaves as expected.
- */
-static-filter
-  vocabulary:add
-  if:x:/-/*?count
-    <:int:1
-    throw:Assert error, [vocabulary] returned no active events.
+Static filter
+  vocabulary:vocabulary
+  if:x:/@vocabulary/*?count
+    !=:int:1
+    throw:Assert error, [vocabulary] misbehaved
 
 
-/*
- * Checks if providing a constant "like" filter to vocabulary behaves as expected.
- */
-static-like-filter
+Static like filter
   vocabulary:~create
-  if:x:/-/*?count
+  if:x:/@vocabulary/*?count
     <:int:1
-    throw:Assert error, [vocabulary] returned no active events.
+    throw:Assert error, [vocabulary] misbehaved
 
 
-/*
- * Checks if providing an expression filter to vocabulary behaves as expected.
- */
-expression-filter
+Expression filter, yielding multiples exact results
   _filter
     add
     if
     else
-  vocabulary:x:/-/*?name
-  if:x:/-/*?count
+  vocabulary:x:/@_filter/*?name
+  if:x:/@vocabulary/*?count
     !=:int:3
-    throw:Assert error, [vocabulary] returned no active events.
+    throw:Assert error, [vocabulary] misbehaved
+
+
+Expression filter, yielding multiples mixed results
+  _filter
+    add
+    ~if
+    else
+  vocabulary:x:/@_filter/*?name
+  if:x:/@vocabulary/*?count
+    <:int:4
+    throw:Assert error, [vocabulary] misbehaved
+
+
+Children filter, yielding multiple exact results
+  vocabulary
+    add
+    if
+  if:x:/@vocabulary/*?count
+    !=:int:2
+    throw:Assert error, [vocabulary] misbehaved
+
+
+Children filter, yielding multiple mixed results
+  vocabulary
+    add
+    ~if
+  if:x:/@vocabulary/*?count
+    <:int:3
+    throw:Assert error, [vocabulary] misbehaved

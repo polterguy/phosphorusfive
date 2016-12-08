@@ -35,7 +35,7 @@ namespace p5.data
     public static class Update
     {
         /// <summary>
-        ///     [update-data] updates nodes, values or names in your database.
+        ///     [update-data] updates nodes, values or names in your p5.data database.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -50,9 +50,9 @@ namespace p5.data
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Acquiring write lock on database, and making sure we keep track of which files are changed, and how many items were affected.
-                Common.Locker.EnterWriteLock ();
                 var changed = new List<Node> ();
                 int affectedItems = 0;
+                Common.Locker.EnterWriteLock ();
                 try {
 
                     // Retrieving source, and iterating through each destination, updating with source value.
