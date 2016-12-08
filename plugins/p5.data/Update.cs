@@ -43,7 +43,7 @@ namespace p5.data
         public static void update_data (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving expression and doing some basic sanity checks.
-            if (!XUtil.IsExpression (e.Args.Value))
+            if (!(e.Args.Value is Expression))
                 throw new LambdaException ("[update-data] requires an expression leading to whatever you want to be updated in your database", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.

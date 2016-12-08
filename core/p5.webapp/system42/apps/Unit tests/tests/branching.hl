@@ -129,7 +129,6 @@ If with value expression, yielding multiple false booleans
     _data1:bool:false
     _data2:bool:false
   if:x:/@_something/*?value
-  else
     throw:Assert error, [if] misbehaved
 
 

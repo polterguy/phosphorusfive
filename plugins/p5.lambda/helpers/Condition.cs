@@ -66,7 +66,7 @@ namespace p5.lambda.helpers
             _conditions = GetConditionalNodes ().ToList ();
 
             // If condition had no operator Active Events, we must evaluate a simple "exist" condition.
-            if (_conditions.Count (ix => ix.Name != "") == 0) {
+            if (_conditions.Count == 0) {
 
                 // No conditions, evaluating simple "exists" condition.
                 TryEvaluateSimpleExist ();
@@ -167,9 +167,6 @@ namespace p5.lambda.helpers
             // Notice, this has to be done once for each condition we create, since theoretically the operators might change, due to
             // having instance event handler objects in the ApplicationContext.
             var operators = _context.Raise ("operators");
-
-            // Then adding empty node, since it can be used to format expressions, etc.
-            operators.Add ("");
 
             // Checking if value of args is null, and if so, we use the first child of it as an Active Event operator, 
             // which simply will be evaluated, and its value checked for true afterwards, during evaluation of conditional nodes.

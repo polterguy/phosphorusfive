@@ -43,7 +43,7 @@ namespace p5.data
         public static void delete_data (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
-            if (!XUtil.IsExpression (e.Args.Value))
+            if (!(e.Args.Value is Expression))
                 throw new LambdaException ("[delete-data] requires an expression as its value", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.

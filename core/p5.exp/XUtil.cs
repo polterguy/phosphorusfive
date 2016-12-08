@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,30 +47,6 @@ namespace p5.exp
         /// <param name="key">Key to retrieve from collection</param>
         /// <returns></returns>
         public delegate object GetDelegate (string key);
-
-        /// <summary>
-        ///     Returns true if given object is an expression
-        /// </summary>
-        /// <returns><c>true</c> if is expression the specified value; otherwise, <c>false</c></returns>
-        /// <param name="value">Value</param>
-        public static bool IsExpression (object value)
-        {
-            return value is Expression;
-        }
-
-        /// <summary>
-        ///     Returns true if given node contains formatting parameters
-        /// </summary>
-        /// <returns><c>true</c> if is formatted the specified evaluatedNode; otherwise, <c>false</c></returns>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        public static bool IsFormatted (Node evaluatedNode)
-        {
-            // A formatted node is defined as having one or more children with "" as name
-            // and a value which is of type string
-            return evaluatedNode.Value is string && 
-                (evaluatedNode.Value as string).Contains ("{0}") && 
-                evaluatedNode.Children.Count (ix => ix.Name == "") > 0;
-        }
 
         /// <summary>
         ///     Iterates a collection, and returns results as nodes back to caller.
@@ -320,7 +295,7 @@ namespace p5.exp
             Node evaluatedNode,
             Node dataSource)
         {
-            // Making sure node contains formatting values
+            // Making sure node contains formatting values, and if not, returning as is to avoid formatting or changing type.
             if (!IsFormatted (evaluatedNode))
                 return evaluatedNode.Value;
 
@@ -328,35 +303,13 @@ namespace p5.exp
                 .Where (ix => ix.Name == "")
                 .Select (ix => FormatNodeRecursively (context, ix, dataSource == evaluatedNode ? ix : dataSource) ?? "").ToArray();
 
-            // Returning node's value, after being formatted, according to its children node's values
-            // PS, at this point all childrenValues have already been converted by the engine itself to string values
-            return string.Format (evaluatedNode.Value as string, childrenValues);
-        }
-        
-        /*
-         * Helper method to recursively format node's value
-         */
-        private static object FormatNodeRecursively (
-            ApplicationContext context,
-            Node evaluatedNode,
-            Node dataSource)
-        {
-            var isFormatted = IsFormatted (evaluatedNode);
-            var isExpression = IsExpression (evaluatedNode.Value);
+            // Returning node's value, after being formatted, according to its children node's values.
+            var retVal = string.Format (evaluatedNode.Value as string, childrenValues);
 
-            if (isExpression) {
-
-                // Node is recursively formatted, and also an expression.
-                // Formating node first, then evaluating expression.
-                // PS, we cannot return null here, in case expression yields null
-                return Single<object> (context, evaluatedNode, dataSource, "");
-            }
-            if (isFormatted) {
-
-                // Node is formatted recursively, but not an expression
-                return FormatNode (context, evaluatedNode, dataSource);
-            }
-            return evaluatedNode.Value ?? "";
+            // House cleaning before returning formatted value.
+            foreach (var idx in evaluatedNode.Children.ToList ())
+                idx.UnTie ();
+            return retVal;
         }
 
         /// <summary>
@@ -368,10 +321,9 @@ namespace p5.exp
         /// <typeparam name="T">The 1st type parameter</typeparam>
         public static T Single<T> (
             ApplicationContext context,
-            Node evaluatedNode,
-            T defaultValue = default (T))
+            Node evaluatedNode)
         {
-            return Single (context, evaluatedNode, evaluatedNode, defaultValue);
+            return Single<T> (context, evaluatedNode, evaluatedNode);
         }
 
         /// <summary>
@@ -385,48 +337,9 @@ namespace p5.exp
         public static T Single<T> (
             ApplicationContext context,
             Node evaluatedNode,
-            Node dataSource,
-            T defaultValue = default (T),
-            Node formattingNode = null)
+            Node dataSource)
         {
-            object singleRetVal = null;
-            string multipleRetVal = null;
-            var firstRun = true;
-            foreach (var idx in Iterate<T> (context, evaluatedNode, dataSource, formattingNode)) {
-
-                // To make sure we never convert object to string, unless absolutely necessary
-                if (firstRun) {
-
-                    // First iteration of foreach loop
-                    singleRetVal = idx;
-                    firstRun = false;
-                } else {
-
-                    // Second, third, or fourth, etc, iteration of foreach.
-                    // This means we will have to convert the iterated objects into string, concatenate the objects,
-                    // before converting to type T afterwards
-                    if (multipleRetVal == null) {
-
-                        // Second iteration of foreach
-                        multipleRetVal = Utilities.Convert<string> (context, singleRetVal);
-                    }
-                    if (idx is Node || (singleRetVal is Node)) {
-
-                        // Current iteration contains a node, making sure we format our string nicely, such that
-                        // the end result becomes valid hyperlambda, before trying to convert to type T afterwards
-                        multipleRetVal += "\r\n";
-                        singleRetVal = null;
-                    }
-                    multipleRetVal += Utilities.Convert<string> (context, idx);
-                }
-            }
-
-            // If there was not multiple iterations above, we use our "singleRetVal" object, which never was
-            // converted into a string
-            var retVal = Utilities.Convert (context, multipleRetVal ?? singleRetVal, defaultValue);
-
-            // Returning result
-            return retVal;
+            return Iterate<T> (context, evaluatedNode, dataSource).FirstOrDefault ();
         }
 
         /// <summary>
@@ -456,7 +369,7 @@ namespace p5.exp
             if (evaluatedNode.Value != null) {
 
                 // Checking if node's value is an expression
-                if (IsExpression (evaluatedNode.Value)) {
+                if (evaluatedNode.Value is Expression) {
 
                     // We have an expression, creating a match object
                     var match = (evaluatedNode.Value as Expression).Evaluate (context, dataSource, evaluatedNode, formattingNode);
@@ -535,6 +448,39 @@ namespace p5.exp
             // Notice Clear invocation, since eventNode still might contain formatting parameters.
             eventNode.Clear ().AddRange (lambda.Children);
             eventNode.Value = lambda.Value;
+        }
+
+        /// <summary>
+        ///     Returns true if given node contains formatting parameters
+        /// </summary>
+        /// <returns><c>true</c> if is formatted the specified evaluatedNode; otherwise, <c>false</c></returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        private static bool IsFormatted (Node evaluatedNode)
+        {
+            // A formatted node is defined as having one or more children with "" as name
+            // and a value which is of type string
+            return evaluatedNode.Value is string &&
+                (evaluatedNode.Value as string).Contains ("{0}") &&
+                evaluatedNode.Children.Count (ix => ix.Name == "") > 0;
+        }
+
+        /*
+         * Helper method to recursively format node's value
+         */
+        private static object FormatNodeRecursively (
+            ApplicationContext context,
+            Node evaluatedNode,
+            Node dataSource)
+        {
+            if (evaluatedNode.Value is Expression) {
+
+                // Node is recursively formatted, and also an expression.
+                // Formating node first, then evaluating expression.
+                // PS, we cannot return null here, in case expression yields null
+                return Single<object> (context, evaluatedNode, dataSource) ?? "";
+            } else {
+                return FormatNode (context, evaluatedNode, dataSource);
+            }
         }
     }
 }

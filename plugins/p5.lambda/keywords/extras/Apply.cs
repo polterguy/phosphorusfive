@@ -191,7 +191,7 @@ namespace p5.lambda.keywords.extras
             var name = template.Name.Substring (1, template.Name.Length - 2);
 
             // Checking type of template.
-            if (XUtil.IsExpression (template.Value)) {
+            if (template.Value is Expression) {
 
                 // Expression type, checking if this is a single value template definition, or a sub-template definition.
                 var match = template.Get<Expression> (context).Evaluate (context, source, template);

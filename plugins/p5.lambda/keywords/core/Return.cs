@@ -80,17 +80,8 @@ namespace p5.lambda.keywords.core
                 }
             } else if (e.Args.Value != null) {
 
-                // Still there's a value, checking type of value.
-                if (XUtil.IsFormatted (e.Args)) {
-
-                    // Returning formatted value.
-                    root.Value = XUtil.FormatNode (context, e.Args);
-
-                } else {
-
-                    // Returning simple value.
-                    root.Value = e.Args.Value;
-                }
+                // Returning formatted value.
+                root.Value = XUtil.FormatNode (context, e.Args);
             }
 
             // Adding all children of [return] as result to evaluated rooot node, no need to clone.

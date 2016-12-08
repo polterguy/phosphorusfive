@@ -42,12 +42,12 @@ namespace p5.exp
         public static T GetExChildValue<T> (
             this Node node, 
             string name, 
-            ApplicationContext context, 
+            ApplicationContext context,
             T defaultValue = default(T))
         {
             if (node [name] == null || node [name].Value == null)
                 return defaultValue;
-            return XUtil.Single<T> (context, node [name], node [name], defaultValue);
+            return XUtil.Single<T> (context, node [name], node [name]);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace p5.exp
         {
             if (node.Value == null)
                 return defaultValue;
-            return XUtil.Single (context, node, node, defaultValue);
+            return XUtil.Single<T> (context, node, node);
         }
     }
 }

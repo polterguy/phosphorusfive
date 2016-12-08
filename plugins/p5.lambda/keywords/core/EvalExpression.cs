@@ -48,22 +48,17 @@ namespace p5.lambda.keywords.core
                 foreach (var idxMatch in XUtil.DestinationMatch (context, e.Args, true)) {
 
                     // Checking type of node value.
-                    if (XUtil.IsExpression (idxMatch.Node.Value)) {
+                    if (idxMatch.Node.Value is Expression) {
 
                         // Evaluates result of expression, and substitues value with expression result.
                         idxMatch.Node.Value = idxMatch.Node.GetExValue<object> (context, null);
 
                         // Making sure we remove all formatting parameters for clarity.
                         idxMatch.Node.Children.RemoveAll (ix => ix.Name == "");
-
-                    } else if (XUtil.IsFormatted (idxMatch.Node)) {
+                    } else {
 
                         // Formats value, and substitutes value with formatting result.
                         idxMatch.Node.Value = XUtil.FormatNode (context, idxMatch.Node);
-
-                        // Making sure we remove all formatting parameters for clarity.
-                        idxMatch.Node.Children.RemoveAll (ix => ix.Name == "");
-
                     } // Notice, we do not throw, to support recursive evaluations by using the /** iterator, where parts of results are not supposed to be forward evaluated.
                 }
             }

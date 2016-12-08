@@ -47,7 +47,7 @@ namespace p5.strings.keywords
                 var characters = e.Args.GetExChildValue ("chars", context, " \r\n\t");
 
                 // Returning length of constant or expression, converted to string if necessary
-                e.Args.Value = XUtil.Single<string> (context, e.Args, "").Trim (characters.ToList().ToArray());
+                e.Args.Value = XUtil.Single<string> (context, e.Args).Trim (characters.ToList().ToArray());
             }
         }
     }

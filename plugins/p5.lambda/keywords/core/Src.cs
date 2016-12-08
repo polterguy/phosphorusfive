@@ -51,42 +51,30 @@ namespace p5.lambda.keywords.core
 
                     // Simple count expression.
                     e.Args.Value = match.Count;
-
                 } else if (match.TypeOfMatch == Match.MatchType.node) {
 
                     // Node values, single or multiple is irrelevant, still need to clone them.
                     e.Args.AddRange (match.Select (ix => ix.Node.Clone ()));
                     e.Args.Value = null;
-
                 } else if (match.Count == 1) {
 
                     // Single value, name or value type of value is irrelevant, adding to value anyways.
                     e.Args.Value = match [0].Value;
-
                 } else if (match.TypeOfMatch == Match.MatchType.name) {
 
                     // Multiple name values.
                     e.Args.AddRange (match.Select (ix => new Node (ix.Node.Name)));
                     e.Args.Value = null;
-
                 } else {
 
                     // Multiple value values.
                     e.Args.AddRange (match.Select (ix => new Node ("", ix.Value)));
                     e.Args.Value = null;
-
                 }
             } else if (e.Args.Value != null) {
 
-                // Still there's a value, checking type of value.
-                if (XUtil.IsFormatted (e.Args)) {
-
-                    // Returning formatted value.
-                    e.Args.Value = XUtil.FormatNode (context, e.Args);
-
-                    // Making sure we remove all formatting parameters for clarity.
-                    e.Args.Children.RemoveAll (ix => ix.Name == "");
-                } // else, returning value of node as is
+                // Returning formatted value.
+                e.Args.Value = XUtil.FormatNode (context, e.Args);
             } // else, returning children nodes as is
         }
     }
