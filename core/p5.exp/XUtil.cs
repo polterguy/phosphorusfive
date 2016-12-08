@@ -30,23 +30,277 @@ using p5.exp.exceptions;
 namespace p5.exp
 {
     /// <summary>
-    ///     Helper class encapsulating common operations for p5 lambda expressions
+    ///     Helper class encapsulating common operations for expressions.
     /// </summary>
     public static class XUtil
     {
         /// <summary>
-        ///     Delegate used for updating collections
+        ///     Delegate used for updating collections.
         /// </summary>
         /// <param name="key">Key in collection</param>
         /// <param name="value">Value for item with specified key (can be null)</param>
         public delegate void SetDelegate (string key, object value);
 
         /// <summary>
-        ///     Delegate used when retrieving collection values
+        ///     Delegate used when retrieving collection values.
         /// </summary>
         /// <param name="key">Key to retrieve from collection</param>
         /// <returns></returns>
         public delegate object GetDelegate (string key);
+
+        /// <summary>
+        ///     Formats the node according to values returned by its children having empty names.
+        /// </summary>
+        /// <returns>The node</returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="context">Context</param>
+        public static object FormatNode (
+            ApplicationContext context,
+            Node evaluatedNode)
+        {
+            return FormatNode (context, evaluatedNode, evaluatedNode);
+        }
+
+        /// <summary>
+        ///     Formats the node according to values returned by its children, with the specified datasource node.
+        /// </summary>
+        /// <returns>The node</returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="dataSource">Data source</param>
+        /// <param name="context">Context</param>
+        public static object FormatNode (
+            ApplicationContext context,
+            Node evaluatedNode,
+            Node dataSource)
+        {
+            // Making sure node contains formatting values, and if not, returning as is to avoid formatting or changing type.
+            if (evaluatedNode.Children.Count (ix => ix.Name == "") == 0)
+                return evaluatedNode.Value;
+
+            var childrenValues = evaluatedNode.Children
+                .Where (ix => ix.Name == "")
+                .Select (ix => FormatNodeRecursively (context, ix, dataSource == evaluatedNode ? ix : dataSource) ?? "").ToArray ();
+
+            // Returning node's value, after being formatted, according to its children node's values.
+            var retVal = string.Format (evaluatedNode.Get<string> (context), childrenValues);
+
+            // House cleaning before returning formatted value.
+            foreach (var idx in evaluatedNode.Children.ToList ())
+                idx.UnTie ();
+            return retVal;
+        }
+
+        /// <summary>
+        ///     Verifies node's value is an expression, and returns that expression to caller.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="expressionNode"></param>
+        /// <param name="activeEventName"></param>
+        /// <returns></returns>
+        static public Expression DestinationExpression (ApplicationContext context, Node expressionNode)
+        {
+            // Asserting destination is expression.
+            var ex = expressionNode.Value as Expression;
+            if (ex == null)
+                throw new LambdaException (
+                    string.Format ("Not a valid destination expression given to [{0}], value was '{1}', expected expression", expressionNode.Name, expressionNode.Value),
+                    expressionNode,
+                    context);
+            return ex;
+        }
+
+        /// <summary>
+        ///     Returns a node match object, optionally restricted to node type.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="expressionNode"></param>
+        /// <param name="activeEventName"></param>
+        /// <returns></returns>
+        static public Match DestinationMatch (
+            ApplicationContext context,
+            Node expressionNode,
+            bool mustBeNodeTypeExpression = false)
+        {
+            var ex = DestinationExpression (context, expressionNode);
+            var match = ex.Evaluate (context, expressionNode, expressionNode);
+
+            // Checking if caller retricted type of expression, and if so, verifying it conforms.
+            if (mustBeNodeTypeExpression && match.TypeOfMatch != Match.MatchType.node)
+                throw new LambdaException (string.Format ("Destination for [{0}] was not a node type of expression", expressionNode.Name), expressionNode, context);
+
+            // Success, returning match object to caller.
+            return match;
+        }
+
+        /// <summary>
+        ///     Returns one single value by evaluating evaluatedNode
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="defaultValue">Default value</param>
+        /// <typeparam name="T">The 1st type parameter</typeparam>
+        public static T Single<T> (
+            ApplicationContext context,
+            Node evaluatedNode)
+        {
+            return Single<T> (context, evaluatedNode, evaluatedNode);
+        }
+
+        /// <summary>
+        ///     Returns one single value by evaluating evaluatedNode
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="dataSource">Data source</param>
+        /// <param name="defaultValue">Default value</param>
+        /// <typeparam name="T">The 1st type parameter</typeparam>
+        public static T Single<T> (
+            ApplicationContext context,
+            Node evaluatedNode,
+            Node dataSource)
+        {
+            return Iterate<T> (context, evaluatedNode, dataSource).FirstOrDefault ();
+        }
+
+        /// <summary>
+        ///     Iterates the given node, and returns multiple values
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <typeparam name="T">The 1st type parameter</typeparam>
+        public static IEnumerable<T> Iterate<T> (ApplicationContext context, Node evaluatedNode)
+        {
+            return Iterate<T> (context, evaluatedNode, evaluatedNode);
+        }
+
+        /// <summary>
+        ///     Iterates the given node, and returns multiple values
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="dataSource">Data source</param>
+        /// <typeparam name="T">The 1st type parameter</typeparam>
+        public static IEnumerable<T> Iterate<T> (
+            ApplicationContext context,
+            Node evaluatedNode,
+            Node dataSource)
+        {
+            if (evaluatedNode.Value != null) {
+
+                // Checking if node's value is an expression.
+                if (evaluatedNode.Value is Expression) {
+
+                    // We have an expression, creating a match object.
+                    var match = (evaluatedNode.Value as Expression).Evaluate (context, dataSource, evaluatedNode);
+
+                    // Checking type of match.
+                    if (match.TypeOfMatch == Match.MatchType.count) {
+
+                        // If expression is of type 'count', we return 'count', possibly triggering a conversion, returning count as type T, hence only iterating once.
+                        yield return Utilities.Convert<T> (context, match.Count);
+                        yield break;
+                    } else {
+
+                        // Expression was anything but 'count', we return it as type T, possibly triggering a conversion.
+                        foreach (var idx in match) {
+                            yield return Utilities.Convert<T> (context, idx.Value);
+                        }
+                    }
+                } else {
+
+                    // Returning single value created from value of node, but first applying formatting parameters, if there are any.
+                    yield return Utilities.Convert<T> (context, FormatNode (context, evaluatedNode, dataSource));
+                }
+            } else {
+
+                if (typeof (T) == typeof (Node)) {
+
+                    // Node's value is null, caller requests nodes, iterating through children of node, yielding results back to caller.
+                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
+                        yield return Utilities.Convert<T> (context, idx);
+                    }
+                } else if (typeof (T) == typeof (string)) {
+
+                    // Caller requested string type of result, returning names of all children.
+                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
+                        yield return Utilities.Convert<T> (context, idx.Name);
+                    }
+                } else {
+
+                    // Caller requests anything but node or string, iterating children, yielding values of children, converted to type back to caller.
+                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
+                        yield return idx.Get<T> (context);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Returns source value for an Active Event.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        static public object Source (
+            ApplicationContext context,
+            Node args,
+            params string[] avoidNodes)
+        {
+            // Finding source nodes.
+            var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_") && !avoidNodes.Contains (ix.Name)).ToList ();
+
+            // Sanity check.
+            if (srcNodes.Count > 1)
+                throw new LambdaException ("Multiple source found for [" + args.Name + "]", args, context);
+            else if (srcNodes.Count == 0)
+                return null;
+
+            // Raising source Active Event, and returning results.
+            context.Raise (srcNodes[0].Name, srcNodes[0]);
+
+            // Sanity check
+            if (srcNodes[0].Value == null && srcNodes[0].Children.Count > 1)
+                throw new LambdaException ("Source Active Event returned multiple source", args, context);
+
+            // Returning value
+            return srcNodes[0].Value ?? srcNodes[0].FirstChild;
+        }
+
+        /// <summary>
+        ///     Returns the source nodes for an  Active Event invocation, which implies raising its children nodes as Active Events, and returning the result
+        ///     as Nodes, avoiding using anything found in avoidNodes as source Active Events.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        static public List<Node> Sources (
+            ApplicationContext context,
+            Node args,
+            params string[] avoidNodes)
+        {
+            // Finding source nodes.
+            var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_") && !avoidNodes.Contains (ix.Name)).ToList ();
+
+            // Looping through all source nodes, invoking Active Events, and adding into return value.
+            var retVal = new List<Node> ();
+            foreach (var idxSrc in srcNodes) {
+
+                // Raising source Active Event.
+                context.Raise (idxSrc.Name, idxSrc);
+
+                // We prioritize value if it exists after source Active Event invocation.
+                if (idxSrc.Value != null) {
+                    if (idxSrc.Value is Node) {
+                        retVal.Add (idxSrc.Value as Node);
+                    } else {
+                        retVal.AddRange (idxSrc.Get<Node> (context).Children);
+                    }
+                } else {
+                    retVal.AddRange (idxSrc.Children);
+                }
+            }
+            return retVal;
+        }
 
         /// <summary>
         ///     Iterates a collection, and returns results as nodes back to caller.
@@ -65,7 +319,8 @@ namespace p5.exp
                 // Iterating through each key reqquested by caller.
                 foreach (var idxKey in Iterate<string> (context, args)) {
 
-                    // Checking if caller tries to access "protected storage key".
+                    // Checking if caller tries to access "protected storage key", which we do not allow, unless this is a native invocation, signified by that the caller invoked
+                    // us with a "." as the name of the node.
                     if (!args.Name.StartsWith (".") && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
                         throw new LambdaException (
                             string.Format ("Tried to access protected key in [{0}], key name was '{1}' ", args.Name, idxKey), 
@@ -156,272 +411,6 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Returns a node match object, optionally restricted to node type.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="expressionNode"></param>
-        /// <param name="activeEventName"></param>
-        /// <returns></returns>
-        static public Match DestinationMatch (
-            ApplicationContext context, 
-            Node expressionNode, 
-            bool mustBeNodeTypeExpression = false)
-        {
-            var ex = DestinationExpression (context, expressionNode);
-            var match = ex.Evaluate (context, expressionNode, expressionNode);
-
-            // Checking if caller retricted type of expression, and if so, verifying it conforms.
-            if (mustBeNodeTypeExpression && match.TypeOfMatch != Match.MatchType.node)
-                throw new LambdaException (string.Format ("Destination for [{0}] was not a node type of expression", expressionNode.Name), expressionNode, context);
-
-            // Success, returning match object to caller.
-            return match;
-        }
-
-        /// <summary>
-        ///     Verifies node's value is an expression, and returns that expression to caller.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="expressionNode"></param>
-        /// <param name="activeEventName"></param>
-        /// <returns></returns>
-        static public Expression DestinationExpression (ApplicationContext context, Node expressionNode)
-        {
-            // Asserting destination is expression.
-            var ex = expressionNode.Value as Expression;
-            if (ex == null)
-                throw new LambdaException (
-                    string.Format ("Not a valid destination expression given to [{0}], value was '{1}', expected expression", expressionNode.Name, expressionNode.Value),
-                    expressionNode,
-                    context);
-            return ex;
-        }
-
-        /// <summary>
-        ///     Returns source value for an Active Event.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        static public object Source (
-            ApplicationContext context, 
-            Node args, 
-            params string[] avoidNodes)
-        {
-            var srcNode = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_")).ToList ();
-            srcNode.RemoveAll (ix => avoidNodes.Contains (ix.Name));
-
-            // Sanity check.
-            if (srcNode.Count > 1)
-                throw new LambdaException ("Multiple source found for [" + args.Name + "]", args, context);
-
-            // Checking if there was any source.
-            if (srcNode.Count == 0)
-                return null;
-
-            // Raising source Active Event, and returning results.
-            context.Raise (srcNode[0].Name, srcNode[0]);
-
-            // Sanity check
-            if (srcNode[0].Value == null && srcNode[0].Children.Count > 1)
-                throw new LambdaException ("Source Active Event returned multiple source", args, context);
-
-            // Returning value
-            return srcNode[0].Value ?? srcNode[0].FirstChild;
-        }
-
-        /// <summary>
-        ///     Returns the source nodes for an  Active Event invocation.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        static public List<Node> Sources (
-            ApplicationContext context,
-            Node args,
-            params string[] avoidNodes)
-        {
-            // Retrieving all source nodes with a legal Active Event name.
-            var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_")).ToList ();
-            srcNodes.RemoveAll (ix => avoidNodes.Contains (ix.Name));
-
-            // If no source nodes was given, we return no source early.
-            if (srcNodes.Count == 0)
-                return null;
-
-            // Looping through all source nodes, invoking Active Events, and adding into return value.
-            var retVal = new List<Node> ();
-            foreach (var idxSrc in srcNodes) {
-
-                // Raising source Active Event.
-                context.Raise (idxSrc.Name, idxSrc);
-
-                // We prioritize value if it exists after source Active Event invocation.
-                if (idxSrc.Value != null) {
-                    if (idxSrc.Value is Node) {
-                        retVal.Add (idxSrc.Value as Node);
-                    } else {
-                        retVal.AddRange (idxSrc.Get<Node> (context).Children);
-                    }
-                } else {
-                    retVal.AddRange (idxSrc.Children);
-                }
-            }
-            return retVal.Count > 0 ? retVal : null;
-        }
-
-        /// <summary>
-        ///     Formats the node according to values returned by its children
-        /// </summary>
-        /// <returns>The node</returns>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        /// <param name="context">Context</param>
-        public static object FormatNode (
-            ApplicationContext context,
-            Node evaluatedNode)
-        {
-            return FormatNode (context, evaluatedNode, evaluatedNode);
-        }
-
-        /// <summary>
-        ///     Formats the node according to values returned by its children
-        /// </summary>
-        /// <returns>The node</returns>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        /// <param name="dataSource">Data source</param>
-        /// <param name="context">Context</param>
-        public static object FormatNode (
-            ApplicationContext context,
-            Node evaluatedNode,
-            Node dataSource)
-        {
-            // Making sure node contains formatting values, and if not, returning as is to avoid formatting or changing type.
-            if (!IsFormatted (evaluatedNode))
-                return evaluatedNode.Value;
-
-            var childrenValues = evaluatedNode.Children
-                .Where (ix => ix.Name == "")
-                .Select (ix => FormatNodeRecursively (context, ix, dataSource == evaluatedNode ? ix : dataSource) ?? "").ToArray();
-
-            // Returning node's value, after being formatted, according to its children node's values.
-            var retVal = string.Format (evaluatedNode.Value as string, childrenValues);
-
-            // House cleaning before returning formatted value.
-            foreach (var idx in evaluatedNode.Children.ToList ())
-                idx.UnTie ();
-            return retVal;
-        }
-
-        /// <summary>
-        ///     Returns one single value by evaluating evaluatedNode
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        /// <param name="defaultValue">Default value</param>
-        /// <typeparam name="T">The 1st type parameter</typeparam>
-        public static T Single<T> (
-            ApplicationContext context,
-            Node evaluatedNode)
-        {
-            return Single<T> (context, evaluatedNode, evaluatedNode);
-        }
-
-        /// <summary>
-        ///     Returns one single value by evaluating evaluatedNode
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        /// <param name="dataSource">Data source</param>
-        /// <param name="defaultValue">Default value</param>
-        /// <typeparam name="T">The 1st type parameter</typeparam>
-        public static T Single<T> (
-            ApplicationContext context,
-            Node evaluatedNode,
-            Node dataSource)
-        {
-            return Iterate<T> (context, evaluatedNode, dataSource).FirstOrDefault ();
-        }
-
-        /// <summary>
-        ///     Iterates the given node, and returns multiple values
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        /// <typeparam name="T">The 1st type parameter</typeparam>
-        public static IEnumerable<T> Iterate<T> (ApplicationContext context, Node evaluatedNode)
-        {
-            return Iterate<T> (context, evaluatedNode, evaluatedNode);
-        }
-
-        /// <summary>
-        ///     Iterates the given node, and returns multiple values
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        /// <param name="dataSource">Data source</param>
-        /// <typeparam name="T">The 1st type parameter</typeparam>
-        public static IEnumerable<T> Iterate<T> (
-            ApplicationContext context,
-            Node evaluatedNode,
-            Node dataSource,
-            Node formattingNode = null)
-        {
-            if (evaluatedNode.Value != null) {
-
-                // Checking if node's value is an expression
-                if (evaluatedNode.Value is Expression) {
-
-                    // We have an expression, creating a match object
-                    var match = (evaluatedNode.Value as Expression).Evaluate (context, dataSource, evaluatedNode, formattingNode);
-
-                    // Checking type of match
-                    if (match.TypeOfMatch == Match.MatchType.count) {
-
-                        // If expression is of type 'count', we return 'count', possibly triggering
-                        // a conversion, returning count as type T, hence only iterating once
-                        yield return Utilities.Convert<T> (context, match.Count);
-                        yield break;
-                    } else {
-
-                        // Caller requested anything but 'count', we return it as type T, possibly triggering
-                        // a conversion
-                        foreach (var idx in match) {
-                            yield return Utilities.Convert<T> (context, idx.Value);
-                        }
-                    }
-                } else {
-
-                    // Returning single value created from value of node, but first applying formatting parameters, 
-                    // if there are any
-                    yield return Utilities.Convert<T> (context, FormatNode (context, evaluatedNode, dataSource));
-                }
-            } else {
-
-                if (typeof(T) == typeof(Node)) {
-
-                    // Node's value is null, caller requests nodes, iterating through children of node, 
-                    // yielding results back to caller
-                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
-                        yield return Utilities.Convert<T> (context, idx);
-                    }
-                } else if (typeof(T) == typeof(string)) {
-
-                    // Caller requests string, iterating children, yielding names of children
-                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
-                        yield return Utilities.Convert<T> (context, idx.Name);
-                    }
-                } else {
-
-                    // Caller requests anything but node and string, iterating children, yielding
-                    // values of children, converted to type back to caller
-                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
-                        yield return idx.Get<T> (context);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         ///     Raises a dynamically created Active Event or lambda object.
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -448,20 +437,6 @@ namespace p5.exp
             // Notice Clear invocation, since eventNode still might contain formatting parameters.
             eventNode.Clear ().AddRange (lambda.Children);
             eventNode.Value = lambda.Value;
-        }
-
-        /// <summary>
-        ///     Returns true if given node contains formatting parameters
-        /// </summary>
-        /// <returns><c>true</c> if is formatted the specified evaluatedNode; otherwise, <c>false</c></returns>
-        /// <param name="evaluatedNode">Evaluated node</param>
-        private static bool IsFormatted (Node evaluatedNode)
-        {
-            // A formatted node is defined as having one or more children with "" as name
-            // and a value which is of type string
-            return evaluatedNode.Value is string &&
-                (evaluatedNode.Value as string).Contains ("{0}") &&
-                evaluatedNode.Children.Count (ix => ix.Name == "") > 0;
         }
 
         /*

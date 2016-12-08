@@ -42,7 +42,7 @@ namespace p5.lambda.keywords.core
         {
             // Finding source nodes, and returning early if no source is given.
             var src = XUtil.Sources (context, e.Args);
-            if (src == null)
+            if (src.Count == 0)
                 return;
 
             // Looping through each destination, adding all source nodes to it, cloning them before adding them.

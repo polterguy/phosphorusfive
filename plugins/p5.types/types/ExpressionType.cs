@@ -41,7 +41,7 @@ namespace p5.types.types {
             if (e.Args.Value is Expression) {
                 return;
             } else {
-                e.Args.Value = Expression.Create (e.Args.Get<string> (context), context);
+                e.Args.Value = Expression.Create (context, e.Args.Get<string> (context));
             }
         }
 

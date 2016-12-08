@@ -53,7 +53,7 @@ namespace p5.lambda.keywords.extras
 
             // Retrieving source, ignoring [template], and making sure source is not null, before we start braiding source(s) and template into destination.
             var source = XUtil.Sources (context, e.Args, "template");
-            if (source != null) {
+            if (source.Count != 0) {
 
                 // Looping through each destination, and braiding source(s) and template, before appending into destination node, 
                 // assuming destination is node type of expression.

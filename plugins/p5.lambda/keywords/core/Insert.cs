@@ -61,7 +61,7 @@ namespace p5.lambda.keywords.core
         {
             // Finding source nodes, and returning early if no source is given.
             var src = XUtil.Sources (context, args);
-            if (src == null || src.Count == 0)
+            if (src.Count == 0)
                 return;
 
             // Looping through each destination, and inserting all source node at specified position, in order of appearance.

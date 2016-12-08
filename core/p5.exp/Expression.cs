@@ -42,14 +42,13 @@ namespace p5.exp
         // Type of expression (node, value, name, count)
         private Match.MatchType _expressionType;
 
-        // If value(s) of expression results should be converted to another type, this will contains
-        // the Hyperlambda type name (int, float, bool, etc)
-        private string _convertResultsType;
+        // If value(s) of expression results should be converted to another type, this will contain the Hyperlambda type name (int, float, bool, etc).
+        private string _convert;
 
         /*
          * Private ctor, use static Create method to create instances.
          */
-        private Expression (string expression, ApplicationContext context)
+        private Expression (ApplicationContext context, string expression)
         {
             Value = expression;
         }
@@ -68,9 +67,9 @@ namespace p5.exp
         /// </summary>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="context">Application context, necessary to convert types value iterators, among other things</param>
-        public static Expression Create (string expression, ApplicationContext context)
+        public static Expression Create (ApplicationContext context, string expression)
         {
-            return new Expression (expression, context);
+            return new Expression (context, expression);
         }
 
         /// <summary>
@@ -80,16 +79,16 @@ namespace p5.exp
         /// <param name="context">Application Context</param>
         /// <param name="exNode">Node that contained expression, optional, necessary for 
         /// formatting operations</param>
-        public Match Evaluate (ApplicationContext context, Node evaluatedNode, Node exNode, Node formattingNode = null)
+        public Match Evaluate (ApplicationContext context, Node evaluatedNode, Node exNode)
         {
             if (evaluatedNode == null || exNode == null)
                 throw new ExpressionException ("[null]", "No actual node or expression node given to evaluate");
 
             // Building expression
-            var iteratorGroup = BuildExpression (context, evaluatedNode, exNode, formattingNode);
+            var iteratorGroup = BuildExpression (context, evaluatedNode, exNode);
 
             // Creating a Match object, and returning to caller.
-            return new Match (iteratorGroup.Evaluate (context), _expressionType, context, _convertResultsType);
+            return new Match (iteratorGroup.Evaluate (context), _expressionType, context, _convert);
         }
 
         /*
@@ -98,14 +97,13 @@ namespace p5.exp
         private IteratorGroup BuildExpression (
             ApplicationContext context, 
             Node evaluatedNode, 
-            Node exNode,
-            Node formattingNode)
+            Node exNode)
         {
             // Setting up a return value
             var retVal = new IteratorGroup ();
 
             // Checking to see if we should run formatting logic on expression before parsing iterators
-            var expression = FormatExpression (context, exNode, formattingNode);
+            var expression = FormatExpression (context, exNode);
 
             string previousToken = null; // Needed to keep track of previous token
             var current = retVal; // Used as index iterator during tokenizing process
@@ -150,7 +148,7 @@ namespace p5.exp
         /*
          * Formats expression with formatting values recursively
          */
-        private string FormatExpression (ApplicationContext context, Node exNode, Node formattingNode)
+        private string FormatExpression (ApplicationContext context, Node exNode)
         {
             var retVal = Value;
             var formatNodes = (from idxNode in exNode.Children where idxNode.Name == "" select idxNode).ToList ();
@@ -160,13 +158,13 @@ namespace p5.exp
                 var val = formatNodes [idx].Value;
                 var exVal = val as Expression;
                 if (exVal != null) {
-                    var match = exVal.Evaluate (context, formattingNode ?? formatNodes [idx], formatNodes [idx], formattingNode);
+                    var match = exVal.Evaluate (context, formatNodes [idx], formatNodes [idx]);
                     val = "";
                     foreach (var idxMatch in match) {
                         val += Utilities.Convert<string> (context, idxMatch.Value);
                     }
                 } else {
-                    val = XUtil.FormatNode (context, formatNodes [idx], formattingNode ?? formatNodes [idx]);
+                    val = XUtil.FormatNode (context, formatNodes [idx], formatNodes [idx]);
                 }
                 retVal = retVal.Replace ("{" + idx + "}", Utilities.Convert<string> (context, val));
             }
@@ -181,7 +179,7 @@ namespace p5.exp
             // this is our last token, storing it as "expression type", and optionally a "convert", before ending iteration
             string typeOfExpression = null;
             if (token.IndexOf ('.') != -1) {
-                _convertResultsType = token.Substring (token.IndexOf ('.') + 1);
+                _convert = token.Substring (token.IndexOf ('.') + 1);
                 typeOfExpression = token.Substring (0, token.IndexOf ('.'));
             } else {
                 typeOfExpression = token;
@@ -545,8 +543,8 @@ namespace p5.exp
         {
             if (_expressionType != rhs._expressionType)
                 return _expressionType.CompareTo (rhs._expressionType);
-            if (_convertResultsType != rhs._convertResultsType)
-                return _convertResultsType.CompareTo (rhs._convertResultsType);
+            if (_convert != rhs._convert)
+                return _convert.CompareTo (rhs._convert);
             return Value.CompareTo (rhs.Value);
         }
 

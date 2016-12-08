@@ -114,6 +114,21 @@ Get with expression to multiple sources
     throw:Assert error, collections misbehaved
 
 
+Get with children nodes yielding multiple sources
+  set-page-value:sys42.tests.sample-value-1
+    src:success-1
+  set-page-value:sys42.tests.sample-value-2
+    src:success-2
+  get-page-value
+    sys42.tests.sample-value-1
+    sys42.tests.sample-value-2
+  if:x:/@get-page-value
+    !=:node:@"get-page-value
+  sys42.tests.sample-value-1:success-1
+  sys42.tests.sample-value-2:success-2"
+    throw:Assert error, collections misbehaved
+
+
 Get throws on protected key
   _success:bool:false
   try
