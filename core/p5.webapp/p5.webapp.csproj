@@ -848,6 +848,7 @@
     <Content Include="system42\apps\Unit tests\tests\src.hl" />
     <Content Include="system42\apps\Unit tests\tests\eval-whitelist.hl" />
     <Content Include="system42\components\web-services\startup\sys42.utilities.load-web-service-ui.hl" />
+    <Content Include="system42\apps\Unit tests\tests\collections.hl" />
     <None Include="system42\README.md" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="system42\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />

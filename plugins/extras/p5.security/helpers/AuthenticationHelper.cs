@@ -112,7 +112,7 @@ namespace p5.security.helpers
                 HttpCookie cookie = new HttpCookie (_credentialCookieName);
                 cookie.Expires = DateTime.Now.AddDays (context.Raise (
                     ".get-config-setting", 
-                    new Node ("", "p5.security.credential-cookie-valid")) [0].Get<int> (context));
+                    new Node (".get-config-setting", "p5.security.credential-cookie-valid")) [0].Get<int> (context));
                 cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie
 
                 // Notice, we use another fingerprint as password for cookie than what we use for storing cookie in auth file

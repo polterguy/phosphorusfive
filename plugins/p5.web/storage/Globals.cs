@@ -54,7 +54,7 @@ namespace p5.web.storage
                     // Setting or updating
                     HttpContext.Current.Application[key] = value;
                 }
-            }, e.Name.StartsWith ("."));
+            });
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".get-global-value")]
         public static void get_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Application [key], e.Name.StartsWith ("."));
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Application [key]);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".list-global-keys")]
         public static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Application.AllKeys, e.Name.StartsWith ("."));
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Application.AllKeys);
         }
     }
 }

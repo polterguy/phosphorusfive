@@ -64,7 +64,7 @@ namespace p5.web.storage
                         DateTime.Now.AddMinutes (minutes),
                         System.Web.Caching.Cache.NoSlidingExpiration);
                 }
-            }, e.Name.StartsWith ("."), new string[] { "minutes" }.ToList ());
+            }, "minutes");
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".get-cache-value")]
         public static void get_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Cache [key], e.Name.StartsWith ("."));
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Cache [key]);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace p5.web.storage
             foreach (DictionaryEntry idx in HttpContext.Current.Cache) {
                 retVal.Add (idx.Key.ToString ());
             }
-            XUtil.ListCollection (context, e.Args, retVal, e.Name.StartsWith ("."));
+            XUtil.ListCollection (context, e.Args, retVal);
         }
     }
 }

@@ -236,12 +236,8 @@ namespace p5.web
         public void return_response_object (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (context, e.Args);
-            var source = XUtil.Source (context, e.Args, e.Args);
-            if (source.Count > 1)
-                throw new LambdaException ("More than one source given for [return-response-object]", e.Args, context);
-            if (source.Count == 0)
-                return; // Nothing to do here
-            AjaxPage.Manager.SendObject (key, core.Utilities.Convert<string> (context, source[0]));
+            var source = XUtil.GetSourceValue (context, e.Args);
+            AjaxPage.Manager.SendObject (key, core.Utilities.Convert<string> (context, source));
         }
 
         #endregion
@@ -287,7 +283,7 @@ namespace p5.web
                 // Associating lambda event storage with page by creating a "page value"
                 context.Raise(
                     ".set-page-value",
-                    new Node("", "_WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
+                    new Node(".set-page-value", "_WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
 
                 // Creating storage for widget ajax events
                 WidgetAjaxEventStorage = new WidgetEventStorage();
@@ -295,19 +291,19 @@ namespace p5.web
                 // Associating ajax event storage with page by creating a "page value"
                 context.Raise(
                     ".set-page-value",
-                    new Node("", "_WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
+                    new Node(".set-page-value", "_WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
             } else {
 
                 // Retrieving existing widget lambda event storage
                 WidgetLambdaEventStorage = context.Raise (
                     ".get-page-value",
-                    new Node("", "_WidgetLambdaEventStorage"))[0]
+                    new Node(".get-page-value", "_WidgetLambdaEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
 
                 // Retrieving existing widget ajax event storage
                 WidgetAjaxEventStorage = context.Raise (
                     ".get-page-value",
-                    new Node("", "_WidgetAjaxEventStorage"))[0]
+                    new Node(".get-page-value", "_WidgetAjaxEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
             }
         }

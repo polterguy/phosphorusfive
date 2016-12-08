@@ -50,7 +50,7 @@ namespace p5.web.storage {
                     // Setting or updating
                     HttpContext.Current.Items[key] = value;
                 }
-            }, e.Name.StartsWith ("."));
+            });
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace p5.web.storage {
         [ActiveEvent (Name = ".get-context-value")]
         public static void get_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Items [key], e.Name.StartsWith ("."));
+            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Items [key]);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace p5.web.storage {
         [ActiveEvent (Name = ".list-context-keys")]
         public static void list_context_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Items.Keys, e.Name.StartsWith ("."));
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Items.Keys);
         }
     }
 }

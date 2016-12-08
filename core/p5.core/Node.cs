@@ -79,6 +79,24 @@ namespace p5.core
         }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="phosphorus.core.Node"/> class
+        /// </summary>
+        /// <param name="name">Name of node. Cannot be null</param>
+        /// <param name="value">Value of node. Can be any object, including null</param>
+        /// <param name="children">Initial children collection for node. Notice that if children given already
+        /// belongs to another Node's children collection, then they will be UnTied from the other node, and ReTied 
+        /// into currently created node</param>
+        public Node (string name, object value, params Node[] children)
+        {
+            Name = name;
+            Value = value;
+            _children = new List<Node> ();
+            if (children != null) {
+                _children.AddRange (children);
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets the name of the node
         /// </summary>
         /// <value>The node's new name</value>
@@ -366,6 +384,17 @@ namespace p5.core
         }
 
         /// <summary>
+        ///     Adds a child node to the current node's children collection, with the specified name, value and children collection.
+        /// </summary>
+        /// <param name="name">name of node to add</param>
+        /// <param name="value">value of node to add</param>
+        /// <param name="nodes">initial child collection of node</param>
+        public Node Add (string name, object value, params Node[] nodes)
+        {
+            return Add (new Node (name, value, nodes));
+        }
+
+        /// <summary>
         ///     Adds a range of nodes
         /// </summary>
         /// <param name="nodes">nodes to add</param>
@@ -373,6 +402,19 @@ namespace p5.core
         {
             // TODO: Optimize
             foreach (var idx in nodes.ToList ()) {
+                Add (idx);
+            }
+            return this;
+        }
+
+        /// <summary>
+        ///     Adds a range of nodes
+        /// </summary>
+        /// <param name="nodes">nodes to add</param>
+        public Node AddRange (params Node[] nodes)
+        {
+            // TODO: Optimize
+            foreach (var idx in nodes) {
                 Add (idx);
             }
             return this;
@@ -400,6 +442,19 @@ namespace p5.core
         {
             // TODO: Optimize
             foreach (var idx in nodes.ToList ())
+                Insert (index++, idx);
+            return this;
+        }
+
+        /// <summary>
+        ///     Inserts a child node to the current node's children collection
+        /// </summary>
+        /// <param name="node">node to add</param>
+        /// <param name="index">where to add</param>
+        public Node InsertRange (int index, params Node[] nodes)
+        {
+            // TODO: Optimize
+            foreach (var idx in nodes)
                 Insert (index++, idx);
             return this;
         }

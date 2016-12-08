@@ -42,9 +42,7 @@ namespace p5.events
         [ActiveEvent (Name = ".get-config-setting")]
         public static void get_config_setting (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, delegate (string key) {
-                return ConfigurationManager.AppSettings[key];
-            }, e.Name.StartsWith ("."));
+            XUtil.GetCollection (context, e.Args, ix => ConfigurationManager.AppSettings[ix]);
         }
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace p5.events
         [ActiveEvent (Name = ".list-config-settings")]
         public static void list_config_settings (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, ConfigurationManager.AppSettings.AllKeys, e.Name.StartsWith ("."));
+            XUtil.ListCollection (context, e.Args, ConfigurationManager.AppSettings.AllKeys);
         }
     }
 }

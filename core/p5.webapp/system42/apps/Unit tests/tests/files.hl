@@ -1,57 +1,29 @@
 
 /*
- * Contains unit tests for testing creation, deletion and so on
- * of files in your system
+ * Unit tests for everything related to files.
  */
 
 
-/*
- * Tests that creating a file behaves
- */
-save-and-load-file
+Save and load single file
   save-file:~/temp/foo.txt
     src:Foo bar
   load-file:~/temp/foo.txt
-  if:x:/-/*?value
+  if:x:/@load-file/*?value
     !=:Foo bar
-    throw:@"Assert error, expected 'Foo bar' in file!"
+    throw:Assert error, p5.io misbehaved
 
-/*
- * Tests that creating multiple file behaves
- */
-save-and-load-multiple-files
-  _files
-    no1:~/temp/foo1.txt
-      content:Foo1
-    no1:~/temp/foo2.txt
-      content:Foo2
-  save-file:x:/../*/_files/*?value
-    eval
-      return:x:/../*/_dn/#/*/content?value
-  load-file:x:/../*/_files/*?value
-  if:x:/-/0?value
-    !=:Foo1
-    or:x:/./-/1?value
-      !=:Foo2
-    throw:@"Assert error, expected 'Foo1' and 'Foo2' in files!"
 
-/*
- * Tests that deleting a single file behaves
- */
-delete-single-file
+Delete single file
   save-file:~/temp/bar.txt
     src:Bar was here
   delete-file:~/temp/bar.txt
   if
     fetch:x:/0/0?value
       file-exist:~/temp/bar.txt
-    throw:@"Assert error, expected file to have been deleted"
+    throw:Assert error, p5.io misbehaved
 
 
-/*
- * Tests that deleting multiple files behaves
- */
-delete-multiple-files
+Deleting multiple files
   save-file:~/temp/bar1.txt
     src:Bar1 was here
   save-file:~/temp/bar2.txt
@@ -63,13 +35,10 @@ delete-multiple-files
     or
       fetch:x:/0/0?value
         file-exist:~/temp/bar2.txt
-    throw:@"Assert error, expected files to have been deleted"
+    throw:Assert error, p5.io misbehaved
 
 
-/*
- * Tests that copying a file behaves
- */
-copy-file
+Copy a single file
   save-file:~/temp/foo.txt
     src:Foo bar
   if
@@ -79,15 +48,32 @@ copy-file
   copy-file:~/temp/foo.txt
     dest:~/temp/foo-copy.txt
   load-file:~/temp/foo-copy.txt
-  if:x:/-/*?value
+  if:x:/@load-file/*?value
     !=:Foo bar
-    throw:@"Assert error, expected 'Foo bar' in file!"
+    throw:Assert error, p5.io misbehaved
 
 
-/*
- * Tests that moving a file behaves
- */
-move-file
+Copy multiple files with expression
+  save-file:~/temp/foo-1.txt
+    src:Foo bar 1
+  save-file:~/temp/foo-2.txt
+    src:Foo bar 2
+  if
+    fetch:x:/0/0?value
+      folder-exist:~/temp/new/
+    delete-folder:~/temp/new/
+  create-folder:~/temp/new/
+  copy-file:x:/../*/save-file?value
+    dest:~/temp/new/
+  load-file:x:/../*/save-file?value
+  if:x:/@load-file/0?value
+    !=:Foo bar 1
+    or:x:/@load-file/1?value
+      !=:Foo bar 2
+    throw:Assert error, p5.io misbehaved
+
+
+Move a single file
   save-file:~/temp/foo-orig.txt
     src:Foo bar
   if
@@ -97,18 +83,15 @@ move-file
   move-file:~/temp/foo-orig.txt
     dest:~/temp/foo-dest.txt
   load-file:~/temp/foo-dest.txt
-  if:x:/-/*?value
+  if:x:/@load-file/*?value
     !=:Foo bar
     or
       fetch:x:/0/0?value
         file-exist:~/temp/foo-orig.txt
-    throw:@"Assert error, file wasnt't correctly moved!"
+    throw:Assert error, p5.io misbehaved
 
 
-/*
- * Tests that renaming a file behaves
- */
-rename-file
+Rename a single file
   save-file:~/temp/foo-orig.txt
     src:Foo bar
   if
@@ -118,29 +101,10 @@ rename-file
   rename-file:~/temp/foo-orig.txt
     dest:~/temp/foo-dest.txt
   load-file:~/temp/foo-dest.txt
-  if:x:/-/*?value
+  if:x:/@load-file/*?value
     !=:Foo bar
     or
       fetch:x:/0/0?value
         file-exist:~/temp/foo-orig.txt
-    throw:@"Assert error, file wasnt't correctly renamed!"
-
-
-/*
- * Tests that listing files behaves
- */
-list-files
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/list-files/
-    delete-folder:~/temp/list-files/
-  create-folder:~/temp/list-files/
-  save-file:~/temp/list-files/foo-orig.txt
-    src:Foo bar
-  list-files:~/temp/list-files/
-  if:x:/-/*?count
-    !=:int:1
-    or:x:/./-/*/~foo-orig.txt
-      not
-    throw:@"Assert error, file wasnt't correctly renamed!"
+    throw:Assert error, p5.io misbehaved
 

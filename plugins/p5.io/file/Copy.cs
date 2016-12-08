@@ -42,18 +42,16 @@ namespace p5.io.file
         {
             // Using our common helper for actual implementation
             MoveCopyHelper.CopyMoveFileObject (
-                context, 
-                e.Args, 
-                "read-file", 
-                "modify-file", 
+                context,
+                e.Args,
+                "read-file",
+                "modify-file",
                 delegate (string rootFolder, string source, string destination) {
-
-                // Actually moving (or renaming) file
-                File.Copy (rootFolder + source, rootFolder + destination);
-            },
-            delegate (string destination) {
-                return File.Exists (destination);
-            });
+                    File.Copy (rootFolder + source, rootFolder + destination);
+                },
+                delegate (string destination) {
+                    return File.Exists (destination);
+                });
         }
     }
 }

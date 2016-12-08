@@ -1,76 +1,80 @@
-/*
- * Contains unit tests for testing [index-of] in system
- */
 
 /*
- * Tests that [index-of] behaves as expected when given a single search,
- * yielding one result
+ * Unit tests for [index-of].
  */
-single-result
+
+
+Index of static string yielding single result
   _data:foobarhowdy
-  index-of:x:/-?value
+  index-of:x:/@_data?value
     src:bar
-  if:x:/-/*?value
+  if:x:/@index-of/*?value
     !=:int:3
-    or:x:/./-/*?count
+    or:x:/@index-of/*?count
       !=:int:1
-    throw:@"Assert error, [index-of] returned wrong result!"
+    throw:Assert error, [index-of] misbehaved
 
-/*
- * Tests that [index-of] behaves as expected when given a single search,
- * yielding multiple results
- */
-multiple-results
+
+Index of static string yielding multiple results
   _data:foobarhowdybar
-  index-of:x:/-?value
+  index-of:x:/@_data?value
     src:bar
-  if:x:/-/0?value
+  if:x:/@index-of/0?value
     !=:int:3
-    or:x:/./-/1?value
+    or:x:/@index-of/1?value
       !=:int:11
-    or:x:/./-/*?count
+    or:x:/@index-of/*?count
       !=:int:2
-    throw:@"Assert error, [index-of] returned wrong result!"
+    throw:Assert error, [index-of] misbehaved
 
-/*
- * Tests that [index-of] behaves as expected when given a regex search
- */
-regex
+
+Index of expression string yielding single result
+  _data:foobarhowdy
+  _input:bar
+  index-of:x:/@_data?value
+    src:x:/@_input?value
+  if:x:/@index-of/*?value
+    !=:int:3
+    or:x:/@index-of/*?count
+      !=:int:1
+    throw:Assert error, [index-of] misbehaved
+
+
+Index of static regex yielding multiple result
   _data:Thomas hansen thomas
-  index-of:x:/-?value
+  index-of:x:/@_data?value
     src:regex:/thomas/i
-  if:x:/-/0?value
+  if:x:/@index-of/0?value
     !=:int:0
-    or:x:/./-/1?value
+    or:x:/@index-of/1?value
       !=:int:14
-    or:x:/./-/*?count
+    or:x:/@index-of/*?count
       !=:int:2
-    throw:@"Assert error, [index-of] returned wrong result!"
+    throw:Assert error, [index-of] misbehaved
 
-/*
- * Tests that [index-of] behaves as expected when given mixed multiples sources
- */
-mixed-sources
-  _data:Thomas Hansen is the creator of Phosphorus Five. Hansen's email is mr.gaia@gaiasoul.com
-  _src
-    no1:regex:/phosphorus/i
-    no2:regex:/Hansen/i
-    no3-string:Five
-  index-of:x:/../*/_data?value
-    src:x:/../*/_src/*?value
-  index-of:x:/../*/_data?value
-    src:x:/../*/_src/*?node
-  if:x:/-2
-    !=:node:@"index-of
-  /phosphorus/i:int:32
-  /phosphorus/i:int:67
-  /Hansen/i:int:7
-  /Hansen/i:int:49
-  Five:int:43"
-    or:x:/./-
-      !=:node:@"index-of
-  no1:int:32
-  no1:int:67
-  no2:int:7
-  no2:int:49
-  no3-string:int:43"
+
+Index of expression regex yielding single result
+  _data:Hansen, Thomas
+  _input:regex:/thomas/i
+  index-of:x:/@_data?value
+    src:x:/@_input?value
+  if:x:/@index-of/0?value
+    !=:int:8
+    or:x:/@index-of/*?count
+      !=:int:1
+    throw:Assert error, [index-of] misbehaved
+
+
+Index of throws on multiple sources
+  _success:bool:false
+  _data:foo bar
+  try
+    index-of:x:/@_data?value
+      src:foo
+      src:bar
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, [index-of] misbehaved

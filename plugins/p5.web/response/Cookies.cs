@@ -57,7 +57,7 @@ namespace p5.web.ui.response
                     // Setting or updating
                     HttpContext.Current.Response.Cookies.Add (CreateCookieFromNode (e.Args, context, key, value));
                 }
-            }, e.Name.StartsWith ("."), new string[] { "duration", "http-only" }.ToList ());
+            }, "duration", "http-only");
         }
 
         /*

@@ -1,0 +1,171 @@
+
+/*
+ * Unit tests for collection types of Active Events.
+ *
+ * Since all collection Active Events basically uses the same type of logic, from XUtil, it is actually enough with testing
+ * one or two of them, to verify they all behaves correctly. Hence, we choose to use the one which is least "intrusive" on the
+ * state of your server, which happens to the setting and getting "page values", which are local to your page, until you refresh it.
+ */
+
+
+Set simple string value
+  set-page-value:sys42.tests.sample-value
+    src:success
+  get-page-value:sys42.tests.sample-value
+  if:x:/@get-page-value/*?value
+    !=:success
+    throw:Assert error, collections misbehaved
+
+
+Set simple integer value
+  set-page-value:sys42.tests.sample-value
+    src:int:57
+  get-page-value:sys42.tests.sample-value
+  if:x:/@get-page-value/*?value
+    !=:int:57
+    throw:Assert error, collections misbehaved
+
+
+Set graph object value
+  set-page-value:sys42.tests.sample-value
+    src
+      person
+        name:Thomas
+        age:int:42
+  get-page-value:sys42.tests.sample-value
+  if:x:/@get-page-value
+    !=:node:@"get-page-value
+  sys42.tests.sample-value
+    person
+      name:Thomas
+      age:int:42"
+    throw:Assert error, collections misbehaved
+
+
+Set throws on multiple root nodes in source
+  _success:bool:false
+  try
+    set-page-value:sys42.tests.sample-value
+      src
+        name:Thomas
+        age:int:42
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, collections misbehaved
+
+
+Set throws on multiple sources
+  _success:bool:false
+  try
+    set-page-value:sys42.tests.sample-value
+      src:Error
+      src:Failure
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, collections misbehaved
+
+
+Set throws on protected key
+  _success:bool:false
+  try
+    set-page-value:.sys42.tests.sample-value
+      src:Error
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, collections misbehaved
+
+
+Set with expression to multiple destinations
+  _dest
+    sys42.tests.sample-value-1
+    sys42.tests.sample-value-2
+  set-page-value:x:/@_dest/*?name
+    src:success
+  if
+    fetch:x:/0/0?value
+      get-page-value:sys42.tests.sample-value-1
+    !=:success
+    or
+      fetch:x:/0/0?value
+        get-page-value:sys42.tests.sample-value-1
+      !=:success
+    throw:Assert error, collections misbehaved
+
+
+Get with expression to multiple sources
+  set-page-value:sys42.tests.sample-value-1
+    src:success-1
+  set-page-value:sys42.tests.sample-value-2
+    src:success-2
+  get-page-value:x:/../*/set-page-value?value
+  if:x:/@get-page-value
+    !=:node:@"get-page-value
+  sys42.tests.sample-value-1:success-1
+  sys42.tests.sample-value-2:success-2"
+    throw:Assert error, collections misbehaved
+
+
+Get throws on protected key
+  _success:bool:false
+  try
+    get-page-value:.sys42.tests.sample-value
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, collections misbehaved
+
+
+List collections exact match
+  set-page-value:sys42.tests.sample-value-1
+    src:success-1
+  set-page-value:sys42.tests.sample-value-2
+    src:success-2
+  list-page-keys:sys42.tests.sample-value-1
+  if:x:/@list-page-keys
+    !=:node:@"list-page-keys
+  sys42.tests.sample-value-1"
+    throw:Assert error, collections misbehaved
+
+
+List collections like match
+  set-page-value:sys42.tests.sample-value-1
+    src:success-1
+  set-page-value:sys42.tests.sample-value-2
+    src:success-2
+  list-page-keys:~sys42.tests.sample-value-
+  if:x:/@list-page-keys
+    !=:node:@"list-page-keys
+  sys42.tests.sample-value-1
+  sys42.tests.sample-value-2"
+    throw:Assert error, collections misbehaved
+
+
+List collections exact match expression
+  set-page-value:sys42.tests.sample-value-1
+    src:success-1
+  set-page-value:sys42.tests.sample-value-2
+    src:success-2
+  list-page-keys:x:/../*/set-page-value?value
+  if:x:/@list-page-keys
+    !=:node:@"list-page-keys
+  sys42.tests.sample-value-1
+  sys42.tests.sample-value-2"
+    throw:Assert error, collections misbehaved
+
+
+List does not return protected key
+  list-page-keys:_WidgetAjaxEventStorage
+  if:x:/@list-page-keys
+    !=:node:@"list-page-keys"
+    throw:Assert error, collections misbehaved

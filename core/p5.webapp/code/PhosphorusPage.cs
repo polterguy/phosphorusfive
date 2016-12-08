@@ -99,7 +99,7 @@ namespace p5.webapp.code
                     // Setting or updating
                     ViewState[key] = value;
                 }
-            }, e.Name.StartsWith ("."));
+            });
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace p5.webapp.code
         [ActiveEvent (Name = ".get-page-value")]
         public void get_page_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => ViewState [key], e.Name.StartsWith ("."));
+            XUtil.GetCollection (context, e.Args, key => ViewState [key]);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace p5.webapp.code
         [ActiveEvent (Name = ".list-page-keys")]
         public void list_page_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, ViewState.Keys, e.Name.StartsWith ("."));
+            XUtil.ListCollection (context, e.Args, ViewState.Keys);
         }
 
         #endregion

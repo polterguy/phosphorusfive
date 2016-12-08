@@ -148,7 +148,7 @@ namespace p5
                 // Execute our "startup file", if there is one defined
                 var appStartupFiles = context.Raise (
                     ".get-config-setting",
-                    new Node ("", ".p5.webapp.application-startup-file"))[0].Get<string> (context);
+                    new Node (".get-config-setting", ".p5.webapp.application-startup-file"))[0].Get<string> (context);
                 if (!string.IsNullOrEmpty (appStartupFiles)) {
 
                     // There is an application-startup-file declared in web.config, executing it as a Hyperlambda file

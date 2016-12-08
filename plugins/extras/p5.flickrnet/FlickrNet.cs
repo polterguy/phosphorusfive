@@ -45,7 +45,7 @@ namespace p5.flickrnet
                 Flickr flickr = new Flickr ();
                 flickr.ApiKey = context.Raise (
                     ".get-config-setting",
-                    new Node ("", ".p5.flickr.api-key"))[0].Get<string> (context);
+                    new Node (".get-config-setting", ".p5.flickr.api-key"))[0].Get<string> (context);
                 var options = new PhotoSearchOptions { 
                     Text = e.Args.GetExChildValue<string> ("text", context),
                     Tags = e.Args.GetExChildValue<string> ("tags", context),

@@ -51,7 +51,7 @@ namespace p5.web.ui.request
                     return HttpUtility.UrlDecode (cookie.Value);
                 }
                 return null;
-            }, e.Name.StartsWith ("."));
+            });
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = ".list-cookie-keys")]
         public static void list_cookie_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Cookies.AllKeys, e.Name.StartsWith ("."));
+            XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Cookies.AllKeys);
         }
     }
 }

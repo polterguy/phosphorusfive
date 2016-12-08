@@ -1,12 +1,10 @@
-/*
- * Contains unit tests for testing creation, deletion and so on
- * of folders in your system
- */
 
 /*
- * Tests that creating a folder behaves
+ * Unit tests for everything related to folders.
  */
-create-single-folder
+
+
+Create a single folder
   if
     fetch:x:/0/0?value
       folder-exist:~/temp/foo/
@@ -16,12 +14,10 @@ create-single-folder
     fetch:x:/0/0?value
       folder-exist:~/temp/foo/
     not
-    throw:@"Assert error, expected folder to exist!"
+    throw:Assert error, p5.io misbehaved
 
-/*
- * Tests that creating multiple folders behaves
- */
-create-multiple-folders
+
+Creates multiple folders with expression
   if
     fetch:x:/0/0?value
       folder-exist:~/temp/foo1/
@@ -31,9 +27,9 @@ create-multiple-folders
       folder-exist:~/temp/foo2/
     delete-folder:~/temp/foo2/
   _folders
-    no1:~/temp/foo1/
-    no1:~/temp/foo2/
-  create-folder:x:/../*/_folders/*?value
+    ~/temp/foo1/
+    ~/temp/foo2/
+  create-folder:x:/@_folders/*?name
   if
     fetch:x:/0/0?value
       folder-exist:~/temp/foo1/
@@ -42,13 +38,10 @@ create-multiple-folders
       fetch:x:/0/0?value
         folder-exist:~/temp/foo2/
       not
-    throw:@"Assert error, expected folders to exist!"
+    throw:Assert error, p5.io misbehaved
 
 
-/*
- * Tests that deep copying a folder behaves
- */
-deep-copy-folder
+Copy folder with sub-folders
   if
     fetch:x:/0/0?value
       folder-exist:~/temp/foo-bar/
@@ -64,205 +57,32 @@ deep-copy-folder
   copy-folder:~/temp/foo-bar/
     dest:~/temp/foo-bar-2/
   load-file:~/temp/foo-bar-2/inner/foo.txt
-  if:x:/-/*?value
+  if:x:/@load-file/*?value
     !=:Foo was here
-    throw:@"Assert error, file didn't contain expected data!"
+    throw:Assert error, p5.io misbehaved
 
 
-/*
- * Tests that deep copying multiple folder behaves
- */
-deep-copy-multiple-folders
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-1/
-    delete-folder:~/temp/foo-bar-1/
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-2/
-    delete-folder:~/temp/foo-bar-2/
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-1-copy/
-    delete-folder:~/temp/foo-bar-1-copy/
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-2-copy/
-    delete-folder:~/temp/foo-bar-2-copy/
-
-  create-folder:~/temp/foo-bar-1/
-  create-folder:~/temp/foo-bar-1/inner/
-  save-file:~/temp/foo-bar-1/inner/foo1.txt
-    src:Foo was here
-
-  create-folder:~/temp/foo-bar-2/
-  create-folder:~/temp/foo-bar-2/inner/
-  save-file:~/temp/foo-bar-2/inner/foo2.txt
-    src:Foo was here too
-
-  _folders
-    no1:~/temp/foo-bar-1/
-    no1:~/temp/foo-bar-2/
-  copy-folder:x:/../*/_folders/*?value
-    eval
-      split:x:/../*/_dn/#?value
-        =:/
-      return:~/temp/{0}-copy/
-        :x:/../*/split/0/-?name
-
-  load-file:~/temp/foo-bar-1-copy/inner/foo1.txt
-  load-file:~/temp/foo-bar-2-copy/inner/foo2.txt
-  if:x:/-2/*?value
-    !=:Foo was here
-    or:x:/./-/*?value
-      !=:Foo was here too
-    throw:@"Assert error, files didn't contain expected data!"
-
-
-/*
- * Tests that moving multiple folders behaves
- */
-move-multiple-folders
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-move-1/
-    delete-folder:~/temp/foo-bar-move-1/
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-move-2/
-    delete-folder:~/temp/foo-bar-move-2/
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-move-1-copy/
-    delete-folder:~/temp/foo-bar-move-1-copy/
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-move-2-copy/
-    delete-folder:~/temp/foo-bar-move-2-copy/
-
-  create-folder:~/temp/foo-bar-move-1/
-  create-folder:~/temp/foo-bar-move-1/inner/
-  save-file:~/temp/foo-bar-move-1/inner/foo1.txt
-    src:Foo was here
-
-  create-folder:~/temp/foo-bar-move-2/
-  create-folder:~/temp/foo-bar-move-2/inner/
-  save-file:~/temp/foo-bar-move-2/inner/foo2.txt
-    src:Foo was here too
-
-  _folders
-    no1:~/temp/foo-bar-move-1/
-    no1:~/temp/foo-bar-move-2/
-  move-folder:x:/../*/_folders/*?value
-    eval
-      split:x:/../*/_dn/#?value
-        =:/
-      return:~/temp/{0}-copy/
-        :x:/../*/split/0/-?name
-
-  load-file:~/temp/foo-bar-move-1-copy/inner/foo1.txt
-  load-file:~/temp/foo-bar-move-2-copy/inner/foo2.txt
-  if:x:/-2/*?value
-    !=:Foo was here
-    or:x:/./-/*?value
-      !=:Foo was here too
-    or
-      fetch:x:/0/0?value
-        folder-exist:~/temp/foo-bar-move-1/
-    or
-      fetch:x:/0/0?value
-        folder-exist:~/temp/foo-bar-move-2/
-    throw:@"Assert error, files didn't contain expected data!"
-
-
-/*
- * Tests that renaming a folder behaves.
- */
-rename-folder
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-move-1/
-    delete-folder:~/temp/foo-bar-move-1/
-  if
-    fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-move-1-copy/
-    delete-folder:~/temp/foo-bar-move-1-copy/
-
-  create-folder:~/temp/foo-bar-move-1/
-  create-folder:~/temp/foo-bar-move-1/inner/
-  save-file:~/temp/foo-bar-move-1/inner/foo1.txt
-    src:Foo was here
-
-  _folders
-    no1:~/temp/foo-bar-move-1/
-  rename-folder:x:/../*/_folders/*?value
-    eval
-      split:x:/../*/_dn/#?value
-        =:/
-      return:~/temp/{0}-copy/
-        :x:/../*/split/0/-?name
-
-  load-file:~/temp/foo-bar-move-1-copy/inner/foo1.txt
-  if:x:/-/*?value
-    !=:Foo was here
-    throw:@"Assert error, files didn't contain expected data!"
-
-
-/*
- * Tests that listing folders behaves
- */
-list-folders
+List folders
   if
     fetch:x:/0/0?value
       folder-exist:~/temp/foo/
     delete-folder:~/temp/foo/
-  create-folder:~/temp/foo/
-  create-folder:~/temp/foo/bar1/
-  create-folder:~/temp/foo/bar2/
+  _folders
+    ~/temp/foo/
+    ~/temp/foo/bar1/
+    ~/temp/foo/bar2/
+  create-folder:x:/@_folders/*?name
   list-folders:~/temp/foo/
-  if:x:/-/*/~bar1
+  if:x:/@list-folders/*/~bar1
     not
-    or:x:/./-/*/~bar2
+    or:x:/@list-folders/*/~bar2
       not
-    or:x:/./-/*?count
+    or:x:/@list-folders/*?count
       !=:int:2
-    throw:Didn't find expected folder
+    throw:Assert error, p5.io misbehaved
 
 
-/*
- * Tests that listing folders behaves, and throw when not given a valid path
- */
-list-folders-throw
-  _success:bool:false
-  try
-    list-folders:~/temp
-  catch
-    set:x:/../*/_success?value
-      src:bool:true
-  if:x:/../*/_success?value
-    not
-    throw:[list-folders] didn't throw when expected to throw
-
-
-/*
- * Tests that listing folders behaves, and throw when not given a valid path
- */
-list-files-throw
-  _success:bool:false
-  try
-    list-folders:~/temp
-  catch
-    set:x:/../*/_success?value
-      src:bool:true
-  if:x:/../*/_success?value
-    not
-    throw:[list-folders] didn't throw when expected to throw
-
-
-/*
- * Tests that listing folders behaves
- */
-list-folders-expressions
+List folders with expression
   if
     fetch:x:/0/0?value
       folder-exist:~/temp/foo/
@@ -271,24 +91,66 @@ list-folders-expressions
     fetch:x:/0/0?value
       folder-exist:~/temp/bar/
     delete-folder:~/temp/bar/
-  create-folder:~/temp/foo/
-  create-folder:~/temp/foo/bar1/
-  create-folder:~/temp/foo/bar2/
-  create-folder:~/temp/bar/
-  create-folder:~/temp/bar/bar3/
-  create-folder:~/temp/bar/bar4/
+  _folders
+    ~/temp/foo/
+    ~/temp/foo/bar1/
+    ~/temp/foo/bar2/
+    ~/temp/bar/
+    ~/temp/bar/bar3/
+    ~/temp/bar/bar4/
+  create-folder:x:/@_folders/*?name
   _folders
     no1:~/temp/foo/
     no1:~/temp/bar/
-  list-folders:x:/../*/_folders/*?value
-  if:x:/-/*/~bar1
+  list-folders:x:/@_folders/*?value
+  if:x:/@list-folders/*/~bar1
     not
-    or:x:/./-/*/~bar2
+    or:x:/@list-folders/*/~bar2
       not
-    or:x:/./-/*/~bar3
+    or:x:/@list-folders/*/~bar3
       not
-    or:x:/./-/*/~bar4
+    or:x:/@list-folders/*/~bar4
       not
-    or:x:/./-/*?count
+    or:x:/@list-folders/*?count
       !=:int:4
-    throw:Didn't find expected folder
+    throw:Assert error, p5.io misbehaved
+
+
+List folders throws on bad path
+  _success:bool:false
+  try
+    list-folders:~/temp
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, p5.io misbehaved
+
+
+List files
+  if
+    fetch:x:/0/0?value
+      folder-exist:~/temp/list-files/
+    delete-folder:~/temp/list-files/
+  create-folder:~/temp/list-files/
+  save-file:~/temp/list-files/foo-orig.txt
+    src:Foo bar
+  list-files:~/temp/list-files/
+  if:x:/-/*?count
+    !=:int:1
+    or:x:/./-/*/~foo-orig.txt
+      not
+    throw:@"Assert error, file wasnt't correctly renamed!"
+
+
+List files throws on bad path
+  _success:bool:false
+  try
+    list-folders:~/temp
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, p5.io misbehaved

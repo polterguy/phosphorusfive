@@ -22,10 +22,11 @@
  */
 
 using System.IO;
+using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.io.common;
-using System.Collections.Generic;
+using p5.exp.exceptions;
 
 namespace p5.io.file
 {
@@ -42,89 +43,31 @@ namespace p5.io.file
         [ActiveEvent (Name = "save-file")]
         public static void save_file (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Sanity check.
+            if (e.Args.Value == null)
+                throw new LambdaException ("[save-file] requires a constant or an expression leading to its path", e.Args, context);
+
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Getting root folder
+                // Getting root folder.
                 var rootFolder = Common.GetRootFolder (context);
 
-                // Checking if we're given an expression as destination, to make sure we support Active Event source
-                if (XUtil.IsExpression (e.Args.Value)) {
+                var content = Utilities.Convert<byte[]> (context, XUtil.GetSourceValue (context, e.Args));
 
-                    // Destination is an expression, which means we might have an Active Event invocation source
-                    var destEx = e.Args.Value as Expression;
-                    foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
+                // Iterating through each destination file path.
+                foreach (var idxDestination in XUtil.Iterate<string> (context, e.Args)) {
 
-                        // Getting relative source, and saving to file
-                        List<byte> content = GetSource (context, e.Args, idxDestination.Node);
+                    // Verifying user is allowed to save to file
+                    Common.RaiseAuthorizeEvent (context, e.Args, "modify-file", idxDestination);
 
-                        // Saving currently iterated file
-                        SaveFile (
-                            context,
-                            e.Args,
-                            rootFolder,
-                            Common.GetSystemPath (context, Utilities.Convert<string> (context, idxDestination.Value)),
-                            content);
+                    // Saving file
+                    using (FileStream stream = File.Create (rootFolder + Common.GetSystemPath (context, idxDestination))) {
+
+                        // Writing content to file stream
+                        stream.Write (content, 0, content.Length);
                     }
-                } else {
-
-                    // Getting relative source, and saving to file
-                    List<byte> content = GetSource (context, e.Args, null);
-
-                    // Destination was not an expression, assuming constant filepath, possibly formatted
-                    SaveFile (
-                        context,
-                        e.Args,
-                        rootFolder,
-                        Common.GetSystemPath (context, e.Args.GetExValue<string> (context)),
-                        content);
                 }
-            }
-        }
-
-        /*
-         * Helper for above
-         */
-        private static List<byte> GetSource (ApplicationContext context, Node parentNode, Node destination)
-        {
-            // Retrieving content to save, possibly relative to currently iterated expression result
-            var src = XUtil.Source (context, parentNode, destination);
-
-            // Creating our return value
-            List<byte> content = new List<byte> ();
-            foreach (var idxSrc in src) {
-
-                // Converting currenyl iterated source to blob, and appending into combined content
-                content.AddRange (Utilities.Convert (context, idxSrc, new byte[] { }));
-
-                // Appending CR/LF after every lambda source, to make sure we preserve good Hyperlambda syntax, 
-                // created from multiple source nodes
-                if (idxSrc is Node)
-                    content.AddRange (new byte[] { 13, 10 });
-            }
-
-            // Returning combined "byte[]" (blob) results to caller
-            return content;
-        }
-
-        /*
-         * Saves the specified text file, retrieving source from args
-         */
-        private static void SaveFile (
-            ApplicationContext context, 
-            Node args, 
-            string rootFolder,
-            string fileName,
-            List<byte> content)
-        {
-            // Verifying user is allowed to save to file
-            Common.RaiseAuthorizeEvent (context, args, "modify-file", fileName);
-
-            // Saving file
-            using (FileStream stream = File.Create (rootFolder + fileName)) {
-
-                // Writing content to file stream
-                stream.Write (content.ToArray (), 0, content.Count);
             }
         }
     }

@@ -31,71 +31,46 @@ using p5.exp.exceptions;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [find] keyword in p5 lambda.
+    ///     Class wrapping the [index-of] Active Event.
     /// </summary>
     public static class IndexOf
     {
         /// <summary>
-        ///     The [index-of] keyword, retrieves the index of the specified string(s) and/or regular expression(s)
+        ///     The [index-of] event, retrieves the index of the specified string(s) and/or regular expression(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "index-of")]
         public static void lambda_index_of (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Sanity check
-                List<Node> sourceNodes = e.Args.Children.Where (ix => ix.Name != "").ToList ();
-                if (sourceNodes.Count == 0)
-                    throw new LambdaException ("No source given to [index-of]", e.Args, context);
-
-                // Figuring out source value for [index-of]
+                // Figuring out source value for [index-of], and returning early if there are no source.
                 string source = XUtil.Single<string> (context, e.Args, true);
                 if (source == null)
-                    return; // Nothing to check
-
-                // Retrieving what source to look for
-                var src = XUtil.Source (context, e.Args, e.Args);
-
-                // Making sure there is a source
-                if (src.Count == 0) {
-                    e.Args.Clear ();
                     return;
+
+                // Retrieving what to look for, and returning early if we have no source.
+                var src = XUtil.GetSourceValue (context, e.Args);
+                if (src == null)
+                    return;
+
+                // Checking what type of value we're looking for, and acting accordingly.
+                if (src is Regex) {
+
+                    // Regex type of find.
+                    e.Args.AddRange (IndexOfRegex (source, src as Regex).Select (ix => new Node ("", ix)));
+                } else {
+
+                    // Simple string type of find.
+                    e.Args.AddRange (IndexOfString (source, Utilities.Convert<string> (context, src)).Select (ix => new Node ("", ix)));
                 }
-
-                // Looping through each source
-                foreach (var idxSrc in src) {
-                    if (idxSrc is Regex) {
-
-                        // Regex type of find
-                        e.Args.AddRange (IndexOfRegex (source, idxSrc as Regex).Select (ix => new Node (Utilities.Convert<string> (context, idxSrc), ix)));
-                    } else if (idxSrc is Node) {
-
-                        // Simple string type of find
-                        var objIdxSrc = (idxSrc as Node).Value;
-                        if (objIdxSrc is Regex) {
-                            e.Args.AddRange (IndexOfRegex (source, objIdxSrc as Regex).Select (ix => new Node ((idxSrc as Node).Name, ix)));
-                        } else {
-                            var strIdxSrc = Utilities.Convert<string> (context, objIdxSrc);
-                            e.Args.AddRange (IndexOfString (source, strIdxSrc).Select (ix => new Node ((idxSrc as Node).Name, ix)));
-                        }
-                    } else {
-
-                        // Simple string type of find
-                        var strIdxSrc = Utilities.Convert<string> (context, idxSrc);
-                        e.Args.AddRange (IndexOfString (source, strIdxSrc).Select (ix => new Node (strIdxSrc, ix)));
-                    }
-                }
-
-                // Since our "args remover" won't remove the [src] argument, we explicitly remove it here
-                sourceNodes.ForEach (ix => e.Args [ix.Name].UnTie ());
             }
         }
 
         /*
-         * Evaluates the given regular expression and yields all index results
+         * Evaluates the given regular expression and yields all its results.
          */
         private static IEnumerable<int> IndexOfRegex (string source, Regex regex)
         {
@@ -108,17 +83,15 @@ namespace p5.strings.keywords
         }
 
         /*
-         * Simple string find
+         * Simple string find.
          */
         private static IEnumerable<int> IndexOfString (string source, string search)
         {
-            // Looping until we don't find anymore occurrencies
-            var curIndex = 0;
-            while (true) {
-                curIndex = source.IndexOf (search, curIndex);
-                if (curIndex == -1)
-                    yield break;
-                yield return curIndex++;
+            // Looping until we don't find anymore occurrencies.
+            var idx = source.IndexOf (search);
+            while (idx != -1) {
+                yield return idx++;
+                idx = source.IndexOf (search, idx);
             }
         }
     }

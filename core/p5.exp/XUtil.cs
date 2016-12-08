@@ -154,7 +154,90 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Common helper for iterating and updating a collection with new value(s)
+        ///     Iterates a collection, and returns results as nodes back to caller.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        /// <param name="functor"></param>
+        public static void GetCollection (
+            ApplicationContext context, 
+            Node args, 
+            GetCollectionDelegate functor)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (var argsRemover = new Utilities.ArgsRemover (args, true)) {
+
+                // Iterating through each key reqquested by caller.
+                foreach (var idxKey in Iterate<string> (context, args)) {
+
+                    // Checking if caller tries to access "protected storage key".
+                    if (!args.Name.StartsWith (".") && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
+                        throw new LambdaException (
+                            string.Format ("Tried to access protected key in [{0}], key name was '{1}' ", args.Name, idxKey), 
+                            args, 
+                            context);
+
+                    // Retrieving object by invoking functor with key, and returning as child of args, if there is a value.
+                    var value = functor (idxKey);
+                    if (value != null) {
+
+                        // Checking type of value.
+                        if (value is Node) {
+
+                            // Not value, returning as child node.
+                            args.Add (idxKey, null, (value as Node).Clone ());
+                        } else {
+
+                            // Any other type of object, returning as is.
+                            args.Add (idxKey, value);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Helper to list collection keys, used in combination with GetCollection and SetCollection.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        /// <param name="list"></param>
+        public static void ListCollection (
+            ApplicationContext context, 
+            Node args, 
+            IEnumerable list)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new Utilities.ArgsRemover (args, true)) {
+
+                // Retrieving filters, if any.
+                var filter = new List<string> (Iterate<string> (context, args));
+
+                // Looping through each existing key in collection, checking if it matches our filters, if there are any filters.
+                foreach (string idxKey in list) {
+
+                    // Making sure we do NOT return "protected keys", unless this is a protected invocation.
+                    if (!args.Name.StartsWith (".") && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
+                        continue;
+
+                    // Returning current key, if it matches our filter, or no filter is not given.
+                    if (filter.Count == 0) {
+
+                        // No filter was given, returning everything.
+                        args.Add (idxKey);
+                    } else {
+
+                        // Filter was given, checking if key matches one of our filters.
+                        if (filter.Any (ix => ix.StartsWith ("~") ? idxKey.IndexOf (ix.Substring (1)) > -1 : ix == idxKey)) {
+                            args.Add (idxKey);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Helper to set and update key collections.
         /// </summary>
         /// <param name="context">Application context object</param>
         /// <param name="args">Root node for updating collection</param>
@@ -166,152 +249,29 @@ namespace p5.exp
         /// <param name="exclusionArgs">Contains a list of node names that are excluded when looking for the "source" for values 
         /// for keys specified</param>
         public static void SetCollection (
-            ApplicationContext context, 
-            Node args, 
-            SetCollectionDelegate functor, 
-            bool isNative,
-            List<string> exclusionArgs = null)
+            ApplicationContext context,
+            Node args,
+            SetCollectionDelegate functor,
+            params string[] exclusionArgs)
         {
-            // Iterating through each destinations, updating with source
-            if (IsExpression (args.Value)) {
+            // Retrieving source.
+            var source = GetSourceValue (context, args);
 
-                // Expression destination (keys)
-                foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
+            // Iterating through each result of expression.
+            foreach (var idxKey in Iterate<string> (context, args)) {
 
-                    // Figuring out source, possibly relative to destination
-                    var source = Source (
-                        context,
+                // Making sure collection key is not "hidden" key
+                if (!args.Name.StartsWith (".") && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
+                    throw new LambdaException (
+                        string.Format ("Tried to update protected key in [{0}], key name was '{1}' ", args.Name, idxKey),
                         args,
-                        idxDestination.Node,
-                        "src",
-                        exclusionArgs);
-
-                    // Making sure there's only one source
-                    if (source.Count > 1)
-                        throw new LambdaException ("[" + args.Name + "]'s source returned multiple values", args, context);
-
-                    // Retrieving key and value for cookie
-                    var key = Utilities.Convert<string> (context, idxDestination.Value);
-
-                    // Making sure collection key is not "hidden" key
-                    if (!isNative && (key.StartsWith ("_") || key.StartsWith (".")))
-                        throw new LambdaException ("Caller tried to access a protected collection key named; " + key, args, context);
-
-                    // Checking if this is deletion of item, or setting item, before invoking functor callback
-                    functor (key, source.Count == 0 ? null : source[0]);
-                }
-            } else {
-
-                // Retrieving key and value for cookie
-                var key = Single<string> (context, args);
-                var source = Source (
-                    context,
-                    args,
-                    args,
-                    "src",
-                    exclusionArgs);
-
-                // Making sure there's only one source
-                if (source.Count > 1)
-                    throw new LambdaException ("[" + args.Name + "]'s source returned multiple values", args, context);
+                        context);
 
                 // Checking if this is deletion of item, or setting item, before invoking functor callback
-                functor (key, source.Count == 0 ? null : source[0]);
+                functor (idxKey, source);
             }
         }
 
-        /// <summary>
-        ///     Iterates a collection, and returns as nodes back to caller
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="args"></param>
-        /// <param name="functor"></param>
-        public static void GetCollection (
-            ApplicationContext context, 
-            Node args, 
-            GetCollectionDelegate functor,
-            bool isNative)
-        {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (var argsRemover = new Utilities.ArgsRemover (args, true)) {
-
-                // Iterating through each "key"
-                foreach (var idxKey in Iterate<string> (context, args, true)) {
-
-                    // Checking if caller tries to access "protected storage key"
-                    if (!isNative && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
-                        throw new LambdaException ("Tried to access 'protected key' in " + args.Name, args, context);
-
-                    // Retrieving object by invoking functor with key
-                    var value = functor (idxKey);
-
-                    // Adding node for given key, defaulting to null value
-                    var resultNode = args.Add (idxKey).LastChild;
-
-                    // Checking if value is not null, and if not, adding result, 
-                    // according to what type of value we're given
-                    if (value != null) {
-
-                        // Adding key node, and value as object, if value is not node, otherwise
-                        // appending value nodes beneath key node
-                        if (value is Node) {
-
-                            // Value is Node
-                            resultNode.Add ((value as Node).Clone ());
-                        } else if (value is IEnumerable<Node>) {
-
-                            // Value is a bunch of nodes, adding them all
-                            resultNode.AddRange ((value as IEnumerable<Node>).Select (ix => ix.Clone ()));
-                        } else if (value is IEnumerable<object>) {
-
-                            // Value is a bunch of object values, adding them all as values of children appended into args
-                            resultNode.AddRange ((value as IEnumerable<object>).Select (ix => new Node ("", ix)));
-                        } else {
-
-                            // Value is any "other type of value", returning it "as is"
-                            resultNode.Value = value;
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Helper to list collection keys, used in association with GetCollection and SetCollection
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="node"></param>
-        /// <param name="list"></param>
-        public static void ListCollection (ApplicationContext context, Node node, IEnumerable list, bool isNative)
-        {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (node, true)) {
-
-                // Retrieving filters, if any
-                var filter = new List<string> (Iterate<string> (context, node));
-
-                // Looping through each existing key in collection
-                foreach (string idxKey in list) {
-
-                    // Making sure we do NOT return "protected keys"
-                    if (!isNative && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
-                        continue;
-
-                    // Returning current key, if it matches our filter, or filter is not given
-                    if (filter.Count == 0) {
-
-                        // No filter was given, returning everything
-                        node.Add (idxKey);
-                    } else {
-
-                        // Filter was given, checking if key matches one of our filters
-                        if (filter.Any (idxFilter => idxKey.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
-                            node.Add (idxKey);
-                        }
-                    }
-                }
-            }
-        }
         /// <summary>
         ///     Returns a node match object, optionally restricted to node type.
         /// </summary>
@@ -319,7 +279,10 @@ namespace p5.exp
         /// <param name="expressionNode"></param>
         /// <param name="activeEventName"></param>
         /// <returns></returns>
-        static public Match GetDestinationMatch (ApplicationContext context, Node expressionNode, bool mustBeNodeTypeExpression = false)
+        static public Match GetDestinationMatch (
+            ApplicationContext context, 
+            Node expressionNode, 
+            bool mustBeNodeTypeExpression = false)
         {
             var ex = GetDestinationExpression (context, expressionNode);
             var match = ex.Evaluate (context, expressionNode, expressionNode);
@@ -338,9 +301,13 @@ namespace p5.exp
         /// <param name="context"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        static public object GetSourceValue (ApplicationContext context, Node args)
+        static public object GetSourceValue (
+            ApplicationContext context, 
+            Node args, 
+            params string[] avoidNodes)
         {
             var srcNode = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_")).ToList ();
+            srcNode.RemoveAll (ix => avoidNodes.Contains (ix.Name));
 
             // Sanity check.
             if (srcNode.Count > 1)
@@ -374,8 +341,7 @@ namespace p5.exp
         {
             // Retrieving all source nodes with a legal Active Event name.
             var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_")).ToList ();
-            if (avoidNodes != null)
-                srcNodes.RemoveAll (ix => avoidNodes.Contains (ix.Name));
+            srcNodes.RemoveAll (ix => avoidNodes.Contains (ix.Name));
 
             // If no source nodes was given, we return no source early.
             if (srcNodes.Count == 0)
