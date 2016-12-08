@@ -1,72 +1,35 @@
-/*
- * Contains unit tests for testing [replace] in system
- */
 
 /*
- * Tests that [replace] behaves as expected when given constant [what] and [with]
+ * Unit tests for [replace].
  */
-constant
+
+Replace single constant string
   _data:Thomas Dumbfuck Hansen
-  replace:x:/-?value
+  replace:x:/@_data?value
     src:Dumbfuck
     dest:Brilliant
-  if:x:/../*/replace?value
+  if:x:/@replace?value
     !=:Thomas Brilliant Hansen
-    throw:@"Assert error, [replace] misbehaved"
+    throw:Assert error, [replace] misbehaved
 
-/*
- * Tests that [replace] behaves as expected when given expression [what] and [with]
- */
-expression
+
+Replace single with expression src and dest
   _with:Brilliant
   _what:Dumbfuck
   _data:Thomas Dumbfuck Hansen
-  replace:x:/-?value
-    src:x:/../*/_what?value
-    dest:x:/../*/_with?value
-  if:x:/../*/replace?value
+  replace:x:/@_data?value
+    src:x:/@_what?value
+    dest:x:/@_with?value
+  if:x:/@replace?value
     !=:Thomas Brilliant Hansen
-    throw:@"Assert error, [replace] misbehaved"
+    throw:Assert error, [replace] misbehaved
 
-/*
- * Tests that [replace] behaves as expected when given regex [what] and constant [with]
- */
-regex
+
+Replace with regular expression src
   _data:Thomas Dumbfuck Hansen is Dumbfuck
-  replace:x:/-?value
+  replace:x:/@_data?value
     src:regex:/dumbfuck/i
     dest:Brilliant
-  if:x:/../*/replace?value
+  if:x:/@replace?value
     !=:Thomas Brilliant Hansen is Brilliant
-    throw:@"Assert error, [replace] misbehaved"
-
-/*
- * Tests that [replace] behaves as expected when given Active Event source and destination
- */
-active-event-sources-1
-  _data:Thomas Hansen is a stupid guy
-  replace:x:/-?value
-    eval
-      return:a stupid
-    eval
-      return:an intelligent
-  if:x:/../*/replace?value
-    !=:Thomas Hansen is an intelligent guy
-    throw:@"Assert error, [replace] misbehaved"
-
-
-/*
- * Tests that [replace] behaves as expected when given multiple sources
- */
-active-event-sources-2
-  _data:Thomas Hansen is a retarded and a stupid man
-  _src
-    a stupid
-    a retarded
-  replace:x:/-2?value
-    src:x:/../*/_src/*?name
-    eval
-      return:an intelligent
-  if:x:/../*/replace?value
-    !=:Thomas Hansen is an intelligent and an intelligent man
-    throw:@"Assert error, [replace] misbehaved"
+    throw:Assert error, [replace] misbehaved

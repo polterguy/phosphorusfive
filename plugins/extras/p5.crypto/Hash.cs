@@ -45,7 +45,7 @@ namespace phosphorus.crypto
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Retrieving value to hash as a single string
-                var whatToHash = XUtil.Single<byte[]> (context, e.Args, true);
+                var whatToHash = XUtil.Single<byte[]> (context, e.Args);
 
                 // Creating Sha256 hash, and returning as value of args
                 using (var sha256 = SHA256.Create ()) {
@@ -76,7 +76,7 @@ namespace phosphorus.crypto
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Retrieving value to hash as a single string
-                var whatToHash = XUtil.Single<byte[]> (context, e.Args, true);
+                var whatToHash = XUtil.Single<byte[]> (context, e.Args);
 
                 // Creating Sha256 hash, and returning as value of args
                 using (var sha512 = SHA512.Create ()) {

@@ -56,7 +56,7 @@ namespace p5.types {
                 try {
 
                     // Looping through all arguments supplied
-                    foreach (var idx in XUtil.Iterate<object> (context, e.Args, true)) {
+                    foreach (var idx in XUtil.Iterate<object> (context, e.Args)) {
                         var objValue = context.Raise (".p5.hyperlambda.get-object-value." + type, new Node ("", idx)).Value;
                     }
 

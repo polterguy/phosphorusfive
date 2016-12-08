@@ -45,7 +45,7 @@ namespace lambda_exe
         [ActiveEvent (Name = "p5.console.write-line")]
         public static void p5_console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
-            Console.WriteLine (XUtil.Single<string> (context, e.Args, true));
+            Console.WriteLine (XUtil.Single<string> (context, e.Args));
         }
 
         /// <summary>

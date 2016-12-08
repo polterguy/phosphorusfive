@@ -83,7 +83,7 @@ namespace p5.web.widgets
             string activeEventName) where T : Control
         {
             // Looping through all Widget IDs supplied by caller, finding widget with specified ID
-            foreach (var idxWidgetID in XUtil.Iterate<string> (context, args, true)) {
+            foreach (var idxWidgetID in XUtil.Iterate<string> (context, args)) {
 
                 // Retrieving Widget with currently iterated ID
                 var idxWidget = FindControl<Control>(idxWidgetID, Manager.AjaxPage);

@@ -45,7 +45,7 @@ namespace p5.lambda.keywords.core
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all destinations.
-                foreach (var idxMatch in XUtil.GetDestinationMatch (context, e.Args, true)) {
+                foreach (var idxMatch in XUtil.DestinationMatch (context, e.Args, true)) {
 
                     // Checking type of node value.
                     if (XUtil.IsExpression (idxMatch.Node.Value)) {

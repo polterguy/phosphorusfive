@@ -89,7 +89,7 @@ namespace p5.webapp.code
         [ActiveEvent (Name = ".set-page-value")]
         public void set_page_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
+            XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // Removal
@@ -111,7 +111,7 @@ namespace p5.webapp.code
         [ActiveEvent (Name = ".get-page-value")]
         public void get_page_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => ViewState [key]);
+            XUtil.Get (context, e.Args, key => ViewState [key]);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace p5.webapp.code
         [ActiveEvent (Name = ".list-page-keys")]
         public void list_page_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, ViewState.Keys);
+            XUtil.List (context, e.Args, ViewState.Keys);
         }
 
         #endregion
@@ -139,7 +139,7 @@ namespace p5.webapp.code
         public void set_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving new Title of page
-            var title = XUtil.Single<string>(context, e.Args, true);
+            var title = XUtil.Single<string>(context, e.Args);
 
             // Checking if this is ajax request, at which point we'll have to update title using JavaScript
             if (Manager.IsPhosphorusAjaxRequest) {

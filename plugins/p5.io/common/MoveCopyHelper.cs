@@ -63,7 +63,7 @@ namespace p5.io.common
             using (new Utilities.ArgsRemover (args)) {
 
                 // Retrieving destination, possibly relative to currently iterated expression result
-                var dest = XUtil.GetSourceValue (context, args);
+                var dest = XUtil.Source (context, args);
 
                 // Getting root folder.
                 var rootFolder = Common.GetRootFolder (context);

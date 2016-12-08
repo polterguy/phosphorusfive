@@ -46,7 +46,7 @@ namespace p5.web.ui.response
         [ActiveEvent (Name = ".set-cookie-value")]
         public static void set_cookie_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
+            XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // Removal

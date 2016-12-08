@@ -40,14 +40,14 @@ namespace p5.exp
         /// </summary>
         /// <param name="key">Key in collection</param>
         /// <param name="value">Value for item with specified key (can be null)</param>
-        public delegate void SetCollectionDelegate (string key, object value);
+        public delegate void SetDelegate (string key, object value);
 
         /// <summary>
         ///     Delegate used when retrieving collection values
         /// </summary>
         /// <param name="key">Key to retrieve from collection</param>
         /// <returns></returns>
-        public delegate object GetCollectionDelegate (string key);
+        public delegate object GetDelegate (string key);
 
         /// <summary>
         ///     Returns true if given object is an expression
@@ -74,95 +74,15 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Helper method to invoke [src] node, or other types of sources, for Active Events that requires such
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="parent">Parent node expected to have a source node</param>
-        /// <param name="destination">Current destination node</param>
-        /// <param name="restrictionSrcName">Can be either "src" or "dest", and restricts the name of the source node to be either. 
-        /// Has no effect on other Active Event sources, which it will still allow, regardless of its value</param>
-        /// <param name="excludeNodes">Names of nodes to exclude when looking for source node.</param>
-        /// <param name="sourceIsOffsetChild">When one Active Event can contain multiple "source nodes",
-        /// this restricts the lookup process to being the n'th source node, instead of looking for simply the first</param>
-        /// <returns></returns>
-        public static List<object> Source (
-            ApplicationContext context, 
-            Node parent, 
-            Node destination, 
-            string restrictionSrcName = "src",
-            List<string> excludeNodes = null,
-            int sourceIsOffsetChild = 0)
-        {
-            // For simplicity, avoiding null reference exceptions inside of Linq later down.
-            if (excludeNodes == null)
-                excludeNodes = new List<string> ();
-
-            // Retrieving source nodes, making sure we do not add up "formatting nodes".
-            var srcList = parent.Children.Where (ix => ix.Name != "" && !excludeNodes.Contains (ix.Name)).ToList ();
-
-            if (srcList.Count == 0) {
-
-                // No source, making sure we never return null.
-                return new List<object> ();
-
-            } else {
-
-                // Making sure we remove up until offset, for cases where the same Active Event contains multiple invocation nodes to this method.
-                while (sourceIsOffsetChild > 0) {
-
-                    srcList.RemoveAt (0);
-                    sourceIsOffsetChild -= 1;
-                }
-
-                // Making sure we obey by the declared "restriction" for Active Event name. Either user should use "src" or "dest".
-                // These two cannot be interchanged, to further clarify the language, such that no occurrency of "dest" is being used,
-                // where the logic is actually source, vice versa.
-                switch (srcList[0].Name) {
-                    case "src":
-                    case "dest":
-                        if (restrictionSrcName != srcList[0].Name)
-                            throw new LambdaException ("Sorry, you cannot use '" + srcList[0] + "' here.", parent, context);
-                        break;
-                }
-
-                // Active Event source invocation.
-                // Storing original children,  to make each invocation immutable, before we pass in "destination node".
-                var originalParentNode = parent.Clone ();
-                srcList[0].Insert (0, new Node ("_dn", destination ?? srcList[0]));
-
-                // Raising source Active Event.
-                context.Raise (srcList[0].Name, srcList[0]);
-
-                // Building up our return value(s).
-                var retVal = new List<object> ();
-                if (srcList[0].Value != null) {
-
-                    // Adding value into return values.
-                    retVal.Add (srcList[0].Value);
-                } else {
-
-                    // Fallback to children.
-                    retVal.AddRange (srcList[0].Children.Where (ix => ix.Name != "_dn").Select (ix => ix.Clone ()));
-                }
-
-                // Making sure we reset original source node baack to what it was.
-                parent.Clear ().AddRange (originalParentNode.Children);
-
-                // Returning list to caller.
-                return retVal;
-            }
-        }
-
-        /// <summary>
         ///     Iterates a collection, and returns results as nodes back to caller.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="args"></param>
         /// <param name="functor"></param>
-        public static void GetCollection (
+        public static void Get (
             ApplicationContext context, 
             Node args, 
-            GetCollectionDelegate functor)
+            GetDelegate functor)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (var argsRemover = new Utilities.ArgsRemover (args, true)) {
@@ -177,60 +97,15 @@ namespace p5.exp
                             args, 
                             context);
 
-                    // Retrieving object by invoking functor with key, and returning as child of args, if there is a value.
+                    // Retrieving object by invoking delegate functor with key, and returning as child of args, if there is a value.
                     var value = functor (idxKey);
                     if (value != null) {
 
-                        // Checking type of value.
-                        if (value is Node) {
-
-                            // Not value, returning as child node.
+                        // Checking type of value, and acting accordingly.
+                        if (value is Node)
                             args.Add (idxKey, null, (value as Node).Clone ());
-                        } else {
-
-                            // Any other type of object, returning as is.
+                        else
                             args.Add (idxKey, value);
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Helper to list collection keys, used in combination with GetCollection and SetCollection.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="args"></param>
-        /// <param name="list"></param>
-        public static void ListCollection (
-            ApplicationContext context, 
-            Node args, 
-            IEnumerable list)
-        {
-            // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (args, true)) {
-
-                // Retrieving filters, if any.
-                var filter = new List<string> (Iterate<string> (context, args));
-
-                // Looping through each existing key in collection, checking if it matches our filters, if there are any filters.
-                foreach (string idxKey in list) {
-
-                    // Making sure we do NOT return "protected keys", unless this is a protected invocation.
-                    if (!args.Name.StartsWith (".") && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
-                        continue;
-
-                    // Returning current key, if it matches our filter, or no filter is not given.
-                    if (filter.Count == 0) {
-
-                        // No filter was given, returning everything.
-                        args.Add (idxKey);
-                    } else {
-
-                        // Filter was given, checking if key matches one of our filters.
-                        if (filter.Any (ix => ix.StartsWith ("~") ? idxKey.IndexOf (ix.Substring (1)) > -1 : ix == idxKey)) {
-                            args.Add (idxKey);
-                        }
                     }
                 }
             }
@@ -248,14 +123,14 @@ namespace p5.exp
         /// are no expressions in args.Value, but only constants.</param>
         /// <param name="exclusionArgs">Contains a list of node names that are excluded when looking for the "source" for values 
         /// for keys specified</param>
-        public static void SetCollection (
+        public static void Set (
             ApplicationContext context,
             Node args,
-            SetCollectionDelegate functor,
+            SetDelegate functor,
             params string[] exclusionArgs)
         {
             // Retrieving source.
-            var source = GetSourceValue (context, args);
+            var source = Source (context, args);
 
             // Iterating through each result of expression.
             foreach (var idxKey in Iterate<string> (context, args)) {
@@ -273,18 +148,51 @@ namespace p5.exp
         }
 
         /// <summary>
+        ///     Helper to list collection keys, used in combination with GetCollection and SetCollection.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="args"></param>
+        /// <param name="list"></param>
+        public static void List (
+            ApplicationContext context,
+            Node args,
+            IEnumerable list)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new Utilities.ArgsRemover (args, true)) {
+
+                // Retrieving filters, if any.
+                var filter = new List<string> (Iterate<string> (context, args));
+
+                // Looping through each existing key in collection, checking if it matches our filters, if there are any filters.
+                foreach (string idxKey in list) {
+
+                    // Making sure we do NOT return "protected keys", unless this is a protected invocation.
+                    if (!args.Name.StartsWith (".") && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
+                        continue;
+
+                    // Returning current key, if it matches our filter, or no filter is not given.
+                    if (filter.Count == 0)
+                        args.Add (idxKey);
+                    else if (filter.Any (ix => ix.StartsWith ("~") ? idxKey.IndexOf (ix.Substring (1)) > -1 : ix == idxKey))
+                        args.Add (idxKey);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Returns a node match object, optionally restricted to node type.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="expressionNode"></param>
         /// <param name="activeEventName"></param>
         /// <returns></returns>
-        static public Match GetDestinationMatch (
+        static public Match DestinationMatch (
             ApplicationContext context, 
             Node expressionNode, 
             bool mustBeNodeTypeExpression = false)
         {
-            var ex = GetDestinationExpression (context, expressionNode);
+            var ex = DestinationExpression (context, expressionNode);
             var match = ex.Evaluate (context, expressionNode, expressionNode);
 
             // Checking if caller retricted type of expression, and if so, verifying it conforms.
@@ -296,12 +204,31 @@ namespace p5.exp
         }
 
         /// <summary>
+        ///     Verifies node's value is an expression, and returns that expression to caller.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="expressionNode"></param>
+        /// <param name="activeEventName"></param>
+        /// <returns></returns>
+        static public Expression DestinationExpression (ApplicationContext context, Node expressionNode)
+        {
+            // Asserting destination is expression.
+            var ex = expressionNode.Value as Expression;
+            if (ex == null)
+                throw new LambdaException (
+                    string.Format ("Not a valid destination expression given to [{0}], value was '{1}', expected expression", expressionNode.Name, expressionNode.Value),
+                    expressionNode,
+                    context);
+            return ex;
+        }
+
+        /// <summary>
         ///     Returns source value for an Active Event.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        static public object GetSourceValue (
+        static public object Source (
             ApplicationContext context, 
             Node args, 
             params string[] avoidNodes)
@@ -334,7 +261,7 @@ namespace p5.exp
         /// <param name="context"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        static public List<Node> GetSourceNodes (
+        static public List<Node> Sources (
             ApplicationContext context,
             Node args,
             params string[] avoidNodes)
@@ -354,9 +281,7 @@ namespace p5.exp
                 // Raising source Active Event.
                 context.Raise (idxSrc.Name, idxSrc);
 
-                // We prioritize value if it is existing after source Active Event invocation.
-                // Fallback is children of invocation node.
-                // Notice, if value alread is a node, we add it as it is, otherwise we convert it, and adds its children, since conversion will create a root node for us.
+                // We prioritize value if it exists after source Active Event invocation.
                 if (idxSrc.Value != null) {
                     if (idxSrc.Value is Node) {
                         retVal.Add (idxSrc.Value as Node);
@@ -368,76 +293,6 @@ namespace p5.exp
                 }
             }
             return retVal.Count > 0 ? retVal : null;
-        }
-
-        /// <summary>
-        ///     Verifies node's value is an expression, and returns that expression to caller.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="expressionNode"></param>
-        /// <param name="activeEventName"></param>
-        /// <returns></returns>
-        static private Expression GetDestinationExpression (ApplicationContext context, Node expressionNode)
-        {
-            // Asserting destination is expression.
-            var ex = expressionNode.Value as Expression;
-            if (ex == null)
-                throw new LambdaException (
-                    string.Format ("Not a valid destination expression given to [{0}], value was '{1}', expected expression", expressionNode.Name, expressionNode.Value),
-                    expressionNode,
-                    context);
-            return ex;
-        }
-
-        /// <summary>
-        ///     Throws an exception if given args Node's value is null
-        /// </summary>
-        /// <param name="args">Arguments</param>
-        /// <param name="activeEventName">Active event name</param>
-        private static void AssertHasValue (
-            ApplicationContext context, 
-            Node args, 
-            string activeEventName)
-        {
-            if (args == null || args.Value == null)
-                throw new LambdaException (
-                    string.Format ("No arguments supplied to [{0}]", activeEventName), 
-                    args, 
-                    context);
-        }
-
-        /// <summary>
-        ///     Throws an exception if given args Node does not have children nodes
-        /// </summary>
-        /// <param name="args">Arguments</param>
-        /// <param name="activeEventName">Active event name</param>
-        private static void AssertHasChildren (
-            ApplicationContext context, 
-            Node args, 
-            string activeEventName)
-        {
-            if (args.Children.Count == 0)
-                throw new LambdaException (
-                    string.Format ("No arguments supplied to [{0}]", activeEventName), 
-                    args, 
-                    context);
-        }
-
-        /// <summary>
-        ///     Throws an exception if given args Node's value is null and args node has no children
-        /// </summary>
-        /// <param name="args">Arguments</param>
-        /// <param name="activeEventName">Active event name</param>
-        private static void AssertHasValueOrChildren (
-            ApplicationContext context, 
-            Node args, 
-            string activeEventName)
-        {
-            if (args.Value == null && args.Children.Count == 0)
-                throw new LambdaException (
-                    string.Format ("No arguments or children nodes supplied to [{0}]", activeEventName), 
-                    args, 
-                    context);
         }
 
         /// <summary>
@@ -494,7 +349,7 @@ namespace p5.exp
                 // Node is recursively formatted, and also an expression.
                 // Formating node first, then evaluating expression.
                 // PS, we cannot return null here, in case expression yields null
-                return Single<object> (context, evaluatedNode, dataSource, false, "");
+                return Single<object> (context, evaluatedNode, dataSource, "");
             }
             if (isFormatted) {
 
@@ -514,10 +369,9 @@ namespace p5.exp
         public static T Single<T> (
             ApplicationContext context,
             Node evaluatedNode,
-            bool mustHaveValue = false,
             T defaultValue = default (T))
         {
-            return Single (context, evaluatedNode, evaluatedNode, mustHaveValue, defaultValue);
+            return Single (context, evaluatedNode, evaluatedNode, defaultValue);
         }
 
         /// <summary>
@@ -532,14 +386,13 @@ namespace p5.exp
             ApplicationContext context,
             Node evaluatedNode,
             Node dataSource,
-            bool mustHaveValue = false,
             T defaultValue = default (T),
             Node formattingNode = null)
         {
             object singleRetVal = null;
             string multipleRetVal = null;
             var firstRun = true;
-            foreach (var idx in Iterate<T> (context, evaluatedNode, dataSource, mustHaveValue, false, false, formattingNode)) {
+            foreach (var idx in Iterate<T> (context, evaluatedNode, dataSource, formattingNode)) {
 
                 // To make sure we never convert object to string, unless absolutely necessary
                 if (firstRun) {
@@ -582,14 +435,9 @@ namespace p5.exp
         /// <param name="context">Context</param>
         /// <param name="evaluatedNode">Evaluated node</param>
         /// <typeparam name="T">The 1st type parameter</typeparam>
-        public static IEnumerable<T> Iterate<T> (
-            ApplicationContext context,
-            Node evaluatedNode,
-            bool mustHaveValue = false,
-            bool mustHaveChildren = false,
-            bool mustHaveValueOrChildren = false)
+        public static IEnumerable<T> Iterate<T> (ApplicationContext context, Node evaluatedNode)
         {
-            return Iterate<T> (context, evaluatedNode, evaluatedNode, mustHaveValue);
+            return Iterate<T> (context, evaluatedNode, evaluatedNode);
         }
 
         /// <summary>
@@ -603,23 +451,8 @@ namespace p5.exp
             ApplicationContext context,
             Node evaluatedNode,
             Node dataSource,
-            bool mustHaveValue = false,
-            bool mustHaveChildren = false,
-            bool mustHaveValueOrChildren = false,
             Node formattingNode = null)
         {
-            // Checking if node must have a value, and running relevant assertion
-            if (mustHaveValue)
-                AssertHasValue (context, evaluatedNode, evaluatedNode.Name);
-
-            // Checking if node must have children, and running the relevant assertion
-            if (mustHaveChildren)
-                AssertHasChildren (context, evaluatedNode, evaluatedNode.Name);
-
-            // Checking if node must have children or value, and running the relevant assertion
-            if (mustHaveValueOrChildren)
-                AssertHasValueOrChildren (context, evaluatedNode, evaluatedNode.Name);
-
             if (evaluatedNode.Value != null) {
 
                 // Checking if node's value is an expression

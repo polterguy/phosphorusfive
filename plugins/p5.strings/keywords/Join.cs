@@ -53,7 +53,7 @@ namespace p5.strings.keywords
                 StringBuilder result = new StringBuilder ();
 
                 // Looping through each value
-                foreach (var idx in XUtil.Iterate<string> (context, e.Args, true)) {
+                foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Checking if this is first instance, and if not, we add separator value
                     if (result.Length != 0)

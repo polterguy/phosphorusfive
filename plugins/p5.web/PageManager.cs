@@ -159,7 +159,7 @@ namespace p5.web
                 // Redirecting using JavaScript
                 AjaxPage.Manager.SendJavaScriptToClient (
                     string.Format ("window.location='{0}';", 
-                        XUtil.Single<string> (context, e.Args, true).Replace ("'", "\\'")));
+                        XUtil.Single<string> (context, e.Args).Replace ("'", "\\'")));
             } else {
 
                 // Redirecting using Response object
@@ -236,7 +236,7 @@ namespace p5.web
         public void return_response_object (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (context, e.Args);
-            var source = XUtil.GetSourceValue (context, e.Args);
+            var source = XUtil.Source (context, e.Args);
             AjaxPage.Manager.SendObject (key, core.Utilities.Convert<string> (context, source));
         }
 

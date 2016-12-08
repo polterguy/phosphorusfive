@@ -48,7 +48,7 @@ namespace p5.html
                 StringBuilder builder = new StringBuilder();
 
                 // Loops through all documents/fragments we're supposed to encode and eppending into StringBuilder
-                foreach (var idxHtmlFragment in XUtil.Iterate<string> (context, e.Args, true)) {
+                foreach (var idxHtmlFragment in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Changing to 'safe HTML'
                     builder.Append (HttpUtility.UrlEncode (idxHtmlFragment));
@@ -74,7 +74,7 @@ namespace p5.html
                 StringBuilder builder = new StringBuilder();
 
                 // Loops through all documents/fragments we're supposed to transform
-                foreach (var idx in XUtil.Iterate<string> (context, e.Args, true)) {
+                foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Changing to 'safe HTML'
                     builder.Append (HttpUtility.UrlEncode (idx));

@@ -41,12 +41,12 @@ namespace p5.lambda.keywords.core
         public static void lambda_add (ApplicationContext context, ActiveEventArgs e)
         {
             // Finding source nodes, and returning early if no source is given.
-            var src = XUtil.GetSourceNodes (context, e.Args);
+            var src = XUtil.Sources (context, e.Args);
             if (src == null)
                 return;
 
             // Looping through each destination, adding all source nodes to it, cloning them before adding them.
-            foreach (var idxDestination in XUtil.GetDestinationMatch (context, e.Args, true)) {
+            foreach (var idxDestination in XUtil.DestinationMatch (context, e.Args, true)) {
 
                 idxDestination.Node.AddRange (src.Select (ix => ix.Clone ()));
             }

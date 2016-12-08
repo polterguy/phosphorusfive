@@ -47,7 +47,7 @@ namespace p5.strings.keywords
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Figuring out source value of [split]
-                string source = XUtil.Single<string> (context, e.Args, true);
+                string source = XUtil.Single<string> (context, e.Args);
                 if (source == null)
                     return; // Nothing to split
 

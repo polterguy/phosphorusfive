@@ -43,7 +43,7 @@ namespace p5.lambda.keywords.core
             Node originalLambda = e.Args.Clone ();
 
             // Retrieving what to iterate.
-            var match = XUtil.GetDestinationMatch (context, e.Args);
+            var match = XUtil.DestinationMatch (context, e.Args);
 
             // Evaluating lambda, until either all iterations are done, or stop flag condition tells us we're done, due to some condition stopping loop early.
             var first = true;

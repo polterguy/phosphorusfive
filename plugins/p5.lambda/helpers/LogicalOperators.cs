@@ -160,7 +160,7 @@ namespace p5.lambda.helpers
                 // Checking if value already is boolean, at which case we don't continue, since it is already evaluated.
                 if (!(args.Parent.Value is bool)) {
 
-                    var obj = XUtil.Single<object> (context, args.Parent, false, null);
+                    var obj = XUtil.Single<object> (context, args.Parent);
                     if (obj == null) {
 
                         // Result of evaluated expression yields null, hence evaluation result is false.

@@ -31,61 +31,41 @@ using p5.exp.exceptions;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [replace] keyword in p5 lambda.
+    ///     Class wrapping the [replace] Active Event.
     /// </summary>
     public static class Replace
     {
         /// <summary>
-        ///     The [replace] keyword, allows you to replace occurrencies of a string or regular expression with another strings
+        ///     The [replace] event, allows you to replace occurrences of a string or regular expression with another strings.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "replace")]
         public static void lambda_replace (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Sanity check.
+            if (e.Args.Value == null)
+                throw new LambdaException ("[replace] requires an expression or constant as its value", e.Args, context);
+
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Figuring out source value
-                string source = XUtil.Single<string> (context, e.Args, true);
+                // Figuring out source value for [match], and returning early if there is no source.
+                string source = XUtil.Single<string> (context, e.Args);
                 if (source == null)
-                    return; // Nothing to check
+                    return;
 
-                // Retrieving what source to look for
-                var src = XUtil.Source (context, e.Args, e.Args, "src", new List<string> (new string[] { "dest" }));
-                var dest = XUtil.Source (context, e.Args, e.Args, "dest", null, 1);
-                if (dest.Count > 1)
-                    throw new LambdaException ("There can only be one 'destination' for [replace]", e.Args, context);
-                var with = dest.Count == 1 ? Utilities.Convert<string> (context, dest[0]) : "";
+                // Retrieving what to replace it with.
+                var with = Utilities.Convert (context, XUtil.Source (context, e.Args, "src"), "");
 
-                foreach (var what in src) {
-
-                    // Checking type of what
-                    if (what is Regex) {
-
-                        // Regular expression search
-                        var regex = what as Regex;
-                        e.Args.Value = regex.Replace (source, with);
-                    } else {
-
-                        // Simple string search, checking if this is a [not-of] operation, or a [what] operation
-                        if (what != null) {
-
-                            // Simple version
-                            e.Args.Value = source.Replace (Utilities.Convert<string> (context, what), with);
-                        } else {
-
-                            // Replacing everything we cannot find in [not-of] with whatever we find in [with] 
-                            // (or empty if no with is given)
-                            var retVal = new StringBuilder ();
-                            for (int idxNo = 0; idxNo < source.Length; idxNo++) {
-                                retVal.Append (with);
-                            }
-                            e.Args.Value = retVal.ToString ();
-                        }
-                    }
-                    source = e.Args.Get<string> (context);
-                }
+                // Checking what type of object we're searching for, and doing some basic sanity check.
+                var what = XUtil.Source (context, e.Args, "dest");
+                if (what == null)
+                    throw new LambdaException ("[replace] requires something to search for", e.Args, context);
+                else if (what is Regex)
+                    e.Args.Value = (what as Regex).Replace (source, with);
+                else
+                    e.Args.Value = source.Replace (Utilities.Convert<string> (context, what), with);
             }
         }
     }

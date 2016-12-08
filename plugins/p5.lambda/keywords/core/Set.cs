@@ -40,10 +40,10 @@ namespace p5.lambda.keywords.core
         public static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
             // Finding source value, notice that if we have no source, we still iterate each destination, such that we can set it to a "null value".
-            var src = XUtil.GetSourceValue (context, e.Args);
+            var src = XUtil.Source (context, e.Args);
 
             // Updating destination(s) with value of source.
-            foreach (var idxDestination in XUtil.GetDestinationMatch (context, e.Args)) {
+            foreach (var idxDestination in XUtil.DestinationMatch (context, e.Args)) {
 
                 // Single source, or null source.
                 idxDestination.Value = src;

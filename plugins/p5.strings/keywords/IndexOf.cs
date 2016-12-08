@@ -43,16 +43,20 @@ namespace p5.strings.keywords
         [ActiveEvent (Name = "index-of")]
         public static void lambda_index_of (ApplicationContext context, ActiveEventArgs e)
         {
+            // Sanity check.
+            if (e.Args.Value == null)
+                throw new LambdaException ("[index-of] requires an expression or constant as its value", e.Args, context);
+
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Figuring out source value for [index-of], and returning early if there are no source.
-                string source = XUtil.Single<string> (context, e.Args, true);
+                // Figuring out source value for [index-of], and returning early if there is no source.
+                string source = XUtil.Single<string> (context, e.Args);
                 if (source == null)
                     return;
 
                 // Retrieving what to look for, and returning early if we have no source.
-                var src = XUtil.GetSourceValue (context, e.Args);
+                var src = XUtil.Source (context, e.Args);
                 if (src == null)
                     return;
 
@@ -61,6 +65,7 @@ namespace p5.strings.keywords
 
                     // Regex type of find.
                     e.Args.AddRange (IndexOfRegex (source, src as Regex).Select (ix => new Node ("", ix)));
+
                 } else {
 
                     // Simple string type of find.
@@ -74,10 +79,8 @@ namespace p5.strings.keywords
          */
         private static IEnumerable<int> IndexOfRegex (string source, Regex regex)
         {
-            // Evaluating regex and looping through each result
+            // Evaluating regex and returning all results.
             foreach (System.Text.RegularExpressions.Match idxMatch in regex.Matches (source)) {
-
-                // Returning currently iterated result
                 yield return idxMatch.Index;
             }
         }
@@ -87,7 +90,7 @@ namespace p5.strings.keywords
          */
         private static IEnumerable<int> IndexOfString (string source, string search)
         {
-            // Looping until we don't find anymore occurrencies.
+            // Returning all occurrences of specified string.
             var idx = source.IndexOf (search);
             while (idx != -1) {
                 yield return idx++;

@@ -49,7 +49,7 @@ namespace p5.html
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Loops through all documents we're supposed to transform
-                foreach (var idxHtmlDoc in XUtil.Iterate<string> (context, e.Args, true)) {
+                foreach (var idxHtmlDoc in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Converting currently iterated document/fragment
                     var doc = new HtmlDocument ();

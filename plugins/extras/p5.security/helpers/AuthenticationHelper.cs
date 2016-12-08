@@ -267,7 +267,7 @@ namespace p5.security.helpers
             var authFile = AuthFile.GetAuthFile (context);
 
             // Iterating all users requested by caller
-            foreach (var idxUsername in XUtil.Iterate<string> (context, args, true)) {
+            foreach (var idxUsername in XUtil.Iterate<string> (context, args)) {
 
                 // Checking if user exist
                 if (authFile ["users"] [idxUsername] == null)
@@ -294,7 +294,7 @@ namespace p5.security.helpers
                 delegate (Node authFile) {
 
                     // Iterating all users requested deleted by caller
-                    foreach (var idxUsername in XUtil.Iterate<string> (context, args, true)) {
+                    foreach (var idxUsername in XUtil.Iterate<string> (context, args)) {
 
                         // Checking if user exist
                         if (authFile ["users"] [idxUsername] == null)

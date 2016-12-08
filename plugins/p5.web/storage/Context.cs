@@ -40,7 +40,7 @@ namespace p5.web.storage {
         [ActiveEvent (Name = ".set-context-value")]
         public static void set_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
+            XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // Removal
@@ -62,7 +62,7 @@ namespace p5.web.storage {
         [ActiveEvent (Name = ".get-context-value")]
         public static void get_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Items [key]);
+            XUtil.Get (context, e.Args, key => HttpContext.Current.Items [key]);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace p5.web.storage {
         [ActiveEvent (Name = ".list-context-keys")]
         public static void list_context_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Items.Keys);
+            XUtil.List (context, e.Args, HttpContext.Current.Items.Keys);
         }
     }
 }

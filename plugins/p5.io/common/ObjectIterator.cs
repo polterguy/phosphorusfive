@@ -55,7 +55,7 @@ namespace p5.io.common
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Multiple filename source, returning existence of all files
-                foreach (var idxFileObject in XUtil.Iterate<string> (context, args, true)) {
+                foreach (var idxFileObject in XUtil.Iterate<string> (context, args)) {
 
                     // Retrieving actual system path
                     var fileObjectName = Common.GetSystemPath (context, idxFileObject);

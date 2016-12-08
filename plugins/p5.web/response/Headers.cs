@@ -40,7 +40,7 @@ namespace p5.web.ui.response
         [ActiveEvent (Name = "set-http-header")]
         public static void set_http_header (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
+            XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // Removal

@@ -51,7 +51,7 @@ namespace p5.imaging
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through each image caller requests the size for.
-                foreach (var idxPath in XUtil.Iterate<string> (context, e.Args, true)) {
+                foreach (var idxPath in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Unrolling path, and verifying user is authorized to reading file.
                     var source = context.Raise (".p5.io.unroll-path", new Node ("", idxPath)).Get<string> (context);

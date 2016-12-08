@@ -43,7 +43,7 @@ namespace p5.lambda.keywords.extras
             context.Raise ("eval-mutable", e.Args);
 
             // Now we can fetch expression value, and clear body, making sure we remove formatting parameters first.
-            e.Args.Value = XUtil.Single<object> (context, e.Args, true);
+            e.Args.Value = XUtil.Single<object> (context, e.Args);
             e.Args.Clear ();
         }
     }

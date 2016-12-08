@@ -53,7 +53,7 @@ namespace p5.io.file
                 // Getting root folder.
                 var rootFolder = Common.GetRootFolder (context);
 
-                var content = Utilities.Convert<byte[]> (context, XUtil.GetSourceValue (context, e.Args));
+                var content = Utilities.Convert<byte[]> (context, XUtil.Source (context, e.Args));
 
                 // Iterating through each destination file path.
                 foreach (var idxDestination in XUtil.Iterate<string> (context, e.Args)) {

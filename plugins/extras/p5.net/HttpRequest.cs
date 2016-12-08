@@ -105,7 +105,7 @@ namespace p5.net
                 try
                 {
                     // Iterating through each request URL given
-                    foreach (var idxUrl in XUtil.Iterate<string> (context, args, true)) {
+                    foreach (var idxUrl in XUtil.Iterate<string> (context, args)) {
 
                         // Creating request
                         HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
@@ -313,7 +313,7 @@ namespace p5.net
             } else {
 
                 // Some sort of "value" content, either text or binary (byte[])
-                return XUtil.Single<object> (context, content, false, null);
+                return XUtil.Single<object> (context, content);
             }
         }
 

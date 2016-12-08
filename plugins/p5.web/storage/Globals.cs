@@ -44,7 +44,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".set-global-value")]
         public static void set_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
+            XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // Removal
@@ -66,7 +66,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".get-global-value")]
         public static void get_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Application [key]);
+            XUtil.Get (context, e.Args, key => HttpContext.Current.Application [key]);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".list-global-keys")]
         public static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Application.AllKeys);
+            XUtil.List (context, e.Args, HttpContext.Current.Application.AllKeys);
         }
     }
 }

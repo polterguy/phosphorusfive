@@ -26,68 +26,50 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using p5.exp;
 using p5.core;
+using p5.exp.exceptions;
 
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [regex] keyword in p5 lambda.
+    ///     Class wrapping the [match] Active Event.
     /// </summary>
     public static class Match
     {
         /// <summary>
-        ///     The [match] keyword, allows you to find occurrencies of regular expressions in a string
+        ///     The [match] event, returns occurrences of a regular expression in a string.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "match")]
         public static void lambda_match (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Sanity check.
+            if (e.Args.Value == null)
+                throw new LambdaException ("[match] requires an expression or constant as its value", e.Args, context);
+
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Figuring out source value
-                string source = XUtil.Single<string> (context, e.Args, true);
+                // Figuring out source value for [match], and returning early if there is no source.
+                string source = XUtil.Single<string> (context, e.Args);
                 if (source == null)
-                    return; // Nothing to check
-
-                // Retrieving explicitly named captures, if any
-                var captures = new List<string> (e.Args.Children.Where (ix => ix.Name != "").Select (ix => ix.Name));
-                captures.RemoveAt (0);
-
-                // Retrieving what source to look for
-                var src = XUtil.Source (context, e.Args, e.Args, "src", captures);
-
-                // Making sure there is a source
-                if (src.Count == 0) {
-                    e.Args.Clear ();
                     return;
-                }
 
-                // Running regular expression(s)
-                foreach (var idxSrc in src) {
-                    var matches = (idxSrc as Regex).Matches (source);
-                    foreach (System.Text.RegularExpressions.Match idxMatch in matches) {
+                // Retrieving what source to look for, and returning early if there is none.
+                var src = XUtil.Source (context, e.Args);
+                if (src == null)
+                    return;
 
-                        // Creating result node
-                        var resultNode = e.Args.Add ("result").LastChild;
+                // Sanity check.
+                if (!(src is Regex))
+                    throw new LambdaException ("[match] requires a regular expression src", e.Args, context);
 
-                        // Checking if caller supplied explicit capture group names
-                        if (captures.Count > 0) {
+                // Evaluating regular expression, and returning results.
+                foreach (System.Text.RegularExpressions.Match idxMatch in (src as Regex).Matches (source)) {
 
-                            // Looping through all group names requested by caller to be returned
-                            foreach (var idxCapture in captures) {
-                                resultNode.Add (idxCapture, idxMatch.Groups[idxCapture].Value);
-                                resultNode.LastChild.Add ("start", idxMatch.Groups[idxCapture].Index);
-                                resultNode.LastChild.Add ("length", idxMatch.Groups[idxCapture].Length);
-                            }
-
-                        } else {
-
-                            // Returning all groups, including outer most
-                            foreach (Group idxGroup in idxMatch.Groups) {
-                                resultNode.Add (idxGroup.Value);
-                            }
-                        }
+                    // Returning all groups matches.
+                    foreach (Group idxGroup in idxMatch.Groups) {
+                        e.Args.Add (idxGroup.Value);
                     }
                 }
             }

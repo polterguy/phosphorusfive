@@ -41,7 +41,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".set-session-value")]
         public static void set_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
+            XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // Removal
@@ -63,7 +63,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".get-session-value")]
         public static void get_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Session [key]);
+            XUtil.Get (context, e.Args, key => HttpContext.Current.Session [key]);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".list-session-keys")]
         public static void list_session_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Session.Keys);
+            XUtil.List (context, e.Args, HttpContext.Current.Session.Keys);
         }
     }
 }

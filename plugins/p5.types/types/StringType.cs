@@ -43,7 +43,7 @@ namespace p5.types.types {
             using (new Utilities.ArgsRemover (e.Args, false)) {
 
                 // Decoding given value from base64 and returning to caller
-                e.Args.Value = Convert.FromBase64String (XUtil.Single<string> (context, e.Args, true));
+                e.Args.Value = Convert.FromBase64String (XUtil.Single<string> (context, e.Args));
             }
         }
     }

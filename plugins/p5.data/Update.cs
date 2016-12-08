@@ -56,7 +56,7 @@ namespace p5.data
                 try {
 
                     // Retrieving source, and iterating through each destination, updating with source value.
-                    var source = XUtil.GetSourceValue (context, e.Args);
+                    var source = XUtil.Source (context, e.Args);
                     foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
 
                         // Updates the destination with the source, making sure we can keep track of files that are changed, and that we throw is update is unsuccessful.

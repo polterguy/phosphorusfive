@@ -41,7 +41,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = ".get-cookie-value")]
         public static void get_cookie_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, delegate (string key) {
+            XUtil.Get (context, e.Args, delegate (string key) {
 
                 // Fetching cookie
                 var cookie = HttpContext.Current.Request.Cookies.Get (key);
@@ -63,7 +63,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = ".list-cookie-keys")]
         public static void list_cookie_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.ListCollection (context, e.Args, HttpContext.Current.Request.Cookies.AllKeys);
+            XUtil.List (context, e.Args, HttpContext.Current.Request.Cookies.AllKeys);
         }
     }
 }

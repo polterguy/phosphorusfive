@@ -49,7 +49,7 @@ namespace p5.web.storage
             var minutes = e.Args.GetExChildValue ("minutes", context, 30);
 
             // Settings cache value
-            XUtil.SetCollection (context, e.Args, delegate (string key, object value) {
+            XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // Removal
@@ -76,7 +76,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = ".get-cache-value")]
         public static void get_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.GetCollection (context, e.Args, key => HttpContext.Current.Cache [key]);
+            XUtil.Get (context, e.Args, key => HttpContext.Current.Cache [key]);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace p5.web.storage
             foreach (DictionaryEntry idx in HttpContext.Current.Cache) {
                 retVal.Add (idx.Key.ToString ());
             }
-            XUtil.ListCollection (context, e.Args, retVal);
+            XUtil.List (context, e.Args, retVal);
         }
     }
 }
