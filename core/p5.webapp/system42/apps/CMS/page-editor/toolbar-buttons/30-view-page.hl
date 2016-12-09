@@ -11,11 +11,11 @@ button
      * Getting currently edited page, and showing it in a JavaScript popup window.
      */
     sys42.cms.get-edited-page-id
-    send-javascript:@"window.open('{0}', '_blank');"
+    p5.web.send-javascript:@"window.open('{0}', '_blank');"
       :x:/./-?value
 
     /*
      * Making sure we set focus to "select page dropdown" if user closes dialogue, without
      * pressing "OK".
      */
-    send-javascript:@"$('#cms-select-page').focus().select();"
+    p5.web.send-javascript:@"$('#cms-select-page').focus().select();"

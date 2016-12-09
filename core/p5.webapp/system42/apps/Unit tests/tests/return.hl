@@ -28,7 +28,7 @@ Return formatted value
     throw:Assert error, [return] misbehaved
 
 
-Return nodes
+Return static nodes
   _x
     return
       foo:bar
@@ -78,10 +78,9 @@ Return expression single node
       foo1:bar1
     return:x:/@_data/*
   eval:x:/@_x
-  if:x:/@eval/*?count
-    !=:int:1
-    or:x:/@eval/*
-      !=:node:"foo1:bar1"
+  if:x:/@eval
+    !=:node:@"eval
+  foo1:bar1"
     throw:Assert error, [return] misbehaved
 
 
@@ -92,10 +91,8 @@ Return expression multiple nodes
       foo2:bar2
     return:x:/@_data/*
   eval:x:/@_x
-  if:x:/@eval/*?count
-    !=:int:2
-    or:x:/@eval
-      !=:node:@"eval
+  if:x:/@eval
+    !=:node:@"eval
   foo1:bar1
   foo2:bar2"
     throw:Assert error, [return] misbehaved

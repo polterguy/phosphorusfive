@@ -35,22 +35,22 @@ create-widget:datagrid-wrapper-1
       // Lambda invoked when datagrid needs items.
       .on-get-items
         if:x:/../*/_query?value
-          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+          p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
             :x:/../*/_query?value
             :x:/../*/_start?value
             :x:/../*/_end?value
         else
-          select-data:x:/*/*/sample.csv/[{0},{1}]
+          p5.data.select:x:/*/*/sample.csv/[{0},{1}]
             :x:/../*/_start?value
             :x:/../*/_end?value
         add:x:/../*/return/*/_items
-          src:x:/../**/select-data/*/sample.csv
+          src:x:/../**/p5.data.select/*/sample.csv
         return
           _items
 
       // Lambda invoked when an item has beeen in-place edited.
       .on-edit-item
-        update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
+        p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
           :x:/../*/_row?value
           :x:/../*/_column?value
           src:x:/../*/_value?value
@@ -110,16 +110,16 @@ create-widget:datagrid-wrapper-2
     sys42.widgets.datagrid
       .on-get-items
         if:x:/../*/_query?value
-          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+          p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
             :x:/../*/_query?value
             :x:/../*/_start?value
             :x:/../*/_end?value
         else
-          select-data:x:/*/*/sample.csv/[{0},{1}]
+          p5.data.select:x:/*/*/sample.csv/[{0},{1}]
             :x:/../*/_start?value
             :x:/../*/_end?value
         add:x:/../*/return/*/_items
-          src:x:/../**/select-data/*/sample.csv
+          src:x:/../**/p5.data.select/*/sample.csv
 
         // Here we make sure that the zero'th column is not editable.
         add:x:/../*/return/*/*/0
@@ -127,7 +127,7 @@ create-widget:datagrid-wrapper-2
         return
           _items
       .on-edit-item
-        update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
+        p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
           :x:/../*/_row?value
           :x:/../*/_column?value
           src:x:/../*/_value?value
@@ -190,20 +190,20 @@ create-widget:datagrid-wrapper-3
         if:x:/../*/_query?value
 
           // We have a query, or filter.
-          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+          p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
             :x:/../*/_query?value
             :x:/../*/_start?value
             :x:/../*/_end?value
         else
 
           // No filter or query was supplied.
-          select-data:x:/*/*/sample.csv/[{0},{1}]
+          p5.data.select:x:/*/*/sample.csv/[{0},{1}]
             :x:/../*/_start?value
             :x:/../*/_end?value
 
         // Adding result of above select into [return]/[_items].
         add:x:/../*/return/*/_items
-          src:x:/../**/select-data/*/sample.csv
+          src:x:/../**/p5.data.select/*/sample.csv
 
         return
           _items
@@ -219,12 +219,12 @@ create-widget:datagrid-wrapper-3
          * Selecting currently clicked record from database, and passing
          * values, and ID, into our wizard window.
          */
-        select-data:x:@"/*/*/sample.csv/""=:guid:{0}"""
+        p5.data.select:x:@"/*/*/sample.csv/""=:guid:{0}"""
           :x:/../*/_items/*?name
         set:x:/../*/sys42.windows.wizard/**/_id?value
           src:x:/../*/_items/*?name
         add:x:/+/*/_data
-          src:x:/../*/select-data/*/*
+          src:x:/../*/p5.data.select/*/*
 
         /*
          * Showing our wizard dialogue, allowing user to edit item.
@@ -240,24 +240,24 @@ create-widget:datagrid-wrapper-3
 
             /*
              * Selecting record from database, and changes the content of
-             * [select-data] from the values entered by user.
+             * [p5.data.select] from the values entered by user.
              */
-            select-data:x:@"/*/*/sample.csv/""=:guid:{0}"""
+            p5.data.select:x:@"/*/*/sample.csv/""=:guid:{0}"""
               :x:/@_id?value
             sys42.windows.wizard.get-values
-            set:x:/@select-data/*/*?value
+            set:x:/@p5.data.select/*/*?value
               eval
                 return:x:/@_dn/#/../*/sys42.windows.wizard.get-values/*/{0}?value
                   :x:/@_dn/#?name
 
             /*
              * Updating data, setting the source for our update operation to the
-             * content of [select-data], which at this point is modified, to contain
+             * content of [p5.data.select], which at this point is modified, to contain
              * the new values, provided by user.
              */
-            update-data:x:@"/*/*/sample.csv/""=:guid:{0}"""
+            p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}"""
               :x:/@_id?value
-              src:x:/@select-data/*
+              src:x:/@p5.data.select/*
             sys42.widgets.datagrid.databind:my-datagrid-3
 ```
 
@@ -295,22 +295,22 @@ create-widget:datagrid-wrapper-4
       // Lambda invoked when datagrid needs items.
       .on-get-items
         if:x:/../*/_query?value
-          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+          p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
             :x:/../*/_query?value
             :x:/../*/_start?value
             :x:/../*/_end?value
         else
-          select-data:x:/*/*/sample.csv/[{0},{1}]
+          p5.data.select:x:/*/*/sample.csv/[{0},{1}]
             :x:/../*/_start?value
             :x:/../*/_end?value
         add:x:/../*/return/*/_items
-          src:x:/../**/select-data/*/sample.csv
+          src:x:/../**/p5.data.select/*/sample.csv
         return
           _items
 
       // Lambda invoked when an item has beeen in-place edited.
       .on-edit-item
-        update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
+        p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
           :x:/../*/_row?value
           :x:/../*/_column?value
           src:x:/../*/_value?value
@@ -388,20 +388,20 @@ create-widget:datagrid-wrapper-5
         if:x:/../*/_query?value
 
           // We have a query, or filter.
-          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+          p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
             :x:/../*/_query?value
             :x:/../*/_start?value
             :x:/../*/_end?value
         else
 
           // No filter or query was supplied.
-          select-data:x:/*/*/sample.csv/[{0},{1}]
+          p5.data.select:x:/*/*/sample.csv/[{0},{1}]
             :x:/../*/_start?value
             :x:/../*/_end?value
 
         // Adding result of above select into [return]/[_items].
         add:x:/../*/return/*/_items
-          src:x:/../**/select-data/*/sample.csv
+          src:x:/../**/p5.data.select/*/sample.csv
 
         /*
          * Adding a custom column at the end, allowing for deletion of items.
@@ -414,12 +414,12 @@ create-widget:datagrid-wrapper-5
                   innerValue:X
                   onclick
                     sys42.widgets.datagrid.get-row-id:x:/../*/_event?value
-                    eval-x:x:/+/*/*/delete-data/0
+                    eval-x:x:/+/*/*/p5.data.delete/0
                     sys42.windows.confirm
                       _header:Confirm deletion
                       _body:Are you sure you wish to delete this item?
                       .onok
-                        delete-data:x:@"/*/*/""=:guid:{0}"""
+                        p5.data.delete:x:@"/*/*/""=:guid:{0}"""
                           :x:/../*/sys42.widgets.datagrid.get-row-id?value
                         sys42.widgets.datagrid.databind:my-datagrid
             select
@@ -439,7 +439,7 @@ create-widget:datagrid-wrapper-5
        * item has been edited using "in place editing".
        */
       .on-edit-item
-        update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
+        p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
           :x:/../*/_row?value
           :x:/../*/_column?value
           src:x:/../*/_value?value
@@ -492,16 +492,16 @@ create-widget:datagrid-wrapper-6
       // Lambda invoked when datagrid needs items.
       .on-get-items
         if:x:/../*/_query?value
-          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+          p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
             :x:/../*/_query?value
             :x:/../*/_start?value
             :x:/../*/_end?value
         else
-          select-data:x:/*/*/sample.csv/[{0},{1}]
+          p5.data.select:x:/*/*/sample.csv/[{0},{1}]
             :x:/../*/_start?value
             :x:/../*/_end?value
         add:x:/../*/return/*/_items
-          src:x:/../**/select-data/*/sample.csv
+          src:x:/../**/p5.data.select/*/sample.csv
         return
           _items
 
@@ -512,7 +512,7 @@ create-widget:datagrid-wrapper-6
         if:x:/../*/_value?value
           =:error
           return:bool:false
-        update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
+        p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
           :x:/../*/_row?value
           :x:/../*/_column?value
           src:x:/../*/_value?value
@@ -541,16 +541,16 @@ create-widget:datagrid-wrapper-6
       // Lambda invoked when datagrid needs items.
       .on-get-items
         if:x:/../*/_query?value
-          select-data:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
+          p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
             :x:/../*/_query?value
             :x:/../*/_start?value
             :x:/../*/_end?value
         else
-          select-data:x:/*/*/sample.csv/[{0},{1}]
+          p5.data.select:x:/*/*/sample.csv/[{0},{1}]
             :x:/../*/_start?value
             :x:/../*/_end?value
         add:x:/../*/return/*/_items
-          src:x:/../**/select-data/*/sample.csv
+          src:x:/../**/p5.data.select/*/sample.csv
 
         // Here we make sure that the 5th column in-place editor becomes a number
         // type of textbox.
@@ -563,7 +563,7 @@ create-widget:datagrid-wrapper-6
       // Lambda invoked when an item has beeen in-place edited.
       .on-edit-item
 
-        update-data:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
+        p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
           :x:/../*/_row?value
           :x:/../*/_column?value
           src:x:/../*/_value?value

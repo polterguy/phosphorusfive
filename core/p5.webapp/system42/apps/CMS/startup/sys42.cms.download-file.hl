@@ -17,4 +17,4 @@ create-event:sys42.cms.download-file
   /*
    * Reloading location, letting [p5.web.load-ui] do the "heavy lifting".
    */
-  reload-location
+  p5.web.reload-location

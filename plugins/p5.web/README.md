@@ -1020,13 +1020,13 @@ Below is a complete list of all of these Active Events.
 * [get-cache-value] - Has private (.) alias
 * [list-cache-keys] - Has private (.) alias
 * [set-cookie-value] - Has private (.) alias
-* [get-cookie-value] - Has private (.) alias
-* [list-cookie-keys] - Has private (.) alias
+* [p5.web.cookie.get] - Has private (.) alias
+* [p5.web.cookie.list] - Has private (.) alias
 * [set-http-header]
-* [get-http-header]
-* [list-http-headers]
-* [get-http-param]
-* [list-http-params]
+* [p5.web.header.get]
+* [p5.web.header.list]
+* [p5.web.params.get]
+* [p5.web.params.list]
 
 Not all of them can be interchanged with each other, since for instance things like HTTP headers, cannot tolerate complete node structures and more
 complex objects, in addition to that storing stuff you'd normally store in your session, obviously does not at all make sense storing in an HTTP
@@ -1201,14 +1201,14 @@ set-cookie-value:some-cookie
 Then run this code.
 
 ```
-get-cookie-value:some-cookie
+p5.web.cookie.get:some-cookie
 ```
 
 As you can see in your last piece of code, your cookie value is returned as a "string". It is quite easily converted back into a node though, by
 running it through *[hyper2lambda]* with the following code.
 
 ```
-get-cookie-value:some-cookie
+p5.web.cookie.get:some-cookie
 hyper2lambda:x:/-/*?value
 ```
 
@@ -1239,16 +1239,16 @@ for a consecutive "get" operation. For obvious reasons ...
 
 ### HTTP GET parameters
 
-To access your HTTP GET parameters, you can use *[get-http-param]* or *[list-http-params]*. Since the GET parameter of a request, is a read-only 
+To access your HTTP GET parameters, you can use *[p5.web.params.get]* or *[p5.web.params.list]*. Since the GET parameter of a request, is a read-only 
 type of collection, there exists no "setter". Try to add up the following string at the end of your URL; "&foo-key=bar-value". Then run the following code.
 
 ```
-get-http-param:foo-key
+p5.web.params.get:foo-key
 ```
 
 Now of course, since modifying the HTTP GET parameter collection of a request, requires changing the URL of a request, there exists no "setter".
 Notice that since the parameter collection in ASP.NET also returns POST variables, in addition to lots of other types of objects, you will also find
-for instance stuff like your cookies hen invoking for instance *[list-http-params]*, and even its raw value when using *[get-http-param]*. In addition,
+for instance stuff like your cookies hen invoking for instance *[p5.web.params.list]*, and even its raw value when using *[p5.web.params.get]*. In addition,
 you will also find the HTTTP headers, and all sort of other "unexpected stuff" in your parameter collection. However, this is the way ASP.NET is 
 implemented, and kept in P5 to remain consistant towards the underlaying implementtation of .Net.
 
@@ -1257,8 +1257,8 @@ implemented, and kept in P5 to remain consistant towards the underlaying impleme
 
 If you wish, you can completely bypass the default HTTP serialization and deserialization, and instead, take complete control of every aspect of
 both the rendering and the parsing of HTTP requests and responses. This is useful if you are creating web services or returing files to the caller
-for instance. For such cases, you have the *[echo]* and *[echo-file]* Active Events for creating your own response. And you have the *[get-request-body]*,
-and the *[get-http-method]* events. These Active Events allows you to access the "raw" HTTP request, as sent by the client, and create your own response, 
+for instance. For such cases, you have the *[echo]* and *[echo-file]* Active Events for creating your own response. And you have the *[p5.web.request.get-body]*,
+and the *[p5.web.request.get-method]* events. These Active Events allows you to access the "raw" HTTP request, as sent by the client, and create your own response, 
 exactly as you see fit.
 
 The default HTTP request/response model in P5, uses POST requests for each Ajax request, and returns JSON to the caller. However, if you wish, you
@@ -1306,7 +1306,7 @@ allows you to return some sub-set of your tree to the caller.
 
 ### Getting the raw HTTP request
 
-You can also retrieve the "raw" HTTP request, by using the *[get-request-body]* Active Event. This Active Event will return the raw HTTP request sent
+You can also retrieve the "raw" HTTP request, by using the *[p5.web.request.get-body]* Active Event. This Active Event will return the raw HTTP request sent
 by the client, giving you complete access to do whatever you wish with it.
 
 Hint!
@@ -1322,7 +1322,7 @@ Use the *[login]* Active Event to change the current "user context ticket" if yo
 
 ### Additional request helper events
 
-You can also get the HTTP method of your request, using the *[get-http-method]* Active Event, in addition to that you can have P5 make its best "guess"
+You can also get the HTTP method of your request, using the *[p5.web.request.get-method]* Active Event, in addition to that you can have P5 make its best "guess"
 of whether or not the request originated from a "mobile device" using the *[request-is-mobile-device]* Active Event. The latter is not 100% perfect,
 since a mobile device is not required to identify itself as such to your server. But it is good enough for most cases, and will do a decent job, 
 determining if the client is some sort of "mobile device" or not.
@@ -1336,7 +1336,7 @@ You can modify the "status message" and the "status code" of your response using
 
 ### Ninja tricks when creating web services
 
-One thing you should realize about *[echo]* and *[get-request-body]*, is that you can both pass in, and return Hyperlambda, which you then convert to 
+One thing you should realize about *[echo]* and *[p5.web.request.get-body]*, is that you can both pass in, and return Hyperlambda, which you then convert to 
 p5.lambda, for then to evaluate it as such. This feature of P5, allows you to pass "code" from your client, to a server, and have the server evaluate 
 your "code", for then to return "code" back again, which the client evaluates on its side.
 

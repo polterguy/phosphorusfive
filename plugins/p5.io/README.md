@@ -38,49 +38,49 @@ with it, is to base64 encode this data, and/or, pass it into other Active Events
 
 Below you can find the documentation for how to handle files in your system.
 
-### [load-file], loading files
+### [p5.io.file.load], loading files
 
-To load a file, simply use the *[load-file]* Active Event. An example of this event is shown below.
+To load a file, simply use the *[p5.io.file.load]* Active Event. An example of this event is shown below.
 
 ```
-load-file:/system42/application-startup.hl
+p5.io.file.load:/system42/application-startup.hl
 ```
 
-The above invocation will load System42's startup file for you. Notice that this is a Hyperlambda file, which the *[load-file]* Active
+The above invocation will load System42's startup file for you. Notice that this is a Hyperlambda file, which the *[p5.io.file.load]* Active
 Event will automatically determine, and hence parse the file for you automatically, to become a p5.lambda structure. If you do not wish to 
 automatically parse the file, but rather load the file "raw", as a piece of text, not transforming it into a p5.lambda object, you must 
 add the argument *[convert]*, and set its value to "false". An example is shown below.
 
 ```
-load-file:/system42/application-startup.hl
+p5.io.file.load:/system42/application-startup.hl
   convert:false
 ```
 
 If you run the above Hyperlambda through your System42/executor, you will see that now it contains simply a text string, preserving all comments
-for you, among other things. Unless you explicitly inform the *[load-file]* Active Event that you do not wish for any conversion to occur,
+for you, among other things. Unless you explicitly inform the *[p5.io.file.load]* Active Event that you do not wish for any conversion to occur,
 then it will automatically convert all Hyperlambda for you, to p5.lambda objects. This makes it very easy for you to load Hyperlambda, and 
 immediately execute your Hyperlambda, without having to convert it yourself.
 
 #### Loading multiple files at the same time
 
 Sometimes, you want to load multiple files at the same time. Often you might even want to treat them as "one aggregated" file result.
-For such cases, you can pass in an expression into your *[load-file]* invocation, such as the following is an example of.
+For such cases, you can pass in an expression into your *[p5.io.file.load]* invocation, such as the following is an example of.
 
 ```
 _files
   file1:/system42/application-startup.hl
   file2:/system42/startup/pf.web.load-ui.hl
-load-file:x:/-/*?value
+p5.io.file.load:x:/-/*?value
 ```
 
-The above code, will load both of the given files, and append them into a node, beneath *[load-file]*, having the name being the path of
+The above code, will load both of the given files, and append them into a node, beneath *[p5.io.file.load]*, having the name being the path of
 the file loaded. The structure will look roughly like this.
 
 ```
 _files
   file1:/system42/application-startup.hl
   file2:/system42/startup/pf.web.load-ui.hl
-load-file
+p5.io.file.load
   /system42/application-startup.hl
      ... file 1 content, p5.lambda nodes ...
   /system42/startup/pf.web.load-ui.hl
@@ -89,13 +89,13 @@ load-file
 
 Notice, if you try to load a file that does not exist, an exception will be thrown.
 
-### [save-file], saving files
+### [p5.io.file.save], saving files
 
-The *[save-file]* Active Event, does the exact opposite of the *[load-file]* event. Meaning, it saves a new file, or overwrites an existing on.
+The *[p5.io.file.save]* Active Event, does the exact opposite of the *[p5.io.file.load]* event. Meaning, it saves a new file, or overwrites an existing on.
 Try the following code.
 
 ```
-save-file:~/foo.md
+p5.io.file.save:~/foo.md
   src:@"Hello there file system!
 =======
 
@@ -106,7 +106,7 @@ After evaluating the above Hyperlambda, a new file will exist within your main "
 If the file already exists, it will be overwritten.
 
 Whatever argument you pass into the *[src]* node, will somehow be converted into a text string, or a single binary piece of blob, and
-flushed into the given file, passed in as the value of *[save-file]*. This allows you to create a new file, or overwrite an existing file.
+flushed into the given file, passed in as the value of *[p5.io.file.save]*. This allows you to create a new file, or overwrite an existing file.
 You can also use expression in your *[src]*, such as the following is an example of.
 
 ```
@@ -118,19 +118,19 @@ _data
   people:Howdy world
     first:John
     last:Doe
-save-file:~/foo.hl
+p5.io.file.save:~/foo.hl
   src:x:/../*/_data/*
-load-file:~/foo.hl
+p5.io.file.load:~/foo.hl
 ```
 
-The *[load-file]* invocation above, is only there to show the results of your newly created file, and illustrates how only the results of
-the expression you pass into your *[src]* to *[save-file]*, are saved to disc. This allows you to save sub-sections of your trees, and even 
+The *[p5.io.file.load]* invocation above, is only there to show the results of your newly created file, and illustrates how only the results of
+the expression you pass into your *[src]* to *[p5.io.file.save]*, are saved to disc. This allows you to save sub-sections of your trees, and even 
 combine multiple pieces of text, and/or p5.lambda sub-trees, and save the combined result to disc.
 
 You can also have a "static" source, containing the nodes as children of *[src]*, such as the following is an example of.
 
 ```
-save-file:~/foo.hl
+p5.io.file.save:~/foo.hl
   src
     person:1
       name:thomas
@@ -143,7 +143,7 @@ Yet even more powerful control over what is saved, can be achieved by using an A
 ```
 _exe
   return:Content of file
-save-file:~/foo.txt
+p5.io.file.save:~/foo.txt
   eval:x:/../*/_exe
 ```
 
@@ -160,7 +160,7 @@ _files
     content:Foo was here
   name:~/bar.txt
     content:Bar was here
-save-file:x:/-/*?value
+p5.io.file.save:x:/-/*?value
   eval:x:/./+
 _get-content
   return:x:/../*/_dn/#/*?value
@@ -172,56 +172,56 @@ source, expected to be the child node(s) beneath each filepath nodes.
 
 This "Ninja trick" allows you to save multiple files, in one go.
 
-### [delete-file], deleting one or more files
+### [p5.io.file.delete], deleting one or more files
 
-Just like *[load-file]*, *[delete-file]* can react upon several files at the same time. Its arguments work the same way as load-file, except of
-course, instead of loading the file(s), it deletes them. To delete the files created above in one of our *[save-file]* examples, you
+Just like *[p5.io.file.load]*, *[p5.io.file.delete]* can react upon several files at the same time. Its arguments work the same way as p5.io.file.load, except of
+course, instead of loading the file(s), it deletes them. To delete the files created above in one of our *[p5.io.file.save]* examples, you
 can use the following code.
 
 ```
-delete-file:~/foo.txt
+p5.io.file.delete:~/foo.txt
 ```
 
 Notice, if the above file does not exist, an exception will be thrown.
 
-The Active Event *[delete-file]*, does not take any arguments, besides a single constant value, or an expression leading to multiple file paths.
+The Active Event *[p5.io.file.delete]*, does not take any arguments, besides a single constant value, or an expression leading to multiple file paths.
 However, just like the other file manipulation Active Events, it requires a fully qualified path, which must start with "/". To delete a file,
 the user context object must be authorized to modifying the file. Otherwise, an exception will be thrown.
 
-### [file-exist], checking if one or more files exist
+### [p5.io.file.exists], checking if one or more files exist
 
-*[file-exist]* accepts its arguments the same way *[load-file]* does. However, *[file-exist]* will return true for each file that
+*[p5.io.file.exists]* accepts its arguments the same way *[p5.io.file.load]* does. However, *[p5.io.file.exists]* will return true for each file that
 exists, instead of returning the content of the file. Example given below.
 
 ```
 _data
   file1:/system42/application-startup.hl
   file2:/does-not-exist/foo.txt
-file-exist:x:/-/*?value
+p5.io.file.exists:x:/-/*?value
 ```
 
 Notice how the above example returns true for the first file, but false for the second file.
 
-### [move-file], moving or renaming a file
+### [p5.io.file.move], moving or renaming a file
 
-With *[move-file]*, you can either rename a file, or entirely move it into for instance a different folder. The Active Event takes the 
+With *[p5.io.file.move]*, you can either rename a file, or entirely move it into for instance a different folder. The Active Event takes the 
 "source file" as its value, and the "destinatin filepath/value", as the value of a *[dest]* child node. Let's show this with an example.
 
 ```
-save-file:~/foo.txt
+p5.io.file.save:~/foo.txt
   src:foo bar
-move-file:~/foo.txt
+p5.io.file.move:~/foo.txt
   dest:~/new-foo.txt
 ```
 
 To move multiple files in one go, you could do something similar to this.
 
 ```
-save-file:~/temp/foo1.txt
+p5.io.file.save:~/temp/foo1.txt
   src:foo1
-save-file:~/temp/foo2.txt
+p5.io.file.save:~/temp/foo2.txt
   src:foo2
-move-file:x:/../*/save-file?value
+p5.io.file.move:x:/../*/p5.io.file.save?value
   eval
     split:x:/../*/_dn/#?value
       =:.
@@ -230,41 +230,41 @@ move-file:x:/../*/save-file?value
       :x:/../*/split/1?name
 ```
 
-The above p5.lambda, first creates two text files. Then it uses an expression leading to each *[save-file]*'s value for *[move-file]*, with
+The above p5.lambda, first creates two text files. Then it uses an expression leading to each *[p5.io.file.save]*'s value for *[p5.io.file.move]*, with
 an Active Event destination, utilizing the *[eval]* Active Event, which returns the old filename, with the text " - new path" appended at 
 its end. The end result being, that you end up with two files at the root of your "p5.website" folder called "foo1 - new path.txt" and
 "foo2 - new path.txt".
 
-The *[move-file]* Active Event, also has the alias of *[rename-file]*, which can be used instead of "move-file". However, the logic is the
+The *[p5.io.file.move]* Active Event, also has the alias of *[p5.io.file.rename]*, which can be used instead of "p5.io.file.move". However, the logic is the
 exact same, and there are no differences in implementation of these two events. They are simply aliases for the same Active Event handler.
 
 If the files you are trying to move, does not exist, an exception will be thrown. If there exist a file from before, with the same path as the
 new destination filenames for your file(s), then an exception will also be thrown.
 
-### [copy-file], copying a file
+### [p5.io.file.copy], copying a file
 
-The *[copy-file]* Active Event, does exactly what you think it should do. It copies one source file, and creates a new copy of that file, into
-a destination file. Besides from that it actually copies the file(s), instead of moving them, it works 100% identically to *[move-file]*. 
-The arguments to *[copy-file]* are also the same as the arguments to *[move-file]*. Consider this code.
+The *[p5.io.file.copy]* Active Event, does exactly what you think it should do. It copies one source file, and creates a new copy of that file, into
+a destination file. Besides from that it actually copies the file(s), instead of moving them, it works 100% identically to *[p5.io.file.move]*. 
+The arguments to *[p5.io.file.copy]* are also the same as the arguments to *[p5.io.file.move]*. Consider this code.
 
 ```
-save-file:~/foo.txt
+p5.io.file.save:~/foo.txt
   src:foo bar
-copy-file:~/foo.txt
+p5.io.file.copy:~/foo.txt
   dest:~/foo-copy.txt
 ```
 
-The *[dest]* node argument above, which is the child node of *[copy-file]*, is of course the destination filepath, for your copy. Here too, you
-could have copied several files at once, like we did with *[move-file]*.
+The *[dest]* node argument above, which is the child node of *[p5.io.file.copy]*, is of course the destination filepath, for your copy. Here too, you
+could have copied several files at once, like we did with *[p5.io.file.move]*.
 
-### [p5.io.file.length], [p5.io.file.is-read-only], [p5.io.file.creation-time] and [p5.io.file.last-access-time]
+### [p5.io.file.length], [p5.io.file.get-read-only], [p5.io.file.creation-time] and [p5.io.file.last-access-time]
 
-The *[p5.io.file.length]*, *[p5.io.file.is-read-only]*, *[p5.io.file.creation-time]* and *[p5.io.file.last-access-time]* Active Events, returns the size, read-only state,
+The *[p5.io.file.length]*, *[p5.io.file.get-read-only]*, *[p5.io.file.creation-time]* and *[p5.io.file.last-access-time]* Active Events, returns the size, read-only state,
 creation time, and access time of each file you supply to them.
 
 ```
 p5.io.file.length:/web.config
-p5.io.file.is-read-only:/web.config
+p5.io.file.get-read-only:/web.config
 p5.io.file.creation-time:/web.config
 p5.io.file.last-access-time:/web.config
 ```
@@ -274,7 +274,7 @@ After evaluating the above code, your result will look something like this.
 ```
 p5.io.file.length
   /web.config:long:8084
-p5.io.file.is-read-only
+p5.io.file.get-read-only
   /web.config:bool:false
 p5.io.file.creation-time
   /web.config:date:"2016-09-07T15:25:22.285"
@@ -290,16 +290,16 @@ using the *[p5.io.file.delete-read-only]* Active Event. Both of these Active Eve
 ## How to handle folders in your system
 
 The Active Events for handling folders, are almost identical to the events for handling files, with some smaller differences though.
-Among other things, there obviously does not exist a *[save-folder]* event, but instead you'll find a *[create-folder]* Active Event,
+Among other things, there obviously does not exist a *[save-folder]* event, but instead you'll find a *[p5.io.folder.create]* Active Event,
 and so on.
 
-### [create-folder]
+### [p5.io.folder.create]
 
 Creates a folder at the given path. Notice that the parent folder must exist, and that this Active Event does not "recursively" create folders.
 Also notice that if the folder exist from before, an exception will be thrown.
 
 This Active Event also handles expressions, and will create all folders your expressions yields as a result, the same way for instance 
-the *[load-file]* will load multiple files.
+the *[p5.io.file.load]* will load multiple files.
 
 Every single Active Event that somehow takes a folder, requires the path to both start with a slash (/), in addition to ending with a slash (/).
 
@@ -309,94 +309,94 @@ Below is some example code that creates two folders.
 _folders
   folder1:~/foo/
   folder2:~/bar/
-create-folder:x:/-/*?value
+p5.io.folder.create:x:/-/*?value
 ```
 
-### [delete-folder]
+### [p5.io.folder.delete]
 
-Delete folder is implemented with the same semantics as *[create-folder]*, except of course, instead of creating folders, it deletes them.
+Delete folder is implemented with the same semantics as *[p5.io.folder.create]*, except of course, instead of creating folders, it deletes them.
 Example code below.
 
 ```
 _folders
   folder1:~/foo/
   folder2:~/bar/
-delete-folder:x:/-/*?value
+p5.io.folder.delete:x:/-/*?value
 ```
 
-The above code will delete the folders previously created in our *[create-folder]* example.
+The above code will delete the folders previously created in our *[p5.io.folder.create]* example.
 
-### [folder-exist]
+### [p5.io.folder.exists]
 
-This Active Event is implemented with the same semantics as *[file-exist]*, which means if you pass in an expression as its value, and the 
+This Active Event is implemented with the same semantics as *[p5.io.file.exists]*, which means if you pass in an expression as its value, and the 
 expression is leading to multiple folder paths, then all folders must exist, in order for the Active Event to return "true". Below we are
 checking if the folder "/system42/" exists, without any expressions as arguments. We could have supplied an expression, either leading to
 a single path, or multiple paths, if we wanted.
 
 ```
-folder-exist:/system42/
+p5.io.folder.exists:/system42/
 ```
 
-### [copy-folder] and [move-folder]
+### [p5.io.folder.copy] and [p5.io.folder.move]
 
-These two Active Events works exactly like their "file counterparts" ([copy-file] and [move-file]). The *[move-folder]* even has an alias,
-just like "move-file", which is *[rename-folder]*. Below is some sample code using them both.
+These two Active Events works exactly like their "file counterparts" ([p5.io.file.copy] and [p5.io.file.move]). The *[p5.io.folder.move]* even has an alias,
+just like "p5.io.file.move", which is *[p5.io.folder.rename]*. Below is some sample code using them both.
 
 ```
-create-folder:~/foo-bar/
-create-folder:~/foo-bar/foo-bar-inner/
+p5.io.folder.create:~/foo-bar/
+p5.io.folder.create:~/foo-bar/foo-bar-inner/
 
 // Creating some dummy text file in folder
-save-file:~/foo-bar/foo.txt
+p5.io.file.save:~/foo-bar/foo.txt
   src:Foo bar text file
-save-file:~/foo-bar/foo-bar-inner/foo2.txt
+p5.io.file.save:~/foo-bar/foo-bar-inner/foo2.txt
   src:Foo bar text file
 
 // Then copying the folder we created
-copy-folder:~/foo-bar/
+p5.io.folder.copy:~/foo-bar/
   dest:~/foo-bar-2/
 
 // Before finally, we move the original folder we created above
-// BTW, we could also have used [rename-folder] here
-move-folder:~/foo-bar/
+// BTW, we could also have used [p5.io.folder.rename] here
+p5.io.folder.move:~/foo-bar/
   dest:~/foo-bar-new-name/
 ```
 
 The above code first creates a folder with an inner folder. Then, for the example, it creates a couple of files within these two folders.
 Afterwards, it copies the root folder created like this, before it renames the original root folder created.
 
-### [list-files] and [list-folders]
+### [p5.io.folder.list-files] and [p5.io.folder.list-folders]
 
 These two Active Events, allows you to list files or folders in your system. Both of them can be given either a constant as a value, or
 an expression, leading to multiple folder paths. An example is given below.
 
 ```
-list-files:/system42/
-list-folders:/system42/
+p5.io.folder.list-files:/system42/
+p5.io.folder.list-folders:/system42/
 ```
 
 If you evaluate the above Hyperlambda, you will see that these Active Events returns the files and folders, as the "name" part of their children
 nodes. This is a general rule in p5.lambda, which is that in general terms, Active Events that returns a list of strings, returns these as 
 the names of the children nodes of their main event node.
 
-Notice the *[list-files]* Active Event, can optionally be given a *[filter]*. This is a piece of string, that each file must contain, to yield a match.
+Notice the *[p5.io.folder.list-files]* Active Event, can optionally be given a *[filter]*. This is a piece of string, that each file must contain, to yield a match.
 For instance, to list only the Hyperlambda files in your System42 folder, you could do something like this.
 
 ```
-list-files:/system42/
+p5.io.folder.list-files:/system42/
   filter:.hl
 ```
 
-Notice, if you start your filter with a period ".", then *[list-files]* assumes that you wish to filter upon file extensions. Otherwise, it will simply
+Notice, if you start your filter with a period ".", then *[p5.io.folder.list-files]* assumes that you wish to filter upon file extensions. Otherwise, it will simply
 retrieve all files somehow containing your specified search term. Regardless of where this is found in the filename.
 
 #### Filtering files according to type
 
-When you invoke *[list-files]*, you can optionally supply a *[filter]* argument, to make sure you only retrieve files with a
+When you invoke *[p5.io.folder.list-files]*, you can optionally supply a *[filter]* argument, to make sure you only retrieve files with a
 specific extension. The code below for instance, will only retrieve the ".aspx" files from your p5.webapp folder.
 
 ```
-list-files:/
+p5.io.folder.list-files:/
   filter:.aspx
 ```
 
@@ -416,7 +416,7 @@ Below is some sample code that creates such a variable Active Event, for then to
 ```
 create-event:p5.io.unroll-path.@my-temp
   return:~/temp
-save-file:@my-temp/foo.txt
+p5.io.file.save:@my-temp/foo.txt
   src:Foo bar
 ```
 
@@ -424,19 +424,19 @@ After evaluating the above code, you should have a foo.txt file in your temp fol
 
 #### Executing every Hyperlambda file within a folder
 
-Combining *[list-files]* and *[eval]*, you can do some interesting things. One of these, is that you can evaluate all Hyperlambda files within
+Combining *[p5.io.folder.list-files]* and *[eval]*, you can do some interesting things. One of these, is that you can evaluate all Hyperlambda files within
 some specific folder, easily, with only 3-4 lines of code. Imagine the following code.
 
 ```
-list-files:/system42/some-hyperlambda-folder/
+p5.io.folder.list-files:/system42/some-hyperlambda-folder/
   filter:.hl
-load-file:x:/-/*?name
+p5.io.file.load:x:/-/*?name
 eval:x:/-/*
 ```
 
 What the above code actually does, is first of all listing every Hyperlambda file with a specific folder. Then it loads all these files.
-As we previously said, *[load-file]* will automatically convert a Hyperlambda file to a p5.lambda structure after loading it. Then we invoke
-the *[eval]* event, passing in an expression leading to all children nodes of *[load-file]*, which now should be the root node of all files 
+As we previously said, *[p5.io.file.load]* will automatically convert a Hyperlambda file to a p5.lambda structure after loading it. Then we invoke
+the *[eval]* event, passing in an expression leading to all children nodes of *[p5.io.file.load]*, which now should be the root node of all files 
 loaded this way. The end result, is that all files in some specific folder is automatically evaluated and executed.
 
 System42 contains helper Active Events, both for evaluating single Hyperlambda files, in addition to recursively evaluating all Hyperlambda

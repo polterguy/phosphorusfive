@@ -21,37 +21,28 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.Web;
-using p5.exp;
+using System.IO;
 using p5.core;
+using p5.io.common;
 
-namespace p5.web.ui.request
+namespace p5.io.folder
 {
     /// <summary>
-    ///     Helper to retrieve GET HTTP request parameters
+    ///     Class to check if one or more folder(s) exists on disc.
     /// </summary>
-    public static class QueryString
+    public static class Exists
     {
         /// <summary>
-        ///     Returns one or more HTTP GET request parameter(s).
+        ///     Returns true if one or more folder(s) exists on disc.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.query.get")]
-        public static void p5_web_query_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.folder.exists")]
+        public static void p5_io_folder_exists (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Get (context, e.Args, key => HttpContext.Current.Request.QueryString [key]);
-        }
-
-        /// <summary>
-        ///     Lists all keys for our GET parameters.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.query.list")]
-        public static void p5_web_query_list (ApplicationContext context, ActiveEventArgs e)
-        {
-            XUtil.List (context, e.Args, HttpContext.Current.Request.QueryString.AllKeys);
+            ObjectIterator.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
+                e.Args.Add (foldername, Directory.Exists (fullpath));
+            });
         }
     }
 }

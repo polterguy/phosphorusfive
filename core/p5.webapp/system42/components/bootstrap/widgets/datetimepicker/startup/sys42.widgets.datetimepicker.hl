@@ -117,19 +117,19 @@ create-event:sys42.widgets.datetimepicker
             /*
              * Including Bootstrap (and jQuery)
              */
-            sys42.bootstrap.include-javascript
+            sys42.bootstrap.p5.web.include-javascript
             sys42.bootstrap.include-css
 
             /*
              * The DateTimePicker is dependent upon Moment.js.
              */
-            include-javascript-file:@BOOTSTRAP/widgets/datetimepicker/media/js/moment.min.js
+            p5.web.include-javascript-file:@BOOTSTRAP/widgets/datetimepicker/media/js/moment.min.js
 
             /*
              * Including DateTimePicker's JavaScript and CSS
              */
-            include-javascript-file:@BOOTSTRAP/widgets/datetimepicker/media/js/bootstrap-datetimepicker.min.js
-            include-stylesheet-file:@BOOTSTRAP/widgets/datetimepicker/media/css/bootstrap-datetimepicker.min.css
+            p5.web.include-javascript-file:@BOOTSTRAP/widgets/datetimepicker/media/js/bootstrap-datetimepicker.min.js
+            p5.web.include-css-file:@BOOTSTRAP/widgets/datetimepicker/media/css/bootstrap-datetimepicker.min.css
 
             /*
              * Becomes the arguments to pass into JavaScript instantiation.
@@ -145,7 +145,7 @@ create-event:sys42.widgets.datetimepicker
               /*
                * Including the necessary "locale" JS file, and setting the "locale" option for our [_argument] above.
                */
-              include-javascript-file:@"@BOOTSTRAP/widgets/datetimepicker/media/js/locale/{0}.js"
+              p5.web.include-javascript-file:@"@BOOTSTRAP/widgets/datetimepicker/media/js/locale/{0}.js"
                 :x:/../*/_options/*/_locale?value
               set:x:/@_arguments?value
                 src:@"{0},locale:'{1}'"
@@ -264,7 +264,7 @@ create-event:sys42.widgets.datetimepicker
                * We have an [.onchange] lambda callback, making sure we intialize datetimepicker such that it raises [.onchange] when 
                * the widget is hidden.
                */
-              send-javascript:@"$('#{0}').datetimepicker({1}).on('dp.hide',function(){{p5.$('{2}').raise('.onchange');}});"
+              p5.web.send-javascript:@"$('#{0}').datetimepicker({1}).on('dp.hide',function(){{p5.$('{2}').raise('.onchange');}});"
                 :x:/../*/_init-widget?value
                 :x:/../*/_arguments?value
                 :x:/../*/_event?value
@@ -274,7 +274,7 @@ create-event:sys42.widgets.datetimepicker
               /*
                * We do not have an [.onchange] lambda callback.
                */
-              send-javascript:@"$('#{0}').datetimepicker({1});"
+              p5.web.send-javascript:@"$('#{0}').datetimepicker({1});"
                 :x:/../*/_init-widget?value
                 :x:/../*/_arguments?value
 

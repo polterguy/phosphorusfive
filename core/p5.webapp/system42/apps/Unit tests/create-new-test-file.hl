@@ -32,7 +32,7 @@ sys42.windows.modal
           =:
           set-widget-property:test-filename-wrp
             class:form-group has-error
-          send-javascript:@"$('#test-filename').focus().select();"
+          p5.web.send-javascript:@"$('#test-filename').focus().select();"
           return
 
         /*
@@ -55,13 +55,13 @@ sys42.windows.modal
           >:int:1
           set-widget-property:test-filename-wrp
             class:form-group has-error
-          send-javascript:@"$('#test-filename').focus().select();"
+          p5.web.send-javascript:@"$('#test-filename').focus().select();"
         else
 
           /*
            * Filename of test file is OK, creating a default test file
            */
-          save-file:{0}{1}
+          p5.io.file.save:{0}{1}
             :@tests/tests/
             :x:/../*/get-widget-property/*/*?value
             src:@"/*

@@ -69,8 +69,8 @@ create-event:sys42.widgets.navbar
     /*
      * Checking if the current URL is an "unroll" URL.
      */
-    get-http-get-param:x:/../*/_options/*/_crawl-get-name?value
-    if:x:/@get-http-get-param/*?value
+    p5.web.query.get:x:/../*/_options/*/_crawl-get-name?value
+    if:x:/@p5.web.query.get/*?value
 
 
       /*
@@ -86,7 +86,7 @@ create-event:sys42.widgets.navbar
              * Notice, [_item-id] is forward evaluated in the above [eval-x] invocation.
              */
             find-widget:x:/../*/_event?value
-              _item-id:x:/@get-http-get-param/*?value
+              _item-id:x:/@p5.web.query.get/*?value
             raise-widget-ajax-event:x:/@find-widget/*/*?value
               onclick
 
@@ -111,8 +111,8 @@ create-event:sys42.widgets.navbar
              * the hack to allow Boostrap's navbar to have multiple levels of inner menus.
              */
             sys42.bootstrap.include-css
-            sys42.bootstrap.include-javascript
-            include-stylesheet-file:@CMS/media/css/navbar-fix.min.css
+            sys42.bootstrap.p5.web.include-javascript
+            p5.web.include-css-file:@CMS/media/css/navbar-fix.min.css
 
           widgets
 

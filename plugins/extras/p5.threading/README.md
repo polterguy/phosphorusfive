@@ -138,31 +138,31 @@ Sometimes you have some shared object, or resource, which you cannot have multip
 use a *[lock]* invocation, to make sure only one thread at the time is able to access your shared object. An example is given below.
 
 ```
-save-file:~/foo.txt
+p5.io.file.save:~/foo.txt
   src:initial value
 wait
   fork
     lock:my-file
-      load-file:~/foo.txt
-      save-file:~/foo.txt
+      p5.io.file.load:~/foo.txt
+      p5.io.file.save:~/foo.txt
         src:"{0}\r\n{1}"
-          :x:/..lock/*/load-file/*?value
+          :x:/..lock/*/p5.io.file.load/*?value
           :first thread
   fork
     lock:my-file
-      load-file:~/foo.txt
-      save-file:~/foo.txt
+      p5.io.file.load:~/foo.txt
+      p5.io.file.save:~/foo.txt
         src:"{0}\r\n{1}"
-          :x:/..lock/*/load-file/*?value
+          :x:/..lock/*/p5.io.file.load/*?value
           :second thread
   fork
     lock:my-file
-      load-file:~/foo.txt
-      save-file:~/foo.txt
+      p5.io.file.load:~/foo.txt
+      p5.io.file.save:~/foo.txt
         src:"{0}\r\n{1}"
-          :x:/..lock/*/load-file/*?value
+          :x:/..lock/*/p5.io.file.load/*?value
           :third thread
-load-file:~/foo.txt
+p5.io.file.load:~/foo.txt
 ```
 
 In the above example, we want to ensure "atomic" access while loading and saving our file. Without this, we could in theory, run the risk of that

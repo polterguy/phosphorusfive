@@ -70,7 +70,7 @@ namespace p5.webapp.code
             args.Add ("page", this);
 
             // Raising our "page initialized" active event
-            ApplicationContext.Raise ("p5.web.initialize-page", args);
+            ApplicationContext.Raise (".p5.web.initialize-page", args);
 
             // Calling base
             base.OnLoad(e);
@@ -197,7 +197,7 @@ namespace p5.webapp.code
 
             // Raising event, making sure we can handle any exceptions occuring.
             try {
-                ApplicationContext.Raise ("p5.web.raise-ajax-event", args);
+                ApplicationContext.Raise (".p5.web.raise-ajax-event", args);
             } catch (Exception err) {
 
                 // Notice, we rethrow exception if handler didn't return true.

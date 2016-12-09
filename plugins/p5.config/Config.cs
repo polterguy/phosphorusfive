@@ -37,9 +37,9 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-config-setting")]
-        [ActiveEvent (Name = ".get-config-setting")]
-        public static void get_config_setting (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.config.get")]
+        [ActiveEvent (Name = ".p5.config.get")]
+        public static void p5_config_get (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Get (context, e.Args, ix => ConfigurationManager.AppSettings[ix]);
         }
@@ -49,9 +49,9 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-config-settings")]
-        [ActiveEvent (Name = ".list-config-settings")]
-        public static void list_config_settings (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.config.list")]
+        [ActiveEvent (Name = ".p5.config.list")]
+        public static void p5_io_config_list (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.List (context, e.Args, ConfigurationManager.AppSettings.AllKeys);
         }

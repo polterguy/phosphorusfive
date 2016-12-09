@@ -8,10 +8,10 @@ create-event:sys42.widgets.tree._create-url
    * First we get current location, without GET parameters, before we add the question mark to make sure we 
    * "open" our GET params collection.
    */
-  get-location-url
-  set:x:/../*/get-location-url?value
+  p5.web.get-location-url
+  set:x:/../*/p5.web.get-location-url?value
     src:{0}?
-      :x:/../*/get-location-url?value
+      :x:/../*/p5.web.get-location-url?value
 
   /*
    * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
@@ -21,25 +21,25 @@ create-event:sys42.widgets.tree._create-url
     _root-tree
   get-widget-property:x:/-/*/*?value
     _root-tree
-  list-http-get-params
+  p5.web.query.list
   set:x:/-/*/{0}
     :x:/../*/get-widget-property/*/*?value
   if:x:/-2/*
-    get-http-get-param:x:/./-2/*?name
+    p5.web.query.get:x:/./-2/*?name
     for-each:x:/-/*
       url-encode:x:/./*/_dp/#?value
-      set:x:/../*/get-location-url?value
+      set:x:/../*/p5.web.get-location-url?value
         src:{0}{1}={2}&
-          :x:/../*/get-location-url?value
+          :x:/../*/p5.web.get-location-url?value
           :x:/..for-each/*/_dp/#?name
           :x:/..for-each/*/url-encode?value
 
   /*
    * Adding key for our "unroll" GET parameter.
    */
-  set:x:/../*/get-location-url?value
+  set:x:/../*/p5.web.get-location-url?value
     src:{0}{1}=
-      :x:/../*/get-location-url?value
+      :x:/../*/p5.web.get-location-url?value
       :x:/../*/get-widget-property/*/*?value
 
   /*
@@ -83,5 +83,5 @@ create-event:sys42.widgets.tree._create-url
   url-encode:x:/../*/trim?value
 
   return:{0}{1}
-    :x:/../*/get-location-url?value
+    :x:/../*/p5.web.get-location-url?value
     :x:/../*/url-encode?value

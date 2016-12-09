@@ -26,23 +26,20 @@ using p5.core;
 using p5.io.common;
 using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for everything related to folders
-/// </summary>
 namespace p5.io.folder
 {
     /// <summary>
-    ///     Class to help create folders on disc
+    ///     Class to help create one or more folder(s).
     /// </summary>
     public static class Create
     {
         /// <summary>
-        ///     Creates folders on disc
+        ///     Creates one or more folder(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-folder")]
-        public static void create_folder (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.folder.create")]
+        public static void p5_io_folder_create (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
                 if (Directory.Exists (fullpath)) {

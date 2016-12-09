@@ -54,24 +54,24 @@ create-event:sys42.widgets.codemirror
   /*
    * Making sure necessary JavaScript files are included
    */
-  include-javascript-file
+  p5.web.include-javascript-file
     /system42/components/common-widgets/codemirror/media/lib/codemirror.js
     /system42/components/common-widgets/codemirror/media/addon/selection/active-line.js
     /system42/components/common-widgets/codemirror/media/addon/display/placeholder.js
     /system42/components/common-widgets/codemirror/media/addon/display/fullscreen.js
     /system42/components/common-widgets/codemirror/media/addon/hint/show-hint.js
-  include-javascript-file:/system42/components/common-widgets/codemirror/media/mode/{0}/{0}.min.js
+  p5.web.include-javascript-file:/system42/components/common-widgets/codemirror/media/mode/{0}/{0}.min.js
     :x:/../*/_options/*/_mode?value
 
 
   /*
    * Making sure necessary Stylesheet files are included
    */
-  include-stylesheet-file
+  p5.web.include-css-file
     /system42/components/common-widgets/codemirror/media/lib/codemirror.css
     /system42/components/common-widgets/codemirror/media/addon/display/fullscreen.css
     /system42/components/common-widgets/codemirror/media/addon/hint/show-hint.css
-  include-stylesheet-file:/system42/components/common-widgets/codemirror/media/theme/{0}.min.css
+  p5.web.include-css-file:/system42/components/common-widgets/codemirror/media/theme/{0}.min.css
     :x:/../*/_options/*/_theme?value
 
 
@@ -139,16 +139,16 @@ create-event:sys42.widgets.codemirror
   /*
    * Including JSON object containing full list of keywords to client.
    *
-   * Notice, "include-javascript" in case we're having multiple Code-Mirror instances on page!
+   * Notice, "p5.web.include-javascript" in case we're having multiple Code-Mirror instances on page!
    */
-  include-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
+  p5.web.include-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
     :x:/@join?value
 
 
   /*
    * Making sure textarea input is replaced with our CodeMirror instance.
    */
-  send-javascript:@"p5['{0}'] = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
+  p5.web.send-javascript:@"p5['{0}'] = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
 mode:'hyperlambda',
 theme:'{2}',
 lineNumbers:true,
@@ -175,7 +175,7 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
   /*
    * Then setting height.
    */
-  send-javascript:@"p5['{0}'].setSize('100%', '{1}');"
+  p5.web.send-javascript:@"p5['{0}'].setSize('100%', '{1}');"
     :x:/../*/_arg?value
     :x:/../*/_height?value
 

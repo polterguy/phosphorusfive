@@ -180,7 +180,7 @@ List collections exact match expression
 
 
 List does not return protected key
-  list-page-keys:_WidgetAjaxEventStorage
+  list-page-keys:.WidgetAjaxEventStorage
   if:x:/@list-page-keys
     !=:node:@"list-page-keys"
     throw:Assert error, collections misbehaved

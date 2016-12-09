@@ -97,7 +97,7 @@ create-event:sys42.widgets.tree
          * Making sure we include our tree specific CSS file.
          */
         _skin:x:/../*/_options/*/_skin?value
-        include-stylesheet-file:/system42/components/common-widgets/tree/media/skins/{0}/{0}.min.css
+        p5.web.include-css-file:/system42/components/common-widgets/tree/media/skins/{0}/{0}.min.css
           :x:/@_skin?value
 
         /*
@@ -113,8 +113,8 @@ create-event:sys42.widgets.tree
            */
           return
 
-        get-http-get-param:x:/@get-widget-property/*/*?value
-        if:x:/@get-http-get-param/*?value
+        p5.web.query.get:x:/@get-widget-property/*/*?value
+        if:x:/@p5.web.query.get/*?value
           not
 
           /*
@@ -126,7 +126,7 @@ create-event:sys42.widgets.tree
          * Splitting up every ID from URL, and adding every ID to invocation of [toggle-items],
          * while forcing an "unrolling" through [_force-expand].
          */
-        split:x:/@get-http-get-param/*?value
+        split:x:/@p5.web.query.get/*?value
           =:|
         add:x:/+/*/_items
           src:x:/@split/*?name

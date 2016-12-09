@@ -14,13 +14,13 @@ if
    */
   if:x:/../*/_args/*/template?value
     !=:
-    load-file:x:/../*/_args/*/template?value
+    p5.io.file.load:x:/../*/_args/*/template?value
 
     /*
      * Removing literal:{content} altogether, and evaluating template just loaded.
      */
     set:x:/-/*/*/create-widget/*/widgets/**/={content}/.
-    eval:x:/./*/load-file/*
+    eval:x:/./*/p5.io.file.load/*
 
 
   /*

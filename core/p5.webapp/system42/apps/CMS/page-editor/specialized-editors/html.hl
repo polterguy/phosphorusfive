@@ -7,7 +7,7 @@
 /*
  * Loading page from database
  */
-select-data:x:/*/*/p5.page/"={0}"
+p5.data.select:x:/*/*/p5.page/"={0}"
   :x:/../*/_page-id?value
 
 
@@ -15,7 +15,7 @@ select-data:x:/*/*/p5.page/"={0}"
  * Setting the value of textarea to [html] from database
  */
 set:x:/../*/create-widget/*/widgets/*/=ck-editor/*/_value?value
-  src:x:/../*/select-data/*/*/html?value
+  src:x:/../*/p5.data.select/*/*/html?value
 
 
 /*

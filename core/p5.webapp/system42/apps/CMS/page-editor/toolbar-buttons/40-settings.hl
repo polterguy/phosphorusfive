@@ -11,7 +11,7 @@ button
      * Retrieving page properties, and using a wizard window to allow user to change them.
      */
     sys42.cms.get-edited-page-id
-    select-data:x:@"/*/*/""={0}"""
+    p5.data.select:x:@"/*/*/""={0}"""
       :x:/@sys42.cms.get-edited-page-id?value
 
     /*
@@ -19,12 +19,12 @@ button
      * to have some intuitive order of [_data] according to "importance".
      */
     add:x:/../*/sys42.windows.wizard/*/_data
-      src:x:/@select-data/*/*/name
+      src:x:/@p5.data.select/*/*/name
     add:x:/../*/sys42.windows.wizard/*/_data
       src:@"url:{0}"
         :x:/../*/sys42.cms.get-edited-page-id?value
     add:x:/../*/sys42.windows.wizard/*/_data
-      src:x:/@select-data/*/*(/template|/role)
+      src:x:/@p5.data.select/*/*(/template|/role)
 
     /*
      * Making sure we change the [template] data segment to a "drop down selection" type
@@ -32,7 +32,7 @@ button
      * This is done by fetching all files from "/system42/apps/CMS/page-templates/", and
      * using these as choices for user.
      */
-    list-files:@CMS/page-templates/
+    p5.io.folder.list-files:@CMS/page-templates/
       filter:hl
     for-each:x:/-/*?name
       split:x:/..for-each/*/_dp?value
@@ -74,7 +74,7 @@ button
          * Making sure we set focus to "select page dropdown" if user closes dialogue, without
          * pressing "OK".
          */
-        send-javascript:@"$('#cms-select-page').focus().select();"
+        p5.web.send-javascript:@"$('#cms-select-page').focus().select();"
       .onok
 
         /*
@@ -86,7 +86,7 @@ button
          * Retrieving currently edited page.
          */
         sys42.cms.get-edited-page-id
-        select-data:x:@"/*/*/""={0}"""
+        p5.data.select:x:@"/*/*/""={0}"""
           :x:/@sys42.cms.get-edited-page-id?value
         _old-name:x:/-/*/*/name?value
         eval-x:x:/-
@@ -101,7 +101,7 @@ button
            * User changed URL, making sure new URL does not exist from before.
            */
           if
-            select-data:x:@"/*/*/""={0}""?count"
+            p5.data.select:x:@"/*/*/""={0}""?count"
               :x:/../*/sys42.windows.wizard.get-values/*/url?value
             !=:int:0
 
@@ -117,7 +117,7 @@ button
             get-parent-widget:x:/-/*/*?value
             sys42.utilities.add-css-classes:x:/-/*/*?value
               _class:has-error
-            send-javascript:@"$('#{0}').focus().select();"
+            p5.web.send-javascript:@"$('#{0}').focus().select();"
               :x:/./-3/*/*?value
             return:bool:false
 
@@ -127,28 +127,28 @@ button
           sys42.cms.set-currently-edited-page:x:/../*/sys42.windows.wizard.get-values/*/url?value
 
         /*
-         * Updating page properties, by first changing [select-data]'s result, for then to move [select-data]'s
-         * result into an [update-data] invocation.
+         * Updating page properties, by first changing [p5.data.select]'s result, for then to move [p5.data.select]'s
+         * result into an [p5.data.update] invocation.
          */
-        set:x:/../*/select-data/*/*/name?value
+        set:x:/../*/p5.data.select/*/*/name?value
           src:x:/../*/sys42.windows.wizard.get-values/*/name?value
-        set:x:/../*/select-data/*?value
+        set:x:/../*/p5.data.select/*?value
           src:x:/../*/sys42.windows.wizard.get-values/*/url?value
-        set:x:/../*/select-data/*/*/template?value
+        set:x:/../*/p5.data.select/*/*/template?value
           src:x:/../*/sys42.windows.wizard.get-values/*/template?value
-        set:x:/../*/select-data/*/*/role?value
+        set:x:/../*/p5.data.select/*/*/role?value
           src:x:/../*/sys42.windows.wizard.get-values/*/role?value
 
         /*
-         * Now we can move [p5.page] from [select-data] into [update-data].
+         * Now we can move [p5.page] from [p5.data.select] into [p5.data.update].
          */
-        add:x:/../*/update-data/*/src
-          src:x:/@select-data/*
+        add:x:/../*/p5.data.update/*/src
+          src:x:/@p5.data.select/*
 
         /*
          * Finally, updating properties for page, and providing feedback to user.
          */
-        update-data:x:@"/*/*/p5.page/""={0}"""
+        p5.data.update:x:@"/*/*/p5.page/""={0}"""
           :x:/../*/sys42.cms.get-edited-page-id?value
           src
         sys42.windows.info-tip:Page '{0}' was saved.

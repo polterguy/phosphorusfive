@@ -14,9 +14,9 @@
 
 
 /*
- * Adding the "type of page" property to our [insert-data] invocation.
+ * Adding the "type of page" property to our [p5.data.insert] invocation.
  */
-add:x:/../*/insert-data/*
+add:x:/../*/p5.data.insert/*
   src:"type:{0}"
     :x:/../*/_type?value
 
@@ -24,26 +24,26 @@ add:x:/../*/insert-data/*
 /*
  * Invoking [sys42.cms.get-page-extra-data] to add global extra data with our page.
  */
-add:x:/../*/insert-data/0
+add:x:/../*/p5.data.insert/0
   sys42.cms.get-page-extra-data
 
 
 /*
  * Invoking specialized template new default page file, if it exists, and appending result value
- * into [insert-data] invocation below.
+ * into [p5.data.insert] invocation below.
  */
 if
   fetch:x:/0/0?value
-    file-exist:@CMS/page-editor/new-page-templates/{0}.hl
+    p5.io.file.exists:@CMS/page-editor/new-page-templates/{0}.hl
       :x:/../*/_template?value
 
   /*
    * New default page of type of page specified during invocation exists, making sure we invoke it, as a lambda object,
-   * and add up the returned value(s) from it into [insert-data] invocation below.
+   * and add up the returned value(s) from it into [p5.data.insert] invocation below.
    */
   sys42.utilities.execute-lambda-file:@CMS/page-editor/new-page-templates/{0}.hl
     :x:/../*/_template?value
-  add:x:/../*/insert-data/0
+  add:x:/../*/p5.data.insert/0
     src:x:/@sys42.utilities.execute-lambda-file/*
 
 
@@ -52,13 +52,13 @@ if
  * without changing the URL of them.
  * This might be "change-this-1", "change-this-2", etc, depending upon what our next available URL is.
  */
-select-data:x:/*/*/p5.page/"=~/change-this-"
+p5.data.select:x:/*/*/p5.page/"=~/change-this-"
 _high:int:1
 
 /*
  * Looping through each [p5.page] selected above, finding the next available "change-this-n" URL for our page.
  */
-for-each:x:/@select-data/*?value
+for-each:x:/@p5.data.select/*?value
 
   /*
    * Splitting upon "-" such that we can get to number, which should be the last entity in our split.
@@ -87,22 +87,22 @@ for-each:x:/@select-data/*?value
  * Setting the URL of our newly created page to "change-this-n", where "n" is [_high]'s value.
  * Which should guarantee that this page has the "next available integer value" for its URL in regards to "change-this-n".
  */
-set:x:/../*/insert-data/0?value
+set:x:/../*/p5.data.insert/0?value
   src:/change-this-{0}
     :x:/@_high?value
 
 /*
  * Now, finally, we can actually insert our page into our database, defaulting access rights to root.
  */
-insert-data
+p5.data.insert
   p5.page
     role:root
     name:Change this
 
 /*
- * Setting currently edited page to return value (ID) from [insert-data], which should be URL of page.
+ * Setting currently edited page to return value (ID) from [p5.data.insert], which should be URL of page.
  */
-sys42.cms.set-currently-edited-page:x:/@insert-data/0?value
+sys42.cms.set-currently-edited-page:x:/@p5.data.insert/0?value
 
 /*
  * Repopulating select page dropdown, and starts editor, in addition to re-creating navbar, since navbar hierarchy now has changed.

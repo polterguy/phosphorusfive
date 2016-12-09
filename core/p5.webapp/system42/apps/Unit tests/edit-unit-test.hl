@@ -9,7 +9,7 @@ get-parent-widget:x:/-/*/*?value
   * Loading unit test file, making sure we do NOT convert to p5.lambda, to
   * preserve comments
   */
-load-file:x:/../*/_file?value
+p5.io.file.load:x:/../*/_file?value
   convert:false
 
 /*
@@ -34,7 +34,7 @@ create-widget:{0}_editor
           :x:/../*/_widget?value
           _auto-focus:true
           _height:700px
-          _value:x:/../*/load-file/*?value
+          _value:x:/../*/p5.io.file.load/*?value
         container
           class:btn-group col-xs-3 col-xs-push-9
           widgets
@@ -58,7 +58,7 @@ create-widget:{0}_editor
                   :x:/../*/_widget?value
                 get-widget-property:x:/-?value
                   value
-                save-file:x:/../*/_file?value
+                p5.io.file.save:x:/../*/_file?value
                   src:x:/../*/get-widget-property/*/*?value
 
                 /*
@@ -84,7 +84,7 @@ create-widget:{0}_editor
                   _body:Are you sure you wish to delete this file?
                   .onok
                     _file:x:/../*/_file?value
-                    delete-file:x:/../*/_file?value
+                    p5.io.file.delete:x:/../*/_file?value
                     sys42.windows.info-tip:File was deleted
                     delete-widget:unit-test-bottom-toolbar
                     delete-widget:unit-test-datagrid

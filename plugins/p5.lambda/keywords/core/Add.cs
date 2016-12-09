@@ -33,7 +33,7 @@ namespace p5.lambda.keywords.core
     public static class Add
     {
         /// <summary>
-        ///     The [add] event allows you to append source lambda object(s) into destination lambda object(s).
+        ///     The [add] event, allows you to append source lambda object(s) into destination lambda object(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

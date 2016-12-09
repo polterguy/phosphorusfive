@@ -30,25 +30,25 @@ using p5.exp.exceptions;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [select-data].
+    ///     Class wrapping [p5.data.select].
     /// </summary>
     public static class Select
     {
         /// <summary>
-        ///     [select-data] selects nodes, names or values from your database.
+        ///     [p5.data.select] selects nodes, names or values from your database.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "select-data")]
-        public static void select_data (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.data.select")]
+        public static void p5_data_select (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving expression and doing basic syntax checking.
             var ex = e.Args.Value as Expression;
             if (ex == null)
-                throw new LambdaException ("[select-data] requires an expression to select items from database", e.Args, context);
+                throw new LambdaException ("[p5.data.select] requires an expression to select items from database", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
-            // In case this is a select count operation though, we return the count as the value of [select-data], hence we cannot remove value of e.Args.
+            // In case this is a select count operation though, we return the count as the value of [p5.data.select], hence we cannot remove value of e.Args.
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Acquiring read lock on database.
@@ -58,7 +58,7 @@ namespace p5.data
                     // Retrieving match object, and checking what type of match it was.
                     var match = ex.Evaluate (context, Common.Database, e.Args);
 
-                    // Removing value of [select-data] node by default.
+                    // Removing value of [p5.data.select] node by default.
                     e.Args.Value = null;
 
                     // Checking type of select, and acting accordingly.

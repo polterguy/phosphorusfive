@@ -7,7 +7,7 @@
 /*
  * Loading page from database
  */
-select-data:x:/*/*/p5.page/"={0}"
+p5.data.select:x:/*/*/p5.page/"={0}"
   :x:/../*/_page-id?value
 
 
@@ -15,7 +15,7 @@ select-data:x:/*/*/p5.page/"={0}"
  * Setting the content of editor_surface to the [lambda] from database
  */
 set:x:/../*/create-widget/*/widgets/*/=editor_surface/*/_value?value
-  src:x:/../*/select-data/*/*/lambda?value
+  src:x:/../*/p5.data.select/*/*/lambda?value
 
 
 /*

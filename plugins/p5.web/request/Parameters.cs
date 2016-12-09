@@ -37,7 +37,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-http-param")]
+        [ActiveEvent (Name = "p5.web.params.get")]
         public static void get_http_param (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Get (context, e.Args, key => HttpContext.Current.Request.Params [key]);
@@ -48,7 +48,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-http-params")]
+        [ActiveEvent (Name = "p5.web.params.list")]
         public static void list_http_params (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.List (context, e.Args, HttpContext.Current.Request.Params.AllKeys);

@@ -23,14 +23,14 @@ sys42.cms.load-template
 /*
  * Including some nice background to visually indicate we're in "configuration mode".
  */
-include-stylesheet-file:@CMS/media/css/backgrounds/cogs.min.css
+p5.web.include-css-file:@CMS/media/css/backgrounds/cogs.min.css
 
 
 /*
  * List all files in "/tests/" directory.
  * Each file is considered a "single test collection for specific concept".
  */
-list-files:@tests/tests/
+p5.io.folder.list-files:@tests/tests/
   filter:.hl
 
 
@@ -53,7 +53,7 @@ _eval-name
  */
 _eval-content
   try
-    load-file:x:/../*/_dn/#?name
+    p5.io.file.load:x:/../*/_dn/#?name
     join:x:/-/*/*?name
       sep:"\r\n</li><li>"
     eval-x:x:/..try/*/return/*
@@ -70,7 +70,7 @@ _eval-content
  * Applying unit tests files to table widget
  */
 apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
-  src:x:/../*/list-files/*
+  src:x:/../*/p5.io.folder.list-files/*
   template
     tr
 

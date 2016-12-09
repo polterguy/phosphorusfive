@@ -39,7 +39,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.save-file")]
+        [ActiveEvent (Name = "p5.mime.p5.io.file.save")]
         public static void p5_mime_save_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves

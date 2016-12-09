@@ -14,8 +14,8 @@ sys42.utilities.execute-lambda-folder:@SYS42-APPS/CMS/startup/
 /*
  * Checking to see if we should create our "initial pages"
  */
-select-data:x:/*/*/p5.page?count
-if:x:/@select-data?value
+p5.data.select:x:/*/*/p5.page?count
+if:x:/@p5.data.select?value
   =:int:0
 
   /*
@@ -23,6 +23,6 @@ if:x:/@select-data?value
    *
    * This we do by loading all pages in our "initial-pages" folder, and inserting them directly into our database.
    */
-  list-files:@CMS/initial-pages/
-  load-file:x:/@list-files/*?name
-  insert-data:x:/@load-file/*/*
+  p5.io.folder.list-files:@CMS/initial-pages/
+  p5.io.file.load:x:/@p5.io.folder.list-files/*?name
+  p5.data.insert:x:/@p5.io.file.load/*/*

@@ -89,8 +89,8 @@ whoami
   * the user can create pages that are not visible in the menu, but only accessible through a 
   * direct link.
   */
-select-data:x:@"/*/*/p5.page!(/*/*/p5.page/""=/app-loader""|/*/*/p5.page/""=~/invisible"")"
-for-each:x:/../*/select-data/[0,1]/*
+p5.data.select:x:@"/*/*/p5.page!(/*/*/p5.page/""=/app-loader""|/*/*/p5.page/""=~/invisible"")"
+for-each:x:/../*/p5.data.select/[0,1]/*
 
   // Menu item "template"
   _create-item
@@ -204,8 +204,8 @@ if:x:/../*/whoami/*/default?value
               * Sends and includes JavaScript to page, to be able to handle Carriage Return and Escape 
               * keys in login window
               */
-            send-javascript:"$('#toggle-navbar').click();setTimeout(function(){$('#username').focus().select();},250);"
-            include-javascript:@"p5.loginUsernameKeyPressed = function(e) {
+            p5.web.send-javascript:"$('#toggle-navbar').click();setTimeout(function(){$('#username').focus().select();},250);"
+            p5.web.include-javascript:@"p5.loginUsernameKeyPressed = function(e) {
   if(e.keyCode == 13) {
     p5.$('login-button').raise('onclick');
     return false;
@@ -284,7 +284,7 @@ p5.loginUsernameKeyUp = function(e) {
                              * User was successfully logged in, reloading location to
                              * make sure user sees page in context of his newly logged in credentials
                              */
-                            reload-location
+                            p5.web.reload-location
                           else
 
                             /*
@@ -292,7 +292,7 @@ p5.loginUsernameKeyUp = function(e) {
                               */
                             set-widget-property:login-controls
                               class:form-group has-error
-                            send-javascript:"p5.wrongCredentials();"
+                            p5.web.send-javascript:"p5.wrongCredentials();"
                                       
 
 else
@@ -302,13 +302,13 @@ else
     * Creating the logout button, but first, since user is logged in, our "apps" menu items,
     * if there are any apps.
     */
-  list-folders:/system42/apps/
+  p5.io.folder.list-folders:/system42/apps/
   if:x:/-/*?count
     >:int:0
     _eval
       if
         fetch:x:/0/0?value
-          file-exist:{0}launch.hl
+          p5.io.file.exists:{0}launch.hl
             :x:/../*/_dn/#?name
         not
         return
@@ -371,4 +371,4 @@ else
             set-session-value:x:/-/*?name
             sys42.utilities.empty-user-temp-folder
             logout
-            reload-location
+            p5.web.reload-location

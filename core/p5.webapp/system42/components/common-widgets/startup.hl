@@ -7,7 +7,7 @@
 
 
 _startup
-list-folders:/system42/components/common-widgets/
+p5.io.folder.list-folders:/system42/components/common-widgets/
 for-each:x:/-/*?name
 
   /*
@@ -16,7 +16,7 @@ for-each:x:/-/*?name
    */
   if
     fetch:x:/0/0?value
-      file-exist:{0}startup.hl
+      p5.io.file.exists:{0}startup.hl
         :x:/..for-each/*/_dp?value
     add:x:/../*/_startup
       src:{0}startup.hl

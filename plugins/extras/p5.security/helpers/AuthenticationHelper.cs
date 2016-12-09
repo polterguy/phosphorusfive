@@ -111,8 +111,8 @@ namespace p5.security.helpers
                 // Caller wants to create persistent cookie to remember username/password
                 HttpCookie cookie = new HttpCookie (_credentialCookieName);
                 cookie.Expires = DateTime.Now.AddDays (context.Raise (
-                    ".get-config-setting", 
-                    new Node (".get-config-setting", "p5.security.credential-cookie-valid")) [0].Get<int> (context));
+                    ".p5.config.get", 
+                    new Node (".p5.config.get", "p5.security.credential-cookie-valid")) [0].Get<int> (context));
                 cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie
 
                 // Notice, we use another fingerprint as password for cookie than what we use for storing cookie in auth file
@@ -307,7 +307,7 @@ namespace p5.security.helpers
                         authFile["users"][idxUsername].UnTie();
 
                         // Deleting user's home directory
-                        context.Raise ("delete-folder", new Node ("", "/users/" + idxUsername + "/"));
+                        context.Raise ("p5.io.folder.delete", new Node ("", "/users/" + idxUsername + "/"));
                     }
                 });
         }
@@ -438,7 +438,7 @@ namespace p5.security.helpers
             string username = context.Ticket.Username;
 
             // Deleting user's home directory
-            context.Raise ("delete-folder", new Node ("", "/users/" + username + "/"));
+            context.Raise ("p5.io.folder.delete", new Node ("", "/users/" + username + "/"));
 
             // Locking access to password file as we delete user object
             AuthFile.ModifyAuthFile (

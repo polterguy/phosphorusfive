@@ -33,7 +33,7 @@ namespace p5.lambda.keywords.core
     public static class Branching
     {
         /// <summary>
-        ///     The [if] Active Event allows for conditional execution of a lambda object.
+        ///     The [if] event, allows for conditional execution of a lambda object.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -50,8 +50,9 @@ namespace p5.lambda.keywords.core
         }
 
         /// <summary>
-        ///     The [else-if] Active Event allows for conditional execution of a lambda object.
+        ///     The [else-if] event, allows for conditional execution of a lambda object.
         ///     Must be preceeded by an [if] or another [else-if].
+        ///     [else-if] only evaluates its condition(s) if its previous [if]/[else-if] evaluated to false.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -77,6 +78,7 @@ namespace p5.lambda.keywords.core
         /// <summary>
         ///     The [else] Active Event allows for conditional execution of a lambda object.
         ///     Must be preceeded by an [if] or an [else-if].
+        ///     [else] evaluates to true automatically if its previous [if]/[else-if] evaluated to false.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

@@ -25,9 +25,9 @@ create-event:sys42.utilities.get-setting
     and:x:/../*/_username?value
 
     /*
-     * Changing user to retrieve setting for in [select-data] below.
+     * Changing user to retrieve setting for in [p5.data.select] below.
      */
-    set:x:/../*/select-data/0?value
+    set:x:/../*/p5.data.select/0?value
       src:x:/../*/_username?value
 
   else-if:x:/../*/_username?value
@@ -37,7 +37,7 @@ create-event:sys42.utilities.get-setting
      */
     throw:Only root accounts can retrieve settings for other users than the currently logged in identity user
 
-  select-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}"""
+  p5.data.select:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}"""
     :x:/@whoami/*/username?value
     :x:/../*/_app?value
     :x:/../*/_arg?value
@@ -46,6 +46,6 @@ create-event:sys42.utilities.get-setting
    * Returning setting value(s)
    */
   insert-before:x:/../0
-    src:x:/@select-data/*
+    src:x:/@p5.data.select/*
 
 

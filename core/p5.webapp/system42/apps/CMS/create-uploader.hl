@@ -40,21 +40,21 @@ create-widget:cms-ajax-uploader
          * Making sure URL of page is unique, and if not, we ask user if he wants to overwrite existing URL, or
          * create a new URL.
          */
-        select-data:x:@"/*/*/p5.page/""={0}"""
+        p5.data.select:x:@"/*/*/p5.page/""={0}"""
           :x:/../*/hyper2lambda/*?value
-        if:x:/@select-data/*?count
+        if:x:/@p5.data.select/*?count
           =:int:0
 
           /*
            * Page did not exist from before, simply inserting as is, and start editing it.
            */
-          add:x:/..if/*/insert-data
+          add:x:/..if/*/p5.data.insert
             src:x:/@hyper2lambda/*
-          insert-data
+          p5.data.insert
           sys42.cms.set-currently-edited-page:x:/@hyper2lambda/*?value
           sys42.cms.populate-select-page
           sys42.cms.edit-page
-          send-javascript:@"$('#cms-select-page').focus();"
+          p5.web.send-javascript:@"$('#cms-select-page').focus();"
           sys42.cms.create-navbar-menu
 
         else
@@ -66,10 +66,10 @@ create-widget:cms-ajax-uploader
            */
           set-session-value:sys42.cms.uploaded-page
             src:x:/@hyper2lambda/*
-          select-data:x:/*/*/p5.page/"=~{0}"
+          p5.data.select:x:/*/*/p5.page/"=~{0}"
             :x:/@hyper2lambda/*?value
           _high:int:2
-          for-each:x:/@select-data/*?value
+          for-each:x:/@p5.data.select/*?value
             split:x:/@_dp?value
               =:-
             if
@@ -108,13 +108,13 @@ create-widget:cms-ajax-uploader
                    * Here we simply use the original values, to overwrite the existing page from database.
                    */
                   get-session-value:sys42.cms.uploaded-page
-                  add:x:/../*/update-data/*/src
+                  add:x:/../*/p5.data.update/*/src
                     src:x:/@get-session-value/*/*
 
                   /*
                    * Inserts the page into database, populated from above logic.
                    */
-                  update-data:x:@"/*/*/p5.page/""={0}"""
+                  p5.data.update:x:@"/*/*/p5.page/""={0}"""
                     :x:/@get-session-value/*/*?value
                     src
 
@@ -126,7 +126,7 @@ create-widget:cms-ajax-uploader
                   sys42.windows.modal.close
                   sys42.cms.populate-select-page
                   sys42.cms.edit-page
-                  send-javascript:@"$('#cms-select-page').focus();"
+                  p5.web.send-javascript:@"$('#cms-select-page').focus();"
                   sys42.cms.create-navbar-menu
 
             .onok
@@ -134,9 +134,9 @@ create-widget:cms-ajax-uploader
               /*
                * Checking if user provided a URL to a page that already exists, which is not kosher.
                */
-              select-data:x:@"/*/*/p5.page/""={0}"""
+              p5.data.select:x:@"/*/*/p5.page/""={0}"""
                 :x:/../*/_data/*/url?value
-              if:x:/@select-data/*?count
+              if:x:/@p5.data.select/*?count
                 !=:int:0
 
                 /*
@@ -160,13 +160,13 @@ create-widget:cms-ajax-uploader
               get-session-value:sys42.cms.uploaded-page
               set:x:/@get-session-value/*/*?value
                 src:x:/../*/_data/*/url?value
-              add:x:/../*/insert-data
+              add:x:/../*/p5.data.insert
                 src:x:/@get-session-value/*/*
 
               /*
                * Inserts the page into database, populated from above logic.
                */
-              insert-data
+              p5.data.insert
 
               /*
                * Sets currently edited page, before we close dialogue, and repopulate select dropdown, and start
@@ -176,7 +176,7 @@ create-widget:cms-ajax-uploader
               sys42.windows.modal.close
               sys42.cms.populate-select-page
               sys42.cms.edit-page
-              send-javascript:@"$('#cms-select-page').focus();"
+              p5.web.send-javascript:@"$('#cms-select-page').focus();"
               sys42.cms.create-navbar-menu
 
             _data

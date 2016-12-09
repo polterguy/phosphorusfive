@@ -19,6 +19,6 @@ create-event:sys42.widgets.datetimepicker.set-value
    * new value to our textbox like the following, in addition to using [set-widget-property].
    * Otherwise, the value of our textbox won't actually change!!
    */
-  send-javascript:@"$('#{0}').val('{1}').change();"
+  p5.web.send-javascript:@"$('#{0}').val('{1}').change();"
     :x:/@find-widget/*/*?value
     :x:/../*/_value?value

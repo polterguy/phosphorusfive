@@ -37,8 +37,8 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-http-header")]
-        public static void get_http_header (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.header.get")]
+        public static void p5_web_header_get (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Get (context, e.Args, key => HttpContext.Current.Request.Headers [key]);
         }
@@ -48,7 +48,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-http-headers")]
+        [ActiveEvent (Name = "p5.web.header.list")]
         public static void list_http_headers (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.List (context, e.Args, HttpContext.Current.Request.Headers.AllKeys);

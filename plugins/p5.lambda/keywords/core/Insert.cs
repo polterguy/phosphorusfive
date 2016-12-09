@@ -33,7 +33,7 @@ namespace p5.lambda.keywords.core
     public static class Insert
     {
         /// <summary>
-        ///     The [insert-before] event allows you to insert nodes before any specified node(s).
+        ///     The [insert-before] event allows you to insert nodes before one or more specified node(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -44,7 +44,7 @@ namespace p5.lambda.keywords.core
         }
 
         /// <summary>
-        ///     The [insert-after] event allows you to insert nodes after any specified node(s).
+        ///     The [insert-after] event allows you to insert nodes after one or more specified node(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

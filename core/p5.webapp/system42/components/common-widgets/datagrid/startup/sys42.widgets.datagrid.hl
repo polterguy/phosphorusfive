@@ -196,7 +196,7 @@ create-event:sys42.widgets.datagrid
          * [_skin] below is forward evaluated above.
          */
         _skin:x:/../*/_options/*/_skin?value
-        include-stylesheet-file:/system42/components/common-widgets/datagrid/media/skins/{0}/{0}.min.css
+        p5.web.include-css-file:/system42/components/common-widgets/datagrid/media/skins/{0}/{0}.min.css
           :x:/../*/_skin?value
 
         /*
@@ -367,7 +367,7 @@ create-event:sys42.widgets.datagrid
                  * Selecting all text in search textbox, and setting focus to it.
                  * Avoiding jQuery dependencies.
                  */
-                send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
+                p5.web.send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
                   :x:/../*/_event?value
 
               oninit
@@ -375,7 +375,7 @@ create-event:sys42.widgets.datagrid
                 /*
                  * Passing in JavaScript to detect carriage return in search textbox.
                  */
-                include-javascript:@"
+                p5.web.include-javascript:@"
 p5.sys42_widgets_datagrid_search_onkeydown = function (e) {
   if(e.keyCode == 13) {
     p5.$(e.target.id).raise('_onenter');

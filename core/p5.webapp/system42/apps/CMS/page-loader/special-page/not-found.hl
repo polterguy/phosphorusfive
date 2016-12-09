@@ -7,7 +7,7 @@
 /*
  * Loading up our template.
  */
-load-file:x:/../*/_template?value
+p5.io.file.load:x:/../*/_template?value
 
 
 /*
@@ -21,7 +21,7 @@ set:x:/-/*/*/create-widget/*/widgets/**/={content}?value
 /*
  * Evaluating template, now with modified content
  */
-eval:x:/./*/load-file/*
+eval:x:/./*/p5.io.file.load/*
 
 
 /*

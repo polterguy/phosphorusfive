@@ -34,7 +34,7 @@ namespace p5.web
         /*
          * Raised by page during initialization of page
          */
-        [ActiveEvent (Name = "p5.web.initialize-page")]
+        [ActiveEvent (Name = ".p5.web.initialize-page")]
         private static void p5_web_initialize_page (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving Page and Manager for current HTTP context

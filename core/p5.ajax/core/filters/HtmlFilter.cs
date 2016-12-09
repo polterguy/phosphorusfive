@@ -193,7 +193,7 @@ namespace p5.ajax.core.filters
 
             // Then we include actual JavaScript into our HTML. Notice, order counts!
             // First we include files, then "inclusions" (which are persistent inline inclusions, supposed to be re-included in e.g. postbacks).
-            // Then finally, we pass in [send-javascript] content, supposed to only be transmitte to client once, as "bursts" of JS.
+            // Then finally, we pass in [p5.web.send-javascript] content, supposed to only be transmitte to client once, as "bursts" of JS.
             // This is because send JS logic might depend upon inclusion JS, and inclusion inline JS might depend upon files.
 
             // Including javascript files, making sure we only retrieve files initially.
@@ -203,7 +203,7 @@ namespace p5.ajax.core.filters
                 builder.Append (string.Format ("\r\n\t\t<script type=\"text/javascript\" src=\"{0}\"></script>", idxFile.Item1.Replace ("&", "&amp;")));
             }
 
-            // Then including inline JavaScript inclusions, and [send-javascript] inclusions, if there is any.
+            // Then including inline JavaScript inclusions, and [p5.web.send-javascript] inclusions, if there is any.
             if (Manager.Changes.Contains ("_p5_script") || (Manager.Page as IAjaxPage).JavaScriptToPush.Count (ix => !ix.Item2) > 0) {
 
                 builder.Append ("\r\n\t\t<script type=\"text/javascript\">\r\nwindow.onload = function() {\r\n\r\n");

@@ -115,11 +115,7 @@ namespace p5.math
                 context,
                 e.Args,
                 delegate (dynamic sum, dynamic input) {
-                    if (sum is BigInteger) {
-                        return BigInteger.Pow (sum, ChangeType (input, typeof (int)));
-                    } else {
-                        return Math.Pow (ChangeType (sum, typeof(double)), ChangeType (input, typeof(double)));
-                    }
+                    return Math.Pow (ChangeType (sum, typeof(double)), ChangeType (input, typeof(double)));
                 });
         }
 

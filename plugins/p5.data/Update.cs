@@ -30,21 +30,21 @@ using p5.exp.exceptions;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [update-data].
+    ///     Class wrapping [p5.data.update].
     /// </summary>
     public static class Update
     {
         /// <summary>
-        ///     [update-data] updates nodes, values or names in your p5.data database.
+        ///     [p5.data.update] updates nodes, values or names in your p5.data database.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "update-data")]
-        public static void update_data (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.data.update")]
+        public static void p5_data_update (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving expression and doing some basic sanity checks.
             if (!(e.Args.Value is Expression))
-                throw new LambdaException ("[update-data] requires an expression leading to whatever you want to be updated in your database", e.Args, context);
+                throw new LambdaException ("[p5.data.update] requires an expression leading to whatever you want to be updated in your database", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -61,7 +61,7 @@ namespace p5.data
 
                         // Updates the destination with the source, making sure we can keep track of files that are changed, and that we throw is update is unsuccessful.
                         if (!UpdateDestination (context, source, idxDestination))
-                            throw new LambdaException ("[update-data] requires your new node needs to have a unique ID, or use its old ID by not providing one", e.Args, context);
+                            throw new LambdaException ("[p5.data.update] requires your new node needs to have a unique ID, or use its old ID by not providing one", e.Args, context);
                         Common.AddNodeToChanges (idxDestination.Node, changed);
                         affectedItems += 1;
                     }
@@ -70,7 +70,7 @@ namespace p5.data
                     // Saving all affected files.
                     // Notice, we do this even though an exception has occurred, since exception is thrown before nodes are updated with any "bad data".
                     // This means that if you update several nodes, some might become updated though, while others are not updated.
-                    // Hence, [update-data] does not feature any sorts of "transactional update support" at the moment.
+                    // Hence, [p5.data.update] does not feature any sorts of "transactional update support" at the moment.
                     Common.SaveAffectedFiles (context, changed);
                     e.Args.Value = affectedItems;
                     Common.Locker.ExitWriteLock ();

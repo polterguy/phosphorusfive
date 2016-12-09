@@ -3,7 +3,7 @@
  * Loads file, and loops through each root node in the file.
  * Every "root node" in file, are expected to be a single test.
  */
-load-file:x:/../*/_file?value
+p5.io.file.load:x:/../*/_file?value
 for-each:x:/-/*/*
 
   /*

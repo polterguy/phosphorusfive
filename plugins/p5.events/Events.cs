@@ -22,11 +22,11 @@
  */
 
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
-using System.Threading;
 
 namespace p5.events
 {

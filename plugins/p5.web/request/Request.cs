@@ -40,8 +40,8 @@ namespace p5.web.ui.request {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-http-method")]
-        public static void get_http_method (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.request.get-method")]
+        public static void p5_web_request_get_method (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = HttpContext.Current.Request.HttpMethod;
         }
@@ -51,8 +51,8 @@ namespace p5.web.ui.request {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-request-body")]
-        public static void get_request_body (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.request.get-body")]
+        public static void p5_web_request_get_body (ApplicationContext context, ActiveEventArgs e)
         {
             if (HttpContext.Current.Request.InputStream.Length == 0) {
                 e.Args.Value = ""; // Defaulting to string.Empty!

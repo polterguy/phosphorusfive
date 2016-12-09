@@ -84,14 +84,14 @@ create-event:sys42.widgets.colorpicker
             /*
              * Including Bootstrap (and jQuery)
              */
-            sys42.bootstrap.include-javascript
+            sys42.bootstrap.p5.web.include-javascript
             sys42.bootstrap.include-css
 
             /*
              * Including Colorpicker's JavaScript and CSS.
              */
-            include-javascript-file:@BOOTSTRAP/widgets/colorpicker/media/js/bootstrap-colorpicker.min.js
-            include-stylesheet-file:@BOOTSTRAP/widgets/colorpicker/media/css/bootstrap-colorpicker.min.css
+            p5.web.include-javascript-file:@BOOTSTRAP/widgets/colorpicker/media/js/bootstrap-colorpicker.min.js
+            p5.web.include-css-file:@BOOTSTRAP/widgets/colorpicker/media/css/bootstrap-colorpicker.min.css
 
             /*
              * Retrieving parent widget, since it is needed later during JavaScript intialization of widget.
@@ -107,7 +107,7 @@ create-event:sys42.widgets.colorpicker
               /*
                * We have an [.onchange] lambda callback, making sure it is evaluated when colorpicker is hidden.
                */
-              include-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}}).on('hidePicker', function() {{p5.$('{1}').raise('.onchange')}});"
+              p5.web.include-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}}).on('hidePicker', function() {{p5.$('{1}').raise('.onchange')}});"
                 :x:/@get-parent-widget/*/*?value
                 :x:/../*/_event?value
             else
@@ -115,7 +115,7 @@ create-event:sys42.widgets.colorpicker
               /*
                * We do not have an [.onchange] lambda callback, initializing colorpicker without "hidePicker" event declared.
                */
-              include-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}});"
+              p5.web.include-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}});"
                 :x:/@get-parent-widget/*/*?value
 
           .onchange

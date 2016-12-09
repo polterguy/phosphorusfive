@@ -12,39 +12,39 @@ create-event:sys42.csv.import
   /*
    * Loading CSV file.
    */
-  load-file:x:/../*/_arg?value
+  p5.io.file.load:x:/../*/_arg?value
 
   /*
-   * Needed to make sure filename becomes type of object to [insert-data].
+   * Needed to make sure filename becomes type of object to [p5.data.insert].
    */
-  split:x:/../*/load-file/*?name
+  split:x:/../*/p5.io.file.load/*?name
     =:/
 
   /*
    * Looping through each row in file, except the first row, 
    * which are column headers.
    */
-  for-each:x:/@load-file/*/*/[1,]
+  for-each:x:/@p5.io.file.load/*/*/[1,]
 
     /*
-     * Adding database type and column headers to [insert-data].
+     * Adding database type and column headers to [p5.data.insert].
      */
-    add:x:/../*/insert-data
+    add:x:/../*/p5.data.insert
       src:x:/@split/0/-?name
-    add:x:/../*/insert-data/0/-
-      src:x:/@load-file/0/0/*?name
+    add:x:/../*/p5.data.insert/0/-
+      src:x:/@p5.io.file.load/0/0/*?name
 
     /*
      * Looping through each column in row.
      */
     _no:int:0
     while:x:/@_no?value
-      <:x:/../*/insert-data/0/-/*?count
+      <:x:/../*/p5.data.insert/0/-/*?count
 
       /*
        * Settings currently iterated column value for currently iterated row.
        */
-      set:x:/../*/insert-data/0/-/{0}?value
+      set:x:/../*/p5.data.insert/0/-/{0}?value
         :x:/@_no?value
         src:x:/@_dp/#/{0}?name
           :x:/@_no?value
@@ -59,4 +59,4 @@ create-event:sys42.csv.import
   /*
    * Making sure we insert all our data in "one go", to reduce the number of locks on database, and increase the speed of the operation.
    */
-  insert-data
+  p5.data.insert

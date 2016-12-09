@@ -30,17 +30,17 @@ using p5.exp.exceptions;
 namespace p5.io.file
 {
     /// <summary>
-    ///     Class to help load files
+    ///     Loads one or more file(s).
     /// </summary>
     public static class Load
     {
         /// <summary>
-        ///     Loads files from disc
+        ///     Loads one or more file(s) from local disc.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "load-file")]
-        public static void file_load (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.load")]
+        public static void p5_io_file_load (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 if (File.Exists (fullpath)) {

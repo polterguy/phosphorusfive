@@ -49,7 +49,7 @@ _startup
  * Listing all folders in all paths provided in the above [_paths] node, and iterating through the folders,
  * checking if a "startup.hl" file exists within this folder. If it does, we add that file's path to [_startup] above.
  */
-list-folders:x:/../*/_paths/*?name
+p5.io.folder.list-folders:x:/../*/_paths/*?name
 for-each:x:/-/*?name
 
   /*
@@ -58,7 +58,7 @@ for-each:x:/-/*?name
    */
   if
     fetch:x:/0/0?value
-      file-exist:{0}startup.hl
+      p5.io.file.exists:{0}startup.hl
         :x:/@_dp?value
     add:x:/../*/_startup
       src:{0}startup.hl

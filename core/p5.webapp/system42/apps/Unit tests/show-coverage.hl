@@ -15,10 +15,10 @@ set:x:/-/*/=
 /*
  * Then loading up all unit test files, making sure we remove the "launch.hl" file
  */
-list-files:@tests/tests/
+p5.io.folder.list-files:@tests/tests/
   filter:.hl
 set:x:/-/*/~launch.hl
-load-file:x:/-2/*?name
+p5.io.file.load:x:/-2/*?name
 
 /*
  * Then looping through our vocabulary, and figuring out how many times each Active Event can be found 
@@ -28,7 +28,7 @@ for-each:x:/../*/vocabulary/*
   add:x:/./*/_dp/#
     src:"{0}:int:{1}"
       :x:/..for-each/*/_dp/#?value
-      :x:/../*/load-file/*/*/**/\{0}?count
+      :x:/../*/p5.io.file.load/*/*/**/\{0}?count
         :x:/..for-each/*/_dp/#?value
 
 /*
@@ -96,7 +96,7 @@ apply:x:/../*/create-widget/*/widgets/**/table/*/widgets
 create-widget
   class:modal fade
   oninit
-    send-javascript:@"$('#{0}').modal('toggle');"
+    p5.web.send-javascript:@"$('#{0}').modal('toggle');"
       :x:/../*/_event?value
   widgets
     container

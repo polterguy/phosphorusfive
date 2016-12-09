@@ -9,11 +9,11 @@
 /*
  * Loads all toolbar buttons, as plugins, and appends into toolbar button widget below.
  */
-list-files:@CMS/page-editor/toolbar-buttons/
+p5.io.folder.list-files:@CMS/page-editor/toolbar-buttons/
   filter:.hl
-load-file:x:/@list-files/*?name
+p5.io.file.load:x:/@p5.io.folder.list-files/*?name
 add:x:/../*/create-widget/**/container/=cms-editor-toolbar-buttons/*/widgets/*/container/*/widgets
-  src:x:/@load-file/*/*
+  src:x:/@p5.io.file.load/*/*
 
 
 /*
@@ -21,18 +21,18 @@ add:x:/../*/create-widget/**/container/=cms-editor-toolbar-buttons/*/widgets/*/c
  */
 if
   fetch:x:/0/0?value
-    folder-exist:@CMS/page-editor/specialized-editors/{0}/toolbar-buttons/
+    p5.io.folder.exists:@CMS/page-editor/specialized-editors/{0}/toolbar-buttons/
       :x:/../*/_editor?value
 
   /*
    * There exists a "/toolbar-buttons/" folder for specialized editor, loading up all files from it, 
    * and appending into toolbar button below.
    */
-  list-files:@CMS/page-editor/specialized-editors/{0}/toolbar-buttons/
+  p5.io.folder.list-files:@CMS/page-editor/specialized-editors/{0}/toolbar-buttons/
     :x:/../*/_editor?value
-  load-file:x:/@list-files/*?name
+  p5.io.file.load:x:/@p5.io.folder.list-files/*?name
   add:x:/../*/create-widget/**/container/=cms-editor-toolbar-buttons/*/widgets/*/container/*/widgets
-    src:x:/@load-file/*/*
+    src:x:/@p5.io.file.load/*/*
 
 
 /*

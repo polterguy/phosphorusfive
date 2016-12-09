@@ -46,7 +46,7 @@ create-event:p5.web.load-ui
     /*
      * Figuring out which page to load according to argument supplied in [_url].
      */
-    select-data:x:@"/*/*/p5.page/""={0}"""
+    p5.data.select:x:@"/*/*/p5.page/""={0}"""
       :x:/../*/_url?value
 
     /*
@@ -60,10 +60,10 @@ create-event:p5.web.load-ui
     else
 
       /*
-       * Adding up all nodes from results of select-data into [execute-lisp-file], which is our [p5.page] object.
+       * Adding up all nodes from results of p5.data.select into [execute-lisp-file], which is our [p5.page] object.
        */
       add:x:/+3/*/_args
-        src:x:/..else/..else/*/select-data/*/*
+        src:x:/..else/..else/*/p5.data.select/*/*
 
       /*
        * Setting value of [execute-lisp-file] to type of page we're loading.
@@ -73,7 +73,7 @@ create-event:p5.web.load-ui
        */
       set:x:/+2?value
         src:@CMS/page-loader/{0}.hl
-          :x:/..else/..else/*/select-data/*/*/type?value
+          :x:/..else/..else/*/p5.data.select/*/*/type?value
       eval-x:x:/+/*/_url
       sys42.utilities.execute-lambda-file
         _args

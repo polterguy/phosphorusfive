@@ -32,7 +32,7 @@ namespace p5.lambda.keywords.extras
     public static class Fetch
     {
         /// <summary>
-        ///     The [fetch] event, allows you to forward retrieve a single value, resulting of evaluation of a lambda object.
+        ///     The [fetch] event, allows you to forward retrieve a single value, resulting of the evaluation of a lambda object.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

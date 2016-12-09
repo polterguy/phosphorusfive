@@ -50,18 +50,18 @@ create-event:sys42.widgets.ck-editor
          * Setting CKEditor's basepath.
          * Notice this must occur BEFORE we include the CKEditor's JavaScript file.
          */
-        include-javascript:"CKEDITOR_BASEPATH='/system42/components/common-widgets/ckeditor/media/';"
+        p5.web.include-javascript:"CKEDITOR_BASEPATH='/system42/components/common-widgets/ckeditor/media/';"
 
         /*
          * Loading CKEditor's JavaScript file
          */
-        include-javascript-file:/system42/components/common-widgets/ckeditor/media/ckeditor.js
+        p5.web.include-javascript-file:/system42/components/common-widgets/ckeditor/media/ckeditor.js
 
         /*
          * JavaScript to replace textarea with CKEditor instance
          */
         _height:x:/../*/_options/*/_height?value
-        send-javascript:@"CKEDITOR.replace('{0}',{{
+        p5.web.send-javascript:@"CKEDITOR.replace('{0}',{{
   allowedContent: true,
   height:{1}
 }});"
@@ -72,5 +72,5 @@ create-event:sys42.widgets.ck-editor
          * Making sure the textarea HTML innerValue updates every time CKEditor content updates,
          * since we rely upon being able to postback this value over Ajax Requests and Post Requests
          */
-        send-javascript:@"CKEDITOR.instances['{0}'].on('change', function() {{ CKEDITOR.instances['{0}'].updateElement();}});"
+        p5.web.send-javascript:@"CKEDITOR.instances['{0}'].on('change', function() {{ CKEDITOR.instances['{0}'].updateElement();}});"
           :x:/../*/_event?value

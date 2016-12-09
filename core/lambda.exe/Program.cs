@@ -96,7 +96,7 @@ namespace lambda_exe
                     } else {
 
                         // Loads given file as lambda
-                        var convertExeFile = context.Raise ("load-file", new Node ("", exeNode.Value)) [0];
+                        var convertExeFile = context.Raise ("p5.io.file.load", new Node ("", exeNode.Value)) [0];
 
                         // Appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
                         exeNode.AddRange (convertExeFile.Children);

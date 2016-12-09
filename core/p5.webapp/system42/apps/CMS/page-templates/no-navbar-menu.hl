@@ -12,8 +12,8 @@
  */
 sys42.utilities.include-jquery
 sys42.bootstrap.include-css
-sys42.bootstrap.include-javascript
-include-stylesheet-file:@CMS/media/css/main.min.css
+sys42.bootstrap.p5.web.include-javascript
+p5.web.include-css-file:@CMS/media/css/main.min.css
 
 
 /*

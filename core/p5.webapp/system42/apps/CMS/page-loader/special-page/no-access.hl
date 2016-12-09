@@ -7,7 +7,7 @@
 /*
  * Loading up our template.
  */
-load-file:x:/../*/_template?value
+p5.io.file.load:x:/../*/_template?value
 
 
 /*
@@ -20,7 +20,7 @@ if:x:/../*/whoami/*/default?value
   /*
    * User is logged in, explaining that he does not have access to this URL
    */
-  set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}?value
+  set:x:/../*/p5.io.file.load/*/*/create-widget/*/widgets/**/={content}?value
     src:@"<h2>Sorry!</h2>
 <p>I cannot give you access to that page!</p>"
 
@@ -34,7 +34,7 @@ else
    * PS!
    * We do this by adding our own widget hierarchy into the template just loaded.
    */
-  add:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/./.
+  add:x:/../*/p5.io.file.load/*/*/create-widget/*/widgets/**/={content}/./.
     src
       container
         class:col-xs-12
@@ -63,7 +63,7 @@ else
                         class:form-control
                         placeholder:Username ...
                         oninit
-                          send-javascript:@"setTimeout(function(){$('#login-username').focus().select();},250);"
+                          p5.web.send-javascript:@"setTimeout(function(){$('#login-username').focus().select();},250);"
                           if
                             fetch:x:/0/0?value
                               widget-exist:login-menu-button
@@ -81,7 +81,7 @@ else
                         class:form-control
                         placeholder:Password ...
                         oninit
-                          send-javascript:@"$('#user-username').focus().select();"
+                          p5.web.send-javascript:@"$('#user-username').focus().select();"
                         onkeypress:"return p5.keyLoginPress(event);"
                   container
                     class:text-right
@@ -107,7 +107,7 @@ else
                               persist:bool:true
 
                             // Reloading page to make sure everything is wired up together correctly
-                            reload-location
+                            p5.web.reload-location
                           else
                             sys42.windows.info-tip:Sorry, wrong credentials
                               _class:info-window-error
@@ -115,13 +115,13 @@ else
   /*
    * Making sure we entirely remove the literal:{content} widget.
    */
-  set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/.
+  set:x:/../*/p5.io.file.load/*/*/create-widget/*/widgets/**/={content}/.
 
 
 /*
  * Evaluating template, now with modified content.
  */
-eval:x:/../*/load-file/*
+eval:x:/../*/p5.io.file.load/*
 
 
 /*
@@ -134,7 +134,7 @@ set-http-status:403 Marvin cannot give you access to that page
 /*
  * Including JavaScript to help handle carriage return key in login box.
  */
-include-javascript:@"p5.keyLoginPress = function(e) {
+p5.web.include-javascript:@"p5.keyLoginPress = function(e) {
   if(e.keyCode == 13) {
     p5.$('login-user').raise('onclick');
     return false;

@@ -22,7 +22,6 @@
  */
 
 using System.IO;
-using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.io.common;
@@ -31,21 +30,21 @@ using p5.exp.exceptions;
 namespace p5.io.file
 {
     /// <summary>
-    ///     Class to help save files
+    ///     Saves one or more file(s).
     /// </summary>
     public static class Save
     {
         /// <summary>
-        ///     Saves files to disc
+        ///     Saves one or more file(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "save-file")]
-        public static void save_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.save")]
+        public static void p5_io_file_save (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
             if (e.Args.Value == null)
-                throw new LambdaException ("[save-file] requires a constant or an expression leading to its path", e.Args, context);
+                throw new LambdaException ("[p5.io.file.save] requires a constant or an expression leading to its path", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {

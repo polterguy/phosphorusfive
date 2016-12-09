@@ -31,8 +31,7 @@ namespace p5.lambda.keywords.core
     public static class Continue
     {
         /// <summary>
-        ///     The [continue] event, allows you to skip the rest of the current iteration of e.g. a [for-each] loop, and
-        ///     move on to the next iteration.
+        ///     The [continue] event, allows you to skip the rest of the current iteration of e.g. a [for-each] loop, and move on to the next iteration.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

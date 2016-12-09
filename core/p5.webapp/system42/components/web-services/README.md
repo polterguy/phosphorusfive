@@ -18,7 +18,7 @@ to execute on your server.
 
 If you create your whitelist, in such a way that you exclusively allow safe Active Events to be invoked, then this is just as secure as any other web services.
 Simply because, if a client tries to execute dangerous events on your server, the execution will be rejected, and a security exception will be raised.
-Below is an example of how to create a web service endpoint, which only allows for some basic keyword Active Events, in addition to *[select-data]* to be
+Below is an example of how to create a web service endpoint, which only allows for some basic keyword Active Events, in addition to *[p5.data.select]* to be
 invoked.
 
 ```
@@ -30,7 +30,7 @@ sys42.utilities.evaluate-web-service-invocation
     insert-after
     eval-x
     return
-    select-data
+    p5.data.select
 ```
 
 If you create a new CMS/lambda page in System42, and paste in the code above, and make sure your page's URL is _"/ws"_, you can invoke your web service 
@@ -40,10 +40,10 @@ with the following code, assuming your server is running on _"localhost"_ on por
 p5.net.http-post:"http://localhost:1176/ws"
   Content-Type:application/x-hyperlambda
   content
-    select-data:x:/*/*/p5.page
-    set:x:/@select-data/*/*(/lambda|/html)
+    p5.data.select:x:/*/*/p5.page
+    set:x:/@p5.data.select/*/*(/lambda|/html)
     insert-before:x:
-      src:x:/@select-data/*
+      src:x:/@p5.data.select/*
 ```
 
 The above invocation of our web service, will return something resembling the following code.
@@ -94,10 +94,10 @@ on the server's endpoint. Try to evaluate the following code for instance, to se
 p5.net.http-post:"http://localhost:1176/ws"
   Content-Type:application/x-hyperlambda
   content
-    delete-data:x:/*/*
+    p5.data.delete:x:/*/*
 ```
 
-The above invocation will be rejected by your web service, simply since its *[_whitelist]* definition does not allow it to execute the *[delete-data]* event.
+The above invocation will be rejected by your web service, simply since its *[_whitelist]* definition does not allow it to execute the *[p5.data.delete]* event.
 The return value from the server in such cases would resemble the following.
 
 ```
@@ -111,10 +111,10 @@ p5.net.http-post
 
     content
       _error
-        message:Caller tried to invoke illegal Active Event [delete-data] according to whitelist definition
+        message:Caller tried to invoke illegal Active Event [p5.data.delete] according to whitelist definition
         type:p5.exp.exceptions.LambdaSecurityException
         stack-trace:@".lambda
-  delete-data:x:/*/*<<====================== [ERROR!!]"
+  p5.data.delete:x:/*/*<<====================== [ERROR!!]"
 ```
 
 If a web service invocation returns *[_success]* as the root node beneath *[content]*, it was successfully evaluated. If it returns *[_error]*, it raised
@@ -124,7 +124,7 @@ as its HTTP *[status]*, instead of _"OK"_, which it returns if invocation is suc
 ## Ninja tricks
 
 The above *[_whitelist]*, puts much trust in that your p5.data database exclusively contains things you'd like to share with the entire world. If you wish,
-you could create a *[post-condition]* to your *[select-data]* whitelist entry, which restricts the types of objects to select from the database, to whatever 
+you could create a *[post-condition]* to your *[p5.data.select]* whitelist entry, which restricts the types of objects to select from the database, to whatever 
 you would like to share with the entire world.
 
 Below is an example of a web service endpoint that exclusivly allows the caller to select objects of type *[p5.page]*. Paste it into another lambda page, 
@@ -139,7 +139,7 @@ sys42.utilities.evaluate-web-service-invocation
     insert-after
     eval-x
     return
-    select-data
+    p5.data.select
       post-condition:children-are-one-of
         p5.page
 ```
@@ -151,10 +151,10 @@ the above web service, you could use something resembling the following.
 p5.net.http-post:"http://localhost:1176/ws2"
   Content-Type:application/x-hyperlambda
   content
-    select-data:x:/*/*/p5.page
-    set:x:/@select-data/*/*(/lambda|/html)
+    p5.data.select:x:/*/*/p5.page
+    set:x:/@p5.data.select/*/*(/lambda|/html)
     insert-before:x:
-      src:x:/@select-data/*
+      src:x:/@p5.data.select/*
 ```
 
 The latter web service example would probably be highly more safe than the example we started out with, since it restricts the objects clients can select from the database,
@@ -166,10 +166,10 @@ If you try to invoke your web service, to select another type of object, it will
 p5.net.http-post:"http://localhost:1176/ws2"
   Content-Type:application/x-hyperlambda
   content
-    select-data:x:/*/*/sys42.app-settings
+    p5.data.select:x:/*/*/sys42.app-settings
     insert-before:x:
-      src:x:/@select-data/*
+      src:x:/@p5.data.select/*
 ```
 
-Notice, the result of the above *[select-data]* is removed before the exception is thrown, to make sure the act of throwing the exception, does not yield sensitive data 
+Notice, the result of the above *[p5.data.select]* is removed before the exception is thrown, to make sure the act of throwing the exception, does not yield sensitive data 
 back to a malicious client.

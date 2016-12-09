@@ -28,20 +28,20 @@ using p5.io.common;
 namespace p5.io.file
 {
     /// <summary>
-    ///     Class to help rename and/or move files
+    ///     Moves or renames one or more file(s).
     /// </summary>
     public static class Move
     {
         /// <summary>
-        ///     Moves or renames a file
+        ///     Moves or renames one or more file(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "move-file")]
-        [ActiveEvent (Name = "rename-file")]
-        public static void move_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.move")]
+        [ActiveEvent (Name = "p5.io.file.rename")]
+        public static void p5_io_file_move_rename (ApplicationContext context, ActiveEventArgs e)
         {
-            // Using our common helper for actual implementation
+            // Using our common helper for actual implementation.
             MoveCopyHelper.CopyMoveFileObject (
                 context, 
                 e.Args, 
@@ -49,7 +49,7 @@ namespace p5.io.file
                 "modify-file", 
                 delegate (string rootFolder, string source, string destination) {
 
-                // Actually moving (or renaming) file
+                // Actually moving (or renaming) file.
                 File.Move (rootFolder + source, rootFolder + destination);
             }, delegate (string destination) {
                 return File.Exists (destination);

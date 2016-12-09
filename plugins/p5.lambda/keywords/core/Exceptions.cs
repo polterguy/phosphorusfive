@@ -30,12 +30,12 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords.core
 {
     /// <summary>
-    ///     Class wrapping exception Active Events, and lambdas, such as [try], [catch], [throw] and [finally].
+    ///     Class wrapping exception Active Events, such as [try], [catch], [throw] and [finally].
     /// </summary>
     public static class Exceptions
     {
         /// <summary>
-        ///     The [try] event allows you to execute a piece of lambda, trapping any potential exceptions occurring.
+        ///     The [try] event, allows you to execute a piece of lambda, trapping any potential exceptions occurring in an associated [catch]/[finally] lambda.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -75,8 +75,7 @@ namespace p5.lambda.keywords.core
         }
 
         /// <summary>
-        ///     The [catch] event allows you to force the execution of a piece of lambda, even if an exception occurs, 
-        ///     stopping the exception from further bubbling up your stack.
+        ///     The [catch] event allows you to stop an exception, and force the execution of a piece of lambda, if an exception occurs inside of its lambda.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -110,7 +109,7 @@ namespace p5.lambda.keywords.core
         }
 
         /// <summary>
-        ///     The [finally] event allows you to make sure a piece of lambda is executed, even if an exception occurs.
+        ///     The [finally] event, allows you to make sure a piece of lambda is executed, even if an exception occurs, without stopping the exception.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -127,7 +126,7 @@ namespace p5.lambda.keywords.core
         }
 
         /// <summary>
-        ///     The [throw] event allows you to throw an exception with an optional message attached.
+        ///     The [throw] event, allows you to throw an exception with an optional message attached.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

@@ -26,12 +26,11 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
-using p5.lambda.helpers;
 
 namespace p5.lambda.keywords.extras
 {
     /// <summary>
-    ///     Class wrapping the [apply] Active Event.
+    ///     Class wrapping the [apply]/[braid] Active Event.
     /// </summary>
     public static class Apply
     {

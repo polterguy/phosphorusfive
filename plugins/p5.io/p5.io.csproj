@@ -66,7 +66,7 @@
     <Compile Include="folder\Copy.cs" />
     <Compile Include="common\Common.cs" />
     <Compile Include="file\Exist.cs" />
-    <Compile Include="folder\Exist.cs" />
+    <Compile Include="folder\Exists.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />

@@ -31,19 +31,19 @@ using p5.exp.exceptions;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [insert-data] and [append-data] Active Events.
+    ///     Class wrapping [p5.data.insert] and [p5.data.append] Active Events.
     /// </summary>
     public static class Insert
     {
         /// <summary>
-        ///     [insert-data] and [append-data] inserts or appends data nodes into your p5.data database.
+        ///     [p5.data.insert] and [p5.data.append] inserts or appends data nodes into your p5.data database.
         ///     The former chooses the first available file node, the latter always appends at the end.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "insert-data")]
-        [ActiveEvent (Name = "append-data")]
-        public static void insert_data (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.data.insert")]
+        [ActiveEvent (Name = "p5.data.append")]
+        public static void p5_data_insert_append (ApplicationContext context, ActiveEventArgs e)
         {
             // Acquiring write lock on database, and making sure we keep track of which files are changed, and how many items were affected.
             var changed = new List<Node> ();
@@ -52,7 +52,7 @@ namespace p5.data
             try {
 
                 // Checking if we should force insertion at the end or not.
-                var forceAppend = e.Name == "append-data";
+                var forceAppend = e.Name == "p5.data.append";
 
                 // Looping through all nodes given as children, value, or as the result of an expression.
                 foreach (var idx in XUtil.Iterate<Node> (context, e.Args)) {
@@ -67,7 +67,7 @@ namespace p5.data
                 // Saving all affected files.
                 // Notice, we do this even though an exception has occurred, since exception is thrown before any illegal nodes are attempted to insert.
                 // This means that if you insert several nodes, some might become inserted though, while others are not inserted.
-                // Hence, [insert-data] does not feature any sorts of "transactional insert support" at the moment.
+                // Hence, [p5.data.insert] does not feature any sorts of "transactional insert support" at the moment.
                 Common.SaveAffectedFiles (context, changed);
                 e.Args.Value = affectedItems;
                 Common.Locker.ExitWriteLock ();
@@ -104,7 +104,7 @@ namespace p5.data
         {
             // Making sure it is impossible to insert items without a name into database.
             if (string.IsNullOrEmpty (node.Name))
-                throw new LambdaException ("[insert-data] requires that each item you insert has a name", node, context);
+                throw new LambdaException ("[p5.data.insert] requires that each item you insert has a name", node, context);
 
             // Making sure insert node gets an ID, unless one is explicitly given.
             if (node.Value == null) {

@@ -127,14 +127,14 @@ create-event:sys42.widgets.navbar._create-items
                    */
                   if
                     is-callback
-                    send-javascript:@"if ($(window).width() < 768) {$('.navbar-toggle').click();}"
+                    p5.web.send-javascript:@"if ($(window).width() < 768) {$('.navbar-toggle').click();}"
                   find-first-ancestor-widget-like:x:/../*/_event?value
                     element:ul
                     class:dropdown-menu
                   if:x:/@find-first-ancestor-widget-like/*/*?value
                     and
                       is-callback
-                    send-javascript:@"$('#{0}').dropdown('toggle');"
+                    p5.web.send-javascript:@"$('#{0}').dropdown('toggle');"
                       :x:/@find-first-ancestor-widget-like/*/*?value
 
   /*

@@ -28,17 +28,17 @@ using p5.io.common;
 namespace p5.io.folder
 {
     /// <summary>
-    ///     Class to help list all folders within folder
+    ///     Class to help list all folders within one or more folder(s).
     /// </summary>
     public static class ListFolders
     {
         /// <summary>
-        ///     List all folders in folder
+        ///     List all folders in one or more folder(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-folders")]
-        public static void p5_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.folder.list-folders")]
+        public static void p5_io_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
             // Getting root folder
             var rootFolder = Common.GetRootFolder (context);

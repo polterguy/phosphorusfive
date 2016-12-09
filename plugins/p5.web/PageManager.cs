@@ -86,8 +86,8 @@ namespace p5.web
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "send-javascript")]
-        public void send_javascript (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.send-javascript")]
+        public void p5_web_send_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript snippet supplied
             foreach (var idxSnippet in XUtil.Iterate<string> (context, e.Args)) {
@@ -102,8 +102,8 @@ namespace p5.web
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "include-javascript")]
-        public void include_javascript (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.include-javascript")]
+        public void p5_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript snippet supplied
             foreach (var idxSnippet in XUtil.Iterate<string> (context, e.Args)) {
@@ -118,8 +118,8 @@ namespace p5.web
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "include-javascript-file")]
-        public void include_javascript_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.include-javascript-file")]
+        public void p5_web_include_javascript_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript file supplied
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
@@ -134,8 +134,8 @@ namespace p5.web
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "include-stylesheet-file")]
-        public void include_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.include-css-file")]
+        public void p5_web_include_css_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each stylesheet file supplied
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
@@ -150,8 +150,8 @@ namespace p5.web
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-location")]
-        public void set_location (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.set-location")]
+        public void p5_web_set_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if this is ajax callback, which means we'll have to redirect using JavaScript
             if (AjaxPage.Manager.IsPhosphorusAjaxRequest) {
@@ -168,15 +168,15 @@ namespace p5.web
         }
 
         /// <summary>
-        ///     Returns the URL/location of your web page
+        ///     Returns the URL/location of your web page with any HTTP GET parameters.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-location")]
-        public void get_location (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.get-location")]
+        public void p5_web_get_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new core.Utilities.ArgsRemover(e.Args)) {
+            using (new core.Utilities.ArgsRemover (e.Args)) {
 
                 // Returning current URL
                 e.Args.Value = AjaxPage.Request.Url.ToString();
@@ -184,12 +184,12 @@ namespace p5.web
         }
 
         /// <summary>
-        ///     Returns the URL/location of your web page without the query string parameters.
+        ///     Returns the URL/location of your web page without any HTTP GET parameters.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-location-url")]
-        public void get_location_url (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.get-location-url")]
+        public void p5_web_get_location_url (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new core.Utilities.ArgsRemover (e.Args)) {
@@ -200,28 +200,28 @@ namespace p5.web
         }
 
         /// <summary>
-        ///     Returns the URL root location of your web application
+        ///     Returns the URL root location of your web application.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-base-location")]
-        public void get_base_location (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.get-root-location")]
+        public void p5_web_get_root_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover(e.Args)) {
+            using (new core.Utilities.ArgsRemover(e.Args)) {
 
                 // Returning web apps root URL
-                e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + AjaxPage.ResolveUrl("~/");
+                e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart (UriPartial.Authority) + AjaxPage.ResolveUrl("~/");
             }
         }
 
         /// <summary>
-        ///     Reloads the current document
+        ///     Reloads the current location.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "reload-location")]
-        public void reload_location (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.reload-location")]
+        public void p5_web_reload_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Redirecting using JavaScript
             AjaxPage.Manager.SendJavaScriptToClient (string.Format ("window.location.replace(window.location.href);"));
@@ -232,8 +232,8 @@ namespace p5.web
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "return-response-object")]
-        public void return_response_object (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.return-response-object")]
+        public void p5_web_return_response_object (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (context, e.Args);
             var source = XUtil.Source (context, e.Args);
@@ -245,26 +245,14 @@ namespace p5.web
         #region [ -- Private helper methods and active events -- ]
 
         /*
-         * Raised by page when an Ajax WebMethod is invoked
+         * Raised by page when an Ajax WebMethod is invoked.
          */
-        [ActiveEvent (Name = "p5.web.raise-ajax-event")]
-        private void p5_web_raise_ajax_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = ".p5.web.raise-ajax-event")]
+        private void _p5_web_raise_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             var widgetID = e.Args.Name;
             var eventName = e.Args.Get<string> (context);
             context.Raise("eval", WidgetAjaxEventStorage[widgetID, eventName].Clone());
-        }
-
-        /*
-         * Returns the page's base URL.
-         */
-        [ActiveEvent (Name = "get-application-location")]
-        private void get_application_location (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = 
-                AjaxPage.Request.Url.Scheme + "://" + 
-                AjaxPage.Request.Url.Authority + 
-                AjaxPage.Request.ApplicationPath.TrimEnd ('/') + "/";
         }
 
         /*
@@ -283,7 +271,7 @@ namespace p5.web
                 // Associating lambda event storage with page by creating a "page value"
                 context.Raise(
                     ".set-page-value",
-                    new Node(".set-page-value", "_WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
+                    new Node(".set-page-value", ".WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
 
                 // Creating storage for widget ajax events
                 WidgetAjaxEventStorage = new WidgetEventStorage();
@@ -291,19 +279,19 @@ namespace p5.web
                 // Associating ajax event storage with page by creating a "page value"
                 context.Raise(
                     ".set-page-value",
-                    new Node(".set-page-value", "_WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
+                    new Node(".set-page-value", ".WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
             } else {
 
                 // Retrieving existing widget lambda event storage
                 WidgetLambdaEventStorage = context.Raise (
                     ".get-page-value",
-                    new Node(".get-page-value", "_WidgetLambdaEventStorage"))[0]
+                    new Node(".get-page-value", ".WidgetLambdaEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
 
                 // Retrieving existing widget ajax event storage
                 WidgetAjaxEventStorage = context.Raise (
                     ".get-page-value",
-                    new Node(".get-page-value", "_WidgetAjaxEventStorage"))[0]
+                    new Node(".get-page-value", ".WidgetAjaxEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
             }
         }

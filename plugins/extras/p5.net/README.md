@@ -116,10 +116,10 @@ and evaluates it as Hyperlambda, for then to return the result to caller. To cre
 
 ```
 // Retrieves the HTTP POST request body.
-get-request-body
+p5.web.request.get-body
 
 // Evaluates the request body as Hyperlambda.
-eval:x:/@get-request-body
+eval:x:/@p5.web.request.get-body
 
 // Converts the return value from the evaluated Hyperlambda to Hyperlambda code.
 lambda2hyper:x:/@eval/*

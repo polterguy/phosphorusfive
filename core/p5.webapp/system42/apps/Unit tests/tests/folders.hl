@@ -7,12 +7,12 @@
 Create a single folder
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/foo/
-    delete-folder:~/temp/foo/
-  create-folder:~/temp/foo/
+      p5.io.folder.exists:~/temp/foo/
+    p5.io.folder.delete:~/temp/foo/
+  p5.io.folder.create:~/temp/foo/
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/foo/
+      p5.io.folder.exists:~/temp/foo/
     not
     throw:Assert error, p5.io misbehaved
 
@@ -20,23 +20,23 @@ Create a single folder
 Creates multiple folders with expression
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/foo1/
-    delete-folder:~/temp/foo1/
+      p5.io.folder.exists:~/temp/foo1/
+    p5.io.folder.delete:~/temp/foo1/
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/foo2/
-    delete-folder:~/temp/foo2/
+      p5.io.folder.exists:~/temp/foo2/
+    p5.io.folder.delete:~/temp/foo2/
   _folders
     ~/temp/foo1/
     ~/temp/foo2/
-  create-folder:x:/@_folders/*?name
+  p5.io.folder.create:x:/@_folders/*?name
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/foo1/
+      p5.io.folder.exists:~/temp/foo1/
     not
     or
       fetch:x:/0/0?value
-        folder-exist:~/temp/foo2/
+        p5.io.folder.exists:~/temp/foo2/
       not
     throw:Assert error, p5.io misbehaved
 
@@ -44,20 +44,20 @@ Creates multiple folders with expression
 Copy folder with sub-folders
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar/
-    delete-folder:~/temp/foo-bar/
+      p5.io.folder.exists:~/temp/foo-bar/
+    p5.io.folder.delete:~/temp/foo-bar/
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/foo-bar-2/
-    delete-folder:~/temp/foo-bar-2/
-  create-folder:~/temp/foo-bar/
-  create-folder:~/temp/foo-bar/inner/
-  save-file:~/temp/foo-bar/inner/foo.txt
+      p5.io.folder.exists:~/temp/foo-bar-2/
+    p5.io.folder.delete:~/temp/foo-bar-2/
+  p5.io.folder.create:~/temp/foo-bar/
+  p5.io.folder.create:~/temp/foo-bar/inner/
+  p5.io.file.save:~/temp/foo-bar/inner/foo.txt
     src:Foo was here
-  copy-folder:~/temp/foo-bar/
+  p5.io.folder.copy:~/temp/foo-bar/
     dest:~/temp/foo-bar-2/
-  load-file:~/temp/foo-bar-2/inner/foo.txt
-  if:x:/@load-file/*?value
+  p5.io.file.load:~/temp/foo-bar-2/inner/foo.txt
+  if:x:/@p5.io.file.load/*?value
     !=:Foo was here
     throw:Assert error, p5.io misbehaved
 
@@ -65,19 +65,19 @@ Copy folder with sub-folders
 List folders
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/foo/
-    delete-folder:~/temp/foo/
+      p5.io.folder.exists:~/temp/foo/
+    p5.io.folder.delete:~/temp/foo/
   _folders
     ~/temp/foo/
     ~/temp/foo/bar1/
     ~/temp/foo/bar2/
-  create-folder:x:/@_folders/*?name
-  list-folders:~/temp/foo/
-  if:x:/@list-folders/*/~bar1
+  p5.io.folder.create:x:/@_folders/*?name
+  p5.io.folder.list-folders:~/temp/foo/
+  if:x:/@p5.io.folder.list-folders/*/~bar1
     not
-    or:x:/@list-folders/*/~bar2
+    or:x:/@p5.io.folder.list-folders/*/~bar2
       not
-    or:x:/@list-folders/*?count
+    or:x:/@p5.io.folder.list-folders/*?count
       !=:int:2
     throw:Assert error, p5.io misbehaved
 
@@ -85,12 +85,12 @@ List folders
 List folders with expression
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/foo/
-    delete-folder:~/temp/foo/
+      p5.io.folder.exists:~/temp/foo/
+    p5.io.folder.delete:~/temp/foo/
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/bar/
-    delete-folder:~/temp/bar/
+      p5.io.folder.exists:~/temp/bar/
+    p5.io.folder.delete:~/temp/bar/
   _folders
     ~/temp/foo/
     ~/temp/foo/bar1/
@@ -98,20 +98,20 @@ List folders with expression
     ~/temp/bar/
     ~/temp/bar/bar3/
     ~/temp/bar/bar4/
-  create-folder:x:/@_folders/*?name
+  p5.io.folder.create:x:/@_folders/*?name
   _folders
     no1:~/temp/foo/
     no1:~/temp/bar/
-  list-folders:x:/@_folders/*?value
-  if:x:/@list-folders/*/~bar1
+  p5.io.folder.list-folders:x:/@_folders/*?value
+  if:x:/@p5.io.folder.list-folders/*/~bar1
     not
-    or:x:/@list-folders/*/~bar2
+    or:x:/@p5.io.folder.list-folders/*/~bar2
       not
-    or:x:/@list-folders/*/~bar3
+    or:x:/@p5.io.folder.list-folders/*/~bar3
       not
-    or:x:/@list-folders/*/~bar4
+    or:x:/@p5.io.folder.list-folders/*/~bar4
       not
-    or:x:/@list-folders/*?count
+    or:x:/@p5.io.folder.list-folders/*?count
       !=:int:4
     throw:Assert error, p5.io misbehaved
 
@@ -119,7 +119,7 @@ List folders with expression
 List folders throws on bad path
   _success:bool:false
   try
-    list-folders:~/temp
+    p5.io.folder.list-folders:~/temp
   catch
     set:x:/@_success?value
       src:bool:true
@@ -131,12 +131,12 @@ List folders throws on bad path
 List files
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/list-files/
-    delete-folder:~/temp/list-files/
-  create-folder:~/temp/list-files/
-  save-file:~/temp/list-files/foo-orig.txt
+      p5.io.folder.exists:~/temp/p5.io.folder.list-files/
+    p5.io.folder.delete:~/temp/p5.io.folder.list-files/
+  p5.io.folder.create:~/temp/p5.io.folder.list-files/
+  p5.io.file.save:~/temp/p5.io.folder.list-files/foo-orig.txt
     src:Foo bar
-  list-files:~/temp/list-files/
+  p5.io.folder.list-files:~/temp/p5.io.folder.list-files/
   if:x:/-/*?count
     !=:int:1
     or:x:/./-/*/~foo-orig.txt
@@ -147,7 +147,7 @@ List files
 List files throws on bad path
   _success:bool:false
   try
-    list-folders:~/temp
+    p5.io.folder.list-folders:~/temp
   catch
     set:x:/@_success?value
       src:bool:true

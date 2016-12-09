@@ -28,18 +28,18 @@ using p5.io.common;
 namespace p5.io.folder
 {
     /// <summary>
-    ///     Class to help rename and/or move folders
+    ///     Class to help rename and/or move one or more folder(s).
     /// </summary>
     public static class Move
     {
         /// <summary>
-        ///     Moves or renames a folder
+        ///     Moves or renames one or more folder(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "move-folder")]
-        [ActiveEvent (Name = "rename-folder")]
-        public static void move_rename_folder (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.folder.move")]
+        [ActiveEvent (Name = "p5.io.folder.rename")]
+        public static void p5_io_folder_move_rename (ApplicationContext context, ActiveEventArgs e)
         {
             // Using our common helper for actual implementation
             MoveCopyHelper.CopyMoveFileObject (

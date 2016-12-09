@@ -230,7 +230,7 @@ sys42.windows.modal
       sys42.windows.info-tip:Not a valid email address!
         _parent:sys42-windows-modal-body-wrapper
         _class:info-window info-window-error
-      send-javascript:@"$('#my-email').focus().select();"
+      p5.web.send-javascript:@"$('#my-email').focus().select();"
       return:bool:false
 
     // Address was valid.
@@ -362,16 +362,16 @@ sys42.windows.modal
       _items
         root:/
       .on-get-items
-        list-folders:x:/../*/_item-id?value
+        p5.io.folder.list-folders:x:/../*/_item-id?value
         for-each:x:/-/*?name
-          list-folders:x:/./*/_dp?value
+          p5.io.folder.list-folders:x:/./*/_dp?value
           split:x:/./*/_dp?value
             =:/
           add:x:/../*/return/*
             src:@"{0}:{1}"
               :x:/..for-each/*/split/0/-?name
               :x:/..for-each/*/_dp?value
-          if:x:/./*/list-folders/*
+          if:x:/./*/p5.io.folder.list-folders/*
             not
             add:x:/../*/return/*/_items/0/-
               src

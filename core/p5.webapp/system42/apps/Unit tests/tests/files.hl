@@ -5,171 +5,171 @@
 
 
 Save and load single file
-  save-file:~/temp/foo.txt
+  p5.io.file.save:~/temp/foo.txt
     src:Foo bar
-  load-file:~/temp/foo.txt
-  if:x:/@load-file/*?value
+  p5.io.file.load:~/temp/foo.txt
+  if:x:/@p5.io.file.load/*?value
     !=:Foo bar
     throw:Assert error, p5.io misbehaved
 
 
 Delete single file
-  save-file:~/temp/bar.txt
+  p5.io.file.save:~/temp/bar.txt
     src:Bar was here
-  delete-file:~/temp/bar.txt
+  p5.io.file.delete:~/temp/bar.txt
   if
     fetch:x:/0/0?value
-      file-exist:~/temp/bar.txt
+      p5.io.file.exists:~/temp/bar.txt
     throw:Assert error, p5.io misbehaved
 
 
 Deleting multiple files
-  save-file:~/temp/bar1.txt
+  p5.io.file.save:~/temp/bar1.txt
     src:Bar1 was here
-  save-file:~/temp/bar2.txt
+  p5.io.file.save:~/temp/bar2.txt
     src:Bar2 was here
-  delete-file:x:/../*/save-file?value
+  p5.io.file.delete:x:/../*/p5.io.file.save?value
   if
     fetch:x:/0/0?value
-      file-exist:~/temp/bar1.txt
+      p5.io.file.exists:~/temp/bar1.txt
     or
       fetch:x:/0/0?value
-        file-exist:~/temp/bar2.txt
+        p5.io.file.exists:~/temp/bar2.txt
     throw:Assert error, p5.io misbehaved
 
 
 Copy a single file
-  save-file:~/temp/foo.txt
+  p5.io.file.save:~/temp/foo.txt
     src:Foo bar
   if
     fetch:x:/0/0?value
-      file-exist:~/temp/foo-copy.txt
-    delete-file:~/temp/foo-copy.txt
-  copy-file:~/temp/foo.txt
+      p5.io.file.exists:~/temp/foo-copy.txt
+    p5.io.file.delete:~/temp/foo-copy.txt
+  p5.io.file.copy:~/temp/foo.txt
     dest:~/temp/foo-copy.txt
-  load-file:~/temp/foo-copy.txt
-  if:x:/@load-file/*?value
+  p5.io.file.load:~/temp/foo-copy.txt
+  if:x:/@p5.io.file.load/*?value
     !=:Foo bar
     throw:Assert error, p5.io misbehaved
 
 
 Copy multiple files with expression
-  save-file:~/temp/foo-1.txt
+  p5.io.file.save:~/temp/foo-1.txt
     src:Foo bar 1
-  save-file:~/temp/foo-2.txt
+  p5.io.file.save:~/temp/foo-2.txt
     src:Foo bar 2
   if
     fetch:x:/0/0?value
-      folder-exist:~/temp/new/
-    delete-folder:~/temp/new/
-  create-folder:~/temp/new/
-  copy-file:x:/../*/save-file?value
+      p5.io.folder.exists:~/temp/new/
+    p5.io.folder.delete:~/temp/new/
+  p5.io.folder.create:~/temp/new/
+  p5.io.file.copy:x:/../*/p5.io.file.save?value
     dest:~/temp/new/
-  load-file:x:/../*/save-file?value
-  if:x:/@load-file/0?value
+  p5.io.file.load:x:/../*/p5.io.file.save?value
+  if:x:/@p5.io.file.load/0?value
     !=:Foo bar 1
-    or:x:/@load-file/1?value
+    or:x:/@p5.io.file.load/1?value
       !=:Foo bar 2
     throw:Assert error, p5.io misbehaved
 
 
 Move a single file
-  save-file:~/temp/foo-orig.txt
+  p5.io.file.save:~/temp/foo-orig.txt
     src:Foo bar
   if
     fetch:x:/0/0?value
-      file-exist:~/temp/foo-dest.txt
-    delete-file:~/temp/foo-dest.txt
-  move-file:~/temp/foo-orig.txt
+      p5.io.file.exists:~/temp/foo-dest.txt
+    p5.io.file.delete:~/temp/foo-dest.txt
+  p5.io.file.move:~/temp/foo-orig.txt
     dest:~/temp/foo-dest.txt
-  load-file:~/temp/foo-dest.txt
-  if:x:/@load-file/*?value
+  p5.io.file.load:~/temp/foo-dest.txt
+  if:x:/@p5.io.file.load/*?value
     !=:Foo bar
     or
       fetch:x:/0/0?value
-        file-exist:~/temp/foo-orig.txt
+        p5.io.file.exists:~/temp/foo-orig.txt
     throw:Assert error, p5.io misbehaved
 
 
 Rename a single file
-  save-file:~/temp/foo-orig.txt
+  p5.io.file.save:~/temp/foo-orig.txt
     src:Foo bar
   if
     fetch:x:/0/0?value
-      file-exist:~/temp/foo-dest.txt
-    delete-file:~/temp/foo-dest.txt
-  rename-file:~/temp/foo-orig.txt
+      p5.io.file.exists:~/temp/foo-dest.txt
+    p5.io.file.delete:~/temp/foo-dest.txt
+  p5.io.file.rename:~/temp/foo-orig.txt
     dest:~/temp/foo-dest.txt
-  load-file:~/temp/foo-dest.txt
-  if:x:/@load-file/*?value
+  p5.io.file.load:~/temp/foo-dest.txt
+  if:x:/@p5.io.file.load/*?value
     !=:Foo bar
     or
       fetch:x:/0/0?value
-        file-exist:~/temp/foo-orig.txt
+        p5.io.file.exists:~/temp/foo-orig.txt
     throw:Assert error, p5.io misbehaved
 
 
 Delete single read-only file throws
   _success:bool:false
-  save-file:~/temp/foo.txt
+  p5.io.file.save:~/temp/foo.txt
     src:Foo bar
   p5.io.file.set-read-only:~/temp/foo.txt
   try
-    delete-file:~/temp/foo.txt
+    p5.io.file.delete:~/temp/foo.txt
   catch
     set:x:/@_success?value
       src:bool:true
   p5.io.file.delete-read-only:~/temp/foo.txt
-  delete-file:~/temp/foo.txt
+  p5.io.file.delete:~/temp/foo.txt
   if:x:/@_success?value
     not
     throw:Assert error, p5.io misbehaved
 
 
 Retrieve single read-only file value
-  save-file:~/temp/foo.txt
+  p5.io.file.save:~/temp/foo.txt
     src:Foo bar
   p5.io.file.set-read-only:~/temp/foo.txt
-  p5.io.file.is-read-only:~/temp/foo.txt
+  p5.io.file.get-read-only:~/temp/foo.txt
   p5.io.file.delete-read-only:~/temp/foo.txt
-  delete-file:~/temp/foo.txt
-  if:x:/@p5.io.file.is-read-only/*?value
+  p5.io.file.delete:~/temp/foo.txt
+  if:x:/@p5.io.file.get-read-only/*?value
     not
     throw:Assert error, p5.io misbehaved
 
 
 Retrieve multiple read-only file values
-  save-file:~/temp/foo-1.txt
+  p5.io.file.save:~/temp/foo-1.txt
     src:Foo bar
-  save-file:~/temp/foo-2.txt
+  p5.io.file.save:~/temp/foo-2.txt
     src:Foo bar
-  p5.io.file.set-read-only:x:/../*/save-file?value
-  p5.io.file.is-read-only:x:/../*/save-file?value
-  p5.io.file.delete-read-only:x:/../*/save-file?value
-  delete-file:x:/../*/save-file?value
-  if:x:/@p5.io.file.is-read-only/0?value
+  p5.io.file.set-read-only:x:/../*/p5.io.file.save?value
+  p5.io.file.get-read-only:x:/../*/p5.io.file.save?value
+  p5.io.file.delete-read-only:x:/../*/p5.io.file.save?value
+  p5.io.file.delete:x:/../*/p5.io.file.save?value
+  if:x:/@p5.io.file.get-read-only/0?value
     not
-    or:x:/@p5.io.file.is-read-only/1?value
+    or:x:/@p5.io.file.get-read-only/1?value
       not
     throw:Assert error, p5.io misbehaved
 
 
 Retrieve multiple read-only file values where file is not read-only
-  save-file:~/temp/foo-1.txt
+  p5.io.file.save:~/temp/foo-1.txt
     src:Foo bar
-  save-file:~/temp/foo-2.txt
+  p5.io.file.save:~/temp/foo-2.txt
     src:Foo bar
-  p5.io.file.set-read-only:x:/../*/save-file?value
-  p5.io.file.delete-read-only:x:/../*/save-file?value
-  p5.io.file.is-read-only:x:/../*/save-file?value
-  delete-file:x:/../*/save-file?value
-  if:x:/@p5.io.file.is-read-only/0?value
-    or:x:/@p5.io.file.is-read-only/1?value
+  p5.io.file.set-read-only:x:/../*/p5.io.file.save?value
+  p5.io.file.delete-read-only:x:/../*/p5.io.file.save?value
+  p5.io.file.get-read-only:x:/../*/p5.io.file.save?value
+  p5.io.file.delete:x:/../*/p5.io.file.save?value
+  if:x:/@p5.io.file.get-read-only/0?value
+    or:x:/@p5.io.file.get-read-only/1?value
     throw:Assert error, p5.io misbehaved
 
 
 Retrieve single file length
-  save-file:~/temp/foo.txt
+  p5.io.file.save:~/temp/foo.txt
     src:Foo bar
   p5.io.file.length:~/temp/foo.txt
   if:x:/@p5.io.file.length/0?value

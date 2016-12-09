@@ -17,6 +17,6 @@ create-event:sys42.widgets.colorpicker.set-value
   /*
    * Making sure we pass JavaScript to client, such that ColorPicker widget actually is updated.
    */
-  send-javascript:@"$('#{0}').colorpicker('setValue', '{1}');"
+  p5.web.send-javascript:@"$('#{0}').colorpicker('setValue', '{1}');"
     :x:/../*/_arg?value
     :x:/../*/_value?value

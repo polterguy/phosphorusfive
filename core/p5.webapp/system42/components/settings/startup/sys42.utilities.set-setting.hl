@@ -28,9 +28,9 @@ create-event:sys42.utilities.set-setting
     and:x:/../*/_username?value
 
     /*
-     * Changing user to set setting for in [select-data], [delete-data] and [insert-data] below.
+     * Changing user to set setting for in [p5.data.select], [p5.data.delete] and [p5.data.insert] below.
      */
-    set:x:/../*(/delete-data/0|/insert-data/*/1)?value
+    set:x:/../*(/p5.data.delete/0|/p5.data.insert/*/1)?value
       src:x:/../*/_username?value
 
   else-if:x:/../*/_username?value
@@ -40,11 +40,11 @@ create-event:sys42.utilities.set-setting
      */
     throw:Only root accounts can retrieve settings for other users than the currently logged in identity user
 
-  delete-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}""/."
+  p5.data.delete:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}""/."
     :x:/@whoami/*/username?value
     :x:/../*/_app?value
     :x:/../*/_arg?value
-  eval-x:x:/../*/insert-data/*/*
+  eval-x:x:/../*/p5.data.insert/*/*
 
   /*
    * Checking if new setting was provided, or if this was a "delete setting" invocation.
@@ -52,11 +52,11 @@ create-event:sys42.utilities.set-setting
   if:x:/../*/_src
     not
     return
-  add:x:/../*/insert-data/*
+  add:x:/../*/p5.data.insert/*
     src:x:/../*/_src
-  set:x:/../*/insert-data/*/*/_src?name
+  set:x:/../*/p5.data.insert/*/*/_src?name
     src:x:/../*/_arg?value
-  insert-data
+  p5.data.insert
     sys42.app-settings
       app-name:x:/../*/_app?value
       username:x:/@whoami/*/username?value

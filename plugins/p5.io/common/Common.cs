@@ -24,9 +24,6 @@
 using p5.core;
 using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for all file operations in Phosphorus Five
-/// </summary>
 namespace p5.io.common
 {
     /// <summary>

@@ -29,17 +29,17 @@ using p5.exp.exceptions;
 namespace p5.io.folder
 {
     /// <summary>
-    ///     Class to help remove folders from disc
+    ///     Class to help delete one or more folder(s).
     /// </summary>
     public static class Remove
     {
         /// <summary>
-        ///     Removes folders from disc
+        ///     Deletes one or more folder(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-folder")]
-        public static void delete_folder (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.folder.delete")]
+        public static void p5_io_folder_delete (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "modify-folder", delegate (string foldername, string fullpath) {
                 if (Directory.Exists (fullpath)) {

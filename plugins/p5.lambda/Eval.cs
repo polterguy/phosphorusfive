@@ -30,11 +30,11 @@ using p5.exp.exceptions;
 namespace p5.lambda
 {
     /// <summary>
-    ///     Class wrapping all [eval] type of keywords.
+    ///     Class wrapping all [eval] type of Active Events.
     /// </summary>
     public static class Eval
     {
-        // Used to extract commonalities for eval Active Events
+        // Common helper used as callback for evaluating a lambda block.
         private delegate void ExecuteFunctor (
             ApplicationContext context,
 
@@ -44,11 +44,11 @@ namespace p5.lambda
             // Node that is currently being evaluated, might contain the lambda block as children, or have an expression leading to lambda block(s) we should evaluate.
             Node evalNode,
 
-            // Arguments to lambda block.
+            // Arguments to lambda block, if any.
             IEnumerable<Node> args);
 
         /// <summary>
-        ///     Executes a specified lambda block.
+        ///     Evaluates a lambda.
         ///     Actually creates a copy of the specified lambda block, passsing in any arguments, and returning whatever it returns, if anything.
         /// </summary>
         /// <param name="context">Application Context</param>

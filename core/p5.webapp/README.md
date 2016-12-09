@@ -113,7 +113,7 @@ end user, from the P5 database.
 The pages in your system, can be retrieved with the following code.
 
 ```
-select-data:x:/*/*/p5.page
+p5.data.select:x:/*/*/p5.page
 ```
 
 Which of course will retrieve all *[p5.page]* objects from your database.

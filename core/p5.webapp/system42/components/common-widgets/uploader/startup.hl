@@ -74,12 +74,12 @@ create-event:sys42.widgets.uploader
          */
         _css-file:x:/../*/_options/*/_css-file?value
         if:x:/@_css-file?value
-          include-stylesheet-file:x:/@_css-file?value
+          p5.web.include-css-file:x:/@_css-file?value
 
         /*
          * Including JavaScript file that contains uploader widget's client-side JavaScript.
          */
-        include-javascript-file:/system42/components/common-widgets/uploader/media/uploader.min.js
+        p5.web.include-javascript-file:/system42/components/common-widgets/uploader/media/uploader.min.js
 
         /*
          * These are forward evaluated during construction of widget.
@@ -104,7 +104,7 @@ create-event:sys42.widgets.uploader
          * Notice, we have to wait until widget is actually attached before we do this, since otherwise we won't know its ID,
          * unless an explicit ID was provided, which is not necessary the case.
          */
-        send-javascript:@"new p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}');"
+        p5.web.send-javascript:@"new p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}');"
           :x:/../*/_event?value
           :x:/../*/_class?value
           :x:/../*/_dragover-class?value
@@ -122,10 +122,10 @@ create-event:sys42.widgets.uploader
         /*
          * Retrieving content, filename, count and current index that was uploaded.
          */
-        get-http-param:sys42.widgets.uploader.count
-        get-http-param:sys42.widgets.uploader.current
-        get-http-param:sys42.widgets.uploader.filename
-        get-http-param:sys42.widgets.uploader.content
+        p5.web.params.get:sys42.widgets.uploader.count
+        p5.web.params.get:sys42.widgets.uploader.current
+        p5.web.params.get:sys42.widgets.uploader.filename
+        p5.web.params.get:sys42.widgets.uploader.content
 
         /*
          * Server side validation of filename's extension, to avoid client-side hacking of JS, to allow uploading of non-supported files!
@@ -134,7 +134,7 @@ create-event:sys42.widgets.uploader
         if:x:/@_filter?value
           split:x:/@_filter?value
             =:|
-          split:x:/../*/get-http-param/*/sys42.widgets.uploader.filename?value
+          split:x:/../*/p5.web.params.get/*/sys42.widgets.uploader.filename?value
             =:.
           if:x:/@split/@split/*/{0}
             :x:/@split/0/-?name
@@ -152,7 +152,7 @@ create-event:sys42.widgets.uploader
          * Checking if multiple files were provided, and if this is legal according to widget's properties.
          */
         _allow-multiple:x:/../*/_options/*/_allow-multiple?value.bool
-        if:x:/../*/get-http-header/*/sys42.widgets.uploader.count?value.int
+        if:x:/../*/p5.web.header.get/*/sys42.widgets.uploader.count?value.int
           >:int:1
           and:x:/@_allow-multiple?value.bool
             =:bool:false
@@ -163,7 +163,7 @@ create-event:sys42.widgets.uploader
         /*
          * Decoding from base64 to byte[].
          */
-        p5.string.decode-base64:x:/../*/get-http-param/*/sys42.widgets.uploader.content?value
+        p5.string.decode-base64:x:/../*/p5.web.params.get/*/sys42.widgets.uploader.content?value
 
         /*
          * Making sure we "isolate" lambda callback supplied during instantiation of widget.
@@ -171,9 +171,9 @@ create-event:sys42.widgets.uploader
         .lambda
         eval-x:x:/+/*
         eval:x:/@.lambda
-          _count:x:/../*/get-http-param/[0,1]/*?value
-          _current:x:/../*/get-http-param/[1,2]/*?value
-          _filename:x:/../*/get-http-param/[2,3]/*?value
+          _count:x:/../*/p5.web.params.get/[0,1]/*?value
+          _current:x:/../*/p5.web.params.get/[1,2]/*?value
+          _filename:x:/../*/p5.web.params.get/[2,3]/*?value
           _content:x:/../*/p5.string.decode-base64?value
 
       widgets

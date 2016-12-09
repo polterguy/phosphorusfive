@@ -32,7 +32,7 @@ create-event:sys42.widgets.codemirror-executor
   /*
    * Making sure our "Evaluate" button is wired up.
    */
-  include-javascript:@"p5._sys42_widgets_codemirror_executor = function (e) {
+  p5.web.include-javascript:@"p5._sys42_widgets_codemirror_executor = function (e) {
     var el = p5.$((event.target || event.srcElement).id);
     el.raise('_onclick', {
       onsuccess:function(ret, evt) {
@@ -182,7 +182,7 @@ create-event:sys42.widgets.codemirror-executor
                    * Then converting lambda result to Hyperlambda, and returning back to client as JSON
                    */
                   lambda2hyper:x:/@eval-whitelist/*/_exe/#/*
-                  return-response-object:code
+                  p5.web.return-response-object:code
                     src:x:/@lambda2hyper?value
 
                 else
@@ -205,7 +205,7 @@ create-event:sys42.widgets.codemirror-executor
                    * Then converting lambda result to Hyperlambda, and returning back to client as JSON
                    */
                   lambda2hyper:x:/@_exe/#/*
-                  return-response-object:code
+                  p5.web.return-response-object:code
                     src:x:/@lambda2hyper?value
 
 

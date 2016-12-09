@@ -40,7 +40,7 @@ sys42.cms.load-template
 /*
  * Including some nice background to visually indicate we're in "configuration mode".
  */
-include-stylesheet-file:@CMS/media/css/backgrounds/cogs.min.css
+p5.web.include-css-file:@CMS/media/css/backgrounds/cogs.min.css
 
 
 /*
@@ -102,7 +102,7 @@ create-widget:cms-page-editor
                 /*
                  * Making sure we set focus to dropdown.
                  */
-                send-javascript:@"$('#{0}').focus().select();"
+                p5.web.send-javascript:@"$('#{0}').focus().select();"
                   :x:/../*/_event?value
 
               onchange
@@ -173,8 +173,8 @@ create-widget:cms-page-editor
                    * Selecting all [p5.page] objects from database, and iterating through them all, such
                    * that we can create one "option" HTML element for each.
                    */
-                  select-data:x:/*/*/p5.page
-                  for-each:x:/@select-data/*
+                  p5.data.select:x:/*/*/p5.page
+                  for-each:x:/@p5.data.select/*
 
                     /*
                      * Checking if currently iterated [p5.page] is being edited, and if so, making sure the
@@ -276,9 +276,9 @@ create-widget:cms-page-editor
                * Then we create one button dropdown item for each editor we have installed as a plugin 
                * in the "@CMS/page-editor/specialized-editors/" folder.
                */
-              list-files:@CMS/page-editor/specialized-editors/
+              p5.io.folder.list-files:@CMS/page-editor/specialized-editors/
                 filter:.hl
-              for-each:x:/@list-files/*?name
+              for-each:x:/@p5.io.folder.list-files/*?name
 
                 /*
                  * Removing folder name and ".hl" extension, before we set the [value] and [innerValue]
@@ -309,7 +309,7 @@ create-widget:cms-page-editor
                           class:btn-group
                         find-widget:x:/@find-first-ancestor-widget-like/*/*?value
                           element:button
-                        send-javascript:@"$('#{0}').dropdown('toggle');"
+                        p5.web.send-javascript:@"$('#{0}').dropdown('toggle');"
                           :x:/@find-widget/0/0?value
 
                         /*
@@ -339,7 +339,7 @@ create-widget:cms-page-editor
               /*
                * Making sure we set focus to select page dropdown.
                */
-              send-javascript:@"$('#cms-select-page').focus().select();"
+              p5.web.send-javascript:@"$('#cms-select-page').focus().select();"
 
 
     /*
@@ -378,7 +378,7 @@ create-widget:cms-page-editor
              * We are editing a page, hence we load [p5.page]'s [type] declaration from database, which is
              * needed to load "specialized editor".
              */
-            select-data:x:@"/*/*/p5.page/""={0}""/*/type?value"
+            p5.data.select:x:@"/*/*/p5.page/""={0}""/*/type?value"
               :x:/@sys42.cms.get-edited-page-id?value
 
             /*
@@ -387,7 +387,7 @@ create-widget:cms-page-editor
              */
             eval-x:x:/+/*
             sys42.utilities.execute-lambda-file:@CMS/page-editor/editor.hl
-              _editor:x:/@select-data/*?value
+              _editor:x:/@p5.data.select/*?value
               _page-id:x:/@sys42.cms.get-edited-page-id?value
 
             /*

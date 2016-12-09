@@ -24,7 +24,7 @@ button
        * Getting currently edited page from database.
        */
       sys42.cms.get-edited-page-id
-      select-data:x:@"/*/*/p5.page/""={0}"""
+      p5.data.select:x:@"/*/*/p5.page/""={0}"""
         :x:/../*/sys42.cms.get-edited-page-id?value
 
       /*
@@ -39,10 +39,10 @@ button
       set:x:/@_page?value
         src:x:/../*/sys42.cms.get-edited-page-id?value
       add:x:/@_page
-        src:x:/../*/select-data/*/*
+        src:x:/../*/p5.data.select/*/*
       set:x:/@_page?name
         src:p5.page
-      save-file:~/temp/page.hl
+      p5.io.file.save:~/temp/page.hl
         src:x:/../*/p5.page
       sys42.cms.download-file:~/temp/page.hl
         _file-type:"x-application/Hyperlambda; charset=utf-8"

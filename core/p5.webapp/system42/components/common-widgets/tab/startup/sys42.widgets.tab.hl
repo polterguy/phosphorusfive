@@ -48,7 +48,7 @@ create-event:sys42.widgets.tab
   /*
    * Retrieving the value of the HTTP GET crawl parameter, if any.
    */
-  get-http-get-param:x:/../*/_options/*/_crawl-get-name?value
+  p5.web.query.get:x:/../*/_options/*/_crawl-get-name?value
 
 
   /*
@@ -116,8 +116,8 @@ create-event:sys42.widgets.tab
        * Checking if there was an HTTP GET argument matching the "crawl URL", and if it
        * matches the currently iterated item.
        */
-      if:x:/@get-http-get-param/*?value
-        and:x:/@get-http-get-param/*?value
+      if:x:/@p5.web.query.get/*?value
+        and:x:/@p5.web.query.get/*?value
           =:x:/@_dp/#?value
 
         /*
@@ -200,7 +200,7 @@ create-event:sys42.widgets.tab
          * Making sure we include our tab specific CSS file.
          */
         _skin:x:/../*/_options/*/_skin?value
-        include-stylesheet-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
+        p5.web.include-css-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
           :x:/../*/_skin?value
 
       /*

@@ -38,7 +38,7 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.load-file")]
+        [ActiveEvent (Name = "p5.mime.p5.io.file.load")]
         public static void p5_mime_load_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves

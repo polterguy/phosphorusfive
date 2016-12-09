@@ -19,7 +19,7 @@ button
        * Retrieving currently edited page.
        */
       sys42.cms.get-edited-page-id
-      select-data:x:@"/*/*/p5.page/""={0}"""
+      p5.data.select:x:@"/*/*/p5.page/""={0}"""
         :x:/@sys42.cms.get-edited-page-id?value
 
       /*
@@ -28,25 +28,25 @@ button
       sys42.cms.get-specialized-editor-data
 
       /*
-       * Then removing all items from [select-data] that also exists in [sys42.cms.get-specialized-editor-data].
+       * Then removing all items from [p5.data.select] that also exists in [sys42.cms.get-specialized-editor-data].
        */
-      for-each:x:/@select-data/*/*
+      for-each:x:/@p5.data.select/*/*
         if:x:@"/@sys42.cms.get-specialized-editor-data/*/""{0}"""
           :x:/@_dp/#?name
           set:x:/@_dp/#
 
       /*
-       * Then we can append all items from [select-data] and [sys42.cms.get-specialized-editor-data] into [update-data] below.
+       * Then we can append all items from [p5.data.select] and [sys42.cms.get-specialized-editor-data] into [p5.data.update] below.
        */
-      add:x:/../*/update-data/*/*
-        src:x:/@select-data/*/*
-      add:x:/../*/update-data/*/*
+      add:x:/../*/p5.data.update/*/*
+        src:x:/@p5.data.select/*/*
+      add:x:/../*/p5.data.update/*/*
         src:x:/@sys42.cms.get-specialized-editor-data/*
 
       /*
        * Updating page in p5.data database.
        */
-      update-data:x:@"/*/*/p5.page/""={0}"""
+      p5.data.update:x:@"/*/*/p5.page/""={0}"""
         :x:/@sys42.cms.get-edited-page-id?value
         src
           p5.page
@@ -55,9 +55,9 @@ button
        * Providing feedback to user.
        */
       sys42.windows.info-tip:Page '{0}' was successfully saved.
-        :x:/@select-data/*/*/name?value
+        :x:/@p5.data.select/*/*/name?value
 
       /*
        * Making sure we set focus to select page dropdown.
        */
-      send-javascript:@"$('#cms-select-page').focus().select();"
+      p5.web.send-javascript:@"$('#cms-select-page').focus().select();"

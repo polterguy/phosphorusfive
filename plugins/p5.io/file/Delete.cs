@@ -29,28 +29,28 @@ using p5.exp.exceptions;
 namespace p5.io.file
 {
     /// <summary>
-    ///     Class to help delete files
+    ///     Class to help delete one or more file(s).
     /// </summary>
     public static class Delete
     {
         /// <summary>
-        ///     Delete files from disc
+        ///     Deletes one or more file(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-file")]
-        public static void delete_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.delete")]
+        public static void p5_io_file_delete (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
                 if (File.Exists (fullpath)) {
 
-                    // File exists, removing file
+                    // File exists, deleting it.
                     File.Delete (fullpath);
                 } else {
 
-                    // Oops, file didn't exist, throwing an exception
+                    // Oops, file didn't exist, throwing an exception.
                     throw new LambdaException (
-                        string.Format ("Tried to delete non-existing file '{0}'", filename),
+                        string.Format ("[delete-file] tried to delete non-existing file '{0}'", filename),
                         e.Args,
                         context);
                 }

@@ -78,7 +78,7 @@ namespace p5.lambda.keywords.core
 
                 // Checking if we're overflowing maximum number of iterations, unless [_unchecked] was true.
                 if (!uncheck && noIterations++ > 5000)
-                    throw new LambdaException ("Possible infinite loop encountered, more than 5.000 iterations of [while] loop", e.Args, context);
+                    throw new LambdaException ("Possible infinite [while] loop encountered, more than 5.000 iterations", e.Args, context);
 
                 // Making sure each iteration is immutable, and that the next condition is evaluated correctly.
                 e.Args.Value = originalLambda.Value;

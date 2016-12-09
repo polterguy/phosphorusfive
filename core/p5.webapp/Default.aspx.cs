@@ -69,7 +69,7 @@ namespace p5.webapp
                 }
 
                 // Making sure base is set for page.
-                var baseUrl = ApplicationContext.Raise("get-application-location").Get<string> (ApplicationContext, null);
+                var baseUrl = ApplicationContext.Raise("p5.web.get-root-location").Get<string> (ApplicationContext, null);
                 ((IAttributeAccessor)baseElement).SetAttribute("href", baseUrl);
             };
             base.OnInit(e);

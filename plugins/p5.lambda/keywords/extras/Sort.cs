@@ -37,6 +37,7 @@ namespace p5.lambda.keywords.extras
         /// <summary>
         ///     The [sort] event and [sort-desc] events, allows you to sort a node result, returning the nodes as children.
         ///     Either ascending (default) or descending, if you use [sort-desc].
+        ///     You can also provide a lambda block callback, which will be invoked with [_lhs] and [_rhs] to provide your own sorting logic.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -48,7 +49,7 @@ namespace p5.lambda.keywords.extras
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Creating copy of node list to insert as result of [sort] after sorting nodes.
-                var nodeList = new List<Node> (XUtil.Iterate<Node> (context, e.Args).Where (ix => ix.Name != "").Select (ix => ix.Clone ()));
+                var nodeList = XUtil.Iterate<Node> (context, e.Args).Where (ix => ix.Name != "").Select (ix => ix.Clone ()).ToList ();
 
                 // Special case for empty [sort] node, at which case we use "default sorting", sorting by value
                 if (e.Args.Children.Count (ix => ix.Name != "") == 0) {

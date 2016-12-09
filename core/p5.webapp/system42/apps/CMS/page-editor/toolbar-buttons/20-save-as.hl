@@ -11,7 +11,7 @@ button
      * Getting name and URL of page, such that we can use it as basis for new name and URL.
      */
     sys42.cms.get-edited-page-id
-    select-data:x:@"/*/*/p5.page/""={0}"""
+    p5.data.select:x:@"/*/*/p5.page/""={0}"""
       :x:/@sys42.cms.get-edited-page-id?value
 
     /*
@@ -33,7 +33,7 @@ button
               class:form-control
               placeholder:Name of page ...
               value:{0} - copy
-                :x:/@select-data/*/*/name?value
+                :x:/@p5.data.select/*/*/name?value
         div:new-page-url-wrp
           class:form-group
           widgets
@@ -46,20 +46,20 @@ button
               class:form-control
               placeholder:URL of page ...
               value:{0}-copy
-                :x:/@select-data/*?value
+                :x:/@p5.data.select/*?value
       .oncancel
 
         /*
          * Making sure we set focus to select page dropdown if user closes dialogue, without pressing "OK".
          */
-        send-javascript:@"$('#cms-select-page').focus().select();"
+        p5.web.send-javascript:@"$('#cms-select-page').focus().select();"
 
       .onok
 
         /*
          * Will contain the database id of old page.
          */
-        _old-page:x:/@select-data/*?value
+        _old-page:x:/@p5.data.select/*?value
 
         /*
          * Getting the new page's name and URL.
@@ -72,9 +72,9 @@ button
         /*
          * Making sure supplied name does not exist from before.
          */
-        select-data:x:@"/*/*/p5.page/""={0}"""
+        p5.data.select:x:@"/*/*/p5.page/""={0}"""
           :x:/@get-widget-property/*/*?value
-        if:x:/@select-data/*?count
+        if:x:/@p5.data.select/*?count
           >:int:0
 
           /*
@@ -82,7 +82,7 @@ button
            */
           sys42.utilities.add-css-classes:new-page-url-wrp
             _class:has-error
-          send-javascript:@"$('#new-page-url').focus().select();"
+          p5.web.send-javascript:@"$('#new-page-url').focus().select();"
           return:bool:false
 
         /*
@@ -94,33 +94,33 @@ button
          * Then making sure we select old page, and replace [name] and [url] (which is ID of database object), 
          * in addition to new data, before saving page as a new [p5.page] object in database.
          */
-        select-data:x:@"/*/*/p5.page/""={0}"""
+        p5.data.select:x:@"/*/*/p5.page/""={0}"""
           :x:/@_old-page?value
 
         /*
          * Changing id (URL of page) to new URL, in addition to changing name of page.
          */
-        set:x:/@select-data/*?value
+        set:x:/@p5.data.select/*?value
           src:x:/@get-widget-property/*/*?value
-        set:x:/@select-data/*/*/name?value
+        set:x:/@p5.data.select/*/*/name?value
           src:x:/@get-widget-property/@get-widget-property/*/*?value
 
         /*
-         * Then removing all items from [select-data] that also exists in [sys42.cms.get-specialized-editor-data].
+         * Then removing all items from [p5.data.select] that also exists in [sys42.cms.get-specialized-editor-data].
          */
-        for-each:x:/@select-data/*/*
+        for-each:x:/@p5.data.select/*/*
           if:x:@"/@sys42.cms.get-specialized-editor-data/*/""{0}"""
             :x:/@_dp/#?name
             set:x:/@_dp/#
 
         /*
-         * Then we can append all items from [select-data] and [sys42.cms.get-specialized-editor-data] into [insert-data] below.
+         * Then we can append all items from [p5.data.select] and [sys42.cms.get-specialized-editor-data] into [p5.data.insert] below.
          */
-        add:x:/../*/insert-data
-          src:x:/@select-data/*
-        add:x:/../*/insert-data/*
+        add:x:/../*/p5.data.insert
+          src:x:/@p5.data.select/*
+        add:x:/../*/p5.data.insert/*
           src:x:/@sys42.cms.get-specialized-editor-data/*
-        insert-data
+        p5.data.insert
 
         /*
          * Then we need to refresh editor, and other widgets, but first we set edited page to the page we just saved.

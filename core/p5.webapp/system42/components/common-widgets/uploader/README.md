@@ -79,7 +79,7 @@ create-widget:foo
       .onupload
 
         // Saving file, and notifying user of success.
-        save-file:~/documents/private/{0}
+        p5.io.file.save:~/documents/private/{0}
           :x:/../*/_filename?value
           src:x:/../*/_content?value
         sys42.windows.info-tip:File '{0}' was uploaded and saved
@@ -104,7 +104,7 @@ create-widget:ajax-dropbox
   widgets
     sys42.widgets.uploader:uploader
       .onupload
-        save-file:~/documents/private/{0}
+        p5.io.file.save:~/documents/private/{0}
           :x:/../*/_filename?value
           src:x:/../*/_content?value
         sys42.windows.info-tip:File '{0}' was uploaded and saved
@@ -115,7 +115,7 @@ create-widget:ajax-dropbox
       element:hr
     sys42.widgets.datagrid:datagrid
       .on-get-items
-        list-files:~/documents/private/
+        p5.io.folder.list-files:~/documents/private/
           filter:x:/../*/_query?value
         for-each:x:/-/*?name
           split:x:/@_dp?value
@@ -130,7 +130,7 @@ create-widget:ajax-dropbox
         return
           _items
       .on-select-items
-        eval-x:x:/+/**(/delete-file|/~download)
+        eval-x:x:/+/**(/p5.io.file.delete|/~download)
         sys42.windows.confirm
           _header:Choose action
           _body:Choose if you wish to download file, or delete it
@@ -147,7 +147,7 @@ create-widget:ajax-dropbox
               class:btn btn-default
               innerValue:Delete
               onclick
-                delete-file:x:/../*/_items/*?name
+                p5.io.file.delete:x:/../*/_items/*?name
                 sys42.windows.modal.destroy
                 sys42.widgets.datagrid.databind:datagrid
 ```

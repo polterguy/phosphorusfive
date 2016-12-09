@@ -10,12 +10,12 @@ p5.page:/app-loader
 /*
  * Loads up the specified app according to the given HTTP parameter.
  */
-get-http-param:app
+p5.web.params.get:app
 sys42.utilities.execute-lambda-file:@SYS42-APPS/{0}/launch.hl
-  :x:/@get-http-param/0?value
-set-title:x:/@get-http-param/0?value
+  :x:/@p5.web.params.get/0?value
+set-title:x:/@p5.web.params.get/0?value
 widget-exist:header
 if:x:/-/*?value
   set-widget-property:header
-    innerValue:x:/@get-http-param/0?value
+    innerValue:x:/@p5.web.params.get/0?value
 "

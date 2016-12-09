@@ -58,17 +58,17 @@ namespace p5.mail.helpers
             string server = 
                 args.GetChildValue<string> ("server", context) ??
                 context.Raise (
-                    ".get-config-setting",
+                    ".p5.config.get",
                     new Node ("", string.Format ("p5.{0}.server", serverType))) [0].Get<string> (context);
             int port = args["port"] != null ? 
                 args.GetChildValue<int> ("port", context) :
                 context.Raise (
-                    ".get-config-setting",
+                    ".p5.config.get",
                     new Node ("", string.Format ("p5.{0}.port", serverType)))[0].Get<int> (context);
             bool useSsl = args["ssl"] != null ? 
                 args.GetChildValue<bool> ("ssl", context) :
                 context.Raise (
-                    ".get-config-setting",
+                    ".p5.config.get",
                     new Node ("", string.Format ("p5.{0}.use-ssl", serverType)))[0].Get<bool> (context);
 
             // Connecting client to server
@@ -94,10 +94,10 @@ namespace p5.mail.helpers
 
                 // Retrieving default username/password from web.config
                 username = context.Raise (
-                    ".get-config-setting", 
+                    ".p5.config.get", 
                     new Node ("", string.Format ("p5.{0}.username", serverType))) [0].Get<string> (context);
                 password = context.Raise (
-                    ".get-config-setting",
+                    ".p5.config.get",
                     new Node ("", string.Format (".p5.{0}.password", serverType))) [0].Get<string> (context);
             }
 

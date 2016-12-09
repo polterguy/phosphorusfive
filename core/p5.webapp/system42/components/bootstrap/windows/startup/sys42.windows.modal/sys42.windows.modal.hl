@@ -170,7 +170,7 @@ create-event:sys42.windows.modal
        * Making sure dialog becomes initially visible, and that we trap "hide", from where we invoke our [.oncancel] Ajax event, 
        * to make sure we evaluate the caller's [.oncancel] lambda callback, supplied when creating widget.
        */
-      send-javascript:@"$('#sys42-windows-modal').modal('toggle').on('hide.bs.modal', function(){p5.$('sys42-windows-modal').raise('.oncancel');});"
+      p5.web.send-javascript:@"$('#sys42-windows-modal').modal('toggle').on('hide.bs.modal', function(){p5.$('sys42-windows-modal').raise('.oncancel');});"
 
     widgets
       container
@@ -247,7 +247,7 @@ create-event:sys42.windows.modal
                         element:input
                       set-widget-property:x:/@find-widget/*/*?value
                         onkeypress:"return p5.sys42_windows_modal_onkeypress(event);"
-                      include-javascript:@"p5.sys42_windows_modal_onkeypress = function(e) {
+                      p5.web.include-javascript:@"p5.sys42_windows_modal_onkeypress = function(e) {
   if(e.keyCode == 13) {
     p5.$('sys42-windows-modal-widgets').raise('.onenterpressed');
     return false;

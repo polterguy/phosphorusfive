@@ -20,7 +20,7 @@ if
    * User has access, now loading template and exchanging {content} 
    * with HTML from database.
    */
-  load-file:x:/../*/_args/*/template?value
+  p5.io.file.load:x:/../*/_args/*/template?value
 
   /*
    * Exchanging literal:{content}'s value with HTML from database.
@@ -31,7 +31,7 @@ if
   /*
    * Evaluating template which now has its {content} replaced with HTML from database.
    */
-  eval:x:/./*/load-file/*
+  eval:x:/./*/p5.io.file.load/*
 
 else
 

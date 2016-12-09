@@ -43,7 +43,7 @@ create-event:sys42.widgets.datagrid._edit-cell
       /*
        * Making sure textbox gets initial focus.
        */
-      send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
+      p5.web.send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
         :x:/../*/_event?value
 
     /*
@@ -68,7 +68,7 @@ create-event:sys42.widgets.datagrid._edit-cell
       get-parent-widget:x:/../*/_event?value
       find-widget:x:/@get-parent-widget/*/*?value
         element:a
-      send-javascript:@"p5.$('{0}').el.focus();"
+      p5.web.send-javascript:@"p5.$('{0}').el.focus();"
         :x:/@find-widget/*/*?value
       delete-widget:x:/../*/_event?value
 
@@ -118,7 +118,7 @@ create-event:sys42.widgets.datagrid._edit-cell
         get-parent-widget:x:/../*/_event?value
         find-widget:x:/@get-parent-widget/*/*?value
           element:a
-        send-javascript:@"p5.$('{0}').el.focus();"
+        p5.web.send-javascript:@"p5.$('{0}').el.focus();"
           :x:/@find-widget/*/*?value
         set-widget-property:x:/@find-widget/*/*?value
           innerValue:x:/@get-widget-property/*/0?value
@@ -136,13 +136,13 @@ create-event:sys42.widgets.datagrid._edit-cell
         /*
          * Selecting all text, and giving focus to textbox, trying to avoid jQuery dependency, if we can.
          */
-        send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
+        p5.web.send-javascript:@"p5.$('{0}').el.focus();p5.$('{0}').el.select();"
           :x:/../*/_event?value
 
   /*
    * Passing in JavaScript to detect ESC and carriage return.
    */
-  include-javascript:@"
+  p5.web.include-javascript:@"
 p5.sys42_widgets_datagrid_onkeydown = function (e) {
 if(e.keyCode == 27) {
 p5.$(e.target.id).raise('.onesc');

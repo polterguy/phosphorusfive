@@ -37,8 +37,8 @@ namespace p5.io.file.file_state
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.io.file.is-read-only")]
-        public static void p5_io_file_is_read_only (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.get-read-only")]
+        public static void p5_io_file_get_read_only (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 e.Args.Add (filename, new FileInfo (fullpath).IsReadOnly);

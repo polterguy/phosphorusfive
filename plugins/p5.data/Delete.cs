@@ -30,21 +30,21 @@ using p5.exp.exceptions;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [delete-data].
+    ///     Class wrapping [p5.data.delete].
     /// </summary>
     public static class Delete
     {
         /// <summary>
-        ///     [delete-data] deletes items from your p5.data database.
+        ///     [p5.data.delete] deletes items from your p5.data database.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-data")]
-        public static void delete_data (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.data.delete")]
+        public static void p5_data_delete (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
             if (!(e.Args.Value is Expression))
-                throw new LambdaException ("[delete-data] requires an expression as its value", e.Args, context);
+                throw new LambdaException ("[p5.data.delete] requires an expression as its value", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -61,7 +61,7 @@ namespace p5.data
 
                         // Sanity check.
                         if (idxDest.Node.OffsetToRoot < 2)
-                            throw new LambdaException ("[delete-data] can only delete items, not files, or entire database", e.Args, context);
+                            throw new LambdaException ("[p5.data.delete] can only delete items, not files, or entire database", e.Args, context);
 
                         // Figuring out which file Node updated belongs to, and storing in changed list.
                         Common.AddNodeToChanges (idxDest.Node, changed);
@@ -78,7 +78,7 @@ namespace p5.data
                     // Saving all affected files.
                     // Notice, we do this even though an exception has occurred, since exception is thrown before node not legal to delete are deleted.
                     // This means that if you delete several nodes, some might become deleted though, while others are not deleted.
-                    // Hence, [delete-data] does not feature any sorts of "transactional delete support" at the moment.
+                    // Hence, [p5.data.delete] does not feature any sorts of "transactional delete support" at the moment.
                     Common.SaveAffectedFiles (context, changed);
                     e.Args.Value = affectedItems;
                     Common.Locker.ExitWriteLock ();

@@ -63,7 +63,7 @@ create-event:sys42.widgets.datagrid._append-items
     /*
      * Making sure we include the necessary JavaScript to select row with carriage return.
      */
-    include-javascript:@"
+    p5.web.include-javascript:@"
 p5.sys42_widgets_datagrid_on_row_keypress = function (e) {
 if(e.keyCode == 13) {
 p5.$(e.target.id).raise('onclick');

@@ -16,12 +16,12 @@ create-event:sys42.utilities.empty-user-temp-folder
     /*
      * User is not default user, hence deleting all files in user's "temp" folder, except the README.md file.
      */
-    list-files:~/temp/
-    delete-file:x:@"/@list-files/*(!/""~/temp/README.md"")?name"
+    p5.io.folder.list-files:~/temp/
+    p5.io.file.delete:x:@"/@p5.io.folder.list-files/*(!/""~/temp/README.md"")?name"
 
     /*
      * Then deleting all folders in user's "temp" folder.
      */
-    list-folders:~/temp/
-    delete-folder:x:/@list-folders/*?name
+    p5.io.folder.list-folders:~/temp/
+    p5.io.folder.delete:x:/@p5.io.folder.list-folders/*?name
 

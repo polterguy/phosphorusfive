@@ -25,26 +25,23 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using p5.core;
-using p5.exp.exceptions;
 using p5.io.common;
+using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for all IO folder operations in Phosphorus Five
-/// </summary>
 namespace p5.io.folder
 {
     /// <summary>
-    ///     Class to help copy a folder
+    ///     Class to help copy one or more folder(s).
     /// </summary>
     public static class Copy
     {
         /// <summary>
-        ///     Copies a folder
+        ///     Copies one or more folder(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "copy-folder")]
-        public static void copy_folder (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.folder.copy")]
+        public static void p5_io_folder_copy (ApplicationContext context, ActiveEventArgs e)
         {
             // Using our common helper for actual implementation
             MoveCopyHelper.CopyMoveFileObject (

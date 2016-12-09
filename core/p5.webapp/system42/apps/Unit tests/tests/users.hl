@@ -31,15 +31,15 @@ create-and-delete-user
       not
     or
       fetch:x:/0/0?value
-        folder-exist:/users/foo-bar/temp/
+        p5.io.folder.exists:/users/foo-bar/temp/
       not
     or
       fetch:x:/0/0?value
-        folder-exist:/users/foo-bar/documents/private/
+        p5.io.folder.exists:/users/foo-bar/documents/private/
       not
     or
       fetch:x:/0/0?value
-        folder-exist:/users/foo-bar/documents/public/
+        p5.io.folder.exists:/users/foo-bar/documents/public/
       not
     or:x:/@list-roles/*/foo-bar-role
       not
@@ -51,7 +51,7 @@ create-and-delete-user
   if:x:/-/*/foo-bar
     or
       fetch:x:/0/0?value
-        folder-exist:/users/foo-bar/
+        p5.io.folder.exists:/users/foo-bar/
     throw:@"Assert error, user wasn't correctly deleted!"
 
 
