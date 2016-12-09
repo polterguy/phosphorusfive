@@ -126,11 +126,11 @@ lambda2hyper:x:/@eval/*
 
 // Making sure we return it with the correct Content-Type, such that
 // invoker of Web Service can more easily recognize it as Hyperlambda.
-set-http-header
+p5.web.header.set
   Content-Type:application/x-hyperlambda
 
 // Returning the Hyperlambda to caller.
-echo:x:/@lambda2hyper?value
+p5.web.echo:x:/@lambda2hyper?value
 ```
 
 Make sure you set the page's _"Role"_ to _"guest"_ in its _"Settings"_, and that you set its URL to _"/invisible-my-service"_. By starting your page's URL

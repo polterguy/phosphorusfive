@@ -21,7 +21,7 @@ if:x:/-/*/_error
       src:@"{0}<pre class=""error"">{1}</pre>"
         :x:/../*/_html?value
         :x:/..for-each/*/html-encode?value
-  set-context-value:sys42.unit-test-errors
+  p5.web.context.set:sys42.unit-test-errors
     src:bool:true
 
   /*
@@ -54,11 +54,11 @@ else
  * Updating unit test count
  * Notice, this is only done when evaluating all unit tests
  */
-get-session-value:sys42.unit-test-count
+p5.web.session.get:sys42.unit-test-count
 if:x:/-/*?value
   +:x:/./-/*?value
     _:x:/../*/sys42.utilities.execute-lambda-file/*(/_success|/_error)?count
-  set-session-value:sys42.unit-test-count
+  p5.web.session.set:sys42.unit-test-count
     src:x:/./-?value
 
 /*

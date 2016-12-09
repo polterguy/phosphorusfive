@@ -37,9 +37,9 @@ namespace p5.web.storage
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-session-value")]
-        [ActiveEvent (Name = ".set-session-value")]
-        public static void set_session_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.session.set")]
+        [ActiveEvent (Name = ".p5.web.session.set")]
+        public static void p5_web_session_set (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
@@ -59,9 +59,9 @@ namespace p5.web.storage
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-session-value")]
-        [ActiveEvent (Name = ".get-session-value")]
-        public static void get_session_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.session.get")]
+        [ActiveEvent (Name = ".p5.web.session.get")]
+        public static void p5_web_session_get (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Get (context, e.Args, key => HttpContext.Current.Session [key]);
         }
@@ -71,9 +71,9 @@ namespace p5.web.storage
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-session-keys")]
-        [ActiveEvent (Name = ".list-session-keys")]
-        public static void list_session_keys (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.session.list")]
+        [ActiveEvent (Name = ".p5.web.session.list")]
+        public static void p5_web_session_list (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.List (context, e.Args, HttpContext.Current.Session.Keys);
         }

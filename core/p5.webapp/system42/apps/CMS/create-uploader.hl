@@ -64,7 +64,7 @@ create-widget:cms-ajax-uploader
            * Figuring out next available URL that at least partially resembles the specified URL, 
            * and using that as the "default value", asking user if he wants to overwrite, or create a new page.
            */
-          set-session-value:sys42.cms.uploaded-page
+          p5.web.session.set:sys42.cms.uploaded-page
             src:x:/@hyper2lambda/*
           p5.data.select:x:/*/*/p5.page/"=~{0}"
             :x:/@hyper2lambda/*?value
@@ -107,22 +107,22 @@ create-widget:cms-ajax-uploader
                   /*
                    * Here we simply use the original values, to overwrite the existing page from database.
                    */
-                  get-session-value:sys42.cms.uploaded-page
+                  p5.web.session.get:sys42.cms.uploaded-page
                   add:x:/../*/p5.data.update/*/src
-                    src:x:/@get-session-value/*/*
+                    src:x:/@p5.web.session.get/*/*
 
                   /*
                    * Inserts the page into database, populated from above logic.
                    */
                   p5.data.update:x:@"/*/*/p5.page/""={0}"""
-                    :x:/@get-session-value/*/*?value
+                    :x:/@p5.web.session.get/*/*?value
                     src
 
                   /*
                    * Sets currently edited page, before we close dialogue, and repopulate select dropdown, and start
                    * editing page.
                    */
-                  sys42.cms.set-currently-edited-page:x:/@get-session-value/*/*?value
+                  sys42.cms.set-currently-edited-page:x:/@p5.web.session.get/*/*?value
                   sys42.windows.modal.close
                   sys42.cms.populate-select-page
                   sys42.cms.edit-page
@@ -157,11 +157,11 @@ create-widget:cms-ajax-uploader
                * Now we know user provided a unique URL, fetching page from session, updating URL, saving page to database with new URL,
                * before we finally close window, and reload location to repopulate select dropdown and allow user to edit page.
                */
-              get-session-value:sys42.cms.uploaded-page
-              set:x:/@get-session-value/*/*?value
+              p5.web.session.get:sys42.cms.uploaded-page
+              set:x:/@p5.web.session.get/*/*?value
                 src:x:/../*/_data/*/url?value
               add:x:/../*/p5.data.insert
-                src:x:/@get-session-value/*/*
+                src:x:/@p5.web.session.get/*/*
 
               /*
                * Inserts the page into database, populated from above logic.

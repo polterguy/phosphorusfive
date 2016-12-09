@@ -27,8 +27,8 @@ eval:x:/./*/p5.io.file.load/*
 /*
  * Returning intelligent status code to client
  */
-set-http-status-code:404
-set-http-status:404 Marvin could not find that page
+p5.web.response.set-status-code:404
+p5.web.response.set-status-description:404 Marvin could not find that page
 
 set-title:Page not found
 

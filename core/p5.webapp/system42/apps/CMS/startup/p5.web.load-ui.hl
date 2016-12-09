@@ -22,25 +22,25 @@ create-event:p5.web.load-ui
     /*
      * Checking if we're currently downloading a file.
      */
-    get-session-value:sys42.cms.download-filename
+    p5.web.session.get:sys42.cms.download-filename
     if:x:/-/*?value
 
       /*
        * We are currently downloading a file, passing it back to client, with given type (if any), and removing the session value,
        * before returning early.
        */
-      get-session-value:sys42.cms.download-filetype
+      p5.web.session.get:sys42.cms.download-filetype
       if:x:/-/*?value
-        set-http-header:Content-Type
-          src:x:/@get-session-value/*?value
-      split:x:/./@get-session-value/*?value
+        p5.web.header.set:Content-Type
+          src:x:/@p5.web.session.get/*?value
+      split:x:/./@p5.web.session.get/*?value
         =:/
-      set-http-header:Content-Disposition
+      p5.web.header.set:Content-Disposition
         src:@"attachment; filename={0}"
           :x:/@split/0/-?name
-      set-session-value:sys42.cms.download-filename
-      set-session-value:sys42.cms.download-filetype
-      echo-file:x:/./@get-session-value/*?value
+      p5.web.session.set:sys42.cms.download-filename
+      p5.web.session.set:sys42.cms.download-filetype
+      p5.web.echo-file:x:/./@p5.web.session.get/*?value
       return
 
     /*

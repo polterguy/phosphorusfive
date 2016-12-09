@@ -26,8 +26,8 @@ create-event:p5.error.Exception
   /*
    * Changing status code.
    */
-  set-http-status-code:500
-  set-http-status:500 Internal server error
+  p5.web.response.set-status-code:500
+  p5.web.response.set-status-description:500 Internal server error
 
   /*
    * Checking if this is an Ajax callback, and if not, we surround the etire returned HTML in a <html><body></html></body> block.
@@ -52,7 +52,7 @@ create-event:p5.error.Exception
   /*
    * Echoing HTML built above back to client, overriding the default rendering of page.
    */
-  echo:x:/../*/_ret?value
+  p5.web.echo:x:/../*/_ret?value
 
   /*
    * Returning true to caller, indicating we have handled this exception, effectively

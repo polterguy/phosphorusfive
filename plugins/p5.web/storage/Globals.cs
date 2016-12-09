@@ -40,9 +40,9 @@ namespace p5.web.storage
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-global-value")]
-        [ActiveEvent (Name = ".set-global-value")]
-        public static void set_global_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.application.set")]
+        [ActiveEvent (Name = ".p5.web.application.set")]
+        public static void p5_web_application_set (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
@@ -62,9 +62,9 @@ namespace p5.web.storage
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-global-value")]
-        [ActiveEvent (Name = ".get-global-value")]
-        public static void get_global_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.application.get")]
+        [ActiveEvent (Name = ".p5.web.application.get")]
+        public static void p5_web_application_get (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Get (context, e.Args, key => HttpContext.Current.Application [key]);
         }
@@ -74,9 +74,9 @@ namespace p5.web.storage
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-global-keys")]
-        [ActiveEvent (Name = ".list-global-keys")]
-        public static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.application.list")]
+        [ActiveEvent (Name = ".p5.web.application.list")]
+        public static void p5_web_application_list (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.List (context, e.Args, HttpContext.Current.Application.AllKeys);
         }

@@ -33,7 +33,7 @@ read or manipulated by any other user than the user who owns the folder. The lat
 contains a user's public files, and each file in here, can be retrieved by anyone with
 a direct link to the file.
 
-To retrieve files from your "private" folder, the Active Event *[echo-file]* can be
+To retrieve files from your "private" folder, the Active Event *[p5.web.echo-file]* can be
 used, for instance. However, all Active Events that read files from the system, will 
 throw an exception, if you try to access files from another user's private folder. 
 You must be logged in as the user whom you are trying to retrieve files from, to be 
@@ -76,7 +76,7 @@ The "public" folder will serve all documents, as long as the user has a direct l
 This allows you to create your own authorization system for retrieving and serving documents, 
 not belonging to one specific user, but rather the server as a whole.
 
-To serve files from the private folder, use for instance the *[echo-file]* Active Event.
+To serve files from the private folder, use for instance the *[p5.web.echo-file]* Active Event.
 
 ### The "system42" folder
 
@@ -141,8 +141,8 @@ In addition to these protected events, which can only be accessed through C#.
 * [.p5.security.get-default-context-username] - Returns the default Ticket username for users not logged in
 
 The "page-value" Active Events above, obeys by the same rule-set as the "collection values" in [p5.web](/plugins/p5.web/).
-And accepts similar types of arguments as for instance *[get-session-value]* etc do. See the documentation 
-for [get-session-value](/plugins/p5.web/) for instance, to understand their arguments.
+And accepts similar types of arguments as for instance *[p5.web.session.get]* etc do. See the documentation 
+for [p5.web.session.get](/plugins/p5.web/) for instance, to understand their arguments.
 
 The page values however, are stored in the ViewState, which is stored on the server, and hence are "page related data", which 
 disappears, if the user navigates to another page, or refreshes his browser.

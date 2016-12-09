@@ -126,7 +126,7 @@ create-widget:cms-page-editor
                    * We store the currently edited page in session, such that user can refresh page,
                    * or go to other apps, and come back, and continue editing the page he previously edited.
                    */
-                  set-session-value:sys42.currently-edited-page
+                  p5.web.session.set:sys42.currently-edited-page
                     src:x:/../*/_arg?value
 
 
@@ -139,8 +139,8 @@ create-widget:cms-page-editor
                    * We store the currently edited page in session, such that user can refresh page,
                    * or go to other apps, and come back, and continue editing the page he previously edited.
                    */
-                  get-session-value:sys42.currently-edited-page
-                  return:x:/@get-session-value/*?value
+                  p5.web.session.get:sys42.currently-edited-page
+                  return:x:/@p5.web.session.get/*?value
 
 
                 /*

@@ -33,7 +33,7 @@ using MimeKit;
 namespace p5.mime.plugins
 {
     /// <summary>
-    ///     Class encapsulating the [echo-mime] Active Event for web apps to return MIME over HTTP response
+    ///     Class encapsulating the [p5.web.echo-mime] Active Event for web apps to return MIME over HTTP response
     /// </summary>
     public static class Echo
     {
@@ -42,7 +42,7 @@ namespace p5.mime.plugins
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "echo-mime")]
+        [ActiveEvent (Name = "p5.web.echo-mime")]
         public static void echo_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves

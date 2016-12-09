@@ -41,9 +41,9 @@ namespace p5.web.storage
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-cache-value")]
-        [ActiveEvent (Name = ".set-cache-value")]
-        public static void set_cache_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.cache.set")]
+        [ActiveEvent (Name = ".p5.web.cache.set")]
+        public static void p5_web_cache_set (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving for how long the value should be set in cache, before removed
             var minutes = e.Args.GetExChildValue ("minutes", context, 30);
@@ -72,9 +72,9 @@ namespace p5.web.storage
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-cache-value")]
-        [ActiveEvent (Name = ".get-cache-value")]
-        public static void get_cache_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.cache.get")]
+        [ActiveEvent (Name = ".p5.web.cache.get")]
+        public static void p5_web_cache_get (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Get (context, e.Args, key => HttpContext.Current.Cache [key]);
         }
@@ -84,9 +84,9 @@ namespace p5.web.storage
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-cache-keys")]
-        [ActiveEvent (Name = ".list-cache-keys")]
-        public static void list_cache_keys (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.cache.list")]
+        [ActiveEvent (Name = ".p5.web.cache.list")]
+        public static void p5_web_cache_list (ApplicationContext context, ActiveEventArgs e)
         {
             var retVal = new List<string> ();
             foreach (DictionaryEntry idx in HttpContext.Current.Cache) {

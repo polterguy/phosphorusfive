@@ -2,16 +2,16 @@
 /*
  * Evaluating all unit tests in one go
  */
-set-context-value:sys42.unit-test-errors
+p5.web.context.set:sys42.unit-test-errors
   src:bool:false
 date-now
-set-session-value:sys42.unit-test-count
+p5.web.session.set:sys42.unit-test-count
   src:int:0
 find-widget
   innerValue:Evaluate
 raise-widget-ajax-event:x:/../*/find-widget/*/*?value
   onclick
-get-session-value:sys42.unit-test-count
+p5.web.session.get:sys42.unit-test-count
 date-now
 -:x:/-?value
   _:x:/../*/date-now/[0,1]?value
@@ -20,7 +20,7 @@ sys42.windows.info-tip:@"{0} unit tests evaluated in {1:s\.fff} seconds"
   :x:/./-4/*?value
   :x:/./-2?value
   _class:info-window-longer info-window
-get-context-value:sys42.unit-test-errors
+p5.web.context.get:sys42.unit-test-errors
 if:x:/-/*?value
   set-widget-property:x:/../*/_event?value
     class:btn btn-warning form-control

@@ -4,7 +4,7 @@ Creating web widgets with Phosphorus Five
 p5.web is the Ajax web widget "GUI library" for Phosphorus Five. This is the part that makes it possible for you to use
 Active Events such as *[create-widget]* and *[set-widget-property]*. In addition, it contains helper Active Events which
 allows you to modify stuff such as the response HTTP headers, access the session object, and even entirely take control
-over the returned response through events such as *[echo]* and *[echo-file]*.
+over the returned response through events such as *[p5.web.echo]* and *[p5.web.echo-file]*.
 
 However, to start out with the obvious, let's first take a look at how we create a basic Ajax widget.
 
@@ -1007,22 +1007,22 @@ as you see fit later.
 
 Below is a complete list of all of these Active Events.
 
-* [set-session-value] - Has private (.) alias
-* [get-session-value] - Has private (.) alias
-* [list-session-keys] - Has private (.) alias
-* [set-global-value] - Has private (.) alias
-* [get-global-value] - Has private (.) alias
-* [list-global-keys] - Has private (.) alias
-* [set-context-value] - Has private (.) alias
-* [get-context-value] - Has private (.) alias
-* [list-context-keys] - Has private (.) alias
-* [set-cache-value] - Has private (.) alias
-* [get-cache-value] - Has private (.) alias
-* [list-cache-keys] - Has private (.) alias
-* [set-cookie-value] - Has private (.) alias
+* [p5.web.session.set] - Has private (.) alias
+* [p5.web.session.get] - Has private (.) alias
+* [p5.web.session.list] - Has private (.) alias
+* [p5.web.application.set] - Has private (.) alias
+* [p5.web.application.get] - Has private (.) alias
+* [p5.web.application.list] - Has private (.) alias
+* [p5.web.context.set] - Has private (.) alias
+* [p5.web.context.get] - Has private (.) alias
+* [p5.web.context.list] - Has private (.) alias
+* [p5.web.cache.set] - Has private (.) alias
+* [p5.web.cache.get] - Has private (.) alias
+* [p5.web.cache.list] - Has private (.) alias
+* [p5.web.cookie.set] - Has private (.) alias
 * [p5.web.cookie.get] - Has private (.) alias
 * [p5.web.cookie.list] - Has private (.) alias
-* [set-http-header]
+* [p5.web.header.set]
 * [p5.web.header.get]
 * [p5.web.header.list]
 * [p5.web.params.get]
@@ -1050,9 +1050,9 @@ The above three mentioned events, also obeys by the same "API" as the once liste
 
 If we start out with the "Session" object from ASP.NET, there are three basic Active Events which allows you to use your session. 
 
-* [set-session-value]
-* [get-session-value]
-* [list-session-keys]
+* [p5.web.session.set]
+* [p5.web.session.get]
+* [p5.web.session.list]
 
 For those not aquinted with how the session object works, it is often a memory based in-process storage, for objects you wish to associate with a
 single session (user activity), for as long as a user is actively using your web site. When the server is rebooted, the user leaves your website, 
@@ -1066,9 +1066,9 @@ all his session variables if he does not somehow, interact with your website, fo
 To show you an example of it, imagine the following code.
 
 ```
-set-session-value:test.my-session-variable
+p5.web.session.set:test.my-session-variable
   src:Some piece of data goes here
-get-session-value:test.my-session-variable
+p5.web.session.get:test.my-session-variable
 ```
 
 In the above code, we first "set" a session variable, name it "test.my-session-variable", and give it the static value of "Some piece of data goes here",
@@ -1076,7 +1076,7 @@ before we retrieve it again. The retrieval does not have to be in the same reque
 your browser, and evaluate the following code, and your original value will still be returned back to you.
 
 ```
-get-session-value:test.my-session-variable
+p5.web.session.get:test.my-session-variable
 ```
 
 All of the "object storage" Active Events in p5.web, takes a "source" argument, the same way *[add]* and *[set]* does. Which allows you to create
@@ -1084,12 +1084,12 @@ fairly complex sources, using Active Event sources, and so on. To store a slight
 like this.
 
 ```
-set-session-value:test.my-session-variable
+p5.web.session.set:test.my-session-variable
   src
     my-node:My value
       my-other-node
         some-integer:int:5
-get-session-value:test.my-session-variable
+p5.web.session.get:test.my-session-variable
 ```
 
 Above we see an example of adding typed objects into the session, which of course is no problem.
@@ -1100,7 +1100,7 @@ as children of a single "root node". The following code will raise an exception 
 
 ```
 // Throws an exception!!
-set-session-value:test.my-session-variable
+p5.web.session.set:test.my-session-variable
   src
     my-node:My value
     my-other-node
@@ -1113,54 +1113,54 @@ node passed into each invocation of your source. Consider this code for instance
 _values
   test-session-1:Some value
   test-session-2:Some other value
-set-session-value:x:/-/*?name
+p5.web.session.set:x:/-/*?name
   eval
     return:x:/../*/_dn/#?value
-get-session-value:test-session-1
-get-session-value:test-session-2
+p5.web.session.get:test-session-1
+p5.web.session.get:test-session-2
 ```
 
 The above code will create two session variables for you, one called "test-session-1", and another called "test-session-2", with the values from
 these nodes as the values of your session objects.
 
-#### Listing your session keys using [list-session-keys]
+#### Listing your session keys using [p5.web.session.list]
 
-Sometimes it can be useful to have a list of which session keys you have in your current session object. This is easily done using *[list-session-keys]*.
+Sometimes it can be useful to have a list of which session keys you have in your current session object. This is easily done using *[p5.web.session.list]*.
 An example of usage is shown below.
 
 ```
-list-session-keys
+p5.web.session.list
 ```
 
 If you provide a value, or an expression as its value, this will be used as a "filter" that your keys must match, in order to be returned. Example
 is given below.
 
 ```
-list-session-keys:test
+p5.web.session.list:test
 ```
 
 The above would yield, assuming you've still got your session objects from our first example in your session, the following result.
 
 ```
-list-session-keys
+p5.web.session.list
   test-session-1
   test-session-2
 ```
 
-To retrieve all values, from all session objects, could easily be done combining this invocation with a *[get-session-value]* invocation.
+To retrieve all values, from all session objects, could easily be done combining this invocation with a *[p5.web.session.get]* invocation.
 
 ```
-list-session-keys:test
-get-session-value:x:/-/*?name
+p5.web.session.list:test
+p5.web.session.get:x:/-/*?name
 ```
 
 ### Accessing the application object
 
 The "application" object has an API which is 100% identical to the "session" object, and consists of these three Active Events.
 
-* [get-global-value]
-* [set-global-value]
-* [list-global-keys]
+* [p5.web.application.get]
+* [p5.web.application.set]
+* [p5.web.application.list]
 
 The only difference is the underlaying implementation, which stores your values in the "global application object" instead of your session object.
 The "application" object i global for all users of your website. Besides from that, it is really quite similar to the session object, and only
@@ -1192,7 +1192,7 @@ In addition, type information is "partially lost" when you set a cookie. To illu
 evaluations in your System42/executor.
 
 ```
-set-cookie-value:some-cookie
+p5.web.cookie.set:some-cookie
   src
     foo:bar
       some-integer:int:5
@@ -1226,7 +1226,7 @@ However, setting an HTTP header obeys by the same API as all other "storage even
 you could do something like this.
 
 ```
-set-http-header:foo
+p5.web.header.set:foo
   src:bar
 ```
 
@@ -1257,7 +1257,7 @@ implemented, and kept in P5 to remain consistant towards the underlaying impleme
 
 If you wish, you can completely bypass the default HTTP serialization and deserialization, and instead, take complete control of every aspect of
 both the rendering and the parsing of HTTP requests and responses. This is useful if you are creating web services or returing files to the caller
-for instance. For such cases, you have the *[echo]* and *[echo-file]* Active Events for creating your own response. And you have the *[p5.web.request.get-body]*,
+for instance. For such cases, you have the *[p5.web.echo]* and *[p5.web.echo-file]* Active Events for creating your own response. And you have the *[p5.web.request.get-body]*,
 and the *[p5.web.request.get-method]* events. These Active Events allows you to access the "raw" HTTP request, as sent by the client, and create your own response, 
 exactly as you see fit.
 
@@ -1266,7 +1266,7 @@ can completely bypass this model, and create your own. Imagine if you wish to re
 creating a page, which contains logic like this.
 
 ```
-echo-file:/system42/README.md
+p5.web.echo-file:/system42/README.md
 ```
 
 If you evaluate the above code in for instance the System42/executor, then it will throw an exception, of course, since the Ajax method invoked when
@@ -1276,32 +1276,32 @@ an Ajax web widget hierarchy, evaluates the above lambda - The you will download
 To see an example, create a *[lambda]* page in the CMS of System42/executor with the URL of "/download-my-file". Then change its code to the following.
 
 ```
-echo-file:/system42/README.md
-set-http-header:Content-Type
+p5.web.echo-file:/system42/README.md
+p5.web.header.set:Content-Type
   src:text/plain
 ```
 
 Then save your page and click "Preview", and you should see your file. If you change the code for your page to the following.
 
 ```
-echo:@"This is foo calling!"
-set-http-header:Content-Type
+p5.web.echo:@"This is foo calling!"
+p5.web.header.set:Content-Type
   src:text/plain
 ```
 
 ... then you will see some statically created text instead.
 
-Notice, once you invoke *[echo]* or *[echo-file]*, then you cannot invoke it again. This means that if you want to dynamically build up your content, 
-then you have to build it first, and have *[echo]* be the last piece of logic in your page. The *[echo-file]* event will also throw an exception if the
+Notice, once you invoke *[p5.web.echo]* or *[p5.web.echo-file]*, then you cannot invoke it again. This means that if you want to dynamically build up your content, 
+then you have to build it first, and have *[p5.web.echo]* be the last piece of logic in your page. The *[p5.web.echo-file]* event will also throw an exception if the
 currently logged in user is not authorized to reading the file you supply to it.
 
-Both *[echo]* and *[echo-file]* can optionally take expressions, leading to either one or more pieces of text, or one file.
+Both *[p5.web.echo]* and *[p5.web.echo-file]* can optionally take expressions, leading to either one or more pieces of text, or one file.
 
-Creating web services, using *[echo]*, which instead of returning HTML to the client, returns some other piece of data, is quite easy using this
+Creating web services, using *[p5.web.echo]*, which instead of returning HTML to the client, returns some other piece of data, is quite easy using this
 technique.
 
 Hint!
-You can return Hyperlambda to the client using the *[echo]* event, since it will automatically convert whatever expression it is given to text, which
+You can return Hyperlambda to the client using the *[p5.web.echo]* event, since it will automatically convert whatever expression it is given to text, which
 allows you to return some sub-set of your tree to the caller.
 
 ### Getting the raw HTTP request
@@ -1331,12 +1331,12 @@ determining if the client is some sort of "mobile device" or not.
 
 You can modify the "status message" and the "status code" of your response using these two Active Events.
 
-* [set-http-status-code] - Sets the "status code", requires an integer, or an expression leading to an integer as its input
-* [set-http-status] - Sets the "status message", tolerates anything that is convertible into text
+* [p5.web.response.set-status-code] - Sets the "status code", requires an integer, or an expression leading to an integer as its input
+* [p5.web.response.set-status-description] - Sets the "status message", tolerates anything that is convertible into text
 
 ### Ninja tricks when creating web services
 
-One thing you should realize about *[echo]* and *[p5.web.request.get-body]*, is that you can both pass in, and return Hyperlambda, which you then convert to 
+One thing you should realize about *[p5.web.echo]* and *[p5.web.request.get-body]*, is that you can both pass in, and return Hyperlambda, which you then convert to 
 p5.lambda, for then to evaluate it as such. This feature of P5, allows you to pass "code" from your client, to a server, and have the server evaluate 
 your "code", for then to return "code" back again, which the client evaluates on its side.
 

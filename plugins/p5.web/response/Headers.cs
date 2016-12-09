@@ -37,8 +37,8 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-http-header")]
-        public static void set_http_header (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.header.set")]
+        public static void p5_web_header_set (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {

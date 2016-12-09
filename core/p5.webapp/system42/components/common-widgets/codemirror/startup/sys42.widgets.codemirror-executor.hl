@@ -65,10 +65,10 @@ create-event:sys42.widgets.codemirror-executor
    * Then checking to see if we've got some code stored in session, 
    * and if so, we stuff it into our editor.
    */
-  get-session-value:sys42.widgets.codemirror-executor.current-code
-  if:x:/@get-session-value/0?value
+  p5.web.session.get:sys42.widgets.codemirror-executor.current-code
+  if:x:/@p5.web.session.get/0?value
     set:x:/../**/=execute_input/*/_value?value
-      src:x:/@get-session-value/0?value
+      src:x:/@p5.web.session.get/0?value
 
 
   /*
@@ -148,9 +148,9 @@ create-event:sys42.widgets.codemirror-executor
                 /*
                  * Then storing current code in session such that code editor remembers content
                  */
-                set:x:/../*/set-session-value/*/src?value
+                set:x:/../*/p5.web.session.set/*/src?value
                   src:x:/@get-widget-property/+/<?value
-                set-session-value:sys42.widgets.codemirror-executor.current-code
+                p5.web.session.set:sys42.widgets.codemirror-executor.current-code
                   src
 
                 /*

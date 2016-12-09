@@ -36,9 +36,9 @@ namespace p5.web.storage {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-context-value")]
-        [ActiveEvent (Name = ".set-context-value")]
-        public static void set_context_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.context.set")]
+        [ActiveEvent (Name = ".p5.web.context.set")]
+        public static void p5_web_context_set (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
@@ -58,9 +58,9 @@ namespace p5.web.storage {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-context-value")]
-        [ActiveEvent (Name = ".get-context-value")]
-        public static void get_context_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.context.get")]
+        [ActiveEvent (Name = ".p5.web.context.get")]
+        public static void p5_web_context_get (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Get (context, e.Args, key => HttpContext.Current.Items [key]);
         }
@@ -70,9 +70,9 @@ namespace p5.web.storage {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-context-keys")]
-        [ActiveEvent (Name = ".list-context-keys")]
-        public static void list_context_keys (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.context.list")]
+        [ActiveEvent (Name = ".p5.web.context.list")]
+        public static void p5_web_context_list (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.List (context, e.Args, HttpContext.Current.Items.Keys);
         }

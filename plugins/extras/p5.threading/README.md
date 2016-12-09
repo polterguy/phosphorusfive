@@ -229,7 +229,7 @@ file, you might get race conditions. If you have multiple processes updating the
 to make sure you don't get in trouble.
 
 Other parts again, that might not necessary be thread safe, are the Active Events, where I use underlaying .Net technology, such as 
-the *[set-global-value]*, which is using the ASP.NET `HttpContext.Current.Application` object. Whether or not these events are thread safe, 
+the *[p5.web.application.set]*, which is using the ASP.NET `HttpContext.Current.Application` object. Whether or not these events are thread safe, 
 depends upon the underlaying .Net classes themselves. If you don't know, you should consult the MSDN website, and see what the different 
 classes implements, in regards to thread safety.
 

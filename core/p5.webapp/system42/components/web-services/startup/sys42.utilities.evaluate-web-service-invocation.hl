@@ -2,7 +2,7 @@
 /*
  * Creates the Active Event that evaluates a Web Service invocation.
  *
- * Will parse the incoming request HTTP POST request body, evaluate it, and [echo] its result back to client.
+ * Will parse the incoming request HTTP POST request body, evaluate it, and [p5.web.echo] its result back to client.
  * If the request is a POST request, and has a Content-Type of "application/x-hyperlambda", the request will be treated as a web service invocation,
  * otherwise a GUI will be loaded, to allow the user to play around with the web service endpoint, evaluating Hyperlambda in a CodeMirror instance,
  * according to which Active Events is whitelisted.
@@ -31,7 +31,7 @@ create-event:sys42.utilities.evaluate-web-service-invocation
     /*
      * Regardless of what happens, from this point, we return lambda to caller.
      */
-    set-http-header
+    p5.web.header.set
       Content-Type:application/x-hyperlambda
 
     /*
@@ -67,7 +67,7 @@ create-event:sys42.utilities.evaluate-web-service-invocation
          */
         set:x:/@eval-whitelist?name
           src:_success
-        echo:x:/@_success
+        p5.web.echo:x:/@_success
 
       else
 
@@ -77,14 +77,14 @@ create-event:sys42.utilities.evaluate-web-service-invocation
         eval:x:/@p5.web.request.get-body
         set:x:/@eval?name
           src:_result
-        echo:x:/@_result
+        p5.web.echo:x:/@_result
 
     catch
 
       /*
        * Returning the ghist of our exception to caller.
        */
-      set-http-status-code:500
+      p5.web.response.set-status-code:500
       _error
       add:x:/@_error
         src:x:/@message
@@ -92,4 +92,4 @@ create-event:sys42.utilities.evaluate-web-service-invocation
         src:x:/@type
       add:x:/@_error
         src:x:/@stack-trace
-      echo:x:/@_error
+      p5.web.echo:x:/@_error

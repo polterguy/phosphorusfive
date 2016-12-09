@@ -8,10 +8,10 @@ create-event:sys42.cms.download-file
    * Puts the given filename and path into session, and simply reloads location, since actual download is
    * done in [p5.web.load-ui].
    */
-  set-session-value:sys42.cms.download-filename
+  p5.web.session.set:sys42.cms.download-filename
     src:x:/../*/_arg?value
   if:x:/../*/_file-type?value
-    set-session-value:sys42.cms.download-filetype
+    p5.web.session.set:sys42.cms.download-filetype
       src:x:/../*/_file-type?value
 
   /*

@@ -28,7 +28,7 @@ using p5.core;
 
 namespace p5.web.ui.response {
     /// <summary>
-    ///     Class encapsulating the [p5.web.response.echo] Active Event
+    ///     Class encapsulating the [p5.web.response.p5.web.echo] Active Event
     /// </summary>
     public static class Echo
     {
@@ -37,8 +37,8 @@ namespace p5.web.ui.response {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "echo")]
-        public static void echo (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.echo")]
+        public static void p5_web_echo (ApplicationContext context, ActiveEventArgs e)
         {
             // Discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it
             HttpContext.Current.Response.Filter = null;
@@ -67,8 +67,8 @@ namespace p5.web.ui.response {
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "echo-file")]
-        public static void echo_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.echo-file")]
+        public static void p5_web_echo_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it
             HttpContext.Current.Response.Filter = null;

@@ -367,8 +367,8 @@ else
            * sees page in context of default Context user
            */
           sys42.logout
-            list-session-keys
-            set-session-value:x:/-/*?name
+            p5.web.session.list
+            p5.web.session.set:x:/-/*?name
             sys42.utilities.empty-user-temp-folder
             logout
             p5.web.reload-location
