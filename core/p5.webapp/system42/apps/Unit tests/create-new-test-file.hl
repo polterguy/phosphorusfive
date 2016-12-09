@@ -26,11 +26,11 @@ sys42.windows.modal
         /*
          * Getting name of new test file, and verifying it's not empty
          */
-        get-widget-property:test-filename
+        p5.web.widgets.property.get:test-filename
           value
-        if:x:/../*/get-widget-property/*/*?value
+        if:x:/../*/p5.web.widgets.property.get/*/*?value
           =:
-          set-widget-property:test-filename-wrp
+          p5.web.widgets.property.set:test-filename-wrp
             class:form-group has-error
           p5.web.send-javascript:@"$('#test-filename').focus().select();"
           return
@@ -38,22 +38,22 @@ sys42.windows.modal
         /*
          * Checking if user supplied the name without a ".hl" extension, and if so, we add it
          */
-        split:x:/../*/get-widget-property/*/*?value
+        split:x:/../*/p5.web.widgets.property.get/*/*?value
           =:.
         if:x:/-/*?count
           =:int:1
-          set:x:/../*/get-widget-property/*/*?value
+          set:x:/../*/p5.web.widgets.property.get/*/*?value
             src:{0}.hl
-              :x:/../*/get-widget-property/*/*?value
+              :x:/../*/p5.web.widgets.property.get/*/*?value
 
         /*
          * Checking if user supplied a slash in the filename, and if so, alert him that this is an error
          */
-        split:x:/../*/get-widget-property/*/*?value
+        split:x:/../*/p5.web.widgets.property.get/*/*?value
           =:/
         if:x:/-/*?count
           >:int:1
-          set-widget-property:test-filename-wrp
+          p5.web.widgets.property.set:test-filename-wrp
             class:form-group has-error
           p5.web.send-javascript:@"$('#test-filename').focus().select();"
         else
@@ -63,7 +63,7 @@ sys42.windows.modal
            */
           p5.io.file.save:{0}{1}
             :@tests/tests/
-            :x:/../*/get-widget-property/*/*?value
+            :x:/../*/p5.web.widgets.property.get/*/*?value
             src:@"/*
  * Contains unit tests for testing [whatever] in system
  */
@@ -85,18 +85,18 @@ foo
           /*
            * Deleting widgets and re-creating datagrid (and other widgets) by invoking "self"
            */
-          delete-widget:unit-test-bottom-toolbar
-          delete-widget:unit-test-datagrid
+          p5.web.widgets.delete:unit-test-bottom-toolbar
+          p5.web.widgets.delete:unit-test-datagrid
           sys42.utilities.execute-lambda-file:@tests/launch.hl
 
           /*
            * Making sure our newly created test is edited
            */
           p5.io.unroll-path.@tests
-          find-widget
+          p5.web.widgets.find
             _file-button:{0}/tests/{1}
               :x:/././-?value
-              :x:/../*/get-widget-property/*/*?value
-          raise-widget-ajax-event:x:/-/*/*?value
+              :x:/../*/p5.web.widgets.property.get/*/*?value
+          p5.web.widgets.ajax-events.raise:x:/-/*/*?value
             onclick
 

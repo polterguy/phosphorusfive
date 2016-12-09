@@ -52,14 +52,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "re-render-widget")]
-        public void re_render_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.re-render")]
+        public void p5_web_widgets_re_render (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widget IDs given by caller
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "re-render-widget")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.re-render")) {
                     idxWidget.ReRender ();
                 }
             }

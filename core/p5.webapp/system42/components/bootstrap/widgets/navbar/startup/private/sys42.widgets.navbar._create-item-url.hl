@@ -18,13 +18,13 @@ create-event:sys42.widgets.navbar._create-item-url
    * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
    * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tree_unroll".
    */
-  find-first-ancestor-widget:x:/../*/_arg?value
+  p5.web.widgets.find-ancestor:x:/../*/_arg?value
     _root-navbar
-  get-widget-property:x:/@find-first-ancestor-widget/*/*?value
+  p5.web.widgets.property.get:x:/@p5.web.widgets.find-ancestor/*/*?value
     _root-navbar
   p5.web.query.list
   set:x:/@p5.web.query.list/*/{0}
-    :x:/@get-widget-property/*/*?value
+    :x:/@p5.web.widgets.property.get/*/*?value
   if:x:/@p5.web.query.list/*
     p5.web.query.get:x:/@p5.web.query.list/*?name
     for-each:x:/@p5.web.query.get/*
@@ -41,14 +41,14 @@ create-event:sys42.widgets.navbar._create-item-url
   set:x:/@p5.web.get-location-url?value
     src:{0}{1}=
       :x:/@p5.web.get-location-url?value
-      :x:/@get-widget-property/*/*?value
+      :x:/@p5.web.widgets.property.get/*/*?value
 
   /*
    * Then we can URL encode the parameter, and return URL to caller.
    */
-  get-widget-property:x:/../*/_arg?value
+  p5.web.widgets.property.get:x:/../*/_arg?value
     _item-id
-  url-encode:x:/@get-widget-property/*/*?value
+  url-encode:x:/@p5.web.widgets.property.get/*/*?value
 
   return:{0}{1}
     :x:/@p5.web.get-location-url?value

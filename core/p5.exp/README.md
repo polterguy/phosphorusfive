@@ -486,18 +486,18 @@ Imagine this for instance.
 ```
 set:x:/++/innerValue?value
   src:Foo bar
-create-literal-widget
+p5.web.widgets.create-literal
   innerValue
 ```
 
-If you later want to move your *[create-literal-widget]* invocation, to for instance an *[eval]* invocation or something, then
+If you later want to move your *[p5.web.widgets.create-literal]* invocation, to for instance an *[eval]* invocation or something, then
 you do not need to change your expression in your *[set]* invocation. Consider this.
 
 ```
 set:x:/++/innerValue?value
   src:Foo bar
 _eval
-  create-literal-widget
+  p5.web.widgets.create-literal
     innerValue
 eval:x:/-
 ```

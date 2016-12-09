@@ -14,8 +14,8 @@ p5.web.params.get:app
 sys42.utilities.execute-lambda-file:@SYS42-APPS/{0}/launch.hl
   :x:/@p5.web.params.get/0?value
 set-title:x:/@p5.web.params.get/0?value
-widget-exist:header
+p5.web.widgets.exists:header
 if:x:/-/*?value
-  set-widget-property:header
+  p5.web.widgets.property.set:header
     innerValue:x:/@p5.web.params.get/0?value
 "

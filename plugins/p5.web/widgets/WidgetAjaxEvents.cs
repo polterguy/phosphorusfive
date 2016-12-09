@@ -48,14 +48,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-ajax-event")]
-        public void get_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.ajax-events.get")]
+        public void p5_web_widgets_ajax_events_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-ajax-event")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.ajax-events.get")) {
 
                     // Looping through events requested by caller
                     foreach (var idxEventNameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
@@ -73,11 +73,11 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-widget-ajax-event")]
+        [ActiveEvent (Name = "p5.web.widgets.ajax-events.set")]
         public void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widgets
-            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-ajax-event")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.ajax-events.set")) {
 
                 // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
@@ -112,11 +112,11 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "raise-widget-ajax-event")]
-        public void raise_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.ajax-events.raise")]
+        public void p5_web_widgets_ajax_events_raise (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widgets
-            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "raise-widget-ajax-event")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.ajax-events.raise")) {
 
                 // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
@@ -132,14 +132,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widget-ajax-events")]
-        public void list_widget_ajax_events (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.ajax-events.list")]
+        public void p5_web_widgets_ajax_events_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all widgets supplied
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "list-widget-ajax-events")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.ajax-events.list")) {
 
                     // Then looping through all attribute keys, filtering everything out that does not start with "on", ".on" or "_on"
                     Node curNode = new Node(idxWidget.ID);

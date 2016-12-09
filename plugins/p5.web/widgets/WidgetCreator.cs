@@ -52,15 +52,15 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-widget")]
-        [ActiveEvent (Name = "create-container-widget")]
-        [ActiveEvent (Name = "create-void-widget")]
-        [ActiveEvent (Name = "create-literal-widget")]
-        public void create_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.create")]
+        [ActiveEvent (Name = "p5.web.widgets.create-container")]
+        [ActiveEvent (Name = "p5.web.widgets.create-void")]
+        [ActiveEvent (Name = "p5.web.widgets.create-literal")]
+        public void p5_web_widgets_create (ApplicationContext context, ActiveEventArgs e)
         {
             // Figuring out which type of widget we're creating
             var splits = e.Name.Split('-');
-            string type = splits.Length == 2 ? "container" : splits[1];
+            string type = splits.Length == 1 ? "container" : splits[1];
 
             // Creating widget of specified type
             e.Args.Value = CreateWidget (context, e.Args, type);
@@ -71,11 +71,11 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget")]
-        public void delete_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.delete")]
+        public void p5_web_widgets_delete (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
-            foreach (var idxWidget in FindWidgets<Control> (context, e.Args, "delete-widget")) {
+            foreach (var idxWidget in FindWidgets<Control> (context, e.Args, "p5.web.widgets.delete")) {
 
                 // Removing widget
                 RemoveWidget (context, e.Args, idxWidget);
@@ -87,11 +87,11 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "clear-widget")]
-        public void clear_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.clear")]
+        public void p5_web_widgets_clear (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
-            foreach (var idxWidget in FindWidgets<Container> (context, e.Args, "clear-widget")) {
+            foreach (var idxWidget in FindWidgets<Container> (context, e.Args, "p5.web.widgets.clear")) {
 
                 // Then looping through all of its children controls
                 foreach (Control idxChildWidget in new ArrayList(idxWidget.Controls)) {
@@ -191,7 +191,7 @@ namespace p5.web.widgets
         }
 
         /*
-         * Creates local widget events for web widgets created through [create-widget]
+         * Creates local widget events for web widgets created through [p5.web.widgets.create]
          */
         private void CreateWidgetLambdaEvents (
             string widgetId, 

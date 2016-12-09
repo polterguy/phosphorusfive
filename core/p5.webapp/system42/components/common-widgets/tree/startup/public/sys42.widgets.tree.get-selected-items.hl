@@ -13,19 +13,19 @@ create-event:sys42.widgets.tree.get-selected-items
    * This is the tree caller requested to retrieve selected items in.
    * Finding all items in the tree that are currently selected.
    */
-  find-widget-like:x:/../*/_arg?value
+  p5.web.widgets.find-like:x:/../*/_arg?value
     class:tree-selected
-  if:x:/@find-widget-like/*/*?count
+  if:x:/@p5.web.widgets.find-like/*/*?count
     !=:int:0
 
     /*
      * Tree has selected items.
      * Finding its parent "li" widget, and retrieving its [_item-id], and returning as [_items] collection to caller.
      */
-    get-parent-widget:x:/@find-widget-like/*/*?value
-    get-widget-property:x:/@get-parent-widget/*/*?value
+    p5.web.widgets.get-parent:x:/@p5.web.widgets.find-like/*/*?value
+    p5.web.widgets.property.get:x:/@p5.web.widgets.get-parent/*/*?value
       _item-id
     add:x:/+/*
-      src:x:/@get-widget-property/*/*?value
+      src:x:/@p5.web.widgets.property.get/*/*?value
     return
       _items

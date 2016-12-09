@@ -53,4 +53,6 @@ TODO before release
 
 * Fix HTML filter, it sometimes chokes.
 
+* Verify we really need [p5.web.widgets.property.delete], which I think we do, since properties can have "null" values.
+
 

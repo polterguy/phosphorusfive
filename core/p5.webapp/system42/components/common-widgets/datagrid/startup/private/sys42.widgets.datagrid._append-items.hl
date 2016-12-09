@@ -10,15 +10,15 @@ create-event:sys42.widgets.datagrid._append-items
   /*
    * Finds "tbody" widget in datagrid for later references, since we'll need to make sure "tr" widgets are children of "tbody".
    */
-  find-widget:x:/../*/_arg?value
+  p5.web.widgets.find:x:/../*/_arg?value
     element:tbody
 
   /*
    * Set during initialization, defines whether or not editing of items is allowed.
    */
-  get-widget-property:x:/../*/_arg?value
+  p5.web.widgets.property.get:x:/../*/_arg?value
     _edit-items
-  if:x:/@get-widget-property/*/*?value
+  if:x:/@p5.web.widgets.property.get/*/*?value
     not
 
     /*
@@ -36,7 +36,7 @@ create-event:sys42.widgets.datagrid._append-items
      * Since in-place editing is disabled, we turn on "row selection", in such a way, that it becomes accessible for screen 
      * readers and similar technologies.
      */
-    add:x:/../*/for-each/*/create-widget
+    add:x:/../*/for-each/*/p5.web.widgets.create
       src
         role:button
         class:clickable
@@ -47,17 +47,17 @@ create-event:sys42.widgets.datagrid._append-items
           /*
            * Finding main datagrid widget, which is necessary to pass into [sys42.widgets.datagrid.select-items] as [_arg].
            */
-          find-first-ancestor-widget:x:/../*/_event?value
+          p5.web.widgets.find-ancestor:x:/../*/_event?value
             _current-page
 
           /*
            * Figuring out "row id", and passsing it into [select-items].
            */
-          get-widget-property:x:/../*/_event?value
+          p5.web.widgets.property.get:x:/../*/_event?value
             _row
           add:x:/+/*
-            src:x:/@get-widget-property/*/*?value
-          sys42.widgets.datagrid.select-items:x:/@find-first-ancestor-widget/*/*?value
+            src:x:/@p5.web.widgets.property.get/*/*?value
+          sys42.widgets.datagrid.select-items:x:/@p5.web.widgets.find-ancestor/*/*?value
             _items
 
     /*
@@ -129,16 +129,16 @@ return false;
               /*
                * Using global helper active event to actually invoke editing of item.
                */
-              find-first-ancestor-widget:x:/../*/_event?value
+              p5.web.widgets.find-ancestor:x:/../*/_event?value
                 _page-size
               eval-x:x:/+/*
-              sys42.widgets.datagrid._cell-clicked:x:/@find-first-ancestor-widget/*/*?value
+              sys42.widgets.datagrid._cell-clicked:x:/@p5.web.widgets.find-ancestor/*/*?value
                 _hyperlink:x:/../*/_event?value
 
     /*
      * [apply] all "td" widgets inside of currently iterated "tr" widget.
      */
-    apply:x:/..for-each/*/create-widget/*/widgets
+    apply:x:/..for-each/*/p5.web.widgets.create/*/widgets
       src:x:/..for-each/*/_dp/#/*
       template
         td
@@ -160,8 +160,8 @@ return false;
      * Forward evaluating [parent] and [_row] before we create "tr" widget.
      */
     eval-x:x:/+/*(/parent|/_row)
-    create-widget
-      parent:x:/../*/find-widget/[0,1]/*/*?value
+    p5.web.widgets.create
+      parent:x:/../*/p5.web.widgets.find/[0,1]/*/*?value
       _row:x:/..for-each/*/_id?value
       element:tr
       widgets

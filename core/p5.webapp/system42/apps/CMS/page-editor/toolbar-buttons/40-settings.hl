@@ -112,9 +112,9 @@ button
             sys42.windows.info-tip:That URL is already taken by another page ...
               _class:info-window info-window-error
               _parent:sys42-windows-modal-body-wrapper
-            find-widget:sys42-windows-modal-body-wrapper
+            p5.web.widgets.find:sys42-windows-modal-body-wrapper
               _data-field-name:url
-            get-parent-widget:x:/-/*/*?value
+            p5.web.widgets.get-parent:x:/-/*/*?value
             sys42.utilities.add-css-classes:x:/-/*/*?value
               _class:has-error
             p5.web.send-javascript:@"$('#{0}').focus().select();"

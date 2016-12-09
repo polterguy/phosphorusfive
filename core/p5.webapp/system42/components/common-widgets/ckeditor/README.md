@@ -8,7 +8,7 @@ This component creates the CKEditor extension widget, accessible as *[sys42.widg
 custom widget on your page. To use it, you could use something like the code below.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   class:col-xs-12
   widgets
@@ -19,11 +19,11 @@ The above will render something like the following.
 
 ![alt tag](screenshots/ck-editor-screenshot-example.png)
 
-To get to HTML created by it, simply use *[get-widget-property]*, and pass in *[value]* as the argument of what to retrieve.
+To get to HTML created by it, simply use *[p5.web.widgets.property.get]*, and pass in *[value]* as the argument of what to retrieve.
 Example code given below.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   class:col-xs-12
   widgets
@@ -33,12 +33,12 @@ create-widget
       innerValue:Get HTML
       class:btn btn-default btn-attach-top
       onclick
-        get-widget-property:my-editor
+        p5.web.widgets.property.get:my-editor
           value
         eval-x:x:/+/*
         sys42.windows.confirm
           _header:Editor's content
-          _body:x:/@get-widget-property/*/*?value
+          _body:x:/@p5.web.widgets.property.get/*/*?value
 ```
 
 ## Ninja tricks

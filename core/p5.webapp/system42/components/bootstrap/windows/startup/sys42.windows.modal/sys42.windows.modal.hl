@@ -56,14 +56,14 @@ create-event:sys42.windows.modal
    */
   if
     fetch:x:/0/0?value
-      widget-exist:sys42-windows-modal
-    delete-widget:sys42-windows-modal
+      p5.web.widgets.exists:sys42-windows-modal
+    p5.web.widgets.delete:sys42-windows-modal
 
   /*
    * Appending buttons into footer of dialogue, which unless overridden through [_buttons], means
    * only the "OK" button.
    */
-  add:x:/../*/create-widget/**/=sys42-windows-modal-footer/*/widgets
+  add:x:/../*/p5.web.widgets.create/**/=sys42-windows-modal-footer/*/widgets
     src:x:/../*/_options/*/_buttons/*
 
   /*
@@ -74,7 +74,7 @@ create-event:sys42.windows.modal
     /*
      * Caller supplied a [_widgets] collection, making sure we append it into the correct container widget.
      */
-    add:x:/../*/create-widget/**/=sys42-windows-modal-widgets/*/widgets
+    add:x:/../*/p5.web.widgets.create/**/=sys42-windows-modal-widgets/*/widgets
       src:x:/../*/_options/*/_widgets/*
 
   else
@@ -82,7 +82,7 @@ create-event:sys42.windows.modal
     /*
      * Caller did not supply a [_widgets] collection, removing the wrapper container entirely.
      */
-    set:x:/../*/create-widget/**/=sys42-windows-modal-widgets
+    set:x:/../*/p5.web.widgets.create/**/=sys42-windows-modal-widgets
 
   /*
    * Checking if no [_body] was supplied, and if not, we entirely remove the "body content" widget.
@@ -95,26 +95,26 @@ create-event:sys42.windows.modal
     /*
      * Caller supplied no [_body], removing body literal widget.
      */
-    set:x:/../*/create-widget/**/=sys42-windows-modal-body
+    set:x:/../*/p5.web.widgets.create/**/=sys42-windows-modal-body
 
   /*
    * Appending [.onok] lambda callback into [sys42.windows.modal._ok].
    */
-  add:x:/../*/create-widget/*/events/*/sys42.windows.modal._ok/*/.lambda
+  add:x:/../*/p5.web.widgets.create/*/events/*/sys42.windows.modal._ok/*/.lambda
     src:x:/../*/_options/*/.onok/*
 
   /*
    * Appending [.oncancel] lambda callback into [sys42.windows.modal._cancel].
    */
-  add:x:/../*/create-widget/*/events/*/sys42.windows.modal._cancel/*/.lambda
+  add:x:/../*/p5.web.widgets.create/*/events/*/sys42.windows.modal._cancel/*/.lambda
     src:x:/../*/_options/*/.oncancel/*
 
   /*
    * Creating actual modal widget, making sure we forward evaluate the [_header], [_body], [class], in addition to 
    * the [class] for the [_inner-class] widget first.
    */
-  eval-x:x:/../*/create-widget(/*/class|/**(/=sys42-windows-modal-body|/=sys42-windows-modal-header)/*/innerValue|/*/widgets/*/container/*/class)
-  create-widget:sys42-windows-modal
+  eval-x:x:/../*/p5.web.widgets.create(/*/class|/**(/=sys42-windows-modal-body|/=sys42-windows-modal-header)/*/innerValue|/*/widgets/*/container/*/class)
+  p5.web.widgets.create:sys42-windows-modal
     parent:cnt
     class:x:/../*/_options/*/_class?value
     .oncancel
@@ -230,10 +230,10 @@ create-event:sys42.windows.modal
                       /*
                        * Finds the first button widget in the footer of the window, if any, and raises the [onclick] Ajax event on it.
                        */
-                      find-widget:sys42-windows-modal-footer
+                      p5.web.widgets.find:sys42-windows-modal-footer
                         element:button
-                      if:x:/@find-widget/*/0?value
-                        raise-widget-ajax-event:x:/@find-widget/*/0?value
+                      if:x:/@p5.web.widgets.find/*/0?value
+                        p5.web.widgets.ajax-events.raise:x:/@p5.web.widgets.find/*/0?value
                           onclick
 
                     oninit
@@ -243,9 +243,9 @@ create-event:sys42.windows.modal
                        *
                        * This logic, will make sure all "input" type of elements, traps carriage return, and invokes [.onenterpressed] when it occurs.
                        */
-                      find-widget:x:/../*/_event?value
+                      p5.web.widgets.find:x:/../*/_event?value
                         element:input
-                      set-widget-property:x:/@find-widget/*/*?value
+                      p5.web.widgets.property.set:x:/@p5.web.widgets.find/*/*?value
                         onkeypress:"return p5.sys42_windows_modal_onkeypress(event);"
                       p5.web.include-javascript:@"p5.sys42_windows_modal_onkeypress = function(e) {
   if(e.keyCode == 13) {

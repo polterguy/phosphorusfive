@@ -7,7 +7,7 @@ create-event:sys42.widgets.datagrid.databind
   /*
    * Retrieving current page, number of items per page, and query (filter).
    */
-  get-widget-property:x:/../*/_arg?value
+  p5.web.widgets.property.get:x:/../*/_arg?value
     _current-page
     _page-size
     _query
@@ -17,32 +17,32 @@ create-event:sys42.widgets.datagrid.databind
    * after having databound the grid again.
    */
   _selected
-  find-widget-like:x:/../*/_arg?value
+  p5.web.widgets.find-like:x:/../*/_arg?value
     element:tr
     class:selected
-  if:x:/@find-widget-like/*/*?value
+  if:x:/@p5.web.widgets.find-like/*/*?value
 
     /*
      * There are one or more selected rows in our datagrid.
      * Making sure we add them to our [_selected] collection above, such that we can make sure they stay selected, 
      * also after databinding is done.
      */
-    get-widget-property:x:/@find-widget-like/*/*?value
+    p5.web.widgets.property.get:x:/@p5.web.widgets.find-like/*/*?value
       _row
     add:x:/../*/_selected
-      src:x:/@get-widget-property/*/*?value
+      src:x:/@p5.web.widgets.property.get/*/*?value
 
   /*
    * Checking if we have a zero or negative value in current page, at which case we disable previous button.
    */
-  if:x:/../*/get-widget-property/*/*/_current-page?value.int
+  if:x:/../*/p5.web.widgets.property.get/*/*/_current-page?value.int
     <=:int:0
 
     /*
      * We're at the first page in our datagrid.
      * Making sure we disable the previous button.
      */
-    find-widget:x:/../*/_arg?value
+    p5.web.widgets.find:x:/../*/_arg?value
       innerValue:&lt;
       element:a
     sys42.utilities.add-css-classes:x:/-/*/*?value
@@ -52,14 +52,14 @@ create-event:sys42.widgets.datagrid.databind
      * Checking if value was negative, which might occur if user clicks many times, before Ajax requests
      * are finished, at which case we set it to zero, and return early.
      */
-    if:x:/@get-widget-property/*/*/_current-page?value.int
+    if:x:/@p5.web.widgets.property.get/*/*/_current-page?value.int
       <:int:0
 
       /*
        * Oops, we have a negative currrent page.
        * Making sure we set it to zero, before we return "false" to signal that no databind operation actually occurred.
        */
-      set-widget-property:x:/../*/_arg?value
+      p5.web.widgets.property.set:x:/../*/_arg?value
         _current-page:0
       return:bool:false
 
@@ -68,7 +68,7 @@ create-event:sys42.widgets.datagrid.databind
     /*
      * Enabling previous button.
      */
-    find-widget:x:/../*/_arg?value
+    p5.web.widgets.find:x:/../*/_arg?value
       innerValue:&lt;
       element:a
     sys42.utilities.delete-css-classes:x:/-/*/*?value
@@ -79,24 +79,24 @@ create-event:sys42.widgets.datagrid.databind
    * of [sys42.widgets.datagrid._get-items] invocation.
    */
   set:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value
-    *:x:/@get-widget-property/*/*/_current-page?value.int
-      _:x:/@get-widget-property/*/*/_page-size?value
+    *:x:/@p5.web.widgets.property.get/*/*/_current-page?value.int
+      _:x:/@p5.web.widgets.property.get/*/*/_page-size?value
 
   /*
    * Adding number of items to [_start], and setting [_end] argument of [sys42.widgets.datagrid._get-items] invocation.
    */
   set:x:/../*/sys42.widgets.datagrid._get-items/*/_end?value
     +:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value.int
-      _:x:/@get-widget-property/*/*/_page-size?value
+      _:x:/@p5.web.widgets.property.get/*/*/_page-size?value
 
   /*
    * Checking if we have a query.
    */
-  if:x:/@get-widget-property/*/*/_query?value
+  if:x:/@p5.web.widgets.property.get/*/*/_query?value
     eval-x:x:/+/*/*
     add:x:/../*/sys42.widgets.datagrid._get-items
       src
-        _query:x:/../*/get-widget-property/*/2?value
+        _query:x:/../*/p5.web.widgets.property.get/*/2?value
 
   /*
    * Retrieving current page's items.
@@ -111,15 +111,15 @@ create-event:sys42.widgets.datagrid.databind
    * Hence, we disable the next button.
    */
   if:x:/@sys42.widgets.datagrid._get-items/*/_items/*?count
-    <:x:/@get-widget-property/*/*/_page-size?value.int
+    <:x:/@p5.web.widgets.property.get/*/*/_page-size?value.int
 
     /*
      * No more items, disabling next button.
      */
-    find-widget:x:/../*/_arg?value
+    p5.web.widgets.find:x:/../*/_arg?value
       innerValue:&gt;
       element:a
-    sys42.utilities.add-css-classes:x:/@find-widget/*/*?value
+    sys42.utilities.add-css-classes:x:/@p5.web.widgets.find/*/*?value
       _class:disabled
 
     /*
@@ -132,7 +132,7 @@ create-event:sys42.widgets.datagrid.databind
      */
     if:x:/@sys42.widgets.datagrid._get-items/*/_items/*?count
       =:int:0
-      and:x:/@get-widget-property/*/*/_current-page?value.int
+      and:x:/@p5.web.widgets.property.get/*/*/_current-page?value.int
         !=:int:0
 
       /*
@@ -146,7 +146,7 @@ create-event:sys42.widgets.datagrid.databind
      * Items return from [.on-get-items] was the size of page, which means that there might be more items in dataset as a whole.
      * Hence, we enable the next button.
      */
-    find-widget:x:/../*/_arg?value
+    p5.web.widgets.find:x:/../*/_arg?value
       innerValue:&gt;
       element:a
     sys42.utilities.delete-css-classes:x:/-/*/*?value
@@ -157,9 +157,9 @@ create-event:sys42.widgets.datagrid.databind
    *
    * Clearing out current items from datagrid (tbody widget) first.
    */
-  find-widget:x:/../*/_arg?value
+  p5.web.widgets.find:x:/../*/_arg?value
     element:tbody
-  clear-widget:x:/@find-widget/*/*?value
+  p5.web.widgets.clear:x:/@p5.web.widgets.find/*/*?value
 
   /*
    * Applying the [_items] returned above to [_append-items] invocation.
@@ -173,9 +173,9 @@ create-event:sys42.widgets.datagrid.databind
    * created further up in event, and adding the "selected" CSS class.
    */
   for-each:x:/../*/_selected/*?name
-    find-widget:x:/../*/_arg?value
+    p5.web.widgets.find:x:/../*/_arg?value
       _row:x:/@_dp?value
-    sys42.utilities.add-css-classes:x:/@find-widget/*/*?value
+    sys42.utilities.add-css-classes:x:/@p5.web.widgets.find/*/*?value
       _class:selected
 
   /*

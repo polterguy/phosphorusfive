@@ -234,10 +234,10 @@ create-event:sys42.widgets.datetimepicker
              * an "open icon" was supplied.
              */
             _init-widget
-            get-parent-widget:x:/../*/_event?value
+            p5.web.widgets.get-parent:x:/../*/_event?value
             if
               fetch:x:/0/0/0?value
-                find-widget-like:x:/../*/get-parent-widget/*/*?value
+                p5.web.widgets.find-like:x:/../*/p5.web.widgets.get-parent/*/*?value
                   element:span
                   class:datetimepicker-dropdown
 
@@ -245,7 +245,7 @@ create-event:sys42.widgets.datetimepicker
                * Using parent widget ("div" element) to initialize datetimepicker.
                */
               set:x:/../*/_init-widget?value
-                src:x:/../*/get-parent-widget/*/*?value
+                src:x:/../*/p5.web.widgets.get-parent/*/*?value
             else
 
               /*
@@ -257,8 +257,8 @@ create-event:sys42.widgets.datetimepicker
             /*
              * Checking if we have an [.onchange] lambda callback.
              */
-            list-widget-ajax-events:x:/../*/_event?value
-            if:x:/@list-widget-ajax-events/*/*/.onchange
+            p5.web.widgets.ajax-events.list:x:/../*/_event?value
+            if:x:/@p5.web.widgets.ajax-events.list/*/*/.onchange
 
               /*
                * We have an [.onchange] lambda callback, making sure we intialize datetimepicker such that it raises [.onchange] when 
@@ -283,14 +283,14 @@ create-event:sys42.widgets.datetimepicker
             /*
              * Getting datetimepicker's value, and invoking [.onchange]'s callback.
              */
-            get-widget-property:x:/../*/_event?value
+            p5.web.widgets.property.get:x:/../*/_event?value
               value
-            get-parent-widget:x:/../*/_event?value
+            p5.web.widgets.get-parent:x:/../*/_event?value
             .lambda
             eval-x:x:/+/*
             eval:x:/@.lambda
-              _value:x:/@get-widget-property/*/*?value
-              _event:x:/@get-parent-widget/*/*?value
+              _value:x:/@p5.web.widgets.property.get/*/*?value
+              _event:x:/@p5.web.widgets.get-parent/*/*?value
 
         /*
          * Icon button for showing DateTimePicker

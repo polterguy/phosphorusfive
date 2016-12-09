@@ -28,24 +28,24 @@ p5.web.include-css-file:@CMS/media/css/backgrounds/cogs.min.css
 
 
 /*
- * Invoking custom control event, for later to transform its results, into a [create-container-widget] invocation.
+ * Invoking custom control event, for later to transform its results, into a [p5.web.widgets.create-container] invocation.
  */
 sys42.widgets.codemirror-executor
 
 
 /*
- * Making sure the [container] returned from invoking custom control event, is transformed into [create-widget],
+ * Making sure the [container] returned from invoking custom control event, is transformed into [p5.web.widgets.create],
  * with the proper [parent].
  */
 set:x:/../*/sys42.widgets.codemirror-executor/0?name
-  src:create-widget
+  src:p5.web.widgets.create
 add:x:/../*/sys42.widgets.codemirror-executor/0
   src
     parent:content
 
 
 /*
- * Then evaluating the results of our [sys42.widgets.codemirror-executor], which is now a [create-widget] invocation
+ * Then evaluating the results of our [sys42.widgets.codemirror-executor], which is now a [p5.web.widgets.create] invocation
  */
 eval:x:/../*/sys42.widgets.codemirror-executor
 

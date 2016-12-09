@@ -12,7 +12,7 @@ The events created are listed below.
 Example code given below.
 
 ```
-create-widget:my-widget
+p5.web.widgets.create:my-widget
   parent:content
   position:0
   style:"width:400px;height:150px;border:solid 1px black;"

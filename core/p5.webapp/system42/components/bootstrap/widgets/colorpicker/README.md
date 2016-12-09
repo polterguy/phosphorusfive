@@ -6,7 +6,7 @@ and [Javi Aguilar](https://itsjavi.com/)'s [Bootstrap ColorPicker](https://itsja
 allows your users to pick a color. Below is an example of how to use it.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   class:col-xs-4
   widgets
@@ -21,7 +21,7 @@ create-widget
       _value:#ff00ff
       _label:My color
       .onchange
-        set-widget-property:output-widget
+        p5.web.widgets.property.set:output-widget
           style:"background-color:{0};"
             :x:/../*/_value?value
 ```
@@ -47,14 +47,14 @@ The ColorPicker also contains the following Active Events.
 To use them, make sure you pass in the ID of your ColorPicker as *[_arg]*, such as the following illustrates.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   class:col-xs-4
   widgets
     sys42.widgets.colorpicker:my-color-picker
       _value:#ff00ff
       _label:My color
-create-widget
+p5.web.widgets.create
   parent:content
   class:col-xs-8
   widgets

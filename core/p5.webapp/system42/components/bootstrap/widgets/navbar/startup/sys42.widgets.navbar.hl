@@ -85,9 +85,9 @@ create-event:sys42.widgets.navbar
              * Making sure we raise [onclick] for the item from the HTTP GET unroll parameter.
              * Notice, [_item-id] is forward evaluated in the above [eval-x] invocation.
              */
-            find-widget:x:/../*/_event?value
+            p5.web.widgets.find:x:/../*/_event?value
               _item-id:x:/@p5.web.query.get/*?value
-            raise-widget-ajax-event:x:/@find-widget/*/*?value
+            p5.web.widgets.ajax-events.raise:x:/@p5.web.widgets.find/*/*?value
               onclick
 
 
@@ -130,13 +130,13 @@ create-event:sys42.widgets.navbar
                 /*
                  * Making sure we attach our [data-target] property
                  */
-                find-first-ancestor-widget:x:/../*/_event?value
+                p5.web.widgets.find-ancestor:x:/../*/_event?value
                   _root-navbar
-                find-widget:x:/@find-first-ancestor-widget/*/*?value
+                p5.web.widgets.find:x:/@p5.web.widgets.find-ancestor/*/*?value
                   class:collapse navbar-collapse
-                set-widget-property:x:/../*/_event?value
+                p5.web.widgets.property.set:x:/../*/_event?value
                   data-target:#{0}
-                    :x:/@find-widget/*/*?value
+                    :x:/@p5.web.widgets.find/*/*?value
 
         /*
          * Main menu items wrapper

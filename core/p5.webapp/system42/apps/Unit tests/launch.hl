@@ -69,7 +69,7 @@ _eval-content
 /*
  * Applying unit tests files to table widget
  */
-apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
+apply:x:/../*/p5.web.widgets.create/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
   src:x:/../*/p5.io.folder.list-files/*
   template
     tr
@@ -101,13 +101,13 @@ apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
                  */
                 if
                   fetch:x:/0/0?value
-                    widget-exist:{0}_editor
+                    p5.web.widgets.exists:{0}_editor
                       :x:/../*/_event?value
 
                   /*
                    * Deleting existing editor, since file is already edited, before returning early.
                    */
-                  delete-widget:{0}_editor
+                  p5.web.widgets.delete:{0}_editor
                     :x:/../*/_event?value
                   return
 
@@ -157,7 +157,7 @@ apply:x:/../*/create-widget/=unit-test-datagrid/*/widgets/*/tbody/*/widgets
  * we can finally create the widget that displays all unit tests in the system.
  * This creates an HTML table, with one row for each test file.
  */
-create-widget:unit-test-datagrid
+p5.web.widgets.create:unit-test-datagrid
   parent:content
   element:table
   class:table
@@ -198,7 +198,7 @@ create-widget:unit-test-datagrid
 /*
  * Creates widget at the bottom, containing button row with "+", "Clear" and "Coverage" buttons.
  */
-create-widget:unit-test-bottom-toolbar
+p5.web.widgets.create:unit-test-bottom-toolbar
   parent:content
   class:col-xs-6 col-xs-push-6 col-md-4 col-md-push-8 col-lg-3 col-lg-push-9 text-right prepend-top
   widgets
@@ -228,8 +228,8 @@ create-widget:unit-test-bottom-toolbar
          * Simply deletes all widgets, and invokes "self" again.
          * Which should reset the page.
          */
-        delete-widget:unit-test-bottom-toolbar
-        delete-widget:unit-test-datagrid
+        p5.web.widgets.delete:unit-test-bottom-toolbar
+        p5.web.widgets.delete:unit-test-datagrid
         sys42.utilities.execute-lambda-file:@tests/launch.hl
 
 

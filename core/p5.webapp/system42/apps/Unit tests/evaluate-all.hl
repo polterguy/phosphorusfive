@@ -7,9 +7,9 @@ p5.web.context.set:sys42.unit-test-errors
 date-now
 p5.web.session.set:sys42.unit-test-count
   src:int:0
-find-widget
+p5.web.widgets.find
   innerValue:Evaluate
-raise-widget-ajax-event:x:/../*/find-widget/*/*?value
+p5.web.widgets.ajax-events.raise:x:/../*/p5.web.widgets.find/*/*?value
   onclick
 p5.web.session.get:sys42.unit-test-count
 date-now
@@ -22,10 +22,10 @@ sys42.windows.info-tip:@"{0} unit tests evaluated in {1:s\.fff} seconds"
   _class:info-window-longer info-window
 p5.web.context.get:sys42.unit-test-errors
 if:x:/-/*?value
-  set-widget-property:x:/../*/_event?value
+  p5.web.widgets.property.set:x:/../*/_event?value
     class:btn btn-warning form-control
     disabled
 else
-  set-widget-property:x:/../*/_event?value
+  p5.web.widgets.property.set:x:/../*/_event?value
     class:btn btn-success form-control
     disabled

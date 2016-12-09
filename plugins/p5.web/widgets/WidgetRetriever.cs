@@ -52,14 +52,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-parent-widget")]
-        public void get_parent_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.get-parent")]
+        public void p5_web_widgets_get_parent (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given
-                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "get-parent-widget")) {
+                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "p5.web.widgets.get-parent")) {
 
                     // Returning parent of widget, and parent's typename
                     e.Args.Add (idxWidget.ID).LastChild.Add (GetTypeName (idxWidget.Parent), idxWidget.Parent.ID);
@@ -72,14 +72,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-children-widgets")]
-        public void get_children_widgets (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.get-children")]
+        public void p5_web_widgets_get_children (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given
-                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "get-children-widgets")) {
+                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "p5.web.widgets.get-children")) {
 
                     // Adding currently iterated widget's ID
                     e.Args.Add(idxWidget.ID);
@@ -99,9 +99,9 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "find-widget")]
-        [ActiveEvent (Name = "find-widget-like")]
-        public void find_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.find")]
+        [ActiveEvent (Name = "p5.web.widgets.find-like")]
+        public void p5_web_widgets_find (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -123,7 +123,7 @@ namespace p5.web.widgets
                     var parentControl = FindControl<Widget> (idxId, Manager.AjaxPage);
 
                     // Retrieving all controls having properties matching whatever arguments supplied
-                    foreach (var idxWidget in FindWidgetsBy (e.Args, parentControl, context, e.Name == "find-widget-like")) {
+                    foreach (var idxWidget in FindWidgetsBy (e.Args, parentControl, context, e.Name == "p5.web.widgets.find-like")) {
 
                         // Adding type of widget as name, and ID as value
                         retVal.FindOrInsert(idxId).Add (GetTypeName (idxWidget), idxWidget.ID);
@@ -138,9 +138,9 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "find-first-ancestor-widget")]
-        [ActiveEvent (Name = "find-first-ancestor-widget-like")]
-        public void find_first_ancestor_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.find-ancestor")]
+        [ActiveEvent (Name = "p5.web.widgets.find-ancestor-like")]
+        public void p5_web_widgets_find_ancestor (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -165,7 +165,7 @@ namespace p5.web.widgets
                         throw new LambdaException ("Start control not found for [" + e.Name + "]", e.Args, context);
 
                     // Checking type of invocation
-                    bool like = e.Name == "find-first-ancestor-widget-like";
+                    bool like = e.Name == "p5.web.widgets.find-ancestor-like";
 
                     // Looping upwards in ancestor hierarchy, til either startCtrl is null, or given attribute(s) are found on a widget,
                     // with the (alternatively) supplied value
@@ -232,9 +232,9 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widgets")]
-        [ActiveEvent (Name = "list-widgets-like")]
-        public void list_widgets (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.list")]
+        [ActiveEvent (Name = "p5.web.widgets.list-like")]
+        public void p5_web_widgets_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -245,7 +245,7 @@ namespace p5.web.widgets
                     return; // Possibly a filter expression, leading into oblivion
 
                 // Recursively retrieving all widgets on page, matching filter, or all, if there is no filters
-                ListWidgets (filter, e.Args, Manager.AjaxPage, e.Name == "list-widgets");
+                ListWidgets (filter, e.Args, Manager.AjaxPage, e.Name == "p5.web.widgets.list");
             }
         }
 
@@ -254,8 +254,8 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "widget-exist")]
-        public void widget_exist (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.exists")]
+        public void p5_web_widgets_exists (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover(e.Args, true)) {

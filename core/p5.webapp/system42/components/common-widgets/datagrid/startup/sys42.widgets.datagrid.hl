@@ -17,7 +17,7 @@
  *                         By default, the user cannot click the headers of the datagrid. However, if you supply this lammbda callback,
  *                         then the headers for your datagrid, will become clickable link buttons, invoking this lambda whenever clicked.
  *                         Your lambda callback, will be evaluated from within the context of the header that was clicked. Meaning, the
- *                         [_event] argument of your header, will be passed into it, allowing you to use [get-widget-property] too figure
+ *                         [_event] argument of your header, will be passed into it, allowing you to use [p5.web.widgets.property.get] too figure
  *                         out which column was clicked.
  * [.on-get-items]       - Callback lambda evaluated when the datagrid need more items.
  *                         You must return an [_items] collection here, with one child node,
@@ -355,13 +355,13 @@ create-event:sys42.widgets.datagrid
                 /*
                  * Searching for items matching search textbox value.
                  */
-                get-widget-property:x:/../*/_event?value
+                p5.web.widgets.property.get:x:/../*/_event?value
                   value
-                find-first-ancestor-widget:x:/../*/_event?value
+                p5.web.widgets.find-ancestor:x:/../*/_event?value
                   _current-page
                 eval-x:x:/+/*
-                sys42.widgets.datagrid.filter:x:/@find-first-ancestor-widget/*/*?value
-                  _query:x:/@get-widget-property/*/*?value
+                sys42.widgets.datagrid.filter:x:/@p5.web.widgets.find-ancestor/*/*?value
+                  _query:x:/@p5.web.widgets.property.get/*/*?value
 
                 /*
                  * Selecting all text in search textbox, and setting focus to it.
@@ -398,9 +398,9 @@ p5.sys42_widgets_datagrid_search_onkeydown = function (e) {
                     /*
                      * Invoking event that moves the grid to its previous items, passing in the id of the root datagrid widget.
                      */
-                    find-first-ancestor-widget:x:/../*/_event?value
+                    p5.web.widgets.find-ancestor:x:/../*/_event?value
                       _current-page
-                    sys42.widgets.datagrid.go-previous:x:/@find-first-ancestor-widget/*/*?value
+                    sys42.widgets.datagrid.go-previous:x:/@p5.web.widgets.find-ancestor/*/*?value
 
                 /*
                  * Our "Next page" button.
@@ -414,6 +414,6 @@ p5.sys42_widgets_datagrid_search_onkeydown = function (e) {
                     /*
                      * Invoking event that moves the grid to its next items, passing in the id of the root datagrid widget.
                      */
-                    find-first-ancestor-widget:x:/../*/_event?value
+                    p5.web.widgets.find-ancestor:x:/../*/_event?value
                       _current-page
-                    sys42.widgets.datagrid.go-next:x:/@find-first-ancestor-widget/*/*?value
+                    sys42.widgets.datagrid.go-next:x:/@p5.web.widgets.find-ancestor/*/*?value

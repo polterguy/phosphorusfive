@@ -9,31 +9,31 @@ create-event:sys42.widgets.datagrid._edit-cell
   /*
    * Figuring our parent of hyperlink, which is "td" cell, such that we can create our textbox as a child widget of that widget.
    */
-  get-parent-widget:x:/../*/_hyperlink?value
+  p5.web.widgets.get-parent:x:/../*/_hyperlink?value
 
   /*
    * Figuring out type of textbox to use for editing.
    */
-  get-widget-property:x:/../*/_hyperlink?value
+  p5.web.widgets.property.get:x:/../*/_hyperlink?value
     _type
-  if:x:/@get-widget-property/*/*?value
+  if:x:/@p5.web.widgets.property.get/*/*?value
 
     /*
      * An explicit type declaration for our input widget was declared when item was fetched, making sure we use it.
      */
-    set:x:/../*/create-void-widget/*/type?value
-      src:x:/@get-widget-property/*/*?value
+    set:x:/../*/p5.web.widgets.create-void/*/type?value
+      src:x:/@p5.web.widgets.property.get/*/*?value
 
 
   /*
    * Creating a textbox for editing value of entity.
    */
   eval-x:x:/+/*(/parent|/value|/_column|/_row)
-  create-void-widget
+  p5.web.widgets.create-void
     element:input
     type:text
     class:form-control
-    parent:x:/@get-parent-widget/*/*?value
+    parent:x:/@p5.web.widgets.get-parent/*/*?value
     value:x:/../*/_value?value
     _column:x:/../*/_column?value
     _row:x:/../*/_row?value
@@ -55,7 +55,7 @@ create-event:sys42.widgets.datagrid._edit-cell
        * Deleting textbox.
        * Notice, we do not set focus here, since user probably blurred item by setting focus to something else.
        */
-      delete-widget:x:/../*/_event?value
+      p5.web.widgets.delete:x:/../*/_event?value
 
     /*
      * Invisible Ajax event, referenced from JavaScript, to delete textbox.
@@ -65,12 +65,12 @@ create-event:sys42.widgets.datagrid._edit-cell
       /*
        * Deleting textbox, and setting focus to hyperlink.
        */
-      get-parent-widget:x:/../*/_event?value
-      find-widget:x:/@get-parent-widget/*/*?value
+      p5.web.widgets.get-parent:x:/../*/_event?value
+      p5.web.widgets.find:x:/@p5.web.widgets.get-parent/*/*?value
         element:a
       p5.web.send-javascript:@"p5.$('{0}').el.focus();"
-        :x:/@find-widget/*/*?value
-      delete-widget:x:/../*/_event?value
+        :x:/@p5.web.widgets.find/*/*?value
+      p5.web.widgets.delete:x:/../*/_event?value
 
     /*
      * Invisible Ajax event, referenced from JavaScript, to delete textbox, and update edited item.
@@ -80,31 +80,31 @@ create-event:sys42.widgets.datagrid._edit-cell
       /*
        * Fetching new value, and notifying [.on-edit-item] lambda callback supplied during creation that item has been edited.
        */
-      get-widget-property:x:/../*/_event?value
+      p5.web.widgets.property.get:x:/../*/_event?value
         value
         _column
         _row
-      find-first-ancestor-widget:x:/../*/_event?value
+      p5.web.widgets.find-ancestor:x:/../*/_event?value
         _current-page
 
       /*
        * Making sure content becomes "&nbsp;" if no new value was actually provided.
        */
-      if:x:/@get-widget-property/*/*/value?value
+      if:x:/@p5.web.widgets.property.get/*/*/value?value
         =:
 
         /*
          * User provided empty ("") value.
          * Making sure hyperlink doesn't disappear, by adding up "&nbsp;" as content.
          */
-        set:x:/@get-widget-property/*/*/value?value
+        set:x:/@p5.web.widgets.property.get/*/*/value?value
           src:&nbsp;
 
       eval-x:x:/+/*
-      sys42.widgets.datagrid._edit-cell-callback:x:/@find-first-ancestor-widget/*/*?value
-        _value:x:/@get-widget-property/*/*/value?value
-        _column:x:/@get-widget-property/*/*/_column?value
-        _row:x:/@get-widget-property/*/*/_row?value
+      sys42.widgets.datagrid._edit-cell-callback:x:/@p5.web.widgets.find-ancestor/*/*?value
+        _value:x:/@p5.web.widgets.property.get/*/*/value?value
+        _column:x:/@p5.web.widgets.property.get/*/*/_column?value
+        _row:x:/@p5.web.widgets.property.get/*/*/_row?value
 
       /*
        * Checking if callback accepted new value.
@@ -115,22 +115,22 @@ create-event:sys42.widgets.datagrid._edit-cell
          * Success, input was acccepted.
          * Deleting textbox, setting focus to hyperlink, and updating value of hyperlink.
          */
-        get-parent-widget:x:/../*/_event?value
-        find-widget:x:/@get-parent-widget/*/*?value
+        p5.web.widgets.get-parent:x:/../*/_event?value
+        p5.web.widgets.find:x:/@p5.web.widgets.get-parent/*/*?value
           element:a
         p5.web.send-javascript:@"p5.$('{0}').el.focus();"
-          :x:/@find-widget/*/*?value
-        set-widget-property:x:/@find-widget/*/*?value
-          innerValue:x:/@get-widget-property/*/0?value
-        delete-widget:x:/../*/_event?value
+          :x:/@p5.web.widgets.find/*/*?value
+        p5.web.widgets.property.set:x:/@p5.web.widgets.find/*/*?value
+          innerValue:x:/@p5.web.widgets.property.get/*/0?value
+        p5.web.widgets.delete:x:/../*/_event?value
 
       else
 
         /*
          * Setting textbox in "error mode".
          */
-        get-parent-widget:x:/../*/_event?value
-        sys42.utilities.add-css-classes:x:/@get-parent-widget/*/*?value
+        p5.web.widgets.get-parent:x:/../*/_event?value
+        sys42.utilities.add-css-classes:x:/@p5.web.widgets.get-parent/*/*?value
           _class:has-error
 
         /*

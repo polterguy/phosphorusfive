@@ -28,11 +28,11 @@ if:x:/-/*/_error
    * Setting unit tests table row to class "error", and button
    * CSS class to warning
    */
-  find-widget
+  p5.web.widgets.find
     _file-row:x:/../*/_file?value
-  set-widget-property:x:/-/*/*?value
+  p5.web.widgets.property.set:x:/-/*/*?value
     class:error
-  set-widget-property:x:/../*/_event?value
+  p5.web.widgets.property.set:x:/../*/_event?value
     class:btn btn-warning form-control
     disabled
 else
@@ -42,11 +42,11 @@ else
    * Setting unit tests table row to class "success" and
    * button CSS class to success
    */
-  find-widget
+  p5.web.widgets.find
     _file-row:x:/../*/_file?value
-  set-widget-property:x:/-/*/*?value
+  p5.web.widgets.property.set:x:/-/*/*?value
     class:success
-  set-widget-property:x:/../*/_event?value
+  p5.web.widgets.property.set:x:/../*/_event?value
     class:btn btn-success form-control
     disabled
 
@@ -67,11 +67,11 @@ if:x:/-/*?value
  * This will create a numbered list to the user, of all successfully evaluated
  * unit tests, and their names.
  */
-find-widget
+p5.web.widgets.find
   _file-result:x:/../*/_file?value
 join:x:/../*/sys42.utilities.execute-lambda-file/*/_success?value
   sep:"\r\n</li><li>"
-set-widget-property:x:/-2/*/*?value
+p5.web.widgets.property.set:x:/-2/*/*?value
   innerValue:@"{0}<pre><ol><li>{1}</li></ol></pre>"
     :x:/../*/_html?value
     :x:/././-?value

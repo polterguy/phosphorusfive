@@ -8,10 +8,10 @@ create-event:sys42.widgets.colorpicker.set-value
   /*
    * Changing the value of our textbox.
    */
-  find-widget:x:/../*/_arg?value
+  p5.web.widgets.find:x:/../*/_arg?value
     element:input
     type:text
-  set-widget-property:x:/@find-widget/*/*?value
+  p5.web.widgets.property.set:x:/@p5.web.widgets.find/*/*?value
     value:x:/../*/_value?value
 
   /*

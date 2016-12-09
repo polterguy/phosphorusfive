@@ -141,15 +141,15 @@ create-event:sys42.widgets.codemirror-executor
                 /*
                  * First retrieving text from execute_input textarea and converting to lambda
                  */
-                get-widget-property:execute_input
+                p5.web.widgets.property.get:execute_input
                   innerValue
-                hyper2lambda:x:/@get-widget-property/*/*?value
+                hyper2lambda:x:/@p5.web.widgets.property.get/*/*?value
 
                 /*
                  * Then storing current code in session such that code editor remembers content
                  */
                 set:x:/../*/p5.web.session.set/*/src?value
-                  src:x:/@get-widget-property/+/<?value
+                  src:x:/@p5.web.widgets.property.get/+/<?value
                 p5.web.session.set:sys42.widgets.codemirror-executor.current-code
                   src
 

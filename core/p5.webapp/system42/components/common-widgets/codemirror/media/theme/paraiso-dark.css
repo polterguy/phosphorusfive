@@ -57,7 +57,7 @@
 .cm-s-paraiso-dark span.cm-number { color: #a16a94; }
 
 /*
- * Used for widget creation and widget types in Hyperlambda, e.g. [a], [div], [container] and [create-widget], etc
+ * Used for widget creation and widget types in Hyperlambda, e.g. [a], [div], [container] and [p5.web.widgets.create], etc
  */
 .cm-s-paraiso-dark span.cm-widget-type { color: #01c0e4; }
 

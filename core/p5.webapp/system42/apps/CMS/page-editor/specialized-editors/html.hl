@@ -14,14 +14,14 @@ p5.data.select:x:/*/*/p5.page/"={0}"
 /*
  * Setting the value of textarea to [html] from database
  */
-set:x:/../*/create-widget/*/widgets/*/=ck-editor/*/_value?value
+set:x:/../*/p5.web.widgets.create/*/widgets/*/=ck-editor/*/_value?value
   src:x:/../*/p5.data.select/*/*/html?value
 
 
 /*
  * Creates the editor widget
  */
-create-widget
+p5.web.widgets.create
   parent:cms-specialized-editor-surface
   class:col-xs-12
   style:"display:inline-block;width:100%;"
@@ -45,9 +45,9 @@ create-widget
           insert-before:x:/../0
             src
               type:html
-          get-widget-property:ck-editor
+          p5.web.widgets.property.get:ck-editor
             innerValue
           insert-before:x:/../0
             src:html
           set:x:/../0?value
-            src:x:/../*/get-widget-property/*/*?value
+            src:x:/../*/p5.web.widgets.property.get/*/*?value

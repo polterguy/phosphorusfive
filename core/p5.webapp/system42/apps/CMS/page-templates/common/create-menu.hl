@@ -4,11 +4,11 @@
  */
 if
   fetch:x:/0/0?value
-    widget-exist:main-navbar-wrapper
+    p5.web.widgets.exists:main-navbar-wrapper
   not
   set:x:/+/**/={_extra-css-classes}?value
     src:x:/../*/__extra-css-classes?value
-  create-widget:main-navbar-wrapper
+  p5.web.widgets.create:main-navbar-wrapper
     parent:cnt
     position:0
     element:nav
@@ -62,7 +62,7 @@ else
   /*
    * Making sure we delete any previous menus created
    */
-  clear-widget:main-menu
+  p5.web.widgets.clear:main-menu
 
 
 
@@ -94,7 +94,7 @@ for-each:x:/../*/p5.data.select/[0,1]/*
 
   // Menu item "template"
   _create-item
-    create-literal-widget
+    p5.web.widgets.create-literal
       parent:main-menu
       element:li
       render-type:open
@@ -105,7 +105,7 @@ for-each:x:/../*/p5.data.select/[0,1]/*
     sys42.cms.verify-access:x:/..for-each/*/_dp/#/*/role?value
 
     // Creating menu item, settings properties first
-    set:x:/..for-each/*/_create-item/*/create-literal-widget/*/innerValue?value
+    set:x:/..for-each/*/_create-item/*/p5.web.widgets.create-literal/*/innerValue?value
       src:@"<a href=""{0}"">{1}</a>"
         :x:/..for-each/*/_dp/#?value
         :x:/..for-each/*/_dp/#/*/name?value
@@ -129,13 +129,13 @@ for-each:x:/../*/p5.data.select/[0,1]/*
             :x:/..for-each/*/_dp?value
         if
           fetch:x:/0/0?value
-            widget-exist:{0}-menu-item
+            p5.web.widgets.exists:{0}-menu-item
               :x:/..for-each/./*/_cur?value
           not
 
           // Root item for current nested item is not created, creating it
           eval-x:x:/+|/+/**
-          create-container-widget:{0}-menu-wrp
+          p5.web.widgets.create-container:{0}-menu-wrp
             :x:/..for-each/./*/_cur?value
             parent:x:/..for-each/./*/_last?value
             element:li
@@ -176,7 +176,7 @@ if:x:/../*/whoami/*/default?value
     * This is the default Context user, and hence user is not logged in
     * Creating our login menu item
     */
-  create-widget:login-menu-button
+  p5.web.widgets.create:login-menu-button
     parent:main-menu
     element:li
     render-type:open
@@ -197,7 +197,7 @@ if:x:/../*/whoami/*/default?value
             /*
               * Making sure we hide login menu button
               */
-            set-widget-property:login-menu-button
+            p5.web.widgets.property.set:login-menu-button
               visible:false
 
             /*
@@ -220,7 +220,7 @@ p5.loginUsernameKeyUp = function(e) {
             /*
               * Creates the window encapsulating the login window
               */
-            create-widget:login-wrapper
+            p5.web.widgets.create:login-wrapper
               class:form-inline login-widget
               parent:header-wrapper
               widgets
@@ -248,8 +248,8 @@ p5.loginUsernameKeyUp = function(e) {
                       onclick
                         sys42.login-button-clicked
                       _onhide
-                        delete-widget:login-wrapper
-                        set-widget-property:login-menu-button
+                        p5.web.widgets.delete:login-wrapper
+                        p5.web.widgets.property.set:login-menu-button
                           visible:true
                       events
 
@@ -262,18 +262,18 @@ p5.loginUsernameKeyUp = function(e) {
                           /*
                             * Retrieves username and password supplied by user
                             */
-                          get-widget-property:username
+                          p5.web.widgets.property.get:username
                             value
-                          get-widget-property:password
+                          p5.web.widgets.property.get:password
                             value
 
                           /*
                             * Sets the username and password field's values to our [login] Active Event
                             */
                           set:x:/+2/0/*/username?value
-                            src:x:/././*/get-widget-property/[0,1]/+/<?value
+                            src:x:/././*/p5.web.widgets.property.get/[0,1]/+/<?value
                           set:x:/+1/0/*/password?value
-                            src:x:/././*/get-widget-property/[1,2]/+/<?value
+                            src:x:/././*/p5.web.widgets.property.get/[1,2]/+/<?value
                           if
                             login
                               username
@@ -290,7 +290,7 @@ p5.loginUsernameKeyUp = function(e) {
                             /*
                               * User supplied wrong credentials
                               */
-                            set-widget-property:login-controls
+                            p5.web.widgets.property.set:login-controls
                               class:form-group has-error
                             p5.web.send-javascript:"p5.wrongCredentials();"
                                       
@@ -324,11 +324,11 @@ else
               href:/app-loader?app={0}
                 :x:/../*/url-encode?value
               innerValue:x:/../*/split/0/-?name
-    apply:x:/./*/create-container-widget/*/widgets/*/ul/*/widgets
+    apply:x:/./*/p5.web.widgets.create-container/*/widgets/*/ul/*/widgets
       src:x:/././-/*
       template
         {@eval}:x:/..if/*/_eval
-    create-container-widget
+    p5.web.widgets.create-container
       parent:main-menu
       element:li
       render-type:open
@@ -348,7 +348,7 @@ else
   /*
     * Creating the logout button
     */
-  create-widget
+  p5.web.widgets.create
     parent:main-menu
     element:li
     render-type:open

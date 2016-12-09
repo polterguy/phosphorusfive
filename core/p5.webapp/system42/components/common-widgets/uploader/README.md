@@ -8,7 +8,7 @@ to have a "browse for file(s) dialogue" open up.
 Below is an example of how to use it.
 
 ```
-create-widget:foo
+p5.web.widgets.create:foo
   parent:content
   class:col-xs-12
   widgets
@@ -70,7 +70,7 @@ Below is an example of how to create a fullscreen image uploader, that saves one
 user's _"documents/private/"_ folder.
 
 ```
-create-widget:foo
+p5.web.widgets.create:foo
   parent:cnt
   widgets
     sys42.widgets.uploader
@@ -98,7 +98,7 @@ better if you append the uploader widget directly into the _"cnt"_ parent contai
 Below is a small application that uses the Ajax uploader dropzone widget, and the Ajax DataGrid, to create a dropbox for your personal files.
 
 ```
-create-widget:ajax-dropbox
+p5.web.widgets.create:ajax-dropbox
   parent:content
   class:col-xs-12
   widgets

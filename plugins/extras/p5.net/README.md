@@ -149,7 +149,7 @@ p5.net.http-post:"http://localhost:1176/invisible-my-service"
       eval-x:x:/+/*/*/*
       add:x:/../*/return
         src
-          create-literal-widget
+          p5.web.widgets.create-literal
             parent:content
             position:0
             element:h3
@@ -170,12 +170,12 @@ p5.net.http-post
     /* ... more HTTP headers ... */
 
     content
-      create-literal-widget
+      p5.web.widgets.create-literal
         parent:content
         position:0
         element:h3
         innerValue:Thomas
-      create-literal-widget
+      p5.web.widgets.create-literal
         parent:content
         position:0
         element:h3

@@ -33,14 +33,14 @@ create-event:sys42.windows.info-tip
    */
   if
     fetch:x:/0/0?value
-      widget-exist:info-window
-    delete-widget:info-window
+      p5.web.widgets.exists:info-window
+    p5.web.widgets.delete:info-window
 
   /*
    * Creating actual info window, making sure we forward evaluate all arguments first.
    */
   eval-x:x:/+/*|/+/*/*/*
-  create-widget:info-window
+  p5.web.widgets.create:info-window
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
     widgets

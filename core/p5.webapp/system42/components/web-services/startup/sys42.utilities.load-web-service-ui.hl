@@ -20,20 +20,20 @@ create-event:sys42.utilities.load-web-service-ui
    */
   if
     fetch:x:/0/0?value
-      widget-exist:content
+      p5.web.widgets.exists:content
     not
 
     /*
      * Making sure we create a default sane layout, and include "content" container on page, to have common windows and such working.
      */
-    create-widget:content
+    p5.web.widgets.create:content
       class:row
       parent:cnt
       widgets
         h1
           class:col-xs-12
           innerValue:Lambda Web Service
-    set-widget-property:cnt
+    p5.web.widgets.property.set:cnt
       class:container
 
   /*
@@ -44,7 +44,7 @@ create-event:sys42.utilities.load-web-service-ui
       src:x:/../*/_whitelist
   sys42.widgets.codemirror-executor
   set:x:/@sys42.widgets.codemirror-executor/0?name
-    src:create-widget
+    src:p5.web.widgets.create
   set:x:/@sys42.widgets.codemirror-executor/0?value
     src:codemirror-executor
   add:x:/@sys42.widgets.codemirror-executor/0

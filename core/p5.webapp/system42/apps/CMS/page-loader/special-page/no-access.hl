@@ -20,7 +20,7 @@ if:x:/../*/whoami/*/default?value
   /*
    * User is logged in, explaining that he does not have access to this URL
    */
-  set:x:/../*/p5.io.file.load/*/*/create-widget/*/widgets/**/={content}?value
+  set:x:/../*/p5.io.file.load/*/*/p5.web.widgets.create/*/widgets/**/={content}?value
     src:@"<h2>Sorry!</h2>
 <p>I cannot give you access to that page!</p>"
 
@@ -34,7 +34,7 @@ else
    * PS!
    * We do this by adding our own widget hierarchy into the template just loaded.
    */
-  add:x:/../*/p5.io.file.load/*/*/create-widget/*/widgets/**/={content}/./.
+  add:x:/../*/p5.io.file.load/*/*/p5.web.widgets.create/*/widgets/**/={content}/./.
     src
       container
         class:col-xs-12
@@ -66,8 +66,8 @@ else
                           p5.web.send-javascript:@"setTimeout(function(){$('#login-username').focus().select();},250);"
                           if
                             fetch:x:/0/0?value
-                              widget-exist:login-menu-button
-                            delete-widget:login-menu-button
+                              p5.web.widgets.exists:login-menu-button
+                            p5.web.widgets.delete:login-menu-button
                         onkeypress:"return p5.keyLoginPress(event);"
                   container
                     class:input-group
@@ -94,12 +94,12 @@ else
                           _widgets
                             login-username
                             login-password
-                          get-widget-property:x:/-/*?name
+                          p5.web.widgets.property.get:x:/-/*?name
                             value
                           set:x:/../**/login/*/username?value
-                            src:x:/../*/get-widget-property/*/login-username/*?value
+                            src:x:/../*/p5.web.widgets.property.get/*/login-username/*?value
                           set:x:/../**/login/*/password?value
-                            src:x:/../*/get-widget-property/*/login-password/*?value
+                            src:x:/../*/p5.web.widgets.property.get/*/login-password/*?value
                           if
                             login
                               username
@@ -115,7 +115,7 @@ else
   /*
    * Making sure we entirely remove the literal:{content} widget.
    */
-  set:x:/../*/p5.io.file.load/*/*/create-widget/*/widgets/**/={content}/.
+  set:x:/../*/p5.io.file.load/*/*/p5.web.widgets.create/*/widgets/**/={content}/.
 
 
 /*
@@ -144,6 +144,6 @@ p5.web.include-javascript:@"p5.keyLoginPress = function(e) {
 set-title:No access
 if
   fetch:x:/0/0?value
-    widget-exist:header
-  set-widget-property:header
+    p5.web.widgets.exists:header
+  p5.web.widgets.property.set:header
     innerValue:No access

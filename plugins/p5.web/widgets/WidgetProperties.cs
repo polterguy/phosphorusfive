@@ -52,14 +52,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-property")]
-        public void get_widget_property (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.property.get")]
+        public void p5_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widget IDs given by caller
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-property")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.get")) {
 
                     // Looping through all properties requested by caller
                     foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
@@ -90,11 +90,11 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-widget-property")]
-        public void set_widget_property (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.property.set")]
+        public void p5_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widget IDs given by caller
-            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-property")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.set")) {
 
                 // Looping through all properties requested by caller
                 foreach (var valueNode in e.Args.Children.Where (ix => ix.Name != "")) {
@@ -139,44 +139,19 @@ namespace p5.web.widgets
             }
         }
 
-        /*
-         * Ensures [oninit] is evaluated for widget, and all children widgets.
-         */
-        private void EnsureOnInit (ApplicationContext context, Widget widget)
-        {
-            // Making sure this is a widget.
-            if (widget != null) {
-
-                // Checking if widget has an [oninit].
-                var onInitNode = Manager.WidgetAjaxEventStorage[widget.ID, "oninit"];
-                if (onInitNode != null) {
-
-                    // [oninit] should be evaluated now!
-                    var clone = onInitNode.Clone ();
-                    clone.Insert (0, new Node ("_event", widget.ID));
-                    context.Raise ("eval", clone.Clone ());
-                }
-
-                // Recursively ensuring [oninit] for children widgets.
-                foreach (var idxCtrl in widget.Controls) {
-                    EnsureOnInit (context, idxCtrl as Widget);
-                }
-            }
-        }
-
         /// <summary>
         ///     Removes the properties and/or attributes of web widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget-property")]
-        public void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.property.delete")]
+        public void p5_web_widgets_property_delete (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Children.Count == 0)
                 return; // Nothing to do here ...
 
             // Looping through all widgets supplied by caller
-            foreach (var widget in FindWidgets<Widget> (context, e.Args, "delete-widget-property")) {
+            foreach (var widget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.delete")) {
 
                 // Looping through each property to remove
                 foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "")) {
@@ -201,14 +176,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widget-properties")]
-        public void list_widget_properties (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.property.list")]
+        public void p5_web_widgets_property_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var widget in FindWidgets<Widget> (context, e.Args, "list-widget-properties")) {
+                foreach (var widget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.list")) {
 
                     // Creating our "return node" for currently handled widget
                     Node curNode = e.Args.Add (widget.ID).LastChild;
@@ -237,14 +212,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-properties")]
-        public void get_widget_properties (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.property.recursively-get")]
+        public void p5_web_widgets_property_recursively_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widget IDs given by caller
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-properties")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.recursively-get")) {
 
                     // Serialize currently iterated widgets, and all descendants of given widget, yielding all properties requested by caller.
                     SerializeWidgetPropertiesRecursively (context, e.Args, idxWidget);
@@ -255,6 +230,31 @@ namespace p5.web.widgets
         #endregion
 
         #region [ -- Private helper methods -- ]
+
+        /*
+         * Ensures [oninit] is evaluated for widget, and all children widgets.
+         */
+        private void EnsureOnInit (ApplicationContext context, Widget widget)
+        {
+            // Making sure this is a widget.
+            if (widget != null) {
+
+                // Checking if widget has an [oninit].
+                var onInitNode = Manager.WidgetAjaxEventStorage[widget.ID, "oninit"];
+                if (onInitNode != null) {
+
+                    // [oninit] should be evaluated now!
+                    var clone = onInitNode.Clone ();
+                    clone.Insert (0, new Node ("_event", widget.ID));
+                    context.Raise ("eval", clone.Clone ());
+                }
+
+                // Recursively ensuring [oninit] for children widgets.
+                foreach (var idxCtrl in widget.Controls) {
+                    EnsureOnInit (context, idxCtrl as Widget);
+                }
+            }
+        }
 
         /*
          * Recursively retrieves all values from form element widget descendants from given widget
@@ -277,7 +277,7 @@ namespace p5.web.widgets
         }
 
         /*
-         * Helper for [get-widget-property], creates a return value for one property
+         * Helper for [p5.web.widgets.property.get], creates a return value for one property
          */
         private static void CreatePropertyReturn (Node node, string name, Widget widget, object value = null)
         {

@@ -95,7 +95,7 @@ create-event:sys42.widgets.uploader
         /*
          * Making sure we pass in file element to uploader instantiation.
          */
-        find-widget:x:/../*/_event?value
+        p5.web.widgets.find:x:/../*/_event?value
           element:input
           type:file
 
@@ -112,7 +112,7 @@ create-event:sys42.widgets.uploader
           :x:/../*/_error-class?value
           :x:/../*/_filter?value
           :x:/../*/to-lower?value
-          :x:/@find-widget/*/*?value
+          :x:/@p5.web.widgets.find/*/*?value
 
       /*
        * Event raised when a file is uploaded.

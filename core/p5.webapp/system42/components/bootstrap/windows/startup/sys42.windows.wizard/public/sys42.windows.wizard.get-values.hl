@@ -7,16 +7,16 @@ create-event:sys42.windows.wizard.get-values
   /*
    * Finding all data-fields in modal window.
    */
-  find-widget:sys42-windows-modal
+  p5.web.widgets.find:sys42-windows-modal
     _data-field-name
 
   /*
    * Retrieving their data-field names and values.
    */
-  get-widget-property:x:/@find-widget/*/*?value
+  p5.web.widgets.property.get:x:/@p5.web.widgets.find/*/*?value
     _data-field-name
     value
-  for-each:x:/@get-widget-property/*
+  for-each:x:/@p5.web.widgets.property.get/*
     add:x:/../*/return
       src:@"{0}:@""{1}"""
         :x:/@_dp/#/*/_data-field-name?value

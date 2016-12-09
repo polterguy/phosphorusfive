@@ -24,7 +24,7 @@ p5.web.include-css-file:@CMS/media/css/navbar-fix.min.css
 /*
  * Creating our main template webpage
  */
-create-widget:template-root
+p5.web.widgets.create:template-root
   class:container
   widgets
 

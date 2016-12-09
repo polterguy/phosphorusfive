@@ -12,26 +12,26 @@ create-event:sys42.widgets.tree.select-items
   /*
    * First finding all previously selected items, and de-selecting them.
    */
-  find-widget-like:x:/../*/_arg?value
+  p5.web.widgets.find-like:x:/../*/_arg?value
     class:tree-selected
-  if:x:/@find-widget-like/*/*?count
+  if:x:/@p5.web.widgets.find-like/*/*?count
     !=:int:0
 
     /*
      * Tree has previously selected items, making sure we un-select them.
      */
-    sys42.utilities.delete-css-classes:x:/@find-widget-like/*/*?value
+    sys42.utilities.delete-css-classes:x:/@p5.web.widgets.find-like/*/*?value
       _class:tree-selected
 
   /*
    * Then adding the selected CSS class to all items requested by caller.
    */
   for-each:x:/../*/_items/*?name
-    find-widget:x:/../*/_arg?value
+    p5.web.widgets.find:x:/../*/_arg?value
       _item-id:x:/@_dp?value
-    find-widget:x:/@find-widget/*/*?value
+    p5.web.widgets.find:x:/@p5.web.widgets.find/*/*?value
       element:a
-    sys42.utilities.add-css-classes:x:/@find-widget/*/0?value
+    sys42.utilities.add-css-classes:x:/@p5.web.widgets.find/*/0?value
       _class:tree-selected
 
   /*

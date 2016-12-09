@@ -6,13 +6,13 @@ Its _"Hello World"_ can be evaluated by making sure you have the "p5.webapp" as 
 click the "Apps/CMS" menu item, create a new page by clicking the _"+"_ - Choose *[lambda]* page, and paste in the following code.
 
 ```
-create-literal-widget
+p5.web.widgets.create-literal
   element:button
   parent:content
   class:btn btn-default
   innerValue:Click me!
   onclick
-    set-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.set:x:/../*/_event?value
       innerValue:Hello World!
 ```
 
@@ -63,7 +63,7 @@ creating plugins, where you can assemble your apps, in a loosely coupled archite
 contrast to the traditional way of _"carving out"_ apps, using interfaces for plugins, which often creates a much higher degree of
 dependencies between your app's different components.
 
-In fact, the above Hello World example, is simply an invocation to an Active Event, who's name is *[create-literal-widget]*, which
+In fact, the above Hello World example, is simply an invocation to an Active Event, who's name is *[p5.web.widgets.create-literal]*, which
 happens to take a set of arguments, that allows you to create an Ajax control on your page, which once clicked, changes 
 its *[innerValue]* property to; _"Hello World!"_.
 
@@ -74,7 +74,7 @@ You can easily create your own Active Events, incrementally, building on top of 
 Ajax widgets than what's shown above. Below is a piece of Hyperlambda that creates an Ajax TreeView, which allows you to browse your folders on disc.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   widgets
     sys42.widgets.tree

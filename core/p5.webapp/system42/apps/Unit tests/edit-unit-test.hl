@@ -2,8 +2,8 @@
 /*
   * Retrieving parent's parent widget (which should be the "tr" HTML row)
   */
-get-parent-widget:x:/../*/_widget?value
-get-parent-widget:x:/-/*/*?value
+p5.web.widgets.get-parent:x:/../*/_widget?value
+p5.web.widgets.get-parent:x:/-/*/*?value
 
 /*
   * Loading unit test file, making sure we do NOT convert to p5.lambda, to
@@ -17,9 +17,9 @@ p5.io.file.load:x:/../*/_file?value
   * of our currently edited test file
   */
 eval-x:x:/+/*|/+|/+/**(/~codemirror|/_file)|/+/*/*/*/*/*/_value
-create-widget:{0}_editor
+p5.web.widgets.create:{0}_editor
   :x:/../*/_widget?value
-  after:x:/../*/get-parent-widget/[1,2]/*/*?value
+  after:x:/../*/p5.web.widgets.get-parent/[1,2]/*/*?value
   element:tr
   widgets
     td
@@ -56,10 +56,10 @@ create-widget:{0}_editor
                 _file:x:/../*/_file?value
                 _codemirror:{0}_codemirror
                   :x:/../*/_widget?value
-                get-widget-property:x:/-?value
+                p5.web.widgets.property.get:x:/-?value
                   value
                 p5.io.file.save:x:/../*/_file?value
-                  src:x:/../*/get-widget-property/*/*?value
+                  src:x:/../*/p5.web.widgets.property.get/*/*?value
 
                 /*
                   * Feedback to user
@@ -86,8 +86,8 @@ create-widget:{0}_editor
                     _file:x:/../*/_file?value
                     p5.io.file.delete:x:/../*/_file?value
                     sys42.windows.info-tip:File was deleted
-                    delete-widget:unit-test-bottom-toolbar
-                    delete-widget:unit-test-datagrid
+                    p5.web.widgets.delete:unit-test-bottom-toolbar
+                    p5.web.widgets.delete:unit-test-datagrid
                     sys42.utilities.execute-lambda-file:@tests/launch.hl
 
             /*
@@ -104,7 +104,7 @@ create-widget:{0}_editor
                 /*
                   * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
                   */
-                find-first-ancestor-widget:x:/../*/_event?value
+                p5.web.widgets.find-ancestor:x:/../*/_event?value
                   element:tr
-                delete-widget:x:/-/*/*?value
+                p5.web.widgets.delete:x:/-/*/*?value
 

@@ -17,13 +17,13 @@ create-event:sys42.widgets.tree._create-url
    * Then we must fetch all GET parameters, and remove any previously created "sys42_widgets_tree_unroll" params,
    * before we add all other GET parameters, to make sure we keep everything EXCEPT "sys42_widgets_tree_unroll".
    */
-  find-first-ancestor-widget:x:/../*/_arg?value
+  p5.web.widgets.find-ancestor:x:/../*/_arg?value
     _root-tree
-  get-widget-property:x:/-/*/*?value
+  p5.web.widgets.property.get:x:/-/*/*?value
     _root-tree
   p5.web.query.list
   set:x:/-/*/{0}
-    :x:/../*/get-widget-property/*/*?value
+    :x:/../*/p5.web.widgets.property.get/*/*?value
   if:x:/-2/*
     p5.web.query.get:x:/./-2/*?name
     for-each:x:/-/*
@@ -40,7 +40,7 @@ create-event:sys42.widgets.tree._create-url
   set:x:/../*/p5.web.get-location-url?value
     src:{0}{1}=
       :x:/../*/p5.web.get-location-url?value
-      :x:/../*/get-widget-property/*/*?value
+      :x:/../*/p5.web.widgets.property.get/*/*?value
 
   /*
    * Then we need to recursively iterate from current widget, and upwards in hierarchy, until
@@ -52,20 +52,20 @@ create-event:sys42.widgets.tree._create-url
   _cur
   _param
   while:bool:true
-    get-widget-property:x:/../*/_cur?value
+    p5.web.widgets.property.get:x:/../*/_cur?value
       _item-id
     set:x:/../*/_param?value
       src:{0}|{1}
-        :x:/..while/*/get-widget-property/[0,1]/*/*?value
+        :x:/..while/*/p5.web.widgets.property.get/[0,1]/*/*?value
         :x:/../*/_param?value
-    get-parent-widget:x:/../*/_cur?value
-    get-parent-widget:x:/-/*/*?value
+    p5.web.widgets.get-parent:x:/../*/_cur?value
+    p5.web.widgets.get-parent:x:/-/*/*?value
 
     /*
      * Checking if we're done. Unless current widget is an "li" widget, we're at the
      * root widget for our tree widget.
      */
-    get-widget-property:x:/-/*/*?value
+    p5.web.widgets.property.get:x:/-/*/*?value
       element
     if:x:/-/*/*?value
       !=:li
@@ -73,7 +73,7 @@ create-event:sys42.widgets.tree._create-url
       // This is main root tree widget, which is "div" and not "li".
       break
     set:x:/../*/_cur?value
-      src:x:/..while/*/get-parent-widget/[1,2]/*/*?value
+      src:x:/..while/*/p5.web.widgets.get-parent/[1,2]/*/*?value
 
   /*
    * Now we URL encode entire parameter, before we return it concatenated with base URL to caller.

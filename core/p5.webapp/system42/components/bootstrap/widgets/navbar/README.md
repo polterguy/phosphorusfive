@@ -14,7 +14,7 @@ To use it, add it to a container widget collection, through its widget creationa
  * you create its parent widget as a 'nav' HTML element, to ensure the
  * correct semantics for your Navbar.
  */
-create-widget:my-navbar
+p5.web.widgets.create:my-navbar
   position:0
   parent:cnt
   element:nav
@@ -78,7 +78,7 @@ no *[_class]* property. The above Hyperlambda for instance, creates a Navbar att
 bottom of your screen for instance, you could use something like the following.
 
 ```
-create-widget:my-navbar
+p5.web.widgets.create:my-navbar
   position:0
   parent:cnt
   element:nav

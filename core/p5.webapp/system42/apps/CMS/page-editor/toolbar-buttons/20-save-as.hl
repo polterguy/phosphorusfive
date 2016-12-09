@@ -64,16 +64,16 @@ button
         /*
          * Getting the new page's name and URL.
          */
-        get-widget-property:new-page-name
+        p5.web.widgets.property.get:new-page-name
           value
-        get-widget-property:new-page-url
+        p5.web.widgets.property.get:new-page-url
           value
 
         /*
          * Making sure supplied name does not exist from before.
          */
         p5.data.select:x:@"/*/*/p5.page/""={0}"""
-          :x:/@get-widget-property/*/*?value
+          :x:/@p5.web.widgets.property.get/*/*?value
         if:x:/@p5.data.select/*?count
           >:int:0
 
@@ -101,9 +101,9 @@ button
          * Changing id (URL of page) to new URL, in addition to changing name of page.
          */
         set:x:/@p5.data.select/*?value
-          src:x:/@get-widget-property/*/*?value
+          src:x:/@p5.web.widgets.property.get/*/*?value
         set:x:/@p5.data.select/*/*/name?value
-          src:x:/@get-widget-property/@get-widget-property/*/*?value
+          src:x:/@p5.web.widgets.property.get/@p5.web.widgets.property.get/*/*?value
 
         /*
          * Then removing all items from [p5.data.select] that also exists in [sys42.cms.get-specialized-editor-data].
@@ -125,7 +125,7 @@ button
         /*
          * Then we need to refresh editor, and other widgets, but first we set edited page to the page we just saved.
          */
-        sys42.cms.set-currently-edited-page:x:/@get-widget-property/*/*?value
+        sys42.cms.set-currently-edited-page:x:/@p5.web.widgets.property.get/*/*?value
 
 
         /*

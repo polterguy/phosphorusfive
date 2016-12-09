@@ -4,7 +4,7 @@
  *
  * Notice, we default its visibility to false, and change its visibility, whenever a page is edited, or editing is stopped.
  */
-create-widget:cms-ajax-uploader
+p5.web.widgets.create:cms-ajax-uploader
   parent:cnt
   visible:false
   widgets
@@ -146,10 +146,10 @@ create-widget:cms-ajax-uploader
                 sys42.windows.info-tip:That page already exists
                   _parent:sys42-windows-modal-body-wrapper
                   _class:info-window info-window-error
-                find-widget:sys42-windows-modal-body-wrapper
+                p5.web.widgets.find:sys42-windows-modal-body-wrapper
                   _data-field-name:url
-                get-parent-widget:x:/@find-widget/*/*?value
-                sys42.utilities.add-css-classes:x:/@get-parent-widget/*/*?value
+                p5.web.widgets.get-parent:x:/@p5.web.widgets.find/*/*?value
+                sys42.utilities.add-css-classes:x:/@p5.web.widgets.get-parent/*/*?value
                   _class:has-error
                 return:bool:false
 

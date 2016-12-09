@@ -2,7 +2,7 @@ Creating web widgets with Phosphorus Five
 ===============
 
 p5.web is the Ajax web widget "GUI library" for Phosphorus Five. This is the part that makes it possible for you to use
-Active Events such as *[create-widget]* and *[set-widget-property]*. In addition, it contains helper Active Events which
+Active Events such as *[p5.web.widgets.create]* and *[p5.web.widgets.property.set]*. In addition, it contains helper Active Events which
 allows you to modify stuff such as the response HTTP headers, access the session object, and even entirely take control
 over the returned response through events such as *[p5.web.echo]* and *[p5.web.echo-file]*.
 
@@ -14,14 +14,14 @@ Below is a piece of code that allows you to create an Ajax web widget, which han
 modifies the widget's text property when clicked, to becomes the server-time.
 
 ```
-create-literal-widget:my-widget
+p5.web.widgets.create-literal:my-widget
   element:h3
   parent:content
   position:0
   innerValue:Click me!
   onclick
     date-now
-    set-widget-property:my-widget
+    p5.web.widgets.property.set:my-widget
       innerValue:x:/../*/date-now?value.string
 ```
 
@@ -34,7 +34,7 @@ some small details which sets them apart.
 
 ### The common arguments to all create widget events
 
-These arguments are common to all create widgets events, meaning *[create-literal-widget]*, *[create-container-widget]* and *[create-void-widget]*.
+These arguments are common to all create widgets events, meaning *[p5.web.widgets.create-literal]*, *[p5.web.widgets.create-container]* and *[p5.web.widgets.create-void]*.
 
 The most important "argument" is the value of your create widget invocation node. This should be a string, if defined, and becomes the ID of your
 widget. Both on the client side, if you wish to access your widget using JavaScript, and on the server-side if you wish to de-reference your widget
@@ -64,7 +64,7 @@ but children nodes instead.
 Below is an example of how to create a widget with a "class" attribute and a "style" attribute for instance.
 
 ```
-create-literal-widget:some-other-widget
+p5.web.widgets.create-literal:some-other-widget
   element:h3
   parent:content
   position:0
@@ -79,13 +79,13 @@ attributes, and not as events.
 If you want to create an Ajax event instead, you could do this like the following code illustrates.
 
 ```
-create-literal-widget
+p5.web.widgets.create-literal
   element:h3
   parent:content
   position:0
   innerValue:Colors, hover your mouse over me!
   onmouseover
-    set-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.set:x:/../*/_event?value
       style:"background-color:LightGreen"
 ```
 
@@ -96,7 +96,7 @@ Notice one detail in the above p5.lambda, which is that it does not declare an e
 assigned ID", looking something like this; "x3833968". This means that we do not know the ID of our widget inside of our *[onmouseover]* event.
 However, this is not a problem for us, since the ID of the widget will be forwarded into all Ajax events, and lambda events (which we will speak 
 about later) automatically. Each time an event is raised, it will have an *[_event]* argument passed into it, which is the server-side and client-side 
-ID of our widget. By referencing this *[_event]* argument in our *[set-widget-property]* expression above, we are able to modify the widget's
+ID of our widget. By referencing this *[_event]* argument in our *[p5.web.widgets.property.set]* expression above, we are able to modify the widget's
 properties.
 
 In fact, if you have a list of widgets, automatically created, inside for instance a loop, which creates rows and cells for a table for instance - 
@@ -112,7 +112,7 @@ into this value. This would inject your JavaScript into the attribute of your wi
 "JavaScript hooks" for DOM HTML events. Imagine something like this for instance.
 
 ```
-create-literal-widget
+p5.web.widgets.create-literal
   element:h3
   parent:content
   position:0
@@ -137,21 +137,21 @@ event is not rendered as a part of your markup, but only accessible on the serve
 For instance, to create a value, which you can only access on the server, you could do something like this.
 
 ```
-create-literal-widget
+p5.web.widgets.create-literal
   element:h3
   parent:content
   position:0
   innerValue:Click me to see the server-side value of [_foo]
   _foo:foo value
   onclick
-    get-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.get:x:/../*/_event?value
       _foo
-    set-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.set:x:/../*/_event?value
       innerValue:Value of [_foo] is '{0}'
-        :x:/../*/get-widget-property/*/*?value
+        :x:/../*/p5.web.widgets.property.get/*/*?value
 ```
 
-Notice how the *[get-widget-property]* retrieves the *[_foo]* value, while the *[set-widget-property]* sets the *[innerValue]* of the widget
+Notice how the *[p5.web.widgets.property.get]* retrieves the *[_foo]* value, while the *[p5.web.widgets.property.set]* sets the *[innerValue]* of the widget
 to a string formatted value, where the "{0}" parts becomes the value retrieved from the widget's *[_foo]*'s value. Notice also how this value is
 only acessible from the server, and not visible or possible to retrieve on the client. Neither by inspecting the DOM, HTML or by using JavaScript.
 
@@ -160,13 +160,13 @@ By starting an attribute with an underscore (_), it is completely invisible for 
 If you prepend an event with underscore (_), the results are similar. Consider this code.
 
 ```
-create-literal-widget:some-invisible-event
+p5.web.widgets.create-literal:some-invisible-event
   element:h3
   parent:content
   position:0
   innerValue:Click me to see the server-side value of [_foo]
   _onfoo
-    set-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.set:x:/../*/_event?value
       innerValue:[_onfoo] was raised
   onclick:@"p5.$('some-invisible-event').raise('_onfoo');"
 ```
@@ -180,14 +180,14 @@ But basically, it raises an Ajax widget's server side event through the JavaScri
 For the record, almost all arguments to your widgets are optional. We've added in our examples the *[element]*, *[parent]* and *[position]* simply
 to make sure it stands out if you evaluate it in the System42/executor.
 
-### [create-container-widget], widget's having children widgets
+### [p5.web.widgets.create-container], widget's having children widgets
 
-So far we have only used the *[create-literal-widget]*. The literal widget, can only contain text or HTML, through its *[innerValue]* property. However,
+So far we have only used the *[p5.web.widgets.create-literal]*. The literal widget, can only contain text or HTML, through its *[innerValue]* property. However,
 a "container widget", allows you to create an entire hierarchy of widget. Instead of having an "innerValue" property, it contains a collection
 of children widgets, through its *[widgets]* property. Let's illustrate with an example.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   element:ul
   parent:content
   position:0
@@ -207,7 +207,7 @@ values (actually 4 values, but our 4th widget is "special", and explained later)
 * [container] - Declares an inner "container widget"
 * [void] - Declares a "void widget" (explained later)
 
-Thes three values maps to the *[create-literal-widget]*, *[create-container-widget]* and *[create-void-widget]* - And you could, if you wanted to, 
+Thes three values maps to the *[p5.web.widgets.create-literal]*, *[p5.web.widgets.create-container]* and *[p5.web.widgets.create-void]* - And you could, if you wanted to, 
 create a single widget at the time, and then fill it manually with its children widgets, by using one of the "create Active Events". However, you
 will probably find the above syntax more easy and simple to use, for creating rich hierarchies of widgets, where all your widgets are known during
 the initial creation.
@@ -215,7 +215,7 @@ the initial creation.
 And of course, each widget above could also have its own set of events and attributes, both hidden and visible. An example is given below.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   element:ul
   parent:content
   position:0
@@ -237,7 +237,7 @@ create-container-widget
 
 You can also of course create container widgets that have container widgets as their children widgets, as deeply as you see fit for your personal needs.
 
-### [create-void-widget], a widget with no content
+### [p5.web.widgets.create-void], a widget with no content
 
 The void widget is useful for HTML elements that have neither content nor children widgets. Some examples are the HTML "br" element, "input" elements,
 "hr" elements, etc. These HTML elements are characterized by that they completely lack content. They are often used to create HTML form elements,
@@ -245,23 +245,23 @@ such as is given an example of below.
 
 
 ```
-create-void-widget:some-void-widget
+p5.web.widgets.create-void:some-void-widget
   element:input
   parent:content
   position:0
   style:"width:400px;"
   placeholder:Type something into me, and click the button ...
-create-void-widget
+p5.web.widgets.create-void
   element:input
   parent:content
   position:1
   type:button
   value:Click me!
   onclick
-    get-widget-property:some-void-widget
+    p5.web.widgets.property.get:some-void-widget
       value
     sys42.windows.info-tip:You typed; '{0}'
-      :x:/../*/get-widget-property/*/*?value
+      :x:/../*/p5.web.widgets.property.get/*/*?value
 ```
 
 In the above example, we create two form elements. One textbox and one button. Both are created using the "void" widget type. Above you also see an
@@ -278,7 +278,7 @@ added a *[innerValue]* argument, *[widgets]* argument, or none of the previously
 one "p" element child, you could do something like the following.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   widgets
     p
@@ -288,7 +288,7 @@ create-widget
 The widget is still a fully fledged widget, and you can add event handlers, lambda events, and so on to it, as if it was declared like the following.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   widgets
     literal
@@ -299,15 +299,15 @@ create-widget
 However, you save one line of code, and your p5.lambda widget declarations becomes more easily understood and read, since they reflect the HTML
 hierarchy the create more directly.
 
-Notice, in both of our two examples above, we are using *[create-widget]*, which is an "alias" Active Event to *[create-container-widget]*.
+Notice, in both of our two examples above, we are using *[p5.web.widgets.create]*, which is an "alias" Active Event to *[p5.web.widgets.create-container]*.
 
 ### The default HTML elements for widgets
 
 By default, all create widget Active Events, will use the following HTML elements for rendering the widgets on the client.
 
-* [create-container-widget] - "div"
-* [create-literal-widget] - "p"
-* [create-void-widget] - "input"
+* [p5.web.widgets.create-container] - "div"
+* [p5.web.widgets.create-literal] - "p"
+* [p5.web.widgets.create-void] - "input"
 
 This means you can omit the *[element]* arguments if you are creating the above HTML elements.
 
@@ -324,7 +324,7 @@ create-event:foo.bar
     literal
       innerValue:Howdy world
 
-create-widget
+p5.web.widgets.create
   parent:content
   position:0
   widgets
@@ -335,7 +335,7 @@ create-widget
 
 The above lambda, first declares an Active Event with the name of "foo.bar". This Active Event returns one *[literal]* widget. Then we use
 our *[foo.bar]* as if it was just another widget type, in our *[widgets]* collection, of our root container widget, created 
-through *[create-widget]*.
+through *[p5.web.widgets.create]*.
 
 The above Ninja trick, allows you to create reusable complex widgets, as Active Events, which you can include in any other parts of your program.
 Just as if they were "normal widgets".
@@ -356,7 +356,7 @@ This widget has no properties or attributes, and cannot be de-referenced in any 
 Imagine the following.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   position:0
   widgets
@@ -378,44 +378,44 @@ and you should not use it, unless you are 100% certain about that you understand
 considered an "anti-pattern" when composing your HTML. And doing just that, is one of the few actual use-cases for it. However, it's there for
 those cases when a "normal" widget just won't "cut it" for you.
 
-### Changing and retrieving widget properties using [get-widget-property] and [set-widget-property]
+### Changing and retrieving widget properties using [p5.web.widgets.property.get] and [p5.web.widgets.property.set]
 
 These two Active Events, allows you to retrieve and set any property you wish, on any widget you wish. The serialization is 100% automatic back
 to the client, and all the nitty and gritty details, are taken care of for you automatically. We have alread used both of them already,
 but in this section, we will further dissect them, to gain a complete picture of how they work.
 
-The *[get-widget-property]* allows you to get as many properties as you wish, in one go. You declare each property you wish to retrieve as the name 
+The *[p5.web.widgets.property.get]* allows you to get as many properties as you wish, in one go. You declare each property you wish to retrieve as the name 
 of children nodes of the invocation, and P5 automatically fills out the values accordingly. Consider this.
 
 ```
-create-literal-widget
+p5.web.widgets.create-literal
   parent:content
   position:0
   element:h3
   innerValue:Foo
   class:bar
   onclick
-    get-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.get:x:/../*/_event?value
       innerValue
       class
     sys42.windows.show-lambda:x:/..
 ```
 
 The *[sys42.windows.show-lambda]* invocation above, is a helper event in System42, and allows you to inspect any section of your currently evaluated 
-lambda object. We use it as a shortcut event, for seeing the results of our *[get-widget-property]* invocation. After evaluating the above code, 
+lambda object. We use it as a shortcut event, for seeing the results of our *[p5.web.widgets.property.get]* invocation. After evaluating the above code, 
 in System42/executor, you should see something like this at the top of your main browser window.
 
 ```
 onclick
   _event:xa886f5b
-  get-widget-property
+  p5.web.widgets.property.get
     xa886f5b
       innerValue:Foo
       class:bar
   sys42.windows.show-lambda:x:/..
 ```
 
-As you can see above, the *[get-widget-property]* returns the ID for your widget, and beneath the ID, each property requested as a "key"/"value" 
+As you can see above, the *[p5.web.widgets.property.get]* returns the ID for your widget, and beneath the ID, each property requested as a "key"/"value" 
 child node. Another interesting fact you see above, is that we use the "root iterator", still it displays only the *[onclick]* node. This is because
 during the evaluation of your *[onclick]* event, the onclick node _is_ your root node. This is similar to how it works when you invoke a lambda object,
 or dynamically created Active Event, using for instance *[eval]*. The rest of your lambda object, is not accessible at this point.
@@ -423,7 +423,7 @@ or dynamically created Active Event, using for instance *[eval]*. The rest of yo
 You can also retrieve multiple widget's properties in one invocation, by supplying an expression leading to multiple IDs. Consider this.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   position:0
   element:h3
@@ -440,16 +440,16 @@ create-container-widget
         _widgets
           first-literal
           second-literal
-        get-widget-property:x:/../*/_widgets/*?name
+        p5.web.widgets.property.get:x:/../*/_widgets/*?name
           innerValue
           class
         sys42.windows.show-lambda:x:/..
 ```
 
-The *[set-widget-property]* works similarly, except of course, instead of retrieving the properties, it changes them. Consider this.
+The *[p5.web.widgets.property.set]* works similarly, except of course, instead of retrieving the properties, it changes them. Consider this.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   position:0
   element:h3
@@ -466,7 +466,7 @@ create-container-widget
         _widgets
           first-literal
           second-literal
-        set-widget-property:x:/../*/_widgets/*?name
+        p5.web.widgets.property.set:x:/../*/_widgets/*?name
           innerValue:Your second widget was clicked
           class:bar-after-update
 ```
@@ -474,27 +474,27 @@ create-container-widget
 Normally, you will only update a single widget's properties though. But for those rare occassions, where you for instance wish to update the CSS
 class of multiple widgets in one go, being able to do such in a single go, is a nifty feature.
 
-Notice, you can also use the *[set-widget-property]* to set a property which does not previously exist on your widget. This will simply add the property.
-You can also use the *[delete-widget-property]* Active Event to entirely delete a property or attribute from your widget. Notice here, that a widget
+Notice, you can also use the *[p5.web.widgets.property.set]* to set a property which does not previously exist on your widget. This will simply add the property.
+You can also use the *[p5.web.widgets.property.delete]* Active Event to entirely delete a property or attribute from your widget. Notice here, that a widget
 with a "null" value in a property, still actually have the property. Its value is simply "null". 
 
-You can also change a widget's visibility, and even ID using the *[set-widget-property]* Active Event. But thes properties cannot be removed. 
+You can also change a widget's visibility, and even ID using the *[p5.web.widgets.property.set]* Active Event. But thes properties cannot be removed. 
 Only attributes rendered to the client as HTML attributes can be removed.
 
 Hint!
-There is also an event called *[list-widget-properties]*, which returns a list of _all_ properties, for one or more specified widget(s). This 
+There is also an event called *[p5.web.widgets.property.list]*, which returns a list of _all_ properties, for one or more specified widget(s). This 
 Active Event can either be given an expression, leading to multiple IDs, or a constant, showing the properties of only one widget at the time.
 
 ### Retrieving an entire hierarchy of widget properties
 
 Sometimes, you wish to retrieve every single widget property, recursively, from some specified root widget. For these occassions, you have 
-the *[get-widget-properties]* Active Event (plural form). This Active Event will return all properties of the requested name(s), below one or 
+the *[p5.web.widgets.property.recursively-get]* Active Event (plural form). This Active Event will return all properties of the requested name(s), below one or 
 more specified "root widget".
 
 To see all form element values for instance, in your form, in one go, you could use something like this for instance.
 
 ```
-get-widget-properties:cnt
+p5.web.widgets.property.recursively-get:cnt
   value
 ```
 
@@ -503,59 +503,59 @@ The above is actually a "Ninja trick" to serialize all form elements from some s
 ### Changing and retrieving a widget's Ajax events dynamically
 
 The same way you can update and change properties of widgets, you can also change their lambda object for what occurs when some Ajax event is raised.
-To do this, you would use the *[get-widget-ajax-event]* and the *[set-widget-ajax-event]* Active Events. Consider this code.
+To do this, you would use the *[p5.web.widgets.ajax-events.get]* and the *[p5.web.widgets.ajax-events.set]* Active Events. Consider this code.
 
 ```
-create-literal-widget
+p5.web.widgets.create-literal
   parent:content
   position:0
   innerValue:Click me!
   onclick
-    set-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.set:x:/../*/_event?value
       innerValue:I was clicked, click me once more! It tickles!
-    set-widget-ajax-event:x:/../*/_event?value
+    p5.web.widgets.ajax-events.set:x:/../*/_event?value
       onclick
-        set-widget-property:x:/../*/_event?value
+        p5.web.widgets.property.set:x:/../*/_event?value
           innerValue:I was clicked one more time! Thank you!
 ```
 
 The above code dynamically changes the p5.lambda that is evaluated as the widget is clicked, when you click it the first time.
-The *[get-widget-ajax-event]* returns its existing lambda object. If you evaluate the following code.
+The *[p5.web.widgets.ajax-events.get]* returns its existing lambda object. If you evaluate the following code.
 
 ```
-create-literal-widget
+p5.web.widgets.create-literal
   parent:content
   position:0
   innerValue:Click me!
   onclick
-    set-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.set:x:/../*/_event?value
       innerValue:I was clicked, click me once more! It tickles!
-    get-widget-ajax-event:x:/../*/_event?value
+    p5.web.widgets.ajax-events.get:x:/../*/_event?value
       onclick
     sys42.windows.show-lambda:x:/-
 ```
 
-Then you will see the output format of *[get-widget-ajax-event]* looking something like the following.
+Then you will see the output format of *[p5.web.widgets.ajax-events.get]* looking something like the following.
 
 ```
-get-widget-ajax-event
+p5.web.widgets.ajax-events.get
   x56592d0
     onclick
       _event:x56592d0
-      set-widget-property:x:/../*/_event?value
+      p5.web.widgets.property.set:x:/../*/_event?value
         innerValue:I was clicked, click me once more! It tickles!
-      get-widget-ajax-event:x:/../*/_event?value
+      p5.web.widgets.ajax-events.get:x:/../*/_event?value
         onclick
       sys42.windows.show-lambda:x:/-
 ```
 
-As you can see above, below the *[get-widget-ajax-event]*, you can find the ID of the widget requested. Then below that node, you can find
+As you can see above, below the *[p5.web.widgets.ajax-events.get]*, you can find the ID of the widget requested. Then below that node, you can find
 the name of the event requested. Inside of that node, you'll find the lambda being evaluated as the widget is clicked. This structure might
 seem counter intuitive in the beginning. However, it allows you to return multiple events, for multiple widgets, in one go. Which is 
 quite useful sometimes.
 
 Hint!
-You can also explicitly raise a widget's Ajax events from your own p5.lambda objects, by invoking *[raise-widget-ajax-event]*. To raise the *[onclick]*
+You can also explicitly raise a widget's Ajax events from your own p5.lambda objects, by invoking *[p5.web.widgets.ajax-events.raise]*. To raise the *[onclick]*
 event on three widgets for instance, you could use code similar to this (which won't evaluate without throwing exceptions, since these widgets does
 not exist)
 
@@ -564,11 +564,11 @@ _widgets
   no1-widget-id
   no2-widget-id
   no3-widget-id
-raise-widget-ajax-event:x:/-/*?name
+p5.web.widgets.ajax-events.raise:x:/-/*?name
   onclick
 
 // Or to raise the "onmouseover" for a single widget
-raise-widget-ajax-event:no4-widget-id
+p5.web.widgets.ajax-events.raise:no4-widget-id
   onmouseover
 ```
 
@@ -583,7 +583,7 @@ created Active Events, which only exists, as long as your widget exist. Which ag
 page, to communicate with other parts of your page. Consider this code.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   position:0
   events
@@ -592,7 +592,7 @@ create-container-widget
         _header:Howdy foo world
         _body:Watch the other label as you click OK!
         .onok
-          set-widget-property:the-other-guy
+          p5.web.widgets.property.set:the-other-guy
             innerValue:The other guy was clicked!
   widgets
     literal:the-other-guy
@@ -606,11 +606,11 @@ create-container-widget
 The lamba events are working identical to any other dynamically created Active Events, or lambda objects, and can take arguments, and return values
 and nodes to the caller. They're simply Active Events, which only lives as long as your widget lives, and only for your page!
 
-Also these lambda events can be dynamically changed, the same way you could with Ajax events, using the *[set-widget-lambda-event]*, 
-and the *[get-widget-lambda-event]*. Both of these Active Events, works similarly to their Ajax events counterparts.
+Also these lambda events can be dynamically changed, the same way you could with Ajax events, using the *[p5.web.widgets.lambda-events.set]*, 
+and the *[p5.web.widgets.lambda-events.get]*. Both of these Active Events, works similarly to their Ajax events counterparts.
 
 Hint!
-You can also use *[list-widget-lambda-events]* and *[list-widget-ajax-events]* to inspect which events are declared for a specific widget.
+You can also use *[p5.web.widgets.lambda-events.list]* and *[p5.web.widgets.ajax-events.list]* to inspect which events are declared for a specific widget.
 
 ### [oninit], initializing your widgets
 
@@ -626,11 +626,11 @@ This allows you to invoke widget lambda events, associated with your widget, and
 Below is an example of *[oninit]* in action.
 
 ```
-create-literal-widget
+p5.web.widgets.create-literal
   parent:content
   position:0
   oninit
-    set-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.set:x:/../*/_event?value
       innerValue:Dynamically changed property during [oninit]
       element:h3
 ```
@@ -647,29 +647,29 @@ but constants in fact. Consider this code.
 _el:div
 
 // This doesn't work, and will create a widget with a *really* weird ID!
-create-literal-widget
+p5.web.widgets.create-literal
   element:x:/../*/_el?value
 
 // However, with our [eval-x] trick, it works
 eval-x:x:/+/*/element
-create-literal-widget
+p5.web.widgets.create-literal
   element:x:/../*/_el?value
 ```
 
 ### Deleting and "emptying" widgets
 
-In addition to the above mentioned events, you also have the *[delete-widget]* and *[clear-widget]* Active Events. The first one entirely deletes
+In addition to the above mentioned events, you also have the *[p5.web.widgets.delete]* and *[p5.web.widgets.clear]* Active Events. The first one entirely deletes
 a widget from your page, while the second one empties its children collection. If your run this through your System42/executor for instance, 
 then your entire page will go "blank".
 
 ```
-clear-widget:cnt
+p5.web.widgets.clear:cnt
 ```
 
 If you wish to instead for instance delete the main menu, you could accomplish that with the following code.
 
 ```
-delete-widget:main-navbar-wrapper
+p5.web.widgets.delete:main-navbar-wrapper
 ```
 
 Yet again, don't panic, but refresh your page, and your menu is back!
@@ -680,17 +680,17 @@ Just refresh the page afterwards, and you should be all right though ... ;)
 
 There are also several helper Active Events to retrieve widgets, according to some criteria. These are listed below.
 
-* [get-parent-widget] - Returns the parent widget(s) of the specified widget(s)
-* [get-children-widgets] - Returns the children widgets of the specified widget(s)
-* [find-widget] - Returns the widgets that have the properties listed, with optionally, the values listed
-* [find-widget-like] - Same as above, but doesn't require an "exact match", only that the widget "contains" your value(s)
-* [find-first-ancestor-widget] - Returns the first ancestor widget with the specifed properties and values
-* [find-first-ancestor-widget-like] - Same as above, but is happy as long as the value "contains" the value(s) specified
-* [list-widgets] - List all widgets that have IDs matching the specified string(s)
-* [list-widgets-like] - Same as above, but is happy as long as the ID(s) "contains" the value(s) specified
-* [widget-exist] - Yields true for each widget that exists matching the specified ID(s)
+* [p5.web.widgets.get-parent] - Returns the parent widget(s) of the specified widget(s)
+* [p5.web.widgets.get-children] - Returns the children widgets of the specified widget(s)
+* [p5.web.widgets.find] - Returns the widgets that have the properties listed, with optionally, the values listed
+* [p5.web.widgets.find-like] - Same as above, but doesn't require an "exact match", only that the widget "contains" your value(s)
+* [p5.web.widgets.find-ancestor] - Returns the first ancestor widget with the specifed properties and values
+* [p5.web.widgets.find-ancestor-like] - Same as above, but is happy as long as the value "contains" the value(s) specified
+* [p5.web.widgets.list] - List all widgets that have IDs matching the specified string(s)
+* [p5.web.widgets.list-like] - Same as above, but is happy as long as the ID(s) "contains" the value(s) specified
+* [p5.web.widgets.exists] - Yields true for each widget that exists matching the specified ID(s)
 
-Notice, besides from *[list-widgets]*, *[list-widgets-like]* and *[widget-exist]*, all the above mentioned events, returns the same structure back to
+Notice, besides from *[p5.web.widgets.list]*, *[p5.web.widgets.list-like]* and *[p5.web.widgets.exists]*, all the above mentioned events, returns the same structure back to
 caller, which looks like the following;
 
 ```
@@ -704,12 +704,12 @@ some-widget-retrieval-event
 The first level of children, are the currently iterated criteria passedin as *[_arg]*. Then comes one or more children nodes, having a name defining
 which type of widget this is, and a value being the ID of our widget. Have that in mind as we look at these Active Events and how they work.
 
-#### [get-parent-widget]
+#### [p5.web.widgets.get-parent]
 
 Returns the parent widget of one or more specified widget(s). Example given below.
 
 ```
-create-container-widget:foo
+p5.web.widgets.create-container:foo
   parent:content
   position:0
   widgets
@@ -717,33 +717,33 @@ create-container-widget:foo
       innerValue:bar1
     literal:bar2
       innerValue:bar2
-get-parent-widget:x:/../0/**/literal?value
+p5.web.widgets.get-parent:x:/../0/**/literal?value
 ```
 
-The above code, uses an expression leading to each value of each *[literal]* node within the *[widgets]* part of the *[create-container-widget]* 
+The above code, uses an expression leading to each value of each *[literal]* node within the *[widgets]* part of the *[p5.web.widgets.create-container]* 
 invocation. This means that it will return the parent widget for both the "bar1" widget and the "bar2" widget, which happens to be the same. 
 The output should look something like this, showing the type of widget as the name, and the ID of the parent widget as its value.
 
 ```
 /* ... rest of code ... */
-get-parent-widget
+p5.web.widgets.get-parent
   bar1
     container:foo
   bar2
     container:foo
 ```
 
-Notice how *[get-parent-widget]* optionally can take an expression as its argument. This means we have to return an additional "layer" before returning
+Notice how *[p5.web.widgets.get-parent]* optionally can take an expression as its argument. This means we have to return an additional "layer" before returning
 the actual parent widget(s), since we need to return "parent widget to which widget" to the caller. If we had simply returned the parent as the first
-node of *[get-parent-widget]*, we wouldn't know who this was a parent to, since we can supply multiple widgets as arguments. This is a general pattern
+node of *[p5.web.widgets.get-parent]*, we wouldn't know who this was a parent to, since we can supply multiple widgets as arguments. This is a general pattern
 for many of the widget retrieval events.
 
-#### [get-children-widgets]
+#### [p5.web.widgets.get-children]
 
 Returns the children widgets of one or more specified widget(s). Example below.
 
 ```
-create-container-widget:foo
+p5.web.widgets.create-container:foo
   parent:content
   position:0
   widgets
@@ -751,39 +751,39 @@ create-container-widget:foo
       innerValue:bar1
     literal:bar2
       innerValue:bar2
-get-children-widgets:foo
+p5.web.widgets.get-children:foo
 ```
 
 The above code uses a constant, instead of an expression as our previous example, and should return something like this.
 
 ```
 /* ... rest of code ... */
-get-children-widgets
+p5.web.widgets.get-children
   foo
     literal:bar1
     literal:bar2
 ```
 
 Even though we do _not_ use an expression in the above example, we still return the children widgets in a similar structure as we did with our previous
-example of *[get-parent-widget]*, which used an expression. This is to make sure we always return data to the caller in the same format. If we had
-used an expression leading to multiple source widgets, instead of the constant of "foo", we would have had multiple return nodes beneath *[get-children-widgets]*
+example of *[p5.web.widgets.get-parent]*, which used an expression. This is to make sure we always return data to the caller in the same format. If we had
+used an expression leading to multiple source widgets, instead of the constant of "foo", we would have had multiple return nodes beneath *[p5.web.widgets.get-children]*
 in our result.
 
 Notice!
 Most of these retrieval Active Events will actually throw an exception if the queried widget does not exist. If you supplied "does-not-exist" to 
-your *[get-children-widgets]* invocation for instance, it would throw an exception.
+your *[p5.web.widgets.get-children]* invocation for instance, it would throw an exception.
 
-#### [find-widget] and [find-widget-like]
+#### [p5.web.widgets.find] and [p5.web.widgets.find-like]
 
 These events takes (optionally) the "root widget from where to start your search", and require you to parametrize them with children nodes, 
 having at least a name, and optionally a value. The name of the node, is some attribute that must exist on your widget, for it be returned as 
-a "match". The value, is an optionally "value" for that attribute, which the widget must either have an exact match of (*[find-widget]*), 
-or "contain" (for the *[find-widget-like]* event).
+a "match". The value, is an optionally "value" for that attribute, which the widget must either have an exact match of (*[p5.web.widgets.find]*), 
+or "contain" (for the *[p5.web.widgets.find-like]* event).
 
 Let's see an example.
 
 ```
-create-container-widget:foo
+p5.web.widgets.create-container:foo
   parent:content
   position:0
   widgets
@@ -792,16 +792,16 @@ create-container-widget:foo
       class:foo-class
     literal:bar2
       innerValue:bar2
-find-widget:foo
+p5.web.widgets.find:foo
   innerValue:bar1
   class:foo-class
-find-widget:foo
+p5.web.widgets.find:foo
   innerValue:bar
-find-widget-like:foo
+p5.web.widgets.find-like:foo
   innerValue:bar
 ```
 
-The above code has two invocations to *[find-widget]* and one to *[find-widget-like]*. The first invocation, requires an exact match for 
+The above code has two invocations to *[p5.web.widgets.find]* and one to *[p5.web.widgets.find-like]*. The first invocation, requires an exact match for 
 the *[innerValue]*, and the *[class]* attributes, being respectively "bar1", and "foo-class". This invocation will return only the "bar1" widget. 
 The second invocation won't yield any matches, since it requires an exact match and no widgets have the innerValue of "bar" exactly. 
 The third invocation will yield both widgets as its return value, since they both have an *[innerValue]* which _contains_ the text "bar".
@@ -809,11 +809,11 @@ The result will look something like this.
 
 ```
 /* ... rest of code ... */
-find-widget
+p5.web.widgets.find
   foo
     literal:bar1
-find-widget
-find-widget-like
+p5.web.widgets.find
+p5.web.widgets.find-like
   foo
     literal:bar1
     literal:bar2
@@ -822,7 +822,7 @@ find-widget-like
 These Active Events can also take expressions as their arguments.
 
 ```
-create-container-widget:foo1
+p5.web.widgets.create-container:foo1
   parent:content
   position:0
   widgets
@@ -831,7 +831,7 @@ create-container-widget:foo1
       class:foo-class
     literal:bar2
       innerValue:bar2
-create-container-widget:foo2
+p5.web.widgets.create-container:foo2
   parent:content
   position:0
   widgets
@@ -840,7 +840,7 @@ create-container-widget:foo2
       class:foo-class
     literal:bar4
       innerValue:bar2
-find-widget:x:/../*/[0,2]?value
+p5.web.widgets.find:x:/../*/[0,2]?value
   innerValue:bar1
 ```
 
@@ -848,22 +848,22 @@ Which of course result in this result.
 
 ```
 /* ... rest of code ... */
-find-widget
+p5.web.widgets.find
   foo1
     literal:bar1
   foo2
     literal:bar3
 ```
 
-#### [find-first-ancestor-widget] and [find-first-ancestor-widget-like]
+#### [p5.web.widgets.find-ancestor] and [p5.web.widgets.find-ancestor-like]
 
-These two Active Events are similar to the *[find-widget]* events, except of course, instead of searching "downwards" in the hierarchy from the root
+These two Active Events are similar to the *[p5.web.widgets.find]* events, except of course, instead of searching "downwards" in the hierarchy from the root
 widget supplied, they search upwards in the ancestor chain for a match, from the currently iterated widget. These Active Events requires (for obvious 
 reasons) the caller to actually supply a value, and will not tolerate a "default" value as our previously mentioned widget retrieval Active Events did.
 Example code given below.
 
 ```
-create-container-widget:foo1
+p5.web.widgets.create-container:foo1
   parent:content
   position:0
   class:foo-class-1
@@ -872,7 +872,7 @@ create-container-widget:foo1
       widgets
         literal:starting-widget-1
           innerValue:Foo bar
-create-container-widget:foo2
+p5.web.widgets.create-container:foo2
   parent:content
   position:0
   class:foo-class-2
@@ -881,28 +881,28 @@ create-container-widget:foo2
       widgets
         literal:starting-widget-2
           innerValue:Foo bar
-find-first-ancestor-widget-like:x:/../**/literal?value
+p5.web.widgets.find-ancestor-like:x:/../**/literal?value
   class:foo-class
 ```
 
 Which of course will yield the following result.
 
 ```
-find-first-ancestor-widget-like
+p5.web.widgets.find-ancestor-like
   starting-widget-1
     container:foo1
   starting-widget-2
     container:foo2
 ```
 
-#### [list-widgets] and [list-widgets-like]
+#### [p5.web.widgets.list] and [p5.web.widgets.list-like]
 
 These Active Events simply lists all widgets, with an ID matching some (optional) filter supplied. Notice, if you do not supply a filter, this Active
 Event will yield every single widget in your page, starting from the root "cnt" widget, declared in your Default.aspx markup. Example code is
 given below.
 
 ```
-create-container-widget:test-foo1
+p5.web.widgets.create-container:test-foo1
   widgets
     literal:test-bar1
       innerValue:Bar 1
@@ -910,36 +910,36 @@ create-container-widget:test-foo1
       innerValue:Bar 2
 
 // Will only return "test-bar2"
-list-widgets:test-bar2
+p5.web.widgets.list:test-bar2
 
 // Will not return anything
-list-widgets:test
+p5.web.widgets.list:test
 
 // Will return all three widgets
-list-widgets-like:test
+p5.web.widgets.list-like:test
 
 // Will return only the two literals
 _lit
   test-bar1
   test-bar2
-list-widgets:x:/-/*?name
+p5.web.widgets.list:x:/-/*?name
 ```
 
 The above code will yield something like this.
 
 ```
 /* ... rest of code ... */
-list-widgets
+p5.web.widgets.list
   literal:test-bar2
-list-widgets
-list-widgets-like
+p5.web.widgets.list
+p5.web.widgets.list-like
   container:test-foo1
   literal:test-bar1
   literal:test-bar2
 _lit
   test-bar1
   test-bar2
-list-widgets
+p5.web.widgets.list
   literal:test-bar1
   literal:test-bar2
 ```
@@ -947,30 +947,30 @@ list-widgets
 One point though, as in many of the other widget retrieval Active Events, is the fact that you are also getting the "type" of widget returned, as
 the name of the node - While you get the ID of the widget, returned as the value - Which might be useful sometimes.
 
-Notice though that [list-widgets] does not return an "injected node" for the widget you start out your search from, simply since there are no such
+Notice though that [p5.web.widgets.list] does not return an "injected node" for the widget you start out your search from, simply since there are no such
 node(s) or criteria given to it. In addition, the same widget might match several criteria, making it impossible to put into one specific filter.
 This means it yields one level less than all other widget retrieval Active Events.
 
-#### [widget-exist]
+#### [p5.web.widgets.exists]
 
 This Active Event allows you to check for the existence of one or more specified widget(s). It can take either a constant, or an expression.
 Below is an example.
 
 ```
-create-container-widget:test-foo1
+p5.web.widgets.create-container:test-foo1
   widgets
     literal:test-bar1
       innerValue:Bar 1
     literal:test-bar2
       innerValue:Bar 2
-widget-exist:test-bar2
+p5.web.widgets.exists:test-bar2
 ```
 
 Which will yield the following result.
 
 ```
 /* ... rest of code ... */
-widget-exist
+p5.web.widgets.exists
   test-bar2:bool:true
 ```
 

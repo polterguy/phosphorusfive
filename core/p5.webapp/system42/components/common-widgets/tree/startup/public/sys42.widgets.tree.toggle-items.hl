@@ -19,9 +19,9 @@ create-event:sys42.widgets.tree.toggle-items
      * Finding anchor/hyperlink for currently iterated item, then retrieving its parent, 
      * for then to find its parent's "ul" widget, if it exist.
      */
-    find-widget:x:/../*/_arg?value
+    p5.web.widgets.find:x:/../*/_arg?value
       _item-id:x:/@_dp?value
-    if:x:/@find-widget/*/*?value
+    if:x:/@p5.web.widgets.find/*/*?value
       not
 
       /*
@@ -43,20 +43,20 @@ create-event:sys42.widgets.tree.toggle-items
      * If you do, it will only expand, regardless of if the item is expanded from before or not.
      * This feature is being used, among other things, while "unrolling" items (SEO friendly links).
      */
-    get-children-widgets:x:/@find-widget/*/*?value
-    if:x:/@get-children-widgets/*/*/container/[1,2]
+    p5.web.widgets.get-children:x:/@p5.web.widgets.find/*/*?value
+    if:x:/@p5.web.widgets.get-children/*/*/container/[1,2]
 
       /*
        * Children items already exist, hence we check if it is hidden,
        * and if so, we simply make it visible, otherwise we hide it (unless [_force-expand] is true).
        */
-      get-widget-property:x:/@get-children-widgets/*/*/container/[1,2]?value
+      p5.web.widgets.property.get:x:/@p5.web.widgets.get-children/*/*/container/[1,2]?value
         class
 
       /*
        * Checking if "ul" HTML widget is simply hidden.
        */
-      if:x:/@get-widget-property/*/*?value
+      if:x:/@p5.web.widgets.property.get/*/*?value
         ~:tree-hidden
 
         /*
@@ -64,19 +64,19 @@ create-event:sys42.widgets.tree.toggle-items
          * add the "tree-expanded" CSS class to main "li" HTML widget, before finally updating the "icon CSS class"
          * to the [_class-open] value.
          */
-        sys42.utilities.delete-css-classes:x:/@get-children-widgets/*/*/container/[1,2]?value
+        sys42.utilities.delete-css-classes:x:/@p5.web.widgets.get-children/*/*/container/[1,2]?value
           _class:tree-hidden
-        sys42.utilities.add-css-classes:x:/@find-widget/*/*?value
+        sys42.utilities.add-css-classes:x:/@p5.web.widgets.find/*/*?value
           _class:tree-expanded
 
         /*
          * Making sure we set the "icon span" CSS class to [_class-open].
          */
-        get-children-widgets:x:/@get-children-widgets/*/*/container/[0,1]?value
-        get-widget-property:x:/@get-children-widgets/*/0?value
+        p5.web.widgets.get-children:x:/@p5.web.widgets.get-children/*/*/container/[0,1]?value
+        p5.web.widgets.property.get:x:/@p5.web.widgets.get-children/*/0?value
           _class-open
-        set-widget-property:x:/@get-children-widgets/*/0?value
-          class:x:/@get-widget-property/*/*?value
+        p5.web.widgets.property.set:x:/@p5.web.widgets.get-children/*/0?value
+          class:x:/@p5.web.widgets.property.get/*/*?value
       else
 
         /*
@@ -90,23 +90,23 @@ create-event:sys42.widgets.tree.toggle-items
            * "ul" HTML widget is visible, and caller did not supply [_force-expand] as true,
            * hence we hide it, by applying the "tree-hidden" class to the main "ul" HTML widget.
            */
-          sys42.utilities.add-css-classes:x:/@get-children-widgets/*/*/container/[1,2]?value
+          sys42.utilities.add-css-classes:x:/@p5.web.widgets.get-children/*/*/container/[1,2]?value
             _class:tree-hidden
 
           /*
            * Then we delete the "tree-expanded" CSS class to our main "li" HTML widget.
            */
-          sys42.utilities.delete-css-classes:x:/@find-widget/*/*?value
+          sys42.utilities.delete-css-classes:x:/@p5.web.widgets.find/*/*?value
             _class:tree-expanded
 
           /*
            * Finally we apply our "close icon CSS class" to the icon "span" HTML widget.
            */
-          get-children-widgets:x:/@get-children-widgets/*/*/container/[0,1]?value
-          get-widget-property:x:/-/*/0?value
+          p5.web.widgets.get-children:x:/@p5.web.widgets.get-children/*/*/container/[0,1]?value
+          p5.web.widgets.property.get:x:/-/*/0?value
             _class-close
-          set-widget-property:x:/@get-children-widgets/*/0?value
-            class:x:/@get-widget-property/*/*?value
+          p5.web.widgets.property.set:x:/@p5.web.widgets.get-children/*/0?value
+            class:x:/@p5.web.widgets.property.get/*/*?value
     else
 
       /*
@@ -135,20 +135,20 @@ create-event:sys42.widgets.tree.toggle-items
         _items:x:/@sys42.widgets.tree._get-items/*/_items
 
       /*
-       * Making sure we change the returned [ul] to a [create-container-widget] invocation.
+       * Making sure we change the returned [ul] to a [p5.web.widgets.create-container] invocation.
        */
       set:x:/@sys42.widgets.tree._create-items/0?name
-        src:create-container-widget
+        src:p5.web.widgets.create-container
 
       /*
-       * Making sure we add "ul" as value of [element] to [create-container-widget] invocation, in addition
+       * Making sure we add "ul" as value of [element] to [p5.web.widgets.create-container] invocation, in addition
        * to making sure our "ul" widget gets the correct [parent] argument, which is the parent "li" element.
        */
       eval-x:x:/+/*/*
       add:x:/@sys42.widgets.tree._create-items/0
         src
           element:ul
-          parent:x:/..for-each/*/find-widget/*/*?value
+          parent:x:/..for-each/*/p5.web.widgets.find/*/*?value
 
       /*
        * Making sure we add the "tree-item-children-animate" CSS class to our widget, since this is
@@ -160,7 +160,7 @@ create-event:sys42.widgets.tree.toggle-items
 
       /*
        * Now we can simply [eval] the returned lambda from the above [sys42.widgets.tree._create-items] invocation,
-       * since it is now a [create-container-widget] invocation, correctly creating items, appending to tree item,
+       * since it is now a [p5.web.widgets.create-container] invocation, correctly creating items, appending to tree item,
        * specified in currently iterated [_items] argument.
        */
       eval:x:/@sys42.widgets.tree._create-items
@@ -168,14 +168,14 @@ create-event:sys42.widgets.tree.toggle-items
       /*
        * Adding the "expanded" CSS class in parent widget.
        */
-      sys42.utilities.add-css-classes:x:/..for-each/*/find-widget/*/*?value
+      sys42.utilities.add-css-classes:x:/..for-each/*/p5.web.widgets.find/*/*?value
         _class:tree-expanded
 
       /*
        * Making sure we apply the "open" CSS class to the icon item.
        */
-      get-children-widgets:x:/..for-each/*/get-children-widgets/*/*/container/[0,1]?value
-      get-widget-property:x:/@get-children-widgets/*/0?value
+      p5.web.widgets.get-children:x:/..for-each/*/p5.web.widgets.get-children/*/*/container/[0,1]?value
+      p5.web.widgets.property.get:x:/@p5.web.widgets.get-children/*/0?value
         _class-open
-      set-widget-property:x:/@get-children-widgets/*/0?value
-        class:x:/@get-widget-property/*/*?value
+      p5.web.widgets.property.set:x:/@p5.web.widgets.get-children/*/0?value
+        class:x:/@p5.web.widgets.property.get/*/*?value

@@ -19,7 +19,7 @@ if
     /*
      * Removing literal:{content} altogether, and evaluating template just loaded.
      */
-    set:x:/-/*/*/create-widget/*/widgets/**/={content}/.
+    set:x:/-/*/*/p5.web.widgets.create/*/widgets/**/={content}/.
     eval:x:/./*/p5.io.file.load/*
 
 
@@ -31,8 +31,8 @@ if
    */
   if
     fetch:x:/0/0?value
-      widget-exist:header
-    set-widget-property:header
+      p5.web.widgets.exists:header
+    p5.web.widgets.property.set:header
       innerValue:x:/../*/_args/*/name?value
   set-title:x:/../*/_args/*/name?value
 

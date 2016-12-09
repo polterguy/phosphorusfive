@@ -9,7 +9,7 @@
 create-event:sys42.widgets.datagrid._create-table-widgets
 
   /*
-   * Creating column headers, by [apply]'ing [_columns] to [create-widget] invocation below.
+   * Creating column headers, by [apply]'ing [_columns] to [p5.web.widgets.create] invocation below.
    */
   if:x:/../*/.on-header-clicked/*
 
@@ -19,7 +19,7 @@ create-event:sys42.widgets.datagrid._create-table-widgets
      */
     add:x:/+/**/onclick
       src:x:/../*/.on-header-clicked/*
-    apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
+    apply:x:/../*/p5.web.widgets.create/*/widgets/*/tr/*/widgets
       src:x:/../*/_columns/*
       template
         th
@@ -35,7 +35,7 @@ create-event:sys42.widgets.datagrid._create-table-widgets
     /*
      * Caller did not specify [.on-header-clicked], hence simply creating header columns as span elements.
      */
-    apply:x:/../*/create-widget/*/widgets/*/tr/*/widgets
+    apply:x:/../*/p5.web.widgets.create/*/widgets/*/tr/*/widgets
       src:x:/../*/_columns/*
       template
         th
@@ -46,15 +46,15 @@ create-event:sys42.widgets.datagrid._create-table-widgets
   /*
    * Finding table element inside of datagrid main wrapper.
    */
-  find-widget:x:/../*/_arg?value
+  p5.web.widgets.find:x:/../*/_arg?value
     element:table
 
   /*
    * Forward evaluating [parent], and creating table "thead" element.
    */
   eval-x:x:/+/*/parent
-  create-widget
-    parent:x:/../*/find-widget/*/*?value
+  p5.web.widgets.create
+    parent:x:/../*/p5.web.widgets.find/*/*?value
     element:thead
     widgets
       tr
@@ -64,7 +64,7 @@ create-event:sys42.widgets.datagrid._create-table-widgets
    * Forward evaluating [parent] and creating table "tbody" element.
    */
   eval-x:x:/+/*/parent
-  create-widget
-    parent:x:/@find-widget/*/*?value
+  p5.web.widgets.create
+    parent:x:/@p5.web.widgets.find/*/*?value
     element:tbody
     widgets

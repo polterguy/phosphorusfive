@@ -2,7 +2,7 @@
 /*
  * Creating our set server salt main widget.
  */
-create-widget:set-server-salt
+p5.web.widgets.create:set-server-salt
   parent:guide
   class:flash-from-left col-xs-12 col-md-8 col-md-push-2
   widgets
@@ -50,13 +50,13 @@ create-widget:set-server-salt
             /*
              * Retrieving salt from above textarea, and storing it.
              */
-            get-widget-property:server-salt
+            p5.web.widgets.property.get:server-salt
               value
-            p5.security.set-server-salt:x:/../*/get-widget-property/*/*?value
+            p5.security.set-server-salt:x:/../*/p5.web.widgets.property.get/*/*?value
 
             /*
              * Deleting main server-salt widget, and moving on to the setting of the root password.
              */
-            delete-widget:set-server-salt
+            p5.web.widgets.delete:set-server-salt
             sys42.utilities.execute-lambda-file:/system42/apps/CMS/installation/set-root-password.hl
 

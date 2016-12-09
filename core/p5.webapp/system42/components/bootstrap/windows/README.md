@@ -138,7 +138,7 @@ that starts out with _"sys42-windows-modal"_. To see them, you can use something
 
 ```
 sys42.windows.confirm
-list-widgets-like:sys42-windows-modal
+p5.web.widgets.list-like:sys42-windows-modal
 sys42.windows.show-lambda:x:/-/*
 ```
 
@@ -163,10 +163,10 @@ sys42.windows.modal
       oninit
         sys42.windows.modal.initial-focus:x:/../*/_event?value
   .onok
-    get-widget-property:my-text
+    p5.web.widgets.property.get:my-text
       value
     sys42.windows.info-tip:Thanx for the data, which was '{0}'
-      :x:/@get-widget-property/*/*?value
+      :x:/@p5.web.widgets.property.get/*/*?value
 ```
 
 The above code will produce something like the following.
@@ -188,10 +188,10 @@ sys42.windows.modal
       oninit
         sys42.windows.modal.initial-focus:x:/../*/_event?value
   .onok
-    get-widget-property:my-text
+    p5.web.widgets.property.get:my-text
       value
     sys42.windows.info-tip:Thanx for the data, which was '{0}'
-      :x:/@get-widget-property/*/*?value
+      :x:/@p5.web.widgets.property.get/*/*?value
 ```
 
 You can however add up any widgets you wish into your modal window. Besides from the above points, the modal window is more or less 
@@ -216,7 +216,7 @@ sys42.windows.modal
       oninit
         sys42.windows.modal.initial-focus:x:/../*/_event?value
   .onok
-    get-widget-property:my-email
+    p5.web.widgets.property.get:my-email
       value
     match:x:/-/*/*?value
       src:regex:@"/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i"
@@ -224,7 +224,7 @@ sys42.windows.modal
       not
 
       // Not a valid email address!
-      get-parent-widget:my-email
+      p5.web.widgets.get-parent:my-email
       sys42.utilities.add-css-classes:x:/-/*/*?value
         _class:has-error
       sys42.windows.info-tip:Not a valid email address!
@@ -235,7 +235,7 @@ sys42.windows.modal
 
     // Address was valid.
     sys42.windows.info-tip:Thanx for the email address; '{0}'
-      :x:/@get-widget-property/*/*?value
+      :x:/@p5.web.widgets.property.get/*/*?value
 ```
 
 If you type something like _"Foo bar"_ into the above textbox, you will get something like this, and the window will not accept your input, and
@@ -316,7 +316,7 @@ allows you to entirely take control over its *[_widgets]* collection. This modal
 
 ### Ninja tricks
 
-Hint, you can use *[get-widget-properties]* to serialize all values from your *[_widgets]* collection in one go, if you use 
+Hint, you can use *[p5.web.widgets.property.recursively-get]* to serialize all values from your *[_widgets]* collection in one go, if you use 
 the *[sys42.windows.modal]* modal Ajax window. Consider the following.
 
 ```
@@ -336,11 +336,11 @@ sys42.windows.modal
       placeholder:Age ...
       class:form-control prepend-bottom
   .onok
-    get-widget-properties:sys42-windows-modal
+    p5.web.widgets.property.recursively-get:sys42-windows-modal
       value
     sys42.windows.info-tip:Hi '{0}', so you're {1} years old ...?
-      :x:/@get-widget-properties/*/your-name/*?value
-      :x:/@get-widget-properties/*/your-age/*?value
+      :x:/@p5.web.widgets.property.recursively-get/*/your-name/*?value
+      :x:/@p5.web.widgets.property.recursively-get/*/your-age/*?value
 sys42.windows.modal.initial-focus:your-name
 ```
 
@@ -379,11 +379,11 @@ sys42.windows.modal
         return
           _items
   .onok
-    get-widget-property:my-text
+    p5.web.widgets.property.get:my-text
       value
     sys42.widgets.tree.get-selected-items:my-tree
     sys42.windows.info-tip:Thanx for the data, which was '{0}' and '{1}'
-      :x:/@get-widget-property/*/*?value
+      :x:/@p5.web.widgets.property.get/*/*?value
       :x:/@sys42.widgets.tree.get-selected-items/*/*?name
 ```
 

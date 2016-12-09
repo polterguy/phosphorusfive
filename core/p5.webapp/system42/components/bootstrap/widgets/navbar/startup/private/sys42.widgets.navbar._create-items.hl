@@ -117,7 +117,7 @@ create-event:sys42.widgets.navbar._create-items
                 innerValue:x:/@_dp/#?name
                 oninit
                   sys42.widgets.navbar._create-item-url:x:/../*/_event?value
-                  set-widget-property:x:/../*/_event?value
+                  p5.web.widgets.property.set:x:/../*/_event?value
                     href:x:/@sys42.widgets.navbar._create-item-url?value
                 onclick
 
@@ -128,14 +128,14 @@ create-event:sys42.widgets.navbar._create-items
                   if
                     is-callback
                     p5.web.send-javascript:@"if ($(window).width() < 768) {$('.navbar-toggle').click();}"
-                  find-first-ancestor-widget-like:x:/../*/_event?value
+                  p5.web.widgets.find-ancestor-like:x:/../*/_event?value
                     element:ul
                     class:dropdown-menu
-                  if:x:/@find-first-ancestor-widget-like/*/*?value
+                  if:x:/@p5.web.widgets.find-ancestor-like/*/*?value
                     and
                       is-callback
                     p5.web.send-javascript:@"$('#{0}').dropdown('toggle');"
-                      :x:/@find-first-ancestor-widget-like/*/*?value
+                      :x:/@p5.web.widgets.find-ancestor-like/*/*?value
 
   /*
    * Returning widget collection to caller.

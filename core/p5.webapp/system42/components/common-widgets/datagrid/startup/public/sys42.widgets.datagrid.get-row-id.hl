@@ -14,9 +14,9 @@ create-event:sys42.widgets.datagrid.get-row-id
   /*
    * Finding "tr" widget from specified [_arg] widget, and returning its [_row] property value.
    */
-  find-first-ancestor-widget:x:/../*/_arg?value
+  p5.web.widgets.find-ancestor:x:/../*/_arg?value
     element:tr
     _row
-  get-widget-property:x:/@find-first-ancestor-widget/*/*?value
+  p5.web.widgets.property.get:x:/@p5.web.widgets.find-ancestor/*/*?value
     _row
-  return:x:/@get-widget-property/*/*?value
+  return:x:/@p5.web.widgets.property.get/*/*?value

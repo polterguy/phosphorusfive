@@ -14,14 +14,14 @@ p5.data.select:x:/*/*/p5.page/"={0}"
 /*
  * Setting the content of editor_surface to the [lambda] from database
  */
-set:x:/../*/create-widget/*/widgets/*/=editor_surface/*/_value?value
+set:x:/../*/p5.web.widgets.create/*/widgets/*/=editor_surface/*/_value?value
   src:x:/../*/p5.data.select/*/*/lambda?value
 
 
 /*
  * Creating our widget to display our editor surface
  */
-create-widget
+p5.web.widgets.create
   parent:cms-specialized-editor-surface
   class:col-xs-12
   widgets
@@ -44,9 +44,9 @@ create-widget
           insert-before:x:/../0
             src
               type:lambda
-          get-widget-property:editor_surface
+          p5.web.widgets.property.get:editor_surface
             innerValue
           insert-after:x:/../0
             src:lambda
           set:x:/../1?value
-            src:x:/../*/get-widget-property/*/*?value
+            src:x:/../*/p5.web.widgets.property.get/*/*?value

@@ -7,7 +7,7 @@ create-event:sys42.widgets.datagrid.filter
   /*
    * Making sure we update pager, such that the first page is displayed.
    */
-  set-widget-property:x:/../*/_arg?value
+  p5.web.widgets.property.set:x:/../*/_arg?value
     _current-page:0
 
   /*
@@ -21,7 +21,7 @@ create-event:sys42.widgets.datagrid.filter
     /*
      * We have a query, making sure we store query in datagrid main widget.
      */
-    set-widget-property:x:/../*/_arg?value
+    p5.web.widgets.property.set:x:/../*/_arg?value
       _query:x:/../*/_query?value
 
   else
@@ -30,7 +30,7 @@ create-event:sys42.widgets.datagrid.filter
      * We no not have a query, deleting [_query] property from datagrid, and making sure our [_get-items] 
      * invocation does not specify any [_query] parameter.
      */
-    delete-widget-property:x:/../*/_arg?value
+    p5.web.widgets.property.delete:x:/../*/_arg?value
       _query
 
   /*

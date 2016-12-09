@@ -8,7 +8,7 @@ This component creates an Active Event for you, called *[sys42.widgets.codemirro
 your page, in Hyperlambda mode. To consume it, you could do something like the following code illustrates.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   class:col-xs-12
   widgets
@@ -19,11 +19,11 @@ The above will render something like the following.
 
 ![alt tag](screenshots/codemirror-example-screenshot.png)
 
-To get to the Hyperlambda code, simply use *[get-widget-property]*, and pass in *[value]* as the argument of what to retrieve.
+To get to the Hyperlambda code, simply use *[p5.web.widgets.property.get]*, and pass in *[value]* as the argument of what to retrieve.
 Example code given below.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   widgets
     sys42.widgets.codemirror:my-editor
@@ -31,7 +31,7 @@ create-widget
       innerValue:Get Hyperlambda
       class:btn btn-default btn-attach-top
       onclick
-        get-widget-property:my-editor
+        p5.web.widgets.property.get:my-editor
           value
         sys42.windows.show-lambda:x:/..
 ```
@@ -43,7 +43,7 @@ Below is an example of a piece of code, that instantiates the CodeMirror editor,
 your Hyperlambda. If you create a new lambda CMS page, and paste in the following code, you've created an _"edit and execute Hyperlambda"_ page.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   widgets
     sys42.widgets.codemirror:my-editor
@@ -51,7 +51,7 @@ create-widget
       innerValue:Execute
       class:btn btn-default btn-attach-top
       onclick
-        get-widget-property:my-editor
+        p5.web.widgets.property.get:my-editor
           value
         hyper2lambda:x:/-/*/*?value
         eval:x:/-
@@ -114,7 +114,7 @@ This widget is created by the *[sys42.widgets.codemirror-executor]* Active Event
 and paste in the following code.
 
 ```
-create-widget
+p5.web.widgets.create
   parent:content
   widgets
     sys42.widgets.codemirror-executor

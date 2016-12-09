@@ -22,7 +22,7 @@ _x
 for-each:x:/../*/_x/*?value
   set:x:/+/*/innerValue?value
     src:x:/..for-each/*/_dp?value
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     innerValue
 ```
@@ -32,7 +32,7 @@ If you run the above code, through the "apps/executor" in System42, you will see
 The two Active Events *[for-each]* and *[set]* are declared in the p5.lambda project, and as you can see in its code, 
 actually simply Active Events, and nothing you cannot implement yourself, to extend the programming language if you wish.
 
-The third Active Event called *[create-literal-widget]* is declared in [p5.web](/plugins/p5.web/).
+The third Active Event called *[p5.web.widgets.create-literal]* is declared in [p5.web](/plugins/p5.web/).
 
 What happens when you evaluate the above piece of Hyperlambda, is that *[eval]* is being invoked, with the root node's children
 of your above Hyperlambda, as the "instructions" to evaluate. The children nodes of this root node again, are simply references
@@ -42,7 +42,7 @@ To evaluate *[eval]* directly yourself, is quite simple, and can be achieved wit
 
 ```
 _x
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     position:0
     element:h1
@@ -74,7 +74,7 @@ except nodes explicitly passed in as parameters, such as the below code demonstr
 _x
   set:x:/+/*/innerValue?value
     src:x:/../*/_argument?value
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     position:0
     element:h1
@@ -94,7 +94,7 @@ _x
   return:Hello World
 set:x:/+/*/innerValue?value
   eval:x:/../*/_x
-create-literal-widget
+p5.web.widgets.create-literal
   parent:content
   position:0
   element:h1
@@ -119,15 +119,15 @@ current instruction pointer, or just before it, or after it, if you wish. Consid
 ```
 insert-after:x:
   src
-    create-literal-widget
+    p5.web.widgets.create-literal
       element:h1
       innerValue:Foo bar
 ```
 
 What happens in the above example, is that when *[eval]* comes to the *[insert-after]* Active Event invocation,
-there exists no *[create-literal-widget]* in the execution tree. The invocation to the *[insert-after]* Active Event
+there exists no *[p5.web.widgets.create-literal]* in the execution tree. The invocation to the *[insert-after]* Active Event
 however, injects this node just after the *[insert-after]* node in the execution tree. When the instruction pointer
-is done evaluating *[insert-after]*, it finds a new Active Event invocation, being our newly added *[create-literal-widget]*
+is done evaluating *[insert-after]*, it finds a new Active Event invocation, being our newly added *[p5.web.widgets.create-literal]*
 Active Event reference, which in turn evaluates, creating our Literal widget.
 
 If you change the above code to using *[insert-before]* instead, there will be no Literal widget after evaluation, 
@@ -136,7 +136,7 @@ but the node hierarchy is clearly changed, as you can see in the output.
 ```
 insert-before:x:
   src
-    create-literal-widget
+    p5.web.widgets.create-literal
       element:h1
       innerValue:Foo bar
 ```
@@ -147,10 +147,10 @@ without messing up the order of your instructions. To prove it, run the followin
 ```
 insert-before:x:
   src
-    create-literal-widget
+    p5.web.widgets.create-literal
       element:h1
       innerValue:Foo bar
-create-literal-widget
+p5.web.widgets.create-literal
   element:h1
   innerValue:Foo bar 2
 ```
@@ -169,12 +169,12 @@ Try out the following code in your System42 evaluator to see this in action.
 
 ```
 _x
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Widget no 1
 _x
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Widget no 2
@@ -249,7 +249,7 @@ further down in the document here. However, to illustrate its simplest version, 
 
 ```
 eval
-  create-literal-widget
+  p5.web.widgets.create-literal
     element:h3
     innerValue:Foo, bar!
 ```
@@ -304,13 +304,13 @@ When we then invoke our *[eval]* Active Event, the value of *[return]*, is no lo
 of that expression, as evaluated during our invocation of our *[eval-x]* Active Event.
 
 The above example might not seem so very useful, besides, a better way of accomplishing the above, would be to pass in values
-as arguments to our *[eval]* invocation. However, a more useful example, could imply using for instance *[create-literal-widget]*,
+as arguments to our *[eval]* invocation. However, a more useful example, could imply using for instance *[p5.web.widgets.create-literal]*,
 which is an Active Event, that takes a lot of properties and children nodes, where the event does not support expressions in its arguments.
 Consider this code.
 
 ```
 _x:Hello World
-create-literal-widget
+p5.web.widgets.create-literal
   parent:content
   position:0
   element:h1
@@ -323,7 +323,7 @@ of *[eval-x]* magic, and we're all set for the type of result we really wanted.
 ```
 _x:Hello World
 eval-x:x:/+/*
-create-literal-widget
+p5.web.widgets.create-literal
   parent:content
   position:0
   element:h1
@@ -359,7 +359,7 @@ create code that modifies itself, before it evaluates the parts it nodified/adde
 
 ```
 _x
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Original, static widget
@@ -367,16 +367,16 @@ _x
     src:x:/../*/_arg/*
 eval:x:/../*/_x
   _arg
-    create-literal-widget
+    p5.web.widgets.create-literal
       parent:content
       element:h1
       innerValue:Dynamically injected into lambda object
 ```
 
-What happens in the above lambda object, is that the *[eval]* invocation, passes in an *[_arg]* argument, which contains a *[create-literal-widget]*
-invocation. After evaluating the first *[create-literal-widget]* node, inside of our *[_x]* node, the *[add]* invocation appends the content of
+What happens in the above lambda object, is that the *[eval]* invocation, passes in an *[_arg]* argument, which contains a *[p5.web.widgets.create-literal]*
+invocation. After evaluating the first *[p5.web.widgets.create-literal]* node, inside of our *[_x]* node, the *[add]* invocation appends the content of
 our *[_arg]* node, which was passed into *[eval]* into the "root node" for our tree, which during the evaluation of *[_x]* is actuall *[_x]*
-itself. Then the instruction pointer moves on, realizing it has _ANOTHER_ (newly dynamically added) *[create-literal-widget]* node, which
+itself. Then the instruction pointer moves on, realizing it has _ANOTHER_ (newly dynamically added) *[p5.web.widgets.create-literal]* node, which
 is then evaluated finally, before the instruction pointer returns from *[_x]*.
 
 This feature of course, is true for all Active Events that modifies the execution tree somehow. In the above code, you also see how to create
@@ -391,12 +391,12 @@ becomes "root nodes" of the lambda object evaluated. Such as we show in the code
 
 ```
 _x
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Original, static widget
 eval:x:/../*/_x
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Dynamically injected into lambda object
@@ -413,7 +413,7 @@ though. However, let's create the simplest if lambda object we possibly can, to 
 
 ```
 if:bool:true
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -425,7 +425,7 @@ you would see something else.
 
 ```
 if:false
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -437,7 +437,7 @@ do this with any other types you wish, for instance integer numbers too.
 
 ```
 if:int:1
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -448,7 +448,7 @@ Notice though, that if you remove the ":int:1" part above, and exchange it with 
 
 ```
 if
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -461,7 +461,7 @@ invocations, as the conditions to conditional events. To understand how this wor
 ```
 if
   foo
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -479,7 +479,7 @@ an expression, yielding the results of some node-set, such as the following.
 ```
 _x:bool:true
 if:x:/../*/_x?value
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -495,7 +495,7 @@ the following code.
 _x:int:5
 if:x:/../*/_x?value
   =:int:5
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -511,7 +511,7 @@ a string, it will _NOT_ yield true, since their types are different.
 _x:int:5
 if:x:/../*/_x?value
   =:5
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -523,7 +523,7 @@ You could however type cast the results of your expression above, to make them b
 _x:int:5
 if:x:/../*/_x?value.string
   =:5
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -541,7 +541,7 @@ of asking "does this string exist in the condition". Imagine the following code 
 _x:thomas hansen
 if:x:/../*/_x?value
   ~:hans
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -566,7 +566,7 @@ if:x:/../*/_foo1?value
   =:bar1
   and:x:/../*/_foo2?value
     =:bar2
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -598,7 +598,7 @@ if:x:/../*/_name?value
     =:john
     and:x:/../*/_surname?value
       =:doe
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -655,7 +655,7 @@ it will as a result always have to _FOLLOW_ the condition it is supposed to nega
 _x:bool:false
 if:x:/../*/_x?value
   not
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -672,7 +672,7 @@ _x:thomas
 if:x:/../*/_x?value
   =:thomas
   not
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -708,7 +708,7 @@ _data
   foo2:hansen
 for-each:x:/../*/_data/*?value
   eval-x:x:/+/*
-  create-literal-widget
+  p5.web.widgets.create-literal
     parent:content
     element:h1
     innerValue:x:/..for-each/*/_dp?value
@@ -1089,13 +1089,13 @@ _people
   thomas
   john
   jane
-apply:x:/../*/create-widget/*/widgets
+apply:x:/../*/p5.web.widgets.create/*/widgets
   src:x:/../*/_people/*
   template
     literal
       element:h3
       {innerValue}:x:?name
-create-widget
+p5.web.widgets.create
   parent:content
   widgets
 ```
@@ -1128,13 +1128,13 @@ _people
     name:John Doe
   person3
     name:Jane Doe
-apply:x:/../*/create-widget/*/widgets
+apply:x:/../*/p5.web.widgets.create/*/widgets
   src:x:/../*/_people/*
   template
     literal
       element:h3
       {innerValue}:x:/*/name?value
-create-widget
+p5.web.widgets.create
   parent:content
   widgets
 ```
@@ -1173,12 +1173,12 @@ _exe
       innerValue:{0}, {1}
         :x:/../*/_dn/#/*/surname?value
         :x:/../*/_dn/#/*/name?value
-apply:x:/../*/create-widget/*/widgets
+apply:x:/../*/p5.web.widgets.create/*/widgets
   src:x:/../*/_people/*
   template
     {@eval}:x:/../*/_exe
     hr
-create-widget
+p5.web.widgets.create
   parent:content
   widgets
 ```
@@ -1224,7 +1224,7 @@ _output1-exe
 apply:x:/../*/_output1
   src:x:/../*/_data/*
   template
-    create-literal-widget
+    p5.web.widgets.create-literal
       element:h3
       {@eval}:x:/../*/_output1-exe
       onclick
@@ -1244,7 +1244,7 @@ invocations above. Unless we had added the back-slash at line 29, then this data
 invocation. Which obviously was not our intention. Hence, we add a back-slash in front of it, which will be removed during the first databound,
 but also make sure our node is not databound during the first apply invocation.
 
-The code creates one *[create-literal-widget]* invocation, for each child node of our *[_data]* segment, having the *[innerValue]* created
+The code creates one *[p5.web.widgets.create-literal]* invocation, for each child node of our *[_data]* segment, having the *[innerValue]* created
 as a combination of the *[last]* and *[first]* name of our persons.
 
 Then we handle the *[onclick]* Ajax event for our widgets, from where we invoke *[apply]* towards an invocation of *[sys42.windows.info-tip]*.

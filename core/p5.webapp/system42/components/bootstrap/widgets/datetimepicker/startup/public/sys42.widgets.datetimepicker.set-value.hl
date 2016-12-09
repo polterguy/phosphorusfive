@@ -8,17 +8,17 @@ create-event:sys42.widgets.datetimepicker.set-value
   /*
    * Changing value of textbox.
    */
-  find-widget:x:/../*/_arg?value
+  p5.web.widgets.find:x:/../*/_arg?value
     element:input
     type:text
-  set-widget-property:x:/@find-widget/*/*?value
+  p5.web.widgets.property.set:x:/@p5.web.widgets.find/*/*?value
     value:x:/../*/_value?value
 
   /*
    * Due to "funny DOM event manipulations" in DateTimePicker, we need to explicitly pass in the
-   * new value to our textbox like the following, in addition to using [set-widget-property].
+   * new value to our textbox like the following, in addition to using [p5.web.widgets.property.set].
    * Otherwise, the value of our textbox won't actually change!!
    */
   p5.web.send-javascript:@"$('#{0}').val('{1}').change();"
-    :x:/@find-widget/*/*?value
+    :x:/@p5.web.widgets.find/*/*?value
     :x:/../*/_value?value

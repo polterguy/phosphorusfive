@@ -106,21 +106,21 @@ create-event:sys42.widgets.tree._create-items
                 /*
                  * Getting id of item, and passing into [toggle-items] and [select-items] as [_items] collection.
                  */
-                get-parent-widget:x:/../*/_event?value
-                get-widget-property:x:/-/*/*?value
+                p5.web.widgets.get-parent:x:/../*/_event?value
+                p5.web.widgets.property.get:x:/-/*/*?value
                   _item-id
                 add:x:/../*/sys42.widgets.tree.toggle-items/*|/../*/sys42.widgets.tree.select-items/*
-                  src:x:/../*/get-widget-property/*/*?value
+                  src:x:/../*/p5.web.widgets.property.get/*/*?value
 
                 /*
                  * Then finding "root tree" widget for currently clicked item, such that we can pass it
                  * into [toggle-items] and [select-items].
                  */
-                find-first-ancestor-widget:x:/../*/_event?value
+                p5.web.widgets.find-ancestor:x:/../*/_event?value
                   _root-tree
-                sys42.widgets.tree.toggle-items:x:/../*/find-first-ancestor-widget/*/*?value
+                sys42.widgets.tree.toggle-items:x:/../*/p5.web.widgets.find-ancestor/*/*?value
                   _items
-                sys42.widgets.tree.select-items:x:/../*/find-first-ancestor-widget/*/*?value
+                sys42.widgets.tree.select-items:x:/../*/p5.web.widgets.find-ancestor/*/*?value
                   _items
 
               /*
@@ -135,9 +135,9 @@ create-event:sys42.widgets.tree._create-items
                  * traverse the hierarchy upwards, adding all necessary IDs, and creating a URL that will
                  * expand all items leading to "current item".
                  */
-                find-first-ancestor-widget:x:/../*/_event?value
+                p5.web.widgets.find-ancestor:x:/../*/_event?value
                   _root-tree
-                get-widget-property:x:/-/*/*?value
+                p5.web.widgets.property.get:x:/-/*/*?value
                   _root-tree
 
                 /*
@@ -145,9 +145,9 @@ create-event:sys42.widgets.tree._create-items
                  * create an SEO friendly tree, and use the value of [_root-tree] as the HTTP GET parameter name while doing.
                  */
                 if:x:/-/*/*?value
-                  get-parent-widget:x:/../*/_event?value
+                  p5.web.widgets.get-parent:x:/../*/_event?value
                   sys42.widgets.tree._create-url:x:/-/*/*?value
-                  set-widget-property:x:/../*/_event?value
+                  p5.web.widgets.property.set:x:/../*/_event?value
                     href:x:/..if/*/sys42.widgets.tree._create-url?value
               widgets
                 span

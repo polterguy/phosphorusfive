@@ -7,17 +7,17 @@ create-event:sys42.widgets.datagrid.get-selected-items
   /*
    * Finding all "tr" widgets with the "selected" class.
    */
-  find-widget-like:x:/../*/_arg?value
+  p5.web.widgets.find-like:x:/../*/_arg?value
     element:tr
     class:selected
 
   /*
    * Looping through these widgets to retrieve their [_row].
    */
-  for-each:x:/@find-widget-like/*/*
-    get-widget-property:x:/@_dp/#?value
+  for-each:x:/@p5.web.widgets.find-like/*/*
+    p5.web.widgets.property.get:x:/@_dp/#?value
       _row
     add:x:/../*/return/*/_items
-      src:x:/@get-widget-property/*/*?value
+      src:x:/@p5.web.widgets.property.get/*/*?value
   return
     _items

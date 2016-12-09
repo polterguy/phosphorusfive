@@ -8,9 +8,9 @@ create-event:sys42.widgets.colorpicker.get-value
   /*
    * Finding textbox, and returning value.
    */
-  find-widget:x:/../*/_arg?value
+  p5.web.widgets.find:x:/../*/_arg?value
     element:input
     type:text
-  get-widget-property:x:/@find-widget/*/*?value
+  p5.web.widgets.property.get:x:/@p5.web.widgets.find/*/*?value
     value
-  return:x:/@get-widget-property/*/*?value
+  return:x:/@p5.web.widgets.property.get/*/*?value

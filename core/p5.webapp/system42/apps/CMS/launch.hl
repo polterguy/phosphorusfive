@@ -52,7 +52,7 @@ sys42.utilities.execute-lambda-file:@CMS/create-uploader.hl
 /*
  * Creating our main widget, consisting of two drop down lists, and really not much more.
  */
-create-widget:cms-page-editor
+p5.web.widgets.create:cms-page-editor
   parent:content
   widgets
 
@@ -96,7 +96,7 @@ create-widget:cms-page-editor
                   /*
                    * Showing uploader.
                    */
-                  set-widget-property:cms-ajax-uploader
+                  p5.web.widgets.property.set:cms-ajax-uploader
                     visible:true
 
                 /*
@@ -151,12 +151,12 @@ create-widget:cms-page-editor
                   /*
                    * Clears any previously created "option" HTML elements from "select existing page for editing" drop down.
                    */
-                  clear-widget:cms-select-page
+                  p5.web.widgets.clear:cms-select-page
 
                   /*
                    * Adding the [_default] item, which simply is an informational piece of text.
                    */
-                  create-literal-widget
+                  p5.web.widgets.create-literal
                     element:option
                     render-type:open
                     parent:cms-select-page
@@ -182,15 +182,15 @@ create-widget:cms-page-editor
                      */
                     if:x:/@sys42.cms.get-edited-page-id?value
                       =:x:/@_dp/#?value
-                      add:x:/..for-each/*/create-literal-widget
+                      add:x:/..for-each/*/p5.web.widgets.create-literal
                         src
                           selected
 
                     /*
-                     * Forward evaluating the expressions in [create-literal-widget], before invoking it.
+                     * Forward evaluating the expressions in [p5.web.widgets.create-literal], before invoking it.
                      */
                     eval-x:x:/+/*
-                    create-literal-widget
+                    p5.web.widgets.create-literal
                       element:option
                       render-type:open
                       parent:cms-select-page
@@ -208,7 +208,7 @@ create-widget:cms-page-editor
                   /*
                    * Figuring out which page was selected for editing, if any.
                    */
-                  get-widget-property:cms-select-page
+                  p5.web.widgets.property.get:cms-select-page
                     value
 
                   /*
@@ -218,8 +218,8 @@ create-widget:cms-page-editor
                    * if the selected "page" was [_default], which is the informational piece of text, explaining
                    * what the dropdown's purpose is.
                    */
-                  sys42.cms.set-currently-edited-page:x:/@get-widget-property/*/*(!/=_default)?value
-                  if:x:/@get-widget-property/*/*(!/=_default)?value
+                  sys42.cms.set-currently-edited-page:x:/@p5.web.widgets.property.get/*/*(!/=_default)?value
+                  if:x:/@p5.web.widgets.property.get/*/*(!/=_default)?value
 
                     /*
                      * Editing page.
@@ -231,12 +231,12 @@ create-widget:cms-page-editor
                     /*
                      * No page is being edited, simply clear the editor surface.
                      */
-                    clear-widget:cms-page-editor-surface
+                    p5.web.widgets.clear:cms-page-editor-surface
 
                     /*
                      * Showing uploader widget.
                      */
-                    set-widget-property:cms-ajax-uploader
+                    p5.web.widgets.property.set:cms-ajax-uploader
                       visible:true
 
 
@@ -292,7 +292,7 @@ create-widget:cms-page-editor
                  * Creating our "button" HTML element for currently iterated "specialized editor".
                  */
                 eval-x:x:/+/*/*/*
-                create-widget
+                p5.web.widgets.create
                   element:li
                   render-type:open
                   parent:cms-create-new-page
@@ -305,19 +305,19 @@ create-widget:cms-page-editor
                         /*
                          * First toggling (closing) bootstrap's dropdown button.
                          */
-                        find-first-ancestor-widget-like:x:/../*/_event?value
+                        p5.web.widgets.find-ancestor-like:x:/../*/_event?value
                           class:btn-group
-                        find-widget:x:/@find-first-ancestor-widget-like/*/*?value
+                        p5.web.widgets.find:x:/@p5.web.widgets.find-ancestor-like/*/*?value
                           element:button
                         p5.web.send-javascript:@"$('#{0}').dropdown('toggle');"
-                          :x:/@find-widget/0/0?value
+                          :x:/@p5.web.widgets.find/0/0?value
 
                         /*
                          * Then creating our new page.
                          */
-                        get-widget-property:x:/../*/_event?value
+                        p5.web.widgets.property.get:x:/../*/_event?value
                           innerValue
-                        sys42.cms.create-new-page:x:/@get-widget-property/*/*?value
+                        sys42.cms.create-new-page:x:/@p5.web.widgets.property.get/*/*?value
 
 
             /*
@@ -366,7 +366,7 @@ create-widget:cms-page-editor
           /*
            * Clears out any previous editors, including the common toolbar.
            */
-          clear-widget:cms-page-editor-surface
+          p5.web.widgets.clear:cms-page-editor-surface
 
           /*
            * Figuring out which page we're editing, if any.
@@ -393,7 +393,7 @@ create-widget:cms-page-editor
             /*
              * Hiding uploader widget.
              */
-            set-widget-property:cms-ajax-uploader
+            p5.web.widgets.property.set:cms-ajax-uploader
               visible:false
 
           else
@@ -401,5 +401,5 @@ create-widget:cms-page-editor
             /*
              * Showing uploader widget.
              */
-            set-widget-property:cms-ajax-uploader
+            p5.web.widgets.property.set:cms-ajax-uploader
               visible:true

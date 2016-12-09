@@ -25,7 +25,7 @@ if
   /*
    * Exchanging literal:{content}'s value with HTML from database.
    */
-  set:x:/-/*/*/create-widget/*/widgets/**/={content}?value
+  set:x:/-/*/*/p5.web.widgets.create/*/widgets/**/={content}?value
     src:x:/../*/_args/*/html?value
 
   /*
@@ -47,8 +47,8 @@ else
  */
 if
   fetch:x:/0/0?value
-    widget-exist:header
-  set-widget-property:header
+    p5.web.widgets.exists:header
+  p5.web.widgets.property.set:header
     innerValue:x:/../*/_args/*/name?value
 set-title:x:/../*/_args/*/name?value
 

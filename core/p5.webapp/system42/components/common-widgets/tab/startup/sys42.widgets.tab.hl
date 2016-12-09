@@ -74,35 +74,35 @@ create-event:sys42.widgets.tab
               /*
                * Finding root tab widget, for then to find the visible widget, and making it invisible.
                */
-              find-first-ancestor-widget:x:/../*/_event?value
+              p5.web.widgets.find-ancestor:x:/../*/_event?value
                 _root-tab
-              find-widget:x:/@find-first-ancestor-widget/*/*?value
+              p5.web.widgets.find:x:/@p5.web.widgets.find-ancestor/*/*?value
                 class:tab-content-item
                 visible:true
-              set-widget-property:x:/@find-widget/*/*?value
+              p5.web.widgets.property.set:x:/@p5.web.widgets.find/*/*?value
                 visible:false
 
               /*
                * Now finding out which index the currently clicked tab header button is, and making sure
                * we set that content widget to visible.
                */
-              get-widget-property:x:/../*/_event?value
+              p5.web.widgets.property.get:x:/../*/_event?value
                 _index
-              find-widget:x:/@find-first-ancestor-widget/*/*?value
+              p5.web.widgets.find:x:/@p5.web.widgets.find-ancestor/*/*?value
                 class:tab-content-item
-              set-widget-property:x:/@find-widget/*/{0}?value
-                :x:/@get-widget-property/*/*?value
+              p5.web.widgets.property.set:x:/@p5.web.widgets.find/*/{0}?value
+                :x:/@p5.web.widgets.property.get/*/*?value
                 visible:true
 
               /*
                * Now making sure we remove the "active" CSS class from the previously active button, and set the class for the currently clicked button
                */
-              find-widget-like:x:/@find-first-ancestor-widget/*/*?value
+              p5.web.widgets.find-like:x:/@p5.web.widgets.find-ancestor/*/*?value
                 class:tab-header-active-item
-              sys42.utilities.toggle-css-classes:x:/@find-widget-like/*/*?value
+              sys42.utilities.toggle-css-classes:x:/@p5.web.widgets.find-like/*/*?value
                 _class:tab-header-active-item
-              get-parent-widget:x:/../*/_event?value
-              sys42.utilities.toggle-css-classes:x:/@get-parent-widget/*/*?value
+              p5.web.widgets.get-parent:x:/../*/_event?value
+              sys42.utilities.toggle-css-classes:x:/@p5.web.widgets.get-parent/*/*?value
                 _class:tab-header-active-item
 
 
@@ -128,7 +128,7 @@ create-event:sys42.widgets.tab
         add:x:/@_header/*/container/*/widgets/*/a
           src
             oninit
-              raise-widget-ajax-event:x:/../*/_event?value
+              p5.web.widgets.ajax-events.raise:x:/../*/_event?value
                 onclick
 
       /*

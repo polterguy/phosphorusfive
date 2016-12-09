@@ -20,25 +20,25 @@ create-event:sys42.utilities.get-widget
   /*
    * Figuring out type of widget.
    */
-  list-widgets:x:/../*/_arg?value
+  p5.web.widgets.list:x:/../*/_arg?value
 
   /*
    * Looping through all widgets requested by caller.
    */
-  while:x:/@list-widgets/0
+  while:x:/@p5.web.widgets.list/0
 
     /*
      * Adding widget to root active event node as "return value".
      */
     insert-before:x:/@_return-value
-      src:x:/@list-widgets/0
+      src:x:/@p5.web.widgets.list/0
 
     /*
      * Fetching properties, and adding to return value.
      */
-    list-widget-properties:x:/@list-widgets/0?value
+    p5.web.widgets.property.list:x:/@p5.web.widgets.list/0?value
     add:x:/@_return-value/-
-      src:x:/@list-widget-properties/*/*
+      src:x:/@p5.web.widgets.property.list/*/*
 
     /*
      * Checking if this was an automatically generated ID, and if it was, we remove the automatically assigned ID.
@@ -53,7 +53,7 @@ create-event:sys42.utilities.get-widget
        * Notice, all automatically generated IDs are exactly 8 characters long, starts with an "x", and continues with 7 hex numbers.
        * There are no capital letters in an automatically created ID.
        */
-      match:x:/@list-widgets/0?value
+      match:x:/@p5.web.widgets.list/0?value
         src:regex:/x[abcdef0-9]{7}/c
       if:x:/@match/*/*?name
         set:x:/@_return-value/-?value
@@ -88,38 +88,38 @@ create-event:sys42.utilities.get-widget
      * Now retrieving widgets' ajax events.
      * First simply listing them, which will only return their names.
      */
-    list-widget-ajax-events:x:/@list-widgets/0?value
+    p5.web.widgets.ajax-events.list:x:/@p5.web.widgets.list/0?value
     add:x:/+
-      src:x:/@list-widget-ajax-events/*/*
+      src:x:/@p5.web.widgets.ajax-events.list/*/*
 
     /*
      * Then retrieving widgets' Ajax events lambda object(s).
      */
-    get-widget-ajax-event:x:/@list-widget-ajax-events/*?name
+    p5.web.widgets.ajax-events.get:x:/@p5.web.widgets.ajax-events.list/*?name
 
     /*
      * Removing all [_event] children of Ajax events, before adding the Ajax events into lambda return value for widget,
      * since these are automatically injected into the events, as the events are created, and are referencing the ID of the widget,
      * which might change.
      */
-    set:x:/@get-widget-ajax-event/*/*/*/_event
+    set:x:/@p5.web.widgets.ajax-events.get/*/*/*/_event
 
     /*
      * Then adding lambda content of Ajax event into returned widget.
      */
     add:x:/@_return-value/-
-      src:x:/@get-widget-ajax-event/*/*
+      src:x:/@p5.web.widgets.ajax-events.get/*/*
 
     /*
      * Widget lambda events, first retrieving list of all events, then retrieving lambda content.
      */
-    list-widget-lambda-events:x:/@list-widgets/0?value
+    p5.web.widgets.lambda-events.list:x:/@p5.web.widgets.list/0?value
 
     /*
      * Checking if we have any lambda events, and if so, add an [events] node to our currently iterated widget,
      * before we retrieve events lambda.
      */
-    if:x:/@list-widget-lambda-events/*/*
+    if:x:/@p5.web.widgets.lambda-events.list/*/*
 
       /*
        * We have lambda events, adding [events] node, for then to add all events into this node. 
@@ -132,19 +132,19 @@ create-event:sys42.utilities.get-widget
        * Retrieving lambda event's lambda.
        */
       add:x:/+
-        src:x:/@list-widget-lambda-events/*/*
-      get-widget-lambda-event:x:/@list-widget-lambda-events/*?name
+        src:x:/@p5.web.widgets.lambda-events.list/*/*
+      p5.web.widgets.lambda-events.get:x:/@p5.web.widgets.lambda-events.list/*?name
 
       /*
        * Removing [_events] node, which is an automatically generated ID, created during event creation.
        */
-      set:x:/@get-widget-lambda-event/*/*/*/_event
+      set:x:/@p5.web.widgets.lambda-events.get/*/*/*/_event
 
       /*
        * Adding lambda events to return value for currently iterated widget.
        */
       add:x:/../*/_return-value/-/*/events
-        src:x:/@get-widget-lambda-event/*/*
+        src:x:/@p5.web.widgets.lambda-events.get/*/*
 
     /*
      * Making sure all [container] widgets have the [widgets] child, even if they're not supposed to fetch their children, to create a
@@ -152,7 +152,7 @@ create-event:sys42.utilities.get-widget
      *
      * This is done, to make it easier for caller to add widgets into [container] widgets, after event has evaluated.
      */
-    if:x:/@list-widgets/0?name
+    if:x:/@p5.web.widgets.list/0?name
       =:container
       add:x:/@_return-value/-
         src
@@ -168,8 +168,8 @@ create-event:sys42.utilities.get-widget
        * Looping through all children widgets recursively, invoking self, adding returned value(s) to [widgets] collection for 
        * currently iterated widget.
        */
-      get-children-widgets:x:/@list-widgets/0?value
-      for-each:x:/@get-children-widgets/*/*?value
+      p5.web.widgets.get-children:x:/@p5.web.widgets.list/0?value
+      for-each:x:/@p5.web.widgets.get-children/*/*?value
 
         /*
          * Dynamically creating recursive invocation, passing in id of currently iterated children widget.
@@ -197,4 +197,4 @@ create-event:sys42.utilities.get-widget
     /*
      * Removing zeroth item of list-widget, to "decrement" [while] loop condition.
      */
-    set:x:/@list-widgets/0
+    set:x:/@p5.web.widgets.list/0

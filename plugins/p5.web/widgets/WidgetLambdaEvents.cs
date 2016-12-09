@@ -50,14 +50,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-lambda-event")]
-        public void get_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.lambda-events.get")]
+        public void p5_web_widgets_lambda_events_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-lambda-event")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.lambda-events.get")) {
 
                     // Looping through events requested by caller
                     foreach (var idxEventNameNode in e.Args.Children.ToList ()) {
@@ -80,11 +80,11 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-widget-lambda-event")]
-        public void set_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.lambda-events.set")]
+        public void p5_web_widgets_lambda_events_set (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widget IDs
-            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-lambda-event")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.lambda-events.set")) {
 
                 // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
@@ -109,14 +109,14 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widget-lambda-events")]
-        public void list_widget_lambda_events (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.lambda-events.list")]
+        public void p5_web_widgets_lambda_events_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "list-widget-lambda-events")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.lambda-events.list")) {
 
                     // Then looping through all attribute keys, filtering everything out that does not start with "on"
                     Node curNode = new Node(idxWidget.ID);
@@ -139,8 +139,8 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-all-widget-lambda-events")]
-        public void list_all_widget_lambda_events (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.lambda-events.list-all")]
+        public void p5_web_widgets_lambda_events_list_all (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving filter, if any
             var filter = new List<string> (XUtil.Iterate<string> (context, e.Args));

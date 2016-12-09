@@ -7,23 +7,23 @@ create-event:sys42.widgets.datagrid.go-next
   /*
    * Retrieving current page and number of items per page.
    */
-  get-widget-property:x:/../*/_arg?value
+  p5.web.widgets.property.get:x:/../*/_arg?value
     _current-page
     _page-size
     _query
 
   /*
-   * Incrementing page by 1, and storing results in above [get-widget-property]'s result.
+   * Incrementing page by 1, and storing results in above [p5.web.widgets.property.get]'s result.
    */
-  set:x:/@get-widget-property/*/*/_current-page?value
-    +:x:/@get-widget-property/*/*/_current-page?value.int
+  set:x:/@p5.web.widgets.property.get/*/*/_current-page?value
+    +:x:/@p5.web.widgets.property.get/*/*/_current-page?value.int
       _:1
 
   /*
    * Updating current page to property of datagrid root widget.
    */
-  set-widget-property:x:/../*/_arg?value
-    _current-page:x:/@get-widget-property/*/*/_current-page?value
+  p5.web.widgets.property.set:x:/../*/_arg?value
+    _current-page:x:/@p5.web.widgets.property.get/*/*/_current-page?value
 
   /*
    * Databinding grid, and if it was unsuccessful, we decrement current page back to what it was previously.
@@ -31,8 +31,8 @@ create-event:sys42.widgets.datagrid.go-next
   if
     sys42.widgets.datagrid.databind:x:/../*/_arg?value
     not
-    set:x:/@get-widget-property/*/*/_current-page?value
-      -:x:/@get-widget-property/*/*/_current-page?value.int
+    set:x:/@p5.web.widgets.property.get/*/*/_current-page?value
+      -:x:/@p5.web.widgets.property.get/*/*/_current-page?value.int
         _:1
-    set-widget-property:x:/../*/_arg?value
-      _current-page:x:/@get-widget-property/*/*/_current-page?value
+    p5.web.widgets.property.set:x:/../*/_arg?value
+      _current-page:x:/@p5.web.widgets.property.get/*/*/_current-page?value

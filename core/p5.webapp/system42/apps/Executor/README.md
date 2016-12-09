@@ -8,13 +8,13 @@ having been evaluated, showing the result of your evaluated code.
 To try it out, start System42, and paste the following code into the input editor, and click the "Evaluate" button.
 
 ```
-create-literal-widget
+p5.web.widgets.create-literal
   element:h3
   parent:content
   class:col-xs-12
   innerValue:Click me!
   onclick
-    set-widget-property:x:/../*/_event?value
+    p5.web.widgets.property.set:x:/../*/_event?value
       innerValue:Hello World!
 ```
 

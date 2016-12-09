@@ -24,7 +24,7 @@ After having evaluated the above Hyperlambda in for instance the CMS/Executor, y
 the following code into a new _"lambda"_ page of System42's CMS.
 
 ```
-create-widget:datagrid-wrapper-1
+p5.web.widgets.create:datagrid-wrapper-1
   parent:content
   class:col-xs-12
   widgets
@@ -103,7 +103,7 @@ argument passed in with a value of "false". However, the emails can be edited, u
 that eliminates editing of the first column, but allows editing of all other columns.
 
 ```
-create-widget:datagrid-wrapper-2
+p5.web.widgets.create:datagrid-wrapper-2
   parent:content
   class:col-xs-12
   widgets
@@ -167,7 +167,7 @@ In the example below, we have increased the page size to 5, and turned on row se
 a modal wizard window, allowing the user to edit his items in a modal window instead.
 
 ```
-create-widget:datagrid-wrapper-3
+p5.web.widgets.create:datagrid-wrapper-3
   parent:content
   class:col-xs-12
   widgets
@@ -276,7 +276,7 @@ your own *[_pager-widgets]* collection, which becomes a *[widget]* collection st
 following.
 
 ```
-create-widget:datagrid-wrapper-4
+p5.web.widgets.create:datagrid-wrapper-4
   parent:content
   class:col-xs-12
   widgets
@@ -365,7 +365,7 @@ template column datagrid, with two template columns. One row allowing you to del
 select your items.
 
 ```
-create-widget:datagrid-wrapper-5
+p5.web.widgets.create:datagrid-wrapper-5
   parent:content
   class:col-xs-12
   widgets
@@ -427,7 +427,7 @@ create-widget:datagrid-wrapper-5
                 button
                   innerValue:V
                   onclick
-                    find-first-ancestor-widget:x:/../*/_event?value
+                    p5.web.widgets.find-ancestor:x:/../*/_event?value
                       _row
                     sys42.utilities.toggle-css-classes:x:/-/*/*?value
                       _class:selected
@@ -450,10 +450,10 @@ create-widget:datagrid-wrapper-5
        * column header is clicked.
        */
       .on-header-clicked
-        get-widget-property:x:/../*/_event?value
+        p5.web.widgets.property.get:x:/../*/_event?value
           innerValue
         sys42.windows.info-tip:'{0}' was clicked.
-          :x:/@get-widget-property/*/*?value
+          :x:/@p5.web.widgets.property.get/*/*?value
 ```
 
 In the above example, we have also turned of the entire footer, effectively disabling paging and searching/filtering your items.
@@ -481,7 +481,7 @@ This is simply done by return _"false"_ from your *[.on-edit-item]* lambda callb
 if your input is _"error"_, at which point it does not accept your new value.
 
 ```
-create-widget:datagrid-wrapper-6
+p5.web.widgets.create:datagrid-wrapper-6
   parent:content
   class:col-xs-12
   widgets
@@ -530,7 +530,7 @@ your *[.on-get-items]* callback. Below we are for instance using a number type o
 Notice, this requires that the data for your 5th column actually is a number, and not some plain text.
 
 ```
-create-widget:datagrid-wrapper-6
+p5.web.widgets.create:datagrid-wrapper-6
   parent:content
   class:col-xs-12
   widgets

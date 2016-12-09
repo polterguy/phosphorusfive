@@ -7,7 +7,7 @@ items in it, by for instance by right clicking and item, and choose _"Open in ne
 To use it, simply add it to a container widget collection, through its widget creational Active Event *[sys42.widgets.tree]*. Example below.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   widgets
     sys42.widgets.tree
@@ -53,7 +53,7 @@ The *[_items]* collection, are your initial items for when the widget is created
 that have children items themselves, such as this example shows you.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   class:col-xs-12
   widgets
@@ -82,7 +82,7 @@ You can also override the CSS class(es) used for specific items, both their _"op
 example of this.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   class:col-xs-12
   widgets
@@ -131,7 +131,7 @@ Notice, all arguments are optional, except the *[_items]* collection, that must 
 smallest possible code to use the Tree view look something like this.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   widgets
     sys42.widgets.tree
       _items
@@ -146,7 +146,7 @@ initially gave it when the widget was created.
 You can also toggle multiple items at the same time, by returning a nested *[_items]* collection, as the following demonstrates.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   widgets
     sys42.widgets.tree
@@ -181,7 +181,7 @@ Your lambda callback will be given a collection of *[_items]*, where the name pr
 Below is an example of a TreeView widget that simply shows an _"info tip box"_ as the user selects items.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   class:col-xs-12
   widgets
@@ -209,7 +209,7 @@ achieve using its API. The *[sys42.widgets.tree.select-items]* lambda widget eve
 Click the button to select both the _"foo-1"_ and the _"bar-2"_ item.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   class:col-xs-12
   widgets
@@ -240,7 +240,7 @@ Which takes the exact same set of parameters as the *[sys42.widgets.tree.select-
 two items in your tree, through clicking a button.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   class:col-xs-12
   widgets
@@ -275,7 +275,7 @@ The tree widget also supports retrieving currently selected items, through its *
 Below is an example of usage. Select any item in your tree, and then click the button.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   class:col-xs-12
   widgets
@@ -321,7 +321,7 @@ Below is the exact same example we started out with, except with a different ski
 smartphones and smaller devices.
 
 ```
-create-container-widget
+p5.web.widgets.create-container
   parent:content
   widgets
     sys42.widgets.tree
