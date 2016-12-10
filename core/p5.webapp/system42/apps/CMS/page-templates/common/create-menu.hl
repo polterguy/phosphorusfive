@@ -78,7 +78,7 @@ if:x:/../*/_extra-css-classes?value
   * Retrieving current Context user for later, since we'll need to check his role, 
   * to see which pages he or she has access to
   */
-p5.auth.whoami
+p5.auth.misc.whoami
 
 /*
   * Selecting all [p5.page] objects from database, and looping through them, to
@@ -169,7 +169,7 @@ for-each:x:/../*/p5.data.select/[0,1]/*
 /*
   * Adding login/logout button to menu
   */
-if:x:/../*/p5.auth.whoami/*/default?value
+if:x:/../*/p5.auth.misc.whoami/*/default?value
   =:bool:true
 
   /*
@@ -314,7 +314,7 @@ else
         return
       p5.string.split:x:/./*/_dn/#?name
         =:/
-      p5.html.encode-url:x:/../*/p5.string.split/0/-?name
+      p5.html.url-encode:x:/../*/p5.string.split/0/-?name
       eval-x:x:/+/*/*/*/*
       return
         li
@@ -322,7 +322,7 @@ else
           widgets
             a
               href:/app-loader?app={0}
-                :x:/../*/p5.html.encode-url?value
+                :x:/../*/p5.html.url-encode?value
               innerValue:x:/../*/p5.string.split/0/-?name
     apply:x:/./*/p5.web.widgets.create-container/*/widgets/*/ul/*/widgets
       src:x:/././-/*

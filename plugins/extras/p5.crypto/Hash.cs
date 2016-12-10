@@ -38,8 +38,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.create-sha256-hash")]
-        public static void p5_crypto_create_sha256_hash (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.hash.create-sha256")]
+        public static void p5_crypto_hash_create_sha256 (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -69,8 +69,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.crypto.create-sha512-hash")]
-        public static void p5_crypto_create_sha512_hash (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.hash.create-sha512")]
+        public static void p5_crypto_hash_create_sha512 (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {

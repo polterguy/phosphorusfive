@@ -132,23 +132,23 @@ To get your user's settings, use the *[p5.auth.my-settings.get]* Active Event.
 To change the passsword of the currently logged in user, use the following code.
 
 ```
-p5.auth.change-my-password:bar
+p5.auth.misc.change-my-password:bar
 ```
 
 The above Hyperlambda will change the passsword for the currentlylogged in user to _"bar"_.
 
-## [p5.auth.whoami], figuring out who you are
+## [p5.auth.misc.whoami], figuring out who you are
 
-To see who you are, you can invoke *[p5.auth.whoami]*, like the following code illustrates.
+To see who you are, you can invoke *[p5.auth.misc.whoami]*, like the following code illustrates.
 
 ```
-p5.auth.whoami
+p5.auth.misc.whoami
 ```
 
 The above Hyperlambda will return the following.
 
 ```
-p5.auth.whoami
+p5.auth.misc.whoami
   username:root
   role:root
   default:bool:false
@@ -157,7 +157,7 @@ p5.auth.whoami
 For the default guest user, meaning somebody who is not logged in, it will return the following.
 
 ```
-p5.auth.whoami
+p5.auth.misc.whoami
   username:guest
   role:guest
   default:bool:true
@@ -166,7 +166,7 @@ p5.auth.whoami
 Notice the *[default]* node above, which is the correct way to check if a user is logged in or not, since the name of the guest role, at least in theory,
 can be changed to something else than "guest". Although, this is not recommended, it is possible to do.
 
-Notice, if you wish, you can invoke an Active Event that deletes the currently logged in user. This Active Event is called *[p5.auth.delete-my-user]*, and
+Notice, if you wish, you can invoke an Active Event that deletes the currently logged in user. This Active Event is called *[p5.auth.misc.delete-my-user]*, and
 will completely delete the currently logged in user, including his or hers files. This will (obviously), also log you out of the system. Notice, this
 Active Event will not destroy the session associated with the user though. Make sure you remove all session values if you choose to use it.
 
@@ -217,13 +217,13 @@ There are two special roles in the system though.
 To list all roles in your system, you can execute the following code.
 
 ```
-p5.auth.list-roles
+p5.auth.roles.list
 ```
 
 The above will result in something similar to the following.
 
 ```
-p5.auth.list-roles
+p5.auth.roles.list
   guest
   root:int:1
 ```

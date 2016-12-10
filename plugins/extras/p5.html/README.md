@@ -58,9 +58,9 @@ all hyperlinks from reddit.com
 
 In addition to the two HTML transformation Active Events above, there are also some supporting Active Events in this library.
 
-* [p5.html.encode-html], encodes a piece of HTML, replacing "<" with "&lt;" etc
-* [p5.html.decode-html], does the opposite of the above
-* [p5.html.encode-url], URL encodes a piece of string with %xx notation
-* [p5.html.decode-url], does the opposite of the above
+* [p5.html.html-encode], encodes a piece of HTML, replacing "<" with "&lt;" etc
+* [p5.html.html-decode], does the opposite of the above
+* [p5.html.url-encode], URL encodes a piece of string with %xx notation
+* [p5.html.url-decode], does the opposite of the above
 
 

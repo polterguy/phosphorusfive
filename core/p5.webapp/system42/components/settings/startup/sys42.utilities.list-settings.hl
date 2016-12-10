@@ -19,8 +19,8 @@ p5.events.create:sys42.utilities.list-settings
   /*
    * Retrieving currently logged in user, checking if user is "root", and if a specific user was supplied.
    */
-  p5.auth.whoami
-  if:x:/@p5.auth.whoami/*/role?value
+  p5.auth.misc.whoami
+  if:x:/@p5.auth.misc.whoami/*/role?value
     =:root
     and:x:/../*/_username?value
 
@@ -38,7 +38,7 @@ p5.events.create:sys42.utilities.list-settings
     throw:Only root accounts can retrieve settings for other users than the currently logged in identity user
 
   p5.data.select:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*"
-    :x:/@p5.auth.whoami/*/username?value
+    :x:/@p5.auth.misc.whoami/*/username?value
     :x:/../*/_app?value
 
   /*

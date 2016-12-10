@@ -32,10 +32,10 @@ p5.web.widgets.create:content
  * to determine what to do, and which GUI to show user.
  */
 if
-  p5.auth.root-password-is-null
+  p5.auth._root-password-is-null
 
   if
-    p5.auth.has-salt
+    p5.auth._has-salt
     not
 
     /*

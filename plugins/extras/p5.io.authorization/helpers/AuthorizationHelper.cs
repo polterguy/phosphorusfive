@@ -142,7 +142,7 @@ namespace p5.io.authorization.helpers
 
                     // Making sure root password is not null, since during setup of server, guest needs write access to create 
                     // salt event files, etc ...
-                    if (!context.Raise ("p5.auth.root-password-is-null").Get<bool> (context))
+                    if (!context.Raise ("p5.auth._root-password-is-null").Get<bool> (context))
                         throw new LambdaSecurityException (
                             string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                             stack, 

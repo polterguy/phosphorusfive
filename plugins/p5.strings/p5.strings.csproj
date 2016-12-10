@@ -70,6 +70,7 @@
     <Compile Include="keywords\Join.cs" />
     <Compile Include="keywords\Length.cs" />
     <Compile Include="keywords\Match.cs" />
+    <Compile Include="keywords\Base64.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="keywords\Replace.cs" />
     <Compile Include="keywords\Split.cs" />

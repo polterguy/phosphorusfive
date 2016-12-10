@@ -9,7 +9,7 @@
 /*
  * Verifying user is authorized to access this application
  */
-p5.auth.whoami
+p5.auth.misc.whoami
 if:x:/-/*/role?value
   !=:root
   throw:@"Sorry, this page is only accessible to ""root acounts"""

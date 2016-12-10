@@ -37,8 +37,8 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.whoami")]
-        public static void p5_auth_whoami (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth.misc.whoami")]
+        public static void p5_auth_misc_whoami (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add("username", AuthenticationHelper.GetTicket (context).Username);
             e.Args.Add("role", AuthenticationHelper.GetTicket (context).Role);
@@ -50,8 +50,8 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.change-my-password")]
-        public static void p5_auth_change_my_password (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth.misc.change-my-password")]
+        public static void p5_auth_misc_change_my_password (ApplicationContext context, ActiveEventArgs e)
         {
             using (new Utilities.ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.ChangePassword (context, e.Args);
@@ -64,8 +64,8 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.delete-my-user")]
-        public static void p5_auth_delete_my_user (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth.misc.delete-my-user")]
+        public static void p5_auth_misc_delete_my_user (ApplicationContext context, ActiveEventArgs e)
         {
             using (new Utilities.ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.DeleteMyUser (context, e.Args);

@@ -13,8 +13,8 @@ p5.io.file.load:x:/../*/_template?value
 /*
  * Checking if there's a user logged in, and if so, showing relevant feedback to user.
  */
-p5.auth.whoami
-if:x:/../*/p5.auth.whoami/*/default?value
+p5.auth.misc.whoami
+if:x:/../*/p5.auth.misc.whoami/*/default?value
   not
 
   /*

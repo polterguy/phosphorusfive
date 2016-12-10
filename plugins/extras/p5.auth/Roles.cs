@@ -37,8 +37,8 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.list-roles")]
-        public static void p5_auth_list_roles (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth.roles.list")]
+        public static void p5_auth_roles_list (ApplicationContext context, ActiveEventArgs e)
         {
             if (context.Ticket.IsDefault || context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to list all roles in system", e.Args, context);

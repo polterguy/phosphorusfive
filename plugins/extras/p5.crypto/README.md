@@ -10,15 +10,15 @@ related to creating a cryptographically secure hash, in addition to creating a c
 
 There are two Active Events in P5 related to creating a hash.
 
-* [p5.crypto.create-sha256-hash], creates a 256 bits SHA hash of the given data
-* [p5.crypto.create-sha512-hash], creates a 512 bits SHA hash of the given data
+* [p5.crypto.hash.create-sha256], creates a 256 bits SHA hash of the given data
+* [p5.crypto.hash.create-sha512], creates a 512 bits SHA hash of the given data
 
 Below is an example of how to use them both.
 
 ```
 _hash-data:This string, once hashed, cannot be determined, unless you have the original string
-p5.crypto.create-sha256-hash:x:/-?value
-p5.crypto.create-sha512-hash:x:/-2?value
+p5.crypto.hash.create-sha256:x:/-?value
+p5.crypto.hash.create-sha512:x:/-2?value
 ```
 
 The first invocation, will create a 512 bit long SHA of the given data, the second a 512 bit long SHA. Hashed values are used in P5, among other things,

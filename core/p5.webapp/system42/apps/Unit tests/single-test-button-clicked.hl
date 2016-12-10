@@ -16,11 +16,11 @@ if:x:/-/*/_error
    * occurred
    */
   for-each:x:/../*/sys42.utilities.execute-lambda-file/*/_error?value
-    p5.html.encode-html:x:/./*/_dp?value
+    p5.html.html-encode:x:/./*/_dp?value
     set:x:/../*/_html?value
       src:@"{0}<pre class=""error"">{1}</pre>"
         :x:/../*/_html?value
-        :x:/..for-each/*/p5.html.encode-html?value
+        :x:/..for-each/*/p5.html.html-encode?value
   p5.web.context.set:sys42.unit-test-errors
     src:bool:true
 

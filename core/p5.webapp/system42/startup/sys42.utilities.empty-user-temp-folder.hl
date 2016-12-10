@@ -9,8 +9,8 @@ p5.events.create:sys42.utilities.empty-user-temp-folder
   /*
    * Retrieving currently logged in user, and verifying user is not "default user" (has no folder).
    */
-  p5.auth.whoami
-  if:x:/@p5.auth.whoami/*/default?value.bool
+  p5.auth.misc.whoami
+  if:x:/@p5.auth.misc.whoami/*/default?value.bool
     =:bool:false
 
     /*

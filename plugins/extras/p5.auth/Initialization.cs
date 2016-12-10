@@ -76,8 +76,8 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.auth.has-salt")]
-        private static void p5_auth_has_salt (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth._has-salt")]
+        private static void p5_auth__has_salt (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = !string.IsNullOrEmpty (AuthenticationHelper.ServerSalt (context));
         }
@@ -88,8 +88,8 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.auth.set-server-salt")]
-        private static void p5_auth_set_server_salt(ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth._set-server-salt")]
+        private static void p5_auth__set_server_salt(ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.SetServerSalt (context, e.Args, e.Args.GetExValue<string> (context));
         }

@@ -53,7 +53,7 @@ button
      * This is done by fetching all distinct user roles, in addition to appending a 
      * static "empty" role (no restrictions for access).
      */
-    p5.auth.list-roles
+    p5.auth.roles.list
     for-each:x:/-/*?name
       add:x:/./+/*/*
         src:@"{0}:{0}"

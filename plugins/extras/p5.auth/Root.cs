@@ -38,7 +38,7 @@ namespace p5.auth
         /// </summary>
         /// <param name="context"></param>
         /// <param name="e"></param>
-        [ActiveEvent (Name = "p5.auth.set-root-password")]
+        [ActiveEvent (Name = "p5.auth._set-root-password")]
         public static void p5_auth_set_root_password (ApplicationContext context, ActiveEventArgs e)
         {
             /*
@@ -47,7 +47,7 @@ namespace p5.auth
              * supposed to be raised during installation of system!
              */
             if (!AuthenticationHelper.NoExistingRootAccount (context))
-                throw new LambdaSecurityException ("[p5.auth.set-root-password] was invoked for root account while root account's password was not null!", e.Args, context);
+                throw new LambdaSecurityException ("[p5.auth._set-root-password] was invoked for root account while root account's password was not null!", e.Args, context);
 
             AuthenticationHelper.SetRootPassword (context, e.Args);
         }
@@ -57,8 +57,8 @@ namespace p5.auth
         /// </summary>
         /// <param name="context"></param>
         /// <param name="e"></param>
-        [ActiveEvent (Name = "p5.auth.root-password-is-null")]
-        public static void p5_auth_root_password_is_null (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.auth._root-password-is-null")]
+        public static void p5_auth__root_password_is_null (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = AuthenticationHelper.NoExistingRootAccount (context);
         }

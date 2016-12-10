@@ -88,7 +88,7 @@ namespace p5.auth.helpers
             var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
 
             // Then creating system fingerprint from given password
-            var cookiePasswordFingerprint = context.Raise ("p5.crypto.create-sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
+            var cookiePasswordFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
 
             // Checking for match on password
             if (userNode["password"].Get<string> (context) != cookiePasswordFingerprint)
@@ -222,7 +222,7 @@ namespace p5.auth.helpers
             var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
 
             // Then salting password with user salt, before salting it with system salt
-            var userPasswordFingerprint = context.Raise ("p5.crypto.create-sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
+            var userPasswordFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
 
             // Locking access to password file as we create new user object
             AuthFile.ModifyAuthFile (
@@ -343,7 +343,7 @@ namespace p5.auth.helpers
                         var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
 
                         // Then salting password with user salt and system, before salting it with system salt
-                        var userPasswordFingerprint = context.Raise ("p5.crypto.create-sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
+                        var userPasswordFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
                         authFile ["users"][username]["password"].Value = userPasswordFingerprint;
                     }
 
@@ -424,7 +424,7 @@ namespace p5.auth.helpers
                     var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
 
                     // Then salting password with user salt and system, before salting it with system salt
-                    var userPasswordFingerprint = context.Raise ("p5.crypto.create-sha256-hash", new Node ("", serverSalt + password)).Get<string> (context);
+                    var userPasswordFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
                     authFile ["users"][username]["password"].Value = userPasswordFingerprint;
                 });
         }
@@ -638,7 +638,7 @@ namespace p5.auth.helpers
             var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
 
             // Then creating system fingerprint from given password
-            var systemFingerprint = context.Raise ("p5.crypto.create-sha256-hash", new Node ("", serverSalt + cookieHashSaltedPwd)).Get<string> (context);
+            var systemFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + cookieHashSaltedPwd)).Get<string> (context);
 
             // Notice, we do NOT THROW if passwords do not match, since it might simply mean that user has explicitly created a new "salt"
             // to throw out other clients that are currently persistently logged into system under his account

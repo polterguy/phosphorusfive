@@ -59,7 +59,6 @@
     <Compile Include="types\LongType.cs" />
     <Compile Include="types\NodeType.cs" />
     <Compile Include="types\TimeType.cs" />
-    <Compile Include="types\StringType.cs" />
     <Compile Include="types\RegexType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

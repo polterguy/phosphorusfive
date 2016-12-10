@@ -11,7 +11,7 @@ p5.events.create:p5.web.load-ui
    * Checking if there are no users in system, at which case, user must go through installation process.
    */
   if
-    p5.auth.root-password-is-null
+    p5.auth._root-password-is-null
 
     /*
      * There are no users in system, making sure we run through the installation process.

@@ -21,7 +21,7 @@ create-and-p5.auth.users.delete
 
   // Checking that user exist, and that folder structure is coorectly applied.
   p5.auth.users.list
-  p5.auth.list-roles
+  p5.auth.roles.list
   p5.auth.users.get:foo-bar
   if:x:/-
     !=:node:@"p5.auth.users.get
@@ -41,7 +41,7 @@ create-and-p5.auth.users.delete
       fetch:x:/0/0?value
         p5.io.folder.exists:/users/foo-bar/documents/public/
       not
-    or:x:/@p5.auth.list-roles/*/foo-bar-role
+    or:x:/@p5.auth.roles.list/*/foo-bar-role
       not
     throw:@"Assert error, user folder structure was not created correctly, or role was not correctly retrieved!"
 

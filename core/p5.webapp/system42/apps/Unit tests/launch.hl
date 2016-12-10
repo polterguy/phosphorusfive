@@ -8,7 +8,7 @@
 /*
  * Verifies user is root first, since only root can run unit tests
  */
-p5.auth.whoami
+p5.auth.misc.whoami
 if:x:/-/*/role?value
   !=:root
   throw:Only root user can run unit tests
