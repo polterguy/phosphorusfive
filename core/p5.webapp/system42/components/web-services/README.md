@@ -37,7 +37,7 @@ If you create a new CMS/lambda page in System42, and paste in the code above, an
 with the following code, assuming your server is running on _"localhost"_ on port _"1176"_.
 
 ```
-p5.net.http-post:"http://localhost:1176/ws"
+p5.http.post:"http://localhost:1176/ws"
   Content-Type:application/x-hyperlambda
   content
     p5.data.select:x:/*/*/p5.page
@@ -49,7 +49,7 @@ p5.net.http-post:"http://localhost:1176/ws"
 The above invocation of our web service, will return something resembling the following code.
 
 ```
-p5.net.http-post
+p5.http.post
   result:"http://localhost:1176/ws"
     status:OK
     Status-Description:OK
@@ -91,7 +91,7 @@ Notice, if you tried to execute an Active Event which is not in the *[_whitelist
 on the server's endpoint. Try to evaluate the following code for instance, to see this in action.
 
 ```
-p5.net.http-post:"http://localhost:1176/ws"
+p5.http.post:"http://localhost:1176/ws"
   Content-Type:application/x-hyperlambda
   content
     p5.data.delete:x:/*/*
@@ -101,7 +101,7 @@ The above invocation will be rejected by your web service, simply since its *[_w
 The return value from the server in such cases would resemble the following.
 
 ```
-p5.net.http-post
+p5.http.post
   result:"http://localhost:1176/ws"
     status:InternalServerError
     Status-Description:Internal Server Error
@@ -148,7 +148,7 @@ Then you would end up with a safer version of our original web service, that onl
 the above web service, you could use something resembling the following.
 
 ```
-p5.net.http-post:"http://localhost:1176/ws2"
+p5.http.post:"http://localhost:1176/ws2"
   Content-Type:application/x-hyperlambda
   content
     p5.data.select:x:/*/*/p5.page
@@ -163,7 +163,7 @@ to only *[p5.page]* types of objects.
 If you try to invoke your web service, to select another type of object, it will throw an exception. Try the following to see it in action.
 
 ```
-p5.net.http-post:"http://localhost:1176/ws2"
+p5.http.post:"http://localhost:1176/ws2"
   Content-Type:application/x-hyperlambda
   content
     p5.data.select:x:/*/*/sys42.app-settings

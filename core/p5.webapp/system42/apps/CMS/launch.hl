@@ -25,8 +25,8 @@
 /*
  * Verifying user is authorized to access this application.
  */
-whoami
-if:x:/@whoami/*/role?value
+p5.auth.whoami
+if:x:/@p5.auth.whoami/*/role?value
   !=:root
   throw:Sorry, this page is only accessible to root acounts
 

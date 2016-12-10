@@ -40,15 +40,5 @@ namespace p5.imaging.helpers
         {
             return context.Raise (".p5.core.application-folder").Get<string> (context);
         }
-
-        /// <summary>
-        ///     Returns a Color from given string representation
-        /// </summary>
-        /// <returns>The color.</returns>
-        /// <param name="color">Color.</param>
-        public static Color GetColor (string color)
-        {
-            return ColorTranslator.FromHtml (color);
-        }
     }
 }

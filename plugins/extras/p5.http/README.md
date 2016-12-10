@@ -11,13 +11,13 @@ This folder contains the Active Events necessary to invoke HTTP REST WebServices
 To retrieve a document, using HTTP GET for instance, you could do something like the following.
 
 ```
-p5.net.http-get:"http://google.com"
+p5.http.get:"http://google.com"
 ```
 
 The above will return something similar to this.
 
 ```
-p5.net.http-get
+p5.http.get
   result:"http://google.com/"
     status:OK
     Status-Description:OK
@@ -37,13 +37,13 @@ If you wish, you can retrieve multiple documents at the same time, by supplying 
 _urls
   url1:"http://google.com"
   url2:"http://digg.com"
-p5.net.http-get:x:/-/*?value
+p5.http.get:x:/-/*?value
 ```
 
 You will have one *[result]* node returned, for each URL you supply to it. You can also supply any HTTP headers you wish, as illustrated below.
 
 ```
-p5.net.http-get:"https://httpbin.org/get"
+p5.http.get:"https://httpbin.org/get"
   Foo-Bar:Some data goes here
 set:x:?value
   src:x:/../**/content?value.string
@@ -51,29 +51,29 @@ set:x:?value
 
 There are 4 basic Active Events in this project.
 
-* [p5.net.http-get] - HTTP GET - Returns document
-* [p5.net.http-post] - HTTP POST - Posts data
-* [p5.net.http-put] - HTTP PUT - Puts data
-* [p5.net.http-delete] - HTTP DELETE - Deletes data
+* [p5.http.get] - HTTP GET - Returns document
+* [p5.http.post] - HTTP POST - Posts data
+* [p5.http.put] - HTTP PUT - Puts data
+* [p5.http.delete] - HTTP DELETE - Deletes data
 
 In addition to the above Active Events, there are 3 additional public events.
 
-* [p5.net.http-get-file] - Retrieves a document, and saves it to a specified file, without loading it into memory
-* [p5.net.http-post-file] - Posts a file, without loading it into memory
-* [p5.net.http-put-file] - Puts a file, without loading it into memory
+* [p5.http.get-file] - Retrieves a document, and saves it to a specified file, without loading it into memory
+* [p5.http.post-file] - Posts a file, without loading it into memory
+* [p5.http.put-file] - Puts a file, without loading it into memory
 
 And if you are using C#, you can find 3 additional _"protected"_ events.
 
-* [.p5.net.http-get-native]
-* [.p5.net.http-post-native]
-* [.p5.net.http-put-native]
+* [.p5.http.get-native]
+* [.p5.http.post-native]
+* [.p5.http.put-native]
 
 The three latter events, are exclusively for C# invocations, and beyond the scope of this documentation. The POST and PUT events, automatically recognize
 Hyperlambda, and allows you to transmit a lambda node structure, without first creating text from it. To transmit a piece of code to another server, you could
 use something like the following for instance.
 
 ```
-p5.net.http-post:"https://httpbin.org/post"
+p5.http.post:"https://httpbin.org/post"
   content
     _data
       no1:Thomas
@@ -85,24 +85,24 @@ p5.net.http-post:"https://httpbin.org/post"
 If you have a big file you wish to POST or PUT, you can achieve it using the following syntax.
 
 ```
-p5.net.http-post-file:"https://httpbin.org/post"
+p5.http.post-file:"https://httpbin.org/post"
   filename:/system42/application-startup.hl
 set:x:?value
   src:x:/../**/content?value.string
 ```
 
-Exchange the above invocation to *[p5.net.http-put-file]* if you wish to use PUT the file instead.
+Exchange the above invocation to *[p5.http.put-file]* if you wish to use PUT the file instead.
 
 The above _"put-file"_ and _"post-file"_ invocations, will not read the files into memory, before they're transmitted to your REST endpoint. But rather,
 copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources.
 
 ## GETting files
 
-If you instead want to retrieve a document using HTTP GET, and save it directly to file, without loading it into memory,you can use *[p5.net.http-get-file]*.
+If you instead want to retrieve a document using HTTP GET, and save it directly to file, without loading it into memory,you can use *[p5.http.get-file]*.
 Consider the following code.
 
 ```
-p5.net.http-get-file:"https://google.com"
+p5.http.get-file:"https://google.com"
   filename:~/documents/private/foo-google.txt
 ```
 
@@ -139,7 +139,7 @@ with _"/invisible-"_, you make sure it doesn't show up in the navbar or menu.
 Then evaluate the following code, assuming your web server is listening on port 1176.
 
 ```
-p5.net.http-post:"http://localhost:1176/invisible-my-service"
+p5.http.post:"http://localhost:1176/invisible-my-service"
   Content-Type:application/x-hyperlambda
   content
     _data
@@ -161,7 +161,7 @@ eval:x:/../**/content
 After evaluating the above HTTP POST request,the return value should look something like the following.
 
 ```
-p5.net.http-post
+p5.http.post
   result:"http://localhost:1176/invisible-my-service"
     status:OK
     Status-Description:OK

@@ -105,8 +105,8 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = ".p5.security.get-auth-file")]
-            private static void _p5_security_get_auth_file (ApplicationContext context, ActiveEventArgs e)
+            [ActiveEvent (Name = ".p5.auth.get-auth-file")]
+            private static void _p5_auth_get_auth_file (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.AuthFile;
@@ -117,8 +117,8 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = ".p5.security.get-default-context-role")]
-            private static void _p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
+            [ActiveEvent (Name = ".p5.auth.get-default-context-role")]
+            private static void _p5_auth_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.DefaultContextRole;
@@ -129,8 +129,8 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = ".p5.security.get-default-context-username")]
-            private static void _p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
+            [ActiveEvent (Name = ".p5.auth.get-default-context-username")]
+            private static void _p5_auth_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.DefaultContextUsername;

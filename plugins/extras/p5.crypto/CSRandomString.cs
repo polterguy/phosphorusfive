@@ -38,8 +38,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-cs-random")]
-        public static void create_cs_random (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.create-random")]
+        public static void p5_crypto_create_random (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {

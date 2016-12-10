@@ -6,7 +6,7 @@ all associated concepts. All users are stored in the _"auth.hl"_ file at the roo
 Passwords are stored in salted hashed values, to increase security. To create a new user, you can use the following code.
 
 ```
-create-user:john-doe
+p5.auth.users.create:john-doe
   password:foo-bar
   role:plain-user
 ```
@@ -74,11 +74,11 @@ also *[p5.io.folder.list-folders]*, *[p5.io.file.copy]*, etc, with path modifier
 
 ## Editing users
 
-To edit a user, use the *[edit-user]* Active Event. To change the role and password of our _"john-doe"_ user from above, you could do something like
+To edit a user, use the *[p5.auth.users.edit]* Active Event. To change the role and password of our _"john-doe"_ user from above, you could do something like
 the following.
 
 ```
-edit-user:john-doe
+p5.auth.users.edit:john-doe
   role:some-other-role
   password:xyz-qwerty
 ```
@@ -87,21 +87,21 @@ The username of a user, _cannot_ be changed, after you have created your user(s)
 
 The complete list of operations you can perform on your user objects, are as following.
 
-* [create-user] - Creates a new user
-* [edit-user] - Edits existing user (changes his or her password, settings, role)
-* [list-users] - List all usernames, and their roles, in your system
-* [get-user] - Returns one or more named user(s)
-* [delete-user] - Deletes one or more user(s) (WARNING! This will delete all files for user(s)!)
+* [p5.auth.users.create] - Creates a new user
+* [p5.auth.users.edit] - Edits existing user (changes his or her password, settings, role)
+* [p5.auth.users.list] - List all usernames, and their roles, in your system
+* [p5.auth.users.get] - Returns one or more named user(s)
+* [p5.auth.users.delete] - Deletes one or more user(s) (WARNING! This will delete all files for user(s)!)
 
 The above Active Events, can only be evaluated by a root account.
 
 ## User settings
 
 In addition to *[role]* and *[password]*, you can associate any data you wish with your user, such as a user's personal settings, by simply adding these 
-as nodes beneath you *[edit-user]* and *[create-user]* invocations. Consider this for instance.
+as nodes beneath you *[p5.auth.users.edit]* and *[p5.auth.users.create]* invocations. Consider this for instance.
 
 ```
-edit-user:john-doe
+p5.auth.users.edit:john-doe
   role:some-other-role
   password:xyz-qwerty
   some-data:foo-bar
@@ -111,44 +111,44 @@ edit-user:john-doe
 ```
 
 If you evaluate the above Hyperlambda, then both *[some-data]* and *[some-complex-data]* will be associated with the _"john-doe"_ user, as settings. To
-retrieve the settings for the currently logged in user, you can use the *[get-my-user-settings]* Active Event. The user's settings are a convenient place to
+retrieve the settings for the currently logged in user, you can use the *[p5.auth.my-settings.get]* Active Event. The user's settings are a convenient place to
 store small pieces of user related data, which are unique to each user in your system, such as name, email address, twitter handler, etc.
 
 You can also change your currently logged in user's settings, with the following code.
 
 ```
-set-my-user-settings
+p5.auth.my-settings.set
   some-data:foo-bar
   some-complex-data
     name:foo
     value:bar
 ```
 
-The difference is that *[edit-user]* can only be invoked by root accounts, while the latter, *[set-my-user-settings]* can be invoked by all users, except
+The difference is that *[p5.auth.users.edit]* can only be invoked by root accounts, while the latter, *[p5.auth.my-settings.set]* can be invoked by all users, except
 "guest" users of course (which actually aren't "real users").
 
-To get your user's settings, use the *[get-my-user-settings]* Active Event.
+To get your user's settings, use the *[p5.auth.my-settings.get]* Active Event.
 
 To change the passsword of the currently logged in user, use the following code.
 
 ```
-change-password:bar
+p5.auth.change-my-password:bar
 ```
 
 The above Hyperlambda will change the passsword for the currentlylogged in user to _"bar"_.
 
-## [whoami], figuring out who you are
+## [p5.auth.whoami], figuring out who you are
 
-To see who you are, you can invoke *[whoami]*, like the following code illustrates.
+To see who you are, you can invoke *[p5.auth.whoami]*, like the following code illustrates.
 
 ```
-whoami
+p5.auth.whoami
 ```
 
 The above Hyperlambda will return the following.
 
 ```
-whoami
+p5.auth.whoami
   username:root
   role:root
   default:bool:false
@@ -157,7 +157,7 @@ whoami
 For the default guest user, meaning somebody who is not logged in, it will return the following.
 
 ```
-whoami
+p5.auth.whoami
   username:guest
   role:guest
   default:bool:true
@@ -166,7 +166,7 @@ whoami
 Notice the *[default]* node above, which is the correct way to check if a user is logged in or not, since the name of the guest role, at least in theory,
 can be changed to something else than "guest". Although, this is not recommended, it is possible to do.
 
-Notice, if you wish, you can invoke an Active Event that deletes the currently logged in user. This Active Event is called *[delete-my-user]*, and
+Notice, if you wish, you can invoke an Active Event that deletes the currently logged in user. This Active Event is called *[p5.auth.delete-my-user]*, and
 will completely delete the currently logged in user, including his or hers files. This will (obviously), also log you out of the system. Notice, this
 Active Event will not destroy the session associated with the user though. Make sure you remove all session values if you choose to use it.
 
@@ -178,7 +178,7 @@ To log in, use *[login]*. The login Active Event takes 3 parameters;
 * [password]
 * [persist]
 
-If you set *[persist]* to true, then a persistent cookie, will be created, with the duration of your web.config setting called _"p5.security.credential-cookie-valid"_
+If you set *[persist]* to true, then a persistent cookie, will be created, with the duration of your web.config setting called _"p5.auth.credential-cookie-valid"_
 number of days, making sure the client you're using to login, don't have to login again, before that timespan has passed.
 
 To logout, simply invoke *[logout]*.
@@ -189,7 +189,7 @@ If you wish, you can create an *[.onlogin]* and/or an *[.onlogout]* lambda callb
 example of a callback, creating a dummy textfile when your currently logged in account is logging out, can be found below.
 
 ```
-set-my-user-settings
+p5.auth.my-settings.set
   .onlogin
     p5.io.file.save:~/foo-bar-file-login.txt
       src:"This was created when my user logged in!!"
@@ -217,13 +217,13 @@ There are two special roles in the system though.
 To list all roles in your system, you can execute the following code.
 
 ```
-list-roles
+p5.auth.list-roles
 ```
 
 The above will result in something similar to the following.
 
 ```
-list-roles
+p5.auth.list-roles
   guest
   root:int:1
 ```

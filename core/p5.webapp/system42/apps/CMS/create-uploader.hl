@@ -73,7 +73,7 @@ p5.web.widgets.create:cms-ajax-uploader
             split:x:/@_dp?value
               =:-
             if
-              can-convert:x:/@split/0/-?name
+              p5.types.can-convert:x:/@split/0/-?name
                 type:int
               and:x:/@split/0/-?name.int
                 >=:x:/@_high?value

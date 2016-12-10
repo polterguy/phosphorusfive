@@ -28,12 +28,12 @@ create-event:sys42.widgets.navbar._create-item-url
   if:x:/@p5.web.query.list/*
     p5.web.query.get:x:/@p5.web.query.list/*?name
     for-each:x:/@p5.web.query.get/*
-      url-encode:x:/@_dp/#?value
+      p5.html.encode-url:x:/@_dp/#?value
       set:x:/@p5.web.get-location-url?value
         src:{0}{1}={2}&
           :x:/@p5.web.get-location-url?value
           :x:/@_dp/#?name
-          :x:/@url-encode?value
+          :x:/@p5.html.encode-url?value
 
   /*
    * Adding key for our "unroll" GET parameter.
@@ -48,8 +48,8 @@ create-event:sys42.widgets.navbar._create-item-url
    */
   p5.web.widgets.property.get:x:/../*/_arg?value
     _item-id
-  url-encode:x:/@p5.web.widgets.property.get/*/*?value
+  p5.html.encode-url:x:/@p5.web.widgets.property.get/*/*?value
 
   return:{0}{1}
     :x:/@p5.web.get-location-url?value
-    :x:/@url-encode?value
+    :x:/@p5.html.encode-url?value

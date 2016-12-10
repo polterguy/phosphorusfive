@@ -167,7 +167,7 @@ namespace p5.web.widgets
                 createNode ["before"].Value = before;
             if (after != null)
                 createNode ["after"].Value = after;
-            context.Raise ("p5.web.widgets." + type, createNode);
+            context.Raise (".p5.web.widgets." + type, createNode);
 
             // Getting [oninit], if any, for entire hierarchy, and invoking each of them, in "breadth first" order
             // Notice that since this is done AFTER creation of entire hierarchy, then each [oninit] can invoke dynamically 

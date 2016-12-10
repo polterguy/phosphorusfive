@@ -63,19 +63,19 @@ format-date:x:/-2?value
 
 ### Common helper Active Events
 
-The *[can-convert]* Active Event, determines if some value can somehow, legally, be converted into "something else", or if a conversion attempt
+The *[p5.types.can-convert]* Active Event, determines if some value can somehow, legally, be converted into "something else", or if a conversion attempt
 will throw an exception. Example can be found below.
 
 ```
 _foo:no-conversion-possible
-can-convert:x:/-?value
+p5.types.can-convert:x:/-?value
   type:date
 _foo2:555
-can-convert:x:/-?value
+p5.types.can-convert:x:/-?value
   type:int
 ```
 
-In the above example the first invocation to *[can-convert]* will yields false, while the second invocation will yield true.
+In the above example the first invocation to *[p5.types.can-convert]* will yields false, while the second invocation will yield true.
 
 
 

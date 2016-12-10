@@ -27,12 +27,12 @@ create-event:sys42.widgets.tree._create-url
   if:x:/-2/*
     p5.web.query.get:x:/./-2/*?name
     for-each:x:/-/*
-      url-encode:x:/./*/_dp/#?value
+      p5.html.encode-url:x:/./*/_dp/#?value
       set:x:/../*/p5.web.get-location-url?value
         src:{0}{1}={2}&
           :x:/../*/p5.web.get-location-url?value
           :x:/..for-each/*/_dp/#?name
-          :x:/..for-each/*/url-encode?value
+          :x:/..for-each/*/p5.html.encode-url?value
 
   /*
    * Adding key for our "unroll" GET parameter.
@@ -45,7 +45,7 @@ create-event:sys42.widgets.tree._create-url
   /*
    * Then we need to recursively iterate from current widget, and upwards in hierarchy, until
    * we reach "main root tree widget", and append all IDs to the URL separated by a pipe sign (|).
-   * Making sure we url-encode the whole thing, before adding it.
+   * Making sure we p5.html.encode-url the whole thing, before adding it.
    */
   set:x:/+?value
     src:x:/../*/_arg?value
@@ -80,8 +80,8 @@ create-event:sys42.widgets.tree._create-url
    */
   trim:x:/../*/_param?value
     chars:|
-  url-encode:x:/../*/trim?value
+  p5.html.encode-url:x:/../*/trim?value
 
   return:{0}{1}
     :x:/../*/p5.web.get-location-url?value
-    :x:/../*/url-encode?value
+    :x:/../*/p5.html.encode-url?value

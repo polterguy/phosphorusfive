@@ -38,8 +38,8 @@ namespace p5.html
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "html-encode")]
-        public static void html_encode (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.html.encode-html")]
+        public static void p5_html_encode_html (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -64,8 +64,8 @@ namespace p5.html
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "html-decode")]
-        public static void html_decode (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.html.decode-html")]
+        public static void p5_html_decode_html (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {

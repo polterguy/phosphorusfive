@@ -37,15 +37,15 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "can-convert")]
-        public static void can_convert (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.types.can-convert")]
+        public static void p5_types_can_convert (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Syntax checking invocation
                 if (!(e.Args.Value is Expression) || e.Args ["type"] == null)
-                    throw new ArgumentException ("[can-convert] needs both an expression as its value, and a [type] parameter");
+                    throw new ArgumentException ("[p5.types.can-convert] needs both an expression as its value, and a [type] parameter");
 
                 // Figuring out type to check for
                 string type = e.Args.GetExChildValue<string> ("type", context);

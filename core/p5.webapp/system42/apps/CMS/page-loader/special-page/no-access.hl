@@ -13,8 +13,8 @@ p5.io.file.load:x:/../*/_template?value
 /*
  * Checking if there's a user logged in, and if so, showing relevant feedback to user.
  */
-whoami
-if:x:/../*/whoami/*/default?value
+p5.auth.whoami
+if:x:/../*/p5.auth.whoami/*/default?value
   not
 
   /*
@@ -96,12 +96,12 @@ else
                             login-password
                           p5.web.widgets.property.get:x:/-/*?name
                             value
-                          set:x:/../**/login/*/username?value
+                          set:x:/../**/p5.auth.login/*/username?value
                             src:x:/../*/p5.web.widgets.property.get/*/login-username/*?value
-                          set:x:/../**/login/*/password?value
+                          set:x:/../**/p5.auth.login/*/password?value
                             src:x:/../*/p5.web.widgets.property.get/*/login-password/*?value
                           if
-                            login
+                            p5.auth.login
                               username
                               password
                               persist:bool:true

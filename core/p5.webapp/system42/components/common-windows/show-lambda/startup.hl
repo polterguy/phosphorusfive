@@ -47,13 +47,13 @@ create-event:sys42.windows.show-lambda
     /*
      * HTML-encoding result, in case there are angle brackets, etc in the resulting Hyperlambda.
      */
-    html-encode:x:/@lambda2hyper?value
+    p5.html.encode-html:x:/@lambda2hyper?value
 
     /*
      * Setting the literal's content to the nodes converted to Hyperlambda
      */
     set:x:/../**/literal/*/element/=pre/./*/innerValue?value
-      src:x:/@html-encode?value
+      src:x:/@p5.html.encode-html?value
 
   /*
    * Creating a widget showing the Hyperlambda code created from the given p5 lambda tree.

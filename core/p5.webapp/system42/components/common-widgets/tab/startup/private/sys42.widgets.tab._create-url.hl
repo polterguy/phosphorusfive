@@ -23,12 +23,12 @@ create-event:sys42.widgets.tab._create-url
   if:x:/@p5.web.query.list/*
     p5.web.query.get:x:/@p5.web.query.list/*?name
     for-each:x:/@p5.web.query.get/*
-      url-encode:x:/@_dp/#?value
+      p5.html.encode-url:x:/@_dp/#?value
       set:x:/@p5.web.get-location-url?value
         src:{0}{1}={2}&
           :x:/@p5.web.get-location-url?value
           :x:/@_dp/#?name
-          :x:/@url-encode?value
+          :x:/@p5.html.encode-url?value
 
   /*
    * Adding key for our "unroll" GET parameter.
@@ -41,9 +41,9 @@ create-event:sys42.widgets.tab._create-url
   /*
    * Then we can URL encode the parameter, and return URL to caller.
    */
-  url-encode:x:/../*/_arg?value
+  p5.html.encode-url:x:/../*/_arg?value
 
   return:{0}{1}
     :x:/../*/p5.web.get-location-url?value
-    :x:/@url-encode?value
+    :x:/@p5.html.encode-url?value
 

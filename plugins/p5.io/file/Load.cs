@@ -102,7 +102,7 @@ namespace p5.io.file
 
                     // Automatically converting to Hyperlambda before returning
                     var csvLambda = new Node ("", fileContent);
-                    context.Raise ("csv2lambda", csvLambda);
+                    context.Raise ("p5.csv.csv2lambda", csvLambda);
                     args.Add (fileName, null, csvLambda["result"].Children);
                 } else {
 

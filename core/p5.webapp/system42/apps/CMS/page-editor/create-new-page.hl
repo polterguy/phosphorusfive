@@ -70,7 +70,7 @@ for-each:x:/@p5.data.select/*?value
     /*
      * Making sure it's actually an integer, before we figure out if it's higher than our currentl [_high] value.
      */
-    can-convert:x:/@split/0/-?name
+    p5.types.can-convert:x:/@split/0/-?name
       type:int
     and:x:/@split/0/-?name.int
       >=:x:/@_high?value.int

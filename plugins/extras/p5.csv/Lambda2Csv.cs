@@ -25,9 +25,6 @@ using System.Text;
 using p5.exp;
 using p5.core;
 
-/// <summary>
-///     Main namespace for handling CSV
-/// </summary>
 namespace p5.csv
 {
     /// <summary>
@@ -40,8 +37,8 @@ namespace p5.csv
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "lambda2csv")]
-        public static void lambda2csv (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.csv.lambda2csv")]
+        public static void p5_csv_lambda2csv (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {

@@ -33,7 +33,7 @@ create-event:sys42.cms.verify-access
     /*
      * Retrieving currently logged in user's role.
      */
-    whoami
+    p5.auth.whoami
 
     /*
      * Checking if "user" was provided as role, and if user is logged in at all.
@@ -50,9 +50,9 @@ create-event:sys42.cms.verify-access
      * logged in user's role not equals specified argument "role", at which 
      * case user does NOT have access.
      */
-    else-if:x:/./*/whoami/*/role?value
+    else-if:x:/./*/p5.auth.whoami/*/role?value
       !=:root
-      and:x:/././*/whoami/*/role?value
+      and:x:/././*/p5.auth.whoami/*/role?value
         !=:x:/../*/_arg?value
       // Has not access
       set:x:/..?value

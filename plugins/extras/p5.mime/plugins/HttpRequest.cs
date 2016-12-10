@@ -32,16 +32,16 @@ using MimeKit;
 namespace p5.mime.plugins
 {
     /// <summary>
-    ///     Class wrapping the [p5.net.http-post-mime/put-mime] Active Events for creating HTTP requests that posts/puts MIME
+    ///     Class wrapping the [p5.http.post-mime/put-mime] Active Events for creating HTTP requests that posts/puts MIME
     /// </summary>
     public static class HttpRequest
     {
         /// <summary>
         ///     Posts or puts a MIME message over an HTTP request
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-post-mime")]
-        [ActiveEvent (Name = "p5.net.http-put-mime")]
-        [ActiveEvent (Name = "p5.net.http-get-mime")]
+        [ActiveEvent (Name = "p5.http.post-mime")]
+        [ActiveEvent (Name = "p5.http.put-mime")]
+        [ActiveEvent (Name = "p5.http.get-mime")]
         public static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves

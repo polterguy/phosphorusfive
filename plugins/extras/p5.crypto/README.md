@@ -10,15 +10,15 @@ related to creating a cryptographically secure hash, in addition to creating a c
 
 There are two Active Events in P5 related to creating a hash.
 
-* [sha256-hash], creates a 256 bits SHA hash of the given data
-* [sha512-hash], creates a 512 bits SHA hash of the given data
+* [p5.crypto.create-sha256-hash], creates a 256 bits SHA hash of the given data
+* [p5.crypto.create-sha512-hash], creates a 512 bits SHA hash of the given data
 
 Below is an example of how to use them both.
 
 ```
 _hash-data:This string, once hashed, cannot be determined, unless you have the original string
-sha256-hash:x:/-?value
-sha512-hash:x:/-2?value
+p5.crypto.create-sha256-hash:x:/-?value
+p5.crypto.create-sha512-hash:x:/-2?value
 ```
 
 The first invocation, will create a 512 bit long SHA of the given data, the second a 512 bit long SHA. Hashed values are used in P5, among other things,
@@ -30,10 +30,10 @@ In P5, both of these Active Events, returns the base64 encoded values of the SHA
 ## Creating a cryptographically secure random number
 
 When dealing with cryptography, acquiring random numbers is key. P5 have one Active Event related to creating a cryptographically secure random number.
-This Active Event is called *[create-cs-random]*. Below is an example of how to use it.
+This Active Event is called *[p5.crypto.create-random]*. Below is an example of how to use it.
 
 ```
-create-cs-random
+p5.crypto.create-random
   resolution:10
 ```
 

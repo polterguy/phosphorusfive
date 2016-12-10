@@ -582,9 +582,17 @@
     <Folder Include="common\temp\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
+      <Project>{1adb1008-02f3-4d95-b1da-628aa73b88dc}</Project>
+      <Name>p5.auth</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\plugins\extras\p5.csv\p5.csv.csproj">
       <Project>{045d3d94-7a30-445d-b578-fee5a5be5c3b}</Project>
       <Name>p5.csv</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.http\p5.http.csproj">
+      <Project>{378663d4-1fc1-4109-8896-f72440c6c269}</Project>
+      <Name>p5.http</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.config\p5.config.csproj">
       <Project>{f27d30f1-86c0-4b44-8108-b3049bc94cec}</Project>
@@ -642,17 +650,9 @@
       <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
       <Name>p5.html</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\extras\p5.net\p5.net.csproj">
-      <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
-      <Name>p5.net</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.io\p5.io.csproj">
       <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
       <Name>p5.io</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\plugins\extras\p5.security\p5.security.csproj">
-      <Project>{1ADB1008-02F3-4D95-B1DA-628AA73B88DC}</Project>
-      <Name>p5.security</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\plugins\extras\p5.io.authorization\p5.io.authorization.csproj">
       <Project>{1D3C2CCC-F27C-4525-96E3-65E83D2E92A6}</Project>

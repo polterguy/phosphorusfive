@@ -52,7 +52,7 @@ p5.web.widgets.create:set-server-salt
              */
             p5.web.widgets.property.get:server-salt
               value
-            p5.security.set-server-salt:x:/../*/p5.web.widgets.property.get/*/*?value
+            p5.auth.set-server-salt:x:/../*/p5.web.widgets.property.get/*/*?value
 
             /*
              * Deleting main server-salt widget, and moving on to the setting of the root password.

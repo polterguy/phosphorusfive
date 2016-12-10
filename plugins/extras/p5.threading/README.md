@@ -190,11 +190,11 @@ sequentially downloading each document. Depending upon how much overhead each of
 Imagine the following code.
 
 ```
-p5.net.http-get:"http://google.com"
-p5.net.http-get:"http://digg.com"
-p5.net.http-get:"http://facebook.com"
-p5.net.http-get:"http://reddit.com"
-p5.net.http-get:"http://twitter.com"
+p5.http.get:"http://google.com"
+p5.http.get:"http://digg.com"
+p5.http.get:"http://facebook.com"
+p5.http.get:"http://reddit.com"
+p5.http.get:"http://twitter.com"
 ```
 
 On my system, this takes about 10 seconds to evaluate using localhost as my P5 server. If I instead created these requests in parallel, in 
@@ -203,15 +203,15 @@ different threads, the difference would be very easy to notice.
 ```
 wait
   fork
-    p5.net.http-get:"http://google.com"
+    p5.http.get:"http://google.com"
   fork
-    p5.net.http-get:"http://digg.com"
+    p5.http.get:"http://digg.com"
   fork
-    p5.net.http-get:"http://facebook.com"
+    p5.http.get:"http://facebook.com"
   fork
-    p5.net.http-get:"http://reddit.com"
+    p5.http.get:"http://reddit.com"
   fork
-    p5.net.http-get:"http://twitter.com"
+    p5.http.get:"http://twitter.com"
 ```
 
 The above code, takes about 3 seconds on my system to evaluate. Basically, 4 times as fast. This is because I don't have to wait for one server

@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1ADB1008-02F3-4D95-B1DA-628AA73B88DC}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>p5.security</RootNamespace>
-    <AssemblyName>p5.security</AssemblyName>
+    <RootNamespace>p5.auth</RootNamespace>
+    <AssemblyName>p5.auth</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -39,14 +39,16 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Misc.cs" />
+    <Compile Include="Authenticate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="helpers\AuthenticationHelper.cs" />
     <Compile Include="Root.cs" />
     <Compile Include="Users.cs" />
     <Compile Include="Roles.cs" />
     <Compile Include="helpers\AuthFile.cs" />
-    <Compile Include="Common.cs" />
-    <Compile Include="Profile.cs" />
+    <Compile Include="Initialization.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

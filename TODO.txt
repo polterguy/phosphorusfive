@@ -30,7 +30,7 @@ TODO before release
 
 * Make support for children widgets in tree view widget.
 
-* Create [lambda2xml] and [lambda2csv] events.
+* Create [lambda2xml] and [p5.csv.lambda2csv] events.
 
 * Unit tests for XML/HTML and CSV files.
 
@@ -54,5 +54,8 @@ TODO before release
 * Fix HTML filter, it sometimes chokes.
 
 * Verify we really need [p5.web.widgets.property.delete], which I think we do, since properties can have "null" values.
+
+* Consider creating p5.http, possibly rename p5.net, and move [url-decode]/encode into this project.
+
 
 

@@ -190,11 +190,11 @@ namespace p5.mime
             string userSeed = args.GetExChildValue<string> ("seed", context, "foobar");
 
             // Then we change the given seed by hashing it, such that each pass through this method creates a different user provided seed
-            args.FindOrInsert ("seed").Value = context.Raise ("sha512-hash", new Node ("", userSeed)).Get<string> (context);
+            args.FindOrInsert ("seed").Value = context.Raise ("p5.crypto.create-sha512-hash", new Node ("", userSeed)).Get<string> (context);
 
             // Then we retrieve a cryptographically secure random number of 128 bytes
             var rndBytes = context.Raise (
-                "create-cs-random", 
+                "p5.crypto.create-random", 
                 new Node ("", null, new Node[] {
                     new Node ("resolution", 128),
                     new Node ("raw", true)})).Get<byte[]> (context);
@@ -203,7 +203,7 @@ namespace p5.mime
             var bcSeed = new ThreadedSeedGenerator ().GenerateSeed (128, false);
 
             // Then we retrieve the server password salt
-            string serverPasswordSalt = context.Raise (".p5.security.get-server-salt").Get<string> (context);
+            string serverPasswordSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
 
             // Then we retrieve the ticks of server
             string serverSeed = DateTime.Now.Ticks.ToString ();
@@ -212,7 +212,7 @@ namespace p5.mime
             // Notice, this will even include the GnuPG password in our seed, in sha2 hashed form!
             // In addition, every time the Hyperlambda active Event calling this method changes, the seed will change
             var code = Utilities.Convert<string> (context, args.Root);
-            serverSeed += context.Raise ("sha256-hash", new Node ("", code)).Get<string> (context);;
+            serverSeed += context.Raise ("p5.crypto.create-sha256-hash", new Node ("", code)).Get<string> (context);;
 
             // Then adding current thread ID
             serverSeed += System.Threading.Thread.CurrentThread.ManagedThreadId.ToString ();
@@ -229,15 +229,15 @@ namespace p5.mime
             List<byte> userSeedByteList = new List<byte>();
             for (int idx = 0; idx < userSeed.Length; idx += 100) {
                 var subStr = userSeed.Substring (idx, Math.Min (100, userSeed.Length - idx));
-                byte[] buffer = context.Raise ("sha512-hash", new Node ("", subStr, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
+                byte[] buffer = context.Raise ("p5.crypto.create-sha512-hash", new Node ("", subStr, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
                 userSeedByteList.AddRange (buffer);
             }
             byte[] userSeedBytes = userSeedByteList.ToArray ();
             args ["seed"].Value = userSeedBytes;
 
             // Then we hash the server seed and the user seed with sha512, to create maximum size, and spread bytes evenly around [0-255] value range
-            byte[] serverSeedBytes = context.Raise ("sha512-hash", new Node ("", serverSeed, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
-            byte[] serverPasswordSaltBytes = context.Raise ("sha512-hash", new Node ("", serverPasswordSalt, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
+            byte[] serverSeedBytes = context.Raise ("p5.crypto.create-sha512-hash", new Node ("", serverSeed, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
+            byte[] serverPasswordSaltBytes = context.Raise ("p5.crypto.create-sha512-hash", new Node ("", serverPasswordSalt, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
 
             // Then we "braid" all the different parts together, to make sure no single parts of our seed becomes predictable due to weaknesses in one or more of
             // our seed generators. Meaning, if at least ONE of our "seed generators" are well functioning, then the entire result will be difficult to predict

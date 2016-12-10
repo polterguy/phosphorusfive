@@ -50,8 +50,8 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.container")]
-        public void p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = ".p5.web.widgets.container")]
+        public void _p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = CreateWidget<Container> (context, e.Args, "div");
         }
@@ -61,8 +61,8 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.literal")]
-        public void p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = ".p5.web.widgets.literal")]
+        public void _p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = CreateWidget<Literal> (context, e.Args, "p");
         }
@@ -72,8 +72,8 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.void")]
-        public void p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = ".p5.web.widgets.void")]
+        public void _p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = CreateWidget<Void> (context, e.Args, "input");
         }
@@ -83,8 +83,8 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.text")]
-        public void p5_web_controls_text (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = ".p5.web.widgets.text")]
+        public void _p5_web_controls_text (ApplicationContext context, ActiveEventArgs e)
         {
             // Creating widget as persistent control
             var parent = e.Args.GetChildValue<Container> ("_parent", context);
@@ -255,7 +255,7 @@ namespace p5.web.widgets
 
                         // "Native" widget
                         idxChild.Insert (0, new Node ("_parent", widget));
-                        context.Raise ("p5.web.widgets." + idxChild.Name, idxChild);
+                        context.Raise (".p5.web.widgets." + idxChild.Name, idxChild);
                         break;
                     default:
 
@@ -283,11 +283,11 @@ namespace p5.web.widgets
                             idxChild.Insert (0, new Node ("_parent", widget));
                             idxChild.Add ("element", idxChild.Name);
                             if (idxChild["innerValue"] != null) {
-                                context.Raise ("p5.web.widgets.literal", idxChild);
+                                context.Raise (".p5.web.widgets.literal", idxChild);
                             } else if (idxChild["widgets"] != null) {
-                                context.Raise ("p5.web.widgets.container", idxChild);
+                                context.Raise (".p5.web.widgets.container", idxChild);
                             } else {
-                                context.Raise ("p5.web.widgets.void", idxChild);
+                                context.Raise (".p5.web.widgets.void", idxChild);
                             }
                         }
                         break;

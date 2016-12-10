@@ -136,9 +136,9 @@ The p5.webapp exposes some Active Events. Some of the more important ones, are l
 In addition to these protected events, which can only be accessed through C#.
 
 * [.p5.core.application-folder] - Returns the root "p5.webapp" folder
-* [.p5.security.get-auth-file] - Returns the filepath to the "auth" file
-* [.p5.security.get-default-context-role] - Returns the default Ticket role for users not logged in
-* [.p5.security.get-default-context-username] - Returns the default Ticket username for users not logged in
+* [.p5.auth.get-auth-file] - Returns the filepath to the "auth" file
+* [.p5.auth.get-default-context-role] - Returns the default Ticket role for users not logged in
+* [.p5.auth.get-default-context-username] - Returns the default Ticket username for users not logged in
 
 The "page-value" Active Events above, obeys by the same rule-set as the "collection values" in [p5.web](/plugins/p5.web/).
 And accepts similar types of arguments as for instance *[p5.web.session.get]* etc do. See the documentation 

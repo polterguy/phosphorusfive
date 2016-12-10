@@ -78,7 +78,7 @@ if:x:/../*/_extra-css-classes?value
   * Retrieving current Context user for later, since we'll need to check his role, 
   * to see which pages he or she has access to
   */
-whoami
+p5.auth.whoami
 
 /*
   * Selecting all [p5.page] objects from database, and looping through them, to
@@ -169,7 +169,7 @@ for-each:x:/../*/p5.data.select/[0,1]/*
 /*
   * Adding login/logout button to menu
   */
-if:x:/../*/whoami/*/default?value
+if:x:/../*/p5.auth.whoami/*/default?value
   =:bool:true
 
   /*
@@ -275,7 +275,7 @@ p5.loginUsernameKeyUp = function(e) {
                           set:x:/+1/0/*/password?value
                             src:x:/././*/p5.web.widgets.property.get/[1,2]/+/<?value
                           if
-                            login
+                            p5.auth.login
                               username
                               password
                               persist:bool:true
@@ -314,7 +314,7 @@ else
         return
       split:x:/./*/_dn/#?name
         =:/
-      url-encode:x:/../*/split/0/-?name
+      p5.html.encode-url:x:/../*/split/0/-?name
       eval-x:x:/+/*/*/*/*
       return
         li
@@ -322,7 +322,7 @@ else
           widgets
             a
               href:/app-loader?app={0}
-                :x:/../*/url-encode?value
+                :x:/../*/p5.html.encode-url?value
               innerValue:x:/../*/split/0/-?name
     apply:x:/./*/p5.web.widgets.create-container/*/widgets/*/ul/*/widgets
       src:x:/././-/*
@@ -370,5 +370,5 @@ else
             p5.web.session.list
             p5.web.session.set:x:/-/*?name
             sys42.utilities.empty-user-temp-folder
-            logout
+            p5.auth.logout
             p5.web.reload-location
