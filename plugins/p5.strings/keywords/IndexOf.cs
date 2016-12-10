@@ -31,26 +31,26 @@ using p5.exp.exceptions;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [index-of] Active Event.
+    ///     Class wrapping the [p5.string.index-of] Active Event.
     /// </summary>
     public static class IndexOf
     {
         /// <summary>
-        ///     The [index-of] event, retrieves the index of the specified string(s) and/or regular expression(s).
+        ///     The [p5.string.index-of] event, retrieves the index of the specified string(s) and/or regular expression(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "index-of")]
-        public static void lambda_index_of (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.string.index-of")]
+        public static void p5_string_index_of (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
             if (e.Args.Value == null)
-                throw new LambdaException ("[index-of] requires an expression or constant as its value", e.Args, context);
+                throw new LambdaException ("[p5.string.index-of] requires an expression or constant as its value", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Figuring out source value for [index-of], and returning early if there is no source.
+                // Figuring out source value for [p5.string.index-of], and returning early if there is no source.
                 string source = XUtil.Single<string> (context, e.Args);
                 if (source == null)
                     return;

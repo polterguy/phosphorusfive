@@ -3,6 +3,6 @@
  * Creates some path unrolling Active Events for p5.io
  */
 
-create-event:p5.io.unroll-path.@CMS
+p5.events.create:p5.io.unroll-path.@CMS
   return:@SYS42-APPS/CMS
 

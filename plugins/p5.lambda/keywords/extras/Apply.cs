@@ -41,7 +41,6 @@ namespace p5.lambda.keywords.extras
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "apply")]
-        [ActiveEvent (Name = "braid")]
         public static void lambda_apply_braid (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving [template], and performing basic sanity check.

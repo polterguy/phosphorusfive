@@ -32,6 +32,17 @@ namespace p5.types.types
     public static class GuidType
     {
         /// <summary>
+        ///     Returns a new randomly created Guid
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.types.guid.new")]
+        private static void p5_types_guid_new (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Guid.NewGuid ();
+        }
+
+        /// <summary>
         ///     Creates a Guid from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -55,17 +66,6 @@ namespace p5.types.types
         private static void p5_hyperlisp_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "guid";
-        }
-
-        /// <summary>
-        ///     Returns a new randomly created Guid
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "new-guid")]
-        private static void new_guid (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = Guid.NewGuid ();
         }
     }
 }

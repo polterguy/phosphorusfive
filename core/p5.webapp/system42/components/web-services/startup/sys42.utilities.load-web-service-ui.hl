@@ -5,7 +5,7 @@
  * Creates a CodeMirror instance,optionally passing in any [_whitelist] arguments, such that user can play around with Hyperlambda,
  * to test the web service.
  */
-create-event:sys42.utilities.load-web-service-ui
+p5.events.create:sys42.utilities.load-web-service-ui
 
   /*
    * Making sure we include Bootstrap.

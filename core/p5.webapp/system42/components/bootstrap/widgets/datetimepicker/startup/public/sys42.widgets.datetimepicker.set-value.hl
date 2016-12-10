@@ -3,7 +3,7 @@
  * Creates the Active Event that sets the value of an Ajax DateTimePicker.
  * Pass in the ID to the DateTimePicker you wish to set the value of as [_arg], and its new value as [_value].
  */
-create-event:sys42.widgets.datetimepicker.set-value
+p5.events.create:sys42.widgets.datetimepicker.set-value
 
   /*
    * Changing value of textbox.

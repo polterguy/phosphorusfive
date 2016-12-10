@@ -4,7 +4,7 @@
  *
  * Normally invoked when user is logging out of system.
  */
-create-event:sys42.utilities.empty-user-temp-folder
+p5.events.create:sys42.utilities.empty-user-temp-folder
 
   /*
    * Retrieving currently logged in user, and verifying user is not "default user" (has no folder).

@@ -5,7 +5,7 @@
  * Invoked by e.g. [sys42.widgets.datagrid.databind] and [oninit].
  * Creates the actual datagrid table, according to arguments supplied during creation of widget.
  */
-create-event:sys42.widgets.datagrid._append-items
+p5.events.create:sys42.widgets.datagrid._append-items
 
   /*
    * Finds "tbody" widget in datagrid for later references, since we'll need to make sure "tr" widgets are children of "tbody".

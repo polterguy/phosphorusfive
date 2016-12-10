@@ -26,7 +26,7 @@
  *                          In addition, for cases when the user is uploading multiple files at once, it will also be given the
  *                          arguments [_count] and [_current], which are the total number of files, and the currently uploaded file.
  */
-create-event:sys42.widgets.uploader
+p5.events.create:sys42.widgets.uploader
 
   /*
    * Applying options for widget, with default values.
@@ -90,7 +90,7 @@ create-event:sys42.widgets.uploader
         _error-class:x:/../*/_options/*/_error-class?value
         _filter:x:/../*/_options/*/_filter?value
         _allow-multiple:x:/../*/_options/*/_allow-multiple?value
-        to-lower:x:/-?value.string
+        p5.string.to-lower:x:/-?value.string
 
         /*
          * Making sure we pass in file element to uploader instantiation.
@@ -111,7 +111,7 @@ create-event:sys42.widgets.uploader
           :x:/../*/_drop-class?value
           :x:/../*/_error-class?value
           :x:/../*/_filter?value
-          :x:/../*/to-lower?value
+          :x:/../*/p5.string.to-lower?value
           :x:/@p5.web.widgets.find/*/*?value
 
       /*
@@ -132,12 +132,12 @@ create-event:sys42.widgets.uploader
          */
         _filter:x:/../*/_options/*/_filter?value
         if:x:/@_filter?value
-          split:x:/@_filter?value
+          p5.string.split:x:/@_filter?value
             =:|
-          split:x:/../*/p5.web.params.get/*/sys42.widgets.uploader.filename?value
+          p5.string.split:x:/../*/p5.web.params.get/*/sys42.widgets.uploader.filename?value
             =:.
-          if:x:/@split/@split/*/{0}
-            :x:/@split/0/-?name
+          if:x:/@p5.string.split/@p5.string.split/*/{0}
+            :x:/@p5.string.split/0/-?name
             not
 
             /*

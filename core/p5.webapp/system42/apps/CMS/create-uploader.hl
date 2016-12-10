@@ -70,15 +70,15 @@ p5.web.widgets.create:cms-ajax-uploader
             :x:/@hyper2lambda/*?value
           _high:int:2
           for-each:x:/@p5.data.select/*?value
-            split:x:/@_dp?value
+            p5.string.split:x:/@_dp?value
               =:-
             if
-              p5.types.can-convert:x:/@split/0/-?name
+              p5.types.can-convert:x:/@p5.string.split/0/-?name
                 type:int
-              and:x:/@split/0/-?name.int
+              and:x:/@p5.string.split/0/-?name.int
                 >=:x:/@_high?value
               set:x:/@_high?value
-                +:x:/@split/0/-?name.int
+                +:x:/@p5.string.split/0/-?name.int
                   _:1
 
           /*

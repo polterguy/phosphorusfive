@@ -6,7 +6,7 @@
  * Optionally, it might also be given an [.on-header-clicked] lambda callback, which if supplied, 
  * will be invoked when a header is clicked.
  */
-create-event:sys42.widgets.datagrid._create-table-widgets
+p5.events.create:sys42.widgets.datagrid._create-table-widgets
 
   /*
    * Creating column headers, by [apply]'ing [_columns] to [p5.web.widgets.create] invocation below.

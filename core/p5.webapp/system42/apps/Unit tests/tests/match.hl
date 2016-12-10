@@ -1,25 +1,25 @@
 
 /*
- * Unit tests for [match].
+ * Unit tests for [p5.string.match].
  */
 
 
 Match yielding a single result
   _data:Thomas Hansen
-  match:x:/@_data?value
+  p5.string.match:x:/@_data?value
     src:regex:/Hansen/
-  if:x:/@match
-    !=:node:@"match
+  if:x:/@p5.string.match
+    !=:node:@"p5.string.match
   Hansen"
-    throw:Assert error, [match] misbehaved
+    throw:Assert error, [p5.string.match] misbehaved
 
 
 Match yielding multiple results
   _data:Thomas Hansen er circus hansen
-  match:x:/@_data?value
+  p5.string.match:x:/@_data?value
     src:regex:/hansen/i
-  if:x:/@match
-    !=:node:@"match
+  if:x:/@p5.string.match
+    !=:node:@"p5.string.match
   Hansen
   hansen"
-    throw:Assert error, [match] misbehaved
+    throw:Assert error, [p5.string.match] misbehaved

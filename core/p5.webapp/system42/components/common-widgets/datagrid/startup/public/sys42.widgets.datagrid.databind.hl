@@ -2,7 +2,7 @@
 /*
  * Databinds the specified [_arg] datagrid.
  */
-create-event:sys42.widgets.datagrid.databind
+p5.events.create:sys42.widgets.datagrid.databind
 
   /*
    * Retrieving current page, number of items per page, and query (filter).

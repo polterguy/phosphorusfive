@@ -2,7 +2,7 @@
 /*
  * Returns the datagrid row id from the specified [_arg] widget, which must be inside of that row.
  */
-create-event:sys42.widgets.datagrid.get-row-id
+p5.events.create:sys42.widgets.datagrid.get-row-id
 
   /*
    * Sanity check!

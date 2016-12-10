@@ -316,7 +316,7 @@ Event source returning node
 
 
 Dynamic event source returning node as children
-  create-event:sys42.tests.dynamic-apply-source
+  p5.events.create:sys42.tests.dynamic-apply-source
     eval-x:x:/+/*
     return
       name:x:/@_dn/#?name
@@ -334,7 +334,7 @@ Dynamic event source returning node as children
 
 
 Dynamic event source returning multiple nodes with static arg
-  create-event:sys42.tests.dynamic-apply-source
+  p5.events.create:sys42.tests.dynamic-apply-source
     eval-x:x:/+/*
     return
       name:x:/@_dn/#?name
@@ -355,7 +355,7 @@ Dynamic event source returning multiple nodes with static arg
 
 
 Dynamic event with arg source returning multiple nodes
-  create-event:sys42.tests.dynamic-apply-source
+  p5.events.create:sys42.tests.dynamic-apply-source
     eval-x:x:/+/*
     return
       name:x:/@_dn/#?name

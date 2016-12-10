@@ -14,7 +14,7 @@
  * [_class]            - Sets the CSS class of your widget.
  * [_whitelist]        - Optional list of events that can be legally invoked.
  */
-create-event:sys42.widgets.codemirror-executor
+p5.events.create:sys42.widgets.codemirror-executor
 
   /*
    * Applying options for widget, with default values.

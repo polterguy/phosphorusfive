@@ -284,7 +284,7 @@ p5.web.widgets.create:cms-page-editor
                  * Removing folder name and ".hl" extension, before we set the [value] and [innerValue]
                  * of our "option" HTML element for our "create new page drop down".
                  */
-                split:x:/@_dp?value
+                p5.string.split:x:/@_dp?value
                   =:/
                   =:.
 
@@ -299,7 +299,7 @@ p5.web.widgets.create:cms-page-editor
                   widgets
                     a
                       href:#
-                      innerValue:x:/@split/0/-2?name
+                      innerValue:x:/@p5.string.split/0/-2?name
                       onclick
 
                         /*

@@ -223,11 +223,11 @@ p5.io.file.save:~/temp/foo2.txt
   src:foo2
 p5.io.file.move:x:/../*/p5.io.file.save?value
   eval
-    split:x:/../*/_dn/#?value
+    p5.string.split:x:/../*/_dn/#?value
       =:.
     return:{0} - new path.{1}
-      :x:/../*/split/0?name
-      :x:/../*/split/1?name
+      :x:/../*/p5.string.split/0?name
+      :x:/../*/p5.string.split/1?name
 ```
 
 The above p5.lambda, first creates two text files. Then it uses an expression leading to each *[p5.io.file.save]*'s value for *[p5.io.file.move]*, with
@@ -414,7 +414,7 @@ mind, or even install your apps in a different folder, than what you originally 
 Below is some sample code that creates such a variable Active Event, for then to consume it when creating a file.
 
 ```
-create-event:p5.io.unroll-path.@my-temp
+p5.events.create:p5.io.unroll-path.@my-temp
   return:~/temp
 p5.io.file.save:@my-temp/foo.txt
   src:Foo bar

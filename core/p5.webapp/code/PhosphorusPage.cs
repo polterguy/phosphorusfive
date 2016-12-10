@@ -85,9 +85,9 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-page-value")]
-        [ActiveEvent (Name = ".set-page-value")]
-        public void set_page_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.viewstate.set")]
+        [ActiveEvent (Name = ".p5.web.viewstate.set")]
+        public void p5_web_viewstate_set (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
@@ -107,9 +107,9 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-page-value")]
-        [ActiveEvent (Name = ".get-page-value")]
-        public void get_page_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.viewstate.get")]
+        [ActiveEvent (Name = ".p5.web.viewstate.get")]
+        public void p5_web_viewstate_get (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Get (context, e.Args, key => ViewState [key]);
         }
@@ -119,9 +119,9 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-page-keys")]
-        [ActiveEvent (Name = ".list-page-keys")]
-        public void list_page_keys (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.viewstate.list")]
+        [ActiveEvent (Name = ".p5.web.viewstate.list")]
+        public void p5_web_viewstate_list (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.List (context, e.Args, ViewState.Keys);
         }
@@ -135,8 +135,8 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-title")]
-        public void set_title (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.page.set-title")]
+        public void p5_web_page_set_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving new Title of page
             var title = XUtil.Single<string>(context, e.Args);
@@ -162,27 +162,16 @@ namespace p5.webapp.code
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-title")]
-        public void get_title (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.page.get-title")]
+        public void p5_web_page_get_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
+            using (new core.Utilities.ArgsRemover (e.Args)) {
 
                 // ViewState title has presedence, since it might have been changed, 
                 // and "Title" property of page is not serialized into ViewState
                 e.Args.Value = ViewState["_pf_title"] ?? Title;
             }
-        }
-
-        /// <summary>
-        ///     Returns true if this is an Ajax callback.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "is-callback")]
-        public void is_callback (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = Manager.IsPhosphorusAjaxRequest;
         }
 
         #endregion

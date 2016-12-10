@@ -50,14 +50,14 @@ Out of the box, P5 supports most native types you'll need. Below is a list of th
 
 ### Helper Active Events for the date type
 
-Some types also have helper Active Events, such as for instance DateTime, which has the *[date-now]* and the *[format-date]* Active Event, 
+Some types also have helper Active Events, such as for instance DateTime, which has the *[p5.types.date.now]* and the *[p5.types.date.format]* Active Event, 
 which allows you to get the current date, and format a date object, supplying a *[cultur]* and a *[format]*. Example code below.
 
 ```
-date-now
-format-date:x:/-?value
+p5.types.date.now
+p5.types.date.format:x:/-?value
   format:"dddd, yyyy:MM:dd HH:mm"
-format-date:x:/-2?value
+p5.types.date.format:x:/-2?value
   culture:NO
 ```
 

@@ -59,17 +59,20 @@ namespace p5.web.ui.request {
                 return; // Nothing to do here ...
             }
 
+            // Checking type of request, and acting accordingly.
             if (RequestIsHyperlambda (e.Args, context)) {
 
                 // Some sort of "textual" based type of request
                 StreamReader reader = new StreamReader (HttpContext.Current.Request.InputStream);
                 var code = Utilities.Convert<Node> (context, reader.ReadToEnd ());
                 e.Args.AddRange (code.Children);
+
             } else if (RequestIsText (e.Args, context)) {
 
                 // Some sort of "textual" based type of request
                 StreamReader reader = new StreamReader (HttpContext.Current.Request.InputStream);
                 e.Args.Value = reader.ReadToEnd ();
+
             } else {
 
                 // Some sort of "binary" type of request, we assume
@@ -80,38 +83,38 @@ namespace p5.web.ui.request {
         }
 
         /// <summary>
-        ///     Saves the current HTTP request's body to a specified file
+        ///     Saves the current HTTP request's body to a specified file.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "save-request-body")]
-        public static void save_request_body (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.request.save-body")]
+        public static void p5_web_request_save_body (ApplicationContext context, ActiveEventArgs e)
         {
-            // Getting filename
+            // Getting filename.
             var filename = e.Args.GetExValue<string> (context);
 
-            // Making sure we transform filename into actual filename in case it uses our "~" logic
+            // Making sure we transform filename into actual filename in case it uses our "~" logic.
             filename = context.Raise (".p5.io.unroll-path", new Node ("", filename)).Get<string> (context);
 
-            // Verifying user is authorized writing to the file
+            // Verifying user is authorized writing to the file.
             context.Raise (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
 
-            // Retrieving root node of web application
+            // Retrieving root path for web application.
             var rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
 
-            // Creating a file stream, copying the request stream to our filestream
+            // Creating a file stream, copying the request stream to our filestream.
             using (FileStream fs = File.Create (rootFolder + filename)) {
                 HttpContext.Current.Request.InputStream.CopyTo (fs);
             }
         }
 
         /// <summary>
-        ///     Returns true if the user is coming in from a mobile device
+        ///     Returns true if the user is coming in from a mobile device.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "request-is-mobile-device")]
-        public static void request_is_mobile_device (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.request.is-mobile")]
+        public static void p5_web_request_is_mobile (ApplicationContext context, ActiveEventArgs e)
         {
             var userAgent = HttpContext.Current.Request.UserAgent.ToLower ();
             if (userAgent.Contains ("blackberry") || 
@@ -128,34 +131,34 @@ namespace p5.web.ui.request {
                 e.Args.Value = true;
             } else {
 
-                // This "might" be a mobile device, checking the .Net Framework's property
+                // This *might* be a mobile device, checking the .Net Framework's property
                 e.Args.Value = HttpContext.Current.Request.Browser.IsMobileDevice;
             }
         }
 
         /*
-         * Determines if current request is "text"
+         * Determines if current request is Hyperlambda.
          */
         private static bool RequestIsHyperlambda (Node node, ApplicationContext context)
         {
-            // Checking if Content-Type starts with "text/" ...
+            // Checking if Content-Type is Hyperlambda MIME extension.
             if (HttpContext.Current.Request.ContentType == "application/x-hyperlambda")
                 return true;
 
-            // Not text type
+            // Not Hyperlambda.
             return false;
         }
 
         /*
-         * Determines if current request is "text"
+         * Determines if current request is some sort of text.
          */
         private static bool RequestIsText (Node node, ApplicationContext context)
         {
-            // Checking if Content-Type starts with "text/" ...
+            // Checking if Content-Type starts with "text/".
             if (HttpContext.Current.Request.ContentType.StartsWith ("text/"))
                 return true;
 
-            // Not text type
+            // Not text.
             return false;
         }
     }

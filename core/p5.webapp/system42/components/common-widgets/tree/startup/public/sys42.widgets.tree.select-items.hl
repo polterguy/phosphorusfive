@@ -7,7 +7,7 @@
  *
  * Notice, all previously selected items are de-selected!
  */
-create-event:sys42.widgets.tree.select-items
+p5.events.create:sys42.widgets.tree.select-items
 
   /*
    * First finding all previously selected items, and de-selecting them.

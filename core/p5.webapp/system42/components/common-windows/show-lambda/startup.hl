@@ -12,7 +12,7 @@
  * This window can have multiple instances at the same time on page
  */
 
-create-event:sys42.windows.show-lambda
+p5.events.create:sys42.windows.show-lambda
 
   /*
    * Applying options for widget, with default values.

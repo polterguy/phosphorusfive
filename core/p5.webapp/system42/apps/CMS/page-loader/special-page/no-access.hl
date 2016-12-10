@@ -141,7 +141,7 @@ p5.web.include-javascript:@"p5.keyLoginPress = function(e) {
   }
 }"
 
-set-title:No access
+p5.web.page.set-title:No access
 if
   fetch:x:/0/0?value
     p5.web.widgets.exists:header

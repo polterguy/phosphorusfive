@@ -27,17 +27,17 @@ using p5.core;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [to-lower] keyword in p5 lambda.
+    ///     Class wrapping the [p5.string.to-lower] keyword in p5 lambda.
     /// </summary>
     public static class ToLower
     {
         /// <summary>
-        ///     The [to-lower] keyword, allows you to transform all UPPERCASE characters in a string to lowercase
+        ///     The [p5.string.to-lower] keyword, allows you to transform all UPPERCASE characters in a string to lowercase
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "to-lower")]
-        public static void lambda_to_lower (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.string.to-lower")]
+        public static void p5_string_to_lower (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {

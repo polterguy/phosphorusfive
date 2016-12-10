@@ -31,25 +31,26 @@ using p5.exp.exceptions;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [split] keyword in p5 lambda
+    ///     Class wrapping the [p5.string.split] keyword in p5 lambda
     /// </summary>
     public static class Split
     {
         /// <summary>
-        ///     The [split] keyword, allows you to split a string into multiple strings, either by index or string
+        ///     The [p5.string.split] keyword, allows you to p5.string.split a string into multiple strings, either by index or string
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "split")]
-        public static void lambda_split (ApplicationContext context, ActiveEventArgs e)
+        // TODO: Cleanup!!
+        [ActiveEvent (Name = "p5.string.split")]
+        public static void p5_string_split (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Figuring out source value of [split]
+                // Figuring out source value of [p5.string.split], and returning early if there is none.
                 string source = XUtil.Single<string> (context, e.Args);
                 if (source == null)
-                    return; // Nothing to split
+                    return;
 
                 // Checking if we should explicitly keep empty items
                 StringSplitOptions options = e.Args.GetExChildValue ("keep-empty", context, false) ? 
@@ -70,14 +71,14 @@ namespace p5.strings.keywords
                     // We have separator objects, now checking type of separator objects
                     if (sepObjects [0] is string) {
 
-                        // String split operation, converting entire array to string array
+                        // String p5.string.split operation, converting entire array to string array
                         var sepStrings = sepObjects.Select (ix => Utilities.Convert<string> (context, ix)).ToList ();
                         e.Args.AddRange (
                             source.Split (
                                 sepStrings.ToArray (), 
                                 options).Select (ix => new Node (trim ? ix.Trim () : ix)));
 
-                        // If string ends with split-string, we add an empty item back to caller, if options is to keep empty items
+                        // If string ends with p5.string.split-string, we add an empty item back to caller, if options is to keep empty items
                         if (options == StringSplitOptions.None) {
                             bool addEmpty = false;
                             foreach (var idxSplitString in sepObjects.Select (ix => Utilities.Convert<string> (context, ix))) {
@@ -91,7 +92,7 @@ namespace p5.strings.keywords
                         }
                     } else if (sepObjects [0] is int) {
 
-                        // Integer split operation, converting all values to integers and running substring upon all values
+                        // Integer p5.string.split operation, converting all values to integers and running substring upon all values
                         var sepIntegers = sepObjects.Select (ix => Utilities.Convert<int> (context, ix, -1)).ToList ();
                         sepIntegers.Sort ();
                         var start = 0;
@@ -103,16 +104,16 @@ namespace p5.strings.keywords
                         e.Args.Add (trim ? source.Substring (start).Trim () : source.Substring (start));
                     } else if (sepObjects [0] is Regex) {
 
-                        // Regex split operation, converting all values to regular expressions, and running Regex.Split on result
+                        // Regex p5.string.split operation, converting all values to regular expressions, and running Regex.Split on result
                         if (sepObjects.Count > 1)
-                            throw new LambdaException ("When supplying a regex to [split], only one [=] operator is allowed", e.Args, context);
+                            throw new LambdaException ("When supplying a regex to [p5.string.split], only one [=] operator is allowed", e.Args, context);
                         var sepRegex = sepObjects [0] as Regex;
                         e.Args.AddRange (sepRegex.Split (source).Select (ix => new Node (trim ? ix.Trim () : ix)));
                     } else {
 
                         // Oops ...!!
                         throw new LambdaException (
-                            "Don't know how to split upon anything else but integers, strings and regular expressions", 
+                            "Don't know how to p5.string.split upon anything else but integers, strings and regular expressions", 
                             e.Args, 
                             context);
                     }

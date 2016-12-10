@@ -4,7 +4,7 @@
  */
 p5.web.context.set:sys42.unit-test-errors
   src:bool:false
-date-now
+p5.types.date.now
 p5.web.session.set:sys42.unit-test-count
   src:int:0
 p5.web.widgets.find
@@ -12,9 +12,9 @@ p5.web.widgets.find
 p5.web.widgets.ajax-events.raise:x:/../*/p5.web.widgets.find/*/*?value
   onclick
 p5.web.session.get:sys42.unit-test-count
-date-now
+p5.types.date.now
 -:x:/-?value
-  _:x:/../*/date-now/[0,1]?value
+  _:x:/../*/p5.types.date.now/[0,1]?value
 eval-x:x:/+
 sys42.windows.info-tip:@"{0} unit tests evaluated in {1:s\.fff} seconds"
   :x:/./-4/*?value

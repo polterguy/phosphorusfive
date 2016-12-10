@@ -24,7 +24,7 @@
  * If user closes modal dialogue, without clicking OK, then the given [.onok] is not evaluated.
  * There can be only one instance of this dialogue at the same time in your page.
  */
-create-event:sys42.windows.confirm
+p5.events.create:sys42.windows.confirm
 
   /*
    * Simply using the [sys42.windows.modal] to create our confirm window.

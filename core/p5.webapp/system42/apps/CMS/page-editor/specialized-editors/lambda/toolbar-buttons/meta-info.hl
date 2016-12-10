@@ -132,7 +132,7 @@ button
           add:x:/..try/*/sys42.windows.modal/*/_widgets/*/ul/*/widgets
             src
               li
-                innerValue:<mark>Your page is too complex</mark>, and would benefit from being split up into an 'app'.
+                innerValue:<mark>Your page is too complex</mark>, and would benefit from becoming an 'app'.
 
         /*
          * Forward evaluating "li" HTML widgets below, and creating our modal window.

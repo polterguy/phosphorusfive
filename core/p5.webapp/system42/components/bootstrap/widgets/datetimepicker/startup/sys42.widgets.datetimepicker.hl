@@ -26,7 +26,7 @@
  * To understand the legal values for the above arguments, please read the documentation for the Bootstrap DateTimePicker here;
  * https://eonasdan.github.io/bootstrap-datetimepicker/
  */
-create-event:sys42.widgets.datetimepicker
+p5.events.create:sys42.widgets.datetimepicker
 
   /*
    * Applying options for widget, with default values.
@@ -220,11 +220,11 @@ create-event:sys42.widgets.datetimepicker
              * Hence, here we are making sure we remove this additional comma.
              */
             if:x:/../*/_arguments?value
-              trim:x:/../*/_arguments?value
+              p5.string.trim:x:/../*/_arguments?value
                 chars:,
               set:x:/../*/_arguments?value
                 src:"{{{0}}}"
-                  :x:/@trim?value
+                  :x:/@p5.string.trim?value
 
             /*
              * Initializing widget with JavaScript client inclusion.

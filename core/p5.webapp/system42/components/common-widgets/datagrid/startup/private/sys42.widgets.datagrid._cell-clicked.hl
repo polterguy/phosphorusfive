@@ -6,7 +6,7 @@
  * Expects [_hyperlink] being the ID of the widget (hyperlink) that was actually clicked, in addition to [_arg] being
  * the ID of the datagrid.
  */
-create-event:sys42.widgets.datagrid._cell-clicked
+p5.events.create:sys42.widgets.datagrid._cell-clicked
 
   /*
    * Fetching column name and innerValue.

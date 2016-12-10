@@ -46,9 +46,9 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-event")]
-        [ActiveEvent (Name = ".create-event")]
-        public static void create_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.events.create")]
+        [ActiveEvent (Name = ".p5.events.create")]
+        public static void p5_events_create (ApplicationContext context, ActiveEventArgs e)
         {
             // Acquire write lock, since we're consuming object shared amongst more than one thread (_events).
             _lock.EnterWriteLock ();
@@ -77,9 +77,9 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-event")]
-        [ActiveEvent (Name = ".delete-event")]
-        public static void delete_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.events.delete")]
+        [ActiveEvent (Name = ".p5.events.delete")]
+        public static void p5_events_delete (ApplicationContext context, ActiveEventArgs e)
         {
             // Acquire write lock, since we're consuming object shared amongst more than one thread (_events).
             _lock.EnterWriteLock ();

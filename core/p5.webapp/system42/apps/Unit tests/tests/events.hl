@@ -6,7 +6,7 @@
  * Tests that events can be stateful
  */
 stateful-event
-  create-event:test.stateful
+  p5.events.create:test.stateful
     _static:node:"count:int:0"
     set:x:/../*/_static/#?value
       +:x:/../*/_static/#?value
@@ -24,16 +24,16 @@ stateful-event
     or:x:/../*/test.stateful/[2,3]?value
       !=:Count 3
     throw:@"Assert error, stateful events was not stateful"
-  delete-event:test.stateful
+  p5.events.delete:test.stateful
 
 /*
  * Tests that events can be deleted
  */
-delete-event
-  create-event:test.to-delete
+p5.events.delete
+  p5.events.create:test.to-delete
     return:foo
   test.to-delete
-  delete-event:test.to-delete
+  p5.events.delete:test.to-delete
   test.to-delete
   if:x:/../*/test.to-delete/[0,1]?value
     !=:foo
@@ -47,7 +47,7 @@ delete-event
 create-dot-event-throw
   _success:bool:false
   try
-    create-event:.foo
+    p5.events.create:.foo
       foo
   catch
     set:x:/../*/_success?value
@@ -63,7 +63,7 @@ create-dot-event-throw
 create-underscore-event-throw
   _success:bool:false
   try
-    create-event:_foo
+    p5.events.create:_foo
       foo
   catch
     set:x:/../*/_success?value

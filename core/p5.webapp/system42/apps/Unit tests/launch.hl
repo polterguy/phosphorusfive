@@ -39,13 +39,13 @@ p5.io.folder.list-files:@tests/tests/
  * such that we can remove the directory path and ".hl" extension.
  */
 _eval-name
-  split:x:/../*/_dn/#?name
+  p5.string.split:x:/../*/_dn/#?name
     =:/
     =:.
   eval-x:x:/+/*/*
   insert-before:x:/../0
     src
-      innerValue:x:/../*/split/0/-2?name
+      innerValue:x:/../*/p5.string.split/0/-2?name
 
 
 /*
@@ -54,12 +54,12 @@ _eval-name
 _eval-content
   try
     p5.io.file.load:x:/../*/_dn/#?name
-    join:x:/-/*/*?name
+    p5.string.join:x:/-/*/*?name
       sep:"\r\n</li><li>"
     eval-x:x:/..try/*/return/*
     return
       innerValue:<pre><ol><li>{0}</li></ol></pre>
-        :x:/..try/*/join?value
+        :x:/..try/*/p5.string.join?value
   catch
     return:Syntax error in Hyperlambda file
   return

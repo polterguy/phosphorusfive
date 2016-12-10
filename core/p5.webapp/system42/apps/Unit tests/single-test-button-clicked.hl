@@ -69,7 +69,7 @@ if:x:/-/*?value
  */
 p5.web.widgets.find
   _file-result:x:/../*/_file?value
-join:x:/../*/sys42.utilities.execute-lambda-file/*/_success?value
+p5.string.join:x:/../*/sys42.utilities.execute-lambda-file/*/_success?value
   sep:"\r\n</li><li>"
 p5.web.widgets.property.set:x:/-2/*/*?value
   innerValue:@"{0}<pre><ol><li>{1}</li></ol></pre>"

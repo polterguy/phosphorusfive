@@ -10,7 +10,7 @@
  * [_src] can either contain a single value, be a node hierarchy, or both. Regardless, everything in [_src] will be stored as
  * your setting(s) values/nodes.
  */
-create-event:sys42.utilities.set-setting
+p5.events.create:sys42.utilities.set-setting
 
   /*
    * Sanity check

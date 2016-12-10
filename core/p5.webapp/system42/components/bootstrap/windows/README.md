@@ -218,7 +218,7 @@ sys42.windows.modal
   .onok
     p5.web.widgets.property.get:my-email
       value
-    match:x:/-/*/*?value
+    p5.string.match:x:/-/*/*?value
       src:regex:@"/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i"
     if:x:/-/*/result/*?name
       not
@@ -365,11 +365,11 @@ sys42.windows.modal
         p5.io.folder.list-folders:x:/../*/_item-id?value
         for-each:x:/-/*?name
           p5.io.folder.list-folders:x:/./*/_dp?value
-          split:x:/./*/_dp?value
+          p5.string.split:x:/./*/_dp?value
             =:/
           add:x:/../*/return/*
             src:@"{0}:{1}"
-              :x:/..for-each/*/split/0/-?name
+              :x:/..for-each/*/p5.string.split/0/-?name
               :x:/..for-each/*/_dp?value
           if:x:/./*/p5.io.folder.list-folders/*
             not

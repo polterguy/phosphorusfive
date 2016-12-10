@@ -10,7 +10,7 @@
  *
  * [_keep-auto-ids] - If true, will keep all automatically generated IDs, otherwise all auto IDs will be removed.
  */
-create-event:sys42.utilities.get-widget
+p5.events.create:sys42.utilities.get-widget
 
   /*
    * Used as "position node", to make sure all return values are returned in order of appearance, among other things.
@@ -53,9 +53,9 @@ create-event:sys42.utilities.get-widget
        * Notice, all automatically generated IDs are exactly 8 characters long, starts with an "x", and continues with 7 hex numbers.
        * There are no capital letters in an automatically created ID.
        */
-      match:x:/@p5.web.widgets.list/0?value
+      p5.string.match:x:/@p5.web.widgets.list/0?value
         src:regex:/x[abcdef0-9]{7}/c
-      if:x:/@match/*/*?name
+      if:x:/@p5.string.match/*/*?name
         set:x:/@_return-value/-?value
 
     /*
@@ -63,9 +63,9 @@ create-event:sys42.utilities.get-widget
      * Notice, contrary to the above removal of automatically generated IDs, caller cannot explicitly inform us that he does not want to remove
      * the automatcally generated ID. Any automatically generated IDs are ALWAYS removed!
      */
-    match:x:/@_return-value/-/*/name?value
+    p5.string.match:x:/@_return-value/-/*/name?value
       src:regex:/x[abcdef0-9]{7}/c
-    if:x:/@match/*/*?name
+    if:x:/@p5.string.match/*/*?name
       set:x:/@_return-value/-/*/name
 
     /*

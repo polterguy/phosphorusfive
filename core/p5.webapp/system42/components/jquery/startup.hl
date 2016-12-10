@@ -3,5 +3,5 @@
  * Startup script that is evaluated when server is started.
  * Creates the Active Event necessary to include jQuery in page.
  */
-create-event:sys42.utilities.include-jquery
+p5.events.create:sys42.utilities.include-jquery
   p5.web.include-javascript-file:@SYS42-COMPONENTS/jquery/js/jquery-2.1.4.min.js

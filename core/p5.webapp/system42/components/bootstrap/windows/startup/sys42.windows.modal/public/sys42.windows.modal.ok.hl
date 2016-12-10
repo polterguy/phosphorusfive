@@ -2,7 +2,7 @@
 /*
  * Evaluates [.onok] lambda object passed in during creation of modal window, and closes modal window.
  */
-create-event:sys42.windows.modal.ok
+p5.events.create:sys42.windows.modal.ok
 
   /*
    * Invokes the hidden lambda event on widget.

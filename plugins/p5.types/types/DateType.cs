@@ -39,8 +39,8 @@ namespace p5.types.types
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "date-now")]
-        public static void date_now (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.types.date.now")]
+        public static void p5_types_date_now (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = DateTime.Now.ToUniversalTime ();
         }
@@ -50,8 +50,8 @@ namespace p5.types.types
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "format-date")]
-        public static void format_date (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.types.date.format")]
+        public static void p5_types_date_format (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up arguments afterwards
             using (new Utilities.ArgsRemover (e.Args)) {

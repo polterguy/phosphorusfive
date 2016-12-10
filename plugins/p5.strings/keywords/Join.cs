@@ -28,17 +28,17 @@ using p5.core;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [join] keyword in p5 lambda.
+    ///     Class wrapping the [p5.string.join] keyword in p5 lambda.
     /// </summary>
     public static class Join
     {
         /// <summary>
-        ///     The [join] keyword, allows you to join multiple nodes/names/values into a single string
+        ///     The [p5.string.join] keyword, allows you to p5.string.join multiple nodes/names/values into a single string
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "join")]
-        public static void lambda_join (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.string.join")]
+        public static void p5_string_join (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {

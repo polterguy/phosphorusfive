@@ -54,7 +54,7 @@ namespace p5.threading
             // Figuring out for how long we should wait, defaults to "infinite"
             int milliseconds = e.Args.GetExValue (context, -1);
 
-            // Keeping a reference to all threads created, such that we can join them afterwards
+            // Keeping a reference to all threads created, such that we can p5.string.join them afterwards
             var threads = CreateThreads (context, e.Args);
 
             // Wait for all threads for as long as caller requested

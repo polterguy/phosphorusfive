@@ -9,32 +9,32 @@
 
 
 Set simple string value
-  set-page-value:sys42.tests.sample-value
+  p5.web.viewstate.set:sys42.tests.sample-value
     src:success
-  get-page-value:sys42.tests.sample-value
-  if:x:/@get-page-value/*?value
+  p5.web.viewstate.get:sys42.tests.sample-value
+  if:x:/@p5.web.viewstate.get/*?value
     !=:success
     throw:Assert error, collections misbehaved
 
 
 Set simple integer value
-  set-page-value:sys42.tests.sample-value
+  p5.web.viewstate.set:sys42.tests.sample-value
     src:int:57
-  get-page-value:sys42.tests.sample-value
-  if:x:/@get-page-value/*?value
+  p5.web.viewstate.get:sys42.tests.sample-value
+  if:x:/@p5.web.viewstate.get/*?value
     !=:int:57
     throw:Assert error, collections misbehaved
 
 
 Set graph object value
-  set-page-value:sys42.tests.sample-value
+  p5.web.viewstate.set:sys42.tests.sample-value
     src
       person
         name:Thomas
         age:int:42
-  get-page-value:sys42.tests.sample-value
-  if:x:/@get-page-value
-    !=:node:@"get-page-value
+  p5.web.viewstate.get:sys42.tests.sample-value
+  if:x:/@p5.web.viewstate.get
+    !=:node:@"p5.web.viewstate.get
   sys42.tests.sample-value
     person
       name:Thomas
@@ -45,7 +45,7 @@ Set graph object value
 Set throws on multiple root nodes in source
   _success:bool:false
   try
-    set-page-value:sys42.tests.sample-value
+    p5.web.viewstate.set:sys42.tests.sample-value
       src
         name:Thomas
         age:int:42
@@ -60,7 +60,7 @@ Set throws on multiple root nodes in source
 Set throws on multiple sources
   _success:bool:false
   try
-    set-page-value:sys42.tests.sample-value
+    p5.web.viewstate.set:sys42.tests.sample-value
       src:Error
       src:Failure
   catch
@@ -74,7 +74,7 @@ Set throws on multiple sources
 Set throws on protected key
   _success:bool:false
   try
-    set-page-value:.sys42.tests.sample-value
+    p5.web.viewstate.set:.sys42.tests.sample-value
       src:Error
   catch
     set:x:/@_success?value
@@ -88,42 +88,42 @@ Set with expression to multiple destinations
   _dest
     sys42.tests.sample-value-1
     sys42.tests.sample-value-2
-  set-page-value:x:/@_dest/*?name
+  p5.web.viewstate.set:x:/@_dest/*?name
     src:success
   if
     fetch:x:/0/0?value
-      get-page-value:sys42.tests.sample-value-1
+      p5.web.viewstate.get:sys42.tests.sample-value-1
     !=:success
     or
       fetch:x:/0/0?value
-        get-page-value:sys42.tests.sample-value-1
+        p5.web.viewstate.get:sys42.tests.sample-value-1
       !=:success
     throw:Assert error, collections misbehaved
 
 
 Get with expression to multiple sources
-  set-page-value:sys42.tests.sample-value-1
+  p5.web.viewstate.set:sys42.tests.sample-value-1
     src:success-1
-  set-page-value:sys42.tests.sample-value-2
+  p5.web.viewstate.set:sys42.tests.sample-value-2
     src:success-2
-  get-page-value:x:/../*/set-page-value?value
-  if:x:/@get-page-value
-    !=:node:@"get-page-value
+  p5.web.viewstate.get:x:/../*/p5.web.viewstate.set?value
+  if:x:/@p5.web.viewstate.get
+    !=:node:@"p5.web.viewstate.get
   sys42.tests.sample-value-1:success-1
   sys42.tests.sample-value-2:success-2"
     throw:Assert error, collections misbehaved
 
 
 Get with children nodes yielding multiple sources
-  set-page-value:sys42.tests.sample-value-1
+  p5.web.viewstate.set:sys42.tests.sample-value-1
     src:success-1
-  set-page-value:sys42.tests.sample-value-2
+  p5.web.viewstate.set:sys42.tests.sample-value-2
     src:success-2
-  get-page-value
+  p5.web.viewstate.get
     sys42.tests.sample-value-1
     sys42.tests.sample-value-2
-  if:x:/@get-page-value
-    !=:node:@"get-page-value
+  if:x:/@p5.web.viewstate.get
+    !=:node:@"p5.web.viewstate.get
   sys42.tests.sample-value-1:success-1
   sys42.tests.sample-value-2:success-2"
     throw:Assert error, collections misbehaved
@@ -132,7 +132,7 @@ Get with children nodes yielding multiple sources
 Get throws on protected key
   _success:bool:false
   try
-    get-page-value:.sys42.tests.sample-value
+    p5.web.viewstate.get:.sys42.tests.sample-value
   catch
     set:x:/@_success?value
       src:bool:true
@@ -142,45 +142,45 @@ Get throws on protected key
 
 
 List collections exact match
-  set-page-value:sys42.tests.sample-value-1
+  p5.web.viewstate.set:sys42.tests.sample-value-1
     src:success-1
-  set-page-value:sys42.tests.sample-value-2
+  p5.web.viewstate.set:sys42.tests.sample-value-2
     src:success-2
-  list-page-keys:sys42.tests.sample-value-1
-  if:x:/@list-page-keys
-    !=:node:@"list-page-keys
+  p5.web.viewstate.list:sys42.tests.sample-value-1
+  if:x:/@p5.web.viewstate.list
+    !=:node:@"p5.web.viewstate.list
   sys42.tests.sample-value-1"
     throw:Assert error, collections misbehaved
 
 
 List collections like match
-  set-page-value:sys42.tests.sample-value-1
+  p5.web.viewstate.set:sys42.tests.sample-value-1
     src:success-1
-  set-page-value:sys42.tests.sample-value-2
+  p5.web.viewstate.set:sys42.tests.sample-value-2
     src:success-2
-  list-page-keys:~sys42.tests.sample-value-
-  if:x:/@list-page-keys
-    !=:node:@"list-page-keys
+  p5.web.viewstate.list:~sys42.tests.sample-value-
+  if:x:/@p5.web.viewstate.list
+    !=:node:@"p5.web.viewstate.list
   sys42.tests.sample-value-1
   sys42.tests.sample-value-2"
     throw:Assert error, collections misbehaved
 
 
 List collections exact match expression
-  set-page-value:sys42.tests.sample-value-1
+  p5.web.viewstate.set:sys42.tests.sample-value-1
     src:success-1
-  set-page-value:sys42.tests.sample-value-2
+  p5.web.viewstate.set:sys42.tests.sample-value-2
     src:success-2
-  list-page-keys:x:/../*/set-page-value?value
-  if:x:/@list-page-keys
-    !=:node:@"list-page-keys
+  p5.web.viewstate.list:x:/../*/p5.web.viewstate.set?value
+  if:x:/@p5.web.viewstate.list
+    !=:node:@"p5.web.viewstate.list
   sys42.tests.sample-value-1
   sys42.tests.sample-value-2"
     throw:Assert error, collections misbehaved
 
 
 List does not return protected key
-  list-page-keys:.WidgetAjaxEventStorage
-  if:x:/@list-page-keys
-    !=:node:@"list-page-keys"
+  p5.web.viewstate.list:.WidgetAjaxEventStorage
+  if:x:/@p5.web.viewstate.list
+    !=:node:@"p5.web.viewstate.list"
     throw:Assert error, collections misbehaved

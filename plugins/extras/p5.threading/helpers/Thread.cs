@@ -80,7 +80,7 @@ namespace p5.threading.helpers
         /// <summary>
         ///     Waits for thread to finish, or number of milliseconds, whichever occurs first
         /// </summary>
-        /// <param name="milliseconds">Milliseconds to wait, if -1, then join will wait "forever"</param>
+        /// <param name="milliseconds">Milliseconds to wait, if -1, then p5.string.join will wait "forever"</param>
         public void Join (int milliseconds = -1)
         {
             if (milliseconds == -1)

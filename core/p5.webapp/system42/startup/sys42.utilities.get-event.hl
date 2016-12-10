@@ -6,7 +6,7 @@
  * Multiple events can be inspected in one go, by providing an expression leading to multiple results, being the names of the events
  * you wish to inspect.
  */
-create-event:sys42.utilities.get-event
+p5.events.create:sys42.utilities.get-event
 
   /*
    * This one, will contain the invocation lambda, necessary to invoke, and inspect, all events caller provided.

@@ -127,11 +127,11 @@ with the website. If you see this folder in a production website, then the websi
 
 The p5.webapp exposes some Active Events. Some of the more important ones, are listed below.
 
-* [set-page-value] - Sets a "page value", think of a "page value" as a ViewState entry. Has a "private" override
-* [get-page-value] - Opposite of above
-* [list-page-keys] - Lists all "page keys" for current page
-* [set-title] - Changes the title of your page
-* [get-title] - Returns the title of page
+* [p5.web.viewstate.set] - Sets a "page value", think of a "page value" as a ViewState entry. Has a "private" override
+* [p5.web.viewstate.get] - Opposite of above
+* [p5.web.viewstate.list] - Lists all "page keys" for current page
+* [p5.web.page.set-title] - Changes the title of your page
+* [p5.web.page.get-title] - Returns the title of page
 
 In addition to these protected events, which can only be accessed through C#.
 

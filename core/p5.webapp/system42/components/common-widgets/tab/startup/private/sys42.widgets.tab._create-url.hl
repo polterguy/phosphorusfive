@@ -2,7 +2,7 @@
 /*
  * Supporting Active Event, to create URL from given [_arg] value, with the given [_crawl-get-name] as the HTTP argument name.
  */
-create-event:sys42.widgets.tab._create-url
+p5.events.create:sys42.widgets.tab._create-url
 
   /*
    * First we get current location, without GET parameters, before we add the question mark to make sure we 

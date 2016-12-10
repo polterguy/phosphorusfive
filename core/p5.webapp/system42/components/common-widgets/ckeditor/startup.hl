@@ -8,7 +8,7 @@
  * [_events] - Collection of widget lambda events to associate with widget.
  * [_value] - Initial value of editor. Defaults to nothing.
  */
-create-event:sys42.widgets.ck-editor
+p5.events.create:sys42.widgets.ck-editor
 
   /*
    * Applying options for widget, with default values.

@@ -2,7 +2,7 @@
 /*
  * Selects all specified [_items] in specified [_arg] datagrid.
  */
-create-event:sys42.widgets.datagrid.select-items
+p5.events.create:sys42.widgets.datagrid.select-items
 
   /*
    * Finding all previously selected items, and "un-selecting" them, by deleting the "selected" CSS class on them.

@@ -2,7 +2,7 @@
 /*
  * Filters specified [_arg] datagrid according to specified [_query].
  */
-create-event:sys42.widgets.datagrid.filter
+p5.events.create:sys42.widgets.datagrid.filter
 
   /*
    * Making sure we update pager, such that the first page is displayed.

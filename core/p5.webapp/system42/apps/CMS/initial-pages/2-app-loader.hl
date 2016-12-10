@@ -13,7 +13,7 @@ p5.page:/app-loader
 p5.web.params.get:app
 sys42.utilities.execute-lambda-file:@SYS42-APPS/{0}/launch.hl
   :x:/@p5.web.params.get/0?value
-set-title:x:/@p5.web.params.get/0?value
+p5.web.page.set-title:x:/@p5.web.params.get/0?value
 p5.web.widgets.exists:header
 if:x:/-/*?value
   p5.web.widgets.property.set:header

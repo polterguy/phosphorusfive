@@ -2,7 +2,7 @@
 /*
  * Responsible for creating the Active Event that allows you to download a file from the server.
  */
-create-event:sys42.cms.download-file
+p5.events.create:sys42.cms.download-file
 
   /*
    * Puts the given filename and path into session, and simply reloads location, since actual download is

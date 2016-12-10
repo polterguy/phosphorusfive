@@ -4,7 +4,7 @@
  *
  * This Active Event creates the Navbar items, for your menu, recursively.
  */
-create-event:sys42.widgets.navbar._create-items
+p5.events.create:sys42.widgets.navbar._create-items
 
   /*
    * Checking if we have items, and if not, returning early.
@@ -126,14 +126,14 @@ create-event:sys42.widgets.navbar._create-items
                    * by caller for [.onclick] of item, if any.
                    */
                   if
-                    is-callback
+                    p5.web.request.is-ajax-callback
                     p5.web.send-javascript:@"if ($(window).width() < 768) {$('.navbar-toggle').click();}"
                   p5.web.widgets.find-ancestor-like:x:/../*/_event?value
                     element:ul
                     class:dropdown-menu
                   if:x:/@p5.web.widgets.find-ancestor-like/*/*?value
                     and
-                      is-callback
+                      p5.web.request.is-ajax-callback
                     p5.web.send-javascript:@"$('#{0}').dropdown('toggle');"
                       :x:/@p5.web.widgets.find-ancestor-like/*/*?value
 

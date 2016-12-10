@@ -23,7 +23,7 @@
  *                      See [_items] above to understand the collection the tree widget expects.
  * [.on-select]       - Callback lambda to invoke when an item is selected.
  */
-create-event:sys42.widgets.tree
+p5.events.create:sys42.widgets.tree
 
   /*
    * Applying options for widget, with default values.
@@ -126,10 +126,10 @@ create-event:sys42.widgets.tree
          * Splitting up every ID from URL, and adding every ID to invocation of [toggle-items],
          * while forcing an "unrolling" through [_force-expand].
          */
-        split:x:/@p5.web.query.get/*?value
+        p5.string.split:x:/@p5.web.query.get/*?value
           =:|
         add:x:/+/*/_items
-          src:x:/@split/*?name
+          src:x:/@p5.string.split/*?name
         sys42.widgets.tree.toggle-items:x:/../*/_event?value
           _items
           _force-expand:bool:true
@@ -138,7 +138,7 @@ create-event:sys42.widgets.tree
          * Making sure we select outer most item.
          */
         add:x:/../*/sys42.widgets.tree.select-items/*
-          src:x:/@split/0/-?name
+          src:x:/@p5.string.split/0/-?name
         sys42.widgets.tree.select-items:x:/../*/_event?value
           _items
 

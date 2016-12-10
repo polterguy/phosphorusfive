@@ -1,35 +1,35 @@
 
 /*
- * Unit tests for [replace].
+ * Unit tests for [p5.string.replace].
  */
 
 Replace single constant string
   _data:Thomas Dumbfuck Hansen
-  replace:x:/@_data?value
+  p5.string.replace:x:/@_data?value
     src:Dumbfuck
     dest:Brilliant
-  if:x:/@replace?value
+  if:x:/@p5.string.replace?value
     !=:Thomas Brilliant Hansen
-    throw:Assert error, [replace] misbehaved
+    throw:Assert error, [p5.string.replace] misbehaved
 
 
 Replace single with expression src and dest
   _with:Brilliant
   _what:Dumbfuck
   _data:Thomas Dumbfuck Hansen
-  replace:x:/@_data?value
+  p5.string.replace:x:/@_data?value
     src:x:/@_what?value
     dest:x:/@_with?value
-  if:x:/@replace?value
+  if:x:/@p5.string.replace?value
     !=:Thomas Brilliant Hansen
-    throw:Assert error, [replace] misbehaved
+    throw:Assert error, [p5.string.replace] misbehaved
 
 
 Replace with regular expression src
   _data:Thomas Dumbfuck Hansen is Dumbfuck
-  replace:x:/@_data?value
+  p5.string.replace:x:/@_data?value
     src:regex:/dumbfuck/i
     dest:Brilliant
-  if:x:/@replace?value
+  if:x:/@p5.string.replace?value
     !=:Thomas Brilliant Hansen is Brilliant
-    throw:Assert error, [replace] misbehaved
+    throw:Assert error, [p5.string.replace] misbehaved

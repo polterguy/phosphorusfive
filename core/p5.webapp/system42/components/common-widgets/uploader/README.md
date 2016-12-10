@@ -118,11 +118,11 @@ p5.web.widgets.create:ajax-dropbox
         p5.io.folder.list-files:~/documents/private/
           filter:x:/../*/_query?value
         for-each:x:/-/*?name
-          split:x:/@_dp?value
+          p5.string.split:x:/@_dp?value
             =:/
           add:x:/./*/add/[1,]/*/*
             src:"file:{0}"
-              :x:/@split/0/-?name
+              :x:/@p5.string.split/0/-?name
           eval-x:x:/+/*/*
           add:x:/../*/return/*/_items
             src

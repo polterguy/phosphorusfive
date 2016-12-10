@@ -34,7 +34,7 @@ if
       p5.web.widgets.exists:header
     p5.web.widgets.property.set:header
       innerValue:x:/../*/_args/*/name?value
-  set-title:x:/../*/_args/*/name?value
+  p5.web.page.set-title:x:/../*/_args/*/name?value
 
   /*
    * Now we can evaluate [lambda] from database, making sure we provide "clue" to which URL is evaluated.

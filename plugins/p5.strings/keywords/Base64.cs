@@ -30,7 +30,7 @@ namespace p5.types.types
     /// <summary>
     ///     Class contains helper methods for string type
     /// </summary>
-    public static class StringType
+    public static class Base64
     {
         /// <summary>
         ///     Creates a bool from its string representation

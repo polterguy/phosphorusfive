@@ -2,7 +2,7 @@
 /*
  * Pages the specified [_arg] datagrid to its previous page.
  */
-create-event:sys42.widgets.datagrid.go-previous
+p5.events.create:sys42.widgets.datagrid.go-previous
 
   /*
    * Retrieving current page and number of items per page.

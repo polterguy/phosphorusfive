@@ -20,9 +20,9 @@ p5.web.widgets.create-literal:my-widget
   position:0
   innerValue:Click me!
   onclick
-    date-now
+    p5.types.date.now
     p5.web.widgets.property.set:my-widget
-      innerValue:x:/../*/date-now?value.string
+      innerValue:x:/../*/p5.types.date.now?value.string
 ```
 
 The above p5.lambda, will create an H3 HTML element, having the value of "Click me!", which when clicked, will change its value to the date and time
@@ -319,7 +319,7 @@ can use your Active Event as a "widget type".
 
 ```
 // This Active Event becomes a "custom widget type"
-create-event:foo.bar
+p5.events.create:foo.bar
   return
     literal
       innerValue:Howdy world
@@ -1040,9 +1040,9 @@ you do not wish some random piece of p5.lambda to access.
 
 Notice, there are also three Active Events defined in the [p5.webapp](/core/p5.webapp/) project, which allows you to store "page values" (ViewState).
 
-* [set-page-value] - Has private (.) alias
-* [get-page-value] - Has private (.) alias
-* [list-page-keys] - Has private (.) alias
+* [p5.web.viewstate.set] - Has private (.) alias
+* [p5.web.viewstate.get] - Has private (.) alias
+* [p5.web.viewstate.list] - Has private (.) alias
 
 The above three mentioned events, also obeys by the same "API" as the once listed below.
 
@@ -1314,7 +1314,7 @@ This is a quite useful feature of P5, since it allows you to create "web service
 other piece of "machine readable type of request", which is intended to be used by machines and web services, instead of browser clients.
 
 If you wish to directly save the request, without first putting it into memory, you can save some memory and CPU cycles by directly saving the request
-body using the *[save-request-body]* Active Event, which takes a constant or expression leading to a filename on your server. Notice, this event
+body using the *[p5.web.request.save-body]* Active Event, which takes a constant or expression leading to a filename on your server. Notice, this event
 requires the currently logged in user context to be able to write to the path supplied.
 
 Hint!
@@ -1323,7 +1323,7 @@ Use the *[login]* Active Event to change the current "user context ticket" if yo
 ### Additional request helper events
 
 You can also get the HTTP method of your request, using the *[p5.web.request.get-method]* Active Event, in addition to that you can have P5 make its best "guess"
-of whether or not the request originated from a "mobile device" using the *[request-is-mobile-device]* Active Event. The latter is not 100% perfect,
+of whether or not the request originated from a "mobile device" using the *[p5.web.request.is-mobile]* Active Event. The latter is not 100% perfect,
 since a mobile device is not required to identify itself as such to your server. But it is good enough for most cases, and will do a decent job, 
 determining if the client is some sort of "mobile device" or not.
 

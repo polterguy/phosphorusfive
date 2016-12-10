@@ -35,12 +35,12 @@ button
     p5.io.folder.list-files:@CMS/page-templates/
       filter:hl
     for-each:x:/-/*?name
-      split:x:/..for-each/*/_dp?value
+      p5.string.split:x:/..for-each/*/_dp?value
         =:/
         =:.
       add:x:/./+/*/*
         src:@"{0}:{1}"
-          :x:/..for-each/*/split/0/-2?name
+          :x:/..for-each/*/p5.string.split/0/-2?name
           :x:/..for-each/*/_dp?value
     add:x:/../*/sys42.windows.wizard/*/_data/*/template
       src

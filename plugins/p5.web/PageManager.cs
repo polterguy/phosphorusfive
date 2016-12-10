@@ -27,7 +27,6 @@ using p5.exp;
 using p5.core;
 using p5.ajax.core;
 using p5.web.widgets;
-using p5.exp.exceptions;
 using p5.web.widgets.helpers;
 
 namespace p5.web
@@ -80,6 +79,17 @@ namespace p5.web
         }
 
         #region [ -- Misc. global Active Events -- ]
+
+        /// <summary>
+        ///     Returns true if this is an Ajax callback.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.request.is-ajax-callback")]
+        public void p5_web_request_is_ajax_callback (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = AjaxPage.Manager.IsPhosphorusAjaxRequest;
+        }
 
         /// <summary>
         ///     Sends the given JavaScript to client one time
@@ -270,28 +280,28 @@ namespace p5.web
 
                 // Associating lambda event storage with page by creating a "page value"
                 context.Raise(
-                    ".set-page-value",
-                    new Node(".set-page-value", ".WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
+                    ".p5.web.viewstate.set",
+                    new Node(".p5.web.viewstate.set", ".WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
 
                 // Creating storage for widget ajax events
                 WidgetAjaxEventStorage = new WidgetEventStorage();
 
                 // Associating ajax event storage with page by creating a "page value"
                 context.Raise(
-                    ".set-page-value",
-                    new Node(".set-page-value", ".WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
+                    ".p5.web.viewstate.set",
+                    new Node(".p5.web.viewstate.set", ".WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
             } else {
 
                 // Retrieving existing widget lambda event storage
                 WidgetLambdaEventStorage = context.Raise (
-                    ".get-page-value",
-                    new Node(".get-page-value", ".WidgetLambdaEventStorage"))[0]
+                    ".p5.web.viewstate.get",
+                    new Node(".p5.web.viewstate.get", ".WidgetLambdaEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
 
                 // Retrieving existing widget ajax event storage
                 WidgetAjaxEventStorage = context.Raise (
-                    ".get-page-value",
-                    new Node(".get-page-value", ".WidgetAjaxEventStorage"))[0]
+                    ".p5.web.viewstate.get",
+                    new Node(".p5.web.viewstate.get", ".WidgetAjaxEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
             }
         }

@@ -4,7 +4,7 @@
  *
  * Expects [_arg] being ID of datagrid, [_column], [_row] and [_hyperlink] being the hyperlink that was actually clicked.
  */
-create-event:sys42.widgets.datagrid._edit-cell
+p5.events.create:sys42.widgets.datagrid._edit-cell
 
   /*
    * Figuring our parent of hyperlink, which is "td" cell, such that we can create our textbox as a child widget of that widget.

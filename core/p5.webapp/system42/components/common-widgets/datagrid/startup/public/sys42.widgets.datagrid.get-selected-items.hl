@@ -2,7 +2,7 @@
 /*
  * Returns the selected items as [_items] from the specified [_arg] datagrid.
  */
-create-event:sys42.widgets.datagrid.get-selected-items
+p5.events.create:sys42.widgets.datagrid.get-selected-items
 
   /*
    * Finding all "tr" widgets with the "selected" class.

@@ -31,21 +31,21 @@ using p5.exp.exceptions;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [match] Active Event.
+    ///     Class wrapping the [p5.string.match] Active Event.
     /// </summary>
     public static class Match
     {
         /// <summary>
-        ///     The [match] event, returns occurrences of a regular expression in a string.
+        ///     The [p5.string.match] event, returns occurrences of a regular expression in a string.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "match")]
-        public static void lambda_match (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.string.match")]
+        public static void p5_string_match (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
             if (e.Args.Value == null)
-                throw new LambdaException ("[match] requires an expression or constant as its value", e.Args, context);
+                throw new LambdaException ("[p5.string.match] requires an expression or constant as its value", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -62,7 +62,7 @@ namespace p5.strings.keywords
 
                 // Sanity check.
                 if (!(src is Regex))
-                    throw new LambdaException ("[match] requires a regular expression src", e.Args, context);
+                    throw new LambdaException ("[p5.string.match] requires a regular expression src", e.Args, context);
 
                 // Evaluating regular expression, and returning results.
                 foreach (System.Text.RegularExpressions.Match idxMatch in (src as Regex).Matches (source)) {

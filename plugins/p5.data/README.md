@@ -246,18 +246,18 @@ p5.data.insert
     name:John Doe
 p5.data.update:x:/*/*/foo.av-update-test
   eval
-    split:x:/../*/_dn/#/*/name?value
+    p5.string.split:x:/../*/_dn/#/*/name?value
       =:" "
     eval-x:x:/+/*/*
     return
       foo.av-update-test
-        first-name:x:/../*/split/0?name
-        surname:x:/../*/split/1?name
+        first-name:x:/../*/p5.string.split/0?name
+        surname:x:/../*/p5.string.split/1?name
 p5.data.select:x:/*/*/foo.av-update-test
 ```
 
 The above lambda, will first insert two items into our database, with a single *[name]* child node, containing the entire name for our objects. Then it will
-update these items, relatively, with an Active Event source invocation, using *[eval]* as our source. Our *[eval]* lambda object, will use *[split]* to split
+update these items, relatively, with an Active Event source invocation, using *[eval]* as our source. Our *[eval]* lambda object, will use *[p5.string.split]* to p5.string.split
 the *[name]* into both *[first-name]* and *[surname]*, which it then returns as children nodes of our new and updated *[foo.av-update-test]* node.
 
 The result becoming that the items are still the same, but their names is splitted into first-names and surnames in our database.

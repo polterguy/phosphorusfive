@@ -7,7 +7,7 @@
  * value to being true. If you do, it will not hide already expanded items.
  * This feature is used among other things during "unrolling" of items due to SEO friendly URLs being traversed.
  */
-create-event:sys42.widgets.tree.toggle-items
+p5.events.create:sys42.widgets.tree.toggle-items
 
   /*
    * This is the tree caller requested to have items toggled in, 

@@ -1,12 +1,12 @@
 /*
- * Contains unit tests for testing [split] in system
+ * Contains unit tests for testing [p5.string.split] in system
  */
 
 /*
- * Tests that split behaves as expected when given a simple string
+ * Tests that p5.string.split behaves as expected when given a simple string
  */
 simple-string
-  split:thomas,hansen
+  p5.string.split:thomas,hansen
     =:,
   if:x:/-/*?count
     !=:int:2
@@ -14,13 +14,13 @@ simple-string
       !=:thomas
     or:x:/./-/1?name
       !=:hansen
-    throw:@"Assert error, [split] misbehaved!"
+    throw:@"Assert error, [p5.string.split] misbehaved!"
 
 /*
- * Tests that split behaves as expected when given a single integer
+ * Tests that p5.string.split behaves as expected when given a single integer
  */
 integer
-  split:thomashansen
+  p5.string.split:thomashansen
     =:int:6
   if:x:/-/*?count
     !=:int:2
@@ -28,13 +28,13 @@ integer
       !=:thomas
     or:x:/./-/1?name
       !=:hansen
-    throw:@"Assert error, [split] misbehaved!"
+    throw:@"Assert error, [p5.string.split] misbehaved!"
 
 /*
- * Tests that split behaves as expected when given two integers
+ * Tests that p5.string.split behaves as expected when given two integers
  */
 two-integers
-  split:thomashansenjohn
+  p5.string.split:thomashansenjohn
     =:int:6
     =:int:12
   if:x:/-/*?count
@@ -45,13 +45,13 @@ two-integers
       !=:hansen
     or:x:/./-/2?name
       !=:john
-    throw:@"Assert error, [split] misbehaved!"
+    throw:@"Assert error, [p5.string.split] misbehaved!"
 
 /*
- * Tests that split behaves as expected when given a simple string
+ * Tests that p5.string.split behaves as expected when given a simple string
  */
 two-strings
-  split:thomas,hansen john
+  p5.string.split:thomas,hansen john
     =:,
     =:" "
   if:x:/-/*?count
@@ -62,13 +62,13 @@ two-strings
       !=:hansen
     or:x:/./-/2?name
       !=:john
-    throw:@"Assert error, [split] misbehaved!"
+    throw:@"Assert error, [p5.string.split] misbehaved!"
 
 /*
- * Tests that split behaves as expected
+ * Tests that p5.string.split behaves as expected
  */
 regex
-  split:thomas,hansen john,doe
+  p5.string.split:thomas,hansen john,doe
     =:regex:/[, ]/
   if:x:/-/*?count
     !=:int:4
@@ -80,15 +80,15 @@ regex
       !=:john
     or:x:/./-/3?name
       !=:doe
-    throw:@"Assert error, [split] misbehaved!"
+    throw:@"Assert error, [p5.string.split] misbehaved!"
 
 /*
- * Tests that split behaves as expected
+ * Tests that p5.string.split behaves as expected
  */
 two-regex-throw
   _result
   try
-    split:thomas
+    p5.string.split:thomas
       =:regex:/[, ]/
       =:regex:/hom/
   catch
@@ -96,4 +96,4 @@ two-regex-throw
       src:success
   if:x:/../*/_result?value
     !=:success
-    throw:@"Assert error, [split] misbehaved and did not throw exception when expected!"
+    throw:@"Assert error, [p5.string.split] misbehaved and did not throw exception when expected!"

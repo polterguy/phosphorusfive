@@ -2,7 +2,7 @@
 /*
  * Supporting Active Event, to create URL from given [_arg] "li" widget.
  */
-create-event:sys42.widgets.tree._create-url
+p5.events.create:sys42.widgets.tree._create-url
 
   /*
    * First we get current location, without GET parameters, before we add the question mark to make sure we 
@@ -78,9 +78,9 @@ create-event:sys42.widgets.tree._create-url
   /*
    * Now we URL encode entire parameter, before we return it concatenated with base URL to caller.
    */
-  trim:x:/../*/_param?value
+  p5.string.trim:x:/../*/_param?value
     chars:|
-  p5.html.encode-url:x:/../*/trim?value
+  p5.html.encode-url:x:/../*/p5.string.trim?value
 
   return:{0}{1}
     :x:/../*/p5.web.get-location-url?value

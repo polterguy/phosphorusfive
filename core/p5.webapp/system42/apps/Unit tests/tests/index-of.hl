@@ -1,75 +1,75 @@
 
 /*
- * Unit tests for [index-of].
+ * Unit tests for [p5.string.index-of].
  */
 
 
 Index of static string yielding single result
   _data:foobarhowdy
-  index-of:x:/@_data?value
+  p5.string.index-of:x:/@_data?value
     src:bar
-  if:x:/@index-of/*?value
+  if:x:/@p5.string.index-of/*?value
     !=:int:3
-    or:x:/@index-of/*?count
+    or:x:/@p5.string.index-of/*?count
       !=:int:1
-    throw:Assert error, [index-of] misbehaved
+    throw:Assert error, [p5.string.index-of] misbehaved
 
 
 Index of static string yielding multiple results
   _data:foobarhowdybar
-  index-of:x:/@_data?value
+  p5.string.index-of:x:/@_data?value
     src:bar
-  if:x:/@index-of/0?value
+  if:x:/@p5.string.index-of/0?value
     !=:int:3
-    or:x:/@index-of/1?value
+    or:x:/@p5.string.index-of/1?value
       !=:int:11
-    or:x:/@index-of/*?count
+    or:x:/@p5.string.index-of/*?count
       !=:int:2
-    throw:Assert error, [index-of] misbehaved
+    throw:Assert error, [p5.string.index-of] misbehaved
 
 
 Index of expression string yielding single result
   _data:foobarhowdy
   _input:bar
-  index-of:x:/@_data?value
+  p5.string.index-of:x:/@_data?value
     src:x:/@_input?value
-  if:x:/@index-of/*?value
+  if:x:/@p5.string.index-of/*?value
     !=:int:3
-    or:x:/@index-of/*?count
+    or:x:/@p5.string.index-of/*?count
       !=:int:1
-    throw:Assert error, [index-of] misbehaved
+    throw:Assert error, [p5.string.index-of] misbehaved
 
 
 Index of static regex yielding multiple result
   _data:Thomas hansen thomas
-  index-of:x:/@_data?value
+  p5.string.index-of:x:/@_data?value
     src:regex:/thomas/i
-  if:x:/@index-of/0?value
+  if:x:/@p5.string.index-of/0?value
     !=:int:0
-    or:x:/@index-of/1?value
+    or:x:/@p5.string.index-of/1?value
       !=:int:14
-    or:x:/@index-of/*?count
+    or:x:/@p5.string.index-of/*?count
       !=:int:2
-    throw:Assert error, [index-of] misbehaved
+    throw:Assert error, [p5.string.index-of] misbehaved
 
 
 Index of expression regex yielding single result
   _data:Hansen, Thomas
   _input:regex:/thomas/i
-  index-of:x:/@_data?value
+  p5.string.index-of:x:/@_data?value
     src:x:/@_input?value
-  if:x:/@index-of/0?value
+  if:x:/@p5.string.index-of/0?value
     !=:int:8
-    or:x:/@index-of/*?count
+    or:x:/@p5.string.index-of/*?count
       !=:int:1
-    throw:Assert error, [index-of] misbehaved
+    throw:Assert error, [p5.string.index-of] misbehaved
 
 
 Index of throws on multiple sources
   _success:bool:false
   _data:foo bar
   try
-    index-of:x:/@_data?value
+    p5.string.index-of:x:/@_data?value
       src:foo
       src:bar
   catch
@@ -77,4 +77,4 @@ Index of throws on multiple sources
       src:bool:true
   if:x:/@_success?value
     not
-    throw:Assert error, [index-of] misbehaved
+    throw:Assert error, [p5.string.index-of] misbehaved

@@ -39,7 +39,7 @@
  *                         It will be given an [_items] collection, which contains one or more children nodes, where their names
  *                         are the ID(s) of the rows that were selected.
  */
-create-event:sys42.widgets.datagrid
+p5.events.create:sys42.widgets.datagrid
 
   /*
    * Applying options for widget, with default values.

@@ -3,7 +3,7 @@
  * Creates the Active Event that imports a CSV file.
  * Imports the given [_arg] CSV file, and puts into p5.data database.
  */
-create-event:sys42.csv.import
+p5.events.create:sys42.csv.import
 
   if:x:/../*/_arg?count
     !=:int:1
@@ -17,7 +17,7 @@ create-event:sys42.csv.import
   /*
    * Needed to make sure filename becomes type of object to [p5.data.insert].
    */
-  split:x:/../*/p5.io.file.load/*?name
+  p5.string.split:x:/../*/p5.io.file.load/*?name
     =:/
 
   /*
@@ -30,7 +30,7 @@ create-event:sys42.csv.import
      * Adding database type and column headers to [p5.data.insert].
      */
     add:x:/../*/p5.data.insert
-      src:x:/@split/0/-?name
+      src:x:/@p5.string.split/0/-?name
     add:x:/../*/p5.data.insert/0/-
       src:x:/@p5.io.file.load/0/0/*?name
 

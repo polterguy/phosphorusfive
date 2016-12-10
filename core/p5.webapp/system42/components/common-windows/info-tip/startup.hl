@@ -10,7 +10,7 @@
  *
  * You cannot show more than one instance of this window at the time
  */
-create-event:sys42.windows.info-tip
+p5.events.create:sys42.windows.info-tip
 
   /*
    * Applying options for widget, with default values.

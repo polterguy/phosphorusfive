@@ -6,13 +6,13 @@ you can see an example of [here](/samples/p5.active-event-sample-plugin/). You c
 In addition, you can also easily execute Hyperlambda files, the same way you'd invoke a function or method, passing in arguments, 
 and returning values, just like you would with a normal function. The latter could be accomplished using e.g. *[sys42.utilities.execute-lambda-file]*.
 
-However, there is also the possibility of dynamically creating globally accessible Active Events, through the *[create-event]*
+However, there is also the possibility of dynamically creating globally accessible Active Events, through the *[p5.events.create]*
 Active Event. This Active Event, allows you to modify the underlaying Active Event dictionary directly, by either modifying existing, 
 adding new, or deleting existing entries within it. Almost like you would do with any other dictionary/hash-table object.
 Imagine the following code.
 
 ```
-create-event:foo
+p5.events.create:foo
   eval-x:x:/+
   return:Hello there {0}
     :x:/../*/_arg?value
@@ -33,7 +33,7 @@ span of your application pool. This means that if something resets your server, 
 to restart, for some reasons (reboot of server or recycling your app pool for instance), you need to re-create your dynamic Active Events,
 if you wish for them to still be acccessible.
 
-In System42, this is easily done, by creating a "startup" file, which is executed during startup somehow. Either by putting your *[create-event]*
+In System42, this is easily done, by creating a "startup" file, which is executed during startup somehow. Either by putting your *[p5.events.create]*
 invocations inside a Hyperlambda file, inside of your "/system42/startup/" folder, or by putting your event creational logic, inside your _app's_
 "startup.hl" file, inside of your "/system42/your-app/" folder. The latter is the preferred way, since it creates better encapsulation and cohesion of
 your app.
@@ -52,12 +52,12 @@ Active Event, since they obey by the same rules.
 
 ## Deleting events
 
-The *[delete-event]* Active Event, allows you to completely delete a dynamic Active Event. You can either provide an expression, leading to multiple
+The *[p5.events.delete]* Active Event, allows you to completely delete a dynamic Active Event. You can either provide an expression, leading to multiple
 names, or a constant, deleting only one event.
 
-However, if you invoke *[create-event]* with no lambda object as its children, you will also delete any existing events with the given name.
-The *[delete-event]* allows you to delete multiple events at the same time though, which the *[create-event]*, without a lambda object does _not_.
-Besides, it is probably better to be more "clear" in your usage of vocabulary, and explicitly use the Active Event *[delete-event]*, to communicate
+However, if you invoke *[p5.events.create]* with no lambda object as its children, you will also delete any existing events with the given name.
+The *[p5.events.delete]* allows you to delete multiple events at the same time though, which the *[p5.events.create]*, without a lambda object does _not_.
+Besides, it is probably better to be more "clear" in your usage of vocabulary, and explicitly use the Active Event *[p5.events.delete]*, to communicate
 your intent more precisely.
 
 ## Stateful Active Events
@@ -78,7 +78,7 @@ inside of values of Active Events, across multiple invocations to the same event
 Consider this Active Event.
 
 ```
-create-event:foo
+p5.events.create:foo
   _static:node:"count:int:0"
   set:x:/../*/_static/#?value
     +:x:/../*/_static/#?value
@@ -107,7 +107,7 @@ the value of our *[_static]* node above, is actually a shared resource. Synchron
 p5.lambda in a *[lock]* block, which is documented in the "p5.threading" project. An example is given below.
 
 ```
-create-event:foo
+p5.events.create:foo
   _static:node:"count:int:0"
   lock:lock.foo
     set:x:/../*/_static/#?value
@@ -135,7 +135,7 @@ You can easily inspect the lambda objects for a dynamically created Active Event
 Event invocation, and then simply return the root node, before letting the event evaluate its own logic. Consider the following code.
 
 ```
-create-event:foo
+p5.events.create:foo
   sys42.windows.confirm
     _header:Foo bar
     _body:Hello world
@@ -214,7 +214,7 @@ set:x:/-/*/static
 The *[vocabulary]* event has a protected alias, called *[.vocabulary]* (of course), which will also return all protected events, but (of course) must be
 raised from C#.
 
-Also the *[create-event]* and *[delete-event]* have similar protected alias versions.
+Also the *[p5.events.create]* and *[p5.events.delete]* have similar protected alias versions.
 
 #### Ninja-Ninja tricks!
 
@@ -244,7 +244,7 @@ If you want to create an Active Event that returns the code for every single Act
 could create your Active Event like this.
 
 ```
-create-event:test.retrieve-event-code
+p5.events.create:test.retrieve-event-code
   vocabulary:x:/../*/_arg?value
   set:x:/-/*/static
   _invocations
@@ -437,7 +437,7 @@ lambda, and not in fact evluate the lambda itself at all.
 
 If you wish to create something similar for your own Active Events, it would look something like this.
 ```
-create-event:test.my-foo-bar-event
+p5.events.create:test.my-foo-bar-event
   _defaults
     _some-argument-1:foo
     _some-argument-2:bar
@@ -457,7 +457,7 @@ Then your code's documentation would always follow your code, even after convers
 allowing any consumer of your code, to simply invoke your event with some custom *[add]* trickery, to retrieve your code's documentation.An example is given below.
 
 ```
-create-event:foo-documented
+p5.events.create:foo-documented
   _dox:@"This is the foo method, it does something intelligent"
 foo-documented
   return:x:/../*/_dox?value

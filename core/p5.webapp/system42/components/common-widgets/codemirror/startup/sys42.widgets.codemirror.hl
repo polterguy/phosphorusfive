@@ -11,7 +11,7 @@
  * [_value] - Initial code to display.
  * [_events] - Collection of associated widget lambda events.
  */
-create-event:sys42.widgets.codemirror
+p5.events.create:sys42.widgets.codemirror
 
 
   /*
@@ -131,7 +131,7 @@ create-event:sys42.widgets.codemirror
   /*
    * Creating our JSON vocabulary object to return to client.
    */
-  join:x:/@_vocabulary/*?value
+  p5.string.join:x:/@_vocabulary/*?value
     sep:,
     wrap:@""""
 
@@ -142,7 +142,7 @@ create-event:sys42.widgets.codemirror
    * Notice, "p5.web.include-javascript" in case we're having multiple Code-Mirror instances on page!
    */
   p5.web.include-javascript:@"CodeMirror._hyperlispKeywords = [{0}];"
-    :x:/@join?value
+    :x:/@p5.string.join?value
 
 
   /*

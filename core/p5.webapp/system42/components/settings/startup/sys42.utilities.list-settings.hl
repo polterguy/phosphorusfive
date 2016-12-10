@@ -7,7 +7,7 @@
  * a "root account", optionally you can retrieve settings for a specific user, by supplying user to retrieve setting
  * for as [_username].
  */
-create-event:sys42.utilities.list-settings
+p5.events.create:sys42.utilities.list-settings
 
   /*
    * Sanity check

@@ -4,7 +4,7 @@
  * Used both during initial creation of tree widget, to create initially shown nodes, and during 
  * "toggling" (creation of new items).
  */
-create-event:sys42.widgets.tree._create-items
+p5.events.create:sys42.widgets.tree._create-items
 
   /*
    * These are the default CSS classes used for icon items, if no explicit override is supplied by caller.

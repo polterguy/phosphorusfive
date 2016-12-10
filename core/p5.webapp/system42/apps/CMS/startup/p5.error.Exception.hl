@@ -7,7 +7,7 @@
  * To create your own handler, that handles a specific type of exception, create an Active Event named [p5.error.MyExceptionType],
  * and it will override this guy for all exceptions of your specified type.
  */
-create-event:p5.error.Exception
+p5.events.create:p5.error.Exception
 
   /*
    * Building up some HTML, passing in the exception message and stacktrace.
@@ -33,7 +33,7 @@ create-event:p5.error.Exception
    * Checking if this is an Ajax callback, and if not, we surround the etire returned HTML in a <html><body></html></body> block.
    */
   if
-    is-callback
+    p5.web.request.is-ajax-callback
     not
     set:x:/../*/_ret?value
       src:@"<html>

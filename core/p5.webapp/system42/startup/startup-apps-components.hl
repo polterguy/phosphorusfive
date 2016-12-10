@@ -14,14 +14,14 @@
 /*
  * Maps up "@SYS42-APPS" to "@SYSTEM42/apps"
  */
-create-event:p5.io.unroll-path.@SYS42-APPS
+p5.events.create:p5.io.unroll-path.@SYS42-APPS
   return:@SYSTEM42/apps
 
 
 /*
  * Maps up "@SYS42-COMPONENTS" to "@SYSTEM42/components"
  */
-create-event:p5.io.unroll-path.@SYS42-COMPONENTS
+p5.events.create:p5.io.unroll-path.@SYS42-COMPONENTS
   return:@SYSTEM42/components
 
 

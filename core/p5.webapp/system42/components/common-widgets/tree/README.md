@@ -18,11 +18,11 @@ p5.web.widgets.create-container
         p5.io.folder.list-folders:x:/../*/_item-id?value
         for-each:x:/-/*?name
           p5.io.folder.list-folders:x:/./*/_dp?value
-          split:x:/./*/_dp?value
+          p5.string.split:x:/./*/_dp?value
             =:/
           add:x:/../*/return/*
             src:@"{0}:{1}"
-              :x:/..for-each/*/split/0/-?name
+              :x:/..for-each/*/p5.string.split/0/-?name
               :x:/..for-each/*/_dp?value
           if:x:/./*/p5.io.folder.list-folders/*
             not
@@ -332,11 +332,11 @@ p5.web.widgets.create-container
         p5.io.folder.list-folders:x:/../*/_item-id?value
         for-each:x:/-/*?name
           p5.io.folder.list-folders:x:/./*/_dp?value
-          split:x:/./*/_dp?value
+          p5.string.split:x:/./*/_dp?value
             =:/
           add:x:/../*/return/*
             src:@"{0}:{1}"
-              :x:/..for-each/*/split/0/-?name
+              :x:/..for-each/*/p5.string.split/0/-?name
               :x:/..for-each/*/_dp?value
           if:x:/./*/p5.io.folder.list-folders/*
             not

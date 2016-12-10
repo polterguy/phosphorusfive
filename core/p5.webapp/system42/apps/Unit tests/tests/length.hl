@@ -1,22 +1,22 @@
 /*
- * Contains unit tests for testing [length] in system
+ * Contains unit tests for testing [p5.string.length] in system
  */
 
 /*
- * Tests that [length] behaves as expected when given a constant
+ * Tests that [p5.string.length] behaves as expected when given a constant
  */
 constant
-  length:Thomas Hansen
+  p5.string.length:Thomas Hansen
   if:x:/-?value
     !=:int:13
-    throw:@"Assert error, [length] misbehaved!"
+    throw:@"Assert error, [p5.string.length] misbehaved!"
 
 /*
- * Tests that [length] behaves as expected when given an expression
+ * Tests that [p5.string.length] behaves as expected when given an expression
  */
 expression
   _data:Thomas Hansen
-  length:x:/-?value
+  p5.string.length:x:/-?value
   if:x:/-?value
     !=:int:13
-    throw:@"Assert error, [length] misbehaved!"
+    throw:@"Assert error, [p5.string.length] misbehaved!"

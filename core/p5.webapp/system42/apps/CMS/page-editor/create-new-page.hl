@@ -61,26 +61,26 @@ _high:int:1
 for-each:x:/@p5.data.select/*?value
 
   /*
-   * Splitting upon "-" such that we can get to number, which should be the last entity in our split.
+   * Splitting upon "-" such that we can get to number, which should be the last entity in our p5.string.split.
    */
-  split:x:/@_dp?value
+  p5.string.split:x:/@_dp?value
     =:-
   if
 
     /*
      * Making sure it's actually an integer, before we figure out if it's higher than our currentl [_high] value.
      */
-    p5.types.can-convert:x:/@split/0/-?name
+    p5.types.can-convert:x:/@p5.string.split/0/-?name
       type:int
-    and:x:/@split/0/-?name.int
+    and:x:/@p5.string.split/0/-?name.int
       >=:x:/@_high?value.int
 
     /*
-     * Last entity from [split] was an integer, and it was higher than our previous [_high] value.
+     * Last entity from [p5.string.split] was an integer, and it was higher than our previous [_high] value.
      * Making sure we set our current [_high] value to +1 more than currently iterated [p5.page]'s "change-thix-N" value.
      */
     set:x:/@_high?value
-      +:x:/@split/0/-?name.int
+      +:x:/@p5.string.split/0/-?name.int
         _:1
 
 /*

@@ -40,17 +40,17 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "replace")]
-        public static void lambda_replace (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.string.replace")]
+        public static void p5_string__replace (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
             if (e.Args.Value == null)
-                throw new LambdaException ("[replace] requires an expression or constant as its value", e.Args, context);
+                throw new LambdaException ("[p5.string.replace] requires an expression or constant as its value", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Figuring out source value for [match], and returning early if there is no source.
+                // Figuring out source value for [replace], and returning early if there is no source.
                 string source = XUtil.Single<string> (context, e.Args);
                 if (source == null)
                     return;
@@ -61,7 +61,7 @@ namespace p5.strings.keywords
                 // Checking what type of object we're searching for, and doing some basic sanity check.
                 var what = XUtil.Source (context, e.Args, "dest");
                 if (what == null)
-                    throw new LambdaException ("[replace] requires something to search for", e.Args, context);
+                    throw new LambdaException ("[p5.string.replace] requires something to search for", e.Args, context);
                 else if (what is Regex)
                     e.Args.Value = (what as Regex).Replace (source, with);
                 else

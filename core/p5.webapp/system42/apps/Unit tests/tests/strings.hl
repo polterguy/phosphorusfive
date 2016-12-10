@@ -5,32 +5,32 @@
 /*
  * Test that trimming a string works.
  */
-trim
+p5.string.trim
   _data:@" foo bar "
-  trim:x:/-?value
+  p5.string.trim:x:/-?value
   if:x:/-?value
     !=:foo bar
-    throw:@"Assert error, [trim] misbehaved!"
+    throw:@"Assert error, [p5.string.trim] misbehaved!"
 
 
 /*
- * Test that [to-upper] behaves.
+ * Test that [p5.string.to-upper] behaves.
  */
-to-upper
+p5.string.to-upper
   _data:@"foo bar"
-  to-upper:x:/-?value
+  p5.string.to-upper:x:/-?value
   if:x:/-?value
     !=:FOO BAR
-    throw:@"Assert error, [to-upper] misbehaved!"
+    throw:@"Assert error, [p5.string.to-upper] misbehaved!"
 
 
 /*
- * Test that [to-lower] behaves.
+ * Test that [p5.string.to-lower] behaves.
  */
-to-lower
+p5.string.to-lower
   _data:@"Foo Bar"
-  to-lower:x:/-?value
+  p5.string.to-lower:x:/-?value
   if:x:/-?value
     !=:foo bar
-    throw:@"Assert error, [to-lower] misbehaved!"
+    throw:@"Assert error, [p5.string.to-lower] misbehaved!"
 

@@ -2,7 +2,7 @@
 /*
  * Creates the Active Event that loads up the default template.
  */
-create-event:sys42.cms.load-template
+p5.events.create:sys42.cms.load-template
 
   /*
    * Assumes the default template exists.
