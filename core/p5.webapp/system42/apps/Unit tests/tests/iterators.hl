@@ -1,46 +1,39 @@
-/*
- * Contains iterator unit tests for system
- */
 
 /*
- * Test the reference iterator
+ * Unit tests for expression iterators.
  */
-reference
+
+
+Reference iterator
   _data:node:
-  set:x:/-/#?name
+  set:x:/@_data/#?name
     src:foo
-  set:x:/-2/#?value
+  set:x:/@_data/#?value
     src:bar
-  if:x:/../0/#?name
+  if:x:/@_data/#?name
     !=:foo
-    or:x:/../0/#?value
+    or:x:/@_data/#?value
       !=:bar
-    throw:@"Assert error, expected [foo:bar], got [{0}]!"
-      :x:/../0/#
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the range iterator
- */
-range
+
+Range iterator
   _out
   _data
     foo1
     foo2
     foo3
     foo4
-  add:x:/-2
-    src:x:/./-/*/[1,3]?name
-  if:x:/-3
+  add:x:/@_out
+    src:x:/@_data/*/[1,3]?name
+  if:x:/@_out
     !=:node:@"_out
   foo2
   foo3"
-    throw:@"Assert error, expected [foo2foo3], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the descendant iterator
- */
-descendant
+
+Descendants iterator
   _out
   _data
     foo1
@@ -50,8 +43,8 @@ descendant
         foo5
     foo6
       foo7
-  add:x:/-2
-    src:x:/./-/**?name
+  add:x:/@_out
+    src:x:/@_data/**?name
   if:x:/-3
     !=:node:@"_out
   foo1
@@ -61,115 +54,94 @@ descendant
   foo5
   foo6
   foo7"
-    throw:@"Assert error, expected [foo1foo2foo3foo4foo5foo6foo7], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the children iterator
- */
-children
+
+Children iterator
   _out
   _data
     foo1
       foo2
         foo3
     foo6
-  add:x:/-2
-    src:x:/./-/*?name
-  if:x:/-3
+  add:x:/@_out
+    src:x:/@_data/*?name
+  if:x:/@_out
     !=:node:@"_out
   foo1
   foo6"
-    throw:@"Assert error, expected [foo1foo6], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the modulo iterator
- */
-modulo
+
+Modulo iterator
   _out
   _data
     foo1
     foo2
     foo3
     foo4
-  add:x:/-2
-    src:x:/./-/*/%2?name
-  if:x:/-3
+  add:x:/@_out
+    src:x:/@_data/*/%2?name
+  if:x:/@_out
     !=:node:@"_out
   foo2
   foo4"
-    throw:@"Assert error, expected [foo2foo4], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the named iterator
- */
-named
+
+Named iterator
   _data
     foo1
     foo2
     foo3
     foo4
-  set:x:/-?value
-    src:x:/./-/*/foo2?name
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/*/foo2?name
+  if:x:/@_data?value
     !=:foo2
-    throw:@"Assert error, expected [foo2], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the named ancestor iterator
- */
-ancestor
+
+Named ancestor iterator
   _data
     foo1
       foo2
         foo3
           foo4
-  set:x:/-?value
-    src:x:/./-/**/foo4/..foo1?name
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/**/foo4/..foo1?name
+  if:x:/@_data?value
     !=:foo1
-    throw:@"Assert error, expected [foo1], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the number child iterator
- */
-numbered-child
+
+Numbered child iterator
   _data
     foo1
     foo2
     foo3
     foo4
-  set:x:/-?value
-    src:x:/./-/2?name
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/2?name
+  if:x:/@_data?value
     !=:foo3
-    throw:@"Assert error, expected [foo3], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the parent iterator
- */
-parent
+
+Parent iterator
   _data
     foo1
       foo2
         foo3
           foo4
-  set:x:/-?value
-    src:x:/./-/**/foo4/./.?name
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/**/foo4/./.?name
+  if:x:/@_data?value
     !=:foo2
-    throw:@"Assert error, expected [foo2], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the left-shift iterator
- */
-left-shift
+
+Left shift iterator
   _out
   _data
     foo1
@@ -179,21 +151,18 @@ left-shift
         foo5
           foo6
       foo7
-  add:x:/-2
-    src:x:/./-/**/foo7/<|/./-/**/foo7/</<|/./-/**/foo7/</</<|/./-/**/foo7/</</</<?name
-  if:x:/-3
+  add:x:/@_out
+    src:x:/@_data/**/foo7/<|/@_data/**/foo7/</<|/@_data/**/foo7/</</<|/@_data/**/foo7/</</</<?name
+  if:x:/@_out
     !=:node:@"_out
   foo6
   foo5
   foo4
   foo3"
-    throw:@"Assert error, expected [foo7foo6foo5foo4], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the right-shift iterator
- */
-right-shift
+
+Right shift iterator
   _out
   _data
     foo1
@@ -203,8 +172,8 @@ right-shift
         foo5
           foo6
       foo7
-  add:x:/-2
-    src:x:/./-/0|/./-/0/>|/./-/0/>/>|/./-/0/>/>/>|/./-/0/>/>/>/>|/./-/0/>/>/>/>/>|/./-/0/>/>/>/>/>/>?name
+  add:x:/@_out
+    src:x:/@_data/0|/@_data/0/>|/@_data/0/>/>|/@_data/0/>/>/>|/@_data/0/>/>/>/>|/@_data/0/>/>/>/>/>|/@_data/0/>/>/>/>/>/>?name
   if:x:/-3
     !=:node:@"_out
   foo1
@@ -214,13 +183,10 @@ right-shift
   foo5
   foo6
   foo7"
-    throw:@"Assert error, expected [foo1foo2foo3foo4foo5foo6foo7], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the sibling iterator
- */
-sibling
+
+Elder and younger sibling iterators
   _out
   _data
     foo1
@@ -230,130 +196,106 @@ sibling
     foo5
     foo6
     foo7
-  add:x:/-2
-    src:x:/./-/0|/./-/0/+|/./-/3/-|/./-/6/+4|/./-/0/-3?name
-  if:x:/-3
+  add:x:/@_out
+    src:x:/@_data/0|/@_data/0/+|/@_data/3/-|/@_data/6/+4|/@_data/0/-3?name
+  if:x:/@_out
     !=:node:@"_out
   foo1
   foo2
   foo3
   foo4
   foo5"
-    throw:@"Assert error, expected [foo1foo2foo3foo4foo5], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the value iterator for simple value
- */
-value-simple
+
+Value iterator with constant string equality
   _data
     foo1:bar1
     foo2:bar2
     foo3:bar3
-  set:x:/-?value
-    src:x:/./-/*/=bar2?name
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/*/=bar2?name
+  if:x:/@_data?value
     !=:foo2
-    throw:@"Assert error, expected [foo2], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the value iterator for value "like" expression
- */
-value-like-string
+
+Value iterator with constant string like equality
   _data
     foo1:bar1
     foo2:bar2
     foo3:bar3
-  set:x:/-?value
-    src:x:/./-/*/=~r2?name
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/*/=~r2?name
+  if:x:/@_data?value
     !=:foo2
-    throw:@"Assert error, expected [foo2], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the value iterator for empty value "like" expression
- */
-value-like-empty-null
+
+Value iterator with constant string like value being empty
   _out
   _data
     foo1
     foo2:
     foo3:bar3
-  add:x:/-2
-    src:x:/./-/*/=~?name
+  add:x:/@_out
+    src:x:/@_data/*/=~?name
   if:x:/-3
     !=:node:@"_out
   foo1
   foo2"
-    throw:@"Assert error, expected [foo1foo2], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the value iterator for escaped value "like" expression
- */
-value-like-escaped
+
+Value iterator with escaped value content
   _data
     foo1:foo1
     foo2:~
     foo3:bar3
-  set:x:/-?value
-    src:x:/./-/*/=\~?name
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/*/=\~?name
+  if:x:/@_data?value
     !=:foo2
-    throw:@"Assert error, expected [foo2], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the name iterator for "like" comparison
- */
-name-like
+
+Name iterator with like comparison
   _data
     foo1:bar1
     foo2:bar2
     foo3:bar3
-  set:x:/-?value
-    src:x:/./-/*/~oo2?value
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/*/~oo2?value
+  if:x:/@_data?value
     !=:bar2
-    throw:@"Assert error, expected [bar2], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the name iterator for "empty" comparison
- */
-name-empty
+
+Name iterator with empty name
   _data
     foo1:bar1
     :bar2
     foo3:bar3
-  set:x:/-?value
-    src:x:/./-/*//?value
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/*//?value
+  if:x:/@_data?value
     !=:bar2
-    throw:@"Assert error, expected [bar2], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the name iterator for "empty" comparison
- */
-name-like-escaped
+
+Name iterator with escaped name
   _data
     foo1:bar1
     ~:bar2
     foo3:bar3
-  set:x:/-?value
-    src:x:/./-/*/\~?value
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:/@_data/*/\~?value
+  if:x:/@_data?value
     !=:bar2
-    throw:@"Assert error, expected [bar2], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the distinct name iterator
- */
-distinct-name
+
+Distinct name iterator
   _out
   _data
     foo1:su
@@ -361,20 +303,17 @@ distinct-name
     foo2:cc
     foo2:error
     foo3:ess
-  add:x:/-2
-    src:x:/./-/*/$?value
-  if:x:/-3
+  add:x:/@_out
+    src:x:/@_data/*/$?value
+  if:x:/@_out
     !=:node:@"_out
   :su
   :cc
   :ess"
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/././-3?node.string
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test the distinct value iterator
- */
-distinct-value
+
+Distinct value iterator
   _out
   _data
     su:foo1
@@ -382,38 +321,21 @@ distinct-value
     cc:foo2
     error:foo2
     ess:int:4
-  add:x:/-2
-    src:x:/./-/*/=$?name
-  if:x:/-3
+  add:x:/@_out
+    src:x:/@_data/*/=$?name
+  if:x:/@_out
     !=:node:@"_out
   su
   cc
   ess"
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/././-3
+    throw:Assert error, iterator misbehaved
 
-/*
- * Test an escaped iterator
- */
-escaped-iterator
-  _data
-    /:success
-  set:x:/-?value
-    src:x:/./-/*/\/?value
-  if:x:/-2?value
-    !=:success
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/././-2?value
 
-/*
- * Test an iterator created as a single line string
- */
-string-literal-iterator
+Name iterator in double quotes
   _data
     /xx/:success
-  set:x:/-?value
-    src:x:@"/./-/*/""/xx/""?value"
-  if:x:/-2?value
+  set:x:/@_data?value
+    src:x:@"/@_data/*/""/xx/""?value"
+  if:x:/@_data?value
     !=:success
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/././-2?value
+    throw:Assert error, iterator misbehaved

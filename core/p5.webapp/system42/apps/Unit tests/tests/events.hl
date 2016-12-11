@@ -1,75 +1,91 @@
-/*
- * Contains unit tests for testing dynamically created events in system
- */
 
 /*
- * Tests that events can be stateful
+ * Unit tests for dynamically created Active Events.
  */
-stateful-event
-  p5.events.create:test.stateful
+
+
+Stateful event is stateful
+  p5.events.create:sys42.tests.stateful-event
     _static:node:"count:int:0"
-    set:x:/../*/_static/#?value
-      +:x:/../*/_static/#?value
+    set:x:/@_static/#?value
+      +:x:/@_static/#?value
         _:int:1
     eval-x:x:/+
     return:Count {0}
-      :x:/../*/_static/#?value
-  test.stateful
-  test.stateful
-  test.stateful
-  if:x:/../*/test.stateful/[0,1]?value
+      :x:/@_static/#?value
+  sys42.tests.stateful-event
+  sys42.tests.stateful-event
+  sys42.tests.stateful-event
+  if:x:/../*/sys42.tests.stateful-event/[0,1]?value
     !=:Count 1
-    or:x:/../*/test.stateful/[1,2]?value
+    or:x:/../*/sys42.tests.stateful-event/[1,2]?value
       !=:Count 2
-    or:x:/../*/test.stateful/[2,3]?value
+    or:x:/../*/sys42.tests.stateful-event/[2,3]?value
       !=:Count 3
-    throw:@"Assert error, stateful events was not stateful"
-  p5.events.delete:test.stateful
+    throw:Assert error, p5.events misbehaved
+  p5.events.delete:sys42.tests.stateful-event
 
-/*
- * Tests that events can be deleted
- */
-p5.events.delete
-  p5.events.create:test.to-delete
+
+Event can return nodes
+  p5.events.create:sys42.tests.return-nodes
+    return
+      foo:bar
+  sys42.tests.return-nodes
+  if:x:/@sys42.tests.return-nodes
+    !=:node:@"sys42.tests.return-nodes
+  foo:bar"
+    throw:Assert error, p5.events misbehaved
+
+
+Delete event
+  p5.events.create:sys42.tests.event-2-delete
     return:foo
-  test.to-delete
-  p5.events.delete:test.to-delete
-  test.to-delete
-  if:x:/../*/test.to-delete/[0,1]?value
+  sys42.tests.event-2-delete
+  p5.events.delete:sys42.tests.event-2-delete
+  sys42.tests.event-2-delete
+  if:x:/../*/sys42.tests.event-2-delete/[0,1]?value
     !=:foo
-    or:x:/../*/test.to-delete/[1,2]?value
-    throw:@"Assert error, event could not be deleted"
+    or:x:/../*/sys42.tests.event-2-delete/[1,2]?value
+    throw:Assert error, p5.events misbehaved
 
 
-/*
- * Tests that events cannot be created with a "." as the start of their name
- */
-create-dot-event-throw
+Overwrite event
+  p5.events.create:sys42.tests.overwrite-event
+    return:foo1
+  sys42.tests.overwrite-event
+  p5.events.create:sys42.tests.overwrite-event
+    return:foo2
+  sys42.tests.overwrite-event
+  if:x:/../*/sys42.tests.overwrite-event/[0,1]?value
+    !=:foo1
+    or:x:/../*/sys42.tests.overwrite-event/[1,2]?value
+      !=:foo2
+    throw:Assert error, p5.events misbehaved
+
+
+Create protected event throws 1
   _success:bool:false
   try
     p5.events.create:.foo
       foo
   catch
-    set:x:/../*/_success?value
+    set:x:/@_success?value
       src:boool:true
-  if:x:/../*/_success?value
+  if:x:/@_success?value
     not
-    throw:Could create protected event
+    throw:Assert error, p5.events misbehaved
 
 
-/*
- * Tests that events cannot be created with a "." as the start of their name
- */
-create-underscore-event-throw
+Create protected event throws 2
   _success:bool:false
   try
     p5.events.create:_foo
       foo
   catch
-    set:x:/../*/_success?value
+    set:x:/@_success?value
       src:boool:true
-  if:x:/../*/_success?value
+  if:x:/@_success?value
     not
-    throw:Could create protected event
+    throw:Assert error, p5.events misbehaved
   
   

@@ -1,73 +1,62 @@
-/*
- * Contains unit tests for testing [insert] in system
- */
 
 /*
- * Tests that [insert-before] behaves as expected
+ * Unit tests for [insert].
  */
-insert-before
+
+
+Insert before, static source
   _foo1
   _foo2
-  insert-before:x:/../*/_foo2
+  insert-before:x:/@_foo2
     src
       success-name:success-value
-  if:x:/../*/_foo2/-
+  if:x:/@_foo2/-
     !=:node:"success-name:success-value"
-    throw:@"Assert error, [insert-before] misbehaved!"
+    throw:Assert error, [insert-before] misbehaved
 
-/*
- * Tests that [insert-after] behaves as expected
- */
-insert-after
+
+Insert after, static source
   _foo1
   _foo2
-  insert-after:x:/../*/_foo1
+  insert-after:x:/@_foo1
     src
       success-name:success-value
-  if:x:/../*/_foo1/+
+  if:x:/@_foo1/+
     !=:node:"success-name:success-value"
-    throw:@"Assert error, [insert-after] misbehaved!"
+    throw:Assert error, [insert-after] misbehaved
 
-/*
- * Tests that [insert-after] behaves as expected when given expression source
- */
-expression-source
+
+Insert after, expression source
   _data
     success-name:success-value
   _foo1
   _foo2
-  insert-after:x:/../*/_foo1
-    src:x:/../*/_data/*
-  if:x:/../*/_foo1/+
+  insert-after:x:/@_foo1
+    src:x:/@_data/*
+  if:x:/@_foo1/+
     !=:node:"success-name:success-value"
-    throw:@"Assert error, [insert-after] misbehaved!"
+    throw:Assert error, [insert-after] misbehaved
 
-/*
- * Tests that [insert-after] behaves as expected when given node source
- */
-node-source
+
+Insert after, node static source value
   _foo1
   _foo2
   insert-after:x:/../*/_foo1
     src:node:"success-name:success-value"
   if:x:/../*/_foo1/+
     !=:node:"success-name:success-value"
-    throw:@"Assert error, [insert-after] misbehaved!"
+    throw:Assert error, [insert-after] misbehaved
 
-/*
- * Tests that [insert-before] behaves as expected when given identity expression
- */
-insert-before-identity-expression
+
+Insert before with identity expression destination
   insert-before:x:
     src:node:"success-name:success-value"
   if:x:/../*/insert-before/-
     !=:node:"success-name:success-value"
-    throw:@"Assert error, [insert-before] misbehaved!"
+    throw:Assert error, [insert-before] misbehaved
 
-/*
- * Tests that [insert-after] behaves as expected when given identity expression
- */
-insert-after-identity-expression
+
+Insert after with identity expression destination
   _result
   insert-after:x:
     src
@@ -75,4 +64,4 @@ insert-after-identity-expression
         src:success
   if:x:/../*/_result?value
     !=:success
-    throw:@"Assert error, [insert-after] misbehaved!"
+    throw:Assert error, [insert-after] misbehaved

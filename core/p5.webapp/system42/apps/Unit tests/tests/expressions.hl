@@ -1,49 +1,39 @@
-/*
- * Contains expression unit tests for system
- */
 
 /*
- * Tests that "identity expression" behaves as expected!
+ * Unit tests for expressions.
  */
-identity
+
+
+Identity
   insert-before:x:
     src
       foo:bar
-  if:x:/../0?name
-    !=:foo
+  if:x:/../0
+    !=:node:@"foo:bar"
     or:x:/../0?value
       !=:bar
-    throw:@"Assert error, expected [foo:bar], got [{0}]!"
-      :x:/../0
+    throw:Assert error, expressions misbehaved
 
-/*
- * Tests value expression
- */
-value
+
+Value type
   _data
   set:x:/-?value
     src:success
   if:x:/../0?value
     !=:success
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, expressions misbehaved
 
-/*
- * Tests name expression
- */
-name
+
+Name type
   _data
   set:x:/-?name
     src:success
   if:x:/../0?name
     !=:success
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/../0?name
+    throw:Assert error, expressions misbehaved
 
-/*
- * Tests node expression
- */
-node
+
+Node type
   _data
   set:x:/-
     src:"foo:bar"
@@ -51,85 +41,85 @@ node
     !=:foo
     or:x:/../0?value
       !=:bar
-    throw:@"Assert error, expected [foo:bar], got [{0}]!"
-      :x:/../0?node.string
+    throw:Assert error, expressions misbehaved
 
-/*
- * Tests count expression
- */
-count
+
+Count type
   _data
     foo1
     foo2
   if:x:/../0/*?count
     !=:int:2
-    throw:@"Assert error, expected [2], got [{0}]!"
-      :x:/../0/*?count
+    throw:Assert error, expressions misbehaved
 
-/*
- * Tests [eval-x] expression that is formatted
- */
-eval-x-formatted
+
+Formatted string with expression value
   _data
     bar
   eval-x:x:/+
   _result:foo-{0}
-    :x:/../*/_data/0?name
-  if:x:/../*/_result?value
+    :x:/@_data/0?name
+  if:x:/@_result?value
     !=:foo-bar
-    throw:@"Assert error, expected [foo-bar], got [{0}]!"
-      :x:/../*/_result?value
+    throw:Assert error, expressions misbehaved
 
-/*
- * Tests the elder relative iterator
- */
-elder-relative-iterator
+
+Elder sibling iterator
   _foo:SUCCESS
-  if:x:/@_foo?value
+  if:x:/-?value
     !=:SUCCESS
-    throw:@"Assert error, expected success"
+    throw:Assert error, expressions misbehaved
 
-/*
- * Tests the elder relative iterator
- */
-elder-relative-iterator-2
+
+Elder sibling iterator with integer offset
   _foo:SUCCESS
   _bar
     _foo
-  if:x:/@_foo?value
+  if:x:/-2?value
     !=:SUCCESS
-    throw:@"Assert error, expected success"
+    throw:Assert error, expressions misbehaved
 
-/*
- * Tests the younger iterator
- */
-younger-sibling-iterator
+
+Younger sibling iterator
+  if:x:/+?value
+    !=:SUCCESS
+    throw:Assert error, expressions misbehaved
+  _foo:SUCCESS
+
+
+Younger sibling iterator with integer offset
+  if:x:/+2?value
+    !=:SUCCESS
+    throw:Assert error, expressions misbehaved
+  _bar
+  _foo:SUCCESS
+
+
+All elder siblings iterator
   _foo
   _bar
     _foo
   set:x:/--?value
     src:SUCCESS
-  if:x:/../0?value
+  if:x:/@_foo?value
     !=:SUCCESS
-    or:x:/../1?value
+    or:x:/@_bar?value
       !=:SUCCESS
-    or:x:/../1/0?value
+    or:x:/@_bar/0?value
       =:SUCCESS
-    throw:@"Assert error, expected success"
+    throw:Assert error, expressions misbehaved
 
-/*
- * Tests the elder iterator
- */
-elder-sibling-iterator
-  set:x:/++?value
+
+All younger siblings iterator
+  set:x:/++!/../*/if?value
     src:SUCCESS
   _foo
   _bar
     _foo
-  if:x:/../1?value
+  if:x:/@_foo?value
     !=:SUCCESS
-    or:x:/../2?value
+    or:x:/@_bar?value
       !=:SUCCESS
-    or:x:/../2/0?value
+    or:x:/@_bar/0?value
       =:SUCCESS
-    throw:@"Assert error, expected success"
+    throw:Assert error, expressions misbehaved

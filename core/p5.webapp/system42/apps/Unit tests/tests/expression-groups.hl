@@ -1,34 +1,40 @@
-/*
- * Contains unit tests for testing 
- * grouping of expressions in system
- */
 
 /*
- * Tests that a simple child group evaluates 
- * on the results of the outer main root expression
+ * Unit tests for grouping of expressions.
  */
-simple
+
+
+Simple grouping
   _data
     foo1:bar1
-  set:x:/-?value
-    src:x:/./-(/*)?value
-  if:x:/../0?value
+  set:x:/@_data?value
+    src:x:/@_data(/*)?value
+  if:x:/@_data?value
     !=:bar1
-    throw:@"Assert error, expected [bar1], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, grouping of expressions misbehaved
 
-/*
- * Tests that a nested child group evaluates 
- * on the results of the outer group
- */
-nested
+
+Nested groups
   _data
     foo1:bar1
       foo2:bar2
-  set:x:/-?value
-    src:x:/./-(/*(/*))?value
-  if:x:/../0?value
+  set:x:/@_data?value
+    src:x:/@_data(/*(/*))?value
+  if:x:/@_data?value
     !=:bar2
-    throw:@"Assert error, expected [bar2], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, grouping of expressions misbehaved
+
+
+Multiple OR'ed sub-groups reacts upon outer group
+  _out
+  _data
+    foo1:bar1
+    foo2:bar2
+  add:x:/@_out
+    src:x:/@_data(/*/foo1|(/*/foo2))?name
+  if:x:/@_out
+    !=:node:@"_out
+  foo1
+  foo2"
+    throw:Assert error, grouping of expressions misbehaved
 

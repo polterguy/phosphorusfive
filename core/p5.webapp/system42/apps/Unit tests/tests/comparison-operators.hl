@@ -1,238 +1,200 @@
-/*
- * Contains unit tests for testing comparison operators, 
- * such as =, !=, <=, etc in system
- */
 
 /*
- * Tests that = behaves correctly
+ * Unit tests for testing comparison operators, such as =, !=, <=, etc.
  */
-equals
+
+
+Equals with expressions yielding no match
   _src1:foo1
   _src2:foo2
   if:x:/../*/_src1?value
     =:x:/../*/_src2?value
-    throw:@"Assert error, [equals] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that != behaves correctly
- */
-not-equals
+
+Equals with constants yielding no match
+  if:foo1
+    =:foo2
+    throw:Assert error, conditional operators misbehaved
+
+
+Not equals with expressions yielding no match
   _src1:foo
   _src2:foo
   if:x:/../*/_src1?value
     !=:x:/../*/_src2?value
-    throw:@"Assert error, [not-equals] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that ~ behaves correctly
- */
-contains-match
+
+Not equals with constants yielding no match
+  if:foo1
+    !=:foo1
+    throw:Assert error, conditional operators misbehaved
+
+
+Like with expression yielding match
   _src1:foobar
   _src2:foo
   if:x:/../*/_src1?value
     ~:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, [contains] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that ~ behaves correctly
- */
-contains-no-match
+
+Like with expression yielding no match
   _src1:foobar
   _src2:fooX
   if:x:/../*/_src1?value
     ~:x:/../*/_src2?value
-    throw:@"Assert error, [contains] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that ~ behaves correctly
- */
-contains-regex-match
+
+Like with expression leading to regex yielding match
   _src1:foobar
   _src2:regex:/FoO/i
   if:x:/../*/_src1?value
     ~:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, [contains] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that ~ behaves correctly
- */
-contains-regex-no-match
+
+Like with expressions leadint to regex yielding no match
   _src1:foobar
   _src2:regex:/Foo/
   if:x:/../*/_src1?value
     ~:x:/../*/_src2?value
-    throw:@"Assert error, [contains] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that ~ behaves correctly
- */
-not-contains-match
+
+Not like with expressions yielding no match
   _src1:foobar
   _src2:foo
   if:x:/../*/_src1?value
     !~:x:/../*/_src2?value
-    throw:@"Assert error, [not-contains] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that ~ behaves correctly
- */
-not-contains-no-match
+
+Not like with expressions yielding match
   _src1:foobar
   _src2:fooX
   if:x:/../*/_src1?value
     !~:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, [not-contains] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that !~ behaves correctly
- */
-not-contains-regex-match
+
+Not like with expressions leading to regex yielding no match
   _src1:foobar
   _src2:regex:/FoO/i
   if:x:/../*/_src1?value
     !~:x:/../*/_src2?value
-    throw:@"Assert error, [not-contains] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that !~ behaves correctly
- */
-not-contains-regex-no-match
+
+Not like with expressions leading to regex yielding match
   _src1:foobar
   _src2:regex:/Foo/
   if:x:/../*/_src1?value
     !~:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, [not-contains] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that > behaves correctly with string type,
- * and no match should be found
- */
-more-than-no-match
+
+More than with expression yielding no match
   _src1:aaa
   _src2:bbb
   if:x:/../*/_src1?value
     >:x:/../*/_src2?value
-    throw:@"Assert error, [more-than] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that < behaves correctly with string type,
- * and no match should be found
- */
-less-than-no-match
+
+Less than with expressions yielding no match
   _src1:bbb
   _src2:aaa
   if:x:/../*/_src1?value
     <:x:/../*/_src2?value
-    throw:@"Assert error, [less-than] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that > behaves correctly with string type,
- * and match should be found
- */
-more-than-match
+
+More than with expressions yielding match
   _src1:bbc
   _src2:bbb
   if:x:/../*/_src1?value
     >:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, [more-than] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that < behaves correctly with string type,
- * and match should be found
- */
-less-than-match
+
+Less than with expressions yielding match
   _src1:bbb
   _src2:bbc
   if:x:/../*/_src1?value
     <:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, [less-than] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that >= behaves correctly with string type, 
- * and no match should be found
- */
-more-than-equals-no-match
+
+More than equals with expressions yielding no match
   _src1:aaa
   _src2:bbb
   if:x:/../*/_src1?value
     >=:x:/../*/_src2?value
-    throw:@"Assert error, [more-than-equals] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that <= behaves correctly with string type,
- * and no match should be found
- */
-less-than-equals-no-match
+
+Less than equals with expressions yielding no match
   _src1:bbb
   _src2:aaa
   if:x:/../*/_src1?value
     <=:x:/../*/_src2?value
-    throw:@"Assert error, [less-than-equals] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that >= behaves correctly with string type, 
- * and match should be found
- */
-more-than-equals-match
+
+More than equals with expressions yielding match
   _src1:bbb
   _src2:bbb
   if:x:/../*/_src1?value
     >=:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, [more-than-equals] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that <= behaves correctly with string type,
- * and match should be found
- */
-less-than-equals-match
+
+Less than equals with expressions yielding match
   _src1:aaa
   _src2:aaa
   if:x:/../*/_src1?value
     <=:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, [less-than-equals] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that = behaves correctly when types differ
- */
-equals-type-difference
+
+Equals with different types yielding no match
   _src1:int:5
   _src2:5
   if:x:/../*/_src1?value
     =:x:/../*/_src2?value
-    throw:@"Assert error, [equals] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that != behaves correctly when types differ
- */
-not-equals-type-difference
+
+Not equals with different types yielding no match
   _src1:int:5
   _src2:5
   if:x:/../*/_src1?value
     !=:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, [not-equals] operator misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests mixed operators joined together
- */
-mixed
+
+Mixed operators joined together by OR
   _src1:int:5
   _src2:5
   if:x:/../*/_src1?value
@@ -249,13 +211,10 @@ mixed
       <:int:4
     or:x:/../*/_src1?value
       !~:regex:/5/
-    throw:@"Assert error, mixed operators misbehaved"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that Active Event evaluation "operator" behaves as expected,
- * when a match should occur
- */
-evaluation-match
+
+Active event condition yielding match for exist on true
   _x
     set:x:/..?value
       src:bool:true
@@ -263,38 +222,29 @@ evaluation-match
     eval:x:/../*/_x
     // Do nothing
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that Active Event evaluation "operator" behaves as expected,
- * when a match should not occur
- */
-evaluation-no-match
+
+Active event condition yielding no match for exist on false
   _x
     set:x:/..?value
       src:bool:false
   if
     eval:x:/../*/_x
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that Active Event evaluation "operator" behaves as expected,
- * when a match should occur, and result is "not" with the [not] operator
- */
-evaluation-not-no-match
+
+Active event condition yielding no match when NOT for exist on true
   _x
     set:x:/..?value
       src:bool:true
   if
     eval:x:/../*/_x
     not
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, conditional operators misbehaved
 
-/*
- * Tests that Active Event evaluation "operator" behaves as expected,
- * when a match should not occur, and result is "not" with the [not] operator
- */
-evaluation-not-match
+
+Active event condition yielding match when NOT for exist on false
   _x
     set:x:/..?value
       src:bool:false
@@ -303,4 +253,4 @@ evaluation-not-match
     not
     // Do nothing
   else
-    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+    throw:Assert error, conditional operators misbehaved

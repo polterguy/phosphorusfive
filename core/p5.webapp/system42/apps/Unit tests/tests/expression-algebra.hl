@@ -1,84 +1,68 @@
-/*
- * Contains unit tests for testing 
- * boolean algebraic expressions in system
- */
 
 /*
- * Tests that logical OR behaves as expected
+ * Unit tests for boolean algebraic expressions.
  */
-or
+
+
+OR
   _out
   _data
     foo1:bar1
     foo2:bar2
     foo3:bar3
-  add:x:/-2
-    src:x:/./-/*/foo1|/./-/*/foo2
-  if:x:/../0
+  add:x:/@_out
+    src:x:/@_data/*/foo1|/@_data/*/foo2
+  if:x:/@_out
     !=:node:@"_out
   foo1:bar1
   foo2:bar2"
-    throw:@"Assert error, expected foo1 and foo2 nodes, got ""{0}!"""
-      :x:/../0
+    throw:Assert error, algebraic expressions misbehaved
 
-/*
- * Tests that logical AND behaves as expected
- */
-and
+
+AND
   _data
     foo1:bar1
     foo2:bar2
-  set:x:/-?value
-    src:x:/./-/*/foo1&/./-/*/=bar1?value
-  if:x:/../0?value
+  set:x:/@_data?value
+    src:x:/@_data/*/foo1&/@_data/*/=bar1?value
+  if:x:/@_data?value
     !=:bar1
-    throw:@"Assert error, expected [bar1], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, algebraic expressions misbehaved
 
-/*
- * Tests that no logical has precedense, but are evaluated
- * exclusively in left-associative order
- */
-left-associative
+
+Boolean algebraic operators are left associative
   _data
     foo1:bar1
     foo2:bar2
     foo3:bar3
-  set:x:/-?value
-    src:x:/./-/*/foo1|/./-/*/foo2&/./-/*/=bar1?value
-  if:x:/../0?value
+  set:x:/@_data?value
+    src:x:/@_data/*/foo1|/@_data/*/foo2&/@_data/*/=bar1?value
+  if:x:/@_data?value
     !=:bar1
-    throw:@"Assert error, expected [bar1], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, algebraic expressions misbehaved
 
-/*
- * Tests that logical NOT behaves as expected
- */
-not
+
+NOT
   _data
     foo1:bar1
     foo2:bar2
-  set:x:/-?value
-    src:x:/./-/*!/./-/*/=bar2?value
-  if:x:/../0?value
+  set:x:/@_data?value
+    src:x:/@_data/*!/@_data/*/=bar2?value
+  if:x:/@_data?value
     !=:bar1
-    throw:@"Assert error, expected [bar1], got [{0}]!"
-      :x:/../0?value
+    throw:Assert error, algebraic expressions misbehaved
 
-/*
- * Tests that logical XOR behaves as expected
- */
-xor
+
+XOR
   _out
   _data
     foo1:br1
     foo2:bar2
     fo3:bar3
-  add:x:/-2
-    src:x:/./-/*/~foo^/./-/*/=~ba
-  if:x:/../0
+  add:x:/@_out
+    src:x:/@_data/*/~foo^/@_data/*/=~ba
+  if:x:/@_out
     !=:node:@"_out
   foo1:br1
   fo3:bar3"
-    throw:@"Assert error, expected foo1 node and fo3 node, got ""{0}""!"
-      :x:/../0
+    throw:Assert error, algebraic expressions misbehaved
