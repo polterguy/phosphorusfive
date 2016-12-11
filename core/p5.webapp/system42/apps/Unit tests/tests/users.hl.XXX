@@ -1,13 +1,16 @@
+
 /*
- * Contains unit tests for testing users creationg and deletion
+ * Unit tests for creation and manipulation of users in the system.
+ *
+ * Notice, since deletion of a user will delete folders on disc, inside the AppDomain, this will stop the web server, at least
+ * when running within the context of XSP on Mac in Mono. Therefor, we have by default disabled this entire Unit Test, since it
+ * will stop the web app's execution, and kill the web site.
+ *
+ * If you wish to enable this Unit Test, running on Windows for instance, you can rename the file, and remove its ".XXX" extension.
  */
 
 
-/*
- * Creates a user, and verifies creation is successful.
- * Then deletes the user, and verifies disc is cleaned up.
- */
-create-and-p5.auth.users.delete
+Create and delete a user
 
   // Checking if our testing user already exist, and if so, deleting him.
   p5.auth.users.list
@@ -52,13 +55,10 @@ create-and-p5.auth.users.delete
     or
       fetch:x:/0/0?value
         p5.io.folder.exists:/users/foo-bar/
-    throw:@"Assert error, user wasn't correctly deleted!"
+    throw:Assert error, p5.auth misbehaved
 
 
-/*
- * Creates a user, with settings, and verifies that settings is correctly applied.
- */
-p5.auth.users.create-with-settings
+Create a user with custom settings associated
 
   // Checking if our testing user already exist, and if so, deleting him.
   p5.auth.users.list
@@ -80,16 +80,13 @@ p5.auth.users.create-with-settings
     role:foo-bar-role
     foo1:bar1
       foo2:bar2"
-    throw:@"Assert error, user settings was not correctly applied!"
+    throw:Assert error, p5.auth misbehaved
 
   // Deletes user.
   p5.auth.users.delete:foo-bar
 
 
-/*
- * Creates a user, modifies user's settings, and verifies that settings is correctly changed.
- */
-modify-user-settings
+Modify user settings
 
   // Checking if our testing user already exist, and if so, deleting him.
   p5.auth.users.list
@@ -118,7 +115,7 @@ modify-user-settings
       foo2:bar2
     howdy
       world"
-    throw:@"Assert error, user settings was not correctly applied!"
+    throw:Assert error, p5.auth misbehaved
 
   // Modifying user's settings.
   p5.auth.users.edit:foo-bar
@@ -131,7 +128,7 @@ modify-user-settings
   foo-bar
     role:foo-bar-role
     foo1:bar1"
-    throw:@"Assert error, user settings was not correctly applied!"
+    throw:Assert error, p5.auth misbehaved
 
   // Modifying user's settings, removing all settings.
   p5.auth.users.edit:foo-bar
@@ -140,7 +137,7 @@ modify-user-settings
     !=:node:@"p5.auth.users.get
   foo-bar
     role:foo-bar-role"
-    throw:@"Assert error, user settings was not correctly deleted!"
+    throw:Assert error, p5.auth misbehaved
 
   // Deletes user.
   p5.auth.users.delete:foo-bar

@@ -47,9 +47,6 @@ namespace p5.ajax.core.filters
         /// <returns>The response returned back to client</returns>
         protected override string RenderResponse ()
         {
-            TextReader reader = new StreamReader (this, ContentEncoding);
-            var content = reader.ReadToEnd ();
-
             // JavaScript files.
             if ((Manager.Page as IAjaxPage).NewJavaScriptToPush.Count > 0) {
                 Manager.SendObject ("__p5_js_objects", (Manager.Page as IAjaxPage).NewJavaScriptToPush);

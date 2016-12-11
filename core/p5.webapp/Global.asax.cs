@@ -29,14 +29,8 @@ using p5.core;
 using p5.webapp.code.configuration;
 using System.Web.UI;
 
-/// <summary>
-///     Main namespace for Phosphorus Five
-/// </summary>
 namespace p5
 {
-    /// <summary>
-    ///     Main namespace for your Phosphorus Five web app
-    /// </summary>
     namespace webapp
     {
         /// <summary>

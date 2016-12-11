@@ -126,7 +126,25 @@ Delete single read-only file throws
     throw:Assert error, p5.io misbehaved
 
 
-Retrieve single read-only file value
+Overwrite single read-only file throws
+  _success:bool:false
+  p5.io.file.save:~/temp/foo.txt
+    src:Foo bar
+  p5.io.file.set-read-only:~/temp/foo.txt
+  try
+    p5.io.file.save:~/temp/foo.txt
+      src:Foo bar 2
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  p5.io.file.delete-read-only:~/temp/foo.txt
+  p5.io.file.delete:~/temp/foo.txt
+  if:x:/@_success?value
+    not
+    throw:Assert error, p5.io misbehaved
+
+
+Retrieve single read-only file flag
   p5.io.file.save:~/temp/foo.txt
     src:Foo bar
   p5.io.file.set-read-only:~/temp/foo.txt
