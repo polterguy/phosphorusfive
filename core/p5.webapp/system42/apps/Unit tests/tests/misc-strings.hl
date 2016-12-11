@@ -1,0 +1,29 @@
+
+/*
+ * Unit tests for miscellaneous string Active Events.
+ */
+
+
+Trim expression string
+  _data:@" foo bar "
+  p5.string.trim:x:/@_data?value
+  if:x:/@p5.string.trim?value
+    !=:foo bar
+    throw:Assert error, [p5.string.trim] misbehaved
+
+
+To upper on expression string
+  _data:@"foo bar"
+  p5.string.to-upper:x:/@_data?value
+  if:x:/@p5.string.to-upper?value
+    !=:FOO BAR
+    throw:Assert error, [p5.string.to-upper] misbehaved
+
+
+To lower on expression string
+  _data:@"Foo Bar"
+  p5.string.to-lower:x:/@_data?value
+  if:x:/@p5.string.to-lower?value
+    !=:foo bar
+    throw:Assert error, [p5.string.to-lower] misbehaved
+

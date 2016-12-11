@@ -31,7 +31,7 @@ namespace p5.exp.iterators
     ///     Returns all sibling nodes younger than current
     /// </summary>
     [Serializable]
-    public class IteratorSiblingYounger : Iterator
+    public class IteratorSiblingsYounger : Iterator
     {
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {

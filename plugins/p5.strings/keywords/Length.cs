@@ -39,10 +39,10 @@ namespace p5.strings.keywords
         [ActiveEvent (Name = "p5.string.length")]
         public static void p5_string_length (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Returning length of constant or expression, converted to string if necessary
+                // Returning length of constant or expression, converted to string if necessary.
                 e.Args.Value = XUtil.Single<string> (context, e.Args).Length;
             }
         }

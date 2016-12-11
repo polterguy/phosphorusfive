@@ -4,10 +4,7 @@
  */
 
 
-/*
- * Tests that insertion of simple setting behaves.
- */
-insert-simple-setting
+Set simple string setting value
   sys42.utilities.set-setting:foo-bar
     _app:sys42.unit-tests
     _src:Foo Bar
@@ -15,13 +12,10 @@ insert-simple-setting
     _app:sys42.unit-tests
   if:x:/@sys42.utilities.get-setting/*/foo-bar?value
     !=:Foo Bar
-    throw:@"Assert error, wrong value returned from settings!"
+    throw:Assert error, [sys42.utilities.set-setting] misbehaved
 
 
-/*
- * Tests that insertion of complex setting behaves.
- */
-insert-complex-setting
+Set graph object setting value
   sys42.utilities.set-setting:foo-bar
     _app:sys42.unit-tests
     _src
@@ -34,26 +28,20 @@ insert-complex-setting
     or:x:/@sys42.utilities.get-setting/*/foo-bar/*/value?value
       !=:Bar
     or:x:/@sys42.utilities.get-setting/*?value
-    throw:@"Assert error, wrong value returned from settings!"
+    throw:Assert error, [sys42.utilities.set-setting] misbehaved
 
 
-/*
- * Tests that deletion of simple setting behaves.
- */
-delete-simple-setting
+Delete simple string setting value
   sys42.utilities.set-setting:foo-bar
     _app:sys42.unit-tests
     _src:Foo Bar
   sys42.utilities.set-setting:foo-bar
     _app:sys42.unit-tests
   if:x:/@sys42.utilities.get-setting/*/foo-bar
-    throw:@"Assert error, wrong value returned from settings!"
+    throw:Assert error, [sys42.utilities.set-setting] misbehaved
 
 
-/*
- * Tests that updating of complex setting behaves.
- */
-update-complex-setting
+Update graph object setting value
   sys42.utilities.set-setting:foo-bar
     _app:sys42.unit-tests
     _src
@@ -66,17 +54,15 @@ update-complex-setting
       value:Bar2
   sys42.utilities.get-setting:foo-bar
     _app:sys42.unit-tests
-  if:x:/@sys42.utilities.get-setting/*/foo-bar/*/name?value
-    !=:Foo2
-    or:x:/@sys42.utilities.get-setting/*/foo-bar/*/value?value
-      !=:Bar2
-    throw:@"Assert error, wrong value returned from settings!"
+  if:x:/@sys42.utilities.get-setting
+    !=:node:@"sys42.utilities.get-setting
+  foo-bar
+    name:Foo2
+    value:Bar2"
+    throw:Assert error, [sys42.utilities.set-setting] misbehaved
 
 
-/*
- * Tests that listing settings behaves.
- */
-list-settings
+List settings for app
   sys42.utilities.set-setting:foo-bar1
     _app:sys42.unit-tests-list
     _src:Foo1
@@ -85,8 +71,8 @@ list-settings
     _src:Foo2
   sys42.utilities.list-settings
     _app:sys42.unit-tests-list
-  if:x:/@sys42.utilities.list-settings/*/foo-bar1?value
-    !=:Foo1
-    or:x:/@sys42.utilities.list-settings/*/foo-bar2?value
-      !=:Foo2
-    throw:@"Assert error, wrong value returned from settings!"
+  if:x:/@sys42.utilities.list-settings
+    !=:node:@"sys42.utilities.list-settings
+  foo-bar1:Foo1
+  foo-bar2:Foo2"
+    throw:Assert error, [sys42.utilities.list-settings] misbehaved

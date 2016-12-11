@@ -1,11 +1,10 @@
-/*
- * Contains unit tests for testing [sort] in system
- */
 
 /*
- * Tests that checks that [sort] behaves correctly when sorting strings
+ * Unit tests for [sort] and [sort-desc].
  */
-string-sort
+
+
+String sort with lambda
   _data
     foo1
       name:brynjar
@@ -13,16 +12,14 @@ string-sort
       name:kalvik
     foo3
       name:abba
-  sort:x:/../*/_data/*
-    if:x:/./*/_lhs/#/*?value
-      <:x:/././*/_rhs/#/*?value
-      set:x:/./.?value
-        src:int:-1
-    else-if:x:/./*/_lhs/#/*?value
-      >:x:/././*/_rhs/#/*?value
-      set:x:/./.?value
-        src:int:1
-  if:x:/../*/sort
+  sort:x:/@_data/*
+    if:x:/@_lhs/#/*?value
+      <:x:/@_rhs/#/*?value
+      return:int:-1
+    else-if:x:/@_lhs/#/*?value
+      >:x:/@_rhs/#/*?value
+      return:int:1
+  if:x:/@sort
     !=:node:@"sort
   foo3
     name:abba
@@ -30,28 +27,52 @@ string-sort
     name:brynjar
   foo2
     name:kalvik"
-    throw:@"Assert error, expected sorted list!"
+    throw:Assert error, [sort] misbehaved
 
-/*
- * Tests that checks that [sort] behaves correctly when sorting integers
- */
-int-sort
+
+Integer sort with lambda
   _data
     foo1:int:60
     foo2:int:57
     foo3:int:88
-  sort:x:/../*/_data/*
-    if:x:/./*/_lhs/#?value
-      <:x:/././*/_rhs/#?value
-      set:x:/./.?value
-        src:int:-1
-    else-if:x:/./*/_lhs/#?value
-      >:x:/././*/_rhs/#?value
-      set:x:/./.?value
-        src:int:1
-  if:x:/../*/sort
+  sort:x:/@_data/*
+    if:x:/@_lhs/#?value
+      <:x:/@_rhs/#?value
+      return:int:-1
+    else-if:x:/@_lhs/#?value
+      >:x:/@_rhs/#?value
+      return:int:1
+  if:x:/@sort
     !=:node:@"sort
   foo2:int:57
   foo1:int:60
   foo3:int:88"
-    throw:@"Assert error, expected sorted list!"
+    throw:Assert error, [sort] misbehaved
+
+
+Sort without lambda
+  _data
+    brynjar
+    kalvik
+    abba
+  sort:x:/@_data/*
+  if:x:/@sort
+    !=:node:@"sort
+  abba
+  brynjar
+  kalvik"
+    throw:Assert error, [sort] misbehaved
+
+
+Sort descending without lambda
+  _data
+    brynjar
+    kalvik
+    abba
+  sort-desc:x:/@_data/*
+  if:x:/@sort-desc
+    !=:node:@"sort-desc
+  kalvik
+  brynjar
+  abba"
+    throw:Assert error, [sort] misbehaved

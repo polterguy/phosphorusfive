@@ -56,15 +56,10 @@ namespace p5.lambda.keywords.extras
 
                     // Defaulting to sorting nodes by "value" casted to IComparable
                     nodeList.Sort (delegate(Node lhs, Node rhs) {
-                        if (lhs.Value == null && rhs.Value != null)
-                            return e.Name == "sort" ? -1 : 1;
-                        else if (lhs.Value != null && rhs.Value == null)
-                            return e.Name == "sort" ? 1 : -1;
-                        else if (lhs.Value == null && rhs.Value == null)
-                            return 0;
-
-                        // Assuming value somehow implements IComparable
-                        return (lhs.Value as IComparable).CompareTo (rhs.Value) * (e.Name == "sort" ? 1 : -1);
+                        if (e.Name == "sort")
+                            return lhs.Name.CompareTo (rhs.Name);
+                        else
+                            return rhs.Name.CompareTo (lhs.Name);
                     });
                 } else {
 
