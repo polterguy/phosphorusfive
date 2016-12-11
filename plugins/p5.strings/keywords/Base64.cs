@@ -40,10 +40,10 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.string.decode-base64")]
         private static void p5_string_decode_base64 (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up after ourselves
+            // Making sure we clean up after ourselves.
             using (new Utilities.ArgsRemover (e.Args, false)) {
 
-                // Decoding given value from base64 and returning to caller
+                // Decoding given value from base64 and returning to caller.
                 e.Args.Value = Convert.FromBase64String (XUtil.Single<string> (context, e.Args));
             }
         }

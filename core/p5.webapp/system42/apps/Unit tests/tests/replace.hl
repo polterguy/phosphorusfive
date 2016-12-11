@@ -13,6 +13,18 @@ Replace single constant string
     throw:Assert error, [p5.string.replace] misbehaved
 
 
+Replace throws on no src
+  _success:bool:false
+  try
+    p5.string.replace:foo
+      src:bar
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    throw:Assert error, [p5.string.replace] misbehaved
+
+
 Replace single with expression src and dest
   _with:Brilliant
   _what:Dumbfuck

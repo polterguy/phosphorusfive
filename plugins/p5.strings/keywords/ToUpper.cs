@@ -27,22 +27,22 @@ using p5.core;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [p5.string.to-upper] keyword in p5 lambda.
+    ///     Class wrapping the [p5.string.to-upper] Active Event.
     /// </summary>
     public static class ToUpper
     {
         /// <summary>
-        ///     The [p5.string.to-upper] keyword, allows you to transform all lowercase characters in a string to UPPERCASE
+        ///     The [p5.string.to-upper] event, allows you to transform all lowercase characters in a string to UPPERCASE.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.string.to-upper")]
         public static void p5_string_to_upper (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Returning to lowers of expression or constant
+                // Returning to lowers of expression or constant.
                 e.Args.Value = XUtil.Single<string> (context, e.Args).ToUpperInvariant ();
             }
         }

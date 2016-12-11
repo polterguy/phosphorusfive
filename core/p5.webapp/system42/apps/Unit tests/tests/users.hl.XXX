@@ -141,5 +141,3 @@ Modify user settings
 
   // Deletes user.
   p5.auth.users.delete:foo-bar
-
-

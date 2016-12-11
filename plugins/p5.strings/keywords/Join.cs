@@ -28,26 +28,28 @@ using p5.core;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [p5.string.join] keyword in p5 lambda.
+    ///     Class wrapping the [p5.string.join] Active Event.
     /// </summary>
     public static class Join
     {
         /// <summary>
-        ///     The [p5.string.join] keyword, allows you to p5.string.join multiple nodes/names/values into a single string
+        ///     The [p5.string.join] event, allows you to join multiple strings into a single string, performing automatic conversion
+        ///     to strings of the specified expression values if necessary.
+        ///     Optionally, pass in a [sep] and [wrap] argument, which separates and 'wraps' each entities joined.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.string.join")]
         public static void p5_string_join (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Retrieving separator character(s)
-                var insertBetweenNodes = e.Args.GetExChildValue ("sep", context, "");
+                // Retrieving separator character(s).
+                var sep = e.Args.GetExChildValue<string> ("sep", context, null);
 
-                // Retrieving wrapper character(s)
-                var wrapValue = e.Args.GetExChildValue ("wrap", context, "");
+                // Retrieving wrapper character(s).
+                var wrap = e.Args.GetExChildValue<string> ("wrap", context, null);
 
                 // Used as buffer
                 StringBuilder result = new StringBuilder ();
@@ -55,15 +57,18 @@ namespace p5.strings.keywords
                 // Looping through each value
                 foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
 
-                    // Checking if this is first instance, and if not, we add separator value
-                    if (result.Length != 0)
-                        result.Append (insertBetweenNodes);
+                    // Checking if this is first instance, and if not, we add separator value, if there is a [sep] value defined.
+                    if (sep != null && result.Length != 0)
+                        result.Append (sep);
 
-                    // Adding currently iterated result
-                    result.Append (wrapValue + idx + wrapValue);
+                    // Adding currently iterated result, possibly adding [wrap] on each side of string.
+                    if (wrap != null)
+                        result.Append (wrap + idx + wrap);
+                    else
+                        result.Append (idx);
                 }
 
-                // Returning result
+                // Returning result.
                 e.Args.Value = result.ToString ();
             }
         }

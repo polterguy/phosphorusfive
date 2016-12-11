@@ -27,12 +27,12 @@ using p5.core;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [length] keyword in p5 lambda.
+    ///     Class wrapping the [length] Active Event.
     /// </summary>
     public static class Length
     {
         /// <summary>
-        ///     The [p5.string.length] keyword, retrieves the length of the specified string, performing conversion if necessary
+        ///     The [p5.string.length] event, retrieves the length of the specified string, performing conversion to string if necessary.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -43,7 +43,7 @@ namespace p5.strings.keywords
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Returning length of constant or expression, converted to string if necessary.
-                e.Args.Value = XUtil.Single<string> (context, e.Args).Length;
+                e.Args.Value = (XUtil.Single<string> (context, e.Args) ?? "").Length;
             }
         }
     }

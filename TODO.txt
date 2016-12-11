@@ -57,5 +57,7 @@ TODO before release
 
 * Consider creating p5.http, possibly rename p5.net, and move [url-decode]/encode into this project.
 
+* Change the [src] and [dest] argument names to [p5.string.replace] to something more intuitive.
 
+* Change the [chars] argument in [p5.string.trim] to something more intuitive.
 

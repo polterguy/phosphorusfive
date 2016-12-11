@@ -28,12 +28,12 @@ using p5.core;
 namespace p5.strings.keywords
 {
     /// <summary>
-    ///     Class wrapping the [trim] keyword in p5 lambda.
+    ///     Class wrapping the [p5.string.trim] Active Event.
     /// </summary>
     public static class Trim
     {
         /// <summary>
-        ///     The [trim] keyword, allows you to trim occurrencies of characters in a string
+        ///     The [p5.string.trim] event, allows you to trim occurrencies of characters in a string
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -47,7 +47,7 @@ namespace p5.strings.keywords
                 var characters = e.Args.GetExChildValue ("chars", context, " \r\n\t");
 
                 // Returning length of constant or expression, converted to string if necessary
-                e.Args.Value = XUtil.Single<string> (context, e.Args).Trim (characters.ToList().ToArray());
+                e.Args.Value = XUtil.Single<string> (context, e.Args).Trim (characters.ToArray());
             }
         }
     }

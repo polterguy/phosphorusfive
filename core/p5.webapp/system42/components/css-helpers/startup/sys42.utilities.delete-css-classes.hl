@@ -12,7 +12,7 @@ p5.events.create:sys42.utilities.delete-css-classes
   p5.string.split:x:/../*/_class?value
     =:,
     =:" "
-    p5.string.trim:true
+    trim:true
 
   /*
    * Retrieving CSS class of specified widget.
