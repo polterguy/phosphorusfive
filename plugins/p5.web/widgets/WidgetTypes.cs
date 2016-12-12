@@ -135,13 +135,18 @@ namespace p5.web.widgets
             if (!string.IsNullOrEmpty (id) && FindControl<Control> (id, Manager.AjaxPage) != null)
                 throw new LambdaException ("A widget with the same ID already exist on page!", args, context);
 
-            var widget = parent.CreatePersistentControl<T> (
-                id,
-                position);
-            widget.Element = elementType;
+            var widget = parent.CreatePersistentControl<T> (id, position);
+            try {
+                widget.Element = elementType;
 
-            // Decorating widget properties/events, and create child widgets
-            DecorateWidget (context, widget, args);
+                // Decorating widget properties/events, and create child widgets
+                DecorateWidget (context, widget, args);
+            } catch {
+
+                // Removing widget from parent, to make operation "atomic".
+                parent.Controls.Remove (widget);
+                throw;
+            }
 
             // Making sure we return Widget to caller
             return widget;
