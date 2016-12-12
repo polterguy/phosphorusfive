@@ -74,13 +74,12 @@ namespace p5.strings.keywords
 
                     // We have separators, meaning we should actually perform a split operation.
                     RunSplit (context, e.Args, source, options, trim, sepObjects);
+
                 } else {
 
                     // Special case, no separators, splitting entire string into characters.
                     // Which is actually the only way we can iterate over each character in a string in P5.
-                    foreach (var idxCh in source) {
-                        e.Args.Add (idxCh.ToString ());
-                    }
+                    e.Args.AddRange (source.Select (ix => new Node (ix.ToString ())));
                 }
             }
         }
@@ -104,12 +103,16 @@ namespace p5.strings.keywords
 
             } else if (sepObjects [0] is int) {
 
-                // Integer split operation.
+                // Integer split operation, sanity check first.
+                if (trim || options == StringSplitOptions.None)
+                    throw new LambdaException ("You cannot trim or keep empty occurrences when using integer split", args, context);
                 IntegerSplit (context, args, source, trim, sepObjects);
 
             } else if (sepObjects [0] is Regex) {
 
-                // Regex split operation.
+                // Regex split operation, sanity check first.
+                if (options == StringSplitOptions.None)
+                    throw new LambdaException ("You cannot keep empty occurrences when using regex split", args, context);
                 RegexSplit (context, args, source, trim, sepObjects);
 
             } else {

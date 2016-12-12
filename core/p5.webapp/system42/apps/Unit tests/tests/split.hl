@@ -14,6 +14,19 @@ Split constant string on single string
     throw:Assert error, [p5.string.split] misbehaved
 
 
+Split constant string on nothing
+  p5.string.split:thomas
+  if:x:/@p5.string.split
+    !=:node:@"p5.string.split
+  t
+  h
+  o
+  m
+  a
+  s"
+    throw:Assert error, [p5.string.split] misbehaved
+
+
 Split expression string on single expression string
   _data:thomas,hansen
   _split:,
@@ -78,6 +91,93 @@ Split constant string on multiple regex throws
     p5.string.split:thomas
       =:regex:/[, ]/
       =:regex:/hom/
+  catch
+    set:x:/@_result?value
+      src:success
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, [p5.string.split] misbehaved
+
+
+Split constant string on single string keep empty is true
+  p5.string.split:thomas,,hansen
+    =:,
+    keep-empty:bool:true
+  if:x:/@p5.string.split
+    !=:node:@"p5.string.split
+  thomas
+  """"
+  hansen"
+    throw:Assert error, [p5.string.split] misbehaved
+
+
+Split constant string on single string trim is true
+  p5.string.split:thomas , hansen
+    =:,
+    trim:bool:true
+  if:x:/@p5.string.split
+    !=:node:@"p5.string.split
+  thomas
+  hansen"
+    throw:Assert error, [p5.string.split] misbehaved
+
+
+Split constant string on single string keep empty is false
+  p5.string.split:thomas,,hansen
+    =:,
+    keep-empty:bool:false
+  if:x:/@p5.string.split
+    !=:node:@"p5.string.split
+  thomas
+  hansen"
+    throw:Assert error, [p5.string.split] misbehaved
+
+
+Split constant string on single string trim is false
+  p5.string.split:thomas , hansen
+    =:,
+    trim:bool:false
+  if:x:/@p5.string.split
+    !=:node:@"p5.string.split
+  ""thomas ""
+  "" hansen"""
+    throw:Assert error, [p5.string.split] misbehaved
+
+
+Split throws on integer split when trimmed
+  _result
+  try
+    p5.string.split:thomas
+      =:int:3
+      trim:bool:true
+  catch
+    set:x:/@_result?value
+      src:success
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, [p5.string.split] misbehaved
+
+
+Split throws on integer split when keeping empty
+  _result
+  try
+    p5.string.split:thomas
+      =:int:3
+      keep-empty:bool:true
+  catch
+    set:x:/@_result?value
+      src:success
+  if:x:/@_result?value
+    !=:success
+    throw:Assert error, [p5.string.split] misbehaved
+
+
+Split throws on regex split when keeping empty
+  _result
+  try
+    p5.string.split:thomas
+      =:regex:/o/i
+      keep-empty:bool:true
   catch
     set:x:/@_result?value
       src:success
