@@ -12,6 +12,40 @@ Trim expression string
     throw:Assert error, [p5.string.trim] misbehaved
 
 
+Trim expression string with chars
+  _data:Yfoo barX
+  p5.string.trim:x:/@_data?value
+    chars:XY
+  if:x:/@p5.string.trim?value
+    !=:foo bar
+    throw:Assert error, [p5.string.trim] misbehaved
+
+
+Trim expression string with chars, case sensitive
+  _data:Yfoo barX
+  p5.string.trim:x:/@_data?value
+    chars:xy
+  if:x:/@p5.string.trim?value
+    !=:Yfoo barX
+    throw:Assert error, [p5.string.trim] misbehaved
+
+
+Trim left expression string
+  _data:@" foo bar "
+  p5.string.trim-left:x:/@_data?value
+  if:x:/@p5.string.trim-left?value
+    !=:"foo bar "
+    throw:Assert error, [p5.string.trim-left] misbehaved
+
+
+Trim right expression string
+  _data:@" foo bar "
+  p5.string.trim-right:x:/@_data?value
+  if:x:/@p5.string.trim-right?value
+    !=:" foo bar"
+    throw:Assert error, [p5.string.trim-right] misbehaved
+
+
 To upper on expression string
   _data:@"foo bar"
   p5.string.to-upper:x:/@_data?value

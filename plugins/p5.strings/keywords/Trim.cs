@@ -33,21 +33,34 @@ namespace p5.strings.keywords
     public static class Trim
     {
         /// <summary>
-        ///     The [p5.string.trim] event, allows you to trim occurrencies of characters in a string
+        ///     The [p5.string.trim] event, allows you to trim occurrencies of characters in a string.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.string.trim")]
+        [ActiveEvent (Name = "p5.string.trim-left")]
+        [ActiveEvent (Name = "p5.string.trim-right")]
         public static void p5_string_trim (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Getting trim characters, defaulting to whitespace characters
+                // Getting trim characters, defaulting to whitespace characters.
                 var characters = e.Args.GetExChildValue ("chars", context, " \r\n\t");
 
-                // Returning length of constant or expression, converted to string if necessary
-                e.Args.Value = XUtil.Single<string> (context, e.Args).Trim (characters.ToArray());
+                // Returning length of constant or expression, converted to string if necessary.
+                var source = XUtil.Single<string> (context, e.Args);
+                switch (e.Name) {
+                    case "p5.string.trim":
+                        e.Args.Value = source.Trim (characters.ToArray ());
+                        break;
+                    case "p5.string.trim-left":
+                        e.Args.Value = source.TrimStart (characters.ToArray ());
+                        break;
+                    case "p5.string.trim-right":
+                        e.Args.Value = source.TrimEnd (characters.ToArray ());
+                        break;
+                }
             }
         }
     }
