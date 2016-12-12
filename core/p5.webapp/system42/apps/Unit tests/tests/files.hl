@@ -113,13 +113,13 @@ Delete single read-only file throws
   _success:bool:false
   p5.io.file.save:~/temp/foo.txt
     src:Foo bar
-  p5.io.file.set-read-only:~/temp/foo.txt
+  p5.io.file.read-only.set:~/temp/foo.txt
   try
     p5.io.file.delete:~/temp/foo.txt
   catch
     set:x:/@_success?value
       src:bool:true
-  p5.io.file.delete-read-only:~/temp/foo.txt
+  p5.io.file.read-only.delete:~/temp/foo.txt
   p5.io.file.delete:~/temp/foo.txt
   if:x:/@_success?value
     not
@@ -130,14 +130,14 @@ Overwrite single read-only file throws
   _success:bool:false
   p5.io.file.save:~/temp/foo.txt
     src:Foo bar
-  p5.io.file.set-read-only:~/temp/foo.txt
+  p5.io.file.read-only.set:~/temp/foo.txt
   try
     p5.io.file.save:~/temp/foo.txt
       src:Foo bar 2
   catch
     set:x:/@_success?value
       src:bool:true
-  p5.io.file.delete-read-only:~/temp/foo.txt
+  p5.io.file.read-only.delete:~/temp/foo.txt
   p5.io.file.delete:~/temp/foo.txt
   if:x:/@_success?value
     not
@@ -147,11 +147,11 @@ Overwrite single read-only file throws
 Retrieve single read-only file flag
   p5.io.file.save:~/temp/foo.txt
     src:Foo bar
-  p5.io.file.set-read-only:~/temp/foo.txt
-  p5.io.file.get-read-only:~/temp/foo.txt
-  p5.io.file.delete-read-only:~/temp/foo.txt
+  p5.io.file.read-only.set:~/temp/foo.txt
+  p5.io.file.read-only.get:~/temp/foo.txt
+  p5.io.file.read-only.delete:~/temp/foo.txt
   p5.io.file.delete:~/temp/foo.txt
-  if:x:/@p5.io.file.get-read-only/*?value
+  if:x:/@p5.io.file.read-only.get/*?value
     not
     throw:Assert error, p5.io misbehaved
 
@@ -161,13 +161,13 @@ Retrieve multiple read-only file values
     src:Foo bar
   p5.io.file.save:~/temp/foo-2.txt
     src:Foo bar
-  p5.io.file.set-read-only:x:/../*/p5.io.file.save?value
-  p5.io.file.get-read-only:x:/../*/p5.io.file.save?value
-  p5.io.file.delete-read-only:x:/../*/p5.io.file.save?value
+  p5.io.file.read-only.set:x:/../*/p5.io.file.save?value
+  p5.io.file.read-only.get:x:/../*/p5.io.file.save?value
+  p5.io.file.read-only.delete:x:/../*/p5.io.file.save?value
   p5.io.file.delete:x:/../*/p5.io.file.save?value
-  if:x:/@p5.io.file.get-read-only/0?value
+  if:x:/@p5.io.file.read-only.get/0?value
     not
-    or:x:/@p5.io.file.get-read-only/1?value
+    or:x:/@p5.io.file.read-only.get/1?value
       not
     throw:Assert error, p5.io misbehaved
 
@@ -177,19 +177,19 @@ Retrieve multiple read-only file values where file is not read-only
     src:Foo bar
   p5.io.file.save:~/temp/foo-2.txt
     src:Foo bar
-  p5.io.file.set-read-only:x:/../*/p5.io.file.save?value
-  p5.io.file.delete-read-only:x:/../*/p5.io.file.save?value
-  p5.io.file.get-read-only:x:/../*/p5.io.file.save?value
+  p5.io.file.read-only.set:x:/../*/p5.io.file.save?value
+  p5.io.file.read-only.delete:x:/../*/p5.io.file.save?value
+  p5.io.file.read-only.get:x:/../*/p5.io.file.save?value
   p5.io.file.delete:x:/../*/p5.io.file.save?value
-  if:x:/@p5.io.file.get-read-only/0?value
-    or:x:/@p5.io.file.get-read-only/1?value
+  if:x:/@p5.io.file.read-only.get/0?value
+    or:x:/@p5.io.file.read-only.get/1?value
     throw:Assert error, p5.io misbehaved
 
 
 Retrieve single file length
   p5.io.file.save:~/temp/foo.txt
     src:Foo bar
-  p5.io.file.length:~/temp/foo.txt
-  if:x:/@p5.io.file.length/0?value
+  p5.io.file.get-length:~/temp/foo.txt
+  if:x:/@p5.io.file.get-length/0?value
     !=:long:7
     throw:Assert error, p5.io misbehaved

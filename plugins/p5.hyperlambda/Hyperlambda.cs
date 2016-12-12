@@ -26,18 +26,15 @@ using p5.exp;
 using p5.core;
 using p5.hyperlambda.helpers;
 
-/// <summary>
-///     Main namespace for parsing and creating Hyperlambda
-/// </summary>
 namespace p5.hyperlambda
 {
     /// <summary>
-    ///     Class to help transform between Hyperlambda and <see cref="phosphorus.core.Node">Nodes</see>
+    ///     Class to help transform between Hyperlambda and <see cref="phosphorus.core.Node">Nodes</see>.
     /// </summary>
     public static class Hyperlambda
     {
         /// <summary>
-        ///     Tranforms the given Hyperlambda to a p5 lambda node structure
+        ///     Tranforms the given Hyperlambda to a lambda graph object.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -65,7 +62,7 @@ namespace p5.hyperlambda
         }
 
         /// <summary>
-        ///     Transforms the given p5 lambda node structure to Hyperlambda
+        ///     Transforms the given lambda graph object to Hyperlambda.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

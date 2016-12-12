@@ -37,8 +37,8 @@ namespace p5.io.file.file_state
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.io.file.creation-time")]
-        public static void p5_io_file_creation_time (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.get-creation-time")]
+        public static void p5_io_file_get_creation_time (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 e.Args.Add (filename, new FileInfo (fullpath).CreationTime);

@@ -37,8 +37,8 @@ namespace p5.io.file.file_state
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.io.file.get-read-only")]
-        public static void p5_io_file_get_read_only (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.read-only.get")]
+        public static void p5_io_file_read_only_get (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
                 e.Args.Add (filename, new FileInfo (fullpath).IsReadOnly);
@@ -50,12 +50,12 @@ namespace p5.io.file.file_state
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.io.file.set-read-only")]
-        [ActiveEvent (Name = "p5.io.file.delete-read-only")]
-        public static void p5_io_file_set_delete_read_only (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.file.read-only.set")]
+        [ActiveEvent (Name = "p5.io.file.read-only.delete")]
+        public static void p5_io_file_read_only_set_delete (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
-                new FileInfo (fullpath).IsReadOnly = e.Name == "p5.io.file.set-read-only";
+                new FileInfo (fullpath).IsReadOnly = e.Name == "p5.io.file.read-only.set";
             });
         }
     }
