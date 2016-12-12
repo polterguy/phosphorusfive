@@ -19,8 +19,6 @@ TODO before release
 
 * Create some sort of "persistent login" (remember me functionality)
 
-* Make sure p5.data cannot access nodes from root or file nodes (minimum /*/* expressions)
-
 * Consider documenting all Active Events by adding a [_dox] node, allowing consumers to invoke them with [add] trickery to retrieve dox.
 
 * Replace Hyperlambda parser, with option to preserve comments as [#comment] nodes, such that we can parse files, without loosing comments,
@@ -38,26 +36,17 @@ TODO before release
 
 * Create [delete-from-row-id] for Datagrid widget.
 
-* Create [trim-left], [trim-right] and [concatenate] events for string manipulation.
+* Make sure [join] works without arguments, to simply concatenate strings.
 
 * Icon support for Navbar through _class on items. Also add support for other types of widgets, such as textbox search, buttons, etc...
 
 * Make sure all widgets that are crawlable use the same "get URL" logic, if we can ...
 
-* Also, make all extension widgets lambda events become global active events. This allows us to get intellisense, in addition to that it is stupid
-  repeating the same active event for each object of widget type. (eats up more resources)
-
 * Make sure datagrid can be set into "read only" mode, without neither [.on-edit-item] nor [.on-select-items]
-
-* Use ReaderWriteLockSlim in p5.data, and other places where we create locks.
-
-* Fix HTML filter, it sometimes chokes.
-
-* Verify we really need [p5.web.widgets.property.delete], which I think we do, since properties can have "null" values.
-
-* Consider creating p5.http, possibly rename p5.net, and move [url-decode]/encode into this project.
 
 * Change the [src] and [dest] argument names to [p5.string.replace] to something more intuitive.
 
 * Change the [chars] argument in [p5.string.trim] to something more intuitive.
+
+* Refactor p5.web, especially the widgets part. Try to support expressions during creation among other things.
 

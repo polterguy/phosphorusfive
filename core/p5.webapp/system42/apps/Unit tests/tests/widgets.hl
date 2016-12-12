@@ -245,7 +245,7 @@ Default parent widget is cnt
     throw:Assert error, widgets misbehaved
 
 
-Create widget with two children widgets with same ID throws
+Create widget with two children widgets with same ID throws and is atomic
   _success:bool:false
   try
     p5.web.widgets.create:sys42.tests.widget-18
