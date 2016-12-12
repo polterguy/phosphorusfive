@@ -62,7 +62,7 @@ sys42.windows.modal
            * Filename of test file is OK, creating a default test file
            */
           p5.io.file.save:{0}{1}
-            :@tests/tests/
+            :@TESTS/tests/
             :x:/../*/p5.web.widgets.property.get/*/*?value
             src:@"/*
  * Contains unit tests for testing [whatever] in system
@@ -87,12 +87,12 @@ foo
            */
           p5.web.widgets.delete:unit-test-bottom-toolbar
           p5.web.widgets.delete:unit-test-datagrid
-          sys42.utilities.execute-lambda-file:@tests/launch.hl
+          sys42.utilities.execute-lambda-file:@TESTS/launch.hl
 
           /*
            * Making sure our newly created test is edited
            */
-          p5.io.unroll-path.@tests
+          p5.io.unroll-path.@TESTS
           p5.web.widgets.find
             _file-button:{0}/tests/{1}
               :x:/././-?value

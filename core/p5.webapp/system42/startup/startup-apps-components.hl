@@ -2,27 +2,27 @@
 /*
  * Initializes all apps and components in System42, and set some path variables.
  *
- * Evaluates all "startup.hl" files, inside of all folders in "@SYSTEM42/apps/" and "@SYSTEM42/components/".
+ * Evaluates all "startup.hl" files, inside of all folders in "@SYS42/apps/" and "@SYS42/components/".
  *
  * Example;
  *
- * If you provide a "startup.hl" file in a folder as follows; "@SYSTEM42/apps/foo/startup.hl" - Then this file will be evaluated by this logic.
- * It will not evaluate any "startup.hl" files directly inside of "@SYSTEM42/apps/" though, only in folders inside of the given [_paths].
+ * If you provide a "startup.hl" file in a folder as follows; "@SYS42/apps/foo/startup.hl" - Then this file will be evaluated by this logic.
+ * It will not evaluate any "startup.hl" files directly inside of "@SYS42/apps/" though, only in folders inside of the given [_paths].
  */
 
 
 /*
- * Maps up "@SYS42-APPS" to "@SYSTEM42/apps"
+ * Maps up "@SYS42-APPS" to "@SYS42/apps"
  */
 p5.events.create:p5.io.unroll-path.@SYS42-APPS
-  return:@SYSTEM42/apps
+  return:@SYS42/apps
 
 
 /*
- * Maps up "@SYS42-COMPONENTS" to "@SYSTEM42/components"
+ * Maps up "@SYS42-COMPONENTS" to "@SYS42/components"
  */
 p5.events.create:p5.io.unroll-path.@SYS42-COMPONENTS
-  return:@SYSTEM42/components
+  return:@SYS42/components
 
 
 /*

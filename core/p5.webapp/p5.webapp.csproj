@@ -528,6 +528,7 @@
     <Content Include="system42\components\common-widgets\codemirror\media\theme\paraiso.css" />
     <Content Include="common\documents\private\web.config" />
     <Content Include="users\root\documents\private\web.config" />
+    <Content Include="system42\apps\Unit tests\tests\widgets.hl" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

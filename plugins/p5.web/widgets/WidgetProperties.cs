@@ -72,6 +72,9 @@ namespace p5.web.widgets
                         case "element":
                             CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.Element);
                             break;
+                        case "parent":
+                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.Parent.ID);
+                            break;
                         case "render-type":
                             CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.RenderType.ToString ());
                             break;

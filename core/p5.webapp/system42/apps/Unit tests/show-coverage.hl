@@ -15,7 +15,7 @@ set:x:/-/*/=
 /*
  * Then loading up all unit test files, making sure we remove the "launch.hl" file
  */
-p5.io.folder.list-files:@tests/tests/
+p5.io.folder.list-files:@TESTS/tests/
   filter:.hl
 set:x:/-/*/~launch.hl
 p5.io.file.load:x:/-2/*?name

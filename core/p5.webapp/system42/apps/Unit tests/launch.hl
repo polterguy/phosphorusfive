@@ -30,7 +30,7 @@ p5.web.include-css-file:@CMS/media/css/backgrounds/cogs.min.css
  * List all files in "/tests/" directory.
  * Each file is considered a "single test collection for specific concept".
  */
-p5.io.folder.list-files:@tests/tests/
+p5.io.folder.list-files:@TESTS/tests/
   filter:.hl
 
 
@@ -118,7 +118,7 @@ apply:x:/../*/p5.web.widgets.create/=unit-test-datagrid/*/widgets/*/tbody/*/widg
                 add:x:/+
                   src:"_widget:{0}"
                     :x:/../*/_event?value
-                sys42.utilities.execute-lambda-file:@tests/edit-unit-test.hl
+                sys42.utilities.execute-lambda-file:@TESTS/edit-unit-test.hl
                   {_file}:x:?name
 
         /*
@@ -149,7 +149,7 @@ apply:x:/../*/p5.web.widgets.create/=unit-test-datagrid/*/widgets/*/tbody/*/widg
                 {_file}:x:?name
                 add:x:/+
                   src:x:@"/../*/"":regex:/^_/"""
-                sys42.utilities.execute-lambda-file:@tests/single-test-button-clicked.hl
+                sys42.utilities.execute-lambda-file:@TESTS/single-test-button-clicked.hl
 
 
 /*
@@ -190,7 +190,7 @@ p5.web.widgets.create:unit-test-datagrid
                      */
                     add:x:/+
                       src:x:/../*/_event
-                    sys42.utilities.execute-lambda-file:@tests/evaluate-all.hl
+                    sys42.utilities.execute-lambda-file:@TESTS/evaluate-all.hl
     tbody
       widgets
 
@@ -212,7 +212,7 @@ p5.web.widgets.create:unit-test-bottom-toolbar
       innerValue:+
       title:Create new unit test file
       onclick
-        sys42.utilities.execute-lambda-file:@tests/create-new-test-file.hl
+        sys42.utilities.execute-lambda-file:@TESTS/create-new-test-file.hl
 
 
     /*
@@ -230,7 +230,7 @@ p5.web.widgets.create:unit-test-bottom-toolbar
          */
         p5.web.widgets.delete:unit-test-bottom-toolbar
         p5.web.widgets.delete:unit-test-datagrid
-        sys42.utilities.execute-lambda-file:@tests/launch.hl
+        sys42.utilities.execute-lambda-file:@TESTS/launch.hl
 
 
     /*
@@ -245,4 +245,4 @@ p5.web.widgets.create:unit-test-bottom-toolbar
         /*
          * Simply evaluates the "show-coverage.hl" file
          */
-        sys42.utilities.execute-lambda-file:@tests/show-coverage.hl
+        sys42.utilities.execute-lambda-file:@TESTS/show-coverage.hl

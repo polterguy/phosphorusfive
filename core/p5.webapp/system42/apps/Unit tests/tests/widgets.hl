@@ -1,0 +1,154 @@
+
+/*
+ * Unit tests for widgets.
+ */
+
+
+Create and delete empty widget
+  p5.web.widgets.create:sys42.tests.widget-1
+  p5.web.widgets.exists:sys42.tests.widget-1
+  p5.web.widgets.delete:sys42.tests.widget-1
+  p5.web.widgets.exists:sys42.tests.widget-1
+  if:x:/../*/p5.web.widgets.exists/[0,1]/0?value
+    not
+    or:x:/../*/p5.web.widgets.exists/[1,2]/0?value
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with same ID twice throws
+  _success:bool:false
+  p5.web.widgets.create:sys42.tests.widget-2
+  try
+    p5.web.widgets.create:sys42.tests.widget-2
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  p5.web.widgets.delete:sys42.tests.widget-2
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with bad parent throws
+  _success:bool:false
+  try
+    p5.web.widgets.create:sys42.tests.widget-3
+      parent:non-existing-widget
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Widget properties yields correct
+  p5.web.widgets.create:sys42.tests.widget-4
+    parent:content
+    element:span
+    class:foo
+    visible:false
+    render-type:immediate
+  p5.web.widgets.property.get:sys42.tests.widget-4
+    parent
+    element
+    class
+    visible
+    render-type
+  p5.web.widgets.delete:sys42.tests.widget-4
+  if:x:/@p5.web.widgets.property.get
+    !=:node:@"p5.web.widgets.property.get
+  sys42.tests.widget-4
+    parent:content
+    element:span
+    class:foo
+    visible:bool:false
+    render-type:immediate"
+    throw:Assert error, widgets misbehaved
+
+
+Widget single property changed with static value
+  p5.web.widgets.create:sys42.tests.widget-5
+    visible:false
+    class:foo
+  p5.web.widgets.property.set:sys42.tests.widget-5
+    visible:true
+    class:bar
+  p5.web.widgets.property.get:sys42.tests.widget-5
+    visible
+    class
+  p5.web.widgets.delete:sys42.tests.widget-5
+  if:x:/@p5.web.widgets.property.get
+    !=:node:@"p5.web.widgets.property.get
+  sys42.tests.widget-5
+    visible:bool:true
+    class:bar"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find for single constant property
+  p5.web.widgets.create:sys42.tests.widget-6
+    class:foo
+  p5.web.widgets.find
+    class:foo
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  cnt
+    container:sys42.tests.widget-6"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find for multiple constant properties
+  p5.web.widgets.create:sys42.tests.widget-7
+    class:foo
+    bar:xyz
+  p5.web.widgets.find
+    class:foo
+    bar:xyz
+  p5.web.widgets.delete:sys42.tests.widget-7
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  cnt
+    container:sys42.tests.widget-7"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find for single expression property
+  p5.web.widgets.create:sys42.tests.widget-8
+    class:foo
+  _class:foo
+  p5.web.widgets.find
+    class:x:/@_class?value
+  p5.web.widgets.delete:sys42.tests.widget-8
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  cnt
+    container:sys42.tests.widget-8"
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with innerValue throws
+  _success:bool:false
+  try
+    p5.web.widgets.create:sys42.tests.widget-9
+      innerValue:foo
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Create container widget with innerValue throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-10
+      innerValue:foo
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved

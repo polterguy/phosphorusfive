@@ -5,7 +5,7 @@
  */
 _html
 eval-x:x:/+/*
-sys42.utilities.execute-lambda-file:@tests/evaluate-single-test.hl
+sys42.utilities.execute-lambda-file:@TESTS/evaluate-single-test.hl
   _file:x:/../*/_file?value
 if:x:/-/*/_error
 

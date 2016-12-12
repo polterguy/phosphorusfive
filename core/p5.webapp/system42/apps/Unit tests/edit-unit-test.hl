@@ -88,7 +88,7 @@ p5.web.widgets.create:{0}_editor
                     sys42.windows.info-tip:File was deleted
                     p5.web.widgets.delete:unit-test-bottom-toolbar
                     p5.web.widgets.delete:unit-test-datagrid
-                    sys42.utilities.execute-lambda-file:@tests/launch.hl
+                    sys42.utilities.execute-lambda-file:@TESTS/launch.hl
 
             /*
               * The "Close" button for edited unit test, such that user
