@@ -52,7 +52,7 @@ sys42.utilities.execute-lambda-file:@CMS/create-uploader.hl
 /*
  * Creating our main widget, consisting of two drop down lists, and really not much more.
  */
-p5.web.widgets.create:cms-page-editor
+p5.web.widgets.create-container:cms-page-editor
   parent:content
   widgets
 
@@ -292,7 +292,7 @@ p5.web.widgets.create:cms-page-editor
                  * Creating our "button" HTML element for currently iterated "specialized editor".
                  */
                 eval-x:x:/+/*/*/*
-                p5.web.widgets.create
+                p5.web.widgets.create-container
                   element:li
                   render-type:open
                   parent:cms-create-new-page

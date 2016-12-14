@@ -8,7 +8,7 @@ if
   not
   set:x:/+/**/={_extra-css-classes}?value
     src:x:/../*/__extra-css-classes?value
-  p5.web.widgets.create:main-navbar-wrapper
+  p5.web.widgets.create-container:main-navbar-wrapper
     parent:cnt
     position:0
     element:nav
@@ -176,7 +176,7 @@ if:x:/../*/p5.auth.misc.whoami/*/default?value
     * This is the default Context user, and hence user is not logged in
     * Creating our login menu item
     */
-  p5.web.widgets.create:login-menu-button
+  p5.web.widgets.create-container:login-menu-button
     parent:main-menu
     element:li
     render-type:open
@@ -220,7 +220,7 @@ p5.loginUsernameKeyUp = function(e) {
             /*
               * Creates the window encapsulating the login window
               */
-            p5.web.widgets.create:login-wrapper
+            p5.web.widgets.create-container:login-wrapper
               class:form-inline login-widget
               parent:header-wrapper
               widgets
@@ -348,7 +348,7 @@ else
   /*
     * Creating the logout button
     */
-  p5.web.widgets.create
+  p5.web.widgets.create-container
     parent:main-menu
     element:li
     render-type:open

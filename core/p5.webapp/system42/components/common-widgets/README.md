@@ -34,7 +34,7 @@ plain *[literal]* widget, you add up an invocation to your own custom extension 
 Below is an example of how to create an Ajax DateTimePicker for instance.
 
 ```
-p5.web.widgets.create:foo
+p5.web.widgets.create-container:foo
   parent:content
   class:col-xs-4
   widgets
@@ -71,7 +71,7 @@ p5.events.create:foo.my-widget
 If you execute the above code, in for instance the System42/Executor, for then to create a "lambda" page in your CMS, with the following code.
 
 ```
-p5.web.widgets.create:foo
+p5.web.widgets.create-container:foo
   parent:content
   class:col-xs-4
   widgets

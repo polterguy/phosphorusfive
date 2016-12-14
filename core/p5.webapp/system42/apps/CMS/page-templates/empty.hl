@@ -9,7 +9,7 @@
 /*
  * Creating our main template webpage
  */
-p5.web.widgets.create:content
+p5.web.widgets.create-container:content
   widgets
     literal
       element:div

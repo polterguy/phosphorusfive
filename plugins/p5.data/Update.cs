@@ -39,6 +39,7 @@ namespace p5.data
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "update-data")]
         [ActiveEvent (Name = "p5.data.update")]
         public static void p5_data_update (ApplicationContext context, ActiveEventArgs e)
         {

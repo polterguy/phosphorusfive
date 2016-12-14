@@ -13,7 +13,7 @@ p5.io.file.load:x:/../*/_template?value
 /*
  * Setting the [content] of our page to "not found" info.
  */
-set:x:/-/*/*/p5.web.widgets.create/*/widgets/**/={content}?value
+set:x:/-/*/*/p5.web.widgets.create-container/*/widgets/**/={content}?value
   src:@"<h2>Sorry!</h2>
 <p>I could not find that page!</p>"
 

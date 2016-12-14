@@ -79,10 +79,10 @@ _get-info-for-row
         innerValue:OK
 
 /*
- * Then [apply]'ing to our [widgets] node in our [p5.web.widgets.create] invocation below,
+ * Then [apply]'ing to our [widgets] node in our [p5.web.widgets.create-container] invocation below,
  * to create one row for each keyword.
  */
-apply:x:/../*/p5.web.widgets.create/*/widgets/**/table/*/widgets
+apply:x:/../*/p5.web.widgets.create-container/*/widgets/**/table/*/widgets
   src:x:/../*/sort-desc/*
   template
     tr
@@ -99,7 +99,7 @@ apply:x:/../*/p5.web.widgets.create/*/widgets/**/table/*/widgets
  * Notice, we create a modal window, with an HTML table inside of it,
  * with one row for each "keyword".
  */
-p5.web.widgets.create
+p5.web.widgets.create-container
   class:modal fade
   oninit
     p5.web.send-javascript:@"$('#{0}').modal('toggle');"

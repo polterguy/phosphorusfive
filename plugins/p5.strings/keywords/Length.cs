@@ -36,6 +36,7 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "length")]
         [ActiveEvent (Name = "p5.string.length")]
         public static void p5_string_length (ApplicationContext context, ActiveEventArgs e)
         {

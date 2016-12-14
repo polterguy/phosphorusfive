@@ -18,7 +18,7 @@ p5.web.include-css-file:@CMS/media/css/backgrounds/cogs.min.css
 /*
  * Creating actual guide form
  */
-p5.web.widgets.create:content
+p5.web.widgets.create-container:content
   class:container
   widgets
     container:guide

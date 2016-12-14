@@ -38,6 +38,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "create-folder")]
         [ActiveEvent (Name = "p5.io.folder.create")]
         public static void p5_io_folder_create (ApplicationContext context, ActiveEventArgs e)
         {

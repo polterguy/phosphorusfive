@@ -249,7 +249,7 @@ namespace p5.web.widgets
                     // [oninit] should be evaluated now!
                     var clone = onInitNode.Clone ();
                     clone.Insert (0, new Node ("_event", widget.ID));
-                    context.Raise ("eval", clone.Clone ());
+                    context.Raise ("eval", clone);
                 }
 
                 // Recursively ensuring [oninit] for children widgets.

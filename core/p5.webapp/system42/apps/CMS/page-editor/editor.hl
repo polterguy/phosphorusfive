@@ -12,7 +12,7 @@
 p5.io.folder.list-files:@CMS/page-editor/toolbar-buttons/
   filter:.hl
 p5.io.file.load:x:/@p5.io.folder.list-files/*?name
-add:x:/../*/p5.web.widgets.create/**/container/=cms-editor-toolbar-buttons/*/widgets/*/container/*/widgets
+add:x:/../*/p5.web.widgets.create-container/**/container/=cms-editor-toolbar-buttons/*/widgets/*/container/*/widgets
   src:x:/@p5.io.file.load/*/*
 
 
@@ -31,14 +31,14 @@ if
   p5.io.folder.list-files:@CMS/page-editor/specialized-editors/{0}/toolbar-buttons/
     :x:/../*/_editor?value
   p5.io.file.load:x:/@p5.io.folder.list-files/*?name
-  add:x:/../*/p5.web.widgets.create/**/container/=cms-editor-toolbar-buttons/*/widgets/*/container/*/widgets
+  add:x:/../*/p5.web.widgets.create-container/**/container/=cms-editor-toolbar-buttons/*/widgets/*/container/*/widgets
     src:x:/@p5.io.file.load/*/*
 
 
 /*
  * Creating toolbar wrapper widget.
  */
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:cms-page-editor-surface
   widgets
 

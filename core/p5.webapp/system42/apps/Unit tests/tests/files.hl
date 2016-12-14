@@ -91,24 +91,6 @@ Move a single file
     throw:Assert error, p5.io misbehaved
 
 
-Rename a single file
-  p5.io.file.save:~/temp/foo-orig.txt
-    src:Foo bar
-  if
-    fetch:x:/0/0?value
-      p5.io.file.exists:~/temp/foo-dest.txt
-    p5.io.file.delete:~/temp/foo-dest.txt
-  p5.io.file.rename:~/temp/foo-orig.txt
-    dest:~/temp/foo-dest.txt
-  p5.io.file.load:~/temp/foo-dest.txt
-  if:x:/@p5.io.file.load/*?value
-    !=:Foo bar
-    or
-      fetch:x:/0/0?value
-        p5.io.file.exists:~/temp/foo-orig.txt
-    throw:Assert error, p5.io misbehaved
-
-
 Delete single read-only file throws
   _success:bool:false
   p5.io.file.save:~/temp/foo.txt

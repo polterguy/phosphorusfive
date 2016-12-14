@@ -39,22 +39,32 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "load-file")]
         [ActiveEvent (Name = "p5.io.file.load")]
         public static void p5_io_file_load (ApplicationContext context, ActiveEventArgs e)
         {
-            ObjectIterator.Iterate (context, e.Args, true, "read-file", delegate (string filename, string fullpath) {
-                if (File.Exists (fullpath)) {
-                    if (IsTextFile (filename)) {
-                        LoadTextFile (context, e.Args, fullpath, filename);
+            ObjectIterator.Iterate (
+                context, 
+                e.Args, 
+                true, 
+                "read-file", 
+                delegate (string filename, string fullpath) {
+                    if (File.Exists (fullpath)) {
+
+                        // Text files and binary files are loaded differently.
+                        // Text file might for instance be converted automatically.
+                        if (IsTextFile (filename))
+                            LoadTextFile (context, e.Args, fullpath, filename);
+                        else
+                            LoadBinaryFile (e.Args, fullpath, filename);
                     } else {
-                        LoadBinaryFile (e.Args, fullpath, filename);
+
+                        // Oops, file didn't exist.
+                        throw new LambdaException (
+                            string.Format ("Couldn't find file '{0}'", filename),
+                            e.Args,
+                            context);
                     }
-                } else {
-                    throw new LambdaException (
-                        string.Format ("Couldn't find file '{0}'", filename),
-                        e.Args,
-                        context);
-                }
             });
         }
 
@@ -80,7 +90,7 @@ namespace p5.io.file
         }
 
         /*
-         * Loads specified as text and appends into args
+         * Loads specified file as text and appends into args, possibly converting into lambda.
          */
         private static void LoadTextFile (
             ApplicationContext context, 
@@ -90,30 +100,32 @@ namespace p5.io.file
         {
             using (TextReader reader = File.OpenText (fullpath)) {
 
-                // Reading file content
+                // Reading file content.
                 string fileContent = reader.ReadToEnd ();
 
-                // Checking if we should automatically convert file content to lambda
+                // Checking if we should automatically convert file content to lambda.
                 if (fileName.EndsWith (".hl") && args.GetExChildValue ("convert", context, true)) {
 
-                    // Automatically converting to Hyperlambda before returning
+                    // Automatically converting to lambda before returning.
                     args.Add (fileName, null, Utilities.Convert<Node> (context, fileContent).Children);
+
                 } else if (fileName.EndsWith (".csv") && args.GetExChildValue ("convert", context, true)) {
 
-                    // Automatically converting to Hyperlambda before returning
+                    // Automatically converting to lambda before returning.
                     var csvLambda = new Node ("", fileContent);
                     context.Raise ("p5.csv.csv2lambda", csvLambda);
                     args.Add (fileName, null, csvLambda["result"].Children);
+
                 } else {
 
-                    // Adding file content as string
+                    // Adding file content as string.
                     args.Add (fileName, fileContent);
                 }
             }
         }
 
         /*
-         * Loads a binary file and appends as blob/byte[] into args
+         * Loads a binary file and appends as blob/byte[] into args.
          */
         private static void LoadBinaryFile (
             Node args, 

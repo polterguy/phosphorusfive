@@ -19,7 +19,7 @@ p5.web.include-css-file:@CMS/media/css/main.min.css
 /*
  * Creating our main template webpage
  */
-p5.web.widgets.create:template-root
+p5.web.widgets.create-container:template-root
   class:container
   widgets
 

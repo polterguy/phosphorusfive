@@ -33,10 +33,11 @@ namespace p5.io.file
     public static class Exists
     {
         /// <summary>
-        ///     Returns true if file(s) exists for each file checked.
+        ///     Returns true if file(s) exists.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "file-exists")]
         [ActiveEvent (Name = "p5.io.file.exists")]
         public static void p5_io_file_exists (ApplicationContext context, ActiveEventArgs e)
         {

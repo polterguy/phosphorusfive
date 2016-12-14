@@ -1089,13 +1089,13 @@ _people
   thomas
   john
   jane
-apply:x:/../*/p5.web.widgets.create/*/widgets
+apply:x:/../*/p5.web.widgets.create-container/*/widgets
   src:x:/../*/_people/*
   template
     literal
       element:h3
       {innerValue}:x:?name
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   widgets
 ```
@@ -1128,13 +1128,13 @@ _people
     name:John Doe
   person3
     name:Jane Doe
-apply:x:/../*/p5.web.widgets.create/*/widgets
+apply:x:/../*/p5.web.widgets.create-container/*/widgets
   src:x:/../*/_people/*
   template
     literal
       element:h3
       {innerValue}:x:/*/name?value
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   widgets
 ```
@@ -1173,12 +1173,12 @@ _exe
       innerValue:{0}, {1}
         :x:/../*/_dn/#/*/surname?value
         :x:/../*/_dn/#/*/name?value
-apply:x:/../*/p5.web.widgets.create/*/widgets
+apply:x:/../*/p5.web.widgets.create-container/*/widgets
   src:x:/../*/_people/*
   template
     {@eval}:x:/../*/_exe
     hr
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   widgets
 ```

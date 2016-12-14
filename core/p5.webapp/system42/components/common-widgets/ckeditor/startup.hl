@@ -36,6 +36,7 @@ p5.events.create:sys42.widgets.ck-editor
     add:x:/../*/return/*/literal
       src
         events
+
   /*
    * Returning textarea widget that CKEditor should wrap on client side, making sure we forward evaluate arguments first.
    */

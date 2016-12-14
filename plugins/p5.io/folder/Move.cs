@@ -37,9 +37,9 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "move-folder")]
         [ActiveEvent (Name = "p5.io.folder.move")]
-        [ActiveEvent (Name = "p5.io.folder.rename")]
-        public static void p5_io_folder_move_rename (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_io_folder_move (ApplicationContext context, ActiveEventArgs e)
         {
             // Using our common helper for actual implementation
             MoveCopyHelper.CopyMoveFileObject (

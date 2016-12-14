@@ -32,12 +32,12 @@ using Void = p5.ajax.widgets.Void;
 namespace p5.web.widgets
 {
     /// <summary>
-    ///     Class encapsulating creation of web widget types
+    ///     Class encapsulating creation of web widget types.
     /// </summary>
     public class WidgetTypes : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetRetriever"/> class
+        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetRetriever"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -53,7 +53,7 @@ namespace p5.web.widgets
         [ActiveEvent (Name = ".p5.web.widgets.container")]
         public void _p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = CreateWidget<Container> (context, e.Args, "div");
+            CreateWidget<Container> (context, e.Args, "div");
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace p5.web.widgets
         [ActiveEvent (Name = ".p5.web.widgets.literal")]
         public void _p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = CreateWidget<Literal> (context, e.Args, "p");
+            CreateWidget<Literal> (context, e.Args, "p");
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace p5.web.widgets
         [ActiveEvent (Name = ".p5.web.widgets.void")]
         public void _p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = CreateWidget<Void> (context, e.Args, "input");
+            CreateWidget<Void> (context, e.Args, "input");
         }
 
         /// <summary>
@@ -89,17 +89,6 @@ namespace p5.web.widgets
             // Creating widget as persistent control
             var parent = e.Args.GetChildValue<Container> ("_parent", context);
             var position = e.Args.GetChildValue ("position", context, -1);
-            var after = e.Args.GetChildValue <Control>("after", context, null);
-            var before = e.Args.GetChildValue <Control>("before", context, null);
-
-            // If before != null, or after != null, we use them, in that priority to figure out positioning
-            if (before != null) {
-                parent = before.Parent as Container;
-                position = parent.Controls.IndexOf (before);
-            } else if (after != null) {
-                parent = after.Parent as Container;
-                position = parent.Controls.IndexOf (after) + 1;
-            }
 
             var ctrl = new LiteralControl ();
             ctrl.Text = e.Args.Get<string> (context);
@@ -109,7 +98,7 @@ namespace p5.web.widgets
         /*
          * Creates a widget from the given node
          */
-        private Widget CreateWidget<T> (
+        private void CreateWidget<T> (
             ApplicationContext context, 
             Node args, 
             string elementType) where T : Widget, new ()
@@ -117,21 +106,9 @@ namespace p5.web.widgets
             // Creating widget as persistent control
             var parent = args.GetChildValue<Container> ("_parent", context);
             var position = args.GetChildValue ("position", context, -1);
-            var after = args.GetChildValue <Control>("after", context, null);
-            var before = args.GetChildValue <Control>("before", context, null);
-
-            // If parent is "cnt" (which is the default value) and position is -1 (which is default)
-            // then we check if after or before was supplied, and if so, we use them to find both parent and position
-            if (before != null) {
-                parent = before.Parent as Container;
-                position = parent.Controls.IndexOf (before);
-            } else if (after != null) {
-                parent = after.Parent as Container;
-                position = parent.Controls.IndexOf (after) + 1;
-            }
 
             // Creating control as persistent control, and setting HTML element type, making sure a widget with the same ID does not exist from before.
-            var id = args.Get<string> (context);
+            var id = args.Get<string> (context, null);
             if (!string.IsNullOrEmpty (id) && FindControl<Control> (id, Manager.AjaxPage) != null)
                 throw new LambdaException ("A widget with the same ID already exist on page!", args, context);
 
@@ -141,15 +118,13 @@ namespace p5.web.widgets
 
                 // Decorating widget properties/events, and create child widgets
                 DecorateWidget (context, widget, args);
+
             } catch {
 
                 // Removing widget from parent, to make operation "atomic".
                 parent.Controls.Remove (widget);
                 throw;
             }
-
-            // Making sure we return Widget to caller
-            return widget;
         }
 
         /*
@@ -282,6 +257,7 @@ namespace p5.web.widgets
 
                             // Recursively invoking self, with the children widgets, that should now be declared as the first child node of idxChild.
                             CreateChildWidgets (context, widget, idxChild);
+
                         } else {
 
                             // This is the "HTML element" helper syntax, declaring the element of the widget as the node's name
@@ -306,10 +282,10 @@ namespace p5.web.widgets
         private void CreateWidgetLambdaEvents (ApplicationContext context, Widget widget, Node events)
         {
             // Looping through all events for widget
-            foreach (var idxEvt in events.Children.ToList ()) {
+            foreach (var idxEvt in events.Children) {
 
                 // Registering our event
-                Manager.WidgetLambdaEventStorage [idxEvt.Name, widget.ID] = idxEvt.UnTie ();
+                Manager.WidgetLambdaEventStorage [idxEvt.Name, widget.ID] = idxEvt.Clone ();
             }
         }
 

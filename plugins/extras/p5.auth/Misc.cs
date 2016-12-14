@@ -37,6 +37,7 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "whoami")]
         [ActiveEvent (Name = "p5.auth.misc.whoami")]
         public static void p5_auth_misc_whoami (ApplicationContext context, ActiveEventArgs e)
         {

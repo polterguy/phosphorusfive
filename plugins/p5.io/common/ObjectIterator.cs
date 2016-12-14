@@ -27,43 +27,40 @@ using p5.core;
 namespace p5.io.common
 {
     /// <summary>
-    ///     Class to help iterate files and folders
+    ///     Class to help iterate files and folders.
     /// </summary>
     public static class ObjectIterator
     {
-        // Callback for iterating files and folders. Unless you return "true", iteration will stop.
-        public delegate void ObjectIteratorDelegate (string filename, string fullpath);
+        // Callback for iterating files and folders.
+        // Unless you return "true", iteration will stop.
+        internal delegate void ObjectIteratorDelegate (string filename, string fullpath);
 
-        /// <summary>
-        ///     Allows you to iterate files and folders for querying them
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="args">Parameters passed into Active Event</param>
-        /// <param name="removeArgsValue">If true, will remove args.Value after evaluation</param>
-        /// <param name="authorizeEvent">Name of [.p5.io.authorize] Active Event to authorize operation</param>
-        public static void Iterate (
+        /*
+         * Allows you to iterate files and folders.
+         */
+        internal static void Iterate (
             ApplicationContext context, 
             Node args, 
             bool removeArgsValue, 
             string authorizeEvent,
             ObjectIteratorDelegate functor)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (args, removeArgsValue)) {
 
-                // Getting root folder
+                // Getting root folder.
                 var rootFolder = Common.GetRootFolder (context);
 
-                // Multiple filename source, returning existence of all files
+                // Iterating over all file paths given.
                 foreach (var idxFileObject in XUtil.Iterate<string> (context, args)) {
 
-                    // Retrieving actual system path
+                    // Retrieving actual system path.
                     var fileObjectName = Common.GetSystemPath (context, idxFileObject);
 
-                    // Verifying user is authorized to reading from currently iterated file
+                    // Verifying user is authorized to reading from currently iterated file.
                     Common.RaiseAuthorizeEvent (context, args, authorizeEvent, idxFileObject);
 
-                    // Invoking callback delegate
+                    // Invoking callback delegate.
                     functor (fileObjectName, rootFolder + fileObjectName);
                 }
             }

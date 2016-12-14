@@ -63,7 +63,7 @@ p5.events.create:sys42.windows.modal
    * Appending buttons into footer of dialogue, which unless overridden through [_buttons], means
    * only the "OK" button.
    */
-  add:x:/../*/p5.web.widgets.create/**/=sys42-windows-modal-footer/*/widgets
+  add:x:/../*/p5.web.widgets.create-container/**/=sys42-windows-modal-footer/*/widgets
     src:x:/../*/_options/*/_buttons/*
 
   /*
@@ -74,7 +74,7 @@ p5.events.create:sys42.windows.modal
     /*
      * Caller supplied a [_widgets] collection, making sure we append it into the correct container widget.
      */
-    add:x:/../*/p5.web.widgets.create/**/=sys42-windows-modal-widgets/*/widgets
+    add:x:/../*/p5.web.widgets.create-container/**/=sys42-windows-modal-widgets/*/widgets
       src:x:/../*/_options/*/_widgets/*
 
   else
@@ -82,7 +82,7 @@ p5.events.create:sys42.windows.modal
     /*
      * Caller did not supply a [_widgets] collection, removing the wrapper container entirely.
      */
-    set:x:/../*/p5.web.widgets.create/**/=sys42-windows-modal-widgets
+    set:x:/../*/p5.web.widgets.create-container/**/=sys42-windows-modal-widgets
 
   /*
    * Checking if no [_body] was supplied, and if not, we entirely remove the "body content" widget.
@@ -95,26 +95,26 @@ p5.events.create:sys42.windows.modal
     /*
      * Caller supplied no [_body], removing body literal widget.
      */
-    set:x:/../*/p5.web.widgets.create/**/=sys42-windows-modal-body
+    set:x:/../*/p5.web.widgets.create-container/**/=sys42-windows-modal-body
 
   /*
    * Appending [.onok] lambda callback into [sys42.windows.modal._ok].
    */
-  add:x:/../*/p5.web.widgets.create/*/events/*/sys42.windows.modal._ok/*/.lambda
+  add:x:/../*/p5.web.widgets.create-container/*/events/*/sys42.windows.modal._ok/*/.lambda
     src:x:/../*/_options/*/.onok/*
 
   /*
    * Appending [.oncancel] lambda callback into [sys42.windows.modal._cancel].
    */
-  add:x:/../*/p5.web.widgets.create/*/events/*/sys42.windows.modal._cancel/*/.lambda
+  add:x:/../*/p5.web.widgets.create-container/*/events/*/sys42.windows.modal._cancel/*/.lambda
     src:x:/../*/_options/*/.oncancel/*
 
   /*
    * Creating actual modal widget, making sure we forward evaluate the [_header], [_body], [class], in addition to 
    * the [class] for the [_inner-class] widget first.
    */
-  eval-x:x:/../*/p5.web.widgets.create(/*/class|/**(/=sys42-windows-modal-body|/=sys42-windows-modal-header)/*/innerValue|/*/widgets/*/container/*/class)
-  p5.web.widgets.create:sys42-windows-modal
+  eval-x:x:/../*/p5.web.widgets.create-container(/*/class|/**(/=sys42-windows-modal-body|/=sys42-windows-modal-header)/*/innerValue|/*/widgets/*/container/*/class)
+  p5.web.widgets.create-container:sys42-windows-modal
     parent:cnt
     class:x:/../*/_options/*/_class?value
     .oncancel

@@ -37,9 +37,9 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "move-file")]
         [ActiveEvent (Name = "p5.io.file.move")]
-        [ActiveEvent (Name = "p5.io.file.rename")]
-        public static void p5_io_file_move_rename (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_io_file_move (ApplicationContext context, ActiveEventArgs e)
         {
             // Using our common helper for actual implementation.
             MoveCopyHelper.CopyMoveFileObject (
@@ -48,12 +48,11 @@ namespace p5.io.file
                 "modify-file", 
                 "modify-file", 
                 delegate (string rootFolder, string source, string destination) {
-
-                // Actually moving (or renaming) file.
-                File.Move (rootFolder + source, rootFolder + destination);
-            }, delegate (string destination) {
-                return File.Exists (destination);
-            });
+                    File.Move (rootFolder + source, rootFolder + destination);
+                },
+                delegate (string destination) {
+                    return File.Exists (destination);
+                });
         }
     }
 }

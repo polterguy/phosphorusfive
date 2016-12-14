@@ -40,6 +40,7 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "replace")]
         [ActiveEvent (Name = "p5.string.replace")]
         public static void p5_string__replace (ApplicationContext context, ActiveEventArgs e)
         {

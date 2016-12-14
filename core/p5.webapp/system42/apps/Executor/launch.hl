@@ -34,18 +34,18 @@ sys42.widgets.codemirror-executor
 
 
 /*
- * Making sure the [container] returned from invoking custom control event, is transformed into [p5.web.widgets.create],
+ * Making sure the [container] returned from invoking custom control event, is transformed into [p5.web.widgets.create-container],
  * with the proper [parent].
  */
 set:x:/../*/sys42.widgets.codemirror-executor/0?name
-  src:p5.web.widgets.create
+  src:p5.web.widgets.create-container
 add:x:/../*/sys42.widgets.codemirror-executor/0
   src
     parent:content
 
 
 /*
- * Then evaluating the results of our [sys42.widgets.codemirror-executor], which is now a [p5.web.widgets.create] invocation
+ * Then evaluating the results of our [sys42.widgets.codemirror-executor], which is now a [p5.web.widgets.create-container] invocation
  */
 eval:x:/../*/sys42.widgets.codemirror-executor
 

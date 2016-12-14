@@ -4,8 +4,8 @@
  */
 
 
-Create and delete empty widget
-  p5.web.widgets.create:sys42.tests.widget-1
+Create and delete widget
+  p5.web.widgets.create-container:sys42.tests.widget-1
   p5.web.widgets.exists:sys42.tests.widget-1
   p5.web.widgets.delete:sys42.tests.widget-1
   p5.web.widgets.exists:sys42.tests.widget-1
@@ -17,9 +17,9 @@ Create and delete empty widget
 
 Create widget with same ID twice throws
   _success:bool:false
-  p5.web.widgets.create:sys42.tests.widget-2
+  p5.web.widgets.create-container:sys42.tests.widget-2
   try
-    p5.web.widgets.create:sys42.tests.widget-2
+    p5.web.widgets.create-container:sys42.tests.widget-2
   catch
     set:x:/@_success?value
       src:bool:true
@@ -32,7 +32,7 @@ Create widget with same ID twice throws
 Create widget with bad parent throws
   _success:bool:false
   try
-    p5.web.widgets.create:sys42.tests.widget-3
+    p5.web.widgets.create-container:sys42.tests.widget-3
       parent:non-existing-widget
   catch
     set:x:/@_success?value
@@ -42,8 +42,8 @@ Create widget with bad parent throws
     throw:Assert error, widgets misbehaved
 
 
-Widget properties yields correct
-  p5.web.widgets.create:sys42.tests.widget-4
+Widget special properties yields correct values
+  p5.web.widgets.create-container:sys42.tests.widget-4
     parent:content
     element:span
     class:foo
@@ -67,8 +67,8 @@ Widget properties yields correct
     throw:Assert error, widgets misbehaved
 
 
-Widget single property changed with static value
-  p5.web.widgets.create:sys42.tests.widget-5
+Widget properties changed with static values
+  p5.web.widgets.create-container:sys42.tests.widget-5
     visible:false
     class:foo
   p5.web.widgets.property.set:sys42.tests.widget-5
@@ -87,7 +87,7 @@ Widget single property changed with static value
 
 
 Widget find for single constant property
-  p5.web.widgets.create:sys42.tests.widget-6
+  p5.web.widgets.create-container:sys42.tests.widget-6
     class:foo
   p5.web.widgets.find
     class:foo
@@ -100,7 +100,7 @@ Widget find for single constant property
 
 
 Widget find for multiple constant properties
-  p5.web.widgets.create:sys42.tests.widget-7
+  p5.web.widgets.create-container:sys42.tests.widget-7
     class:foo
     bar:xyz
   p5.web.widgets.find
@@ -115,7 +115,7 @@ Widget find for multiple constant properties
 
 
 Widget find for single expression property
-  p5.web.widgets.create:sys42.tests.widget-8
+  p5.web.widgets.create-container:sys42.tests.widget-8
     class:foo
   _class:foo
   p5.web.widgets.find
@@ -128,23 +128,10 @@ Widget find for single expression property
     throw:Assert error, widgets misbehaved
 
 
-Create widget with innerValue throws
-  _success:bool:false
-  try
-    p5.web.widgets.create:sys42.tests.widget-9
-      innerValue:foo
-  catch
-    set:x:/@_success?value
-      src:bool:true
-  if:x:/@_success?value
-    not
-    throw:Assert error, widgets misbehaved
-
-
 Create container widget with innerValue throws
   _success:bool:false
   try
-    p5.web.widgets.create-container:sys42.tests.widget-10
+    p5.web.widgets.create-container:sys42.tests.widget-9
       innerValue:foo
   catch
     set:x:/@_success?value
@@ -154,7 +141,7 @@ Create container widget with innerValue throws
     throw:Assert error, widgets misbehaved
 
 
-Create literal widget with widgets throws
+Create literal widget with widgets collection throws
   _success:bool:false
   try
     p5.web.widgets.create-literal:sys42.tests.widget-11
@@ -198,7 +185,7 @@ Create void widget with innerValue throws
 
 
 Default container widget element is div
-  p5.web.widgets.create:sys42.tests.widget-14
+  p5.web.widgets.create-container:sys42.tests.widget-14
   p5.web.widgets.property.get:sys42.tests.widget-14
     element
   p5.web.widgets.delete:sys42.tests.widget-14
@@ -248,7 +235,7 @@ Default parent widget is cnt
 Create widget with two children widgets with same ID throws and is atomic
   _success:bool:false
   try
-    p5.web.widgets.create:sys42.tests.widget-18
+    p5.web.widgets.create-container:sys42.tests.widget-18
       widgets
         literal:foo
         literal:foo
@@ -264,10 +251,10 @@ Create widget with two children widgets with same ID throws and is atomic
 
 
 Create widget before another widget
-  p5.web.widgets.create:sys42.tests.widget-19
-  p5.web.widgets.create:sys42.tests.widget-20
+  p5.web.widgets.create-container:sys42.tests.widget-19
+  p5.web.widgets.create-container:sys42.tests.widget-20
     parent:sys42.tests.widget-19
-  p5.web.widgets.create:sys42.tests.widget-21
+  p5.web.widgets.create-container:sys42.tests.widget-21
     before:sys42.tests.widget-20
   p5.web.widgets.get-children:sys42.tests.widget-19
   p5.web.widgets.delete:sys42.tests.widget-19
@@ -280,10 +267,10 @@ Create widget before another widget
 
 
 Create widget after another widget
-  p5.web.widgets.create:sys42.tests.widget-22
-  p5.web.widgets.create:sys42.tests.widget-23
+  p5.web.widgets.create-container:sys42.tests.widget-22
+  p5.web.widgets.create-container:sys42.tests.widget-23
     parent:sys42.tests.widget-22
-  p5.web.widgets.create:sys42.tests.widget-24
+  p5.web.widgets.create-container:sys42.tests.widget-24
     after:sys42.tests.widget-23
   p5.web.widgets.get-children:sys42.tests.widget-22
   p5.web.widgets.delete:sys42.tests.widget-22
@@ -292,4 +279,295 @@ Create widget after another widget
   sys42.tests.widget-22
     container:container:sys42.tests.widget-23
     container:container:sys42.tests.widget-24"
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with generic event and innerValue
+  p5.web.widgets.create:sys42.tests.widget-25
+    innerValue:Foo bar
+  p5.web.widgets.list:sys42.tests.widget-25
+  p5.web.widgets.delete:sys42.tests.widget-25
+  if:x:/@p5.web.widgets.list/0?name
+    !=:literal
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with generic event and widgets
+  p5.web.widgets.create:sys42.tests.widget-26
+    widgets
+  p5.web.widgets.list:sys42.tests.widget-26
+  p5.web.widgets.delete:sys42.tests.widget-26
+  if:x:/@p5.web.widgets.list/0?name
+    !=:container
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with generic event and neither widgets nor innerValue
+  p5.web.widgets.create:sys42.tests.widget-27
+  p5.web.widgets.list:sys42.tests.widget-27
+  p5.web.widgets.delete:sys42.tests.widget-27
+  if:x:/@p5.web.widgets.list/0?name
+    !=:void
+    throw:Assert error, widgets misbehaved
+
+
+Clear widget clears children collection
+  p5.web.widgets.create:sys42.tests.widget-28
+    widgets
+      literal:foo
+      literal:bar
+  p5.web.widgets.get-children:sys42.tests.widget-28
+  p5.web.widgets.clear:sys42.tests.widget-28
+  p5.web.widgets.get-children:sys42.tests.widget-28
+  p5.web.widgets.delete:sys42.tests.widget-28
+  if:x:/../*/p5.web.widgets.get-children/[0,1]/*/*?count
+    !=:int:2
+    or:x:/../*/p5.web.widgets.get-children/[1,2]/*/*?count
+      !=:int:0
+    throw:Assert error, widgets misbehaved
+
+
+Supplying both parent and before throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-29
+      parent:cnt
+      before:content
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Supplying both parent and after throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-30
+      parent:cnt
+      after:content
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Supplying both before and after throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-31
+      before:content
+      after:content
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Supplying both before and position throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-32
+      before:content
+      position:0
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Supplying both after and position throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-33
+      after:content
+      position:0
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with parent and position
+  p5.web.widgets.create-container:sys42.tests.widget-34
+  p5.web.widgets.create-container:sys42.tests.widget-35
+    parent:sys42.tests.widget-34
+  p5.web.widgets.create-container:sys42.tests.widget-36
+    parent:sys42.tests.widget-34
+    position:0
+  p5.web.widgets.get-children:sys42.tests.widget-34
+  p5.web.widgets.delete:sys42.tests.widget-34
+  if:x:/@p5.web.widgets.get-children
+    !=:node:@"p5.web.widgets.get-children
+  sys42.tests.widget-34
+    container:container:sys42.tests.widget-36
+    container:container:sys42.tests.widget-35"
+    throw:Assert error, widgets misbehaved
+
+
+Create visible widget with oninit event
+  p5.web.viewstate.set:sys42.tests.widget-test-1
+  p5.web.widgets.create-container:sys42.tests.widget-37
+    oninit
+      p5.web.viewstate.set:sys42.tests.widget-test-1
+        src:bool:true
+  p5.web.widgets.delete:sys42.tests.widget-37
+  if
+    fetch:x:/0/0?value
+      p5.web.viewstate.get:sys42.tests.widget-test-1
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Create invisible widget with oninit event
+  p5.web.viewstate.set:sys42.tests.widget-test-2
+  p5.web.widgets.create-container:sys42.tests.widget-38
+    visible:false
+    oninit
+      p5.web.viewstate.set:sys42.tests.widget-test-2
+        src:bool:true
+  p5.web.widgets.delete:sys42.tests.widget-38
+  if
+    fetch:x:/0/0?value
+      p5.web.viewstate.get:sys42.tests.widget-test-2
+    throw:Assert error, widgets misbehaved
+
+
+Create invisible widget with oninit event, make visible after creation
+  p5.web.viewstate.set:sys42.tests.widget-test-3
+  p5.web.widgets.create-container:sys42.tests.widget-39
+    visible:false
+    oninit
+      p5.web.viewstate.set:sys42.tests.widget-test-3
+        src:bool:true
+  p5.web.widgets.property.set:sys42.tests.widget-39
+    visible:true
+  p5.web.widgets.delete:sys42.tests.widget-39
+  if
+    fetch:x:/0/0?value
+      p5.web.viewstate.get:sys42.tests.widget-test-3
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with oninit event invoking lambda event
+  p5.web.viewstate.set:sys42.tests.widget-test-4
+  p5.web.widgets.create-container:sys42.tests.widget-40
+    oninit
+      sys42.tests.widgets.lambda-1
+    events
+      sys42.tests.widgets.lambda-1
+        p5.web.viewstate.set:sys42.tests.widget-test-4
+          src:bool:true
+  p5.web.widgets.delete:sys42.tests.widget-40
+  if
+    fetch:x:/0/0?value
+      p5.web.viewstate.get:sys42.tests.widget-test-4
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with lambda event which is invoked after creation
+  p5.web.viewstate.set:sys42.tests.widget-test-5
+  p5.web.widgets.create-container:sys42.tests.widget-41
+    events
+      sys42.tests.widgets.lambda-2
+        p5.web.viewstate.set:sys42.tests.widget-test-5
+          src:bool:true
+  sys42.tests.widgets.lambda-2
+  p5.web.widgets.delete:sys42.tests.widget-41
+  if
+    fetch:x:/0/0?value
+      p5.web.viewstate.get:sys42.tests.widget-test-5
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Create two widgets handling the same lambda event
+  p5.web.widgets.create-container:sys42.tests.widget-42
+    events
+      sys42.tests.widgets.lambda-3
+        return
+          one
+  p5.web.widgets.create-container:sys42.tests.widget-43
+    events
+      sys42.tests.widgets.lambda-3
+        return
+          two
+  sys42.tests.widgets.lambda-3
+  p5.web.widgets.delete:sys42.tests.widget-42
+  p5.web.widgets.delete:sys42.tests.widget-43
+  if:x:/@sys42.tests.widgets.lambda-3
+    !=:node:@"sys42.tests.widgets.lambda-3
+  one
+  two"
+    throw:Assert error, widgets misbehaved
+
+
+Create two widgets handling the same lambda event, delete one before invocation
+  p5.web.widgets.create-container:sys42.tests.widget-44
+    events
+      sys42.tests.widgets.lambda-4
+        return
+          one
+  p5.web.widgets.create-container:sys42.tests.widget-45
+    events
+      sys42.tests.widgets.lambda-4
+        return
+          two
+  p5.web.widgets.delete:sys42.tests.widget-44
+  sys42.tests.widgets.lambda-4
+  p5.web.widgets.delete:sys42.tests.widget-45
+  if:x:/@sys42.tests.widgets.lambda-4
+    !=:node:@"sys42.tests.widgets.lambda-4
+  two"
+    throw:Assert error, widgets misbehaved
+
+
+Create widget with child having lambda event, which is invoked after creation
+  p5.web.viewstate.set:sys42.tests.widget-test-6
+  p5.web.widgets.create-container:sys42.tests.widget-46
+    widgets
+      literal
+        events
+          sys42.tests.widgets.lambda-5
+            p5.web.viewstate.set:sys42.tests.widget-test-6
+              src:bool:true
+  sys42.tests.widgets.lambda-5
+  p5.web.widgets.delete:sys42.tests.widget-46
+  if
+    fetch:x:/0/0?value
+      p5.web.viewstate.get:sys42.tests.widget-test-6
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Create invisible widget, with invisible child, with lambda event, invoked after creation
+
+  // Notive, even though [oninit] is not invoked on invisible widgets, lambda events are handled!
+  p5.web.viewstate.set:sys42.tests.widget-test-7
+  p5.web.widgets.create-container:sys42.tests.widget-47
+    visible:false
+    widgets
+      literal
+        visible:false
+        events
+          sys42.tests.widgets.lambda-6
+            p5.web.viewstate.set:sys42.tests.widget-test-7
+              src:bool:true
+  sys42.tests.widgets.lambda-6
+  p5.web.widgets.delete:sys42.tests.widget-47
+  if
+    fetch:x:/0/0?value
+      p5.web.viewstate.get:sys42.tests.widget-test-7
+    not
     throw:Assert error, widgets misbehaved

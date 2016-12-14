@@ -39,6 +39,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "save-file")]
         [ActiveEvent (Name = "p5.io.file.save")]
         public static void p5_io_file_save (ApplicationContext context, ActiveEventArgs e)
         {
@@ -49,21 +50,21 @@ namespace p5.io.file
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Getting root folder.
+                // Getting root folder, and converting content to blob, making sure user does use [src] and not [dest] as file content.
                 var rootFolder = Common.GetRootFolder (context);
+                var content = Utilities.Convert<byte[]> (context, XUtil.Source (context, e.Args, "dest"));
 
-                var content = Utilities.Convert<byte[]> (context, XUtil.Source (context, e.Args));
-
-                // Iterating through each destination file path.
+                // Iterating through each destination file path, which probably doesn't make that much sense, but to be consistent in how we
+                // handle files, we still do this, such that "API" is similar to [load-file], etc.
                 foreach (var idxDestination in XUtil.Iterate<string> (context, e.Args)) {
 
-                    // Verifying user is allowed to save to file
+                    // Verifying user is allowed to save to file.
                     Common.RaiseAuthorizeEvent (context, e.Args, "modify-file", idxDestination);
 
-                    // Saving file
+                    // Saving file.
                     using (FileStream stream = File.Create (rootFolder + Common.GetSystemPath (context, idxDestination))) {
 
-                        // Writing content to file stream
+                        // Writing content to file stream.
                         stream.Write (content, 0, content.Length);
                     }
                 }

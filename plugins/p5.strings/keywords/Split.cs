@@ -44,6 +44,7 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "split")]
         [ActiveEvent (Name = "p5.string.split")]
         public static void p5_string_split (ApplicationContext context, ActiveEventArgs e)
         {

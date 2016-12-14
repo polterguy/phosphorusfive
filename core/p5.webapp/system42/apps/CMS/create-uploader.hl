@@ -4,7 +4,7 @@
  *
  * Notice, we default its visibility to false, and change its visibility, whenever a page is edited, or editing is stopped.
  */
-p5.web.widgets.create:cms-ajax-uploader
+p5.web.widgets.create-container:cms-ajax-uploader
   parent:cnt
   visible:false
   widgets

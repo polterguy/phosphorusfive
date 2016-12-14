@@ -17,7 +17,7 @@ p5.io.file.load:x:/../*/_file?value
   * of our currently edited test file
   */
 eval-x:x:/+/*|/+|/+/**(/~codemirror|/_file)|/+/*/*/*/*/*/_value
-p5.web.widgets.create:{0}_editor
+p5.web.widgets.create-container:{0}_editor
   :x:/../*/_widget?value
   after:x:/../*/p5.web.widgets.get-parent/[1,2]/*/*?value
   element:tr

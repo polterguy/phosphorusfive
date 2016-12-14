@@ -37,6 +37,9 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "trim")]
+        [ActiveEvent (Name = "trim-left")]
+        [ActiveEvent (Name = "trim-right")]
         [ActiveEvent (Name = "p5.string.trim")]
         [ActiveEvent (Name = "p5.string.trim-left")]
         [ActiveEvent (Name = "p5.string.trim-right")]
@@ -51,12 +54,15 @@ namespace p5.strings.keywords
                 // Returning length of constant or expression, converted to string if necessary.
                 var source = XUtil.Single<string> (context, e.Args);
                 switch (e.Name) {
+                    case "trim":
                     case "p5.string.trim":
                         e.Args.Value = source.Trim (characters.ToArray ());
                         break;
+                    case "trim-left":
                     case "p5.string.trim-left":
                         e.Args.Value = source.TrimStart (characters.ToArray ());
                         break;
+                    case "trim-right":
                     case "p5.string.trim-right":
                         e.Args.Value = source.TrimEnd (characters.ToArray ());
                         break;

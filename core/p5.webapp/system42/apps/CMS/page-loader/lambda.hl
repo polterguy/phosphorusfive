@@ -19,7 +19,7 @@ if
     /*
      * Removing literal:{content} altogether, and evaluating template just loaded.
      */
-    set:x:/-/*/*/p5.web.widgets.create/*/widgets/**/={content}/.
+    set:x:/-/*/*/p5.web.widgets.create-container/*/widgets/**/={content}/.
     eval:x:/./*/p5.io.file.load/*
 
 

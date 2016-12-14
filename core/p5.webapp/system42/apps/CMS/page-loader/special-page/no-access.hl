@@ -20,7 +20,7 @@ if:x:/../*/p5.auth.misc.whoami/*/default?value
   /*
    * User is logged in, explaining that he does not have access to this URL
    */
-  set:x:/../*/p5.io.file.load/*/*/p5.web.widgets.create/*/widgets/**/={content}?value
+  set:x:/../*/p5.io.file.load/*/*/p5.web.widgets.create-container/*/widgets/**/={content}?value
     src:@"<h2>Sorry!</h2>
 <p>I cannot give you access to that page!</p>"
 
@@ -34,7 +34,7 @@ else
    * PS!
    * We do this by adding our own widget hierarchy into the template just loaded.
    */
-  add:x:/../*/p5.io.file.load/*/*/p5.web.widgets.create/*/widgets/**/={content}/./.
+  add:x:/../*/p5.io.file.load/*/*/p5.web.widgets.create-container/*/widgets/**/={content}/./.
     src
       container
         class:col-xs-12
@@ -115,7 +115,7 @@ else
   /*
    * Making sure we entirely remove the literal:{content} widget.
    */
-  set:x:/../*/p5.io.file.load/*/*/p5.web.widgets.create/*/widgets/**/={content}/.
+  set:x:/../*/p5.io.file.load/*/*/p5.web.widgets.create-container/*/widgets/**/={content}/.
 
 
 /*

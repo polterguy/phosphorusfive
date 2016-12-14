@@ -25,13 +25,13 @@ p5.web.include-css-file:@CMS/media/css/navbar-fix.min.css
  * Checking is user don't want a "content" literal widget.
  */
 if:x:/../*/_no-content?value.bool
-  set:x:/../*/p5.web.widgets.create/**/={content}/.
+  set:x:/../*/p5.web.widgets.create-container/**/={content}/.
 
 
 /*
  * Creating our main template webpage
  */
-p5.web.widgets.create:template-root
+p5.web.widgets.create-container:template-root
   class:container
   widgets
 

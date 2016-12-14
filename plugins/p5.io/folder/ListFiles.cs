@@ -38,6 +38,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "list-files")]
         [ActiveEvent (Name = "p5.io.folder.list-files")]
         public static void p5_io_folder_list_files (ApplicationContext context, ActiveEventArgs e)
         {

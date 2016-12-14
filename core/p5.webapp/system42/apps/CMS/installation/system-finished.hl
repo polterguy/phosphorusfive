@@ -7,7 +7,7 @@
 /*
  * Second "tab" of wizard
  */
-p5.web.widgets.create:finished
+p5.web.widgets.create-container:finished
   parent:guide
   class:flash-from-left col-xs-12 text-center
   oninit

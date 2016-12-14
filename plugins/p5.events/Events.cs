@@ -46,6 +46,7 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "create-event")]
         [ActiveEvent (Name = "p5.events.create")]
         [ActiveEvent (Name = ".p5.events.create")]
         public static void p5_events_create (ApplicationContext context, ActiveEventArgs e)
@@ -73,10 +74,11 @@ namespace p5.events
         }
 
         /// <summary>
-        ///     Removes dynamically created Active Events
+        ///     Removes dynamically created Active Events.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "delete-event")]
         [ActiveEvent (Name = "p5.events.delete")]
         [ActiveEvent (Name = ".p5.events.delete")]
         public static void p5_events_delete (ApplicationContext context, ActiveEventArgs e)
@@ -104,8 +106,9 @@ namespace p5.events
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "vocabulary")]
-        [ActiveEvent (Name = ".vocabulary")]
-        public static void vocabulary (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.events.list")]
+        [ActiveEvent (Name = ".p5.events.list")]
+        public static void p5_events_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving filter, if any.
             var filter = new List<string> (XUtil.Iterate<string> (context, e.Args));

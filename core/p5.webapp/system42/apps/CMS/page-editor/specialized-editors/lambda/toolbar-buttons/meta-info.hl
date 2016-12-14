@@ -106,7 +106,7 @@ button
          * Then our widgets created by page.
          */
         apply:x:/..try/*/sys42.windows.modal/*/_widgets/*/table/[2,3]/*/widgets/*/tbody/*/widgets
-          src:x:/@hyper2lambda/**(/p5.web.widgets.create|/p5.web.widgets.create-literal|/p5.web.widgets.create-container|/p5.web.widgets.create-void|/widgets/*|/_widgets/*|/_buttons/*)/$
+          src:x:/@hyper2lambda/**(/p5.web.widgets.create-literal|/p5.web.widgets.create-container|/p5.web.widgets.create-void|/widgets/*|/_widgets/*|/_buttons/*)/$
           template
             tr
               widgets
@@ -158,7 +158,7 @@ button
                     :x:/@_active-event-no?value
                 li
                   innerValue:{0} widgets created
-                    :x:/@hyper2lambda/**(/p5.web.widgets.create|/p5.web.widgets.create-literal|/p5.web.widgets.create-container|/p5.web.widgets.create-void|/widgets/*|/_widgets/*|/_buttons/*)?count
+                    :x:/@hyper2lambda/**(/p5.web.widgets.create-literal|/p5.web.widgets.create-container|/p5.web.widgets.create-void|/widgets/*|/_widgets/*|/_buttons/*)?count
                 li
                   innerValue:{0} lambda callbacks
                     :x:@"/@hyper2lambda/**/"":regex:/^\\./""?count"

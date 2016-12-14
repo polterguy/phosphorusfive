@@ -39,6 +39,7 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "join")]
         [ActiveEvent (Name = "p5.string.join")]
         public static void p5_string_join (ApplicationContext context, ActiveEventArgs e)
         {

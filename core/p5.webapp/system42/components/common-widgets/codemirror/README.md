@@ -8,7 +8,7 @@ This component creates an Active Event for you, called *[sys42.widgets.codemirro
 your page, in Hyperlambda mode. To consume it, you could do something like the following code illustrates.
 
 ```
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   class:col-xs-12
   widgets
@@ -23,7 +23,7 @@ To get to the Hyperlambda code, simply use *[p5.web.widgets.property.get]*, and 
 Example code given below.
 
 ```
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   widgets
     sys42.widgets.codemirror:my-editor
@@ -43,7 +43,7 @@ Below is an example of a piece of code, that instantiates the CodeMirror editor,
 your Hyperlambda. If you create a new lambda CMS page, and paste in the following code, you've created an _"edit and execute Hyperlambda"_ page.
 
 ```
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   widgets
     sys42.widgets.codemirror:my-editor
@@ -114,7 +114,7 @@ This widget is created by the *[sys42.widgets.codemirror-executor]* Active Event
 and paste in the following code.
 
 ```
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   widgets
     sys42.widgets.codemirror-executor

@@ -314,6 +314,9 @@ namespace p5.web
             // Creating and registering our WidgetCreator as event listener
             context.RegisterListeningObject (new WidgetCreator (context, this));
 
+            // Creating and registering our WidgetCreator as event listener
+            context.RegisterListeningObject (new WidgetDeleter (context, this));
+
             // Creating and registering our WidgetRetriever as event listener
             context.RegisterListeningObject (new WidgetRetriever (context, this));
 

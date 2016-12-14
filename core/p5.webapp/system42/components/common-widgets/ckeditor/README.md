@@ -8,7 +8,7 @@ This component creates the CKEditor extension widget, accessible as *[sys42.widg
 custom widget on your page. To use it, you could use something like the code below.
 
 ```
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   class:col-xs-12
   widgets
@@ -23,7 +23,7 @@ To get to HTML created by it, simply use *[p5.web.widgets.property.get]*, and pa
 Example code given below.
 
 ```
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   class:col-xs-12
   widgets

@@ -6,7 +6,7 @@ showing some aspecct of your page. Kind of like the TabControl in for instance w
 its items, without adding the additional overhead of having to initially render the inactive items. Below is an example.
 
 ```
-p5.web.widgets.create:my-tabs
+p5.web.widgets.create-container:my-tabs
   parent:content
   class:col-xs-12
   widgets
@@ -41,7 +41,7 @@ Notice, if you set the TabControl into _"crawlable mode"_, you must also provide
 value of the HTTP GET parameter used when crawling your TabControl. Below is an example of a _"SEO friendly and crawlable TabControl"_.
 
 ```
-p5.web.widgets.create:foo
+p5.web.widgets.create-container:foo
   parent:content
   class:col-xs-8
   widgets
@@ -73,7 +73,7 @@ instance clicking on the tabview button, that shows it. This means that you can 
 them, before they're actually shown. Consider this code.
 
 ```
-p5.web.widgets.create:foo
+p5.web.widgets.create-container:foo
   parent:content
   class:col-xs-8
   widgets
@@ -148,7 +148,7 @@ own *[oninit]* callback in one of your widgets, inside one of your tabviews, you
 everytime a specific tabview becomes active. Consider the following code.
 
 ```
-p5.web.widgets.create:my-tabs
+p5.web.widgets.create-container:my-tabs
   parent:content
   class:col-xs-12
   widgets

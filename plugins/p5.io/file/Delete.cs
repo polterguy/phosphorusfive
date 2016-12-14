@@ -38,30 +38,36 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "delete-file")]
         [ActiveEvent (Name = "p5.io.file.delete")]
         public static void p5_io_file_delete (ApplicationContext context, ActiveEventArgs e)
         {
-            ObjectIterator.Iterate (context, e.Args, true, "modify-file", delegate (string filename, string fullpath) {
-                if (File.Exists (fullpath)) {
+            ObjectIterator.Iterate (
+                context, 
+                e.Args, 
+                true, 
+                "modify-file", 
+                delegate (string filename, string fullpath) {
+                    if (File.Exists (fullpath)) {
 
-                    // File exists, deleting it, but first making sure it's not read only.
-                    // Notice, Linux and Mac allows a read only file to be deleted, so even though .Net on Windows takes care
-                    // of this automatically for us, we'll need this check in here, to have *nix and Windows systems to behave similarly.
-                    if (new FileInfo (fullpath).IsReadOnly)
+                        // File exists, deleting it, but first making sure it's not read only.
+                        // Notice, Linux and Mac allows a read only file to be deleted, so even though .Net on Windows takes care
+                        // of this automatically for us, we'll need this check in here, to have *nix and Windows systems to behave similarly.
+                        if (new FileInfo (fullpath).IsReadOnly)
+                            throw new LambdaException (
+                                string.Format ("[delete-file] tried to delete a read only file called; '{0}'", filename),
+                                e.Args,
+                                context);
+                        File.Delete (fullpath);
+
+                    } else {
+
+                        // Oops, file didn't exist, throwing an exception.
                         throw new LambdaException (
-                            string.Format ("[delete-file] tried to delete a read only file called; '{0}'", filename),
+                            string.Format ("[delete-file] tried to delete non-existing file '{0}'", filename),
                             e.Args,
                             context);
-                    File.Delete (fullpath);
-
-                } else {
-
-                    // Oops, file didn't exist, throwing an exception.
-                    throw new LambdaException (
-                        string.Format ("[delete-file] tried to delete non-existing file '{0}'", filename),
-                        e.Args,
-                        context);
-                }
+                    }
             });
         }
     }

@@ -59,7 +59,7 @@ p5.events.create:sys42.windows.show-lambda
    * Creating a widget showing the Hyperlambda code created from the given p5 lambda tree.
    */
   eval-x:x:/+/*
-  p5.web.widgets.create
+  p5.web.widgets.create-container
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
     position:0

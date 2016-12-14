@@ -26,7 +26,7 @@ p5.events.create:sys42.utilities.load-web-service-ui
     /*
      * Making sure we create a default sane layout, and include "content" container on page, to have common windows and such working.
      */
-    p5.web.widgets.create:content
+    p5.web.widgets.create-container:content
       class:row
       parent:cnt
       widgets
@@ -44,7 +44,7 @@ p5.events.create:sys42.utilities.load-web-service-ui
       src:x:/../*/_whitelist
   sys42.widgets.codemirror-executor
   set:x:/@sys42.widgets.codemirror-executor/0?name
-    src:p5.web.widgets.create
+    src:p5.web.widgets.create-container
   set:x:/@sys42.widgets.codemirror-executor/0?value
     src:codemirror-executor
   add:x:/@sys42.widgets.codemirror-executor/0

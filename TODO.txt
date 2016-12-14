@@ -50,3 +50,5 @@ TODO before release
 
 * Refactor p5.web, especially the widgets part. Try to support expressions during creation among other things.
 
+* Fix editing of unit tests, when a test is clicked, it throws due to parameters being passed in the wrong way.
+

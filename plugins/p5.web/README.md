@@ -278,7 +278,7 @@ added a *[innerValue]* argument, *[widgets]* argument, or none of the previously
 one "p" element child, you could do something like the following.
 
 ```
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   widgets
     p
@@ -288,7 +288,7 @@ p5.web.widgets.create
 The widget is still a fully fledged widget, and you can add event handlers, lambda events, and so on to it, as if it was declared like the following.
 
 ```
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   widgets
     literal
@@ -324,7 +324,7 @@ p5.events.create:foo.bar
     literal
       innerValue:Howdy world
 
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   position:0
   widgets
@@ -335,7 +335,7 @@ p5.web.widgets.create
 
 The above lambda, first declares an Active Event with the name of "foo.bar". This Active Event returns one *[literal]* widget. Then we use
 our *[foo.bar]* as if it was just another widget type, in our *[widgets]* collection, of our root container widget, created 
-through *[p5.web.widgets.create]*.
+through *[p5.web.widgets.create-container]*.
 
 The above Ninja trick, allows you to create reusable complex widgets, as Active Events, which you can include in any other parts of your program.
 Just as if they were "normal widgets".

@@ -40,6 +40,7 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "match")]
         [ActiveEvent (Name = "p5.string.match")]
         public static void p5_string_match (ApplicationContext context, ActiveEventArgs e)
         {

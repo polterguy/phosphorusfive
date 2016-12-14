@@ -32,7 +32,7 @@ namespace p5.io.common
     public static class Common
     {
         /// <summary>
-        ///     Unrolls the path for current node, if path contains variables
+        ///     Unrolls the path for current node, if path contains variables, such as @SYS42 etc.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="e"></param>
@@ -42,25 +42,20 @@ namespace p5.io.common
             e.Args.Value = GetSystemPath (context, e.Args.Get<string> (context));
         }
 
-        /// <summary>
-        ///     Returns the root folder of application pool back to caller
-        /// </summary>
-        /// <returns>The root folder of system</returns>
-        /// <param name="context">Application Context</param>
-        public static string GetRootFolder (ApplicationContext context)
+        /*
+         * Returns the root folder of application pool back to caller.
+         */
+        internal static string GetRootFolder (ApplicationContext context)
         {
             return context.Raise (".p5.core.application-folder").Get<string> (context);
         }
 
-        /// <summary>
-        ///     Returns the "system path" unrolled, replacing for insance "~" with actual path.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="path">Path to unroll</param>
-        /// <returns></returns>
-        public static string GetSystemPath (ApplicationContext context, string path)
+        /*
+         * Returns the "system path" unrolled, replacing for instance "~" and "@SYS42" in the beginning of path.
+         */
+        internal static string GetSystemPath (ApplicationContext context, string path)
         {
-            // Checking if path contains variables
+            // Checking if path contains alias variables.
             if (path.StartsWith ("~")) {
 
                 // Returning user's folder.
@@ -68,26 +63,23 @@ namespace p5.io.common
                     return "/common" + path.Substring (1);
                 else
                     return "/users/" + context.Ticket.Username + path.Substring (1);
+
             } else if (path.StartsWith ("@")) {
 
-                // Returning variable path according to results of Active Event invocation
+                // Returning variable path according to results of Active Event invocation.
                 var variable = path.Substring (0, path.IndexOf ("/"));
                 var variableUnrolled = context.Raise ("p5.io.unroll-path." + variable).Get<string> (context);
 
-                // Recursively invoking self untill there is nothing more to unroll
+                // Recursively invoking self untill there is nothing more to unroll.
                 return GetSystemPath (context, variableUnrolled + path.Substring (variable.Length));
             }
             return path;
         }
 
-        /// <summary>
-        ///     Raises the specified authorize event for given path
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="args">Root node for Active Event invoking method</param>
-        /// <param name="eventName">Authorize event, will be checked against list of pre-defined event names</param>
-        /// <param name="path">Path to authorize</param>
-        public static void RaiseAuthorizeEvent (
+        /*
+         * Raises the specified authorize event for given path.
+         */
+        internal static void RaiseAuthorizeEvent (
             ApplicationContext context, 
             Node args, 
             string eventName, 
@@ -101,7 +93,10 @@ namespace p5.io.common
                     context.Raise (".p5.io.authorize." + eventName, new Node ("", GetSystemPath (context, path)).Add ("args", args));
                     break;
                 default:
-                    throw new LambdaException ("Unknown authorize event given to " + args.Name, args, context);
+                throw new LambdaException (
+                    string.Format ("Unknown authorize event '{0}' given to '{1}'.", eventName, args.Name), 
+                    args, 
+                    context);
             }
         }
     }

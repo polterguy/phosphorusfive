@@ -37,6 +37,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "folder-exists")]
         [ActiveEvent (Name = "p5.io.folder.exists")]
         public static void p5_io_folder_exists (ApplicationContext context, ActiveEventArgs e)
         {

@@ -24,7 +24,7 @@ After having evaluated the above Hyperlambda in for instance the CMS/Executor, y
 the following code into a new _"lambda"_ page of System42's CMS.
 
 ```
-p5.web.widgets.create:datagrid-wrapper-1
+p5.web.widgets.create-container:datagrid-wrapper-1
   parent:content
   class:col-xs-12
   widgets
@@ -103,7 +103,7 @@ argument passed in with a value of "false". However, the emails can be edited, u
 that eliminates editing of the first column, but allows editing of all other columns.
 
 ```
-p5.web.widgets.create:datagrid-wrapper-2
+p5.web.widgets.create-container:datagrid-wrapper-2
   parent:content
   class:col-xs-12
   widgets
@@ -167,7 +167,7 @@ In the example below, we have increased the page size to 5, and turned on row se
 a modal wizard window, allowing the user to edit his items in a modal window instead.
 
 ```
-p5.web.widgets.create:datagrid-wrapper-3
+p5.web.widgets.create-container:datagrid-wrapper-3
   parent:content
   class:col-xs-12
   widgets
@@ -276,7 +276,7 @@ your own *[_pager-widgets]* collection, which becomes a *[widget]* collection st
 following.
 
 ```
-p5.web.widgets.create:datagrid-wrapper-4
+p5.web.widgets.create-container:datagrid-wrapper-4
   parent:content
   class:col-xs-12
   widgets
@@ -365,7 +365,7 @@ template column datagrid, with two template columns. One row allowing you to del
 select your items.
 
 ```
-p5.web.widgets.create:datagrid-wrapper-5
+p5.web.widgets.create-container:datagrid-wrapper-5
   parent:content
   class:col-xs-12
   widgets
@@ -481,7 +481,7 @@ This is simply done by return _"false"_ from your *[.on-edit-item]* lambda callb
 if your input is _"error"_, at which point it does not accept your new value.
 
 ```
-p5.web.widgets.create:datagrid-wrapper-6
+p5.web.widgets.create-container:datagrid-wrapper-6
   parent:content
   class:col-xs-12
   widgets
@@ -530,7 +530,7 @@ your *[.on-get-items]* callback. Below we are for instance using a number type o
 Notice, this requires that the data for your 5th column actually is a number, and not some plain text.
 
 ```
-p5.web.widgets.create:datagrid-wrapper-6
+p5.web.widgets.create-container:datagrid-wrapper-6
   parent:content
   class:col-xs-12
   widgets

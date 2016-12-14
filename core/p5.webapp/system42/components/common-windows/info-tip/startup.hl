@@ -40,7 +40,7 @@ p5.events.create:sys42.windows.info-tip
    * Creating actual info window, making sure we forward evaluate all arguments first.
    */
   eval-x:x:/+/*|/+/*/*/*
-  p5.web.widgets.create:info-window
+  p5.web.widgets.create-container:info-window
     parent:x:/../*/_options/*/_parent?value
     class:x:/../*/_options/*/_class?value
     widgets

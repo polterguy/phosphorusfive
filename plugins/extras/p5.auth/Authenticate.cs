@@ -36,6 +36,7 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "login")]
         [ActiveEvent (Name = "p5.auth.login")]
         public static void p5_auth_login (ApplicationContext context, ActiveEventArgs e)
         {
@@ -47,6 +48,7 @@ namespace p5.auth
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "logout")]
         [ActiveEvent (Name = "p5.auth.logout")]
         public static void p5_auth_logout (ApplicationContext context, ActiveEventArgs e)
         {

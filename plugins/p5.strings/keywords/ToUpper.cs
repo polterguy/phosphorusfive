@@ -36,6 +36,7 @@ namespace p5.strings.keywords
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "to-upper")]
         [ActiveEvent (Name = "p5.string.to-upper")]
         public static void p5_string_to_upper (ApplicationContext context, ActiveEventArgs e)
         {

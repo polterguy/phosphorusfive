@@ -41,6 +41,8 @@ namespace p5.data
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "insert-data")]
+        [ActiveEvent (Name = "append-data")]
         [ActiveEvent (Name = "p5.data.insert")]
         [ActiveEvent (Name = "p5.data.append")]
         public static void p5_data_insert_append (ApplicationContext context, ActiveEventArgs e)
@@ -52,7 +54,7 @@ namespace p5.data
             try {
 
                 // Checking if we should force insertion at the end or not.
-                var forceAppend = e.Name == "p5.data.append";
+                var forceAppend = e.Name == "p5.data.append" || e.Name == "append-data";
 
                 // Looping through all nodes given as children, value, or as the result of an expression.
                 foreach (var idx in XUtil.Iterate<Node> (context, e.Args)) {

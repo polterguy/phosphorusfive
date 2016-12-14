@@ -36,7 +36,7 @@ p5.events.create:sys42.widgets.datagrid._append-items
      * Since in-place editing is disabled, we turn on "row selection", in such a way, that it becomes accessible for screen 
      * readers and similar technologies.
      */
-    add:x:/../*/for-each/*/p5.web.widgets.create
+    add:x:/../*/for-each/*/p5.web.widgets.create-container
       src
         role:button
         class:clickable
@@ -138,7 +138,7 @@ return false;
     /*
      * [apply] all "td" widgets inside of currently iterated "tr" widget.
      */
-    apply:x:/..for-each/*/p5.web.widgets.create/*/widgets
+    apply:x:/..for-each/*/p5.web.widgets.create-container/*/widgets
       src:x:/..for-each/*/_dp/#/*
       template
         td
@@ -160,7 +160,7 @@ return false;
      * Forward evaluating [parent] and [_row] before we create "tr" widget.
      */
     eval-x:x:/+/*(/parent|/_row)
-    p5.web.widgets.create
+    p5.web.widgets.create-container
       parent:x:/../*/p5.web.widgets.find/[0,1]/*/*?value
       _row:x:/..for-each/*/_id?value
       element:tr

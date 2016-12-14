@@ -6,7 +6,7 @@ This folder contains the Ajax DateTimePicker for Phosphorus Five. The widget is 
 Below is an example of how to use it.
 
 ```
-p5.web.widgets.create:foo
+p5.web.widgets.create-container:foo
   parent:content
   class:col-xs-12
   widgets
@@ -55,14 +55,14 @@ Both of the two above Active Events requires you to pass in the ID of your DateT
 pass in the new value as *[_value]*. An example of how to change the date, and retrieve it, by the click of a button, can be found beneath.
 
 ```
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   class:col-xs-4
   widgets
     sys42.widgets.datetimepicker:my-date
       _label:My date
       _locale:nb
-p5.web.widgets.create
+p5.web.widgets.create-container
   parent:content
   class:col-xs-8
   widgets
