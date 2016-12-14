@@ -571,3 +571,17 @@ Create invisible widget, with invisible child, with lambda event, invoked after 
       p5.web.viewstate.get:sys42.tests.widget-test-7
     not
     throw:Assert error, widgets misbehaved
+
+
+Create visible widget with oninit event, making sure _event is passed correctly in
+  p5.web.viewstate.set:sys42.tests.widget-test-8
+  p5.web.widgets.create-container:sys42.tests.widget-48
+    oninit
+      p5.web.viewstate.set:sys42.tests.widget-test-8
+        src:x:/../*/_event?value
+  p5.web.widgets.delete:sys42.tests.widget-48
+  if
+    fetch:x:/0/0?value
+      p5.web.viewstate.get:sys42.tests.widget-test-8
+    !=:sys42.tests.widget-48
+    throw:Assert error, widgets misbehaved
