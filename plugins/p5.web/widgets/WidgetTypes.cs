@@ -104,6 +104,23 @@ namespace p5.web.widgets
             Node args, 
             string elementType) where T : Widget, new ()
         {
+            switch (args.Name) {
+                case "container":
+                case "literal":
+                case "void":
+                case "create-widget":
+                case "create-void-widget":
+                case "create-literal-widget":
+                case "create-container-widget":
+                case "p5.web.widgets.create":
+                case "p5.web.widgets.create-void":
+                case "p5.web.widgets.create-literal":
+                case "p5.web.widgets.create-container":
+                    break;
+                default:
+                    elementType = args.Name;
+                    break;
+            }
             // Figuring out which container widget is the created widget's parent, and which position we should inject the widget at.
             var parent = args.GetChildValue<Container> ("_parent", context);
             var position = args.GetExChildValue ("position", context, -1);
@@ -260,7 +277,6 @@ namespace p5.web.widgets
                             // Checking type of widget, before we invoke creation event.
                             idxChild.Insert (0, new Node ("_parent", widget));
                             try {
-                                idxChild.Add ("element", idxChild.Name);
                                 if (idxChild ["innerValue"] != null) {
                                     context.Raise (".p5.web.widgets.literal", idxChild);
                                 } else if (idxChild ["widgets"] != null) {

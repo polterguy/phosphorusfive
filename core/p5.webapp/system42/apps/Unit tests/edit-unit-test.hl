@@ -6,16 +6,16 @@ p5.web.widgets.get-parent:x:/../*/_widget?value
 p5.web.widgets.get-parent:x:/-/*/*?value
 
 /*
-  * Loading unit test file, making sure we do NOT convert to p5.lambda, to
-  * preserve comments
-  */
+ * Loading unit test file, making sure we do NOT convert to p5.lambda, to
+ * preserve comments
+ */
 p5.io.file.load:x:/../*/_file?value
   convert:false
 
 /*
-  * Then creating a new "tr" row, after that one, which contains only one column, containing the content
-  * of our currently edited test file
-  */
+ * Then creating a new "tr" row, after that one, which contains only one column, containing the content
+ * of our currently edited test file
+ */
 eval-x:x:/+/*|/+|/+/**(/~codemirror|/_file)|/+/*/*/*/*/*/_value
 p5.web.widgets.create-container:{0}_editor
   :x:/../*/_widget?value
@@ -28,8 +28,8 @@ p5.web.widgets.create-container:{0}_editor
       widgets
 
         /*
-          * Our CodeMirror custom editor widget
-          */
+         * Our CodeMirror custom editor widget
+         */
         sys42.widgets.codemirror:{0}_codemirror
           :x:/../*/_widget?value
           _auto-focus:true
@@ -40,8 +40,8 @@ p5.web.widgets.create-container:{0}_editor
           widgets
 
             /*
-              * The "Save" button for edited unit test
-              */
+             * The "Save" button for edited unit test
+             */
             literal
               element:button
               style:"width:33%;"
@@ -50,9 +50,9 @@ p5.web.widgets.create-container:{0}_editor
               onclick
 
                 /*
-                  * Retrieving value from CodeMirror "textarea", and saving to specified test file.
-                  * [_file] and [_codemirror] is forward evaluated before creation of widget
-                  */
+                 * Retrieving value from CodeMirror "textarea", and saving to specified test file.
+                 * [_file] and [_codemirror] is forward evaluated before creation of widget
+                 */
                 _file:x:/../*/_file?value
                 _codemirror:{0}_codemirror
                   :x:/../*/_widget?value
@@ -62,13 +62,13 @@ p5.web.widgets.create-container:{0}_editor
                   src:x:/../*/p5.web.widgets.property.get/*/*?value
 
                 /*
-                  * Feedback to user
-                  */
+                 * Feedback to user
+                 */
                 sys42.windows.info-tip:File was saved
 
             /*
-              * The "Delete" button for edited unit test
-              */
+             * The "Delete" button for edited unit test
+             */
             literal
               element:button
               style:"width:33%;"
@@ -77,8 +77,8 @@ p5.web.widgets.create-container:{0}_editor
               onclick
 
                 /*
-                  * Deletes the specified test
-                  */
+                 * Deletes the specified test
+                 */
                 sys42.windows.confirm
                   _header:Confirm deletion!
                   _body:Are you sure you wish to delete this file?
@@ -91,9 +91,9 @@ p5.web.widgets.create-container:{0}_editor
                     sys42.utilities.execute-lambda-file:@TESTS/launch.hl
 
             /*
-              * The "Close" button for edited unit test, such that user
-              * can stop editing test
-              */
+             * The "Close" button for edited unit test, such that user
+             * can stop editing test
+             */
             literal
               element:button
               style:"width:33%;"
@@ -102,8 +102,8 @@ p5.web.widgets.create-container:{0}_editor
               onclick
 
                 /*
-                  * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
-                  */
+                 * Deleting entire "editor HTML row" ("tr" element wrapping CodeMirror)
+                 */
                 p5.web.widgets.find-ancestor:x:/../*/_event?value
                   element:tr
                 p5.web.widgets.delete:x:/-/*/*?value

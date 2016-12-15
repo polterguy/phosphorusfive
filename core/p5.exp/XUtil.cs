@@ -85,7 +85,7 @@ namespace p5.exp
             var retVal = string.Format (evaluatedNode.Get<string> (context), childrenValues);
 
             // House cleaning before returning formatted value.
-            foreach (var idx in evaluatedNode.Children.ToList ())
+            foreach (var idx in evaluatedNode.Children.Where (ix => ix.Name == "").ToList ())
                 idx.UnTie ();
             return retVal;
         }

@@ -30,7 +30,7 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords.extras
 {
     /// <summary>
-    ///     Class wrapping the [apply]/[braid] Active Event.
+    ///     Class wrapping the [apply] Active Event.
     /// </summary>
     public static class Apply
     {
@@ -234,8 +234,8 @@ namespace p5.lambda.keywords.extras
          */
         private static IEnumerable<Node> ProcessItemChildren (ApplicationContext context, Node template, Node source)
         {
-            // Looping through children of template, avoiding formatted expressions and values.
-            foreach (var idxTemplate in template.Children.Where (ix => ix.Name != "")) {
+            // Looping through children of template.
+            foreach (var idxTemplate in template.Children) {
 
                 // Recursively databinding children of template node.
                 foreach (var idx in ProcessTemplateItem (context, idxTemplate, source)) {
