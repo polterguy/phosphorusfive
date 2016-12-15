@@ -46,7 +46,7 @@ namespace p5.io.folder
             var rootFolder = Common.GetRootFolder (context);
 
             // Checking if we've got a filter
-            string filter = e.Args.GetExChildValue ("filter", context, "");
+            string filter = e.Args.GetExChildValue ("filter", context, "") ?? "";
 
             ObjectIterator.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
                 foreach (var idxFile in Directory.GetFiles (fullpath)) {
