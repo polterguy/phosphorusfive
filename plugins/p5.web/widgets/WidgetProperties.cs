@@ -32,12 +32,12 @@ using p5.exp.exceptions;
 namespace p5.web.widgets
 {
     /// <summary>
-    ///     Class encapsulating properties of widgets
+    ///     Class encapsulating retrieving and setting properties of widgets.
     /// </summary>
     public class WidgetProperties : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetProperties"/> class
+        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetProperties"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -45,43 +45,60 @@ namespace p5.web.widgets
             : base (context, manager)
         { }
 
-        #region [ -- Widget property getters and setters -- ]
-
         /// <summary>
-        ///     Returns properties and/or attributes requested by caller as children nodes
+        ///     Returns properties and/or attributes requested by caller as children nodes.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.property.get")]
         public void p5_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Looping through all widget IDs given by caller
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.get")) {
+                // Making sure we fetch property list before we start modifying arguments.
+                var propertyList = e.Args.Children.Where (ix => ix.Name != "").ToList ();
 
-                    // Looping through all properties requested by caller
-                    foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
+                // Looping through all widget caller requests to retrieve properties for.
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
-                        // Checking if this is a generic attribute, or a specific property
-                        switch (nameNode.Name) {
-                        case "visible":
-                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.Visible);
-                            break;
-                        case "element":
-                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.Element);
-                            break;
-                        case "parent":
-                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.Parent.ID);
-                            break;
-                        case "render-type":
-                            CreatePropertyReturn (e.Args, nameNode.Name, idxWidget, idxWidget.RenderType.ToString ());
-                            break;
-                        default:
-                            if (!string.IsNullOrEmpty (nameNode.Name))
-                                CreatePropertyReturn (e.Args, nameNode.Name, idxWidget);
-                            break;
+                    // Looping through all properties requested by caller.
+                    foreach (var idxPropertyName in propertyList) {
+
+                        // Checking if this is a generic attribute, or a special property.
+                        switch (idxPropertyName.Name) {
+                            case "visible":
+                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.Visible);
+                                break;
+                            case "element":
+                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.Element);
+                                break;
+                            case "parent":
+                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.Parent.ID);
+                                break;
+                            case "position":
+                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.Parent.Controls.IndexOf (idxWidget));
+                                break;
+                            case "before":
+                                var indexBefore = idxWidget.Parent.Controls.IndexOf (idxWidget) + 1;
+                                CreatePropertyReturn (e.Args, 
+                                                      idxPropertyName.Name, 
+                                                      idxWidget, 
+                                                      indexBefore >= idxWidget.Parent.Controls.Count ? null : idxWidget.Parent.Controls [indexBefore].ID);
+                                break;
+                            case "after":
+                                var indexAfter = idxWidget.Parent.Controls.IndexOf (idxWidget) - 1;
+                                CreatePropertyReturn (e.Args, 
+                                                      idxPropertyName.Name, 
+                                                      idxWidget, 
+                                                      indexAfter < 0 ? null : idxWidget.Parent.Controls [indexAfter].ID);
+                                break;
+                            case "render-type":
+                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.RenderType.ToString ());
+                                break;
+                            default:
+                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget);
+                                break;
                         }
                     }
                 }
@@ -89,7 +106,7 @@ namespace p5.web.widgets
         }
 
         /// <summary>
-        ///     Sets properties and/or attributes of web widgets
+        ///     Sets properties and/or attributes of web widgets.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -97,7 +114,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widget IDs given by caller
-            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.set")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
                 // Looping through all properties requested by caller
                 foreach (var valueNode in e.Args.Children.Where (ix => ix.Name != "")) {
@@ -154,7 +171,7 @@ namespace p5.web.widgets
                 return; // Nothing to do here ...
 
             // Looping through all widgets supplied by caller
-            foreach (var widget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.delete")) {
+            foreach (var widget in FindWidgets<Widget> (context, e.Args)) {
 
                 // Looping through each property to remove
                 foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "")) {
@@ -186,7 +203,7 @@ namespace p5.web.widgets
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var widget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.list")) {
+                foreach (var widget in FindWidgets<Widget> (context, e.Args)) {
 
                     // Creating our "return node" for currently handled widget
                     Node curNode = e.Args.Add (widget.ID).LastChild;
@@ -222,17 +239,13 @@ namespace p5.web.widgets
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widget IDs given by caller
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.property.recursively-get")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
                     // Serialize currently iterated widgets, and all descendants of given widget, yielding all properties requested by caller.
                     SerializeWidgetPropertiesRecursively (context, e.Args, idxWidget);
                 }
             }
         }
-
-        #endregion
-
-        #region [ -- Private helper methods -- ]
 
         /*
          * Ensures [oninit] is evaluated for widget, and all children widgets.
@@ -298,6 +311,5 @@ namespace p5.web.widgets
                 widget [propertyName] : 
                 value;
         }
-        #endregion
     }
 }

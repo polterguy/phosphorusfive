@@ -128,7 +128,7 @@ namespace p5.web.widgets
                 insertedPos?.UnTie ();
             }
 
-            // Making sure we invoke our [oninit] lambdas, but only if widget's parent is visible.
+            // Making sure we invoke our [oninit] lambdas, but only if widget's parent widget is visible.
             if (parent.Visible) {
                 foreach (var idxInit in GetInitLambdas (args, context)) {
 

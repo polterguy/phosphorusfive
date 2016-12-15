@@ -28,18 +28,16 @@ using p5.core;
 using p5.ajax.widgets;
 using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for everything related to widgets
-/// </summary>
 namespace p5.web.widgets
 {
     /// <summary>
-    ///     Base class for helper Active Event classes related to widgets
+    ///     Base class for Active Event classes related to widgets.
+    ///     Contains common functionality.
     /// </summary>
     public abstract class BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.BaseWidget"/> class
+        ///     Initializes a new instance of the <see cref="p5.web.widgets.BaseWidget"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -50,7 +48,7 @@ namespace p5.web.widgets
         }
 
         /*
-         * PageManager for this instance
+         * PageManager for this instance.
          */
         protected PageManager Manager {
             get;
@@ -58,16 +56,16 @@ namespace p5.web.widgets
         }
 
         /*
-         * Recursively searches through page for Container with specified id, starting from "startWidget"
+         * Recursively searches through page for a control with the specified id, starting from "startWidget".
          */
-        protected T FindControl<T> (string id, Control startWidget) where T : Control
+        protected T FindControl<T> (string id, Control startControl) where T : Control
         {
-            if (id == null || startWidget == null)
+            if (id == null || startControl == null)
                 return null;
-            if (startWidget.ID == id)
-                return startWidget as T;
-            foreach (Control idxChild in startWidget.Controls) {
-                var tmpRet = FindControl<T> (id, idxChild);
+            if (startControl.ID == id)
+                return startControl as T;
+            foreach (Control idx in startControl.Controls) {
+                var tmpRet = FindControl<T> (id, idx);
                 if (tmpRet != null)
                     return tmpRet;
             }
@@ -75,64 +73,27 @@ namespace p5.web.widgets
         }
 
         /*
-         * Helper to retrieve a list of widgets from a Node, throws if widget with specified ID does not exist
+         * Helper to iterate a node and retrieve a list of widgets from the Node.
+         * Throws if widget with the specified ID does not exist.
          */
-        protected IEnumerable<T> FindWidgets<T> (
-            ApplicationContext context, 
-            Node args, 
-            string activeEventName) where T : Control
+        protected IEnumerable<T> FindWidgets<T> (ApplicationContext context, Node args) where T : Control
         {
-            // Looping through all Widget IDs supplied by caller, finding widget with specified ID
+            // Iterating through all widget IDs supplied by caller, finding widget with specified ID.
             foreach (var idxWidgetID in XUtil.Iterate<string> (context, args)) {
 
-                // Retrieving Widget with currently iterated ID
-                var idxWidget = FindControl<Control>(idxWidgetID, Manager.AjaxPage);
+                // Retrieving Widget with currently iterated ID.
+                var idxWidget = FindControl<T>(idxWidgetID, Manager.AjaxPage);
 
-                // Throwing exception if widget does not exist
+                // Throwing exception if widget does not exist.
                 if (idxWidget == null)
                     throw new LambdaException(
-                        string.Format ("Couldn't find widget with ID '{0}'", idxWidgetID),
+                        string.Format ("Couldn't find widget with ID '{0}', are you sure it exists and is an actual p5.ajax widget?", idxWidgetID),
                         args, 
                         context);
 
-                // Verifies widget is of requested type
-                var retVal = idxWidget as T;
-                if (retVal == null) {
-
-                    // Widget was not correct type, figuring out type of widget
-                    string typeString = typeof (T).FullName;
-                    if (typeof(T).BaseType == typeof(Widget)) {
-
-                        // Using "short version" typename for all widgets inheriting from p5 Ajax Widget
-                        typeString = typeString.Substring(typeString.LastIndexOf(".") + 1).ToLower();
-                    }
-
-                    // Throwing exception
-                    throw new LambdaException(
-                        string.Format("You cannot use [{0}] on a Control that is not of type '{1}'", activeEventName, typeString),
-                        args,
-                        context);
-                }
-
-                // Returning widget to caller
-                yield return retVal;
+                // Returning widget to caller.
+                yield return idxWidget;
             }
-        }
-
-        /*
-         * Returns typename of specified Control
-         */
-        protected static string GetTypeName (Control ctrl)
-        {
-            // Adding type of widget as name, and ID as value
-            string typeName = ctrl.GetType().FullName;
-
-            // Making sure we return "condensed typename" if widget type is from p5 Ajax
-            if (ctrl is Widget)
-                typeName = typeName.Substring(typeName.LastIndexOf(".") + 1).ToLower();
-
-            // Returning typename to caller
-            return typeName;
         }
     }
 }

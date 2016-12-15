@@ -42,9 +42,9 @@ namespace p5.web.widgets.helpers
         internal IEnumerable<Node> this [string key1]
         {
             get {
-                if (_events.ContainsKey(key1))
+                if (_events.ContainsKey (key1))
                     return _events[key1];
-                return new Node[] { };
+                return null;
             }
         }
 
@@ -139,8 +139,8 @@ namespace p5.web.widgets.helpers
          */
         internal void Remove (string key1, string key2)
         {
-            if (_events.ContainsKey(key1)) {
-                _events[key1].RemoveAll(ix => ix.Name == key2);
+            if (_events.ContainsKey (key1)) {
+                _events [key1].RemoveAll (ix => ix.Name == key2);
             }
         }
 

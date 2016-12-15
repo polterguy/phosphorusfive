@@ -24,16 +24,17 @@
 using System.Linq;
 using p5.core;
 using p5.ajax.widgets;
+using p5.exp.exceptions;
 
 namespace p5.web.widgets
 {
     /// <summary>
-    ///     Class encapsulating ajax events of widgets
+    ///     Class encapsulating Ajax events for widgets.
     /// </summary>
     public class WidgetAjaxEvents : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetAjaxEvents"/> class
+        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetAjaxEvents"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -41,26 +42,36 @@ namespace p5.web.widgets
             : base (context, manager)
         { }
 
-        #region [ -- Widget Ajax events -- ]
-
         /// <summary>
-        ///     Returns the given ajax event(s) for the given widget(s)
+        ///     Returns the given Ajax event(s) for the given widget(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.ajax-events.get")]
         public void p5_web_widgets_ajax_events_get (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Sanity check.
+            if (e.Args.Value == null || e.Args.Children.Count == 0)
+                throw new LambdaException (
+                    string.Format ("[{0}] needs both a value being widget(s) to iterate, and children arguments being events to retrieve", e.Args.Name), 
+                    e.Args, 
+                    context);
+
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Looping through all widgets
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.ajax-events.get")) {
+                // Since the process of returning widget's Ajax events changes the e.Args children, we need to store the original children,
+                // to make sure we only iterate the originally requested Ajax events to caller.
+                var eventList = e.Args.Children.Where (ix => ix.Name != "").ToList ();
 
-                    // Looping through events requested by caller
-                    foreach (var idxEventNameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
+                // Finding all widgets caller requests to retrieve events for.
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
-                        // Returning lambda object for Widget Ajax event
+                    // Iterating through each Ajax event requested by caller to retrieve for widgets.
+                    foreach (var idxEventNameNode in eventList) {
+
+                        // Checking if the currently iterated widget has the currently iterated Ajax event, 
+                        // and if so, making sure we return a cloned version of its lambda.
                         if (Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] != null)
                             e.Args.FindOrInsert(idxWidget.ID).Add(Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name].Clone());
                     }
@@ -69,37 +80,44 @@ namespace p5.web.widgets
         }
 
         /// <summary>
-        ///     Changes the given ajax event(s) for the given widget(s)
+        ///     Changes or deletes the given Ajax event(s) for the given widget(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.ajax-events.set")]
         public void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // Looping through all widgets
-            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.ajax-events.set")) {
+            // Sanity check.
+            if (e.Args.Value == null || e.Args.Children.Count == 0)
+                throw new LambdaException (
+                    string.Format ("[{0}] needs both a value being widget(s) to iterate, and children arguments being events to retrieve", e.Args.Name),                    e.Args,                    context);
 
-                // Looping through events requested by caller
-                foreach (var idxEventNameNode in e.Args.Children) {
+            // Iterating through all widget(s) requested by caller.
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
-                    // Checking if we should delete existing event
+                // Iterating through each event(s) requested by caller, making sure we avoid formatting value.
+                foreach (var idxEventNameNode in e.Args.Children.Where (ix => ix.Name != "")) {
+
+                    // Checking if we should delete existing Ajax event.
                     if (idxEventNameNode.Children.Count == 0) {
 
-                        // Deleting existing ajax event
+                        // Deleting existing Ajax event.
                         Manager.WidgetAjaxEventStorage.Remove (idxWidget.ID, idxEventNameNode.Name);
                         idxWidget.RemoveAttribute (idxEventNameNode.Name);
+
                     } else {
 
-                        // Setting Widget's Ajax event to whatever we were given
+                        // Setting widget's Ajax event to whatever we were given, making sure we clone the lambda supplied.
                         var clone = idxEventNameNode.Clone();
 
-                        // In case this event is copied from another event, we remove the [_event] node
-                        if (clone ["_event"] != null)
-                            clone ["_event"].UnTie ();
+                        // In case this event is copied from another event, we remove any [_event] node within it.
+                        clone ["_event"]?.UnTie ();
 
-                        // Making sure ajax event is parametrized with [_event] node
+                        // Making sure updated Ajax event is parametrized with [_event] node.
                         clone.Insert (0, new Node ("_event", idxWidget.ID));
                         Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = clone;
+
+                        // Notice, since [oninit] is a special server-side event, we do not map it up as an Ajax event.
                         if (idxEventNameNode.Name != "oninit")
                             idxWidget [idxEventNameNode.Name] = "common_event_handler";
                     }
@@ -108,58 +126,63 @@ namespace p5.web.widgets
         }
 
         /// <summary>
-        ///     Raises the specified ajax event(s) for specified widget(s)
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.ajax-events.raise")]
-        public void p5_web_widgets_ajax_events_raise (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Looping through all widgets
-            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.ajax-events.raise")) {
-
-                // Looping through events requested by caller
-                foreach (var idxEventNameNode in e.Args.Children) {
-
-                    // Raising specified event
-                    idxWidget.InvokeEventHandler (idxEventNameNode.Name);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Lists all existing ajax events for given widget(s)
+        ///     Lists all existing Ajax events for given widget(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.ajax-events.list")]
         public void p5_web_widgets_ajax_events_list (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover(e.Args, true)) {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Looping through all widgets supplied
-                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "p5.web.widgets.ajax-events.list")) {
+                // Iterating through all widgets supplied by caller.
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
-                    // Then looping through all attribute keys, filtering everything out that does not start with "on", ".on" or "_on"
-                    Node curNode = new Node(idxWidget.ID);
-                    foreach (var idxAtr in idxWidget.AttributeKeys.Where (ix => ix.StartsWith ("on") || ix.StartsWith ("_on") || ix.StartsWith(".on"))) {
+                    // Then iterating through all attribute keys, filtering everything out that does not start with "on", ".on" or "_on".
+                    Node curNode = new Node (idxWidget.ID);
+                    foreach (var idxAtr in idxWidget.AttributeKeys.Where (ix => ix.StartsWith ("on") || ix.StartsWith ("_on") || ix.StartsWith (".on"))) {
 
-                        // Adding this attribute
-                        curNode.Add(idxAtr);
+                        // Adding currently iterated Ajax event.
+                        curNode.Add (idxAtr);
                     }
 
-                    // Special handling of [oninit], since it never leaves the server, and is hence not in widget's attribute collection
-                    if (Manager.WidgetAjaxEventStorage[idxWidget.ID, "oninit"] != null)
-                        curNode.Add("oninit");
+                    // Special handling of [oninit], since it never leaves the server, and is hence not in widget's attribute collection.
+                    if (Manager.WidgetAjaxEventStorage [idxWidget.ID, "oninit"] != null)
+                        curNode.Add ("oninit");
 
-                    // Checking if we've got more than zero events for given widget, and if so, adding event node, containing list of events
+                    // Checking if we've got more than zero events for given widget, and if so, adding event node, containing list of events.
                     if (curNode.Children.Count > 0)
-                        e.Args.Add(curNode);
+                        e.Args.Add (curNode);
                 }
             }
         }
 
-        #endregion
+        /// <summary>
+        ///     Raises the specified Ajax event(s) for specified widget(s).
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.widgets.ajax-events.raise")]
+        public void p5_web_widgets_ajax_events_raise (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Sanity check.
+            if (e.Args.Value == null || e.Args.Children.Count == 0)
+                throw new LambdaException (
+                    string.Format ("[{0}] needs both a value being widget(s) to iterate, and children arguments being events to retrieve", e.Args.Name),
+                    e.Args,
+                    context);
+
+            // Iterating through all widget(s) supplied by caller.
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
+
+                // Iterating through all Ajax event(s) requested by caller.
+                foreach (var idxEventNameNode in e.Args.Children) {
+
+                    // Raising currently iterated Ajax event for currently iterated widget, letting p5.ajax do the heavy lifting.
+                    idxWidget.InvokeEventHandler (idxEventNameNode.Name);
+                }
+            }
+        }
     }
 }

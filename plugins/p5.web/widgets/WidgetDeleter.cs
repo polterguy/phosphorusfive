@@ -45,8 +45,6 @@ namespace p5.web.widgets
             : base (context, manager)
         { }
 
-        #region [ -- Active events for deleting widgets -- ]
-
         /// <summary>
         ///     Deletes the given widget(s) from page.
         /// </summary>
@@ -55,85 +53,80 @@ namespace p5.web.widgets
         [ActiveEvent (Name = "p5.web.widgets.delete")]
         public void p5_web_widgets_delete (ApplicationContext context, ActiveEventArgs e)
         {
-            // Looping through all IDs given
-            foreach (var idxWidget in FindWidgets<Control> (context, e.Args, "p5.web.widgets.delete")) {
+            // Iterating through all widget IDs given.
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
-                // Removing widget
-                RemoveWidget (context, e.Args, idxWidget);
+                // Deleting currently iterated widget.
+                DeleteWidget (context, e.Args, idxWidget);
             }
         }
 
         /// <summary>
-        ///     Clears the given widget(s), removing all of its children widgets
+        ///     Clears the given widget(s), removing all of its children widgets.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.clear")]
         public void p5_web_widgets_clear (ApplicationContext context, ActiveEventArgs e)
         {
-            // Looping through all IDs given
-            foreach (var idxWidget in FindWidgets<Container> (context, e.Args, "p5.web.widgets.clear")) {
+            // Iterating through all widget IDs given.
+            foreach (var idxWidget in FindWidgets<Container> (context, e.Args)) {
 
-                // Then looping through all of its children controls
-                foreach (Control idxChildWidget in new ArrayList(idxWidget.Controls)) {
+                // Then iterating through all of its children controls.
+                // Notice, we cannot use Linq's ToList on Controls collections.
+                foreach (Widget idxChildWidget in new ArrayList (idxWidget.Controls)) {
 
-                    // Removing widget from page control collection
-                    RemoveWidget (context, e.Args, idxChildWidget);
+                    // Deleting currently iterated child widget.
+                    DeleteWidget (context, e.Args, idxChildWidget);
                 }
             }
         }
 
-        #endregion
-
-        #region [ -- Private helper methods -- ]
-
         /*
-         * Helper to remove a widget from Page control collection
+         * Helper to delete a widget from Page.
+         * Removes all Ajax and lambda events, recursively, for the specified widget, and all of its children widgets.
          */
-        private void RemoveWidget (
+        private void DeleteWidget (
             ApplicationContext context, 
             Node args, 
-            Control widget)
+            Widget widget)
         {
-            // Basic logical error checking
+            // Sanity check.
             var parent = widget.Parent as Container;
             if (parent == null)
                 throw new LambdaException (
-                    "You cannot delete a widget who's parent is not a Phosphorus Five Ajax Container widget",
+                    "You cannot delete a widget who's parent is not a p5.ajax Container widget",
                     args,
                     context);
 
-            // Removing all events, both "lambda" and "ajax"
-            RemoveAllEventsRecursive (widget);
+            // Removing all Ajax and lambda events for widget recursively.
+            DeleteEvents (widget);
 
-            // Removing widget itself from page control collection, making sure we persist the change to parent Container
+            // Removing widget from parent's Controls collection persistently.
             parent.RemoveControlPersistent (widget);
         }
 
         /*
-         * Removing all events for widget recursively
+         * Deleting all events for widget recursively.
          */
-        private void RemoveAllEventsRecursive (Control widget)
+        private void DeleteEvents (Control control)
         {
-            // Checking if currently iterated Control is Widget, since only Widgets have
-            // ajax and lambda events
-            if (widget is Widget) {
+            // Checking if currently iterated Control is Widget, since only widgets have Ajax and lambda events.
+            if (control is Widget) {
 
-                // Removing all Ajax Events for widget
-                Manager.WidgetAjaxEventStorage.RemoveFromKey1(widget.ID);
+                // Deleting all Ajax events for widget.
+                Manager.WidgetAjaxEventStorage.RemoveFromKey1(control.ID);
 
-                // Removing all lambda events for widget
-                Manager.WidgetLambdaEventStorage.RemoveFromKey2(widget.ID);
+                // Deleting all lambda events for widget.
+                Manager.WidgetLambdaEventStorage.RemoveFromKey2(control.ID);
             }
 
-            // Recursively invoking "self" for all children widgets
-            foreach (Widget idxChildWidget in widget.Controls) {
+            // Recursively invoking "self" for all children controls.
+            foreach (Control idxChild in control.Controls) {
 
-                // Removing all events for currently iterated child
-                RemoveAllEventsRecursive(idxChildWidget);
+                // Deleting all events for currently iterated child.
+                DeleteEvents (idxChild);
             }
         }
-
-        #endregion
     }
 }

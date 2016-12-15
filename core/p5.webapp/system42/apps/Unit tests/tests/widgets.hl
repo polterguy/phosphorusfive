@@ -49,12 +49,14 @@ Widget special properties yields correct values
     class:foo
     visible:false
     render-type:immediate
+    position:0
   p5.web.widgets.property.get:sys42.tests.widget-4
     parent
     element
     class
     visible
     render-type
+    position
   p5.web.widgets.delete:sys42.tests.widget-4
   if:x:/@p5.web.widgets.property.get
     !=:node:@"p5.web.widgets.property.get
@@ -63,7 +65,8 @@ Widget special properties yields correct values
     element:span
     class:foo
     visible:bool:false
-    render-type:immediate"
+    render-type:immediate
+    position:int:0"
     throw:Assert error, widgets misbehaved
 
 
@@ -584,4 +587,348 @@ Create visible widget with oninit event, making sure _event is passed correctly 
     fetch:x:/0/0?value
       p5.web.viewstate.get:sys42.tests.widget-test-8
     !=:sys42.tests.widget-48
+    throw:Assert error, widgets misbehaved
+
+
+Child widget with parent throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-49
+      widgets
+        literal
+          parent:content
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Child widget with before throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-49
+      widgets
+        literal
+          before:content
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+    throw:Assert error, widgets misbehaved
+
+
+Child widget with after throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-49
+      widgets
+        literal
+          after:content
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Child widget with _parent throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-49
+      widgets
+        literal
+          _parent:content
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Child widget with position throws
+  _success:bool:false
+  try
+    p5.web.widgets.create-container:sys42.tests.widget-49
+      widgets
+        literal
+          position:0
+  catch
+    set:x:/@_success?value
+      src:bool:true
+  if:x:/@_success?value
+    not
+    throw:Assert error, widgets misbehaved
+
+
+Widget properties can take expressions
+  _data
+    parent:content
+    element:span
+    class:foo
+    visible:false
+    render-type:immediate
+  p5.web.widgets.create-container:sys42.tests.widget-50
+    parent:x:/@_data/*/parent?value
+    element:x:/@_data/*/element?value
+    class:x:/@_data/*/class?value
+    visible:x:/@_data/*/visible?value
+    render-type:x:/@_data/*/render-type?value
+  p5.web.widgets.property.get:sys42.tests.widget-50
+    parent
+    element
+    class
+    visible
+    render-type
+  p5.web.widgets.delete:sys42.tests.widget-50
+  if:x:/@p5.web.widgets.property.get
+    !=:node:@"p5.web.widgets.property.get
+  sys42.tests.widget-50
+    parent:content
+    element:span
+    class:foo
+    visible:bool:false
+    render-type:immediate"
+    throw:Assert error, widgets misbehaved
+
+
+Child widget properties can take expressions
+  _data
+    element:span
+    class:foo
+    visible:false
+    render-type:immediate
+  p5.web.widgets.create:sys42.tests.widget-51
+    widgets
+      literal:sys42.tests.widget-52
+        element:x:/@_data/*/element?value
+        class:x:/@_data/*/class?value
+        visible:x:/@_data/*/visible?value
+        render-type:x:/@_data/*/render-type?value
+  p5.web.widgets.property.get:sys42.tests.widget-52
+    parent
+    element
+    class
+    visible
+    render-type
+  p5.web.widgets.delete:sys42.tests.widget-52
+  if:x:/@p5.web.widgets.property.get
+    !=:node:@"p5.web.widgets.property.get
+  sys42.tests.widget-52
+    parent:sys42.tests.widget-51
+    element:span
+    class:foo
+    visible:bool:false
+    render-type:immediate"
+    throw:Assert error, widgets misbehaved
+
+
+Retrieve widget's Ajax event
+  p5.web.widgets.create:sys42.tests.widget-53
+    onclick
+      foo
+  p5.web.widgets.ajax-events.get:sys42.tests.widget-53
+    onclick
+  p5.web.widgets.delete:sys42.tests.widget-53
+  if:x:/@p5.web.widgets.ajax-events.get
+    !=:node:@"p5.web.widgets.ajax-events.get
+  sys42.tests.widget-53
+    onclick
+      _event:sys42.tests.widget-53
+      foo"
+    throw:Assert error, widgets misbehaved
+
+
+Delete widget's Ajax event
+  p5.web.widgets.create:sys42.tests.widget-54
+    onclick
+      foo
+  p5.web.widgets.ajax-events.set:sys42.tests.widget-54
+    onclick
+  p5.web.widgets.ajax-events.get:sys42.tests.widget-54
+    onclick
+  p5.web.widgets.delete:sys42.tests.widget-54
+  if:x:/@p5.web.widgets.ajax-events.get
+    !=:node:@"p5.web.widgets.ajax-events.get"
+    throw:Assert error, widgets misbehaved
+
+
+Invoke widget's Ajax event
+  p5.web.session.set:sys42.tests.session-value-1
+  p5.web.widgets.create:sys42.tests.widget-53.2
+    onclick
+      p5.web.session.set:sys42.tests.session-value-1
+        src:x:/../*/_event?value
+  p5.web.widgets.ajax-events.raise:sys42.tests.widget-53.2
+    onclick
+  p5.web.widgets.delete:sys42.tests.widget-53.2
+  p5.web.session.get:sys42.tests.session-value-1
+  if:x:/@p5.web.session.get
+    !=:node:@"p5.web.session.get
+  sys42.tests.session-value-1:sys42.tests.widget-53.2"
+    throw:Assert error, widgets misbehaved
+
+
+Multiple widget lambda events returning value
+  p5.web.widgets.create:sys42.tests.widget-55
+    widgets
+      literal
+        events
+          sys42.tests.lambda-7
+            return:x
+      literal
+        events
+          sys42.tests.lambda-7
+            return:y
+  sys42.tests.lambda-7
+  p5.web.widgets.delete:sys42.tests.widget-55
+  if:x:/@sys42.tests.lambda-7
+    !=:node:@"sys42.tests.lambda-7:y"
+    throw:Assert error, widgets misbehaved
+
+
+Multiple widget lambda events returning value given value argument
+  p5.web.widgets.create:sys42.tests.widget-56
+    widgets
+      literal
+        events
+          sys42.tests.lambda-8
+            return:{0}-bar-1
+              :x:/../*/_arg?value
+      literal
+        events
+          sys42.tests.lambda-8
+            return:{0}-bar-2
+              :x:/../*/_arg?value
+  sys42.tests.lambda-8:foo
+  p5.web.widgets.delete:sys42.tests.widget-56
+  if:x:/@sys42.tests.lambda-8
+    !=:node:@"sys42.tests.lambda-8:foo-bar-2"
+    throw:Assert error, widgets misbehaved
+
+
+Copy lambda event from widget, making sure _event is wired up correctly
+  p5.web.widgets.create:sys42.tests.widget-57
+    events
+      sys42.tests.lambda-9
+        return:x:/../*/_event?value
+  p5.web.widgets.create:sys42.tests.widget-58
+  p5.web.widgets.lambda-events.get:sys42.tests.widget-57
+    sys42.tests.lambda-9
+  add:x:/+
+    src:x:/@p5.web.widgets.lambda-events.get/*/*
+  p5.web.widgets.lambda-events.set:sys42.tests.widget-58
+  p5.web.widgets.lambda-events.set:sys42.tests.widget-57
+    sys42.tests.lambda-9
+  sys42.tests.lambda-9
+  p5.web.widgets.delete:sys42.tests.widget-57
+  p5.web.widgets.delete:sys42.tests.widget-58
+  if:x:/@sys42.tests.lambda-9?value
+    !=:sys42.tests.widget-58
+    throw:Assert error, widgets misbehaved
+
+
+List lambda events for widget
+  p5.web.widgets.create:sys42.tests.widget-59
+    events
+      sys42.tests.lambda-10
+        foo
+      sys42.tests.lambda-11
+        foo
+      sys42.tests.lambda-12
+  p5.web.widgets.lambda-events.list:sys42.tests.widget-59
+  p5.web.widgets.delete:sys42.tests.widget-59
+  if:x:/@p5.web.widgets.lambda-events.list
+    !=:node:@"p5.web.widgets.lambda-events.list
+  sys42.tests.widget-59
+    sys42.tests.lambda-10
+    sys42.tests.lambda-11"
+    throw:Assert error, widgets misbehaved
+
+
+Delete lambda event before listing events for widget
+  p5.web.widgets.create:sys42.tests.widget-59
+    events
+      sys42.tests.lambda-10
+        foo
+      sys42.tests.lambda-11
+        foo
+  p5.web.widgets.lambda-events.set:sys42.tests.widget-59
+    sys42.tests.lambda-10
+  p5.web.widgets.lambda-events.list:sys42.tests.widget-59
+  p5.web.widgets.delete:sys42.tests.widget-59
+  if:x:/@p5.web.widgets.lambda-events.list
+    !=:node:@"p5.web.widgets.lambda-events.list
+  sys42.tests.widget-59
+    sys42.tests.lambda-11"
+    throw:Assert error, widgets misbehaved
+
+
+List all lambda events
+  p5.web.widgets.create:sys42.tests.widget-59
+    events
+      sys42.tests.lambda-10
+        foo
+      sys42.tests.lambda-11
+        foo
+      sys42.tests.lambda-12
+  p5.web.widgets.lambda-events.vocabulary:~sys42.tests.lambda-
+  p5.web.widgets.delete:sys42.tests.widget-59
+  if:x:/@p5.web.widgets.lambda-events.vocabulary
+    !=:node:@"p5.web.widgets.lambda-events.vocabulary
+  dynamic:sys42.tests.lambda-10
+  dynamic:sys42.tests.lambda-11"
+    throw:Assert error, widgets misbehaved
+
+
+Widget property before and after yields correct values
+  p5.web.widgets.create-container:sys42.tests.widget-60
+    widgets
+      literal:sys42.tests.widget-61
+      literal:sys42.tests.widget-62
+  p5.web.widgets.property.get:sys42.tests.widget-61
+    position
+    before
+  p5.web.widgets.property.get:sys42.tests.widget-62
+    position
+    after
+  p5.web.widgets.delete:sys42.tests.widget-60
+  if:x:/../*/p5.web.widgets.property.get/[0,1]
+    !=:node:@"p5.web.widgets.property.get
+  sys42.tests.widget-61
+    position:int:0
+    before:sys42.tests.widget-62"
+    or:x:/../*/p5.web.widgets.property.get/[1,2]
+      !=:node:@"p5.web.widgets.property.get
+  sys42.tests.widget-62
+    position:int:1
+    after:sys42.tests.widget-61"
+    throw:Assert error, widgets misbehaved
+
+
+Widget property before and after yields correct values when there is nothing return
+  p5.web.widgets.create-container:sys42.tests.widget-60
+    widgets
+      literal:sys42.tests.widget-61
+      literal:sys42.tests.widget-62
+  p5.web.widgets.property.get:sys42.tests.widget-61
+    position
+    after
+  p5.web.widgets.property.get:sys42.tests.widget-62
+    position
+    before
+  p5.web.widgets.delete:sys42.tests.widget-60
+  if:x:/../*/p5.web.widgets.property.get/[0,1]
+    !=:node:@"p5.web.widgets.property.get
+  sys42.tests.widget-61
+    position:int:0"
+    or:x:/../*/p5.web.widgets.property.get/[1,2]
+      !=:node:@"p5.web.widgets.property.get
+  sys42.tests.widget-62
+    position:int:1"
     throw:Assert error, widgets misbehaved

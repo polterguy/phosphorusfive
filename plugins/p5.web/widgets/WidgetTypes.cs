@@ -33,7 +33,7 @@ using Void = p5.ajax.widgets.Void;
 namespace p5.web.widgets
 {
     /// <summary>
-    ///     Class encapsulating creation of web widget types.
+    ///     Class encapsulating creation of Ajax widgets.
     /// </summary>
     public class WidgetTypes : BaseWidget
     {
@@ -80,7 +80,7 @@ namespace p5.web.widgets
         }
 
         /// <summary>
-        ///     Creates a simple text widget, non ajax, non-control.
+        ///     Creates a simple text widget, non ajax, non-control, simply inline HTML content.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -111,7 +111,7 @@ namespace p5.web.widgets
             // Creating control as persistent control, and setting HTML element type, making sure a widget with the same ID does not exist from before.
             var id = args.GetExValue<string> (context, null);
             if (!string.IsNullOrEmpty (id) && FindControl<Control> (id, Manager.AjaxPage) != null)
-                throw new LambdaException ("A widget with the same ID already exist on page!", args, context);
+                throw new LambdaException ("A widget with the same ID already exists on page.", args, context);
 
             var widget = parent.CreatePersistentControl<T> (id, position);
             try {
@@ -172,11 +172,11 @@ namespace p5.web.widgets
                 }
             }
 
-            // Ensures "name" property is created, if necessary.
-            EnsureNameProperty (widget, args, context);
-            
             // Ensures "value" property is created, if necessary.
             EnsureValueProperty (widget, args, context);
+
+            // Ensures "name" property is created, if necessary.
+            EnsureNameProperty (widget, args, context);
         }
 
         /*
@@ -220,20 +220,25 @@ namespace p5.web.widgets
             // Looping through all children widgets.
             foreach (var idxChild in children.Children) {
 
-                // Passing in parent widget, when invoking creational Active Event for currently iterated widget.
+                // Figuring out type of widget to create.
                 switch (idxChild.Name) {
                     case "literal":
                     case "container":
                     case "void":
                     case "text":
 
-                        // "Native" widget
+                        // Sanity check, before invoking "create native widget" event.                        if (idxChild.Children.Count (ix => ix.Name == "parent" || ix.Name == "_parent" || ix.Name == "before" || ix.Name == "after" || ix.Name == "position") > 0)
+                            throw new LambdaException ("You cannot specify [parent], [_parent], [before], [after] or [position] for a child widget", idxChild, context);
                         idxChild.Insert (0, new Node ("_parent", widget));
-                        context.Raise (".p5.web.widgets." + idxChild.Name, idxChild);
+                        try {
+                            context.Raise (".p5.web.widgets." + idxChild.Name, idxChild);
+                        } finally {
+                            idxChild ["_parent"].UnTie ();
+                        }
                         break;
                     default:
 
-                        // Checking if this is a "custom widget".
+                        // Checking if this is a "custom widget", which it is, if name contains a ".".
                         if (idxChild.Name.IndexOf (".") > 0) {
 
                             // Making sure we store the ID for widget, since lambda event invocation will delete it after evaluation.
@@ -253,13 +258,17 @@ namespace p5.web.widgets
                             // This is the "HTML element" helper syntax, declaring the element of the widget as the node's name.
                             // Checking type of widget, before we invoke creation event.
                             idxChild.Insert (0, new Node ("_parent", widget));
-                            idxChild.Add ("element", idxChild.Name);
-                            if (idxChild["innerValue"] != null) {
-                                context.Raise (".p5.web.widgets.literal", idxChild);
-                            } else if (idxChild["widgets"] != null) {
-                                context.Raise (".p5.web.widgets.container", idxChild);
-                            } else {
-                                context.Raise (".p5.web.widgets.void", idxChild);
+                            try {
+                                idxChild.Add ("element", idxChild.Name);
+                                if (idxChild ["innerValue"] != null) {
+                                    context.Raise (".p5.web.widgets.literal", idxChild);
+                                } else if (idxChild ["widgets"] != null) {
+                                    context.Raise (".p5.web.widgets.container", idxChild);
+                                } else {
+                                    context.Raise (".p5.web.widgets.void", idxChild);
+                                }
+                            } finally {
+                                idxChild ["_parent"].UnTie ();
                             }
                         }
                         break;
@@ -274,7 +283,13 @@ namespace p5.web.widgets
         {
             // Looping through all events for widget, and registering them as widget lambda events.
             foreach (var idxEvt in events.Children) {
-                Manager.WidgetLambdaEventStorage [idxEvt.Name, widget.ID] = idxEvt.Clone ();
+
+                // Making sure there actually is a lambda for currently iterated event.
+                if (idxEvt.Children.Count (ix => ix.Name != "") > 0) {
+                    var clone = idxEvt.Clone ();
+                    clone.Insert (0, new Node ("_event", widget.ID));
+                    Manager.WidgetLambdaEventStorage [idxEvt.Name, widget.ID] = clone;
+                }
             }
         }
 
@@ -288,39 +303,41 @@ namespace p5.web.widgets
 
                 // This is an event, creating it.
                 CreateEventHandler (context, widget, node);
+
             } else {
 
                 // This is a normal attribute, making sure we escape attribute if necessary.
-                widget [node.Name.StartsWith ("\\") ? node.Name.Substring(1) : node.Name] = node.Get<string> (context);
+                widget [node.Name.StartsWith ("\\") ? node.Name.Substring(1) : node.Name] = node.GetExValue<string> (context);
             }
         }
 
         /*
-         * Creates an event handler on the given widget for the given node. If a value is given in node, the
-         * event will be assumed to be a JavaScript event, and simply sent back to client as JavaScript.
-         * If node does not contain a value, the event will be handled as a server-side lambda event, assuming children 
-         * widgets are lambda code to evaluate.
+         * Creates an event handler on the given widget for the given node.
+         * If a value is given in node, the event will be assumed to be a JavaScript event, and simply sent back to client as JavaScript.
+         * If node does not contain a value, the event will be handled as a server-side lambda event, assuming children nodes is lambda to evaluate.
          */
-        private void CreateEventHandler (ApplicationContext context, Widget widget, Node node)
+        private void CreateEventHandler (ApplicationContext context, Widget widget, Node lambda)
         {
             // Checking what type of event this is, JavaScript or server-side lambda.
-            if (node.Value != null) {
+            if (lambda.Value != null) {
 
                 // Javascript code to be executed.
-                widget [node.Name] = node.GetExValue<string> (context);
+                widget [lambda.Name] = lambda.GetExValue<string> (context);
 
             } else {
 
                 // Mapping the widget's ajax event to our common event handler on page.
                 // But intentionally dropping [oninit], since it's a purely server-side lambda event, and not supposed to be pushed to client.
-                if (node.Name != "oninit")
-                    widget [node.Name] = "common_event_handler"; // Name of common WebMethod from page
+                // Making sure we clone lambda given.
+                var clone = lambda.Clone ();
+                if (clone.Name != "oninit")
+                    widget [clone.Name] = "common_event_handler"; // Name of common WebMethod from page.
 
                 // Making sure event has a reference to ID of widget in its body as the first child node's value.
-                node.Insert (0, new Node ("_event", widget.ID));
+                clone.Insert (0, new Node ("_event", widget.ID));
 
                 // Storing our Widget Ajax event in storage.
-                Manager.WidgetAjaxEventStorage [widget.ID, node.Name] = node.Clone ();
+                Manager.WidgetAjaxEventStorage [widget.ID, lambda.Name] = clone;
             }
         }
     }

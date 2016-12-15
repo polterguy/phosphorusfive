@@ -59,7 +59,7 @@ namespace p5.web.widgets
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given
-                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "p5.web.widgets.get-parent")) {
+                foreach (var idxWidget in FindWidgets <Control> (context, e.Args)) {
 
                     // Returning parent of widget, and parent's typename
                     e.Args.Add (idxWidget.ID).LastChild.Add (GetTypeName (idxWidget.Parent), idxWidget.Parent.ID);
@@ -79,7 +79,7 @@ namespace p5.web.widgets
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given
-                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "p5.web.widgets.get-children")) {
+                foreach (var idxWidget in FindWidgets <Control> (context, e.Args)) {
 
                     // Adding currently iterated widget's ID
                     e.Args.Add(idxWidget.ID);
@@ -366,6 +366,22 @@ namespace p5.web.widgets
                     if (idxSubMatch is Widget)
                         yield return (idxSubMatch as Widget);
             }
+        }
+
+        /*
+         * Returns typename of specified ctrl.
+         */
+        protected static string GetTypeName (Control ctrl)
+        {
+            // Adding type of widget as name, and ID as value
+            string typeName = ctrl.GetType ().FullName;
+
+            // Making sure we return "condensed typename" if widget type is from p5 Ajax
+            if (ctrl is Widget)
+                typeName = typeName.Substring (typeName.LastIndexOf (".") + 1).ToLower ();
+
+            // Returning typename to caller
+            return typeName;
         }
 
         #endregion

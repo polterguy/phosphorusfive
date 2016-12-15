@@ -52,3 +52,12 @@ TODO before release
 
 * Fix editing of unit tests, when a test is clicked, it throws due to parameters being passed in the wrong way.
 
+* Figure out why modal windows in e.g. CMS is not given focus to any controls initially.
+
+* Check out if we should allow widget Ajax events to take expressions during creation.
+
+* Consider creating [p5.web.widgets.ajax-events.delete] and [p5.web.widgets.lambda-events.delete]
+
+* Rethink widget lambda events logic, since it is impossible to have multiple handlers for the same Active Event return values.
+
+
