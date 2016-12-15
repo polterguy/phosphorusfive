@@ -488,13 +488,13 @@ Active Event can either be given an expression, leading to multiple IDs, or a co
 ### Retrieving an entire hierarchy of widget properties
 
 Sometimes, you wish to retrieve every single widget property, recursively, from some specified root widget. For these occassions, you have 
-the *[p5.web.widgets.property.recursively-get]* Active Event (plural form). This Active Event will return all properties of the requested name(s), below one or 
+the *[p5.web.widgets.properties.get]* Active Event (plural form). This Active Event will return all properties of the requested name(s), below one or 
 more specified "root widget".
 
 To see all form element values for instance, in your form, in one go, you could use something like this for instance.
 
 ```
-p5.web.widgets.property.recursively-get:cnt
+p5.web.widgets.properties.get:cnt
   value
 ```
 

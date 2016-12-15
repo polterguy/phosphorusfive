@@ -24,6 +24,7 @@
 using System;
 using System.Linq;
 using System.Web.UI;
+using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.ajax.widgets;
@@ -113,13 +114,16 @@ namespace p5.web.widgets
         [ActiveEvent (Name = "p5.web.widgets.property.set")]
         public void p5_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
-            // Looping through all widget IDs given by caller
+            // Making sure we fetch property list before we start modifying arguments.
+            var propertyList = e.Args.Children.Where (ix => ix.Name != "").ToList ();
+
+            // Looping through all widget IDs given by caller.
             foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
-                // Looping through all properties requested by caller
-                foreach (var valueNode in e.Args.Children.Where (ix => ix.Name != "")) {
+                // Looping through all properties requested by caller.
+                foreach (var valueNode in propertyList) {
                     switch (valueNode.Name) {
-                    case "visible":
+                        case "visible":
                             var newValue = valueNode.GetExValue<bool> (context);
                             var oldValue = idxWidget.Visible;
                             idxWidget.Visible = newValue;
@@ -129,94 +133,105 @@ namespace p5.web.widgets
                                 EnsureOnInit (context, idxWidget);
                             }
                             break;
-                    case "element":
-                        idxWidget.Element = valueNode.GetExValue<string> (context);
-                        idxWidget.ReRender ();
-                        break;
-                    case "render-type":
-                        idxWidget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.GetExValue<string> (context));
-                        idxWidget.ReRender ();
-                        break;
-                    case "id":
-                        var oldID = idxWidget.ID;
-                        var newID = valueNode.GetExValue<string> (context);
-                        if (string.IsNullOrEmpty (newID)) {
+                        case "element":
+                            idxWidget.Element = valueNode.GetExValue<string> (context);
+                            idxWidget.ReRender ();
+                            break;
+                        case "render-type":
+                            idxWidget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.GetExValue<string> (context));
+                            idxWidget.ReRender ();
+                            break;
+                        case "id":
+                            var oldID = idxWidget.ID;
+                            var newID = valueNode.GetExValue<string> (context);
+                            if (string.IsNullOrEmpty (newID)) {
 
-                            // Widget's new id was null or empty, creating a new random unique ID for widget
-                            newID = Container.CreateUniqueId ();
-                        }
-                        idxWidget.ID = newID;
-                        if (oldID != newID) {
-                            Manager.WidgetAjaxEventStorage.ChangeKey1 (context, oldID, newID);
-                            Manager.WidgetLambdaEventStorage.ChangeKey2 (oldID, newID);
-                        }
-                        break;
-                    default:
-                        idxWidget [valueNode.Name.StartsWith ("\\") ? valueNode.Name.Substring(1) : valueNode.Name] = valueNode.GetExValue<string> (context);
-                        break;
+                                // Widget's new id was null or empty, creating a new random unique ID for widget
+                                newID = Container.CreateUniqueId ();
+                            }
+                            idxWidget.ID = newID;
+                            if (oldID != newID) {
+                                Manager.WidgetAjaxEventStorage.ChangeKey1 (context, oldID, newID);
+                                Manager.WidgetLambdaEventStorage.ChangeKey2 (oldID, newID);
+                            }
+                            break;
+                        case "parent":
+                        case "position":
+                        case "before":
+                        case "after":
+                            throw new LambdaException ("You cannot change [parent], [position], [before] or [after], since these are read only after creation of widget", e.Args, context);
+                        default:
+                            idxWidget [valueNode.Name.StartsWith ("\\") ? valueNode.Name.Substring(1) : valueNode.Name] = valueNode.GetExValue<string> (context);
+                            break;
                     }
                 }
             }
         }
 
         /// <summary>
-        ///     Removes the properties and/or attributes of web widgets
+        ///     Deletes/removes the properties and/or attributes of one or more Ajax widgets.
+        ///     Notice, since an attibute can be existing, with a null value, only relying upon "set", simply won't cut it for us.
+        ///     Hence, we need an explicit delete attribute Active Event.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.property.delete")]
         public void p5_web_widgets_property_delete (ApplicationContext context, ActiveEventArgs e)
         {
+            // Checking if caller even supplied any argument.
             if (e.Args.Value == null || e.Args.Children.Count == 0)
-                return; // Nothing to do here ...
+                return;
 
-            // Looping through all widgets supplied by caller
+            // Looping through all widgets supplied by caller.
             foreach (var widget in FindWidgets<Widget> (context, e.Args)) {
 
-                // Looping through each property to remove
+                // Looping through each property to delete.
                 foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "")) {
 
-                    // Verifying property can be removed
+                    // Verifying property can legally be removed.
                     switch (nameNode.Name) {
-                    case "visible":
-                    case "invisible-element":
-                    case "element":
-                    case "render-type":
-                        throw new LambdaException ("Cannot remove property '" + nameNode.Name + "' of widget", e.Args, context);
-                    default:
-                        widget.RemoveAttribute (nameNode.Name.StartsWith ("\\") ? nameNode.Name.Substring(1) : nameNode.Name);
-                        break;
+                        case "parent":
+                        case "position":
+                        case "before":
+                        case "after":
+                        case "visible":
+                        case "element":
+                        case "render-type":
+                            throw new LambdaException ("Cannot remove property '" + nameNode.Name + "' of widget", e.Args, context);
+                        default:
+                            widget.RemoveAttribute (nameNode.Name.StartsWith ("\\") ? nameNode.Name.Substring(1) : nameNode.Name);
+                            break;
                     }
                 }
             }
         }
 
         /// <summary>
-        ///     Lists all existing properties for given web widget
+        ///     Lists all properties for given Ajax widget(s).
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.property.list")]
         public void p5_web_widgets_property_list (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                // Looping through all widgets
+                // Looping through all widgets.
                 foreach (var widget in FindWidgets<Widget> (context, e.Args)) {
 
-                    // Creating our "return node" for currently handled widget
+                    // Creating our "return node" for currently handled widget.
                     Node curNode = e.Args.Add (widget.ID).LastChild;
 
-                    // First listing "static properties"
+                    // First listing special properties.
                     if (!widget.Visible)
                         curNode.Add ("visible", false);
                     curNode.Add ("element", widget.Element);
 
-                    // Then the generic attributes
+                    // Then the generic attributes.
                     foreach (var idxAtr in widget.AttributeKeys) {
 
-                        // Dropping the Tag property and all events, except events that are "JavaScript declarations"
+                        // Dropping the Element property and all events, except events that are JavaScript client side attributes.
                         if (idxAtr == "Element" || 
                             idxAtr == "id" ||
                             ((idxAtr.StartsWith ("on") || idxAtr.StartsWith ("_on") || idxAtr.StartsWith(".on")) && widget [idxAtr] == "common_event_handler"))
@@ -228,27 +243,30 @@ namespace p5.web.widgets
         }
 
         /// <summary>
-        ///     Recursively retrieves properties from widgets specified by caller.
+        ///     Recursively retrieves properties from widgets, and their descendant widgets, specified by caller.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.property.recursively-get")]
-        public void p5_web_widgets_property_recursively_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.web.widgets.properties.get")]
+        public void p5_web_widgets_properties_get (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // Looping through all widget IDs given by caller
+                // Retrieving list of properties to retrieve, before we start modifying arguments.
+                var list = e.Args.Children.Where (ix => ix.Name != "").ToList ();
+
+                // Looping through all widget IDs given by caller.
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
                     // Serialize currently iterated widgets, and all descendants of given widget, yielding all properties requested by caller.
-                    SerializeWidgetPropertiesRecursively (context, e.Args, idxWidget);
+                    SerializeWidgetPropertiesRecursively (context, e.Args, list, idxWidget);
                 }
             }
         }
 
         /*
-         * Ensures [oninit] is evaluated for widget, and all children widgets.
+         * Ensures [oninit] is evaluated for widget, and all of widgets' descendant widgets.
          */
         private void EnsureOnInit (ApplicationContext context, Widget widget)
         {
@@ -261,7 +279,6 @@ namespace p5.web.widgets
 
                     // [oninit] should be evaluated now!
                     var clone = onInitNode.Clone ();
-                    clone.Insert (0, new Node ("_event", widget.ID));
                     context.Raise ("eval", clone);
                 }
 
@@ -273,22 +290,59 @@ namespace p5.web.widgets
         }
 
         /*
-         * Recursively retrieves all values from form element widget descendants from given widget
+         * Recursively retrieves all specified values from widget, and widget's descendants.
          */
-        private static void SerializeWidgetPropertiesRecursively (ApplicationContext context, Node args, Widget widget)
+        private static void SerializeWidgetPropertiesRecursively (
+            ApplicationContext context, 
+            Node args, 
+            List<Node> list,
+            Widget widget)
         {
-            // Checking if we even have a widget
+            // Checking if we even have a widget.
             if (widget == null)
                 return;
 
-            // Then looping through all additional properties requested by caller, making sure we don't invalidate our IEnumerable.
-            foreach (var idxNode in args.Children.Where (ix => ix.Name != "").ToList ()) {
-                CreatePropertyReturn (args, idxNode.Name, widget);
+            // Then looping through all properties requested by caller.
+            foreach (var idxNode in list) {
+                switch (idxNode.Name) {
+                    case "visible":
+                        CreatePropertyReturn (args, idxNode.Name, widget, widget.Visible);
+                        break;
+                    case "element":
+                        CreatePropertyReturn (args, idxNode.Name, widget, widget.Element);
+                        break;
+                    case "parent":
+                        CreatePropertyReturn (args, idxNode.Name, widget, widget.Parent.ID);
+                        break;
+                    case "position":
+                        CreatePropertyReturn (args, idxNode.Name, widget, widget.Parent.Controls.IndexOf (widget));
+                        break;
+                    case "before":
+                        var indexBefore = widget.Parent.Controls.IndexOf (widget) + 1;
+                        CreatePropertyReturn (args,
+                                              idxNode.Name,
+                                              widget,
+                                              indexBefore >= widget.Parent.Controls.Count ? null : widget.Parent.Controls [indexBefore].ID);
+                        break;
+                    case "after":
+                        var indexAfter = widget.Parent.Controls.IndexOf (widget) - 1;
+                        CreatePropertyReturn (args,
+                                              idxNode.Name,
+                                              widget,
+                                              indexAfter < 0 ? null : widget.Parent.Controls [indexAfter].ID);
+                        break;
+                    case "render-type":
+                        CreatePropertyReturn (args, idxNode.Name, widget, widget.RenderType.ToString ());
+                        break;
+                    default:
+                        CreatePropertyReturn (args, idxNode.Name, widget);
+                        break;
+                }
             }
 
-            // Looping through all children widgets, recursively
+            // Looping through all children widgets, recursively, invoking "self" for each child control.
             foreach (Control idxCtrl in widget.Controls) {
-                SerializeWidgetPropertiesRecursively (context, args, idxCtrl as Widget);
+                SerializeWidgetPropertiesRecursively (context, args, list, idxCtrl as Widget);
             }
         }
 

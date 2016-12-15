@@ -316,7 +316,7 @@ allows you to entirely take control over its *[_widgets]* collection. This modal
 
 ### Ninja tricks
 
-Hint, you can use *[p5.web.widgets.property.recursively-get]* to serialize all values from your *[_widgets]* collection in one go, if you use 
+Hint, you can use *[p5.web.widgets.properties.get]* to serialize all values from your *[_widgets]* collection in one go, if you use 
 the *[sys42.windows.modal]* modal Ajax window. Consider the following.
 
 ```
@@ -336,11 +336,11 @@ sys42.windows.modal
       placeholder:Age ...
       class:form-control prepend-bottom
   .onok
-    p5.web.widgets.property.recursively-get:sys42-windows-modal
+    p5.web.widgets.properties.get:sys42-windows-modal
       value
     sys42.windows.info-tip:Hi '{0}', so you're {1} years old ...?
-      :x:/@p5.web.widgets.property.recursively-get/*/your-name/*?value
-      :x:/@p5.web.widgets.property.recursively-get/*/your-age/*?value
+      :x:/@p5.web.widgets.properties.get/*/your-name/*?value
+      :x:/@p5.web.widgets.properties.get/*/your-age/*?value
 sys42.windows.modal.initial-focus:your-name
 ```
 
