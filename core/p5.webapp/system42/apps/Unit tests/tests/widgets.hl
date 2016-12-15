@@ -4,7 +4,7 @@
  */
 
 
-Create and delete widget
+Create and delete widget, verify exists
   p5.web.widgets.create-container:sys42.tests.widget-1
   p5.web.widgets.exists:sys42.tests.widget-1
   p5.web.widgets.delete:sys42.tests.widget-1
@@ -102,6 +102,120 @@ Widget find for single constant property
     throw:Assert error, widgets misbehaved
 
 
+Widget find for position 0
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    widgets
+      literal:test-1
+        element:small
+      literal:test-2
+        element:small
+  p5.web.widgets.find:sys42.tests.widget-6
+    position:0
+    element:small
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  sys42.tests.widget-6
+    literal:test-1"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find for position 1
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    widgets
+      literal:test-1
+        element:small
+      literal:test-2
+        element:small
+  p5.web.widgets.find:sys42.tests.widget-6
+    position:1
+    element:small
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  sys42.tests.widget-6
+    literal:test-2"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find for position not existing
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    widgets
+      literal:test-1
+        element:small
+      literal:test-2
+        element:small
+  p5.web.widgets.find:sys42.tests.widget-6
+    position:3
+    element:small
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find for before
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    widgets
+      literal:test-1
+      literal:test-2
+  p5.web.widgets.find:sys42.tests.widget-6
+    before:test-2
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  sys42.tests.widget-6
+    literal:test-1"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find for after
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    widgets
+      literal:test-1
+      literal:test-2
+  p5.web.widgets.find:sys42.tests.widget-6
+    after:test-1
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  sys42.tests.widget-6
+    literal:test-2"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find for parent
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    widgets
+      literal:test-1
+      literal:test-2
+  p5.web.widgets.find:sys42.tests.widget-6
+    parent:sys42.tests.widget-6
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  sys42.tests.widget-6
+    literal:test-1
+    literal:test-2"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find for render-type
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    widgets
+      literal:test-1
+      literal:test-2
+        render-type:immediate
+  p5.web.widgets.find:sys42.tests.widget-6
+    render-type:immediate
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  sys42.tests.widget-6
+    literal:test-2"
+    throw:Assert error, widgets misbehaved
+
+
 Widget find for multiple constant properties
   p5.web.widgets.create-container:sys42.tests.widget-7
     class:foo
@@ -117,6 +231,26 @@ Widget find for multiple constant properties
     throw:Assert error, widgets misbehaved
 
 
+Widget find multiple widgets for multiple constant properties
+  p5.web.widgets.create-container:sys42.tests.widget-7
+    class:foo
+    bar:xyz
+  p5.web.widgets.create-container:sys42.tests.widget-8
+    class:foo
+    bar:xyz
+  p5.web.widgets.find
+    class:foo
+    bar:xyz
+  p5.web.widgets.delete:sys42.tests.widget-7
+  p5.web.widgets.delete:sys42.tests.widget-8
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find
+  cnt
+    container:sys42.tests.widget-7
+    container:sys42.tests.widget-8"
+    throw:Assert error, widgets misbehaved
+
+
 Widget find for single expression property
   p5.web.widgets.create-container:sys42.tests.widget-8
     class:foo
@@ -128,6 +262,43 @@ Widget find for single expression property
     !=:node:@"p5.web.widgets.find
   cnt
     container:sys42.tests.widget-8"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find-like for single constant property
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    class:foo-bar
+  p5.web.widgets.find-like
+    class:foo
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find-like
+    !=:node:@"p5.web.widgets.find-like
+  cnt
+    container:sys42.tests.widget-6"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find-like respecting start widget
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    parent:cnt
+    class:foo-bar
+  p5.web.widgets.find-like:content
+    class:foo
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find-like
+    !=:node:@"p5.web.widgets.find-like"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find respecting start widget
+  p5.web.widgets.create-container:sys42.tests.widget-6
+    parent:cnt
+    class:foo-bar
+  p5.web.widgets.find:content
+    class:foo
+  p5.web.widgets.delete:sys42.tests.widget-6
+  if:x:/@p5.web.widgets.find
+    !=:node:@"p5.web.widgets.find"
     throw:Assert error, widgets misbehaved
 
 
@@ -960,4 +1131,251 @@ Recursive widget properties yields correct information
     class:foo-2
   test-4
     class:bar-2"
+    throw:Assert error, widgets misbehaved
+
+
+Get parent widget yields correctly for single constant widget
+  p5.web.widgets.create-container:sys42.tests.widget-64
+    widgets
+      literal:sys42.tests.widget-65
+  p5.web.widgets.get-parent:sys42.tests.widget-65
+  p5.web.widgets.delete:sys42.tests.widget-64
+  if:x:/../*/p5.web.widgets.get-parent
+    !=:node:@"p5.web.widgets.get-parent
+  sys42.tests.widget-65
+    container:sys42.tests.widget-64"
+    throw:Assert error, widgets misbehaved
+
+
+Get parent widget yields correctly for multiple constant widgets
+  p5.web.widgets.create-container:sys42.tests.widget-64
+    widgets
+      literal:sys42.tests.widget-65
+  p5.web.widgets.create-container:sys42.tests.widget-66
+    widgets
+      literal:sys42.tests.widget-67
+  p5.web.widgets.get-parent
+    sys42.tests.widget-65
+    sys42.tests.widget-67
+  p5.web.widgets.delete:sys42.tests.widget-64
+  p5.web.widgets.delete:sys42.tests.widget-66
+  if:x:/../*/p5.web.widgets.get-parent
+    !=:node:@"p5.web.widgets.get-parent
+  sys42.tests.widget-65
+    container:sys42.tests.widget-64
+  sys42.tests.widget-67
+    container:sys42.tests.widget-66"
+    throw:Assert error, widgets misbehaved
+
+
+Get parent widget yields correctly for expressions leading to multiple widget IDs
+  p5.web.widgets.create-container:sys42.tests.widget-64
+    widgets
+      literal:sys42.tests.widget-65
+  p5.web.widgets.create-container:sys42.tests.widget-66
+    widgets
+      literal:sys42.tests.widget-67
+  _widgets
+    sys42.tests.widget-65
+    sys42.tests.widget-67
+  p5.web.widgets.get-parent:x:/@_widgets/*?name
+  p5.web.widgets.delete:sys42.tests.widget-64
+  p5.web.widgets.delete:sys42.tests.widget-66
+  if:x:/../*/p5.web.widgets.get-parent
+    !=:node:@"p5.web.widgets.get-parent
+  sys42.tests.widget-65
+    container:sys42.tests.widget-64
+  sys42.tests.widget-67
+    container:sys42.tests.widget-66"
+    throw:Assert error, widgets misbehaved
+
+
+Get children widget yields correctly for expressions leading to multiple widget IDs
+  p5.web.widgets.create-container:sys42.tests.widget-64
+    widgets
+      literal:sys42.tests.widget-65
+  p5.web.widgets.create-container:sys42.tests.widget-66
+    widgets
+      literal:sys42.tests.widget-67
+  _widgets
+    sys42.tests.widget-64
+    sys42.tests.widget-66
+  p5.web.widgets.get-children:x:/@_widgets/*?name
+  p5.web.widgets.delete:sys42.tests.widget-64
+  p5.web.widgets.delete:sys42.tests.widget-66
+  if:x:/../*/p5.web.widgets.get-children
+    !=:node:@"p5.web.widgets.get-children
+  sys42.tests.widget-64
+    literal:sys42.tests.widget-65
+  sys42.tests.widget-66
+    literal:sys42.tests.widget-67"
+    throw:Assert error, widgets misbehaved
+
+
+Get children widget yields correctly for multiple constant IDs
+  p5.web.widgets.create-container:sys42.tests.widget-64
+    widgets
+      literal:sys42.tests.widget-65
+  p5.web.widgets.create-container:sys42.tests.widget-66
+    widgets
+      literal:sys42.tests.widget-67
+  p5.web.widgets.get-children
+    sys42.tests.widget-64
+    sys42.tests.widget-66
+  p5.web.widgets.delete:sys42.tests.widget-64
+  p5.web.widgets.delete:sys42.tests.widget-66
+  if:x:/../*/p5.web.widgets.get-children
+    !=:node:@"p5.web.widgets.get-children
+  sys42.tests.widget-64
+    literal:sys42.tests.widget-65
+  sys42.tests.widget-66
+    literal:sys42.tests.widget-67"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find ancestor for single constant property
+  p5.web.widgets.create-container:sys42.tests.widget-68
+    class:foo
+    widgets
+      literal:sys42.tests.widget-69
+  p5.web.widgets.find-ancestor:sys42.tests.widget-69
+    class:foo
+  p5.web.widgets.delete:sys42.tests.widget-68
+  if:x:/@p5.web.widgets.find-ancestor
+    !=:node:@"p5.web.widgets.find-ancestor
+  sys42.tests.widget-69
+    container:sys42.tests.widget-68"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find ancestor for single constant property does not stop on first match
+  p5.web.widgets.create-container:sys42.tests.widget-68
+    class:foo
+    widgets
+      container:sys42.tests.widget-69
+        class:foo
+        widgets
+          literal:sys42.tests.widget-70
+  p5.web.widgets.find-ancestor:sys42.tests.widget-70
+    class:foo
+  p5.web.widgets.delete:sys42.tests.widget-68
+  if:x:/@p5.web.widgets.find-ancestor
+    !=:node:@"p5.web.widgets.find-ancestor
+  sys42.tests.widget-70
+    container:sys42.tests.widget-69
+    container:sys42.tests.widget-68"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find first ancestor for single constant property does stop on first match
+  p5.web.widgets.create-container:sys42.tests.widget-68
+    class:foo
+    widgets
+      container:sys42.tests.widget-69
+        class:foo
+        widgets
+          literal:sys42.tests.widget-70
+  p5.web.widgets.find-first-ancestor:sys42.tests.widget-70
+    class:foo
+  p5.web.widgets.delete:sys42.tests.widget-68
+  if:x:/@p5.web.widgets.find-first-ancestor
+    !=:node:@"p5.web.widgets.find-first-ancestor
+  sys42.tests.widget-70
+    container:sys42.tests.widget-69"
+    throw:Assert error, widgets misbehaved
+
+
+Widget find ancestor like for single constant property
+  p5.web.widgets.create-container:sys42.tests.widget-68
+    class:foo-bar
+    widgets
+      container:sys42.tests.widget-69
+        class:fo0
+        widgets
+          literal:sys42.tests.widget-70
+  p5.web.widgets.find-ancestor-like:sys42.tests.widget-70
+    class:foo
+  p5.web.widgets.delete:sys42.tests.widget-68
+  if:x:/@p5.web.widgets.find-ancestor-like
+    !=:node:@"p5.web.widgets.find-ancestor-like
+  sys42.tests.widget-70
+    container:sys42.tests.widget-68"
+    throw:Assert error, widgets misbehaved
+
+
+List widgets like with constant static filter
+  p5.web.widgets.create-container:sys42.tests.foo-1
+    widgets
+      container:sys42.tests.foo-2
+        widgets
+          literal:sys42.tests.foo-3
+  p5.web.widgets.list-like:.foo-
+  p5.web.widgets.delete:sys42.tests.foo-1
+  if:x:/@p5.web.widgets.list-like
+    !=:node:@"p5.web.widgets.list-like
+  container:sys42.tests.foo-1
+  container:sys42.tests.foo-2
+  literal:sys42.tests.foo-3"
+    throw:Assert error, widgets misbehaved
+
+
+List widgets with constant multiple children filters
+  p5.web.widgets.create-container:sys42.tests.foo-1
+    widgets
+      container:sys42.tests.foo-2
+        widgets
+          literal:sys42.tests.foo-3
+  p5.web.widgets.list
+    sys42.tests.foo-1
+    sys42.tests.foo-2
+    sys42.tests.foo-3
+  p5.web.widgets.delete:sys42.tests.foo-1
+  if:x:/@p5.web.widgets.list
+    !=:node:@"p5.web.widgets.list
+  container:sys42.tests.foo-1
+  container:sys42.tests.foo-2
+  literal:sys42.tests.foo-3"
+    throw:Assert error, widgets misbehaved
+
+
+Widgets exists with constant multiple children IDs
+  p5.web.widgets.create-container:sys42.tests.foo-1
+    widgets
+      container:sys42.tests.foo-2
+        widgets
+          literal:sys42.tests.foo-3
+  p5.web.widgets.exists
+    sys42.tests.foo-2
+    sys42.tests.foo-4
+    sys42.tests.foo-1
+    sys42.tests.foo-3
+  p5.web.widgets.delete:sys42.tests.foo-1
+  if:x:/@p5.web.widgets.exists
+    !=:node:@"p5.web.widgets.exists
+  sys42.tests.foo-2:bool:true
+  sys42.tests.foo-4:bool:false
+  sys42.tests.foo-1:bool:true
+  sys42.tests.foo-3:bool:true"
+    throw:Assert error, widgets misbehaved
+
+
+Widgets exists with expression leading to multiple IDs
+  p5.web.widgets.create-container:sys42.tests.foo-1
+    widgets
+      container:sys42.tests.foo-2
+        widgets
+          literal:sys42.tests.foo-3
+  _widgets
+    sys42.tests.foo-2
+    sys42.tests.foo-4
+    sys42.tests.foo-1
+    sys42.tests.foo-3
+  p5.web.widgets.exists:x:/@_widgets/*?name
+  p5.web.widgets.delete:sys42.tests.foo-1
+  if:x:/@p5.web.widgets.exists
+    !=:node:@"p5.web.widgets.exists
+  sys42.tests.foo-2:bool:true
+  sys42.tests.foo-4:bool:false
+  sys42.tests.foo-1:bool:true
+  sys42.tests.foo-3:bool:true"
     throw:Assert error, widgets misbehaved
