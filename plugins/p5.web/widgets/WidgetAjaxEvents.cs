@@ -110,11 +110,8 @@ namespace p5.web.widgets
                         // Setting widget's Ajax event to whatever we were given, making sure we clone the lambda supplied.
                         var clone = idxEventNameNode.Clone();
 
-                        // In case this event is copied from another event, we remove any [_event] node within it.
-                        clone ["_event"]?.UnTie ();
-
                         // Making sure updated Ajax event is parametrized with [_event] node.
-                        clone.Insert (0, new Node ("_event", idxWidget.ID));
+                        clone.FindOrInsert ("_event", 0).Value = idxWidget.ID;
                         Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = clone;
 
                         // Notice, since [oninit] is a special server-side event, we do not map it up as an Ajax event.

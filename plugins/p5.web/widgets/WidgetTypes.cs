@@ -24,9 +24,9 @@
 using System;
 using System.Linq;
 using System.Web.UI;
-using p5.ajax.widgets;
 using p5.exp;
 using p5.core;
+using p5.ajax.widgets;
 using p5.exp.exceptions;
 using Void = p5.ajax.widgets.Void;
 
@@ -97,32 +97,33 @@ namespace p5.web.widgets
         }
 
         /*
-         * Creates a widget from the given node.
+         * Creates a widget from the given node, and inserts it into the specified [_parent] widget in args.
          */
         private void CreateWidget<T> (
             ApplicationContext context, 
             Node args, 
             string elementType) where T : Widget, new ()
         {
-            // Creating widget as persistent control.
+            // Figuring out which container widget is the created widget's parent, and which position we should inject the widget at.
             var parent = args.GetChildValue<Container> ("_parent", context);
             var position = args.GetExChildValue ("position", context, -1);
 
-            // Creating control as persistent control, and setting HTML element type, making sure a widget with the same ID does not exist from before.
+            // retrieving ID if any, and making sure another widget doesn't exists from before on page with the same ID.
             var id = args.GetExValue<string> (context, null);
             if (!string.IsNullOrEmpty (id) && FindControl<Control> (id, Manager.AjaxPage) != null)
                 throw new LambdaException ("A widget with the same ID already exists on page.", args, context);
 
+            // Creating widget as persistent control, making sure we atomically create widget, in case an exception occurs inwards in hierarchy.
             var widget = parent.CreatePersistentControl<T> (id, position);
             try {
-                widget.Element = elementType;
 
-                // Decorating widget properties/events, and creating child widgets.
+                // Setting element type, and decorating properties/children-widgets/attributes/events/etc ...
+                widget.Element = elementType;
                 DecorateWidget (context, widget, args);
 
             } catch {
 
-                // Removing widget from parent, to make operation "atomic".
+                // Removing widget from parent, to make operation "atomic", before we rethrow exception.
                 parent.Controls.Remove (widget);
                 throw;
             }
@@ -286,6 +287,8 @@ namespace p5.web.widgets
 
                 // Making sure there actually is a lambda for currently iterated event.
                 if (idxEvt.Children.Count (ix => ix.Name != "") > 0) {
+
+                    // Cloning lambda and inserting [_event] node, before storing its lambda in lambda event storage for page.
                     var clone = idxEvt.Clone ();
                     clone.Insert (0, new Node ("_event", widget.ID));
                     Manager.WidgetLambdaEventStorage [idxEvt.Name, widget.ID] = clone;
