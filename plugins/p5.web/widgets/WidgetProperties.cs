@@ -289,8 +289,9 @@ namespace p5.web.widgets
                 var onInitNode = Manager.WidgetAjaxEventStorage[widget.ID, "oninit"];
                 if (onInitNode != null) {
 
-                    // [oninit] should be evaluated now!
+                    // [oninit] should be evaluated now.
                     var clone = onInitNode.Clone ();
+                    clone.FindOrInsert ("_event", 0).Value = widget.ID;
                     context.Raise ("eval", clone);
                 }
 

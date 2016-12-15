@@ -126,12 +126,15 @@ namespace p5.web.widgets
             var position = args.GetExChildValue ("position", context, -1);
 
             // retrieving ID if any, and making sure another widget doesn't exists from before on page with the same ID.
-            var id = args.GetExValue<string> (context, null);
+            var id = args.GetExValue<string> (context, null) ?? Container.CreateUniqueId ();
             if (!string.IsNullOrEmpty (id) && FindControl<Control> (id, Manager.AjaxPage) != null)
                 throw new LambdaException ("A widget with the same ID already exists on page.", args, context);
 
             // Creating widget as persistent control, making sure we atomically create widget, in case an exception occurs inwards in hierarchy.
             var widget = parent.CreatePersistentControl<T> (id, position);
+
+            // Making sure we return ID after creation to caller.
+            args.Value = id;
             try {
 
                 // Setting element type, and decorating properties/children-widgets/attributes/events/etc ...
