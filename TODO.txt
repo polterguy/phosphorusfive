@@ -60,4 +60,5 @@ TODO before release
 
 * Rethink widget lambda events logic, since it is impossible to have multiple handlers for the same Active Event return values.
 
+* Investigate why we're escaping property name in p5.web/WidgetProperties.CreatePropertyReturn method.
 

@@ -33,7 +33,7 @@ using p5.exp.exceptions;
 namespace p5.web.widgets
 {
     /// <summary>
-    ///     Class encapsulating retrieving and setting properties of widgets.
+    ///     Class encapsulating retrieving, setting, deleting and listing properties of widgets.
     /// </summary>
     public class WidgetProperties : BaseWidget
     {
@@ -64,43 +64,10 @@ namespace p5.web.widgets
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
                     // Looping through all properties requested by caller.
-                    foreach (var idxPropertyName in propertyList) {
+                    foreach (var idxProp in propertyList) {
 
-                        // Checking if this is a generic attribute, or a special property.
-                        switch (idxPropertyName.Name) {
-                            case "visible":
-                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.Visible);
-                                break;
-                            case "element":
-                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.Element);
-                                break;
-                            case "parent":
-                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.Parent.ID);
-                                break;
-                            case "position":
-                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.Parent.Controls.IndexOf (idxWidget));
-                                break;
-                            case "before":
-                                var indexBefore = idxWidget.Parent.Controls.IndexOf (idxWidget) + 1;
-                                CreatePropertyReturn (e.Args, 
-                                                      idxPropertyName.Name, 
-                                                      idxWidget, 
-                                                      indexBefore >= idxWidget.Parent.Controls.Count ? null : idxWidget.Parent.Controls [indexBefore].ID);
-                                break;
-                            case "after":
-                                var indexAfter = idxWidget.Parent.Controls.IndexOf (idxWidget) - 1;
-                                CreatePropertyReturn (e.Args, 
-                                                      idxPropertyName.Name, 
-                                                      idxWidget, 
-                                                      indexAfter < 0 ? null : idxWidget.Parent.Controls [indexAfter].ID);
-                                break;
-                            case "render-type":
-                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget, idxWidget.RenderType.ToString ());
-                                break;
-                            default:
-                                CreatePropertyReturn (e.Args, idxPropertyName.Name, idxWidget);
-                                break;
-                        }
+                        // Invoking method which retrieves the currently iterated property/attribute value of currently iterated widget.
+                        RetrieveWidgetProperty (e.Args, idxProp.Name, idxWidget);
                     }
                 }
             }
@@ -197,6 +164,7 @@ namespace p5.web.widgets
                         case "visible":
                         case "element":
                         case "render-type":
+                        case "id":
                             throw new LambdaException ("Cannot remove property '" + nameNode.Name + "' of widget", e.Args, context);
                         default:
                             widget.RemoveAttribute (nameNode.Name.StartsWith ("\\") ? nameNode.Name.Substring(1) : nameNode.Name);
@@ -266,6 +234,50 @@ namespace p5.web.widgets
         }
 
         /*
+         * Returns as a child of args the specified property's value for specified widget.
+         */
+        private void RetrieveWidgetProperty (Node args, string propertyName, Widget widget)
+        {
+            // Checking if this is a generic attribute, or a special property.
+            switch (propertyName) {
+                case "visible":
+                    CreateAttributeReturn (args, propertyName, widget, widget.Visible);
+                    break;
+                case "element":
+                    CreateAttributeReturn (args, propertyName, widget, widget.Element);
+                    break;
+                case "parent":
+                    CreateAttributeReturn (args, propertyName, widget, widget.Parent.ID);
+                    break;
+                case "position":
+                    CreateAttributeReturn (args, propertyName, widget, widget.Parent.Controls.IndexOf (widget));
+                    break;
+                case "before":
+                    var indexBefore = widget.Parent.Controls.IndexOf (widget) + 1;
+                    CreateAttributeReturn (args,
+                                          propertyName,
+                                          widget,
+                                          indexBefore >= widget.Parent.Controls.Count ? null : widget.Parent.Controls [indexBefore].ID);
+                    break;
+                case "after":
+                    var indexAfter = widget.Parent.Controls.IndexOf (widget) - 1;
+                    CreateAttributeReturn (args,
+                                          propertyName,
+                                          widget,
+                                          indexAfter < 0 ? null : widget.Parent.Controls [indexAfter].ID);
+                    break;
+                case "render-type":
+                    CreateAttributeReturn (args, propertyName, widget, widget.RenderType.ToString ());
+                    break;
+                default:
+
+                    // This is a generic attribute.
+                    CreateAttributeReturn (args, propertyName, widget);
+                    break;
+            }
+        }
+
+        /*
          * Ensures [oninit] is evaluated for widget, and all of widgets' descendant widgets.
          */
         private void EnsureOnInit (ApplicationContext context, Widget widget)
@@ -292,7 +304,7 @@ namespace p5.web.widgets
         /*
          * Recursively retrieves all specified values from widget, and widget's descendants.
          */
-        private static void SerializeWidgetPropertiesRecursively (
+        private void SerializeWidgetPropertiesRecursively (
             ApplicationContext context, 
             Node args, 
             List<Node> list,
@@ -303,41 +315,10 @@ namespace p5.web.widgets
                 return;
 
             // Then looping through all properties requested by caller.
-            foreach (var idxNode in list) {
-                switch (idxNode.Name) {
-                    case "visible":
-                        CreatePropertyReturn (args, idxNode.Name, widget, widget.Visible);
-                        break;
-                    case "element":
-                        CreatePropertyReturn (args, idxNode.Name, widget, widget.Element);
-                        break;
-                    case "parent":
-                        CreatePropertyReturn (args, idxNode.Name, widget, widget.Parent.ID);
-                        break;
-                    case "position":
-                        CreatePropertyReturn (args, idxNode.Name, widget, widget.Parent.Controls.IndexOf (widget));
-                        break;
-                    case "before":
-                        var indexBefore = widget.Parent.Controls.IndexOf (widget) + 1;
-                        CreatePropertyReturn (args,
-                                              idxNode.Name,
-                                              widget,
-                                              indexBefore >= widget.Parent.Controls.Count ? null : widget.Parent.Controls [indexBefore].ID);
-                        break;
-                    case "after":
-                        var indexAfter = widget.Parent.Controls.IndexOf (widget) - 1;
-                        CreatePropertyReturn (args,
-                                              idxNode.Name,
-                                              widget,
-                                              indexAfter < 0 ? null : widget.Parent.Controls [indexAfter].ID);
-                        break;
-                    case "render-type":
-                        CreatePropertyReturn (args, idxNode.Name, widget, widget.RenderType.ToString ());
-                        break;
-                    default:
-                        CreatePropertyReturn (args, idxNode.Name, widget);
-                        break;
-                }
+            foreach (var idxProp in list) {
+
+                // Invoking method which retrieves the currently iterated property/attribute value of currently iterated widget.
+                RetrieveWidgetProperty (args, idxProp.Name, widget);
             }
 
             // Looping through all children widgets, recursively, invoking "self" for each child control.
@@ -347,20 +328,24 @@ namespace p5.web.widgets
         }
 
         /*
-         * Helper for [p5.web.widgets.property.get], creates a return value for one property
+         * Helper for RetrieveWidgetProperty, creates a return value for one normal attribute.
          */
-        private static void CreatePropertyReturn (Node node, string name, Widget widget, object value = null)
+        private static void CreateAttributeReturn (Node node, string name, Widget widget, object value = null)
         {
+            // Fetching property name.
             var propertyName = name.StartsWith ("\\") ? name.Substring (1) : name;
+
             // Checking if widget has the attribute, if it doesn't, we don't even add any return nodes at all, to make it possible
             // to separate widgets which has the property, but no value, (such as the selected property on checkboxes for instance),
-            // and widgets that does not have the property at all
+            // and widgets that does not have the property at all.
             if (value == null && !widget.HasAttribute (propertyName))
                 return;
 
+            // Making sure we skip server-side Ajax events.
             if ((propertyName.StartsWith ("on") || propertyName.StartsWith ("_on") || propertyName.StartsWith(".on")) && widget [propertyName] == "common_event_handler")
-                return; // Skipping these guys
+                return;
 
+            // Returning specified value, unless no value is given, at which case we return the attribute value from widget.
             node.FindOrInsert (widget.ID).Add (name).LastChild.Value = value == null ? 
                 widget [propertyName] : 
                 value;

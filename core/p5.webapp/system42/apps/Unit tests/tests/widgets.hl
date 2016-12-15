@@ -932,3 +932,32 @@ Widget property before and after yields correct values when there is nothing ret
   sys42.tests.widget-62
     position:int:1"
     throw:Assert error, widgets misbehaved
+
+
+Recursive widget properties yields correct information
+  p5.web.widgets.create-container:sys42.tests.widget-63
+    class:foo
+    widgets
+      literal:test-1
+      literal:test-2
+        class:bar
+      container:test-2-2
+        class:foo-2
+        widgets
+          literal:test3
+          literal:test-4
+            class:bar-2
+  p5.web.widgets.properties.get:sys42.tests.widget-63
+    class
+  p5.web.widgets.delete:sys42.tests.widget-63
+  if:x:/@p5.web.widgets.properties.get
+    !=:node:@"p5.web.widgets.properties.get
+  sys42.tests.widget-63
+    class:foo
+  test-2
+    class:bar
+  test-2-2
+    class:foo-2
+  test-4
+    class:bar-2"
+    throw:Assert error, widgets misbehaved
