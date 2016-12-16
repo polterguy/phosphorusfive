@@ -70,8 +70,10 @@ its *[innerValue]* property to; _"Hello World!"_.
 The paradox is, that due to neither using OOP nor inheritance, in any ways, Hyperlambda facilitates for perfect encapsulation, and polymorphism,
 without even as much as a trace of inheritance, OOP or objects.
 
-You can easily create your own Active Events, incrementally, building on top of your previously created Active Events, that creates much richer
+You can easily create your own Active Events, incrementally building on top of your previously created Active Events, that creates much richer
 Ajax widgets than what's shown above. Below is a piece of Hyperlambda that creates an Ajax TreeView, which allows you to browse your folders on disc.
+This [extension widget](/code/p5.webapp/system42/components/common-widgets/tree/) is entirely created in Hyperlambda, but you can also created Active 
+Events in C#.
 
 ```
 p5.web.widgets.create-container
