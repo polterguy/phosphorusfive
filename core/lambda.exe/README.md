@@ -27,5 +27,5 @@ lambda.exe also have an immediate mode, which allows you to type in Hyperlambda 
 and have it evaluated when you are finished. See the help instructions for the program, for details about how to do this.
 
 The _"lambda.exe"_ is actually pathetically simple in its implementation, and illustrates how you could utilize Active Events, and
-Active Event plugins, in your own projects, starting entirely from scratch. See the _"Program.cs"_ file if you're interested in 
+Active Event plugins, in your own projects, starting entirely from scratch. See the [Program.cs file](Program.cs) if you're interested in 
 how this is done.
