@@ -13,19 +13,34 @@ When playing with P5, you should set _"p5.webapp"_ as your startup project.
 
 Normally, when you play with Phosphorus Five, you don't need to think about the parts that are inside of this folder.
 
+## p5.webapp, the only website project you need
+
 The _"p5.webapp"_, is actually just an almost entirely empty website. By default, it comes with [System42](/core/p5.webapp/system42/) 
 pre-installed, which is a GUI front-end/back-end for your system, containing among other things, a fully fledged CMS, or publishing 
-system. Everything you see when you start P5, can be found in System42, which taps into the Active Events in the [plugins folder](/plugins/).
+system. Everything you see when you start P5, can be found in System42.
 
-In fact, when you create web apps and/or websites, then the only projects you'd normally need to include a reference to, are these;
+If you wish, you can entirely delete System42, to start out with a completely _"blank piece of paper"_, and create your own back-end/front-end
+entirely as you see fit yourself.
 
-* p5.ajax, if you wish to have Ajax functionality in your project
-* p5.core, if you wish to consume Active Events in your project
-* p5.exp, if you wish to use expressions in your project
+## p5.core, the Active Event design patternt implementation
 
-In addition, you could also choose to use the p5.webapp, either as a starting ground for your own ASP.NET website project, or hosting
-your entire application, adding up all your own functionality as plugins. However, all projects are actually optional, and you can use
-any single part of Phosphorus Five, without including any other parts.
+_"p5.core"_ contains the Active Event design pattern. If you wish to create your own Active Events, this is the only project you'll need to
+reference. It allows you to raise Active Events and create Active Event handlers yourself. When you use it in combination with _"p5.webapp"_,
+then all your plugins are loaded automatically according to the configuration settings found in your web.config file of p5.webapp.
 
+## p5.exp, lambda expressions
 
+In _"p5.exp"_, the expression engine for lambda expressions can be found. This is what allows you to reference nodes inside your lambda objects,
+with the funny `:x:/foo?value` syntax. If you create your own custom Active Events, and you want them to be able to consider expressions, you'll
+need to reference this project, in addition to _"p5.core"_.
 
+## p5.ajax, the last Ajax library you'll ever need
+
+In _"p5.ajax"_ you can find the Ajax widgets/controls, which all Ajax functionality is built upon in P5. It is created such that it only
+really contains 1 widget (3 actually, but they're just variations over the base widget), which allows you to decide which element and attributes
+you want to use for your widgets. This allows you to gain 100% perfect control over how your HTML is rendered to the client, while automatically
+taking care of the bitty gritty stuff, such as Ajax serialization, file inclusions, etc.
+
+## lambda.exe, a console program for executing Hyperlambda
+
+The _"lambda.exe"_ project, is a simple console program, that allows you to execute Hyperlambda from the console.
