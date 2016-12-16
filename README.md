@@ -72,7 +72,7 @@ without even as much as a trace of inheritance, OOP or objects.
 
 You can easily create your own Active Events, incrementally building on top of your previously created Active Events, that creates much richer
 Ajax widgets than what's shown above. Below is a piece of Hyperlambda, that creates an Ajax TreeView, which allows you to browse your folders on disc.
-This [extension widget](/core/p5.webapp/system42/components/common-widgets/tree/) is entirely created in Hyperlambda, but you can also created Active 
+This [extension widget](/core/p5.webapp/system42/components/common-widgets/tree/) is entirely created in Hyperlambda, but you can also create Active 
 Events in C#.
 
 ```
@@ -108,6 +108,9 @@ Below is a screenshot of how the above piece of Hyperlambda might look like, if 
 
 Notice, the above Ajax TreeView is even search engine friendly, and allows for spiders to crawl your items. Try seeing this in action, by right-clicking
 any node in it, and choose _"Open in new tab"_.
+
+This _"incremental"_ development model, allows you to reuse almost everything you create in your future projects, to an extent difficult to understand,
+before you have experienced it.
 
 ## Documentation
 
