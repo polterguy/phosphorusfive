@@ -1,4 +1,4 @@
-Phosphorus Five - Ajax, Hyperlambda and Active Events
+Phosphorus Five documentation
 ===============
 
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
