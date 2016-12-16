@@ -1,4 +1,4 @@
-Phosphorus Five "application pool" (main website)
+The main website, or _"application pool"_
 ========
 
 This is the main web site's folder of your Phosphorus Five installation. This is the project 

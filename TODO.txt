@@ -62,3 +62,6 @@ TODO before release
 
 * Investigate why we're escaping property name in p5.web/WidgetProperties.CreatePropertyReturn method.
 
+* Create logo, a yeallow pentagram star, with a ring around it.
+
+
