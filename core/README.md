@@ -11,12 +11,11 @@ Here you can find the core parts of Phosphorus Five. There are five different pr
 
 When playing with P5, you should set _"p5.webapp"_ as your startup project.
 
-Normally, when you play with Phosphorus Five, you don't need to think about these parts. Though, the documentation for lambda
-expressions, can be found in [p5.exp](p5.exp/).
+Normally, when you play with Phosphorus Five, you don't need to think about the parts that are inside of this folder.
 
-The p5.webapp, is really just a simple website, allowing for you to create plugins for, which you can use in your own
-code. By default, it comes with [System42](/core/p5.webapp/system42/) pre-installed, which is a simple GUI front-end/back-end for your system, containing
-pieces like a fully fledged CMS or publishing system, the ability to browse files and folders on your system, managing users, etc.
+The _"p5.webapp"_, is actually just an almost entirely empty website. By default, it comes with [System42](/core/p5.webapp/system42/) 
+pre-installed, which is a GUI front-end/back-end for your system, containing among other things, a fully fledged CMS, or publishing 
+system. Everything you see when you start P5, can be found in System42, which taps into the Active Events in the [plugins folder](/plugins/).
 
 In fact, when you create web apps and/or websites, then the only projects you'd normally need to include a reference to, are these;
 
