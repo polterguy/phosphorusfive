@@ -7,6 +7,10 @@ _System.Web.UI.Control_ - Or indirectly, through using the [p5.web library](/plu
 allowing you to create controls with Active Events, using for instance Hyperlambda as your programming 
 language.
 
+The Hello World example application at the [root of this documentation](/), actually consumes this
+Ajax library indirectly, by invoking the *[p5.web.widgets.create-literal]* Active Event, which internally
+create a _"Literal"_ widget for you.
+
 In our documentation here, we will assume some C# knowledge, and create our examples, as "pure" ASP.NET 
 examples. If you wish to see it further abstracted, the way you'd probably normally use it, in combination 
 with P5, then I encourage you to rather check out the documentation for [p5.web](/plugins/p5.web/).
