@@ -20,9 +20,9 @@ with Hyperlambda, I encourage you to rather check out the documentation for [p5.
 In general there are only 3 Ajax controls, or _"widgets"_, as we usually refer to them as, giving you 100% 
 control over your page's rendered HTML;
 
-* Literal - An Ajax control containing text, and/or HTML as its content through *[innerValue]*.
+* Literal - An Ajax widget containing text, and/or HTML as its content through *[innerValue]*.
 * Container - A _"panel"_ type of widget, having children widgets of itself through *[widgets]*.
-* Void - A web control with neither children widgets, nor text/HTML content.
+* Void - An Ajax widget with neither children widgets, nor text/HTML content.
 
 To create an attribute for your widget, simply use the subscript operator, with
 the name being the property name, and its value being the value. To change the HTML 
@@ -30,6 +30,7 @@ element a widget is rendered with, simply change its `Element` property. An exam
 
 ```csharp
 var lit = new Literal ();
+lit.innerValue = "John Doe, Cypress Hill 57, 98765 California, US"
 lit.Element = "address";
 lit ["class"] = "address-css-class";
 ```
