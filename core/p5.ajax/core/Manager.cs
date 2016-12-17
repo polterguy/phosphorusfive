@@ -27,13 +27,14 @@ using System.Collections.Specialized;
 using p5.ajax.core.filters;
 
 /*
- * Making sure we include our "manager.js" JavaScript file as a WebResource
+ * Making sure we include our "manager.js" JavaScript file as a WebResource.
  */
 [assembly: WebResource ("p5.ajax.javascript.manager.min.js", "application/javascript")]
 
-namespace p5.ajax.core {
+namespace p5.ajax.core
+{
     /// <summary>
-    ///     Manages an IAjaxPage
+    ///     Manages an IAjaxPage.
     /// </summary>
     public class Manager
     {

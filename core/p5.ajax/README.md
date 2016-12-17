@@ -247,6 +247,27 @@ Ajax library itself, please check out the website project called [p5.ajax-sample
 To test this project, make sure you set it as your startup project in Visual Studio, Xamarin or MonoDevelop, 
 and start your debugger.
 
+## Additional features
+
+p5.ajax also contains a lot of helper methods and classes, such as for instance `RegisterJavaScriptFile`
+and `RegisterStylesheetFile`, which allows you to dynamically include a JavaScript file, or a CSS file, in 
+an Ajax request towards your server. p5.ajax also nicely formats your HTML, before it sends it to the client, 
+allowing you to more easily read it, if you wish to use it in combination with for instance jQuery, or some other 
+JavaScript library.
+
+p5.ajax automatically takes care of including your CSS files at the top of your page, inside your header element,
+while including all JavaScript files at the bottom, making sure all _"Ajax best practices"_ are simply automatically
+followed for you, making your page highly responsive, and rendered extremely fast.
+
+p5.ajax allows you to return custom JSON values to the client during any Ajax request, using `SendObject`, in
+addition to return inline JavaScript using the `SendJavaScriptToClient` method, etc, etc, etc. In general, even
+though the library is actually extremely small, it should be able to serve all the core needs you would expect from
+a _"Managed"_ Ajax library.
+
+You can also (of course) create an Ajax request in JavaScript, using the API of the _"manager.js" file, inside the
+_"javascript"_ folder, if you wish, allowing you to easily have the library collaborate with other JavaScript frameworks.
+p5.ajax is in general terms, highly extendible, and extremely _"collaboration friendly"_.
+
 ## Conclusion
 
 The above traits of p5.ajax, meaning that it keeps its state, is a perfect match for [p5.web](/plugins/p5.web/).
