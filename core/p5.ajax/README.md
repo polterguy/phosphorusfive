@@ -7,8 +7,8 @@ _System.Web.UI.Control_ - Or indirectly, through using the [p5.web library](/plu
 allowing you to create controls with Active Events, using for instance Hyperlambda as your programming 
 language.
 
-The Hello World example application at the root of this documentation, actually consumes this
-library indirectly, by invoking the *[p5.web.widgets.create-literal]* Active Event, which internally
+The Hello World example application at the [root of this documentation](https://github.com/polterguy/phosphorusfive), 
+actually consumes this library indirectly, by invoking the *[p5.web.widgets.create-literal]* Active Event, which internally
 creates a _"Literal"_ widget for you, and injects it into your page.
 
 In our documentation here, we will assume some C# knowledge, and create our examples, as _"pure"_ ASP.NET/C#
@@ -26,8 +26,8 @@ control over your page's rendered HTML;
 
 To create an attribute for your widget, simply use the subscript operator, with
 the name being the attribute name, and its value being the value. To change the HTML 
-element a widget is rendered with, simply change its `Element` property. An example of creating a Literal widget
-with a CSS class attribute, an inner value, rendered with the _"address"_ HTML element, can be found below.
+element a widget is rendered with, simply change its `Element` property. An example of creating a `Literal` widget
+with a CSS `class` attribute, an inner value containing some text, rendered with the _"address"_ HTML element, can be found below.
 
 ```csharp
 var lit = new Literal ();
@@ -38,17 +38,19 @@ lit ["class"] = "address-css-class";
 
 The above two traits of p5.ajax, allows you to aquire 100% perfect control over what
 HTML is rendered to your clients. And since the `Container` widget allows you to
-dynamically add and remove widgets from its children `Controls` collection, this allows
+persistently add and remove widgets from its children `Controls` collection, this allows
 you to create any type of markup you wish, dynamically building up your website's HTML,
 exactly as you need.
+
+## Where the Ajax TreeView/DataGrid/"insert-your-complex-control-here"
 
 p5.ajax does not have a _"Tree Ajax widget"_ or a _"DataGrid Ajax widget"_, simply
 because it is not its responsibility to create such Controls/widgets. However, to
 create such extension widgets, utilizing the 3 pre-existing widgets from p5.ajax,
 would be very easy, and could easily be done, without even having to resort to JavaScript, if you wish.
 
-In fact, such an Ajax TreeView widget actually exists in System42, entirely created exclusively
-using the native widgets from p5.ajax. To see it in action, feel free to check out the documentation
+In fact, such an Ajax TreeView widget actually exists in System42, created exclusively
+using the 3 native widgets from p5.ajax. To see it in action, feel free to check out the documentation
 for the [Ajax TreeView widget](/core/p5.webapp/system42/components/common-widgets/tree).
 
 ## No more keeping track of your controls
@@ -67,7 +69,7 @@ re-created upon every postback to your server. Which of course, for beginners in
 ASP.NET, entirely removes the burdon of having to keep track of which widgets 
 have been previously created.
 
-## Example usage in C#
+## Example usage in C\#
 
 Create an empty ASP.NET Web Forms website project.
 
