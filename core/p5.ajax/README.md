@@ -38,37 +38,38 @@ lit ["class"] = "address-css-class";
 
 The above two traits of p5.ajax, allows you to aquire 100% perfect control over what
 HTML is rendered to your clients. And since the `Container` widget allows you to
-dynamically add and remove widgets from its children Controls collecction, this allows
+dynamically add and remove widgets from its children `Controls` collection, this allows
 you to create any type of markup you wish, dynamically building up your website's HTML,
 exactly as you need.
 
-p5.ajax does not have a "Tree Ajax Control" or a "DataGrid Ajax Control", simply
+p5.ajax does not have a _"Tree Ajax widget"_ or a _"DataGrid Ajax widget"_, simply
 because it is not its responsibility to create such Controls/widgets. However, to
-create these as extension controls, utilizing the 3 pre-existing widgets from p5.ajax,
-would be very easy, and could easily be done, without even having to resort to JavaScript
-at all, if you wish.
+create such extension widgets, utilizing the 3 pre-existing widgets from p5.ajax,
+would be very easy, and could easily be done, without even having to resort to JavaScript, if you wish.
 
-In fact, such an Ajax TreeView widget actually exists in System42, entirely create exclusively
+In fact, such an Ajax TreeView widget actually exists in System42, entirely created exclusively
 using the native widgets from p5.ajax. To see it in action, feel free to check out the documentation
 for the [Ajax TreeView widget](/core/p5.webapp/system42/components/common-widgets/tree).
 
 ## No more keeping track of your controls
 
-The Container widget, will automatically track its children Controls collection,
+The Container widget, will automatically track its children widgets collection,
 as long as you use the `CreatePersistentControl`, and `RemoveControlPersistent` methods
-for adding and removing controls from its collection.
+for adding and removing widgets from its `Controls` collection.
 
-This means, that you do not need to re-create its controls collection upon postbacks or callbacks,
-since it'll keep track of whatever controls it contains, at any specific point in time,
+This means, that you do not need to re-create its widgets collection upon postbacks or callbacks,
+since it'll keep track of whatever widgets it contains, at any specific point in time,
 automatically for you.
 
-You can add and remove any control(s) you wish from a Container widget, as
-long as you use the above mentioned methods. The controls will be automatically
+You can add and remove any widgets you wish from a Container widget, as
+long as you use the above mentioned methods. The widgets will be automatically
 re-created upon every postback to your server. Which of course, for beginners in 
-ASP.NET, entirely removes the burdon of having to keep track of which controls 
+ASP.NET, entirely removes the burdon of having to keep track of which widgets 
 have been previously created.
 
 ## Example usage in C#
+
+Create an empty ASP.NET Web Forms website project.
 
 Create a reference to _"p5.ajax.dll"_ in your ASP.NET Web Forms application, and make sure 
 you have a "Default.aspx" page.
@@ -89,8 +90,7 @@ section, to recognize the p5.ajax controls.
 </system.web>
 ```
 
-Then either inherit your page from AjaxPage, or implement the IAjaxPage interface, before you create 
-a literal widget, by adding the code below in your .aspx markup.
+Then inherit your page from AjaxPage, before you create a literal widget, by adding the code below into your .aspx markup.
 
 ```xml
 <p5:Literal
@@ -103,16 +103,14 @@ a literal widget, by adding the code below in your .aspx markup.
 <p5:Container
     runat="server"
     id="hello_ul"
-    Element="ul"
-    Foo bar!
-</p5:Container>
+    Element="ul" />
 ```
 
-Add the following code in your codebehind
+Add the following code in your C# codebehind.
 
 ```csharp
 using p5.ajax.core;
-using p5.= p5.ajax.widgets;
+using p5 = p5.ajax.widgets;
 
 /* ... rest of class ... */
 
@@ -131,7 +129,7 @@ protected void hello_onclick (p5.Literal sender, EventArgs e)
     // factory method, indirectly!
     var lit = hello_ul.CreatePersistentControl<Literal> ();
     lit.Element = "li";
-    lit["class"] = "some-class-value";
+    lit ["class"] = "some-class-value";
     lit.innerValue = "Item no; " + hello_ul.Controls.Count;
 }
 
