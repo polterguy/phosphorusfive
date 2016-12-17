@@ -69,14 +69,12 @@ re-created upon every postback to your server. Which of course, for beginners in
 ASP.NET, entirely removes the burdon of having to keep track of which widgets 
 have been previously created.
 
-## Example usage in C\#
+## Example usage
 
-Create an empty ASP.NET Web Forms website project.
-
-Create a reference to _"p5.ajax.dll"_ in your ASP.NET Web Forms application, and make sure 
+1. Create an empty ASP.NET Web Forms website project.
+2. Create a reference to _"p5.ajax.dll"_ in your ASP.NET Web Forms application, and make sure 
 you have a "Default.aspx" page.
-
-Modify your web.config, and make sure it has something like this inside its _"system.web"_ 
+3. Modify your web.config, and make sure it has something like this inside its _"system.web"_ 
 section, to recognize the p5.ajax controls.
 
 ```xml
