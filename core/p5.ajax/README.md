@@ -90,8 +90,8 @@ section, to recognize the p5.ajax controls.
 </system.web>
 ```
 
-Then inherit your page from AjaxPage, before you create a literal widget, by adding the code below into your Default.aspx, 
-somewhere inside of its form declaration.
+Then inherit your page from AjaxPage, before you create a `Literal` widget, and a `Container` widget, 
+by adding the code below into your Default.aspx, somewhere inside of its form declaration.
 
 ```xml
 <p5:Literal
