@@ -27,9 +27,6 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.ajax.core.internals;
 
-/// <summary>
-///     Contains all Ajax functionality in Phosphorus Five
-/// </summary>
 namespace p5.ajax
 {
     /// <summary>

@@ -255,8 +255,8 @@ an Ajax request towards your server. p5.ajax also nicely formats your HTML, befo
 allowing you to more easily read it, if you wish to use it in combination with for instance jQuery, or some other 
 JavaScript library.
 
-p5.ajax automatically takes care of including your CSS files at the top of your page, inside your header element,
-while including all JavaScript files at the bottom, making sure all _"Ajax best practices"_ are simply automatically
+p5.ajax automatically takes care of inclusion of your CSS files at the top of your page, inside your header element,
+while including all JavaScript files at the bottom, making sure all _"Ajax best practices"_, are simply automatically
 followed for you, making your page highly responsive, and rendered extremely fast.
 
 p5.ajax allows you to return custom JSON values to the client during any Ajax request, using `SendObject`, in
