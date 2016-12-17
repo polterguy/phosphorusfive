@@ -23,9 +23,12 @@ The lambda.exe program contains two special Active Events itself, which are;
 * [p5.console.write-line] - Writes a line to the std output.
 * [p5.console.read-line] - Reads a line of input from the std input, and returns it as _"value"_ of node.
 
-lambda.exe also have an immediate mode, which allows you to type in Hyperlambda as you go, into the console, 
-and have it evaluated when you are finished. See the help instructions for the program, for details about how to do this.
+lambda.exe also have an _"immediate mode"_, which allows you to type in Hyperlambda as you go, into the console, 
+and have it evaluated by supplying en ampty line. See the help instructions for the program, for details about how to do this.
 
 The _"lambda.exe"_ is actually pathetically simple in its implementation, and illustrates how you could utilize Active Events, and
 Active Event plugins, in your own projects, starting entirely from scratch. See the [Program.cs file](Program.cs) if you're interested in 
 how this is done.
+
+It also serves as an excellent starting ground, if you wish to include Hyperlambda support in your own projects, such as for instance 
+to have dynamic _"script"_ support in a game, or another application.
