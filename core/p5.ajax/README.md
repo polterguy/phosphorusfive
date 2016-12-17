@@ -73,7 +73,7 @@ have been previously created.
 
 1. Create an empty ASP.NET Web Forms website project.
 2. Create a reference to _"p5.ajax.dll"_ in your ASP.NET Web Forms application, and make sure 
-you have a "Default.aspx" page.
+you have a _"Default.aspx"_ page.
 3. Modify your web.config, and make sure it has something like this inside its _"system.web"_ 
 section, to recognize the p5.ajax controls.
 
@@ -90,19 +90,21 @@ section, to recognize the p5.ajax controls.
 </system.web>
 ```
 
-Then inherit your page from AjaxPage, before you create a literal widget, by adding the code below into your .aspx markup.
+Then inherit your page from AjaxPage, before you create a literal widget, by adding the code below into your Default.aspx, 
+somewhere inside of its form declaration.
 
 ```xml
 <p5:Literal
     runat="server"
     id="hello"
-    Element="strong"
+    Element="button"
     onclick="hello_onclick">
-    Click me
+    Click me!
 </p5:Literal>
 <p5:Container
     runat="server"
     id="hello_ul"
+    Visible="false"
     Element="ul" />
 ```
 
@@ -131,6 +133,9 @@ protected void hello_onclick (p5.Literal sender, EventArgs e)
     lit.Element = "li";
     lit ["class"] = "some-class-value";
     lit.innerValue = "Item no; " + hello_ul.Controls.Count;
+
+    // Making sure "ul" element becomes visible.
+    hello_ul.Visible = true;
 }
 
 /* ... */
