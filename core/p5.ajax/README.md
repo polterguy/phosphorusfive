@@ -25,8 +25,9 @@ control over your page's rendered HTML;
 * Void - An Ajax widget with neither children widgets, nor text/HTML content.
 
 To create an attribute for your widget, simply use the subscript operator, with
-the name being the property name, and its value being the value. To change the HTML 
-element a widget is rendered with, simply change its `Element` property. An example can be found below.
+the name being the attribute name, and its value being the value. To change the HTML 
+element a widget is rendered with, simply change its `Element` property. An example of creating a Literal widget
+with a CSS class attribute, an inner value, rendered with the _"address"_ HTML element, can be found below.
 
 ```csharp
 var lit = new Literal ();
@@ -43,9 +44,13 @@ exactly as you need.
 
 p5.ajax does not have a "Tree Ajax Control" or a "DataGrid Ajax Control", simply
 because it is not its responsibility to create such Controls/widgets. However, to
-create these as extension controls, utilizing the three pre-existing widgets from p5.ajax,
+create these as extension controls, utilizing the 3 pre-existing widgets from p5.ajax,
 would be very easy, and could easily be done, without even having to resort to JavaScript
 at all, if you wish.
+
+In fact, such an Ajax TreeView widget actually exists in System42, entirely create exclusively
+using the native widgets from p5.ajax. To see it in action, feel free to check out the documentation
+for the [Ajax TreeView widget](/core/p5.webapp/system42/components/common-widgets/tree).
 
 ## No more keeping track of your controls
 
