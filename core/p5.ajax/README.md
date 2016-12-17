@@ -143,11 +143,11 @@ protected void hello_onclick (p5.Literal sender, EventArgs e)
 
 For security reasons, you must explicitly mark your server-side Ajax methods with the [WebMethod] attribute. 
 Besides from that, they work similarly to how a server side event works in ASP.NET. Although, you can create
-events for _anything_ in p5.ajax, as long as you start the property name with "on".
+events for _anything_ in p5.ajax, as long as you start your attribute's name with _"on"_.
 
 ## Structure of p5.ajax
 
-All three widgets described above, inherit from the `Widget` class. This class takes
+All 3 widgets described above, inherit from the `Widget` class. This class takes
 care of attribute creation, deletion, and so on. And all attributes added to any control,
 will be automatically remembered across postbacks.
 
@@ -175,7 +175,7 @@ of your page. In fact, you can even change the element a widget is rendered with
 dynamically - And even its ID - And p5.ajax will automatically take care of everything
 that changes, and render the correct HTML/JSON back to the client.
 
-Imagine you have a "myWidget" on your page, which can be any of the three existing types
+Imagine you have a _"myWidget"_ on your page, which can be any of the 3 existing types
 of widgets, and then you do something like this in one of your web methods.
 
 ```csharp
@@ -188,40 +188,43 @@ every consecutive callback.
 ## JSON
 
 p5.ajax uses JSON internally to return updates back to the client. This means, that among
-other things, it rarely needs to re-render your controls, using "partial rendering". You can 
+other things, it rarely needs to re-render your controls, using _"partial rendering"_. You can 
 also inject any new control, in a postback or Ajax callback, at any position in your 
-page, as long as its parent control, is of type "Container", and you use the apropriate factory 
+page, as long as its parent control, is of type `Container`, and you use the appropriate factory 
 method to create your controls.
 
 The JSON parts of p5.ajax, means that the bandwidth consumption when consuming the library,
-is ridiculously small, compared to frameworks built around "partial rendering", which requires
+is ridiculously small, compared to frameworks built around _"partial rendering"_, which requires
 some portion of the page, to be partially re-rendered.
 
-This also makes the client-side JavaScript parts of P5 tiny compared to other Ajax "frameworks".
-In its release build, minified and GZipped, the entire JavaScript parts in p5.ajax, is actually ~5KB.
+This also makes the client-side JavaScript parts of P5 tiny compared to other Ajax frameworks.
+In its release build, minified and GZipped, the entire JavaScript parts in p5.ajax, is actually 
+less than 3KB in total.
 
 ## ViewState
 
-The ViewState is "bye, bye" in p5.ajax. Or rather, to be accurate, it is kept, but on
-the server. This means that the amount of data sent back and forth between your clients and server, 
-is probably less than a fraction of what you are used to from other Ajax frameworks, such as 
+The ViewState is bye, bye in p5.ajax. Or rather, to be accurate, it is kept, but on
+the server. This means that the amount of data sent back and forth between your clients and your server, 
+is probably less than a fraction of that which you are used to from other Ajax frameworks, such as 
 ASP.NET Ajax, and similar frameworks.
 
-The above comes with some consequences though, which is that the memory consumption on the
-server, increases for each session object that connects to it simultaneously.
+The above comes with some consequences though, which is that the resource consumption on the
+server, increases for each session object that connects to it simultaneously. To prevent a single
+client from exhausting your server's resources entirely, p5.ajax stores only the last 5 used ViewState
+page objects per session.
 
 Out of the box, without tweaking the library, this means that it is best suited
-for building web apps, where you don't have an extreme amount of simultaneously
-users. As a general rule, I'd suggest using p5.ajax for building enterprise apps,
-without too many simultaneous users, and not for instance; Social media websites, 
-such as Facebook or Twitter, for the above mentioned reasons.
+for building single page web _"apps"_, where you don't have an extreme amount of simultaneous
+users, and most users would only request one or two pages at the same time. As a general rule, 
+I'd suggest using p5.ajax for building enterprise apps, without too many simultaneous users, 
+and not for instance; Social media websites, such as Facebook or Twitter, for the above mentioned reasons.
 
 Another consequence, is that (by default), only 5 simultaneous tabs are tolerated
 at the same time, for each session object. If the user opens up a sixth tab,
-and/or refreshes one of his pages more than 5 times, then the "oldest" ViewState key
-is invalidated, and the next Ajax request towards the server, will be rejected, from 
-that page, due to a non-valid ViewState lookup. If this was not the case, a single
-session (user), could exhaust your server's memory, simply by refreshing his webpage,
+and/or refreshes one of his pages more than 5 times, then the _"oldest"_ ViewState key
+is invalidated, and the next Ajax request towards the server, with this key, will be rejected, 
+due to a non-valid ViewState lookup. If this was not the case, a single
+session (user), could exhaust your server's resources entirely, by simply refreshing his webpage,
 thousands of times.
 
 Have this in mind as you do your p5.ajax development. The library is best suited for
@@ -231,9 +234,8 @@ or thousands of simultaneous users, such as for instance would often be the case
 with social media websites, such as StackOverflow, Facebook or Twitter etc ...
 
 As a general rule, I encourage people to use it to build enterprise apps, while
-use something else to build websites, requiring thousands, and sometimes millions 
-of simultaneous users. Although it could probably be tweaked to handle also such 
-scenarios.
+use something else to build websites, requiring millions, of simultaneous users.
+Although p5.ajax could be tweaked to handle also such scenarios.
 
 The ViewState logic _can_ be overridden though, by implementing your own IAjaxPage,
 and/or tweaking your web.config.
@@ -245,26 +247,24 @@ Ajax library itself, please check out the website project called [p5.ajax-sample
 To test this project, make sure you set it as your startup project in Visual Studio, Xamarin or MonoDevelop, 
 and start your debugger.
 
-## Epilogue
+## Conclusion
 
 The above traits of p5.ajax, meaning that it keeps its state, is a perfect match for [p5.web](/plugins/p5.web/).
-This allows you to simply "declare" your widget hierarchy, for then to in your own server side events, modify
+This allows you to simply _"declare"_ your widget hierarchy, for then to in your own server side events, modify
 any widget's state, including adding controls (widgets) to your page. Which results in a ridiculously simple
 to understand development model, without compromising power in any ways.
 
 In addition, by only having 3 different controls, allows you to easily create your own custom extensions, exactly
-as you see fit. Instead of being forced to use a "DataGrid" or "TreeControl" as I for some reasons feel for implementing
-it.
+as you see fit. Instead of being forced to use an _"Ajax DataGrid"_ or an _"Ajax TreeView"_ as I for some reasons
+feel for implementing it.
 
-Building up complex and rich hierarchies of controls, rendered with the element you wish, having the attributes
-and events you see fit, is simply a breeze. And none of the code necessary for wiring up things becomes a burdon
-to the developer.
+Building up complex and rich hierarchies of controls, rendered with the elements you wish, having the attributes
+and/or events you see fit, is as easy as a walk in the park. And none of the code necessary for wiring up things 
+becomes a burdon to you, since all Ajax functionality, and resource inclusions, simply _"happens automatically"_.
 
 A testimonial towards this trait, is the fact of that even though p5.ajax depends upon ASP.NET, and is entirely
-built on top of the "ASP.NET Page Life cycle", you never even once have to worry about this, and simply add/remove/change
-whatever you wish, in which ever server-side event you feel for doing such.
+built on top of the _"ASP.NET Page Life cycle"_, you never even once have to worry about this, and simply add/remove/change
+whatever you wish, in which ever server-side event you feel for doing such a thing.
 
 When combining this with [p5.lambda](/plugins/p5.lambda/) and [p5.web](/plugins/p5.web/), development of really
 rich UI and UX apps becomes so easy, that you would highly likely be very pleasently surprised as you dive into it.
-
-
