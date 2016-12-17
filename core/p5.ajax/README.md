@@ -7,26 +7,32 @@ _System.Web.UI.Control_ - Or indirectly, through using the [p5.web library](/plu
 allowing you to create controls with Active Events, using for instance Hyperlambda as your programming 
 language.
 
-The Hello World example application at the [root of this documentation](/), actually consumes this
-Ajax library indirectly, by invoking the *[p5.web.widgets.create-literal]* Active Event, which internally
-create a _"Literal"_ widget for you.
+The Hello World example application at the root of this documentation, actually consumes this
+library indirectly, by invoking the *[p5.web.widgets.create-literal]* Active Event, which internally
+creates a _"Literal"_ widget for you, and injects it into your page.
 
-In our documentation here, we will assume some C# knowledge, and create our examples, as "pure" ASP.NET 
+In our documentation here, we will assume some C# knowledge, and create our examples, as _"pure"_ ASP.NET/C#
 examples. If you wish to see it further abstracted, the way you'd probably normally use it, in combination 
-with P5, then I encourage you to rather check out the documentation for [p5.web](/plugins/p5.web/).
+with Hyperlambda, I encourage you to rather check out the documentation for [p5.web](/plugins/p5.web/).
 
 ## The trinity of widgets
 
-In general there are only 3 Ajax controls, or "widgets", as we usually refer to them as, giving you 100% 
+In general there are only 3 Ajax controls, or _"widgets"_, as we usually refer to them as, giving you 100% 
 control over your page's rendered HTML;
 
-* Literal - A web control containing text, and/or HTML as its content
-* Container - A "panel" type of widget, having children widgets of itself
-* Void - A web control with neither children controls, nor textual fragment content
+* Literal - An Ajax control containing text, and/or HTML as its content through *[innerValue]*.
+* Container - A _"panel"_ type of widget, having children widgets of itself through *[widgets]*.
+* Void - A web control with neither children widgets, nor text/HTML content.
 
-To create a property for your widget(s), simply use the subscript operator, with
+To create an attribute for your widget, simply use the subscript operator, with
 the name being the property name, and its value being the value. To change the HTML 
-element a widget is rendered with, simply set its `Element` property.
+element a widget is rendered with, simply change its `Element` property. An example can be found below.
+
+```csharp
+var lit = new Literal ();
+lit.Element = "address";
+lit ["class"] = "address-css-class";
+```
 
 The above two traits of p5.ajax, allows you to aquire 100% perfect control over what
 HTML is rendered to your clients. And since the `Container` widget allows you to
