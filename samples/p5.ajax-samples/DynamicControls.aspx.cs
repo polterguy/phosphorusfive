@@ -47,7 +47,7 @@ namespace p5.samples
         protected override void OnPreRender (EventArgs e)
         {
             if (CurrentEdit != null)
-                Update.RemoveAttribute ("disabled");
+                Update.DeleteAttribute ("disabled");
             else
                 Update["disabled"] = null;
             base.OnPreRender (e);
@@ -123,7 +123,7 @@ namespace p5.samples
         {
             CurrentEdit = null;
             var rnd = new Random ();
-            foreach (var idx in List.GetChildControls<p5.Literal> ()) {
+            foreach (var idx in List.ControlsOfType<p5.Literal> ()) {
                 if (rnd.Next (0, 3) == 1) {
                     idx.innerValue = "I like turtles!";
                     idx["class"] = "turtles";
@@ -135,7 +135,7 @@ namespace p5.samples
         protected void harvest_love_onclick (p5.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            var toRemove = List.GetChildControls<p5.Literal> ().Where (idx => idx.innerValue.Contains ("turtles")).Cast<Control> ().ToList ();
+            var toRemove = List.ControlsOfType<p5.Literal> ().Where (idx => idx.innerValue.Contains ("turtles")).Cast<Control> ().ToList ();
             foreach (var idx in toRemove) {
                 List.RemoveControlPersistent (idx);
             }

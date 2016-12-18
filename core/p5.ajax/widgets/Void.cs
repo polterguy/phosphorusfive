@@ -37,6 +37,16 @@ namespace p5.ajax.widgets
             RenderType = RenderingType.open;
         }
 
+        // Overridden to make sure the default element for this widget is "input".
+        public override string Element {
+            get {
+                if (string.IsNullOrEmpty (base.Element))
+                    return "input";
+                return base.Element;
+            }
+            set { base.Element = value; }
+        }
+
         // Overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control
         public override string this [string name]
         {

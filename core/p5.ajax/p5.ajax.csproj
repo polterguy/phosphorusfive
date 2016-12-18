@@ -53,7 +53,6 @@
     <Compile Include="core\AjaxPage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="core\Utilities.cs" />
     <Compile Include="widgets\Literal.cs" />
     <Compile Include="widgets\Container.cs" />
     <Compile Include="core\WebMethod.cs" />

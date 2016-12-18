@@ -26,7 +26,8 @@ using System;
 namespace p5.ajax.core
 {
     /// <summary>
-    ///     Attribute for methods you wish to use as web methods
+    ///     Attribute for methods you wish to use as Ajax "web methods", meaning making it possible to invoke them from JavaScript using the p5.ajax
+    ///     JavaScript API, or use as Ajax server-side event handlers for DOM client side events.
     /// </summary>
     [AttributeUsage (AttributeTargets.Method)]
     public class WebMethod : Attribute

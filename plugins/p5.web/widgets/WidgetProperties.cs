@@ -167,7 +167,7 @@ namespace p5.web.widgets
                         case "id":
                             throw new LambdaException ("Cannot remove property '" + nameNode.Name + "' of widget", e.Args, context);
                         default:
-                            widget.RemoveAttribute (nameNode.Name.StartsWith ("\\") ? nameNode.Name.Substring(1) : nameNode.Name);
+                            widget.DeleteAttribute (nameNode.Name.StartsWith ("\\") ? nameNode.Name.Substring(1) : nameNode.Name);
                             break;
                     }
                 }

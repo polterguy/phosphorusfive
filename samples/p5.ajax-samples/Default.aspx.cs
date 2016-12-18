@@ -38,7 +38,7 @@ namespace p5.samples
                 sender ["class"] = "change-is-the-only-constant";
             } else {
                 sender.innerValue = "Click me for hello world";
-                sender.RemoveAttribute ("class");
+                sender.DeleteAttribute ("class");
             }
         }
     }

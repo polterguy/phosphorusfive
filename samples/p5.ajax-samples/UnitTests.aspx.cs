@@ -83,14 +83,14 @@ namespace p5.samples
         [WebMethod]
         protected void sandbox_invoke_add_remove_2_onclick (p5.Literal literal, EventArgs e)
         {
-            literal.RemoveAttribute ("class");
+            literal.DeleteAttribute ("class");
         }
 
         [WebMethod]
         protected void sandbox_invoke_add_remove_same_onclick (p5.Literal literal, EventArgs e)
         {
             literal ["class"] = "mumbo-jumbo";
-            literal.RemoveAttribute ("class");
+            literal.DeleteAttribute ("class");
         }
 
         [WebMethod]
@@ -109,13 +109,13 @@ namespace p5.samples
         [WebMethod]
         protected void sandbox_invoke_remove_markup_attribute_onclick (p5.Literal literal, EventArgs e)
         {
-            literal.RemoveAttribute ("class");
+            literal.DeleteAttribute ("class");
         }
 
         [WebMethod]
         protected void sandbox_invoke_remove_add_markup_attribute_1_onclick (p5.Literal literal, EventArgs e)
         {
-            literal.RemoveAttribute ("class");
+            literal.DeleteAttribute ("class");
         }
 
         [WebMethod]
@@ -151,7 +151,7 @@ namespace p5.samples
         [WebMethod]
         protected void sandbox_invoke_add_child_onclick (p5.Container container, EventArgs e)
         {
-            var existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            var existing = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             if (existing.Count != 1)
                 throw new ApplicationException ("widget disappeared somehow");
 
@@ -162,7 +162,7 @@ namespace p5.samples
             literal.Element = "strong";
             literal.innerValue = "howdy world";
 
-            existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            existing = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
 
@@ -177,7 +177,7 @@ namespace p5.samples
             literal.Element = "strong";
             literal.innerValue = "howdy world";
 
-            var existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            var existing = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
 
@@ -196,7 +196,7 @@ namespace p5.samples
         [WebMethod]
         protected void sandbox_invoke_add_child_check_exist_2_onclick (p5.Container container, EventArgs e)
         {
-            var existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            var existing = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow");
 
@@ -210,7 +210,7 @@ namespace p5.samples
             literal.Element = "strong";
             literal.innerValue = "howdy world 2";
 
-            existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            existing = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             if (existing.Count != 3)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
 
@@ -229,7 +229,7 @@ namespace p5.samples
         [WebMethod]
         protected void sandbox_invoke_insert_child_check_exist_2_onclick (p5.Container container, EventArgs e)
         {
-            var existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            var existing = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow");
 
@@ -243,7 +243,7 @@ namespace p5.samples
             literal.Element = "strong";
             literal.innerValue = "howdy world 2";
 
-            existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            existing = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             if (existing.Count != 3)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
 
@@ -254,14 +254,14 @@ namespace p5.samples
         [WebMethod]
         protected void sandbox_invoke_remove_child_onclick (p5.Container container, EventArgs e)
         {
-            var literals = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            var literals = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             container.RemoveControlPersistent (literals [0]);
         }
 
         [WebMethod]
         protected void sandbox_invoke_remove_multiple_onclick (p5.Container container, EventArgs e)
         {
-            var literals = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            var literals = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             container.RemoveControlPersistent (literals [0]);
             container.RemoveControlPersistent (literals [1]);
         }
@@ -269,7 +269,7 @@ namespace p5.samples
         [WebMethod]
         protected void sandbox_invoke_append_remove_onclick (p5.Container container, EventArgs e)
         {
-            var literals = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
+            var literals = new List<p5.Literal> (container.ControlsOfType<p5.Literal> ());
             container.RemoveControlPersistent (literals [0]);
             var literal = container.CreatePersistentControl<p5.Literal> (null, 0);
             literal.Element = "strong";

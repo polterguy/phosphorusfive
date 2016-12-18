@@ -30,7 +30,9 @@ using System.Collections.Generic;
 namespace p5.ajax.core.internals
 {
     /// <summary>
-    ///     Responsible for storing page's state for all requests in system.
+    ///     Responsible for storing page's state for all requests.
+    ///     Simply puts ViewState data into session, but never more than a maximum number of objects for each session, 
+    ///     which is configurable through web.config.
     /// </summary>
     internal class StatePersister : PageStatePersister
     {
@@ -40,25 +42,28 @@ namespace p5.ajax.core.internals
         private readonly Guid _viewStateId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.ajax.core.internals.StatePersister"/> class.
+        ///     Initializes a new instance of the <see cref="StatePersister"/> class.
         /// </summary>
         /// <param name="page">Page instance</param>
         /// <param name="numberOfViewStateEntries">Number of view state entries per session</param>
-        internal StatePersister (Page page, int numberOfViewStateEntries)
+        internal StatePersister (AjaxPage page, int numberOfViewStateEntries)
             : base (page)
         {
             _numberOfViewStateEntries = numberOfViewStateEntries;
             if (_numberOfViewStateEntries < 0 || _numberOfViewStateEntries > 50)
-                throw new ApplicationException ("Legal value for '.p5.webapp.viewstate-per-session-entries' web.config settings are between 0 and 50");
+                throw new ApplicationException ("Legal value for '.p5.webapp.viewstate-per-session-entries' web.config setting is between 0 and 50");
 
             _viewStateId = page.IsPostBack ? new Guid (page.Request ["_p5_state_key"]) : Guid.NewGuid ();
-            if ((page as AjaxPage).IsAjaxRequest) return;
+            if (page.IsAjaxRequest) return;
 
             // Adding the viewstate ID to the form, such that we can retrieve it again when the client does a postback
             var literal = new LiteralControl {Text = string.Format ("\t<input type=\"hidden\" value=\"{0}\" name=\"_p5_state_key\">\r\n\t\t", _viewStateId)};
             page.Form.Controls.Add (literal);
         }
 
+        /// <summary>
+        ///     Loads the state for the page from Session.
+        /// </summary>
         public override void Load ()
         {
             if (Page.Session [SessionKey] == null)
@@ -70,9 +75,9 @@ namespace p5.ajax.core.internals
             // accurately; user cannot reload the same page without invalidating viewstates older than "_numberOfViewStateEntries"
             var viewState = Page.Session [SessionKey] as List<Tuple<Guid, string>>;
 
-            var entry = viewState.Find (idx => idx.Item1 == _viewStateId);
+            var entry = viewState.Find (ix => ix.Item1 == _viewStateId);
             if (entry == null) {
-                throw new ApplicationException ("The state for this page is not longer valid, please reload page");
+                throw new ApplicationException ("The state for this page is not longer valid, please reload your page");
             }
 
             var formatter = new LosFormatter ();
@@ -81,6 +86,9 @@ namespace p5.ajax.core.internals
             ViewState = pair.Second;
         }
 
+        /// <summary>
+        ///     Saves the state for the page into Session.
+        /// </summary>
         public override void Save ()
         {
             var builder = new StringBuilder ();

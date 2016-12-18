@@ -103,7 +103,7 @@ namespace p5.web.widgets
 
                         // Deleting existing Ajax event.
                         Manager.WidgetAjaxEventStorage.Remove (idxWidget.ID, idxEventNameNode.Name);
-                        idxWidget.RemoveAttribute (idxEventNameNode.Name);
+                        idxWidget.DeleteAttribute (idxEventNameNode.Name);
 
                     } else {
 

@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.Linq;
 using System.Web.UI;
 using System.Collections.Generic;
 using p5.ajax.widgets;
@@ -63,7 +64,7 @@ namespace p5.ajax.core.internals
         /// </summary>
         /// <returns><c>true</c> if this instance has the attribute with the specified key; otherwise, <c>false</c></returns>
         /// <param name="name">The name of the attribute you wish to retrieve the value of</param>
-        public bool HasAttribute (string name)
+        internal bool HasAttribute (string name)
         {
             return GetAttributeInternal (name) != null;
         }
@@ -73,7 +74,7 @@ namespace p5.ajax.core.internals
         /// </summary>
         /// <returns>The value of the attribute</returns>
         /// <param name="name">The name of the attribute you wish to retrieve the value of</param>
-        public string GetAttribute (string name)
+        internal string GetAttribute (string name)
         {
             var atr = GetAttributeInternal (name);
             if (atr != null)
@@ -86,27 +87,28 @@ namespace p5.ajax.core.internals
         /// </summary>
         /// <param name="name">The name of the attribute you wish to change the value of</param>
         /// <param name="value">The new value of attribute</param>
-        public void ChangeAttribute (string name, string value)
+        internal void ChangeAttribute (string name, string value)
         {
             SetAttributeInternal (_dynamicallyAddedThisRequest, name, value);
 
             // Removing attribute from all other lists.
-            RemoveAttributeInternal (_dynamicallyRemovedThisRequest, name);
-            RemoveAttributeInternal (_formDataThisRequest, name);
-            RemoveAttributeInternal (_viewStatePersistedRemoved, name);
-            RemoveAttributeInternal (_viewStatePersisted, name);
+            DeleteAttributeInternal (_dynamicallyRemovedThisRequest, name);
+            DeleteAttributeInternal (_formDataThisRequest, name);
+            DeleteAttributeInternal (_viewStatePersistedRemoved, name);
+            DeleteAttributeInternal (_viewStatePersisted, name);
         }
 
         /// <summary>
         ///     Removes the attribute with the specified name.
         /// </summary>
         /// <param name="name">The name of the attribute you wish to remove</param>
-        public void RemoveAttribute (string name, bool serializeToClient = true)
+        internal void RemoveAttribute (string name, bool serializeToClient = true)
         {
             if (FindAttribute (_dynamicallyAddedThisRequest, name) != null) {
 
                 // Attribute was added this request, simply removing the add.
-                RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
+                DeleteAttributeInternal (_dynamicallyAddedThisRequest, name);
+
             } else {
 
                 // Changing attribute, and storing its old value, but only if caller says we should serialize the attribute change back to the client.
@@ -115,11 +117,11 @@ namespace p5.ajax.core.internals
                 }
 
                 // Removing the attribute from all other lists.
-                RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
-                RemoveAttributeInternal (_formDataThisRequest, name);
-                RemoveAttributeInternal (_viewStatePersistedRemoved, name);
-                RemoveAttributeInternal (_viewStatePersisted, name);
-                RemoveAttributeInternal (_preViewState, name);
+                DeleteAttributeInternal (_dynamicallyAddedThisRequest, name);
+                DeleteAttributeInternal (_formDataThisRequest, name);
+                DeleteAttributeInternal (_viewStatePersistedRemoved, name);
+                DeleteAttributeInternal (_viewStatePersisted, name);
+                DeleteAttributeInternal (_preViewState, name);
             }
         }
 
@@ -127,7 +129,8 @@ namespace p5.ajax.core.internals
         ///     Returns all attribute keys.
         /// </summary>
         /// <value>The names of all attributes stored in this instance</value>
-        public IEnumerable<string> Keys {
+        internal IEnumerable<string> Keys
+        {
             get {
 
                 // In order to not yield the same attribute several times, we need to keep track of which attributes we have already seen.
@@ -191,10 +194,10 @@ namespace p5.ajax.core.internals
             SetAttributeInternal (_formDataThisRequest, name, value);
 
             // Removing from all other lists.
-            RemoveAttributeInternal (_dynamicallyRemovedThisRequest, name);
-            RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
-            RemoveAttributeInternal (_viewStatePersistedRemoved, name);
-            RemoveAttributeInternal (_viewStatePersisted, name);
+            DeleteAttributeInternal (_dynamicallyRemovedThisRequest, name);
+            DeleteAttributeInternal (_dynamicallyAddedThisRequest, name);
+            DeleteAttributeInternal (_viewStatePersistedRemoved, name);
+            DeleteAttributeInternal (_viewStatePersisted, name);
         }
 
         /// <summary>
@@ -319,7 +322,7 @@ namespace p5.ajax.core.internals
             foreach (var idx in lst) {
                 var name = idx.Name;
                 string value;
-                if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
+                if (idx.Name.StartsWith ("on") && IsLegalMethodName (idx.Value)) {
 
                     // This is an Ajax event.
                     value = "p5.e(event)";
@@ -360,7 +363,7 @@ namespace p5.ajax.core.internals
         }
 
         /*
-         * Helper method for retrieving attribute
+         * Helper method for retrieving attribute.
          */
         private Attribute GetAttributeInternal (string name)
         {
@@ -378,11 +381,11 @@ namespace p5.ajax.core.internals
 
             var viewStateRemoved = FindAttribute (_viewStatePersistedRemoved, name);
             if (viewStateRemoved != null)
-                return null; // if attribute was removed during viewstate load, we DO NOT check values that were saved before viewstate was being tracked
+                return null; // If attribute was removed during viewstate load, we DO NOT check values that were saved before viewstate was being tracked
 
             var removed = FindAttribute (_dynamicallyRemovedThisRequest, name);
             if (removed != null)
-                return null; // if attribute was removed this request, we DO NOT check values that were saved before viewstate was being tracked
+                return null; // If attribute was removed this request, we DO NOT check values that were saved before viewstate was being tracked
 
             // last resort ...
             var preViewState = FindAttribute (_preViewState, name);
@@ -390,28 +393,37 @@ namespace p5.ajax.core.internals
         }
 
         /*
-         * Helper method for changing or setting attribute
+         * Helper method for changing or setting attribute.
          */
         private static void SetAttributeInternal (List<Attribute> attributes, string name, string value)
         {
-            attributes.RemoveAll (idx => idx.Name == name);
+            attributes.RemoveAll (ix => ix.Name == name);
             attributes.Add (new Attribute (name, value));
         }
 
         /*
-         * Helper method for removing attribute
+         * Helper method for deleting attribute.
          */
-        private static void RemoveAttributeInternal (List<Attribute> attributes, string name)
+        private static void DeleteAttributeInternal (List<Attribute> attributes, string name)
         {
-            attributes.RemoveAll (idx => idx.Name == name);
+            attributes.RemoveAll (ix => ix.Name == name);
         }
 
         /*
-         * Helper method for retrieving attribute
+         * Helper method for retrieving attribute.
          */
         private static Attribute FindAttribute (List<Attribute> attributes, string name)
         {
-            return attributes.Find (idx => idx.Name == name);
+            return attributes.Find (ix => ix.Name == name);
+        }
+
+        /*
+         * Returns true is this is a legal C# method name, which means it does not contain stuff that's normally found in JavaScript.
+         * Used to determine how to render content for DOM JavaScript event handler attributes.
+         */
+        private static bool IsLegalMethodName (string name)
+        {
+            return name.All (ix => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_".IndexOf (ix) != -1);
         }
     }
 }

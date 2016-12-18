@@ -32,7 +32,7 @@ namespace p5.ajax.core.internals
         ///     Initializes a new instance of the Attribute class.
         /// </summary>
         /// <param name="name">Name of your attribute</param>
-        public Attribute (string name)
+        internal Attribute (string name)
         {
             Name = name;
         }
