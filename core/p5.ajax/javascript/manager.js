@@ -83,84 +83,6 @@
 
 
     /*
-     * This makes sure we are able to decode any HTML sent from the server.
-     *
-     * The server will never transmit 'pure HTML', but rather encoded HTML, which means that the offset
-     * calculations will be wrong, when calculating substring operations below, in our '_ch' function.
-     *
-     * Therefor, we'll need to 'decode' any potential HTML sent from the server.
-     * The easiest way to accomplish this, is in fact to stuff the value into a textarea, and then retrieve the value
-     * from that textarea element afterwards.
-     */
-    p5._dec = function (v) {
-        var e = document.createElement('textarea');
-        e.innerHTML = v;
-        return e.value;
-    };
-
-
-    /*
-     * Returns the new value for element property/attribute.
-     *
-     * The server can return 5 possible different values for updating properties and attributes;
-     * 
-     *   - string            Which contains the new value of the property/attribute).
-     * 
-     *   - [number]          Which means the existing value is to have everything removed 
-     *                       starting from 'number' position.
-     * 
-     *   - [string]          Which means the existing value should have the given 'string' 
-     *                       concatenated to its existing value.
-     *
-     *   - [number, string]  Which means the given string it to have its value removed from the 'number' 
-     *                       position and have 'string' concatenated to its existing value.
-     *
-     *   - null              Property/attribute set to null.
-     *
-     * This function returns the new value of the property/attribute according to the 'v'
-     * object given. 'o' is the property's 'old value'.
-     */
-    p5._ch = function(o, v) {
-        if (v !== null) {
-
-            /*
-             * Making sure we normalize carriage returns in old values before calculating offset.
-             * This is necessary for cases where the browser is given "xyz\r\n", but stores the values as "xyz\n" (no CR, only LF).
-             *
-             * If we do not do this, then each CR/LF sent from server, will calculate the offsey change incorrectly.
-             */
-            if (o != null && o.indexOf != null && o.indexOf ('\n') != -1 && o.indexOf ('\r') == -1) {
-                o = o.replace ('\n', '\r\n');
-            }
-
-            /*
-             * The server can return 5 possible different values, se description above for possible permutations.
-             *
-             * Here we'll need to check which type of value was given from server, and act accordingly.
-             */
-            if (typeof v == 'object') {
-                if (v.length == 2) {
-
-                    // Removing from 'number' and appending afterwards.
-                    return o.substring(0, v[0]) + this._dec (v[1]);
-                } else {
-                    if (typeof v[0] == 'number') {
-
-                        // Simply removing from 'number'.
-                        return o.substring(0, v[0]);
-                    } else {
-
-                        // Only appending at the end, without removing anything.
-                        return o + this._dec (v[0]); // Only concatenating to existing value
-                    }
-                }
-            }
-        }
-        return v; // The new value
-    };
-
-
-    /*
      * Wraps a DOM element, providing helper functions.
      *
      * The p5.el type wraps a dom element with some handy helper functions for raising server side http ajax requests, 
@@ -205,24 +127,22 @@
             if (this.el.tagName === 'TEXTAREA') {
 
                 // Special handling of textarea type of element, since its innerHTML actually is its value.
-                this.el.value = p5._ch(this.el.value, v);
+                this.el.value = v;
             } else {
 
                 // All other types of elements, besides textares.
-                this.el.innerHTML = p5._ch(this.el.innerHTML, v);
+                this.el.innerHTML = v;
             }
         },
 
 
         "class": function(v) {
-            this.el.className = p5._ch(this.el.className, v);
+            this.el.className = v;
         },
 
 
         style: function (v) {
 
-            // No need to calculate offset, since style is always returned entirely, due to that it is impossible
-            // to logically figure out 'offset' with certainty.
             this.el.style.cssText = v;
         },
 
@@ -287,8 +207,6 @@
          *
          * Will update one DOM element's attribute/property according to the return value from the server.
          * Might also delete an attribute entirely.
-         * Uses p5._ch internally to figure out how to update the given 'k' attribute. This is the main function in 
-         * JavaScript to update DOM elements, according to the return value from the server after an Ajax HTTP request.
          */
         _set: function(k, v) {
 
@@ -303,10 +221,11 @@
                 var t = document.createElement(this.el.tagName);
                 t.innerHTML = v;
                 this.el.insertBefore(t.firstChild, this.el.children[parseInt(k.substring(9), 10)]);
+
             } else {
 
                 // Default logic, simply setting attribute.
-                this.el.setAttribute(k, p5._ch(this.el[k], v));
+                this.el.setAttribute(k, v);
             }
         },
 
@@ -585,6 +504,7 @@
 
                 // Removing current request from queue
                 p5._chain.splice(0, 1);
+
             } else {
 
                 var cont = opt.onerror.apply(this, [xhr.status, xhr.statusText, xhr.responseText, cur.evt]);

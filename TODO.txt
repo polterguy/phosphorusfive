@@ -66,4 +66,5 @@ TODO before release
 
 * Making sure we're using the correct JS inclusions all over the place, alternatives are [p5.web.send-javascript] and [p5.web.include-javascript]
 
+* Make sure deletion of attribute and/or widget in p5.ajax, removes all other relevant changes in "_changes" such that we don't send redundant data back.
 

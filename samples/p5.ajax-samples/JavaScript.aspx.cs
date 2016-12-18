@@ -35,7 +35,7 @@ namespace p5.samples
         {
             // Here we extract the "custom_data" pushed from our JavaScript handler on the client side,
             // and prepend that string to the server-time. before returning the combined results to our client again as "custom_return_value".
-            SendObjectToClient ("custom_return_data", Page.Request.Params["custom_data"] + "Your server speaks the server-time " + DateTime.Now + ".\r\n");
+            SendObject ("custom_return_data", Page.Request.Params["custom_data"] + "Your server speaks the server-time " + DateTime.Now + ".\r\n");
         }
     }
 }

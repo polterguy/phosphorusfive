@@ -22,6 +22,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Web.UI;
 using System.Configuration;
 using System.Collections.Generic;
@@ -67,12 +68,12 @@ namespace p5.ajax.core
                 // Determining if we should create an Ajax filter or an HTML filter for rendering our response.
                 if (IsAjaxRequest) {
 
-                    // Rendering Ajax JSON back to the client, by making sure we use the correct Response filter.
+                    // Rendering JSON changes back to the client, by making sure we use the correct Response filter.
                     Response.Filter = new JsonFilter (this);
 
                 } else {
 
-                    // Rendering plain HTML back to client, by making sure we use the correct Response filter.
+                    // Rendering HTML back to client, by making sure we use the correct Response filter.
                     Response.Filter = new HtmlFilter (this);
 
                     // Making sure we include "manager.js", which is the main client-side parts of p5.ajax.
@@ -87,7 +88,7 @@ namespace p5.ajax.core
         ///     will render back to the client, as in a default and normal ASP.NET Web Forms app.
         /// </summary>
         /// <value>The number of valid viewstate entries for each session. Zero turns off server-side ViewState storage.</value>
-        public int ViewStateSessionEntries { get; protected set; }
+        public int ViewStateSessionEntries { get; private set; }
 
         /// <summary>
         ///     Returns true if this request is an Ajax request.
@@ -102,8 +103,10 @@ namespace p5.ajax.core
         ///     Registers CSS stylesheet file for inclusion on your page.
         /// 
         ///     Notice, if you wish, you can supply an absolute URL, to include files from for instance a CDN, or similar types of sources.
-        ///     This inclusion is actually persistently done, such that a normal postback to the server, will remember the included file, and
-        ///     re-include it automatically for you. In addition, it will make sure the same CSS file is not included twice.
+        ///     This inclusion is persistently done, such that a normal postback to the server, will remember the included file, and
+        ///     re-include it automatically for you.
+        ///     In addition, it will make sure the same CSS file is not included twice.
+        ///     You can also use "ClientScript.GetWebResourceUrl" to include CSS files that are embedded resources in other projects.
         /// </summary>
         /// <param name="url">URL to stylesheet you wish to include</param>
         public void IncludeCSSFile (string url)
@@ -124,8 +127,9 @@ namespace p5.ajax.core
         ///     Will automatically keep track of all previously included JavaScript files, to avoid redundant inclusions, 
         ///     and even include JavaScript files during Ajax requests automatically for you, making sure they're included on the client-side.
         ///     Notice, if you wish, you can supply an absolute URL, to include files from for instance a CDN, or similar types of sources.
+        ///     You can also use "ClientScript.GetWebResourceUrl" to include JavaScript files that are embedded resources in other projects.
         /// </summary>
-        /// <param name="url">url to JavaScript to register</param>
+        /// <param name="url">URL to JavaScript to register</param>
         public void IncludeJavaScriptFile (string url)
         {
             // Checking if specified file is already included.
@@ -133,9 +137,9 @@ namespace p5.ajax.core
 
                 // File has not been previously included, making sure we store it in ViewState, to avoid redundant inclusions in the future,
                 // before we register it for a "push" to client.
-                var file = new Tuple<string, bool> (url, true);
+                var file = new Tuple<string, bool> (url, true /* Registering the fact that this is a file */);
                 PersistentJSInclusions.Add (file);
-                JSInclusionsForCurrentRequest.Add (file);
+                _javaScriptObjectsForCurrentRequest.Add (file);
             }
         }
 
@@ -144,9 +148,8 @@ namespace p5.ajax.core
         /// 
         ///     Notice, a JavaScript "inclusion", is an inline, persistently included piece of JavaScript, which if in the rare occasion of a
         ///     normal PostBack should occur, will be automatically re-included for you, during the rendering of the HTML for your PostBack.
-        ///     This allows you to "include" JavaScript, as if it was contained in a static file, which is useful for initialization of JavaScript
-        ///     widgets requiring initialization, and similar constructs. In addition, it will make sure that the same JavaScript object, is not
-        ///     included twice.
+        ///     This allows you to "include" JavaScript, as if it was contained in a static file. 
+        ///     In addition, it will make sure that the same JavaScript object, is not included twice.
         /// 
         ///     Notice, if you only want to "send" some JavaScript to the client, and not persistently "include" it, you should rather use the
         ///     "SendJavaScriptToClient" method. This is useful for sending JavaScript to the client, that only should be evaluated once, and not
@@ -161,9 +164,9 @@ namespace p5.ajax.core
 
                 // JavaScript inclusion has not been previously included, making sure we store it in ViewState, to avoid redundant inclusions in 
                 // the future, before we register it for a "push" to client.
-                var jsObject = new Tuple<string, bool> (script, false);
+                var jsObject = new Tuple<string, bool> (script, false /* Registering the fact that this is an object */);
                 PersistentJSInclusions.Add (jsObject);
-                JSInclusionsForCurrentRequest.Add (jsObject);
+                _javaScriptObjectsForCurrentRequest.Add (jsObject);
             }
         }
 
@@ -183,14 +186,27 @@ namespace p5.ajax.core
         /// <summary>
         ///     Sends an object back to the client as JSON.
         /// 
-        ///     Useful if you're having custom JavaScript raising Ajax server-side events.
+        ///     Useful if you're having custom JavaScript raising Ajax server-side events, and you wish to return an arbitrary object to your client.
         ///     Allows you to return "custom data" back to the client.
         /// </summary>
         /// <param name="id">ID of object, must be unique for request</param>
         /// <param name="value">Object to serialize back as JSON</param>
         public void SendObject (string id, object value)
         {
+            if (!IsAjaxRequest)
+                throw new ApplicationException ("You cannot return an object to the client unless you're doign so from within an Ajax request.");
             _changes [id] = value;
+        }
+
+        /// <summary>
+        ///     Handled to make sure we configure the number of ViewState entries to store in the Session object.
+        /// </summary>
+        /// <param name="e">EventArgs</param>
+        protected override void OnPreInit (EventArgs e)
+        {
+            // Retrieving viewstate entries per session from web.config, defaulting to 5 if no configuration is found.
+            ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings [".p5.webapp.viewstate-per-session-entries"] ?? "5");
+            base.OnPreInit (e);
         }
 
         /// <summary>
@@ -200,24 +216,13 @@ namespace p5.ajax.core
         protected override PageStatePersister PageStatePersister
         {
             get {
-                // Notice, if consumer of class has declared to have zero "0" ViewState entries stored in session, we
-                // completely bypass our custom PageStatePersister, and simply returns the base implementation from System.Web.UI,
-                // to facilitate for turning OFF server-side ViewState storage entirely, by configuring app to store 0 ViewState entries.
+                // Notice, if consumer of class has declared in his web.config that he wishes to have zero "0" ViewState entries stored in session, 
+                // we completely bypass our custom PageStatePersister, and simply returns the base implementation from System.Web.UI,
+                // to facilitate for turning OFF server-side ViewState storage entirely.
                 if (ViewStateSessionEntries == 0)
                     return base.PageStatePersister;
                 return _statePersister ?? (_statePersister = new StatePersister (this, ViewStateSessionEntries));
             }
-        }
-
-        /// <summary>
-        ///     Handled to make sure we configure the number of ViewState entries to store in the Session object.
-        /// </summary>
-        /// <param name="e">EventArgs</param>
-        protected override void OnPreInit (EventArgs e)
-        {
-            // Retrieving viewstate entries per session.
-            ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings [".p5.webapp.viewstate-per-session-entries"] ?? "5");
-            base.OnPreInit (e);
         }
 
         /*
@@ -248,23 +253,9 @@ namespace p5.ajax.core
          * This is normally only used if we're in a JsonFilter type of request, and only returns the new CSS inclusions, that was added during the
          * current request.
          */
-        internal List<string> CSSInclusionsForCurrentRequest
+        internal IEnumerable<string> CSSInclusionsForCurrentRequest
         {
             get { return _cssFileForCurrentRequest; }
-        }
-
-        /*
-         * Returns the JavaScript files and objects we need to push to client for each postback.
-         * This is normally only used when we're having a normal postback, or initial request, using e.g. the HtmlFilter for filtering our response.
-         * It keeps track of all CSS files included on page, during page's entire lifetime.
-         */
-        internal List<Tuple<string, bool>> PersistentJSInclusions
-        {
-            get {
-                if (ViewState ["__p5_js_objects"] == null)
-                    ViewState ["__p5_js_objects"] = new List<Tuple<string, bool>> ();
-                return ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>;
-            }
         }
 
         /*
@@ -272,9 +263,29 @@ namespace p5.ajax.core
          * This is normally only used if we're in a JsonFilter type of request, and only returns the new JS inclusions, that was added during the
          * current request.
          */
-        internal List<Tuple<string, bool>> JSInclusionsForCurrentRequest
+        internal IEnumerable<Tuple<string, bool>> JSInclusionsForCurrentRequest
         {
             get { return _javaScriptObjectsForCurrentRequest; }
+        }
+
+        /*
+         * Returns all persistently included JavaScript files.
+         */
+        internal IEnumerable<string> PersistensJSFileInclusions
+        {
+            get {
+                return PersistentJSInclusions.Where (ix => ix.Item2).Select (ix => ix.Item1);
+            }
+        }
+
+        /*
+         * Returns all persistently included JavaScript objects.
+         */
+        internal IEnumerable<string> PersistensJSObjectInclusions
+        {
+            get {
+                return PersistentJSInclusions.Where (ix => !ix.Item2).Select (ix => ix.Item1);
+            }
         }
 
         /*
@@ -294,30 +305,26 @@ namespace p5.ajax.core
         /*
          * Registers a change for a widget to be sent back to the client.
          */
-        internal void RegisterWidgetChanges (string id, string name, string newValue, string oldValue = null)
+        internal void RegisterWidgetChanges (string widgetID, string attributeName, string value)
         {
-            // Retrieve the value to send back to the client, which might be the entire new value, or only a portion of the value, depending
-            // upon how the oldValue and the newValue are "diffed".
-            var change = GetPropertyChanges (oldValue, newValue);
-
             // Making sure our dictionary contains the main root item for sending changes to widgets back to client, before we retrieve the root node.
             if (!_changes.Contains ("__p5_change"))
                 _changes ["__p5_change"] = new Dictionary<string, Dictionary<string, object>> ();
             var widgets = _changes ["__p5_change"] as Dictionary<string, Dictionary<string, object>>;
 
             // Making sure the main root change node contains an entry for the current widget, before retrieving the node for widget.
-            if (!widgets.ContainsKey (id))
-                widgets [id] = new Dictionary<string, object> ();
-            var widgetChanges = widgets [id];
+            if (!widgets.ContainsKey (widgetID))
+                widgets [widgetID] = new Dictionary<string, object> ();
+            var widgetChanges = widgets [widgetID];
 
             // Setting the value for the change, such that it can be sent to client during JSON rendering.
-            widgetChanges [name] = change;
+            widgetChanges [attributeName] = value;
         }
 
         /*
          * Registers an attribute of a widget to be deleted.
          */
-        internal void RegisterDeletedAttribute (string id, string name)
+        internal void RegisterDeletedAttribute (string widgetID, string attributeName)
         {
             // Making sure our dictionary contains the main root item for sending changes to widgets back to client, before we retrieve the root node.
             if (!_changes.Contains ("__p5_change"))
@@ -325,67 +332,40 @@ namespace p5.ajax.core
             var widgets = _changes ["__p5_change"] as Dictionary<string, Dictionary<string, object>>;
 
             // Making sure the main root change node contains an entry for the current widget, before retrieving the node for widget.
-            if (!widgets.ContainsKey (id))
-                widgets [id] = new Dictionary<string, object> ();
-            var widgetChanges = widgets [id];
+            if (!widgets.ContainsKey (widgetID))
+                widgets [widgetID] = new Dictionary<string, object> ();
+            var widgetChanges = widgets [widgetID];
 
-            // Making sure the changes contains an entry for deleting attributes, before retrieving it, such that we can append the specified attribute to it.
+            // Making sure the changes contains an entry for deleting attributes, such that we can append the specified attribute to it.
             if (!widgetChanges.ContainsKey ("_p5_del"))
                 widgetChanges ["_p5_del"] = new List<string> ();
             var list = widgetChanges ["_p5_del"] as List<string>;
-            list.Add (name);
+            list.Add (attributeName);
         }
 
         /*
          * Registers an entire widget for being deleted on the client side.
          */
-        internal void RegisterDeletedWidget (string id)
+        internal void RegisterDeletedWidget (string widgetID)
         {
             if (!_changes.Contains ("_p5_del"))
                 _changes ["_p5_del"] = new List<string> ();
             var list = _changes ["_p5_del"] as List<string>;
-            list.Add (id);
+            list.Add (widgetID);
         }
 
         /*
-         * This is the method that will create a "diff object" for widget attributes and values, such that we only need to send
-         * back the actual changes, and not the entire value, which is useful for longer attribute and property values, such as when for instance
-         * simply concatenating some new value, to an existing value, which significantly reduces the amount of bandwidth sent back to the client,
-         * during Ajax requests.
+         * Returns the JavaScript files and objects we need to push to client for each postback.
+         * This is normally only used when we're having a normal postback, or initial request, using e.g. the HtmlFilter for filtering our response.
+         * It keeps track of all CSS files included on page, during page's entire lifetime.
          */
-        private object GetPropertyChanges (string oldValue, string newValue)
+        private List<Tuple<string, bool>> PersistentJSInclusions
         {
-            if (oldValue == null || oldValue.Length < 10 || newValue == null || newValue.Length < 10) {
-                return newValue; // No need to reduce size.
+            get {
+                if (ViewState ["__p5_js_objects"] == null)
+                    ViewState ["__p5_js_objects"] = new List<Tuple<string, bool>> ();
+                return ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>;
             }
-
-            // If the new value is the same as the old value, there is no need to send back any changes to the client.
-            if (oldValue == newValue)
-                return null; // No change in fact.
-
-            // Finding the position of where the changes start such that we can return as small amounts of changes back to client as possible, 
-            // to conserve bandwidth and make response smaller.
-            var start = -1;
-            string update = null;
-            for (var idx = 0; idx < oldValue.Length && idx < newValue.Length; idx++) {
-                if (oldValue [idx] != newValue [idx]) {
-                    start = idx;
-                    if (idx < newValue.Length) {
-                        update = newValue.Substring (idx);
-                    }
-                    break;
-                }
-            }
-            if (start == -1 && newValue.Length > oldValue.Length) {
-                return new object [] { oldValue.Length, newValue.Substring (oldValue.Length) };
-            }
-            if (start == -1 && newValue.Length < oldValue.Length) {
-                return new object [] { newValue.Length };
-            }
-            if (start < 5) {
-                return newValue; // We cannot save anything here ...
-            }
-            return new object [] { start, update };
         }
     }
 }

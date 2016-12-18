@@ -39,12 +39,6 @@ namespace p5.ajax.core.internals
         // are originally in the markup, which are removed, and which are added.
         // Hence, we need several lists of attributes, to know which are removed, added, and so on, during requests, for each widget.
 
-        // Contains the original value of an attribute, before it is changed, due to code, or FORM data is being parsed, etc.
-        // This is necessary in order to be able to send exclusively the changes back to the client.
-        // This is what allows us to only send a substring of new attribute value, back to manager.js, which then can concatenate the new
-        // value with the existing value for the specified attribute.
-        private readonly List<Attribute> _oldAttributeValue = new List<Attribute> ();
-
         // List of attributes that are dynamically added during the current request.
         private readonly List<Attribute> _dynamicallyAddedThisRequest = new List<Attribute> ();
 
@@ -94,8 +88,6 @@ namespace p5.ajax.core.internals
         /// <param name="value">The new value of attribute</param>
         public void ChangeAttribute (string name, string value)
         {
-            // Changing attribute, but first storing old value.
-            StoreOldValue (name);
             SetAttributeInternal (_dynamicallyAddedThisRequest, name, value);
 
             // Removing attribute from all other lists.
@@ -119,7 +111,6 @@ namespace p5.ajax.core.internals
 
                 // Changing attribute, and storing its old value, but only if caller says we should serialize the attribute change back to the client.
                 if (serializeToClient) {
-                    StoreOldValue (name);
                     SetAttributeInternal (_dynamicallyRemovedThisRequest, name, null);
                 }
 
@@ -155,12 +146,6 @@ namespace p5.ajax.core.internals
                     }
                 }
                 foreach (var idx in _formDataThisRequest) {
-                    if (!_alreadySen.ContainsKey (idx.Name)) {
-                        yield return idx.Name;
-                        _alreadySen [idx.Name] = true;
-                    }
-                }
-                foreach (var idx in _oldAttributeValue) {
                     if (!_alreadySen.ContainsKey (idx.Name)) {
                         yield return idx.Name;
                         _alreadySen [idx.Name] = true;
@@ -369,49 +354,8 @@ namespace p5.ajax.core.internals
                 if (idx.Name.StartsWith ("_") || idx.Name.StartsWith ("."))
                     continue;
 
-                // Finding old value, if any.
-                var oldAtr = FindAttribute (_oldAttributeValue, idx.Name);
-
-                // Checking if we should only register the "offset change", or the entire attribute's value.
-                if (oldAtr != null) {
-
-                    // Possibly "offset change", but first making sure there even is a change at all.
-                    if (oldAtr.Value != idx.Value) {
-
-                        // Notice, we force an entire re-render operation of "style" attributes, 
-                        // since there is no way to figure out actual offset on client side for sure.
-                        if (idx.Name == "style")
-                            page.RegisterWidgetChanges (id, idx.Name, idx.Value);
-                        else
-                            page.RegisterWidgetChanges (id, idx.Name, idx.Value, oldAtr.Value);
-                    }
-                } else {
-
-                    // No old value, attribute was added during this request.
-                    page.RegisterWidgetChanges (id, idx.Name, idx.Value);
-                }
-            }
-        }
-
-        /*
-         * Helper method to store the old value of attribute.
-         */
-        private void StoreOldValue (string name)
-        {
-            // We only store old value the first time attribute is touched, since it's used to calculate "offset" for changes to send back to client.
-            if (FindAttribute (_oldAttributeValue, name) == null) {
-
-                // Storing old value.
-                var old = FindAttribute (_formDataThisRequest, name) ?? 
-                    (FindAttribute (_viewStatePersisted, name) ?? 
-                     FindAttribute (_preViewState, name));
-
-                // Checking if we have an old value for attribute.
-                if (old != null) {
-
-                    // We have an old value, making sure we store it in the collection where the old values are stored.
-                    _oldAttributeValue.Add (new Attribute (old.Name, old.Value));
-                }
+                // Registering change to be returned to client.
+                page.RegisterWidgetChanges (id, idx.Name, idx.Value);
             }
         }
 

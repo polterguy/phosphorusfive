@@ -21,7 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.IO;
+using System.Linq;
 using System.Web.Script.Serialization;
 
 namespace p5.ajax.core.filters
@@ -48,12 +48,12 @@ namespace p5.ajax.core.filters
         protected override string RenderResponse ()
         {
             // JavaScript files.
-            if (Page.JSInclusionsForCurrentRequest.Count > 0) {
+            if (Page.JSInclusionsForCurrentRequest.Count() > 0) {
                 Page.SendObject ("__p5_js_objects", Page.JSInclusionsForCurrentRequest);
             }
 
             // Stylesheet files.
-            if (Page.CSSInclusionsForCurrentRequest.Count > 0) {
+            if (Page.CSSInclusionsForCurrentRequest.Count() > 0) {
                 Page.SendObject ("__p5_css_files", Page.CSSInclusionsForCurrentRequest);
             }
 

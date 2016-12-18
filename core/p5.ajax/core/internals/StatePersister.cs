@@ -48,6 +48,8 @@ namespace p5.ajax.core.internals
             : base (page)
         {
             _numberOfViewStateEntries = numberOfViewStateEntries;
+            if (_numberOfViewStateEntries < 0 || _numberOfViewStateEntries > 50)
+                throw new ApplicationException ("Legal value for '.p5.webapp.viewstate-per-session-entries' web.config settings are between 0 and 50");
 
             _viewStateId = page.IsPostBack ? new Guid (page.Request ["_p5_state_key"]) : Guid.NewGuid ();
             if ((page as AjaxPage).IsAjaxRequest) return;

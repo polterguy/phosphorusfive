@@ -145,11 +145,8 @@ namespace p5.ajax.core.filters
          */
         private string IncludeCSSFiles (string html)
         {
-            // Retrieving CSS files.
-            var cssFiles = Page.PersistentCSSInclusions;
-
             // If we don't have any CSS files to include, we return early.
-            if (cssFiles.Count == 0)
+            if (Page.PersistentCSSInclusions.Count == 0)
                 return html;
 
             // Setting up a StringBuilder return buffer.
@@ -160,7 +157,7 @@ namespace p5.ajax.core.filters
             builder.Append (html.Substring (0, indexOfHeadEnd).TrimEnd ());
 
             // Including CSS files, making sure we nicely format our inclusion HTML.
-            foreach (var idxFile in cssFiles) {
+            foreach (var idxFile in Page.PersistentCSSInclusions) {
                 builder.Append (string.Format ("\r\n\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>", idxFile));
             }
 
@@ -193,22 +190,22 @@ namespace p5.ajax.core.filters
             // This is because send JS logic might depend upon inclusion JS, and inclusion inline JS might depend upon files.
 
             // Including javascript files, making sure we only retrieve files initially.
-            foreach (var idxFile in Page.PersistentJSInclusions.Where (ix => ix.Item2)) {
+            foreach (var idxFile in Page.PersistensJSFileInclusions) {
 
                 // Making sure we nicely format it, and URL encode its most usual variants.
-                builder.Append (string.Format ("\r\n\t\t<script type=\"text/javascript\" src=\"{0}\"></script>", idxFile.Item1.Replace ("&", "&amp;")));
+                builder.Append (string.Format ("\r\n\t\t<script type=\"text/javascript\" src=\"{0}\"></script>", idxFile.Replace ("&", "&amp;")));
             }
 
             // Then including inline JavaScript inclusions, and [p5.web.send-javascript] bursts, if there are any.
-            if (Page.SendScripts.Count > 0 || Page.PersistentJSInclusions.Count (ix => !ix.Item2) > 0) {
+            if (Page.SendScripts.Count() > 0 || Page.PersistensJSObjectInclusions.Count () > 0) {
 
                 builder.Append ("\r\n\t\t<script type=\"text/javascript\">\r\nwindow.onload = function() {\r\n\r\n");
 
                 // Inclusions have presedence, since they're logically almost like "JS files".
-                foreach (var idxInclusion in Page.PersistentJSInclusions.Where (ix => !ix.Item2)) {
+                foreach (var idxInclusion in Page.PersistensJSObjectInclusions) {
 
                     // Making sure we at least to some extent nicely format our JavaScript.
-                    builder.Append (idxInclusion.Item1);
+                    builder.Append (idxInclusion);
                     builder.Append ("\r\n\r\n");
                 }
 
