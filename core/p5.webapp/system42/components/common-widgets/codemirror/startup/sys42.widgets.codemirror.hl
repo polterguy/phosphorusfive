@@ -148,7 +148,7 @@ p5.events.create:sys42.widgets.codemirror
   /*
    * Making sure textarea input is replaced with our CodeMirror instance.
    */
-  p5.web.send-javascript:@"p5['{0}'] = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
+  p5.web.include-javascript:@"p5['{0}'] = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
 mode:'hyperlambda',
 theme:'{2}',
 lineNumbers:true,
@@ -175,7 +175,7 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
   /*
    * Then setting height.
    */
-  p5.web.send-javascript:@"p5['{0}'].setSize('100%', '{1}');"
+  p5.web.include-javascript:@"p5['{0}'].setSize('100%', '{1}');"
     :x:/../*/_arg?value
     :x:/../*/_height?value
 

@@ -114,6 +114,19 @@ namespace p5.ajax.widgets
             RenderMode = RenderingMode.Default;
         }
 
+        /*
+         * Helper to retrieve AjaxPage reference.
+         */
+        private AjaxPage _page;
+        protected AjaxPage AjaxPage
+        {
+            get {
+                if (_page == null)
+                    _page = Page as AjaxPage;
+                return _page;
+            }
+        }
+
         // Contains all attributes of widget
         private readonly AttributeStorage _attributes = new AttributeStorage ();
 
@@ -408,7 +421,7 @@ namespace p5.ajax.widgets
         protected virtual void RenderChildrenWidgetsAsJson (HtmlTextWriter writer)
         {
             // re-rendering all children by default
-            (Page as IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "innerValue", GetChildrenHtml ());
+            AjaxPage.RegisterWidgetChanges (ClientID, "innerValue", GetChildrenHtml ());
         }
 
         public override void RenderControl (HtmlTextWriter writer)
@@ -420,16 +433,16 @@ namespace p5.ajax.widgets
                         if (RenderMode == RenderingMode.ReRender) {
 
                             // Re-rendering entire widget
-                            (Page as IAjaxPage).Manager.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetHtml ());
+                            AjaxPage.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetHtml ());
                         } else if (RenderMode == RenderingMode.ReRenderChildren) {
 
                             // Re-rendering all children controls, but also renders changes to widget ...
-                            _attributes.RegisterChanges ((Page as IAjaxPage).Manager, _oldId ?? ClientID);
+                            _attributes.RegisterChanges (AjaxPage, _oldId ?? ClientID);
                             RenderChildrenWidgetsAsJson (writer);
                         } else {
 
                             // Only pass changes back to client as json
-                            _attributes.RegisterChanges ((Page as IAjaxPage).Manager, _oldId ?? ClientID);
+                            _attributes.RegisterChanges (AjaxPage, _oldId ?? ClientID);
                             RenderChildren (writer);
                         }
                     } else {
@@ -443,7 +456,7 @@ namespace p5.ajax.widgets
                     if (IsPhosphorusRequest && RenderMode == RenderingMode.RenderInvisible && !ancestorReRendering) {
 
                         // Re-rendering widget's invisible markup
-                        (Page as IAjaxPage).Manager.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetInvisibleHtml ());
+                        AjaxPage.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetInvisibleHtml ());
                     } else if (!IsPhosphorusRequest || ancestorReRendering) {
 
                         // Rendering invisible markup
@@ -624,7 +637,7 @@ namespace p5.ajax.widgets
             }
 
             // Render attributes
-            _attributes.Render (writer, this);
+            _attributes.Render (writer);
 
             if (HasContent) {
                 writer.Write (">");

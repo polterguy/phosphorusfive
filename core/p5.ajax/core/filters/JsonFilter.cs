@@ -27,18 +27,18 @@ using System.Web.Script.Serialization;
 namespace p5.ajax.core.filters
 {
     /// <summary>
-    ///     HTTP response filter for rendering JSON back to client during ajax requests.
+    ///     HTTP response filter for rendering JSON back to client during Ajax requests.
     /// </summary>
     public class JsonFilter : Filter
     {
         /// <summary>
         ///     Initializes a new instance of the JsonFilter class.
         /// </summary>
-        /// <param name="manager">The manager this instance is rendering for</param>
-        public JsonFilter (Manager manager)
-            : base (manager)
+        /// <param name="page">The AjaxPage this instance is rendering for</param>
+        public JsonFilter (AjaxPage page)
+            : base (page)
         {
-            Manager.Page.Response.Headers ["Content-Type"] = "application/json";
+            Page.Response.Headers ["Content-Type"] = "application/json";
         }
 
         /// <summary>
@@ -48,17 +48,17 @@ namespace p5.ajax.core.filters
         protected override string RenderResponse ()
         {
             // JavaScript files.
-            if ((Manager.Page as IAjaxPage).NewJavaScriptToPush.Count > 0) {
-                Manager.SendObject ("__p5_js_objects", (Manager.Page as IAjaxPage).NewJavaScriptToPush);
+            if (Page.JSInclusionsForCurrentRequest.Count > 0) {
+                Page.SendObject ("__p5_js_objects", Page.JSInclusionsForCurrentRequest);
             }
 
             // Stylesheet files.
-            if ((Manager.Page as IAjaxPage).NewStylesheetFilesToPush.Count > 0) {
-                Manager.SendObject ("__p5_css_files", (Manager.Page as IAjaxPage).NewStylesheetFilesToPush);
+            if (Page.CSSInclusionsForCurrentRequest.Count > 0) {
+                Page.SendObject ("__p5_css_files", Page.CSSInclusionsForCurrentRequest);
             }
 
             // Returning JSON.
-            return new JavaScriptSerializer ().Serialize (Manager.Changes);
+            return new JavaScriptSerializer ().Serialize (Page.Changes);
         }
     }
 }

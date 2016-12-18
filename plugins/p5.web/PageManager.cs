@@ -88,7 +88,7 @@ namespace p5.web
         [ActiveEvent (Name = "p5.web.request.is-ajax-callback")]
         public void p5_web_request_is_ajax_callback (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = AjaxPage.Manager.IsPhosphorusAjaxRequest;
+            e.Args.Value = AjaxPage.IsAjaxRequest;
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace p5.web
             foreach (var idxSnippet in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Passing JavaScript to client
-                AjaxPage.Manager.SendJavaScriptToClient (idxSnippet);
+                AjaxPage.SendJavaScript (idxSnippet);
             }
         }
 
@@ -119,7 +119,7 @@ namespace p5.web
             foreach (var idxSnippet in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Passing JavaScript to client
-                AjaxPage.RegisterJavaScript (idxSnippet);
+                AjaxPage.IncludeJavaScriptObject (idxSnippet);
             }
         }
 
@@ -135,7 +135,7 @@ namespace p5.web
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Passing file to client
-                AjaxPage.RegisterJavaScriptFile (context.Raise (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
+                AjaxPage.IncludeJavaScriptFile (context.Raise (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
             }
         }
 
@@ -151,7 +151,7 @@ namespace p5.web
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Register file for inclusion back to client
-                AjaxPage.RegisterStylesheetFile (context.Raise (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
+                AjaxPage.IncludeCSSFile (context.Raise (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
             }
         }
 
@@ -164,12 +164,11 @@ namespace p5.web
         public void p5_web_set_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if this is ajax callback, which means we'll have to redirect using JavaScript
-            if (AjaxPage.Manager.IsPhosphorusAjaxRequest) {
+            if (AjaxPage.IsAjaxRequest) {
 
                 // Redirecting using JavaScript
-                AjaxPage.Manager.SendJavaScriptToClient (
-                    string.Format ("window.location='{0}';", 
-                        XUtil.Single<string> (context, e.Args).Replace ("'", "\\'")));
+                AjaxPage.SendJavaScript (string.Format ("window.location='{0}';", XUtil.Single<string> (context, e.Args).Replace ("'", "\\'")));
+
             } else {
 
                 // Redirecting using Response object
@@ -233,8 +232,8 @@ namespace p5.web
         [ActiveEvent (Name = "p5.web.reload-location")]
         public void p5_web_reload_location (ApplicationContext context, ActiveEventArgs e)
         {
-            // Redirecting using JavaScript
-            AjaxPage.Manager.SendJavaScriptToClient (string.Format ("window.location.replace(window.location.href);"));
+            // Redirecting using JavaScript.
+            AjaxPage.SendJavaScript ("window.location.replace(window.location.href);");
         }
 
         /// <summary>
@@ -247,7 +246,7 @@ namespace p5.web
         {
             var key = XUtil.Single<string> (context, e.Args);
             var source = XUtil.Source (context, e.Args);
-            AjaxPage.Manager.SendObject (key, core.Utilities.Convert<string> (context, source));
+            AjaxPage.SendObject (key, core.Utilities.Convert<string> (context, source));
         }
 
         #endregion

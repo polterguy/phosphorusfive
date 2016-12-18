@@ -49,7 +49,6 @@ p5.events.create:sys42.widgets.ck-editor
 
         /*
          * Setting CKEditor's basepath.
-         * Notice this must occur BEFORE we include the CKEditor's JavaScript file.
          */
         p5.web.include-javascript:"CKEDITOR_BASEPATH='/system42/components/common-widgets/ckeditor/media/';"
 

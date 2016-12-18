@@ -142,10 +142,10 @@ namespace p5.webapp.code
             var title = XUtil.Single<string>(context, e.Args);
 
             // Checking if this is ajax request, at which point we'll have to update title using JavaScript
-            if (Manager.IsPhosphorusAjaxRequest) {
+            if (IsAjaxRequest) {
 
                 // Passing title to client as JavaScript update, making sure we escape string
-                Manager.SendJavaScriptToClient(
+                SendJavaScript(
                     string.Format("document.title='{0}';", title.Replace("\\", "\\\\").Replace("'", "\\'")));
             } else {
 

@@ -23,6 +23,7 @@
 
 using System.IO;
 using System.Text;
+using System.Web.UI;
 
 namespace p5.ajax.core.filters
 {
@@ -31,37 +32,36 @@ namespace p5.ajax.core.filters
     /// </summary>
     public abstract class Filter : Stream
     {
+        // Next stream, to support "chaining" of streams.
         private readonly Stream _next;
-        private readonly MemoryStream _stream;
+
+        // Actual implementation of base Stream class, simply making sure we render content into a memory stream.
+        private readonly MemoryStream _stream = new MemoryStream ();
 
         /// <summary>
         ///     Initializes a new instance of the Filter class.
         /// </summary>
         /// <param name="manager">The manager for this filter</param>
-        protected Filter (Manager manager)
+        protected Filter (AjaxPage page)
         {
-            Manager = manager;
-            _stream = new MemoryStream ();
-            Manager.Page.Error += Page_Error;
-            _next = Manager.Page.Response.Filter;
-            ContentEncoding = Manager.Page.Response.ContentEncoding;
+            // Making sure our AjaxPage object stays around by reference, since it's needed at other places during filter's life cycle.
+            Page = page;
+
+            // Making sure we handle any unhandled exceptions, such that we can delete the filter, and render the default HTML back to client.
+            Page.Error += Page_Error;
+
+            // Making it possible to "chain" filters, adding additional filters.
+            _next = Page.Response.Filter;
+
+            // Keeping any existing content encoding, to make sure we support alternative encodings during rendering.
+            ContentEncoding = Page.Response.ContentEncoding;
         }
 
         /// <summary>
-        ///    Handled to remove our custom filter, to make sure default filter is rendering the pure HTML back to client.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Page_Error (object sender, System.EventArgs e)
-        {
-            Manager.Page.Response.Filter = _next;
-        }
-
-        /// <summary>
-        ///     Returns the manager for this filter.
+        ///     Returns the owning AjaxPage for our filter.
         /// </summary>
         /// <value>the manager</value>
-        protected Manager Manager
+        protected AjaxPage Page
         {
             get;
             private set;
@@ -76,6 +76,27 @@ namespace p5.ajax.core.filters
             get;
             private set;
         }
+
+        /// <summary>
+        ///     Renders the response.
+        ///     Responsible for returning whatever should be rendered back to the client.
+        /// </summary>
+        /// <returns>The response rendered back to the client</returns>
+        protected abstract string RenderResponse ();
+
+        /// <summary>
+        ///    Handled to remove our custom filter, to make sure default filter is rendering the pure HTML back to client.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Page_Error (object sender, System.EventArgs e)
+        {
+            _stream.CopyTo (_next);
+            Page.Response.Filter = _next;
+            this.Dispose ();
+        }
+
+        #region [ -- Implementation of base class -- ]
 
         /// <summary>
         ///     Returns a value indicating whether this instance can read.
@@ -153,12 +174,6 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Renders the response.
-        /// </summary>
-        /// <returns>The response rendered back to the client</returns>
-        protected abstract string RenderResponse ();
-
-        /// <summary>
         ///     Closes the stream and renders its content to the next filter in the chain of filters.
         /// </summary>
         public override void Close ()
@@ -171,7 +186,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Flush this instance
+        ///     Flush this instance.
         /// </summary>
         public override void Flush ()
         {
@@ -179,7 +194,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Seek the specified offset and origin
+        ///     Seek the specified offset and origin.
         /// </summary>
         /// <param name="offset">Offset</param>
         /// <param name="origin">Origin from where to count your offset from</param>
@@ -189,7 +204,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Sets the length
+        ///     Sets the length.
         /// </summary>
         /// <param name="value">New length of stream</param>
         public override void SetLength (long value)
@@ -198,7 +213,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Reads into the specified buffer, offset and count
+        ///     Reads into the specified buffer, offset and count.
         /// </summary>
         /// <param name="buffer">Buffer to hold the content you wish to read</param>
         /// <param name="offset">Offset from where you start reading</param>
@@ -209,7 +224,7 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Write the specified buffer's content, offset and count
+        ///     Write the specified buffer's content, offset and count.
         /// </summary>
         /// <param name="buffer">Buffer containing bytes to write</param>
         /// <param name="offset">Offset from where to start reading from the buffer</param>
@@ -220,7 +235,25 @@ namespace p5.ajax.core.filters
         }
 
         /// <summary>
-        ///     Disposes this instance
+        ///     Reads one byte.
+        /// </summary>
+        /// <returns>The byte it just read</returns>
+        public override int ReadByte ()
+        {
+            return _stream.ReadByte ();
+        }
+
+        /// <summary>
+        ///     Writes one byte.
+        /// </summary>
+        /// <param name="value">The byte you wish to write</param>
+        public override void WriteByte (byte value)
+        {
+            _stream.WriteByte (value);
+        }
+
+        /// <summary>
+        ///     Disposes this instance.
         /// </summary>
         /// <param name="disposing">if set to <c>true</c> disposing</param>
         protected override void Dispose (bool disposing)
@@ -230,22 +263,6 @@ namespace p5.ajax.core.filters
             base.Dispose (disposing);
         }
 
-        /// <summary>
-        ///     Reads one byte
-        /// </summary>
-        /// <returns>The byte it just read</returns>
-        public override int ReadByte ()
-        {
-            return _stream.ReadByte ();
-        }
-
-        /// <summary>
-        ///     Writes one byte
-        /// </summary>
-        /// <param name="value">The byte you wish to write</param>
-        public override void WriteByte (byte value)
-        {
-            _stream.WriteByte (value);
-        }
+        #endregion
     }
 }

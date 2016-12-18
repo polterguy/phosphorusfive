@@ -28,25 +28,44 @@ using p5.ajax.widgets;
 namespace p5.ajax.core.internals
 {
     /// <summary>
-    ///     Class used to encapsulate all attributes for widgets
+    ///     Class used to encapsulate all attributes for widgets.
     /// </summary>
     internal class AttributeStorage
     {
+        // All of these will have values added and removed automatically during the request, depending upon when 
+        // and how attributes are added and removed.
+        // Notice, since we can have a mix of attributes declared in the .aspx markup, in addition to having these removed,
+        // while other attributes are added dynamically during callbacks, etc - We need to keep track of which attributes
+        // are originally in the markup, which are removed, and which are added.
+        // Hence, we need several lists of attributes, to know which are removed, added, and so on, during requests, for each widget.
+
+        // Contains the original value of an attribute, before it is changed, due to code, or FORM data is being parsed, etc.
+        // This is necessary in order to be able to send exclusively the changes back to the client.
+        // This is what allows us to only send a substring of new attribute value, back to manager.js, which then can concatenate the new
+        // value with the existing value for the specified attribute.
+        private readonly List<Attribute> _oldAttributeValue = new List<Attribute> ();
+
+        // List of attributes that are dynamically added during the current request.
         private readonly List<Attribute> _dynamicallyAddedThisRequest = new List<Attribute> ();
+
+        // List of attributes that are dynamically removed during the current request.
         private readonly List<Attribute> _dynamicallyRemovedThisRequest = new List<Attribute> ();
+
+        // List of attributes (mostly form HTTP POST values) that are sent from the client as FORM data during the current request.
         private readonly List<Attribute> _formDataThisRequest = new List<Attribute> ();
 
-        // All of these will have values added and removed automatically during the request
-        // depending upon when and how attributes are added and removed
-        private readonly List<Attribute> _originalValue = new List<Attribute> ();
-
-        // This is never touched after viewstate is loaded
+        // Original value for attribute, before ViewState is de-serialized.
         private readonly List<Attribute> _preViewState = new List<Attribute> ();
+
+        // List of attributes that are persisted in the ViewState during the current request.
         private readonly List<Attribute> _viewStatePersisted = new List<Attribute> ();
+
+        // List of attributes that are persistently removed from the widget in ViewState.
+        // Necessary to keep track of attributes that are declared in .aspx, but removed later.
         private readonly List<Attribute> _viewStatePersistedRemoved = new List<Attribute> ();
 
         /// <summary>
-        ///     Determines whether this instance has the attribute with the specified name
+        ///     Determines whether this instance has the attribute with the specified name.
         /// </summary>
         /// <returns><c>true</c> if this instance has the attribute with the specified key; otherwise, <c>false</c></returns>
         /// <param name="name">The name of the attribute you wish to retrieve the value of</param>
@@ -56,7 +75,7 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Returns the value of the attribute with the specified name
+        ///     Returns the value of the attribute with the specified name.
         /// </summary>
         /// <returns>The value of the attribute</returns>
         /// <param name="name">The name of the attribute you wish to retrieve the value of</param>
@@ -69,17 +88,17 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Changes or creates the value of the attribute with the specified name
+        ///     Changes the existing, or creates a new value, for the attribute with the specified name.
         /// </summary>
         /// <param name="name">The name of the attribute you wish to change the value of</param>
         /// <param name="value">The new value of attribute</param>
         public void ChangeAttribute (string name, string value)
         {
-            // changing attribute, but first storing old value
+            // Changing attribute, but first storing old value.
             StoreOldValue (name);
             SetAttributeInternal (_dynamicallyAddedThisRequest, name, value);
 
-            // removing from all other lists
+            // Removing attribute from all other lists.
             RemoveAttributeInternal (_dynamicallyRemovedThisRequest, name);
             RemoveAttributeInternal (_formDataThisRequest, name);
             RemoveAttributeInternal (_viewStatePersistedRemoved, name);
@@ -87,24 +106,24 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Removes the attribute with the specified name
+        ///     Removes the attribute with the specified name.
         /// </summary>
         /// <param name="name">The name of the attribute you wish to remove</param>
         public void RemoveAttribute (string name, bool serializeToClient = true)
         {
             if (FindAttribute (_dynamicallyAddedThisRequest, name) != null) {
 
-                // Attribute was added this request, simply removing the add
+                // Attribute was added this request, simply removing the add.
                 RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
             } else {
 
-                // Changing attribute, but first storing old value, but only if caller says we should
+                // Changing attribute, and storing its old value, but only if caller says we should serialize the attribute change back to the client.
                 if (serializeToClient) {
                     StoreOldValue (name);
                     SetAttributeInternal (_dynamicallyRemovedThisRequest, name, null);
                 }
 
-                // Removing from all other lists
+                // Removing the attribute from all other lists.
                 RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
                 RemoveAttributeInternal (_formDataThisRequest, name);
                 RemoveAttributeInternal (_viewStatePersistedRemoved, name);
@@ -114,15 +133,21 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Returns all attribute keys
+        ///     Returns all attribute keys.
         /// </summary>
         /// <value>The names of all attributes stored in this instance</value>
         public IEnumerable<string> Keys {
             get {
+
+                // In order to not yield the same attribute several times, we need to keep track of which attributes we have already seen.
                 Dictionary<string, bool> _alreadySen = new Dictionary<string, bool> ();
+
+                // Making sure we first iterate through all attributes that were removed, such that we do NOT yield those to caller.
                 foreach (var idx in _dynamicallyRemovedThisRequest) {
                     _alreadySen [idx.Name] = true;
                 }
+
+                // Then yielding all attributes for widget back to caller.
                 foreach (var idx in _dynamicallyAddedThisRequest) {
                     if (!_alreadySen.ContainsKey (idx.Name)) {
                         yield return idx.Name;
@@ -135,7 +160,7 @@ namespace p5.ajax.core.internals
                         _alreadySen [idx.Name] = true;
                     }
                 }
-                foreach (var idx in _originalValue) {
+                foreach (var idx in _oldAttributeValue) {
                     if (!_alreadySen.ContainsKey (idx.Name)) {
                         yield return idx.Name;
                         _alreadySen [idx.Name] = true;
@@ -157,7 +182,7 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Sets the state the attribute has, before ViewState is loaded
+        ///     Sets the state the attribute has, before ViewState is loaded.
         /// </summary>
         /// <param name="name">Name of attribute</param>
         /// <param name="value">Value of attribute</param>
@@ -167,20 +192,20 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Sets the attribute value as read from your HTTP POST parameters
+        ///     Sets the attribute value as read from your HTTP POST form data.
         /// </summary>
         /// <param name="name">Name of attribute</param>
         /// <param name="value">Value of attribute</param>
         internal void SetAttributeFormData (string name, string value)
         {
-            // Making sure we normalize Carriage Return, such that they're always in "canonical form"
+            // Making sure we normalize Carriage Return, such that they're always in "canonical form".
             if (value != null && value.Contains ("\n") && !value.Contains ("\r\n"))
                 value = value.Replace ("\n", "\r\n");
 
-            // Adding attribute to form data list
+            // Adding attribute to form data list.
             SetAttributeInternal (_formDataThisRequest, name, value);
 
-            // Removing from all other lists
+            // Removing from all other lists.
             RemoveAttributeInternal (_dynamicallyRemovedThisRequest, name);
             RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
             RemoveAttributeInternal (_viewStatePersistedRemoved, name);
@@ -188,7 +213,7 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Loads the attribute values from the ViewState object given
+        ///     Loads the attribute values from the ViewState object given.
         /// </summary>
         /// <param name="viewStateObject">The ViewState object</param>
         internal void LoadFromViewState (object viewStateObject)
@@ -199,15 +224,15 @@ namespace p5.ajax.core.internals
             var vals = viewStateObject as string[][];
             foreach (var idx in vals) {
 
-                // Skipping "id" attribute, which might end up in our list, when ever a 
-                // widget has changed its ID
+                // Skipping "id" attribute, which might end up in our list, whenever a widget has its ID changed.
                 if (idx [0] != "id")
                     _viewStatePersisted.Add (new Attribute (idx [0], idx [1]));
             }
         }
 
         /// <summary>
-        ///     Loads the attributes that are removed from ViewState
+        ///     Loads the attributes that are persistently removed from ViewState.
+        ///     Necessary to make it possible to remove attributes that are declared in .aspx markup.
         /// </summary>
         /// <param name="viewstateObject">Viewstate object</param>
         internal void LoadRemovedFromViewState (object viewstateObject)
@@ -222,32 +247,33 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Returns an object intended to be put into the ViewState back to caller
+        ///     Returns an object intended to be put into the ViewState back to caller.
+        ///     Invoked during serialization of ViewState for control/widget.
         /// </summary>
         /// <returns>The attribute changes in ViewState format</returns>
         internal object SaveToViewState (Widget widget)
         {
             var atrs = new List<Attribute> ();
 
-            // First add all that are dynamically added
+            // First add all that are dynamically added.
             atrs.AddRange (_dynamicallyAddedThisRequest);
 
-            // Then add all that are already in the viewstate
+            // Then add all that are already in the ViewState.
             atrs.AddRange (_viewStatePersisted);
 
             // Then if widget is not visible, we add the form data attributes, to make sure they don't disappear during next callback.
+            // This is necessary in order to have a widget keep its FORM data value(s), if it is later made invisible.
             if (!widget.Visible)
                 atrs.AddRange (_formDataThisRequest);
 
-            // Then removing all that has the same value as when they were created before viewstate was being tracked
-            atrs.RemoveAll (
-                delegate (Attribute idx) { return _preViewState.Exists (idxPre => idxPre.Name == idx.Name && idxPre.Value == idx.Value); });
+            // Then removing all attributes that has the same value as when they were created before ViewState was being tracked.
+            atrs.RemoveAll (ix => _preViewState.Exists (ixPre => ixPre.Name == ix.Name && ixPre.Value == ix.Value));
 
-            // Nothing to return
+            // Checking if we have anything to serialize into our ViewState, and if not, returning null, early.
             if (atrs.Count == 0)
                 return null;
 
-            // Returning attributes
+            // Returning attributes, as a two dimensional array back to caller.
             var retVal = new string[atrs.Count][];
             for (var idx = 0; idx < atrs.Count; idx++) {
 
@@ -259,7 +285,8 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Returns an object intended to be put into your ViewState containing all the removed attributes back to caller
+        ///     Returns an object intended to be put into your ViewState containing all the removed attributes back to caller.
+        ///     Invoked during serialization of ViewState for control/widget.
         /// </summary>
         /// <returns>The removed attributes</returns>
         internal object SaveRemovedToViewState ()
@@ -268,9 +295,12 @@ namespace p5.ajax.core.internals
             atrs.AddRange (_dynamicallyRemovedThisRequest);
             atrs.AddRange (_viewStatePersistedRemoved);
 
+            // Making sure we have something to serialize.
             if (atrs.Count == 0)
                 return null;
 
+            // Returing attribute names as an array, to serialize into ViewState.
+            // Notice, no need to serialize value (obviously!)
             var retVal = new string[atrs.Count];
             for (var idx = 0; idx < atrs.Count; idx++) {
                 retVal [idx] = atrs [0].Name;
@@ -279,29 +309,28 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Renders the attributes to the given HtmlTextWriter
+        ///     Renders the attributes to the given HtmlTextWriter.
         /// </summary>
-        /// <param name="writer">Where to write the attributes</param>
-        /// <param name="widget">Widget we are rendering for</param>
-        internal void Render (HtmlTextWriter writer, Widget widget)
+        /// <param name="writer">Where to render the attribute names/values.</param>
+        internal void Render (HtmlTextWriter writer)
         {
-            // Adding all changes
+            // Adding all changes we need to render.
             var lst = new List<Attribute> ();
             lst.AddRange (_dynamicallyAddedThisRequest);
             lst.AddRange (_formDataThisRequest);
             lst.AddRange (_viewStatePersisted);
 
-            // Adding all that existed before viewstate was being tracked, but ONLY if they do not exist in other lists
+            // Adding all that existed before viewstate was being tracked, but ONLY if they do not exist in other lists.
             foreach (var idx in _preViewState) {
                 if (FindAttribute (lst, idx.Name) == null)
                     lst.Add (idx);
             }
 
             // Removing stuff that's not actually attributes, but still persisted here for convenience,
-            // in addition to all "private attributes", meaning server-side only attributes
+            // in addition to all "private attributes", meaning server-side only attributes.
             lst.RemoveAll (ix => ix.Name == "outerHTML" || ix.Name == "innerValue" || ix.Name == "Element" || ix.Name.StartsWith ("_") || ix.Name.StartsWith ("."));
 
-            // Rendering to html writer
+            // Rendering attributes, both names and values, to HtmlTextWriter.
             foreach (var idx in lst) {
                 var name = idx.Name;
                 string value;
@@ -309,74 +338,79 @@ namespace p5.ajax.core.internals
 
                     // This is an Ajax event.
                     value = "p5.e(event)";
+
                 } else {
+
+                    // This is either a normal attribute, or a JavaScript DOM event handler, with inline JavaScript.
                     value = idx.Value;
                 }
 
-                writer.Write (" ");
-                if (value == null) {
-                    writer.Write (@"{0}", name);
-                } else {
-                    writer.Write (@"{0}=""{1}""", name, value.Replace("\"", "&quot;"));
-                }
+                // Rendering attribute, making sure we support "empty" attributes, and that we escape double quotes.
+                writer.Write (value == null ? string.Format (@" {0}", name) : string.Format (@" {0}=""{1}""", name, value.Replace ("\"", "&quot;")));
             }
         }
 
         /// <summary>
-        ///     Registers the changed attributes during this request into the given Manager object
+        ///     Registers the changed attributes during this request.
         /// </summary>
         /// <param name="manager">Manager to render changes into</param>
         /// <param name="id">ID of widget that owns storage object</param>
-        internal void RegisterChanges (Manager manager, string id)
+        internal void RegisterChanges (AjaxPage page, string id)
         {
-            // Adding up the ones that were deleted during this request
+            // Adding up the ones that were deleted during this request.
             foreach (var idx in _dynamicallyRemovedThisRequest) {
-                manager.RegisterDeletedAttribute (id, idx.Name);
+                page.RegisterDeletedAttribute (id, idx.Name);
             }
 
-            // Adding up our changes
+            // Adding up our changes.
             foreach (var idx in _dynamicallyAddedThisRequest) {
 
-                // Checking if this is an invisible attribute, at which case it 
-                // is never rendered to client
-                if (idx.Name.IndexOf ("_") == 0 || idx.Name.IndexOf(".") == 0)
+                // Checking if this is an invisible attribute, at which case it is never rendered back to client.
+                if (idx.Name.StartsWith ("_") || idx.Name.StartsWith ("."))
                     continue;
 
-                var value = idx.Value;
+                // Finding old value, if any.
+                var oldAtr = FindAttribute (_oldAttributeValue, idx.Name);
 
-                // Finding old value, if any
-                var oldAtr = FindAttribute (_originalValue, idx.Name);
-
+                // Checking if we should only register the "offset change", or the entire attribute's value.
                 if (oldAtr != null) {
+
+                    // Possibly "offset change", but first making sure there even is a change at all.
                     if (oldAtr.Value != idx.Value) {
 
                         // Notice, we force an entire re-render operation of "style" attributes, 
-                        // since there is no intelligent way to figure out offset of changes
+                        // since there is no way to figure out actual offset on client side for sure.
                         if (idx.Name == "style")
-                            manager.RegisterWidgetChanges (id, idx.Name, value);
+                            page.RegisterWidgetChanges (id, idx.Name, idx.Value);
                         else
-                            manager.RegisterWidgetChanges (id, idx.Name, value, oldAtr.Value);
+                            page.RegisterWidgetChanges (id, idx.Name, idx.Value, oldAtr.Value);
                     }
                 } else {
-                    manager.RegisterWidgetChanges (id, idx.Name, value);
+
+                    // No old value, attribute was added during this request.
+                    page.RegisterWidgetChanges (id, idx.Name, idx.Value);
                 }
             }
         }
 
         /*
-         * Helper method to store the old value of attribute
+         * Helper method to store the old value of attribute.
          */
         private void StoreOldValue (string name)
         {
-            // We only store old value the first time attribute is touched
-            if (FindAttribute (_originalValue, name) == null) {
+            // We only store old value the first time attribute is touched, since it's used to calculate "offset" for changes to send back to client.
+            if (FindAttribute (_oldAttributeValue, name) == null) {
 
-                // Storing old value
-                var old = FindAttribute (_formDataThisRequest, name) ?? (FindAttribute (_viewStatePersisted, name) ?? FindAttribute (_preViewState, name));
+                // Storing old value.
+                var old = FindAttribute (_formDataThisRequest, name) ?? 
+                    (FindAttribute (_viewStatePersisted, name) ?? 
+                     FindAttribute (_preViewState, name));
+
+                // Checking if we have an old value for attribute.
                 if (old != null) {
 
-                    // "Deep copy"
-                    _originalValue.Add (new Attribute (old.Name, old.Value));
+                    // We have an old value, making sure we store it in the collection where the old values are stored.
+                    _oldAttributeValue.Add (new Attribute (old.Name, old.Value));
                 }
             }
         }

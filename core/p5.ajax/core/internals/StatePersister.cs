@@ -30,16 +30,17 @@ using System.Collections.Generic;
 namespace p5.ajax.core.internals
 {
     /// <summary>
-    ///     Responsible for storing page's state for all requests in system
+    ///     Responsible for storing page's state for all requests in system.
     /// </summary>
     internal class StatePersister : PageStatePersister
     {
-        private const string SessionKey = "_p5_viewstate_session_key";
+        // Becomes the Session key for all ViewState entires for current session.
+        private const string SessionKey = ".p5.ajax.ViewState.Session-Key";
         private readonly int _numberOfViewStateEntries;
         private readonly Guid _viewStateId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.ajax.core.internals.StatePersister"/> class
+        ///     Initializes a new instance of the <see cref="p5.ajax.core.internals.StatePersister"/> class.
         /// </summary>
         /// <param name="page">Page instance</param>
         /// <param name="numberOfViewStateEntries">Number of view state entries per session</param>
@@ -49,7 +50,7 @@ namespace p5.ajax.core.internals
             _numberOfViewStateEntries = numberOfViewStateEntries;
 
             _viewStateId = page.IsPostBack ? new Guid (page.Request ["_p5_state_key"]) : Guid.NewGuid ();
-            if ((page as IAjaxPage).Manager.IsPhosphorusAjaxRequest) return;
+            if ((page as AjaxPage).IsAjaxRequest) return;
 
             // Adding the viewstate ID to the form, such that we can retrieve it again when the client does a postback
             var literal = new LiteralControl {Text = string.Format ("\t<input type=\"hidden\" value=\"{0}\" name=\"_p5_state_key\">\r\n\t\t", _viewStateId)};

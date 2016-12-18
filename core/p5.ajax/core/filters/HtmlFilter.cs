@@ -38,9 +38,9 @@ namespace p5.ajax.core.filters
         /// <summary>
         ///     Initializes a new instance of the HtmlFilter class.
         /// </summary>
-        /// <param name="manager">The manager this instance is rendering for</param>
-        public HtmlFilter (Manager manager)
-            : base (manager)
+        /// <param name="page">The AjaxPage this instance is rendering for</param>
+        public HtmlFilter (AjaxPage page)
+            : base (page)
         { }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace p5.ajax.core.filters
         private string IncludeCSSFiles (string html)
         {
             // Retrieving CSS files.
-            var cssFiles = (Manager.Page as IAjaxPage).StylesheetFilesToPush;
+            var cssFiles = Page.PersistentCSSInclusions;
 
             // If we don't have any CSS files to include, we return early.
             if (cssFiles.Count == 0)
@@ -175,10 +175,6 @@ namespace p5.ajax.core.filters
          */
         private string IncludeJavaScript (string html)
         {
-            // Retrieving JavaScript files.
-            // Notice, there will always be at least one, manager.js that is.
-            var jsFiles = (Manager.Page as IAjaxPage).JavaScriptToPush;
-
             // Figuring out where <body> ends, by iterating backwards from end of HTML, until we've found </body>
             var endBuffer = "";
             var positionOfEndBody = html.Length - 1;
@@ -197,19 +193,19 @@ namespace p5.ajax.core.filters
             // This is because send JS logic might depend upon inclusion JS, and inclusion inline JS might depend upon files.
 
             // Including javascript files, making sure we only retrieve files initially.
-            foreach (var idxFile in jsFiles.Where (ix => ix.Item2)) {
+            foreach (var idxFile in Page.PersistentJSInclusions.Where (ix => ix.Item2)) {
 
                 // Making sure we nicely format it, and URL encode its most usual variants.
                 builder.Append (string.Format ("\r\n\t\t<script type=\"text/javascript\" src=\"{0}\"></script>", idxFile.Item1.Replace ("&", "&amp;")));
             }
 
-            // Then including inline JavaScript inclusions, and [p5.web.send-javascript] inclusions, if there is any.
-            if (Manager.Changes.Contains ("_p5_script") || (Manager.Page as IAjaxPage).JavaScriptToPush.Count (ix => !ix.Item2) > 0) {
+            // Then including inline JavaScript inclusions, and [p5.web.send-javascript] bursts, if there are any.
+            if (Page.SendScripts.Count > 0 || Page.PersistentJSInclusions.Count (ix => !ix.Item2) > 0) {
 
                 builder.Append ("\r\n\t\t<script type=\"text/javascript\">\r\nwindow.onload = function() {\r\n\r\n");
 
                 // Inclusions have presedence, since they're logically almost like "JS files".
-                foreach (var idxInclusion in (Manager.Page as IAjaxPage).JavaScriptToPush.Where (ix => !ix.Item2)) {
+                foreach (var idxInclusion in Page.PersistentJSInclusions.Where (ix => !ix.Item2)) {
 
                     // Making sure we at least to some extent nicely format our JavaScript.
                     builder.Append (idxInclusion.Item1);
@@ -217,13 +213,11 @@ namespace p5.ajax.core.filters
                 }
 
                 // Then sending JavaScript content (last, after including files).
-                if (Manager.Changes.Contains ("_p5_script")) {
-                    foreach (var idxScript in Manager.Changes["_p5_script"] as List<string>) {
+                foreach (var idxScript in Page.SendScripts) {
 
-                        // Making sure we at least to some extent nicely format our JavaScript.
-                        builder.Append (idxScript);
-                        builder.Append ("\r\n\r\n");
-                    }
+                    // Making sure we at least to some extent nicely format our JavaScript.
+                    builder.Append (idxScript);
+                    builder.Append ("\r\n\r\n");
                 }
                 builder.Append ("};\r\n\t\t</script>");
             }

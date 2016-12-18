@@ -248,7 +248,7 @@ namespace p5.ajax.widgets
         {
             // Making sure all the automatically generated LiteralControls are removed, since they mess up their IDs,
             // but not in a normal postback, or initial loading of the page, since we need the formatting they provide
-            if ((Page as IAjaxPage).Manager.IsPhosphorusAjaxRequest) {
+            if (AjaxPage.IsAjaxRequest) {
                 var ctrls = Controls.Cast<Control> ().Where (idx => string.IsNullOrEmpty (idx.ID)).ToList ();
                 foreach (var idx in ctrls) {
                     Controls.Remove (idx);
@@ -311,7 +311,7 @@ namespace p5.ajax.widgets
             // Informing our manager that the current widget has changes, if we should
             if (widgets.Count > 0) {
                 foreach (var idx in widgets) {
-                    (Page as IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "__p5_add_" + idx.Item2, idx.Item1);
+                    AjaxPage.RegisterWidgetChanges (ClientID, "__p5_add_" + idx.Item2, idx.Item1);
                 }
             }
         }
@@ -322,7 +322,7 @@ namespace p5.ajax.widgets
             foreach (var idxOriginal in _originalCollection) {
                 var exist = Controls.Cast<Control> ().Any (idxActual => idxActual == idxOriginal);
                 if (!exist && !string.IsNullOrEmpty (idxOriginal.ID))
-                    (Page as IAjaxPage).Manager.RegisterDeletedWidget (idxOriginal.ClientID);
+                    AjaxPage.RegisterDeletedWidget (idxOriginal.ClientID);
             }
         }
 

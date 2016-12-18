@@ -64,4 +64,6 @@ TODO before release
 
 * Create logo, a yeallow pentagram star, with a ring around it.
 
+* Making sure we're using the correct JS inclusions all over the place, alternatives are [p5.web.send-javascript] and [p5.web.include-javascript]
+
 

@@ -21,18 +21,15 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-/// <summary>
-///     Namespace internally used by p5.ajax
-/// </summary>
 namespace p5.ajax.core.internals
 {
     /// <summary>
-    ///     Class encapsulating one attribute for Ajax widgets
+    ///     Class encapsulating one attribute for Ajax widgets.
     /// </summary>
     internal class Attribute
     {
         /// <summary>
-        ///     Initializes a new instance of the Attribute class
+        ///     Initializes a new instance of the Attribute class.
         /// </summary>
         /// <param name="name">Name of your attribute</param>
         public Attribute (string name)
@@ -41,7 +38,7 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Initializes a new instance of the Attribute class
+        ///     Initializes a new instance of the Attribute class.
         /// </summary>
         /// <param name="name">Name of your attribute</param>
         /// <param value="name">Value of your attribute</param>
@@ -52,7 +49,7 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Gets the name of your attribute
+        ///     Gets the name of your attribute.
         /// </summary>
         /// <value>The name</value>
         internal string Name
@@ -62,7 +59,7 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Gets the value of your attribute
+        ///     Gets the value of your attribute.
         /// </summary>
         /// <value>The value</value>
         internal string Value
