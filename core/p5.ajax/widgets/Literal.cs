@@ -28,6 +28,8 @@ namespace p5.ajax.widgets
 {
     /// <summary>
     ///     Allows you to create a widget that contains simple text or HTML.
+    /// 
+    ///     Useful for most widgets, where you don't care about de-referencing its content as widgets.
     /// </summary>
     [ParseChildren (true, "innerValue")]
     [PersistChildren (false)]

@@ -32,6 +32,8 @@ namespace p5.ajax.widgets
 {
     /// <summary>
     ///     A widget that can contains children widgets.
+    /// 
+    ///     Useful for widgets where you need to explicitly de-reference its children widgets.
     /// </summary>
     [ViewStateModeById]
     public class Container : Widget, INamingContainer

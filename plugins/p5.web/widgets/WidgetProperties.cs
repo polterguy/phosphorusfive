@@ -113,7 +113,7 @@ namespace p5.web.widgets
                             var newID = valueNode.GetExValue<string> (context);
                             if (string.IsNullOrEmpty (newID)) {
 
-                                // Widget's new id was null or empty, creating a new random unique ID for widget
+                                // Widget's new ID was null or empty, creating a new random unique ID for widget.
                                 newID = Container.CreateUniqueId ();
                             }
                             idxWidget.ID = newID;

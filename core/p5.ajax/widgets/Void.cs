@@ -27,7 +27,9 @@ using System.Web.UI;
 namespace p5.ajax.widgets
 {
     /// <summary>
-    ///     A widget that has neither children controls, nor content
+    ///     A widget that has neither children controls, nor content.
+    /// 
+    ///     Useful for "input", "hr" and "br" elements, etc.
     /// </summary>
     [ViewStateModeById]
     public class Void : Widget

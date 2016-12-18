@@ -69,10 +69,10 @@
 
 
     /*
-     * Raise server side event.
+     * Raise a server side event.
      *
-     * Raises a server side event for a dom element
-     * 'e' is the dom event.
+     * Raises a server side event for a DOM element.
+     * 'e' is the DOM event.
      */
     p5.e = function(e) {
         var el = p5.$(e.currentTarget);
@@ -88,7 +88,7 @@
      * The p5.el type wraps a dom element with some handy helper functions for raising server side http ajax requests, 
      * and help handle the return from the server to update the DOM, among other things.
      */
-    p5.el= function(e) {
+    p5.el = function(e) {
         this.el = e;
     };
 
