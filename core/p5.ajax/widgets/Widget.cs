@@ -93,14 +93,15 @@ namespace p5.ajax.widgets
             Default,
 
             /// <summary>
-            ///     Re-rendering mode, the entire widget will be re-transmitted back to the client as HTML.
+            ///     Re-rendering mode, the entire widget will be re-rendered back to the client as HTML.
             /// </summary>
             ReRender,
 
             /// <summary>
-            ///     Re-renders the children collection, meaning all children will be re-rendered as HTML back to the client.
+            ///     The children collection of widget has been modified, which means we'll need to take care of rendering deleted widgets and added
+            ///     widgets back to the client.
             /// </summary>
-            ReRenderChildren,
+            ChildrenCollectionModified,
 
             /// <summary>
             ///     Renders the widget in as invisible, which means it'll render without any of its attributes or content, and have
@@ -158,7 +159,7 @@ namespace p5.ajax.widgets
 
                         // Notice, we only keep the "original ID", in case ID is changed multiple times during page's life cycle.
                         if (_oldId == null)
-                            _oldId = base.ID;
+                            _oldId = base.ClientID;
                         _attributes.ChangeAttribute ("id", value);
                     }
                 }
@@ -204,8 +205,10 @@ namespace p5.ajax.widgets
         {
             get { return this ["Element"]; }
             set {
-                if (value.ToLower () != value)
+                if (value != null && value.ToLower () != value)
                     throw new ArgumentException ("p5.ajax doesn't like uppercase element names", "value");
+                if (value == null)
+                    this.DeleteAttribute ("Element");
                 this ["Element"] = value;
             }
         }
@@ -308,13 +311,15 @@ namespace p5.ajax.widgets
             RenderMode = RenderingMode.ReRender;
         }
 
-        /// <summary>
-        ///     Forces a re-rendering of your widget's children controls.
-        /// </summary>
-        public void ReRenderChildren ()
+        /*
+         * Forces a re-rendering of your widget's children controls.
+         */
+        protected void ChildrenCollectionIsModified ()
         {
+            // Notice, if the widget is re-rendered entirely, there is no need to mark the children collection as changed, since widget will be entirely
+            // re-rendered anyway, with all of its children also re-rendered.
             if (RenderMode != RenderingMode.ReRender)
-                RenderMode = RenderingMode.ReRenderChildren;
+                RenderMode = RenderingMode.ChildrenCollectionModified;
         }
 
         /// <summary>
@@ -365,44 +370,47 @@ namespace p5.ajax.widgets
         public override void RenderControl (HtmlTextWriter writer)
         {
             if (AreAncestorsVisible ()) {
-                var ancestorReRendering = IsAncestorReRenderingChildren ();
+                var ancestorReRendering = IsAncestorReRenderingThisWidget ();
                 if (Visible) {
                     if (AjaxPage.IsAjaxRequest && !ancestorReRendering) {
                         if (RenderMode == RenderingMode.ReRender) {
 
-                            // Re-rendering entire widget
+                            // Re-rendering entire widget.
+                            // Notice, since GetWidgetHtml will return HTML for widget, and its children controls, it's not necessary to invoke
+                            // "RenderChildren" or any similar methods here.
                             AjaxPage.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetHtml ());
 
-                        } else if (RenderMode == RenderingMode.ReRenderChildren) {
+                        } else if (RenderMode == RenderingMode.ChildrenCollectionModified) {
 
-                            // Re-rendering all children controls, but also renders changes to widget ...
+                            // Re-rendering all children controls, but also renders changes to widget.
                             _attributes.RegisterChanges (AjaxPage, _oldId ?? ClientID);
                             RenderChildrenWidgetsAsJson (writer);
 
                         } else {
 
-                            // Only pass changes back to client as json
+                            // Only pass changes back to client as JSON.
                             _attributes.RegisterChanges (AjaxPage, _oldId ?? ClientID);
                             RenderChildren (writer);
                         }
                     } else {
 
-                        // Not ajax request, or ancestors are re-rendering
+                        // Not an Ajax request, or ancestors are re-rendering widget somehow.
                         RenderHtmlResponse (writer);
                     }
                 } else {
 
-                    // Invisible widget
+                    // Invisible widget.
                     if (AjaxPage.IsAjaxRequest && RenderMode == RenderingMode.RenderInvisible && !ancestorReRendering) {
 
-                        // Re-rendering widget's invisible markup
+                        // Re-rendering widget's invisible markup.
+                        // Widget was probably made invisible during the current request.
                         AjaxPage.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetInvisibleHtml ());
 
                     } else if (!AjaxPage.IsAjaxRequest || ancestorReRendering) {
 
-                        // Rendering invisible markup
+                        // Rendering invisible HTML.
                         writer.Write (GetWidgetInvisibleHtml ());
-                    } // Else, nothing to render since widget is in-visible, and this was an ajax request
+                    }
                 }
             }
         }
@@ -667,13 +675,13 @@ namespace p5.ajax.widgets
          * Returns true if any of widget's ancestor widgets are re-rendered, or wants to have their children re-rendered, meaning they render as HTML.
          * At which case, this widget should also render as pure HTML into HtmlTextWriter, returning content to client.
          */
-        private bool IsAncestorReRenderingChildren ()
+        private bool IsAncestorReRenderingThisWidget ()
         {
             // Returns true if any of its ancestors are rendering as HTML.
             var idx = Parent;
             while (idx != null) {
                 var wdg = idx as Widget;
-                if (wdg != null && (wdg.RenderMode == RenderingMode.ReRender || wdg.RenderMode == RenderingMode.ReRenderChildren))
+                if (wdg != null && (wdg.RenderMode == RenderingMode.ReRender || wdg.RenderMode == RenderingMode.ChildrenCollectionModified))
                     return true;
                 idx = idx.Parent;
             }
@@ -720,7 +728,9 @@ namespace p5.ajax.widgets
             if (HasContent) {
                 writer.Write (">");
 
-                // Rendering children widgets, before we determine ho and if to close widget's HTML.
+                // Rendering children widgets, before we determine how, and if, to close widget's HTML.
+                // Literal widgets are closed on the same line, if closed.
+                // Container widgets are "nicely formatted".
                 RenderChildren (writer);
                 if (RenderType != RenderingType.open) {
                     if (this is Container) {

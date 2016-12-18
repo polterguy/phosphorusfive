@@ -34,20 +34,25 @@ namespace p5.ajax.widgets
     {
         public Void ()
         {
+            // Setting the default rendering type of widget, which is "open", since it most likely is an input element, br element or hr element.
             RenderType = RenderingType.open;
         }
 
-        // Overridden to make sure the default element for this widget is "input".
+        /*
+         * Overridden to make sure the default element type for this widget is "input".
+         */
         public override string Element {
             get {
                 if (string.IsNullOrEmpty (base.Element))
                     return "input";
                 return base.Element;
             }
-            set { base.Element = value; }
+            set { base.Element = value == "input" ? null : value; }
         }
 
-        // Overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control
+        /*
+         * Overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control.
+         */
         public override string this [string name]
         {
             get { return base [name]; }
@@ -58,11 +63,17 @@ namespace p5.ajax.widgets
             }
         }
 
+        /*
+         * Implementation of abstract base class property, which always returns false, sine void widget never has any content.
+         */
         protected override bool HasContent
         {
             get { return false; }
         }
 
+        /*
+         * Overridden to make sure user doesn't blow off his feet ...
+         */
         protected override void AddedControl (Control control, int index)
         {
             throw new ArgumentException ("Void widget cannot have children");
