@@ -73,7 +73,7 @@ namespace p5.samples
             CurrentEdit = null;
             var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next++), List.Controls.Count);
             widget.Element = "li";
-            widget.RenderType = p5.Widget.RenderingType.open;
+            widget.RenderAs = p5.Widget.Rendering.open;
             widget["onclick"] = "item_onclick";
             widget.innerValue = Txt["value"];
         }
@@ -84,7 +84,7 @@ namespace p5.samples
             CurrentEdit = null;
             var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next++), 0);
             widget.Element = "li";
-            widget.RenderType = p5.Widget.RenderingType.open;
+            widget.RenderAs = p5.Widget.Rendering.open;
             widget["onclick"] = "item_onclick";
             widget.innerValue = Txt["value"];
         }
@@ -95,7 +95,7 @@ namespace p5.samples
             CurrentEdit = null;
             var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next++), new Random ().Next (0, List.Controls.Count));
             widget.Element = "li";
-            widget.RenderType = p5.Widget.RenderingType.open;
+            widget.RenderAs = p5.Widget.Rendering.open;
             widget["onclick"] = "item_onclick";
             widget.innerValue = Txt["value"];
         }
@@ -112,7 +112,7 @@ namespace p5.samples
 
                 var widget = List.CreatePersistentControl<p5.Literal> ("x" + (_next++), which);
                 widget.Element = "li";
-                widget.RenderType = p5.Widget.RenderingType.open;
+                widget.RenderAs = p5.Widget.Rendering.open;
                 widget["onclick"] = "item_onclick";
                 widget.innerValue = Txt["value"];
             }

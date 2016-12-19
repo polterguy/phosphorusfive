@@ -33,7 +33,7 @@ using p5.ajax.core.internals;
 namespace p5.ajax.widgets
 {
     /// <summary>
-    ///     Abstract base class for all widgets in p5.ajax.
+    ///     Abstract base class for all Ajax widgets.
     /// </summary>
     [ViewStateModeById]
     public abstract class Widget : Control, IAttributeAccessor
@@ -46,8 +46,8 @@ namespace p5.ajax.widgets
             /// <summary>
             ///     Initializes a new instance of the AjaxEventArgs class.
             /// </summary>
-            /// <param name="name">Name</param>
-            public AjaxEventArgs (string name)
+            /// <param name="name">Name of Ajax event that was raised.</param>
+            internal AjaxEventArgs (string name)
             {
                 Name = name;
             }
@@ -62,22 +62,22 @@ namespace p5.ajax.widgets
         /// <summary>
         ///     Defines how to render the HTML element of your widget.
         /// </summary>
-        public enum RenderingType
+        public enum Rendering
         {
             /// <summary>
-            ///     This is for elements that require both an opening element, and a closing element, such as "div" and "ul".
+            ///     This is for elements that normally require both an opening tag, and a closing tag, such as "div" and "ul".
             /// </summary>
             normal,
 
             /// <summary>
             ///     This forces the element to close itself immediately, which is meaningful for XHTML renderings, where you wish
-            ///     to immediately close the element, such as when using for instance a "br" element.
+            ///     to immediately close the element, such as when using for instance a "br" element, or having an element with no content.
             /// </summary>
             immediate,
 
             /// <summary>
             ///     This is for elements that does not require a closing element at all, such as when rendering plain HTML (not XHTML),
-            ///     and you render for instance a "p" or an "li" element, which doesn't in fact even require a closing element at all.
+            ///     and you render for instance a "p" or an "li" element, which doesn't in fact require a closing tag at all.
             /// </summary>
             open
         }
@@ -98,14 +98,14 @@ namespace p5.ajax.widgets
             ReRender,
 
             /// <summary>
-            ///     The children collection of widget has been modified, which means we'll need to take care of rendering deleted widgets and added
+            ///     The children collection of widget has been modified, which means we'll need to take care of rendering deleted widgets, and added
             ///     widgets back to the client.
             /// </summary>
             ChildrenCollectionModified,
 
             /// <summary>
-            ///     Renders the widget in as invisible, which means it'll render without any of its attributes or content, and have
-            ///     a style property with "display:none !important" to simply serve as a placeholder for widget as it later possibly
+            ///     Renders the widget as invisible, which means it'll render without any of its attributes or content, and have
+            ///     a style property with "display:none !important", to simply serve as a placeholder for widget, as it later 
             ///     becomes visible.
             /// </summary>
             RenderInvisible
@@ -117,7 +117,7 @@ namespace p5.ajax.widgets
         // Contains a reference to the AjaxPage owning this widget.
         private AjaxPage _page;
 
-        // Used to hold the old ID of widget, in the rare case that its ID is somehow updated.
+        // Used to hold the old ID of widget, in the rare case, that its ID is somehow changed.
         // Necessary to make sure we are able to retrieve widget, and update its ID on the client side, during Ajax requests.
         private string _oldId;
 
@@ -133,7 +133,7 @@ namespace p5.ajax.widgets
         ///     Returns the owning AjaxPage for current widget.
         /// </summary>
         /// <value>The ajax page.</value>
-        protected AjaxPage AjaxPage
+        public AjaxPage AjaxPage
         {
             get {
                 if (_page == null)
@@ -146,34 +146,29 @@ namespace p5.ajax.widgets
         ///     Overridden to make it possible to change an element's ID.
         /// </summary>
         /// <value>The new ID</value>
-        public override string ID
-        {
-            get {
-                return base.ID;
-            }
+        public override string ID {
+            get { return base.ID; }
             set {
                 // Storing old ID of element, since this is the stuff that'll be rendered over the wire,
-                // to allow for retrieving the element on the client side.
-                if (IsTrackingViewState) {
-                    if (value != base.ID) {
+                // to allow for retrieving the element on the client side, and change its ID on the client side.
+                if (IsTrackingViewState && value != base.ID) {
 
-                        // Notice, we only keep the "original ID", in case ID is changed multiple times during page's life cycle.
-                        if (_oldId == null)
-                            _oldId = base.ClientID;
-                        _attributes.ChangeAttribute ("id", value);
-                    }
+                    // Notice, we only keep the "first original ID", in case ID is changed multiple times during page's life cycle.
+                    if (_oldId == null)
+                        _oldId = base.ClientID;
+                    _attributes.ChangeAttribute ("id", value);
                 }
                 base.ID = value;
             }
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this <see cref="T:p5.ajax.widgets.Widget"/> is visible.
-        ///     Overridden from base, to make sure we can automatically determine rendering mode for widget, during changes to visibility.
+        ///     Gets or sets a value indicating whether Widget is visible or not.
+        /// 
+        ///     Overridden from base, to make sure we can automatically set rendering mode for widget, during changes to visibility.
         /// </summary>
         /// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
-        public override bool Visible
-        {
+        public override bool Visible {
             get { return base.Visible; }
             set {
                 if (value == base.Visible)
@@ -181,14 +176,12 @@ namespace p5.ajax.widgets
 
                 if (!base.Visible && value && IsTrackingViewState && AjaxPage.IsAjaxRequest) {
 
-                    // This widget was made visible during this request, and should be re-rendered as HTML, 
-                    // unless any of its ancestors are invisible.
+                    // This widget was made visible during this request, and should be re-rendered as HTML.
                     RenderMode = RenderingMode.ReRender;
 
                 } else if (base.Visible && !value && IsTrackingViewState && AjaxPage.IsAjaxRequest) {
 
-                    // This widget was made invisible during this request and should be re-rendered as invisible,
-                    // unless any of its ancestors are invisible.
+                    // This widget was made invisible during this request, and should be re-rendered as invisible.
                     RenderMode = RenderingMode.RenderInvisible;
                 }
                 base.Visible = value;
@@ -196,48 +189,47 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
-        ///     Gets or sets the element type used to render your widget.
-        /// 
-        ///     Set this value to whatever HTML element name you wish having your widget rendered as, e.g. "p", "div", "span", etc.
-        /// </summary>
-        /// <value>The HTML element used to render widget</value>
-        public virtual string Element
-        {
-            get { return this ["Element"]; }
-            set {
-                if (value != null && value.ToLower () != value)
-                    throw new ArgumentException ("p5.ajax doesn't like uppercase element names", "value");
-                if (value == null)
-                    this.DeleteAttribute ("Element");
-                this ["Element"] = value;
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the rendering mode for the widget.
-        /// 
-        ///     Allows you to explicitly force to have your widget re-rendered, or re-rendering its children, if you wish.
-        /// </summary>
-        /// <value>The render mode</value>
-        protected RenderingMode RenderMode
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         ///     Gets or sets how to render the widget.
         /// 
         ///     Legal values are; "normal", "immediate" and "open".
         ///     "normal" means your widget will render with an opening tag, and a closing tag.
-        ///     "immediate" means your widget's tag will immediately close, which is useful for XHTML renderings for instance.
-        ///     "open" is useful for HTML elements that doesn't require a closing tag, such as "p" or "li".
+        ///     "immediate" means your widget's tag will immediately close, which is useful for XHTML pages for instance.
+        ///     "open" is useful for HTML elements that doesn't require a closing tag, such as "p" or "li", but only in HTML (non XHTML pages).
         /// </summary>
         /// <value>The render type</value>
-        public RenderingType RenderType
-        {
-            get { return (RenderingType) (ViewState ["rt"] ?? RenderingType.normal); }
+        public Rendering RenderAs {
+            get { return (Rendering)(ViewState ["rt"] ?? Rendering.normal); }
             set { ViewState ["rt"] = value; }
+        }
+
+        /// <summary>
+        ///     Gets or sets the element type used to render your widget.
+        /// 
+        ///     Set this value to whatever HTML element name you wish for your widget to render as, e.g. "p", "div", "span", etc.
+        /// </summary>
+        /// <value>The HTML element used to render widget</value>
+        public virtual string Element {
+            get { return _attributes.GetAttribute ("Element"); }
+            set {
+
+                // If Element name is set to "null", we entirely remove attribute, to let default value of sub classes kick in, and do its magic.
+                if (value == null) {
+
+                    // Deletion of Element, which means overridden defaults in sub classes will hopefully return something sane.
+                    DeleteAttribute ("Element");
+
+                } else {
+
+                    // Sanity check, before figuring out what to do with new value for Element property.
+                    SanitizeElementValue (value);
+
+                    // Setting the element name, depending upon if we're serializing changes or not.
+                    if (!IsTrackingViewState)
+                        _attributes.SetAttributePreViewState ("Element", value);
+                    else
+                        _attributes.ChangeAttribute ("Element", value);
+                }
+            }
         }
 
         /// <summary>
@@ -247,29 +239,16 @@ namespace p5.ajax.widgets
         ///     value to "null", it will still exist on widget, as an "empty attribute".
         /// </summary>
         /// <param name="name">Name of attribute to retrieve or set value of.</param>
-        public virtual string this [string name]
-        {
+        public virtual string this [string name] {
             get { return _attributes.GetAttribute (name); }
             set {
 
-                // Special handling for "selected" attribute for "option" elements, to make sure
-                // we remove the selected attribute on any sibling "option" elements.
-                if (Element == "option" && name == "selected") {
-                    foreach (Widget idxWidget in Parent.Controls) {
-                        if (idxWidget != this && idxWidget.HasAttribute ("selected"))
-                            idxWidget.DeleteAttribute ("selected");
-                    }
-
-                    // Due to a bug in the way browsers handles the "selected" property on "option" elements, we need to re-render all
-                    // select widgets, every time an "option" element's "selected" attribute is changed.
-                    // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
-                    (Parent as Widget).ReRender ();
-                }
-                if (!IsTrackingViewState) {
+                // Notice, we store the attribute differently, depending upon whether or not we have started tracking ViewState or not.
+                // This is necessarily due to making sure we're able to track changes to attributes, and correctly pass them on to the client.
+                if (!IsTrackingViewState)
                     _attributes.SetAttributePreViewState (name, value);
-                } else {
+                else
                     _attributes.ChangeAttribute (name, value);
-                }
             }
         }
 
@@ -309,17 +288,6 @@ namespace p5.ajax.widgets
         public void ReRender ()
         {
             RenderMode = RenderingMode.ReRender;
-        }
-
-        /*
-         * Forces a re-rendering of your widget's children controls.
-         */
-        protected void ChildrenCollectionIsModified ()
-        {
-            // Notice, if the widget is re-rendered entirely, there is no need to mark the children collection as changed, since widget will be entirely
-            // re-rendered anyway, with all of its children also re-rendered.
-            if (RenderMode != RenderingMode.ReRender)
-                RenderMode = RenderingMode.ChildrenCollectionModified;
         }
 
         /// <summary>
@@ -369,8 +337,11 @@ namespace p5.ajax.widgets
         /// <param name="writer">Writer.</param>
         public override void RenderControl (HtmlTextWriter writer)
         {
+            // If ancestor is invisible, we do not render this control at all.
             if (AreAncestorsVisible ()) {
-                var ancestorReRendering = IsAncestorReRenderingThisWidget ();
+
+                // Figuring out if one of this widget's ancestor widgets are in "re-rendering mode", at which case we render the HTML.
+                var ancestorReRendering = AncestorIsReRendering ();
                 if (Visible) {
                     if (AjaxPage.IsAjaxRequest && !ancestorReRendering) {
                         if (RenderMode == RenderingMode.ReRender) {
@@ -418,12 +389,52 @@ namespace p5.ajax.widgets
         /// <summary>
         ///     Gets a value indicating whether this instance has content or not.
         /// 
-        ///     This property is used to determine how a widget should be rendered, if its rendering mode is set to "immediate".
-        ///     Abstract, must be overridden in derived classes.
+        ///     This property is used to determine how a widget should be rendered, if its rendering mode is set to "immediate", and if its children should
+        ///     be rendered or not.
+        ///     Method is abstract, and must be overridden in derived classes.
         /// </summary>
         /// <value><c>true</c> if this instance has content; otherwise, <c>false</c></value>
         protected abstract bool HasContent {
             get;
+        }
+
+        /// <summary>
+        ///     Verifies the Element name is legal for the current widget.
+        /// 
+        ///     Override this method in your own classes, to provide further restrictions. But please, call base class method.
+        /// </summary>
+        /// <param name="elementName">The new Element name.</param>
+        protected virtual void SanitizeElementValue (string elementName)
+        {
+            // Making sure Element is not empty string "".
+            if (elementName == "")
+                throw new ArgumentException ("Sorry, but you must provide either an actual value, or 'null', as the Element name for your widget", nameof (Element));
+
+            // Making sure Element does not contain other non-legal characters.
+            if (elementName.Any (ix => !"abcdefghijklmnopqrstuvwxyz123456".Contains (ix)))
+                throw new ArgumentException ("Sorry, but p5.ajax doesn't like these types of characters for its Element names", nameof (Element));
+        }
+
+        /// <summary>
+        ///     Gets or sets the rendering mode for the widget.
+        /// 
+        ///     Allows you to explicitly force to have your widget re-rendered, or re-rendering its children, if you wish.
+        /// </summary>
+        /// <value>The render mode</value>
+        protected RenderingMode RenderMode {
+            get;
+            set;
+        }
+
+        /// <summary>
+        ///     Invoked when Controls collection of widget has been updated.
+        /// </summary>
+        protected void ChildrenCollectionIsModified ()
+        {
+            // Notice, if the widget is re-rendered entirely, there is no need to mark the children collection as changed, since widget will be entirely
+            // re-rendered anyway, with all of its children also re-rendered.
+            if (RenderMode != RenderingMode.ReRender)
+                RenderMode = RenderingMode.ChildrenCollectionModified;
         }
 
         /// <summary>
@@ -509,6 +520,10 @@ namespace p5.ajax.widgets
         /// <param name="e">EventArgs</param>
         protected override void OnLoad (EventArgs e)
         {
+            // Sanity check.
+            if (AjaxPage == null)
+                throw new ApplicationException ("Oops, make sure you inherit your page from AjaxPage somehow.");
+
             if (Page.IsPostBack)
                 LoadFormData ();
 
@@ -527,68 +542,86 @@ namespace p5.ajax.widgets
 
         /// <summary>
         ///     Renders all children as JSON update(s) back to client.
+        /// 
+        ///     Override this one to provide custom rendering.
         /// </summary>
         protected virtual void RenderChildrenWidgetsAsJson (HtmlTextWriter writer)
         {
             // re-rendering all children by default
-            AjaxPage.RegisterWidgetChanges (ClientID, "innerValue", GetChildrenHtml ());
+            AjaxPage.RegisterWidgetChanges (ClientID, "innerValue", GetInnerHTML ());
         }
 
         /// <summary>
-        ///     Overridden to make sure we can correctly handle additions of "option" elements to "select" HTML elements.
+        ///     Renders widget's content as pure HTML into specified HtmlTextWriter.
         /// 
-        ///     This is necessary to make sure we can correctly keep track of the "selected" property/attribute on the client side, due to some
-        ///     "funny" behavior in browsers' way of handling these things.
+        ///     Override this one to provide custom rendering.
+        ///     Notice, you can also override one of the other rendering methods, if you only wish to slightly modify the widget's rendering.
         /// </summary>
-        /// <param name="control">Control.</param>
-        /// <param name="index">Index.</param>
-        protected override void AddedControl (Control control, int index)
+        /// <param name="writer">The HtmlTextWriter to render the widget into.</param>
+        protected virtual void RenderHtmlResponse (HtmlTextWriter writer)
         {
-            // Due to a bug in the way browsers handles the "selected" property on "option" elements, we need to re-render all
-            // select widgets, every time the "option" collection is changed.
-            // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
-            if (IsTrackingViewState && Element == "select") {
+            // Rendering opening tag for element.
+            var noTabs = RenderTagOpening (writer);
 
-                // Making sure control added as a Widget, and that it has the "selected" attribute.
-                var curWidget = control as Widget;
-                if (curWidget.HasAttribute ("selected")) {
-                    foreach (Widget idxWidget in Controls) {
+            // Rendering widget's content (children or innerValue), but only if element had any content.
+            if (HasContent)
+                RenderChildren (writer);
 
-                        // Checking if currently iterated widget contains the "selected" attribute.
-                        if (idxWidget != null && idxWidget.HasAttribute ("selected")) {
-
-                            // Removing the "selected" attribute from previously selected option element.
-                            idxWidget.DeleteAttribute ("selected");
-                        }
-                    }
-                }
-
-                // Since insertion of "option" elements, with the "selected" attribute set, does not behave correctly in browser, according
-                // to; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
-                // We need to resort to partial (re) rendering of entire "select" element here ...
-                ReRender ();
-            }
-            base.AddedControl (control, index);
+            // Closing element, but only if element is rendered in "normal" mode.
+            if (RenderAs == Rendering.normal)
+                RenderTagClosing (writer, noTabs);
         }
 
         /// <summary>
-        ///     Overridden to make sure we re-render "select" HTML elements in Ajax callbacks when an "option" element is deleted, 
-        ///     due to a "bug" (or weird behavior to be more accurate) in browsers.
+        ///     Renders the HTML opening tag of widget.
+        /// 
+        ///     Override to provide custom rendering for opening tag of widget.
         /// </summary>
-        /// <param name="control">Control.</param>
-        protected override void RemovedControl (Control control)
+        /// <returns>The number of tabs we had to add, to nicely format element into HTML.</returns>
+        /// <param name="writer">The HtmlTextWriter we should render into.</param>
+        protected virtual int RenderTagOpening (HtmlTextWriter writer)
         {
-            // Due to a "bug" (or unexpected behavior) in the way browsers handles the "selected" property on "option" elements, we need to re-render all
-            // select widgets, every time the "option" collection is changed.
-            // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
-            if (IsTrackingViewState && Element == "select") {
+            // Making sure we nicely indent element, unless this is an Ajax request.
+            var noTabs = 0;
+            if (!AjaxPage.IsAjaxRequest) {
 
-                // Since removal of "option" elements, with the "selected" attribute set, does not behave correctly in browser, according
-                // to; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
-                // We need to resort to partial (re) rendering of entire "select" element here ...
-                ReRender ();
+                // Appending one one CR/LF sequence.
+                // Then appending and one TAB, for each ancestor Control this instance has, between itself and the Page object.
+                // This ensures that widget is nicely formatted if this is not an Ajax request.
+                writer.Write ("\r\n\t");
+                noTabs = 1;
+                Control idxCtrl = this;
+                while (idxCtrl != Page) {
+                    writer.Write ("\t");
+                    idxCtrl = idxCtrl.Parent;
+                    noTabs += 1;
+                }
             }
-            base.RemovedControl (control);
+
+            // Render start of opening tag, before we render all attributes.
+            writer.Write (@"<{0} id=""{1}""", Element, ClientID);
+            _attributes.Render (writer);
+
+            // Closing opening tag for HTML element, which depends upon whether or not widget has content and its rendering mode.
+            if (!HasContent && RenderAs == Rendering.immediate)
+                writer.Write (" />"); // No content, and tag should be closed immediately.
+            else
+                writer.Write (">");
+
+            // Returning the number of TAB characters we created due to trying to nicely format the element in the HTML.
+            return noTabs;
+        }
+
+        /// <summary>
+        ///     Renders HTML closing tag of widget.
+        /// 
+        ///     Override to provide customer rendering for closing tag of widget.
+        /// </summary>
+        /// <param name="writer">Writer.</param>
+        /// <param name="noTabs">No tabs.</param>
+        protected virtual void RenderTagClosing (HtmlTextWriter writer, int noTabs)
+        {
+            writer.Write ("</{0}>", Element);
         }
 
         /// <summary>
@@ -609,7 +642,8 @@ namespace p5.ajax.widgets
          */
         private string GetWidgetHtml ()
         {
-            // Wrapping an HtmlTextWriter, using a MemoryStream as its base stream, to render widget's content into, and return as string to caller.
+            // Wrapping an HtmlTextWriter, using a MemoryStream as its base stream, to render widget's content into, 
+            // and return as string to caller.
             using (var stream = new MemoryStream ()) {
                 using (var txt = new HtmlTextWriter (new StreamWriter (stream))) {
                     RenderHtmlResponse (txt);
@@ -625,7 +659,7 @@ namespace p5.ajax.widgets
         /*
          * Returns the widget's children as HTML.
          */
-        private string GetChildrenHtml ()
+        private string GetInnerHTML ()
         {
             // Wrapping an HtmlTextWriter, using a MemoryStream as its base stream, to render widget's children into, 
             // and return as string to caller.
@@ -655,7 +689,7 @@ namespace p5.ajax.widgets
          * Visibility of a widget is determined by AND'ing widget's own visibility together with visibility of all of its ancestor
          * widgets'/controls' visibility.
          */
-        public bool AreAncestorsVisible ()
+        private bool AreAncestorsVisible ()
         {
             // If this widget, and all of its ancestor widgets are visible, then we return true, otherwise we return false.
             var idx = Parent;
@@ -675,7 +709,7 @@ namespace p5.ajax.widgets
          * Returns true if any of widget's ancestor widgets are re-rendered, or wants to have their children re-rendered, meaning they render as HTML.
          * At which case, this widget should also render as pure HTML into HtmlTextWriter, returning content to client.
          */
-        private bool IsAncestorReRenderingThisWidget ()
+        private bool AncestorIsReRendering ()
         {
             // Returns true if any of its ancestors are rendering as HTML.
             var idx = Parent;
@@ -689,85 +723,13 @@ namespace p5.ajax.widgets
         }
 
         /*
-         * Renders widget's content as pure HTML into specified HtmlTextWriter.
-         */
-        private void RenderHtmlResponse (HtmlTextWriter writer)
-        {
-            // Making sure we nicely indent widget if this is a normal HTTP POST or GET request.
-            var noTabs = 0;
-            if (!AjaxPage.IsAjaxRequest) {
-                writer.Write ("\r\n\t");
-                noTabs = 1;
-                Control idxCtrl = this;
-                while (idxCtrl != Page) {
-                    writer.Write ("\t");
-                    idxCtrl = idxCtrl.Parent;
-                    noTabs += 1;
-                }
-            }
-
-            // Render opening tag.
-            // Notice, we do not render ID of widget if this is an "option" element.
-            if (Element == "option") {
-
-                // We do NOT render IDs of "option" elements, since there are few intelligent reasons why
-                // you would want to de-reference them, and if you change the "select" controls collection in any ways, you
-                // will anyways trigger a re-rendering of the entire parent "select" widget.
-                writer.Write (@"<{0}", Element);
-
-            } else {
-
-                // Default rendering, passing in the ID of widget.
-                writer.Write (@"<{0} id=""{1}""", Element, ClientID);
-            }
-
-            // Render attributes.
-            _attributes.Render (writer);
-
-            // Checking if widget has any content, and if not, and widget is in "immediate" mode, we simply close tag immediately.
-            if (HasContent) {
-                writer.Write (">");
-
-                // Rendering children widgets, before we determine how, and if, to close widget's HTML.
-                // Literal widgets are closed on the same line, if closed.
-                // Container widgets are "nicely formatted".
-                RenderChildren (writer);
-                if (RenderType != RenderingType.open) {
-                    if (this is Container) {
-
-                        // Making sure we nicely format end tag for widget.
-                        writer.Write ("\r\n");
-                        while (noTabs != 0) {
-                            writer.Write ("\t");
-                            noTabs -= 1;
-                        }
-                    }
-                    writer.Write ("</{0}>", Element);
-                }
-            } else {
-
-                // No content in widget, figuring out how to close widget's HTML.
-                switch (RenderType) {
-                    case RenderingType.immediate:
-                        writer.Write (" />");
-                        break;
-                    case RenderingType.open:
-                        writer.Write (">");
-                        break;
-                    case RenderingType.normal:
-                        writer.Write ("></{0}>", Element);
-                        break;
-                }
-            }
-        }
-
-        /*
          * Hidden implementation of IAttributeAccessor, to keep the "API" for the Widget class as encapsulated as possible.
          */
         string IAttributeAccessor.GetAttribute (string key)
         {
             return _attributes.GetAttribute (key);
         }
+
         void IAttributeAccessor.SetAttribute (string key, string value)
         {
             _attributes.SetAttributePreViewState (key, value);

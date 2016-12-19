@@ -37,18 +37,15 @@ namespace p5.ajax.widgets
         public Void ()
         {
             // Setting the default rendering type of widget, which is "open", since it most likely is an input element, br element or hr element.
-            RenderType = RenderingType.open;
+            RenderAs = Rendering.open;
         }
 
         /*
          * Overridden to make sure the default element type for this widget is "input".
          */
-        public override string Element {
-            get {
-                if (string.IsNullOrEmpty (base.Element))
-                    return "input";
-                return base.Element;
-            }
+        public override string Element
+        {
+            get { return string.IsNullOrEmpty (base.Element) ? "input": base.Element; }
             set { base.Element = value == "input" ? null : value; }
         }
 
@@ -73,6 +70,41 @@ namespace p5.ajax.widgets
             get { return false; }
         }
 
+        /// <summary>
+        ///     Verifies element name is legal to use for the this widget type.
+        /// </summary>
+        /// <param name="elementName">Element name.</param>
+        protected override void SanitizeElementValue (string elementName)
+        {
+            // Letting base do its magic.
+            base.SanitizeElementValue (elementName);
+
+            // Making sure element name is legal for this widget.
+            switch (elementName) {
+                case "input":
+                case "br":
+                case "col":
+                case "hr":
+                case "link":
+                case "meta":
+                case "area":
+                case "base":
+                case "command":
+                case "embed":
+                case "img":
+                case "keygen":
+                case "param":
+                case "source":
+                case "track":
+                case "wbr":
+                    break; // Legal "void" element.
+                default:
+                    if (elementName == "textarea")
+                        throw new ArgumentException ("You cannot use the Void widget here, use the Literal widget instead", nameof (Element));
+                    else
+                        throw new ArgumentException ("You cannot use Void widget here, use the Container or the Literal widget instead", nameof (Element));
+            }
+        }
         /*
          * Overridden to make sure user doesn't blow off his feet ...
          */

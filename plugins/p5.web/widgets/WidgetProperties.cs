@@ -105,7 +105,7 @@ namespace p5.web.widgets
                             idxWidget.ReRender ();
                             break;
                         case "render-type":
-                            idxWidget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.GetExValue<string> (context));
+                            idxWidget.RenderAs = (Widget.Rendering) Enum.Parse (typeof (Widget.Rendering), valueNode.GetExValue<string> (context));
                             idxWidget.ReRender ();
                             break;
                         case "id":
@@ -267,7 +267,7 @@ namespace p5.web.widgets
                                           indexAfter < 0 ? null : widget.Parent.Controls [indexAfter].ID);
                     break;
                 case "render-type":
-                    CreateAttributeReturn (args, propertyName, widget, widget.RenderType.ToString ());
+                    CreateAttributeReturn (args, propertyName, widget, widget.RenderAs.ToString ());
                     break;
                 default:
 

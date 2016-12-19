@@ -368,7 +368,7 @@ namespace p5.web.widgets
                         if (value == null)
                             throw new LambdaException ("You cannot query for 'render-type exists', since all widgets have some sort of render-type.", criteria, context);
 
-                        match = widget.RenderType == (Widget.RenderingType)Enum.Parse (typeof (Widget.RenderingType), value);
+                        match = widget.RenderAs == (Widget.Rendering)Enum.Parse (typeof (Widget.Rendering), value);
 
                     } else if (!widget.HasAttribute (idxCriteria.Name)) {
 

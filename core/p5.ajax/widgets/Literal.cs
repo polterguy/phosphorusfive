@@ -39,14 +39,8 @@ namespace p5.ajax.widgets
         /*
          * Overridden to make sure the default element type for this widget is "p".
          */
-        public override string Element
-        {
-            get
-            {
-                if (string.IsNullOrEmpty (base.Element))
-                    return "p";
-                return base.Element;
-            }
+        public override string Element {
+            get { return string.IsNullOrEmpty (base.Element) ? "p" : base.Element; }
             set { base.Element = value == "p" ? null : value; }
         }
 
@@ -66,30 +60,51 @@ namespace p5.ajax.widgets
         /*
          * Overridden to provide some help for retrieving value of textarea and option elements.
          */
-        public override string this [string name]
-        {
+        public override string this [string name] {
             get {
-                if (name == "value" && Element == "textarea") {
+                if (Element == "textarea" && name == "value") {
 
                     // Special treatment for textarea, to make it resemble what goes on on the client-side.
                     return base ["innerValue"];
 
-                } else if (name == "value" && Element == "option" && !base.HasAttribute ("value")) {
+                } else if (Element == "option" && name == "value" && !HasAttribute ("value")) {
 
                     // By default, "option" HTML elements returns their "innerValue" if they have no value attribute.
-                    return this ["innerValue"];
+                    return innerValue;
 
                 } else {
 
-                    // No need for special treatment.
+                    // No need for special treatment, letting base do the heavy lifting.
                     return base [name];
                 }
             }
             set {
-                if (name == "value" && Element == "textarea") {
+                if (Element == "textarea" && name == "value") {
 
-                    // Special treatment for textarea, to make it resemble what goes on on the client-side
+                    // Special treatment for textarea, to make it resemble what goes on on the client-side.
                     base ["innerValue"] = value;
+
+                } else if (Element == "option" && name == "selected") {
+
+                    // Sanity check
+                    if (value != null && value != "selected")
+                        throw new ArgumentException ("You cannot set the selected attribute of an option element to anything but null or 'selected'.");
+
+                    // Returning early if widget already has the attribute, to avoid re-rendering when selected property is set to what it was before.
+                    if (HasAttribute ("selected"))
+                        return;
+
+                    // Special treatment for "option" element's "selected" attribute, since it requires re-rendering the entire parent widget,
+                    // and also requires removing the "selected" attribute on all of its sibling widgets.
+                    foreach (Widget idxWidget in Parent.Controls) {
+                        idxWidget.DeleteAttribute ("selected");
+                    }
+                    base [name] = value;
+
+                    // Due to a "bug" in the way browsers handles the "selected" property on "option" elements, we need to re-render all
+                    // select widgets, every time one of its "option" elements' "selected" attribute is changed.
+                    // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+                    (Parent as Widget).ReRender ();
 
                 } else {
 
@@ -131,9 +146,43 @@ namespace p5.ajax.widgets
         /*
          * Implementation of abstract base class property.
          */
-        protected override bool HasContent
-        {
+
+        protected override bool HasContent {
             get { return !string.IsNullOrEmpty (innerValue); }
+        }
+
+        /// <summary>
+        ///     Verifies element is legal to use for this widget type.
+        /// </summary>
+        /// <param name="elementName">Element name.</param>
+        protected override void SanitizeElementValue (string elementName)
+        {
+            // Letting base do its magic.
+            base.SanitizeElementValue (elementName);
+
+            // Making sure element name is legal for this widget.
+            switch (elementName) {
+                // Although technically the select element could be used for a Literal, we prevent it, to avoid messing up FORM data loading, 
+                // and setting/getting of its value property, which is done by iterating its children widgets, looking for a "selected" attribute.
+                case "select":
+                case "input":
+                case "br":
+                case "col":
+                case "hr":
+                case "link":
+                case "meta":
+                case "area":
+                case "base":
+                case "command":
+                case "embed":
+                case "img":
+                case "keygen":
+                case "param":
+                case "source":
+                case "track":
+                case "wbr":
+                    throw new ArgumentException ("You cannot use this Element for the Literal widget", nameof (Element));
+            }
         }
     }
 }

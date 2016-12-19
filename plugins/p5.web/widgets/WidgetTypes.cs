@@ -165,7 +165,7 @@ namespace p5.web.widgets
                         widget.Element = idxArg.GetExValue<string> (context);
                         break;
                     case "render-type":
-                        widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), idxArg.GetExValue<string> (context));
+                        widget.RenderAs = (Widget.Rendering) Enum.Parse (typeof (Widget.Rendering), idxArg.GetExValue<string> (context));
                         break;
                     case "widgets":
                         CreateChildWidgets (context, widget, idxArg);

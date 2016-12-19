@@ -90,11 +90,7 @@ namespace p5.ajax.widgets
          */
         public override string Element
         {
-            get {
-                if (string.IsNullOrEmpty (base.Element))
-                    return "div";
-                return base.Element;
-            }
+            get { return string.IsNullOrEmpty (base.Element) ? "div" : base.Element; }
             set { base.Element = value == "div" ? null : value; }
         }
 
@@ -109,7 +105,7 @@ namespace p5.ajax.widgets
                     throw new ArgumentException ("You cannot get the 'innerValue' property of a Container widget");
 
                 // Special treatment for select HTML elements, to make it resemble what goes on on the client-side.
-                if (name == "value" && Element == "select") {
+                if (Element == "select" && name == "value") {
 
                     // Returning each selected "option" element separated by comma, in case this is a multi select widget.
                     string retVal = "";
@@ -130,7 +126,7 @@ namespace p5.ajax.widgets
                     throw new ArgumentException ("You cannot set the 'innerValue' property of a Container widget");
 
                 // Special treatment for select HTML elements, to make it resemble what goes on on the client-side.
-                if (name == "value" && Element == "select") {
+                if (Element == "select" && name == "value") {
 
                     // Splitting specified value by comma ",", and adding the "selected" attribute for each option element with a value
                     // matching anything in the split results.
@@ -271,6 +267,40 @@ namespace p5.ajax.widgets
             get { return Controls.Count > 0; }
         }
 
+        /// <summary>
+        ///     Verifies element is legal to use for this widget type.
+        /// </summary>
+        /// <param name="elementName">Element name.</param>
+        protected override void SanitizeElementValue (string elementName)
+        {
+            // Letting base do its magic.
+            base.SanitizeElementValue (elementName);
+
+            // Making sure element name is legal for this widget.
+            switch (elementName) {
+                // Although the textarea element technically could be used for rendering a Container widget, we explicitly still deny it,
+                // to avoid making the user believe he can change parts of the textarea's content, by modifying a widget's attributes/values.
+                case "textarea":
+                case "input":
+                case "br":
+                case "col":
+                case "hr":
+                case "link":
+                case "meta":
+                case "area":
+                case "base":
+                case "command":
+                case "embed":
+                case "img":
+                case "keygen":
+                case "param":
+                case "source":
+                case "track":
+                case "wbr":
+                    throw new ArgumentException ("You cannot use this Element for the Container widget", nameof (Element));
+            }
+        }
+
         /*
          * Overridden to make sure we remove all LiteralControls during Ajax requests.
          */
@@ -329,6 +359,63 @@ namespace p5.ajax.widgets
             }
         }
 
+        /// <summary>
+        ///     Overridden to make sure we can correctly handle additions of "option" elements to "select" HTML elements.
+        /// 
+        ///     This is necessary to make sure we can correctly keep track of the "selected" property/attribute on the client side, due to some
+        ///     "funny" behavior in browsers' way of handling these things.
+        /// </summary>
+        /// <param name="control">Control.</param>
+        /// <param name="index">Index.</param>
+        protected override void AddedControl (Control control, int index)
+        {
+            // Due to a bug in the way browsers handles the "selected" property on "option" elements, we need to re-render all
+            // select widgets, every time the "option" collection is changed.
+            // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+            if (IsTrackingViewState && Element == "select") {
+
+                // Making sure control added as a Widget, and that it has the "selected" attribute.
+                var curWidget = control as Widget;
+                if (curWidget.HasAttribute ("selected")) {
+                    foreach (Widget idxWidget in Controls) {
+
+                        // Checking if currently iterated widget contains the "selected" attribute.
+                        if (idxWidget != null && idxWidget.HasAttribute ("selected")) {
+
+                            // Removing the "selected" attribute from previously selected option element.
+                            idxWidget.DeleteAttribute ("selected");
+                        }
+                    }
+                }
+
+                // Since insertion of "option" elements, with the "selected" attribute set, does not behave correctly in browser, according
+                // to; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+                // We need to resort to partial (re) rendering of entire "select" element here ...
+                ReRender ();
+            }
+            base.AddedControl (control, index);
+        }
+
+        /// <summary>
+        ///     Overridden to make sure we re-render "select" HTML elements in Ajax callbacks when an "option" element is deleted, 
+        ///     due to a "bug" (or weird behavior to be more accurate) in browsers.
+        /// </summary>
+        /// <param name="control">Control.</param>
+        protected override void RemovedControl (Control control)
+        {
+            // Due to a "bug" (or unexpected behavior) in the way browsers handles the "selected" property on "option" elements, we need to re-render all
+            // select widgets, every time the "option" collection is changed.
+            // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+            if (IsTrackingViewState && Element == "select") {
+
+                // Since removal of "option" elements, with the "selected" attribute set, does not behave correctly in browser, according
+                // to; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+                // We need to resort to partial (re) rendering of entire "select" element here ...
+                ReRender ();
+            }
+            base.RemovedControl (control);
+        }
+
         /*
          * Making sure we can persist the Controls collection into ViewState.
          */
@@ -349,6 +436,20 @@ namespace p5.ajax.widgets
                 // Nothing to do here.
                 return base.SaveViewState ();
             }
+        }
+
+        /*
+         * Overridden, to make sure we nicely format end tag, with correct number of tabs.
+         */
+        protected override void RenderTagClosing (HtmlTextWriter writer, int noTabs)
+        {
+            // Making sure we nicely format end tag for widget.
+            writer.Write ("\r\n");
+            while (noTabs != 0) {
+                writer.Write ("\t");
+                noTabs -= 1;
+            }
+            writer.Write ("</{0}>", Element);
         }
 
         /*
