@@ -57,7 +57,7 @@ else
                       literal
                         class:input-group-addon
                         innerValue:Username
-                      literal:login-username
+                      void:login-username
                         element:input
                         type:text
                         class:form-control
@@ -75,7 +75,7 @@ else
                       literal
                         class:input-group-addon
                         innerValue:Password
-                      literal:login-password
+                      void:login-password
                         element:input
                         type:password
                         class:form-control

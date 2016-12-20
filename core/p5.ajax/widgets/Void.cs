@@ -31,34 +31,46 @@ namespace p5.ajax.widgets
     /// 
     ///     Useful for "input", "hr" and "br" elements, etc.
     /// </summary>
-    [ViewStateModeById]
     public class Void : Widget
     {
-        /*
-         * Overridden to make sure the default element type for this widget is "input".
-         */
-        public override string Element
+        public Void ()
         {
-            get { return string.IsNullOrEmpty (base.Element) ? "input": base.Element; }
-            set { base.Element = value == "input" ? null : value; }
+            Element = "input";
         }
 
         /*
          * Overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control.
          */
-        public override void SetAttributeValue (string name, string value)
+        public override void SetAttribute (string name, string value)
         {
             if (name == "innerValue")
                 throw new ArgumentException ("you cannot set the 'innerValue' property of a Void widget");
-            base.SetAttributeValue (name, value);
+            base.SetAttribute (name, value);
         }
 
         /*
-         * Implementation of abstract base class property, which always returns false, sine void widget never has any content.
+         * Overridden to make sure user doesn't blow off his feet ...
          */
-        protected override bool HasContent
+        protected override void AddedControl (Control control, int index)
         {
-            get { return false; }
+            throw new ArgumentException ("Void widget cannot have children");
+        }
+
+        /// <summary>
+        ///     Overridden to intentionally do "nothing", or call base, since all elements of type "void" are "self closing elements".
+        /// </summary>
+        /// <param name="writer">Writer.</param>
+        /// <param name="noTabs">No tabs.</param>
+        protected override void RenderTagClosing (HtmlTextWriter writer, int noTabs)
+        { }
+
+        /// <summary>
+        ///     Overridden to close element immediately.
+        /// </summary>
+        /// <param name="writer">Writer.</param>
+        protected override void RenderTagOpeningClosing (HtmlTextWriter writer)
+        {
+            writer.Write (" />");
         }
 
         /// <summary>
@@ -72,36 +84,45 @@ namespace p5.ajax.widgets
 
             // Making sure element name is legal for this widget.
             switch (elementName) {
-                case "input":
-                case "br":
-                case "col":
-                case "hr":
-                case "link":
-                case "meta":
-                case "area":
-                case "base":
-                case "command":
-                case "embed":
-                case "img":
-                case "keygen":
-                case "param":
-                case "source":
-                case "track":
-                case "wbr":
-                    break; // Legal "void" element.
-                default:
-                    if (elementName == "textarea")
-                        throw new ArgumentException ("You cannot use the Void widget here, use the Literal widget instead", nameof (Element));
-                    else
-                        throw new ArgumentException ("You cannot use Void widget here, use the Container or the Literal widget instead", nameof (Element));
+            case "input":
+            case "br":
+            case "col":
+            case "hr":
+            case "link":
+            case "meta":
+            case "area":
+            case "base":
+            case "command":
+            case "embed":
+            case "img":
+            case "keygen":
+            case "param":
+            case "source":
+            case "track":
+            case "wbr":
+                break; // Legal "void" element.
+            default:
+                if (elementName == "textarea")
+                    throw new ArgumentException ("You cannot use the Void widget here, use the Literal widget instead", nameof (Element));
+                else
+                    throw new ArgumentException ("You cannot use Void widget here, use the Container or the Literal widget instead", nameof (Element));
             }
         }
-        /*
-         * Overridden to make sure user doesn't blow off his feet ...
-         */
-        protected override void AddedControl (Control control, int index)
+
+        /// <summary>
+        ///     Overridden to ensure all "input" elements have a "name" attribute, correspnding to their ID, unless a name has already 
+        ///     been explicitly created, in addition to ensuring all radio input elements have a "value", unless explicitly specified from before.
+        /// </summary>
+        /// <param name="e">EventArgs</param>
+        protected override void OnPreRender (EventArgs e)
         {
-            throw new ArgumentException ("Void widget cannot have children");
+            if (Element == "input") {
+                if (!HasAttribute ("name"))
+                    this ["name"] = ID;
+                if (this ["type"] == "radio" && !HasAttribute ("value"))
+                    this ["value"] = ID;
+            }
+            base.OnPreRender (e);
         }
     }
 }

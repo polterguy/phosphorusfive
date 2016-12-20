@@ -85,20 +85,16 @@ namespace p5.ajax.widgets
          */
         private List<Control> _originalCollection;
 
-        /*
-         * Overridden to make sure the default element type for this widget is "div".
-         */
-        public override string Element
+        public Container ()
         {
-            get { return string.IsNullOrEmpty (base.Element) ? "div" : base.Element; }
-            set { base.Element = value == "div" ? null : value; }
+            Element = "div";
         }
 
         /*
          * Overridden to make sure we handle the "value" attribute for "select" HTML widgets correctly, in addition to throwing an exception,
          * if user tries to get the "innerValue" property/attribute of widget.
          */
-        public override string GetAttributeValue (string name)
+        public override string GetAttribute (string name)
         {
             if (name == "innerValue")
                 throw new ArgumentException ("You cannot get the 'innerValue' property of a Container widget");
@@ -117,7 +113,7 @@ namespace p5.ajax.widgets
             } else {
 
                 // No special treatment required.
-                return base.GetAttributeValue (name);
+                return base.GetAttribute (name);
             }
         }
 
@@ -125,7 +121,7 @@ namespace p5.ajax.widgets
          * Overridden to make sure we handle the "value" attribute for "select" HTML widgets correctly, in addition to throwing an exception,
          * if user tries to set the "innerValue" property/attribute of widget.
          */
-        public override void SetAttributeValue (string name, string value)
+        public override void SetAttribute (string name, string value)
         {
             if (name == "innerValue")
                 throw new ArgumentException ("You cannot set the 'innerValue' property of a Container widget");
@@ -148,7 +144,7 @@ namespace p5.ajax.widgets
             } else {
 
                 // No special treatment required.
-                base.SetAttributeValue (name, value);
+                base.SetAttribute (name, value);
             }
         }
 
@@ -252,14 +248,6 @@ namespace p5.ajax.widgets
             var retVal = Guid.NewGuid ().ToString ().Replace ("-", "");
             retVal = "x" + retVal [0] + retVal [5] + retVal [10] + retVal [15] + retVal [20] + retVal [25] + retVal [30];
             return retVal;
-        }
-
-        /*
-         * Implementation of abstract base class method, to make sure we return true, only if widget has children widgets.
-         */
-        protected override bool HasContent
-        {
-            get { return Controls.Count > 0; }
         }
 
         /// <summary>
@@ -386,7 +374,7 @@ namespace p5.ajax.widgets
                 // Since insertion of "option" elements, with the "selected" attribute set, does not behave correctly in browser, according
                 // to; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
                 // We need to resort to partial (re) rendering of entire "select" element here ...
-                ReRender ();
+                RenderMode = RenderingMode.ReRender;
             }
             base.AddedControl (control, index);
         }
@@ -406,7 +394,7 @@ namespace p5.ajax.widgets
                 // Since removal of "option" elements, with the "selected" attribute set, does not behave correctly in browser, according
                 // to; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
                 // We need to resort to partial (re) rendering of entire "select" element here ...
-                ReRender ();
+                RenderMode = RenderingMode.ReRender;
             }
             base.RemovedControl (control);
         }
@@ -462,8 +450,8 @@ namespace p5.ajax.widgets
 
                 // Controls were either added or removed during the current request.
                 RenderDeletedWidgets ();
-                RenderAddedWidgets ();
                 RenderOldWidgets (writer);
+                RenderAddedWidgets ();
             }
         }
 
@@ -481,14 +469,28 @@ namespace p5.ajax.widgets
         }
 
         /*
+         * Rendering all controls that was neither added nor removed during this request.
+         */
+        private void RenderOldWidgets (HtmlTextWriter writer)
+        {
+            // Looping through all Controls that were in Controls collection before it was tampered with, and that are still in the Controls collection,
+            // and simply render them "normally".
+            foreach (Control idx in _originalCollection.Where (ix => Controls.Contains (ix))) {
+                idx.RenderControl (writer);
+            }
+        }
+
+        /*
          * Renders all controls that was added this request.
          */
         private void RenderAddedWidgets ()
         {
+            // Making sure all children rendered from this point are rendered as pure HTML, for then to create an "insertion JSON object" to add widget
+            // into this widget's collection on client-side.
+            RenderMode = RenderingMode.ReRender;
+
             // Looping through all Controls, figuring out which were not there in the "_originalCollection", before it was changed, and retrieving their
             // HTML, such that we can pass it to the client, as a JSON insertion.
-            var oldRenderMode = RenderMode;
-            RenderMode = RenderingMode.ReRender;
             foreach (var idx in Controls.Cast<Widget> ().Where (ix => !_originalCollection.Contains (ix) && !string.IsNullOrEmpty (ix.ID))) {
 
                 // Getting control's HTML, by rendering it into a MemoryStream, and for then to pass it on as an "insertion" to our AjaxPage.
@@ -506,19 +508,6 @@ namespace p5.ajax.widgets
                         AjaxPage.RegisterWidgetChanges (JsonClientID, "__p5_add_" + Controls.IndexOf (idx), reader.ReadToEnd ());
                     }
                 }
-            }
-            RenderMode = oldRenderMode;
-        }
-
-        /*
-         * Rendering all controls that was neither added nor removed during this request.
-         */
-        private void RenderOldWidgets (HtmlTextWriter writer)
-        {
-            // Looping through all Controls that were in Controls collection before it was tampered with, and that are still in the Controls collection,
-            // and simply render them "normally".
-            foreach (Control idx in _originalCollection.Where (ix => Controls.Contains (ix))) {
-                idx.RenderControl (writer);
             }
         }
 
@@ -544,6 +533,18 @@ namespace p5.ajax.widgets
             if (!_creators.ContainsKey (fullName))
                 _creators [fullName] = new Creator<T> ();
             return _creators [fullName];
+        }
+
+        /// <summary>
+        ///     Overridden to ensure all "select" elements have a "name" attribute, correspnding to their ID, unless a name has already 
+        ///     been explicitly created.
+        /// </summary>
+        /// <param name="e">EventArgs</param>
+        protected override void OnPreRender (EventArgs e)
+        {
+            if (Element == "select" && !HasAttribute ("name"))
+                this ["name"] = ID;
+            base.OnPreRender (e);
         }
     }
 }

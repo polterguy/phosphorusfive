@@ -33,15 +33,11 @@ namespace p5.ajax.widgets
     /// </summary>
     [ParseChildren (true, "innerValue")]
     [PersistChildren (false)]
-    [ViewStateModeById]
     public class Literal : Widget
     {
-        /*
-         * Overridden to make sure the default element type for this widget is "p".
-         */
-        public override string Element {
-            get { return string.IsNullOrEmpty (base.Element) ? "p" : base.Element; }
-            set { base.Element = value == "p" ? null : value; }
+        public Literal ()
+        {
+            Element = "p";
         }
 
         /// <summary>
@@ -53,19 +49,19 @@ namespace p5.ajax.widgets
         [PersistenceMode (PersistenceMode.InnerDefaultProperty)]
         public string innerValue
         {
-            get { return base.GetAttributeValue ("innerValue"); }
-            set { base.SetAttributeValue ("innerValue", value); }
+            get { return base.GetAttribute ("innerValue"); }
+            set { base.SetAttribute ("innerValue", value); }
         }
 
         /*
          * Overridden to provide some help for retrieving value of textarea and option elements.
          */
-        public override string GetAttributeValue (string name)
+        public override string GetAttribute (string name)
         {
             if (Element == "textarea" && name == "value") {
 
                 // Special treatment for textarea, to make it resemble what goes on on the client-side.
-                return base.GetAttributeValue ("innerValue");
+                return base.GetAttribute ("innerValue");
 
             } else if (Element == "option" && name == "value" && !HasAttribute ("value")) {
 
@@ -75,19 +71,19 @@ namespace p5.ajax.widgets
             } else {
 
                 // No need for special treatment, letting base do the heavy lifting.
-                return base.GetAttributeValue (name);
+                return base.GetAttribute (name);
             }
         }
 
         /*
          * Overridden to provide some help for setting value of textarea and option elements.
          */
-        public override void SetAttributeValue (string name, string value)
+        public override void SetAttribute (string name, string value)
         {
             if (Element == "textarea" && name == "value") {
 
                 // Special treatment for textarea, to make it resemble what goes on on the client-side.
-                base.SetAttributeValue ("innerValue", value);
+                base.SetAttribute ("innerValue", value);
 
             } else if (Element == "option" && name == "selected") {
 
@@ -96,7 +92,7 @@ namespace p5.ajax.widgets
                     throw new ArgumentException ("You cannot set the selected attribute of an option element to anything but null or 'selected'.");
 
                 // Returning early if widget already has the attribute, to avoid re-rendering, when selected property is set to what it was before.
-                if (HasAttribute ("selected") && GetAttributeValue ("selected") == value)
+                if (HasAttribute ("selected") && GetAttribute ("selected") == value)
                     return;
 
                 // Since there can only be one "selected" widget inside a "select" HTML element, we remove the "selected" attribute on all widgets
@@ -104,17 +100,17 @@ namespace p5.ajax.widgets
                 foreach (Widget idxWidget in Parent.Controls) {
                     idxWidget.DeleteAttribute ("selected");
                 }
-                base.SetAttributeValue (name, value);
+                base.SetAttribute (name, value);
 
                 // Due to a "bug" in the way browsers handles the "selected" property on "option" elements, we need to re-render all
                 // select widgets, every time one of its "option" elements' "selected" attribute is changed.
                 // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
-                (Parent as Widget).ReRender ();
+                (Parent as Widget).RenderMode = RenderingMode.ReRender;
 
             } else {
 
                 // No need for special treatment.
-                base.SetAttributeValue (name, value);
+                base.SetAttribute (name, value);
             }
         }
 
@@ -145,14 +141,6 @@ namespace p5.ajax.widgets
         protected override void AddedControl (Control control, int index)
         {
             throw new ApplicationException ("Literal widget cannot have children controls");
-        }
-
-        /*
-         * Implementation of abstract base class property.
-         */
-        protected override bool HasContent
-        {
-            get { return !string.IsNullOrEmpty (innerValue); }
         }
 
         /// <summary>
@@ -187,6 +175,18 @@ namespace p5.ajax.widgets
                 case "wbr":
                     throw new ArgumentException ("You cannot use this Element for the Literal widget", nameof (Element));
             }
+        }
+
+        /// <summary>
+        ///     Overridden to ensure all "textarea" elements have a "name" attribute, correspnding to their ID, unless a name has already 
+        ///     been explicitly created.
+        /// </summary>
+        /// <param name="e">EventArgs</param>
+        protected override void OnPreRender (EventArgs e)
+        {
+            if (Element == "textarea" && !HasAttribute ("name"))
+                this ["name"] = ID;
+            base.OnPreRender (e);
         }
     }
 }

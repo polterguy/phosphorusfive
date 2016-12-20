@@ -189,45 +189,6 @@ namespace p5.web.widgets
                         break;
                 }
             }
-
-            // Ensures "value" property is created, if necessary.
-            EnsureValueProperty (widget, args, context);
-
-            // Ensures "name" property is created, if necessary.
-            EnsureNameProperty (widget, args, context);
-        }
-
-        /*
-         * Ensuring that the "value" property is the same as the "ID" of the widget.
-         * But only if widget require a value attribute to function properly, and widget has not explicitly explicitly been given a value.
-         */
-        private void EnsureValueProperty (Widget widget, Node node, ApplicationContext context)
-        {
-            if (widget.HasAttribute ("value"))
-                return; // Caller already explicitly added value attribute.
-            
-            // Making sure "input" type "radio" widgets have a value corresponding to their ID.
-            if (widget.Element == "input" && widget ["type"] == "radio")
-                widget ["value"] = widget.ID;
-        }
-            
-        /*
-         * Ensuring that the "name" property is the same as the "ID" of the widget, unless a name property is explicitly given,
-         * or element type doesn't require a name attribute to function properly.
-         */
-        private void EnsureNameProperty (Widget widget, Node node, ApplicationContext context)
-        {
-            if (widget.HasAttribute ("name"))
-                return; // Caller already explicitly added name attribute.
-
-            // Making sure "input", "select" and "textarea" widgets have a name corresponding to their ID.
-            switch (widget.Element) {
-                case "input":
-                case "textarea":
-                case "select":
-                    widget ["name"] = widget.ID;
-                    break;
-            }
         }
 
         /*

@@ -99,10 +99,10 @@ namespace p5.ajax.core.internals
         }
 
         /// <summary>
-        ///     Removes the attribute with the specified name.
+        ///     Deletes the attribute with the specified name entirely.
         /// </summary>
         /// <param name="name">The name of the attribute you wish to remove</param>
-        internal void RemoveAttribute (string name, bool serializeToClient = true)
+        internal void DeleteAttribute (string name, bool serializeToClient = true)
         {
             if (FindAttribute (_dynamicallyAddedThisRequest, name) != null) {
 

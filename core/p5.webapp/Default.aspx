@@ -11,7 +11,8 @@
         <base runat="server" id="baseElement"/>
     </head>
     <body>
-        <form id="form1" runat="server" autocomplete="off"><p5:Container
+        <form id="form1" runat="server" autocomplete="off">
+			<p5:Container
                 runat="server"
                 id="cnt"/>
         </form>
