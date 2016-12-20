@@ -128,13 +128,23 @@ namespace p5.ajax.widgets
 
                         // Notice, both checkboxes and radio buttons can be "grouped", by making them have the same "name" attribute value.
                         // If they do, they will be serialized as one HTTP POST parameter, with each checked element's value, separated by comma.
-                        var splits = Page.Request.Params [this ["name"]].Split (',');
-                        if (splits.Length == 1 && splits [0] == "on")
-                            Attributes.SetAttributeFormData ("checked", null);
-                        else if (splits.Any (ix => ix == this ["value"]))
-                            Attributes.SetAttributeFormData ("checked", null);
-                        else
+                        // Also here, we apply the same "trick" to allow for "value"s of these widgets to contains "," 
+                        // as we do in the Container widget for an "option" element.
+                        var val = Page.Request.Params [this ["name"]];
+                        if (string.IsNullOrEmpty (val)) {
+
+                            // Definitely unchcked!
                             Attributes.DeleteAttribute ("checked", false);
+
+                        } else {
+                            var splits = val.Split (',');
+                            if (splits.Length == 1 && splits [0] == "on")
+                                Attributes.SetAttributeFormData ("checked", null);
+                            else if (splits.Any (ix => Page.Server.UrlDecode (ix) == this ["value"]))
+                                Attributes.SetAttributeFormData ("checked", null);
+                            else
+                                Attributes.DeleteAttribute ("checked", false);
+                        }
                         break;
                     default:
                         Attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
@@ -153,7 +163,7 @@ namespace p5.ajax.widgets
             if (Element == "input") {
                 if (string.IsNullOrEmpty (this ["name"]))
                     this ["name"] = ID;
-                if (this ["type"] == "radio" && string.IsNullOrEmpty (this ["value"]))
+                if ((this ["type"] == "radio" || this ["type"] == "checkbox") && string.IsNullOrEmpty (this ["value"]))
                     this ["value"] = ID;
             }
             base.OnPreRender (e);

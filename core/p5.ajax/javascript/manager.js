@@ -259,7 +259,7 @@
                                 case "checkbox":
                                 case "radio":
                                     if (el.checked) { // Only push checked items.
-                                        val.push ([el.name, el.value]);
+                                        val.push ([el.name, encodeURIComponent (el.value)]);
                                     }
                                     break;
                                 default: // Defaulting to push 'value'.
