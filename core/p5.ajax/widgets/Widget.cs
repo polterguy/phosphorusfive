@@ -37,6 +37,8 @@ namespace p5.ajax.widgets
     /// </summary>
     public abstract class Widget : Control, IAttributeAccessor
     {
+        #region [ -- Nested class declarations and enums -- ]
+
         /// <summary>
         ///     EventArgs for an Ajax server-side event.
         /// </summary>
@@ -92,6 +94,10 @@ namespace p5.ajax.widgets
             WidgetBecameInvisible
         }
 
+        #endregion
+
+        #region [ -- Private and protected fields -- ]
+
         // Contains a reference to the AjaxPage owning this widget.
         private AjaxPage _page;
 
@@ -107,7 +113,11 @@ namespace p5.ajax.widgets
         /// <summary>
         ///     Contains all attributes for widget.
         /// </summary>
-        protected readonly AttributeStorage Attributes = new AttributeStorage ();
+        protected internal readonly AttributeStorage Attributes = new AttributeStorage ();
+
+        #endregion
+
+        #region [ -- Public properties and methods -- ]
 
         /// <summary>
         ///     Returns the owning AjaxPage for current widget.
@@ -122,61 +132,6 @@ namespace p5.ajax.widgets
                         throw new ApplicationException ("Oops, make sure you inherit your page from AjaxPage somehow.");
                 }
                 return _page;
-            }
-        }
-
-        /// <summary>
-        ///     Overridden to make it possible to change an element's ID during an Ajax callback.
-        /// </summary>
-        /// <value>The new ID</value>
-        public override string ID
-        {
-            get { return base.ID; }
-            set {
-                // Storing old ID of element, since this is the stuff that'll be rendered over the wire,
-                // to allow for retrieving the element on the client side, and change its ID on the client side.
-                if (IsTrackingViewState && value != ID) {
-
-                    // Notice, we only keep the "first original ID", in case ID is changed multiple times during page's life cycle.
-                    if (_oldClientID == null)
-                        _oldClientID = ClientID;
-                    Attributes.ChangeAttribute ("id", value);
-                }
-                base.ID = value;
-            }
-        }
-
-        /// <summary>
-        ///     This is the ClientID to use when sending JSON updates back to the client for the widget.
-        /// 
-        ///     This is necessary for the rare occasions that a widget changes its ID during an Ajax callback, at which point, the DOM
-        ///     element we're updating, does not have the ClientID the widget has during rendering. Hence, when transmitting updates
-        ///     back to the client for a widget, using JSON updates, we must use this property, and not the ClientID.
-        /// </summary>
-        /// <value>The JSON client identifier.</value>
-        protected string JsonClientID
-        {
-            get { return _oldClientID ?? ClientID; }
-        }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether Widget is visible or not.
-        /// 
-        ///     Overridden from base, to make sure we can automatically set rendering mode for widget, during changes to visibility.
-        /// </summary>
-        /// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
-        public override bool Visible
-        {
-            get { return base.Visible; }
-            set {
-                if (value == base.Visible)
-                    return; // No change, returning early ...
-
-                // If we've changed widget's visibility after we've started tracking ViewState, and this is an Ajax request, 
-                // we'll have to change widget's rendering mode.
-                if (IsTrackingViewState && AjaxPage.IsAjaxRequest)
-                    RenderMode = value ? RenderingMode.ReRender : RenderingMode.WidgetBecameInvisible;
-                base.Visible = value;
             }
         }
 
@@ -286,7 +241,7 @@ namespace p5.ajax.widgets
         /// </summary>
         /// <param name="eventName">Event name such as 'onclick', or name of C# method on Page, UserControl, or MasterPage</param>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual void InvokeEventHandler (string eventName)
+        public void InvokeEventHandler (string eventName)
         {
             // Defaulting to event name for WebMethod invocations from JavaScript.
             var eventHandlerName = eventName;
@@ -324,6 +279,139 @@ namespace p5.ajax.widgets
             method.Invoke (owner, new object [] { this, new AjaxEventArgs (eventName) });
         }
 
+        #endregion
+
+        #region [ -- Protected methods and properties -- ]
+
+        /// <summary>
+        ///     This is the ClientID to use when sending JSON updates back to the client for the widget.
+        /// 
+        ///     This is necessary for the rare occasions that a widget changes its ID during an Ajax callback, at which point, the DOM
+        ///     element we're updating, does not have the ClientID the widget has during rendering. Hence, when transmitting updates
+        ///     back to the client for a widget, using JSON updates, we must use this property, and not the ClientID.
+        /// </summary>
+        /// <value>The JSON client identifier.</value>
+        protected string JsonClientID
+        {
+            get { return _oldClientID ?? ClientID; }
+        }
+
+        /// <summary>
+        ///     Formats given HtmlTextWriter, by adding the correct number of TABs, plus one initial CR/LF.
+        /// 
+        ///     Notice, will not do anything if the current request is an Ajax request.
+        /// </summary>
+        /// <returns>The formatting.</returns>
+        /// <param name="tabs">Tabs.</param>
+        protected void IndentWidgetRendering (HtmlTextWriter writer)
+        {
+            // We don't format at all, unless this is an HTML request, somehow.
+            if (!AjaxPage.IsAjaxRequest) {
+                writer.Write ("\r\n");
+                Control idxCtrl = this;
+                while (idxCtrl != null) {
+                    writer.Write ("\t");
+                    idxCtrl = idxCtrl.Parent;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Renders widget's content as pure HTML into specified HtmlTextWriter.
+        /// 
+        ///     Method is abstract in Widget class, make sure you override it, if you inherit directly from Widget, to provide custom rendering.
+        /// </summary>
+        /// <param name="writer">The HtmlTextWriter to render the widget into.</param>
+        protected abstract void RenderHtmlResponse (HtmlTextWriter writer);
+
+        /// <summary>
+        ///     Loads the form data from the HTTP request object for the current widget, if there is any data.
+        /// </summary>
+        protected abstract void LoadFormData ();
+
+        /// <summary>
+        ///     Returns true if any of widget's ancestor widgets are re-rendered, or wants to have their children re-rendered, meaning they render as HTML.
+        ///     At which case, this widget should also render as pure HTML into HtmlTextWriter, returning content to client.
+        /// </summary>
+        /// <returns><c>true</c>, if is re rendering was ancestored, <c>false</c> otherwise.</returns>
+        protected bool AncestorIsReRendering ()
+        {
+            // Returns true if any of its ancestors are rendering as HTML.
+            var idx = Parent as Widget;
+            while (idx != null) {
+                if (idx.RenderMode == RenderingMode.ReRender)
+                    return true;
+                idx = idx.Parent as Widget;
+            }
+            return false;
+        }
+
+        /// <summary>
+        ///     Verifies the Element name is legal for the current widget.
+        /// 
+        ///     Override this method in your own classes, to provide further restrictions. But please, call base implementation, 
+        ///     unless you wish to eliminate all the basic restrictions, allowing for "weird" elements to be created.
+        ///     This implementation throws an exception if elementName is empty string (""), or contains anything but a-z or 1-6, which should
+        ///     accommodate for most "sane" HTML elements.
+        /// </summary>
+        /// <param name="elementName">The new Element name.</param>
+        protected virtual void SanitizeElementName (string elementName)
+        {
+            // Making sure Element is not empty string "".
+            if (elementName == "")
+                throw new ArgumentException ("Sorry, but you must provide either an actual value, or 'null', as the Element name for your widget", nameof (Element));
+
+            // Making sure Element does not contain other non-legal characters.
+            if (elementName.Any (ix => !"abcdefghijklmnopqrstuvwxyz123456".Contains (ix)))
+                throw new ArgumentException ("Sorry, but p5.ajax doesn't like these types of characters for its Element names", nameof (Element));
+        }
+
+        #endregion
+
+        #region [ -- Overrides from System.Web.UI.Control -- ]
+
+        /// <summary>
+        ///     Overridden to make it possible to change an element's ID during an Ajax callback.
+        /// </summary>
+        /// <value>The new ID</value>
+        public override string ID
+        {
+            get { return base.ID; }
+            set {
+                // Storing old ID of element, since this is the stuff that'll be rendered over the wire,
+                // to allow for retrieving the element on the client side, and change its ID on the client side.
+                if (IsTrackingViewState && value != ID) {
+
+                    // Notice, we only keep the "first original ID", in case ID is changed multiple times during page's life cycle.
+                    if (_oldClientID == null)
+                        _oldClientID = ClientID;
+                    Attributes.ChangeAttribute ("id", value);
+                }
+                base.ID = value;
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether Widget is visible or not.
+        /// 
+        ///     Overridden from base, to make sure we can automatically set rendering mode for widget, during changes to visibility.
+        /// </summary>
+        /// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
+        public override bool Visible
+        {
+            get { return base.Visible; }
+            set {
+                if (value == base.Visible)
+                    return; // No change, returning early ...
+
+                // If we've changed widget's visibility after we've started tracking ViewState, and this is an Ajax request, 
+                // we'll have to change widget's rendering mode.
+                if (IsTrackingViewState && AjaxPage.IsAjaxRequest)
+                    RenderMode = value ? RenderingMode.ReRender : RenderingMode.WidgetBecameInvisible;
+                base.Visible = value;
+            }
+        }
+
         /// <summary>
         ///     Overridden to make sure we can load widget's attributes from ViewState.
         /// </summary>
@@ -334,71 +422,6 @@ namespace p5.ajax.widgets
             base.LoadViewState (tmp [0]);
             Attributes.LoadFromViewState (tmp [1]);
             Attributes.LoadRemovedFromViewState (tmp [2]);
-        }
-
-        /// <summary>
-        ///     Loads the form data from the HTTP request object for the current widget, if there is any data.
-        /// </summary>
-        protected virtual void LoadFormData ()
-        {
-            if (!Visible)
-                return;
-            if (!HasAttribute ("disabled")) {
-                if (!string.IsNullOrEmpty (this ["name"])) {
-                    switch (Element) {
-                        case "input":
-                            switch (this ["type"]) {
-                                case "radio":
-                                case "checkbox":
-                                    if (Page.Request.Params [this ["name"]] != null) {
-                                        var splits = Page.Request.Params [this ["name"]].Split (',');
-                                        bool found = false;
-                                        foreach (var idxSplit in splits) {
-                                            if (idxSplit == this ["value"] || (!HasAttribute ("value") && idxSplit == "on")) {
-                                                found = true;
-                                                break;
-                                            }
-                                        }
-                                        if (found) {
-                                            Attributes.SetAttributeFormData ("checked", null);
-                                        } else {
-                                            Attributes.DeleteAttribute ("checked", false);
-                                        }
-                                    } else {
-                                        Attributes.DeleteAttribute ("checked", false);
-                                    } break;
-                                default:
-                                    if (Page.Request.Params [this ["name"]] != null)
-                                        Attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
-                                    else
-                                        Attributes.DeleteAttribute ("value");
-                                    break;
-                            }
-                            break;
-                        case "textarea":
-                            if (Page.Request.Params [this ["name"]] != null)
-                                Attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
-                            else
-                                Attributes.DeleteAttribute ("innerValue");
-                            break;
-                        case "select":
-                            if (Page.Request.Params [this ["name"]] != null) {
-                                var splits = Page.Request.Params [this ["name"]].Split (',').Select(ix => Page.Server.UrlDecode (ix));
-                                foreach (var idxChild in Controls) {
-                                    var idxChildWidget = idxChild as Widget;
-                                    if (idxChildWidget != null) {
-                                        if (splits.Contains (idxChildWidget ["value"])) {
-                                            idxChildWidget.Attributes.SetAttributeFormData ("selected", null);
-                                        } else {
-                                            idxChildWidget.Attributes.DeleteAttribute ("selected", false);
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -445,6 +468,23 @@ namespace p5.ajax.widgets
             }
         }
 
+        /// <summary>
+        ///     Overridden to make sure we can persist widget's attributes into ViewState.
+        /// </summary>
+        /// <returns>The view state.</returns>
+        protected override object SaveViewState ()
+        {
+            var retVal = new object [3];
+            retVal [0] = base.SaveViewState ();
+            retVal [1] = Attributes.SaveToViewState (this);
+            retVal [2] = Attributes.SaveRemovedToViewState ();
+            return retVal;
+        }
+
+        #endregion
+
+        #region [ -- Private helper methods -- ]
+
         /*
          * Responsible for rendering all different permutations for a visible widget.
          */
@@ -490,8 +530,8 @@ namespace p5.ajax.widgets
 
                 // Re-rendering widget's invisible markup, since widget was made invisible during the current request.
                 AjaxPage.RegisterWidgetChanges (
-                    JsonClientID, 
-                    "outerHTML", 
+                    JsonClientID,
+                    "outerHTML",
                     string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", Element, ClientID));
 
             } else if (!AjaxPage.IsAjaxRequest || ancestorReRendering) {
@@ -499,47 +539,6 @@ namespace p5.ajax.widgets
                 // Rendering invisible HTML.
                 writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", Element, ClientID));
             }
-        }
-
-        /// <summary>
-        ///     Formats given HtmlTextWriter, by adding the correct number of TABs, plus one initial CR/LF.
-        /// 
-        ///     Notice, will not do anything if the current request is an Ajax request.
-        /// </summary>
-        /// <returns>The formatting.</returns>
-        /// <param name="tabs">Tabs.</param>
-        protected void IndentWidgetRendering (HtmlTextWriter writer)
-        {
-            // We don't format at all, unless this is an HTML request, somehow.
-            if (!AjaxPage.IsAjaxRequest) {
-                writer.Write ("\r\n");
-                Control idxCtrl = this;
-                while (idxCtrl != null) {
-                    writer.Write ("\t");
-                    idxCtrl = idxCtrl.Parent;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Renders widget's content as pure HTML into specified HtmlTextWriter.
-        /// 
-        ///     Method is abstract in Widget class, make sure you override it, if you inherit directly from Widget, to provide custom rendering.
-        /// </summary>
-        /// <param name="writer">The HtmlTextWriter to render the widget into.</param>
-        protected abstract void RenderHtmlResponse (HtmlTextWriter writer);
-
-        /// <summary>
-        ///     Overridden to make sure we can persist widget's attributes into ViewState.
-        /// </summary>
-        /// <returns>The view state.</returns>
-        protected override object SaveViewState ()
-        {
-            var retVal = new object [3];
-            retVal [0] = base.SaveViewState ();
-            retVal [1] = Attributes.SaveToViewState (this);
-            retVal [2] = Attributes.SaveRemovedToViewState ();
-            return retVal;
         }
 
         /*
@@ -564,40 +563,6 @@ namespace p5.ajax.widgets
             return false;
         }
 
-        /*
-         * Returns true if any of widget's ancestor widgets are re-rendered, or wants to have their children re-rendered, meaning they render as HTML.
-         * At which case, this widget should also render as pure HTML into HtmlTextWriter, returning content to client.
-         */
-        protected bool AncestorIsReRendering ()
-        {
-            // Returns true if any of its ancestors are rendering as HTML.
-            var idx = Parent as Widget;
-            while (idx != null) {
-                if (idx.RenderMode == RenderingMode.ReRender)
-                    return true;
-                idx = idx.Parent as Widget;
-            }
-            return false;
-        }
- 
-        /// <summary>
-        ///     Verifies the Element name is legal for the current widget.
-        /// 
-        ///     Override this method in your own classes, to provide further restrictions. But please, call base implementation, 
-        ///     unless you wish to eliminate all the basic restrictions, allowing for "weird" elements to be created.
-        ///     This implementation throws an exception if elementName is empty string (""), or contains anything but a-z or 1-6, which should
-        ///     accommodate for most "sane" HTML elements.
-        /// </summary>
-        /// <param name="elementName">The new Element name.</param>
-        protected virtual void SanitizeElementName (string elementName)
-        {
-            // Making sure Element is not empty string "".
-            if (elementName == "")
-                throw new ArgumentException ("Sorry, but you must provide either an actual value, or 'null', as the Element name for your widget", nameof (Element));
-
-            // Making sure Element does not contain other non-legal characters.
-            if (elementName.Any (ix => !"abcdefghijklmnopqrstuvwxyz123456".Contains (ix)))
-                throw new ArgumentException ("Sorry, but p5.ajax doesn't like these types of characters for its Element names", nameof (Element));
-        }
-   }
+        #endregion
+    }
 }

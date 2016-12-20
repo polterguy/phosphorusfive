@@ -61,7 +61,7 @@ namespace p5.ajax.widgets
             if (Element == "textarea" && name == "value") {
 
                 // Special treatment for textarea, to make it resemble what goes on on the client-side.
-                return base.GetAttribute ("innerValue");
+                return innerValue;
 
             } else if (Element == "option" && name == "value" && !HasAttribute ("value")) {
 
@@ -87,11 +87,11 @@ namespace p5.ajax.widgets
 
             } else if (Element == "option" && name == "selected") {
 
-                // Sanity check
+                // Sanity check.
                 if (value != null && value != "selected")
                     throw new ArgumentException ("You cannot set the selected attribute of an option element to anything but null or 'selected'.");
 
-                // Returning early if widget already has the attribute, to avoid re-rendering, when selected property is set to what it was before.
+                // Returning early if widget already has the attribute, to avoid re-rendering, when selected property is set to whatever it was before.
                 if (HasAttribute ("selected") && GetAttribute ("selected") == value)
                     return;
 
@@ -139,7 +139,7 @@ namespace p5.ajax.widgets
         {
             // Rendering opening tag for element, then its "innerValue", before we render the closing tag.
             // Making sure we nicely format output, if we should.
-            RenderFormatting (writer);
+            IndentWidgetRendering (writer);
 
             // Render start of opening tag, before we render all attributes.
             writer.Write (@"<{0} id=""{1}""", Element, ClientID);
@@ -168,7 +168,8 @@ namespace p5.ajax.widgets
 
             // Making sure element name is legal for this widget.
             switch (elementName) {
-                // Although technically the select element could be used for a Literal, we prevent it, to avoid messing up FORM data loading, 
+
+                // Although technically the Literal widget could be used for a "select" element, we prevent it, to avoid messing up FORM data loading, 
                 // and setting/getting of its value property, which is done by iterating its children widgets, looking for a "selected" attribute.
                 case "select":
                 case "input":
@@ -188,6 +189,17 @@ namespace p5.ajax.widgets
                 case "track":
                 case "wbr":
                     throw new ArgumentException ("You cannot use this Element for the Literal widget", nameof (Element));
+            }
+        }
+
+        /// <summary>
+        ///     Loads the form data from the HTTP request object for the current widget, if there is any data.
+        /// </summary>
+        protected override void LoadFormData ()
+        {
+            // Checking if this widget is a "textarea", and if so, loading its HTTP POST form data, if we should.
+            if (Visible && Element == "textarea" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
+                Attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
             }
         }
 

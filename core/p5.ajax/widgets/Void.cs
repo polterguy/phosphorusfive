@@ -22,6 +22,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Web.UI;
 
 namespace p5.ajax.widgets
@@ -68,7 +69,7 @@ namespace p5.ajax.widgets
         {
             // Rendering opening tag for element, then its children, before we render the closing tag.
             // Making sure we nicely indent element, unless this is an Ajax request.
-            RenderFormatting (writer);
+            IndentWidgetRendering (writer);
 
             // Render start of opening tag, before we render all attributes.
             writer.Write (@"<{0} id=""{1}""", Element, ClientID);
@@ -87,28 +88,58 @@ namespace p5.ajax.widgets
 
             // Making sure element name is legal for this widget.
             switch (elementName) {
-            case "input":
-            case "br":
-            case "col":
-            case "hr":
-            case "link":
-            case "meta":
-            case "area":
-            case "base":
-            case "command":
-            case "embed":
-            case "img":
-            case "keygen":
-            case "param":
-            case "source":
-            case "track":
-            case "wbr":
-                break; // Legal "void" element.
-            default:
-                if (elementName == "textarea")
-                    throw new ArgumentException ("You cannot use the Void widget here, use the Literal widget instead", nameof (Element));
-                else
-                    throw new ArgumentException ("You cannot use Void widget here, use the Container or the Literal widget instead", nameof (Element));
+                case "input":
+                case "br":
+                case "col":
+                case "hr":
+                case "link":
+                case "meta":
+                case "area":
+                case "base":
+                case "command":
+                case "embed":
+                case "img":
+                case "keygen":
+                case "param":
+                case "source":
+                case "track":
+                case "wbr":
+                    break; // Legal "void" element.
+                default:
+                    if (elementName == "textarea")
+                        throw new ArgumentException ("You cannot use the Void widget here, use the Literal widget instead", nameof (Element));
+                    else
+                        throw new ArgumentException ("You cannot use Void widget here, use the Container or the Literal widget instead", nameof (Element));
+            }
+        }
+
+        /// <summary>
+        ///     Loads the form data from the HTTP request object for the current widget, if there is any data.
+        /// </summary>
+        protected override void LoadFormData ()
+        {
+            // Checking if this widget is a "input", and if so, loading its HTTP POST form data, if we should.
+            if (Visible && Element == "input" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
+
+                // Figuring out what to do, according to what "type" of input element this is.
+                switch (this ["type"]) {
+                    case "radio":
+                    case "checkbox":
+
+                        // Notice, both checkboxes and radio buttons can be "grouped", by making them have the same "name" attribute value.
+                        // If they do, they will be serialized as one HTTP POST parameter, with each checked element's value, separated by comma.
+                        var splits = Page.Request.Params [this ["name"]].Split (',');
+                        if (splits.Length == 1 && splits [0] == "on")
+                            Attributes.SetAttributeFormData ("checked", null);
+                        else if (splits.Any (ix => ix == this ["value"]))
+                            Attributes.SetAttributeFormData ("checked", null);
+                        else
+                            Attributes.DeleteAttribute ("checked", false);
+                        break;
+                    default:
+                        Attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
+                        break;
+                }
             }
         }
 
@@ -120,9 +151,9 @@ namespace p5.ajax.widgets
         protected override void OnPreRender (EventArgs e)
         {
             if (Element == "input") {
-                if (!HasAttribute ("name"))
+                if (string.IsNullOrEmpty (this ["name"]))
                     this ["name"] = ID;
-                if (this ["type"] == "radio" && !HasAttribute ("value"))
+                if (this ["type"] == "radio" && string.IsNullOrEmpty (this ["value"]))
                     this ["value"] = ID;
             }
             base.OnPreRender (e);

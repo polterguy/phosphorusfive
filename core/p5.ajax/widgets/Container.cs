@@ -108,6 +108,11 @@ namespace p5.ajax.widgets
                     if (idxWidget.HasAttribute ("selected"))
                         retVal += idxWidget ["value"] + ",";
                 }
+
+                // Notice, a "select" HTML element, unless it has an explicit value, or is in "multiple" mode, 
+                // will automatically yield its first option elemt's value as "value".
+                if (retVal == "" && !base.HasAttribute ("multiple"))
+                    return Controls.Count > 0 ? (Controls [0] as Widget)["value"] : null;
                 return retVal.TrimEnd (','); // Removing last comma ",".
 
             } else {
@@ -153,14 +158,12 @@ namespace p5.ajax.widgets
          */
         public override bool HasAttribute (string name)
         {
-            if (name == "value" && Element == "select") {
+            if (name == "value" && Element == "select" && !base.HasAttribute ("multiple")) {
 
-                // Special treatment for select HTML elements, to make it resemble what goes on on the client-side.
-                foreach (Widget idxWidget in Controls) {
-                    if (idxWidget.HasAttribute ("selected"))
-                        return true;
-                }
-                return false;
+                // Special treatment for select HTML elements, that are not in "multiple" mode, to make it resemble what goes on on the client-side.
+                // Notice, a "select" element, unless in "multiple" mode, will always "logically" have a value, since its first "option" will be selected, 
+                // if no option element is explicitly selected.
+                return true;
 
             } else {
 
@@ -261,8 +264,9 @@ namespace p5.ajax.widgets
 
             // Making sure element name is legal for this widget.
             switch (elementName) {
-                // Although the textarea element technically could be used for rendering a Container widget, we explicitly still deny it,
-                // to avoid making the user believe he can change parts of the textarea's content, by modifying a widget's attributes/values.
+
+                // Although the "textarea" element technically could be rendered using a Container widget, we explicitly deny it,
+                // to avoid making the user believe he can change parts of the textarea's content, by modifying a "textarea" widget's children collection.
                 case "textarea":
                 case "input":
                 case "br":
@@ -281,6 +285,31 @@ namespace p5.ajax.widgets
                 case "track":
                 case "wbr":
                     throw new ArgumentException ("You cannot use this Element for the Container widget", nameof (Element));
+            }
+        }
+
+        /// <summary>
+        ///     Loads the form data from the HTTP request object for the current widget, if there is any data.
+        /// </summary>
+        protected override void LoadFormData ()
+        {
+            // Checking if this widget is a "select", and if so, loading its HTTP POST form data, if we should.
+            if (Visible && Element == "select" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
+
+                // Splitting up value of HTTP param on comma ",", to allow for "multiple" select widgets, with multiple selected "option" elements.
+                // Notice, to support having "option" elements with a "," as a part of their value, the value of an option element is URL decoded by
+                // the client, before transferred to server.
+                // Hence, we need to URL decode it, before we know which "option" item(s) was selected.
+                // Notice, this dilemma is actually quite more common than what you think, since the default "value" of an "option" element is its "innerValue".
+                var splits = Page.Request.Params [this ["name"]].Split (',').Select (ix => Page.Server.UrlDecode (ix));
+                foreach (Widget idxChildWidget in Controls) {
+
+                    // If currently iterated "option" widget's value is found in split result, then widget ise "selected", otherwise it's not.
+                    if (splits.Contains (idxChildWidget ["value"]))
+                        idxChildWidget.Attributes.SetAttributeFormData ("selected", null);
+                    else
+                        idxChildWidget.Attributes.DeleteAttribute ("selected", false);
+                }
             }
         }
 
@@ -433,7 +462,7 @@ namespace p5.ajax.widgets
         {
             // Rendering opening tag for element, then its children, before we render the closing tag.
             // Making sure we nicely indent element, if we should.
-            RenderFormatting (writer);
+            IndentWidgetRendering (writer);
 
             // Render start of opening tag, before we render all attributes.
             writer.Write (@"<{0} id=""{1}""", Element, ClientID);
@@ -444,7 +473,7 @@ namespace p5.ajax.widgets
             base.RenderChildren (writer);
 
             // Another formatting round, before we render end tag for element.
-            RenderFormatting (writer);
+            IndentWidgetRendering (writer);
             writer.Write ("</{0}>", Element);
         }
 
