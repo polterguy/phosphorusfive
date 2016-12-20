@@ -48,14 +48,12 @@ Widget special properties yields correct values
     element:span
     class:foo
     visible:false
-    render-type:immediate
     position:0
   p5.web.widgets.property.get:sys42.tests.widget-4
     parent
     element
     class
     visible
-    render-type
     position
   p5.web.widgets.delete:sys42.tests.widget-4
   if:x:/@p5.web.widgets.property.get
@@ -65,7 +63,6 @@ Widget special properties yields correct values
     element:span
     class:foo
     visible:bool:false
-    render-type:immediate
     position:int:0"
     throw:Assert error, widgets misbehaved
 
@@ -196,22 +193,6 @@ Widget find for parent
     !=:node:@"p5.web.widgets.find
   sys42.tests.widget-6
     literal:test-1
-    literal:test-2"
-    throw:Assert error, widgets misbehaved
-
-
-Widget find for render-type
-  p5.web.widgets.create-container:sys42.tests.widget-6
-    widgets
-      literal:test-1
-      literal:test-2
-        render-type:immediate
-  p5.web.widgets.find:sys42.tests.widget-6
-    render-type:immediate
-  p5.web.widgets.delete:sys42.tests.widget-6
-  if:x:/@p5.web.widgets.find
-    !=:node:@"p5.web.widgets.find
-  sys42.tests.widget-6
     literal:test-2"
     throw:Assert error, widgets misbehaved
 
@@ -843,19 +824,16 @@ Widget properties can take expressions
     element:span
     class:foo
     visible:false
-    render-type:immediate
   p5.web.widgets.create-container:sys42.tests.widget-50
     parent:x:/@_data/*/parent?value
     element:x:/@_data/*/element?value
     class:x:/@_data/*/class?value
     visible:x:/@_data/*/visible?value
-    render-type:x:/@_data/*/render-type?value
   p5.web.widgets.property.get:sys42.tests.widget-50
     parent
     element
     class
     visible
-    render-type
   p5.web.widgets.delete:sys42.tests.widget-50
   if:x:/@p5.web.widgets.property.get
     !=:node:@"p5.web.widgets.property.get
@@ -863,8 +841,7 @@ Widget properties can take expressions
     parent:content
     element:span
     class:foo
-    visible:bool:false
-    render-type:immediate"
+    visible:bool:false"
     throw:Assert error, widgets misbehaved
 
 
@@ -873,20 +850,17 @@ Child widget properties can take expressions
     element:span
     class:foo
     visible:false
-    render-type:immediate
   p5.web.widgets.create:sys42.tests.widget-51
     widgets
       literal:sys42.tests.widget-52
         element:x:/@_data/*/element?value
         class:x:/@_data/*/class?value
         visible:x:/@_data/*/visible?value
-        render-type:x:/@_data/*/render-type?value
   p5.web.widgets.property.get:sys42.tests.widget-52
     parent
     element
     class
     visible
-    render-type
   p5.web.widgets.delete:sys42.tests.widget-52
   if:x:/@p5.web.widgets.property.get
     !=:node:@"p5.web.widgets.property.get
@@ -894,8 +868,7 @@ Child widget properties can take expressions
     parent:sys42.tests.widget-51
     element:span
     class:foo
-    visible:bool:false
-    render-type:immediate"
+    visible:bool:false"
     throw:Assert error, widgets misbehaved
 
 

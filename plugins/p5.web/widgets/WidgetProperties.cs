@@ -102,11 +102,6 @@ namespace p5.web.widgets
                             break;
                         case "element":
                             idxWidget.Element = valueNode.GetExValue<string> (context);
-                            idxWidget.ReRender ();
-                            break;
-                        case "render-type":
-                            idxWidget.RenderAs = (Widget.Rendering) Enum.Parse (typeof (Widget.Rendering), valueNode.GetExValue<string> (context));
-                            idxWidget.ReRender ();
                             break;
                         case "id":
                             var oldID = idxWidget.ID;
@@ -163,7 +158,6 @@ namespace p5.web.widgets
                         case "after":
                         case "visible":
                         case "element":
-                        case "render-type":
                         case "id":
                             throw new LambdaException ("Cannot remove property '" + nameNode.Name + "' of widget", e.Args, context);
                         default:
@@ -265,9 +259,6 @@ namespace p5.web.widgets
                                           propertyName,
                                           widget,
                                           indexAfter < 0 ? null : widget.Parent.Controls [indexAfter].ID);
-                    break;
-                case "render-type":
-                    CreateAttributeReturn (args, propertyName, widget, widget.RenderAs.ToString ());
                     break;
                 default:
 

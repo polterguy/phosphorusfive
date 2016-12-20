@@ -158,7 +158,6 @@ p5.web.widgets.create-container:cms-page-editor
                    */
                   p5.web.widgets.create-literal
                     element:option
-                    render-type:open
                     parent:cms-select-page
                     value:_default
                     innerValue:Choose existing page to edit ...
@@ -192,7 +191,6 @@ p5.web.widgets.create-container:cms-page-editor
                     eval-x:x:/+/*
                     p5.web.widgets.create-literal
                       element:option
-                      render-type:open
                       parent:cms-select-page
                       value:x:/@_dp/#?value
                       innerValue:x:/@_dp/#/*/name?value
@@ -294,7 +292,6 @@ p5.web.widgets.create-container:cms-page-editor
                 eval-x:x:/+/*/*/*
                 p5.web.widgets.create-container
                   element:li
-                  render-type:open
                   parent:cms-create-new-page
                   widgets
                     a

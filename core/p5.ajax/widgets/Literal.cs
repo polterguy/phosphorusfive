@@ -53,64 +53,68 @@ namespace p5.ajax.widgets
         [PersistenceMode (PersistenceMode.InnerDefaultProperty)]
         public string innerValue
         {
-            get { return this ["innerValue"]; }
-            set { this ["innerValue"] = value; }
+            get { return base.GetAttributeValue ("innerValue"); }
+            set { base.SetAttributeValue ("innerValue", value); }
         }
 
         /*
          * Overridden to provide some help for retrieving value of textarea and option elements.
          */
-        public override string this [string name] {
-            get {
-                if (Element == "textarea" && name == "value") {
+        public override string GetAttributeValue (string name)
+        {
+            if (Element == "textarea" && name == "value") {
 
-                    // Special treatment for textarea, to make it resemble what goes on on the client-side.
-                    return base ["innerValue"];
+                // Special treatment for textarea, to make it resemble what goes on on the client-side.
+                return base.GetAttributeValue ("innerValue");
 
-                } else if (Element == "option" && name == "value" && !HasAttribute ("value")) {
+            } else if (Element == "option" && name == "value" && !HasAttribute ("value")) {
 
-                    // By default, "option" HTML elements returns their "innerValue" if they have no value attribute.
-                    return innerValue;
+                // By default, "option" HTML elements returns their "innerValue" if they have no value attribute.
+                return innerValue;
 
-                } else {
+            } else {
 
-                    // No need for special treatment, letting base do the heavy lifting.
-                    return base [name];
-                }
+                // No need for special treatment, letting base do the heavy lifting.
+                return base.GetAttributeValue (name);
             }
-            set {
-                if (Element == "textarea" && name == "value") {
+        }
 
-                    // Special treatment for textarea, to make it resemble what goes on on the client-side.
-                    base ["innerValue"] = value;
+        /*
+         * Overridden to provide some help for setting value of textarea and option elements.
+         */
+        public override void SetAttributeValue (string name, string value)
+        {
+            if (Element == "textarea" && name == "value") {
 
-                } else if (Element == "option" && name == "selected") {
+                // Special treatment for textarea, to make it resemble what goes on on the client-side.
+                base.SetAttributeValue ("innerValue", value);
 
-                    // Sanity check
-                    if (value != null && value != "selected")
-                        throw new ArgumentException ("You cannot set the selected attribute of an option element to anything but null or 'selected'.");
+            } else if (Element == "option" && name == "selected") {
 
-                    // Returning early if widget already has the attribute, to avoid re-rendering when selected property is set to what it was before.
-                    if (HasAttribute ("selected"))
-                        return;
+                // Sanity check
+                if (value != null && value != "selected")
+                    throw new ArgumentException ("You cannot set the selected attribute of an option element to anything but null or 'selected'.");
 
-                    // Special treatment for "option" element's "selected" attribute, since it requires re-rendering the entire parent widget,
-                    // and also requires removing the "selected" attribute on all of its sibling widgets.
-                    foreach (Widget idxWidget in Parent.Controls) {
-                        idxWidget.DeleteAttribute ("selected");
-                    }
-                    base [name] = value;
+                // Returning early if widget already has the attribute, to avoid re-rendering, when selected property is set to what it was before.
+                if (HasAttribute ("selected") && GetAttributeValue ("selected") == value)
+                    return;
 
-                    // Due to a "bug" in the way browsers handles the "selected" property on "option" elements, we need to re-render all
-                    // select widgets, every time one of its "option" elements' "selected" attribute is changed.
-                    // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
-                    (Parent as Widget).ReRender ();
-
-                } else {
-
-                    // No need for special treatment.
-                    base [name] = value;
+                // Since there can only be one "selected" widget inside a "select" HTML element, we remove the "selected" attribute on all widgets
+                // in parent Controls collection, before we add the "selected" attribute for this "option" HTML element.
+                foreach (Widget idxWidget in Parent.Controls) {
+                    idxWidget.DeleteAttribute ("selected");
                 }
+                base.SetAttributeValue (name, value);
+
+                // Due to a "bug" in the way browsers handles the "selected" property on "option" elements, we need to re-render all
+                // select widgets, every time one of its "option" elements' "selected" attribute is changed.
+                // Read more here; https://bugs.chromium.org/p/chromium/issues/detail?id=662669
+                (Parent as Widget).ReRender ();
+
+            } else {
+
+                // No need for special treatment.
+                base.SetAttributeValue (name, value);
             }
         }
 
@@ -128,7 +132,7 @@ namespace p5.ajax.widgets
         }
 
         /*
-         * Notice how we do not call base here, and only render the innerValue, and none of its children.
+         * Notice how we do not call base here, and only render its innerValue, and none of its children.
          */
         protected override void RenderChildren (HtmlTextWriter writer)
         {

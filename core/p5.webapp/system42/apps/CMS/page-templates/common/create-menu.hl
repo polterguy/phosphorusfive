@@ -97,7 +97,6 @@ for-each:x:/../*/p5.data.select/[0,1]/*
     p5.web.widgets.create-literal
       parent:main-menu
       element:li
-      render-type:open
       innerValue
 
   // Verifying user has access to currently iterated [p5.page] object
@@ -139,7 +138,6 @@ for-each:x:/../*/p5.data.select/[0,1]/*
             :x:/..for-each/./*/_cur?value
             parent:x:/..for-each/./*/_last?value
             element:li
-            render-type:open
             class:dropdown
             widgets
               literal
@@ -179,7 +177,6 @@ if:x:/../*/p5.auth.misc.whoami/*/default?value
   p5.web.widgets.create-container:login-menu-button
     parent:main-menu
     element:li
-    render-type:open
     widgets
       literal
         element:a
@@ -318,7 +315,6 @@ else
       eval-x:x:/+/*/*/*/*
       return
         li
-          render-type:open
           widgets
             a
               href:/app-loader?app={0}
@@ -331,7 +327,6 @@ else
     p5.web.widgets.create-container
       parent:main-menu
       element:li
-      render-type:open
       widgets
         a
           href:#
@@ -351,7 +346,6 @@ else
   p5.web.widgets.create-container
     parent:main-menu
     element:li
-    render-type:open
     widgets
       literal
         element:a

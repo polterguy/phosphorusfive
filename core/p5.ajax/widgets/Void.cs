@@ -34,12 +34,6 @@ namespace p5.ajax.widgets
     [ViewStateModeById]
     public class Void : Widget
     {
-        public Void ()
-        {
-            // Setting the default rendering type of widget, which is "open", since it most likely is an input element, br element or hr element.
-            RenderAs = Rendering.open;
-        }
-
         /*
          * Overridden to make sure the default element type for this widget is "input".
          */
@@ -52,14 +46,11 @@ namespace p5.ajax.widgets
         /*
          * Overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control.
          */
-        public override string this [string name]
+        public override void SetAttributeValue (string name, string value)
         {
-            get { return base [name]; }
-            set {
-                if (name == "innerValue")
-                    throw new ArgumentException ("you cannot set the 'innerValue' property of a Void widget");
-                base [name] = value;
-            }
+            if (name == "innerValue")
+                throw new ArgumentException ("you cannot set the 'innerValue' property of a Void widget");
+            base.SetAttributeValue (name, value);
         }
 
         /*

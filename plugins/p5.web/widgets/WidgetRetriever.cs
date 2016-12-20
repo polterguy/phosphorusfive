@@ -359,17 +359,6 @@ namespace p5.web.widgets
                         else
                             match = likeMatch ?                                (widget.Parent.Controls [indexOfWidget - 1].ID ?? "").Contains (value) :                                 widget.Parent.Controls [indexOfWidget - 1].ID == value;
 
-                    } else if (idxCriteria.Name == "render-type") {
-
-                        // Matching widget, only if widget immediately after matches criteria with its ID.
-                        var value = idxCriteria.GetExValue<string> (context, null);
-
-                        // Basic sanity check.
-                        if (value == null)
-                            throw new LambdaException ("You cannot query for 'render-type exists', since all widgets have some sort of render-type.", criteria, context);
-
-                        match = widget.RenderAs == (Widget.Rendering)Enum.Parse (typeof (Widget.Rendering), value);
-
                     } else if (!widget.HasAttribute (idxCriteria.Name)) {
 
                         // Since widget doesn't even have this attribute, there's no way this can possibly be a match.

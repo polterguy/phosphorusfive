@@ -48,7 +48,6 @@ p5.events.create:sys42.widgets.navbar._create-items
       add:x:/../*/return
         src
           li
-            render-type:open
             class:dropdown
             widgets
               a
@@ -72,7 +71,6 @@ p5.events.create:sys42.widgets.navbar._create-items
       add:x:/../*/return
         src
           li
-            render-type:open
             class:divider
             role:separator
 
@@ -108,7 +106,6 @@ p5.events.create:sys42.widgets.navbar._create-items
       add:x:/../*/return
         src
           li
-            render-type:open
             widgets
               a
                 href:#

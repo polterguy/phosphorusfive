@@ -60,29 +60,6 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
-        ///     Defines how to render the HTML element of your widget.
-        /// </summary>
-        public enum Rendering
-        {
-            /// <summary>
-            ///     This is for elements that normally require both an opening tag, and a closing tag, such as "div" and "ul".
-            /// </summary>
-            normal,
-
-            /// <summary>
-            ///     This forces the element to close itself immediately, which is meaningful for XHTML renderings, where you wish
-            ///     to immediately close the element, such as when using for instance a "br" element, or having an element with no content.
-            /// </summary>
-            immediate,
-
-            /// <summary>
-            ///     This is for elements that does not require a closing element at all, such as when rendering plain HTML (not XHTML),
-            ///     and you render for instance a "p" or an "li" element, which doesn't in fact require a closing tag at all.
-            /// </summary>
-            open
-        }
-
-        /// <summary>
         ///     Defines how the widget is supposed to be rendered during the current request.
         /// </summary>
         protected enum RenderingMode
@@ -106,7 +83,7 @@ namespace p5.ajax.widgets
             ///     a style property with "display:none !important", to simply serve as a placeholder for widget, as it later 
             ///     becomes visible.
             /// </summary>
-            RenderInvisible
+            WidgetBecameInvisible
         }
 
         // Contains all attributes for widget.
@@ -144,7 +121,7 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
-        ///     Overridden to make it possible to change an element's ID.
+        ///     Overridden to make it possible to change an element's ID during an Ajax callback.
         /// </summary>
         /// <value>The new ID</value>
         public override string ID
@@ -162,6 +139,19 @@ namespace p5.ajax.widgets
                 }
                 base.ID = value;
             }
+        }
+
+        /// <summary>
+        ///     This is the ClientID to use when sending JSON updates back to the client for the widget.
+        /// 
+        ///     This is necessary for the rare occasions that a widget changes its ID during an Ajax callback, at which point, the DOM
+        ///     element we're updating, does not have the ClientID the widget has during rendering. Hence, when transmitting updates
+        ///     back to the client for a widget, using JSON updates, we must use this property, and not the ClientID.
+        /// </summary>
+        /// <value>The JSON client identifier.</value>
+        protected string JsonClientID
+        {
+            get { return _oldClientID ?? ClientID; }
         }
 
         /// <summary>
@@ -185,25 +175,10 @@ namespace p5.ajax.widgets
                 } else if (Visible && !value && IsTrackingViewState && AjaxPage.IsAjaxRequest) {
 
                     // This widget was made invisible during this request, and should be re-rendered as invisible.
-                    RenderMode = RenderingMode.RenderInvisible;
+                    RenderMode = RenderingMode.WidgetBecameInvisible;
                 }
                 base.Visible = value;
             }
-        }
-
-        /// <summary>
-        ///     Gets or sets how to render the widget.
-        /// 
-        ///     Legal values are; "normal", "immediate" and "open".
-        ///     "normal" means your widget will render with an opening tag, and a closing tag.
-        ///     "immediate" means your widget's tag will immediately close, which is useful for XHTML pages for instance.
-        ///     "open" is useful for HTML elements that doesn't require a closing tag, such as "p" or "li", but only in HTML (non XHTML pages).
-        /// </summary>
-        /// <value>The render type</value>
-        public virtual Rendering RenderAs
-        {
-            get { return (Rendering)(ViewState ["rt"] ?? Rendering.normal); }
-            set { ViewState ["rt"] = value; }
         }
 
         /// <summary>
@@ -217,6 +192,10 @@ namespace p5.ajax.widgets
             get { return _attributes.GetAttribute ("Element"); }
             set {
 
+                // Verifying we actually have a change.
+                if (value == Element)
+                    return; // No need to continue.
+
                 // If Element name is set to "null", we entirely remove attribute, to let default value of sub classes kick in, and do its thing.
                 if (value == null) {
 
@@ -229,11 +208,11 @@ namespace p5.ajax.widgets
                     SanitizeElementName (value);
 
                     // Setting the element name, depending upon if we're serializing changes or not.
-                    if (!IsTrackingViewState)
-                        _attributes.SetAttributePreViewState ("Element", value);
-                    else
-                        _attributes.ChangeAttribute ("Element", value);
+                    SetAttributeValue ("Element", value);
                 }
+
+                // When the element name changes, we re-render widget entirely automatically.
+                ReRender ();
             }
         }
 
@@ -244,28 +223,10 @@ namespace p5.ajax.widgets
         ///     value to "null", it will still exist on widget, as an "empty attribute".
         /// </summary>
         /// <param name="name">Name of attribute to retrieve or set value of.</param>
-        public virtual string this [string name]
+        public string this [string name]
         {
-            get { return _attributes.GetAttribute (name); }
-            set {
-
-                // Notice, we store the attribute differently, depending upon whether or not we have started tracking ViewState or not.
-                // This is necessarily due to making sure we're able to track changes to attributes, and correctly pass them on to the client.
-                if (!IsTrackingViewState)
-                    _attributes.SetAttributePreViewState (name, value);
-                else
-                    _attributes.ChangeAttribute (name, value);
-            }
-        }
-
-        /// <summary>
-        ///     Deletes the specified attribute from widget entirely.
-        /// </summary>
-        /// <param name="name">Name of attribute you wish to delete.</param>
-        public virtual void DeleteAttribute (string name)
-        {
-            if (HasAttribute (name))
-                _attributes.RemoveAttribute (name);
+            get { return GetAttributeValue (name); }
+            set { SetAttributeValue (name, value); }
         }
 
         /// <summary>
@@ -279,14 +240,47 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
+        ///     Returns the value of the given attribute, if any.
+        /// </summary>
+        /// <returns>The attribute value.</returns>
+        /// <param name="name">Name.</param>
+        public virtual string GetAttributeValue (string name)
+        {
+            return _attributes.GetAttribute (name);
+        }
+
+        /// <summary>
+        ///     Sets the specified attribute to the specified value.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="value">Value.</param>
+        public virtual void SetAttributeValue (string name, string value)
+        {
+            // Notice, we store the attribute differently, depending upon whether or not we have started tracking ViewState or not.
+            // This is necessarily due to making sure we're able to track changes to attributes, and correctly pass them on to the client.
+            if (!IsTrackingViewState)
+                _attributes.SetAttributePreViewState (name, value);
+            else
+                _attributes.ChangeAttribute (name, value);
+        }
+
+        /// <summary>
+        ///     Deletes the specified attribute from widget entirely.
+        /// </summary>
+        /// <param name="name">Name of attribute you wish to delete.</param>
+        public virtual void DeleteAttribute (string name)
+        {
+            if (HasAttribute (name))
+                _attributes.RemoveAttribute (name);
+        }
+
+        /// <summary>
         ///     Returns all attribute keys for widget.
         /// </summary>
         /// <value>All attribute keys for widget</value>
         public virtual IEnumerable<string> AttributeKeys
         {
-            get {
-                return _attributes.Keys;
-            }
+            get { return _attributes.Keys; }
         }
 
         /// <summary>
@@ -472,7 +466,7 @@ namespace p5.ajax.widgets
         ///     Allows you to explicitly force to have your widget re-rendered, or re-rendering its children, if you wish.
         /// </summary>
         /// <value>The render mode</value>
-        protected virtual RenderingMode RenderMode
+        protected RenderingMode RenderMode
         {
             get;
             set;
@@ -483,7 +477,7 @@ namespace p5.ajax.widgets
         /// 
         ///     Notice, this is almost never necessary, but will invoke a "partial rendering", or re-rendering of the entire widget.
         /// </summary>
-        public virtual void ReRender ()
+        protected internal virtual void ReRender ()
         {
             RenderMode = RenderingMode.ReRender;
         }
@@ -528,12 +522,12 @@ namespace p5.ajax.widgets
                 if (RenderMode == RenderingMode.ReRender) {
 
                     // Re-rendering entire widget.
-                    AjaxPage.RegisterWidgetChanges (_oldClientID ?? ClientID, "outerHTML", GetWidgetHtml ());
+                    AjaxPage.RegisterWidgetChanges (JsonClientID, "outerHTML", GetWidgetHtml ());
 
                 } else {
 
                     // Only pass changes for this widget back to the client as JSON, before we render its children.
-                    _attributes.RegisterChanges (AjaxPage, _oldClientID ?? ClientID);
+                    _attributes.RegisterChanges (AjaxPage, JsonClientID);
                     RenderChildren (writer);
                 }
             }
@@ -545,10 +539,10 @@ namespace p5.ajax.widgets
         private void RenderInvisibleWidget (HtmlTextWriter writer)
         {
             var ancestorReRendering = AncestorIsReRendering ();
-            if (AjaxPage.IsAjaxRequest && RenderMode == RenderingMode.RenderInvisible && !ancestorReRendering) {
+            if (AjaxPage.IsAjaxRequest && RenderMode == RenderingMode.WidgetBecameInvisible && !ancestorReRendering) {
 
                 // Re-rendering widget's invisible markup, since widget was made invisible during the current request.
-                AjaxPage.RegisterWidgetChanges (_oldClientID ?? ClientID, "outerHTML", GetWidgetInvisibleHtml ());
+                AjaxPage.RegisterWidgetChanges (JsonClientID, "outerHTML", GetWidgetInvisibleHtml ());
 
             } else if (!AjaxPage.IsAjaxRequest || ancestorReRendering) {
 
@@ -567,16 +561,10 @@ namespace p5.ajax.widgets
         /// <param name="writer">The HtmlTextWriter to render the widget into.</param>
         protected virtual void RenderHtmlResponse (HtmlTextWriter writer)
         {
-            // Rendering opening tag for element.
+            // Rendering opening tag for element, then its children, before we render the closing tag.
             var noTabs = RenderTagOpening (writer);
-
-            // Rendering widget's content (children or innerValue), but only if element had any content.
-            if (HasContent)
-                RenderChildren (writer);
-
-            // Closing element, but only if element is rendered in "normal" mode, or it is rendered at "close immediately" and it has content.
-            if (RenderAs == Rendering.normal || (RenderAs == Rendering.immediate && HasContent))
-                RenderTagClosing (writer, noTabs);
+            RenderChildren (writer);
+            RenderTagClosing (writer, noTabs);
         }
 
         /// <summary>
@@ -609,11 +597,8 @@ namespace p5.ajax.widgets
             writer.Write (@"<{0} id=""{1}""", Element, ClientID);
             _attributes.Render (writer);
 
-            // Closing opening tag for HTML element, which depends upon whether or not widget has content and its rendering mode.
-            if (!HasContent && RenderAs == Rendering.immediate)
-                writer.Write (" />"); // No content, and tag should be closed immediately.
-            else
-                writer.Write (">");
+            // Closing opening tag for HTML element.
+            writer.Write (">");
 
             // Returning the number of TAB characters we created due to trying to nicely format the element in the HTML.
             return noTabs;

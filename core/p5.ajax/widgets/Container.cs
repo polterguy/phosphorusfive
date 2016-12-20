@@ -96,55 +96,59 @@ namespace p5.ajax.widgets
 
         /*
          * Overridden to make sure we handle the "value" attribute for "select" HTML widgets correctly, in addition to throwing an exception,
-         * if user tries to set or get the "innerValue" property/attribute of widget.
+         * if user tries to get the "innerValue" property/attribute of widget.
          */
-        public override string this [string name]
+        public override string GetAttributeValue (string name)
         {
-            get {
-                if (name == "innerValue")
-                    throw new ArgumentException ("You cannot get the 'innerValue' property of a Container widget");
+            if (name == "innerValue")
+                throw new ArgumentException ("You cannot get the 'innerValue' property of a Container widget");
 
-                // Special treatment for select HTML elements, to make it resemble what goes on on the client-side.
-                if (Element == "select" && name == "value") {
+            // Special treatment for select HTML elements, to make it resemble what goes on on the client-side.
+            if (Element == "select" && name == "value") {
 
-                    // Returning each selected "option" element separated by comma, in case this is a multi select widget.
-                    string retVal = "";
-                    foreach (Widget idxWidget in Controls) {
-                        if (idxWidget.HasAttribute ("selected"))
-                            retVal += idxWidget ["value"] + ",";
-                    }
-                    return retVal.TrimEnd (','); // Removing last comma ",".
-
-                } else {
-
-                    // No special treatment required.
-                    return base [name];
+                // Returning each selected "option" element separated by comma, in case this is a multi select widget.
+                string retVal = "";
+                foreach (Widget idxWidget in Controls) {
+                    if (idxWidget.HasAttribute ("selected"))
+                        retVal += idxWidget ["value"] + ",";
                 }
+                return retVal.TrimEnd (','); // Removing last comma ",".
+
+            } else {
+
+                // No special treatment required.
+                return base.GetAttributeValue (name);
             }
-            set {
-                if (name == "innerValue")
-                    throw new ArgumentException ("You cannot set the 'innerValue' property of a Container widget");
+        }
 
-                // Special treatment for select HTML elements, to make it resemble what goes on on the client-side.
-                if (Element == "select" && name == "value") {
+        /*
+         * Overridden to make sure we handle the "value" attribute for "select" HTML widgets correctly, in addition to throwing an exception,
+         * if user tries to set the "innerValue" property/attribute of widget.
+         */
+        public override void SetAttributeValue (string name, string value)
+        {
+            if (name == "innerValue")
+                throw new ArgumentException ("You cannot set the 'innerValue' property of a Container widget");
 
-                    // Splitting specified value by comma ",", and adding the "selected" attribute for each option element with a value
-                    // matching anything in the split results.
+            // Special treatment for select HTML elements, to make it resemble what goes on on the client-side.
+            if (Element == "select" && name == "value") {
+
+                // Splitting specified value by comma ",", and adding the "selected" attribute for each option element with a value
+                // matching anything in the split results.
+                foreach (Widget idxWidget in Controls) {
+                    idxWidget.DeleteAttribute ("selected"); // DeleteAttribute will check if attribute exists before attempting to delete it.
+                }
+                foreach (string idxSplit in value.Split (',')) {
                     foreach (Widget idxWidget in Controls) {
-                        idxWidget.DeleteAttribute ("selected"); // DeleteAttribute will check if attribute exists before attempting to delete it.
-                    }
-                    foreach (string idxSplit in value.Split (',')) {
-                        foreach (Widget idxWidget in Controls) {
-                            if (idxWidget["value"] == idxSplit) {
-                                idxWidget ["selected"] = null;
-                            }
+                        if (idxWidget ["value"] == idxSplit) {
+                            idxWidget ["selected"] = null;
                         }
                     }
-                } else {
-
-                    // No special treatment required.
-                    base [name] = value;
                 }
+            } else {
+
+                // No special treatment required.
+                base.SetAttributeValue (name, value);
             }
         }
 
@@ -499,8 +503,7 @@ namespace p5.ajax.widgets
                     using (TextReader reader = new StreamReader(stream)) {
 
                         // Registering currently iterated widget's HTML as an insertion on client side.
-                        // TODO: Fix client ID to allow for changing IDs... (create base property to retrieve "CurrentClientID" or something)
-                        AjaxPage.RegisterWidgetChanges (ClientID, "__p5_add_" + Controls.IndexOf (idx), reader.ReadToEnd ());
+                        AjaxPage.RegisterWidgetChanges (JsonClientID, "__p5_add_" + Controls.IndexOf (idx), reader.ReadToEnd ());
                     }
                 }
             }
