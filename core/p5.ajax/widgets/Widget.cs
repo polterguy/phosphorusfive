@@ -88,20 +88,18 @@ namespace p5.ajax.widgets
         protected enum RenderingMode
         {
             /// <summary>
-            ///     The default value.
+            ///     The default rendering mode.
+            /// 
+            ///     This will render the widget either as plain HTML, or pass JSON updates back to client, depending upon whether or not the current
+            ///     request is an Ajax request, or one of its ancestor widgets are being re-rendered.
             /// </summary>
             Default,
 
             /// <summary>
-            ///     Re-rendering mode, the entire widget will be re-rendered back to the client as HTML.
+            ///     Re-rendering mode, the entire widget will be re-rendered back to the client as HTML, regardless of whether or not it's an Ajax callback,
+            ///     or none of its ancestor widgets are being re-rendered.
             /// </summary>
             ReRender,
-
-            /// <summary>
-            ///     The children collection of widget has been modified, which means we'll need to take care of rendering deleted widgets, and added
-            ///     widgets back to the client.
-            /// </summary>
-            ChildrenCollectionModified,
 
             /// <summary>
             ///     Renders the widget as invisible, which means it'll render without any of its attributes or content, and have
@@ -119,7 +117,7 @@ namespace p5.ajax.widgets
 
         // Used to hold the old ID of widget, in the rare case, that its ID is somehow changed.
         // Necessary to make sure we are able to retrieve widget, and update its ID on the client side, during Ajax requests.
-        private string _oldId;
+        private string _oldClientID;
 
         /// <summary>
         ///     Initializes a new instance of a Widget.
@@ -136,8 +134,11 @@ namespace p5.ajax.widgets
         public AjaxPage AjaxPage
         {
             get {
-                if (_page == null)
+                if (_page == null) {
                     _page = Page as AjaxPage;
+                    if (_page == null)
+                        throw new ApplicationException ("Oops, make sure you inherit your page from AjaxPage somehow.");
+                }
                 return _page;
             }
         }
@@ -146,16 +147,17 @@ namespace p5.ajax.widgets
         ///     Overridden to make it possible to change an element's ID.
         /// </summary>
         /// <value>The new ID</value>
-        public override string ID {
+        public override string ID
+        {
             get { return base.ID; }
             set {
                 // Storing old ID of element, since this is the stuff that'll be rendered over the wire,
                 // to allow for retrieving the element on the client side, and change its ID on the client side.
-                if (IsTrackingViewState && value != base.ID) {
+                if (IsTrackingViewState && value != ID) {
 
                     // Notice, we only keep the "first original ID", in case ID is changed multiple times during page's life cycle.
-                    if (_oldId == null)
-                        _oldId = base.ClientID;
+                    if (_oldClientID == null)
+                        _oldClientID = ClientID;
                     _attributes.ChangeAttribute ("id", value);
                 }
                 base.ID = value;
@@ -168,18 +170,19 @@ namespace p5.ajax.widgets
         ///     Overridden from base, to make sure we can automatically set rendering mode for widget, during changes to visibility.
         /// </summary>
         /// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
-        public override bool Visible {
+        public override bool Visible
+        {
             get { return base.Visible; }
             set {
-                if (value == base.Visible)
+                if (value == Visible)
                     return; // Nothing to do here ...
 
-                if (!base.Visible && value && IsTrackingViewState && AjaxPage.IsAjaxRequest) {
+                if (!Visible && value && IsTrackingViewState && AjaxPage.IsAjaxRequest) {
 
-                    // This widget was made visible during this request, and should be re-rendered as HTML.
+                    // This widget was made visible during this request, and should be re-rendered as such.
                     RenderMode = RenderingMode.ReRender;
 
-                } else if (base.Visible && !value && IsTrackingViewState && AjaxPage.IsAjaxRequest) {
+                } else if (Visible && !value && IsTrackingViewState && AjaxPage.IsAjaxRequest) {
 
                     // This widget was made invisible during this request, and should be re-rendered as invisible.
                     RenderMode = RenderingMode.RenderInvisible;
@@ -197,7 +200,8 @@ namespace p5.ajax.widgets
         ///     "open" is useful for HTML elements that doesn't require a closing tag, such as "p" or "li", but only in HTML (non XHTML pages).
         /// </summary>
         /// <value>The render type</value>
-        public Rendering RenderAs {
+        public virtual Rendering RenderAs
+        {
             get { return (Rendering)(ViewState ["rt"] ?? Rendering.normal); }
             set { ViewState ["rt"] = value; }
         }
@@ -208,20 +212,21 @@ namespace p5.ajax.widgets
         ///     Set this value to whatever HTML element name you wish for your widget to render as, e.g. "p", "div", "span", etc.
         /// </summary>
         /// <value>The HTML element used to render widget</value>
-        public virtual string Element {
+        public virtual string Element
+        {
             get { return _attributes.GetAttribute ("Element"); }
             set {
 
-                // If Element name is set to "null", we entirely remove attribute, to let default value of sub classes kick in, and do its magic.
+                // If Element name is set to "null", we entirely remove attribute, to let default value of sub classes kick in, and do its thing.
                 if (value == null) {
 
-                    // Deletion of Element, which means overridden defaults in sub classes will hopefully return something sane.
+                    // Deletion of Element, which means overridden defaults in sub classes will hopefully return some sane default.
                     DeleteAttribute ("Element");
 
                 } else {
 
                     // Sanity check, before figuring out what to do with new value for Element property.
-                    SanitizeElementValue (value);
+                    SanitizeElementName (value);
 
                     // Setting the element name, depending upon if we're serializing changes or not.
                     if (!IsTrackingViewState)
@@ -239,7 +244,8 @@ namespace p5.ajax.widgets
         ///     value to "null", it will still exist on widget, as an "empty attribute".
         /// </summary>
         /// <param name="name">Name of attribute to retrieve or set value of.</param>
-        public virtual string this [string name] {
+        public virtual string this [string name]
+        {
             get { return _attributes.GetAttribute (name); }
             set {
 
@@ -256,7 +262,7 @@ namespace p5.ajax.widgets
         ///     Deletes the specified attribute from widget entirely.
         /// </summary>
         /// <param name="name">Name of attribute you wish to delete.</param>
-        public void DeleteAttribute (string name)
+        public virtual void DeleteAttribute (string name)
         {
             if (HasAttribute (name))
                 _attributes.RemoveAttribute (name);
@@ -273,21 +279,14 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
-        ///     Returns all attribute names for widget.
+        ///     Returns all attribute keys for widget.
         /// </summary>
         /// <value>All attribute keys for widget</value>
-        public IEnumerable<string> AttributeKeys {
+        public virtual IEnumerable<string> AttributeKeys
+        {
             get {
                 return _attributes.Keys;
             }
-        }
-
-        /// <summary>
-        ///     Forces a re-rendering of your widget.
-        /// </summary>
-        public void ReRender ()
-        {
-            RenderMode = RenderingMode.ReRender;
         }
 
         /// <summary>
@@ -297,21 +296,22 @@ namespace p5.ajax.widgets
         /// </summary>
         /// <param name="eventName">Event name such as 'onclick', or name of C# method on Page, UserControl, or MasterPage</param>
         /// <exception cref="NotImplementedException"></exception>
-        public void InvokeEventHandler (string eventName)
+        public virtual void InvokeEventHandler (string eventName)
         {
-            var eventHandlerName = eventName; // Defaulting to event name for WebMethod invocations from JavaScript
-            if (HasAttribute (eventName)) {
+            // Defaulting to event name for WebMethod invocations from JavaScript.
+            var eventHandlerName = eventName;
 
-                // Probably "onclick" or other types of automatically generated mapping between server method and javascript handler
-                eventHandlerName = this [eventName];
-            }
+            // Checking is this is an automatically generated mapping between server method and JavaScript handler.
+            if (HasAttribute (eventName))
+                eventHandlerName = this [eventName]; // This is an "onXXX" event, retrieving underlaying method name we should invoke.
 
-            // Finding out at what context to invoke the method within
+            // Finding out at what context to invoke the method within, which means iterating upwards in Control hierarchy, 
+            // until we find a UserControl, or the Page itself.
             var owner = Parent;
             while (!(owner is UserControl) && !(owner is Page))
                 owner = owner.Parent;
 
-            // Retrieving the method
+            // Retrieving the MethodInfo, such that we can invoke it using Reflection.
             var method = owner.GetType ().GetMethod (eventHandlerName,
                 BindingFlags.Instance |
                 BindingFlags.Public |
@@ -320,91 +320,43 @@ namespace p5.ajax.widgets
             if (method == null)
                 throw new NotImplementedException ("Method + '" + eventHandlerName + "' could not be found");
 
-            // Verifying method has the WebMethod attribute
-            var atrs = method.GetCustomAttributes (typeof (WebMethod), false /* for security reasons we want method to be explicitly marked as WebMethod */);
+            // Verifying method has the WebMethod attribute.
+            // For security reasons we want method to be explicitly marked as WebMethod, and not allow inherited methods to be implicitly legal.
+            var atrs = method.GetCustomAttributes (typeof (WebMethod), false);
+
+            // Notice, to not give away any information to malicious requests, allowing them to figure out which methods exists on UserControl/Page,
+            // we throw the exact same exception as above.
             if (atrs == null || atrs.Length == 0)
-                throw new AccessViolationException ("Method + '" + eventHandlerName + "' is illegal to invoke over http");
+                throw new NotImplementedException ("Method + '" + eventHandlerName + "' could not be found");
 
-            // Invoking methods with the "this" widget and empty event args
+            // Invoking methods with the "this" widget, and an AjaxEventArg, passing in the name of the event that was raised on the client, to allow
+            // for reusing the same event handler, for multiple events.
             method.Invoke (owner, new object [] { this, new AjaxEventArgs (eventName) });
-        }
-
-        /// <summary>
-        ///     Renders the widget.
-        /// 
-        ///     Overridden to entirely bypass the ASP.NET Web Forms rendering, and provide our own with Ajax support.
-        /// </summary>
-        /// <param name="writer">Writer.</param>
-        public override void RenderControl (HtmlTextWriter writer)
-        {
-            // If ancestor is invisible, we do not render this control at all.
-            if (AreAncestorsVisible ()) {
-
-                // Figuring out if one of this widget's ancestor widgets are in "re-rendering mode", at which case we render the HTML.
-                var ancestorReRendering = AncestorIsReRendering ();
-                if (Visible) {
-                    if (AjaxPage.IsAjaxRequest && !ancestorReRendering) {
-                        if (RenderMode == RenderingMode.ReRender) {
-
-                            // Re-rendering entire widget.
-                            // Notice, since GetWidgetHtml will return HTML for widget, and its children controls, it's not necessary to invoke
-                            // "RenderChildren" or any similar methods here.
-                            AjaxPage.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetHtml ());
-
-                        } else if (RenderMode == RenderingMode.ChildrenCollectionModified) {
-
-                            // Re-rendering all children controls, but also renders changes to widget.
-                            _attributes.RegisterChanges (AjaxPage, _oldId ?? ClientID);
-                            RenderChildrenWidgetsAsJson (writer);
-
-                        } else {
-
-                            // Only pass changes back to client as JSON.
-                            _attributes.RegisterChanges (AjaxPage, _oldId ?? ClientID);
-                            RenderChildren (writer);
-                        }
-                    } else {
-
-                        // Not an Ajax request, or ancestors are re-rendering widget somehow.
-                        RenderHtmlResponse (writer);
-                    }
-                } else {
-
-                    // Invisible widget.
-                    if (AjaxPage.IsAjaxRequest && RenderMode == RenderingMode.RenderInvisible && !ancestorReRendering) {
-
-                        // Re-rendering widget's invisible markup.
-                        // Widget was probably made invisible during the current request.
-                        AjaxPage.RegisterWidgetChanges (_oldId ?? ClientID, "outerHTML", GetWidgetInvisibleHtml ());
-
-                    } else if (!AjaxPage.IsAjaxRequest || ancestorReRendering) {
-
-                        // Rendering invisible HTML.
-                        writer.Write (GetWidgetInvisibleHtml ());
-                    }
-                }
-            }
         }
 
         /// <summary>
         ///     Gets a value indicating whether this instance has content or not.
         /// 
-        ///     This property is used to determine how a widget should be rendered, if its rendering mode is set to "immediate", and if its children should
-        ///     be rendered or not.
+        ///     This property is used to determine how a widget should be rendered, if its rendering mode is set to "immediate", 
+        ///     and if its children should be rendered or not.
         ///     Method is abstract, and must be overridden in derived classes.
         /// </summary>
         /// <value><c>true</c> if this instance has content; otherwise, <c>false</c></value>
-        protected abstract bool HasContent {
+        protected abstract bool HasContent
+        {
             get;
         }
 
         /// <summary>
         ///     Verifies the Element name is legal for the current widget.
         /// 
-        ///     Override this method in your own classes, to provide further restrictions. But please, call base class method.
+        ///     Override this method in your own classes, to provide further restrictions. But please, call base implementation, 
+        ///     unless you wish to eliminate all the basic restrictions, allowing for "weird" elements to be created.
+        ///     This implementation throws an exception if elementName is empty string (""), or contains anything but a-z or 1-6, which should
+        ///     accommodate for most "sane" HTML elements.
         /// </summary>
         /// <param name="elementName">The new Element name.</param>
-        protected virtual void SanitizeElementValue (string elementName)
+        protected virtual void SanitizeElementName (string elementName)
         {
             // Making sure Element is not empty string "".
             if (elementName == "")
@@ -413,28 +365,6 @@ namespace p5.ajax.widgets
             // Making sure Element does not contain other non-legal characters.
             if (elementName.Any (ix => !"abcdefghijklmnopqrstuvwxyz123456".Contains (ix)))
                 throw new ArgumentException ("Sorry, but p5.ajax doesn't like these types of characters for its Element names", nameof (Element));
-        }
-
-        /// <summary>
-        ///     Gets or sets the rendering mode for the widget.
-        /// 
-        ///     Allows you to explicitly force to have your widget re-rendered, or re-rendering its children, if you wish.
-        /// </summary>
-        /// <value>The render mode</value>
-        protected RenderingMode RenderMode {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///     Invoked when Controls collection of widget has been updated.
-        /// </summary>
-        protected void ChildrenCollectionIsModified ()
-        {
-            // Notice, if the widget is re-rendered entirely, there is no need to mark the children collection as changed, since widget will be entirely
-            // re-rendered anyway, with all of its children also re-rendered.
-            if (RenderMode != RenderingMode.ReRender)
-                RenderMode = RenderingMode.ChildrenCollectionModified;
         }
 
         /// <summary>
@@ -520,19 +450,15 @@ namespace p5.ajax.widgets
         /// <param name="e">EventArgs</param>
         protected override void OnLoad (EventArgs e)
         {
-            // Sanity check.
-            if (AjaxPage == null)
-                throw new ApplicationException ("Oops, make sure you inherit your page from AjaxPage somehow.");
-
             if (Page.IsPostBack)
                 LoadFormData ();
 
-            // Making sure event handlers are being processed
+            // Making sure event handlers are being raised.
             if (AjaxPage.IsAjaxRequest) {
                 if (Page.Request.Params ["_p5_widget"] == ClientID) {
                     Page.LoadComplete += delegate {
 
-                        // Event was raised for this widget
+                        // Event was raised for this widget.
                         InvokeEventHandler (Page.Request.Params ["_p5_event"]);
                     };
                 }
@@ -541,21 +467,102 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
-        ///     Renders all children as JSON update(s) back to client.
+        ///     Gets or sets the rendering mode for the widget.
         /// 
-        ///     Override this one to provide custom rendering.
+        ///     Allows you to explicitly force to have your widget re-rendered, or re-rendering its children, if you wish.
         /// </summary>
-        protected virtual void RenderChildrenWidgetsAsJson (HtmlTextWriter writer)
+        /// <value>The render mode</value>
+        protected virtual RenderingMode RenderMode
         {
-            // re-rendering all children by default
-            AjaxPage.RegisterWidgetChanges (ClientID, "innerValue", GetInnerHTML ());
+            get;
+            set;
+        }
+
+        /// <summary>
+        ///     Forces a re-rendering of your widget.
+        /// 
+        ///     Notice, this is almost never necessary, but will invoke a "partial rendering", or re-rendering of the entire widget.
+        /// </summary>
+        public virtual void ReRender ()
+        {
+            RenderMode = RenderingMode.ReRender;
+        }
+
+        /// <summary>
+        ///     Renders the widget.
+        /// 
+        ///     Overridden to entirely bypass the ASP.NET Web Forms rendering, and provide our own with Ajax support.
+        ///     Notice, we never call base class implementation here!
+        ///     RenderChildren though, might get invoked.
+        /// </summary>
+        /// <param name="writer">Writer.</param>
+        public override void RenderControl (HtmlTextWriter writer)
+        {
+            // If one of its ancestors are invisible, we do not render this control at all.
+            if (AreAncestorsVisible ()) {
+
+                // Rendering widget differently, according to whether or not it is visible or not.
+                if (Visible)
+                    RenderVisibleWidget (writer);
+                else
+                    RenderInvisibleWidget (writer);
+            }
+        }
+
+        /*
+         * Responsible for rendering all different permutations for a visible widget.
+         */
+        private void RenderVisibleWidget (HtmlTextWriter writer)
+        {
+            // How its ancestor Control(s) are being rendered, largely detremine how this widget is rendered, since an ancestor being shown,
+            // that was previously hidden for instance, triggers a rendering of the entire widget, one way or another.
+            if (!AjaxPage.IsAjaxRequest || AncestorIsReRendering ()) {
+
+                // Not an Ajax request, or ancestors are re-rendering widget somehow.
+                // Hence, we default to rendering widget as HTML into the given HtmlTextWriter.
+                RenderHtmlResponse (writer);
+
+            } else {
+
+                // Checking the rendering mode of this widget, which also determines how widget should be rendered.
+                if (RenderMode == RenderingMode.ReRender) {
+
+                    // Re-rendering entire widget.
+                    AjaxPage.RegisterWidgetChanges (_oldClientID ?? ClientID, "outerHTML", GetWidgetHtml ());
+
+                } else {
+
+                    // Only pass changes for this widget back to the client as JSON, before we render its children.
+                    _attributes.RegisterChanges (AjaxPage, _oldClientID ?? ClientID);
+                    RenderChildren (writer);
+                }
+            }
+        }
+
+        /*
+         * Responsible for rendering all different permutations for an invisible widget.
+         */
+        private void RenderInvisibleWidget (HtmlTextWriter writer)
+        {
+            var ancestorReRendering = AncestorIsReRendering ();
+            if (AjaxPage.IsAjaxRequest && RenderMode == RenderingMode.RenderInvisible && !ancestorReRendering) {
+
+                // Re-rendering widget's invisible markup, since widget was made invisible during the current request.
+                AjaxPage.RegisterWidgetChanges (_oldClientID ?? ClientID, "outerHTML", GetWidgetInvisibleHtml ());
+
+            } else if (!AjaxPage.IsAjaxRequest || ancestorReRendering) {
+
+                // Rendering invisible HTML.
+                writer.Write (GetWidgetInvisibleHtml ());
+            }
         }
 
         /// <summary>
         ///     Renders widget's content as pure HTML into specified HtmlTextWriter.
         /// 
         ///     Override this one to provide custom rendering.
-        ///     Notice, you can also override one of the other rendering methods, if you only wish to slightly modify the widget's rendering.
+        ///     Notice, you can also override one of the other rendering methods, if you only wish to slightly modify the widget's rendering, such as
+        ///     its opening or closing tag rendering.
         /// </summary>
         /// <param name="writer">The HtmlTextWriter to render the widget into.</param>
         protected virtual void RenderHtmlResponse (HtmlTextWriter writer)
@@ -567,8 +574,8 @@ namespace p5.ajax.widgets
             if (HasContent)
                 RenderChildren (writer);
 
-            // Closing element, but only if element is rendered in "normal" mode.
-            if (RenderAs == Rendering.normal)
+            // Closing element, but only if element is rendered in "normal" mode, or it is rendered at "close immediately" and it has content.
+            if (RenderAs == Rendering.normal || (RenderAs == Rendering.immediate && HasContent))
                 RenderTagClosing (writer, noTabs);
         }
 
@@ -624,19 +631,6 @@ namespace p5.ajax.widgets
             writer.Write ("</{0}>", Element);
         }
 
-        /// <summary>
-        ///     Overridden to make sure we can persist widget's attributes into ViewState.
-        /// </summary>
-        /// <returns>The view state.</returns>
-        protected override object SaveViewState ()
-        {
-            var retVal = new object [3];
-            retVal [0] = base.SaveViewState ();
-            retVal [1] = _attributes.SaveToViewState (this);
-            retVal [2] = _attributes.SaveRemovedToViewState ();
-            return retVal;
-        }
-
         /*
          * Returns the HTML necessary to render widget on client side.
          */
@@ -657,30 +651,24 @@ namespace p5.ajax.widgets
         }
 
         /*
-         * Returns the widget's children as HTML.
-         */
-        private string GetInnerHTML ()
-        {
-            // Wrapping an HtmlTextWriter, using a MemoryStream as its base stream, to render widget's children into, 
-            // and return as string to caller.
-            using (var stream = new MemoryStream ()) {
-                using (var txt = new HtmlTextWriter (new StreamWriter (stream))) {
-                    RenderChildren (txt);
-                    txt.Flush ();
-                }
-                stream.Seek (0, SeekOrigin.Begin);
-                using (TextReader reader = new StreamReader (stream)) {
-                    return reader.ReadToEnd ();
-                }
-            }
-        }
-
-        /*
          * Returns the HTML necessary to render widget as invisible (as an invisible placeholder) on client side.
          */
         private string GetWidgetInvisibleHtml ()
         {
             return string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", Element, ClientID);
+        }
+
+        /// <summary>
+        ///     Overridden to make sure we can persist widget's attributes into ViewState.
+        /// </summary>
+        /// <returns>The view state.</returns>
+        protected override object SaveViewState ()
+        {
+            var retVal = new object [3];
+            retVal [0] = base.SaveViewState ();
+            retVal [1] = _attributes.SaveToViewState (this);
+            retVal [2] = _attributes.SaveRemovedToViewState ();
+            return retVal;
         }
 
         /*
@@ -709,15 +697,14 @@ namespace p5.ajax.widgets
          * Returns true if any of widget's ancestor widgets are re-rendered, or wants to have their children re-rendered, meaning they render as HTML.
          * At which case, this widget should also render as pure HTML into HtmlTextWriter, returning content to client.
          */
-        private bool AncestorIsReRendering ()
+        protected bool AncestorIsReRendering ()
         {
             // Returns true if any of its ancestors are rendering as HTML.
-            var idx = Parent;
+            var idx = Parent as Widget;
             while (idx != null) {
-                var wdg = idx as Widget;
-                if (wdg != null && (wdg.RenderMode == RenderingMode.ReRender || wdg.RenderMode == RenderingMode.ChildrenCollectionModified))
+                if (idx.RenderMode == RenderingMode.ReRender)
                     return true;
-                idx = idx.Parent;
+                idx = idx.Parent as Widget;
             }
             return false;
         }

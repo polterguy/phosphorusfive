@@ -146,8 +146,8 @@ namespace p5.ajax.widgets
         /*
          * Implementation of abstract base class property.
          */
-
-        protected override bool HasContent {
+        protected override bool HasContent
+        {
             get { return !string.IsNullOrEmpty (innerValue); }
         }
 
@@ -155,10 +155,10 @@ namespace p5.ajax.widgets
         ///     Verifies element is legal to use for this widget type.
         /// </summary>
         /// <param name="elementName">Element name.</param>
-        protected override void SanitizeElementValue (string elementName)
+        protected override void SanitizeElementName (string elementName)
         {
             // Letting base do its magic.
-            base.SanitizeElementValue (elementName);
+            base.SanitizeElementName (elementName);
 
             // Making sure element name is legal for this widget.
             switch (elementName) {

@@ -190,9 +190,6 @@ namespace p5.ajax.widgets
         /// <typeparam name="T">The type of control you want to create.</typeparam>
         public T CreatePersistentControl<T> (string id = null, int index = -1) where T : Control, new ()
         {
-            // Making sure we store the fact that the children collection of this widget has changed.
-            ChildrenCollectionIsModified ();
-
             // Then we must make sure we store our original controls, before we start adding new ones to the Controls collection.
             // Notice, this is only done the first time we create a new child control for a Container widget.
             MakeSureOriginalControlsAreStored ();
@@ -220,9 +217,6 @@ namespace p5.ajax.widgets
         /// <param name="control">Control to remove</param>
         public void RemoveControlPersistent (Control control)
         {
-            // Making sure we store the fact that the children collection of this widget has changed.
-            ChildrenCollectionIsModified ();
-
             // Then making sure we store original controls, the first time the Controls collection is changed, such that we now which widgets to render,
             // and which to remove on the client side.
             MakeSureOriginalControlsAreStored ();
@@ -237,9 +231,6 @@ namespace p5.ajax.widgets
         /// <param name="index">Index of control to remove</param>
         public void RemoveControlPersistentAt (int index)
         {
-            // Making sure we store the fact that the children collection of this widget has changed.
-            ChildrenCollectionIsModified ();
-
             // Then making sure we store original controls, the first time the Controls collection is changed, such that we now which widgets to render,
             // and which to remove on the client side.
             MakeSureOriginalControlsAreStored ();
@@ -271,10 +262,10 @@ namespace p5.ajax.widgets
         ///     Verifies element is legal to use for this widget type.
         /// </summary>
         /// <param name="elementName">Element name.</param>
-        protected override void SanitizeElementValue (string elementName)
+        protected override void SanitizeElementName (string elementName)
         {
             // Letting base do its magic.
-            base.SanitizeElementValue (elementName);
+            base.SanitizeElementName (elementName);
 
             // Making sure element name is legal for this widget.
             switch (elementName) {
@@ -453,16 +444,19 @@ namespace p5.ajax.widgets
         }
 
         /*
-         * Overridden to correctly render children widgets when JSON rendering of children is necessary.
+         * Overridden to make sure we correctly render its Controls collection.
          */
-        protected override void RenderChildrenWidgetsAsJson (HtmlTextWriter writer)
+        protected override void RenderChildren (HtmlTextWriter writer)
         {
-            if (_originalCollection == null) {
+            // Checking if we need to apply custom rendering, due to our children collection having being changed during current request.
+            if (!AjaxPage.IsAjaxRequest || _originalCollection == null || RenderMode == RenderingMode.ReRender || AncestorIsReRendering ()) {
 
-                base.RenderChildrenWidgetsAsJson (writer);
+                // No custom rendering necessary.
+                base.RenderChildren (writer);
 
             } else {
 
+                // Controls were either added or removed during the current request.
                 RenderDeletedWidgets ();
                 RenderAddedWidgets ();
                 RenderOldWidgets (writer);
@@ -489,11 +483,9 @@ namespace p5.ajax.widgets
         {
             // Looping through all Controls, figuring out which were not there in the "_originalCollection", before it was changed, and retrieving their
             // HTML, such that we can pass it to the client, as a JSON insertion.
-            for (var idxNo = 0; idxNo < Controls.Count; idxNo++) {
-
-                var idx = Controls [idxNo];
-                if (_originalCollection.Contains (idx) || string.IsNullOrEmpty (idx.ID))
-                    continue; // Control has already been rendered, or is a literal control without an ID
+            var oldRenderMode = RenderMode;
+            RenderMode = RenderingMode.ReRender;
+            foreach (var idx in Controls.Cast<Widget> ().Where (ix => !_originalCollection.Contains (ix) && !string.IsNullOrEmpty (ix.ID))) {
 
                 // Getting control's HTML, by rendering it into a MemoryStream, and for then to pass it on as an "insertion" to our AjaxPage.
                 using (var stream = new MemoryStream()) {
@@ -507,10 +499,12 @@ namespace p5.ajax.widgets
                     using (TextReader reader = new StreamReader(stream)) {
 
                         // Registering currently iterated widget's HTML as an insertion on client side.
-                        AjaxPage.RegisterWidgetChanges (ClientID, "__p5_add_" + idxNo, reader.ReadToEnd ());
+                        // TODO: Fix client ID to allow for changing IDs... (create base property to retrieve "CurrentClientID" or something)
+                        AjaxPage.RegisterWidgetChanges (ClientID, "__p5_add_" + Controls.IndexOf (idx), reader.ReadToEnd ());
                     }
                 }
             }
+            RenderMode = oldRenderMode;
         }
 
         /*
@@ -518,12 +512,6 @@ namespace p5.ajax.widgets
          */
         private void RenderOldWidgets (HtmlTextWriter writer)
         {
-            // Notice, to avoid re-rendering the old widgets, we need to change the state of our RenderMode enumeration, to avoid
-            // having the old widgets entirely re-rendered.
-            // Since these are the last widgets rendered in our collection, we don't need to reset the RenderMode enum afterwards either.
-            var old = RenderMode;
-            RenderMode = RenderingMode.Default;
-
             // Looping through all Controls that were in Controls collection before it was tampered with, and that are still in the Controls collection,
             // and simply render them "normally".
             foreach (Control idx in _originalCollection.Where (ix => Controls.Contains (ix))) {

@@ -74,10 +74,10 @@ namespace p5.ajax.widgets
         ///     Verifies element name is legal to use for the this widget type.
         /// </summary>
         /// <param name="elementName">Element name.</param>
-        protected override void SanitizeElementValue (string elementName)
+        protected override void SanitizeElementName (string elementName)
         {
             // Letting base do its magic.
-            base.SanitizeElementValue (elementName);
+            base.SanitizeElementName (elementName);
 
             // Making sure element name is legal for this widget.
             switch (elementName) {

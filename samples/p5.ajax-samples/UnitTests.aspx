@@ -2,7 +2,6 @@
 <%@ Page 
     Language="C#" 
     Inherits="p5.samples.UnitTests"
-    ViewStateSessionEntries="5"
     Codebehind="UnitTests.aspx.cs" %>
 
 <!DOCTYPE html>
@@ -161,22 +160,6 @@
                         </td>
                         <td>
                             <input type="button" id="invoke_remove_add_markup_attribute" class="undetermined" value="run" onclick="tests.invoke_remove_add_markup_attribute(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Concatenate long attribute
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_concatenate_long_attribute" class="undetermined" value="run" onclick="tests.invoke_concatenate_long_attribute(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Create attribute then concatenate long string
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_create_concatenate_long_attribute" class="undetermined" value="run" onclick="tests.invoke_create_concatenate_long_attribute(event)">
                         </td>
                     </tr>
                     <tr class="spacer">
