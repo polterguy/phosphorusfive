@@ -35,8 +35,6 @@ namespace p5.webapp
     /// </summary>
     public partial class Default : PhosphorusPage
     {
-        protected HtmlGenericControl baseElement;
-
         protected override void OnInit(EventArgs e)
         {
             // Rewriting path to what was actually requested, such that HTML form element's action doesn't become garbage.
@@ -59,6 +57,7 @@ namespace p5.webapp
                     // Making sure we do it, in such a way, that we can handle any exceptions that occurs.
                     try {
                         ApplicationContext.Raise ("p5.web.load-ui", args);
+
                     } catch (Exception err) {
 
                         // Oops, an exception occurred.
@@ -66,11 +65,13 @@ namespace p5.webapp
                         if (!HandleException (err))
                             throw;
                     }
-                }
 
-                // Making sure base is set for page.
-                var baseUrl = ApplicationContext.Raise("p5.web.get-root-location").Get<string> (ApplicationContext, null);
-                ((IAttributeAccessor)baseElement).SetAttribute("href", baseUrl);
+                    // Making sure base is set for page.
+                    var baseUrl = ApplicationContext.Raise ("p5.web.get-root-location").Get<string> (ApplicationContext, null);
+                    LiteralControl baseCtrl = new LiteralControl ();
+                    baseCtrl.Text = string.Format (@"<base href= ""{0}""/>", baseUrl);
+                    Page.Header.Controls.Add (baseCtrl);
+                }
             };
             base.OnInit(e);
         }

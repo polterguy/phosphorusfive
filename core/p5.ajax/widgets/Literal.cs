@@ -127,12 +127,26 @@ namespace p5.ajax.widgets
             return base.HasAttribute (name);
         }
 
-        /*
-         * Notice how we do not call base here, and only render its innerValue, and none of its children.
-         */
-        protected override void RenderChildren (HtmlTextWriter writer)
+        /// <summary>
+        ///     Renders widget's content as pure HTML into specified HtmlTextWriter.
+        /// 
+        ///     Override this one to provide custom rendering.
+        ///     Notice, you can also override one of the other rendering methods, if you only wish to slightly modify the widget's rendering, such as
+        ///     its opening or closing tag rendering.
+        /// </summary>
+        /// <param name="writer">The HtmlTextWriter to render the widget into.</param>
+        protected override void RenderHtmlResponse (HtmlTextWriter writer)
         {
+            // Rendering opening tag for element, then its "innerValue", before we render the closing tag.
+            // Making sure we nicely format output, if we should.
+            RenderFormatting (writer);
+
+            // Render start of opening tag, before we render all attributes.
+            writer.Write (@"<{0} id=""{1}""", Element, ClientID);
+            Attributes.Render (writer);
+            writer.Write (">");
             writer.Write (innerValue);
+            writer.Write ("</{0}>", Element);
         }
 
         /*

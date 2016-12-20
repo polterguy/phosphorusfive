@@ -421,17 +421,30 @@ namespace p5.ajax.widgets
             }
         }
 
-        /*
-         * Overridden, to make sure we nicely format end tag, with correct number of tabs.
-         */
-        protected override void RenderTagClosing (HtmlTextWriter writer, int noTabs)
+        /// <summary>
+        ///     Renders widget's content as pure HTML into specified HtmlTextWriter.
+        /// 
+        ///     Override this one to provide custom rendering.
+        ///     Notice, you can also override one of the other rendering methods, if you only wish to slightly modify the widget's rendering, such as
+        ///     its opening or closing tag rendering.
+        /// </summary>
+        /// <param name="writer">The HtmlTextWriter to render the widget into.</param>
+        protected override void RenderHtmlResponse (HtmlTextWriter writer)
         {
-            // Making sure we nicely format end tag for widget.
-            writer.Write ("\r\n");
-            while (noTabs != 0) {
-                writer.Write ("\t");
-                noTabs -= 1;
-            }
+            // Rendering opening tag for element, then its children, before we render the closing tag.
+            // Making sure we nicely indent element, if we should.
+            RenderFormatting (writer);
+
+            // Render start of opening tag, before we render all attributes.
+            writer.Write (@"<{0} id=""{1}""", Element, ClientID);
+            Attributes.Render (writer);
+            writer.Write (">");
+
+            // No need to invoke our own override, since we know anyways we're rendering pure HTML.
+            base.RenderChildren (writer);
+
+            // Another formatting round, before we render end tag for element.
+            RenderFormatting (writer);
             writer.Write ("</{0}>", Element);
         }
 
@@ -443,7 +456,7 @@ namespace p5.ajax.widgets
             // Checking if we need to apply custom rendering, due to our children collection having being changed during current request.
             if (!AjaxPage.IsAjaxRequest || _originalCollection == null || RenderMode == RenderingMode.ReRender || AncestorIsReRendering ()) {
 
-                // No custom rendering necessary.
+                // No custom rendering necessary, but we'll need some nice formatting before we start rendering our children.
                 base.RenderChildren (writer);
 
             } else {
@@ -485,8 +498,7 @@ namespace p5.ajax.widgets
          */
         private void RenderAddedWidgets ()
         {
-            // Making sure all children rendered from this point are rendered as pure HTML, for then to create an "insertion JSON object" to add widget
-            // into this widget's collection on client-side.
+            // Making sure all children rendered from this point are rendered as pure HTML.
             RenderMode = RenderingMode.ReRender;
 
             // Looping through all Controls, figuring out which were not there in the "_originalCollection", before it was changed, and retrieving their

@@ -57,19 +57,22 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
-        ///     Overridden to intentionally do "nothing", or call base, since all elements of type "void" are "self closing elements".
+        ///     Renders widget's content as pure HTML into specified HtmlTextWriter.
+        /// 
+        ///     Override this one to provide custom rendering.
+        ///     Notice, you can also override one of the other rendering methods, if you only wish to slightly modify the widget's rendering, such as
+        ///     its opening or closing tag rendering.
         /// </summary>
-        /// <param name="writer">Writer.</param>
-        /// <param name="noTabs">No tabs.</param>
-        protected override void RenderTagClosing (HtmlTextWriter writer, int noTabs)
-        { }
-
-        /// <summary>
-        ///     Overridden to close element immediately.
-        /// </summary>
-        /// <param name="writer">Writer.</param>
-        protected override void RenderTagOpeningClosing (HtmlTextWriter writer)
+        /// <param name="writer">The HtmlTextWriter to render the widget into.</param>
+        protected override void RenderHtmlResponse (HtmlTextWriter writer)
         {
+            // Rendering opening tag for element, then its children, before we render the closing tag.
+            // Making sure we nicely indent element, unless this is an Ajax request.
+            RenderFormatting (writer);
+
+            // Render start of opening tag, before we render all attributes.
+            writer.Write (@"<{0} id=""{1}""", Element, ClientID);
+            Attributes.Render (writer);
             writer.Write (" />");
         }
 

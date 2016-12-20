@@ -92,9 +92,6 @@ namespace p5.ajax.widgets
             WidgetBecameInvisible
         }
 
-        // Contains all attributes for widget.
-        private readonly AttributeStorage _attributes = new AttributeStorage ();
-
         // Contains a reference to the AjaxPage owning this widget.
         private AjaxPage _page;
 
@@ -102,8 +99,15 @@ namespace p5.ajax.widgets
         // Necessary to make sure we are able to retrieve widget, and update its ID on the client side, during Ajax requests.
         private string _oldClientID;
 
-        // Allows you to explicitly force to have your widget re-rendered, or re-rendering its children, if you wish.
+        /// <summary>
+        ///     Allows you to explicitly force to have your widget re-rendered, or re-rendering its children, if you wish.
+        /// </summary>
         protected internal RenderingMode RenderMode = RenderingMode.Default;
+
+        /// <summary>
+        ///     Contains all attributes for widget.
+        /// </summary>
+        protected readonly AttributeStorage Attributes = new AttributeStorage ();
 
         /// <summary>
         ///     Returns the owning AjaxPage for current widget.
@@ -136,7 +140,7 @@ namespace p5.ajax.widgets
                     // Notice, we only keep the "first original ID", in case ID is changed multiple times during page's life cycle.
                     if (_oldClientID == null)
                         _oldClientID = ClientID;
-                    _attributes.ChangeAttribute ("id", value);
+                    Attributes.ChangeAttribute ("id", value);
                 }
                 base.ID = value;
             }
@@ -184,7 +188,7 @@ namespace p5.ajax.widgets
         /// <value>The HTML element used to render widget</value>
         public string Element
         {
-            get { return _attributes.GetAttribute ("Element"); }
+            get { return Attributes.GetAttribute ("Element"); }
             set {
 
                 // Verifying we actually have a change.
@@ -223,7 +227,7 @@ namespace p5.ajax.widgets
         /// <param name="name">Name of the attribute to check if exists.</param>
         public virtual bool HasAttribute (string name)
         {
-            return _attributes.HasAttribute (name);
+            return Attributes.HasAttribute (name);
         }
 
         /// <summary>
@@ -236,7 +240,7 @@ namespace p5.ajax.widgets
         /// <param name="key">Attribute name ot look for</param>
         public virtual string GetAttribute (string key)
         {
-            return _attributes.GetAttribute (key);
+            return Attributes.GetAttribute (key);
         }
 
         /// <summary>
@@ -252,9 +256,9 @@ namespace p5.ajax.widgets
             // Notice, we store the attribute differently, depending upon whether or not we have started tracking ViewState or not.
             // This is necessarily due to making sure we're able to track changes to attributes, and correctly pass them on to the client.
             if (!IsTrackingViewState)
-                _attributes.SetAttributePreViewState (key, value);
+                Attributes.SetAttributePreViewState (key, value);
             else
-                _attributes.ChangeAttribute (key, value);
+                Attributes.ChangeAttribute (key, value);
         }
 
         /// <summary>
@@ -263,8 +267,7 @@ namespace p5.ajax.widgets
         /// <param name="name">Name of attribute you wish to delete.</param>
         public virtual void DeleteAttribute (string name)
         {
-            if (HasAttribute (name))
-                _attributes.DeleteAttribute (name);
+            Attributes.DeleteAttribute (name);
         }
 
         /// <summary>
@@ -273,7 +276,7 @@ namespace p5.ajax.widgets
         /// <value>All attribute keys for widget</value>
         public virtual IEnumerable<string> AttributeKeys
         {
-            get { return _attributes.Keys; }
+            get { return Attributes.Keys; }
         }
 
         /// <summary>
@@ -329,8 +332,8 @@ namespace p5.ajax.widgets
         {
             var tmp = savedState as object [];
             base.LoadViewState (tmp [0]);
-            _attributes.LoadFromViewState (tmp [1]);
-            _attributes.LoadRemovedFromViewState (tmp [2]);
+            Attributes.LoadFromViewState (tmp [1]);
+            Attributes.LoadRemovedFromViewState (tmp [2]);
         }
 
         /// <summary>
@@ -357,26 +360,26 @@ namespace p5.ajax.widgets
                                             }
                                         }
                                         if (found) {
-                                            _attributes.SetAttributeFormData ("checked", null);
+                                            Attributes.SetAttributeFormData ("checked", null);
                                         } else {
-                                            _attributes.DeleteAttribute ("checked", false);
+                                            Attributes.DeleteAttribute ("checked", false);
                                         }
                                     } else {
-                                        _attributes.DeleteAttribute ("checked", false);
+                                        Attributes.DeleteAttribute ("checked", false);
                                     } break;
                                 default:
                                     if (Page.Request.Params [this ["name"]] != null)
-                                        _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
+                                        Attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
                                     else
-                                        _attributes.DeleteAttribute ("value");
+                                        Attributes.DeleteAttribute ("value");
                                     break;
                             }
                             break;
                         case "textarea":
                             if (Page.Request.Params [this ["name"]] != null)
-                                _attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
+                                Attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
                             else
-                                _attributes.DeleteAttribute ("innerValue");
+                                Attributes.DeleteAttribute ("innerValue");
                             break;
                         case "select":
                             if (Page.Request.Params [this ["name"]] != null) {
@@ -385,9 +388,9 @@ namespace p5.ajax.widgets
                                     var idxChildWidget = idxChild as Widget;
                                     if (idxChildWidget != null) {
                                         if (splits.Contains (idxChildWidget ["value"])) {
-                                            idxChildWidget._attributes.SetAttributeFormData ("selected", null);
+                                            idxChildWidget.Attributes.SetAttributeFormData ("selected", null);
                                         } else {
-                                            idxChildWidget._attributes.DeleteAttribute ("selected", false);
+                                            idxChildWidget.Attributes.DeleteAttribute ("selected", false);
                                         }
                                     }
                                 }
@@ -424,14 +427,14 @@ namespace p5.ajax.widgets
         /// <summary>
         ///     Renders the widget.
         /// 
-        ///     Overridden to entirely bypass the ASP.NET Web Forms rendering, and provide our own with Ajax support.
+        ///     Overridden to entirely bypass the ASP.NET Web Forms rendering, and provide our own rendering, with Ajax support.
         ///     Notice, we never call base class implementation here!
-        ///     RenderChildren though, might get invoked.
+        ///     RenderChildren might be invoked.
         /// </summary>
         /// <param name="writer">Writer.</param>
         public override void RenderControl (HtmlTextWriter writer)
         {
-            // If one of its ancestors are invisible, we do not render this control at all.
+            // If one of its ancestors are invisible, we do not render this widget at all.
             if (AreAncestorsVisible ()) {
 
                 // Rendering widget differently, according to whether or not it is visible or not.
@@ -455,32 +458,25 @@ namespace p5.ajax.widgets
                 // Hence, we default to rendering widget as HTML into the given HtmlTextWriter.
                 RenderHtmlResponse (writer);
 
-            } else {
+            } else if (RenderMode == RenderingMode.ReRender) {
 
-                // Checking the rendering mode of this widget, which also determines how widget should be rendered.
-                if (RenderMode == RenderingMode.ReRender) {
-
-                    // Re-rendering entire widget.
-                    // Notice, this will re-render entire widget, including its children as HTML, so there's no need to invoke RenderChildren explicitly.
-                    // We wrap our own HtmlTextWriter here, such that we can render HTML of widget into this writer, for then to pass on entire HTML
-                    // as an update to "outerHTML" on client side, using JSON.
-                    using (var streamWriter = new StreamWriter (new MemoryStream ())) {
-                        using (var txt = new HtmlTextWriter (streamWriter)) {
-                            RenderHtmlResponse (txt);
-                            txt.Flush ();
-                            streamWriter.BaseStream.Seek (0, SeekOrigin.Begin);
-                            using (TextReader reader = new StreamReader (streamWriter.BaseStream)) {
-                                AjaxPage.RegisterWidgetChanges (JsonClientID, "outerHTML", reader.ReadToEnd ());
-                            }
+                // Re-rendering entire widget, including its children.
+                using (var streamWriter = new StreamWriter (new MemoryStream ())) {
+                    using (var txt = new HtmlTextWriter (streamWriter)) {
+                        RenderHtmlResponse (txt);
+                        txt.Flush ();
+                        streamWriter.BaseStream.Seek (0, SeekOrigin.Begin);
+                        using (TextReader reader = new StreamReader (streamWriter.BaseStream)) {
+                            AjaxPage.RegisterWidgetChanges (JsonClientID, "outerHTML", reader.ReadToEnd ());
                         }
                     }
-
-                } else {
-
-                    // Only pass changes for this widget back to the client as JSON, before we render our children.
-                    _attributes.RegisterChanges (AjaxPage, JsonClientID);
-                    RenderChildren (writer);
                 }
+
+            } else {
+
+                // Only pass changes for this widget back to the client as JSON, before we render its children.
+                Attributes.RegisterChanges (AjaxPage, JsonClientID);
+                RenderChildren (writer);
             }
         }
 
@@ -493,99 +489,45 @@ namespace p5.ajax.widgets
             if (AjaxPage.IsAjaxRequest && RenderMode == RenderingMode.WidgetBecameInvisible && !ancestorReRendering) {
 
                 // Re-rendering widget's invisible markup, since widget was made invisible during the current request.
-                AjaxPage.RegisterWidgetChanges (JsonClientID, "outerHTML", GetWidgetInvisibleHtml ());
+                AjaxPage.RegisterWidgetChanges (
+                    JsonClientID, 
+                    "outerHTML", 
+                    string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", Element, ClientID));
 
             } else if (!AjaxPage.IsAjaxRequest || ancestorReRendering) {
 
                 // Rendering invisible HTML.
-                writer.Write (GetWidgetInvisibleHtml ());
+                writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", Element, ClientID));
+            }
+        }
+
+        /// <summary>
+        ///     Formats given HtmlTextWriter, by adding the correct number of TABs, plus one initial CR/LF.
+        /// 
+        ///     Notice, will not do anything if the current request is an Ajax request.
+        /// </summary>
+        /// <returns>The formatting.</returns>
+        /// <param name="tabs">Tabs.</param>
+        protected void IndentWidgetRendering (HtmlTextWriter writer)
+        {
+            // We don't format at all, unless this is an HTML request, somehow.
+            if (!AjaxPage.IsAjaxRequest) {
+                writer.Write ("\r\n");
+                Control idxCtrl = this;
+                while (idxCtrl != null) {
+                    writer.Write ("\t");
+                    idxCtrl = idxCtrl.Parent;
+                }
             }
         }
 
         /// <summary>
         ///     Renders widget's content as pure HTML into specified HtmlTextWriter.
         /// 
-        ///     Override this one to provide custom rendering.
-        ///     Notice, you can also override one of the other rendering methods, if you only wish to slightly modify the widget's rendering, such as
-        ///     its opening or closing tag rendering.
+        ///     Method is abstract in Widget class, make sure you override it, if you inherit directly from Widget, to provide custom rendering.
         /// </summary>
         /// <param name="writer">The HtmlTextWriter to render the widget into.</param>
-        protected virtual void RenderHtmlResponse (HtmlTextWriter writer)
-        {
-            // Rendering opening tag for element, then its children, before we render the closing tag.
-            var noTabs = RenderTagOpening (writer);
-            RenderChildren (writer);
-            RenderTagClosing (writer, noTabs);
-        }
-
-        /// <summary>
-        ///     Renders the HTML opening tag of widget.
-        /// 
-        ///     Override to provide custom rendering for opening tag of widget.
-        /// </summary>
-        /// <returns>The number of tabs we had to add, to nicely format element into HTML.</returns>
-        /// <param name="writer">The HtmlTextWriter we should render into.</param>
-        protected virtual int RenderTagOpening (HtmlTextWriter writer)
-        {
-            // Making sure we nicely indent element, unless this is an Ajax request.
-            var noTabs = 0;
-            if (!AjaxPage.IsAjaxRequest) {
-
-                // Appending one one CR/LF sequence.
-                // Then appending and one TAB, for each ancestor Control this instance has, between itself and the Page object.
-                // This ensures that widget is nicely formatted if this is not an Ajax request.
-                writer.Write ("\r\n\t");
-                noTabs = 1;
-                Control idxCtrl = this;
-                while (idxCtrl != Page) {
-                    writer.Write ("\t");
-                    idxCtrl = idxCtrl.Parent;
-                    noTabs += 1;
-                }
-            }
-
-            // Render start of opening tag, before we render all attributes.
-            writer.Write (@"<{0} id=""{1}""", Element, ClientID);
-            _attributes.Render (writer);
-
-            // Making sure we support custom closing of opening tag, to support stuff like " />" for instance.
-            RenderTagOpeningClosing (writer);
-
-            // Returning the number of TAB characters we created due to trying to nicely format the element in the HTML.
-            return noTabs;
-        }
-
-        /// <summary>
-        ///     Closes the opening tag of element.
-        /// 
-        ///     Such as if you have a widget wrapping an element that is "self closing".
-        ///     If you override this method, you should also highly likely override also the "RenderTagClosing", and make it do nothing!
-        /// </summary>
-        /// <param name="writer">Writer.</param>
-        protected virtual void RenderTagOpeningClosing (HtmlTextWriter writer)
-        {
-            writer.Write (">");
-        }
-
-        /// <summary>
-        ///     Renders HTML closing tag of widget.
-        /// 
-        ///     Override to provide customer rendering for closing tag of widget.
-        /// </summary>
-        /// <param name="writer">Writer.</param>
-        /// <param name="noTabs">No tabs.</param>
-        protected virtual void RenderTagClosing (HtmlTextWriter writer, int noTabs)
-        {
-            writer.Write ("</{0}>", Element);
-        }
-
-        /*
-         * Returns the HTML necessary to render widget as invisible (as an invisible placeholder) on client side.
-         */
-        private string GetWidgetInvisibleHtml ()
-        {
-            return string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", Element, ClientID);
-        }
+        protected abstract void RenderHtmlResponse (HtmlTextWriter writer);
 
         /// <summary>
         ///     Overridden to make sure we can persist widget's attributes into ViewState.
@@ -595,8 +537,8 @@ namespace p5.ajax.widgets
         {
             var retVal = new object [3];
             retVal [0] = base.SaveViewState ();
-            retVal [1] = _attributes.SaveToViewState (this);
-            retVal [2] = _attributes.SaveRemovedToViewState ();
+            retVal [1] = Attributes.SaveToViewState (this);
+            retVal [2] = Attributes.SaveRemovedToViewState ();
             return retVal;
         }
 

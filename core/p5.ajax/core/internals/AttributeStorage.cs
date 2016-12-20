@@ -31,7 +31,7 @@ namespace p5.ajax.core.internals
     /// <summary>
     ///     Class used to encapsulate all attributes for widgets.
     /// </summary>
-    internal class AttributeStorage
+    public class AttributeStorage
     {
         // All of these will have values added and removed automatically during the request, depending upon when 
         // and how attributes are added and removed.
@@ -104,6 +104,10 @@ namespace p5.ajax.core.internals
         /// <param name="name">The name of the attribute you wish to remove</param>
         internal void DeleteAttribute (string name, bool serializeToClient = true)
         {
+            // Verifying attribute exists first, and if not, returning early.
+            if (!HasAttribute (name))
+                return;
+
             if (FindAttribute (_dynamicallyAddedThisRequest, name) != null) {
 
                 // Attribute was added this request, simply removing the add.

@@ -158,7 +158,7 @@ namespace p5.ajax.core.filters
 
             // Including CSS files, making sure we nicely format our inclusion HTML.
             foreach (var idxFile in Page.PersistentCSSInclusions) {
-                builder.Append (string.Format ("\r\n\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>", idxFile));
+                builder.Append (string.Format ("\r\n\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\" />", idxFile));
             }
 
             // Appending everything from <head> end, and onwards, into StringBuilder return buffer, before we return the result.

@@ -8,7 +8,6 @@
         <meta charset="utf-8" />
         <title>Phosphorus Five - Got Privacy?</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <base runat="server" id="baseElement"/>
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">
