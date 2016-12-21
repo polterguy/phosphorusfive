@@ -92,7 +92,7 @@ namespace p5.lambda.keywords.core
             if (!PreviousConditionEvaluatedTrue (e.Args, context)) {
 
                 // Since no previous conditions evaluated to true, we simply execute this scope, without checking any conditions, since there are none.
-                context.Raise ("eval-mutable", e.Args);
+                context.RaiseActiveEvent ("eval-mutable", e.Args);
             }
         }
 

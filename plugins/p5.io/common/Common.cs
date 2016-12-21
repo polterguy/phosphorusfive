@@ -47,7 +47,7 @@ namespace p5.io.common
          */
         internal static string GetRootFolder (ApplicationContext context)
         {
-            return context.Raise (".p5.core.application-folder").Get<string> (context);
+            return context.RaiseActiveEvent (".p5.core.application-folder").Get<string> (context);
         }
 
         /*
@@ -68,7 +68,7 @@ namespace p5.io.common
 
                 // Returning variable path according to results of Active Event invocation.
                 var variable = path.Substring (0, path.IndexOf ("/"));
-                var variableUnrolled = context.Raise ("p5.io.unroll-path." + variable).Get<string> (context);
+                var variableUnrolled = context.RaiseActiveEvent ("p5.io.unroll-path." + variable).Get<string> (context);
 
                 // Recursively invoking self untill there is nothing more to unroll.
                 return GetSystemPath (context, variableUnrolled + path.Substring (variable.Length));
@@ -90,7 +90,7 @@ namespace p5.io.common
                 case "read-file":
                 case "modify-folder":
                 case "modify-file":
-                    context.Raise (".p5.io.authorize." + eventName, new Node ("", GetSystemPath (context, path)).Add ("args", args));
+                    context.RaiseActiveEvent (".p5.io.authorize." + eventName, new Node ("", GetSystemPath (context, path)).Add ("args", args));
                     break;
                 default:
                 throw new LambdaException (

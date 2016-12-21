@@ -113,7 +113,7 @@ namespace p5.io.file
 
                     // Automatically converting to lambda before returning.
                     var csvLambda = new Node ("", fileContent);
-                    context.Raise ("p5.csv.csv2lambda", csvLambda);
+                    context.RaiseActiveEvent ("p5.csv.csv2lambda", csvLambda);
                     args.Add (fileName, null, csvLambda["result"].Children);
 
                 } else {

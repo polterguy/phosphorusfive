@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("p5.core")]
-[assembly: AssemblyDescription("Active Event design pattern implementation")]
+[assembly: AssemblyDescription("Active Event implementation")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("p5.core")]

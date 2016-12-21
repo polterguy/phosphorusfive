@@ -43,14 +43,14 @@ namespace p5.auth.helpers
         /*
          * Returns user Context Ticket (Context "user")
          */
-        public static ApplicationContext.ContextTicket GetTicket (ApplicationContext context)
+        public static ContextTicket GetTicket (ApplicationContext context)
         {
             if (HttpContext.Current.Session[".p5.auth.context-ticket"] == null) {
 
                 // No user is logged in, using default impersonated user
                 HttpContext.Current.Session [".p5.auth.context-ticket"] = CreateDefaultTicket (context);
             }
-            return HttpContext.Current.Session[".p5.auth.context-ticket"] as ApplicationContext.ContextTicket;
+            return HttpContext.Current.Session[".p5.auth.context-ticket"] as ContextTicket;
         }
 
         /*
@@ -85,10 +85,10 @@ namespace p5.auth.helpers
                 throw new LambdaSecurityException ("Credentials not accepted", args, context);
 
             // Getting system salt
-            var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
+            var serverSalt = context.RaiseActiveEvent (".p5.auth.get-server-salt").Get<string> (context);
 
             // Then creating system fingerprint from given password
-            var cookiePasswordFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
+            var cookiePasswordFingerprint = context.RaiseActiveEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
 
             // Checking for match on password
             if (userNode["password"].Get<string> (context) != cookiePasswordFingerprint)
@@ -96,7 +96,7 @@ namespace p5.auth.helpers
 
             // Success, creating our ticket
             string role = userNode["role"].Get<string>(context);
-            SetTicket (new ApplicationContext.ContextTicket(username, role, false));
+            SetTicket (new ContextTicket(username, role, false));
             args.Value = true;
 
             // Removing last login attempt, to reset brute force login cool off seconds for user's IP address
@@ -110,7 +110,7 @@ namespace p5.auth.helpers
 
                 // Caller wants to create persistent cookie to remember username/password
                 HttpCookie cookie = new HttpCookie (_credentialCookieName);
-                cookie.Expires = DateTime.Now.AddDays (context.Raise (
+                cookie.Expires = DateTime.Now.AddDays (context.RaiseActiveEvent (
                     ".p5.config.get", 
                     new Node (".p5.config.get", "p5.auth.credential-cookie-valid")) [0].Get<int> (context));
                 cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie
@@ -128,7 +128,7 @@ namespace p5.auth.helpers
             GetSettings (context, onLogin);
             if (onLogin [".onlogin"] != null) {
                 var lambda = onLogin[".onlogin"].Clone ();
-                context.Raise ("eval", lambda);
+                context.RaiseActiveEvent ("eval", lambda);
             }
         }
 
@@ -142,7 +142,7 @@ namespace p5.auth.helpers
             GetSettings (context, onLogout);
             if (onLogout[".onlogout"] != null) {
                 var lambda = onLogout[".onlogout"].Clone ();
-                context.Raise ("eval", lambda);
+                context.RaiseActiveEvent ("eval", lambda);
             }
 
             // By destroying Ticket, default user will be used for current session, until user logs in again
@@ -219,10 +219,10 @@ namespace p5.auth.helpers
             VerifyUsernameValid (username);
 
             // Creating user salt, and retrieving system salt
-            var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
+            var serverSalt = context.RaiseActiveEvent (".p5.auth.get-server-salt").Get<string> (context);
 
             // Then salting password with user salt, before salting it with system salt
-            var userPasswordFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
+            var userPasswordFingerprint = context.RaiseActiveEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
 
             // Locking access to password file as we create new user object
             AuthFile.ModifyAuthFile (
@@ -255,7 +255,7 @@ namespace p5.auth.helpers
                 });
 
             // Creating newly created user's directory structure
-            CreateUserDirectory (context.Raise(".p5.core.application-folder").Get<string>(context), username);
+            CreateUserDirectory (context.RaiseActiveEvent(".p5.core.application-folder").Get<string>(context), username);
         }
 
         /*
@@ -307,7 +307,7 @@ namespace p5.auth.helpers
                         authFile["users"][idxUsername].UnTie();
 
                         // Deleting user's home directory
-                        context.Raise ("p5.io.folder.delete", new Node ("", "/users/" + idxUsername + "/"));
+                        context.RaiseActiveEvent ("p5.io.folder.delete", new Node ("", "/users/" + idxUsername + "/"));
                     }
                 });
         }
@@ -340,10 +340,10 @@ namespace p5.auth.helpers
 
                         // Changing user's password
                         // Creating user salt, and retrieving system salt
-                        var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
+                        var serverSalt = context.RaiseActiveEvent (".p5.auth.get-server-salt").Get<string> (context);
 
                         // Then salting password with user salt and system, before salting it with system salt
-                        var userPasswordFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
+                        var userPasswordFingerprint = context.RaiseActiveEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
                         authFile ["users"][username]["password"].Value = userPasswordFingerprint;
                     }
 
@@ -421,10 +421,10 @@ namespace p5.auth.helpers
 
                     // Changing user's password
                     // Creating user salt, and retrieving system salt
-                    var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
+                    var serverSalt = context.RaiseActiveEvent (".p5.auth.get-server-salt").Get<string> (context);
 
                     // Then salting password with user salt and system, before salting it with system salt
-                    var userPasswordFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
+                    var userPasswordFingerprint = context.RaiseActiveEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
                     authFile ["users"][username]["password"].Value = userPasswordFingerprint;
                 });
         }
@@ -438,7 +438,7 @@ namespace p5.auth.helpers
             string username = context.Ticket.Username;
 
             // Deleting user's home directory
-            context.Raise ("p5.io.folder.delete", new Node ("", "/users/" + username + "/"));
+            context.RaiseActiveEvent ("p5.io.folder.delete", new Node ("", "/users/" + username + "/"));
 
             // Locking access to password file as we delete user object
             AuthFile.ModifyAuthFile (
@@ -460,7 +460,7 @@ namespace p5.auth.helpers
         public static void GetRoles (ApplicationContext context, Node args)
         {
             // Making sure default role is added first.
-            string defaultRole = context.Raise (".p5.auth.get-default-context-role").Get<string> (context);
+            string defaultRole = context.RaiseActiveEvent (".p5.auth.get-default-context-role").Get<string> (context);
             if (!string.IsNullOrEmpty (defaultRole)) {
 
                 // There exist a default role, checking if it's already added
@@ -560,7 +560,7 @@ namespace p5.auth.helpers
         /*
          * Sets user Context Ticket (context "user")
          */
-        private static void SetTicket (ApplicationContext.ContextTicket ticket)
+        private static void SetTicket (ContextTicket ticket)
         { 
             HttpContext.Current.Session[".p5.auth.context-ticket"] = ticket;
         }
@@ -635,17 +635,17 @@ namespace p5.auth.helpers
                 throw new SecurityException ("Cookie not accepted");
 
             // Getting system salt
-            var serverSalt = context.Raise (".p5.auth.get-server-salt").Get<string> (context);
+            var serverSalt = context.RaiseActiveEvent (".p5.auth.get-server-salt").Get<string> (context);
 
             // Then creating system fingerprint from given password
-            var systemFingerprint = context.Raise ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + cookieHashSaltedPwd)).Get<string> (context);
+            var systemFingerprint = context.RaiseActiveEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + cookieHashSaltedPwd)).Get<string> (context);
 
             // Notice, we do NOT THROW if passwords do not match, since it might simply mean that user has explicitly created a new "salt"
             // to throw out other clients that are currently persistently logged into system under his account
             if (systemFingerprint == userNode["password"].Get<string> (context)) {
 
                 // MATCH, discarding previous Context Ticket and creating a new Ticket
-                SetTicket (new ApplicationContext.ContextTicket(
+                SetTicket (new ContextTicket(
                     userNode.Name, 
                     userNode ["role"].Get<string>(context), 
                     false));
@@ -656,11 +656,11 @@ namespace p5.auth.helpers
         /*
          * Creates default Context Ticket according to settings from config file
          */
-        private static ApplicationContext.ContextTicket CreateDefaultTicket (ApplicationContext context)
+        private static ContextTicket CreateDefaultTicket (ApplicationContext context)
         {
-            return new ApplicationContext.ContextTicket (
-                context.Raise (".p5.auth.get-default-context-username").Get<string> (context), 
-                context.Raise (".p5.auth.get-default-context-role").Get<string> (context), 
+            return new ContextTicket (
+                context.RaiseActiveEvent (".p5.auth.get-default-context-username").Get<string> (context), 
+                context.RaiseActiveEvent (".p5.auth.get-default-context-role").Get<string> (context), 
                 true);
         }
 

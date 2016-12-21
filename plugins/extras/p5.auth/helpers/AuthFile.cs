@@ -77,7 +77,7 @@ namespace p5.auth.helpers
          */
         internal static string CreateNewSalt(ApplicationContext context)
         {
-            return context.Raise ("p5.crypto.create-random").Get<string> (context);
+            return context.RaiseActiveEvent ("p5.crypto.create-random").Get<string> (context);
         }
 
         #region [ -- Private helper methods -- ]
@@ -131,10 +131,10 @@ namespace p5.auth.helpers
         private static string GetAuthFilePath (ApplicationContext context)
         {
             // Getting filepath to pwd file
-            string rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
+            string rootFolder = context.RaiseActiveEvent (".p5.core.application-folder").Get<string> (context);
 
             // The logic below makes it possible to store auth file OUTSIDE of main web application folder!
-            string pwdFilePath = rootFolder + context.Raise (".p5.auth.get-auth-file").Get<string> (context);
+            string pwdFilePath = rootFolder + context.RaiseActiveEvent (".p5.auth.get-auth-file").Get<string> (context);
 
             // Returning path to caller
             return pwdFilePath;

@@ -21,39 +21,45 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
+using System.Reflection;
 
-namespace p5.core
+namespace p5.core.internals
 {
     /// <summary>
-    ///     EventArgs for an Active Event.
+    ///     One single Active Event handler, with its associated instance, if any.
     /// </summary>
-    public class ActiveEventArgs : EventArgs
+    internal class MethodSink
     {
-        /*
-         * initializes a new instance of this class
-         */
-        internal ActiveEventArgs (string name, Node args)
+        /// <summary>
+        ///     Creates a new Active Event handler.
+        /// 
+        ///     If instance is null, it assumes your event handler is a static method.
+        /// </summary>
+        /// <param name="method">Method that implements Active Event</param>
+        /// <param name="instance">Instance to raise method within.</param>
+        public MethodSink (MethodInfo method, object instance)
         {
-            Args = args;
-            Name = name;
+            Method = method;
+            Instance = instance;
         }
 
         /// <summary>
-        ///     Arguments passed in and returned from Active Events.
+        ///     Returns the method that implements your Active Event.
         /// </summary>
-        /// <value>Node arguments</value>
-        public Node Args
+        /// <value>The method</value>
+        public MethodInfo Method
         {
             get;
             private set;
         }
 
         /// <summary>
-        ///     Name of the Active Event raised.
+        ///     The object instance to raise the method within.
+        /// 
+        ///     If null, your Active Event is assumed to be a static method.
         /// </summary>
-        /// <value>Active Event name</value>
-        public string Name
+        /// <value>The instance.</value>
+        public object Instance
         {
             get;
             private set;

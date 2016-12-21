@@ -163,7 +163,7 @@ namespace p5.hyperlambda.helpers
                 return value; // string is default type
 
             // Converting our string to the actual object, and returning back to caller
-            return _context.Raise (
+            return _context.RaiseActiveEvent (
                 ".p5.hyperlambda.get-object-value." + (typeInfo == "node" ? "abs.node" : typeInfo), 
                 new Node ("", value, new Node [] { new Node ("decode", true) })).Value;
         }

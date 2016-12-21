@@ -54,10 +54,18 @@
     <Compile Include="Node.cs" />
     <Compile Include="ActiveEventArgs.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="ActiveEvents.cs" />
+    <Compile Include="internals\ActiveEvent.cs" />
+    <Compile Include="internals\ActiveEvents.cs" />
+    <Compile Include="internals\MethodSink.cs" />
+    <Compile Include="ContextTicket.cs" />
+    <Compile Include="internals\ActiveEventsTypes.cs" />
+    <Compile Include="internals\ActiveEventsType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="internals\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

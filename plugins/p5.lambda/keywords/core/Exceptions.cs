@@ -49,7 +49,7 @@ namespace p5.lambda.keywords.core
             try {
 
                 // Evaluating [try] lambda block.
-                context.Raise ("eval-mutable", e.Args);
+                context.RaiseActiveEvent ("eval-mutable", e.Args);
 
             } catch (Exception err) {
 
@@ -66,7 +66,7 @@ namespace p5.lambda.keywords.core
                     // Notice, we do this by invoking [finally], even though we could have simply evaluated finally block directly.
                     // This is due to things such as for instance [eval-whitelist], and other injection patterns, needing to know and/or control which
                     // exact Active Events are being raised in the system.
-                    context.Raise ("finally", e.Args.NextSibling);
+                    context.RaiseActiveEvent ("finally", e.Args.NextSibling);
 
                     // Rethrowing after having evaluated [finally].
                     ExceptionDispatchInfo.Capture (err.InnerException).Throw ();
@@ -97,7 +97,7 @@ namespace p5.lambda.keywords.core
                 e.Args.Parent ["_exception"].UnTie ();
 
                 // Evaluating [catch] lambda block
-                context.Raise ("eval-mutable", e.Args);
+                context.RaiseActiveEvent ("eval-mutable", e.Args);
 
                 /*
                  * Notice, we do not directly raise [finally] here, since unless another exception occurs inside of [catch] block, it will
@@ -122,7 +122,7 @@ namespace p5.lambda.keywords.core
                 throw new LambdaException ("You cannot have a [finally] lambda without a preceeding [try]", e.Args, context);
 
             // Evaluating [finally] lambda block.
-            context.Raise ("eval-mutable", e.Args);
+            context.RaiseActiveEvent ("eval-mutable", e.Args);
         }
 
         /// <summary>

@@ -55,10 +55,10 @@ namespace p5
                 // Creating our App Context
                 // Notice, the Application_Start's ApplicationContext is evaluated from within the context of "root" to have extended rights
                 // during startup.
-                var context = Loader.Instance.CreateApplicationContext (new ApplicationContext.ContextTicket ("root", "root", false));
+                var context = Loader.Instance.CreateApplicationContext (new ContextTicket ("root", "root", false));
 
                 // Raising the application start Active Event, making sure we do it with a "root" Context Ticket
-                context.Raise (".p5.core.application-start");
+                context.RaiseActiveEvent (".p5.core.application-start");
 
                 // Executing our startup files.
                 ExecuteStartupFiles (context);
@@ -140,7 +140,7 @@ namespace p5
             private static void ExecuteStartupFiles (ApplicationContext context)
             {
                 // Execute our "startup file", if there is one defined
-                var appStartupFiles = context.Raise (
+                var appStartupFiles = context.RaiseActiveEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.webapp.application-startup-file"))[0].Get<string> (context);
                 if (!string.IsNullOrEmpty (appStartupFiles)) {
@@ -156,7 +156,7 @@ namespace p5
             private void LoadPluginAssemblies ()
             {
                 // Adding up executing (this) assembly as Active Event handler
-                Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+                Loader.Instance.RegisterAssembly (Assembly.GetExecutingAssembly ());
 
                 // Adding all Active Event handler assemblies from web.config
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -189,7 +189,7 @@ namespace p5
             private static void ExecuteHyperlispFile (ApplicationContext context, string filePath)
             {
                 // Loading file, converting to Lambda, for then to evaluate as p5 lambda
-                context.Raise ("eval", context.Raise ("p5.io.file.load", new Node("", filePath)) [0]);
+                context.RaiseActiveEvent ("eval", context.RaiseActiveEvent ("p5.io.file.load", new Node("", filePath)) [0]);
             }
 
             /*

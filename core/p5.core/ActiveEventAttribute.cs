@@ -23,21 +23,18 @@
 
 using System;
 
-/// <summary>
-///     Main namespace for core Active Event features of Phosphorus Five
-/// </summary>
 namespace p5.core
 {
     /// <summary>
-    ///     Attribute used for marking your methods as Active Events
+    ///     Attribute used for marking your methods as Active Events.
     /// </summary>
     [AttributeUsage (AttributeTargets.Method, AllowMultiple = true)]
     public class ActiveEventAttribute : Attribute
     {
         /// <summary>
-        ///     The name of your Active Event
+        ///     The name of your Active Event.
         /// </summary>
-        /// <value>the name</value>
+        /// <value>Active Event name</value>
         public string Name { get; set; }
     }
 }

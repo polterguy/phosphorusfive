@@ -84,7 +84,7 @@ namespace lambda_exe
                     var context = Loader.Instance.CreateApplicationContext ();
 
                     // Raising our application startup Active Event, in case there are plugins depending upon it.
-                    context.Raise (".p5.core.application-start", new Node ());
+                    context.RaiseActiveEvent (".p5.core.application-start", new Node ());
 
                     // Checking if we're in "immediate mode".
                     if (immediate) {
@@ -95,9 +95,9 @@ namespace lambda_exe
                     } else {
 
                         // Loads specified Hyperlambda file, pass in arguments, and evaluate it.
-                        var convertExeFile = context.Raise ("p5.io.file.load", new Node ("", exeNode.Value)) [0];
+                        var convertExeFile = context.RaiseActiveEvent ("p5.io.file.load", new Node ("", exeNode.Value)) [0];
                         exeNode.AddRange (convertExeFile.Children);
-                        context.Raise ("eval", exeNode);
+                        context.RaiseActiveEvent ("eval", exeNode);
                     }
                 }
             }
@@ -132,7 +132,7 @@ namespace lambda_exe
         private static void LoadDefaultPlugins ()
         {
             // Initializing the default plugins, including executing assembly, to wire up the console read-line/write-line events.
-            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly());
+            Loader.Instance.RegisterAssembly (Assembly.GetExecutingAssembly());
             Loader.Instance.LoadAssembly ("plugins/", "p5.hyperlambda");
             Loader.Instance.LoadAssembly ("plugins/", "p5.types");
             Loader.Instance.LoadAssembly ("plugins/", "p5.lambda");
@@ -166,8 +166,8 @@ namespace lambda_exe
                 } else {
 
                     // Converting Hyperlambda collected above to lambda and evaluating it.
-                    Node convert = context.Raise ("hyper2lambda", new Node ("", hyperlambda));
-                    context.Raise ("eval", convert);
+                    Node convert = context.RaiseActiveEvent ("hyper2lambda", new Node ("", hyperlambda));
+                    context.RaiseActiveEvent ("eval", convert);
                     Console.WriteLine ();
                 }
             }

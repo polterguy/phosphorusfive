@@ -144,7 +144,7 @@ namespace p5.lambda.keywords.extras
             // Setting accurate name for node, adding datasource as [_dn], and invoking event.
             template.Name = name;
             template.Insert (0, new Node ("_dn", source));
-            context.Raise (template.Name, template);
+            context.RaiseActiveEvent (template.Name, template);
 
             // Returning results of event invocation, prioritizing value.
             if (template.Value != null) {

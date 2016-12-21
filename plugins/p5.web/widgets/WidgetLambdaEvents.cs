@@ -176,8 +176,8 @@ namespace p5.web.widgets
                 ListActiveEvents (Manager.WidgetLambdaEventStorage.Keys, e.Args, filter, context);
 
                 // Checking if there exists a whitelist, and if so, removing everything not in it.
-                if (context.Whitelist != null)
-                    e.Args.Children.RemoveAll (ix => context.Whitelist [ix.Get<string> (context)] == null);
+                if (context.Ticket.Whitelist != null)
+                    e.Args.Children.RemoveAll (ix => context.Ticket.Whitelist [ix.Get<string> (context)] == null);
             }
         }
 

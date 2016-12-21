@@ -267,10 +267,10 @@ namespace p5.http
                     context);
 
             // Getting file to post or put, verifying expression does not lead into oblivion
-            var filename = context.Raise (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, args["filename"]))).Get<string> (context);
+            var filename = context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, args["filename"]))).Get<string> (context);
 
             // Making sure user is authorized to read the file request should send
-            context.Raise (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", args));
+            context.RaiseActiveEvent (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", args));
 
             // Opening request stream, and render file as content of request
             using (Stream stream = request.GetRequestStream ()) {
@@ -285,7 +285,7 @@ namespace p5.http
                 SetRequestHeaders (context, request, args);
 
                 // Retrieving root node of web application
-                var rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
+                var rootFolder = context.RaiseActiveEvent (".p5.core.application-folder").Get<string> (context);
 
                 // Copying FileStream to RequestStream
                 using (Stream fileStream = File.OpenRead (rootFolder + filename)) {
@@ -306,7 +306,7 @@ namespace p5.http
             if (content.Value == null && content.Children.Count > 0) {
 
                 // Hyperlambda content
-                return context.Raise ("lambda2hyper", content.UnTie ()).Value;
+                return context.RaiseActiveEvent ("lambda2hyper", content.UnTie ()).Value;
             } else {
 
                 // Some sort of "value" content, either text or binary (byte[])
@@ -393,7 +393,7 @@ namespace p5.http
                         if (args.GetExChildValue ("convert", context, true)) {
 
                             // Converting from Hyperlambda to p5 lambda
-                            Node convert = context.Raise ("hyper2lambda", new Node ("content", reader.ReadToEnd ()));
+                            Node convert = context.RaiseActiveEvent ("hyper2lambda", new Node ("content", reader.ReadToEnd ()));
                             convert.Value = null;
                             result.Add (convert);
                         } else {
@@ -455,10 +455,10 @@ namespace p5.http
             Node args)
         {
             // Getting filename user wants to save response as
-            var filename = context.Raise (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, args ["filename"]))).Get<string>(context);
+            var filename = context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, args ["filename"]))).Get<string>(context);
 
             // Making sure user is authorized to write/overwrite the file response should be saved to
-            context.Raise (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));
+            context.RaiseActiveEvent (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));
 
             // Retrieving HTTP response
             HttpWebResponse response = (HttpWebResponse)request.GetResponseNoException ();
@@ -471,7 +471,7 @@ namespace p5.http
             using (Stream stream = response.GetResponseStream ()) {
 
                 // Retrieving root folder of web application
-                var rootFolder = context.Raise (".p5.core.application-folder").Get<string> (context);
+                var rootFolder = context.RaiseActiveEvent (".p5.core.application-folder").Get<string> (context);
 
                 // Copying response content stream to file stream encapsualting file caller requested to save content to
                 using (Stream fileStream = File.Create (rootFolder + filename)) {

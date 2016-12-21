@@ -52,7 +52,7 @@ namespace p5_active_event_sample_plugins
         public static void create_instance_handler (ApplicationContext context, ActiveEventArgs e)
         {
             var fooInstance = new SomeActiveEventHandler ();
-            context.RegisterListeningObject (fooInstance);
+            context.RegisterListeningInstance (fooInstance);
         }
 
         // Notice how this event handler, handles the same ("foo") Active Event, but is *NOT*a static method
@@ -68,7 +68,7 @@ namespace p5_active_event_sample_plugins
         [ActiveEvent (Name = "unregister-instance-handler")]
         public void unregister_instance_handler (ApplicationContext context, ActiveEventArgs e)
         {
-            context.UnregisterListeningObject (this);
+            context.UnregisterListeningInstance (this);
         }
     }
 }

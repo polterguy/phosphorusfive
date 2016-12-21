@@ -54,8 +54,8 @@ namespace p5.imaging
                 foreach (var idxPath in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Unrolling path, and verifying user is authorized to reading file.
-                    var source = context.Raise (".p5.io.unroll-path", new Node ("", idxPath)).Get<string> (context);
-                    context.Raise (".p5.io.authorize.read-file", new Node ("", source).Add ("args", e.Args));
+                    var source = context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", idxPath)).Get<string> (context);
+                    context.RaiseActiveEvent (".p5.io.authorize.read-file", new Node ("", source).Add ("args", e.Args));
 
                     // Getting root folder, and opening file.
                     var rootFolder = Helpers.GetBaseFolder (context);

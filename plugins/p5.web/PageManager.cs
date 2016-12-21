@@ -135,7 +135,7 @@ namespace p5.web
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Passing file to client
-                AjaxPage.IncludeJavaScriptFile (context.Raise (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
+                AjaxPage.IncludeJavaScriptFile (context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
             }
         }
 
@@ -151,7 +151,7 @@ namespace p5.web
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Register file for inclusion back to client
-                AjaxPage.IncludeCSSFile (context.Raise (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
+                AjaxPage.IncludeCSSFile (context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
             }
         }
 
@@ -261,7 +261,7 @@ namespace p5.web
         {
             var widgetID = e.Args.Name;
             var eventName = e.Args.Get<string> (context);
-            context.Raise("eval", WidgetAjaxEventStorage[widgetID, eventName].Clone());
+            context.RaiseActiveEvent("eval", WidgetAjaxEventStorage[widgetID, eventName].Clone());
         }
 
         /*
@@ -278,7 +278,7 @@ namespace p5.web
                 WidgetLambdaEventStorage = new WidgetEventStorage();
 
                 // Associating lambda event storage with page by creating a "page value"
-                context.Raise(
+                context.RaiseActiveEvent(
                     ".p5.web.viewstate.set",
                     new Node(".p5.web.viewstate.set", ".WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
 
@@ -286,19 +286,19 @@ namespace p5.web
                 WidgetAjaxEventStorage = new WidgetEventStorage();
 
                 // Associating ajax event storage with page by creating a "page value"
-                context.Raise(
+                context.RaiseActiveEvent(
                     ".p5.web.viewstate.set",
                     new Node(".p5.web.viewstate.set", ".WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
             } else {
 
                 // Retrieving existing widget lambda event storage
-                WidgetLambdaEventStorage = context.Raise (
+                WidgetLambdaEventStorage = context.RaiseActiveEvent (
                     ".p5.web.viewstate.get",
                     new Node(".p5.web.viewstate.get", ".WidgetLambdaEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
 
                 // Retrieving existing widget ajax event storage
-                WidgetAjaxEventStorage = context.Raise (
+                WidgetAjaxEventStorage = context.RaiseActiveEvent (
                     ".p5.web.viewstate.get",
                     new Node(".p5.web.viewstate.get", ".WidgetAjaxEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
@@ -311,25 +311,25 @@ namespace p5.web
         private void RegisterListeners (ApplicationContext context)
         {
             // Creating and registering our WidgetCreator as event listener
-            context.RegisterListeningObject (new WidgetCreator (context, this));
+            context.RegisterListeningInstance (new WidgetCreator (context, this));
 
             // Creating and registering our WidgetCreator as event listener
-            context.RegisterListeningObject (new WidgetDeleter (context, this));
+            context.RegisterListeningInstance (new WidgetDeleter (context, this));
 
             // Creating and registering our WidgetRetriever as event listener
-            context.RegisterListeningObject (new WidgetRetriever (context, this));
+            context.RegisterListeningInstance (new WidgetRetriever (context, this));
 
             // Creating and registering our WidgetProperties as event listener
-            context.RegisterListeningObject (new WidgetProperties (context, this));
+            context.RegisterListeningInstance (new WidgetProperties (context, this));
 
             // Creating and registering our WidgetAjaxEvents as event listener
-            context.RegisterListeningObject (new WidgetAjaxEvents (context, this));
+            context.RegisterListeningInstance (new WidgetAjaxEvents (context, this));
 
             // Creating and registering our WidgetLambdaEvents as event listener
-            context.RegisterListeningObject (new WidgetLambdaEvents (context, this));
+            context.RegisterListeningInstance (new WidgetLambdaEvents (context, this));
 
             // Creating and registering our WidgetTypes as event listener
-            context.RegisterListeningObject (new WidgetTypes (context, this));
+            context.RegisterListeningInstance (new WidgetTypes (context, this));
         }
 
         #endregion

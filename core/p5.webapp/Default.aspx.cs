@@ -56,7 +56,7 @@ namespace p5.webapp
                     // Invoking the Active Event that actually loads our UI, now with a [_url] node being the URL of the requested page.
                     // Making sure we do it, in such a way, that we can handle any exceptions that occurs.
                     try {
-                        ApplicationContext.Raise ("p5.web.load-ui", args);
+                        ApplicationContext.RaiseActiveEvent ("p5.web.load-ui", args);
 
                     } catch (Exception err) {
 
@@ -67,7 +67,7 @@ namespace p5.webapp
                     }
 
                     // Making sure base is set for page.
-                    var baseUrl = ApplicationContext.Raise ("p5.web.get-root-location").Get<string> (ApplicationContext, null);
+                    var baseUrl = ApplicationContext.RaiseActiveEvent ("p5.web.get-root-location").Get<string> (ApplicationContext, null);
                     LiteralControl baseCtrl = new LiteralControl ();
                     baseCtrl.Text = string.Format (@"<base href= ""{0}""/>", baseUrl);
                     Page.Header.Controls.Add (baseCtrl);

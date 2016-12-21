@@ -55,7 +55,7 @@ namespace p5.types
 
                     // Looping through all arguments supplied
                     foreach (var idx in XUtil.Iterate<object> (context, e.Args)) {
-                        var objValue = context.Raise (".p5.hyperlambda.get-object-value." + type, new Node ("", idx)).Value;
+                        var objValue = context.RaiseActiveEvent (".p5.hyperlambda.get-object-value." + type, new Node ("", idx)).Value;
                     }
 
                     // No exception occurred, conversion is possible

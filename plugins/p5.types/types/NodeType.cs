@@ -43,7 +43,7 @@ namespace p5.types.types
                 return;
             var code = e.Args.Get<string> (context);
             var tmp = new Node ("", code);
-            context.Raise ("hyper2lambda", tmp);
+            context.RaiseActiveEvent ("hyper2lambda", tmp);
             e.Args.Value = tmp.Children.Count > 0 ? new Node ("", null, tmp.Children) : null;
         }
 
@@ -57,7 +57,7 @@ namespace p5.types.types
         {
             var code = e.Args.Get<string> (context);
             var tmp = new Node ("", code);
-            context.Raise ("hyper2lambda", tmp);
+            context.RaiseActiveEvent ("hyper2lambda", tmp);
 
             // Different logic if there's one node or multiple nodes!
             if (tmp.Children.Count == 1) {
@@ -87,7 +87,7 @@ namespace p5.types.types
         private static void p5_hyperlisp_get_string_value_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             var tmp = new Node ("", e.Args.Value);
-            context.Raise ("lambda2hyper", tmp);
+            context.RaiseActiveEvent ("lambda2hyper", tmp);
             e.Args.Value = tmp.Value;
         }
 

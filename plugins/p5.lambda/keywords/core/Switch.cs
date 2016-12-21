@@ -73,7 +73,7 @@ namespace p5.lambda.keywords.core
 
                 // Evaluating [case] lambda.
                 if (lambda != null)
-                    context.Raise (lambda.Name, lambda);
+                    context.RaiseActiveEvent (lambda.Name, lambda);
             }
         }
 
@@ -91,7 +91,7 @@ namespace p5.lambda.keywords.core
         [ActiveEvent (Name = "case")]
         public static void lambda_case (ApplicationContext context, ActiveEventArgs e)
         {
-            context.Raise ("eval-mutable", e.Args);
+            context.RaiseActiveEvent ("eval-mutable", e.Args);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace p5.lambda.keywords.core
         [ActiveEvent (Name = "default")]
         public static void lambda_default (ApplicationContext context, ActiveEventArgs e)
         {
-            context.Raise ("eval-mutable", e.Args);
+            context.RaiseActiveEvent ("eval-mutable", e.Args);
         }
 
         /*

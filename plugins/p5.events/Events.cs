@@ -132,8 +132,8 @@ namespace p5.events
             ListActiveEvents (context.ActiveEvents, e.Args, filter, "static", context);
 
             // Checking if there exists a whitelist, and if so, removing everything not in our whitelist.
-            if (context.Whitelist != null)
-                e.Args.Children.RemoveAll (ix => context.Whitelist[ix.Get<string> (context)] == null);
+            if (context.Ticket.Whitelist != null)
+                e.Args.Children.RemoveAll (ix => context.Ticket.Whitelist[ix.Get<string> (context)] == null);
 
             // Sorting such that static events comes first, and then having keywords coming.
             e.Args.Sort (delegate (Node lhs, Node rhs) {

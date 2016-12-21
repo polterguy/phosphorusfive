@@ -280,7 +280,7 @@ namespace p5.core
                     } else {
                         builder.Append ("\r\n");
                     }
-                    builder.Append (context.Raise (
+                    builder.Append (context.RaiseActiveEvent (
                         ".p5.hyperlambda.get-string-value." +
                         idx.GetType ().FullName, new Node ("", idx)).Value);
                 }
@@ -289,7 +289,7 @@ namespace p5.core
             Node node = new Node ("", value);
             if (encode && value is byte[])
                 node.Add ("encode", true);
-            return context.Raise (
+            return context.RaiseActiveEvent (
                 ".p5.hyperlambda.get-string-value." +
                 value.GetType ().FullName, node).Value as string;
         }
@@ -299,11 +299,11 @@ namespace p5.core
          */
         private static T Convert2Object<T> (object value, ApplicationContext context, T defaultValue = default (T))
         {
-            var typeName = context.Raise (
+            var typeName = context.RaiseActiveEvent (
                 ".p5.hyperlambda.get-type-name." + typeof (T).FullName).Get<string> (context);
             if (typeName == null)
                 return defaultValue;
-            return context.Raise (
+            return context.RaiseActiveEvent (
                 ".p5.hyperlambda.get-object-value." +
                 typeName, new Node ("", value)).Get<T> (context);
         }

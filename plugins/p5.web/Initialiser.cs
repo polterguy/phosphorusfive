@@ -44,7 +44,7 @@ namespace p5.web
             var instance = new PageManager (
                 context, 
                 page);
-            context.RegisterListeningObject (instance);
+            context.RegisterListeningInstance (instance);
         }
     }
 }

@@ -25,10 +25,8 @@ using System;
 using System.Linq;
 using System.Security;
 using System.Collections.Generic;
+using p5.core.internals;
 
-/// <summary>
-///     Main namespace for Phosphorus core functionality.
-/// </summary>
 namespace p5.core
 {
     /// <summary>
@@ -36,82 +34,34 @@ namespace p5.core
     /// </summary>
     public class ApplicationContext
     {
-        /// <summary>
-        ///     Class used as ticket when raising Active Events
-        /// </summary>
-        [Serializable]
-        public class ContextTicket
-        {
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="p5.core.ApplicationContext+ContextTicket"/> class
-            /// </summary>
-            /// <param name="username">Username</param>
-            /// <param name="role">Role</param>
-            public ContextTicket(string username, string role, bool isDefault)
-            {
-                Username = username;
-                Role = role;
-                IsDefault = isDefault;
-            }
+        // Wraps all registered Active Events for the given context.
+        private readonly ActiveEvents _registeredActiveEvents = new ActiveEvents ();
 
-            /// <summary>
-            ///     Gets the username
-            /// </summary>
-            /// <value>The username</value>
-            public string Username {
-                get;
-                private set;
-            }
+        // Wraps all types that have instance events, not necessarily registered as events, but that might be registered later, if an
+        // instance event handler is registered as a listener object.
+        private readonly ActiveEventTypes _typesInstanceActiveEvents;
 
-            /// <summary>
-            ///     Gets the role
-            /// </summary>
-            /// <value>The password</value>
-            public string Role {
-                get;
-                private set;
-            }
-
-            /// <summary>
-            ///     Gets whether or not this is the "default Context user"
-            /// </summary>
-            /// <value>Whethere or not user is "default user"</value>
-            public bool IsDefault {
-                get;
-                private set;
-            }
-        }
-
-        private readonly ActiveEvents _registeredActiveEvents = new ActiveEvents();
-        private readonly Loader.ActiveEventTypes _typesInstanceActiveEvents;
+        // The current "ticket", authorization/authentication object for the context.
         private ContextTicket _ticket;
-        private Node _whitelist;
 
-        internal ApplicationContext (
-            Loader.ActiveEventTypes instanceEvents, 
-            Loader.ActiveEventTypes staticEvents, 
-            ContextTicket ticket)
+        /*
+         * Creates a new application context.
+         * This must be done through the Loader class, hence the constructor is internal.
+         */
+        internal ApplicationContext (ActiveEventTypes instanceTypes, ActiveEventTypes staticTypes, ContextTicket ticket)
         {
             _ticket = ticket;
-            _typesInstanceActiveEvents = instanceEvents;
-            InitializeApplicationContext (staticEvents);
+            _typesInstanceActiveEvents = instanceTypes;
+            InitializeApplicationContext (staticTypes);
         }
 
         /// <summary>
-        ///     Gets the Context user ticket
+        ///     Returns the context ticket for this instance.
         /// </summary>
-        /// <value>The ticket</value>
+        /// <value>The context ticket</value>
         public ContextTicket Ticket
         {
             get { return _ticket; }
-        }
-
-        /// <summary>
-        ///     Gets or sets the whitelist of legal Active Events for the current context.
-        /// </summary>
-        public Node Whitelist {
-            get { return _whitelist; }
-            set { _whitelist = value; }
         }
 
         /// <summary>
@@ -120,11 +70,11 @@ namespace p5.core
         /// <value>The active events</value>
         public IEnumerable<string> ActiveEvents
         {
-            get { return _registeredActiveEvents.GetEvents ().Select (idx => idx.Name); }
+            get { return _registeredActiveEvents.Events.Select (idx => idx.Name); }
         }
 
         /// <summary>
-        ///     Changes the ticket for the context
+        ///     Changes the ticket for the context.
         /// </summary>
         /// <param name="ticket">New ticket</param>
         public void UpdateTicket (ContextTicket ticket)
@@ -133,45 +83,28 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Determines whether this instance has the event with the specified name.
-        /// </summary>
-        /// <returns><c>true</c> if this instance has event with the specified name; otherwise, <c>false</c></returns>
-        /// <param name="name">Name</param>
-        public bool HasEvent (string name)
-        {
-            return _registeredActiveEvents.HasEvent(name);
-        }
-
-        /// <summary>
         ///     Registers an instance Active Event listening object.
         /// </summary>
-        /// <param name="instance">object to register for Active Event handling</param>
-        public void RegisterListeningObject (object instance)
+        /// <param name="instance">Object to register as an instance Active Event handling.</param>
+        public void RegisterListeningInstance (object instance)
         {
+            // Sanity check.
             if (instance == null)
-                throw new ArgumentNullException ("instance");
+                throw new ArgumentNullException (nameof (instance));
 
-            // Recursively iterating the Type of the object given, until we reach an object where we know there won't exist
-            // any Active Events
-            var idxType = instance.GetType ();
-            while (!idxType.FullName.StartsWith ("System.")) {
+            // Recursively iterating the Type of the object given, until we reach an object where we know for a fact, there won't exist any handlers.
+            for (var idxType = instance.GetType (); !idxType.FullName.StartsWith ("System."); idxType = idxType.BaseType) {
 
-                // Checking to see if this type is registered in our list of types that has Active Events
+                // Checking to see if this type is registered in our list of types that contains Active Events.
                 if (_typesInstanceActiveEvents.Types.ContainsKey (idxType)) {
 
-                    // Retrieving the list of ActiveEvent/MethodInfo  for the currently iterated Type
+                    // Retrieving the list of ActiveEvent/MethodInfo for the currently iterated Type.
                     foreach (var idxActiveEvent in _typesInstanceActiveEvents.Types [idxType].Events) {
 
-                        // Adding Active Event
-                        _registeredActiveEvents.AddMethod (
-                            idxActiveEvent.Attribute.Name,
-                            idxActiveEvent.Method,
-                            instance);
+                        // Registering Active Event, with specified instance.
+                        _registeredActiveEvents.AddMethod (idxActiveEvent.Attribute.Name, idxActiveEvent.Method, instance);
                     }
                 }
-
-                // Continue iteration over Types until we reach a type we know does not have Active Events
-                idxType = idxType.BaseType;
             }
         }
 
@@ -179,105 +112,90 @@ namespace p5.core
         ///     Unregisters an instance listening object.
         /// </summary>
         /// <param name="instance">object to unregister</param>
-        public void UnregisterListeningObject (object instance)
+        public void UnregisterListeningInstance (object instance)
         {
+            // Sanity check.
             if (instance == null)
-                throw new ArgumentNullException ("instance");
+                throw new ArgumentNullException (nameof (instance));
 
-            // Iterating over the Type until we find a type we know for a fact won't contains Active Events
-            var type = instance.GetType ();
-            while (!type.FullName.StartsWith ("System.")) {
-
-                // Checking to see if our list of instance Active Events contains the currently iterated Type
-                _registeredActiveEvents.RemoveMethod (instance);
-
-                // finding base type, to continue iteration over its Type until we find a Type we're sure of does not 
-                // contain Active Event declarations
-                type = type.BaseType;
-            }
+            // Deleting all associated Active Events for specified instance.
+            _registeredActiveEvents.DeleteEventsForInstance (instance);
         }
 
         /// <summary>
-        ///     Raises one Active Event from lambda object
+        ///     Raises the specified Active Event, with the given arguments, if any.
         /// </summary>
-        /// <param name="name">name of Active Event to raise</param>
-        /// <param name="pars">arguments to pass into the Active Event</param>
-        public Node Raise (string name, Node pars = null)
+        /// <param name="activeEventName">Name of Active Event to raise</param>
+        /// <param name="arguments">Arguments to pass into the Active Event</param>
+        public Node RaiseActiveEvent (string activeEventName, Node arguments = null)
         {
-            if (Whitelist != null && !name.StartsWith (".") && !name.StartsWith ("_")) {
-                return ExecuteSingleEventWithWhitelist (name, pars);
+            // Checking if we have a whitelist definition on ticket or not, to determine how to raise Active Event, if at all.
+            // Notice, to not mess up internal Active Events, necessary to for instance raise pre-condition active events, and other similar
+            // internal system events, we do not consider whitelist definition, if Active Event starts with a "_" or an ".", since these
+            // events are anyways impossible to raise from lambda, and only C# code is able to raise them.
+            if (Ticket != null && Ticket.Whitelist != null && !activeEventName.StartsWith (".") && !activeEventName.StartsWith ("_")) {
+
+                // Considering our whitelist before we raise event.
+                return RaiseWithWhitelist (activeEventName, arguments);
+
             } else {
-                return _registeredActiveEvents.Raise (name, pars, this, _ticket);
+
+                // No whitelist definition.
+                return _registeredActiveEvents.Raise (this, arguments, activeEventName);
             }
         }
 
         /*
-         * Executes a single event according to whitelist definition.
+         * Raises a single Active Event, making sure it exists in our whitelist, before we allow it to be raised.
          */
-        private Node ExecuteSingleEventWithWhitelist (string name, Node pars)
+        private Node RaiseWithWhitelist (string activeEventName, Node arguments)
         {
-            // Whitelist provided, making sure event is legal.
-            var definition = Whitelist[name];
-            if (definition == null) {
+            // Retrieving definition, and throwing an exception, unless Active Event is explicitly legalized in whitelist.
+            var definition = Ticket.Whitelist [activeEventName];
+            if (definition == null)
+                throw new SecurityException (string.Format ("Caller tried to invoke illegal Active Event [{0}] according to whitelist definition", activeEventName));
 
-                // Active Event invocation did not exist in Whitelist definition.
-                throw new SecurityException (string.Format ("Caller tried to invoke illegal Active Event [{0}] according to whitelist definition", name));
+            // Looping through all [pre-condition]s for Active Event, and raising them as Active Events, to verify activeEventName can be legally raised by caller.
+            foreach (var idxCondition in definition.Children.Where (ix => ix.Name == "pre-condition")) {
+
+                // Raising [pre-condition] Active Event, which will throw an exception, if condition is not met.
+                var conditionArgs = new Node ("", null, new Node ("pre-condition", idxCondition), new Node ("lambda", arguments));
+                RaiseActiveEvent (".p5.lambda.whitelist.pre-condition." + idxCondition.Get<string> (this), conditionArgs);
             }
 
-            // Checking if there exists one or more [pre-condition] objects with our definition.
-            if (definition["pre-condition"] != null) {
+            // OK, so far, so good, now we can raise the actual Active Event caller attempts to raise.
+            var retVal = _registeredActiveEvents.Raise (this, arguments, activeEventName);
 
-                // Looping through all [post-conditions] for Active Event.
-                foreach (var idxCondition in definition.Children.Where (ix => ix.Name == "pre-condition")) {
+            // Looping through all [post-conditions] for Active Event.
+            foreach (var idxCondition in definition.Children.Where (ix => ix.Name == "post-condition")) {
 
-                    // Raising [post-condition] Active Event, which will throw if condition is not met.
-                    var args = new Node ();
-                    args.Add ("pre-condition", idxCondition);
-                    args.Add ("lambda", pars);
-                    Raise (".p5.lambda.whitelist.pre-condition." + idxCondition.Get<string> (this), args);
-                }
+                // Raising [post-condition] Active Event, which will throw if condition is not met.
+                var conditionArgs = new Node ("", null, new Node ("post-condition", idxCondition), new Node ("lambda", retVal));
+                RaiseActiveEvent (".p5.lambda.whitelist.post-condition." + idxCondition.Get<string> (this), conditionArgs);
             }
 
-            // Raising the given Active Event, using the existing whitelist.
-            var retVal = _registeredActiveEvents.Raise (name, pars, this, _ticket);
-
-            // Checking if there exists one or more [post-condition] objects with our definition.
-            if (definition["post-condition"] != null) {
-
-                // Looping through all [post-conditions] for Active Event.
-                foreach (var idxCondition in definition.Children.Where (ix => ix.Name == "post-condition")) {
-
-                    // Raising [post-condition] Active Event, which will throw if condition is not met.
-                    var args = new Node ();
-                    args.Add ("post-condition", idxCondition);
-                    args.Add ("lambda", pars);
-                    Raise (".p5.lambda.whitelist.post-condition." + idxCondition.Get<string> (this), args);
-                }
-            }
+            // Success, returning results to caller.
             return retVal;
         }
 
         /*
-         * initializes app context
+         * Initializes our ApplicationContext instance.
          */
-        private void InitializeApplicationContext (Loader.ActiveEventTypes staticEvents)
+        private void InitializeApplicationContext (ActiveEventTypes staticEventTypes)
         {
-            // Looping through each Type in static Active Events given
-            foreach (var idxType in staticEvents.Types.Keys) {
+            // Looping through each Type in Active Events given.
+            foreach (var idxType in staticEventTypes.Types.Keys) {
 
-                // Looping through each ActiveEvent/MethodInfo tuple in Type
-                foreach (var idxAVTypeEvent in staticEvents.Types [idxType].Events) {
+                // Looping through each ActiveEvent in Type.
+                foreach (var idxAVTypeEvent in staticEventTypes.Types [idxType].Events) {
 
-                    // Registering Active Event
-                    _registeredActiveEvents.AddMethod (
-                        idxAVTypeEvent.Attribute.Name, 
-                        idxAVTypeEvent.Method, 
-                        null);
+                    // Registering Active Event as a static Active Event handler.
+                    _registeredActiveEvents.AddMethod (idxAVTypeEvent.Attribute.Name, idxAVTypeEvent.Method, null);
                 }
             }
 
-            // Raising "initialize" Application Context Active Event
-            Raise(".p5.core.initialize-application-context");
+            // Raising "initialize" Application Context Active Event, in case there are any listeners being interested in such things.
+            RaiseActiveEvent(".p5.core.initialize-application-context");
         }
     }
 }

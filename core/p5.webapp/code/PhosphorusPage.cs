@@ -54,7 +54,7 @@ namespace p5.webapp.code
             ApplicationContext = Loader.Instance.CreateApplicationContext ();
 
             // Registering "this" web page as listener object, since page contains many Active Event handlers itself
-            ApplicationContext.RegisterListeningObject (this);
+            ApplicationContext.RegisterListeningInstance (this);
 
             // Call base
             base.OnInit (e);
@@ -70,7 +70,7 @@ namespace p5.webapp.code
             args.Add ("page", this);
 
             // Raising our "page initialized" active event
-            ApplicationContext.Raise (".p5.web.initialize-page", args);
+            ApplicationContext.RaiseActiveEvent (".p5.web.initialize-page", args);
 
             // Calling base
             base.OnLoad(e);
@@ -186,7 +186,7 @@ namespace p5.webapp.code
 
             // Raising event, making sure we can handle any exceptions occuring.
             try {
-                ApplicationContext.Raise (".p5.web.raise-ajax-event", args);
+                ApplicationContext.RaiseActiveEvent (".p5.web.raise-ajax-event", args);
             } catch (Exception err) {
 
                 // Notice, we rethrow exception if handler didn't return true.
@@ -211,7 +211,7 @@ namespace p5.webapp.code
                 args.Add ("_message", message);
                 args.Add ("_trace", trace);
                 args.Add ("_type", err.GetType ().Name);
-                ApplicationContext.Raise ("p5.error." + idxTypeName, args);
+                ApplicationContext.RaiseActiveEvent ("p5.error." + idxTypeName, args);
                 if (args.Get (ApplicationContext, false))
                     return true;
                 idxType = idxType.BaseType;

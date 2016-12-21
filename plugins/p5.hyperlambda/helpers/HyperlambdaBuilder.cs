@@ -110,7 +110,7 @@ namespace p5.hyperlambda.helpers
 
             builder.Append (
                 string.Format (":{0}",
-                    _context.Raise (
+                    _context.RaiseActiveEvent (
                         ".p5.hyperlambda.get-type-name." + node.Value.GetType (),
                         new Node ()).Get<string> (_context)));
         }

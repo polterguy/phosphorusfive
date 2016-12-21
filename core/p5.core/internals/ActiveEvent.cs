@@ -21,39 +21,40 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
+using System.Collections.Generic;
 
-namespace p5.core
+namespace p5.core.internals
 {
     /// <summary>
-    ///     EventArgs for an Active Event.
+    ///     One single Active Event.
     /// </summary>
-    public class ActiveEventArgs : EventArgs
+    internal class ActiveEvent
     {
-        /*
-         * initializes a new instance of this class
-         */
-        internal ActiveEventArgs (string name, Node args)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ActiveEvents+ActiveEvent"/> class.
+        /// </summary>
+        /// <param name="name">Name of Active Event</param>
+        public ActiveEvent (string name)
         {
-            Args = args;
             Name = name;
+            Methods = new List<MethodSink> ();
         }
 
         /// <summary>
-        ///     Arguments passed in and returned from Active Events.
+        ///     Name of Active Event.
         /// </summary>
-        /// <value>Node arguments</value>
-        public Node Args
+        /// <value>The Active Event's name</value>
+        public string Name
         {
             get;
             private set;
         }
 
         /// <summary>
-        ///     Name of the Active Event raised.
+        ///     Encapsulates all methods tied to this specific Active Event.
         /// </summary>
-        /// <value>Active Event name</value>
-        public string Name
+        /// <value>The methods</value>
+        public List<MethodSink> Methods
         {
             get;
             private set;

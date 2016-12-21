@@ -70,12 +70,12 @@ namespace p5.lambda.keywords.extras
             var lambda = e.Args["lambda"].Get<Node> (context);
 
             // Evaluating [pre-condition], asserting it yields true, detaching whitelist first, making sure we attach it afterwards.
-            var old = context.Whitelist;
-            context.Whitelist = null;
+            var old = context.Ticket.Whitelist;
+            context.Ticket.Whitelist = null;
             try {
-                context.Raise ("eval", condition);
+                context.RaiseActiveEvent ("eval", condition);
             } finally {
-                context.Whitelist = old;
+                context.Ticket.Whitelist = old;
             }
             if (!condition.Get<bool> (context))
                 throw new LambdaSecurityException ("[pre-condition] of whitelist not met", lambda, context);

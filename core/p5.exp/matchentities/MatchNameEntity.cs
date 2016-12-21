@@ -46,7 +46,7 @@ namespace p5.exp.matchentities
                 if (!string.IsNullOrEmpty (_match.Convert) && _match.Convert != "string") {
 
                     // We need to convert value before returning to caller
-                    retVal = _match.Context.Raise (
+                    retVal = _match.Context.RaiseActiveEvent (
                         ".p5.hyperlambda.get-object-value." + _match.Convert, 
                         new Node ("", retVal)).Value;
                 }

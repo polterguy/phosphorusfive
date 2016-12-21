@@ -49,7 +49,7 @@ namespace p5.exp.matchentities
                     // Need to convert value before returning
                     retVal = _match.Convert == "string" ?
                         Utilities.Convert<string> (_match.Context, retVal) :
-                            _match.Context.Raise (".p5.hyperlambda.get-object-value." + _match.Convert, new Node ("", retVal)).Value;
+                            _match.Context.RaiseActiveEvent (".p5.hyperlambda.get-object-value." + _match.Convert, new Node ("", retVal)).Value;
                 }
                 return retVal;
             }

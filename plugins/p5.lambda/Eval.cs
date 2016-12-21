@@ -81,11 +81,11 @@ namespace p5.lambda
         public static void eval_whitelist (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure no existing whitelist has been applied earlier.
-            if (context.Whitelist != null)
+            if (context.Ticket.Whitelist != null)
                 throw new LambdaSecurityException ("Whitelist was previously applied.", e.Args, context);
 
             // Setting whitelist for context, making sure we by default deny everything, unless an explicit [events] node is specified.
-            context.Whitelist = e.Args["events"]?.UnTie () ?? new Node ();
+            context.Ticket.Whitelist = e.Args["events"]?.UnTie () ?? new Node ();
 
             // Making sure that whitelist is reset after evaluating its lambda.
             try {
@@ -96,7 +96,7 @@ namespace p5.lambda
             } finally {
 
                 // Resetting whitelist.
-                context.Whitelist = null;
+                context.Ticket.Whitelist = null;
             }
         }
 
@@ -207,7 +207,7 @@ namespace p5.lambda
                 if (!current.Name.StartsWith ("_") && !current.Name.StartsWith (".") && current.Name != "") {
 
                     // Raising the given Active Event.
-                    context.Raise (current.Name, current);
+                    context.RaiseActiveEvent (current.Name, current);
 
                     // Checking if we're supposed to return from evaluation.
                     var rootChildName = lambda.Root.FirstChild?.Name;
