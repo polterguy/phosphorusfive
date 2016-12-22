@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
@@ -28,65 +29,65 @@ using System.Runtime.ExceptionServices;
 
 namespace p5.core.internals
 {
-    /// <summary>
-    ///     Active Events class, wrapping all Active Events in your ApplicationContext.
-    /// </summary>
+    /*
+     * Class wrapping all registered Active Events in your ApplicationContext.
+     */
     internal class ActiveEvents
     {
         // Maps between an Active Event name, and its Active Event methods.
-        private Dictionary<string, ActiveEvent> _events = new Dictionary<string, ActiveEvent> ();
+        // Each Active Event can have multiple handlers (List), and each method that handles the Active Event, optionally has an instance,
+        // if the method is an instance method.
+        private Dictionary<string, List<Tuple<MethodInfo, object>>> _events = new Dictionary<string, List<Tuple<MethodInfo, object>>> ();
 
-        /// <summary>
-        ///     Creates an Active Event handler.
-        /// </summary>
-        /// <param name="activeEventName">Name of Active Event</param>
-        /// <param name="method">Event handler for Active Event</param>
-        /// <param name="listenerObject">Null if event handler is static, otherwise a reference to instance registered as listening object</param>
-        public void AddMethod (string activeEventName, MethodInfo method, object listenerObject)
+        /*
+         * Creates an Active Event handler.
+         * 
+         * If listenerInstance is null, it's assumed to be a static event handler, otherwise an instance event handler.
+         */
+        internal void AddEventMethod (string activeEventName, MethodInfo method, object listenerObject = null)
         {
             // Verifying we have an entry for Active Event name.
             if (!_events.ContainsKey (activeEventName)) {
 
                 // No existing Active Events for given name, create new event.
-                _events [activeEventName] = new ActiveEvent (activeEventName);
+                _events [activeEventName] = new List<Tuple<MethodInfo, object>> ();
             }
 
             // Now that we have for sure created an Active Event entry, we can add the actual MethodInfo/instance.
             // Notice, in case for some reasons, the same listener object is added twice, or the same assembly is loaded twice, we verify that
             // this handler has not been previously added to our list of events.
-            if (!_events [activeEventName].Methods.Exists (ix => ix.Instance == listenerObject && ix.Method == method))
-                _events [activeEventName].Methods.Add (new MethodSink (method, listenerObject));
+            if (!_events [activeEventName].Exists (ix => ix.Item2 == listenerObject && ix.Item1 == method))
+                _events [activeEventName].Add (new Tuple<MethodInfo, object> (method, listenerObject));
         }
 
-        /// <summary>
-        ///     Deletes all event handlers for the given object instance.
-        /// 
-        ///     Used when unregistering a listener object in the ApplicationContext.
-        /// </summary>
-        /// <param name="listenerObject">Instance or registered listening object</param>
-        public void DeleteEventsForInstance (object listenerObject)
+        /*
+         * Deletes all event handlers for the given object instance.
+         */
+        internal void DeleteEventsForInstance (object listenerObject)
         {
+            // Sanity check.
+            if (listenerObject == null)
+                throw new ArgumentException (nameof (listenerObject));
+
             // Iterating through each key, for then to check if there's a registered listening object in events, for the given listenerObject,
             // for then to, if it exists, deleting it from events dictionary.
+            // Notice our "ToList" invocation, to not invalidate IEnumerable, since we're modifying dictionary during enumeration.
             foreach (var activeEventName in _events.Keys.ToList ()) {
 
                 // Removing all events associated with the specified listening object.
-                _events [activeEventName].Methods.RemoveAll (ix => ix.Instance == listenerObject);
+                _events [activeEventName].RemoveAll (ix => ix.Item2 == listenerObject);
 
                 // Checking if this was the only remaining MethodInfo/instance-object for given Active Event, and if so, 
                 // removing the Active Event entirely.
-                if (_events [activeEventName].Methods.Count == 0)
+                if (_events [activeEventName].Count == 0)
                     _events.Remove (activeEventName);
             }
         }
 
-        /// <summary>
-        ///     Raise the Active Event with the specified name.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="args">Arguments to pass into Event Handlers</param>
-        /// <param name="activeEventName">Name of Active Event to raise</param>
-        public Node Raise (ApplicationContext context, Node args, string activeEventName)
+        /*
+         * Raise the Active Event with the specified name, with the given args (if any), within the given application context.
+         */
+        internal Node RaiseEvent (ApplicationContext context, Node args, string activeEventName)
         {
             try {
                 // Constructing EventArgs to pass into event handler.
@@ -100,8 +101,8 @@ namespace p5.core.internals
                     // Looping through all Active Events handlers for the given Active Event name, invoking all methods handling event.
                     // Notice, we must iterate the events using "ToList", since an Active Event, theoretically, might create a new Active Event,
                     // invalidating the enumerator for our foreach loop.
-                    foreach (var idxMethod in _events [activeEventName].Methods.ToList ()) {
-                        idxMethod.Method.Invoke (idxMethod.Instance, new object[] { context, e });
+                    foreach (var idxMethod in _events [activeEventName].ToList ()) {
+                        idxMethod.Item1.Invoke (idxMethod.Item2, new object[] { context, e });
                     }
                 }
 
@@ -109,8 +110,8 @@ namespace p5.core.internals
                 if (_events.ContainsKey ("")) {
 
                     // Active Event was not protected, and we have a "null event handler".
-                    foreach (var idxMethod in _events [""].Methods.ToList ()) {
-                        idxMethod.Method.Invoke (idxMethod.Instance, new object[] { context, e });
+                    foreach (var idxMethod in _events [""].ToList ()) {
+                        idxMethod.Item1.Invoke (idxMethod.Item2, new object[] { context, e });
                     }
                 }
 
@@ -127,16 +128,13 @@ namespace p5.core.internals
             }
         }
 
-        /// <summary>
-        ///     Returns all registered Active Events in system.
-        /// </summary>
-        /// <returns>All Active Events registered in the system</returns>
-        public IEnumerable<ActiveEvent> Events
+        /*
+         * Returns all registered Active Event names in the given instance.
+         */
+        internal IEnumerable<string> ActiveEventNames
         {
             get {
-                foreach (var idx in _events.Values) {
-                    yield return idx;
-                }
+                return _events.Keys;
             }
         }
     }

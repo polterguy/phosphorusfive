@@ -73,7 +73,7 @@ namespace p5.lambda.keywords.extras
             var old = context.Ticket.Whitelist;
             context.Ticket.Whitelist = null;
             try {
-                context.RaiseActiveEvent ("eval", condition);
+                context.RaiseEvent ("eval", condition);
             } finally {
                 context.Ticket.Whitelist = old;
             }

@@ -135,7 +135,7 @@ namespace p5.web
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Passing file to client
-                AjaxPage.IncludeJavaScriptFile (context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
+                AjaxPage.IncludeJavaScriptFile (context.RaiseEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
             }
         }
 
@@ -151,7 +151,7 @@ namespace p5.web
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Register file for inclusion back to client
-                AjaxPage.IncludeCSSFile (context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
+                AjaxPage.IncludeCSSFile (context.RaiseEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
             }
         }
 
@@ -261,7 +261,7 @@ namespace p5.web
         {
             var widgetID = e.Args.Name;
             var eventName = e.Args.Get<string> (context);
-            context.RaiseActiveEvent("eval", WidgetAjaxEventStorage[widgetID, eventName].Clone());
+            context.RaiseEvent("eval", WidgetAjaxEventStorage[widgetID, eventName].Clone());
         }
 
         /*
@@ -278,7 +278,7 @@ namespace p5.web
                 WidgetLambdaEventStorage = new WidgetEventStorage();
 
                 // Associating lambda event storage with page by creating a "page value"
-                context.RaiseActiveEvent(
+                context.RaiseEvent(
                     ".p5.web.viewstate.set",
                     new Node(".p5.web.viewstate.set", ".WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
 
@@ -286,19 +286,19 @@ namespace p5.web
                 WidgetAjaxEventStorage = new WidgetEventStorage();
 
                 // Associating ajax event storage with page by creating a "page value"
-                context.RaiseActiveEvent(
+                context.RaiseEvent(
                     ".p5.web.viewstate.set",
                     new Node(".p5.web.viewstate.set", ".WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
             } else {
 
                 // Retrieving existing widget lambda event storage
-                WidgetLambdaEventStorage = context.RaiseActiveEvent (
+                WidgetLambdaEventStorage = context.RaiseEvent (
                     ".p5.web.viewstate.get",
                     new Node(".p5.web.viewstate.get", ".WidgetLambdaEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);
 
                 // Retrieving existing widget ajax event storage
-                WidgetAjaxEventStorage = context.RaiseActiveEvent (
+                WidgetAjaxEventStorage = context.RaiseEvent (
                     ".p5.web.viewstate.get",
                     new Node(".p5.web.viewstate.get", ".WidgetAjaxEventStorage"))[0]
                     .Get<WidgetEventStorage>(context);

@@ -69,7 +69,7 @@ namespace p5.exp.exceptions
             {
                 var convert = new Node ();
                 convert.Add (_node);
-                _context.RaiseActiveEvent ("lambda2hyper", convert);
+                _context.RaiseEvent ("lambda2hyper", convert);
                 string lisp = convert.Get<string> (_context);
                 int curPosCrLf = 0, noCrLf = 0;
                 while (noCrLf != _lineNo) {

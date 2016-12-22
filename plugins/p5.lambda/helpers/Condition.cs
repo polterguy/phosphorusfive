@@ -81,7 +81,7 @@ namespace p5.lambda.helpers
                         continue;
 
                     // Raising comparison operator Active Event, logical operator event, or any other event currently part of conditional operators.
-                    _context.RaiseActiveEvent (idx.Name, idx);
+                    _context.RaiseEvent (idx.Name, idx);
 
                     // Moving results of Active Event invocation up from conditional Active Event invocation result node's value,
                     // to the result of conditional statement, to "bubble" results up to the top-most branching Active Event branching node.
@@ -120,7 +120,7 @@ namespace p5.lambda.helpers
                 _args.Insert (0, new Node ("offset", _conditions.Count));
 
             // Evaluating body of conditional statement, now with [offset] pointing to first non-comparison/non-formatting node.
-            _context.RaiseActiveEvent ("eval-mutable", _args);
+            _context.RaiseEvent ("eval-mutable", _args);
         }
 
         /*
@@ -166,7 +166,7 @@ namespace p5.lambda.helpers
             // Retrieving all comparison operators and logical operators in system.
             // Notice, this has to be done once for each condition we create, since theoretically the operators might change, due to
             // having instance event handler objects in the ApplicationContext.
-            var operators = _context.RaiseActiveEvent ("operators");
+            var operators = _context.RaiseEvent ("operators");
 
             // Checking if value of args is null, and if so, we use the first child of it as an Active Event operator, 
             // which simply will be evaluated, and its value checked for true afterwards, during evaluation of conditional nodes.

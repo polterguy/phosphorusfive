@@ -78,7 +78,7 @@ namespace p5.lambda.keywords.extras
                         exeNode.Insert (1, new Node ("_rhs", rhs));
 
                         // Invoking [sort] callback
-                        context.RaiseActiveEvent ("eval", exeNode);
+                        context.RaiseEvent ("eval", exeNode);
 
                         // Retrieving value of [sort] callback, defaulting to "equals"
                         return exeNode.Get (context, 0);

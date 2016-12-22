@@ -58,7 +58,7 @@ namespace p5
                 var context = Loader.Instance.CreateApplicationContext (new ContextTicket ("root", "root", false));
 
                 // Raising the application start Active Event, making sure we do it with a "root" Context Ticket
-                context.RaiseActiveEvent (".p5.core.application-start");
+                context.RaiseEvent (".p5.core.application-start");
 
                 // Executing our startup files.
                 ExecuteStartupFiles (context);
@@ -140,7 +140,7 @@ namespace p5
             private static void ExecuteStartupFiles (ApplicationContext context)
             {
                 // Execute our "startup file", if there is one defined
-                var appStartupFiles = context.RaiseActiveEvent (
+                var appStartupFiles = context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.webapp.application-startup-file"))[0].Get<string> (context);
                 if (!string.IsNullOrEmpty (appStartupFiles)) {
@@ -189,7 +189,7 @@ namespace p5
             private static void ExecuteHyperlispFile (ApplicationContext context, string filePath)
             {
                 // Loading file, converting to Lambda, for then to evaluate as p5 lambda
-                context.RaiseActiveEvent ("eval", context.RaiseActiveEvent ("p5.io.file.load", new Node("", filePath)) [0]);
+                context.RaiseEvent ("eval", context.RaiseEvent ("p5.io.file.load", new Node("", filePath)) [0]);
             }
 
             /*

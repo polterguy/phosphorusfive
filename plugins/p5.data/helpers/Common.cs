@@ -87,7 +87,7 @@ namespace p5.data.helpers
                 Database = new Node ();
 
                 // Finding and setting our database root directory
-                _dbFullPath = context.RaiseActiveEvent (
+                _dbFullPath = context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
                 _dbFullPath = GetRootFolder (context) + _dbFullPath;
@@ -160,7 +160,7 @@ namespace p5.data.helpers
         public static Node GetAvailableFileNode (ApplicationContext context, bool forceAppend)
         {
             // Searching through database to see if there are any nodes we can use from before
-            var objectsPerFile = context.RaiseActiveEvent (
+            var objectsPerFile = context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.data.nodes-per-file"))[0].Get<int> (context, 32);
             if (forceAppend) {
@@ -213,7 +213,7 @@ namespace p5.data.helpers
 
                 // Saves node as Hyperlambda
                 using (TextWriter writer = File.CreateText (_dbFullPath + fileNode.Value)) {
-                    writer.Write (context.RaiseActiveEvent ("lambda2hyper", new Node ().AddRange (fileNode.Clone ().Children)).Value);
+                    writer.Write (context.RaiseEvent ("lambda2hyper", new Node ().AddRange (fileNode.Clone ().Children)).Value);
                 }
             }
         }
@@ -227,7 +227,7 @@ namespace p5.data.helpers
             using (TextReader reader = File.OpenText (_dbFullPath + path)) {
 
                 // Converting file to lambda
-                Node retVal = context.RaiseActiveEvent ("hyper2lambda", new Node ("", reader.ReadToEnd ()));
+                Node retVal = context.RaiseEvent ("hyper2lambda", new Node ("", reader.ReadToEnd ()));
                 retVal.Value = path;
                 return retVal;
             }
@@ -273,7 +273,7 @@ namespace p5.data.helpers
         private static string FindAvailableNewFileName (ApplicationContext context)
         {
             // Retrieving maximum number of files for folder
-            var maxFilesPerDirectory = context.RaiseActiveEvent (
+            var maxFilesPerDirectory = context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.data.files-per-folder"))[0].Get<int> (context, 256);
 
@@ -334,7 +334,7 @@ namespace p5.data.helpers
          */
         private static string GetRootFolder (ApplicationContext context)
         {
-            return context.RaiseActiveEvent (".p5.core.application-folder").Get<string> (context);
+            return context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
         }
     }
 }

@@ -256,7 +256,7 @@ namespace p5.exp
                 return null;
 
             // Raising source Active Event, and returning results.
-            context.RaiseActiveEvent (srcNodes[0].Name, srcNodes[0]);
+            context.RaiseEvent (srcNodes[0].Name, srcNodes[0]);
 
             // Sanity check
             if (srcNodes[0].Value == null && srcNodes[0].Children.Count > 1)
@@ -286,7 +286,7 @@ namespace p5.exp
             foreach (var idxSrc in srcNodes) {
 
                 // Raising source Active Event.
-                context.RaiseActiveEvent (idxSrc.Name, idxSrc);
+                context.RaiseEvent (idxSrc.Name, idxSrc);
 
                 // We prioritize value if it exists after source Active Event invocation.
                 if (idxSrc.Value != null) {
@@ -431,7 +431,7 @@ namespace p5.exp
             lambda.InsertRange (0, Iterate<object> (context, eventNode).Select (ix => new Node ("_arg", ix)));
 
             // Evaluating lambda object now, by invoking [eval], which does the heavy lifting.
-            context.RaiseActiveEvent ("eval", lambda);
+            context.RaiseEvent ("eval", lambda);
 
             // Making sure we return all nodes that was created during evaluation of event back to caller, in addition to value.
             // Notice Clear invocation, since eventNode still might contain formatting parameters.

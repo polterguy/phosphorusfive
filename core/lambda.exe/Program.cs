@@ -84,7 +84,7 @@ namespace lambda_exe
                     var context = Loader.Instance.CreateApplicationContext ();
 
                     // Raising our application startup Active Event, in case there are plugins depending upon it.
-                    context.RaiseActiveEvent (".p5.core.application-start", new Node ());
+                    context.RaiseEvent (".p5.core.application-start", new Node ());
 
                     // Checking if we're in "immediate mode".
                     if (immediate) {
@@ -95,9 +95,9 @@ namespace lambda_exe
                     } else {
 
                         // Loads specified Hyperlambda file, pass in arguments, and evaluate it.
-                        var convertExeFile = context.RaiseActiveEvent ("p5.io.file.load", new Node ("", exeNode.Value)) [0];
+                        var convertExeFile = context.RaiseEvent ("p5.io.file.load", new Node ("", exeNode.Value)) [0];
                         exeNode.AddRange (convertExeFile.Children);
-                        context.RaiseActiveEvent ("eval", exeNode);
+                        context.RaiseEvent ("eval", exeNode);
                     }
                 }
             }
@@ -166,8 +166,8 @@ namespace lambda_exe
                 } else {
 
                     // Converting Hyperlambda collected above to lambda and evaluating it.
-                    Node convert = context.RaiseActiveEvent ("hyper2lambda", new Node ("", hyperlambda));
-                    context.RaiseActiveEvent ("eval", convert);
+                    Node convert = context.RaiseEvent ("hyper2lambda", new Node ("", hyperlambda));
+                    context.RaiseEvent ("eval", convert);
                     Console.WriteLine ();
                 }
             }

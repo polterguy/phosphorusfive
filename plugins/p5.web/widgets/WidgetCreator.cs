@@ -119,7 +119,7 @@ namespace p5.web.widgets
             try {
                 if (position != -1 && args ["position"] == null)
                     insertedPos = args.Add ("position", position).LastChild;
-                context.RaiseActiveEvent (".p5.web.widgets." + type, args);
+                context.RaiseEvent (".p5.web.widgets." + type, args);
 
             } finally {
 
@@ -135,7 +135,7 @@ namespace p5.web.widgets
                     // Invoking currently iterated [oninit] lambda.
                     var clone = idxInit.Clone ();
                     clone.Insert (0, new Node ("_event", idxInit.Parent.Value));
-                    context.RaiseActiveEvent ("eval", clone);
+                    context.RaiseEvent ("eval", clone);
                 }
             }
         }

@@ -46,10 +46,10 @@ namespace p5.core
         private readonly List<Assembly> _assemblies = new List<Assembly> ();
 
         // Types that have instance Active Event handlers.
-        private readonly ActiveEventTypes _instanceActiveEvents = new ActiveEventTypes();
+        private readonly HandlerTypes _instanceActiveEvents = new HandlerTypes();
 
         // Types that have static Active Event handlers.
-        private readonly ActiveEventTypes _staticActiveEvents = new ActiveEventTypes();
+        private readonly HandlerTypes _staticActiveEvents = new HandlerTypes();
 
         /*
          * Private constructor, to prevent other classes from instantiating this class.
@@ -58,11 +58,12 @@ namespace p5.core
         { }
 
         /// <summary>
-        ///     Creates a new ApplicationContext for you.
+        ///     Creates a new ApplicationContext.
         /// 
         ///     This is the only way to actually create an ApplicationContext, which again is used for raising Active Events.
         /// </summary>
         /// <returns>The newly created context</returns>
+        /// <param name="ticket">The ticket to use for the context created, if any</param>
         public ApplicationContext CreateApplicationContext (ContextTicket ticket = null)
         {
             return new ApplicationContext (_instanceActiveEvents, _staticActiveEvents, ticket);
@@ -189,8 +190,9 @@ namespace p5.core
         ///     Unregister the specified assembly.
         /// 
         ///     No types in assembly will be able to handle Active Events after you've invoked this method.
+        ///     Notice, this method will unregister all types from the assembly where the type is declared.
         /// </summary>
-        /// <param name="assembly">Assembly to unregister</param>
+        /// <param name="type">Type from assembly you wish to unregister</param>
         public void UnregisterAssembly (Type type)
         {
             UnregisterAssembly (type.Assembly);
@@ -215,10 +217,10 @@ namespace p5.core
             foreach (var idxType in assembly.GetTypes ()) {
 
                 // Removing type from instance Active Events list.
-                _instanceActiveEvents.RemoveType (idxType);
+                _instanceActiveEvents.DeleteType (idxType);
 
                 // Removing type from static Active Events list.
-                _staticActiveEvents.RemoveType (idxType);
+                _staticActiveEvents.DeleteType (idxType);
             }
         }
 
@@ -255,7 +257,7 @@ namespace p5.core
          * Loops through all MethodInfo objects given, and adds them to the associated dictionary with type as key, 
          * if they have ActiveEventAttribute declared, once or more.
          */
-        private void AddActiveEventsForType (Type type, MethodInfo[] methods, ActiveEventTypes activeEventTypes)
+        private void AddActiveEventsForType (Type type, MethodInfo[] methods, HandlerTypes activeEventTypes)
         {
             // Looping through all MethodInfos from type we currently are iterating.
             foreach (var idxMethod in methods) {
@@ -272,7 +274,7 @@ namespace p5.core
                     foreach (var idxAtr in atrs) {
 
                         // Adding currently iterated Active Event attribute
-                        activeEventTypes.AddActiveEvent (type, idxAtr, idxMethod);
+                        activeEventTypes.AddActiveEvent (type, idxAtr.Name, idxMethod);
                     }
                 }
             }

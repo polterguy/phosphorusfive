@@ -114,7 +114,7 @@ namespace p5.imaging
                 var activeEventName = ".p5.imaging.transformations." + idxTransNode.Name;
                 idxTransNode.Value = bitmap;
                 try {
-                    context.RaiseActiveEvent (activeEventName, idxTransNode);
+                    context.RaiseEvent (activeEventName, idxTransNode);
                     if (idxTransNode.Value != bitmap) {
                         bitmap.Dispose ();
                         bitmap = idxTransNode.Get<Bitmap> (context);
@@ -239,8 +239,8 @@ namespace p5.imaging
          */
         private static string GetSourcePath (ApplicationContext context, Node args)
         {
-            var source = context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", args.GetExValue<string> (context))).Get<string> (context);
-            context.RaiseActiveEvent (".p5.io.authorize.read-file", new Node ("", source).Add ("args", args));
+            var source = context.RaiseEvent (".p5.io.unroll-path", new Node ("", args.GetExValue<string> (context))).Get<string> (context);
+            context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", source).Add ("args", args));
 
             // Sanity check.
             if (string.IsNullOrEmpty (source))
@@ -256,8 +256,8 @@ namespace p5.imaging
          */
         private static string GetDestinationPath (ApplicationContext context, Node args)
         {
-            var destination = context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", args.GetExChildValue<string> ("destination", context))).Get<string> (context);
-            context.RaiseActiveEvent (".p5.io.authorize.modify-file", new Node ("", destination).Add ("args", args));
+            var destination = context.RaiseEvent (".p5.io.unroll-path", new Node ("", args.GetExChildValue<string> ("destination", context))).Get<string> (context);
+            context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", destination).Add ("args", args));
 
             // Sanity check.
             if (string.IsNullOrEmpty (destination))

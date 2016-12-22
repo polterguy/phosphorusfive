@@ -40,7 +40,7 @@ namespace p5.lambda.keywords.extras
         public static void lambda_fetch (ApplicationContext context, ActiveEventArgs e)
         {
             // Evaluating [fetch] lambda block.
-            context.RaiseActiveEvent ("eval-mutable", e.Args);
+            context.RaiseEvent ("eval-mutable", e.Args);
 
             // Now we can fetch expression value, and clear body, making sure we remove formatting parameters first.
             e.Args.Value = XUtil.Single<object> (context, e.Args);

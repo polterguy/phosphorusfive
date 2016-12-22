@@ -78,7 +78,7 @@ namespace p5.io.authorization.helpers
                         context);
 
                 // Verify all database files are safe
-                if (filename.ToLower ().StartsWith (context.RaiseActiveEvent (
+                if (filename.ToLower ().StartsWith (context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.data.path"))[0].Get<string> (context, "/db/")))
                     throw new LambdaSecurityException (
@@ -142,7 +142,7 @@ namespace p5.io.authorization.helpers
 
                     // Making sure root password is not null, since during setup of server, guest needs write access to create 
                     // salt event files, etc ...
-                    if (!context.RaiseActiveEvent ("p5.auth._root-password-is-null").Get<bool> (context))
+                    if (!context.RaiseEvent ("p5.auth._root-password-is-null").Get<bool> (context))
                         throw new LambdaSecurityException (
                             string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                             stack, 
@@ -183,7 +183,7 @@ namespace p5.io.authorization.helpers
                         context);
 
                 // Verifies nobody but root account can read from database folder
-                if (foldername.StartsWith (context.RaiseActiveEvent (
+                if (foldername.StartsWith (context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.data.path"))[0].Get<string> (context, "/db/")))
                     throw new LambdaSecurityException (
@@ -217,7 +217,7 @@ namespace p5.io.authorization.helpers
                     return; // Legal
 
                 // Verifies nobody but root account can write to database folder
-                if (foldername.StartsWith (context.RaiseActiveEvent (
+                if (foldername.StartsWith (context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.data.path"))[0].Get<string> (context, "/db/")))
                     throw new LambdaSecurityException (
@@ -239,7 +239,7 @@ namespace p5.io.authorization.helpers
          */
         public static string GetAuthFile (ApplicationContext context)
         {
-            return context.RaiseActiveEvent (".p5.auth.get-auth-file").Get<string> (context);
+            return context.RaiseEvent (".p5.auth.get-auth-file").Get<string> (context);
         }
     }
 }

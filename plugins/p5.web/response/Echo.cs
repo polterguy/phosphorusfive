@@ -75,13 +75,13 @@ namespace p5.web.ui.response {
             HttpContext.Current.Response.ClearContent ();
 
             // Retrieving root node of web application
-            var rootFolder = context.RaiseActiveEvent (".p5.core.application-folder").Get<string> (context);
+            var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
 
             // Finding filename
-            var fileName = context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, e.Args))).Get<string> (context);
+            var fileName = context.RaiseEvent (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, e.Args))).Get<string> (context);
 
             // Verifying user is authorized to reading from currently iterated file
-            context.RaiseActiveEvent (".p5.io.authorize.read-file", new Node ("", fileName).Add ("args", e.Args));
+            context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", fileName).Add ("args", e.Args));
 
             // Rendering file back to client
             using (Stream fileStream = File.OpenRead (rootFolder + fileName)) {

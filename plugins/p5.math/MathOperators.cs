@@ -166,7 +166,7 @@ namespace p5.math
                     } else {
 
                         // Active Event invocation to retrieve value to use
-                        nextValue = context.RaiseActiveEvent (idxChild.Name, idxChild).Get<object> (context, 0);
+                        nextValue = context.RaiseEvent (idxChild.Name, idxChild).Get<object> (context, 0);
                     }
 
                     // Now evaluating result of above node's value with existing result, evaluating the "functor" passed

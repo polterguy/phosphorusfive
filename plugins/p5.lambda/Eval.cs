@@ -207,7 +207,7 @@ namespace p5.lambda
                 if (!current.Name.StartsWith ("_") && !current.Name.StartsWith (".") && current.Name != "") {
 
                     // Raising the given Active Event.
-                    context.RaiseActiveEvent (current.Name, current);
+                    context.RaiseEvent (current.Name, current);
 
                     // Checking if we're supposed to return from evaluation.
                     var rootChildName = lambda.Root.FirstChild?.Name;

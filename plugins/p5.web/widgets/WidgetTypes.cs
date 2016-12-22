@@ -210,7 +210,7 @@ namespace p5.web.widgets
                             throw new LambdaException ("You cannot specify [parent], [_parent], [before], [after] or [position] for a child widget", idxChild, context);
                         idxChild.Insert (0, new Node ("_parent", widget));
                         try {
-                            context.RaiseActiveEvent (".p5.web.widgets." + idxChild.Name, idxChild);
+                            context.RaiseEvent (".p5.web.widgets." + idxChild.Name, idxChild);
                         } finally {
                             idxChild ["_parent"].UnTie ();
                         }
@@ -222,7 +222,7 @@ namespace p5.web.widgets
 
                             // Making sure we store the ID for widget, since lambda event invocation will delete it after evaluation.
                             var id = idxChild.Value;
-                            context.RaiseActiveEvent (idxChild.Name, idxChild);
+                            context.RaiseEvent (idxChild.Name, idxChild);
                             if (idxChild.Children.Count != 1)
                                 throw new LambdaException ("Custom widget event did not return exactly one child value", idxChild, context);
 
@@ -239,11 +239,11 @@ namespace p5.web.widgets
                             idxChild.Insert (0, new Node ("_parent", widget));
                             try {
                                 if (idxChild ["innerValue"] != null) {
-                                    context.RaiseActiveEvent (".p5.web.widgets.literal", idxChild);
+                                    context.RaiseEvent (".p5.web.widgets.literal", idxChild);
                                 } else if (idxChild ["widgets"] != null) {
-                                    context.RaiseActiveEvent (".p5.web.widgets.container", idxChild);
+                                    context.RaiseEvent (".p5.web.widgets.container", idxChild);
                                 } else {
-                                    context.RaiseActiveEvent (".p5.web.widgets.void", idxChild);
+                                    context.RaiseEvent (".p5.web.widgets.void", idxChild);
                                 }
                             } finally {
                                 idxChild ["_parent"].UnTie ();

@@ -94,13 +94,13 @@ namespace p5.web.ui.request {
             var filename = e.Args.GetExValue<string> (context);
 
             // Making sure we transform filename into actual filename in case it uses our "~" logic.
-            filename = context.RaiseActiveEvent (".p5.io.unroll-path", new Node ("", filename)).Get<string> (context);
+            filename = context.RaiseEvent (".p5.io.unroll-path", new Node ("", filename)).Get<string> (context);
 
             // Verifying user is authorized writing to the file.
-            context.RaiseActiveEvent (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
+            context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
 
             // Retrieving root path for web application.
-            var rootFolder = context.RaiseActiveEvent (".p5.core.application-folder").Get<string> (context);
+            var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
 
             // Creating a file stream, copying the request stream to our filestream.
             using (FileStream fs = File.Create (rootFolder + filename)) {

@@ -74,7 +74,7 @@ namespace p5.lambda.keywords.core
             lambda.Insert (0, new Node ("_dp", dp));
 
             // Evaluating (mutably) [for-each] lambda object, such that loop has access to entire tree.
-            context.RaiseActiveEvent ("eval-mutable", lambda);
+            context.RaiseEvent ("eval-mutable", lambda);
 
             // Checking if we have some sort of stop condition.
             var stopNode = lambda.Root.FirstChild;

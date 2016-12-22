@@ -43,7 +43,7 @@ namespace p5.flickrnet
 
                 // Instantiating Flickr.NET and doing search, supplying tags user wants to see
                 Flickr flickr = new Flickr ();
-                flickr.ApiKey = context.RaiseActiveEvent (
+                flickr.ApiKey = context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.flickr.api-key"))[0].Get<string> (context);
                 var options = new PhotoSearchOptions { 
