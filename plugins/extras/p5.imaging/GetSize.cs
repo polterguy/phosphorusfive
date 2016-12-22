@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -48,7 +48,7 @@ namespace p5.imaging
         public static void p5_imaging_get_size (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Looping through each image caller requests the size for.
                 foreach (var idxPath in XUtil.Iterate<string> (context, e.Args)) {

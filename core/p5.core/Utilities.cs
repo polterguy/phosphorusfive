@@ -36,97 +36,114 @@ namespace p5.core
     public static class Utilities
     {
         /// <summary>
-        ///     Helper to remove all arguments passed into active events after invocation.
-        /// 
-        ///     Wrap instance of class inside a "using" statement, to have automatic and deterministic removal of arguments of specified 
-        ///     Node instance.
-        /// </summary>
-        public class ArgsRemover : IDisposable
-        {
-            private List<Node> _nodes;
-            private Node _args = null;
-
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="Utilities+ArgsRemover"/> class.
-            /// </summary>
-            /// <param name="args">Arguments.</param>
-            /// <param name="removeValue">If set to <c>true</c> removes value</param>
-            public ArgsRemover (Node args, bool removeValue = false)
-            {
-                // Storing original children, such that we can remove them when instance is disposed.
-                _nodes = new List<Node> (args.Children);
-
-                // If we should also remove value of node, we keep a reference to node such that Dispose understands it should also remove value.
-                if (removeValue)
-                    _args = args;
-            }
-
-            /*
-             * Private implementation.
-             */
-            void IDisposable.Dispose ()
-            {
-                foreach (var idx in _nodes) {
-                    idx.UnTie ();
-                }
-                if (_args != null)
-                    _args.Value = null;
-            }
-        }
-
-        /// <summary>
         ///     Converts the given object "value" to type T.
         /// </summary>
         /// <param name="value">Value to convert</param>
-        /// <param name="context">Application context Needed since it might potentially have to raise "conversion Active Events" to convert your value</param>
-        /// <param name="defaultValue">Default value to return, if no conversion is possible</param>
-        /// <param name="encode">If true, then the value will be encoded as base64, if necessary, and value is byte[]</param>
+        /// <param name="context">Application context</param>
+        /// <param name="defaultValue">Default value to return, if no conversion is possible, or value is null</param>
         /// <typeparam name="T">Type to convert your value to</typeparam>
-        public static T Convert<T> (
-            ApplicationContext context,
-            object value,
-            T defaultValue = default (T),
-            bool encode = false)
+        /// <returns>Converted value, or defaultValue if no conversion is possible</returns>
+        public static T Convert<T> (ApplicationContext context, object value, T defaultValue = default (T))
         {
-            // Checking if value is null
+            // Checking if value is null.
             if (value == null)
                 return defaultValue;
 
-            // Checking to see if conversion is even necessary
+            // Checking to see if conversion is even necessary.
             if (value is T)
                 return (T) value;
 
-            // Trying installed converters from ApplicationContext
-            if (typeof(T) == typeof(string)) {
-
-                // Converting from object, to string
-                var retVal = Convert2String(value, context, encode);
-                if (retVal != null)
-                    return (T)(object)retVal;
-            } else if (value.GetType() == typeof(string) || typeof(T) == typeof(byte[])) {
-
-                // Converting from string to object
-                var retVal = Convert2Object<T>(value, context);
-                if (retVal != null && !retVal.Equals(default (T)))
-                    return retVal;
-            } else if (typeof(T) == typeof(Node)) {
-
-                // Converting to Node somehow, and value is NOT string, creating string out of value first
-                return (T)(object)Convert<Node>(context, Convert<string>(context, value), defaultValue as Node).FirstChild.UnTie();
-            }
-
-            // Checking if type is IConvertible
-            if (value is IConvertible)
-                return (T) System.Convert.ChangeType (value, typeof (T), CultureInfo.InvariantCulture);
-
-            // Stuff like for instance Guids don't implement IConvertible, but still return sane values, if we
-            // first do ToString on them, for then to cast them to object, for then to cast object to T, if the caller
-            // is requesting to have them returned as string
+            // Then checking if we're doing a "ToString" conversion.
             if (typeof (T) == typeof (string))
-                return (T) (object) value.ToString ();
+                return Convert (context, Convert2String (context, value), defaultValue);
 
-            // Conversion is not possible!
-            return defaultValue;
+            // Then the "whatever case".
+            return Convert2Object (value, context, defaultValue);
+        }
+
+        /// <summary>
+        ///     Converts the specified value to a string using conversion Active Events.
+        /// </summary>
+        /// <param name="value">Value to convert</param>
+        /// <param name="context">ApplicationContext to convert within</param>
+        /// <param name="defaultValue">Default string to return, if no conversion is possible, or value is null</param>
+        /// <returns>The converted object as a string</returns>
+        public static string Convert2String (ApplicationContext context, object value, string defaultValue = null)
+        {
+            // Sanity check.
+            if (value == null)
+                return defaultValue;
+
+            // Checking if conversion is even necessary.
+            if (value is string)
+                return (string)value;
+
+            // Then the "whatever case".
+            Node node = new Node ("", value);
+
+            // Notice, if Active Event conversion yields null, we invoke "System.Convert.ToString" as a failsafe default, which means Active Event conversions
+            // does not need to be implemented for types where this method yields something sane, such as integers, Guids, floats, etc ...
+            return context.RaiseEvent (".p5.hyperlambda.get-string-value." + value.GetType ().FullName, node).Value as string ?? System.Convert.ToString (value);
+        }
+
+        /// <summary>
+        ///     Base64 encodes the given value.
+        /// </summary>
+        /// <returns>The encoded array</returns>
+        /// <param name="context">Context to perform conversion from within</param>
+        /// <param name="value">What to base64 encode</param>
+        public static string Base64Encode (ApplicationContext context, byte [] value)
+        {
+            // Sanity check.
+            if (value == null)
+                return null;
+
+            // Invoking conversion Active Event with "encode" set to true.
+            Node node = new Node ("", value);
+            node.Add ("encode", true);
+
+            // Notice, if Active Event conversion yields null, we invoke "System.Convert.ToString" as a failsafe default, which means Active Event conversions
+            // does not need to be implemented for types where this method yields something sane, such as integers, Guids, floats, etc ...
+            return context.RaiseEvent (".p5.hyperlambda.get-string-value.System.Byte[]", node).Value as string;
+        }
+
+        /// <summary>
+        ///     Converts the specified value to an object of type T using conversion Active Events.
+        /// </summary>
+        /// <param name="value">Value to convert</param>
+        /// <param name="context">Context to convert within</param>
+        /// <param name="defaultValue">Default value to return if no conversion is possible</param>
+        /// <typeparam name="T">The type to convert object to</typeparam>
+        /// <returns>The value converted to type T</returns>
+        public static T Convert2Object<T> (object value, ApplicationContext context, T defaultValue = default (T))
+        {
+            // Sanity check, before we attempt conversion.
+            if (value == null || value.Equals (default (T)))
+                return defaultValue;
+
+            // Checking if conversion is even necessary.
+            if (value is T)
+                return (T)value;
+
+            // Retrieving type name for object type, such that we can figure out which Active Event to use for conversion.
+            var typeName = context.RaiseEvent (".p5.hyperlambda.get-type-name." + typeof (T).FullName).Value as string;
+
+            // Checking if we have a native typename installed in context, and if not, using IConvertible if possible, resorting to defaultValue if not.
+            if (typeName == null)
+                return value is IConvertible ? (T)System.Convert.ChangeType (value, typeof (T)) : defaultValue;
+
+            // This is a native Phosphorus Five type, attempting to convert it to the specified type.
+            var retVal = context.RaiseEvent (".p5.hyperlambda.get-object-value." + typeName, new Node ("", value)).Value ?? defaultValue;
+
+            // If above invocation was not successful, we try IConvertible for object.
+            if (retVal == null || retVal.Equals (default (T))) {
+                if (value is IConvertible)
+                    return (T)System.Convert.ChangeType (value, typeof (T), CultureInfo.InvariantCulture);
+
+                // No conversion possible, yielding defaultValue specified by caller.
+                return defaultValue;
+            }
+            return (T)retVal;
         }
 
         /// <summary>
@@ -243,49 +260,6 @@ namespace p5.core
             }
             var hexNumber = System.Convert.ToInt32 (hexNumberString, 16);
             return new string ((char) hexNumber, 1);
-        }
-
-        /*
-         * Converts value to string using conversion Active Events
-         */
-        private static string Convert2String (object value, ApplicationContext context, bool encode)
-        {
-            var nodes = value as IEnumerable<Node>;
-            if (nodes != null) {
-                var builder = new StringBuilder ();
-                var first = true;
-                foreach (var idx in nodes) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        builder.Append ("\r\n");
-                    }
-                    builder.Append (context.RaiseEvent (
-                        ".p5.hyperlambda.get-string-value." +
-                        idx.GetType ().FullName, new Node ("", idx)).Value);
-                }
-                return builder.ToString ();
-            }
-            Node node = new Node ("", value);
-            if (encode && value is byte[])
-                node.Add ("encode", true);
-            return context.RaiseEvent (
-                ".p5.hyperlambda.get-string-value." +
-                value.GetType ().FullName, node).Value as string;
-        }
-
-        /*
-         * Converts string to object using conversion Active Events
-         */
-        private static T Convert2Object<T> (object value, ApplicationContext context, T defaultValue = default (T))
-        {
-            var typeName = context.RaiseEvent (
-                ".p5.hyperlambda.get-type-name." + typeof (T).FullName).Get<string> (context);
-            if (typeName == null)
-                return defaultValue;
-            return context.RaiseEvent (
-                ".p5.hyperlambda.get-object-value." +
-                typeName, new Node ("", value)).Get<T> (context);
         }
     }
 }

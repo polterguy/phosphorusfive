@@ -93,7 +93,7 @@ namespace p5.http
             RenderResponseFunctor renderResponse)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (args, true)) {
+            using (new ArgsRemover (args, true)) {
 
                 // Figuring out which HTTP method to use
                 string method = args.Name.Substring (args.Name.IndexOf ("-") + 1).ToUpper ();

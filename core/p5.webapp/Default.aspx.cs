@@ -37,10 +37,10 @@ namespace p5.webapp
     {
         protected override void OnInit(EventArgs e)
         {
-            // Rewriting path to what was actually requested, such that HTML form element's action doesn't become garbage.
-            // This ensures that our HTML form element stays correct. Basically "undoing" what was done in Global.asax.cs
-            // In addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx"
-            HttpContext.Current.RewritePath ((string) HttpContext.Current.Items ["_p5_original_url"]);
+            // Rewriting path, to what was actually requested, such that HTML form element's action doesn't become garbage.
+            // This ensures that our HTML form element stays correct. Basically "undoing" what was done in Global.asax.cs.
+            // In addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx".
+            HttpContext.Current.RewritePath ((string) HttpContext.Current.Items [".p5.webapp.original-url"]);
 
             // Mapping up our Page_Load event for initial loading of web page
             Load += delegate {
@@ -51,7 +51,7 @@ namespace p5.webapp
                     // Raising our [p5.web.load-ui] Active Event, creating the node to pass in first,
                     // where the [_URL] node becomes the name of the form requested
                     var args = new Node("p5.web.load-ui");
-                    args.Add(new Node("_url", HttpContext.Current.Items["_p5_original_url"]));
+                    args.Add(new Node("_url", HttpContext.Current.Items[".p5.webapp.original-url"]));
 
                     // Invoking the Active Event that actually loads our UI, now with a [_url] node being the URL of the requested page.
                     // Making sure we do it, in such a way, that we can handle any exceptions that occurs.

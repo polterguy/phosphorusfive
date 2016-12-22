@@ -129,7 +129,7 @@ namespace p5.lambda.helpers
             } else {
 
                 // Simple string "like"
-                e.Args.Value = lhs.Contains (Utilities.Convert<string> (context, rhs, ""));
+                e.Args.Value = lhs.Contains (Utilities.Convert (context, rhs, ""));
             }
         }
 
@@ -155,7 +155,7 @@ namespace p5.lambda.helpers
             } else {
 
                 // Simple string "like"
-                e.Args.Value = !lhs.Contains (Utilities.Convert<string> (context, rhs, ""));
+                e.Args.Value = !lhs.Contains (Utilities.Convert (context, rhs, ""));
             }
         }
 

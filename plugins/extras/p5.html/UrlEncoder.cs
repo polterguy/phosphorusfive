@@ -42,7 +42,7 @@ namespace p5.html
         public static void p5_html_url_encode (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Used as return value
                 StringBuilder builder = new StringBuilder();
@@ -68,7 +68,7 @@ namespace p5.html
         public static void p5_html_url_decode (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Used as return value
                 StringBuilder builder = new StringBuilder();

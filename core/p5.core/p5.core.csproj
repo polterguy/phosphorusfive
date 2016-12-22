@@ -57,6 +57,7 @@
     <Compile Include="internals\ActiveEventMethods.cs" />
     <Compile Include="ContextTicket.cs" />
     <Compile Include="internals\ActiveEventTypes.cs" />
+    <Compile Include="ArgsRemover.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />

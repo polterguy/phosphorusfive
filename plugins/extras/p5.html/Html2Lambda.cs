@@ -46,7 +46,7 @@ namespace p5.html
         public static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Loops through all documents we're supposed to transform
                 foreach (var idxHtmlDoc in XUtil.Iterate<string> (context, e.Args)) {

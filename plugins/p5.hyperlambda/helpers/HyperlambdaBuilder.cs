@@ -121,9 +121,9 @@ namespace p5.hyperlambda.helpers
         private void AppendValue (StringBuilder builder, Node node)
         {
             if (node.Value == null)
-                return; // Nothing to append here
+                return; // Nothing to append here.
 
-            var value = Utilities.Convert<string> (_context, node.Value, null, true);
+            var value = (node.Value is byte [] ? Utilities.Base64Encode (_context, node.Value as byte []) : Utilities.Convert2String (_context, node.Value)) ?? "";
             if (value.Contains ("\n") || value.Contains ("\"")) {
                 builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
             } else if (value.Contains (":") || value.Trim () != value) {

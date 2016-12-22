@@ -58,7 +58,7 @@ namespace p5.web.widgets
                     context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Since the process of returning widget's Ajax events changes the e.Args children, we need to store the original children,
                 // to make sure we only iterate the originally requested Ajax events to caller.
@@ -131,7 +131,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_ajax_events_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Iterating through all widgets supplied by caller.
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {

@@ -19,7 +19,7 @@ Length with expression leading to string
     throw:Assert error, [p5.string.length] misbehavede
 
 
-Length with expression leading to integer
+Length with expression leading to integerg
   _data:int:12345
   p5.string.length:x:/@_data?value
   if:x:/@p5.string.length?value

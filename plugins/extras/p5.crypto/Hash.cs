@@ -42,7 +42,7 @@ namespace phosphorus.crypto
         public static void p5_crypto_hash_create_sha256 (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Retrieving value to hash as a single string
                 var whatToHash = XUtil.Single<byte[]> (context, e.Args);
@@ -73,7 +73,7 @@ namespace phosphorus.crypto
         public static void p5_crypto_hash_create_sha512 (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Retrieving value to hash as a single string
                 var whatToHash = XUtil.Single<byte[]> (context, e.Args);

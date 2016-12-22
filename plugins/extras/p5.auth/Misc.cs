@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -54,7 +54,7 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.misc.change-my-password")]
         public static void p5_auth_misc_change_my_password (ApplicationContext context, ActiveEventArgs e)
         {
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.ChangePassword (context, e.Args);
             }
         }
@@ -68,7 +68,7 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.misc.delete-my-user")]
         public static void p5_auth_misc_delete_my_user (ApplicationContext context, ActiveEventArgs e)
         {
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.DeleteMyUser (context, e.Args);
             }
         }

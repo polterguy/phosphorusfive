@@ -49,7 +49,7 @@ namespace p5.data
                 throw new LambdaException ("[p5.data.update] requires an expression leading to whatever you want to be updated in your database", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Acquiring write lock on database, and making sure we keep track of which files are changed, and how many items were affected.
                 var changed = new List<Node> ();

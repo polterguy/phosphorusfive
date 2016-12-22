@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -39,7 +39,7 @@ namespace p5.flickrnet
         public static void p5_flickr_search (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Instantiating Flickr.NET and doing search, supplying tags user wants to see
                 Flickr flickr = new Flickr ();

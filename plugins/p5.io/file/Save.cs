@@ -48,7 +48,7 @@ namespace p5.io.file
                 throw new LambdaException ("[p5.io.file.save] requires a constant or an expression leading to its path", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Getting root folder, and converting content to blob, making sure user does use [src] and not [dest] as file content.
                 var rootFolder = Common.GetRootFolder (context);

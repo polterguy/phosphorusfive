@@ -49,7 +49,7 @@ namespace p5.strings.keywords
         public static void p5_string_split (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Figuring out source value of [p5.string.split], and returning early if there is none.
                 string source = XUtil.Single<string> (context, e.Args);
@@ -165,7 +165,7 @@ namespace p5.strings.keywords
             bool trim, 
             List<object> sepObjects)
         {
-            var sepIntegers = sepObjects.Select (ix => Utilities.Convert<int> (context, ix, -1)).ToList ();
+            var sepIntegers = sepObjects.Select (ix => Utilities.Convert (context, ix, -1)).ToList ();
             sepIntegers.Sort ();
             var start = 0;
             foreach (var idx in sepIntegers) {

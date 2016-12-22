@@ -42,7 +42,7 @@ namespace p5.lambda.keywords.core
         public static void eval_x (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Looping through all destinations.
                 foreach (var idxMatch in XUtil.DestinationMatch (context, e.Args, true)) {

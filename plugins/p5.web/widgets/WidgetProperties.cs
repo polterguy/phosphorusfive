@@ -55,7 +55,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Making sure we fetch property list before we start modifying arguments.
                 var propertyList = e.Args.Children.Where (ix => ix.Name != "").ToList ();
@@ -177,7 +177,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_property_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new p5.core.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets.
                 foreach (var widget in FindWidgets<Widget> (context, e.Args)) {
@@ -213,7 +213,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_properties_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Retrieving list of properties to retrieve, before we start modifying arguments.
                 var list = e.Args.Children.Where (ix => ix.Name != "").ToList ();

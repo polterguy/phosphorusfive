@@ -57,7 +57,7 @@ namespace p5.io.common
                     context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (args)) {
+            using (new ArgsRemover (args)) {
 
                 // Retrieving destination file or folder, and root folder for app, making sure we get a [dest] node for destination.
                 var dest = Common.GetSystemPath (context, Utilities.Convert<string> (context, XUtil.Source (context, args, "src")));

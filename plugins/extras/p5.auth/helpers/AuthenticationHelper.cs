@@ -190,7 +190,7 @@ namespace p5.auth.helpers
         public static void SetServerSalt (ApplicationContext context, Node args, string salt)
         {
             AuthFile.ModifyAuthFile (context, delegate (Node node) {
-                if (node.Children.Where (ix => ix.Name == "server-salt") != null)
+                if (node.Children.Any (ix => ix.Name == "server-salt"))
                     throw new LambdaSecurityException ("Tried to change server salt after initial creation", args, context);
                 node.FindOrInsert ("server-salt").Value = salt;
             });

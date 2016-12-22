@@ -46,7 +46,7 @@ namespace p5.io.common
             ObjectIteratorDelegate functor)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (args, removeArgsValue)) {
+            using (new ArgsRemover (args, removeArgsValue)) {
 
                 // Getting root folder.
                 var rootFolder = Common.GetRootFolder (context);

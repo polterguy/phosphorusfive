@@ -54,7 +54,7 @@ namespace p5.types.types
         public static void p5_types_date_format (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up arguments afterwards
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Retrieving DateTime given, and returning formatted date accordingly, defaulting to "full date and time" format
                 DateTime date = e.Args.GetExValue<DateTime> (context);

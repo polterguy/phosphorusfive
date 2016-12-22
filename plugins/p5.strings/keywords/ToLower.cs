@@ -41,7 +41,7 @@ namespace p5.strings.keywords
         public static void p5_string_to_lower (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Returning to lowers of expression or constant.
                 e.Args.Value = XUtil.Single<string> (context, e.Args).ToLowerInvariant ();

@@ -44,7 +44,7 @@ namespace p5.strings.keywords
         public static void p5_string_join (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Retrieving separator character(s).
                 var sep = e.Args.GetExChildValue<string> ("sep", context, null);

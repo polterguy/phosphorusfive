@@ -48,7 +48,7 @@ namespace p5.data
                 throw new LambdaException ("[p5.data.delete] requires an expression as its value", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Acquiring write lock on database, and making sure we keep track of nodes that are changed,andhow many items were deleted.
                 var changed = new List<Node> ();

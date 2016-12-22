@@ -118,7 +118,7 @@ namespace p5.events
             try {
 
                 // Getting all dynamic Active Events, making sure we clean up after ourselves.
-                using (new Utilities.ArgsRemover (e.Args, true)) {
+                using (new ArgsRemover (e.Args, true)) {
                     ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context);
                 }
 

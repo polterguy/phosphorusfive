@@ -41,7 +41,7 @@ namespace p5.types
         public static void p5_types_can_convert (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Syntax checking invocation
                 if (!(e.Args.Value is Expression) || e.Args ["type"] == null)

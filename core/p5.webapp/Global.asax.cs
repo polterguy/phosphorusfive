@@ -202,7 +202,7 @@ namespace p5
                     url = "/";
 
                 // Storing original path
-                HttpContext.Current.Items ["_p5_original_url"] = url;
+                HttpContext.Current.Items [".p5.webapp.original-url"] = url;
 
                 // Rewriting path
                 HttpContext.Current.RewritePath ("~/Default.aspx");

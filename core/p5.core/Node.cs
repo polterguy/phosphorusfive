@@ -588,24 +588,17 @@ namespace p5.core
             var retVal = string.Compare (Name, rhs.Name);
             if (retVal != 0)
                 return retVal;
-            if (Value == null) {
-                if (rhs.Value != null)
-                    return -1;
-            } else if (rhs.Value == null) {
-                return 1;
-            }
 
-            // Comparing values of objects, and returning results, unless it is zero, at which case we need to traverse children, to perform
-            // a "deep comparison".
+            // Comparing values of objects, and returning results, if inequality was found.
             retVal = CompareValueObjects (Value, rhs.Value);
             if (retVal != 0)
                 return retVal;
 
-            // Doing a "deep comparison", first counting children, before iterating each node in both nodes children collection, 
-            // comparing them to each other.
-            if (_children.Count < rhs._children.Count) {
+            // Doing a "deep comparison", first counting children, checking for inequality, before iterating each node in both 
+            // children collections, comparing them to each other.
+            if (Count < rhs.Count) {
                 return -1;
-            } else if (rhs._children.Count < _children.Count) {
+            } else if (rhs.Count < Count) {
                 return 1;
             } else {
 
@@ -614,54 +607,35 @@ namespace p5.core
                 for (var idxNo = 0; idxNo < _children.Count; idxNo ++) {
 
                     // Doing comparison on currently iterated nodes.
-                    retVal = _children [idxNo].CompareTo (rhs._children [idxNo]);
+                    retVal = this [idxNo].CompareTo (rhs [idxNo]);
 
                     // If we found an inequality, we return it, otherwise we continue iteration.
                     if (retVal != 0)
                         return retVal;
                 }
             }
+
+            // Nodes are equal.
             return 0;
         }
 
-        /// <summary>
-        ///     Returns a <see cref="System.String"/> that represents the current node.
-        /// </summary>
-        /// <returns>A <see cref="System.String"/> that represents the current node</returns>
-        public override string ToString ()
-        {
-            var retVal = "";
-            if (!string.IsNullOrEmpty (Name))
-                retVal += "Name=" + Name;
-            if (Value != null)
-                retVal += ", Value=" + Value;
-            if (_children.Count > 0)
-                retVal += ", Count=" + _children.Count;
-            retVal = retVal.Trim (',', ' ');
-            return retVal;
-        }
-
-        // TODO: Check up overriding other object methods, to make sure we conform to what's supposed to be done here, according to .Net best practices.
-
         /*
-         * Does actual comparison of two non-null Node values
+         * Helper for above, does a comparison of two values.
          */
         private int CompareValueObjects (object value, object rhsValue)
         {
-            // Simple versions first, checking if both objects are null.
-            if (value == null && rhsValue == null)
-                return 0;
+            // First the simple case, checking objects for "null".
+            if (value == null)
+                return rhsValue == null ? 0 : -1;
+            else if (rhsValue == null)
+                return 1;
 
             // Second comparison, making sure Types are equal.
-            if (value.GetType () != rhsValue.GetType ()) {
-                return string.Compare(value.GetType ().ToString (), rhsValue.GetType ().ToString (), StringComparison.Ordinal);
-            }
+            if (value.GetType () != rhsValue.GetType ())
+                return string.Compare (value.GetType ().ToString (), rhsValue.GetType ().ToString (), false);
 
-            // Resorting to IComparable, if none of the above yielded any differences, assuming value implements IComparable.
-            var thisValue = value as IComparable;
-            if (thisValue == null)
-                throw new ArgumentException ("Cannot compare objects of type; '" + value.GetType () + "'");
-            return thisValue.CompareTo (rhsValue);
+            // Resorting to IComparable, if none of the above yielded any differences, assuming value argument implements IComparable.
+            return (value as IComparable).CompareTo (rhsValue);
         }
     }
 }

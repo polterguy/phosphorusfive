@@ -42,7 +42,7 @@ namespace p5.csv
         public static void p5_csv_csv2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Loops through all documents we're supposed to transform.
                 foreach (var idxCsvDoc in XUtil.Iterate<string> (context, e.Args)) {

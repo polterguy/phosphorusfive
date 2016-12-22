@@ -47,6 +47,7 @@ namespace p5.types.types
 
                     // Caller specified he wanted to decode value from base64
                     e.Args.Value = Convert.FromBase64String (e.Args.Get<string>(context));
+
                 } else {
 
                     // No decoding here, returning raw bytes through UTF8 encoding

@@ -43,7 +43,7 @@ namespace p5.html
         public static void p5_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Used as buffer when converting from lambda to HTML
                 StringBuilder builder = new StringBuilder ();

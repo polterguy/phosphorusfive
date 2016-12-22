@@ -50,7 +50,7 @@ namespace p5.data
 
             // Making sure we clean up and remove all arguments passed in after execution.
             // In case this is a select count operation though, we return the count as the value of [p5.data.select], hence we cannot remove value of e.Args.
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Acquiring read lock on database.
                 Common.Locker.EnterReadLock ();

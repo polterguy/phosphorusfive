@@ -41,7 +41,7 @@ namespace p5.csv
         public static void p5_csv_lambda2csv (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Loops through all documents we're supposed to transform, and stuffing into temporary StringBuilder.
                 var builder = new StringBuilder ();

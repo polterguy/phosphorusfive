@@ -314,7 +314,7 @@ namespace p5.exp
             GetDelegate functor)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (var argsRemover = new Utilities.ArgsRemover (args, true)) {
+            using (var argsRemover = new ArgsRemover (args, true)) {
 
                 // Iterating through each key reqquested by caller.
                 foreach (var idxKey in Iterate<string> (context, args)) {
@@ -389,7 +389,7 @@ namespace p5.exp
             IEnumerable list)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (args, true)) {
+            using (new ArgsRemover (args, true)) {
 
                 // Retrieving filters, if any.
                 var filter = new List<string> (Iterate<string> (context, args));

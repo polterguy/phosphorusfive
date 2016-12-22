@@ -50,7 +50,7 @@ namespace p5.imaging
         public static void p5_imaging_transform (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Retrieving source path.
                 string source = GetSourcePath (context, e.Args);

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -57,7 +57,7 @@ namespace p5.auth
         {
             if (context.Ticket.IsDefault || context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to retrieve existing user", e.Args, context);
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.GetUser (context, e.Args);
             }
         }

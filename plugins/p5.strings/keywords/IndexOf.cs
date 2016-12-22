@@ -49,7 +49,7 @@ namespace p5.strings.keywords
                 throw new LambdaException ("[p5.string.index-of] requires an expression or constant as its value", e.Args, context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Figuring out source value for [p5.string.index-of], and returning early if there is no source.
                 string source = XUtil.Single<string> (context, e.Args);

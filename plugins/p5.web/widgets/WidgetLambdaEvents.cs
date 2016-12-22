@@ -60,7 +60,7 @@ namespace p5.web.widgets
                     context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Since the process of returning widget's lambda events changes the e.Args children, we need to store the original children,
                 // to make sure we only iterate the originally requested lambda events to caller.
@@ -138,7 +138,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_lambda_events_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover(e.Args, true)) {
+            using (new ArgsRemover(e.Args, true)) {
 
                 // Iterating through all widgets caller specified.
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
@@ -167,7 +167,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_lambda_events_vocabulary (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up arguments after invocation.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Retrieving filter, if any.
                 var filter = new List<string> (XUtil.Iterate<string> (context, e.Args));

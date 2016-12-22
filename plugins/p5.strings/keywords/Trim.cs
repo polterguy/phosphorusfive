@@ -46,7 +46,7 @@ namespace p5.strings.keywords
         public static void p5_string_trim (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Getting trim characters, defaulting to whitespace characters.
                 var characters = e.Args.GetExChildValue ("chars", context, " \r\n\t");

@@ -42,7 +42,7 @@ namespace p5.hyperlambda
         public static void hyper2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Concatenating all Hyperlambda submitted, injecting CR/LF between each component
                 StringBuilder builder = new StringBuilder();
@@ -70,7 +70,7 @@ namespace p5.hyperlambda
         public static void lambda2hyper (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Using HyperlispBuilder to create Hyperlambda from p5 lambda
                 e.Args.Value = new HyperlambdaBuilder (

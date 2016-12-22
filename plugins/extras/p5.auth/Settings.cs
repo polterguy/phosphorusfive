@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -39,7 +39,7 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.my-settings.get")]
         public static void p5_auth_my_settings_get (ApplicationContext context, ActiveEventArgs e)
         {
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.GetSettings (context, e.Args);
             }
         }
@@ -52,7 +52,7 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.my-settings.set")]
         public static void p5_auth_my_settings_set (ApplicationContext context, ActiveEventArgs e)
         {
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.ChangeSettings (context, e.Args);
             }
         }

@@ -144,7 +144,7 @@ namespace p5.math
             CalculateFunctor functor)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (args)) {
+            using (new ArgsRemover (args)) {
 
                 // Getting lhs, or existing result
                 dynamic result = args.GetExValue<object> (context, "");

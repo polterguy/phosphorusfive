@@ -42,7 +42,7 @@ namespace phosphorus.crypto
         public static void p5_crypto_create_random (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Creating a new random number and returning to caller
                 using (RNGCryptoServiceProvider csRandomGenerator = new RNGCryptoServiceProvider ()) {

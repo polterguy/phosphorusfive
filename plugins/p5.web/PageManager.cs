@@ -185,7 +185,7 @@ namespace p5.web
         public void p5_web_get_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new core.Utilities.ArgsRemover (e.Args)) {
+            using (new core.ArgsRemover (e.Args)) {
 
                 // Returning current URL
                 e.Args.Value = AjaxPage.Request.Url.ToString();
@@ -201,7 +201,7 @@ namespace p5.web
         public void p5_web_get_location_url (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new core.Utilities.ArgsRemover (e.Args)) {
+            using (new core.ArgsRemover (e.Args)) {
 
                 // Returning current URL
                 e.Args.Value = AjaxPage.Request.Url.GetLeftPart (UriPartial.Path);
@@ -217,7 +217,7 @@ namespace p5.web
         public void p5_web_get_root_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new core.Utilities.ArgsRemover(e.Args)) {
+            using (new core.ArgsRemover(e.Args)) {
 
                 // Returning web apps root URL
                 e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart (UriPartial.Authority) + AjaxPage.ResolveUrl("~/");

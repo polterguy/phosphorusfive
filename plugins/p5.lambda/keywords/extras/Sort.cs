@@ -46,7 +46,7 @@ namespace p5.lambda.keywords.extras
         public static void lambda_sort (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning.
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Creating copy of node list to insert as result of [sort] after sorting nodes.
                 var nodeList = XUtil.Iterate<Node> (context, e.Args).Where (ix => ix.Name != "").Select (ix => ix.Clone ()).ToList ();
