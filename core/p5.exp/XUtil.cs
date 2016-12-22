@@ -199,6 +199,7 @@ namespace p5.exp
                         // If expression is of type 'count', we return 'count', possibly triggering a conversion, returning count as type T, hence only iterating once.
                         yield return Utilities.Convert<T> (context, match.Count);
                         yield break;
+
                     } else {
 
                         // Expression was anything but 'count', we return it as type T, possibly triggering a conversion.
@@ -213,22 +214,23 @@ namespace p5.exp
                 }
             } else {
 
+                // Notice, since iteration of nodes might change children collection, we need "ToList" in all the versions below.
                 if (typeof (T) == typeof (Node)) {
 
                     // Node's value is null, caller requests nodes, iterating through children of node, yielding results back to caller.
-                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
+                    foreach (var idx in evaluatedNode.Children.ToList ()) {
                         yield return Utilities.Convert<T> (context, idx);
                     }
                 } else if (typeof (T) == typeof (string)) {
 
                     // Caller requested string type of result, returning names of all children.
-                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
+                    foreach (var idx in evaluatedNode.Children.ToList ()) {
                         yield return Utilities.Convert<T> (context, idx.Name);
                     }
                 } else {
 
                     // Caller requests anything but node or string, iterating children, yielding values of children, converted to type back to caller.
-                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
+                    foreach (var idx in evaluatedNode.Children.ToList ()) {
                         yield return idx.Get<T> (context);
                     }
                 }
@@ -290,11 +292,10 @@ namespace p5.exp
 
                 // We prioritize value if it exists after source Active Event invocation.
                 if (idxSrc.Value != null) {
-                    if (idxSrc.Value is Node) {
+                    if (idxSrc.Value is Node)
                         retVal.Add (idxSrc.Value as Node);
-                    } else {
+                    else
                         retVal.AddRange (idxSrc.Get<Node> (context).Children);
-                    }
                 } else {
                     retVal.AddRange (idxSrc.Children);
                 }
@@ -453,6 +454,7 @@ namespace p5.exp
                 // Formating node first, then evaluating expression.
                 // PS, we cannot return null here, in case expression yields null
                 return Single<object> (context, evaluatedNode, dataSource) ?? "";
+
             } else {
                 return FormatNode (context, evaluatedNode, dataSource);
             }

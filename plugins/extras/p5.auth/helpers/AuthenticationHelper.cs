@@ -509,7 +509,7 @@ namespace p5.auth.helpers
         public static bool NoExistingRootAccount (ApplicationContext context)
         {
             // Retrieving password file, and making sure we lock access to file as we do
-            Node rootPwdNode = AuthFile.GetAuthFile(context)["users"]["root"];
+            Node rootPwdNode = AuthFile.GetAuthFile (context)["users"]["root"];
 
             // Returning true if root account does not exist
             return rootPwdNode == null;

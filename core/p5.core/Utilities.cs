@@ -74,9 +74,14 @@ namespace p5.core
             if (value == null)
                 return defaultValue;
 
-            // Checking if conversion is even necessary.
+            // Checking if conversion is even necessarily.
             if (value is string)
                 return (string)value;
+
+            // Special handling for IEnumerable<Node>, to make sure we are able to "hit" our conversion Active Event.
+            // This is done to make sure we only need one event handler for array types of conversions.
+            if (value is IEnumerable<Node>)
+                value = ((IEnumerable<Node>)value).ToArray ();
 
             // Notice, if Active Event conversion yields null, we invoke "System.Convert.ToString" as a failsafe default, which means Active Event conversions
             // does not need to be implemented for types where this method yields something sane, such as integers, Guids, floats, etc ...
@@ -134,18 +139,13 @@ namespace p5.core
             var retVal = context.RaiseEvent (".p5.hyperlambda.get-object-value." + typeName, new Node ("", value)).Value;
 
             // If above invocation was not successful, we try IConvertible for object.
-            if (retVal == null || retVal.Equals (default (T))) {
-                if (value is IConvertible)
-                    return (T)System.Convert.ChangeType (value, typeof (T), CultureInfo.InvariantCulture);
-
-                // No conversion possible, yielding defaultValue specified by caller.
-                return defaultValue;
-            }
+            if (retVal == null || retVal.Equals (default (T)))
+                return value is IConvertible ? (T)System.Convert.ChangeType (value, typeof (T), CultureInfo.InvariantCulture) : defaultValue;
             return (T)retVal;
         }
 
         /// <summary>
-        ///     Reads a single line string literal token from specified text reader
+        ///     Reads a single line string literal from the specified text reader.
         /// </summary>
         /// <returns>The single line string literal, parsed</returns>
         /// <param name="reader">Reader to read from</param>
@@ -161,19 +161,17 @@ namespace p5.core
                         break;
                     case '\n':
                     case '\r':
-                        throw new ArgumentException (
-                            string.Format ("Syntax error in hyperlambda, single line string literal contains new line near '{0}'", builder));
+                        throw new ApplicationException (string.Format ("Syntax error, string literal unexpected CR/LF near '{0}'", builder));
                     default:
                         builder.Append ((char) c);
                         break;
                 }
             }
-            throw new ArgumentException (
-                string.Format ("Syntax error in Hyperlambda, single line string literal not closed before end of input near '{0}'", builder));
+            throw new ApplicationException (string.Format ("Syntax error, string literal not closed before end of input near '{0}'", builder));
         }
 
         /// <summary>
-        ///     Reads a multi line string literal token from specified text reader
+        ///     Reads a multi line string literal from the specified text reader.
         /// </summary>
         /// <returns>The single line string literal, parsed</returns>
         /// <param name="reader">Reader to read from</param>
@@ -183,19 +181,17 @@ namespace p5.core
             for (var c = reader.Read (); c != -1; c = reader.Read ()) {
                 switch (c) {
                     case '"':
-                        if ((char) reader.Peek () == '"') {
+                        if ((char) reader.Peek () == '"')
                             builder.Append ((char) reader.Read ());
-                        } else {
+                        else
                             return builder.ToString ();
-                        }
                         break;
                     case '\n':
                         builder.Append ("\r\n"); // Normalizing carriage return
                         break;
                     case '\r':
                         if ((char) reader.Read () != '\n')
-                            throw new ArgumentException (
-                                string.Format ("Syntax error in hyperlambda, carriage return found but no new line character in multi line string literal near '{0}'", builder.ToString ()));
+                            throw new ArgumentException (string.Format ("Unexpected CR found without any matching LF near '{0}'", builder.ToString ()));
                         builder.Append ("\r\n");
                         break;
                     default:
@@ -203,19 +199,17 @@ namespace p5.core
                         break;
                 }
             }
-            throw new ArgumentException (
-                string.Format ("Syntax error in hyperlambda, multiline string literal not closed before end of input near '{0}'", builder.ToString ()));
+            throw new ArgumentException (string.Format ("String literal not closed before end of input near '{0}'", builder.ToString ()));
         }
 
         /*
-         * appends an escape character to stringbuilder
+         * Appends an escape character intoto StringBuilder from specified StringReader.
          */
         private static string AppendEscapeCharacter (StringReader reader)
         {
-            var c = reader.Read ();
-            switch (c) {
+            switch (reader.Read ()) {
                 case -1:
-                    throw new ArgumentException ("Syntax error in hyperlambda, end of input found when looking for escape character in single line string literal");
+                    throw new ArgumentException ("End of input found when looking for escape character in single line string literal");
                 case '"':
                     return "\"";
                 case '\'':
@@ -233,31 +227,29 @@ namespace p5.core
                 case 'v':
                     return "\v";
                 case 'n':
-                    return "\r\n"; // normalizing carriage return
+                    return "\r\n"; // Normalizing carriage return
                 case 'r':
-                    // '\r' must be followed by '\n'
+                    // CR must be followed by LF.
                     if ((char) reader.Read () != '\\' || (char) reader.Read () != 'n')
-                        throw new ArgumentException ("Syntax error in hyperlambda, carriage return found, but no new line character found");
+                        throw new ArgumentException ("CR found, but no matching LF found");
                     return "\r\n";
                 case 'x':
                     return HexaCharacter (reader);
                 default:
-                    throw new ArgumentException (string.Format ("Invalid escape sequence found in hyperlambda string literal; '\\{0}'",
-                        (char) c));
+                    throw new ArgumentException ("Invalid escape sequence found in string literal");
             }
         }
 
         /*
-         * Returns a character represented as an octal character representation
+         * Returns a character represented as an octal character representation.
          */
         private static string HexaCharacter (StringReader reader)
         {
             var hexNumberString = "";
-            for (var idxNo = 0; idxNo < 4; idxNo++) {
+            for (var idxNo = 0; idxNo < 4; idxNo++)
                 hexNumberString += (char) reader.Read ();
-            }
-            var hexNumber = System.Convert.ToInt32 (hexNumberString, 16);
-            return new string ((char) hexNumber, 1);
+            var integerNo = System.Convert.ToInt32 (hexNumberString, 16);
+            return Encoding.UTF8.GetString (BitConverter.GetBytes (integerNo).Reverse ().ToArray ());
         }
     }
 }

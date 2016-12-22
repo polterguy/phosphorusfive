@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.Text;
 using p5.core;
 using p5.exp.exceptions;
 
@@ -89,6 +90,22 @@ namespace p5.types.types
             var tmp = new Node ("", e.Args.Value);
             context.RaiseEvent ("lambda2hyper", tmp);
             e.Args.Value = tmp.Value;
+        }
+
+        /// <summary>
+        ///     Creates a string from a <see cref="phosphorus.core.Node">Node</see> array.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.p5.core.Node[]")]
+        private static void p5_hyperlisp_get_string_value_p5_core_Node_array (ApplicationContext context, ActiveEventArgs e)
+        {
+            StringBuilder retVal = new StringBuilder ();
+            foreach (var idx in e.Args.Value as Node []) {
+                retVal.Append (context.RaiseEvent ("lambda2hyper", new Node ("", idx)).Value as string);
+                retVal.Append ("\r\n");
+            }
+            e.Args.Value = retVal.ToString ().TrimEnd ();
         }
 
         /// <summary>
