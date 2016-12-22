@@ -78,12 +78,10 @@ namespace p5.core
             if (value is string)
                 return (string)value;
 
-            // Then the "whatever case".
-            Node node = new Node ("", value);
-
             // Notice, if Active Event conversion yields null, we invoke "System.Convert.ToString" as a failsafe default, which means Active Event conversions
             // does not need to be implemented for types where this method yields something sane, such as integers, Guids, floats, etc ...
-            return context.RaiseEvent (".p5.hyperlambda.get-string-value." + value.GetType ().FullName, node).Value as string ?? System.Convert.ToString (value);
+            return context.RaiseEvent (".p5.hyperlambda.get-string-value." + value.GetType ().FullName, new Node ("", value)).Value as string 
+                          ?? System.Convert.ToString (value, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -130,10 +128,10 @@ namespace p5.core
 
             // Checking if we have a native typename installed in context, and if not, using IConvertible if possible, resorting to defaultValue if not.
             if (typeName == null)
-                return value is IConvertible ? (T)System.Convert.ChangeType (value, typeof (T)) : defaultValue;
+                return value is IConvertible ? (T)System.Convert.ChangeType (value, typeof (T), CultureInfo.InvariantCulture) : defaultValue;
 
             // This is a native Phosphorus Five type, attempting to convert it to the specified type.
-            var retVal = context.RaiseEvent (".p5.hyperlambda.get-object-value." + typeName, new Node ("", value)).Value ?? defaultValue;
+            var retVal = context.RaiseEvent (".p5.hyperlambda.get-object-value." + typeName, new Node ("", value)).Value;
 
             // If above invocation was not successful, we try IConvertible for object.
             if (retVal == null || retVal.Equals (default (T))) {
