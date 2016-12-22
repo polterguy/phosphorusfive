@@ -31,50 +31,43 @@ using System.Collections.Generic;
 namespace p5.core
 {
     /// <summary>
-    ///     Utility class, contains helpers for common operations
+    ///     Utility class, contains helpers for common operations.
     /// </summary>
     public static class Utilities
     {
         /// <summary>
-        ///     Helper to remove all arguments passed into active events after invocation
+        ///     Helper to remove all arguments passed into active events after invocation.
+        /// 
+        ///     Wrap instance of class inside a "using" statement, to have automatic and deterministic removal of arguments of specified 
+        ///     Node instance.
         /// </summary>
         public class ArgsRemover : IDisposable
         {
             private List<Node> _nodes;
-            private Node _args;
+            private Node _args = null;
 
             /// <summary>
-            ///     Initializes a new instance of the <see cref="p5.core.Utilities+ArgsRemover"/> class
+            ///     Initializes a new instance of the <see cref="Utilities+ArgsRemover"/> class.
             /// </summary>
             /// <param name="args">Arguments.</param>
             /// <param name="removeValue">If set to <c>true</c> removes value</param>
-            /// <param name="onlyEmptyNames">If set to <c>true</c> removes only empty names</param>
-            public ArgsRemover (Node args, bool removeValue = false, bool onlyEmptyNames = false)
+            public ArgsRemover (Node args, bool removeValue = false)
             {
-                if (onlyEmptyNames)
-                    _nodes = new List<Node> (args.Children.Where (idx => idx.Name == ""));
-                else
-                    _nodes = new List<Node> (args.Children);
+                // Storing original children, such that we can remove them when instance is disposed.
+                _nodes = new List<Node> (args.Children);
+
+                // If we should also remove value of node, we keep a reference to node such that Dispose understands it should also remove value.
                 if (removeValue)
                     _args = args;
             }
 
-            /// <summary>
-            ///     Prevents the removal of value of args node, even if object is initialized with such state
-            /// </summary>
-            public void StopRemovingArgsValue ()
-            {
-                _args = null;
-            }
-
             /*
-             * Private implementation
+             * Private implementation.
              */
             void IDisposable.Dispose ()
             {
                 foreach (var idx in _nodes) {
-                    if (idx.Parent != null)
-                        idx.UnTie();
+                    idx.UnTie ();
                 }
                 if (_args != null)
                     _args.Value = null;
@@ -82,7 +75,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Converts the given value to type T
+        ///     Converts the given object "value" to type T.
         /// </summary>
         /// <param name="value">Value to convert</param>
         /// <param name="context">Application context Needed since it might potentially have to raise "conversion Active Events" to convert your value</param>
@@ -137,19 +130,6 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Returns true if string can be converted to an integer
-        /// </summary>
-        /// <returns><c>true</c> if this instance is a whole, positive, integer number; otherwise, <c>false</c></returns>
-        /// <param name="value">String to check</param>
-        public static bool IsNumber (string value)
-        {
-            if (value.Any (idx => "0123456789".IndexOf (idx) == -1)) {
-                return false;
-            }
-            return value.Length > 0;
-        }
-
-        /// <summary>
         ///     Reads a single line string literal token from specified text reader
         /// </summary>
         /// <returns>The single line string literal, parsed</returns>
@@ -167,14 +147,14 @@ namespace p5.core
                     case '\n':
                     case '\r':
                         throw new ArgumentException (
-                            string.Format ("Syntax error in hyperlambda, single line string literal contains new line near '{0}'", builder.ToString ()));
+                            string.Format ("Syntax error in hyperlambda, single line string literal contains new line near '{0}'", builder));
                     default:
                         builder.Append ((char) c);
                         break;
                 }
             }
             throw new ArgumentException (
-                string.Format ("Syntax error in hyperlambda, single line string literal not closed before end of input near '{0}'", builder.ToString ()));
+                string.Format ("Syntax error in Hyperlambda, single line string literal not closed before end of input near '{0}'", builder));
         }
 
         /// <summary>

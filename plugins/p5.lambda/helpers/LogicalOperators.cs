@@ -112,7 +112,7 @@ namespace p5.lambda.helpers
         public static void not (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure [not] has no children.
-            if (e.Args.Children.Count > 0 || e.Args.Value != null)
+            if (e.Args.Count > 0 || e.Args.Value != null)
                 throw new LambdaException ("Logical [not] cannot have children or a value, it simply negates previous conditions", e.Args, context);
 
             // Retrieving previous node, and making sure parent has evaluated "exists" condition, if any, and doing some basical sanity check.

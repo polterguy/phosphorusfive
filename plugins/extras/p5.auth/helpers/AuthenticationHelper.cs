@@ -190,7 +190,7 @@ namespace p5.auth.helpers
         public static void SetServerSalt (ApplicationContext context, Node args, string salt)
         {
             AuthFile.ModifyAuthFile (context, delegate (Node node) {
-                if (node.Children.Find (delegate (Node ix) { return ix.Name == "server-salt"; }) != null)
+                if (node.Children.Where (ix => ix.Name == "server-salt") != null)
                     throw new LambdaSecurityException ("Tried to change server salt after initial creation", args, context);
                 node.FindOrInsert ("server-salt").Value = salt;
             });
@@ -249,7 +249,7 @@ namespace p5.auth.helpers
                     foreach (var idxNode in args.Children.Where (ix => ix.Name != "username" && ix.Name != "password" && ix.Name != "role")) {
 
                         // Only adding nodes with some sort of actual value
-                        if (idxNode.Value != null || idxNode.Children.Count > 0)
+                        if (idxNode.Value != null || idxNode.Count > 0)
                             authFile["users"].LastChild.Add (idxNode.Clone ());
                     }
                 });
@@ -353,7 +353,7 @@ namespace p5.auth.helpers
                     }
 
                     // Removing old settings
-                    authFile["users"][username].Children.RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
+                    authFile["users"][username].RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
 
                     // Adding all other specified objects to user
                     foreach (var idxNode in args.Children.Where (ix => ix.Name != "password" && ix.Name != "role")) {
@@ -394,7 +394,7 @@ namespace p5.auth.helpers
                 delegate (Node authFile) {
 
                     // Removing old settings
-                    authFile["users"][username].Children.RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
+                    authFile["users"][username].RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
 
                     // Changing all settings for user
                     foreach (var idxNode in args.Children) {

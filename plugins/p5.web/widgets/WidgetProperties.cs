@@ -141,7 +141,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_property_delete (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if caller even supplied any argument.
-            if (e.Args.Value == null || e.Args.Children.Count == 0)
+            if (e.Args.Value == null || e.Args.Count == 0)
                 return;
 
             // Looping through all widgets supplied by caller.

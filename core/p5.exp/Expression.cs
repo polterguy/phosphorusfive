@@ -374,7 +374,7 @@ namespace p5.exp
                         ElderRelativeToken (current, token);
                     } else {
 
-                        if (Utilities.IsNumber (token)) {
+                        if (IsNumber (token)) {
 
                             // Numbered child token
                             current.AddIterator (new IteratorNumberedChild (int.Parse (token)));
@@ -469,14 +469,14 @@ namespace p5.exp
             var startStr = values [0].Trim ();
             var endStr = values [1].Trim ();
             if (startStr.Length > 0) { // start index was explicitly given
-                if (!Utilities.IsNumber (startStr))
+                if (!IsNumber (startStr))
                     throw new ExpressionException (
                         Value,
                         string.Format ("Syntax error in range token '[{0}]', expected number, found string", token));
                 start = int.Parse (startStr, CultureInfo.InvariantCulture);
             }
             if (endStr.Length > 0) { // end index was explicitly given
-                if (!Utilities.IsNumber (endStr))
+                if (!IsNumber (endStr))
                     throw new ExpressionException (
                         Value,
                         string.Format ("Syntax error in range token '[{0}]', expected number, found string", token));
@@ -498,7 +498,7 @@ namespace p5.exp
             token = token.Substring (1);
 
             // Making sure we're given a number
-            if (!Utilities.IsNumber (token))
+            if (!IsNumber (token))
                 throw new ExpressionException (
                     Value,
                     string.Format ("Syntax error in modulo token '{0}', expected integer value, found string", token));
@@ -513,7 +513,7 @@ namespace p5.exp
             var intValue = token.Substring (1);
             var oper = token[0];
             var value = 1;
-            if (intValue.Length > 0 && !Utilities.IsNumber (intValue))
+            if (intValue.Length > 0 && !IsNumber (intValue))
                 throw new ExpressionException (
                     Value,
                     string.Format ("Syntax error in sibling token '{0}', expected integer value, found string", token));
@@ -556,6 +556,16 @@ namespace p5.exp
         public override int GetHashCode ()
         {
             return ToString ().GetHashCode ();
+        }
+
+        /*
+         * Returns true if string can be converted to an integer
+         */
+        private static bool IsNumber (string value)
+        {
+            if (value.Any (ix => "0123456789".IndexOf (ix) == -1))
+                return false;
+            return value.Length > 0;
         }
     }
 }

@@ -35,11 +35,11 @@ namespace p5.core
     public class ApplicationContext
     {
         // Wraps all registered Active Events for the given context.
-        private readonly ActiveEvents _registeredActiveEvents = new ActiveEvents ();
+        private readonly ActiveEventMethods _registeredActiveEvents = new ActiveEventMethods ();
 
         // Wraps all types that have instance events, not necessarily registered as events, but that might be registered later, if an
         // instance event handler is registered as a listener object.
-        private readonly HandlerTypes _instanceHandlerTypes;
+        private readonly ActiveEventTypes _instanceHandlerTypes;
 
         // The current "ticket", authorization/authentication object for the context.
         private ContextTicket _ticket;
@@ -48,7 +48,7 @@ namespace p5.core
          * Creates a new application context.
          * This must be done through the Loader class, hence the constructor is internal.
          */
-        internal ApplicationContext (HandlerTypes instanceHandlerTypes, HandlerTypes staticHandlerTypes, ContextTicket ticket)
+        internal ApplicationContext (ActiveEventTypes instanceHandlerTypes, ActiveEventTypes staticHandlerTypes, ContextTicket ticket)
         {
             _ticket = ticket;
 
@@ -191,7 +191,7 @@ namespace p5.core
         /*
          * Initializes our ApplicationContext instance.
          */
-        private void InitializeApplicationContext (HandlerTypes staticEventTypes)
+        private void InitializeApplicationContext (ActiveEventTypes staticEventTypes)
         {
             // Looping through each Type in Active Events given.
             foreach (var idxType in staticEventTypes.Keys) {

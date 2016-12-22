@@ -206,7 +206,7 @@ namespace p5.web.widgets
 
                 // Retrieving filter, if any.
                 var filter = XUtil.Iterate<string>(context, e.Args).ToList ();
-                if ((e.Args.Value != null || e.Args.Children.Count > 0) && filter.Count == 0)
+                if ((e.Args.Value != null || e.Args.Count > 0) && filter.Count == 0)
                     return; // Possibly a filter expression, leading into oblivion.
 
                 // Recursively retrieving all widgets on page, matching filter, or all widgets, if there are no filters.

@@ -155,7 +155,7 @@ namespace p5.http
                         context);
 
                 // Checking to see if this is Hyperlambda content, since we're by default setting Content-Type to application/x-hyperlambda if it is
-                bool isHyperlisp = args ["content"].Value == null && args ["content"].Children.Count > 0;
+                bool isHyperlisp = args ["content"].Value == null && args ["content"].Count > 0;
 
                 // Retrieving actual content to post or put
                 var content = GetRequestContent (context, args ["content"]);
@@ -303,7 +303,7 @@ namespace p5.http
             ApplicationContext context, 
             Node content)
         {
-            if (content.Value == null && content.Children.Count > 0) {
+            if (content.Value == null && content.Count > 0) {
 
                 // Hyperlambda content
                 return context.RaiseEvent ("lambda2hyper", content.UnTie ()).Value;

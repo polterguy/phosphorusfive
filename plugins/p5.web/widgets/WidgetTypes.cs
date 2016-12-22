@@ -223,7 +223,7 @@ namespace p5.web.widgets
                             // Making sure we store the ID for widget, since lambda event invocation will delete it after evaluation.
                             var id = idxChild.Value;
                             context.RaiseEvent (idxChild.Name, idxChild);
-                            if (idxChild.Children.Count != 1)
+                            if (idxChild.Count != 1)
                                 throw new LambdaException ("Custom widget event did not return exactly one child value", idxChild, context);
 
                             // Making sure we decorate the ID for widget automatically.

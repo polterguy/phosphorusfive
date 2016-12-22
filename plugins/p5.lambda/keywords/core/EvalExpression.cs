@@ -54,7 +54,7 @@ namespace p5.lambda.keywords.core
                         idxMatch.Node.Value = idxMatch.Node.GetExValue<object> (context, null);
 
                         // Making sure we remove all formatting parameters for clarity.
-                        idxMatch.Node.Children.RemoveAll (ix => ix.Name == "");
+                        idxMatch.Node.RemoveAll (ix => ix.Name == "");
                     } else {
 
                         // Formats value, and substitutes value with formatting result.

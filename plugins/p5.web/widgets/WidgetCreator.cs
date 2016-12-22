@@ -84,9 +84,9 @@ namespace p5.web.widgets
                 case "p5.web.widgets.create":
 
                     // Generic versions, figuring out type according to whether or not [innerValue] or [widgets] exists as arguments.
-                    if (e.Args.Children.Exists (ix => ix.Name == "innerValue"))
+                    if (e.Args.Children.Any (ix => ix.Name == "innerValue"))
                         type = "literal";
-                    else if (e.Args.Children.Exists (ix => ix.Name == "widgets"))
+                    else if (e.Args.Children.Any (ix => ix.Name == "widgets"))
                         type = "container";
                     else
                         type = "void";

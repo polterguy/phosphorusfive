@@ -48,7 +48,7 @@ namespace p5.imaging.transformations
 
             // Sanity check.
             if (e.Args["matrix"] == null || 
-                e.Args["matrix"].Children.Count != 5)
+                e.Args["matrix"].Count != 5)
                 throw new LambdaException ("[colorize] requires a [matrix] argument, with 5 children nodes, each with a comma separated value having 5 floating point values.", e.Args, context);
 
             using (Graphics g = Graphics.FromImage (destination)) {

@@ -22,6 +22,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -116,7 +117,7 @@ namespace p5.data
             } else {
 
                 // User gave us an "explicit new ID", making sure that it does not exist from before.
-                if (Common.Database.Children.Exists (ix => ix.Children.Exists (ix2 => ix2.Value.Equals (node.Value)))) {
+                if (Common.Database.Children.Any (ix => ix.Children.Any (ix2 => ix2.Value.Equals (node.Value)))) {
 
                     // Explicit new ID exists from before.
                     throw new LambdaException ("Sorry, your new node needs to have a unique ID, or use the ID it already had from before", node, context);

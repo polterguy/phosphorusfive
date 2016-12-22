@@ -32,7 +32,7 @@ namespace p5.core.internals
      * 
      * Class is basically a thin layer around a Dictionary instance, and really nothing more.
      */
-    internal class HandlerTypes
+    internal class ActiveEventTypes
     {
         // Contains the list af Active Events/Methods for each Type registered in current instance.
         private Dictionary<Type, List<Tuple<string, MethodInfo>>> _types = new Dictionary<Type, List<Tuple<string, MethodInfo>>> ();

@@ -112,7 +112,7 @@ namespace p5.lambda.helpers
         public void ExecuteCurrentScope ()
         {
             // Making sure there actually is something to evaluate.
-            if (_args.Children.Count == _conditions.Count)
+            if (_args.Count == _conditions.Count)
                 return;
 
             // Storing offset temporary in args, such that [eval-mutable] knows where to start execution.
@@ -174,7 +174,7 @@ namespace p5.lambda.helpers
             if (_args.Value == null) {
 
                 // Basic syntax checking.
-                if (_args.Children.Count == 0)
+                if (_args.Count == 0)
                     throw new LambdaException ("Nothing to use as a condition for your branching Active Event", _args, _context);
 
                 // Returning first child as Active Event condition.
@@ -188,7 +188,7 @@ namespace p5.lambda.helpers
             while (idxOperator != null) {
 
                 // Checking if currently iterated node's name is in list of operators.
-                if (!operators.Children.Exists (ix => ix.Name == idxOperator.Name))
+                if (!operators.Children.Any (ix => ix.Name == idxOperator.Name))
                     yield break; // This is not an "operator" node, stopping further iteration.
 
                 // This is a comparison/logical operator, or an empty formatting node.

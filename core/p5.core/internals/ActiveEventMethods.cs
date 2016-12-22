@@ -32,7 +32,7 @@ namespace p5.core.internals
     /*
      * Class wrapping all registered Active Events in your ApplicationContext.
      */
-    internal class ActiveEvents
+    internal class ActiveEventMethods
     {
         // Maps between an Active Event name, and its Active Event methods.
         // Each Active Event can have multiple handlers (List), and each method that handles the Active Event, optionally has an instance,

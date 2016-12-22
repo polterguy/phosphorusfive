@@ -259,7 +259,7 @@ namespace p5.exp
             context.RaiseEvent (srcNodes[0].Name, srcNodes[0]);
 
             // Sanity check
-            if (srcNodes[0].Value == null && srcNodes[0].Children.Count > 1)
+            if (srcNodes[0].Value == null && srcNodes[0].Count > 1)
                 throw new LambdaException ("Source Active Event returned multiple source", args, context);
 
             // Returning value

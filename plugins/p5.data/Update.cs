@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.Linq;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -105,7 +106,7 @@ namespace p5.data
                     } else {
 
                         // User gave us an explicit ID, making sure it is either the same, or a new unique ID.
-                        if (Common.Database.Children.Exists (ix => ix.Children.Exists (ix2 => ix2 != destination.Node && ix2.Value.Equals (newNode.Value)))) {
+                        if (Common.Database.Children.Any (ix => ix.Children.Any (ix2 => ix2 != destination.Node && ix2.Value.Equals (newNode.Value)))) {
 
                             // Explicit new ID exists from before, and it is not the node we're currently updating.
                             return false;

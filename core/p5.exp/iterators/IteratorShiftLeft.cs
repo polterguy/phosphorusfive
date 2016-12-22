@@ -22,6 +22,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using p5.core;
 
@@ -41,8 +42,8 @@ namespace p5.exp.iterators
                     yield return previous;
                 } else {
                     var idxNode = idxCurrent.Root;
-                    while (idxNode.Children.Count > 0) {
-                        idxNode = idxNode.Children [idxNode.Children.Count - 1];
+                    while (idxNode.Count > 0) {
+                        idxNode = idxNode [idxNode.Count - 1];
                     }
                     yield return idxNode;
                 }

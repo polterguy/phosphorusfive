@@ -67,7 +67,7 @@ namespace p5.lambda.keywords.core
 
                 // Finding first non-empty [case] lambda, in case of fallthrough.
                 // Notice, formatting parameters are removed at this point.
-                while (lambda != null && lambda.Children.Count == 0) {
+                while (lambda != null && lambda.Count == 0) {
                     lambda = lambda.NextSibling;
                 }
 
@@ -127,7 +127,7 @@ namespace p5.lambda.keywords.core
                 throw new LambdaException ("[default] cannot have a value", args, context);
 
             // Sanity checking that [default], if provided, is our last lambda.
-            if (args["default"] != null && args.IndexOf (args["default"]) != args.Children.Count - 1)
+            if (args["default"] != null && args.IndexOf (args["default"]) != args.Count - 1)
                 throw new LambdaException ("[default] must be the last lambda in a [switch]", args, context);
 
             // Unrolling case values, and sanity checking them, that each [case] holds a unique value, after having evaluated their values.
@@ -135,7 +135,7 @@ namespace p5.lambda.keywords.core
 
                 // Forward evaluating value of currently iterated [case], and making sure we remove any formatting parameters.
                 idx.Value = idx.GetExValue<object> (context, null);
-                idx.Children.RemoveAll (ix => ix.Name == "");
+                idx.RemoveAll (ix => ix.Name == "");
 
                 // Making sure there's only one [case] in the children collection with the given value.
                 if (args.Children.Count (ix => (ix.Value == null && idx.Value == null) || (ix.Value != null && ix.Value.Equals (idx.Value) )) > 1)
@@ -143,7 +143,7 @@ namespace p5.lambda.keywords.core
             }
 
             // More sanity check, to make sure the last [case] or [default] lambda is not empty, which would signify fallthrough into "nothing".
-            if (args.LastChild.Children.Count == 0)
+            if (args.LastChild.Count == 0)
                 throw new LambdaException ("Your last lambda in a [switch] cannot be a fallthrough lambda block", args.LastChild, context);
         }
     }

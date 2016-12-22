@@ -282,7 +282,7 @@ namespace lambda_exe
                     // User wants to enter immediate mode.
                     immediate = true;
 
-                } else if (exeNode.Children.Count == 0 || exeNode.LastChild.Value != null) {
+                } else if (exeNode.Count == 0 || exeNode.LastChild.Value != null) {
 
                     // Arbitrary argument name passed in from console.
                     exeNode.Add (new Node (idx));

@@ -53,7 +53,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_lambda_events_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
-            if (e.Args.Value == null || e.Args.Children.Count == 0)
+            if (e.Args.Value == null || e.Args.Count == 0)
                 throw new LambdaException (
                     string.Format ("[{0}] needs both a value being widget(s) to iterate, and children arguments being events to retrieve", e.Args.Name),
                     e.Args,
@@ -94,7 +94,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_lambda_events_set (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
-            if (e.Args.Value == null || e.Args.Children.Count == 0)
+            if (e.Args.Value == null || e.Args.Count == 0)
                 throw new LambdaException (
                     string.Format ("[{0}] needs both a value being widget(s) to iterate, and children arguments being events to retrieve", e.Args.Name),
                     e.Args,
@@ -111,7 +111,7 @@ namespace p5.web.widgets
                 foreach (var idxEventNameNode in e.Args.Children.Where (ix => ix.Name != "")) {
 
                     // Checking if this is actually a deletion invocation.
-                    if (idxEventNameNode.Children.Count == 0) {
+                    if (idxEventNameNode.Count == 0) {
 
                         // Deleting currently iterated lambda event for currently iterated widget.
                         Manager.WidgetLambdaEventStorage.Remove (idxEventNameNode.Name, idxWidget.ID);
@@ -152,7 +152,7 @@ namespace p5.web.widgets
                     }
 
                     // Checking if we've got more than zero events, and if so, adding event node, containing list of all lambda events for widget.
-                    if (idxRetVal.Children.Count > 0)
+                    if (idxRetVal.Count > 0)
                         e.Args.Add (idxRetVal);
                 }
             }
@@ -177,7 +177,7 @@ namespace p5.web.widgets
 
                 // Checking if there exists a whitelist, and if so, removing everything not in it.
                 if (context.Ticket.Whitelist != null)
-                    e.Args.Children.RemoveAll (ix => context.Ticket.Whitelist [ix.Get<string> (context)] == null);
+                    e.Args.RemoveAll (ix => context.Ticket.Whitelist [ix.Get<string> (context)] == null);
             }
         }
 

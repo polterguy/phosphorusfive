@@ -240,11 +240,11 @@ namespace p5.lambda
                 int offset = lambda["offset"].UnTie ().Get<int> (context);
 
                 // Checking if execution block is "empty"
-                if (offset == lambda.Children.Count)
+                if (offset == lambda.Count)
                     return null;
 
                 // Checking offset is not larger than number of children in current lambda
-                if (offset > lambda.Children.Count)
+                if (offset > lambda.Count)
                     throw new LambdaException ("[offset] was too large for lambda block, couldn't find that many children", lambda, context);
 
                 // Setting first execution statement as the offset node

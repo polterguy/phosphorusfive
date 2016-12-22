@@ -51,7 +51,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_ajax_events_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
-            if (e.Args.Value == null || e.Args.Children.Count == 0)
+            if (e.Args.Value == null || e.Args.Count == 0)
                 throw new LambdaException (
                     string.Format ("[{0}] needs both a value being widget(s) to iterate, and children arguments being events to retrieve", e.Args.Name), 
                     e.Args, 
@@ -88,7 +88,7 @@ namespace p5.web.widgets
         public void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
-            if (e.Args.Value == null || e.Args.Children.Count == 0)
+            if (e.Args.Value == null || e.Args.Count == 0)
                 throw new LambdaException (
                     string.Format ("[{0}] needs both a value being widget(s) to iterate, and children arguments being events to retrieve", e.Args.Name),                    e.Args,                    context);
 
@@ -99,7 +99,7 @@ namespace p5.web.widgets
                 foreach (var idxEventNameNode in e.Args.Children.Where (ix => ix.Name != "")) {
 
                     // Checking if we should delete existing Ajax event.
-                    if (idxEventNameNode.Children.Count == 0) {
+                    if (idxEventNameNode.Count == 0) {
 
                         // Deleting existing Ajax event.
                         Manager.WidgetAjaxEventStorage.Remove (idxWidget.ID, idxEventNameNode.Name);
@@ -149,7 +149,7 @@ namespace p5.web.widgets
                         curNode.Add ("oninit");
 
                     // Checking if we've got more than zero events for given widget, and if so, adding event node, containing list of events.
-                    if (curNode.Children.Count > 0)
+                    if (curNode.Count > 0)
                         e.Args.Add (curNode);
                 }
             }
@@ -164,7 +164,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_ajax_events_raise (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
-            if (e.Args.Value == null || e.Args.Children.Count == 0)
+            if (e.Args.Value == null || e.Args.Count == 0)
                 throw new LambdaException (
                     string.Format ("[{0}] needs both a value being widget(s) to iterate, and children arguments being events to retrieve", e.Args.Name),
                     e.Args,
