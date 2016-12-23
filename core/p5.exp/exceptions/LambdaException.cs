@@ -22,12 +22,13 @@
  */
 
 using System;
+using System.Linq;
 using p5.core;
 
 namespace p5.exp.exceptions
 {
     /// <summary>
-    ///     Exception thrown when node hierarchy contains a logical error
+    ///     Exception thrown when lambda contains a logical error.
     /// </summary>
     public class LambdaException : ApplicationException
     {
@@ -36,37 +37,43 @@ namespace p5.exp.exceptions
         private readonly int _lineNo;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LambdaException" /> class
+        ///     Initializes a new instance of the <see cref="LambdaException" /> class.
         /// </summary>
         /// <param name="message">Message for exception, describing what went wrong</param>
         /// <param name="node">Node where expression was found</param>
-        /// <param name="context">Application context Necessary to perform conversion from p5 lambda to Hyperlambda to show Hyperlambda StackTrace</param>
+        /// <param name="context">Application context</param>
+        /// <param name="innerException">InnerException</param>
         public LambdaException (string message, Node node, ApplicationContext context, Exception innerException = null)
             : base (message, innerException)
         {
-            // Need to find root to append current evaluation scope to stack trace!
+            // Need to find root node, and clone it, such that we can add currently evaluated lambda to stack trace, to provide context for user.
             _node = node.Root.Clone ();
 
-            // Figuring out which line number error node has in hierarchy
+            // Figuring out which line number error node has in hierarchy, such that we can display it later in our stack trace.
             var idxCurrent = node;
             int idxNo = 0;
-            while (idxCurrent != node.Root) {
+            while (true) {
+                var strVal = idxCurrent.Value as string;
+                if (strVal != null) {
+                    idxNo += strVal.Count (ix => ix == '\n');
+                }
+                if (idxCurrent == node.Root)
+                    break;
                 idxCurrent = idxCurrent.PreviousNode;
                 idxNo += 1;
             }
             _lineNo = idxNo + 1;
 
-            // Storing context since we need it to convert to Hyperlambda later
+            // Storing context since we need it to convert to Hyperlambda later.
             _context = context;
         }
 
         /*
-         * Overiding StackTrace from Exception class to provide "Hyperlambda stack trace" instead of default stacktrace
+         * Overiding StackTrace from Exception class to provide "Hyperlambda stack trace", instead of default stacktrace.
          */
         public override string StackTrace
         {
-            get
-            {
+            get {
                 var convert = new Node ();
                 convert.Add (_node);
                 _context.RaiseEvent ("lambda2hyper", convert);
