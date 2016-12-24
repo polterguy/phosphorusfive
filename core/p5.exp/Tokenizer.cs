@@ -52,15 +52,12 @@ namespace p5.exp
         /// <value>The tokens consisting your Expression</value>
         public IEnumerable<string> Tokens
         {
-            get
-            {
-                string previousToken = null;
+            get {
                 while (true) {
                     var token = GetNextToken ();
                     if (token == null)
                         yield break;
                     yield return token;
-                    previousToken = token;
                 }
             }
         }

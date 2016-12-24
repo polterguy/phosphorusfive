@@ -33,7 +33,7 @@ p5.events.create:sys42.widgets.codemirror-executor
    * Making sure our "Evaluate" button is wired up.
    */
   p5.web.include-javascript:@"p5._sys42_widgets_codemirror_executor = function (e) {
-    var el = p5.$((event.target || event.srcElement).id);
+    var el = p5.$((e.target || e.srcElement).id);
     el.raise('_onclick', {
       onsuccess:function(ret, evt) {
         p5['execute_output'].getDoc().setValue(ret.code);
