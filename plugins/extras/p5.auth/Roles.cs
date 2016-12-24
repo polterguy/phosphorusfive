@@ -30,7 +30,7 @@ namespace p5.auth
     /// <summary>
     ///     Class wrapping role associated Active Events.
     /// </summary>
-    internal static class Roles
+    static class Roles
     {
         /// <summary>
         ///     Returns all roles in system.

@@ -62,7 +62,7 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.Logical" /> class
+        ///     Initializes a new instance of the <see cref="Logical" /> class
         /// </summary>
         /// <param name="type">Type of logical, Or, And, Xor or Not</param>
         public Logical (LogicalType type)
@@ -71,7 +71,7 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Returns the last <see cref="phosphorus.expressions.iterators.Iterator" /> in the list of iterators belonging to this logical
+        ///     Returns the last <see cref="Iterator" /> in the list of iterators belonging to this logical
         /// </summary>
         /// <value>The last iterator in the chain of iterators</value>
         public Iterator Iterator
@@ -84,7 +84,7 @@ namespace p5.exp
         ///     Gets the type of logical
         /// </summary>
         /// <value>The type of logical</value>
-        private LogicalType TypeOfLogical
+        LogicalType TypeOfLogical
         {
             get;
             set;

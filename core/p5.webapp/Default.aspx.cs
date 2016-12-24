@@ -24,7 +24,6 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using p5.core;
 using p5.webapp.code;
 
@@ -33,7 +32,7 @@ namespace p5.webapp
     /// <summary>
     ///     Main ASP.NET web page for your phosphorus five application
     /// </summary>
-    public partial class Default : PhosphorusPage
+    public class Default : PhosphorusPage
     {
         protected override void OnInit(EventArgs e)
         {
@@ -68,7 +67,7 @@ namespace p5.webapp
 
                     // Making sure base is set for page.
                     var baseUrl = ApplicationContext.RaiseEvent ("p5.web.get-root-location").Get<string> (ApplicationContext, null);
-                    LiteralControl baseCtrl = new LiteralControl ();
+                    var baseCtrl = new LiteralControl ();
                     baseCtrl.Text = string.Format (@"<base href= ""{0}""/>", baseUrl);
                     Page.Header.Controls.Add (baseCtrl);
                 }

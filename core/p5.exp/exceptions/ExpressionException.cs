@@ -30,8 +30,8 @@ namespace p5.exp.exceptions
     /// </summary>
     public class ExpressionException : ArgumentException
     {
-        private readonly string _expression;
-        private readonly string _message;
+        readonly string _expression;
+        readonly string _message;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ExpressionException" /> class.

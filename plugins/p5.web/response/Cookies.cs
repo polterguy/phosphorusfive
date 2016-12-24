@@ -23,13 +23,9 @@
 
 using System;
 using System.Web;
-using System.Linq;
 using p5.exp;
 using p5.core;
 
-/// <summary>
-///     Main namespace for everything related to the current HTTP response
-/// </summary>
 namespace p5.web.ui.response
 {
     /// <summary>
@@ -63,7 +59,7 @@ namespace p5.web.ui.response
         /*
          * Creates a cookie from given Node and returns back to caller
          */
-        private static HttpCookie CreateCookieFromNode (Node node, ApplicationContext context, string name, object value)
+        static HttpCookie CreateCookieFromNode (Node node, ApplicationContext context, string name, object value)
         {
             // Creating cookie to send back to caller
             var retVal = new HttpCookie (name, HttpUtility.UrlEncode (Utilities.Convert<string> (context, value))) {

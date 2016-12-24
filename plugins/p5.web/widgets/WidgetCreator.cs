@@ -22,8 +22,6 @@
  */
 
 using System.Linq;
-using System.Web.UI;
-using System.Collections;
 using System.Collections.Generic;
 using p5.core;
 using p5.exp;
@@ -38,7 +36,7 @@ namespace p5.web.widgets
     public class WidgetCreator : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetCreator"/> class.
+        ///     Initializes a new instance of the <see cref="WidgetCreator"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -100,7 +98,7 @@ namespace p5.web.widgets
         /*
          * Helper method for creating widgets.
          */
-        private void CreateWidget (
+        void CreateWidget (
             ApplicationContext context, 
             Node args, 
             string type)
@@ -143,7 +141,7 @@ namespace p5.web.widgets
         /*
          * Returns the parent widget where we should create our widget, according to arguments specified.
          */
-        private Widget GetParentWidget (ApplicationContext context, Node args, out int index)
+        Widget GetParentWidget (ApplicationContext context, Node args, out int index)
         {
             if (args ["before"] != null) {
 
@@ -157,7 +155,9 @@ namespace p5.web.widgets
                 return widget.Parent as Widget;
 
 
-            } else if (args ["after"] != null) {
+            }
+
+            if (args ["after"] != null) {
 
                 // Sanity check, before returning parent widget.
                 if (args ["parent"] != null || args ["position"] != null)
@@ -168,18 +168,17 @@ namespace p5.web.widgets
                 index = widget.Parent.Controls.IndexOf (widget) + 1;
                 return widget.Parent as Widget;
 
-            } else {
-
-                // Returning [position] and [parent] widget.
-                index = args.GetExChildValue ("position", context, -1);
-                return FindControl<Widget> (args.GetExChildValue ("parent", context, "cnt"), Manager.AjaxPage);
             }
+
+            // Returning [position] and [parent] widget.
+            index = args.GetExChildValue ("position", context, -1);
+            return FindControl<Widget> (args.GetExChildValue ("parent", context, "cnt"), Manager.AjaxPage);
         }
 
         /*
          * Retrieves all [oninit] lambda events for visible widgets in hierarchy, breadth first, and returns them to caller.
          */
-        private IEnumerable<Node> GetInitLambdas (Node args, ApplicationContext context)
+        IEnumerable<Node> GetInitLambdas (Node args, ApplicationContext context)
         {
             // Checking if widget is invisible, at which point we're supposed to return early.
             if (!args.GetExChildValue ("visible", context, true))

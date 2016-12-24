@@ -22,16 +22,10 @@
  */
 
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
 using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
 using p5.imaging.helpers;
 
-/// <summary>
-///     Main namespace for handling images
-/// </summary>
 namespace p5.imaging
 {
     /// <summary>

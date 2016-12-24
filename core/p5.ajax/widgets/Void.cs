@@ -42,11 +42,11 @@ namespace p5.ajax.widgets
         /*
          * Overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control.
          */
-        public override void SetAttribute (string name, string value)
+        public override void SetAttribute (string key, string value)
         {
-            if (name == "innerValue")
+            if (key == "innerValue")
                 throw new ArgumentException ("you cannot set the 'innerValue' property of a Void widget");
-            base.SetAttribute (name, value);
+            base.SetAttribute (key, value);
         }
 
         /*
@@ -108,8 +108,7 @@ namespace p5.ajax.widgets
                 default:
                     if (elementName == "textarea")
                         throw new ArgumentException ("You cannot use the Void widget here, use the Literal widget instead", nameof (Element));
-                    else
-                        throw new ArgumentException ("You cannot use Void widget here, use the Container or the Literal widget instead", nameof (Element));
+                    throw new ArgumentException ("You cannot use Void widget here, use the Container or the Literal widget instead", nameof (Element));
             }
         }
 

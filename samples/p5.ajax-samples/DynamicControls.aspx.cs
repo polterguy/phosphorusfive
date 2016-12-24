@@ -28,18 +28,18 @@ using p5.ajax.core;
 
 namespace p5.samples
 {
-    using p5 = p5.ajax.widgets;
+    using p5 = ajax.widgets;
 
-    public partial class DynamicControls : AjaxPage
+    public class DynamicControls : AjaxPage
     {
-        private static int _next = 1;
+        static int _next = 1;
         protected p5.Container List;
         protected p5.Void Txt;
         protected p5.Void Update;
         protected p5.Container Container2;
         protected p5.Literal Literal5;
 
-        private string CurrentEdit {
+        string CurrentEdit {
             get { return ViewState["CurrentEdit"] as string; }
             set { ViewState["CurrentEdit"] = value; }
         }

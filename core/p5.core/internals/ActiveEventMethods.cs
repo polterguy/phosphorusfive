@@ -32,12 +32,12 @@ namespace p5.core.internals
     /*
      * Class wrapping all registered Active Events in your ApplicationContext.
      */
-    internal class ActiveEventMethods
+    class ActiveEventMethods
     {
         // Maps between an Active Event name, and its Active Event methods.
         // Each Active Event can have multiple handlers (List), and each method that handles the Active Event, optionally has an instance,
         // if the method is an instance method.
-        private Dictionary<string, List<Tuple<MethodInfo, object>>> _events = new Dictionary<string, List<Tuple<MethodInfo, object>>> ();
+        readonly Dictionary<string, List<Tuple<MethodInfo, object>>> _events = new Dictionary<string, List<Tuple<MethodInfo, object>>> ();
 
         /*
          * Creates an Active Event handler.

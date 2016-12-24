@@ -53,7 +53,7 @@ namespace p5.strings.keywords
                 var wrap = e.Args.GetExChildValue<string> ("wrap", context, null);
 
                 // Used as buffer
-                StringBuilder result = new StringBuilder ();
+                var result = new StringBuilder ();
 
                 // Looping through each value
                 foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {

@@ -21,8 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.Linq;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using p5.exp;
 using p5.core;

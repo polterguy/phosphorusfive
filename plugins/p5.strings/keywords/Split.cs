@@ -146,7 +146,7 @@ namespace p5.strings.keywords
             if (options == StringSplitOptions.None) {
                 bool addEmpty = false;
                 foreach (var idx in sepObjects.Select (ix => Utilities.Convert<string> (context, ix))) {
-                    if (source.EndsWith (idx)) {
+                    if (source.EndsWithEx (idx)) {
                         addEmpty = true;
                         break;
                     }

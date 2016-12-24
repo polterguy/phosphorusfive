@@ -57,7 +57,7 @@ namespace p5.lambda.keywords.core
         /*
          * Common insertion method for both of the above Active Events.
          */
-        private static void InsertNodes (ApplicationContext context, Node args, bool after)
+        static void InsertNodes (ApplicationContext context, Node args, bool after)
         {
             // Finding source nodes, and returning early if no source is given.
             var src = XUtil.Sources (context, args);

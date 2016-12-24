@@ -57,7 +57,6 @@ namespace p5.exp
         /// <param name="node">Node to evaluate</param>
         /// <param name="context">Application Context</param>
         /// <param name="defaultValue">Default value to return</param>
-        /// <param name="inject">String to inject between entities of expression</param>
         /// <typeparam name="T">The type to return the evaluated result as</typeparam>
         public static T GetExValue<T> (
             this Node node, 

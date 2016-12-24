@@ -56,36 +56,37 @@ namespace p5.ajax.widgets
         /*
          * Overridden to provide some help for retrieving value of textarea and option elements.
          */
-        public override string GetAttribute (string name)
+        public override string GetAttribute (string key)
         {
-            if (Element == "textarea" && name == "value") {
+            if (Element == "textarea" && key == "value") {
 
                 // Special treatment for textarea, to make it resemble what goes on on the client-side.
                 return innerValue;
 
-            } else if (Element == "option" && name == "value" && !HasAttribute ("value")) {
+            }
+
+            if (Element == "option" && key == "value" && !HasAttribute ("value")) {
 
                 // By default, "option" HTML elements returns their "innerValue" if they have no value attribute.
                 return innerValue;
 
-            } else {
-
-                // No need for special treatment, letting base do the heavy lifting.
-                return base.GetAttribute (name);
             }
+
+            // No need for special treatment, letting base do the heavy lifting.
+            return base.GetAttribute (key);
         }
 
         /*
          * Overridden to provide some help for setting value of textarea and option elements.
          */
-        public override void SetAttribute (string name, string value)
+        public override void SetAttribute (string key, string value)
         {
-            if (Element == "textarea" && name == "value") {
+            if (Element == "textarea" && key == "value") {
 
                 // Special treatment for textarea, to make it resemble what goes on on the client-side.
                 base.SetAttribute ("innerValue", value);
 
-            } else if (Element == "option" && name == "selected") {
+            } else if (Element == "option" && key == "selected") {
 
                 // Sanity check.
                 if (value != null && value != "selected")
@@ -100,7 +101,7 @@ namespace p5.ajax.widgets
                 foreach (Widget idxWidget in Parent.Controls) {
                     idxWidget.DeleteAttribute ("selected");
                 }
-                base.SetAttribute (name, value);
+                base.SetAttribute (key, value);
 
                 // Due to a "bug" in the way browsers handles the "selected" property on "option" elements, we need to re-render all
                 // select widgets, every time one of its "option" elements' "selected" attribute is changed.
@@ -110,7 +111,7 @@ namespace p5.ajax.widgets
             } else {
 
                 // No need for special treatment.
-                base.SetAttribute (name, value);
+                base.SetAttribute (key, value);
             }
         }
 

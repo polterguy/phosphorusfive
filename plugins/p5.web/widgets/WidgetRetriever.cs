@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
 using System.Linq;
 using System.Web.UI;
 using System.Collections.Generic;
@@ -38,7 +37,7 @@ namespace p5.web.widgets
     public class WidgetRetriever : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetRetriever"/> class.
+        ///     Initializes a new instance of the <see cref="WidgetRetriever"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -124,7 +123,7 @@ namespace p5.web.widgets
 
                 // Setting up a result node, to avoid modifying our args before entire iteration is finished.
                 // Notice, if we hadn't done this, then each match would create a new (bogus) criteria, meaning there could never be more than one match.
-                Node retVal = new Node ();
+                var retVal = new Node ();
 
                 // Iterating each starting widget.
                 foreach (var idxStartWidgetId in list) {
@@ -169,7 +168,7 @@ namespace p5.web.widgets
 
                 // Setting up a result node, to avoid modifying our args before all iteration is finished
                 // Notice, if we hadn't done this, then each match would create a new (bogus) criteria, meaning there could never be more than one match.
-                Node retVal = new Node ();
+                var retVal = new Node ();
 
                 // Iterating start widget(s) to start searching for criteria amongst ancestor widgets.
                 foreach (var idxStartWidgetId in XUtil.Iterate<string> (context, e.Args)) {
@@ -239,7 +238,7 @@ namespace p5.web.widgets
          * must have ID matching one of the specified filter(s), unless exactMatch is false, at which point the ID must simply "contain"
          * the string from one of the specified filters.
          */
-        private static void ListWidgets (
+        static void ListWidgets (
             List<string> filter, 
             Node args, 
             Control ctrl,
@@ -266,7 +265,7 @@ namespace p5.web.widgets
          * Helper to retrieve a list of widgets from a Node that serves as criteria.
          * TODO: Refactor, way too long ...!!
          */
-        private IEnumerable<Widget> FindWidgetsMatchingCriteria (
+        IEnumerable<Widget> FindWidgetsMatchingCriteria (
             Node criteria, 
             Control startControl, 
             ApplicationContext context,
@@ -417,7 +416,7 @@ namespace p5.web.widgets
 
             // Making sure we return "condensed typename" if widget type is from p5.ajax, meaning one of the standard types.
             if (ctrl is Widget)
-                typeName = typeName.Substring (typeName.LastIndexOf (".") + 1).ToLower ();
+                typeName = typeName.Substring (typeName.LastIndexOfEx (".") + 1).ToLower ();
 
             // Returning typename to caller.
             return typeName;

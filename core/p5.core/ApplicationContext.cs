@@ -35,14 +35,14 @@ namespace p5.core
     public class ApplicationContext
     {
         // Wraps all registered Active Events for the given context.
-        private readonly ActiveEventMethods _registeredActiveEvents = new ActiveEventMethods ();
+        readonly ActiveEventMethods _registeredActiveEvents = new ActiveEventMethods ();
 
         // Wraps all types that have instance events, not necessarily registered as events, but that might be registered later, if an
         // instance event handler is registered as a listener object.
-        private readonly ActiveEventTypes _instanceHandlerTypes;
+        readonly ActiveEventTypes _instanceHandlerTypes;
 
         // The current "ticket", authorization/authentication object for the context.
-        private ContextTicket _ticket;
+        ContextTicket _ticket;
 
         /*
          * Creates a new application context.
@@ -103,7 +103,7 @@ namespace p5.core
 
             // Recursively iterating the Type of the type of the object given, in its inheritance chain, 
             // until we reach a type where we know for a fact, there won't exist any handlers.
-            for (var idxType = instance.GetType (); !idxType.FullName.StartsWith ("System."); idxType = idxType.BaseType) {
+            for (var idxType = instance.GetType (); !idxType.FullName.StartsWith ("System.", StringComparison.InvariantCulture); idxType = idxType.BaseType) {
 
                 // Checking to see if this type is registered in our list of types that contains Active Events.
                 if (_instanceHandlerTypes.ContainsKey (idxType)) {
@@ -143,22 +143,21 @@ namespace p5.core
             // Notice, to not mess up internal Active Events, necessary to for instance raise pre-condition active events, and other similar
             // internal system events, we do not consider whitelist definition, if Active Event starts with a "_" or an ".", since these
             // events are anyways impossible to raise from lambda, and only C# code is able to raise them.
-            if (Ticket != null && Ticket.Whitelist != null && !activeEventName.StartsWith (".") && !activeEventName.StartsWith ("_")) {
+            if (Ticket != null && Ticket.Whitelist != null && !activeEventName.StartsWith (".", StringComparison.InvariantCulture) && !activeEventName.StartsWith ("_", StringComparison.InvariantCulture)) {
 
                 // Considering our whitelist before we raise event.
                 return RaiseWithWhitelist (activeEventName, arguments);
 
-            } else {
-
-                // No whitelist definition.
-                return _registeredActiveEvents.RaiseEvent (this, arguments, activeEventName);
             }
+
+            // No whitelist definition.
+            return _registeredActiveEvents.RaiseEvent (this, arguments, activeEventName);
         }
 
         /*
          * Raises a single Active Event, making sure it exists in our whitelist, before we allow it to be raised.
          */
-        private Node RaiseWithWhitelist (string activeEventName, Node arguments)
+        Node RaiseWithWhitelist (string activeEventName, Node arguments)
         {
             // Retrieving definition, and throwing an exception, unless Active Event is explicitly legalized in whitelist.
             var definition = Ticket.Whitelist [activeEventName];
@@ -191,7 +190,7 @@ namespace p5.core
         /*
          * Initializes our ApplicationContext instance.
          */
-        private void InitializeApplicationContext (ActiveEventTypes staticEventTypes)
+        void InitializeApplicationContext (ActiveEventTypes staticEventTypes)
         {
             // Looping through each Type in Active Events given.
             foreach (var idxType in staticEventTypes.Keys) {

@@ -99,7 +99,7 @@ namespace p5.lambda.keywords.core
         /*
          * Verifies that an [else] or [else-if] has a previous [if].
          */
-        private static void VerifyElseSyntax (Node args, ApplicationContext context)
+        static void VerifyElseSyntax (Node args, ApplicationContext context)
         {
             /*
              * Note, we are taking advantage of that [if] never verifies its syntax here, such that
@@ -119,7 +119,7 @@ namespace p5.lambda.keywords.core
         /*
          * Checks if a previous conditional statement ([if] or [else-if]) evaluated to true, and if so return true, otherwise return false.
          */
-        private static bool PreviousConditionEvaluatedTrue (Node args, ApplicationContext context)
+        static bool PreviousConditionEvaluatedTrue (Node args, ApplicationContext context)
         {
             // Looping as long as we have conditional statements as previous siblings.
             for (var ix = args.PreviousSibling; ix != null && (ix.Name == "if" || ix.Name == "else-if"); ix = ix.PreviousSibling) {

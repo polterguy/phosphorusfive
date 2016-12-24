@@ -21,9 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
 using System.Linq;
-using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 
@@ -57,9 +55,8 @@ namespace p5.lambda.keywords.extras
                     // Defaulting to sorting nodes by "value" casted to IComparable
                     nodeList.Sort (delegate(Node lhs, Node rhs) {
                         if (e.Name == "sort")
-                            return lhs.Name.CompareTo (rhs.Name);
-                        else
-                            return rhs.Name.CompareTo (lhs.Name);
+                            return string.Compare (lhs.Name, rhs.Name, System.StringComparison.InvariantCulture);
+                        return string.Compare (rhs.Name, lhs.Name, System.StringComparison.InvariantCulture);
                     });
                 } else {
 

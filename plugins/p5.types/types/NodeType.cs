@@ -33,12 +33,12 @@ namespace p5.types.types
     public static class NodeType
     {
         /// <summary>
-        ///     Creates a <see cref="phosphorus.core.Node">Node</see> list from its string representation
+        ///     Creates a <see cref="Node">Node</see> list from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.node")]
-        private static void p5_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is Node)
                 return;
@@ -49,12 +49,12 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Creates a single <see cref="phosphorus.core.Node">Node</see> from its string representation
+        ///     Creates a single <see cref="Node">Node</see> from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.abs.node")]
-        private static void p5_hyperlisp_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
         {
             var code = e.Args.Get<string> (context);
             var tmp = new Node ("", code);
@@ -80,12 +80,12 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Creates a string from a <see cref="phosphorus.core.Node">Node</see>
+        ///     Creates a string from a <see cref="Node">Node</see>
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.p5.core.Node")]
-        private static void p5_hyperlisp_get_string_value_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_string_value_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             var tmp = new Node ("", e.Args.Value);
             context.RaiseEvent ("lambda2hyper", tmp);
@@ -93,14 +93,14 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Creates a string from a <see cref="phosphorus.core.Node">Node</see> array.
+        ///     Creates a string from a <see cref="Node">Node</see> array.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.p5.core.Node[]")]
-        private static void p5_hyperlisp_get_string_value_p5_core_Node_array (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_string_value_p5_core_Node_array (ApplicationContext context, ActiveEventArgs e)
         {
-            StringBuilder retVal = new StringBuilder ();
+            var retVal = new StringBuilder ();
             foreach (var idx in e.Args.Value as Node []) {
                 retVal.Append (context.RaiseEvent ("lambda2hyper", new Node ("", idx)).Value as string);
                 retVal.Append ("\r\n");
@@ -109,12 +109,12 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Returns the Hyperlambda type-name for the <see cref="phosphorus.core.Node">Node</see> type
+        ///     Returns the Hyperlambda type-name for the <see cref="Node">Node</see> type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.p5.core.Node")]
-        private static void p5_hyperlisp_get_type_name_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_type_name_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "node";
         }

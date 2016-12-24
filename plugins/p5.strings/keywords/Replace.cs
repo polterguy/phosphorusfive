@@ -21,8 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.Text;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using p5.exp;
 using p5.core;
@@ -63,7 +61,7 @@ namespace p5.strings.keywords
                 var what = XUtil.Source (context, e.Args, "dest");
                 if (what == null)
                     throw new LambdaException ("[p5.string.replace] requires something to search for", e.Args, context);
-                else if (what is Regex)
+                if (what is Regex)
                     e.Args.Value = (what as Regex).Replace (source, with);
                 else
                     e.Args.Value = source.Replace (Utilities.Convert<string> (context, what), with);

@@ -40,22 +40,22 @@ namespace p5.exp
         {
             
             /// <summary>
-            ///     Returns <see cref="phosphorus.core.Node">count</see> themselves
+            ///     Returns <see cref="Node">count</see> themselves
             /// </summary>
             node,
 
             /// <summary>
-            ///     Returns <see cref="phosphorus.core.Node.Name">name</see> property of matched nodes
+            ///     Returns <see cref="Node.Name">name</see> property of matched nodes
             /// </summary>
             name,
 
             /// <summary>
-            ///     Returns <see cref="phosphorus.core.Node.Value">value</see> property of matched nodes
+            ///     Returns <see cref="Node.Value">value</see> property of matched nodes
             /// </summary>
             value,
 
             /// <summary>
-            ///     Returns <see cref="phosphorus.core.Node.Name">count</see> property of matched nodes
+            ///     Returns number of matched nodes
             /// </summary>
             count
         }
@@ -63,12 +63,12 @@ namespace p5.exp
         /*
          * Kept around, to allow conversion of node values
          */
-        private readonly ApplicationContext _context;
+        readonly ApplicationContext _context;
 
         /*
          * Contains all matched entities
          */
-        private readonly List<MatchEntity> _matchEntities = new List<MatchEntity> ();
+        readonly List<MatchEntity> _matchEntities = new List<MatchEntity> ();
 
         /*
          * Internal ctor, to make sure only Expression class can instantiate instances of Match class

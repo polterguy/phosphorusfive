@@ -70,7 +70,7 @@ namespace p5.lambda.keywords.extras
         /*
          * Braids the specified template with the specified source, and returns a bunch of nodes.
          */
-        private static IEnumerable<Node> BraidTemplateWithSource (
+        static IEnumerable<Node> BraidTemplateWithSource (
             ApplicationContext context,
             Node template,
             Node source)
@@ -90,20 +90,20 @@ namespace p5.lambda.keywords.extras
         /*
          * Processes a single template child node, by applying entire node, and children of node, recursively.
          */
-        private static IEnumerable<Node> ProcessTemplateItem (
+        static IEnumerable<Node> ProcessTemplateItem (
             ApplicationContext context, 
             Node child, 
             Node source)
         {
             // Checking type of template node.
-            if (child.Name.StartsWith ("{@") && child.Name.EndsWith ("}")) {
+            if (child.Name.StartsWithEx ("{@") && child.Name.EndsWithEx ("}")) {
 
                 // Event invocation.
                 foreach (var idx in ProcessEventItem (context, child, source)) {
                     yield return idx;
                 }
 
-            } else if (child.Name.StartsWith ("{") && child.Name.EndsWith ("}")) {
+            } else if (child.Name.StartsWithEx ("{") && child.Name.EndsWithEx ("}")) {
 
                 // A databound expression, which might be either a single databound value, or a sub-template definition.
                 foreach (var idx in ProcessDataItem (context, child, source)) {
@@ -116,7 +116,7 @@ namespace p5.lambda.keywords.extras
                 // Creating our default return value, making sure we support escaping node names, which among other things is necessary to
                 // support creating one [apply] from within another [apply].
                 yield return new Node (
-                    child.Name.StartsWith ("\\") ? child.Name.Substring (1) : child.Name, 
+                    child.Name.StartsWithEx ("\\") ? child.Name.Substring (1) : child.Name, 
                     child.Value, 
                     ProcessItemChildren (context, child, source));
             }
@@ -125,7 +125,7 @@ namespace p5.lambda.keywords.extras
         /*
          * Processing a single event invocation template.
          */
-        private static IEnumerable<Node> ProcessEventItem (
+        static IEnumerable<Node> ProcessEventItem (
             ApplicationContext context,
             Node template,
             Node source)
@@ -134,7 +134,7 @@ namespace p5.lambda.keywords.extras
             var name = template.Name.Substring (2, template.Name.Length - 3);
 
             // Sanity check.
-            if (name.StartsWith (".") || name.StartsWith ("_") || name == "")
+            if (name.StartsWithEx (".") || name.StartsWithEx ("_") || name == "")
                 throw new LambdaException ("[apply] tried to invoke protected event", template, context);
 
             // Keeping original node around, such that we can reset template, after invocation of Active Event.
@@ -183,7 +183,7 @@ namespace p5.lambda.keywords.extras
         /*
          * Processing a single data item, which might be a single data value, constant, null, or a sub-template.
          */
-        private static IEnumerable<Node> ProcessDataItem (ApplicationContext context, Node template, Node source)
+        static IEnumerable<Node> ProcessDataItem (ApplicationContext context, Node template, Node source)
         {
             // Retrieving node's name
             var name = template.Name.Substring (1, template.Name.Length - 2);
@@ -216,7 +216,7 @@ namespace p5.lambda.keywords.extras
         /*
          * Processing a sub-template.
          */
-        private static IEnumerable<Node> ProcessSubTemplate (ApplicationContext context, Node template, Node source)
+        static IEnumerable<Node> ProcessSubTemplate (ApplicationContext context, Node template, Node source)
         {
             // This is a sub-template, which we treat as a new template definition, evaluating its expression relatively to the current source,
             // and braids together, before returning results to caller.
@@ -232,7 +232,7 @@ namespace p5.lambda.keywords.extras
         /*
          * Process children of template items recusrsively.
          */
-        private static IEnumerable<Node> ProcessItemChildren (ApplicationContext context, Node template, Node source)
+        static IEnumerable<Node> ProcessItemChildren (ApplicationContext context, Node template, Node source)
         {
             // Looping through children of template.
             foreach (var idxTemplate in template.Children) {

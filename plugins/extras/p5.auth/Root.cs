@@ -30,7 +30,7 @@ namespace p5.auth
     /// <summary>
     ///     Class wrapping "root user" Active Events.
     /// </summary>
-    internal static class Root
+    static class Root
     {
         /// <summary>
         ///     Invoked only once, during setup of system.

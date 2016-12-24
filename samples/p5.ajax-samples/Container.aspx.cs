@@ -26,9 +26,9 @@ using p5.ajax.core;
 
 namespace p5.samples
 {
-    using p5 = p5.ajax.widgets;
+    using p5 = ajax.widgets;
 
-    public partial class Container : AjaxPage
+    public class Container : AjaxPage
     {
         // Using the same event handler for both of our literal widgets
         [WebMethod]

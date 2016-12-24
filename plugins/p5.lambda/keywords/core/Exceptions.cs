@@ -139,7 +139,7 @@ namespace p5.lambda.keywords.core
         /*
          * Sanity checks [try]/[catch]/[finally], making sure at least one of [catch] or [finally] occurs, and that their occur in the right order.
          */
-        private static void SanityCheckTry (ApplicationContext context, ActiveEventArgs e)
+        static void SanityCheckTry (ApplicationContext context, ActiveEventArgs e)
         {
             // Used to track if at least one of [catch] or [finally] have been seen.
             bool seenCatchFinally = false;

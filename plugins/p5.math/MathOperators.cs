@@ -23,7 +23,6 @@
 
 using System;
 using System.Linq;
-using System.Numerics;
 using p5.exp;
 using p5.core;
 
@@ -37,7 +36,7 @@ namespace p5.math
         /*
          * Functor for calculating single instance
          */
-        private delegate dynamic CalculateFunctor (dynamic sum, dynamic input);
+        delegate dynamic CalculateFunctor (dynamic sum, dynamic input);
 
         /// <summary>
         ///     Adds zero or more objects to another object
@@ -138,7 +137,7 @@ namespace p5.math
         /*
          * Helper method for calculations, pass in specialized delegate for math function you wish to apply
          */
-        private static void Calculate (
+        static void Calculate (
             ApplicationContext context,
             Node args,
             CalculateFunctor functor)
@@ -158,8 +157,8 @@ namespace p5.math
                     if (idxChild.Name == "_") {
 
                         // Simple value, or expression yielding value to use
-                        nextValue = idxChild.GetExValue<object> (context, (object)0);
-                    } else if (idxChild.Name.StartsWith ("_")) {
+                        nextValue = idxChild.GetExValue<object> (context, 0);
+                    } else if (idxChild.Name.StartsWithEx ("_")) {
 
                         // Possible [_dn] or other ignored node
                         continue;

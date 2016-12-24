@@ -83,7 +83,7 @@ namespace p5.data
         /*
          * Updates a single destination with the given source.
          */
-        private static bool UpdateDestination (
+        static bool UpdateDestination (
             ApplicationContext context, 
             object source, 
             exp.matchentities.MatchEntity destination)
@@ -92,7 +92,7 @@ namespace p5.data
             if (source is Node) {
 
                 // Checking if this is a "root node" update, and if so, make sure we keep the old ID, unless a new one is explicitly given.
-                Node newNode = source as Node;
+                var newNode = source as Node;
                 if (destination.Node.OffsetToRoot == 2) {
 
                     // "Root node" update, making sure node keep old ID, or if a new ID is explicitly given, make sure it is unique.

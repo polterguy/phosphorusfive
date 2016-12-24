@@ -44,7 +44,7 @@ namespace p5.imaging.transformations
         public static void _p5_imaging_transformations_colorize (ApplicationContext context, ActiveEventArgs e)
         {
             Bitmap original = e.Args.Get<Bitmap> (context);
-            Bitmap destination = new Bitmap (original.Width, original.Height);
+            var destination = new Bitmap (original.Width, original.Height);
 
             // Sanity check.
             if (e.Args["matrix"] == null || 
@@ -55,10 +55,10 @@ namespace p5.imaging.transformations
 
                 // ColorMatrix creation.
                 float[][] colors = e.Args["matrix"].Children.Select (ix => ix.GetExValue<string> (context).Split (',').Select(ix2 => float.Parse(ix2)).ToArray ()).ToArray ();
-                ColorMatrix matrix = new ColorMatrix (colors);
+                var matrix = new ColorMatrix (colors);
 
                 // Image attributes, to apply colors to blit operation.
-                ImageAttributes attrs = new ImageAttributes ();
+                var attrs = new ImageAttributes ();
                 attrs.SetColorMatrix (matrix);
 
                 // Blitting original image to destination image.

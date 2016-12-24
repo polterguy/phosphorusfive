@@ -34,12 +34,12 @@ namespace p5.ajax.core.internals
     ///     Simply puts ViewState data into session, but never more than a maximum number of objects for each session, 
     ///     which is configurable through web.config.
     /// </summary>
-    internal class StatePersister : PageStatePersister
+    class StatePersister : PageStatePersister
     {
         // Becomes the Session key for all ViewState entires for current session.
-        private const string SessionKey = ".p5.ajax.ViewState.Session-Key";
-        private readonly int _numberOfViewStateEntries;
-        private readonly Guid _viewStateId;
+        const string SessionKey = ".p5.ajax.ViewState.Session-Key";
+        readonly int _numberOfViewStateEntries;
+        readonly Guid _viewStateId;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="StatePersister"/> class.

@@ -49,10 +49,7 @@ namespace p5.io.file
                 "modify-file", 
                 delegate (string rootFolder, string source, string destination) {
                     File.Move (rootFolder + source, rootFolder + destination);
-                },
-                delegate (string destination) {
-                    return File.Exists (destination);
-                });
+                }, File.Exists);
         }
     }
 }

@@ -34,10 +34,10 @@ namespace p5.exp.iterators
     [Serializable]
     public class IteratorNamedAncestor : Iterator
     {
-        private readonly string _name;
+        readonly string _name;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamedAncestor" /> class
+        ///     Initializes a new instance of the <see cref="IteratorNamedAncestor" /> class
         /// </summary>
         /// <param name="name">name to look for</param>
         public IteratorNamedAncestor (string name)
@@ -47,7 +47,7 @@ namespace p5.exp.iterators
 
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            List<Node> retVal = new List<Node> ();
+            var retVal = new List<Node> ();
             foreach (var idxAncestor in Left.Evaluate (context).Select (idxCurrent => idxCurrent.Parent)) {
                 var curAncestor = idxAncestor;
                 while (curAncestor != null) {

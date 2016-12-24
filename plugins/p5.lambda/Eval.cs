@@ -35,11 +35,11 @@ namespace p5.lambda
     public static class Eval
     {
         // Common helper used as callback for evaluating a lambda block.
-        private delegate void ExecuteFunctor (
+        delegate void ExecuteFunctor (
             ApplicationContext context,
 
             // Lambda block to evaluate.
-            Node lambda,
+            Node lambdaObj,
 
             // Node that is currently being evaluated, might contain the lambda block as children, or have an expression leading to lambda block(s) we should evaluate.
             Node evalNode,
@@ -103,13 +103,13 @@ namespace p5.lambda
         /*
          * Worker method for [eval] and [eval-mutable].
          */
-        private static void Executor (
+        static void Executor (
             ExecuteFunctor functor, 
             ApplicationContext context, 
             Node args)
         {
             // Checking if we should foce execution of children nodes, and not evaluate expressions in main node
-            if (args.Value == null || !args.Name.StartsWith ("eval")) {
+            if (args.Value == null || !args.Name.StartsWithEx ("eval")) {
 
                 // Evaluating current scope
                 functor (context, args, args, null);
@@ -129,14 +129,14 @@ namespace p5.lambda
          * Executes a block of nodes by copying the nodes executed, and executing the copy, 
          * returning anything created inside of the block back to caller
          */
-        private static void ExecuteBlockCopy (
+        static void ExecuteBlockCopy (
             ApplicationContext context, 
-            Node lambda, 
+            Node lambdaObj, 
             Node evalNode, 
             IEnumerable<Node> args)
         {
             // Making sure lambda is executed on copy of execution nodes, without access to nodes outside of its own scope.
-            Node lambdaClone = lambda.Clone ();
+            Node lambdaClone = lambdaObj.Clone ();
 
             // Passing in arguments, in order of appearance, if there are any arguments.
             if (args != null) {
@@ -148,7 +148,7 @@ namespace p5.lambda
 
             // Storing the original nodes before execution, such that we can "diff" against nodes after execution,
             // to make it possible to return ONLY added nodes after execution
-            List<Node> originalNodes = new List<Node> (lambdaClone.Children);
+            var originalNodes = new List<Node> (lambdaClone.Children);
 
             // Actual execution of nodes
             ExecuteAll (lambdaClone, context);
@@ -167,9 +167,9 @@ namespace p5.lambda
         /*
          * Executes a block of nodes in mutable state
          */
-        private static void ExecuteBlockMutable (
+        static void ExecuteBlockMutable (
             ApplicationContext context, 
-            Node lambda, 
+            Node lambdaObj, 
             Node evalNode, 
             IEnumerable<Node> args)
         {
@@ -177,25 +177,25 @@ namespace p5.lambda
             if (args != null) {
                 var index = evalNode["offset"] != null ? evalNode.IndexOf (evalNode["offset"]) : 0;
                 foreach (var idx in args.Reverse ()) {
-                    lambda.Insert (index, idx.Clone ());
+                    lambdaObj.Insert (index, idx.Clone ());
                 }
             }
 
             // Actual execution of block
-            ExecuteAll (lambda, context);
+            ExecuteAll (lambdaObj, context);
 
             // Checking if we returned prematurely due to [return] invocation
-            if (lambda.FirstChild != null && lambda.FirstChild.Name == "_return")
-                lambda.FirstChild.UnTie ();
+            if (lambdaObj.FirstChild != null && lambdaObj.FirstChild.Name == "_return")
+                lambdaObj.FirstChild.UnTie ();
         }
 
         /*
          * Executes one execution statement
          */
-        private static void ExecuteAll (Node lambda, ApplicationContext context)
+        static void ExecuteAll (Node lambdaObj, ApplicationContext context)
         {
             // Retrieving first node to be evaluated, if any.
-            Node current = GetFirstExecutionNode (context, lambda);
+            Node current = GetFirstExecutionNode (context, lambdaObj);
 
             // Looping as long as we've got more nodes in scope.
             while (current != null) {
@@ -204,13 +204,13 @@ namespace p5.lambda
                 // to nodes starting with ".", since these are considered lambda callbacks.
                 // In addition, we don't execute nodes with no names ("", empty names), since these interfers with "null Active Event handlers".
                 // Besides, they're also exlusively used as formatting nodes anyways.
-                if (!current.Name.StartsWith ("_") && !current.Name.StartsWith (".") && current.Name != "") {
+                if (!current.Name.StartsWithEx ("_") && !current.Name.StartsWithEx (".") && current.Name != "") {
 
                     // Raising the given Active Event.
                     context.RaiseEvent (current.Name, current);
 
                     // Checking if we're supposed to return from evaluation.
-                    var rootChildName = lambda.Root.FirstChild?.Name;
+                    var rootChildName = lambdaObj.Root.FirstChild?.Name;
                     switch (rootChildName) {
                         case "_return":
                         case "_break":
@@ -229,30 +229,30 @@ namespace p5.lambda
         /*
          * Retrieves the first lambda node that should be evaluates, calculating any [offset} arguments, if there are any.
          */
-        private static Node GetFirstExecutionNode (ApplicationContext context, Node lambda)
+        static Node GetFirstExecutionNode (ApplicationContext context, Node lambdaObj)
         {
             Node retVal = null;
 
             // Checking if we have an [offset]
-            if (lambda["offset"] != null) {
+            if (lambdaObj["offset"] != null) {
 
                 // Retrieving offset
-                int offset = lambda["offset"].UnTie ().Get<int> (context);
+                int offset = lambdaObj["offset"].UnTie ().Get<int> (context);
 
                 // Checking if execution block is "empty"
-                if (offset == lambda.Count)
+                if (offset == lambdaObj.Count)
                     return null;
 
                 // Checking offset is not larger than number of children in current lambda
-                if (offset > lambda.Count)
-                    throw new LambdaException ("[offset] was too large for lambda block, couldn't find that many children", lambda, context);
+                if (offset > lambdaObj.Count)
+                    throw new LambdaException ("[offset] was too large for lambda block, couldn't find that many children", lambdaObj, context);
 
                 // Setting first execution statement as the offset node
-                retVal = lambda[offset];
+                retVal = lambdaObj[offset];
             } else {
 
                 // No [offset] given, executing everything
-                retVal = lambda.FirstChild;
+                retVal = lambdaObj.FirstChild;
             }
             return retVal;
         }

@@ -34,7 +34,7 @@ namespace p5.web.widgets.helpers
     [Serializable]
     public class WidgetEventStorage
     {
-        private Dictionary<string, List<Node>> _events = new Dictionary<string, List<Node>>();
+        readonly Dictionary<string, List<Node>> _events = new Dictionary<string, List<Node>>();
 
         /*
          * Returns all items that matches "key1".

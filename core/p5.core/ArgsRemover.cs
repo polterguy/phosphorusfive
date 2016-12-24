@@ -22,10 +22,6 @@
  */
 
 using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Globalization;
 using System.Collections.Generic;
 
 namespace p5.core
@@ -38,8 +34,8 @@ namespace p5.core
     /// </summary>
     public class ArgsRemover : IDisposable
     {
-        private List<Node> _nodes;
-        private Node _args = null;
+        readonly List<Node> _nodes;
+        readonly Node _args;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Utilities+ArgsRemover"/> class.

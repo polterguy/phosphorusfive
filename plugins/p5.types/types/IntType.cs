@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.Globalization;
 using p5.core;
 
 namespace p5.types.types
@@ -37,13 +36,11 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.int")]
-        private static void p5_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value is int) {
+            if (e.Args.Value is int)
                 return;
-            } else {
-                e.Args.Value = System.Convert.ToInt32 (e.Args.Value);
-            }
+            e.Args.Value = System.Convert.ToInt32 (e.Args.Value);
         }
 
         /// <summary>
@@ -52,7 +49,7 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.Int32")]
-        private static void p5_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "int";
         }

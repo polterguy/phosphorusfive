@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.Drawing;
 using p5.core;
 
 namespace p5.imaging.helpers
@@ -29,7 +28,7 @@ namespace p5.imaging.helpers
     /// <summary>
     ///     Class containing common methods for p5.imaging namespace
     /// </summary>
-    internal static class Helpers
+    static class Helpers
     {
         /// <summary>
         ///     Returns the root folder of application pool back to caller

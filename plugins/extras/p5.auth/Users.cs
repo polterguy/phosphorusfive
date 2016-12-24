@@ -30,7 +30,7 @@ namespace p5.auth
     /// <summary>
     ///     Class wrapping user related Active Events.
     /// </summary>
-    internal static class Users
+    static class Users
     {
         /// <summary>
         ///     Creates a new user.

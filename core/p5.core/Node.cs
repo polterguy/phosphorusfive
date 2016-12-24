@@ -33,8 +33,8 @@ namespace p5.core
     [Serializable]
     public class Node : IComparable
     {
-        private readonly List<Node> _children;
-        private string _name;
+        readonly List<Node> _children;
+        string _name;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Node"/> class.
@@ -75,7 +75,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.core.Node"/> class.
+        ///     Initializes a new instance of the <see cref="Node"/> class.
         /// </summary>
         /// <param name="name">Name of node, cannot be null</param>
         /// <param name="value">Value of node, can be any object, including null</param>
@@ -355,8 +355,7 @@ namespace p5.core
                 return retVal;
             if (index == -1)
                 return Add (new Node (name)).LastChild;
-            else
-                return Insert (index, new Node (name))[index];
+            return Insert (index, new Node (name))[index];
         }
 
         /// <summary>
@@ -598,21 +597,22 @@ namespace p5.core
             // children collections, comparing them to each other.
             if (Count < rhs.Count) {
                 return -1;
-            } else if (rhs.Count < Count) {
+            }
+
+            if (rhs.Count < Count) {
                 return 1;
-            } else {
+            }
 
-                // Both nodes have similar values, names and number of children.
-                // Hence, we need to compare one child against the other, looking for inequalities.
-                for (var idxNo = 0; idxNo < _children.Count; idxNo ++) {
+            // Both nodes have similar values, names and number of children.
+            // Hence, we need to compare one child against the other, looking for inequalities.
+            for (var idxNo = 0; idxNo < _children.Count; idxNo ++) {
 
-                    // Doing comparison on currently iterated nodes.
-                    retVal = this [idxNo].CompareTo (rhs [idxNo]);
+                // Doing comparison on currently iterated nodes.
+                retVal = this [idxNo].CompareTo (rhs [idxNo]);
 
-                    // If we found an inequality, we return it, otherwise we continue iteration.
-                    if (retVal != 0)
-                        return retVal;
-                }
+                // If we found an inequality, we return it, otherwise we continue iteration.
+                if (retVal != 0)
+                    return retVal;
             }
 
             // Nodes are equal.
@@ -622,12 +622,12 @@ namespace p5.core
         /*
          * Helper for above, does a comparison of two values.
          */
-        private int CompareValueObjects (object value, object rhsValue)
+        int CompareValueObjects (object value, object rhsValue)
         {
             // First the simple case, checking objects for "null".
             if (value == null)
                 return rhsValue == null ? 0 : -1;
-            else if (rhsValue == null)
+            if (rhsValue == null)
                 return 1;
 
             // Second comparison, making sure Types are equal.

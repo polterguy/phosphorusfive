@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -29,7 +29,7 @@ namespace p5.io.authorization
     /// <summary>
     ///     Class wrapping authorization for files in Phosphorus Five
     /// </summary>
-    internal static class Authorization
+    static class Authorization
     {
         /// <summary>
         ///     Throws an exception if user is not authorized to read the given file
@@ -37,7 +37,7 @@ namespace p5.io.authorization
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.io.authorize.read-file")]
-        private static void _p5_io_authorize_read_file (ApplicationContext context, ActiveEventArgs e)
+        static void _p5_io_authorize_read_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeReadFile (
                 context, 
@@ -51,7 +51,7 @@ namespace p5.io.authorization
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.io.authorize.modify-file")]
-        private static void _p5_io_authorize_modify_file (ApplicationContext context, ActiveEventArgs e)
+        static void _p5_io_authorize_modify_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeModifyFile (
                 context, 
@@ -65,7 +65,7 @@ namespace p5.io.authorization
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.io.authorize.read-folder")]
-        private static void _authorize_read_folder (ApplicationContext context, ActiveEventArgs e)
+        static void _authorize_read_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeReadFolder (
                 context, 
@@ -79,7 +79,7 @@ namespace p5.io.authorization
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.io.authorize.modify-folder")]
-        private static void _p5_io_authorize_modify_folder (ApplicationContext context, ActiveEventArgs e)
+        static void _p5_io_authorize_modify_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeModifyFolder (
                 context, 

@@ -26,7 +26,7 @@ namespace p5.ajax.core.internals
     /// <summary>
     ///     Class encapsulating one attribute for Ajax widgets.
     /// </summary>
-    internal class Attribute
+    class Attribute
     {
         /// <summary>
         ///     Initializes a new instance of the Attribute class.

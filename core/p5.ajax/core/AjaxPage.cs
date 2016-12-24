@@ -45,17 +45,17 @@ namespace p5.ajax.core
     {
         // Contains all changes that needs to be serialized back to client.
         // Only relevant during an Ajax request, in a normal HTTP POST/GET request, it is not in use.
-        private readonly OrderedDictionary _changes = new OrderedDictionary ();
+        readonly OrderedDictionary _changes = new OrderedDictionary ();
 
         // Responsible for persisting the ViewState for page.
-        private PageStatePersister _statePersister;
+        PageStatePersister _statePersister;
 
         // Contains the list of new JavaScript objects to include in current request.
         // If Item2 of Tuple is true, it means that it is a JavaScript file inclusion, otherwise it's an inline JavaScript content inclusion.
-        private List<Tuple<string, bool>> _javaScriptObjectsForCurrentRequest = new List<Tuple<string, bool>> ();
+        List<Tuple<string, bool>> _javaScriptObjectsForCurrentRequest = new List<Tuple<string, bool>> ();
 
         // List of new CSS files to include for the current request.
-        private List<string> _cssFileForCurrentRequest = new List<string> ();
+        List<string> _cssFileForCurrentRequest = new List<string> ();
 
         /// <summary>
         ///    Initializes a new instance of the <see cref="T:p5.ajax.core.AjaxPage"/> class.
@@ -310,12 +310,12 @@ namespace p5.ajax.core
             // Making sure our dictionary contains the main root item for sending changes to widgets back to client, before we retrieve the root node.
             if (!_changes.Contains ("__p5_change"))
                 _changes ["__p5_change"] = new Dictionary<string, Dictionary<string, object>> ();
-            var widgets = _changes ["__p5_change"] as Dictionary<string, Dictionary<string, object>>;
+            var changes = _changes ["__p5_change"] as Dictionary<string, Dictionary<string, object>>;
 
             // Making sure the main root change node contains an entry for the current widget, before retrieving the node for widget.
-            if (!widgets.ContainsKey (widgetID))
-                widgets [widgetID] = new Dictionary<string, object> ();
-            var widgetChanges = widgets [widgetID];
+            if (!changes.ContainsKey (widgetID))
+                changes [widgetID] = new Dictionary<string, object> ();
+            var widgetChanges = changes [widgetID];
 
             // Setting the value for the change, such that it can be sent to client during JSON rendering.
             widgetChanges [attributeName] = value;
@@ -329,12 +329,12 @@ namespace p5.ajax.core
             // Making sure our dictionary contains the main root item for sending changes to widgets back to client, before we retrieve the root node.
             if (!_changes.Contains ("__p5_change"))
                 _changes ["__p5_change"] = new Dictionary<string, Dictionary<string, object>> ();
-            var widgets = _changes ["__p5_change"] as Dictionary<string, Dictionary<string, object>>;
+            var changes = _changes ["__p5_change"] as Dictionary<string, Dictionary<string, object>>;
 
             // Making sure the main root change node contains an entry for the current widget, before retrieving the node for widget.
-            if (!widgets.ContainsKey (widgetID))
-                widgets [widgetID] = new Dictionary<string, object> ();
-            var widgetChanges = widgets [widgetID];
+            if (!changes.ContainsKey (widgetID))
+                changes [widgetID] = new Dictionary<string, object> ();
+            var widgetChanges = changes [widgetID];
 
             // Making sure the changes contains an entry for deleting attributes, such that we can append the specified attribute to it.
             if (!widgetChanges.ContainsKey ("_p5_del"))
@@ -359,7 +359,7 @@ namespace p5.ajax.core
          * This is normally only used when we're having a normal postback, or initial request, using e.g. the HtmlFilter for filtering our response.
          * It keeps track of all CSS files included on page, during page's entire lifetime.
          */
-        private List<Tuple<string, bool>> PersistentJSInclusions
+        List<Tuple<string, bool>> PersistentJSInclusions
         {
             get {
                 if (ViewState ["__p5_js_objects"] == null)

@@ -27,9 +27,6 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-/// <summary>
-///     Contains helper classes for p5 lambda conditional active events
-/// </summary>
 namespace p5.lambda.helpers
 {
     /// <summary>
@@ -38,10 +35,10 @@ namespace p5.lambda.helpers
     public class Condition
     {
         // Used to hold all conditional nodes for evaluation.
-        private List<Node> _conditions;
+        List<Node> _conditions;
 
-        private ApplicationContext _context;
-        private Node _args;
+        readonly ApplicationContext _context;
+        readonly Node _args;
 
         /// <summary>
         ///     Creates an instance of condition class.
@@ -57,9 +54,7 @@ namespace p5.lambda.helpers
         /// <summary>
         ///     Evaluate a conditional Active Event node, and returns either true if condition yields true, otherwise false.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
+        /// <returns>True if condition yields true</returns>
         public bool Evaluate ()
         {
             // Retrieving conditions once for each evaluation, since they might change.
@@ -107,8 +102,6 @@ namespace p5.lambda.helpers
         /// <summary>
         ///     Executes the current scope of branching.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="args"></param>
         public void ExecuteCurrentScope ()
         {
             // Making sure there actually is something to evaluate.
@@ -127,7 +120,7 @@ namespace p5.lambda.helpers
          * Will evaluate the given condition to true, if it is anything but a false boolean, null, 
          * or an expression returning anything but null or false
          */
-        private void TryEvaluateSimpleExist ()
+        void TryEvaluateSimpleExist ()
         {
             // If value is not boolean type, we evaluate value, and set its value to true, if evaluation did not result in "null" or "false".
             if (_args.Value == null) {
@@ -161,7 +154,7 @@ namespace p5.lambda.helpers
         /*
          * Returns all nodes that either comparison operators or logical operators, and hence should be evaluated
          */
-        private IEnumerable<Node> GetConditionalNodes ()
+        IEnumerable<Node> GetConditionalNodes ()
         {
             // Retrieving all comparison operators and logical operators in system.
             // Notice, this has to be done once for each condition we create, since theoretically the operators might change, due to

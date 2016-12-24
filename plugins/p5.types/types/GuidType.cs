@@ -37,7 +37,7 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.types.guid.new")]
-        private static void p5_types_guid_new (ApplicationContext context, ActiveEventArgs e)
+        static void p5_types_guid_new (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = Guid.NewGuid ();
         }
@@ -48,13 +48,12 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.guid")]
-        private static void p5_hyperlisp_get_object_value_guid (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_object_value_guid (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is Guid) {
                 return;
-            } else {
-                e.Args.Value = Guid.Parse (e.Args.Get<string> (context));
             }
+            e.Args.Value = Guid.Parse (e.Args.Get<string> (context));
         }
 
         /// <summary>
@@ -63,7 +62,7 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.Guid")]
-        private static void p5_hyperlisp_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "guid";
         }

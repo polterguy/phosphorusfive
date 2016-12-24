@@ -22,6 +22,7 @@
  */
 
 using System.Linq;
+using p5.exp;
 using p5.core;
 using p5.ajax.widgets;
 using p5.exp.exceptions;
@@ -34,7 +35,7 @@ namespace p5.web.widgets
     public class WidgetAjaxEvents : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetAjaxEvents"/> class.
+        ///     Initializes a new instance of the <see cref="WidgetAjaxEvents"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -137,8 +138,8 @@ namespace p5.web.widgets
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
                     // Then iterating through all attribute keys, filtering everything out that does not start with "on", ".on" or "_on".
-                    Node curNode = new Node (idxWidget.ID);
-                    foreach (var idxAtr in idxWidget.AttributeKeys.Where (ix => ix.StartsWith ("on") || ix.StartsWith ("_on") || ix.StartsWith (".on"))) {
+                    var curNode = new Node (idxWidget.ID);
+                    foreach (var idxAtr in idxWidget.AttributeKeys.Where (ix => ix.StartsWithEx ("on") || ix.StartsWithEx ("_on") || ix.StartsWithEx (".on"))) {
 
                         // Adding currently iterated Ajax event.
                         curNode.Add (idxAtr);

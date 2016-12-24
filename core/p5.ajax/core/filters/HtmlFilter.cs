@@ -25,7 +25,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 
 namespace p5.ajax.core.filters
 {
@@ -68,22 +67,22 @@ namespace p5.ajax.core.filters
         /*
          * Removes the __VIEWSTATE input element, in adddition to its "aspNetHidden" wrapper div, if it exists.
          */
-        private string RemoveViewState (string html)
+        string RemoveViewState (string html)
         {
             // Setting up a stringbuilder to create our return value, being HTML without ViewState wrapper div.
-            StringBuilder buffer = new StringBuilder ();
+            var buffer = new StringBuilder ();
 
             // First checking if we have a "wrapper div" around __VIEWSTATE input.
-            int startOffset = html.IndexOf (@"<div class=""aspNetHidden"">");
+            int startOffset = html.IndexOf (@"<div class=""aspNetHidden"">", StringComparison.InvariantCulture);
             int endOffset = -1;
             if (startOffset != -1) {
 
                 // Removing entire "__VIEWSTATE wrapper div".
-                endOffset = html.IndexOf ("</div>", startOffset) + 6;
+                endOffset = html.IndexOf ("</div>", startOffset, StringComparison.InvariantCulture) + 6;
             } else {
 
                 // Defaulting to only removing __VIEWSTATE input
-                startOffset = html.IndexOf ("__VIEWSTATE");
+                startOffset = html.IndexOf ("__VIEWSTATE", StringComparison.InvariantCulture);
                 endOffset = html.IndexOf ('>', startOffset);
                 while (html[startOffset] != '<')
                     startOffset -= 1;
@@ -101,15 +100,15 @@ namespace p5.ajax.core.filters
         /*
          * Cleans up head section, which means nicely formatting <head>.
          */
-        private string CleanHead (string html)
+        string CleanHead (string html)
         {
             // Creating buffer to hold return value, appending the top parts of HTML head into it.
             var builder = new StringBuilder ();
             builder.Append ("<!DOCTYPE html>\r\n<html>\r\n\t<head>" + "\r\n");
 
             // Figuring out where <head> starts and ends in given input.
-            var indexOfHeadStart = html.IndexOf ("<head>") + 6;
-            var indexOfHeadEnd = html.IndexOf ("</head>");
+            var indexOfHeadStart = html.IndexOf ("<head>", StringComparison.InvariantCulture) + 6;
+            var indexOfHeadEnd = html.IndexOf ("</head>", StringComparison.InvariantCulture);
 
             // Looping through HTML between <head> and </head>, appending each element nicely formatted into result buffer.
             string element = "";
@@ -117,12 +116,12 @@ namespace p5.ajax.core.filters
                 element += html[indexOfHeadStart++];
 
                 // Checking if we're at end of element.
-                if (element.EndsWith ("/>") || (element.EndsWith (">") && element.Contains ("</"))) {
+                if (element.EndsWith ("/>", StringComparison.InvariantCulture) || (element.EndsWith (">", StringComparison.InvariantCulture) && element.Contains ("</"))) {
 
                     // End of element, inserting into resulting StringBuilder, making sure we nicely format element, before we reset element buffer.
                     // Notice, we handle <title> differently, since it's all messed up by ASP.NET.
                     builder.Append ("\t\t");
-                    if (element.StartsWith ("<title>")) {
+                    if (element.StartsWith ("<title>", StringComparison.InvariantCulture)) {
                         builder.Append ("<title>");
                         builder.Append (element.Substring (7, element.Length - 15).Trim ());
                         builder.Append ("</title>");
@@ -136,14 +135,14 @@ namespace p5.ajax.core.filters
 
             // Appending the rest of our HTML, making sure also our <form> element is nicely formatted.
             builder.Append ("\t</head>\r\n\t<body>\r\n\t\t");
-            builder.Append (html.Substring (html.IndexOf ("<form", indexOfHeadEnd)));
+            builder.Append (html.Substring (html.IndexOf ("<form", indexOfHeadEnd, StringComparison.InvariantCulture)));
             return builder.ToString ();
         }
 
         /*
          * Includes the CSS stylesheet files we should include for this response.
          */
-        private string IncludeCSSFiles (string html)
+        string IncludeCSSFiles (string html)
         {
             // If we don't have any CSS files to include, we return early.
             if (Page.PersistentCSSInclusions.Count == 0)
@@ -153,7 +152,7 @@ namespace p5.ajax.core.filters
             var builder = new StringBuilder ();
 
             // Finding out where <head> ends, and appending all pre-existing content in <head> into StringBuilder.
-            var indexOfHeadEnd = html.IndexOf ("</head>");
+            var indexOfHeadEnd = html.IndexOf ("</head>", StringComparison.InvariantCulture);
             builder.Append (html.Substring (0, indexOfHeadEnd).TrimEnd ());
 
             // Including CSS files, making sure we nicely format our inclusion HTML.
@@ -170,14 +169,14 @@ namespace p5.ajax.core.filters
         /*
          * Includes the JavaScript files and inline JS inclusions we should include for this response.
          */
-        private string IncludeJavaScript (string html)
+        string IncludeJavaScript (string html)
         {
             // Figuring out where <body> ends, by iterating backwards from end of HTML, until we've found </body>
             var endBuffer = "";
             var positionOfEndBody = html.Length - 1;
-            for (; true; positionOfEndBody --) {
+            for (;; positionOfEndBody --) {
                 endBuffer = html [positionOfEndBody] + endBuffer;
-                if (endBuffer.StartsWith ("<") && endBuffer.StartsWith ("</body>", StringComparison.InvariantCultureIgnoreCase))
+                if (endBuffer.StartsWith ("<", StringComparison.InvariantCulture) && endBuffer.StartsWith ("</body>", StringComparison.InvariantCulture))
                     break;
             }
 

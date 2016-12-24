@@ -68,16 +68,16 @@ namespace p5.lambda.keywords.core
          * Invokes [for-each] lambda, setting the [_dp] to the currently iterated value, and returns true if iteration should continue.
          * If it returns false, then iteration has for some reasons been stopped early ...
          */
-        private static bool Iterate (ApplicationContext context, object dp, Node lambda)
+        static bool Iterate (ApplicationContext context, object dp, Node lambdaObj)
         {
             // Inserting data pointer for current iteration.
-            lambda.Insert (0, new Node ("_dp", dp));
+            lambdaObj.Insert (0, new Node ("_dp", dp));
 
             // Evaluating (mutably) [for-each] lambda object, such that loop has access to entire tree.
-            context.RaiseEvent ("eval-mutable", lambda);
+            context.RaiseEvent ("eval-mutable", lambdaObj);
 
             // Checking if we have some sort of stop condition.
-            var stopNode = lambda.Root.FirstChild;
+            var stopNode = lambdaObj.Root.FirstChild;
             bool proceed = stopNode.Name != "_return" && stopNode.Name != "_break";
 
             // Checking if this is a "local stop" node, at which case, we simply untie it to clean up after ourselves.

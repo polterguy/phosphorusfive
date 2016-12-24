@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -29,16 +29,16 @@ namespace p5.auth.helpers
     /// <summary>
     ///     Class wrapping access to read and write operations to and from "auth" file
     /// </summary>
-    internal static class AuthFile
+    static class AuthFile
     {
         // Used as delegate for modification of "auth" file
         internal delegate void ModifyAuthFileDelegate (Node authFile);
 
         // Used to lock access to password file
-        private static object _passwordFileLocker = new object ();
+        static object _passwordFileLocker = new object ();
 
         // Used to cache password file, for faster access
-        private static Node _authFileContent = null;
+        static Node _authFileContent;
 
         /*
          * Helper to retrieve "auth" file as lambda object
@@ -85,7 +85,7 @@ namespace p5.auth.helpers
         /*
          * Private implementation of retrieving auth file
          */
-        private static Node GetAuthFileInternal (ApplicationContext context)
+        static Node GetAuthFileInternal (ApplicationContext context)
         {
             // Checking if we can return cached version
             if (_authFileContent != null)
@@ -111,7 +111,7 @@ namespace p5.auth.helpers
         /*
          * Private implementation of saving auth file
          */
-        private static void SaveAuthFileInternal (ApplicationContext context, Node authFileNode)
+        static void SaveAuthFileInternal (ApplicationContext context, Node authFileNode)
         {
             // Updating cached version
             _authFileContent = authFileNode.Clone ();
@@ -128,7 +128,7 @@ namespace p5.auth.helpers
         /*
          * Returns path to auth file
          */
-        private static string GetAuthFilePath (ApplicationContext context)
+        static string GetAuthFilePath (ApplicationContext context)
         {
             // Getting filepath to pwd file
             string rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);

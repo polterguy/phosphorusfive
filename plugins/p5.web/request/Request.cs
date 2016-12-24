@@ -26,9 +26,6 @@ using System.Web;
 using p5.exp;
 using p5.core;
 
-/// <summary>
-///     Main namespace for everything related to the current HTTP request
-/// </summary>
 namespace p5.web.ui.request {
     /// <summary>
     ///     Class wrapping Active Events related to the HTTP request
@@ -60,17 +57,17 @@ namespace p5.web.ui.request {
             }
 
             // Checking type of request, and acting accordingly.
-            if (RequestIsHyperlambda (e.Args, context)) {
+            if (RequestIsHyperlambda (context)) {
 
                 // Some sort of "textual" based type of request
-                StreamReader reader = new StreamReader (HttpContext.Current.Request.InputStream);
+                var reader = new StreamReader (HttpContext.Current.Request.InputStream);
                 var code = Utilities.Convert<Node> (context, reader.ReadToEnd ());
                 e.Args.AddRange (code.Children);
 
-            } else if (RequestIsText (e.Args, context)) {
+            } else if (RequestIsText (context)) {
 
                 // Some sort of "textual" based type of request
-                StreamReader reader = new StreamReader (HttpContext.Current.Request.InputStream);
+                var reader = new StreamReader (HttpContext.Current.Request.InputStream);
                 e.Args.Value = reader.ReadToEnd ();
 
             } else {
@@ -139,7 +136,7 @@ namespace p5.web.ui.request {
         /*
          * Determines if current request is Hyperlambda.
          */
-        private static bool RequestIsHyperlambda (Node node, ApplicationContext context)
+        static bool RequestIsHyperlambda (ApplicationContext context)
         {
             // Checking if Content-Type is Hyperlambda MIME extension.
             if (HttpContext.Current.Request.ContentType == "application/x-hyperlambda")
@@ -152,10 +149,10 @@ namespace p5.web.ui.request {
         /*
          * Determines if current request is some sort of text.
          */
-        private static bool RequestIsText (Node node, ApplicationContext context)
+        static bool RequestIsText (ApplicationContext context)
         {
             // Checking if Content-Type starts with "text/".
-            if (HttpContext.Current.Request.ContentType.StartsWith ("text/"))
+            if (HttpContext.Current.Request.ContentType.StartsWithEx ("text/"))
                 return true;
 
             // Not text.

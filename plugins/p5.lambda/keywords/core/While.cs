@@ -63,13 +63,17 @@ namespace p5.lambda.keywords.core
                     rootChild.UnTie ();
                     return;
 
-                } else if (rootChild.Name == "_return") {
+                }
+
+                if (rootChild.Name == "_return") {
 
                     // [return] invocation, stopping execution of loop entirely.
                     // Notice, it is not up to us to clean up this signal node, but rather [eval], or the outer execution lambda's responsibility.
                     return;
 
-                } else if (rootChild.Name == "_continue") {
+                }
+
+                if (rootChild.Name == "_continue") {
 
                     // [continue] instruction, simply cleaning up, to make sure we evaluate the nest iteration normally.
                     rootChild.UnTie ();

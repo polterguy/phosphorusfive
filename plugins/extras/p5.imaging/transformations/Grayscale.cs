@@ -41,12 +41,12 @@ namespace p5.imaging.transformations
         public static void _p5_imaging_transformations_grayscale (ApplicationContext context, ActiveEventArgs e)
         {
             Bitmap original = e.Args.Get<Bitmap> (context);
-            Bitmap destination = new Bitmap (original.Width, original.Height);
+            var destination = new Bitmap (original.Width, original.Height);
 
             using (Graphics g = Graphics.FromImage (destination)) {
 
                 // Grayscale ColorMatrix creation.
-                ColorMatrix colors = new ColorMatrix (
+                var colors = new ColorMatrix (
                    new float[][] {
                          new float[] {.3f, .3f, .3f, 0, 0},
                          new float[] {.59f, .59f, .59f, 0, 0},
@@ -56,7 +56,7 @@ namespace p5.imaging.transformations
                    });
 
                 // Image attributes, to apply colors to blit operation.
-                ImageAttributes attrs = new ImageAttributes ();
+                var attrs = new ImageAttributes ();
                 attrs.SetColorMatrix (colors);
 
                 // Blitting original image to destination image.

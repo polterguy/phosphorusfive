@@ -26,9 +26,9 @@ using p5.ajax.core;
 
 namespace p5.samples
 {
-    using p5 = p5.ajax.widgets;
+    using p5 = ajax.widgets;
 
-    public partial class Default : AjaxPage
+    public class Default : AjaxPage
     {
         [WebMethod]
         protected void hello_onclick (p5.Literal sender, EventArgs e)

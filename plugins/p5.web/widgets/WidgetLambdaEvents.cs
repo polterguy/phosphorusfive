@@ -36,7 +36,7 @@ namespace p5.web.widgets
     public class WidgetLambdaEvents : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetLambdaEvents"/> class.
+        ///     Initializes a new instance of the <see cref="WidgetLambdaEvents"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -101,7 +101,7 @@ namespace p5.web.widgets
                     context);
 
             // Making sure caller does not try to create "protected" lambda event(s).
-            if (e.Args.Children.Count (ix => ix.Name.StartsWith (".") || ix.Name.StartsWith ("_")) > 0)
+            if (e.Args.Children.Count (ix => ix.Name.StartsWithEx (".") || ix.Name.StartsWithEx ("_")) > 0)
                 throw new LambdaException ("Caller tried to create a protected lambda event starting with '_' or '.' for widget", e.Args, context);
 
             // Iterating through all widgets.
@@ -144,7 +144,7 @@ namespace p5.web.widgets
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
                     // Setting up a return value node, and iterating through each lambda event, currently iterated widget contains.
-                    Node idxRetVal = new Node (idxWidget.ID);
+                    var idxRetVal = new Node (idxWidget.ID);
                     foreach (var idxAtr in Manager.WidgetLambdaEventStorage.FindByKey2 (idxWidget.ID)) {
 
                         // Adding name of currently iterated lambda event into return node.
@@ -192,14 +192,14 @@ namespace p5.web.widgets
          * values from them, only the lambda event that happens to be evaluated last, will be able to actually return anything as a value.
          */
         [ActiveEvent (Name = "")]
-        private void null_handler (ApplicationContext context, ActiveEventArgs e)
+        void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if we have a lambda event with the specified name.
             var enumerable = Manager.WidgetLambdaEventStorage [e.Name];
             if (enumerable != null) {
 
                 // Used to store return values to return to caller after all invocations have been evaluated.
-                Node retVal = new Node ();
+                var retVal = new Node ();
 
                 // Used to hold original arguments.
                 Node argsClone = null;
@@ -225,7 +225,7 @@ namespace p5.web.widgets
                     var clone = idxLambda.Clone ();
 
                     // Evaluating lambda event.
-                    XUtil.EvaluateLambda (context, e.Name, clone, e.Args);
+                    XUtil.EvaluateLambda (context, clone, e.Args);
 
                     // Moving returned nodes from invocation into retVal.
                     retVal.AddRange (e.Args.Children);
@@ -244,7 +244,7 @@ namespace p5.web.widgets
         /*
          * Returns Active Events from source given, using name as type of Active Event.
          */
-        private static void ListActiveEvents (
+        static void ListActiveEvents (
             IEnumerable<string> source,
             Node args,
             List<string> filter,
@@ -267,7 +267,7 @@ namespace p5.web.widgets
                 } else {
 
                     // We have filter(s), checking to see if Active Event name matches at least one of our filters.
-                    if (filter.Any (ix => ix.StartsWith ("~") ? idx.Contains (ix.Substring (1)) : idx == ix)) {
+                    if (filter.Any (ix => ix.StartsWithEx ("~") ? idx.Contains (ix.Substring (1)) : idx == ix)) {
                         args.Add (new Node ("dynamic", idx));
                     }
                 }

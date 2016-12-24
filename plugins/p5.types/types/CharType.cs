@@ -36,13 +36,12 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.char")]
-        private static void p5_hyperlisp_get_object_value_char (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_object_value_char (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is char) {
                 return;
-            } else {
-                e.Args.Value = char.Parse (e.Args.Get<string> (context));
             }
+            e.Args.Value = char.Parse (e.Args.Get<string> (context));
         }
 
         /// <summary>
@@ -51,7 +50,7 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.Char")]
-        private static void p5_hyperlisp_get_type_name_System_Char (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_type_name_System_Char (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "char";
         }

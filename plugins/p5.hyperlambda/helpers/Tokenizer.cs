@@ -34,8 +34,8 @@ namespace p5.hyperlambda.helpers
      */
     public sealed class Tokenizer : IDisposable
     {
-        private readonly StringReader _reader;
-        private bool _disposed;
+        readonly StringReader _reader;
+        bool _disposed;
 
         /*
          * Ctor taking Hyperlambda as input. Use the "Tokens" property after creation to parse and access p5 lambda 
@@ -80,7 +80,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Actual implementation of Dispose method
          */
-        private void Dispose (bool disposing)
+        void Dispose (bool disposing)
         {
             if (!_disposed && disposing) {
                 _disposed = true;
@@ -91,7 +91,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Retrieves next hyperlambda token from text reader
          */
-        private Token NextToken (Token previousToken)
+        Token NextToken (Token previousToken)
         {
             var nextChar = _reader.Peek ();
             if ((nextChar == ':') &&
@@ -129,7 +129,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Skips the comment token starting at current position of reader
          */
-        private Token SkipCommentToken ()
+        Token SkipCommentToken ()
         {
             var nextChar = _reader.Read ();
             if (nextChar == '/') {
@@ -160,7 +160,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Trims reader until reader head is at first non-space character
          */
-        private void TrimReader ()
+        void TrimReader ()
         {
             var nextChar = _reader.Peek ();
             while (nextChar == ' ') {
@@ -172,7 +172,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Reads and validates next space token ("  ") from text reader
          */
-        private Token NextSpaceToken ()
+        Token NextSpaceToken ()
         {
             var buffer = " ";
             var nextChar = _reader.Peek ();
@@ -186,7 +186,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Reads and validates next carriage return / line feed token ("\r\n" or "\n")
          */
-        private Token NextCrlfToken ()
+        Token NextCrlfToken ()
         {
             var nextChar = _reader.Read ();
             if (nextChar == -1)
@@ -199,7 +199,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Reads next "default token" from text reader, can be string, multiline string, or simply legal unescaped characters
          */
-        private Token NextDefaultToken (int nextChar, Token previousToken)
+        Token NextDefaultToken (int nextChar, Token previousToken)
         {
             if (nextChar == '"') {
                 return new Token (GetTokenType (previousToken), Utilities.ReadSingleLineStringLiteral (_reader)); // single line string literal
@@ -227,7 +227,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Returns the curent token's type according to the previous token type
          */
-        private Token.TokenType GetTokenType (Token previousToken)
+        Token.TokenType GetTokenType (Token previousToken)
         {
             if (previousToken != null && previousToken.Type == Token.TokenType.Separator)
                 return Token.TokenType.TypeOrContent;

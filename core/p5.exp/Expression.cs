@@ -28,9 +28,6 @@ using p5.core;
 using p5.exp.iterators;
 using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for the Expression engine in Phosphorus Five
-/// </summary>
 namespace p5.exp
 {
     /// <summary>
@@ -40,15 +37,15 @@ namespace p5.exp
     public class Expression : IComparable
     {
         // Type of expression (node, value, name, count)
-        private Match.MatchType _expressionType;
+        Match.MatchType _expressionType;
 
         // If value(s) of expression results should be converted to another type, this will contain the Hyperlambda type name (int, float, bool, etc).
-        private string _convert;
+        string _convert;
 
         /*
          * Private ctor, use static Create method to create instances.
          */
-        private Expression (ApplicationContext context, string expression)
+        Expression (string expression)
         {
             Value = expression;
         }
@@ -63,17 +60,17 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.Expression" /> class
+        ///     Initializes a new instance of the <see cref="Expression" /> class
         /// </summary>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="context">Application context, necessary to convert types value iterators, among other things</param>
         public static Expression Create (ApplicationContext context, string expression)
         {
-            return new Expression (context, expression);
+            return new Expression (expression);
         }
 
         /// <summary>
-        ///     Evaluates expression for given <see cref="phosphorus.core.Node">node</see>
+        ///     Evaluates expression for given <see cref="Node">node</see>
         /// </summary>
         /// <param name="evaluatedNode">Node to evaluate expression for</param>
         /// <param name="context">Application Context</param>
@@ -94,7 +91,7 @@ namespace p5.exp
         /*
          * Tokenizes and initializes expression object
          */
-        private IteratorGroup BuildExpression (
+        IteratorGroup BuildExpression (
             ApplicationContext context, 
             Node evaluatedNode, 
             Node exNode)
@@ -118,11 +115,15 @@ namespace p5.exp
                         // Last token, initializing type of expression and conversion type, if given
                         InitializeType (idxToken);
                         break; // finished
-                    } else if (previousToken == null && idxToken != "/" && idxToken != "?" && idxToken != "(") {
+                    }
+
+                    if (previousToken == null && idxToken != "/" && idxToken != "?" && idxToken != "(") {
 
                         // Missing '/' before iterator
                         throw new ExpressionException (Value, "Syntax error in expression, missing iterator declaration, after evaluation expression yields; " + expression);
-                    } else if (idxToken != "?") {
+                    }
+
+                    if (idxToken != "?") {
 
                         // '?' token is handled in next iteration
                         current = AppendToken (context, current, idxToken, previousToken);
@@ -148,7 +149,7 @@ namespace p5.exp
         /*
          * Formats expression with formatting values recursively
          */
-        private string FormatExpression (ApplicationContext context, Node exNode)
+        string FormatExpression (ApplicationContext context, Node exNode)
         {
             var retVal = Value;
             var formatNodes = (from idxNode in exNode.Children where idxNode.Name == "" select idxNode).ToList ();
@@ -174,7 +175,7 @@ namespace p5.exp
         /*
          * Initializes expression type, and optionally a conversion type
          */
-        private void InitializeType (string token)
+        void InitializeType (string token)
         {
             // this is our last token, storing it as "expression type", and optionally a "convert", before ending iteration
             string typeOfExpression = null;
@@ -199,7 +200,7 @@ namespace p5.exp
         /*
          * Handles an expression iterator token
          */
-        private IteratorGroup AppendToken (
+        IteratorGroup AppendToken (
             ApplicationContext context,
             IteratorGroup current,
             string token,
@@ -240,7 +241,7 @@ namespace p5.exp
                     // Boolean algebraic operator, opening up a new sibling-expression, checking for empty name iterator first
                     if (previousToken == "/")
                         current.AddIterator (new IteratorNamed (""));
-                    LogicalToken (current, token, previousToken);
+                    LogicalToken (current, token);
                     break;
                 case "..":
 
@@ -348,27 +349,27 @@ namespace p5.exp
                         throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
                     // Handles everything else
-                    if (token.StartsWith ("=")) {
+                    if (token.StartsWithEx ("=")) {
 
                         // Some type of value token, either normal value, or regex value
-                        ValueToken (context, current, token);
-                    } else if (token.StartsWith ("[")) {
+                        ValueToken (current, token);
+                    } else if (token.StartsWithEx ("[")) {
 
                         // Range iterator token
                         RangeToken (current, token);
-                    } else if (token.StartsWith ("..") && token.Length > 2) {
+                    } else if (token.StartsWithEx ("..") && token.Length > 2) {
 
                         // Named ancestor token
                         current.AddIterator (new IteratorNamedAncestor (token.Substring (2)));
-                    } else if (token.StartsWith ("%")) {
+                    } else if (token.StartsWithEx ("%")) {
 
                         // Modulo token
                         ModuloToken (current, token);
-                    } else if (token.StartsWith ("-") || token.StartsWith ("+")) {
+                    } else if (token.StartsWithEx ("-") || token.StartsWithEx ("+")) {
 
                         // Sibling offset
                         SiblingToken (current, token);
-                    } else if (token.StartsWith ("@")) {
+                    } else if (token.StartsWithEx ("@")) {
 
                         // Sibling offset
                         ElderRelativeToken (current, token);
@@ -394,7 +395,7 @@ namespace p5.exp
         /*
          * Handles "|", "&", "!" and "^" tokens
          */
-        private static void LogicalToken (IteratorGroup current, string token, string previousToken)
+        static void LogicalToken (IteratorGroup current, string token)
         {
             switch (token) {
                 case "|":
@@ -423,13 +424,13 @@ namespace p5.exp
         /*
          * Creates a valued token
          */
-        private void ValueToken (ApplicationContext context, IteratorGroup current, string token)
+        void ValueToken (IteratorGroup current, string token)
         {
             token = token.Substring (1); // Removing equal sign (=)
             string type = null; // Defaulting to "no type", meaning "string" type basically
 
             // Might contain a type declaration, checking here
-            if (token.StartsWith (":")) {
+            if (token.StartsWithEx (":")) {
 
                 // Yup, we've got a type declaration for our token ...
                 type = token.Substring (1, token.IndexOf (":", 1, StringComparison.Ordinal) - 1);
@@ -441,7 +442,7 @@ namespace p5.exp
         /*
          * Creates a range token [x,y]
          */
-        private void RangeToken (IteratorGroup current, string token)
+        void RangeToken (IteratorGroup current, string token)
         {
             // Verifying token ends with "]"
             token = token.TrimEnd ();
@@ -492,7 +493,7 @@ namespace p5.exp
         /*
          * Creates a modulo token
          */
-        private void ModuloToken (IteratorGroup current, string token)
+        void ModuloToken (IteratorGroup current, string token)
         {
             // Removing "%" character
             token = token.Substring (1);
@@ -508,7 +509,7 @@ namespace p5.exp
         /*
          * Creates a sibling token
          */
-        private void SiblingToken (IteratorGroup current, string token)
+        void SiblingToken (IteratorGroup current, string token)
         {
             var intValue = token.Substring (1);
             var oper = token[0];
@@ -525,7 +526,7 @@ namespace p5.exp
         /*
          * Creates an elder relative token
          */
-        private void ElderRelativeToken (IteratorGroup current, string token)
+        void ElderRelativeToken (IteratorGroup current, string token)
         {
             var name = token.Substring (1);
             current.AddIterator (new IteratorNamedElderRelative (name));
@@ -544,8 +545,8 @@ namespace p5.exp
             if (_expressionType != rhs._expressionType)
                 return _expressionType.CompareTo (rhs._expressionType);
             if (_convert != rhs._convert)
-                return _convert.CompareTo (rhs._convert);
-            return Value.CompareTo (rhs.Value);
+                return string.Compare (_convert, rhs._convert, StringComparison.InvariantCulture);
+            return string.Compare (Value, rhs.Value, StringComparison.InvariantCulture);
         }
 
         public override string ToString ()
@@ -561,7 +562,7 @@ namespace p5.exp
         /*
          * Returns true if string can be converted to an integer
          */
-        private static bool IsNumber (string value)
+        static bool IsNumber (string value)
         {
             if (value.Any (ix => "0123456789".IndexOf (ix) == -1))
                 return false;

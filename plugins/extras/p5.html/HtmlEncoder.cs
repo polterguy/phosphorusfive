@@ -45,7 +45,7 @@ namespace p5.html
             using (new ArgsRemover (e.Args)) {
 
                 // Used as return value
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
 
                 // Loops through all documents/fragments we're supposed to encode and eppending into StringBuilder
                 foreach (var idxHtmlFragment in XUtil.Iterate<string> (context, e.Args)) {
@@ -71,7 +71,7 @@ namespace p5.html
             using (new ArgsRemover (e.Args)) {
 
                 // Used as return value
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
 
                 // Loops through all documents/fragments we're supposed to transform
                 foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {

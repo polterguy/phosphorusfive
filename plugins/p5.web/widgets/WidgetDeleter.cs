@@ -21,10 +21,8 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.Linq;
 using System.Web.UI;
 using System.Collections;
-using System.Collections.Generic;
 using p5.core;
 using p5.ajax.widgets;
 using p5.exp.exceptions;
@@ -37,7 +35,7 @@ namespace p5.web.widgets
     public class WidgetDeleter : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetCreator"/> class.
+        ///     Initializes a new instance of the <see cref="WidgetCreator"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -86,7 +84,7 @@ namespace p5.web.widgets
          * Helper to delete a widget from Page.
          * Removes all Ajax and lambda events, recursively, for the specified widget, and all of its children widgets.
          */
-        private void DeleteWidget (
+        void DeleteWidget (
             ApplicationContext context, 
             Node args, 
             Widget widget)
@@ -109,7 +107,7 @@ namespace p5.web.widgets
         /*
          * Deleting all events for widget recursively.
          */
-        private void DeleteEvents (Control control)
+        void DeleteEvents (Control control)
         {
             // Checking if currently iterated Control is Widget, since only widgets have Ajax and lambda events.
             if (control is Widget) {

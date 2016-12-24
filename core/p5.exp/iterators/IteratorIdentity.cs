@@ -28,12 +28,12 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     IdentityIterator, returning current <see cref="phosphorus.core.Node" />
+    ///     IdentityIterator, returning current <see cref="Node" />
     /// </summary>
     [Serializable]
     public class IteratorIdentity : Iterator
     {
-        private Node _node;
+        Node _node;
 
         internal Node RootNode {
             get { return _node; }

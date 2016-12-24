@@ -78,7 +78,7 @@ namespace p5.strings.keywords
         /*
          * Evaluates the given regular expression and yields all its results.
          */
-        private static IEnumerable<int> IndexOfRegex (string source, Regex regex)
+        static IEnumerable<int> IndexOfRegex (string source, Regex regex)
         {
             // Evaluating regex and returning all results.
             foreach (System.Text.RegularExpressions.Match idxMatch in regex.Matches (source)) {
@@ -89,13 +89,13 @@ namespace p5.strings.keywords
         /*
          * Simple string find.
          */
-        private static IEnumerable<int> IndexOfString (string source, string search)
+        static IEnumerable<int> IndexOfString (string source, string search)
         {
             // Returning all occurrences of specified string.
-            var idx = source.IndexOf (search);
+            var idx = source.IndexOfEx (search);
             while (idx != -1) {
                 yield return idx++;
-                idx = source.IndexOf (search, idx);
+                idx = source.IndexOfEx (search, idx);
             }
         }
     }

@@ -36,19 +36,19 @@ namespace p5.exp.iterators
     [Serializable]
     public class IteratorValued : Iterator
     {
-        private readonly string _type;
-        private readonly string _value;
-        private bool _like;
+        readonly string _type;
+        readonly string _value;
+        readonly bool _like;
 
         public IteratorValued (string value, string type)
         {
             _type = type;
-            if (value.StartsWith ("~")) {
+            if (value.StartsWithEx ("~")) {
 
                 // "Like" equality
                 _value = value.Substring (1);
                 _like = true;
-            } else if (value.StartsWith ("\\")) {
+            } else if (value.StartsWithEx ("\\")) {
 
                 // Escaped "like operator"
                 _value = value.Substring (1);
@@ -78,24 +78,25 @@ namespace p5.exp.iterators
             if (value is Regex) {
 
                 // Special case for regular expressions
-                return Left.Evaluate (context).Where (idxCurrent => (value as Regex).IsMatch (idxCurrent.Get<string>(context, "")));
-            } else if (_like) {
+                return Left.Evaluate (context).Where (idxCurrent => (value as Regex).IsMatch (idxCurrent.Get (context, "")));
+            }
+
+            if (_like) {
                 
                 // Special case for empty value, making sure we return either empty or null values
                 if (string.IsNullOrEmpty (_value)) {
 
                     // If type of equality is "like" and comparison value is "", we match for either null or "" string
                     return Left.Evaluate (context).Where (idxCurrent => string.IsNullOrEmpty (idxCurrent.Get (context, "")));
-                } else {
-
-                    // Matching all value that contains the specified value
-                    return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Get (context, "").Contains (_value));
                 }
-            } else {
 
-                // Exact match for value, that might be any type, meaning types must also match
-                return Left.Evaluate (context).Where (idxCurrent => value.Equals (idxCurrent.Value));
+                // Matching all value that contains the specified value
+                return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Get (context, "").Contains (_value));
+
             }
+
+            // Exact match for value, that might be any type, meaning types must also match
+            return Left.Evaluate (context).Where (idxCurrent => value.Equals (idxCurrent.Value));
         }
     }
 }

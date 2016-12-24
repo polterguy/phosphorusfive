@@ -38,8 +38,8 @@ namespace p5.http
     public static class HttpRequest
     {
         // Specialized delegate functors for rendering request and response
-        private delegate void RenderRequestFunctor (ApplicationContext context, HttpWebRequest request, Node args, string method);
-        private delegate void RenderResponseFunctor (ApplicationContext context, HttpWebRequest request, Node args);
+        delegate void RenderRequestFunctor (ApplicationContext context, HttpWebRequest request, Node args, string method);
+        delegate void RenderResponseFunctor (ApplicationContext context, HttpWebRequest request, Node args);
 
         /// <summary>
         ///     Creates a new HTTP REST request of specified type
@@ -86,7 +86,7 @@ namespace p5.http
         /*
          * Actual implementation of creation of HTTP request
          */
-        private static void CreateRequest (
+        static void CreateRequest (
             ApplicationContext context, 
             Node args, 
             RenderRequestFunctor renderRequest, 
@@ -96,16 +96,16 @@ namespace p5.http
             using (new ArgsRemover (args, true)) {
 
                 // Figuring out which HTTP method to use
-                string method = args.Name.Substring (args.Name.IndexOf ("-") + 1).ToUpper ();
+                string method = args.Name.Substring (args.Name.IndexOfEx ("-") + 1).ToUpper ();
                 if (method.Contains ("-"))
-                    method = method.Substring (0, method.IndexOf ("-"));
+                    method = method.Substring (0, method.IndexOfEx ("-"));
                 try
                 {
                     // Iterating through each request URL given
                     foreach (var idxUrl in XUtil.Iterate<string> (context, args)) {
 
                         // Creating request
-                        HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
+                        var request = WebRequest.Create (idxUrl) as HttpWebRequest;
 
                         // Setting HTTP method
                         request.Method = method;
@@ -136,7 +136,7 @@ namespace p5.http
         /*
          * Renders normal HTTP request
          */
-        private static void RenderRequest (
+        static void RenderRequest (
             ApplicationContext context, 
             HttpWebRequest request, 
             Node args, 
@@ -166,7 +166,7 @@ namespace p5.http
                     using (Stream stream = request.GetRequestStream ()) {
 
                         // Checking if this is binary content
-                        byte[] byteContent = content as byte[];
+                        var byteContent = content as byte[];
                         if (byteContent != null) {
 
                             // Setting our Content-Type header, defaulting to "application/octet-stream", in addition to other headers
@@ -217,7 +217,7 @@ namespace p5.http
         /*
          * Renders normal HTTP request
          */
-        private static void RenderRequestNative (
+        static void RenderRequestNative (
             ApplicationContext context, 
             HttpWebRequest request, 
             Node args, 
@@ -237,7 +237,7 @@ namespace p5.http
                         context);
 
                 // Retrieving delegate which caller should have supplied for rendering request, and invoking it
-                EventHandler functor = args["request-native"].Value as EventHandler;
+                var functor = args["request-native"].Value as EventHandler;
                 functor (request, new EventArgs ());
             } else {
 
@@ -253,7 +253,7 @@ namespace p5.http
         /*
          * Renders HTTP post/put file request
          */
-        private static void RenderFileRequest (
+        static void RenderFileRequest (
             ApplicationContext context, 
             HttpWebRequest request, 
             Node args, 
@@ -279,7 +279,7 @@ namespace p5.http
                 request.ContentType = args.GetExChildValue (
                     "Content-Type", 
                     context, 
-                    filename.EndsWith (".hl") ? "application/x-hyperlambda" : "application/octet-stream");
+                    filename.EndsWithEx (".hl") ? "application/x-hyperlambda" : "application/octet-stream");
 
                 // Setting other HTTP request headers
                 SetRequestHeaders (context, request, args);
@@ -299,7 +299,7 @@ namespace p5.http
         /*
          * Returns content back to caller
          */
-        private static object GetRequestContent (
+        static object GetRequestContent (
             ApplicationContext context, 
             Node content)
         {
@@ -307,17 +307,16 @@ namespace p5.http
 
                 // Hyperlambda content
                 return context.RaiseEvent ("lambda2hyper", content.UnTie ()).Value;
-            } else {
-
-                // Some sort of "value" content, either text or binary (byte[])
-                return XUtil.Single<object> (context, content);
             }
+
+            // Some sort of "value" content, either text or binary (byte[])
+            return XUtil.Single<object> (context, content);
         }
 
         /*
          * Decorates all headers for request, except Content-Type, which should be handled by caller
          */
-        private static void SetRequestHeaders (
+        static void SetRequestHeaders (
             ApplicationContext context, 
             HttpWebRequest request, 
             Node args)
@@ -369,12 +368,12 @@ namespace p5.http
         /*
          * Renders response into given Node
          */
-        private static void RenderResponse (
+        static void RenderResponse (
             ApplicationContext context, 
             HttpWebRequest request, 
             Node args)
         {
-            HttpWebResponse response = (HttpWebResponse)request.GetResponseNoException ();
+            var response = request.GetResponseNoException ();
             Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
 
             // Getting response HTTP headers
@@ -384,7 +383,7 @@ namespace p5.http
             using (Stream stream = response.GetResponseStream ()) {
 
                 // Checking type of response
-                if (response.ContentType.StartsWith ("application/x-hyperlambda")) {
+                if (response.ContentType.StartsWithEx ("application/x-hyperlambda")) {
 
                     // Hyperlambda, possibly special treatment
                     using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
@@ -402,9 +401,9 @@ namespace p5.http
                             result.Add ("content", reader.ReadToEnd());
                         }
                     }
-                } else if (response.ContentType.StartsWith ("text") || 
-                    response.ContentType.StartsWith ("application/rss+xml") ||
-                    response.ContentType.StartsWith ("application/xml")) {
+                } else if (response.ContentType.StartsWithEx ("text") || 
+                    response.ContentType.StartsWithEx ("application/rss+xml") ||
+                    response.ContentType.StartsWithEx ("application/xml")) {
 
                     // Text response
                     using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
@@ -428,20 +427,20 @@ namespace p5.http
         /*
          * Renders response into given Node
          */
-        private static void RenderResponseNative (
+        static void RenderResponseNative (
             ApplicationContext context, 
             HttpWebRequest request, 
             Node args)
         {
             // Retrieving response and creating our [result] node
-            HttpWebResponse response = (HttpWebResponse)request.GetResponseNoException ();
+            var response = request.GetResponseNoException ();
             Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
 
             // Getting response HTTP headers
             GetResponseHeaders (context, response, result, request);
 
             // Invoking callback that should have been supplied by caller
-            EventHandler functor = args["response-native"].Value as EventHandler;
+            var functor = args["response-native"].Value as EventHandler;
             result.Add ("response-native", response);
             functor (result, new EventArgs ());
         }
@@ -449,7 +448,7 @@ namespace p5.http
         /*
          * Saves response into filename given
          */
-        private static void RenderFileResponse (
+        static void RenderFileResponse (
             ApplicationContext context, 
             HttpWebRequest request, 
             Node args)
@@ -461,7 +460,7 @@ namespace p5.http
             context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));
 
             // Retrieving HTTP response
-            HttpWebResponse response = (HttpWebResponse)request.GetResponseNoException ();
+            var response = request.GetResponseNoException ();
             Node result = args.Add ("result").LastChild;
 
             // Getting HTTP response headers
@@ -485,7 +484,7 @@ namespace p5.http
         /*
          * Returns the HTTP response headers into node given
          */
-        private static void GetResponseHeaders (
+        static void GetResponseHeaders (
             ApplicationContext context, 
             HttpWebResponse response, 
             Node args, 
@@ -526,7 +525,7 @@ namespace p5.http
         /*
          * Helper to retrieve response without exception, if possible
          */
-        private static HttpWebResponse GetResponseNoException(this HttpWebRequest req)
+        static HttpWebResponse GetResponseNoException(this HttpWebRequest req)
         {
             try
             {

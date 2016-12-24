@@ -25,9 +25,6 @@ using System;
 using System.Collections.Generic;
 using p5.core;
 
-/// <summary>
-///     Main namespace for all p5 lambda Expression Iterators
-/// </summary>
 namespace p5.exp.iterators
 {
     /// <summary>
@@ -49,7 +46,7 @@ namespace p5.exp.iterators
         /// <summary>
         ///     Evaluates the iterator
         /// </summary>
-        /// <value>The evaluated result, returning a list of <see cref="phosphorus.core.Node" />s</value>
+        /// <value>The evaluated result, returning a list of <see cref="Node" />s</value>
         public abstract IEnumerable<Node> Evaluate (ApplicationContext context);
     }
 }

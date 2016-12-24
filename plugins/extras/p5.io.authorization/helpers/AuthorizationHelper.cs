@@ -22,6 +22,7 @@
  */
 
 using System.IO;
+using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
@@ -30,7 +31,7 @@ namespace p5.io.authorization.helpers
     /*
      * Helper class for authorization features in p5.io
      */
-    internal static class AuthorizationHelper
+    static class AuthorizationHelper
     {
         /*
          * Verifies user is authorized reading from the specified file
@@ -41,7 +42,7 @@ namespace p5.io.authorization.helpers
             Node stack)
         {
             // Verifies filename is a valid filename
-            if (string.IsNullOrEmpty (filename) || !filename.StartsWith ("/") || filename.Contains ("\\"))
+            if (string.IsNullOrEmpty (filename) || !filename.StartsWithEx ("/") || filename.Contains ("\\"))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid file path", filename), 
                     stack, 
@@ -52,19 +53,19 @@ namespace p5.io.authorization.helpers
 
                 // Checking if this is "common folder", at which point we return immediately,
                 // since all users have access to this folder
-                if (filename.ToLower ().StartsWith ("/common/"))
+                if (filename.ToLower ().StartsWithEx ("/common/"))
                     return; // Legal
 
                 // Verifying auth file is safe
                 if (filename.ToLower () == GetAuthFile (context).ToLower ())
                     throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to access auth file", context.Ticket.Username, filename), 
+                        string.Format ("User '{0}' tried to access auth file", context.Ticket.Username), 
                         stack, 
                         context);
 
                 // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder
-                if (filename.ToLower ().StartsWith ("/users/") && 
-                    filename.ToLower ().IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+                if (filename.ToLower ().StartsWithEx ("/users/") && 
+                    filename.ToLower ().IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to read file '{1}'", context.Ticket.Username, filename), 
                         stack, 
@@ -73,14 +74,14 @@ namespace p5.io.authorization.helpers
                 // Verifying only root can read web.config
                 if (filename.ToLower () == "/web.config")
                     throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to access web.config", context.Ticket.Username, filename), 
+                        string.Format ("User '{0}' tried to access web.config", context.Ticket.Username), 
                         stack, 
                         context);
 
                 // Verify all database files are safe
-                if (filename.ToLower ().StartsWith (context.RaiseEvent (
+                if (filename.ToLower ().StartsWithEx (context.RaiseEvent (
                     ".p5.config.get",
-                    new Node (".p5.config.get", ".p5.data.path"))[0].Get<string> (context, "/db/")))
+                    new Node (".p5.config.get", ".p5.data.path"))[0].Get (context, "/db/")))
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to read from database file '{1}'", context.Ticket.Username, filename), 
                         stack, 
@@ -97,7 +98,7 @@ namespace p5.io.authorization.helpers
             Node stack)
         {
             // Verifies filename is a valid filename
-            if (string.IsNullOrEmpty (filename) || !filename.StartsWith ("/") || filename.Contains ("\\"))
+            if (string.IsNullOrEmpty (filename) || !filename.StartsWithEx ("/") || filename.Contains ("\\"))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid file path", filename), 
                     stack, 
@@ -119,12 +120,12 @@ namespace p5.io.authorization.helpers
 
                 // Checking if this is "common folder", at which point we return immediately,
                 // since all users have access to this folder
-                if (filename.ToLower ().StartsWith ("/common/"))
+                if (filename.ToLower ().StartsWithEx ("/common/"))
                     return; // Legal
 
                 // Verifying file is not underneath ANOTHER user's folder, which is not legal!
-                if (filename.ToLower ().StartsWith ("/users/") && 
-                    filename.ToLower ().IndexOf (string.Format ("/users/{0}/", context.Ticket.Username.ToLower ())) != 0)
+                if (filename.ToLower ().StartsWithEx ("/users/") && 
+                    filename.ToLower ().IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username.ToLower ())) != 0)
                     throw new LambdaSecurityException (
                         string.Format ("Root user '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                         stack, 
@@ -133,12 +134,12 @@ namespace p5.io.authorization.helpers
                 // Verifying "auth file" is safe
                 if (filename.ToLower () == GetAuthFile (context).ToLower ())
                     throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to access 'auth' file", context.Ticket.Username, filename), 
+                        string.Format ("User '{0}' tried to access 'auth' file", context.Ticket.Username), 
                         stack, 
                         context);
 
                 // Verifies only root account can write to anything but "user files"
-                if (!filename.ToLower ().StartsWith ("/users/")) {
+                if (!filename.ToLower ().StartsWithEx ("/users/")) {
 
                     // Making sure root password is not null, since during setup of server, guest needs write access to create 
                     // salt event files, etc ...
@@ -160,7 +161,7 @@ namespace p5.io.authorization.helpers
             Node stack)
         {
             // Verifies foldername is a valid foldername
-            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWith ("/") || !foldername.EndsWith ("/") || foldername.Contains ("\\"))
+            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWithEx ("/") || !foldername.EndsWithEx ("/") || foldername.Contains ("\\"))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid folder path", foldername), 
                     stack, 
@@ -171,21 +172,21 @@ namespace p5.io.authorization.helpers
 
                 // Checking if this is "common folder", at which point we return immediately,
                 // since all users have access to this folder
-                if (foldername.ToLower ().StartsWith ("/common/"))
+                if (foldername.ToLower ().StartsWithEx ("/common/"))
                     return; // Legal
 
                 // Verifies file is underneath authorized user's folder, if it is underneath "/users/" folders
-                if (foldername.StartsWith ("/users/") && foldername.Length != 7 && 
-                    foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+                if (foldername.StartsWithEx ("/users/") && foldername.Length != 7 && 
+                    foldername.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to read from another user's folder; '{1}'", context.Ticket.Username, foldername), 
                         stack, 
                         context);
 
                 // Verifies nobody but root account can read from database folder
-                if (foldername.StartsWith (context.RaiseEvent (
+                if (foldername.StartsWithEx (context.RaiseEvent (
                     ".p5.config.get",
-                    new Node (".p5.config.get", ".p5.data.path"))[0].Get<string> (context, "/db/")))
+                    new Node (".p5.config.get", ".p5.data.path"))[0].Get (context, "/db/")))
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to read from database folder '{1}'", context.Ticket.Username, foldername), 
                         stack, 
@@ -202,7 +203,7 @@ namespace p5.io.authorization.helpers
             Node stack)
         {
             // Verifies foldername is a valid foldername
-            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWith ("/") || !foldername.EndsWith ("/") || foldername.Contains ("\\"))
+            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWithEx ("/") || !foldername.EndsWithEx ("/") || foldername.Contains ("\\"))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid folder path", foldername), 
                     stack, 
@@ -213,20 +214,20 @@ namespace p5.io.authorization.helpers
 
                 // Checking if this is "common folder", at which point we return immediately,
                 // since all users have access to this folder
-                if (foldername.ToLower ().StartsWith ("/common/"))
+                if (foldername.ToLower ().StartsWithEx ("/common/"))
                     return; // Legal
 
                 // Verifies nobody but root account can write to database folder
-                if (foldername.StartsWith (context.RaiseEvent (
+                if (foldername.StartsWithEx (context.RaiseEvent (
                     ".p5.config.get",
-                    new Node (".p5.config.get", ".p5.data.path"))[0].Get<string> (context, "/db/")))
+                    new Node (".p5.config.get", ".p5.data.path"))[0].Get (context, "/db/")))
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to write to database folder '{1}'", context.Ticket.Username, foldername), 
                         stack, 
                         context);
 
                 // Verifying folder is not underneath ANOTHER user's folder, which is not legal even for root account!
-                if (foldername.StartsWith ("/users/") && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+                if (foldername.StartsWithEx ("/users/") && foldername.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                     throw new LambdaSecurityException (
                         string.Format ("Root user '{0}' tried to write to folder '{1}'", context.Ticket.Username, foldername), 
                         stack, 

@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
@@ -56,18 +57,19 @@ namespace p5.io.common
         internal static string GetSystemPath (ApplicationContext context, string path)
         {
             // Checking if path contains alias variables.
-            if (path.StartsWith ("~")) {
+            if (path.StartsWithEx ("~")) {
 
                 // Returning user's folder.
                 if (context.Ticket.IsDefault)
                     return "/common" + path.Substring (1);
-                else
-                    return "/users/" + context.Ticket.Username + path.Substring (1);
+                return "/users/" + context.Ticket.Username + path.Substring (1);
 
-            } else if (path.StartsWith ("@")) {
+            }
+
+            if (path.StartsWithEx ("@")) {
 
                 // Returning variable path according to results of Active Event invocation.
-                var variable = path.Substring (0, path.IndexOf ("/"));
+                var variable = path.Substring (0, path.IndexOfEx ("/"));
                 var variableUnrolled = context.RaiseEvent ("p5.io.unroll-path." + variable).Get<string> (context);
 
                 // Recursively invoking self untill there is nothing more to unroll.

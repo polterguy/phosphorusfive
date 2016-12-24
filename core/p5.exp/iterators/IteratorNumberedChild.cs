@@ -34,10 +34,10 @@ namespace p5.exp.iterators
     [Serializable]
     public class IteratorNumberedChild : Iterator
     {
-        private readonly int _number;
+        readonly int _number;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNumbered" /> class
+        ///     Initializes a new instance of the <see cref="IteratorNumberedChild" /> class
         /// </summary>
         /// <param name="number">The n'th child to return, if it exists, from previous result-set</param>
         public IteratorNumberedChild (int number)

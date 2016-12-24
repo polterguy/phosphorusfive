@@ -27,9 +27,6 @@ using HtmlAgilityPack;
 using p5.exp;
 using p5.core;
 
-/// <summary>
-///     Main namespace for handling HTML
-/// </summary>
 namespace p5.html
 {
     /// <summary>
@@ -71,7 +68,7 @@ namespace p5.html
         /*
          * Helper for above, recursively parses HTML node given
          */
-        private static void ParseHtmlDocument (Node resultNode, HtmlNode htmlNode)
+        static void ParseHtmlDocument (Node resultNode, HtmlNode htmlNode)
         {
             // Skipping document node
             if (htmlNode.Name != "#document") {

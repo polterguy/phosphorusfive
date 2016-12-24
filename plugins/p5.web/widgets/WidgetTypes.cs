@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
 using System.Linq;
 using System.Web.UI;
 using p5.exp;
@@ -38,7 +37,7 @@ namespace p5.web.widgets
     public class WidgetTypes : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetRetriever"/> class.
+        ///     Initializes a new instance of the <see cref="WidgetRetriever"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -99,7 +98,7 @@ namespace p5.web.widgets
         /*
          * Creates a widget from the given node, and inserts it into the specified [_parent] widget in args.
          */
-        private void CreateWidget<T> (
+        void CreateWidget<T> (
             ApplicationContext context, 
             Node args, 
             string elementType) where T : Widget, new ()
@@ -152,7 +151,7 @@ namespace p5.web.widgets
         /*
          * Decorates widget with common properties/arguments.
          */
-        private void DecorateWidget (ApplicationContext context, Widget widget, Node args)
+        void DecorateWidget (ApplicationContext context, Widget widget, Node args)
         {
             // Looping through all properties/arguments of widget, figuring out what to do with them.
             foreach (var idxArg in args.Children) {
@@ -194,7 +193,7 @@ namespace p5.web.widgets
         /*
          * Creating children widgets of widget.
          */
-        private void CreateChildWidgets (ApplicationContext context, Widget widget, Node children)
+        void CreateChildWidgets (ApplicationContext context, Widget widget, Node children)
         {
             // Looping through all children widgets.
             foreach (var idxChild in children.Children) {
@@ -218,7 +217,7 @@ namespace p5.web.widgets
                     default:
 
                         // Checking if this is a "custom widget", which it is, if name contains a ".".
-                        if (idxChild.Name.IndexOf (".") > 0) {
+                        if (idxChild.Name.IndexOfEx (".") > 0) {
 
                             // Making sure we store the ID for widget, since lambda event invocation will delete it after evaluation.
                             var id = idxChild.Value;
@@ -257,7 +256,7 @@ namespace p5.web.widgets
         /*
          * Creates lambda events for Widget.
          */
-        private void CreateWidgetLambdaEvents (ApplicationContext context, Widget widget, Node events)
+        void CreateWidgetLambdaEvents (ApplicationContext context, Widget widget, Node events)
         {
             // Looping through all events for widget, and registering them as widget lambda events.
             foreach (var idxEvt in events.Children) {
@@ -276,10 +275,10 @@ namespace p5.web.widgets
         /*
          * Handles all default properties of widget.
          */
-        private void HandleDefaultProperty (ApplicationContext context, Widget widget, Node node)
+        void HandleDefaultProperty (ApplicationContext context, Widget widget, Node node)
         {
             // Checking if this is a declaration of an event handler, either "visible" or "invisible server-side".
-            if (node.Name.StartsWith ("on") || node.Name.StartsWith ("_on") || node.Name.StartsWith(".on")) {
+            if (node.Name.StartsWithEx ("on") || node.Name.StartsWithEx ("_on") || node.Name.StartsWithEx (".on")) {
 
                 // This is an event, creating it.
                 CreateEventHandler (context, widget, node);
@@ -287,7 +286,7 @@ namespace p5.web.widgets
             } else {
 
                 // This is a normal attribute, making sure we escape attribute if necessary.
-                widget [node.Name.StartsWith ("\\") ? node.Name.Substring(1) : node.Name] = node.GetExValue<string> (context);
+                widget [node.Name.StartsWithEx ("\\") ? node.Name.Substring(1) : node.Name] = node.GetExValue<string> (context);
             }
         }
 
@@ -296,7 +295,7 @@ namespace p5.web.widgets
          * If a value is given in node, the event will be assumed to be a JavaScript event, and simply sent back to client as JavaScript.
          * If node does not contain a value, the event will be handled as a server-side lambda event, assuming children nodes is lambda to evaluate.
          */
-        private void CreateEventHandler (ApplicationContext context, Widget widget, Node lambda)
+        void CreateEventHandler (ApplicationContext context, Widget widget, Node lambda)
         {
             // Checking what type of event this is, JavaScript or server-side lambda.
             if (lambda.Value != null) {

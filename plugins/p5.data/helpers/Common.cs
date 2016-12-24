@@ -25,11 +25,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
+using p5.exp;
 using p5.core;
 
-/// <summary>
-///     Main namespace for common data classes
-/// </summary>
 namespace p5.data.helpers
 {
     /// <summary>
@@ -38,7 +36,7 @@ namespace p5.data.helpers
     public static class Common
     {
         // Contains full path to database folder
-        private static string _dbFullPath;
+        static string _dbFullPath;
 
         /// <summary>
         ///     This is your actual Database
@@ -63,7 +61,7 @@ namespace p5.data.helpers
         /// <param name="context">Context</param>
         /// <param name="e">E</param>
         [ActiveEvent (Name = ".p5.core.application-start")]
-        private static void _p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
+        static void _p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
         {
             // Acquiring lock on database, before we initialize database.
             Locker.EnterWriteLock ();
@@ -78,7 +76,7 @@ namespace p5.data.helpers
         ///     Make sure database is properly initialized
         /// </summary>
         /// <param name="context">application context</param>
-        private static void Initialize (ApplicationContext context)
+        static void Initialize (ApplicationContext context)
         {
             // Verifying database is not already initialized from before
             if (Database == null) {
@@ -162,7 +160,7 @@ namespace p5.data.helpers
             // Searching through database to see if there are any nodes we can use from before
             var objectsPerFile = context.RaiseEvent (
                     ".p5.config.get",
-                    new Node (".p5.config.get", ".p5.data.nodes-per-file"))[0].Get<int> (context, 32);
+                    new Node (".p5.config.get", ".p5.data.nodes-per-file"))[0].Get (context, 32);
             if (forceAppend) {
                 if (Database.Count > 0) {
                     if (Database [Database.Count - 1].Count < objectsPerFile)
@@ -192,7 +190,7 @@ namespace p5.data.helpers
         /*
          * Saves a database node to disc, or deletes it if it is empty
          */
-        private static void SaveFileNode (ApplicationContext context, Node fileNode)
+        static void SaveFileNode (ApplicationContext context, Node fileNode)
         {
             // Checking to see if we should remove file entirely, due to it having no more content
             if (fileNode.Count == 0) {
@@ -201,9 +199,9 @@ namespace p5.data.helpers
                 File.Delete (_dbFullPath + fileNode.Value);
 
                 // Checking to see if we should remove folder entirely
-                string folder = fileNode.Get<string> (context).Substring (0, fileNode.Get<string> (context).LastIndexOf ("/") + 1);
+                string folder = fileNode.Get<string> (context).Substring (0, fileNode.Get<string> (context).LastIndexOfEx ("/") + 1);
                 var fileList = Directory.GetFiles (_dbFullPath + folder).ToList ();
-                fileList.RemoveAll (ix => !Path.GetFileName (ix).StartsWith ("db") && !Path.GetFileName (ix).EndsWith (".hl"));
+                fileList.RemoveAll (ix => !Path.GetFileName (ix).StartsWithEx ("db") && !Path.GetFileName (ix).EndsWithEx (".hl"));
                 if (fileList.Count == 0) {
 
                     // Deleting folder, since there are no more files in it
@@ -221,7 +219,7 @@ namespace p5.data.helpers
         /*
          * Loads a file from "path" and returns as Node
          */
-        private static Node LoadFile (ApplicationContext context, string path)
+        static Node LoadFile (ApplicationContext context, string path)
         {
             // Reading file from disc
             using (TextReader reader = File.OpenText (_dbFullPath + path)) {
@@ -236,7 +234,7 @@ namespace p5.data.helpers
         /*
          * Returns all directories within database folder
          */
-        private static IEnumerable<string> GetFolders (ApplicationContext context)
+        static IEnumerable<string> GetFolders (ApplicationContext context)
         {
             // Looping through each subfolder in folder given
             var folders = Directory.GetDirectories (_dbFullPath).ToList ();
@@ -253,11 +251,11 @@ namespace p5.data.helpers
         /*
          * Returns files within directory
          */
-        private static IEnumerable<string> GetFiles (ApplicationContext context, string folder)
+        static IEnumerable<string> GetFiles (ApplicationContext context, string folder)
         {
             // Looping through each file in folder given
             var files = Directory.GetFiles (_dbFullPath + folder.Substring (1)).ToList ();
-            files.RemoveAll (ix => !Path.GetFileName (ix).StartsWith ("db") || Path.GetFileName (ix).EndsWith ("~"));
+            files.RemoveAll (ix => !Path.GetFileName (ix).StartsWithEx ("db") || Path.GetFileName (ix).EndsWithEx ("~"));
             files.Sort ((x, y) => 
                 int.Parse (Path.GetFileName (x).Substring (2).Replace (".hl", "")).CompareTo (int.Parse (Path.GetFileName (y).Substring (2).Replace (".hl", ""))));
             foreach (var idxFile in files) {
@@ -270,12 +268,12 @@ namespace p5.data.helpers
         /*
          * Returns the next available filename for a new database file
          */
-        private static string FindAvailableNewFileName (ApplicationContext context)
+        static string FindAvailableNewFileName (ApplicationContext context)
         {
             // Retrieving maximum number of files for folder
             var maxFilesPerDirectory = context.RaiseEvent (
                     ".p5.config.get",
-                    new Node (".p5.config.get", ".p5.data.files-per-folder"))[0].Get<int> (context, 256);
+                    new Node (".p5.config.get", ".p5.data.files-per-folder"))[0].Get (context, 256);
 
             // Retrieving all folders currently in use
             var directoryList = GetFolders (context).ToList ();
@@ -324,7 +322,7 @@ namespace p5.data.helpers
         /*
          * Helper to create directory
          */
-        private static void CreateNewDirectory (ApplicationContext context, string directory)
+        static void CreateNewDirectory (ApplicationContext context, string directory)
         {
             Directory.CreateDirectory (_dbFullPath + directory.Substring (1));
         }
@@ -332,7 +330,7 @@ namespace p5.data.helpers
         /*
          * Helper to retrieve root folder of application
          */
-        private static string GetRootFolder (ApplicationContext context)
+        static string GetRootFolder (ApplicationContext context)
         {
             return context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
         }

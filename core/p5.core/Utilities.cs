@@ -102,7 +102,7 @@ namespace p5.core
                 return null;
 
             // Invoking conversion Active Event with "encode" set to true.
-            Node node = new Node ("", value);
+            var node = new Node ("", value);
             node.Add ("encode", true);
 
             // Notice, if Active Event conversion yields null, we invoke "System.Convert.ToString" as a failsafe default, which means Active Event conversions
@@ -191,7 +191,7 @@ namespace p5.core
                         break;
                     case '\r':
                         if ((char) reader.Read () != '\n')
-                            throw new ArgumentException (string.Format ("Unexpected CR found without any matching LF near '{0}'", builder.ToString ()));
+                            throw new ArgumentException (string.Format ("Unexpected CR found without any matching LF near '{0}'", builder));
                         builder.Append ("\r\n");
                         break;
                     default:
@@ -199,13 +199,13 @@ namespace p5.core
                         break;
                 }
             }
-            throw new ArgumentException (string.Format ("String literal not closed before end of input near '{0}'", builder.ToString ()));
+            throw new ArgumentException (string.Format ("String literal not closed before end of input near '{0}'", builder));
         }
 
         /*
          * Appends an escape character intoto StringBuilder from specified StringReader.
          */
-        private static string AppendEscapeCharacter (StringReader reader)
+        static string AppendEscapeCharacter (StringReader reader)
         {
             switch (reader.Read ()) {
                 case -1:
@@ -243,7 +243,7 @@ namespace p5.core
         /*
          * Returns a character represented as an octal character representation.
          */
-        private static string HexaCharacter (StringReader reader)
+        static string HexaCharacter (StringReader reader)
         {
             var hexNumberString = "";
             for (var idxNo = 0; idxNo < 4; idxNo++)

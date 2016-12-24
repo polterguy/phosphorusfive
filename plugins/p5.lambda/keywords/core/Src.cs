@@ -42,11 +42,11 @@ namespace p5.lambda.keywords.core
         public static void lambda_src_dest (ApplicationContext context, ActiveEventArgs e)
         {
             // Figuring out type of source.
-            Expression exp = e.Args.Value as Expression;
-            if (exp != null) {
+            var x = e.Args.Value as Expression;
+            if (x != null) {
 
                 // Source is an expression, evaluating it, and returning results back to caller.
-                var match = exp.Evaluate (context, e.Args, e.Args);
+                var match = x.Evaluate (context, e.Args, e.Args);
                 if (match.TypeOfMatch == Match.MatchType.count) {
 
                     // Simple count expression.

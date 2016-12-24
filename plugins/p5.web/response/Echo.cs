@@ -45,7 +45,7 @@ namespace p5.web.ui.response {
             HttpContext.Current.Response.ClearContent ();
 
             // Rendering content back on wire
-            byte[] val = e.Args.Value as byte[];
+            var val = e.Args.Value as byte[];
             if (val != null) {
 
                 // Content is binary type of content

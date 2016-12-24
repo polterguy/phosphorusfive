@@ -47,11 +47,11 @@ namespace p5.lambda.keywords.core
             root.Insert (0, new Node ("_return"));
 
             // Checking value of return, and acting accordingly, making sure we return simple values as such, and node expression results as nodes.
-            Expression exp = e.Args.Value as Expression;
-            if (exp != null) {
+            var x = e.Args.Value as Expression;
+            if (x != null) {
 
                 // Source is an expression, evaluating it, and returning results back to caller.
-                var match = exp.Evaluate (context, e.Args, e.Args);
+                var match = x.Evaluate (context, e.Args, e.Args);
                 if (match.TypeOfMatch == Match.MatchType.count) {
 
                     // Simple count expression.

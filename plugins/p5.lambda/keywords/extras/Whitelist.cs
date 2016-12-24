@@ -42,17 +42,17 @@ namespace p5.lambda.keywords.extras
         {
             // Retrieving condition and lambda node from args.
             var condition = e.Args["post-condition"].Get<Node> (context);
-            var lambda = e.Args["lambda"].Get<Node> (context);
+            var lambdaObj = e.Args["lambda"].Get<Node> (context);
 
             // Looping through each children of lambda, making sure it's name can be found in condition's children.
-            foreach (var idxLambda in lambda.Children) {
+            foreach (var idxLambda in lambdaObj.Children) {
 
                 // Verifying currently iterated lambda child node's name can be found in [post-condition] of whitelist.
                 if (condition.Children.Count (ix => ix.Name == idxLambda.Name) == 0) {
 
                     // Child of lambda was not found in [post-condition], making sure we remove all children of lambda, before we throw an exception.
-                    lambda.Clear ();
-                    throw new LambdaSecurityException ("[post-condition] of whitelist not met", lambda, context);
+                    lambdaObj.Clear ();
+                    throw new LambdaSecurityException ("[post-condition] of whitelist not met", lambdaObj, context);
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace p5.lambda.keywords.extras
         {
             // Retrieving condition and lambda node from args, cloning it since we'll evaluate it using [eval].
             var condition = e.Args["pre-condition"].Get<Node> (context).Clone ();
-            var lambda = e.Args["lambda"].Get<Node> (context);
+            var lambdaObj = e.Args["lambda"].Get<Node> (context);
 
             // Evaluating [pre-condition], asserting it yields true, detaching whitelist first, making sure we attach it afterwards.
             var old = context.Ticket.Whitelist;
@@ -78,7 +78,7 @@ namespace p5.lambda.keywords.extras
                 context.Ticket.Whitelist = old;
             }
             if (!condition.Get<bool> (context))
-                throw new LambdaSecurityException ("[pre-condition] of whitelist not met", lambda, context);
+                throw new LambdaSecurityException ("[pre-condition] of whitelist not met", lambdaObj, context);
         }
     }
 }

@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
 using System.Linq;
 using System.Web.UI;
 using System.Collections.Generic;
@@ -38,7 +37,7 @@ namespace p5.web.widgets
     public class WidgetProperties : BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetProperties"/> class.
+        ///     Initializes a new instance of the <see cref="WidgetProperties"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
@@ -123,7 +122,7 @@ namespace p5.web.widgets
                         case "after":
                             throw new LambdaException ("You cannot change [parent], [position], [before] or [after], since these are read only after creation of widget", e.Args, context);
                         default:
-                            idxWidget [valueNode.Name.StartsWith ("\\") ? valueNode.Name.Substring(1) : valueNode.Name] = valueNode.GetExValue<string> (context);
+                            idxWidget [valueNode.Name.StartsWithEx ("\\") ? valueNode.Name.Substring(1) : valueNode.Name] = valueNode.GetExValue<string> (context);
                             break;
                     }
                 }
@@ -161,7 +160,7 @@ namespace p5.web.widgets
                         case "id":
                             throw new LambdaException ("Cannot remove property '" + nameNode.Name + "' of widget", e.Args, context);
                         default:
-                            widget.DeleteAttribute (nameNode.Name.StartsWith ("\\") ? nameNode.Name.Substring(1) : nameNode.Name);
+                            widget.DeleteAttribute (nameNode.Name.StartsWithEx ("\\") ? nameNode.Name.Substring(1) : nameNode.Name);
                             break;
                     }
                 }
@@ -177,7 +176,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_property_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new p5.core.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets.
                 foreach (var widget in FindWidgets<Widget> (context, e.Args)) {
@@ -196,7 +195,7 @@ namespace p5.web.widgets
                         // Dropping the Element property and all events, except events that are JavaScript client side attributes.
                         if (idxAtr == "Element" || 
                             idxAtr == "id" ||
-                            ((idxAtr.StartsWith ("on") || idxAtr.StartsWith ("_on") || idxAtr.StartsWith(".on")) && widget [idxAtr] == "common_event_handler"))
+                            ((idxAtr.StartsWithEx ("on") || idxAtr.StartsWithEx ("_on") || idxAtr.StartsWithEx (".on")) && widget [idxAtr] == "common_event_handler"))
                             continue;
                         curNode.Add (idxAtr, widget [idxAtr]);
                     }
@@ -230,7 +229,7 @@ namespace p5.web.widgets
         /*
          * Returns as a child of args the specified property's value for specified widget.
          */
-        private void RetrieveWidgetProperty (Node args, string propertyName, Widget widget)
+        void RetrieveWidgetProperty (Node args, string propertyName, Widget widget)
         {
             // Checking if this is a generic attribute, or a special property.
             switch (propertyName) {
@@ -271,7 +270,7 @@ namespace p5.web.widgets
         /*
          * Ensures [oninit] is evaluated for widget, and all of widgets' descendant widgets.
          */
-        private void EnsureOnInit (ApplicationContext context, Widget widget)
+        void EnsureOnInit (ApplicationContext context, Widget widget)
         {
             // Making sure this is a widget.
             if (widget != null) {
@@ -296,7 +295,7 @@ namespace p5.web.widgets
         /*
          * Recursively retrieves all specified values from widget, and widget's descendants.
          */
-        private void SerializeWidgetPropertiesRecursively (
+        void SerializeWidgetPropertiesRecursively (
             ApplicationContext context, 
             Node args, 
             List<Node> list,
@@ -322,10 +321,10 @@ namespace p5.web.widgets
         /*
          * Helper for RetrieveWidgetProperty, creates a return value for one normal attribute.
          */
-        private static void CreateAttributeReturn (Node node, string name, Widget widget, object value = null)
+        static void CreateAttributeReturn (Node node, string name, Widget widget, object value = null)
         {
             // Fetching property name.
-            var propertyName = name.StartsWith ("\\") ? name.Substring (1) : name;
+            var propertyName = name.StartsWithEx ("\\") ? name.Substring (1) : name;
 
             // Checking if widget has the attribute, if it doesn't, we don't even add any return nodes at all, to make it possible
             // to separate widgets which has the property, but no value, (such as the selected property on checkboxes for instance),
@@ -334,13 +333,11 @@ namespace p5.web.widgets
                 return;
 
             // Making sure we skip server-side Ajax events.
-            if ((propertyName.StartsWith ("on") || propertyName.StartsWith ("_on") || propertyName.StartsWith(".on")) && widget [propertyName] == "common_event_handler")
+            if ((propertyName.StartsWithEx ("on") || propertyName.StartsWithEx ("_on") || propertyName.StartsWithEx (".on")) && widget [propertyName] == "common_event_handler")
                 return;
 
             // Returning specified value, unless no value is given, at which case we return the attribute value from widget.
-            node.FindOrInsert (widget.ID).Add (name).LastChild.Value = value == null ? 
-                widget [propertyName] : 
-                value;
+            node.FindOrInsert (widget.ID).Add (name).LastChild.Value = value ?? widget [propertyName];
         }
     }
 }

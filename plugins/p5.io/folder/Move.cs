@@ -51,9 +51,7 @@ namespace p5.io.folder
 
                 // Actually moving (or renaming) folder
                 Directory.Move (rootFolder + source, rootFolder + destination);
-            }, delegate (string destination) {
-                return Directory.Exists (destination);
-            });
+            }, Directory.Exists);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace p5.hyperlambda.helpers
     /*
      * Class used internally to tokenize Hyperlambda
      */
-    internal class Token
+    class Token
     {
         /*
          * Type of token

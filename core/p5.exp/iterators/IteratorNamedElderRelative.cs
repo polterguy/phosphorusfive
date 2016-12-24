@@ -22,9 +22,7 @@
  */
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using p5.core;
 
 namespace p5.exp.iterators
@@ -38,7 +36,7 @@ namespace p5.exp.iterators
         internal readonly string Name;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamedElderRelative" /> class
+        ///     Initializes a new instance of the <see cref="IteratorNamedElderRelative" /> class
         /// </summary>
         /// <param name="name">name to match</param>
         public IteratorNamedElderRelative (string name)

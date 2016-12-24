@@ -29,7 +29,7 @@ namespace p5.auth
     /// <summary>
     ///     Class wrapping miscellaneous authentication/authorization Active Events.
     /// </summary>
-    internal static class Misc
+    static class Misc
     {
         /// <summary>
         ///     Returns the currently logged in user object.

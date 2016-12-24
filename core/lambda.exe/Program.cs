@@ -117,11 +117,11 @@ namespace lambda_exe
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.core.application-folder")]
-        private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
+        static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving location for currently executed assembly, and making sure we remove the trailing slash "/".
             string retVal = Assembly.GetExecutingAssembly().Location.Replace ("\\", "/");
-            if (retVal.EndsWith("/"))
+            if (retVal.EndsWithEx ("/"))
                 retVal = retVal.Substring(0, retVal.Length - 1);
             e.Args.Value = retVal;
         }
@@ -129,7 +129,7 @@ namespace lambda_exe
         /*
          * Loads the default plugins.
          */
-        private static void LoadDefaultPlugins ()
+        static void LoadDefaultPlugins ()
         {
             // Initializing the default plugins, including executing assembly, to wire up the console read-line/write-line events.
             Loader.Instance.RegisterAssembly (Assembly.GetExecutingAssembly());
@@ -144,7 +144,7 @@ namespace lambda_exe
          * Starts immediate mode, allowing user to type in a bunch of Hyperlambda, executing lambda when empty line is submitted,
          * and exiting when user types in "exit" as Hyperlambda.
          */ 
-        private static void ImmediateMode (ApplicationContext context)
+        static void ImmediateMode (ApplicationContext context)
         {
             // Looping until user types "exit".
             while (true) {
@@ -158,7 +158,9 @@ namespace lambda_exe
                     // Exiting program entirely.
                     break;
 
-                } else if (hyperlambda.Trim () == "") {
+                }
+
+                if (hyperlambda.Trim () == "") {
 
                     // User didn't type anything at all.
                     Console.WriteLine ("Nothing to do here, type 'exit' to exit program");
@@ -177,10 +179,10 @@ namespace lambda_exe
          * Retrieves Hyperlambda from console.
          * Basically retrieves a line of input, until the user submits an empty line.
          */
-        private static string GetNextHyperlambda (ApplicationContext context)
+        static string GetNextHyperlambda (ApplicationContext context)
         {
             // Used as buffer to hold Hyperlambda.
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             // Looping until user types in an empty line.
             while (true) {
@@ -206,7 +208,7 @@ namespace lambda_exe
         /*
          * Outputs instructions on how to use the lambda executor to the console.
          */
-        private static void OutputInstructions ()
+        static void OutputInstructions ()
         {
             Console.WriteLine ();
             Console.WriteLine ();
@@ -239,7 +241,7 @@ namespace lambda_exe
          * Returns filename to evaluate as value of returned node, alternatively sets "immediate" to true, if user requested
          * to initiate "immediate mode".
          */
-        private static Node ParseArguments (string[] args, out bool immediate)
+        static Node ParseArguments (string[] args, out bool immediate)
         {
             immediate = false;
             var exeNode = new Node ("input-file");

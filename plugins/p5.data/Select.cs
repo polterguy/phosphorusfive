@@ -59,26 +59,21 @@ namespace p5.data
                     // Retrieving match object, and checking what type of match it was.
                     var match = ex.Evaluate (context, Common.Database, e.Args);
 
-                    // Removing value of [p5.data.select] node by default.
+                    // Retrieving result of match.
                     e.Args.Value = null;
-
-                    // Checking type of select, and acting accordingly.
-                    if (match.TypeOfMatch == Match.MatchType.count) {
-
-                        // Returning number of items found as main value of node.
-                        e.Args.Value = match.Count;
-                    } else if (match.TypeOfMatch == Match.MatchType.node) {
-
-                        // Node match, returning cloned version of each node found.
-                        e.Args.AddRange (match.Select (ix => ix.Node.Clone ()));
-                    } else if (match.TypeOfMatch == Match.MatchType.name) {
-
-                        // Name match, returning only names of nodes.
-                        e.Args.AddRange (match.Select (ix => new Node (ix.Node.Name)));
-                    } else {
-
-                        // Value match, returning all values of nodes.
-                        e.Args.AddRange (match.Select (ix => new Node ("", ix.Value)));
+                    switch (match.TypeOfMatch) {
+                        case Match.MatchType.count:
+                            e.Args.Value = match.Count;
+                            break;
+                        case Match.MatchType.node:
+                            e.Args.AddRange (match.Select (ix => ix.Node.Clone ()));
+                            break;
+                        case Match.MatchType.name:
+                            e.Args.AddRange (match.Select (ix => new Node (ix.Node.Name)));
+                            break;
+                        case Match.MatchType.value:
+                            e.Args.AddRange (match.Select (ix => new Node ("", ix.Value)));
+                            break;
                     }
                 } finally {
 

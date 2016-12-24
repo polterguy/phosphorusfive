@@ -34,8 +34,8 @@ namespace p5.hyperlambda.helpers
     /// </summary>
     public class NodeBuilder
     {
-        private readonly ApplicationContext _context;
-        private readonly string _hyperlisp;
+        readonly ApplicationContext _context;
+        readonly string _hyperlisp;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NodeBuilder" /> class
@@ -49,7 +49,7 @@ namespace p5.hyperlambda.helpers
         }
 
         /// <summary>
-        ///     Creates a list of <see cref="phosphorus.core.Node" />s from the given Hyperlambda
+        ///     Creates a list of <see cref="Node" />s from the given Hyperlambda
         /// </summary>
         /// <returns>The Hyperlambda converted to p5 lambda</returns>
         public List<Node> Nodes
@@ -94,7 +94,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Helper method for NodesFromHyperlisp, creates a node tree hierarchy from a Token object
          */
-        private Node TokensToNode (Node node, Token token, Token previousToken)
+        Node TokensToNode (Node node, Token token, Token previousToken)
         {
             switch (token.Type) {
                 case Token.TokenType.Name:
@@ -105,7 +105,7 @@ namespace p5.hyperlambda.helpers
                 case Token.TokenType.TypeOrContent:
 
                     // This might either be the value or the type information of our node
-                    HandleContentOrTypeToken (node, token, previousToken);
+                    HandleContentOrTypeToken (node, token);
                     break;
             }
             return node;
@@ -114,7 +114,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Handles a "Name" token
          */
-        private Node NameTokenToNode (Node node, Token token, Token previousToken)
+        Node NameTokenToNode (Node node, Token token, Token previousToken)
         {
             if (previousToken == null || previousToken.Type == Token.TokenType.CarriageReturn) {
 
@@ -144,7 +144,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Handles a "TypeOrContent" token
          */
-        private void HandleContentOrTypeToken (Node node, Token token, Token previousToken)
+        void HandleContentOrTypeToken (Node node, Token token)
         {
             // If there's no existing value for node, then there's not any type information associated with object neither,
             // hence we don't have to attempt to convert token's value before setting the value of the node
@@ -157,7 +157,7 @@ namespace p5.hyperlambda.helpers
          * can actually store in your hyperlambda file, as long as you have created the correct
          * converters and type information Active Events.
          */
-        private object ConvertStringValue (string value, string typeInfo)
+        object ConvertStringValue (string value, string typeInfo)
         {
             if (typeInfo == "string")
                 return value; // string is default type

@@ -165,7 +165,7 @@ namespace p5.lambda.helpers
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "operators")]
-        private static void operators (ApplicationContext context, ActiveEventArgs e)
+        static void operators (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("=");
             e.Args.Add ("!=");
@@ -181,7 +181,7 @@ namespace p5.lambda.helpers
          * Compares a list of values for equality, and returns -1, 0 or +1 depending upon which list
          * is more than, less than or equals to the other
          */
-        private static int CompareValues (List<object> lhs, List<object> rhs)
+        static int CompareValues (List<object> lhs, List<object> rhs)
         {
             // Checking for "null items" (which logically are equal)
             // This means that an expression yielding exclusively "null values", will be equal to anything else that somehow
@@ -210,7 +210,7 @@ namespace p5.lambda.helpers
 
                 // Checking to see if types are the same
                 if (lhs [idx].GetType () != rhs [idx].GetType ())
-                    return lhs [idx].GetType ().FullName.CompareTo (rhs [idx].GetType ().FullName);
+                    return string.Compare (lhs [idx].GetType ().FullName, rhs [idx].GetType ().FullName, StringComparison.InvariantCulture);
 
                 // Running through IComparable
                 int retVal = ((IComparable)lhs [idx]).CompareTo (rhs [idx]);
@@ -226,13 +226,13 @@ namespace p5.lambda.helpers
         /*
          * Returns two lists containing the object values of both sides being compared to each other
          */
-        private static Tuple<List<object>, List<object>> GetBothSides (Node args, ApplicationContext context)
+        static Tuple<List<object>, List<object>> GetBothSides (Node args, ApplicationContext context)
         {
             // Left-hand side
-            List<object> lhs = new List<object> (XUtil.Iterate<object> (context, args.Parent));
+            var lhs = new List<object> (XUtil.Iterate<object> (context, args.Parent));
 
             // Right-hand side
-            List<object> rhs = new List<object> (XUtil.Iterate<object> (context, args));
+            var rhs = new List<object> (XUtil.Iterate<object> (context, args));
 
             // Returning both sides to caller
             return new Tuple<List<object>, List<object>> (lhs, rhs);

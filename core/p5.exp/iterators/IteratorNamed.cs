@@ -36,24 +36,24 @@ namespace p5.exp.iterators
     public class IteratorNamed : Iterator
     {
         internal readonly string Name;
-        private bool _like;
-        private bool _regex;
+        readonly bool _like;
+        readonly bool _regex;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamed" /> class
+        ///     Initializes a new instance of the <see cref="IteratorNamed" /> class
         /// </summary>
         /// <param name="name">name to match</param>
         public IteratorNamed (string name)
         {
-            if (name.StartsWith ("~")) {
+            if (name.StartsWithEx ("~")) {
 
                 // "Like" equality
                 Name = name.Substring (1);
                 _like = true;
-            } else if (name.StartsWith (":regex:")) {
+            } else if (name.StartsWithEx (":regex:")) {
                 _regex = true;
                 Name = name.Substring (7);
-            } else if (name.StartsWith ("\\")) {
+            } else if (name.StartsWithEx ("\\")) {
 
                 // Escaped "named operator"
                 Name = name.Substring (1);
@@ -69,11 +69,11 @@ namespace p5.exp.iterators
             if (_regex) {
                 var ex = Utilities.Convert<Regex> (context, Name);
                 return Left.Evaluate (context).Where (idxCurrent => ex.IsMatch(idxCurrent.Name));
-            } else if (_like) {
-                return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name.Contains (Name));
-            } else {
-                return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name == Name);
             }
+
+            if (_like)
+                return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name.Contains (Name));
+            return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name == Name);
         }
     }
 }

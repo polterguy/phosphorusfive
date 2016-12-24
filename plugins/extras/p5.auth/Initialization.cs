@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -31,7 +31,7 @@ namespace p5.auth
     /// <summary>
     ///     Class wrapping initialization of authentication.
     /// </summary>
-    internal static class Initialization
+    static class Initialization
     {
         /// <summary>
         ///     Associates an ApplicationContext with a ContextTicket, meaning an authenticated user.
@@ -40,7 +40,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.core.initialize-application-context")]
-        private static void _p5_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
+        static void _p5_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if session is null, which it might be, during for instance [p5.core.application-start]
             if (HttpContext.Current.Session != null) {
@@ -63,7 +63,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent(Name = ".p5.auth.get-server-salt")]
-        private static void _p5_auth_get_server_salt(ApplicationContext context, ActiveEventArgs e)
+        static void _p5_auth_get_server_salt(ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = AuthenticationHelper.ServerSalt(context);
         }
@@ -77,7 +77,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.auth._has-salt")]
-        private static void p5_auth__has_salt (ApplicationContext context, ActiveEventArgs e)
+        static void p5_auth__has_salt (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = !string.IsNullOrEmpty (AuthenticationHelper.ServerSalt (context));
         }
@@ -89,7 +89,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.auth._set-server-salt")]
-        private static void p5_auth__set_server_salt(ApplicationContext context, ActiveEventArgs e)
+        static void p5_auth__set_server_salt(ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.SetServerSalt (context, e.Args, e.Args.GetExValue<string> (context));
         }

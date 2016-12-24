@@ -25,7 +25,6 @@ using System.Web.UI;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.ajax.widgets;
 using p5.exp.exceptions;
 
 namespace p5.web.widgets
@@ -37,11 +36,11 @@ namespace p5.web.widgets
     public abstract class BaseWidget
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.widgets.BaseWidget"/> class.
+        ///     Initializes a new instance of the <see cref="BaseWidget"/> class.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="manager">PageManager owning this instance</param>
-        public BaseWidget (ApplicationContext context, PageManager manager)
+        protected BaseWidget (ApplicationContext context, PageManager manager)
         {
             // Setting WidgetManager for this instance
             Manager = manager;

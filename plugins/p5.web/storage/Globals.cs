@@ -25,9 +25,6 @@ using System.Web;
 using p5.exp;
 using p5.core;
 
-/// <summary>
-///     Main namespace for everything related to Web User Interface
-/// </summary>
 namespace p5.web.storage
 {
     /// <summary>

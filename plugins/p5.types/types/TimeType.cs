@@ -38,13 +38,12 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.time")]
-        private static void p5_hyperlisp_get_object_value_time (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_object_value_time (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is TimeSpan) {
                 return;
-            } else {
-                e.Args.Value = TimeSpan.ParseExact (e.Args.Get<string> (context), "c", CultureInfo.InvariantCulture);
             }
+            e.Args.Value = TimeSpan.ParseExact (e.Args.Get<string> (context), "c", CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -53,7 +52,7 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.System.TimeSpan")]
-        private static void p5_hyperlisp_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = e.Args.Get<TimeSpan> (context).ToString ("c", CultureInfo.InvariantCulture);
         }
@@ -64,7 +63,7 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.TimeSpan")]
-        private static void p5_hyperlisp_get_type_name_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_type_name_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "time";
         }

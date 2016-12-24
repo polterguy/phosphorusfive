@@ -25,9 +25,6 @@ using System.Text;
 using System.Collections.Generic;
 using p5.core;
 
-/// <summary>
-///     Contains common helper methods for Hyperlambda
-/// </summary>
 namespace p5.hyperlambda.helpers
 {
     /// <summary>
@@ -35,8 +32,8 @@ namespace p5.hyperlambda.helpers
     /// </summary>
     public class HyperlambdaBuilder
     {
-        private readonly ApplicationContext _context;
-        private readonly IEnumerable<Node> _nodes;
+        readonly ApplicationContext _context;
+        readonly IEnumerable<Node> _nodes;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="HyperlambdaBuilder" /> class
@@ -66,7 +63,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Recursively invoked for each "level" in node hierarchy
          */
-        private void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
+        void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
         {
             foreach (var idxNode in nodes) {
                 var idxLevel = level;
@@ -84,7 +81,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Appends node's name to Hyperlambda StringBuilder output
          */
-        private void AppendName (StringBuilder builder, Node node)
+        void AppendName (StringBuilder builder, Node node)
         {
             if (node.Name.Contains ("\n")) {
                 builder.Append (string.Format (@"@""{0}""", node.Name.Replace (@"""", @"""""")));
@@ -99,7 +96,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Appends node's type to Hyperlambda StringBuilder output
          */
-        private void AppendType (StringBuilder builder, Node node)
+        void AppendType (StringBuilder builder, Node node)
         {
             if (node.Value == null)
                 return; // no type information here
@@ -118,7 +115,7 @@ namespace p5.hyperlambda.helpers
         /*
          * Appends node's value to Hyperlambda StringBuilder output
          */
-        private void AppendValue (StringBuilder builder, Node node)
+        void AppendValue (StringBuilder builder, Node node)
         {
             if (node.Value == null)
                 return; // Nothing to append here.

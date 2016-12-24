@@ -95,7 +95,6 @@ namespace p5.exp
         /// </summary>
         /// <param name="context"></param>
         /// <param name="expressionNode"></param>
-        /// <param name="activeEventName"></param>
         /// <returns></returns>
         static public Expression DestinationExpression (ApplicationContext context, Node expressionNode)
         {
@@ -114,7 +113,6 @@ namespace p5.exp
         /// </summary>
         /// <param name="context"></param>
         /// <param name="expressionNode"></param>
-        /// <param name="activeEventName"></param>
         /// <returns></returns>
         static public Match DestinationMatch (
             ApplicationContext context,
@@ -137,7 +135,6 @@ namespace p5.exp
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="evaluatedNode">Evaluated node</param>
-        /// <param name="defaultValue">Default value</param>
         /// <typeparam name="T">The 1st type parameter</typeparam>
         public static T Single<T> (
             ApplicationContext context,
@@ -152,7 +149,6 @@ namespace p5.exp
         /// <param name="context">Context</param>
         /// <param name="evaluatedNode">Evaluated node</param>
         /// <param name="dataSource">Data source</param>
-        /// <param name="defaultValue">Default value</param>
         /// <typeparam name="T">The 1st type parameter</typeparam>
         public static T Single<T> (
             ApplicationContext context,
@@ -200,12 +196,11 @@ namespace p5.exp
                         yield return Utilities.Convert<T> (context, match.Count);
                         yield break;
 
-                    } else {
+                    }
 
-                        // Expression was anything but 'count', we return it as type T, possibly triggering a conversion.
-                        foreach (var idx in match) {
-                            yield return Utilities.Convert<T> (context, idx.Value);
-                        }
+                    // Expression was anything but 'count', we return it as type T, possibly triggering a conversion.
+                    foreach (var idx in match) {
+                        yield return Utilities.Convert<T> (context, idx.Value);
                     }
                 } else {
 
@@ -249,12 +244,12 @@ namespace p5.exp
             params string[] avoidNodes)
         {
             // Finding source nodes.
-            var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_") && !avoidNodes.Contains (ix.Name)).ToList ();
+            var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWithEx (".") && !ix.Name.StartsWithEx ("_") && !avoidNodes.Contains (ix.Name)).ToList ();
 
             // Sanity check.
             if (srcNodes.Count > 1)
                 throw new LambdaException ("Multiple source found for [" + args.Name + "]", args, context);
-            else if (srcNodes.Count == 0)
+            if (srcNodes.Count == 0)
                 return null;
 
             // Raising source Active Event, and returning results.
@@ -281,7 +276,7 @@ namespace p5.exp
             params string[] avoidNodes)
         {
             // Finding source nodes.
-            var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWith (".") && !ix.Name.StartsWith ("_") && !avoidNodes.Contains (ix.Name)).ToList ();
+            var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWithEx (".") && !ix.Name.StartsWithEx ("_") && !avoidNodes.Contains (ix.Name)).ToList ();
 
             // Looping through all source nodes, invoking Active Events, and adding into return value.
             var retVal = new List<Node> ();
@@ -322,7 +317,7 @@ namespace p5.exp
 
                     // Checking if caller tries to access "protected storage key", which we do not allow, unless this is a native invocation, signified by that the caller invoked
                     // us with a "." as the name of the node.
-                    if (!args.Name.StartsWith (".") && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
+                    if (!args.Name.StartsWithEx (".") && (idxKey.StartsWithEx ("_") || idxKey.StartsWithEx (".")))
                         throw new LambdaException (
                             string.Format ("Tried to access protected key in [{0}], key name was '{1}' ", args.Name, idxKey), 
                             args, 
@@ -349,9 +344,6 @@ namespace p5.exp
         /// <param name="args">Root node for updating collection</param>
         /// <param name="functor">Callback supplied by caller, that will be invoked once for each "key", with whatever value method 
         /// finds for specified key</param>
-        /// <param name="isNative">If true, then this is a "native invocation", which allows for setting any object type into the session,
-        /// at which the logic will change, and set the value "raw" into the collection, not iterating destinations etc. Only applicable if there
-        /// are no expressions in args.Value, but only constants.</param>
         /// <param name="exclusionArgs">Contains a list of node names that are excluded when looking for the "source" for values 
         /// for keys specified</param>
         public static void Set (
@@ -367,11 +359,15 @@ namespace p5.exp
             foreach (var idxKey in Iterate<string> (context, args)) {
 
                 // Making sure collection key is not "hidden" key
-                if (!args.Name.StartsWith (".") && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
+                if (!args.Name.StartsWithEx (".") && (idxKey.StartsWithEx ("_") || idxKey.StartsWithEx (".")))
                     throw new LambdaException (
                         string.Format ("Tried to update protected key in [{0}], key name was '{1}' ", args.Name, idxKey),
                         args,
                         context);
+
+                // Checking exclusion arguments.
+                if (exclusionArgs.Any (ix => ix == idxKey))
+                    continue;
 
                 // Checking if this is deletion of item, or setting item, before invoking functor callback
                 functor (idxKey, source);
@@ -399,13 +395,13 @@ namespace p5.exp
                 foreach (string idxKey in list) {
 
                     // Making sure we do NOT return "protected keys", unless this is a protected invocation.
-                    if (!args.Name.StartsWith (".") && (idxKey.StartsWith ("_") || idxKey.StartsWith (".")))
+                    if (!args.Name.StartsWithEx (".") && (idxKey.StartsWithEx ("_") || idxKey.StartsWithEx (".")))
                         continue;
 
                     // Returning current key, if it matches our filter, or no filter is not given.
                     if (filter.Count == 0)
                         args.Add (idxKey);
-                    else if (filter.Any (ix => ix.StartsWith ("~") ? idxKey.IndexOf (ix.Substring (1)) > -1 : ix == idxKey))
+                    else if (filter.Any (ix => ix.StartsWithEx ("~") ? idxKey.IndexOfEx (ix.Substring (1)) > -1 : ix == idxKey))
                         args.Add (idxKey);
                 }
             }
@@ -417,10 +413,8 @@ namespace p5.exp
         /// <param name="context">Application Context</param>
         /// <param name="eventNode">Arguments to pass into event</param>
         /// <param name="lambda">Lambda object to evaluate</param>
-        /// <param name="eventName">Name of Active Event to raise</param>
         public static void EvaluateLambda (
             ApplicationContext context,
-            string eventName,
             Node lambda,
             Node eventNode)
         {
@@ -443,7 +437,7 @@ namespace p5.exp
         /*
          * Helper method to recursively format node's value
          */
-        private static object FormatNodeRecursively (
+        static object FormatNodeRecursively (
             ApplicationContext context,
             Node evaluatedNode,
             Node dataSource)
@@ -455,9 +449,8 @@ namespace p5.exp
                 // PS, we cannot return null here, in case expression yields null
                 return Single<object> (context, evaluatedNode, dataSource) ?? "";
 
-            } else {
-                return FormatNode (context, evaluatedNode, dataSource);
             }
+            return FormatNode (context, evaluatedNode, dataSource);
         }
     }
 }

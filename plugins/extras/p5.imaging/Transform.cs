@@ -30,9 +30,6 @@ using p5.core;
 using p5.exp.exceptions;
 using p5.imaging.helpers;
 
-/// <summary>
-///     Main namespace for handling images
-/// </summary>
 namespace p5.imaging
 {
     /// <summary>
@@ -101,7 +98,7 @@ namespace p5.imaging
         /*
          * Applies transformations to bitmap, if any.
          */
-        private static void ApplyTransformations (ApplicationContext context, Node args, ref Bitmap bitmap)
+        static void ApplyTransformations (ApplicationContext context, Node args, ref Bitmap bitmap)
         {
             // Checking if there are any transformations.
             if (args ["transformations"] == null)
@@ -130,7 +127,7 @@ namespace p5.imaging
         /*
          * Saves destination image.
          */
-        private static void SaveDestinationImage (
+        static void SaveDestinationImage (
             ApplicationContext context, 
             Node args, 
             string destination, 
@@ -157,7 +154,7 @@ namespace p5.imaging
 
                 // Then finding our encoder, according to quality requested by caller.
                 Encoder encoder = Encoder.Quality;
-                EncoderParameters pars = new EncoderParameters (1);
+                var pars = new EncoderParameters (1);
                 pars.Param[0] = new EncoderParameter (encoder, quality);
 
                 // Now saving image with encoder and parameters to encoder.
@@ -172,7 +169,7 @@ namespace p5.imaging
         /*
          * Draws source image unto destination image.
          */
-        private static void BlitSourceImage (
+        static void BlitSourceImage (
             int destinationWidth, 
             int destinationHeight, 
             Image srcImage, 
@@ -196,10 +193,10 @@ namespace p5.imaging
         /*
          * Returns the destination image format.
          */
-        private static ImageFormat GetDestinationFormat (string destination)
+        static ImageFormat GetDestinationFormat (string destination)
         {
             ImageFormat format = null;
-            switch (destination.Substring (destination.LastIndexOf (".") + 1)) {
+            switch (destination.Substring (destination.LastIndexOfEx (".") + 1)) {
                 case "bmp":
                     format = ImageFormat.Bmp;
                     break;
@@ -221,7 +218,7 @@ namespace p5.imaging
         /*
          * Returns the source Rectangle.
          */
-        private static Rectangle GetSourceRect (ApplicationContext context, Node args, Image srcImage)
+        static Rectangle GetSourceRect (ApplicationContext context, Node args, Image srcImage)
         {
             var srcRectNode = args["src-rect"];
             var srcRect = srcRectNode == null ?
@@ -237,7 +234,7 @@ namespace p5.imaging
         /*
          * Returns the source path.
          */
-        private static string GetSourcePath (ApplicationContext context, Node args)
+        static string GetSourcePath (ApplicationContext context, Node args)
         {
             var source = context.RaiseEvent (".p5.io.unroll-path", new Node ("", args.GetExValue<string> (context))).Get<string> (context);
             context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", source).Add ("args", args));
@@ -254,7 +251,7 @@ namespace p5.imaging
         /*
          * Returns the destination path.
          */
-        private static string GetDestinationPath (ApplicationContext context, Node args)
+        static string GetDestinationPath (ApplicationContext context, Node args)
         {
             var destination = context.RaiseEvent (".p5.io.unroll-path", new Node ("", args.GetExChildValue<string> ("destination", context))).Get<string> (context);
             context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", destination).Add ("args", args));

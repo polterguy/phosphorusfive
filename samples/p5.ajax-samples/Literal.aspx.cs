@@ -26,9 +26,9 @@ using p5.ajax.core;
 
 namespace p5.samples
 {
-    using p5 = p5.ajax.widgets;
+    using p5 = ajax.widgets;
 
-    public partial class Literal : AjaxPage
+    public class Literal : AjaxPage
     {
         protected p5.Literal txt;
 

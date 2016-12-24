@@ -39,32 +39,31 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.regex")]
-        private static void p5_hyperlisp_get_object_value_regex (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_object_value_regex (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is Regex) {
                 return;
-            } else {
-                var strValue = XUtil.FormatNode (context, e.Args).ToString ();
-
-                // Sanity check
-                if (!strValue.StartsWith ("/"))
-                    throw new LambdaException ("Syntax error in regular expression, missing initial /", e.Args, context);
-
-                // Converting string to regular expression
-                var regexString = strValue.Substring (1); // Removing initial "/"
-
-                // More sanity check
-                if (!regexString.Contains ("/"))
-                    throw new LambdaException ("Syntax error in regular expression, missing trailing /", e.Args, context);
-
-                // Retrieving options
-                var options = regexString.Substring (regexString.LastIndexOf ("/") + 1);
-
-                // Removing options from actual regex string
-                regexString = regexString.Substring (0, regexString.LastIndexOf ("/"));
-
-                e.Args.Value = new Regex (regexString, GetOptions (context, e.Args, options));
             }
+            var strValue = XUtil.FormatNode (context, e.Args).ToString ();
+
+            // Sanity check
+            if (!strValue.StartsWithEx ("/"))
+                throw new LambdaException ("Syntax error in regular expression, missing initial /", e.Args, context);
+
+            // Converting string to regular expression
+            var regexString = strValue.Substring (1); // Removing initial "/"
+
+            // More sanity check
+            if (!regexString.Contains ("/"))
+                throw new LambdaException ("Syntax error in regular expression, missing trailing /", e.Args, context);
+
+            // Retrieving options
+            var options = regexString.Substring (regexString.LastIndexOfEx ("/") + 1);
+
+            // Removing options from actual regex string
+            regexString = regexString.Substring (0, regexString.LastIndexOfEx ("/"));
+
+            e.Args.Value = new Regex (regexString, GetOptions (context, e.Args, options));
         }
 
         /// <summary>
@@ -73,10 +72,10 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.System.Text.RegularExpressions.Regex")]
-        private static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             var value = e.Args.Get<Regex> (context);
-            var retVal = "/" + value.ToString () + "/";
+            var retVal = "/" + value + "/";
             retVal += GetOptionString (value);
             e.Args.Value = retVal;
         }
@@ -87,12 +86,12 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.Text.RegularExpressions.Regex")]
-        private static void p5_hyperlisp_get_type_name_System_Text_RegularExpressions_Regex (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_type_name_System_Text_RegularExpressions_Regex (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "regex";
         }
 
-        private static string GetOptionString (Regex regex)
+        static string GetOptionString (Regex regex)
         {
             var retVal = "";
             if ((regex.Options & RegexOptions.Compiled) == RegexOptions.Compiled)
@@ -120,7 +119,7 @@ namespace p5.types.types
         /*
          * Parses supplied options and returns as Option object to caller
          */
-        private static RegexOptions GetOptions (
+        static RegexOptions GetOptions (
             ApplicationContext context,
             Node args,
             string optStr)

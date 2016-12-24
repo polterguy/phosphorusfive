@@ -38,7 +38,7 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.string.decode-base64")]
-        private static void p5_string_decode_base64 (ApplicationContext context, ActiveEventArgs e)
+        static void p5_string_decode_base64 (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves.
             using (new ArgsRemover (e.Args)) {

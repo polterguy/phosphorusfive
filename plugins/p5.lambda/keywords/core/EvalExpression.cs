@@ -23,8 +23,6 @@
 
 using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
-using p5.lambda.helpers;
 
 namespace p5.lambda.keywords.core
 {

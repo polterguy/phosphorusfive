@@ -23,7 +23,6 @@
 
 using System.IO;
 using System.Text;
-using System.Web.UI;
 
 namespace p5.ajax.core.filters
 {
@@ -33,15 +32,15 @@ namespace p5.ajax.core.filters
     public abstract class Filter : Stream
     {
         // Next stream, to support "chaining" of streams.
-        private readonly Stream _next;
+        readonly Stream _next;
 
         // Actual implementation of base Stream class, simply making sure we render content into a memory stream.
-        private readonly MemoryStream _stream = new MemoryStream ();
+        readonly MemoryStream _stream = new MemoryStream ();
 
         /// <summary>
         ///     Initializes a new instance of the Filter class.
         /// </summary>
-        /// <param name="manager">The manager for this filter</param>
+        /// <param name="page">The Ajax page this instance belongs to</param>
         protected Filter (AjaxPage page)
         {
             // Making sure our AjaxPage object stays around by reference, since it's needed at other places during filter's life cycle.
@@ -89,11 +88,11 @@ namespace p5.ajax.core.filters
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Page_Error (object sender, System.EventArgs e)
+        void Page_Error (object sender, System.EventArgs e)
         {
             _stream.CopyTo (_next);
             Page.Response.Filter = _next;
-            this.Dispose ();
+            Dispose ();
         }
 
         #region [ -- Implementation of base class -- ]

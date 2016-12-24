@@ -71,29 +71,34 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.date")]
-        private static void p5_hyperlisp_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value is DateTime) {
                 return;
-            } else {
-                var strValue = e.Args.Get<string> (context);
-                if (strValue != null) {
-                    if (strValue.Length == 10)
+            }
+            var strValue = e.Args.Get<string> (context);
+            if (strValue != null) {
+                switch (strValue.Length) {
+                    case 10:
                         e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                    else if (strValue.Length == 16)
+                        break;
+                    case 16:
                         e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture);
-                    else if (strValue.Length == 19)
+                        break;
+                    case 19:
                         e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-                    else if (strValue.Length == 23)
+                        break;
+                    case 23:
                         e.Args.Value = DateTime.ParseExact (strValue, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
-                    else
+                        break;
+                    default:
                         throw new ArgumentException ("date; '" + strValue + "' is not recognized as a valid date");
-                } else {
-                    throw new LambdaException (
-                        "Don't know how to convert that to a date",
-                        e.Args, 
-                        context);
                 }
+            } else {
+                throw new LambdaException (
+                    "Don't know how to convert that to a date",
+                    e.Args, 
+                    context);
             }
         }
 
@@ -103,7 +108,7 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-string-value.System.DateTime")]
-        private static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             var value = e.Args.Get<DateTime> (context);
             if (value.Hour == 0 && value.Minute == 0 && value.Second == 0 && value.Millisecond == 0)
@@ -120,7 +125,7 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.DateTime")]
-        private static void p5_hyperlisp_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e)
+        static void p5_hyperlisp_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "date";
         }

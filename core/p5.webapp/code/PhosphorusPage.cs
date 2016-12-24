@@ -166,7 +166,7 @@ namespace p5.webapp.code
         public void p5_web_page_get_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new core.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // ViewState title has presedence, since it might have been changed, 
                 // and "Title" property of page is not serialized into ViewState

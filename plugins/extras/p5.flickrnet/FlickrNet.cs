@@ -23,14 +23,10 @@
 
 using System;
 using System.Linq;
-using System.Configuration;
 using p5.exp;
 using p5.core;
 using FlickrNet;
 
-/// <summary>
-///     Main namespace for handling Flickr.NET
-/// </summary>
 namespace p5.flickrnet
 {
     public static class FlickrNet
@@ -42,7 +38,7 @@ namespace p5.flickrnet
             using (new ArgsRemover (e.Args, true)) {
 
                 // Instantiating Flickr.NET and doing search, supplying tags user wants to see
-                Flickr flickr = new Flickr ();
+                var flickr = new Flickr ();
                 flickr.ApiKey = context.RaiseEvent (
                     ".p5.config.get",
                     new Node (".p5.config.get", ".p5.flickr.api-key"))[0].Get<string> (context);
@@ -51,7 +47,7 @@ namespace p5.flickrnet
                     Tags = e.Args.GetExChildValue<string> ("tags", context),
                     Username = e.Args.GetExChildValue<string> ("username", context), 
                     PerPage = e.Args.GetExChildValue ("per-page", context, 50), 
-                    Page = e.Args.GetExChildValue<int> ("page", context, 0) + 1, 
+                    Page = e.Args.GetExChildValue ("page", context, 0) + 1, 
                     Extras = 
                         PhotoSearchExtras.Tags | 
                         PhotoSearchExtras.Description | 
@@ -59,9 +55,9 @@ namespace p5.flickrnet
                         PhotoSearchExtras.Medium640Url | 
                         PhotoSearchExtras.ThumbnailUrl |
                         PhotoSearchExtras.License,
-                    SafeSearch = (SafetyLevel)Enum.Parse (typeof (SafetyLevel), e.Args.GetExChildValue<string> ("safety-level", context, "None")),
-                    SortOrder = (PhotoSearchSortOrder)Enum.Parse (typeof (PhotoSearchSortOrder), e.Args.GetExChildValue<string> ("sort-order", context, "Relevance")),
-                    TagMode = (TagMode)Enum.Parse (typeof (TagMode), e.Args.GetExChildValue<string> ("tag-mode", context, "AllTags"))
+                    SafeSearch = (SafetyLevel)Enum.Parse (typeof (SafetyLevel), e.Args.GetExChildValue ("safety-level", context, "None")),
+                    SortOrder = (PhotoSearchSortOrder)Enum.Parse (typeof (PhotoSearchSortOrder), e.Args.GetExChildValue ("sort-order", context, "Relevance")),
+                    TagMode = (TagMode)Enum.Parse (typeof (TagMode), e.Args.GetExChildValue ("tag-mode", context, "AllTags"))
                 };
                 options.Licenses.Add (LicenseType.AttributionCC);
                 options.Licenses.Add (LicenseType.AttributionNoDerivativesCC);

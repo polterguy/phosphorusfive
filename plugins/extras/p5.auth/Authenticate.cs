@@ -29,7 +29,7 @@ namespace p5.auth
     /// <summary>
     ///     Class wrapping authentication.
     /// </summary>
-    internal static class Authenticate
+    static class Authenticate
     {
         /// <summary>
         ///     Logs in a user to be associated with the current ApplicationContext, and any future ApplicationContext objects created within the same session.

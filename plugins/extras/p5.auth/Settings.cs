@@ -29,7 +29,7 @@ namespace p5.auth
     /// <summary>
     ///     Class wrapping user settings related Active Events.
     /// </summary>
-    internal static class Settings
+    static class Settings
     {
         /// <summary>
         ///     Returns the settings for the currently logged in user.

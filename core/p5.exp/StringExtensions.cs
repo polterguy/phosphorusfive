@@ -21,22 +21,31 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
-using p5.ajax.core;
-
-namespace p5.samples
+namespace p5.exp
 {
-    using p5 = ajax.widgets;
-
-    public class Void : AjaxPage
+    /// <summary>
+    ///     Contains extension methods for string, to make sure we by default have culture-awareness sane methods.
+    /// </summary>
+    public static class StringExtensions
     {
-        protected p5.Literal lbl;
-        protected p5.Void txtBox;
-
-        [WebMethod]
-        protected void btn_onclick (p5.Widget sender, EventArgs e)
+        public static int IndexOfEx (this string self, string what, int startIndex = 0)
         {
-            lbl.innerValue = "Value of textbox was; '" + txtBox["value"] + "'";
+            return self.IndexOf (what, startIndex, System.StringComparison.InvariantCulture);
+        }
+
+        public static int LastIndexOfEx (this string self, string what)
+        {
+            return self.LastIndexOf (what, System.StringComparison.InvariantCulture);
+        }
+
+        public static bool StartsWithEx (this string self, string what)
+        {
+            return self.StartsWith (what, System.StringComparison.InvariantCulture);
+        }
+
+        public static bool EndsWithEx (this string self, string what)
+        {
+            return self.EndsWith (what, System.StringComparison.InvariantCulture);
         }
     }
 }

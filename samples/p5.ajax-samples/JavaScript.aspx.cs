@@ -26,9 +26,9 @@ using p5.ajax.core;
 
 namespace p5.samples
 {
-    using p5 = p5.ajax.widgets;
+    using p5 = ajax.widgets;
 
-    public partial class JavaScript : AjaxPage
+    public class JavaScript : AjaxPage
     {
         [WebMethod]
         protected void javascript_widget_onclicked (p5.Literal literal, EventArgs e)

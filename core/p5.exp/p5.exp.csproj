@@ -82,6 +82,7 @@
     <Compile Include="iterators\IteratorIdentity.cs" />
     <Compile Include="iterators\IteratorDistinctValue.cs" />
     <Compile Include="iterators\IteratorDistinctName.cs" />
+    <Compile Include="StringExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

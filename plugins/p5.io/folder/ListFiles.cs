@@ -62,9 +62,9 @@ namespace p5.io.folder
         /*
          * Helper for above
          */
-        private static bool MatchFilter (string filename, string filter)
+        static bool MatchFilter (string filename, string filter)
         {
-            if (filter.StartsWith ("."))
+            if (filter.StartsWithEx ("."))
                 return Path.GetExtension (filename).ToLower () == filter.ToLower ();
             return Path.GetFileName (filename).Contains (filter);
         }

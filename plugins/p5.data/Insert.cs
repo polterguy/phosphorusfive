@@ -80,7 +80,7 @@ namespace p5.data
         /*
          * Inserts one node into database.
          */
-        private static void InsertNode (
+        static void InsertNode (
             Node node, 
             ApplicationContext context, 
             List<Node> changed,
@@ -103,7 +103,7 @@ namespace p5.data
         /*
          * Syntax checks node before insertion is allowed.
          */
-        private static void SyntaxCheckInsertNode (Node node, ApplicationContext context)
+        static void SyntaxCheckInsertNode (Node node, ApplicationContext context)
         {
             // Making sure it is impossible to insert items without a name into database.
             if (string.IsNullOrEmpty (node.Name))

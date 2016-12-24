@@ -50,7 +50,7 @@ namespace p5.lambda.keywords.core
                 throw new LambdaException ("[switch] cannot act upon nodes, only other types of values", e.Args, context);
 
             // Our lambda evaluation object.
-            Node lambda = null;
+            Node lambdaObj = null;
 
             // Retrieving correct lambda, if there are any.
             // Notice, due to that [default] are now syntax checked, and we have confirmed it has no value, then default will be returned if no [case] with
@@ -58,22 +58,22 @@ namespace p5.lambda.keywords.core
             // Notice also that all [case] values should be forward evaluated at this point, hence we can simply compare against its value, and there is no need
             // to evaluate expressions or snything like that in them.
             if (value == null)
-                lambda = e.Args.Children.FirstOrDefault (ix => ix.Value == null);
+                lambdaObj = e.Args.Children.FirstOrDefault (ix => ix.Value == null);
             else
-                lambda = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && value.Equals (ix.Value)) ?? e.Args["default"];
+                lambdaObj = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && value.Equals (ix.Value)) ?? e.Args["default"];
 
             // Checking if we have a match, and if so, evaluate lambda belonging to match.
-            if (lambda != null) {
+            if (lambdaObj != null) {
 
                 // Finding first non-empty [case] lambda, in case of fallthrough.
                 // Notice, formatting parameters are removed at this point.
-                while (lambda != null && lambda.Count == 0) {
-                    lambda = lambda.NextSibling;
+                while (lambdaObj != null && lambdaObj.Count == 0) {
+                    lambdaObj = lambdaObj.NextSibling;
                 }
 
                 // Evaluating [case] lambda.
-                if (lambda != null)
-                    context.RaiseEvent (lambda.Name, lambda);
+                if (lambdaObj != null)
+                    context.RaiseEvent (lambdaObj.Name, lambdaObj);
             }
         }
 
@@ -108,7 +108,7 @@ namespace p5.lambda.keywords.core
         /*
          * Forward evaluates values of [case] lambdas, and sanity checks syntax of [switch].
          */
-        private static void ForwardEvaluateValuesAndSanityCheck (ApplicationContext context, Node args)
+        static void ForwardEvaluateValuesAndSanityCheck (ApplicationContext context, Node args)
         {
             // Sanity check, only [case], [default], and formatting parameters are legal as children nodes.
             if (args.Children.Count (ix => ix.Name != "" && ix.Name != "case" && ix.Name != "default") > 0)

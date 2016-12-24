@@ -32,9 +32,9 @@ namespace p5.exp.exceptions
     /// </summary>
     public class LambdaException : ApplicationException
     {
-        private readonly ApplicationContext _context;
-        private readonly Node _node;
-        private readonly int _lineNo;
+        readonly ApplicationContext _context;
+        readonly Node _node;
+        readonly int _lineNo;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LambdaException" /> class.
@@ -80,7 +80,7 @@ namespace p5.exp.exceptions
                 string lisp = convert.Get<string> (_context);
                 int curPosCrLf = 0, noCrLf = 0;
                 while (noCrLf != _lineNo) {
-                    var newLineIndex = lisp.IndexOf ("\r\n", curPosCrLf + 2);
+                    var newLineIndex = lisp.IndexOfEx ("\r\n", curPosCrLf + 2);
                     if (newLineIndex == -1) {
                         curPosCrLf = lisp.Length;
                         break;

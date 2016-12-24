@@ -29,7 +29,7 @@ using p5.hyperlambda.helpers;
 namespace p5.hyperlambda
 {
     /// <summary>
-    ///     Class to help transform between Hyperlambda and <see cref="phosphorus.core.Node">Nodes</see>.
+    ///     Class to help transform between Hyperlambda and <see cref="Node">Nodes</see>.
     /// </summary>
     public static class Hyperlambda
     {
@@ -45,7 +45,7 @@ namespace p5.hyperlambda
             using (new ArgsRemover (e.Args, true)) {
 
                 // Concatenating all Hyperlambda submitted, injecting CR/LF between each component
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
                 foreach (var idxHyperlisp in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Making sure we put in a carriage return between each Hyperlambda entity

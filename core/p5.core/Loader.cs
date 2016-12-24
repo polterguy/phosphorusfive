@@ -43,18 +43,18 @@ namespace p5.core
         public static readonly Loader Instance = new Loader ();
 
         // List of all assmeblies that has been loaded and registered for handling Active Events.
-        private readonly List<Assembly> _assemblies = new List<Assembly> ();
+        readonly List<Assembly> _assemblies = new List<Assembly> ();
 
         // Types that have instance Active Event handlers.
-        private readonly ActiveEventTypes _instanceActiveEvents = new ActiveEventTypes();
+        readonly ActiveEventTypes _instanceActiveEvents = new ActiveEventTypes();
 
         // Types that have static Active Event handlers.
-        private readonly ActiveEventTypes _staticActiveEvents = new ActiveEventTypes();
+        readonly ActiveEventTypes _staticActiveEvents = new ActiveEventTypes();
 
         /*
          * Private constructor, to prevent other classes from instantiating this class.
          */
-        private Loader ()
+        Loader ()
         { }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace p5.core
         public void LoadAssembly (string assemblyPath, string assemblyName)
         {
             // Making sure assemblyName ends with ".dll", unless caller already did this for us.
-            if (!assemblyName.ToLower ().EndsWith (".dll"))
+            if (!assemblyName.ToLower ().EndsWith (".dll", StringComparison.InvariantCulture))
                 assemblyName += ".dll";
 
             // Checking to see if assembly is already loaded, at which point we return early.
@@ -172,7 +172,7 @@ namespace p5.core
         public void UnregisterAssembly (string name)
         {
             // Making sure assemblyName ends with ".dll", unless caller already did this for us.
-            if (!name.ToLower ().EndsWith (".dll"))
+            if (!name.ToLower ().EndsWith (".dll", StringComparison.InvariantCulture))
                 name += ".dll";
 
             // Finding the assembly in our list of initialized assemblies.
@@ -228,7 +228,7 @@ namespace p5.core
          * Initializes an assembly, by looping through all types from it, and see if type has Active Event attributes for one or more of its methods.
          * If it does, we register type as Active Event handler, for all future ApplicationContext objects created from Loader.
          */
-        private void RegisterTypesFromAssembly (Assembly assembly)
+        void RegisterTypesFromAssembly (Assembly assembly)
         {
             // Looping through all types in assembly.
             foreach (var idxType in assembly.GetTypes ()) {
@@ -257,7 +257,7 @@ namespace p5.core
          * Loops through all MethodInfo objects given, and adds them to the associated dictionary with type as key, 
          * if they have ActiveEventAttribute declared, once or more.
          */
-        private void AddActiveEventsForType (Type type, MethodInfo[] methods, ActiveEventTypes activeEventTypes)
+        void AddActiveEventsForType (Type type, MethodInfo[] methods, ActiveEventTypes activeEventTypes)
         {
             // Looping through all MethodInfos from type we currently are iterating.
             foreach (var idxMethod in methods) {
@@ -283,7 +283,7 @@ namespace p5.core
         /*
          * Verifies that the signature of our Active Event is correct.
          */
-        private static void VerifyActiveEventSignature (MethodInfo method)
+        static void VerifyActiveEventSignature (MethodInfo method)
         {
             var pars = method.GetParameters ();
 

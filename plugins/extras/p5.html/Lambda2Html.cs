@@ -46,7 +46,7 @@ namespace p5.html
             using (new ArgsRemover (e.Args)) {
 
                 // Used as buffer when converting from lambda to HTML
-                StringBuilder builder = new StringBuilder ();
+                var builder = new StringBuilder ();
 
                 // Doing actual conversion from lambda to HTML
                 Convert (context, XUtil.Iterate<Node> (context, e.Args), builder);
@@ -59,7 +59,7 @@ namespace p5.html
         /*
          * Helper for above
          */
-        private static void Convert (
+        static void Convert (
             ApplicationContext context, 
             IEnumerable<Node> nodes, 
             StringBuilder builder)
@@ -70,7 +70,7 @@ namespace p5.html
                     continue;
                 }
                 builder.Append (string.Format ("<{0}{1}>", idxNode.Name, GetAttributes (idxNode)));
-                Convert (context, idxNode.Children.Where (ix => !ix.Name.StartsWith ("@")), builder);
+                Convert (context, idxNode.Children.Where (ix => !ix.Name.StartsWithEx ("@")), builder);
                 builder.Append (string.Format ("</{0}>", idxNode.Name));
             }
         }
@@ -78,10 +78,10 @@ namespace p5.html
         /*
          * Helper method, to parse and retrieve attributes
          */
-        private static string GetAttributes (Node node)
+        static string GetAttributes (Node node)
         {
             string retVal = "";
-            foreach (Node idxAtr in node.Children.Where (ix => ix.Name.StartsWith ("@"))) {
+            foreach (Node idxAtr in node.Children.Where (ix => ix.Name.StartsWithEx ("@"))) {
                 retVal += " " + idxAtr.Name.Substring (1) + "=\"" + idxAtr.Value + "\"";
             }
             return retVal;

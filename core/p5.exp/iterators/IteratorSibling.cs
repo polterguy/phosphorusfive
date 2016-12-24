@@ -33,10 +33,10 @@ namespace p5.exp.iterators
     [Serializable]
     public class IteratorSibling : Iterator
     {
-        private readonly int _offset;
+        readonly int _offset;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorSibling" /> class
+        ///     Initializes a new instance of the <see cref="IteratorSibling" /> class
         /// </summary>
         /// <param name="offset">offset siblings from current nodes</param>
         public IteratorSibling (int offset)

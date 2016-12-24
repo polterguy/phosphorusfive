@@ -46,7 +46,7 @@ namespace p5.ajax.widgets
          * Together with the implementation below, and the "_creators" static field in class, it allows us to create a specific object 
          * type (widget type), by mapping from its type's FullName, to an implementation, that simply creates a new object of the specified type.
          */
-        private interface ICreator
+        interface ICreator
         {
             Control Create ();
         }
@@ -57,7 +57,7 @@ namespace p5.ajax.widgets
          * Concrete implementation, which there should exist one of, for every single widget type in system, who's sole purpose it is to create a Widget,
          * given a string.
          */
-        private class Creator<T> : ICreator where T : Control, new()
+        class Creator<T> : ICreator where T : Control, new()
         {
             public Control Create () { return new T (); }
         }
@@ -75,7 +75,7 @@ namespace p5.ajax.widgets
          * We could get rid of this, and the above template class and interface if we wanted. This would however require us to use for instance 
          * reflection, or less flexible solutions to be able to re-create our widgets upon postbacks to the server.
          */
-        private static readonly Dictionary<string, ICreator> _creators = new Dictionary<string, ICreator> ();
+        static readonly Dictionary<string, ICreator> _creators = new Dictionary<string, ICreator> ();
 
         /*
          * Contains the original controls collection, before we started adding and removing controls for current request.
@@ -83,7 +83,7 @@ namespace p5.ajax.widgets
          * Notice, we must store this, such that we can delete items, that are for instance statically declared in .aspx markup, and have
          * the changes persist into the ViewState.
          */
-        private List<Control> _originalCollection;
+        List<Control> _originalCollection;
 
         public Container ()
         {
@@ -94,13 +94,13 @@ namespace p5.ajax.widgets
          * Overridden to make sure we handle the "value" attribute for "select" HTML widgets correctly, in addition to throwing an exception,
          * if user tries to get the "innerValue" property/attribute of widget.
          */
-        public override string GetAttribute (string name)
+        public override string GetAttribute (string key)
         {
-            if (name == "innerValue")
+            if (key == "innerValue")
                 throw new ArgumentException ("You cannot get the 'innerValue' property of a Container widget");
 
             // Special treatment for select HTML elements, to make it resemble what goes on on the client-side.
-            if (Element == "select" && name == "value") {
+            if (Element == "select" && key == "value") {
 
                 // Returning each selected "option" element separated by comma, in case this is a multi select widget.
                 string retVal = "";
@@ -115,24 +115,23 @@ namespace p5.ajax.widgets
                     return Controls.Count > 0 ? (Controls [0] as Widget)["value"] : null;
                 return retVal.TrimEnd (','); // Removing last comma ",".
 
-            } else {
-
-                // No special treatment required.
-                return base.GetAttribute (name);
             }
+
+            // No special treatment required.
+            return base.GetAttribute (key);
         }
 
         /*
          * Overridden to make sure we handle the "value" attribute for "select" HTML widgets correctly, in addition to throwing an exception,
          * if user tries to set the "innerValue" property/attribute of widget.
          */
-        public override void SetAttribute (string name, string value)
+        public override void SetAttribute (string key, string value)
         {
-            if (name == "innerValue")
+            if (key == "innerValue")
                 throw new ArgumentException ("You cannot set the 'innerValue' property of a Container widget");
 
             // Special treatment for select HTML elements, to make it resemble what goes on on the client-side.
-            if (Element == "select" && name == "value") {
+            if (Element == "select" && key == "value") {
 
                 // Splitting specified value by comma ",", and adding the "selected" attribute for each option element with a value
                 // matching anything in the split results.
@@ -149,7 +148,7 @@ namespace p5.ajax.widgets
             } else {
 
                 // No special treatment required.
-                base.SetAttribute (name, value);
+                base.SetAttribute (key, value);
             }
         }
 
@@ -165,11 +164,10 @@ namespace p5.ajax.widgets
                 // if no option element is explicitly selected.
                 return true;
 
-            } else {
-
-                // No special treatment required.
-                return base.HasAttribute (name);
             }
+
+            // No special treatment required.
+            return base.HasAttribute (name);
         }
 
         /// <summary>
@@ -345,7 +343,7 @@ namespace p5.ajax.widgets
                 var toRemove = Controls.Cast<Control> ().Where (
                     idxControl => string.IsNullOrEmpty (idxControl.ID) || !ctrlsViewstate.Exists (idxViewstate => idxViewstate.Item2 == idxControl.ID)).ToList ();
                 foreach (var idxCtrl in toRemove) {
-                    Controls.Remove ((Control)idxCtrl);
+                    Controls.Remove (idxCtrl);
                 }
 
                 // Then adding all controls that are persisted but does not exist in the controls collection
@@ -443,11 +441,10 @@ namespace p5.ajax.widgets
                 tmp [1] = base.SaveViewState ();
                 return tmp;
 
-            } else {
-
-                // Nothing to do here.
-                return base.SaveViewState ();
             }
+
+            // Nothing to do here.
+            return base.SaveViewState ();
         }
 
         /// <summary>
@@ -500,7 +497,7 @@ namespace p5.ajax.widgets
         /*
          * Renders all controls that was removed this request.
          */
-        private void RenderDeletedWidgets ()
+        void RenderDeletedWidgets ()
         {
             // Iterates through all Controls that were removed during this request, and make sure we register them for deletion on client side.
             // Notice, we don't care about LiteralControls, which have empty IDs.
@@ -513,7 +510,7 @@ namespace p5.ajax.widgets
         /*
          * Rendering all controls that was neither added nor removed during this request.
          */
-        private void RenderOldWidgets (HtmlTextWriter writer)
+        void RenderOldWidgets (HtmlTextWriter writer)
         {
             // Looping through all Controls that were in Controls collection before it was tampered with, and that are still in the Controls collection,
             // and simply render them "normally".
@@ -525,7 +522,7 @@ namespace p5.ajax.widgets
         /*
          * Renders all controls that was added this request.
          */
-        private void RenderAddedWidgets ()
+        void RenderAddedWidgets ()
         {
             // Making sure all children rendered from this point are rendered as pure HTML.
             RenderMode = RenderingMode.ReRender;
@@ -556,7 +553,7 @@ namespace p5.ajax.widgets
          * Storing original controls that were there before we started adding and removing controls.
          * Necessary to keep track of "old controls", such that we only render added and deleted controls.
          */
-        private void MakeSureOriginalControlsAreStored ()
+        void MakeSureOriginalControlsAreStored ()
         {
             if (_originalCollection == null) {
                 _originalCollection = new List<Control> (Controls.Cast<Control> ());
@@ -568,7 +565,7 @@ namespace p5.ajax.widgets
          * 
          * The Creator<T> which is returned from here, is responsible for creating Widgets according to values found in ViewState, among other things.
          */
-        private static ICreator GetCreator<T> () where T : Control, new ()
+        static ICreator GetCreator<T> () where T : Control, new ()
         {
             var fullName = typeof (T).FullName;
             if (!_creators.ContainsKey (fullName))

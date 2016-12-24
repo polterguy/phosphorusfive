@@ -29,13 +29,13 @@ namespace p5.web
     /// <summary>
     ///     Class initialising one HTTP request
     /// </summary>
-    public class Initialiser
+    public static class Initialiser
     {
         /*
          * Raised by page during initialization of page
          */
         [ActiveEvent (Name = ".p5.web.initialize-page")]
-        private static void p5_web_initialize_page (ApplicationContext context, ActiveEventArgs e)
+        static void p5_web_initialize_page (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving Page and Manager for current HTTP context
             var page = e.Args ["page"].Get<AjaxPage> (context);

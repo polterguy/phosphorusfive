@@ -57,16 +57,14 @@ namespace p5.io.folder
                         GetSourceFileObjects (rootFolder + source, ""), 
                         rootFolder + source, 
                         rootFolder + destination);
-                }, delegate (string destination) {
-                    return Directory.Exists (destination);
-                });
+                }, Directory.Exists);
         }
 
         /*
          * Helper for above, creates all folders, and copies all files.
          * When this method is invoked, our "sourceFileObjects" list will contain all folders and all files we should copy.
          */
-        private static void CopyFolder (
+        static void CopyFolder (
             ApplicationContext context,
             Node args,
             List<Tuple<string, bool>> sourceFileObjects, 
@@ -107,7 +105,7 @@ namespace p5.io.folder
          * Helper for above, returns a list of folders and files. 
          * Folders are "true" in Item2 of Tuple.
          */
-        private static List<Tuple<string, bool>> GetSourceFileObjects (
+        static List<Tuple<string, bool>> GetSourceFileObjects (
             string rootFolder, 
             string source)
         {

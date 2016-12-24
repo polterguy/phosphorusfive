@@ -67,7 +67,7 @@ namespace p5.io.common
                 foreach (var idxSource in XUtil.Iterate<string> (context, args)) {
 
                     // Figuring out destination file, which might be "relative" to currently iterated source file.
-                    var destinationFile = dest.EndsWith ("/") ? dest + idxSource.Substring (idxSource.LastIndexOf ("/") + 1) : dest;
+                    var destinationFile = dest.EndsWithEx ("/") ? dest + idxSource.Substring (idxSource.LastIndexOfEx ("/") + 1) : dest;
 
                     // Making sure user is authorized to do operation on both source file and destination file.
                     Common.RaiseAuthorizeEvent (context, args, sourceAuthorizeEvent, idxSource);

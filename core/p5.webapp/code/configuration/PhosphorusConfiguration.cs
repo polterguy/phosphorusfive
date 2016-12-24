@@ -23,9 +23,6 @@
 
 using System.Configuration;
 
-/// <summary>
-///     Main namespace for all configuration code that is specific to your application-pool
-/// </summary>
 namespace p5.webapp.code.configuration
 {
     /// <summary>

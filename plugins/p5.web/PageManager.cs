@@ -37,11 +37,10 @@ namespace p5.web
     public class PageManager
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="p5.web.PageManager"/> class
+        ///     Initializes a new instance of the <see cref="PageManager"/> class
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="page">Ajax Page</param>
-        /// <param name="manager">Ajax Manager</param>
         public PageManager (ApplicationContext context, AjaxPage page)
         {
             // Setting Page for instance
@@ -185,7 +184,7 @@ namespace p5.web
         public void p5_web_get_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new core.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Returning current URL
                 e.Args.Value = AjaxPage.Request.Url.ToString();
@@ -201,7 +200,7 @@ namespace p5.web
         public void p5_web_get_location_url (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new core.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Returning current URL
                 e.Args.Value = AjaxPage.Request.Url.GetLeftPart (UriPartial.Path);
@@ -217,7 +216,7 @@ namespace p5.web
         public void p5_web_get_root_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new core.ArgsRemover(e.Args)) {
+            using (new ArgsRemover(e.Args)) {
 
                 // Returning web apps root URL
                 e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart (UriPartial.Authority) + AjaxPage.ResolveUrl("~/");
@@ -246,7 +245,7 @@ namespace p5.web
         {
             var key = XUtil.Single<string> (context, e.Args);
             var source = XUtil.Source (context, e.Args);
-            AjaxPage.SendObject (key, core.Utilities.Convert<string> (context, source));
+            AjaxPage.SendObject (key, Utilities.Convert<string> (context, source));
         }
 
         #endregion
@@ -257,7 +256,7 @@ namespace p5.web
          * Raised by page when an Ajax WebMethod is invoked.
          */
         [ActiveEvent (Name = ".p5.web.raise-ajax-event")]
-        private void _p5_web_raise_ajax_event (ApplicationContext context, ActiveEventArgs e)
+        void _p5_web_raise_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             var widgetID = e.Args.Name;
             var eventName = e.Args.Get<string> (context);
@@ -267,7 +266,7 @@ namespace p5.web
         /*
          * Initializes storage for ajax and lambda events
          */
-        private void InitializeEventStorage (ApplicationContext context)
+        void InitializeEventStorage (ApplicationContext context)
         {
             // Checking if we should re/initialize storage
             // Sometimes .Net on IIS Express messes this up, having a different assembly on two consecutive debugging sessions, hence we cannot
@@ -308,7 +307,7 @@ namespace p5.web
         /*
          * Registers all event listeners
          */
-        private void RegisterListeners (ApplicationContext context)
+        void RegisterListeners (ApplicationContext context)
         {
             // Creating and registering our WidgetCreator as event listener
             context.RegisterListeningInstance (new WidgetCreator (context, this));

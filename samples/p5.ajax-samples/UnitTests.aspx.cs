@@ -28,9 +28,9 @@ using p5.ajax.core;
 
 namespace p5.samples
 {
-    using p5 = p5.ajax.widgets;
+    using p5 = ajax.widgets;
 
-    public partial class UnitTests : AjaxPage
+    public class UnitTests : AjaxPage
     {
         [WebMethod]
         protected void sandbox_invoke_empty_onclick (p5.Literal literal, EventArgs e)

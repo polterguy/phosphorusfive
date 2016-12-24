@@ -34,11 +34,11 @@ namespace p5.exp.iterators
     [Serializable]
     public class IteratorRange : Iterator
     {
-        private readonly int _from;
-        private readonly int _to;
+        readonly int _from;
+        readonly int _to;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorRange" /> class
+        ///     Initializes a new instance of the <see cref="IteratorRange" /> class
         /// </summary>
         /// <param name="from">start position, from</param>
         /// <param name="to">end position, to</param>

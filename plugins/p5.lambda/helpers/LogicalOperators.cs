@@ -142,7 +142,7 @@ namespace p5.lambda.helpers
          * Will evaluate the given condition to true, if it is anything but a false boolean, null, 
          * or an expression returning anything but null or false
          */
-        private static Node EnsureParentFindPreviousCondition (ApplicationContext context, Node args)
+        static Node EnsureParentFindPreviousCondition (ApplicationContext context, Node args)
         {
             // Sanity check.
             if (args.Parent == null || args.Parent.Name == "")

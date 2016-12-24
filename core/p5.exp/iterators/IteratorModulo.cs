@@ -34,10 +34,10 @@ namespace p5.exp.iterators
     [Serializable]
     public class IteratorModulo : Iterator
     {
-        private readonly int _modulo;
+        readonly int _modulo;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorModulo" /> class
+        ///     Initializes a new instance of the <see cref="IteratorModulo" /> class
         /// </summary>
         /// <param name="modulo">modulo</param>
         public IteratorModulo (int modulo)

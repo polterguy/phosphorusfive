@@ -71,7 +71,7 @@ namespace p5.io.file
         /*
          * Determines if file is text according to the most common file extensions
          */
-        private static bool IsTextFile (string fileName)
+        static bool IsTextFile (string fileName)
         {
             switch (Path.GetExtension (fileName)) {
                 case ".txt":
@@ -92,7 +92,7 @@ namespace p5.io.file
         /*
          * Loads specified file as text and appends into args, possibly converting into lambda.
          */
-        private static void LoadTextFile (
+        static void LoadTextFile (
             ApplicationContext context, 
             Node args, 
             string fullpath,
@@ -104,12 +104,12 @@ namespace p5.io.file
                 string fileContent = reader.ReadToEnd ();
 
                 // Checking if we should automatically convert file content to lambda.
-                if (fileName.EndsWith (".hl") && args.GetExChildValue ("convert", context, true)) {
+                if (fileName.EndsWithEx (".hl") && args.GetExChildValue ("convert", context, true)) {
 
                     // Automatically converting to lambda before returning.
                     args.Add (fileName, null, Utilities.Convert<Node> (context, fileContent).Children);
 
-                } else if (fileName.EndsWith (".csv") && args.GetExChildValue ("convert", context, true)) {
+                } else if (fileName.EndsWithEx (".csv") && args.GetExChildValue ("convert", context, true)) {
 
                     // Automatically converting to lambda before returning.
                     var csvLambda = new Node ("", fileContent);
@@ -127,7 +127,7 @@ namespace p5.io.file
         /*
          * Loads a binary file and appends as blob/byte[] into args.
          */
-        private static void LoadBinaryFile (
+        static void LoadBinaryFile (
             Node args, 
             string rootFolder,
             string fileName)

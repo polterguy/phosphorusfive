@@ -36,10 +36,10 @@ namespace p5.events
     public static class Events
     {
         // Contains our list of dynamically created Active Events.
-        private static readonly Dictionary<string, Node> _events = new Dictionary<string, Node> ();
+        static readonly Dictionary<string, Node> _events = new Dictionary<string, Node> ();
 
         // Used to create lock when creating, deleting and consuming events.
-        private static readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        static readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         /// <summary>
         ///     Creates (or deletes) an Active Event, depending upon whether or not any lambda objects were supplied.
@@ -139,14 +139,13 @@ namespace p5.events
             e.Args.Sort (delegate (Node lhs, Node rhs) {
                 if (lhs.Name == "static" && rhs.Name == "dynamic")
                     return -1;
-                else if (lhs.Name == "dynamic" && rhs.Name == "static")
+                if (lhs.Name == "dynamic" && rhs.Name == "static")
                     return 1;
                 if (!lhs.Get<string> (context).Contains (".") && rhs.Get<string> (context).Contains ("."))
                     return -1;
-                else if (lhs.Get<string> (context).Contains (".") && !rhs.Get<string> (context).Contains ("."))
+                if (lhs.Get<string> (context).Contains (".") && !rhs.Get<string> (context).Contains ("."))
                     return 1;
-                else
-                    return lhs.Get<string> (context).CompareTo (rhs.Value);
+                return lhs.Get<string> (context).CompareTo (rhs.Value);
             });
         }
 
@@ -154,7 +153,7 @@ namespace p5.events
          * Responsible for executing all dynamically created Active Events or lambda objects
          */
         [ActiveEvent (Name = "")]
-        private static void _p5_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
+        static void _p5_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Acquire read lock, since we're consuming object shared amongst more than one thread (_events).
             // This lock must be released before event is invoked, and is only here since we're consuming
@@ -180,7 +179,7 @@ namespace p5.events
 
             // Raising Active Event, if it exists.
             if (lambda != null)
-                XUtil.EvaluateLambda (context, e.Name, lambda, e.Args);
+                XUtil.EvaluateLambda (context, lambda, e.Args);
         }
 
         /*
@@ -189,7 +188,7 @@ namespace p5.events
         internal static void CreateEvent (string name, Node args, ApplicationContext context)
         {
             // Sanity check.
-            if (!args.Name.StartsWith (".") && (name.StartsWith ("_") || name.StartsWith (".") || name == ""))
+            if (!args.Name.StartsWithEx (".") && (name.StartsWithEx ("_") || name.StartsWithEx (".") || name == ""))
                 throw new LambdaException ("Tried to create a 'protected' event", args, context);
 
             // Cannot create an event which is already a native event.
@@ -209,7 +208,7 @@ namespace p5.events
         internal static void DeleteEvent (string name, ApplicationContext context, Node args)
         {
             // Sanity check.
-            if (!args.Name.StartsWith (".") && (name.StartsWith ("_") || name.StartsWith (".")))
+            if (!args.Name.StartsWithEx (".") && (name.StartsWithEx ("_") || name.StartsWithEx (".")))
                 throw new LambdaException ("Tried to delete a 'protected event'", args, context);
 
             // Removing event, if it exists.
@@ -221,7 +220,7 @@ namespace p5.events
         /*
          * Returns Active Events from source given, using name as type of Active Event
          */
-        private static void ListActiveEvents (
+        static void ListActiveEvents (
             IEnumerable<string> source, 
             Node args, 
             List<string> filter,
@@ -231,7 +230,7 @@ namespace p5.events
             // Looping through each Active Event from IEnumerable
             foreach (var idx in source) {
 
-                if (!args.Name.StartsWith (".") && (idx.StartsWith (".") || idx.StartsWith ("_") || idx.Contains ("._")))
+                if (!args.Name.StartsWithEx (".") && (idx.StartsWithEx (".") || idx.StartsWithEx ("_") || idx.Contains ("._")))
                     continue;
 
                 // Checking to see if we have any filter
@@ -242,7 +241,7 @@ namespace p5.events
                 } else {
 
                     // We have filter(s), checking to see if Active Event name matches at least one of our filters
-                    if (filter.Any (ix => ix.StartsWith ("~") ? idx.Contains (ix.Substring (1)) : idx == ix)) {
+                    if (filter.Any (ix => ix.StartsWithEx ("~") ? idx.Contains (ix.Substring (1)) : idx == ix)) {
                         args.Add (new Node (eventTypeName, idx));
                     }
                 }

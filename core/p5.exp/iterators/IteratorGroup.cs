@@ -37,12 +37,12 @@ namespace p5.exp.iterators
         ///     Root iterators for nested IteratorGroup iterators
         /// </summary>
         [Serializable]
-        private class IteratorLeftParent : Iterator
+        class IteratorLeftParent : Iterator
         {
-            private readonly Iterator _leftParent;
+            readonly Iterator _leftParent;
 
             /// <summary>
-            ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorLeftParent" /> class
+            ///     Initializes a new instance of the <see cref="IteratorLeftParent" /> class
             /// </summary>
             /// <param name="leftParent">The last iterator of the parent group iterator</param>
             public IteratorLeftParent (Iterator leftParent)
@@ -56,11 +56,11 @@ namespace p5.exp.iterators
             }
         }
 
-        private readonly Iterator _groupRoot;
-        private readonly List<Logical> _logicals = new List<Logical> ();
+        readonly Iterator _groupRoot;
+        readonly List<Logical> _logicals = new List<Logical> ();
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorGroup" /> class
+        ///     Initializes a new instance of the <see cref="IteratorGroup" /> class
         /// </summary>
         internal IteratorGroup ()
         {
@@ -69,7 +69,7 @@ namespace p5.exp.iterators
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorGroup" /> class
+        ///     Initializes a new instance of the <see cref="IteratorGroup" /> class
         /// </summary>
         /// <param name="parent">Parent iterator group</param>
         public IteratorGroup (IteratorGroup parent)
@@ -117,7 +117,7 @@ namespace p5.exp.iterators
         }
 
         /// <summary>
-        ///     Appends a new iterator to the last <see cref="phosphorus.expressions.Logical" /> in the group
+        ///     Appends a new iterator to the last <see cref="Logical" /> in the group
         /// </summary>
         /// <param name="iterator">Iterator to append</param>
         public void AddIterator (Iterator iterator)

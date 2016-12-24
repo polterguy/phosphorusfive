@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
@@ -35,10 +35,10 @@ namespace p5.auth.helpers
     /// <summary>
     ///     Class wrapping authentication helper features of Phosphorus Five
     /// </summary>
-    internal static class AuthenticationHelper
+    static class AuthenticationHelper
     {
         // Name of credential cookie, used to store username and hashsalted password
-        private const string _credentialCookieName = "_p5_user";
+        const string _credentialCookieName = "_p5_user";
 
         /*
          * Returns user Context Ticket (Context "user")
@@ -109,7 +109,7 @@ namespace p5.auth.helpers
             if (persist) {
 
                 // Caller wants to create persistent cookie to remember username/password
-                HttpCookie cookie = new HttpCookie (_credentialCookieName);
+                var cookie = new HttpCookie (_credentialCookieName);
                 cookie.Expires = DateTime.Now.AddDays (context.RaiseEvent (
                     ".p5.config.get", 
                     new Node (".p5.config.get", "p5.auth.credential-cookie-valid")) [0].Get<int> (context));
@@ -481,7 +481,7 @@ namespace p5.auth.helpers
                 var role = idxUserNode["role"].Get<string>(context);
 
                 // Adding currently iterated role, unless already added, and incrementing user count for it
-                args.FindOrInsert (role).Value = args[role].Get<int> (context, 0) + 1;
+                args.FindOrInsert (role).Value = args[role].Get (context, 0) + 1;
             }
         }
 
@@ -497,7 +497,7 @@ namespace p5.auth.helpers
                 throw new LambdaSecurityException("You cannot set the root password to empty", args, context);
 
             // Creating root account
-            Node rootAccountNode = new Node ("", "root");
+            var rootAccountNode = new Node ("", "root");
             rootAccountNode.Add ("password", password);
             rootAccountNode.Add ("role", "root");
             CreateUser (context, rootAccountNode);
@@ -529,15 +529,14 @@ namespace p5.auth.helpers
                     // The simplest way to do this, is simply to throw exception, which will be handled 
                     // further down, and deletes current cookie!
                     throw null;
-                } else {
+                }
 
-                    // Checking if client has persistent cookie
-                    HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
-                    if (cookie != null) {
+                // Checking if client has persistent cookie
+                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
+                if (cookie != null) {
 
-                        // We have a cookie, try to use it as credentials
-                        LoginFromCookie (cookie, context);
-                    }
+                    // We have a cookie, try to use it as credentials
+                    LoginFromCookie (cookie, context);
                 }
             } catch {
 
@@ -560,7 +559,7 @@ namespace p5.auth.helpers
         /*
          * Sets user Context Ticket (context "user")
          */
-        private static void SetTicket (ContextTicket ticket)
+        static void SetTicket (ContextTicket ticket)
         { 
             HttpContext.Current.Session[".p5.auth.context-ticket"] = ticket;
         }
@@ -568,7 +567,7 @@ namespace p5.auth.helpers
         /*
          * Verifies that given username is valid
          */
-        private static void VerifyUsernameValid (string username)
+        static void VerifyUsernameValid (string username)
         {
             foreach (var charIdx in username) {
                 if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-".IndexOf(charIdx) == -1)
@@ -579,7 +578,7 @@ namespace p5.auth.helpers
         /*
          * Creates folder structure for user
          */
-        private static void CreateUserDirectory (string rootFolder, string username)
+        static void CreateUserDirectory (string rootFolder, string username)
         {
             // Creating folders for user, and making sure private directory stays private ...
             if (!Directory.Exists (rootFolder + "/users/" + username))
@@ -618,7 +617,7 @@ namespace p5.auth.helpers
         /*
          * Tries to login with the given cookie as credentials
          */
-        private static void LoginFromCookie (HttpCookie cookie, ApplicationContext context)
+        static void LoginFromCookie (HttpCookie cookie, ApplicationContext context)
         {
             // User has persistent cookie associated with client
             var cookieSplits = cookie.Value.Split (' ');
@@ -656,7 +655,7 @@ namespace p5.auth.helpers
         /*
          * Creates default Context Ticket according to settings from config file
          */
-        private static ContextTicket CreateDefaultTicket (ApplicationContext context)
+        static ContextTicket CreateDefaultTicket (ApplicationContext context)
         {
             return new ContextTicket (
                 context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context), 
@@ -667,7 +666,7 @@ namespace p5.auth.helpers
         /*
          * Helper to store "last login attempt" for a specific IP address
          */
-        private static DateTime LastLoginAttemptForIP
+        static DateTime LastLoginAttemptForIP
         {
             get {
 

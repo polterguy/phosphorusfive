@@ -99,11 +99,11 @@ namespace p5.ajax.widgets
         #region [ -- Private and protected fields -- ]
 
         // Contains a reference to the AjaxPage owning this widget.
-        private AjaxPage _page;
+        AjaxPage _page;
 
         // Used to hold the old ID of widget, in the rare case, that its ID is somehow changed.
         // Necessary to make sure we are able to retrieve widget, and update its ID on the client side, during Ajax requests.
-        private string _oldClientID;
+        string _oldClientID;
 
         /// <summary>
         ///     Allows you to explicitly force to have your widget re-rendered, or re-rendering its children, if you wish.
@@ -263,7 +263,7 @@ namespace p5.ajax.widgets
                 BindingFlags.NonPublic |
                 BindingFlags.FlattenHierarchy);
             if (method == null)
-                throw new NotImplementedException ("Method + '" + eventHandlerName + "' could not be found");
+                throw new ApplicationException ("Method + '" + eventHandlerName + "' could not be found");
 
             // Verifying method has the WebMethod attribute.
             // For security reasons we want method to be explicitly marked as WebMethod, and not allow inherited methods to be implicitly legal.
@@ -272,7 +272,7 @@ namespace p5.ajax.widgets
             // Notice, to not give away any information to malicious requests, allowing them to figure out which methods exists on UserControl/Page,
             // we throw the exact same exception as above.
             if (atrs == null || atrs.Length == 0)
-                throw new NotImplementedException ("Method + '" + eventHandlerName + "' could not be found");
+                throw new ApplicationException ("Method + '" + eventHandlerName + "' could not be found");
 
             // Invoking methods with the "this" widget, and an AjaxEventArg, passing in the name of the event that was raised on the client, to allow
             // for reusing the same event handler, for multiple events.
@@ -302,7 +302,7 @@ namespace p5.ajax.widgets
         ///     Notice, will not do anything if the current request is an Ajax request.
         /// </summary>
         /// <returns>The formatting.</returns>
-        /// <param name="tabs">Tabs.</param>
+        /// <param name="writer">The writer to render widget into</param>
         protected void IndentWidgetRendering (HtmlTextWriter writer)
         {
             // We don't format at all, unless this is an HTML request, somehow.
@@ -488,7 +488,7 @@ namespace p5.ajax.widgets
         /*
          * Responsible for rendering all different permutations for a visible widget.
          */
-        private void RenderVisibleWidget (HtmlTextWriter writer)
+        void RenderVisibleWidget (HtmlTextWriter writer)
         {
             // How its ancestor Control(s) are being rendered, largely detremine how this widget is rendered, since an ancestor being shown,
             // that was previously hidden, or newly created for that matter, triggers a re-rendering of the entire widget, one way or another.
@@ -523,7 +523,7 @@ namespace p5.ajax.widgets
         /*
          * Responsible for rendering all different permutations for an invisible widget.
          */
-        private void RenderInvisibleWidget (HtmlTextWriter writer)
+        void RenderInvisibleWidget (HtmlTextWriter writer)
         {
             var ancestorReRendering = AncestorIsReRendering ();
             if (AjaxPage.IsAjaxRequest && RenderMode == RenderingMode.WidgetBecameInvisible && !ancestorReRendering) {
@@ -547,7 +547,7 @@ namespace p5.ajax.widgets
          * Visibility of a widget is determined by AND'ing widget's own visibility together with visibility of all of its ancestor
          * widgets'/controls' visibility.
          */
-        private bool AreAncestorsVisible ()
+        bool AreAncestorsVisible ()
         {
             // If this widget, and all of its ancestor widgets are visible, then we return true, otherwise we return false.
             var idx = Parent;

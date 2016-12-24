@@ -34,11 +34,11 @@ namespace p5.exp
     /// </summary>
     public sealed class Tokenizer : IDisposable
     {
-        private readonly StringReader _reader;
-        private bool _disposed;
+        readonly StringReader _reader;
+        bool _disposed;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.Tokenizer" /> class
+        ///     Initializes a new instance of the <see cref="Tokenizer" /> class
         /// </summary>
         /// <param name="expression">Expression to tokenize</param>
         public Tokenizer (string expression)
@@ -56,7 +56,7 @@ namespace p5.exp
             {
                 string previousToken = null;
                 while (true) {
-                    var token = GetNextToken (previousToken);
+                    var token = GetNextToken ();
                     if (token == null)
                         yield break;
                     yield return token;
@@ -76,7 +76,7 @@ namespace p5.exp
         /*
          * Disposes the tokenizer
          */
-        private void Dispose (bool disposing)
+        void Dispose (bool disposing)
         {
             if (!_disposed && disposing) {
                 _disposed = true;
@@ -87,7 +87,7 @@ namespace p5.exp
         /*
          * Finds next token and returns to caller, returns null if there are no more tokens in expression
          */
-        private string GetNextToken (string previousToken)
+        string GetNextToken ()
         {
             // Left trimming white spaces from StringReader, and putting first non-white-space character in "buffer"
             var nextChar = _reader.Read ();
@@ -100,9 +100,13 @@ namespace p5.exp
 
             if ("/|&^!()?".IndexOf ((char)nextChar) != -1) {
                 return builder.ToString (); // single character token
-            } else if (nextChar == '"') {
+            }
+
+            if (nextChar == '"') {
                 return Utilities.ReadSingleLineStringLiteral (_reader); // Singleline string literal token
-            } else if (nextChar == '@' && _reader.Peek () == '"') {
+            }
+
+            if (nextChar == '@' && _reader.Peek () == '"') {
                 _reader.Read (); // skipping opening '"'
                 return Utilities.ReadMultiLineStringLiteral (_reader); // Multiline string literal token
             }
