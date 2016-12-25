@@ -34,41 +34,57 @@ namespace p5.lambda
     /// </summary>
     public static class Eval
     {
-        // Common helper used as callback for evaluating a lambda block.
-        delegate void ExecuteFunctor (
-            ApplicationContext context,
-
-            // Lambda block to evaluate.
-            Node lambdaObj,
-
-            // Node that is currently being evaluated, might contain the lambda block as children, or have an expression leading to lambda block(s) we should evaluate.
-            Node evalNode,
-
-            // Arguments to lambda block, if any.
-            IEnumerable<Node> args);
-
         /// <summary>
-        ///     Evaluates a lambda.
-        ///     Actually creates a copy of the specified lambda block, passsing in any arguments, and returning whatever it returns, if anything.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval")]
-        public static void eval (ApplicationContext context, ActiveEventArgs e)
-        {
-            Executor (ExecuteBlockCopy, context, e.Args);
-        }
-        
-        /// <summary>
-        ///     Executes a specified lambda block as mutable, meaning it has access to entire tree.
-        ///     Useful when creating keywords and such, but should very rarely be directly used from Hyperlambda!
+        ///     Executes a specified lambda block mutably, meaning it has access to entire tree.
+        /// 
+        ///     Useful when creating keywords and such, but should very rarely be directly used from Hyperlambda.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "eval-mutable")]
         public static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
         {
-            Executor (ExecuteBlockMutable, context, e.Args);
+            // Checking if we should foce execution of children nodes, and not evaluate expression/object in main node.
+            if (e.Args.Value == null || e.Args.Name != "eval-mutable") {
+
+                // Evaluating current scope.
+                ExecuteAll (e.Args, context);
+
+            } else {
+
+                // Evaluating a value object or an expression..
+                foreach (var idxLambda in XUtil.Iterate<Node> (context, e.Args)) {
+
+                    // Evaluating currently iterated lambda.
+                    ExecuteAll (idxLambda, context);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Evaluates a lambda.
+        ///     Creates a copy of the specified lambda block, passsing in any arguments, and returning whatever it returns, if anything.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "eval")]
+        public static void eval (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Checking if we should foce execution of children nodes, and not evaluate expressions in main node
+            if (e.Args.Value == null || e.Args.Name != "eval") {
+
+                // Evaluating current scope
+                ExecuteBlockCopy (context, e.Args, e.Args, null);
+
+            } else {
+
+                // Evaluating a value object or an expression.
+                foreach (var idxLambda in XUtil.Iterate<Node> (context, e.Args)) {
+
+                    // Evaluating currently iterated source
+                    ExecuteBlockCopy (context, idxLambda, e.Args, e.Args.Children);
+                }
+            }
         }
 
         /// <summary>
@@ -90,38 +106,26 @@ namespace p5.lambda
             // Making sure that whitelist is reset after evaluating its lambda.
             try {
 
-                // Executing scope.
-                Executor (ExecuteBlockCopy, context, e.Args);
+                // Checking if we should foce execution of children nodes, and not evaluate expressions in main node
+                if (e.Args.Value == null || e.Args.Name != "eval-whitelist") {
+
+                    // Evaluating current scope
+                    ExecuteBlockCopy (context, e.Args, e.Args, null);
+
+                } else {
+
+                    // Evaluating a value object or an expression.
+                    foreach (var idxLambda in XUtil.Iterate<Node> (context, e.Args)) {
+
+                        // Evaluating currently iterated source
+                        ExecuteBlockCopy (context, idxLambda, e.Args, e.Args.Children);
+                    }
+                }
 
             } finally {
 
                 // Resetting whitelist.
                 context.Ticket.Whitelist = null;
-            }
-        }
-
-        /*
-         * Worker method for [eval] and [eval-mutable].
-         */
-        static void Executor (
-            ExecuteFunctor functor, 
-            ApplicationContext context, 
-            Node args)
-        {
-            // Checking if we should foce execution of children nodes, and not evaluate expressions in main node
-            if (args.Value == null || !args.Name.StartsWithEx ("eval")) {
-
-                // Evaluating current scope
-                functor (context, args, args, null);
-
-            } else {
-
-                // Evaluating a value object or an expression.
-                foreach (var idxLambda in XUtil.Iterate<Node> (context, args)) {
-
-                    // Evaluating currently iterated source
-                    functor (context, idxLambda, args, args.Children);
-                }
             }
         }
 
@@ -138,57 +142,30 @@ namespace p5.lambda
             // Making sure lambda is executed on copy of execution nodes, without access to nodes outside of its own scope.
             Node lambdaClone = lambdaObj.Clone ();
 
-            // Passing in arguments, in order of appearance, if there are any arguments.
+            // Passing in arguments, in order of appearance, if there are any arguments, making sure we also insert our offset.
             if (args != null) {
-                var index = evalNode["offset"] != null ? evalNode.IndexOf (evalNode["offset"]) : 0;
-                foreach (var idx in args.Reverse ()) {
-                    lambdaClone.Insert (index, idx.Clone ());
-                }
+                lambdaClone.Insert (0, new Node ("offset", args.Count ()));
+                lambdaClone.InsertRange (1, args.Select (ix => ix.Clone ()));
             }
 
             // Storing the original nodes before execution, such that we can "diff" against nodes after execution,
             // to make it possible to return ONLY added nodes after execution
-            var originalNodes = new List<Node> (lambdaClone.Children);
+            var originalNodes = lambdaClone.Children.ToList ();
 
             // Actual execution of nodes
             ExecuteAll (lambdaClone, context);
 
             // Checking if we returned prematurely due to [return] invocation
-            if (lambdaClone.FirstChild != null && lambdaClone.FirstChild.Name == "_return")
+            if (lambdaClone.FirstChild?.Name == "_return")
                 lambdaClone.FirstChild.UnTie ();
 
             // Returning all nodes created inside of execution block, and ONLY these nodes, plus value of lambda block.
             // Notice, this means clearing the evalNode's children collection.
             evalNode.Clear ();
-            evalNode.AddRange (lambdaClone.Children.Where (ix => originalNodes.IndexOf (ix) == -1));
+            evalNode.AddRange (lambdaClone.Children.Where (ix => !originalNodes.Contains (ix)));
             evalNode.Value = lambdaClone.Value;
         }
         
-        /*
-         * Executes a block of nodes in mutable state
-         */
-        static void ExecuteBlockMutable (
-            ApplicationContext context, 
-            Node lambdaObj, 
-            Node evalNode, 
-            IEnumerable<Node> args)
-        {
-            // Passing in arguments, in order of appearance, if there are any arguments.
-            if (args != null) {
-                var index = evalNode["offset"] != null ? evalNode.IndexOf (evalNode["offset"]) : 0;
-                foreach (var idx in args.Reverse ()) {
-                    lambdaObj.Insert (index, idx.Clone ());
-                }
-            }
-
-            // Actual execution of block
-            ExecuteAll (lambdaObj, context);
-
-            // Checking if we returned prematurely due to [return] invocation
-            if (lambdaObj.FirstChild != null && lambdaObj.FirstChild.Name == "_return")
-                lambdaObj.FirstChild.UnTie ();
-        }
-
         /*
          * Executes one execution statement
          */
@@ -210,8 +187,7 @@ namespace p5.lambda
                     context.RaiseEvent (current.Name, current);
 
                     // Checking if we're supposed to return from evaluation.
-                    var rootChildName = lambdaObj.Root.FirstChild?.Name;
-                    switch (rootChildName) {
+                    switch (lambdaObj.Root.FirstChild?.Name) {
                         case "_return":
                         case "_break":
                         case "_continue":
@@ -234,10 +210,10 @@ namespace p5.lambda
             Node retVal = null;
 
             // Checking if we have an [offset]
-            if (lambdaObj["offset"] != null) {
+            if (lambdaObj ["offset"] != null) {
 
                 // Retrieving offset
-                int offset = lambdaObj["offset"].UnTie ().Get<int> (context);
+                int offset = lambdaObj ["offset"].UnTie ().Get<int> (context);
 
                 // Checking if execution block is "empty"
                 if (offset == lambdaObj.Count)
@@ -248,7 +224,7 @@ namespace p5.lambda
                     throw new LambdaException ("[offset] was too large for lambda block, couldn't find that many children", lambdaObj, context);
 
                 // Setting first execution statement as the offset node
-                retVal = lambdaObj[offset];
+                retVal = lambdaObj [offset];
             } else {
 
                 // No [offset] given, executing everything

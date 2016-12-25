@@ -85,7 +85,7 @@ You can also skin your CodeMirror widget with the following setting; _"sys42.cod
 the _"sys42"_ app. To change your CodeMirror's skin to something darker, you can evaluate the following code for instance, in your Hyperlambda Executor.
 
 ```
-sys42.utilities.set-setting:sys42.code-mirror-default-theme
+sys42.settings.set:sys42.code-mirror-default-theme
   _app:sys42
   _src:paraiso-dark
 ```

@@ -637,5 +637,10 @@ namespace p5.core
             // Resorting to IComparable, if none of the above yielded any differences, assuming value argument implements IComparable.
             return (value as IComparable).CompareTo (rhsValue);
         }
+
+        public override string ToString ()
+        {
+            return string.Format ("[Node: Name={0}, Value={1}, Children={2}]", Name, Value, Children.Count ());
+        }
     }
 }

@@ -70,3 +70,5 @@ TODO before release
 
 * Investigate creating support for "p5.reflection", allowing us to instantiate CLR objects, and invoke methods and properties for them.
 
+* [create-widgets] (plural form) that takes a [widgets] collection, and creates these widgets according to a [parent], [position], [before], [after] argument
+

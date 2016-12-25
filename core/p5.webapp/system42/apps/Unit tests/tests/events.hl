@@ -87,5 +87,15 @@ Create protected event throws 2
   if:x:/@_success?value
     not
     throw:Assert error, p5.events misbehaved
-  
-  
+
+
+Lambda injection into event is not possible
+  create-event:sys42.tests.injection-test
+    return
+      foo:bar
+  sys42.tests.injection-test
+    throw:Foo bar
+  if:x:/@sys42.tests.injection-test
+    !=:node:@"sys42.tests.injection-test
+  foo:bar"
+    throw:Assert error, p5.events misbehaved

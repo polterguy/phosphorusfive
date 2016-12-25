@@ -5,74 +5,74 @@
 
 
 Set simple string setting value
-  sys42.utilities.set-setting:foo-bar
+  sys42.settings.set:foo-bar
     _app:sys42.unit-tests
     _src:Foo Bar
-  sys42.utilities.get-setting:foo-bar
+  sys42.settings.get:foo-bar
     _app:sys42.unit-tests
-  if:x:/@sys42.utilities.get-setting/*/foo-bar?value
+  if:x:/@sys42.settings.get/*/foo-bar?value
     !=:Foo Bar
-    throw:Assert error, [sys42.utilities.set-setting] misbehaved
+    throw:Assert error, [sys42.settings.set] misbehaved
 
 
 Set graph object setting value
-  sys42.utilities.set-setting:foo-bar
+  sys42.settings.set:foo-bar
     _app:sys42.unit-tests
     _src
       name:Foo
       value:Bar
-  sys42.utilities.get-setting:foo-bar
+  sys42.settings.get:foo-bar
     _app:sys42.unit-tests
-  if:x:/@sys42.utilities.get-setting/*/foo-bar/*/name?value
+  if:x:/@sys42.settings.get/*/foo-bar/*/name?value
     !=:Foo
-    or:x:/@sys42.utilities.get-setting/*/foo-bar/*/value?value
+    or:x:/@sys42.settings.get/*/foo-bar/*/value?value
       !=:Bar
-    or:x:/@sys42.utilities.get-setting/*?value
-    throw:Assert error, [sys42.utilities.set-setting] misbehaved
+    or:x:/@sys42.settings.get/*?value
+    throw:Assert error, [sys42.settings.set] misbehaved
 
 
 Delete simple string setting value
-  sys42.utilities.set-setting:foo-bar
+  sys42.settings.set:foo-bar
     _app:sys42.unit-tests
     _src:Foo Bar
-  sys42.utilities.set-setting:foo-bar
+  sys42.settings.set:foo-bar
     _app:sys42.unit-tests
-  if:x:/@sys42.utilities.get-setting/*/foo-bar
-    throw:Assert error, [sys42.utilities.set-setting] misbehaved
+  if:x:/@sys42.settings.get/*/foo-bar
+    throw:Assert error, [sys42.settings.set] misbehaved
 
 
 Update graph object setting value
-  sys42.utilities.set-setting:foo-bar
+  sys42.settings.set:foo-bar
     _app:sys42.unit-tests
     _src
       name:Foo
       value:Bar
-  sys42.utilities.set-setting:foo-bar
+  sys42.settings.set:foo-bar
     _app:sys42.unit-tests
     _src
       name:Foo2
       value:Bar2
-  sys42.utilities.get-setting:foo-bar
+  sys42.settings.get:foo-bar
     _app:sys42.unit-tests
-  if:x:/@sys42.utilities.get-setting
-    !=:node:@"sys42.utilities.get-setting
+  if:x:/@sys42.settings.get
+    !=:node:@"sys42.settings.get
   foo-bar
     name:Foo2
     value:Bar2"
-    throw:Assert error, [sys42.utilities.set-setting] misbehaved
+    throw:Assert error, [sys42.settings.set] misbehaved
 
 
 List settings for app
-  sys42.utilities.set-setting:foo-bar1
+  sys42.settings.set:foo-bar1
     _app:sys42.unit-tests-list
     _src:Foo1
-  sys42.utilities.set-setting:foo-bar2
+  sys42.settings.set:foo-bar2
     _app:sys42.unit-tests-list
     _src:Foo2
-  sys42.utilities.list-settings
+  sys42.settings.list
     _app:sys42.unit-tests-list
-  if:x:/@sys42.utilities.list-settings
-    !=:node:@"sys42.utilities.list-settings
+  if:x:/@sys42.settings.list
+    !=:node:@"sys42.settings.list
   foo-bar1:Foo1
   foo-bar2:Foo2"
-    throw:Assert error, [sys42.utilities.list-settings] misbehaved
+    throw:Assert error, [sys42.settings.list] misbehaved

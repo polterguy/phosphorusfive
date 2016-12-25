@@ -12,6 +12,10 @@ p5.events.create:p5.error.Exception
   /*
    * Building up some HTML, passing in the exception message and stacktrace.
    */
+  set:x:/../*/_trace?value
+    p5.html.html-encode:x:/../*/_trace?value
+  set:x:/../*/_message?value
+    p5.html.html-encode:x:/../*/_message?value
   _ret:
   set:x:/../*/_ret?value
     src:@"<h1>[{0}] - {1}</h1>"

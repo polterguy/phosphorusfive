@@ -48,6 +48,7 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "delete-widget")]
         [ActiveEvent (Name = "p5.web.widgets.delete")]
         public void p5_web_widgets_delete (ApplicationContext context, ActiveEventArgs e)
         {
@@ -64,6 +65,7 @@ namespace p5.web.widgets
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "clear-widget")]
         [ActiveEvent (Name = "p5.web.widgets.clear")]
         public void p5_web_widgets_clear (ApplicationContext context, ActiveEventArgs e)
         {

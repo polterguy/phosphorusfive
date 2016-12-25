@@ -93,3 +93,26 @@ Do not evaluate illegal event
   .p5.core.application-folder
   if:x:/-?value
     throw:Assert error, [eval] misbehaved
+
+
+Eval multiple expression results with args
+
+  _x1
+    if:x:/../*/_input?value
+      !=:success
+      throw:Assert error, [eval] misbehaved
+    return
+      success1
+  _x2
+    if:x:/../*/_input?value
+      !=:success
+      throw:Assert error, [eval] misbehaved
+    return
+      success2
+  eval:x:/--
+    _input:success
+  if:x:/-
+    !=:node:@"eval
+  success1
+  success2"
+    throw:Assert error, [eval] misbehaved

@@ -1,4 +1,4 @@
-﻿
+
 /*
  * Creates the Active Event that sets application specific setting(s).
  *
@@ -10,7 +10,7 @@
  * [_src] can either contain a single value, be a node hierarchy, or both. Regardless, everything in [_src] will be stored as
  * your setting(s) values/nodes.
  */
-p5.events.create:sys42.utilities.set-setting
+create-event:sys42.settings.set
 
   /*
    * Sanity check

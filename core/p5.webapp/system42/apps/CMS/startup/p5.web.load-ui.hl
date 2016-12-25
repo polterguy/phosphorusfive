@@ -5,7 +5,7 @@
  *
  * Argument expected to by supplied is [_url], being the URL of the page requested.
  */
-p5.events.create:p5.web.load-ui
+create-event:p5.web.load-ui
 
   /* 
    * Checking if there are no users in system, at which case, user must go through installation process.

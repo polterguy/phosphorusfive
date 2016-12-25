@@ -1,13 +1,13 @@
-﻿
+
 /*
- * Creates the Active Event that returns all application specific settings.
+ * Creates the Active Event that returns application specific setting(s).
  *
- * Pass in name of app to retrieve setting for as [_app].
- * Will return all app settings according to which user is currently logged in. If currently logged in user is
+ * Pass in the name of your app to retrieve setting for as [_app] and setting(s) to retrieve as [_arg].
+ * Will return app setting according to which user is currently logged in. If currently logged in user is
  * a "root account", optionally you can retrieve settings for a specific user, by supplying user to retrieve setting
- * for as [_username].
+ * for as [_username]
  */
-p5.events.create:sys42.utilities.list-settings
+create-event:sys42.settings.get
 
   /*
    * Sanity check
@@ -37,14 +37,15 @@ p5.events.create:sys42.utilities.list-settings
      */
     throw:Only root accounts can retrieve settings for other users than the currently logged in identity user
 
-  p5.data.select:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*"
+  p5.data.select:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}"""
     :x:/@p5.auth.misc.whoami/*/username?value
     :x:/../*/_app?value
+    :x:/../*/_arg?value
 
   /*
-   * Returning setting value(s).
+   * Returning setting value(s)
    */
   insert-before:x:/../0
-    src:x:/@p5.data.select/*(!/username!/app-name)
+    src:x:/@p5.data.select/*
 
 

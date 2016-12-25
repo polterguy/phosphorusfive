@@ -418,12 +418,18 @@ namespace p5.exp
             Node lambda,
             Node eventNode)
         {
+            // Fetching arguments.
+            var args = eventNode.Children.Where (ix => ix.Name != "");
+
+            // Making sure we create an [offset] for all arguments passed in.
+            lambda.Insert (0, new Node ("offset", args.Count ()));
+
             // Adding up children arguments, no need to clone, they should be gone after execution anyway.
             // But skipping all "empty name" arguments, since they're formatting parameters.
-            lambda.InsertRange (0, eventNode.Children.Where (ix => ix.Name != ""));
+            lambda.InsertRange (1, args);
 
-            // Applying "value arguments" last, meaning they'll end up first.
-            lambda.InsertRange (0, Iterate<object> (context, eventNode).Select (ix => new Node ("_arg", ix)));
+            // Applying "value arguments" last, to make sure they'll end up first.
+            lambda.InsertRange (1, Iterate<object> (context, eventNode).Select (ix => new Node ("_arg", ix)));
 
             // Evaluating lambda object now, by invoking [eval], which does the heavy lifting.
             context.RaiseEvent ("eval", lambda);

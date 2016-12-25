@@ -786,7 +786,7 @@
     <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.confirm\sys42.windows.confirm.hl" />
     <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.modal\sys42.windows.modal.hl" />
     <Content Include="system42\components\bootstrap\windows\startup\sys42.windows.wizard\sys42.windows.wizard.hl" />
-    <Content Include="system42\components\settings\startup\sys42.utilities.get-setting.hl" />
+    <Content Include="system42\components\settings\startup\sys42.settings.get.hl" />
     <Content Include="system42\components\bootstrap\windows\README.md" />
     <Content Include="system42\components\bootstrap\widgets\README.md" />
     <Content Include="system42\components\common-windows\info-tip\README.md" />
@@ -862,8 +862,8 @@
     <Content Include="system42\components\css-helpers\startup\sys42.utilities.toggle-css-classes.hl" />
     <Content Include="system42\components\settings\README.md" />
     <Content Include="system42\startup\sys42.utilities.get-event.hl" />
-    <Content Include="system42\components\settings\startup\sys42.utilities.list-settings.hl" />
-    <Content Include="system42\components\settings\startup\sys42.utilities.set-setting.hl" />
+    <Content Include="system42\components\settings\startup\sys42.settings.list.hl" />
+    <Content Include="system42\components\settings\startup\sys42.settings.set.hl" />
     <Content Include="system42\components\common-widgets\codemirror\startup\sys42.widgets.codemirror-executor.hl" />
     <None Include="system42\apps\CMS\startup\p5.web.load-ui.hl" />
     <Content Include="system42\startup\README.md" />
@@ -885,6 +885,8 @@
     <None Include="users\root\temp\README.md" />
     <None Include="common\documents\private\README.md" />
     <None Include="common\documents\public\README.md" />
+    <None Include="system42\apps\dsw8\init\default-boards\README.md" />
+    <None Include="system42\apps\dsw8\startup\README.md" />
   </ItemGroup>
   <ItemGroup />
 </Project>
