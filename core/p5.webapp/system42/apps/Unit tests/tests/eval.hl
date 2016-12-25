@@ -113,6 +113,6 @@ Eval multiple expression results with args
     _input:success
   if:x:/-
     !=:node:@"eval
-  success1
-  success2"
+  success2
+  success1"
     throw:Assert error, [eval] misbehaved

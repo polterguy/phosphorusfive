@@ -38,6 +38,7 @@ namespace p5.lambda
         ///     Executes a specified lambda block mutably, meaning it has access to entire tree.
         /// 
         ///     Useful when creating keywords and such, but should very rarely be directly used from Hyperlambda.
+        ///     Notice, you cannot pass in or return arguments from this Active Event.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -45,14 +46,14 @@ namespace p5.lambda
         public static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if we should foce execution of children nodes, and not evaluate expression/object in main node.
-            if (e.Args.Value == null || e.Args.Name != "eval-mutable") {
+            if (e.Args.Value == null || e.Args.Name != e.Name) {
 
                 // Evaluating current scope.
                 ExecuteAll (e.Args, context);
 
             } else {
 
-                // Evaluating a value object or an expression..
+                // Evaluating a value object or an expression.
                 foreach (var idxLambda in XUtil.Iterate<Node> (context, e.Args)) {
 
                     // Evaluating currently iterated lambda.
@@ -70,21 +71,7 @@ namespace p5.lambda
         [ActiveEvent (Name = "eval")]
         public static void eval (ApplicationContext context, ActiveEventArgs e)
         {
-            // Checking if we should foce execution of children nodes, and not evaluate expressions in main node
-            if (e.Args.Value == null || e.Args.Name != "eval") {
-
-                // Evaluating current scope
-                ExecuteBlockCopy (context, e.Args, e.Args, null);
-
-            } else {
-
-                // Evaluating a value object or an expression.
-                foreach (var idxLambda in XUtil.Iterate<Node> (context, e.Args)) {
-
-                    // Evaluating currently iterated source
-                    ExecuteBlockCopy (context, idxLambda, e.Args, e.Args.Children);
-                }
-            }
+            EvaluateMutably (context, e.Args);
         }
 
         /// <summary>
@@ -100,27 +87,14 @@ namespace p5.lambda
             if (context.Ticket.Whitelist != null)
                 throw new LambdaSecurityException ("Whitelist was previously applied.", e.Args, context);
 
-            // Setting whitelist for context, making sure we by default deny everything, unless an explicit [events] node is specified.
+            // Setting whitelist for context, making sure we deny everything by default, unless an explicit [events] node is specified.
             context.Ticket.Whitelist = e.Args["events"]?.UnTie () ?? new Node ();
 
             // Making sure that whitelist is reset after evaluating its lambda.
             try {
 
-                // Checking if we should foce execution of children nodes, and not evaluate expressions in main node
-                if (e.Args.Value == null || e.Args.Name != "eval-whitelist") {
-
-                    // Evaluating current scope
-                    ExecuteBlockCopy (context, e.Args, e.Args, null);
-
-                } else {
-
-                    // Evaluating a value object or an expression.
-                    foreach (var idxLambda in XUtil.Iterate<Node> (context, e.Args)) {
-
-                        // Evaluating currently iterated source
-                        ExecuteBlockCopy (context, idxLambda, e.Args, e.Args.Children);
-                    }
-                }
+                // Actual evaluation, which equals [eval] implementation.
+                EvaluateMutably (context, e.Args);
 
             } finally {
 
@@ -130,40 +104,57 @@ namespace p5.lambda
         }
 
         /*
-         * Executes a block of nodes by copying the nodes executed, and executing the copy, 
-         * returning anything created inside of the block back to caller
+         * Helper for above two mutably evaluation events.
          */
-        static void ExecuteBlockCopy (
-            ApplicationContext context, 
-            Node lambdaObj, 
-            Node evalNode, 
-            IEnumerable<Node> args)
+        static void EvaluateMutably (ApplicationContext context, Node args)
         {
-            // Making sure lambda is executed on copy of execution nodes, without access to nodes outside of its own scope.
-            Node lambdaClone = lambdaObj.Clone ();
+            // Checking if we should force evaluation of children nodes, and not evaluate expression/object in main node.
+            if (args.Value == null || !args.Name.StartsWithEx ("eval")) {
 
-            // Passing in arguments, in order of appearance, if there are any arguments, making sure we also insert our offset.
-            if (args != null) {
-                lambdaClone.Insert (0, new Node ("offset", args.Count ()));
-                lambdaClone.InsertRange (1, args.Select (ix => ix.Clone ()));
+                // Evaluating current scope.
+                var clone = args.Clone ();
+                args.Clear ().AddRange (ExecuteBlockCopy (context, clone)).Value = clone.Value;
+
+            } else {
+
+                // Evaluating a value object or an expression, making sure we are able to store everything resulting from evaluation of all objects.
+                var retVal = new Node ();
+                foreach (var idxLambda in XUtil.Iterate<Node> (context, args)) {
+
+                    // Evaluating currently iterated lambda.
+                    var clone = idxLambda.Clone ();
+
+                    // Passing in arguments, in order of appearance, if there are any arguments, making sure we also insert our offset.
+                    clone.Insert (0, new Node ("offset", args.Count));
+                    clone.InsertRange (1, args.Clone ().Children);
+
+                    // Evaluating cloned lambda, and making sure we save any return value for after iteration.
+                    retVal.AddRange (ExecuteBlockCopy (context, clone)).Value = clone.Value;
+                }
+                args.Clear ().AddRange (retVal.Children).Value = retVal.Value;
             }
+        }
 
+        /*
+         * Executes a block of nodes by copying the nodes executed, and executing the copy, 
+         * returning anything returned from the evaluation of lambda back to caller.
+         */
+        static IEnumerable<Node> ExecuteBlockCopy (ApplicationContext context, Node clone)
+        {
             // Storing the original nodes before execution, such that we can "diff" against nodes after execution,
             // to make it possible to return ONLY added nodes after execution
-            var originalNodes = lambdaClone.Children.ToList ();
+            var originalNodes = clone.Children.ToList ();
 
             // Actual execution of nodes
-            ExecuteAll (lambdaClone, context);
+            ExecuteAll (clone, context);
 
             // Checking if we returned prematurely due to [return] invocation
-            if (lambdaClone.FirstChild?.Name == "_return")
-                lambdaClone.FirstChild.UnTie ();
+            if (clone.FirstChild?.Name == "_return")
+                clone.FirstChild.UnTie ();
 
             // Returning all nodes created inside of execution block, and ONLY these nodes, plus value of lambda block.
             // Notice, this means clearing the evalNode's children collection.
-            evalNode.Clear ();
-            evalNode.AddRange (lambdaClone.Children.Where (ix => !originalNodes.Contains (ix)));
-            evalNode.Value = lambdaClone.Value;
+            return clone.Children.Where (ix => !originalNodes.Contains (ix));
         }
         
         /*
