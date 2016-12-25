@@ -11,7 +11,7 @@ p5.events.create:sys42.utilities.load-web-service-ui
    * Making sure we include Bootstrap.
    */
   sys42.bootstrap.include-css
-  sys42.bootstrap.p5.web.include-javascript
+  sys42.bootstrap.include-javascript
   p5.web.include-css-file:@CMS/media/css/main.min.css
   p5.web.include-css-file:@CMS/media/css/backgrounds/cogs.min.css
 

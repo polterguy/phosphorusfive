@@ -19,7 +19,7 @@ p5.events.create:p5.io.unroll-path.@BOOTSTRAP
  *
  * Notice, Bootstrap's JavaScript is dependent upon jQuery, hence we make sure jQuery is also included here.
  */
-p5.events.create:sys42.bootstrap.p5.web.include-javascript
+p5.events.create:sys42.bootstrap.include-javascript
 
   sys42.utilities.include-jquery
   p5.web.include-javascript-file:@BOOTSTRAP/js/bootstrap.min.js

@@ -84,7 +84,7 @@ p5.events.create:sys42.widgets.colorpicker
             /*
              * Including Bootstrap (and jQuery)
              */
-            sys42.bootstrap.p5.web.include-javascript
+            sys42.bootstrap.include-javascript
             sys42.bootstrap.include-css
 
             /*

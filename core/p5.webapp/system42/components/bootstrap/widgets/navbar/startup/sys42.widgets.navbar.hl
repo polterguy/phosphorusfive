@@ -111,7 +111,7 @@ p5.events.create:sys42.widgets.navbar
              * the hack to allow Boostrap's navbar to have multiple levels of inner menus.
              */
             sys42.bootstrap.include-css
-            sys42.bootstrap.p5.web.include-javascript
+            sys42.bootstrap.include-javascript
             p5.web.include-css-file:@CMS/media/css/navbar-fix.min.css
 
           widgets
