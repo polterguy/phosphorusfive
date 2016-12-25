@@ -117,7 +117,7 @@ namespace p5.lambda
 
             } else {
 
-                // Evaluating a value object or an expression, making sure we are able to store everything resulting from evaluation of all objects.
+                // Evaluating a value object or an expression, making sure we are able to return everything resulting from evaluation of all lambdas.
                 var retVal = new Node ();
                 foreach (var idxLambda in XUtil.Iterate<Node> (context, args)) {
 
@@ -129,8 +129,10 @@ namespace p5.lambda
                     clone.InsertRange (1, args.Clone ().Children);
 
                     // Evaluating cloned lambda, and making sure we save any return value for after iteration.
-                    retVal.AddRange (ExecuteBlockCopy (context, clone)).Value = clone.Value;
+                    retVal.AddRange (ExecuteBlockCopy (context, clone)).Value = clone.Value ?? retVal.Value;
                 }
+
+                // Returning results from all above evaluations.
                 args.Clear ().AddRange (retVal.Children).Value = retVal.Value;
             }
         }

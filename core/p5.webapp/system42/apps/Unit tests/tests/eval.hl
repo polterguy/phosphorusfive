@@ -95,24 +95,40 @@ Do not evaluate illegal event
     throw:Assert error, [eval] misbehaved
 
 
-Eval multiple expression results with args
+Eval avoiding lambda injection
 
   _x1
-    if:x:/../*/_input?value
-      !=:success
-      throw:Assert error, [eval] misbehaved
     return
       success1
   _x2
-    if:x:/../*/_input?value
-      !=:success
-      throw:Assert error, [eval] misbehaved
     return
       success2
+  _x3
   eval:x:/--
-    _input:success
+    throw:Foo bar
   if:x:/-
     !=:node:@"eval
   success2
   success1"
+    throw:Assert error, [eval] misbehaved
+
+
+Eval expression yielding multiple evaluations with args
+
+  _x1
+    eval-x:x:/+/*
+    return
+      success1:x:/../*/_success?value
+  _x2
+    eval-x:x:/+/*
+    return
+      success2:x:/../*/_success?value
+  _x3
+    return:More success
+  eval:x:/--
+    _success:yup
+  if:x:/-
+    !=:node:@"eval:More success
+  success2:yup
+  success1:yup"
     throw:Assert error, [eval] misbehaved
