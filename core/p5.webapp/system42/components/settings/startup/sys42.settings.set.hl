@@ -17,20 +17,22 @@ create-event:sys42.settings.set
    */
   if:x:/../*/_app?value
     not
+    or:x:/../*/_app?value
+      =:
     throw:No application specified!
 
   /*
    * Retrieving currently logged in user, checking if user as "root", and if a specific user was supplied.
    */
-  p5.auth.misc.whoami
-  if:x:/@p5.auth.misc.whoami/*/role?value
+  whoami
+  if:x:/@whoami/*/role?value
     =:root
     and:x:/../*/_username?value
 
     /*
-     * Changing user to set setting for in [p5.data.select], [p5.data.delete] and [p5.data.insert] below.
+     * Changing user to set setting for in [delete-data] and [insert-data] below.
      */
-    set:x:/../*(/p5.data.delete/0|/p5.data.insert/*/1)?value
+    set:x:/../*(/delete-data/0|/insert-data/*/1)?value
       src:x:/../*/_username?value
 
   else-if:x:/../*/_username?value
@@ -40,11 +42,10 @@ create-event:sys42.settings.set
      */
     throw:Only root accounts can retrieve settings for other users than the currently logged in identity user
 
-  p5.data.delete:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}""/."
-    :x:/@p5.auth.misc.whoami/*/username?value
+  delete-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}""/."
+    :x:/@whoami/*/username?value
     :x:/../*/_app?value
     :x:/../*/_arg?value
-  eval-x:x:/../*/p5.data.insert/*/*
 
   /*
    * Checking if new setting was provided, or if this was a "delete setting" invocation.
@@ -52,13 +53,14 @@ create-event:sys42.settings.set
   if:x:/../*/_src
     not
     return
-  add:x:/../*/p5.data.insert/*
+  eval-x:x:/../*/insert-data/*/*
+  add:x:/../*/insert-data/*
     src:x:/../*/_src
-  set:x:/../*/p5.data.insert/*/*/_src?name
+  set:x:/../*/insert-data/*/*/_src?name
     src:x:/../*/_arg?value
-  p5.data.insert
+  insert-data
     sys42.app-settings
       app-name:x:/../*/_app?value
-      username:x:/@p5.auth.misc.whoami/*/username?value
+      username:x:/@whoami/*/username?value
 
 

@@ -529,6 +529,7 @@
     <Content Include="common\documents\private\web.config" />
     <Content Include="users\root\documents\private\web.config" />
     <Content Include="system42\apps\Unit tests\tests\widgets.hl" />
+    <Content Include="system42\components\settings\startup\sys42.settings.ensure-defaults.hl" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

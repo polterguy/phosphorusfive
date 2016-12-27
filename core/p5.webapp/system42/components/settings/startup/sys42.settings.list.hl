@@ -14,20 +14,22 @@ create-event:sys42.settings.list
    */
   if:x:/../*/_app?value
     not
+    or:x:/../*/_app?value
+      =:
     throw:No application specified!
 
   /*
    * Retrieving currently logged in user, checking if user is "root", and if a specific user was supplied.
    */
-  p5.auth.misc.whoami
-  if:x:/@p5.auth.misc.whoami/*/role?value
+  whoami
+  if:x:/@whoami/*/role?value
     =:root
     and:x:/../*/_username?value
 
     /*
-     * Changing user to retrieve setting for in [p5.data.select] below.
+     * Changing user to retrieve setting for in [select-data] below.
      */
-    set:x:/../*/p5.data.select/0?value
+    set:x:/../*/select-data/0?value
       src:x:/../*/_username?value
 
   else-if:x:/../*/_username?value
@@ -37,14 +39,22 @@ create-event:sys42.settings.list
      */
     throw:Only root accounts can retrieve settings for other users than the currently logged in identity user
 
-  p5.data.select:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*"
-    :x:/@p5.auth.misc.whoami/*/username?value
+  /*
+   * Checking if caller provided a filter, and if so, making sure we use it during [select-data].
+   */
+  if:x:/../*/_arg?value
+    set:x:/../*/select-data/2?value
+      src:/~{0}
+        :x:/../*/_arg?value
+
+  select-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*{2}"
+    :x:/@whoami/*/username?value
     :x:/../*/_app?value
+    :
 
   /*
    * Returning setting value(s).
    */
-  insert-before:x:/../0
-    src:x:/@p5.data.select/*(!/username!/app-name)
+  return:x:/@select-data/*(!/username!/app-name)
 
 

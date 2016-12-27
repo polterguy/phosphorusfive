@@ -1,0 +1,39 @@
+
+/*
+ * Creates the given default settings, if they do not already exist.
+ */
+create-event:sys42.settings.ensure-defaults
+
+  /*
+   * Sanity check
+   */
+  if:x:/../*/_app?value
+    not
+    throw:No application specified!
+
+  /*
+   * Retrieving currently logged in user, and parametrizing invocations to settings below.
+   */
+  whoami
+  add:x:/../*/for-each/*(/sys42.settings.get|/if/*/sys42.settings.set)
+    src:x:/../*(/_app|/_username)
+
+  /*
+   * Looping through each setting from [src] argument, checking if setting exists, and if not, create its default value.
+   */
+  for-each:x:/../*/src/*
+
+    /*
+     * Checking if setting exists, and if not, create it.
+     */
+    sys42.settings.get:x:/@_dp/#?name
+    if:x:/@sys42.settings.get/*
+      not
+      if:x:/@_dp/#/*
+        add:x:/..if/..if/*/sys42.settings.set/*/_src
+          src:x:/@_dp/#/*
+      else
+        set:x:/..if/*/sys42.settings.set/*/_src?value
+          src:x:/@_dp/#?value
+      sys42.settings.set:x:/@_dp/#?name
+        _src
