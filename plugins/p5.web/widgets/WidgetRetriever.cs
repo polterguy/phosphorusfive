@@ -219,6 +219,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.exists")]
+        [ActiveEvent (Name = "widget-exists")]
         public void p5_web_widgets_exists (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.

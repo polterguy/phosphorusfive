@@ -96,7 +96,7 @@ namespace p5.http
             using (new ArgsRemover (args, true)) {
 
                 // Figuring out which HTTP method to use
-                string method = args.Name.Substring (args.Name.IndexOfEx ("-") + 1).ToUpper ();
+                string method = args.Name.Split ('.').Last ();
                 if (method.Contains ("-"))
                     method = method.Substring (0, method.IndexOfEx ("-"));
                 try

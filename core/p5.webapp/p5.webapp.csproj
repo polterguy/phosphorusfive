@@ -530,6 +530,9 @@
     <Content Include="users\root\documents\private\web.config" />
     <Content Include="system42\apps\Unit tests\tests\widgets.hl" />
     <Content Include="system42\components\settings\startup\sys42.settings.ensure-defaults.hl" />
+    <Content Include="system42\components\image-helpers\README.md" />
+    <Content Include="system42\components\image-helpers\startup.hl" />
+    <Content Include="system42\components\image-helpers\startup\sys42.imaging.auto-crop-resize.hl" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -583,6 +586,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="common\temp\" />
+    <Folder Include="system42\apps\dsw8\navbar\" />
+    <Folder Include="system42\apps\dsw8\board\keys\" />
+    <Folder Include="system42\apps\dsw8\board\configure-key\plugins\" />
+    <Folder Include="system42\components\image-helpers\" />
+    <Folder Include="system42\components\image-helpers\startup\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">

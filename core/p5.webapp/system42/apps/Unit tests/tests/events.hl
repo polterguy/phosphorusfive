@@ -99,3 +99,26 @@ Lambda injection into event is not possible
     !=:node:@"sys42.tests.injection-test
   foo:bar"
     throw:Assert error, p5.events misbehaved
+
+
+Event does not return [_arg] expression
+  create-event:sys42.tests.no-return
+    return
+      foo:bar
+  _data:foo
+  sys42.tests.no-return:x:/../*/_data?value
+  if:x:/@sys42.tests.no-return
+    !=:node:@"sys42.tests.no-return
+  foo:bar"
+    throw:Assert error, p5.events misbehaved
+
+
+Event does not return [_arg] constant
+  create-event:sys42.tests.no-return-2
+    return
+      foo:bar
+  sys42.tests.no-return-2:foo
+  if:x:/@sys42.tests.no-return-2
+    !=:node:@"sys42.tests.no-return-2
+  foo:bar"
+    throw:Assert error, p5.events misbehaved

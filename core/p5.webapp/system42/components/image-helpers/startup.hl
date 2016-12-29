@@ -1,0 +1,5 @@
+﻿
+/*
+ * Initializing "image-helpers" component.
+ */
+sys42.utilities.execute-lambda-folder:@SYS42-COMPONENTS/image-helpers/startup/

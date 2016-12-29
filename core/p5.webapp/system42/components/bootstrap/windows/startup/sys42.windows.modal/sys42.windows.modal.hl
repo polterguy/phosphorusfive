@@ -110,10 +110,16 @@ p5.events.create:sys42.windows.modal
     src:x:/../*/_options/*/.oncancel/*
 
   /*
+   * Checking if we have any buttons, and if not, entirely removing footer of window.
+   */
+  if:x:/../*/_options/*/_buttons/*
+    not
+    set:x:/../*/p5.web.widgets.create-container/**/container/=sys42-windows-modal-footer
+
+  /*
    * Creating actual modal widget, making sure we forward evaluate the [_header], [_body], [class], in addition to 
    * the [class] for the [_inner-class] widget first.
    */
-  eval-x:x:/../*/p5.web.widgets.create-container(/*/class|/**(/=sys42-windows-modal-body|/=sys42-windows-modal-header)/*/innerValue|/*/widgets/*/container/*/class)
   p5.web.widgets.create-container:sys42-windows-modal
     parent:cnt
     class:x:/../*/_options/*/_class?value
@@ -253,6 +259,13 @@ p5.events.create:sys42.windows.modal
     return false;
   }
 }"
+                    events
+
+                      /*
+                       * Deletes all widgets inside of the modal body of window.
+                       */
+                      sys42.windows.modal.clear-body
+                        p5.web.widgets.clear:sys42-windows-modal-widgets
 
               /*
                * Footer of dialog, contains [_buttons], which by default means only "OK" button.

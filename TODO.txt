@@ -72,3 +72,12 @@ TODO before release
 
 * [create-widgets] (plural form) that takes a [widgets] collection, and creates these widgets according to a [parent], [position], [before], [after] argument
 
+* Verify execute-lamba-file correctly handles lambda injection (no execution)
+
+* Why aren't arguments to evaluation of lambda files passed into the order they're supplied ...?
+
+* p5.ajax throws on empty "select" HTML widget on LoadFormData.
+
+* [load-file] cannot handle a "?node.string" [src] expression returning multiple nodes.
+
+

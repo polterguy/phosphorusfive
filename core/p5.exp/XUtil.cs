@@ -418,18 +418,16 @@ namespace p5.exp
             Node lambda,
             Node eventNode)
         {
-            // Fetching arguments.
+            // Retrieving arguments, all of them.
+            var allArgs = new List<Node> ();
+            if (eventNode.Value != null)
+                allArgs.AddRange (Iterate<object> (context, eventNode).Select (ix => new Node ("_arg", ix)));
             var args = eventNode.Children.Where (ix => ix.Name != "");
+            allArgs.AddRange (args);
 
-            // Making sure we create an [offset] for all arguments passed in.
-            lambda.Insert (0, new Node ("offset", args.Count ()));
-
-            // Adding up children arguments, no need to clone, they should be gone after execution anyway.
-            // But skipping all "empty name" arguments, since they're formatting parameters.
-            lambda.InsertRange (1, args);
-
-            // Applying "value arguments" last, to make sure they'll end up first.
-            lambda.InsertRange (1, Iterate<object> (context, eventNode).Select (ix => new Node ("_arg", ix)));
+            // Inserting arguments, in addition to [offset] making sure no arguments are evaluated using "lambda injection".
+            lambda.Insert (0, new Node ("offset", allArgs.Count));
+            lambda.InsertRange (1, allArgs);
 
             // Evaluating lambda object now, by invoking [eval], which does the heavy lifting.
             context.RaiseEvent ("eval", lambda);
@@ -437,7 +435,7 @@ namespace p5.exp
             // Making sure we return all nodes that was created during evaluation of event back to caller, in addition to value.
             // Notice Clear invocation, since eventNode still might contain formatting parameters.
             eventNode.Clear ().AddRange (lambda.Children);
-            eventNode.Value = lambda.Value;
+            eventNode.Value = lambda.Value == eventNode.Value ? null : lambda.Value;
         }
 
         /*

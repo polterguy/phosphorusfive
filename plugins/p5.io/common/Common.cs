@@ -37,10 +37,11 @@ namespace p5.io.common
         /// </summary>
         /// <param name="context"></param>
         /// <param name="e"></param>
+        [ActiveEvent (Name = "p5.io.unroll-path")]
         [ActiveEvent (Name = ".p5.io.unroll-path")]
-        public static void _p5_io_unroll_path (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_io_unroll_path (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = GetSystemPath (context, e.Args.Get<string> (context));
+            e.Args.Value = GetSystemPath (context, e.Args.GetExValue<string> (context));
         }
 
         /*
