@@ -76,8 +76,18 @@ TODO before release
 
 * Why aren't arguments to evaluation of lambda files passed into the order they're supplied ...?
 
-* p5.ajax throws on empty "select" HTML widget on LoadFormData.
-
 * [load-file] cannot handle a "?node.string" [src] expression returning multiple nodes.
+
+* Creates unit test for invoking dynamic Active Event, with expression [_arg], leading to multiple values, making sure
+  lambda injection is not possible. This was a severe bug found in XUtil.EvaluateLambda, which I think is fixed, but not entirely certain.
+
+* Go through all Active Event, including widgets/windows, and check if we should remove "_" in front of arguments, etc ...
+
+* Make sure we do not pass in attributes back to client that was not actually changed during Ajax request, for cases where an
+  an attribute is changed to its already existing value.
+
+* Make sure uploader widget uses minified version of JavaScript. Had to change it to create fix on Mac.
+
+* Check formatting strings, since for instance a [p5.types.date.now] invocation inside e.g. {0} seems to be locally formatted.
 
 

@@ -192,9 +192,11 @@ namespace p5.web.widgets
             if (args ["widgets"] != null) {
                 foreach (var idxNode in args["widgets"].Children) {
 
-                    // Notice, if this is a custom widget, we iterate its first child node, which is its return widget, and not the custom widget itself.
-                    // We do this by recursively invoking "self".
-                    foreach (var idxInnerSecond in GetInitLambdas (idxNode.Name.Contains (".") ? idxNode.FirstChild : idxNode, context)) {
+                    // Notice, we need to recursively find the first widget which is not a "custom widget", hence the while loop.
+                    var cur = idxNode;
+                    while (cur != null && cur.Name.Contains ("."))
+                        cur = cur.FirstChild;
+                    foreach (var idxInnerSecond in GetInitLambdas (cur, context)) {
                         yield return idxInnerSecond;
                     }
                 }

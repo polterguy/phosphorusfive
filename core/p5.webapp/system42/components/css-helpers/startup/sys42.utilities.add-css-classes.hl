@@ -4,15 +4,15 @@
  * This Active Event takes a CSS class(es) as [_class], and will append that CSS class to the widget given as [_arg],
  * if the class does not already exist on widget.
  */
-p5.events.create:sys42.utilities.add-css-classes
+create-event:sys42.utilities.add-css-classes
 
   /*
    * Splitting upon every given CSS class caller wants to add.
    */
-  p5.string.split:x:/../*/_class?value
+  split:x:/../*/_class?value
     =:,
     =:" "
-    p5.string.trim:true
+    trim:true
 
   /*
    * Retrieving CSS class of specified widget.
@@ -24,31 +24,31 @@ p5.events.create:sys42.utilities.add-css-classes
    * Splitting each CSS class already in widget, such that we can figure out if class(es)
    * caller wants to add already exists or not.
    */
-  p5.string.split:x:/@p5.web.widgets.property.get/*/*?value
+  split:x:/@p5.web.widgets.property.get/*/*?value
     =:" "
 
   /*
    * Looping through each class supplied.
    */
-  for-each:x:/../*/p5.string.split/[0,1]/*/$
+  for-each:x:/../*/split/[0,1]/*/$
 
     /*
-     * Checking if currently iterated CSS class is not already in [p5.string.split] result.
+     * Checking if currently iterated CSS class is not already in [split] result.
      */
-    if:x:/@p5.string.split/*/{0}
+    if:x:/@split/*/{0}
       :x:/@_dp/#?name
       not
 
       /*
        * Class does NOT exist, adding it
        */
-      add:x:/@p5.string.split
+      add:x:/@split
         src:x:/@_dp/#?name
 
   /*
-   * Invoking [p5.string.join] on p5.string.split results, before settings new class value
+   * Invoking [join] on split results, before settings new class value
    */
-  p5.string.join:x:/@p5.string.split/*?name
+  join:x:/@split/*?name
     sep:" "
   p5.web.widgets.property.set:x:/../*/_arg?value
-    class:x:/@p5.string.join?value
+    class:x:/@join?value

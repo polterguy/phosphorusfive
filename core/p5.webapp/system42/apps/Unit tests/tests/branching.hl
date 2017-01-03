@@ -1013,3 +1013,11 @@ Misc, with formatted expression
     =:x
   else
     throw:Assert error, [if] misbehaved
+
+
+Not, with formatting expression
+  _data
+  if:x:/../*/{0}
+    :_data
+    not
+    throw:Assert error, [if] misbehaved

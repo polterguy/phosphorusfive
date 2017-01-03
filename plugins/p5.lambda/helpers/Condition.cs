@@ -104,13 +104,16 @@ namespace p5.lambda.helpers
         /// </summary>
         public void ExecuteCurrentScope ()
         {
+            // Making sure we now add the formatting nodes to our _conditions, before we calculate [offset].
+            var offset = _conditions.Count + _args.Children.Count (ix => ix.Name == "");
+
             // Making sure there actually is something to evaluate.
-            if (_args.Count == _conditions.Count)
+            if (_args.Count == offset)
                 return;
 
             // Storing offset temporary in args, such that [eval-mutable] knows where to start execution.
-            if (_conditions.Count > 0)
-                _args.Insert (0, new Node ("offset", _conditions.Count));
+            if (offset > 0)
+                _args.Insert (0, new Node ("offset", offset));
 
             // Evaluating body of conditional statement, now with [offset] pointing to first non-comparison/non-formatting node.
             _context.RaiseEvent ("eval-mutable", _args);
@@ -180,12 +183,17 @@ namespace p5.lambda.helpers
             // Then returning operators, until we find something that is NOT in our list of comparison/logical operators.
             while (idxOperator != null) {
 
-                // Checking if currently iterated node's name is in list of operators.
-                if (!operators.Children.Any (ix => ix.Name == idxOperator.Name))
-                    yield break; // This is not an "operator" node, stopping further iteration.
+                // Making sure we simply continue if current node is a formatting node, to avoid breaking if expression in
+                // main conditional node is formatted somehow.
+                if (idxOperator.Name != "") {
 
-                // This is a comparison/logical operator, or an empty formatting node.
-                yield return idxOperator;
+                    // Checking if currently iterated node's name is in list of operators.
+                    if (!operators.Children.Any (ix => ix.Name == idxOperator.Name))
+                        yield break; // This is not an "operator" node, stopping further iteration.
+
+                    // This is a comparison/logical operator, or an empty formatting node.
+                    yield return idxOperator;
+                }
 
                 // Incrementing currently iterated node.
                 idxOperator = idxOperator.NextSibling;

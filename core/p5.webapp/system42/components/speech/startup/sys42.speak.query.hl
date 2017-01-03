@@ -1,0 +1,129 @@
+
+/*
+ * Creates the event that allows caller to query what languages and voices exists on the current client.
+ *
+ * This event invokes the specified [.on-finished] callback when voices have been retrieved.
+ * Your [.on-finished] lambda will be invoked with [voices] being the supported voices for the current client.
+ *
+ * Internally, this might requires a roundtrip to the client, injecting a JavaScript component, which then invokes
+ * the server again asynchronously, for the first time you invoke this event. 
+ * This is necessary, since the client is the one who knows which supported voices and languages it has.
+ */
+create-event:sys42.speak.query
+
+  /*
+   * Checking if we have previously queried available voices for the current session, and if so, simply invoking
+   * the supplied [.on-finished] callback immediately.
+   */
+  p5.web.session.get:sys42.speak.query.voices
+  if:x:/@p5.web.session.get/*
+
+    /*
+     * Session object has already stored the available voices for the current client.
+     * Invoking [.on-finished] immediately, with the available voices.
+     */
+    add:x:/+/*/voices
+      src:x:/@p5.web.session.get/*/*/*
+    eval:x:/../*/.on-finished
+      voices
+
+  else
+
+    /*
+     * We don't have the supported voices in our session, hence we'll need to create a roundtrip to the client, to have it
+     * return the available voices for us.
+     * We do this by creating a temporary invisible widget, with an invisible Ajax event, which is invoked once the client has
+     * retrieved the available voices.
+     *
+     * First we need to parametrize the Ajax event with the [.on-finished] lambda callback supplied by caller.
+     */
+    add:x:/+/**/.ondone
+      src:x:/../*/.on-finished
+    create-literal-widget
+      element:span
+      style:"display:none !important;"
+      .ondone
+
+        /*
+         * Deleting the temporary injected widget.
+         */
+        delete-widget:x:/../*/_event?value
+
+        /*
+         * Retrieving all voices supported by client from HTTP POST parameter collection.
+         */
+        p5.web.post.list:~p5-sys42-speech-voices.
+        p5.web.post.get:x:/-/*?name
+
+        /*
+         * Parametrizing lambda callbak [.on-finished] and invoking it.
+         */
+        for-each:x:/@p5.web.post.get/*
+          split:x:/@_dp/#?name
+            =:.
+          add:x:/../*/eval/*
+            src:"{0}:{1}"
+              :x:/@split/0/-?name
+              :x:/@_dp/#?value
+
+        /*
+         * Notice, before we invoke lambda callback, we store the voices in session, to avoid creating another roundtrip
+         * to client, if user invokes event again.
+         */
+        add:x:/../*/p5.web.session.set/*/*
+          src:x:/../*/eval/*/voices/*
+        p5.web.session.set:sys42.speak.query.voices
+          src
+            voices
+        eval:x:/../*/.on-finished
+          voices
+
+      oninit
+
+        /*
+         * Passing over JavaScript necessary to query the available voices.
+         * Notice, if "voices" have been initialized on the client, we can get away with passing over a smaller version of
+         * our JavaScript.
+         */
+        p5.web.viewstate.get:sys42.speak.client-initialized
+        if:x:/@p5.web.viewstate.get/*?value
+          =:bool:true
+
+          /*
+           * Client has been previously initialized, passing over our "short version".
+           */
+          p5.web.send-javascript:@"
+p5.$('{0}').raise('.ondone', {{
+  onbefore: function (pars, evt) {{
+    for (var ix = 0; ix < p5.sys42_speech_voices.length;ix++) {{
+      pars.push (['p5-sys42-speech-voices.' + p5.sys42_speech_voices[ix].name, p5.sys42_speech_voices[ix].lang]);
+    }}
+  }}
+}});"
+            :x:/../*/_event?value
+
+        else
+
+          /*
+           * Client has not been previously initialized, passing over "long version".
+           */
+          p5.web.send-javascript:@"
+window.speechSynthesis.onvoiceschanged = function() {{
+  p5.sys42_speech_voices = window.speechSynthesis.getVoices();
+  p5.$('{0}').raise('.ondone', {{
+    onbefore: function (pars, evt) {{
+      for (var ix = 0; ix < p5.sys42_speech_voices.length;ix++) {{
+        pars.push (['p5-sys42-speech-voices.' + p5.sys42_speech_voices[ix].name, p5.sys42_speech_voices[ix].lang]);
+      }}
+    }}
+  }});
+}}"
+            :x:/../*/_event?value
+
+          /*
+           * Making sure we store in the ViewState that "p5.sys42_speech_voices" has been initialized on the client side.
+           */
+          p5.web.viewstate.set:sys42.speak.client-initialized
+            src:bool:true
+
+

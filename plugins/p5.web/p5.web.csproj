@@ -74,6 +74,7 @@
     <Compile Include="Initialiser.cs" />
     <Compile Include="widgets\BaseWidget.cs" />
     <Compile Include="widgets\WidgetDeleter.cs" />
+    <Compile Include="request\PostParameters.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

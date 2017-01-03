@@ -21,12 +21,14 @@
  * [_allow-multiple]      - If false, then only one file is allowed being uploaded at the same time. The default value is true.
  * [_filter]              - Pipe separated (|) list of  valid file extensions that the uploader accepts. Default value is empty, "", 
  *                          which means "everything is accepted".
+ * [_clickable]           - If false, will not let the user click the widget to open up browse for file window.
+ * [_preview]             - If false, will not create previews of files during upload.
  * [.onupload]            - Lambda callback which will be invoked whenever some file have been uploaded to the server. Will be given
  *                          a [_filename] and a [_content] argument.
  *                          In addition, for cases when the user is uploading multiple files at once, it will also be given the
  *                          arguments [_count] and [_current], which are the total number of files, and the currently uploaded file.
  */
-p5.events.create:sys42.widgets.uploader
+create-event:sys42.widgets.uploader
 
   /*
    * Applying options for widget, with default values.
@@ -39,6 +41,8 @@ p5.events.create:sys42.widgets.uploader
     _error-class:uploader-widget-error
     _allow-multiple:bool:true
     _filter
+    _clickable:true
+    _preview:true
     .onupload
   _options
   add:x:/../*/_options
@@ -53,9 +57,25 @@ p5.events.create:sys42.widgets.uploader
 
 
   /*
+   * Making sure we remove the role=button parts, if widget is not clickable.
+   */
+  if:x:/../*/_options/*/_clickable?value.bool
+    not
+    set:x:/../*/return/*/container/*/role
+
+
+  /*
+   * Making sure we remove the "multiple" attribute, if widget does not allow for multiple files.
+   */
+  if:x:/../*/_options/*/_allow-multiple?value.bool
+    not
+    set:x:/../*/return/*/container/*/widgets/*/void/*/multiple
+
+
+  /*
    * Forward evaluating some arguments to widget.
    */
-  eval-x:x:/../*/return/**(/container/*/class|/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple|/_css-file)|/return/*/container/*/class|/.onupload/*(/_filter|/_allow-multiple))
+  eval-x:x:/../*/return/**(/container/*/class|/oninit/*(/_class|/_dragover-class|/_drop-class|/_error-class|/_filter|/_allow-multiple|/_css-file|/_clickable|/_preview)|/return/*/container/*/class|/.onupload/*(/_filter|/_allow-multiple))
 
 
   /*
@@ -79,7 +99,7 @@ p5.events.create:sys42.widgets.uploader
         /*
          * Including JavaScript file that contains uploader widget's client-side JavaScript.
          */
-        p5.web.include-javascript-file:/system42/components/common-widgets/uploader/media/uploader.min.js
+        p5.web.include-javascript-file:/system42/components/common-widgets/uploader/media/uploader.js
 
         /*
          * These are forward evaluated during construction of widget.
@@ -90,6 +110,10 @@ p5.events.create:sys42.widgets.uploader
         _error-class:x:/../*/_options/*/_error-class?value
         _filter:x:/../*/_options/*/_filter?value
         _allow-multiple:x:/../*/_options/*/_allow-multiple?value
+        p5.string.to-lower:x:/-?value.string
+        _clickable:x:/../*/_options/*/_clickable?value
+        p5.string.to-lower:x:/-?value.string
+        _preview:x:/../*/_options/*/_preview?value
         p5.string.to-lower:x:/-?value.string
 
         /*
@@ -104,15 +128,17 @@ p5.events.create:sys42.widgets.uploader
          * Notice, we have to wait until widget is actually attached before we do this, since otherwise we won't know its ID,
          * unless an explicit ID was provided, which is not necessary the case.
          */
-        p5.web.send-javascript:@"new p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}');"
+        p5.web.send-javascript:@"p5['{0}'] = new p5.uploader ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', {8}, {9});"
           :x:/../*/_event?value
           :x:/../*/_class?value
           :x:/../*/_dragover-class?value
           :x:/../*/_drop-class?value
           :x:/../*/_error-class?value
           :x:/../*/_filter?value
-          :x:/../*/p5.string.to-lower?value
+          :x:/../*/p5.string.to-lower/[0,1]?value
           :x:/@p5.web.widgets.find/*/*?value
+          :x:/../*/p5.string.to-lower/[1,2]?value
+          :x:/../*/p5.string.to-lower/[2,3]?value
 
       /*
        * Event raised when a file is uploaded.
@@ -181,4 +207,4 @@ p5.events.create:sys42.widgets.uploader
           element:input
           type:file
           multiple
-          style:"opacity:0 !important;position:absolute !important;"
+          style:"opacity:0 !important;position:absolute !important;width:0;height:0;z-index:-1;top:-5000px;left:0;"

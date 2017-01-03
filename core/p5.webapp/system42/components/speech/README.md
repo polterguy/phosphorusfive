@@ -1,0 +1,4 @@
+Speech component
+===============
+
+TODO: Document ...

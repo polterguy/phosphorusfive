@@ -25,7 +25,7 @@
 (function () {
 
     // Constructor.
-    p5.uploader = function (widget, cssClass, hoverClass, dropClass, errorClass, filter, multiple, file) {
+    p5.uploader = function (widget, cssClass, hoverClass, dropClass, errorClass, filter, multiple, file, clickable, preview) {
 
         // Initializing.
         this._widget = p5.$(widget);
@@ -36,13 +36,16 @@
         this._filter = (filter == '' ? [] : filter.split('|'));
         this._multiple = multiple;
         this._file = p5.$(file).el;
+        this._preview = preview;
 
         // Storing this as "self" to have access to it inside of event handlers further down.
         var self = this;
 
         // First the DOM event handler for what happens when main widget is clicked.
         // We simply raise "click" on the file input.
-        this._widget.el.addEventListener('click', function (e) {self._file.click();}, false);
+        if (clickable) {
+            this._widget.el.addEventListener('click', function (e) {self._file.click();}, false);
+        }
 
         // Since we trigger click on file input when main widget is clicked above, and file input is a child of main widget, we
         // need to stop propagation, to prevent never ending recursive bubbling, when file input element is clicked.
@@ -62,6 +65,14 @@
     };
 
 
+    // Allows you to show the "browse for file" window explicitly.
+    p5.uploader.prototype.browse = function () {
+
+        // Clicks the file input element.
+        this._file.click ();
+    };
+
+
     // Triggered when file input's value was changed.
     p5.uploader.prototype.onFileInputChanged = function () {
 
@@ -77,10 +88,10 @@
     p5.uploader.prototype.onDrop = function (e) {
 
         // Making sure we prevent default logic, since that would simply load up the files in browser.
-        e.preventDefault();
+        e.preventDefault ();
 
         // Forwarding to common uploader function.
-        this.uploadFiles(e.dataTransfer.files);
+        this.uploadFiles (e.dataTransfer.files);
     };
 
 
@@ -88,13 +99,14 @@
     p5.uploader.prototype.uploadFiles = function (files) {
 
         // Checking if file input's files are accepted as valid input.
-        if (!this.checkFile(files)) {
+        if (!this.checkFile (files)) {
 
             // File input is not valid, making sure we provide visual clues to user by setting its error CSS class.
             // Also making sure we remove the error CSS class after one second, such that we can set it again later successfully,
             // in case user does something else later, that also triggers an error.
             this._widget.el.className = this._cssClass + " " + this._errorClass;
-            setTimeout(function () { this._widget.el.className = this._cssClass; }, 1000);
+            var self = this;
+            setTimeout(function () { self._widget.el.className = self._cssClass; }, 1000);
 
         } else {
 
@@ -146,18 +158,18 @@
     // tons of bandwidth and waiting for the file(s) to upload.
     p5.uploader.prototype.checkFile = function (files) {
 
-        // Checking if current instance has a filter.
-        if (this._filter.length == 0) {
-
-            // No filters, accepting everything.
-            return true;
-        }
-
         // Checking if user provided multiple files, and only one is allowed.
         if (this._multiple === false && files.length > 1) {
 
             // Widget only allows uploading one file, and multiple files were provided.
             return false;
+        }
+
+        // Checking if current instance has a filter.
+        if (this._filter.length == 0) {
+
+            // No filters, accepting everything.
+            return true;
         }
 
         // Looping through files, making sure they match at least one of our filters.
@@ -190,6 +202,9 @@
     // If file is an image, the image will be displayed, otherwise a generic preview image will be displayed.
     p5.uploader.prototype.addPreview = function (files) {
 
+        // Checking if we should add preview.
+        if (this._preview === false) { return; }
+
         // Looping through all files supplied, and creating an image for each of them, appending it into main widget's surface as a child element.
         for (var idx = 0; idx < files.length; idx++) {
 
@@ -206,6 +221,7 @@
                 img.title = files[idx].name;
                 img.className = 'uploader-widget-preview';
                 this._widget.el.appendChild(img);
+
             } else {
 
                 // File was not an image, displaying the "generic" preview span element instead.
@@ -245,12 +261,15 @@
                 // Otherwise, sets back CSS class to default class.
                 onsuccess: function (serverReturn, evt) {
 
+                    // Checking if we have added previews.
                     var w = self._widget.el;
-                    for (var idx = 0; idx < w.childNodes.length; idx++) {
-                        var ix = w.childNodes[idx];
-                        if (ix.tagName == 'IMG' || ix.tagName == 'SPAN') {
-                            w.removeChild(ix);
-                            break;
+                    if (self._preview) {
+                        for (var idx = 0; idx < w.childNodes.length; idx++) {
+                            var ix = w.childNodes[idx];
+                            if (ix.tagName == 'IMG' || ix.tagName == 'SPAN') {
+                                w.removeChild(ix);
+                                break;
+                            }
                         }
                     }
                     if (self._files.length > 0) {

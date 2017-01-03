@@ -1,0 +1,5 @@
+﻿
+/*
+ * Initializing "speech" component.
+ */
+sys42.utilities.execute-lambda-folder:@SYS42-COMPONENTS/speech/startup/

@@ -533,6 +533,10 @@
     <Content Include="system42\components\image-helpers\README.md" />
     <Content Include="system42\components\image-helpers\startup.hl" />
     <Content Include="system42\components\image-helpers\startup\sys42.imaging.auto-crop-resize.hl" />
+    <Content Include="system42\components\speech\README.md" />
+    <Content Include="system42\components\speech\startup.hl" />
+    <Content Include="system42\components\speech\startup\sys42.speak.hl" />
+    <Content Include="system42\components\speech\startup\sys42.speak.query.hl" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -591,6 +595,8 @@
     <Folder Include="system42\apps\dsw8\board\configure-key\plugins\" />
     <Folder Include="system42\components\image-helpers\" />
     <Folder Include="system42\components\image-helpers\startup\" />
+    <Folder Include="system42\components\speech\" />
+    <Folder Include="system42\components\speech\startup\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">

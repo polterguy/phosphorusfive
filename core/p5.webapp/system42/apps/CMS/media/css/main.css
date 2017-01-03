@@ -303,6 +303,5 @@
  */
 .colorpicker-element span.input-group-addon:last-child,
 .date span.input-group-addon:last-child {
-    width:auto;
     min-width:inherit;
 }

@@ -7,6 +7,7 @@
  * [_value]            - Initial value for widget. Can be either '#xxyyzz', 'rgba(x,y,z,q)' or a 'named color' such as 'yellow'. Defaults to #000000.
  * [_class]            - CSS class to use. Defaults to "input-group colorpicker-component colorpicker-element".
  * [_label]            - If declared, will create a descriptive input-group-addon label, with the specified text.
+ * [_title]            - If declared, will create a tooltip with the specified text.
  * [.onchange]         - Lambda callback invoked when the value of the colorpicker changes.
  *
  * In addition, the ColorPicker contains the following Active Events.
@@ -25,6 +26,7 @@ p5.events.create:sys42.widgets.colorpicker
     _class:input-group colorpicker-component colorpicker-element
     .onchange
     _label
+    _title
   _options
   add:x:/../*/_options
     src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
@@ -66,7 +68,7 @@ p5.events.create:sys42.widgets.colorpicker
   /*
    * Forward evaluating arguments.
    */
-  eval-x:x:/../*/return/*/container/*(/class|/widgets/*/input/*/value)
+  eval-x:x:/../*/return/*/container/*(/class|/title|/widgets/*/input/*/value)
 
   /*
    * Returning color picker to caller.
@@ -74,6 +76,7 @@ p5.events.create:sys42.widgets.colorpicker
   return
     container
       class:x:/../*/_options/*/_class?value
+      title:x:/../*/_options/*/_title?value
       widgets
         input
           type:text
