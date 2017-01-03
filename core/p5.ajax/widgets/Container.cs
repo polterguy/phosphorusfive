@@ -104,15 +104,20 @@ namespace p5.ajax.widgets
 
                 // Returning each selected "option" element separated by comma, in case this is a multi select widget.
                 string retVal = "";
+                bool found = false;
                 foreach (Widget idxWidget in Controls) {
-                    if (idxWidget.HasAttribute ("selected"))
+                    if (idxWidget.HasAttribute ("selected")) {
+                        found = true;
                         retVal += idxWidget ["value"] + ",";
+                    }
                 }
 
                 // Notice, a "select" HTML element, unless it has an explicit value, or is in "multiple" mode, 
                 // will automatically yield its first option elemt's value as "value".
-                if (retVal == "" && !base.HasAttribute ("multiple"))
-                    return Controls.Count > 0 ? (Controls [0] as Widget)["value"] : null;
+                if (retVal == "" && !base.HasAttribute ("multiple") && Controls.Count > 0)
+                    return (Controls [0] as Widget)["value"];
+                if (!found)
+                    return base.GetAttribute (key);
                 return retVal.TrimEnd (','); // Removing last comma ",".
 
             }
@@ -138,6 +143,7 @@ namespace p5.ajax.widgets
                 foreach (Widget idxWidget in Controls) {
                     idxWidget.DeleteAttribute ("selected"); // DeleteAttribute will check if attribute exists before attempting to delete it.
                 }
+
                 foreach (string idxSplit in value.Split (',')) {
                     foreach (Widget idxWidget in Controls) {
                         if (idxWidget ["value"] == idxSplit) {
@@ -157,7 +163,7 @@ namespace p5.ajax.widgets
          */
         public override bool HasAttribute (string name)
         {
-            if (name == "value" && Element == "select" && !base.HasAttribute ("multiple")) {
+            if (name == "value" && Element == "select" && !base.HasAttribute ("multiple") && Controls.Count > 0) {
 
                 // Special treatment for select HTML elements, that are not in "multiple" mode, to make it resemble what goes on on the client-side.
                 // Notice, a "select" element, unless in "multiple" mode, will always "logically" have a value, since its first "option" will be selected, 
@@ -292,22 +298,31 @@ namespace p5.ajax.widgets
         protected override void LoadFormData ()
         {
             // Checking if this widget is a "select", and if so, loading its HTTP POST form data, if we should.
-            if (Visible && Element == "select" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
+            if (Visible && Element == "select" && !string.IsNullOrEmpty (this ["name"]) && 
+                !HasAttribute ("disabled") && !string.IsNullOrEmpty (Page.Request.Form [this ["name"]])) {
 
                 // Splitting up value of HTTP param on comma ",", to allow for "multiple" select widgets, with multiple selected "option" elements.
                 // Notice, to support having "option" elements with a "," as a part of their value, the value of an option element is URL decoded by
                 // the client, before transferred to server.
                 // Hence, we need to URL decode it, before we know which "option" item(s) was selected.
                 // Notice, this dilemma is actually quite more common than what you think, since the default "value" of an "option" element is its "innerValue".
-                var splits = Page.Request.Params [this ["name"]].Split (',').Select (ix => Page.Server.UrlDecode (ix));
+                // Also notce, that if we are unsuccessful of finding an "option" HTML widget as a child, matching the "value", we set
+                // the attribute ["value"] to the given HTTP POST parameter, since this allows us to dynamically populate an HTML select
+                // widget on the client side with "option" elements, and still retain the "selected" value on the server side.
+                bool found = false;
+                var splits = Page.Request.Form [this ["name"]].Split (',').Select (ix => Page.Server.UrlDecode (ix));
                 foreach (Widget idxChildWidget in Controls) {
 
                     // If currently iterated "option" widget's value is found in split result, then widget ise "selected", otherwise it's not.
-                    if (splits.Contains (idxChildWidget ["value"]))
+                    if (splits.Contains (idxChildWidget ["value"])) {
+                        found = true;
                         idxChildWidget.Attributes.SetAttributeFormData ("selected", null);
-                    else
+                    } else {
                         idxChildWidget.Attributes.DeleteAttribute ("selected", false);
+                    }
                 }
+                if (!found)
+                    this ["value"] = Page.Request.Form [this ["name"]];
             }
         }
 

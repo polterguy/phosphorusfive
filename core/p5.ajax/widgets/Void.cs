@@ -129,7 +129,7 @@ namespace p5.ajax.widgets
                         // If they do, they will be serialized as one HTTP POST parameter, with each checked element's value, separated by comma.
                         // Also here, we apply the same "trick" to allow for "value"s of these widgets to contains "," 
                         // as we do in the Container widget for an "option" element.
-                        var val = Page.Request.Params [this ["name"]];
+                        var val = Page.Request.Form [this ["name"]];
                         if (string.IsNullOrEmpty (val)) {
 
                             // Definitely unchcked!
@@ -146,7 +146,7 @@ namespace p5.ajax.widgets
                         }
                         break;
                     default:
-                        Attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
+                        Attributes.SetAttributeFormData ("value", Page.Request.Form [this ["name"]]);
                         break;
                 }
             }
