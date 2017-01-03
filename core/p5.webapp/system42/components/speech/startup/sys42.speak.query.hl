@@ -13,7 +13,8 @@ create-event:sys42.speak.query
 
   /*
    * Checking if we have previously queried available voices for the current session, and if so, simply invoking
-   * the supplied [.on-finished] callback immediately.
+   * the supplied [.on-finished] callback immediately, fetching the available voices from the session object.
+   * This saves us another roundtrip for retrieving voices every consecutive query, after the initial query.
    */
   p5.web.session.get:sys42.speak.query.voices
   if:x:/@p5.web.session.get/*
@@ -28,6 +29,11 @@ create-event:sys42.speak.query
       voices
 
   else
+
+    /*
+     * Making sure we include our JavaScript file.
+     */
+    p5.web.include-javascript-file:@SYS42-COMPONENTS/speech/media/speech.js
 
     /*
      * We don't have the supported voices in our session, hence we'll need to create a roundtrip to the client, to have it
@@ -52,7 +58,7 @@ create-event:sys42.speak.query
         /*
          * Retrieving all voices supported by client from HTTP POST parameter collection.
          */
-        p5.web.post.list:~p5-sys42-speech-voices.
+        p5.web.post.list:~p5-speech-voice.
         p5.web.post.get:x:/-/*?name
 
         /*
@@ -82,48 +88,6 @@ create-event:sys42.speak.query
 
         /*
          * Passing over JavaScript necessary to query the available voices.
-         * Notice, if "voices" have been initialized on the client, we can get away with passing over a smaller version of
-         * our JavaScript.
          */
-        p5.web.viewstate.get:sys42.speak.client-initialized
-        if:x:/@p5.web.viewstate.get/*?value
-          =:bool:true
-
-          /*
-           * Client has been previously initialized, passing over our "short version".
-           */
-          p5.web.send-javascript:@"
-p5.$('{0}').raise('.ondone', {{
-  onbefore: function (pars, evt) {{
-    for (var ix = 0; ix < p5.sys42_speech_voices.length;ix++) {{
-      pars.push (['p5-sys42-speech-voices.' + p5.sys42_speech_voices[ix].name, p5.sys42_speech_voices[ix].lang]);
-    }}
-  }}
-}});"
-            :x:/../*/_event?value
-
-        else
-
-          /*
-           * Client has not been previously initialized, passing over "long version".
-           */
-          p5.web.send-javascript:@"
-window.speechSynthesis.onvoiceschanged = function() {{
-  p5.sys42_speech_voices = window.speechSynthesis.getVoices();
-  p5.$('{0}').raise('.ondone', {{
-    onbefore: function (pars, evt) {{
-      for (var ix = 0; ix < p5.sys42_speech_voices.length;ix++) {{
-        pars.push (['p5-sys42-speech-voices.' + p5.sys42_speech_voices[ix].name, p5.sys42_speech_voices[ix].lang]);
-      }}
-    }}
-  }});
-}}"
-            :x:/../*/_event?value
-
-          /*
-           * Making sure we store in the ViewState that "p5.sys42_speech_voices" has been initialized on the client side.
-           */
-          p5.web.viewstate.set:sys42.speak.client-initialized
-            src:bool:true
-
-
+        p5.web.send-javascript:@"p5.speech.query('{0}');"
+          :x:/../*/_event?value

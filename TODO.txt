@@ -90,4 +90,8 @@ TODO before release
 
 * Check formatting strings, since for instance a [p5.types.date.now] invocation inside e.g. {0} seems to be locally formatted.
 
+* Test populating a "select" widget on client side, and see if we can retrieve its value on the server.
+  Also make sure that ONLY "empty" select widgets are possible to populate this way, to avoid as much as possible, client beig able
+  to "inject" logic into server.
 
+* Minimize "speak.js" file.

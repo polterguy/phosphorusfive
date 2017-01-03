@@ -13,6 +13,11 @@
  */
 create-event:sys42.speak
 
+  /*
+   * Making sure we include our JavaScript file.
+   */
+  p5.web.include-javascript-file:@SYS42-COMPONENTS/speech/media/speech.js
+
 
   /*
    * Passing in JavaScript to client that creates the speech, making sure we [join] arguments, if multiple [_arg]s are 
@@ -23,107 +28,13 @@ create-event:sys42.speak
   replace:x:/@join?value
     src:@""""
     dest:@""""""
+  replace:x:/-?value
+    src:"\r\n"
+    dest:"\\r\\n"
 
   /*
-   * Checking if we've previously initialized the client, and if so, passing over our "short version" of JavaScript
-   * necessary to speak the given text.
-   * Notice, we pass in a shorter version if no [voice] is defined, using the default voice on client.
+   * Making sure we invoke client-side function that wraps our speech.
    */
-  p5.web.viewstate.get:sys42.speak.client-initialized
-  if:x:/@p5.web.viewstate.get/*?value
-    =:bool:true
-    and:x:/../*/voice?value
-    and:x:/../*/voice?value
-      !=:
-
-    /*
-     * Passing over our "short version" of JavaScript, using explicit voice.
-     * No need to initialize client.
-     */
-    p5.web.send-javascript:@"
-var lang = '{1}';
-var speech = new SpeechSynthesisUtterance(""{0}"");
-var voices = p5.sys42_speech_voices.filter(function(voice) {{
-  if (lang.indexOf(',') != -1) {{
-    return voice.name == lang.split(',')[0];
-  }}
-  return voice.name == lang || voice.lang == lang;
-}});
-if (voices.length == 0 && lang.indexOf(',') != -1) {{
-  voices = p5.sys42_speech_voices.filter(function(voice) {{return voice.lang == lang.split(',')[1]}});
-}}
-if (voices.length > 0) {{
-  speech.voice = voices [0];
-  window.speechSynthesis.speak(speech);
-}} else {{
-  window.speechSynthesis.speak(new SpeechSynthesisUtterance(""That voice is not supported!""));
-}}"
-      :x:/@replace?value
-      :x:/../*/voice?value
-
-  else-if:x:/@p5.web.viewstate.get/*?value
-    =:bool:true
-
-    /*
-     * Passing over our "short version" of JavaScript, using default voice.
-     * No need to initialize client.
-     */
-    p5.web.send-javascript:@"window.speechSynthesis.speak(new SpeechSynthesisUtterance(""{0}""));"
-      :x:/@replace?value
-
-  else-if:x:/../*/voice?value
-    and:x:/../*/voice?value
-      !=:
-
-    /*
-     * Passing over our "slightly longer version" of JavaScript, using explicit voice.
-     * We need to initialize client though.
-     */
-    p5.web.send-javascript:@"
-window.speechSynthesis.onvoiceschanged = function() {{
-  p5.sys42_speech_voices = window.speechSynthesis.getVoices();
-  var lang = '{1}';
-  var speech = new SpeechSynthesisUtterance(""{0}"");
-  var voices = p5.sys42_speech_voices.filter(function(voice) {{
-    if (lang.indexOf (',') != -1) {{
-      return voice.name == lang.split(',')[0];
-    }}
-    return voice.name == lang || voice.lang == lang;
-  }});
-  if (voices.length == 0 && lang.indexOf(',') != -1) {{
-    voices = p5.sys42_speech_voices.filter(function(voice) {{return voice.lang == lang.split(',')[1]}});
-  }}
-  if (voices.length > 0) {{
-    speech.voice = voices [0];
-    window.speechSynthesis.speak(speech);
-  }} else {{
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(""That voice is not supported!""));
-  }}
-}}"
-      :x:/@replace?value
-      :x:/../*/voice?value
-
-    /*
-     * Making sure we store in the ViewState that "p5.sys42_speech_voices" has been initialized on the client side.
-     */
-    p5.web.viewstate.set:sys42.speak.client-initialized
-      src:bool:true
-
-  else
-
-    /*
-     * Passing over our "slightly longer version" of JavaScript, using default voice,
-     * Still making sure we initialize client though.
-     */
-    p5.web.send-javascript:@"
-window.speechSynthesis.onvoiceschanged = function() {{
-  p5.sys42_speech_voices = window.speechSynthesis.getVoices();
-  window.speechSynthesis.speak(new SpeechSynthesisUtterance(""{0}""));
-}}"
-      :x:/@replace?value
-
-    /*
-     * Making sure we store in the ViewState that "p5.sys42_speech_voices" has been initialized on the client side.
-     */
-    p5.web.viewstate.set:sys42.speak.client-initialized
-      src:bool:true
+  p5.web.send-javascript:@"p5.speech.speak(""{0}"", ""{1}"");"
+    :x:/@replace?value
+    :x:/../*/voice?value

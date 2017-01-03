@@ -597,6 +597,7 @@
     <Folder Include="system42\components\image-helpers\startup\" />
     <Folder Include="system42\components\speech\" />
     <Folder Include="system42\components\speech\startup\" />
+    <Folder Include="system42\components\speech\media\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
@@ -902,6 +903,12 @@
     <None Include="common\documents\public\README.md" />
     <None Include="system42\apps\dsw8\init\default-boards\README.md" />
     <None Include="system42\apps\dsw8\startup\README.md" />
+    <None Include="system42\components\speech\media\speech.js" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="system42\components\speech\media\manager.min.js">
+      <DependentUpon>speech.js</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
