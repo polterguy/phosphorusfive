@@ -60,13 +60,26 @@ namespace p5.io.folder
         }
 
         /*
-         * Helper for above
+         * Helper for above.
+         * Verifies the filename somehow matches one of the filters, defaulting to true, if filter is empty.
          */
         static bool MatchFilter (string filename, string filter)
         {
-            if (filter.StartsWithEx ("."))
-                return Path.GetExtension (filename).ToLower () == filter.ToLower ();
-            return Path.GetFileName (filename).Contains (filter);
+            bool retVal = filter == "";
+            foreach (var idxFilter in filter.Split ('|')) {
+                if (idxFilter.StartsWithEx (".")) {
+                    if (Path.GetExtension (filename).ToLower () == idxFilter.ToLower ()) {
+                        retVal = true;
+                        break;
+                    }
+                } else {
+                    if (Path.GetFileName (filename).Contains (idxFilter.ToLower ())) {
+                        retVal = true;
+                        break;
+                    }
+                }
+            }
+            return retVal;
         }
     }
 }

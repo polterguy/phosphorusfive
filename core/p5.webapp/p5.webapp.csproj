@@ -598,6 +598,7 @@
     <Folder Include="system42\components\speech\" />
     <Folder Include="system42\components\speech\startup\" />
     <Folder Include="system42\components\speech\media\" />
+    <Folder Include="system42\apps\dsw8\media\empty-keys\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">

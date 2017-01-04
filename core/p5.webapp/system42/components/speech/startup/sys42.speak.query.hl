@@ -65,12 +65,17 @@ create-event:sys42.speak.query
          * Parametrizing lambda callbak [.on-finished] and invoking it.
          */
         for-each:x:/@p5.web.post.get/*
+          split:x:/@_dp/#?value
+            =:,
           split:x:/@_dp/#?name
             =:.
           add:x:/../*/eval/*
             src:"{0}:{1}"
               :x:/@split/0/-?name
-              :x:/@_dp/#?value
+              :x:/..for-each/*/split/[0,1]/0?name
+          add:x:/../*/eval/*/0/-
+            src:"local:{0}"
+              :x:/..for-each/*/split/[0,1]/1?name
 
         /*
          * Notice, before we invoke lambda callback, we store the voices in session, to avoid creating another roundtrip
