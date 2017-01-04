@@ -199,7 +199,7 @@ namespace p5.ajax.widgets
         protected override void LoadFormData ()
         {
             // Checking if this widget is a "textarea", and if so, loading its HTTP POST form data, if we should.
-            if (Visible && Element == "textarea" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
+            if (Visible && AreAncestorsVisible () && Element == "textarea" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
                 Attributes.SetAttributeFormData ("innerValue", Page.Request.Form [this ["name"]]);
             }
         }

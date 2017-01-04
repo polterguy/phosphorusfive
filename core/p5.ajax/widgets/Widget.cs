@@ -399,16 +399,17 @@ namespace p5.ajax.widgets
         /// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
         public override bool Visible
         {
-            get { return base.Visible; }
+            // Notice, we cannot use base implementation, since this won't be persisted, if one of the current widget's ancestors are IN-visible!!
+            get { return ViewState ["Visible"] == null ? true : (bool)ViewState ["Visible"]; }
             set {
-                if (value == base.Visible)
+                if (value == Visible)
                     return; // No change, returning early ...
 
                 // If we've changed widget's visibility after we've started tracking ViewState, and this is an Ajax request, 
                 // we'll have to change widget's rendering mode.
                 if (IsTrackingViewState && AjaxPage.IsAjaxRequest)
                     RenderMode = value ? RenderingMode.ReRender : RenderingMode.WidgetBecameInvisible;
-                base.Visible = value;
+                ViewState ["Visible"] = value;
             }
         }
 
@@ -547,7 +548,7 @@ namespace p5.ajax.widgets
          * Visibility of a widget is determined by AND'ing widget's own visibility together with visibility of all of its ancestor
          * widgets'/controls' visibility.
          */
-        bool AreAncestorsVisible ()
+        internal bool AreAncestorsVisible ()
         {
             // If this widget, and all of its ancestor widgets are visible, then we return true, otherwise we return false.
             var idx = Parent;

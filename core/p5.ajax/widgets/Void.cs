@@ -118,7 +118,7 @@ namespace p5.ajax.widgets
         protected override void LoadFormData ()
         {
             // Checking if this widget is a "input", and if so, loading its HTTP POST form data, if we should.
-            if (Visible && Element == "input" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
+            if (Visible && AreAncestorsVisible() && Element == "input" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
 
                 // Figuring out what to do, according to what "type" of input element this is.
                 switch (this ["type"]) {

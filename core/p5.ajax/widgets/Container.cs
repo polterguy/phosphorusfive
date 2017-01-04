@@ -298,7 +298,7 @@ namespace p5.ajax.widgets
         protected override void LoadFormData ()
         {
             // Checking if this widget is a "select", and if so, loading its HTTP POST form data, if we should.
-            if (Visible && Element == "select" && !string.IsNullOrEmpty (this ["name"]) && 
+            if (Visible && AreAncestorsVisible () && Element == "select" && !string.IsNullOrEmpty (this ["name"]) && 
                 !HasAttribute ("disabled") && !string.IsNullOrEmpty (Page.Request.Form [this ["name"]])) {
 
                 // Splitting up value of HTTP param on comma ",", to allow for "multiple" select widgets, with multiple selected "option" elements.

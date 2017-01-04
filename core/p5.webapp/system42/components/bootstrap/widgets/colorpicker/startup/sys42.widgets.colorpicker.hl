@@ -110,7 +110,7 @@ p5.events.create:sys42.widgets.colorpicker
               /*
                * We have an [.onchange] lambda callback, making sure it is evaluated when colorpicker is hidden.
                */
-              p5.web.include-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}}).on('hidePicker', function() {{p5.$('{1}').raise('.onchange')}});"
+              p5.web.send-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}}).on('hidePicker', function() {{p5.$('{1}').raise('.onchange')}});"
                 :x:/@p5.web.widgets.get-parent/*/*?value
                 :x:/../*/_event?value
             else
@@ -118,7 +118,7 @@ p5.events.create:sys42.widgets.colorpicker
               /*
                * We do not have an [.onchange] lambda callback, initializing colorpicker without "hidePicker" event declared.
                */
-              p5.web.include-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}});"
+              p5.web.send-javascript:@"$('#{0}').colorpicker({{component:'.colorpicker-dropper'}});"
                 :x:/@p5.web.widgets.get-parent/*/*?value
 
           .onchange

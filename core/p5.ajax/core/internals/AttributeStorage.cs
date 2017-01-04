@@ -256,7 +256,7 @@ namespace p5.ajax.core.internals
 
             // Then if widget is not visible, we add the form data attributes, to make sure they don't disappear during next callback.
             // This is necessary in order to have a widget keep its FORM data value(s), if it is later made invisible.
-            if (!widget.Visible)
+            if (_formDataThisRequest.Count > 0 && (!widget.Visible || !widget.AreAncestorsVisible ()))
                 atrs.AddRange (_formDataThisRequest);
 
             // Then removing all attributes that has the same value as when they were created before ViewState was being tracked.
