@@ -118,7 +118,7 @@ namespace p5.ajax.widgets
                     return (Controls [0] as Widget)["value"];
                 if (!found)
                     return base.GetAttribute (key);
-                return retVal.TrimEnd (','); // Removing last comma ",".
+                return retVal.Substring (0, retVal.Length - 1); // Removing last comma ",".
 
             }
 
@@ -146,7 +146,7 @@ namespace p5.ajax.widgets
 
                 foreach (string idxSplit in value.Split (',')) {
                     foreach (Widget idxWidget in Controls) {
-                        if (idxWidget ["value"] == idxSplit) {
+                        if (idxWidget ["value"] == idxSplit || idxWidget ["value"] == value) {
                             idxWidget ["selected"] = null;
                         }
                     }
@@ -314,7 +314,7 @@ namespace p5.ajax.widgets
                 foreach (Widget idxChildWidget in Controls) {
 
                     // If currently iterated "option" widget's value is found in split result, then widget ise "selected", otherwise it's not.
-                    if (splits.Contains (idxChildWidget ["value"])) {
+                    if (splits.Contains (idxChildWidget ["value"]) || idxChildWidget ["value"] == Page.Request.Form [this ["name"]]) {
                         found = true;
                         idxChildWidget.Attributes.SetAttributeFormData ("selected", null);
                     } else {
