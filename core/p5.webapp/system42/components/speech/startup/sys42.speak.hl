@@ -27,7 +27,7 @@ create-event:sys42.speak
     sep:" "
   replace:x:/@join?value
     src:@""""
-    dest:@""""""
+    dest:@"\"""
   replace:x:/-?value
     src:"\r\n"
     dest:"\\r\\n"
