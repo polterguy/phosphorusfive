@@ -27,6 +27,7 @@
  *                          a [_filename] and a [_content] argument.
  *                          In addition, for cases when the user is uploading multiple files at once, it will also be given the
  *                          arguments [_count] and [_current], which are the total number of files, and the currently uploaded file.
+ * [events]               - Additional set of custom events to be associated with widget.
  */
 create-event:sys42.widgets.uploader
 
@@ -70,6 +71,13 @@ create-event:sys42.widgets.uploader
   if:x:/../*/_options/*/_allow-multiple?value.bool
     not
     set:x:/../*/return/*/container/*/widgets/*/void/*/multiple
+
+
+  /*
+   * Adding all custom lambda events specified, if any.
+   */
+  add:x:/../*/return/*/container
+    src:x:/../*/events
 
 
   /*
@@ -201,6 +209,7 @@ create-event:sys42.widgets.uploader
           _current:x:/../*/p5.web.params.get/[1,2]/*?value
           _filename:x:/../*/p5.web.params.get/[2,3]/*?value
           _content:x:/../*/p5.string.decode-base64?value
+          _event:x:/../*/_event?value
 
       widgets
         void
