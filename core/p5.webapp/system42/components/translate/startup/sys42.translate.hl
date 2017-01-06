@@ -1,0 +1,38 @@
+
+/*
+ * Creates the event that allows caller to translate a piece of text from one language to another.
+ * Pass in [_arg] as whatever you want to have translated, and [lang] being the language you wish to have it translated to.
+ *
+ * Example of some [lang]s you could use are; "en" English, and "no" for Norwegian.
+ */
+create-event:sys42.translate
+
+  /*
+   * URL encoding text.
+   */
+  p5.html.url-encode:x:/../*/_arg?value
+
+  /*
+   * Invoking Google Translate with URL encoded text.
+   */
+  p5.http.get:"https://translate.googleapis.com/translate_a/single?client=gtx&ie=UTF-8&sl=auto&tl={0}&dt=t&q={1}"
+    :x:/../*/lang?value
+    :x:/@p5.html.url-encode?value
+  split:x:/@p5.http.get/**/content?value.string
+    =:@"["
+    =:@"]"
+  _ret
+  set:x:/@split/*/%2
+  for-each:x:/@split/*?name
+    index-of:x:/@_dp?value
+      src:,
+    if:x:/@index-of/*
+      not
+      break
+    split:x:/@_dp?value
+      =:@""""
+    set:x:/@_ret?value
+      src:{0}{1}
+        :x:/@_ret?value
+        :x:/@split/0?name
+  return:x:/@_ret?value

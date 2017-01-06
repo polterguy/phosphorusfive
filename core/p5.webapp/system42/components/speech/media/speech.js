@@ -146,7 +146,6 @@
      * Expects "p5.speech._sys42_speech_voices" to have already beein initialized.
      */
     p5.speech._query = function (widget) {
-        console.log(p5.speech._sys42_speech_voices);
         p5.$(widget).raise('.ondone', {
             onbefore: function (pars, evt) {
                 for (var ix = 0; ix < p5.speech._sys42_speech_voices.length;ix++) {

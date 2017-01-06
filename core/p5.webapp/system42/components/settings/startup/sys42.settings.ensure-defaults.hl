@@ -1,6 +1,8 @@
 
 /*
  * Creates the given default settings, if they do not already exist.
+ *
+ * Returns the names of all settings that was created as a result.
  */
 create-event:sys42.settings.ensure-defaults
 
@@ -37,3 +39,5 @@ create-event:sys42.settings.ensure-defaults
           src:x:/@_dp/#?value
       sys42.settings.set:x:/@_dp/#?name
         _src
+      insert-before:x:/../0
+        src:x:/@_dp/#?name

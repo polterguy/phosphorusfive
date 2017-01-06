@@ -1,0 +1,4 @@
+Translate component
+===============
+
+TODO: Document ...

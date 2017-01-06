@@ -537,6 +537,9 @@
     <Content Include="system42\components\speech\startup.hl" />
     <Content Include="system42\components\speech\startup\sys42.speak.hl" />
     <Content Include="system42\components\speech\startup\sys42.speak.query.hl" />
+    <Content Include="system42\components\translate\README.md" />
+    <Content Include="system42\components\translate\startup.hl" />
+    <Content Include="system42\components\translate\startup\sys42.translate.hl" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -599,7 +602,9 @@
     <Folder Include="system42\components\speech\startup\" />
     <Folder Include="system42\components\speech\media\" />
     <Folder Include="system42\apps\dsw8\media\empty-keys\" />
-    <Folder Include="system42\apps\dsw8\output\actions\" />
+    <Folder Include="system42\apps\dsw8\document\actions\" />
+    <Folder Include="system42\components\translate\" />
+    <Folder Include="system42\components\translate\startup\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
