@@ -130,6 +130,8 @@ namespace p5.lambda.keywords.core
                     // Currently iterated conditional statement yielded true.
                     return true;
                 }
+                if (ix.Name == "if")
+                    break; // End of related conditional events.
             }
 
             // No previous conditional Active Event(s) evaluated to true.
