@@ -41,8 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bundleconfig.json" />
-    <None Include="javascript\manager.js" />
     <None Include="README.md" />
+    <None Include="javascript\manager.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

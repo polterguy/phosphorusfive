@@ -70,6 +70,7 @@
     <Compile Include="common\Common.cs" />
     <Compile Include="file\Exist.cs" />
     <Compile Include="folder\Exists.cs" />
+    <Compile Include="file\file-state\LastWriteTime.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />

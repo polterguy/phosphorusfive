@@ -36,20 +36,20 @@ p5.events.create:sys42.utilities.execute-lambda-file
   /*
    * Loading up all files given as [_arg] arguments.
    */
-  p5.io.file.load:x:/../*/_arg?value
+  load-file:x:/../*/_arg?value
 
   /*
    * Forwarding all arguments given to evaluation of file.
-   * This expression will add up all nodes before our [p5.io.file.load] node, except the [_arg] argument, which basically means all arguments 
+   * This expression will add up all nodes before our [load-file] node, except the [_arg] argument, which basically means all arguments 
    * passed into event invocation, except [_arg], which is the file to evaluate.
    */
   add:x:/+
     src:x:/./-/--!/../*/_arg
 
   /*
-   * Evaluating [p5.io.file.load]'s children, with the arguments applied in the above [add] invocation.
+   * Evaluating [load-file]'s children, with the arguments applied in the above [add] invocation.
    */
-  eval:x:/@p5.io.file.load/*
+  eval:x:/@load-file/*
 
   /*
    * Returning the results of the above evaluation to caller.
@@ -78,24 +78,24 @@ p5.events.create:sys42.utilities.execute-lambda-folder
   /*
    * Listing all Hyperlambda files in directories we're given.
    */
-  p5.io.folder.list-files:x:/../*/_arg?value
+  list-files:x:/../*/_arg?value
     filter:.hl
 
   /*
    * Evaluating all Hyperlambda files from that folder.
    */
-  sys42.utilities.execute-lambda-file:x:/@p5.io.folder.list-files/*?name
+  sys42.utilities.execute-lambda-file:x:/@list-files/*?name
 
   /*
    * Listing all folders recursively, within the folder(s) we've just evaluated.
    */
-  p5.io.folder.list-folders:x:/../*/_arg?value
+  list-folders:x:/../*/_arg?value
 
   /*
    * If the above [list-folder] gave us any result(s), we recursively invoke self.
    */
   if:x:/-/*
-    sys42.utilities.execute-lambda-folder:x:/@p5.io.folder.list-folders/*?name
+    sys42.utilities.execute-lambda-folder:x:/@list-folders/*?name
 
 
 /*

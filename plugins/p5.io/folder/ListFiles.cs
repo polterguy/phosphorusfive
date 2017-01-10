@@ -47,10 +47,16 @@ namespace p5.io.folder
 
             // Checking if we've got a filter
             string filter = e.Args.GetExChildValue ("filter", context, "") ?? "";
+            bool showAll = e.Args.GetExChildValue ("show-all", context, false);
 
             ObjectIterator.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
                 foreach (var idxFile in Directory.GetFiles (fullpath)) {
                     if (filter == "" || MatchFilter (idxFile, filter)) {
+
+                        // Notice, unless [show-all] is true, we explicitly remove all files starting with a "." as a part of their filename.
+                        if (!showAll && Path.GetFileName (idxFile).StartsWithEx ("."))
+                            continue;
+                        
                         var fileName = idxFile.Replace ("\\", "/");
                         fileName = fileName.Replace (rootFolder, "");
                         e.Args.Add (fileName);
@@ -73,7 +79,7 @@ namespace p5.io.folder
                         break;
                     }
                 } else {
-                    if (Path.GetFileName (filename).Contains (idxFilter.ToLower ())) {
+                    if (Path.GetFileName (filename).Contains (idxFilter)) {
                         retVal = true;
                         break;
                     }

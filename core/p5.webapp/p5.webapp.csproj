@@ -911,6 +911,7 @@
     <None Include="system42\apps\dsw8\init\default-boards\README.md" />
     <None Include="system42\apps\dsw8\startup\README.md" />
     <None Include="system42\components\speech\media\speech.js" />
+    <None Include="system42\apps\dsw8\startup\dsw8.utilities.execute-localized-lambda-file.hl" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -147,6 +147,12 @@
         },
 
 
+        value: function (v) {
+
+            this.el.value = v;
+        },
+
+
         /*
          * These next functions are handlers for deleting attributes.
          *

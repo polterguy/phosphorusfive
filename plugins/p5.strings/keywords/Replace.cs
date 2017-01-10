@@ -60,7 +60,7 @@ namespace p5.strings.keywords
                 // Checking what type of object we're searching for, and doing some basic sanity check.
                 var what = XUtil.Source (context, e.Args, "dest");
                 if (what == null)
-                    throw new LambdaException ("[p5.string.replace] requires something to search for", e.Args, context);
+                    throw new LambdaException ("[replace] requires something to search for", e.Args, context);
                 if (what is Regex)
                     e.Args.Value = (what as Regex).Replace (source, with);
                 else
