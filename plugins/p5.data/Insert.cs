@@ -65,6 +65,7 @@ namespace p5.data
                     idx.Clear ();
                     affectedItems += 1;
                 }
+
             } finally {
 
                 // Saving all affected files.

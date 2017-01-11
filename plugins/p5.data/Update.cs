@@ -99,9 +99,8 @@ namespace p5.data
                     if (newNode.Value == null) {
 
                         // We're keeping our old ID, no need to check for unique ID.
-                        newNode.Value = destination.Node.Value;
-                        destination.Value = newNode;
-                        newNode.Value = null;
+                        destination.Node.Clear ().AddRange (newNode.Clone ().Children);
+                        destination.Node.Name = newNode.Name;
 
                     } else {
 
@@ -111,10 +110,14 @@ namespace p5.data
                             // Explicit new ID exists from before, and it is not the node we're currently updating.
                             return false;
                         }
-                        destination.Value = newNode;
+                        destination.Node.Clear ().AddRange (newNode.Clone ().Children);
+                        destination.Node.Name = newNode.Name;
+                        destination.Node.Value = newNode.Value;
                     }
                 } else {
-                    destination.Value = newNode;
+                    destination.Node.Clear ().AddRange (newNode.Clone ().Children);
+                    destination.Node.Name = newNode.Name;
+                    destination.Node.Value = newNode.Value;
                 }
             } else {
                 destination.Value = source;
