@@ -364,5 +364,5 @@ else
             p5.web.session.list
             p5.web.session.set:x:/-/*?name
             sys42.utilities.empty-user-temp-folder
-            p5.auth.logout
+            logout
             p5.web.reload-location

@@ -96,4 +96,3 @@ TODO before release
 
 * Minimize "speak.js" file.
 
-* Session doesn't seem to be cleared when user logs out ...
