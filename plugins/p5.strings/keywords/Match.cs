@@ -61,7 +61,7 @@ namespace p5.strings.keywords
 
                 // Sanity check.
                 if (!(src is Regex))
-                    throw new LambdaException ("[p5.string.match] requires a regular expression source", e.Args, context);
+                    throw new LambdaException ("[match] requires a regular expression source", e.Args, context);
 
                 // Evaluating regular expression, and returning results.
                 foreach (System.Text.RegularExpressions.Match idxMatch in (src as Regex).Matches (source)) {

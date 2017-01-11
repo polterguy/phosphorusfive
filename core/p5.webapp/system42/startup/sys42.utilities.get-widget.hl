@@ -53,9 +53,9 @@ p5.events.create:sys42.utilities.get-widget
        * Notice, all automatically generated IDs are exactly 8 characters long, starts with an "x", and continues with 7 hex numbers.
        * There are no capital letters in an automatically created ID.
        */
-      p5.string.match:x:/@p5.web.widgets.list/0?value
+      match:x:/@p5.web.widgets.list/0?value
         src:regex:/x[abcdef0-9]{7}/c
-      if:x:/@p5.string.match/*/*?name
+      if:x:/@match/*?name
         set:x:/@_return-value/-?value
 
     /*

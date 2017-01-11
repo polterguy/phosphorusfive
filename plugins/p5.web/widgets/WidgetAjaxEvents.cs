@@ -53,10 +53,7 @@ namespace p5.web.widgets
         {
             // Sanity check.
             if (e.Args.Value == null || e.Args.Count == 0)
-                throw new LambdaException (
-                    string.Format ("[{0}] needs both a value being widget(s) to iterate, and children arguments being events to retrieve", e.Args.Name), 
-                    e.Args, 
-                    context);
+                return;
 
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args, true)) {
