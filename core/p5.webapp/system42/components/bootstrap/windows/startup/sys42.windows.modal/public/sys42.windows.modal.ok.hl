@@ -5,6 +5,11 @@
 p5.events.create:sys42.windows.modal.ok
 
   /*
+   * Making sure we close window without evaluating [.oncancel].
+   */
+  sys42.windows.modal.destroy
+
+  /*
    * Invokes the hidden lambda event on widget.
    */
   sys42.windows.modal._ok
@@ -22,11 +27,7 @@ p5.events.create:sys42.windows.modal.ok
         =:bool:false
 
     /*
-     * Returning early before we destroy the window on the client side.
+     * Making sure we remove our "destruction JavaScript" passed onto the client during destroy.
      */
-    return
-
-  /*
-   * Making sure we close window without evaluating [.oncancel].
-   */
-  sys42.windows.modal.destroy
+    p5.web.remove-send-javascript:@"$('#sys42-windows-modal').modal('hide');"
+    p5.web.remove-send-javascript:@"$('#sys42-windows-modal').off('hide.bs.modal');"

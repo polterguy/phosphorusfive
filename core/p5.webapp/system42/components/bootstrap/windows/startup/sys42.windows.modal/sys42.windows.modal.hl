@@ -57,7 +57,25 @@ p5.events.create:sys42.windows.modal
   if
     fetch:x:/0/0?value
       p5.web.widgets.exists:sys42-windows-modal
-    p5.web.widgets.delete:sys42-windows-modal
+
+    /*
+     * Deleting previously visible modal window.
+     */
+    delete-widget:sys42-windows-modal
+
+    /*
+     * Notice, since we're showing a modal window in the same request as we're hiding another modal window, we need
+     * to explicitly make sure we remove the "delete HTML on client" JavaScript parts.
+     */
+    p5.web.remove-send-javascript:@"$('#sys42-windows-modal').modal('hide');"
+    p5.web.remove-send-javascript:@"$('#sys42-windows-modal').off('hide.bs.modal');"
+
+    /*
+     * We must also explicitly delete our previous "backdrop", otherwise we'll end up with two.
+     */
+    insert-before:x:/../*/p5.web.widgets.create-container/*/oninit/0
+      src
+        p5.web.send-javascript:@"$('.modal-backdrop').remove();"
 
   /*
    * Appending buttons into footer of dialogue, which unless overridden through [_buttons], means

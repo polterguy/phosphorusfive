@@ -184,6 +184,15 @@ namespace p5.ajax.core
         }
 
         /// <summary>
+        ///     Removes the previously sent JavaScript, if existing.
+        /// </summary>
+        /// <param name="script">JavaScript to evaluate on client</param>
+        public bool RemoveSendJavaScript (string script)
+        {
+            return SendScripts.Remove (script);
+        }
+
+        /// <summary>
         ///     Sends an object back to the client as JSON.
         /// 
         ///     Useful if you're having custom JavaScript raising Ajax server-side events, and you wish to return an arbitrary object to your client.

@@ -107,6 +107,22 @@ namespace p5.web
         }
 
         /// <summary>
+        ///     Removes the previously sent JavaScript.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.remove-send-javascript")]
+        public void p5_web_remove_send_javascript (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Looping through each JavaScript snippet supplied
+            foreach (var idxSnippet in XUtil.Iterate<string> (context, e.Args)) {
+
+                // Passing JavaScript to client
+                AjaxPage.RemoveSendJavaScript (idxSnippet);
+            }
+        }
+
+        /// <summary>
         ///     Includes the given JavaScript on page persistently
         /// </summary>
         /// <param name="context">Application Context</param>
