@@ -172,7 +172,7 @@ namespace p5.web.widgets
             foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {
 
                 // Iterating through all Ajax event(s) requested by caller.
-                foreach (var idxEventNameNode in e.Args.Children) {
+                foreach (var idxEventNameNode in e.Args.Children.Where (ix => ix.Name != "")) {
 
                     // Raising currently iterated Ajax event for currently iterated widget, letting p5.ajax do the heavy lifting.
                     idxWidget.InvokeEventHandler (idxEventNameNode.Name);
