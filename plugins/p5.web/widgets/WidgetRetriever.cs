@@ -282,7 +282,7 @@ namespace p5.web.widgets
                 // If "like" is true, then it will look for a "like" condition, meaning not exact match of criteria, but rather 
                 // if attribute "contains" value of criteria.
                 bool match = true;
-                foreach (var idxCriteria in criteria.Children) {
+                foreach (var idxCriteria in criteria.Children.Where (ix => ix.Name != "")) {
 
                     // Checking if this is a "special property".
                     if (idxCriteria.Name == "element") {
