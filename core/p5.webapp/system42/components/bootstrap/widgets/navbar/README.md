@@ -94,8 +94,8 @@ put a Navbar inside your Modal Windows. Below is an example of such a thing.
 
 ```
 sys42.windows.modal
-  _header:Modal with Navbar
-  _widgets
+  header:Modal with Navbar
+  widgets
     container:my-navbar
       element:nav
       class:navbar navbar-default

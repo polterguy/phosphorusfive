@@ -16,19 +16,19 @@ button
 
     /*
      * Making sure we first add [name], before we add [url] and the finally the last properties,
-     * to have some intuitive order of [_data] according to "importance".
+     * to have some intuitive order of [data] according to "importance".
      */
-    add:x:/../*/sys42.windows.wizard/*/_data
+    add:x:/../*/sys42.windows.wizard/*/data
       src:x:/@p5.data.select/*/*/name
-    add:x:/../*/sys42.windows.wizard/*/_data
+    add:x:/../*/sys42.windows.wizard/*/data
       src:@"url:{0}"
         :x:/../*/sys42.cms.get-edited-page-id?value
-    add:x:/../*/sys42.windows.wizard/*/_data
+    add:x:/../*/sys42.windows.wizard/*/data
       src:x:/@p5.data.select/*/*(/template|/role)
 
     /*
      * Making sure we change the [template] data segment to a "drop down selection" type
-     * of [_data] segment, by appending our choices to it as [_options].
+     * of [data] segment, by appending our choices to it as [_options].
      * This is done by fetching all files from "/system42/apps/CMS/page-templates/", and
      * using these as choices for user.
      */
@@ -42,14 +42,14 @@ button
         src:@"{0}:{1}"
           :x:/..for-each/*/p5.string.split/0/-2?name
           :x:/..for-each/*/_dp?value
-    add:x:/../*/sys42.windows.wizard/*/_data/*/template
+    add:x:/../*/sys42.windows.wizard/*/data/*/template
       src
         _options
           none:
 
     /*
      * Making sure we change the [role] data segment to a "drop down selection" type
-     * of [_data] segment, by appending our choices to it as [_options].
+     * of [data] segment, by appending our choices to it as [_options].
      * This is done by fetching all distinct user roles, in addition to appending a 
      * static "empty" role (no restrictions for access).
      */
@@ -58,7 +58,7 @@ button
       add:x:/./+/*/*
         src:@"{0}:{0}"
           :x:/..for-each/*/_dp?value
-    add:x:/../*/sys42.windows.wizard/*/_data/*/role
+    add:x:/../*/sys42.windows.wizard/*/data/*/role
       src
         _options
 
@@ -66,8 +66,8 @@ button
      * Showing actual wizard window.
      */
     sys42.windows.wizard
-      _header:Settings
-      _data
+      header:Settings
+      data
       .oncancel
 
         /*

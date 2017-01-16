@@ -19,8 +19,8 @@ button
      */
     eval-x:x:/+/*/*/*/*/*/value|/+/*/.onok/*/_old-page
     sys42.windows.modal
-      _header:Supply name and URL of new page
-      _widgets
+      header:Supply name and URL of new page
+      widgets
         div:new-page-name-wrp
           class:form-group
           widgets

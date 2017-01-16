@@ -132,9 +132,9 @@ p5.web.widgets.create-container:ajax-dropbox
       .on-select-items
         eval-x:x:/+/**(/p5.io.file.delete|/~download)
         sys42.windows.confirm
-          _header:Choose action
-          _body:Choose if you wish to download file, or delete it
-          _buttons
+          header:Choose action
+          body:Choose if you wish to download file, or delete it
+          buttons
             button
               class:btn btn-default
               innerValue:Download

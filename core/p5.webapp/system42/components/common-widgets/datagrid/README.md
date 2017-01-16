@@ -223,16 +223,16 @@ create-widget:datagrid-wrapper-3
           :x:/../*/items/*?name
         set:x:/../*/sys42.windows.wizard/**/_id?value
           src:x:/../*/items/*?name
-        add:x:/+/*/_data
+        add:x:/+/*/data
           src:x:/../*/p5.data.select/*/*
 
         /*
          * Showing our wizard dialogue, allowing user to edit item.
          */
         sys42.windows.wizard
-          _header:Editing item
-          _body:Please supply new values for record
-          _data
+          header:Editing item
+          body:Please supply new values for record
+          data
           .onok
 
             // Contains ID of row
@@ -416,8 +416,8 @@ create-widget:datagrid-wrapper-5
                     sys42.widgets.datagrid.get-row-id:x:/../*/_event?value
                     eval-x:x:/+/*/*/p5.data.delete/0
                     sys42.windows.confirm
-                      _header:Confirm deletion
-                      _body:Are you sure you wish to delete this item?
+                      header:Confirm deletion
+                      body:Are you sure you wish to delete this item?
                       .onok
                         p5.data.delete:x:@"/*/*/""=:guid:{0}"""
                           :x:/../*/sys42.widgets.datagrid.get-row-id?value

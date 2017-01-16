@@ -137,8 +137,8 @@ Event invocation, and then simply return the root node, before letting the event
 ```
 create-event:foo
   sys42.windows.confirm
-    _header:Foo bar
-    _body:Hello world
+    header:Foo bar
+    body:Hello world
 ```
 
 The above code, will create an Active Event, which simply displays a "confirmation window" once invoked. If you invoke it with *[foo]*, you will

@@ -6,7 +6,7 @@ display modal windows to your users. There are three basic windows, which are in
 used, is always *[sys42.windows.modal]*, which is the window the others are built upon.
 
 * [sys42.windows.confirm] - The most basic window, allowing for user to confirm some action.
-* [sys42.windows.wizard] - Automatically creates widgets from its [_data] segment for you.
+* [sys42.windows.wizard] - Automatically creates widgets from its [data] segment for you.
 * [sys42.windows.modal] - Advanced version, allows you to inject any custom widgets into its modal body.
 
 
@@ -17,8 +17,8 @@ can (optionally) evaluate some piece of lambda, declared through its *[.onok]* l
 
 ```
 sys42.windows.confirm
-  _header:Please confirm action!
-  _body:Sorry, I won't do this until you confirm you really want to do it!
+  header:Please confirm action!
+  body:Sorry, I won't do this until you confirm you really want to do it!
   .onok
     sys42.windows.info-tip:Something dangerous just happened!!
 ```
@@ -37,8 +37,8 @@ the "OK" button, and by clicking the "X" in the top right corner, and watch the 
 
 ```
 sys42.windows.confirm
-  _header:Please confirm action!
-  _body:Sorry, I won't do this until you confirm you really want to do it!
+  header:Please confirm action!
+  body:Sorry, I won't do this until you confirm you really want to do it!
   .onok
     sys42.windows.info-tip:Something dangerous just happened!!
   .oncancel
@@ -54,9 +54,9 @@ of the "OK" button. This is done by adding any buttons you wish inside a *[_butt
 
 ```
 sys42.windows.confirm
-  _header:Please confirm action!
-  _body:Sorry, I won't do this until you confirm you really want to do it!
-  _buttons
+  header:Please confirm action!
+  body:Sorry, I won't do this until you confirm you really want to do it!
+  buttons
     button
       class:btn btn-default
       innerValue:Yup
@@ -106,11 +106,11 @@ also create a wider modal window, by changing your *[_inner-class]* to for insta
 
 ### Arguments to [sys42.windows.confirm]
 
-* [_header] - Header of modal window.
-* [_body] - Content of modal window. Feel free to pass in HTML here. The body widget is rendered as a *"div"* HTML element.
-* [_class] - Main CSS class for your confirm window.
-* [_inner-class] - Secondary, or "inner" CSS class for your confirm window.
-* [_buttons] - Override the default buttons, or widgets in fact, that are rendered in its footer.
+* [header] - Header of modal window.
+* [body] - Content of modal window. Feel free to pass in HTML here. The body widget is rendered as a *"div"* HTML element.
+* [class] - Main CSS class for your confirm window.
+* [inner-class] - Secondary, or "inner" CSS class for your confirm window.
+* [buttons] - Override the default buttons, or widgets in fact, that are rendered in its footer.
 * [.onok] - Lambda callback evaluated when *[sys42.windows.modal.ok]* is invoked. When "OK" button clicked, for instance.
 * [.oncancel] - Lambda callback evaluated when *[sys42.windows.modal.cancel]* is invoked. When window is closed with the "X" for instance.
 
@@ -153,8 +153,8 @@ its *[_widgets]* collection into the body. This allows you to collect informatio
 
 ```
 sys42.windows.modal
-  _header:Please supply input!
-  _widgets
+  header:Please supply input!
+  widgets
     literal:my-text
       element:textarea
       placeholder:Please supply some text here ...
@@ -178,8 +178,8 @@ Ajax event, of the first button inside of your footer. Run this code, and try to
 
 ```
 sys42.windows.modal
-  _header:Please supply input!
-  _widgets
+  header:Please supply input!
+  widgets
     literal:my-text
       element:input
       type:text
@@ -206,8 +206,8 @@ and refuse closing the window, if the input is not according to your app's expec
 
 ```
 sys42.windows.modal
-  _header:Please supply a valid email address!
-  _widgets
+  header:Please supply a valid email address!
+  widgets
     literal:my-email
       element:input
       type:text
@@ -248,14 +248,14 @@ You can of course still close the window by clicking the "X", or outside of the 
 ## [sys42.windows.wizard] - Easily collect and update data
 
 This Active Event allows you to even more easily than by using the *[sys42.windows.modal]* Active Event collect data from the user.
-Instead of a *[_widgets]* collection, this Active Event expects you to provide a *[_data]* collection. Each entry you put into your *[_data]*
+Instead of a *[_widgets]* collection, this Active Event expects you to provide a *[data]* collection. Each entry you put into your *[data]*
 collection, will have its own widget, of some type, which depends upon how your data segment looks like. To collect for instance two text
 values, with the name of _"name"_ and _"email"_, you could do something like this.
 
 ```
 sys42.windows.wizard
-  _header:Please supply input!
-  _data
+  header:Please supply input!
+  data
     name:Your name goes here
     email:Your email goes here
   .onok
@@ -271,8 +271,8 @@ the values from its widgets. To use it, you can do something like the following.
 
 ```
 sys42.windows.wizard
-  _header:Please supply input!
-  _data
+  header:Please supply input!
+  data
     name:Your name goes here
     email:Your email goes here
   .onok
@@ -287,8 +287,8 @@ of options. Imagine the following code.
 
 ```
 sys42.windows.wizard
-  _header:Please supply input!
-  _data
+  header:Please supply input!
+  data
     name:Your name goes here
     gender:trans
       _options
@@ -321,7 +321,7 @@ the *[sys42.windows.modal]* modal Ajax window. Consider the following.
 
 ```
 sys42.windows.modal
-  _widgets
+  widgets
     void:your-name
       element:input
       type:text
@@ -349,8 +349,8 @@ widget, into a modal Ajax window, just to demonstrate some of the powers this wi
 
 ```
 sys42.windows.modal
-  _header:Please supply input!
-  _widgets
+  header:Please supply input!
+  widgets
     literal:my-text
       element:textarea
       placeholder:Please supply some text here ...

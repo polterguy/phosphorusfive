@@ -228,8 +228,8 @@ making *[eval]* perform an automatic conversion (attempt) on your values before 
 
 ```
 _x:@"sys42.windows.confirm
-  _header:Howdy from string
-  _body:Yup, I've got a body. Do you ...?
+  header:Howdy from string
+  body:Yup, I've got a body. Do you ...?
 return:Returned from string!"
 eval:x:/../*/_x?value
 ```
@@ -902,20 +902,20 @@ _foo:thomas
 switch:x:/-?value
   case:john
     sys42.windows.confirm
-      _header:Hello there Mr
-      _body:John Doe
+      header:Hello there Mr
+      body:John Doe
   case:jane
     sys42.windows.confirm
-      _header:Hello there Mrs
-      _body:Jane Doe
+      header:Hello there Mrs
+      body:Jane Doe
   case:thomas
     sys42.windows.confirm
-      _header:Hello there Guru
-      _body:Thomas Hansen
+      header:Hello there Guru
+      body:Thomas Hansen
   default
     sys42.windows.confirm
-      _header:Hello there Mr/Mrs
-      _body:Stranger ...?
+      header:Hello there Mr/Mrs
+      body:Stranger ...?
 ```
 
 In the above example, unless the name os either "thomas", "jane" or "john" in the value of the *[_foo]* node, then the *[default]* lambda block
@@ -932,12 +932,12 @@ switch:x:/-?value
   case:john
   case:jane
     sys42.windows.confirm
-      _header:Hello there Mrs/Mr
-      _body:Doe
+      header:Hello there Mrs/Mr
+      body:Doe
   case:thomas
     sys42.windows.confirm
-      _header:Hello there Guru
-      _body:Thomas Hansen
+      header:Hello there Guru
+      body:Thomas Hansen
 ```
 
 In the above example, the lambda block of "jane" will evaluate, for both the value of "jane", and the value of "john". As you can see in the 
@@ -965,8 +965,8 @@ try
   throw:Darn it, my head hurts!!
 catch
   sys42.windows.confirm
-    _header:ERROR!
-    _body:Something went wrong
+    header:ERROR!
+    body:Something went wrong
 ```
 
 In the above example, we explicitly throw an exception, with the message of "Darn it, my head hurts!!". If you wish, you can retrieve
@@ -980,8 +980,8 @@ catch
   set:x:/+/*/_body?value
     src:x:/..catch/*/message?value
   sys42.windows.confirm
-    _header:ERROR!
-    _body
+    header:ERROR!
+    body
 ```
 
 In addition to the *[message]* argument passed into your *[catch]* block, you also get the *[type]* of exception thrown, which is the 
@@ -1003,7 +1003,7 @@ lambda evaluation. To illustrate with some code.
 _exe
   return:foo
   sys42.windows.confirm
-    _header:Never evaluated
+    header:Never evaluated
 eval:x:/-
 ```
 
@@ -1322,8 +1322,8 @@ if
     eval:x:/../*/_exe
   =:Hansen
   sys42.windows.confirm
-    _header:Are you my brother?
-    _body:Looks like we have the same surnames ...
+    header:Are you my brother?
+    body:Looks like we have the same surnames ...
 ```
 
 What happens in the above lambda, is that first the *[if]* Active Event is invoked. Since our if node does not have a value, its first

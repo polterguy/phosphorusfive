@@ -80,8 +80,8 @@ p5.web.widgets.create-container:{0}_editor
                  * Deletes the specified test
                  */
                 sys42.windows.confirm
-                  _header:Confirm deletion!
-                  _body:Are you sure you wish to delete this file?
+                  header:Confirm deletion!
+                  body:Are you sure you wish to delete this file?
                   .onok
                     _file:x:/../*/_file?value
                     p5.io.file.delete:x:/../*/_file?value

@@ -4,18 +4,18 @@
  *
  * Arguments;
  * 
- * [_header]         - Header of modal dialogue
- * [_body]           - Explanatory text of dialogue
- * [_class]          - Override the default CSS class
- * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
- * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
- *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
+ * [header]          - Header of modal dialogue
+ * [body]            - Explanatory text of dialogue
+ * [class]           - Override the default CSS class
+ * [inner-class]     - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
+ * [buttons]         - Makes it possible to exchange the default "OK" button with your own buttons
+ *                     If you supply a [buttons] parameter, then [_ok] has no effect, and you must
  *                     provide your own logic in the onclick handler of these buttons instead.
  *                     To evaluate the [.onok] lambda, you can invoke [sys42.windows.modal.ok],
  *                     To close dialogue, you can invoke [sys42.windows.modal.destroy]. If you wish to
  *                     make sure your [.oncancel] lambda is evaluated, you should use [sys42.windows.modal.cancel]
  *                     instead. [sys42.windows.modal.destroy] will not evaluate your [.oncancel] lambda callback.
- * [_widgets]        - Widget collection to append into the body parts of the modal window.
+ * [widgets]         - Widget collection to append into the body parts of the modal window.
  * [.onok]           - Code to be evaluated if user clicks OK button
  * [.oncancel]       - Lambda callback to be evaluated if user closes dialogue without pressing "OK".
  *
@@ -31,11 +31,11 @@ create-event:sys42.windows.modal
    * up prioritizing specified argument, resorting to [_defaults] if an expected argument was not given.
    */
   _defaults
-    _header:Please supply input!
-    _body
-    _class:modal fade
-    _inner-class:modal-dialog
-    _buttons
+    header:Please supply input!
+    body
+    class:modal fade
+    inner-class:modal-dialog
+    buttons
       literal:sys42-modal-window-default-ok-button
         element:button
         class:btn btn-default
@@ -44,10 +44,10 @@ create-event:sys42.windows.modal
           sys42.windows.modal.ok
     .onok
     .oncancel
-    _widgets
+    widgets
   _options
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
 
   /*
    * Making sure we delete any previously created dialogs.
@@ -78,40 +78,40 @@ create-event:sys42.windows.modal
         p5.web.send-javascript:@"$('.modal-backdrop').remove();"
 
   /*
-   * Appending buttons into footer of dialogue, which unless overridden through [_buttons], means
+   * Appending buttons into footer of dialogue, which unless overridden through [buttons], means
    * only the "OK" button.
    */
   add:x:/../*/p5.web.widgets.create-container/**/=sys42-windows-modal-footer/*/widgets
-    src:x:/../*/_options/*/_buttons/*
+    src:x:/../*/_options/*/buttons/*
 
   /*
-   * Appending [_widgets] into body of dialogue, if there are any, otherwise we remove the "sys42-windows-modal-widgets" widget entirely.
+   * Appending [widgets] into body of dialogue, if there are any, otherwise we remove the "sys42-windows-modal-widgets" widget entirely.
    */
-  if:x:/../*/_options/*/_widgets/*
+  if:x:/../*/_options/*/widgets/*
 
     /*
-     * Caller supplied a [_widgets] collection, making sure we append it into the correct container widget.
+     * Caller supplied a [widgets] collection, making sure we append it into the correct container widget.
      */
     add:x:/../*/p5.web.widgets.create-container/**/=sys42-windows-modal-widgets/*/widgets
-      src:x:/../*/_options/*/_widgets/*
+      src:x:/../*/_options/*/widgets/*
 
   else
 
     /*
-     * Caller did not supply a [_widgets] collection, removing the wrapper container entirely.
+     * Caller did not supply a [widgets] collection, removing the wrapper container entirely.
      */
     set:x:/../*/p5.web.widgets.create-container/**/=sys42-windows-modal-widgets
 
   /*
-   * Checking if no [_body] was supplied, and if not, we entirely remove the "body content" widget.
+   * Checking if no [body] was supplied, and if not, we entirely remove the "body content" widget.
    */
-  if:x:/../*/_options/*/_body?value
+  if:x:/../*/_options/*/body?value
     not
-    or:x:/../*/_options/*/_body?value
+    or:x:/../*/_options/*/body?value
       =:
 
     /*
-     * Caller supplied no [_body], removing body literal widget.
+     * Caller supplied no [body], removing body literal widget.
      */
     set:x:/../*/p5.web.widgets.create-container/**/=sys42-windows-modal-body
 
@@ -130,17 +130,17 @@ create-event:sys42.windows.modal
   /*
    * Checking if we have any buttons, and if not, entirely removing footer of window.
    */
-  if:x:/../*/_options/*/_buttons/*
+  if:x:/../*/_options/*/buttons/*
     not
     set:x:/../*/p5.web.widgets.create-container/**/container/=sys42-windows-modal-footer
 
   /*
-   * Creating actual modal widget, making sure we forward evaluate the [_header], [_body], [class], in addition to 
-   * the [class] for the [_inner-class] widget first.
+   * Creating actual modal widget, making sure we forward evaluate the [header], [body], [class], in addition to 
+   * the [class] for the [inner-class] widget first.
    */
   p5.web.widgets.create-container:sys42-windows-modal
     parent:cnt
-    class:x:/../*/_options/*/_class?value
+    class:x:/../*/_options/*/class?value
     .oncancel
 
       /*
@@ -198,7 +198,7 @@ create-event:sys42.windows.modal
 
     widgets
       container
-        class:x:/../*/_options/*/_inner-class?value
+        class:x:/../*/_options/*/inner-class?value
         role:document
         widgets
           container
@@ -227,7 +227,7 @@ create-event:sys42.windows.modal
                    */
                   literal:sys42-windows-modal-header
                     element:h4
-                    innerValue:x:/../*/_options/*/_header?value
+                    innerValue:x:/../*/_options/*/header?value
 
               /*
                * Body wrapper of modal window.
@@ -237,14 +237,14 @@ create-event:sys42.windows.modal
                 widgets
 
                   /*
-                   * This is the body text [_body] supplied during creation of widget.
+                   * This is the body text [body] supplied during creation of widget.
                    */
                   literal:sys42-windows-modal-body
                     element:div
-                    innerValue:x:/../*/_options/*/_body?value
+                    innerValue:x:/../*/_options/*/body?value
 
                   /*
-                   * The widget wraps our [_widgets] collection, if any, supplied during creation of widget.
+                   * The widget wraps our [widgets] collection, if any, supplied during creation of widget.
                    */
                   container:sys42-windows-modal-widgets
                     class:form
@@ -286,7 +286,7 @@ create-event:sys42.windows.modal
                         p5.web.widgets.clear:sys42-windows-modal-widgets
 
               /*
-               * Footer of dialog, contains [_buttons], which by default means only "OK" button.
+               * Footer of dialog, contains [buttons], which by default means only "OK" button.
                */
               container:sys42-windows-modal-footer
                 class:modal-footer

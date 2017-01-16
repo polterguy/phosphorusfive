@@ -196,8 +196,8 @@ button
          */
         eval-x:x:/+/*
         sys42.windows.confirm
-          _header:Syntax error in page
-          _inner-class:modal-dialog modal-lg
-          _body:@"<h5>{0}</h5><pre>{1}</pre>"
+          header:Syntax error in page
+          inner-class:modal-dialog modal-lg
+          body:@"<h5>{0}</h5><pre>{1}</pre>"
             :x:/@message?value
             :x:/@stack-trace?value

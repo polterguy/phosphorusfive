@@ -28,8 +28,8 @@ button
      * Asking user to confirm deletion of page.
      */
     sys42.windows.confirm
-      _header:Please confirm deletion
-      _body:Are you sure you want to delete this page? This action cannot be undone!
+      header:Please confirm deletion
+      body:Are you sure you want to delete this page? This action cannot be undone!
       .oncancel
 
         /*

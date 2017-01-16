@@ -4,18 +4,18 @@
  *
  * Arguments;
  * 
- * [_header]         - Header of modal dialogue
- * [_body]           - Explanatory text of dialogue
- * [_class]          - Override the default CSS class
- * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
- * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
- *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
+ * [header]          - Header of modal dialogue
+ * [body]            - Explanatory text of dialogue
+ * [class]           - Override the default CSS class
+ * [inner-class]     - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
+ * [buttons]         - Makes it possible to exchange the default "OK" button with your own buttons
+ *                     If you supply a [buttons] parameter, then [_ok] has no effect, and you must
  *                     provide your own logic in the onclick handler of these buttons instead.
  *                     To evaluate the [.onok] lambda, you can invoke [sys42.windows.modal.ok],
  *                     To close dialogue, you can invoke [sys42.windows.modal.destroy]. If you wish to
  *                     make sure your [.oncancel] lambda is evaluated, you should use [sys42.windows.modal.cancel]
  *                     instead. [sys42.windows.modal.destroy] will not evaluate your [.oncancel] lambda callback.
- * [_data]           - Will automatically create a widget collection, according to the type of data supplied.
+ * [data]            - Will automatically create a widget collection, according to the type of data supplied.
  *                     The default widget type to use, is a normal textbox. However, if you supply a child node with the name of
  *                     [_options], it will create a select HTML element instead, with the option elements supplied as children of [_options].
  * [.onok]           - Code to be evaluated if user clicks OK button
@@ -36,27 +36,27 @@ create-event:sys42.windows.wizard
   /*
    * Sanity checking arguments.
    */
-  if:x:/../*/_header?value
+  if:x:/../*/header?value
     not
     add:x:/../*/.lambda/*
       src
-        _header:Please supply input!
-  if:x:/../*/_body
+        header:Please supply input!
+  if:x:/../*/body
     not
     add:x:/../*/.lambda/*
       src
-        _body:<p>Please supply me with some input</p>
+        body:<p>Please supply me with some input</p>
   if:x:/../*/_widgets
     throw:You cannot supply a [_widgets] collection to [sys42.windows.wizard]. Use [sys42.windows.modal] instead.
 
   /*
-   * Looping through each [_data] items, creating an edit widget for each item.
+   * Looping through each [data] items, creating an edit widget for each item.
    *
-   * Notice, by default, this creates a textbox "input" HTML widget for each child node of [_data], unless the node contains an [_options] child,
+   * Notice, by default, this creates a textbox "input" HTML widget for each child node of [data], unless the node contains an [_options] child,
    * at which case it will create a "select" HTML widget instead, with the currently active value, being the value of the currently iterated
-   * [_data] child.
+   * [data] child.
    */
-  for-each:x:/../*/_data/*
+  for-each:x:/../*/data/*
 
     /*
      * Checking what type of edit field this is.

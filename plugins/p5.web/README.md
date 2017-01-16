@@ -589,8 +589,8 @@ p5.web.widgets.create-container
   events
     my-namespace.foo-event
       sys42.windows.confirm
-        _header:Howdy foo world
-        _body:Watch the other label as you click OK!
+        header:Howdy foo world
+        body:Watch the other label as you click OK!
         .onok
           p5.web.widgets.property.set:the-other-guy
             innerValue:The other guy was clicked!

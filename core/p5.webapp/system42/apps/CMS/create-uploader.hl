@@ -85,11 +85,11 @@ create-widget:cms-ajax-uploader
           /*
            * Forward evaluate [_url] inside of wizard window.
            */
-          eval-x:x:/+/**/_data/*/url
+          eval-x:x:/+/**/data/*/url
           sys42.windows.wizard
-            _header:Page exist from before
-            _body:@"There is already a page in your CMS with the same URL. Do you wish to overwrite it, or create a new page?"
-            _buttons
+            header:Page exist from before
+            body:@"There is already a page in your CMS with the same URL. Do you wish to overwrite it, or create a new page?"
+            buttons
               button
                 class:btn btn-default
                 innerValue:Save as new page
@@ -136,7 +136,7 @@ create-widget:cms-ajax-uploader
                * Checking if user provided a URL to a page that already exists, which is not kosher.
                */
               p5.data.select:x:@"/*/*/p5.page/""={0}"""
-                :x:/../*/_data/*/url?value
+                :x:/../*/data/*/url?value
               if:x:/@p5.data.select/*?count
                 !=:int:0
 
@@ -160,7 +160,7 @@ create-widget:cms-ajax-uploader
                */
               p5.web.session.get:sys42.cms.uploaded-page
               set:x:/@p5.web.session.get/*/*?value
-                src:x:/../*/_data/*/url?value
+                src:x:/../*/data/*/url?value
               add:x:/../*/p5.data.insert
                 src:x:/@p5.web.session.get/*/*
 
@@ -173,14 +173,14 @@ create-widget:cms-ajax-uploader
                * Sets currently edited page, before we close dialogue, and repopulate select dropdown, and start
                * editing page.
                */
-              sys42.cms.set-currently-edited-page:x:/../*/_data/*/url?value
+              sys42.cms.set-currently-edited-page:x:/../*/data/*/url?value
               sys42.windows.modal.close
               sys42.cms.populate-select-page
               sys42.cms.edit-page
               p5.web.send-javascript:@"$('#cms-select-page').focus();"
               sys42.cms.create-navbar-menu
 
-            _data
+            data
               url:{0}-{1}
                 :x:/@hyper2lambda/*?value
                 :x:/@_high?value

@@ -7,12 +7,12 @@
  *
  * Arguments;
  * 
- * [_header]         - Header of modal dialogue
- * [_body]           - Explanatory text of dialogue
- * [_class]          - Override the default CSS class
- * [_inner-class]    - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
- * [_buttons]        - Makes it possible to exchange the default "OK" button with your own buttons
- *                     If you supply a [_buttons] parameter, then [_ok] has no effect, and you must
+ * [header]          - Header of modal dialogue
+ * [body]            - Explanatory text of dialogue
+ * [class]           - Override the default CSS class
+ * [inner-class]     - Override the default inner CSS class. Set this to "modal-dialog modal-lg" to create a wider dialogue.
+ * [buttons]         - Makes it possible to exchange the default "OK" button with your own buttons
+ *                     If you supply a [buttons] parameter, then [_ok] has no effect, and you must
  *                     provide your own logic in the onclick handler of these buttons instead.
  *                     To evaluate the [.onok] lambda, you can invoke [sys42.windows.modal.ok],
  *                     To close dialogue, you can invoke [sys42.windows.modal.destroy]. If you wish to
@@ -36,28 +36,28 @@ create-event:sys42.windows.confirm
   /*
    * Sanity checking arguments.
    */
-  if:x:/../*/_header?value
+  if:x:/../*/header?value
     not
     add:x:/../*/.lambda/*
       src
-        _header:Please confirm action!
-  if:x:/../*/_body?value
+        header:Please confirm action!
+  if:x:/../*/body?value
     not
     add:x:/../*/.lambda/*
       src
-        _body:<p>Please confirm you really want to do this</p>
+        body:<p>Please confirm you really want to do this</p>
   if:x:/../*/_widgets
     throw:You cannot supply a [_widgets] collection to [sys42.windows.confirm]. Use [sys42.windows.modal] instead.
 
   /*
-   * Checking if caller supplied a [_buttons] collection, and if not, we create a default "OK" button, which
+   * Checking if caller supplied a [buttons] collection, and if not, we create a default "OK" button, which
    * has initial focus, and simply invokes [sys42.windows.modal.ok] when clicked.
    */
-  if:x:/../*/_buttons/*
+  if:x:/../*/buttons/*
     not
     add:x:/../*/.lambda/*
       src
-        _buttons
+        buttons
           literal
             element:button
             class:btn btn-default

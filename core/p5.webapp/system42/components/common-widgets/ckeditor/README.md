@@ -37,8 +37,8 @@ p5.web.widgets.create-container
           value
         eval-x:x:/+/*
         sys42.windows.confirm
-          _header:Editor's content
-          _body:x:/@p5.web.widgets.property.get/*/*?value
+          header:Editor's content
+          body:x:/@p5.web.widgets.property.get/*/*?value
 ```
 
 ## Ninja tricks
