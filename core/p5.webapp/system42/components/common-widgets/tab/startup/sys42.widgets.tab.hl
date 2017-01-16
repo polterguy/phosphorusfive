@@ -10,33 +10,33 @@
  *
  * Arguments;
  * 
- * [_skin]            - Skin file and class to use. Default value is "default".
- * [_items]           - Collection of "TabViews" in your TabControl.
+ * [skin]            - Skin file and class to use. Default value is "default".
+ * [items]           - Collection of "TabViews" in your TabControl.
  *                      Each item beneath here, should have a name, and a [widgets] collection. The [widgets] collection, only becomes
  *                      visible, as the user clicks the tabview to show it. The name of the children nodes beneath [_items], becomes the
  *                      friendly displayed name for your TabView.
- * [_crawl]           - If true, the widget will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
- * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tab_unroll".
+ * [crawl]           - If true, the widget will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
+ * [crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tab_unroll".
  */
-p5.events.create:sys42.widgets.tab
+create-event:sys42.widgets.tab
 
   /*
    * Applying options for widget, with default values.
    */
   _defaults
-    _skin:default
-    _items
-    _crawl:bool:false
-    _crawl-get-name:sys42_widgets_tab_unroll
+    skin:default
+    items
+    crawl:bool:false
+    crawl-get-name:sys42_widgets_tab_unroll
   _options
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
 
 
   /*
    * Making sure caller supplied at the very least one item.
    */
-  if:x:/../*/_options/*/_items/*
+  if:x:/../*/_options/*/items/*
     not
 
     /*
@@ -48,14 +48,14 @@ p5.events.create:sys42.widgets.tab
   /*
    * Retrieving the value of the HTTP GET crawl parameter, if any.
    */
-  p5.web.query.get:x:/../*/_options/*/_crawl-get-name?value
+  p5.web.query.get:x:/../*/_options/*/crawl-get-name?value
 
 
   /*
-   * Looping through each [item] in [_items], and creating a tabview header item for each of them.
+   * Looping through each [item] in [items], and creating a tabview header item for each of them.
    */
   _index:int:0
-  for-each:x:/../*/_options/*/_items/*
+  for-each:x:/../*/_options/*/items/*
 
     /*
      * Adding header item first.
@@ -109,7 +109,7 @@ p5.events.create:sys42.widgets.tab
     /*
      * Checking if caller wants tab control to be crawlable by search engines.
      */
-    if:x:/../*/_options/*/_crawl?value.bool
+    if:x:/../*/_options/*/crawl?value.bool
 
       /*
        * Tab control should be crawlable by search engines.
@@ -137,7 +137,7 @@ p5.events.create:sys42.widgets.tab
       eval-x:x:/+/*/*
       set:x:/@_header/*/container/*/widgets/*/a/*/href?value
         sys42.widgets.tab._create-url:x:/@_dp/#?value
-          _crawl-get-name:x:/../*/_options/*/_crawl-get-name?value
+          crawl-get-name:x:/../*/_options/*/crawl-get-name?value
 
     /*
      * Forward evaluating innerValue and _index of header widget, and adding to returned container.
@@ -181,7 +181,7 @@ p5.events.create:sys42.widgets.tab
 
 
   /*
-   * Forward evaluating [class] and [_skin] inside of [oninit] to make sure we use [_options]/[_class] if supplied, and specified skin file.
+   * Forward evaluating [class] and [_skin] inside of [oninit] to make sure we use [_options]/[class] if supplied, and specified skin file.
    */
   eval-x:x:/../*/return/*/*(/class|/oninit/*/_skin)
 
@@ -193,13 +193,13 @@ p5.events.create:sys42.widgets.tab
     container
       _root-tab
       class:tab-widget-{0}
-        :x:/../*/_options/*/_skin?value
+        :x:/../*/_options/*/skin?value
       oninit
 
         /*
          * Making sure we include our tab specific CSS file.
          */
-        _skin:x:/../*/_options/*/_skin?value
+        _skin:x:/../*/_options/*/skin?value
         p5.web.include-css-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
           :x:/../*/_skin?value
 

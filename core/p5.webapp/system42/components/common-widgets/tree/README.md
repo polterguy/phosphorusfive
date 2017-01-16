@@ -28,7 +28,7 @@ p5.web.widgets.create-container
             not
             add:x:/../*/return/*/items/0/-
               src
-                _class:tree-leaf
+                class:tree-leaf
         return
           items
 ```
@@ -39,17 +39,17 @@ like the following.
 ![alt tag](screenshots/ajax-treeview-widget-example-screenshot.png)
 
 Notice, if you right click an item, and choose _"Open in new tab"_ for instance, then the URL opened, will unroll the TreeView,
-to whatever item you choose. This is due to the *[_crawl]* parameter being set to true. This works by adding an HTTP GET parameter to
+to whatever item you choose. This is due to the *[crawl]* parameter being set to true. This works by adding an HTTP GET parameter to
 the current URL, which contains the IDs of every single item, separated by "|", necessary to toggle, to open up the tree, to the point
 you requested. This is done on the server, and hence makes the TreeView very _"SEO friendly"_, in addition to allowing your users to
 bookmark items. If you wish to override the name of the HTTP GET parameter used for this operation, you can do so with 
-the *[_crawl-get-name]* argument while creating your tree.
+the *[crawl-get-name]* argument while creating your tree.
 
 You can also add your own item root CSS class for your items. In the above example, we add the class _"tree-leaf"_, which removes the
-expand icon on items, through the *[_class]* argument on each item inside of your *[_items]* collection. In our next example we will see 
+expand icon on items, through the *[_class]* argument on each item inside of your *[items]* collection. In our next example we will see 
 this more accurately, using a bunch of statically loaded items.
 
-The *[_items]* collection, are your initial items for when the widget is created. If wish, you can supply an initial set of *[_items]*,
+The *[items]* collection, are your initial items for when the widget is created. If wish, you can supply an initial set of *[items]*,
 that have children items themselves, such as this example shows you.
 
 ```
@@ -140,10 +140,10 @@ p5.web.widgets.create-container
 
 Of course, unless you supply an *[.on-get-items]* callback lambda, then no new items can possibly be appended to your tree view, and it will
 only show the items you initially feed it with. If you wish to being able to dynamically feed your widget with new items, you must add
-the *[.on-get-items]* lambda callback, where you are expected to return an *[_items]* collection, resembling the *[_items]* collection you
+the *[.on-get-items]* lambda callback, where you are expected to return an *[items]* collection, resembling the *[items]* collection you
 initially gave it when the widget was created.
 
-You can also toggle multiple items at the same time, by returning a nested *[_items]* collection, as the following demonstrates.
+You can also toggle multiple items at the same time, by returning a nested *[items]* collection, as the following demonstrates.
 
 ```
 create-widget
@@ -176,7 +176,7 @@ create-widget
 ## Handling selected event
 
 If you wish, you can supply an *[.on-select]* lambda callback, which will be invoked when the user is selecting items in your tree.
-Your lambda callback will be given a collection of *[_items]*, where the name property of the node, is the ID of the item selected.
+Your lambda callback will be given a collection of *[items]*, where the name property of the node, is the ID of the item selected.
 
 Below is an example of a TreeView widget that simply shows an _"info tip box"_ as the user selects items.
 
@@ -266,7 +266,7 @@ create-widget
             bar-1
 ```
 
-The *[sys42.widgets.tree.toggle-items]* Active Event, optionally takes a *[_force-expand]* argument, which if set to true, will not collapse
+The *[sys42.widgets.tree.toggle-items]* Active Event, optionally takes a *[force-expand]* argument, which if set to true, will not collapse
 items that are already expanded, but exclusively open already collapsed items.
 
 ## Retrieving currently selected items
@@ -305,7 +305,7 @@ and if you have somehow selected multiple items through its API, or something si
 
 ## Styling your Ajax tree widget
 
-You can also override the skin used for the TreeView widget. To use another skin, pass in the skin you wish to use as a *[_skin]* argument. 
+You can also override the skin used for the TreeView widget. To use another skin, pass in the skin you wish to use as a *[skin]* argument. 
 The default value here is _"default"_, which is the CSS found in the _"default/default.min.css"_ file.
 
 Besides from this file, the widget is not dependent upon any CSS files in any ways, except of the default icons for closed and opened

@@ -6,12 +6,12 @@ showing some aspecct of your page. Kind of like the TabControl in for instance w
 its items, without adding the additional overhead of having to initially render the inactive items. Below is an example.
 
 ```
-p5.web.widgets.create-container:my-tabs
+create-widget:my-tabs
   parent:content
   class:col-xs-12
   widgets
     sys42.widgets.tab
-      _items
+      items
         First tab
           widgets
             literal
@@ -32,10 +32,10 @@ any widget you wish into these, including complex widgets.
 
 The TabControl has the following arguments.
 
-* [_skin] - Skin to use, default value is "default".
-* [_items] - TabView items, each having its own separated *[widgets]* collection.
-* [_crawl] - If true, will allow for search engines, and crawlers, to "crawl" your TabControl.
-* [_crawl-get-name] - HTTP GET parameter used when crawling items.
+* [skin] - Skin to use, default value is "default".
+* [items] - TabView items, each having its own separated *[widgets]* collection.
+* [crawl] - If true, will allow for search engines, and crawlers, to "crawl" your TabControl.
+* [crawl-get-name] - HTTP GET parameter used when crawling items.
 
 Notice, if you set the TabControl into _"crawlable mode"_, you must also provide a value for all you *[_items]*. This value becomes the
 value of the HTTP GET parameter used when crawling your TabControl. Below is an example of a _"SEO friendly and crawlable TabControl"_.
@@ -46,9 +46,9 @@ p5.web.widgets.create-container:foo
   class:col-xs-8
   widgets
     sys42.widgets.tab
-      _crawl:true
-      _crawl-get-name:tab-view
-      _items
+      crawl:true
+      crawl-get-name:tab-view
+      items
         First tab:item-1
           widgets
             literal
@@ -73,14 +73,14 @@ instance clicking on the tabview button, that shows it. This means that you can 
 them, before they're actually shown. Consider this code.
 
 ```
-p5.web.widgets.create-container:foo
+create-widget:foo
   parent:content
   class:col-xs-8
   widgets
     sys42.widgets.tab
-      _crawl:true
-      _crawl-get-name:tab-view
-      _items
+      crawl:true
+      crawl-get-name:tab-view
+      items
         Simple HTML:item-1
           widgets
             literal
@@ -101,25 +101,25 @@ p5.web.widgets.create-container:foo
               class:col-xs-12
               widgets
                 sys42.widgets.tree
-                  _items
+                  items
                     root:/
                   .on-get-items
-                    p5.io.folder.list-folders:x:/../*/_item-id?value
+                    list-folders:x:/../*/_item-id?value
                     for-each:x:/-/*?name
-                      p5.io.folder.list-folders:x:/./*/_dp?value
+                      list-folders:x:/./*/_dp?value
                       p5.string.split:x:/./*/_dp?value
                         =:/
                       add:x:/../*/return/*
                         src:@"{0}:{1}"
                           :x:/..for-each/*/p5.string.split/0/-?name
                           :x:/..for-each/*/_dp?value
-                      if:x:/./*/p5.io.folder.list-folders/*
+                      if:x:/@list-folders/*
                         not
-                        add:x:/../*/return/*/_items/0/-
+                        add:x:/../*/return/*/items/0/-
                           src
-                            _class:tree-leaf
+                            class:tree-leaf
                     return
-                      _items
+                      items
 ```
 
 The above code, in its default, and visible tab, only shows some static HTML widget. However, in its second tabview, it shows a complex
@@ -148,12 +148,12 @@ own *[oninit]* callback in one of your widgets, inside one of your tabviews, you
 everytime a specific tabview becomes active. Consider the following code.
 
 ```
-p5.web.widgets.create-container:my-tabs
+create-widget:my-tabs
   parent:content
   class:col-xs-12
   widgets
     sys42.widgets.tab
-      _items
+      items
         First tab
           widgets
             literal

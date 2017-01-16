@@ -3,11 +3,11 @@
  * Invoked when user wants to "toggle" one or more items.
  * Expects [items] collection.
  *
- * Notice, you can force this event to only expand items, by adding the [_force-expand] argument, and set its
+ * Notice, you can force this event to only expand items, by adding the [force-expand] argument, and set its
  * value to being true. If you do, it will not hide already expanded items.
  * This feature is used among other things during "unrolling" of items due to SEO friendly URLs being traversed.
  */
-p5.events.create:sys42.widgets.tree.toggle-items
+create-event:sys42.widgets.tree.toggle-items
 
   /*
    * This is the tree caller requested to have items toggled in, 
@@ -31,7 +31,7 @@ p5.events.create:sys42.widgets.tree.toggle-items
 
     /*
      * Now checking if there already exist a "ul" HTML widget beneath the main "tree-item".
-     * If a "ul" widget exist, and it is not hidden, we hide it, unless [_force-expand] is true.
+     * If a "ul" widget exist, and it is not hidden, we hide it, unless [force-expand] is true.
      * If the "ul" widget exist, and is hidden, we show it.
      * If it doesn't exist, we invoke the lambda callback provided during creation, to retrieve 
      * additional items, before we create the "ul" widget and show it.
@@ -39,7 +39,7 @@ p5.events.create:sys42.widgets.tree.toggle-items
      * This prevents having to retrieve the items from the supplied lambda callback more than once
      * for each item.
      *
-     * Notice, hiding can be prevented by adding the [_force-expand] argument set to true.
+     * Notice, hiding can be prevented by adding the [force-expand] argument set to true.
      * If you do, it will only expand, regardless of if the item is expanded from before or not.
      * This feature is being used, among other things, while "unrolling" items (SEO friendly links).
      */
@@ -48,7 +48,7 @@ p5.events.create:sys42.widgets.tree.toggle-items
 
       /*
        * Children items already exist, hence we check if it is hidden,
-       * and if so, we simply make it visible, otherwise we hide it (unless [_force-expand] is true).
+       * and if so, we simply make it visible, otherwise we hide it (unless [force-expand] is true).
        */
       p5.web.widgets.property.get:x:/@p5.web.widgets.get-children/*/*/container/[1,2]?value
         class
@@ -81,13 +81,13 @@ p5.events.create:sys42.widgets.tree.toggle-items
 
         /*
          * Checking if caller wanted to "force an expansion" (meaning, open items will not be closed).
-         * Only if caller did NOT supply [_force-expand] as true, we actually hide items.
+         * Only if caller did NOT supply [force-expand] as true, we actually hide items.
          */
-        if:x:/../*/_force-expand?value
+        if:x:/../*/force-expand?value
           not
 
           /*
-           * "ul" HTML widget is visible, and caller did not supply [_force-expand] as true,
+           * "ul" HTML widget is visible, and caller did not supply [force-expand] as true,
            * hence we hide it, by applying the "tree-hidden" class to the main "ul" HTML widget.
            */
           sys42.utilities.add-css-classes:x:/@p5.web.widgets.get-children/*/*/container/[1,2]?value
