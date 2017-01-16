@@ -3,11 +3,11 @@
  * Invoke this to select items in the widget.
  *
  * [_arg] must be the ID of the main tree widget.
- * [_items] must be a collection of items to select.
+ * [items] must be a collection of items to select.
  *
  * Notice, all previously selected items are de-selected!
  */
-p5.events.create:sys42.widgets.tree.select-items
+create-event:sys42.widgets.tree.select-items
 
   /*
    * First finding all previously selected items, and de-selecting them.
@@ -26,7 +26,7 @@ p5.events.create:sys42.widgets.tree.select-items
   /*
    * Then adding the selected CSS class to all items requested by caller.
    */
-  for-each:x:/../*/_items/*?name
+  for-each:x:/../*/items/*?name
     p5.web.widgets.find:x:/../*/_arg?value
       _item-id:x:/@_dp?value
     p5.web.widgets.find:x:/@p5.web.widgets.find/*/*?value
@@ -38,5 +38,5 @@ p5.events.create:sys42.widgets.tree.select-items
    * Making sure [.on-select] lambda callback is invoked.
    */
   add:x:/+
-    src:x:/../*/_items
+    src:x:/../*/items
   sys42.widgets.tree._select:x:/../*/_arg?value

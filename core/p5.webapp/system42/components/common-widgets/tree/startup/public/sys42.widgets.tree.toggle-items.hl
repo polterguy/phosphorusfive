@@ -1,7 +1,7 @@
 
 /*
  * Invoked when user wants to "toggle" one or more items.
- * Expects [_items] collection.
+ * Expects [items] collection.
  *
  * Notice, you can force this event to only expand items, by adding the [_force-expand] argument, and set its
  * value to being true. If you do, it will not hide already expanded items.
@@ -11,9 +11,9 @@ p5.events.create:sys42.widgets.tree.toggle-items
 
   /*
    * This is the tree caller requested to have items toggled in, 
-   * now looping through all [_items] caller wants to toggle.
+   * now looping through all [items] caller wants to toggle.
    */
-  for-each:x:/../*/_items/*?name
+  for-each:x:/../*/items/*?name
 
     /*
      * Finding anchor/hyperlink for currently iterated item, then retrieving its parent, 
@@ -120,19 +120,19 @@ p5.events.create:sys42.widgets.tree.toggle-items
       /*
        * Making sure this item actually has children items, and if not, going to next iteration of [for-each].
        */
-      if:x:/@sys42.widgets.tree._get-items/*/_items/*
+      if:x:/@sys42.widgets.tree._get-items/*/items/*
         not
         continue
 
       /*
-       * Then evaluating Active Event responsible for creating widgets out of our returned [_items] collection,
+       * Then evaluating Active Event responsible for creating widgets out of our returned [items] collection,
        * from the above [sys42.widgets.tree._get-items] invocation.
        *
-       * Notice, we pass in the node to our [_items] by reference, as value of the [_items] node argument.
+       * Notice, we pass in the node to our [items] by reference, as value of the [items] node argument.
        */
       eval-x:x:/+/*
       sys42.widgets.tree._create-items
-        _items:x:/@sys42.widgets.tree._get-items/*/_items
+        items:x:/@sys42.widgets.tree._get-items/*/items
 
       /*
        * Making sure we change the returned [ul] to a [p5.web.widgets.create-container] invocation.
@@ -161,7 +161,7 @@ p5.events.create:sys42.widgets.tree.toggle-items
       /*
        * Now we can simply [eval] the returned lambda from the above [sys42.widgets.tree._create-items] invocation,
        * since it is now a [p5.web.widgets.create-container] invocation, correctly creating items, appending to tree item,
-       * specified in currently iterated [_items] argument.
+       * specified in currently iterated [items] argument.
        */
       eval:x:/@sys42.widgets.tree._create-items
 

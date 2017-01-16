@@ -5,22 +5,22 @@
  *
  * The TreeView is "SEO friendly", which means that it will allow spiders to crawl the nodes in your tree, as if they were hyperlinks,
  * while still retaining the single page app feeling for human users, through Ajax functionality. But only if you explicitly set
- * the [_crawl] paremeter to true. If you do, you can override the default name of the HTTP GET parameter, by supplying it as [_crawl-get-name].
+ * the [crawl] paremeter to true. If you do, you can override the default name of the HTTP GET parameter, by supplying it as [crawl-get-name].
  *
  * Arguments;
  * 
- * [_skin]            - Skin file and class to use. Default value is "default".
- * [_items]           - Collection of items to show initially as "root items".
+ * [skin]             - Skin file and class to use. Default value is "default".
+ * [items]            - Collection of items to show initially as "root items".
  *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
  *                      item, used to uniquely identify the item, when the item is clicked for instance, etc.
  *                      Optionally you can supply child nodes for each item, declaring the CSS classes used to display it as [_class-close]
  *                      and [_class-open]. Their default values are "glyphicon glyphicon-folder-close" and "glyphicon glyphicon-folder-open".
- * [_crawl]           - If true, the tree will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
- * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tree_unroll".
+ * [crawl]            - If true, the tree will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
+ * [crawl-get-name]   - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_tree_unroll".
  * [.on-get-items]    - Callback lambda evaluated when the tree need more items.
  *                      Callback will be given [_item-id] for which item to retrieve children of.
- *                      Callback is expected to return an [_items] collection, similarly to when the tree is initially created.
- *                      See [_items] above to understand the collection the tree widget expects.
+ *                      Callback is expected to return an [items] collection, similarly to when the tree is initially created.
+ *                      See [items] above to understand the collection the tree widget expects.
  * [.on-select]       - Callback lambda to invoke when an item is selected.
  */
 p5.events.create:sys42.widgets.tree
@@ -29,19 +29,19 @@ p5.events.create:sys42.widgets.tree
    * Applying options for widget, with default values.
    */
   _defaults
-    _skin:default
+    skin:default
     .on-get-items
     .on-select
-    _crawl-get-name:sys42_widgets_tree_unroll
-    _crawl:bool:false
+    crawl-get-name:sys42_widgets_tree_unroll
+    crawl:bool:false
   _options
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
 
   /*
    * Making sure caller supplied at the very least one item.
    */
-  if:x:/../*/_options/*/_items/*
+  if:x:/../*/_options/*/items/*
     not
     throw:You have to supply at the very least one root item when creating your tree widget.
 
@@ -52,7 +52,7 @@ p5.events.create:sys42.widgets.tree
   eval-x:x:/+/*/*
   add:x:/../*/return/*/container/*/widgets
     sys42.widgets.tree._create-items
-      _items:x:/../*/_options/*/_items
+      items:x:/../*/_options/*/items
 
 
   /*
@@ -72,13 +72,13 @@ p5.events.create:sys42.widgets.tree
   /*
    * Checking if crawling is enabled.
    */
-  if:x:/../*/_options/*/_crawl?value.bool
+  if:x:/../*/_options/*/crawl?value.bool
     set:x:/../*/return/*/*/_root-tree?value
-      src:x:/../*/_options/*/_crawl-get-name?value
+      src:x:/../*/_options/*/crawl-get-name?value
 
 
   /*
-   * Forward evaluating [class] and [oninit]/[_skin] to make sure we use the [_skin] supplied during creation.
+   * Forward evaluating [class] and [oninit]/[_skin] to make sure we use the [skin] supplied during creation.
    */
   eval-x:x:/../*/return/*/*(/class|/oninit/*/_skin)
 
@@ -90,13 +90,13 @@ p5.events.create:sys42.widgets.tree
     container
       _root-tree
       class:tree-widget-{0}
-        :x:/../*/_options/*/_skin?value
+        :x:/../*/_options/*/skin?value
       oninit
 
         /*
          * Making sure we include our tree specific CSS file.
          */
-        _skin:x:/../*/_options/*/_skin?value
+        _skin:x:/../*/_options/*/skin?value
         p5.web.include-css-file:/system42/components/common-widgets/tree/media/skins/{0}/{0}.min.css
           :x:/@_skin?value
 
@@ -128,10 +128,10 @@ p5.events.create:sys42.widgets.tree
          */
         p5.string.split:x:/@p5.web.query.get/*?value
           =:|
-        add:x:/+/*/_items
+        add:x:/+/*/items
           src:x:/@p5.string.split/*?name
         sys42.widgets.tree.toggle-items:x:/../*/_event?value
-          _items
+          items
           _force-expand:bool:true
 
         /*
@@ -140,7 +140,7 @@ p5.events.create:sys42.widgets.tree
         add:x:/../*/sys42.widgets.tree.select-items/*
           src:x:/@p5.string.split/0/-?name
         sys42.widgets.tree.select-items:x:/../*/_event?value
-          _items
+          items
 
 
       /*
@@ -200,7 +200,7 @@ p5.events.create:sys42.widgets.tree
            */
           .lambda
           add:x:/+
-            src:x:/../*/_items
+            src:x:/../*/items
           eval:x:/@.lambda
           insert-before:x:
             src:x:/@eval/*

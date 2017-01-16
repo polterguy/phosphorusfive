@@ -370,7 +370,7 @@ namespace p5.web.widgets
                         var value = idxCriteria.GetExValue<string> (context, null);
                         if (value != null && !likeMatch && widget [idxCriteria.Name] != value) {
                             match = false;
-                        } else if (value != null && likeMatch && !widget [idxCriteria.Name].Contains (value)) {
+                        } else if (value != null && likeMatch && !(widget [idxCriteria.Name] ?? "").Contains (value)) {
                             match = false;
                         }
                     }

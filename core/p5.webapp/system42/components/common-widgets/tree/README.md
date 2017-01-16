@@ -11,8 +11,8 @@ p5.web.widgets.create-container
   parent:content
   widgets
     sys42.widgets.tree
-      _crawl:true
-      _items
+      crawl:true
+      items
         root:/
       .on-get-items
         p5.io.folder.list-folders:x:/../*/_item-id?value
@@ -26,11 +26,11 @@ p5.web.widgets.create-container
               :x:/..for-each/*/_dp?value
           if:x:/./*/p5.io.folder.list-folders/*
             not
-            add:x:/../*/return/*/_items/0/-
+            add:x:/../*/return/*/items/0/-
               src
                 _class:tree-leaf
         return
-          _items
+          items
 ```
 
 The above example allows you to traverse your folders in your Phosphorus Five installation, using the Ajax tree widget. It will look something
@@ -58,21 +58,21 @@ p5.web.widgets.create-container
   class:col-xs-12
   widgets
     sys42.widgets.tree
-      _items
+      items
         Foo:foo
-          _items
+          items
             Foo 1:foo-1
-              _class:tree-leaf
+              class:tree-leaf
             Foo 2:foo-2
-              _class:tree-leaf
+              class:tree-leaf
         Bar:bar
-          _items
+          items
             Bar 1:bar-1
-              _items
+              items
                 Howdy World:tjobing-1
-                  _class:tree-leaf
+                  class:tree-leaf
             Bar 2:bar-2
-              _class:tree-leaf
+              class:tree-leaf
 ```
 
 As the above example also illustrates, you can also have multiple root items. There must however be at least _one_ item, otherwise the
@@ -87,31 +87,31 @@ p5.web.widgets.create-container
   class:col-xs-12
   widgets
     sys42.widgets.tree
-      _items
+      items
         Foo:foo
-          _class-close:glyphicon glyphicon-wrench
-          _class-open:glyphicon glyphicon-cog
-          _items
+          class-close:glyphicon glyphicon-wrench
+          class-open:glyphicon glyphicon-cog
+          items
             Foo 1:foo-1
-              _class-close:glyphicon glyphicon-time
-              _class:tree-leaf
+              class-close:glyphicon glyphicon-time
+              class:tree-leaf
             Foo 2:foo-2
-              _class-close:glyphicon glyphicon-headphones
-              _class:tree-leaf
+              class-close:glyphicon glyphicon-headphones
+              class:tree-leaf
         Bar:bar
-          _class-close:glyphicon glyphicon-trash
-          _class-open:glyphicon glyphicon-home
-          _items
+          class-close:glyphicon glyphicon-trash
+          class-open:glyphicon glyphicon-home
+          items
             Bar 1:bar-1
-              _class-close:glyphicon glyphicon-picture
-              _class-open:glyphicon glyphicon-edit
-              _items
+              class-close:glyphicon glyphicon-picture
+              class-open:glyphicon glyphicon-edit
+              items
                 Howdy World:tjobing-1
-                  _class-open:glyphicon glyphicon-picture
-                  _class:tree-leaf
+                  class-open:glyphicon glyphicon-picture
+                  class:tree-leaf
             Bar 2:bar-2
-              _class-close:glyphicon glyphicon-fast-backward
-              _class:tree-leaf
+              class-close:glyphicon glyphicon-fast-backward
+              class:tree-leaf
 ```
 
 The above example, will produce something like the following.
@@ -134,7 +134,7 @@ smallest possible code to use the Tree view look something like this.
 p5.web.widgets.create-container
   widgets
     sys42.widgets.tree
-      _items
+      items
         Foo:foo
 ```
 
@@ -146,31 +146,31 @@ initially gave it when the widget was created.
 You can also toggle multiple items at the same time, by returning a nested *[_items]* collection, as the following demonstrates.
 
 ```
-p5.web.widgets.create-container
+create-widget
   parent:content
   widgets
     sys42.widgets.tree
-      _items
+      items
         Root:root
       .on-get-items
         if:x:/../*/_item-id?value
           =:root
           return
-            _items
+            items
               Foo 1:foo-1
-                _items
+                items
                   Foo 1's child 1:foo-1-1
-                    _class:tree-leaf
+                    class:tree-leaf
                   Foo 1's child 2:foo-1-2
-                    _class:tree-leaf
+                    class:tree-leaf
                   Foo 1's child 3:foo-1-3
-                    _class:tree-leaf
+                    class:tree-leaf
               Bar 1:bar-1
-                _items
+                items
                   Bar 1's child 1:bar-1-1
-                    _class:tree-leaf
+                    class:tree-leaf
                   Bar 1's child 2:bar-1-2
-                    _class:tree-leaf
+                    class:tree-leaf
 ```
 
 ## Handling selected event
@@ -181,23 +181,23 @@ Your lambda callback will be given a collection of *[_items]*, where the name pr
 Below is an example of a TreeView widget that simply shows an _"info tip box"_ as the user selects items.
 
 ```
-p5.web.widgets.create-container
+create-widget
   parent:content
   class:col-xs-12
   widgets
     sys42.widgets.tree
       .on-select
         sys42.windows.info-tip:You selected '{0}'
-          :x:/../*/_items/0?name
-      _items
+          :x:/../*/items/0?name
+      items
         Foo:foo
-          _items
+          items
             Foo 1:foo-1
             Foo 2:foo-2
         Bar:bar
-          _items
+          items
             Bar 1:bar-1
-              _items
+              items
                 Howdy World:tjobing-1
             Bar 2:bar-2
 ```
@@ -214,15 +214,15 @@ p5.web.widgets.create-container
   class:col-xs-12
   widgets
     sys42.widgets.tree:my-tree
-      _items
+      items
         Foo:foo
-          _items
+          items
             Foo 1:foo-1
             Foo 2:foo-2
         Bar:bar
-          _items
+          items
             Bar 1:bar-1
-              _items
+              items
                 Howdy World:tjobing-1
             Bar 2:bar-2
     literal
@@ -230,7 +230,7 @@ p5.web.widgets.create-container
       innerValue:Select two items
       onclick
         sys42.widgets.tree.select-items:my-tree
-          _items
+          items
             foo-1
             bar-2
 ```
@@ -240,20 +240,20 @@ Which takes the exact same set of parameters as the *[sys42.widgets.tree.select-
 two items in your tree, through clicking a button.
 
 ```
-p5.web.widgets.create-container
+create-widget
   parent:content
   class:col-xs-12
   widgets
     sys42.widgets.tree:my-tree
-      _items
+      items
         Foo:foo
-          _items
+          items
             Foo 1:foo-1
             Foo 2:foo-2
         Bar:bar
-          _items
+          items
             Bar 1:bar-1
-              _items
+              items
                 Howdy World:tjobing-1
             Bar 2:bar-2
     literal
@@ -261,7 +261,7 @@ p5.web.widgets.create-container
       innerValue:Toggle two items
       onclick
         sys42.widgets.tree.toggle-items:my-tree
-          _items
+          items
             foo
             bar-1
 ```
@@ -275,20 +275,20 @@ The tree widget also supports retrieving currently selected items, through its *
 Below is an example of usage. Select any item in your tree, and then click the button.
 
 ```
-p5.web.widgets.create-container
+create-widget
   parent:content
   class:col-xs-12
   widgets
     sys42.widgets.tree:my-tree
-      _items
+      items
         Foo:foo
-          _items
+          items
             Foo 1:foo-1
             Foo 2:foo-2
         Bar:bar
-          _items
+          items
             Bar 1:bar-1
-              _items
+              items
                 Howdy World:tjobing-1
             Bar 2:bar-2
     literal
@@ -321,30 +321,30 @@ Below is the exact same example we started out with, except with a different ski
 smartphones and smaller devices.
 
 ```
-p5.web.widgets.create-container
+create-widget
   parent:content
   widgets
     sys42.widgets.tree
-      _skin:large
-      _items
+      skin:large
+      items
         root:/
       .on-get-items
-        p5.io.folder.list-folders:x:/../*/_item-id?value
+        list-folders:x:/../*/_item-id?value
         for-each:x:/-/*?name
-          p5.io.folder.list-folders:x:/./*/_dp?value
-          p5.string.split:x:/./*/_dp?value
+          list-folders:x:/@_dp?value
+          split:x:/./*/_dp?value
             =:/
           add:x:/../*/return/*
             src:@"{0}:{1}"
-              :x:/..for-each/*/p5.string.split/0/-?name
-              :x:/..for-each/*/_dp?value
-          if:x:/./*/p5.io.folder.list-folders/*
+              :x:/@split/0/-?name
+              :x:/@_dp?value
+          if:x:/@list-folders/*
             not
-            add:x:/../*/return/*/_items/0/-
+            add:x:/../*/return/*/items/0/-
               src
-                _class:tree-leaf
+                class:tree-leaf
         return
-          _items
+          items
 ```
 
 The above example will render something like the following.
