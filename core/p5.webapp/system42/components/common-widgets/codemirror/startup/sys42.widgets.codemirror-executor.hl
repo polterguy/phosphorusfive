@@ -11,10 +11,9 @@
  *
  * Arguments;
  *
- * [_class]            - Sets the CSS class of your widget.
- * [_whitelist]        - Optional list of events that can be legally invoked.
+ * [whitelist]         - Optional list of events that can be legally invoked.
  */
-p5.events.create:sys42.widgets.codemirror-executor
+create-event:sys42.widgets.codemirror-executor
 
   /*
    * Applying options for widget, with default values.
@@ -22,36 +21,34 @@ p5.events.create:sys42.widgets.codemirror-executor
    * up prioritizing specified argument, resorting to [_default] value if not given.
    */
   _defaults
-    _class:col-xs-12
-    _whitelist
+    whitelist
   _options
   add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+    src:x:(/@_defaults/--|/@_defaults/*)/$
 
 
   /*
    * Making sure our "Evaluate" button is wired up.
    */
-  p5.web.include-javascript:@"p5._sys42_widgets_codemirror_executor = function (e) {
-    var el = p5.$((e.target || e.srcElement).id);
-    el.raise('_onclick', {
+  p5.web.include-javascript:@"p5._sys42_widgets_codemirror_executor = function () {
+    p5.$('sys42-codemirror-executor-execute').raise('_onclick', {
       onsuccess:function(ret, evt) {
         p5['execute_output'].getDoc().setValue(ret.code);
       }});
-      e.preventDefault();
+      return false;
   }"
 
 
   /*
    * Checking if an explicit whitelist was given, and if so, making sure the rest of our page has access to it.
    */
-  if:x:/../*/_whitelist/*
+  if:x:/../*/whitelist/*
 
     /*
      * Appending whitelist definition into widget lambda event below.
      */
     add:x:/../**/sys42.widgets.codemirror._whitelist/*/return
-      src:x:/../*/_whitelist/*
+      src:x:/../*/whitelist/*
 
   else
 
@@ -67,7 +64,7 @@ p5.events.create:sys42.widgets.codemirror-executor
    */
   p5.web.session.get:sys42.widgets.codemirror-executor.current-code
   if:x:/@p5.web.session.get/0?value
-    set:x:/../**/=execute_input/*/_value?value
+    set:x:/../**/=execute_input/*/value?value
       src:x:/@p5.web.session.get/0?value
 
 
@@ -86,8 +83,7 @@ p5.events.create:sys42.widgets.codemirror-executor
         sys42.widgets.codemirror._whitelist
           return
 
-
-      class:x:/../*/_options/*/_class?value
+      class:col-xs-12
       widgets
 
 
@@ -97,9 +93,12 @@ p5.events.create:sys42.widgets.codemirror-executor
         container
           widgets
             sys42.widgets.codemirror:execute_input
-              _value:
-              _auto-focus:true
-              _height:400px
+              value:
+              auto-focus:true
+              height:400px
+              keys
+                Alt-E:"p5._sys42_widgets_codemirror_executor();"
+                  
 
 
         /*
@@ -114,10 +113,11 @@ p5.events.create:sys42.widgets.codemirror-executor
           style:"overflow:auto;"
 
           widgets
-            literal
+            literal:sys42-codemirror-executor-execute
               class:btn btn-default btn-attach-top col-lg-2 col-lg-offset-10 col-md-3 col-md-offset-9 col-xs-4 col-xs-offset-8
               element:button
               innerValue:Evaluate
+              title:Keyboard shortcut ALT+E
 
 
               /*
@@ -130,8 +130,14 @@ p5.events.create:sys42.widgets.codemirror-executor
                * the executed code as a piece of string, named "code", which the JavaScript
                * again puts into the "execute_output" CodeMirror widget.
                */
-              onclick:"p5._sys42_widgets_codemirror_executor(event);"
+              onclick:"return p5._sys42_widgets_codemirror_executor();"
               _onclick
+
+                /*
+                 * Making sure output widget and clear widget becomes visible.
+                 */
+                p5.web.widgets.property.set:sys42_widgets_codemirror_output_wrapper
+                  style:"height:inherit;"
 
                 /*
                  * Retrieving whitelist definition, if any.
@@ -212,26 +218,9 @@ p5.events.create:sys42.widgets.codemirror-executor
         /*
          * Output textarea element, transformed into a CodeMirror widget later
          */
-        container
+        container:sys42_widgets_codemirror_output_wrapper
           class:prepend-top
+          style:"height:0;overflow:hidden;"
           widgets
             sys42.widgets.codemirror:execute_output
-              _height:200px
-
-
-        /*
-         * The clear button for clearing the execute_output editor surface
-         */
-        container
-
-          /*
-           * Necessary to have the next widget obey its "margin-top" CSS.
-           */
-          style:"overflow:auto;"
-
-          widgets
-            literal
-              element:button
-              class:btn btn-default btn-attach-top col-lg-2 col-lg-push-10 col-xs-4 col-xs-push-8
-              innerValue:Clear
-              onclick:"p5['execute_output'].getDoc().setValue('');event.preventDefault();"
+              height:200px

@@ -21,12 +21,6 @@ sys42.cms.load-template
 
 
 /*
- * Including some nice background to visually indicate we're in "configuration mode".
- */
-p5.web.include-css-file:@CMS/media/css/backgrounds/cogs.min.css
-
-
-/*
  * List all files in "/tests/" directory.
  * Each file is considered a "single test collection for specific concept".
  */

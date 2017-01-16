@@ -10,7 +10,7 @@ return
  * Default [lambda] type of page.
  * Edit this page to meet your own needs.
  */
-p5.web.widgets.create-container:foo
+create-widget:foo
   parent:content
   class:col-xs-12
   widgets

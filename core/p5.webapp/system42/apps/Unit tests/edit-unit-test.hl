@@ -32,9 +32,9 @@ p5.web.widgets.create-container:{0}_editor
          */
         sys42.widgets.codemirror:{0}_codemirror
           :x:/../*/_widget?value
-          _auto-focus:true
-          _height:700px
-          _value:x:/../*/p5.io.file.load/*?value
+          auto-focus:true
+          height:700px
+          value:x:/../*/p5.io.file.load/*?value
         container
           class:btn-group col-xs-3 col-xs-push-9
           widgets

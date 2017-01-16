@@ -2,9 +2,10 @@
 /*
  * View page button.
  */
-button
+button:sys42-cms-page-editor-view-page-btn
   innerValue:@"<span class=""glyphicon glyphicon-eye-open""></span> View page"
   class:btn btn-default diffuse btn-attach-top
+  title:Keyboard shortcut ALT+V
   onclick
 
     /*
@@ -13,9 +14,3 @@ button
     sys42.cms.get-edited-page-id
     p5.web.send-javascript:@"window.open('{0}', '_blank');"
       :x:/./-?value
-
-    /*
-     * Making sure we set focus to "select page dropdown" if user closes dialogue, without
-     * pressing "OK".
-     */
-    p5.web.send-javascript:@"$('#cms-select-page').focus().select();"

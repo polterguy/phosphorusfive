@@ -14,7 +14,7 @@ p5.data.select:x:/*/*/p5.page/"={0}"
 /*
  * Setting the content of editor_surface to the [lambda] from database
  */
-set:x:/../*/p5.web.widgets.create-container/*/widgets/*/=editor_surface/*/_value?value
+set:x:/../*/p5.web.widgets.create-container/*/widgets/*/=editor_surface/*/value?value
   src:x:/../*/p5.data.select/*/*/lambda?value
 
 
@@ -26,14 +26,17 @@ p5.web.widgets.create-container
   class:col-xs-12
   widgets
     sys42.widgets.codemirror:editor_surface
-      _height:555px
-      _value
+      height:555px
+      value
+      keys
+        Alt-S:@"p5.$('sys42-cms-page-editor-save-btn').raise('onclick');"
+        Alt-V:@"p5.$('sys42-cms-page-editor-view-page-btn').raise('onclick');"
 
 
       /*
        * Lambda events for Editor Surface
        */
-      _events
+      events
 
 
         /*

@@ -38,12 +38,6 @@ sys42.cms.load-template
 
 
 /*
- * Including some nice background to visually indicate we're in "configuration mode".
- */
-p5.web.include-css-file:@CMS/media/css/backgrounds/cogs.min.css
-
-
-/*
  * Creating our "upload page" widget.
  */
 sys42.utilities.execute-lambda-file:@CMS/create-uploader.hl

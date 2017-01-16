@@ -2,9 +2,10 @@
 /*
  * Save toolbar button for page editor.
  */
-button
+button:sys42-cms-page-editor-save-btn
   innerValue:@"<span class=""glyphicon glyphicon-floppy-save""></span> Save"
   class:btn btn-default diffuse btn-attach-top
+  title:Keyboard shortcut ALT+S
   onclick
     sys42.save-edited-page
   events
@@ -56,8 +57,3 @@ button
        */
       sys42.windows.info-tip:Page '{0}' was successfully saved.
         :x:/@p5.data.select/*/*/name?value
-
-      /*
-       * Making sure we set focus to select page dropdown.
-       */
-      p5.web.send-javascript:@"$('#cms-select-page').focus().select();"

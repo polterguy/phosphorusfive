@@ -4,32 +4,16 @@
  *
  * Arguments;
  *
- * [_auto-focus] - If true, CodeMirror editor will gain initial focus upon load. Defaults to false.
- * [_mode] - Which language type to use. Defaults to 'hyperlambda'.
- * [_theme]  - Which theme to use, defaults to 'paraiso'.
- * [_height] - Height, add units, e.g. '250px'. Defaults to '300px'.
- * [_value] - Initial code to display.
- * [_events] - Collection of associated widget lambda events.
+ * [auto-focus]     - If true, CodeMirror editor will gain initial focus upon load. Defaults to false.
+ * [mode]           - Which language type to use. Defaults to 'hyperlambda'.
+ * [theme]          - Which theme to use, defaults to 'paraiso'.
+ * [height]         - Height, add units, e.g. '250px'. Defaults to '300px'.
+ * [value]          - Initial code to display.
+ * [events]         - Collection of associated widget lambda events.
+ * [keys]           - Collection of keyboard shortcuts. E.g. "Alt-E" to trap ALT+E key. Pass in JavaScript as value for shortcut.
+ *                    'cm', being the CodeMirror instance will be passed in.
  */
-p5.events.create:sys42.widgets.codemirror
-
-
-  /*
-   * Check if default Code-Mirror theme setting exists, and if not, create it.
-   */
-  sys42.settings.get:sys42.code-mirror-default-theme
-    _app:sys42
-  if:x:/-/*?value
-    not
-
-    /*
-     * Making sure default "paraiso" Code-Mirror theme is used by default.
-     */
-    sys42.settings.set:sys42.code-mirror-default-theme
-      _app:sys42
-      _src:paraiso
-    add:x:/@sys42.settings.get
-      src:"sys42.code-mirror-default-theme:paraiso"
+create-event:sys42.widgets.codemirror
 
 
   /*
@@ -38,17 +22,35 @@ p5.events.create:sys42.widgets.codemirror
    * up prioritizing specified argument, resorting to [_default] value if not given
    */
   _defaults
-    _auto-focus:false
-    _mode:hyperlambda
-    _theme:paraiso
-    _height:300px
-    _value:
-    _events
+    auto-focus:false
+    mode:hyperlambda
+    theme:paraiso
+    height:300px
+    value:
+    events
   _options
-  set:x:/../*/_defaults/*/_theme?value
-    src:x:/@sys42.settings.get/*?value
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
+
+
+  /*
+   * Check if default Code-Mirror theme setting exists, and if not, create it.
+   */
+  sys42.settings.ensure-defaults
+    _app:sys42
+    src
+      sys42.code-mirror-default-theme:paraiso
+
+
+  /*
+   * Checking if caller supplied an explicit theme, and if not, making sure we use the "default setting theme".
+   */
+  if:x:/@_defaults/--/theme
+    not
+    sys42.settings.get:sys42.code-mirror-default-theme
+      _app:sys42
+    set:x:/@_options/*/theme?value
+      src:x:/@sys42.settings.get/*?value
 
 
   /*
@@ -61,7 +63,7 @@ p5.events.create:sys42.widgets.codemirror
     /system42/components/common-widgets/codemirror/media/addon/display/fullscreen.js
     /system42/components/common-widgets/codemirror/media/addon/hint/show-hint.js
   p5.web.include-javascript-file:/system42/components/common-widgets/codemirror/media/mode/{0}/{0}.min.js
-    :x:/../*/_options/*/_mode?value
+    :x:/../*/_options/*/mode?value
 
 
   /*
@@ -72,7 +74,7 @@ p5.events.create:sys42.widgets.codemirror
     /system42/components/common-widgets/codemirror/media/addon/display/fullscreen.css
     /system42/components/common-widgets/codemirror/media/addon/hint/show-hint.css
   p5.web.include-css-file:/system42/components/common-widgets/codemirror/media/theme/{0}.min.css
-    :x:/../*/_options/*/_theme?value
+    :x:/../*/_options/*/theme?value
 
 
   /*
@@ -146,6 +148,22 @@ p5.events.create:sys42.widgets.codemirror
 
 
   /*
+   * Making sure we handle keyboard shortcuts.
+   */
+  _keys:,
+  for-each:x:/../*/_options/*/keys/*
+    set:x:/@_keys?value
+      src:{0}{1}
+        :x:/@_keys?value
+        :@"
+  '{0}':function(cm) {{{1}}},"
+          :x:/@_dp/#?name
+          :x:/@_dp/#?value
+  trim-right:x:/@_keys?value
+    chars:,
+
+
+  /*
    * Making sure textarea input is replaced with our CodeMirror instance.
    */
   p5.web.send-javascript:@"p5['{0}'] = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
@@ -158,7 +176,7 @@ autofocus:{1},
 tabSize:2,
 indentAuto:true,
 extraKeys: {{
-  'Alt-F':function(cm) {{cm.setOption('fullScreen', !cm.getOption('fullScreen'));}},
+  'Alt-F':function(cm) {{cm.setOption('fullScreen', !cm.getOption('fullScreen'));}}{3},
   'Ctrl-Space':'autocomplete'}}
 }});
 p5['{0}'].on('change',function (cMirror) {{
@@ -168,8 +186,9 @@ p5['{0}'].on('change',function (cMirror) {{
 CodeMirror.keyMap.default['Shift-Tab'] = 'indentLess';
 CodeMirror.keyMap.default['Tab'] = 'indentMore';"
     :x:/../*/_arg?value
-    :x:/../*/_options/*/_auto-focus?value
-    :x:/../*/_options/*/_theme?value
+    :x:/../*/_options/*/auto-focus?value
+    :x:/../*/_options/*/theme?value
+    :x:/@trim-right?value
 
 
   /*
@@ -177,15 +196,15 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
    */
   p5.web.send-javascript:@"p5['{0}'].setSize('100%', '{1}');"
     :x:/../*/_arg?value
-    :x:/../*/_height?value
+    :x:/../*/height?value
 
 
   /*
    * Applying any custom widget events to widget.
    */
-  if:x:/../*/_options/*/_events/*
+  if:x:/../*/_options/*/events/*
     add:x:/+/*/*
-      src:x:/../*/_options/*/_events/*
+      src:x:/../*/_options/*/events/*
     add:x:/../*/return/*/literal
       src
         events
@@ -199,4 +218,4 @@ CodeMirror.keyMap.default['Tab'] = 'indentMore';"
   return
     literal
       element:textarea
-      innerValue:x:/../*/_options/*/_value?value
+      innerValue:x:/../*/_options/*/value?value

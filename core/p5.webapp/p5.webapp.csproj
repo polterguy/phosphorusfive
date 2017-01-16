@@ -55,10 +55,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="system42\apps\CMS\media\css\backgrounds\cogs.css" />
-    <Content Include="system42\apps\CMS\media\css\backgrounds\cogs.min.css">
-      <DependentUpon>cogs.css</DependentUpon>
-    </Content>
     <Content Include="system42\apps\CMS\media\css\main.min.css">
       <DependentUpon>main.css</DependentUpon>
     </Content>

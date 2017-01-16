@@ -22,12 +22,6 @@ sys42.cms.load-template
 
 
 /*
- * Including some nice background to visually indicate we're in "configuration mode".
- */
-p5.web.include-css-file:@CMS/media/css/backgrounds/cogs.min.css
-
-
-/*
  * Invoking custom control event, for later to transform its results, into a [p5.web.widgets.create-container] invocation.
  */
 sys42.widgets.codemirror-executor

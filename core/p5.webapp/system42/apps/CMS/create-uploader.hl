@@ -16,7 +16,7 @@ p5.web.widgets.create-container:cms-ajax-uploader
     sys42.widgets.uploader:cms-uploader-widget
       _filter:hl
       _allow-multiple:false
-      _class:uploader-widget uploader-faded uploader-full-screen
+      _class:uploader-full-screen
       .onupload
 
         /*
