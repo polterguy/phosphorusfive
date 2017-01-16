@@ -5,7 +5,6 @@
 button:sys42-cms-page-editor-save-btn
   innerValue:@"<span class=""glyphicon glyphicon-floppy-save""></span> Save"
   class:btn btn-default diffuse btn-attach-top
-  title:Keyboard shortcut ALT+S
   onclick
     sys42.save-edited-page
   events

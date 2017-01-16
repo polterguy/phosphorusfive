@@ -4,11 +4,11 @@
  *
  * Arguments;
  *
- * [_height] - Height in pixels.
- * [_events] - Collection of widget lambda events to associate with widget.
- * [_value] - Initial value of editor. Defaults to nothing.
+ * [height]       - Height in pixels.
+ * [events]       - Collection of widget lambda events to associate with widget.
+ * [value]        - Initial value of editor. Defaults to nothing.
  */
-p5.events.create:sys42.widgets.ck-editor
+create-event:sys42.widgets.ck-editor
 
   /*
    * Applying options for widget, with default values.
@@ -16,23 +16,23 @@ p5.events.create:sys42.widgets.ck-editor
    * up prioritizing specified argument, resorting to [_default] value if not given
    */
   _defaults
-    _height:381
-    _events
-    _value:
+    height:381
+    events
+    value:
   _options
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
 
   /*
    * Checking if lambda events were given, and if so, making sure we associate them with widget.
    */
-  if:x:/../*/_options/*/_events/*
+  if:x:/../*/_options/*/events/*
 
     /*
      * Caller supplied widget specific lambda events, making sure we associate them with the widget.
      */
     add:x:/+/*/*
-      src:x:/../*/_options/*/_events/*
+      src:x:/../*/_options/*/events/*
     add:x:/../*/return/*/literal
       src
         events
@@ -44,7 +44,7 @@ p5.events.create:sys42.widgets.ck-editor
   return
     literal
       element:textarea
-      innerValue:x:/../*/_options/*/_value?value
+      innerValue:x:/../*/_options/*/value?value
       oninit
 
         /*
@@ -60,7 +60,7 @@ p5.events.create:sys42.widgets.ck-editor
         /*
          * JavaScript to replace textarea with CKEditor instance
          */
-        _height:x:/../*/_options/*/_height?value
+        _height:x:/../*/_options/*/height?value
         p5.web.send-javascript:@"CKEDITOR.replace('{0}',{{
   allowedContent: true,
   height:{1}

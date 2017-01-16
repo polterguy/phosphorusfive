@@ -14,27 +14,27 @@ p5.data.select:x:/*/*/p5.page/"={0}"
 /*
  * Setting the value of textarea to [html] from database
  */
-set:x:/../*/p5.web.widgets.create-container/*/widgets/*/=ck-editor/*/_value?value
+set:x:/../*/create-widget/*/widgets/*/=ck-editor/*/value?value
   src:x:/../*/p5.data.select/*/*/html?value
 
 
 /*
  * Creates the editor widget
  */
-p5.web.widgets.create-container
+create-widget
   parent:cms-specialized-editor-surface
   class:col-xs-12
   style:"display:inline-block;width:100%;"
   widgets
     sys42.widgets.ck-editor:ck-editor
-      _height:451
-      _value
+      height:451
+      value
 
 
       /*
        * Lambda events for Editor Surface
        */
-      _events
+      events
 
 
         /*
