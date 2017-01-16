@@ -6,23 +6,23 @@
  *
  * Arguments;
  *
- * [_css-file]            - A CSS file to automatically include into the page as the widget is instantiated.
+ * [css-file]             - A CSS file to automatically include into the page as the widget is instantiated.
  *                          Its default value is "uploader.min.css", which can be found in the "media" folder of the widget's
  *                          folder structure. If you set it to "" (empty string), then no CSS file will be included.
- * [_class]               - The CSS class for your widget. Default value is "uploader-widget", which corresponds with the class
+ * [class]                - The CSS class for your widget. Default value is "uploader-widget", which corresponds with the class
  *                          inside of "uploader.min.css".
- * [_dragover-class]      - The CSS class to use whenever some file(s) is dragged over your widget. Useful to give the user hints that
+ * [dragover-class]       - The CSS class to use whenever some file(s) is dragged over your widget. Useful to give the user hints that
  *                          it accepts dropping of files. The default value is "uploader-widget-dragover".
- * [_drop-class]          - The CSS class to use whenever some file(s) are dropped unto the widget's surface. Useful to give
+ * [drop-class]           - The CSS class to use whenever some file(s) are dropped unto the widget's surface. Useful to give
  *                          visual clues to the user that an uploading of one or more files is in progress. The default value
  *                          is "uploader-widget-drop".
- * [_error-class]         - CSS class used for the widget when there is some sort of error, due to for instance trying to upload a file
+ * [error-class]          - CSS class used for the widget when there is some sort of error, due to for instance trying to upload a file
  *                          with the wrong extension, or trying to upload multiple files, when the uploader only accepts a single file.
- * [_allow-multiple]      - If false, then only one file is allowed being uploaded at the same time. The default value is true.
- * [_filter]              - Pipe separated (|) list of  valid file extensions that the uploader accepts. Default value is empty, "", 
+ * [allow-multiple]       - If false, then only one file is allowed being uploaded at the same time. The default value is true.
+ * [filter]               - Pipe separated (|) list of  valid file extensions that the uploader accepts. Default value is empty, "", 
  *                          which means "everything is accepted".
- * [_clickable]           - If false, will not let the user click the widget to open up browse for file window.
- * [_preview]             - If false, will not create previews of files during upload.
+ * [clickable]            - If false, will not let the user click the widget to open up browse for file window.
+ * [preview]              - If false, will not create previews of files during upload.
  * [.onupload]            - Lambda callback which will be invoked whenever some file have been uploaded to the server. Will be given
  *                          a [_filename] and a [_content] argument.
  *                          In addition, for cases when the user is uploading multiple files at once, it will also be given the
@@ -35,19 +35,19 @@ create-event:sys42.widgets.uploader
    * Applying options for widget, with default values.
    */
   _defaults
-    _css-file:/system42/components/common-widgets/uploader/media/uploader.min.css
-    _class:uploader-widget
-    _dragover-class:uploader-widget-dragover
-    _drop-class:uploader-widget-drop
-    _error-class:uploader-widget-error
-    _allow-multiple:bool:true
-    _filter
-    _clickable:true
-    _preview:true
+    css-file:/system42/components/common-widgets/uploader/media/uploader.min.css
+    class:uploader-widget
+    dragover-class:uploader-widget-dragover
+    drop-class:uploader-widget-drop
+    error-class:uploader-widget-error
+    allow-multiple:bool:true
+    filter
+    clickable:true
+    preview:true
     .onupload
   _options
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
 
 
   /*
@@ -60,7 +60,7 @@ create-event:sys42.widgets.uploader
   /*
    * Making sure we remove the role=button parts, if widget is not clickable.
    */
-  if:x:/../*/_options/*/_clickable?value.bool
+  if:x:/../*/_options/*/clickable?value.bool
     not
     set:x:/../*/return/*/container/*/role
 
@@ -68,7 +68,7 @@ create-event:sys42.widgets.uploader
   /*
    * Making sure we remove the "multiple" attribute, if widget does not allow for multiple files.
    */
-  if:x:/../*/_options/*/_allow-multiple?value.bool
+  if:x:/../*/_options/*/allow-multiple?value.bool
     not
     set:x:/../*/return/*/container/*/widgets/*/void/*/multiple
 
@@ -92,7 +92,7 @@ create-event:sys42.widgets.uploader
   return
     container
       element:div
-      class:x:/../*/_options/*/_class?value
+      class:x:/../*/_options/*/class?value
       role:button
       oninit
 
@@ -100,7 +100,7 @@ create-event:sys42.widgets.uploader
          * Including CSS file, if a CSS file was specified.
          * This one is forward evaluated above.
          */
-        _css-file:x:/../*/_options/*/_css-file?value
+        _css-file:x:/../*/_options/*/css-file?value
         if:x:/@_css-file?value
           p5.web.include-css-file:x:/@_css-file?value
 
@@ -112,16 +112,16 @@ create-event:sys42.widgets.uploader
         /*
          * These are forward evaluated during construction of widget.
          */
-        _class:x:/../*/_options/*/_class?value
-        _dragover-class:x:/../*/_options/*/_dragover-class?value
-        _drop-class:x:/../*/_options/*/_drop-class?value
-        _error-class:x:/../*/_options/*/_error-class?value
-        _filter:x:/../*/_options/*/_filter?value
-        _allow-multiple:x:/../*/_options/*/_allow-multiple?value
+        _class:x:/../*/_options/*/class?value
+        _dragover-class:x:/../*/_options/*/dragover-class?value
+        _drop-class:x:/../*/_options/*/drop-class?value
+        _error-class:x:/../*/_options/*/error-class?value
+        _filter:x:/../*/_options/*/filter?value
+        _allow-multiple:x:/../*/_options/*/allow-multiple?value
         p5.string.to-lower:x:/-?value.string
-        _clickable:x:/../*/_options/*/_clickable?value
+        _clickable:x:/../*/_options/*/clickable?value
         p5.string.to-lower:x:/-?value.string
-        _preview:x:/../*/_options/*/_preview?value
+        _preview:x:/../*/_options/*/preview?value
         p5.string.to-lower:x:/-?value.string
 
         /*
@@ -164,14 +164,14 @@ create-event:sys42.widgets.uploader
         /*
          * Server side validation of filename's extension, to avoid client-side hacking of JS, to allow uploading of non-supported files!
          */
-        _filter:x:/../*/_options/*/_filter?value
+        _filter:x:/../*/_options/*/filter?value
         if:x:/@_filter?value
-          p5.string.split:x:/@_filter?value
+          split:x:/@_filter?value
             =:|
-          p5.string.split:x:/../*/p5.web.params.get/*/sys42.widgets.uploader.filename?value
+          split:x:/../*/p5.web.params.get/*/sys42.widgets.uploader.filename?value
             =:.
-          if:x:/@p5.string.split/@p5.string.split/*/{0}
-            :x:/@p5.string.split/0/-?name
+          if:x:/@split/@split/*/{0}
+            :x:/@split/0/-?name
             not
 
             /*
@@ -185,7 +185,7 @@ create-event:sys42.widgets.uploader
         /*
          * Checking if multiple files were provided, and if this is legal according to widget's properties.
          */
-        _allow-multiple:x:/../*/_options/*/_allow-multiple?value.bool
+        _allow-multiple:x:/../*/_options/*/allow-multiple?value.bool
         if:x:/../*/p5.web.header.get/*/sys42.widgets.uploader.count?value.int
           >:int:1
           and:x:/@_allow-multiple?value.bool

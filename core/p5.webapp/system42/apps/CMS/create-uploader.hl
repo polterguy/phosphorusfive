@@ -4,7 +4,7 @@
  *
  * Notice, we default its visibility to false, and change its visibility, whenever a page is edited, or editing is stopped.
  */
-p5.web.widgets.create-container:cms-ajax-uploader
+create-widget:cms-ajax-uploader
   parent:cnt
   visible:false
   widgets
@@ -14,9 +14,10 @@ p5.web.widgets.create-container:cms-ajax-uploader
      * The uploader widget, notice, it wraps all other widgets on page!
      */
     sys42.widgets.uploader:cms-uploader-widget
-      _filter:hl
-      _allow-multiple:false
-      _class:uploader-full-screen
+      filter:hl
+      allow-multiple:false
+      class:uploader-full-screen
+      clickable:false
       .onupload
 
         /*
@@ -184,4 +185,3 @@ p5.web.widgets.create-container:cms-ajax-uploader
                 :x:/@hyper2lambda/*?value
                 :x:/@_high?value
 
-      _widgets
