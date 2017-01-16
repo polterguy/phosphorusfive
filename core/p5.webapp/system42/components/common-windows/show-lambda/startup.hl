@@ -6,8 +6,8 @@
  * Arguments;
  *
  * [_arg]            - Expression leading to lambda you wish to inspect
- * [_class]          - Override the default CSS class
- * [_parent]         - Override the default parent widget
+ * [class]           - Override the default CSS class
+ * [parent]          - Override the default parent widget
  *
  * This window can have multiple instances at the same time on page
  */
@@ -19,20 +19,25 @@ create-event:sys42.windows.show-lambda
    * This lambda uses the boolean algebraic "OR" operator, combined with /$ (unique name), ending
    * up prioritizing specified argument, resorting to [_default] value if no argument is given.
    */
-  if:x:/../*/_parent?value
+  _defaults
+    class:col-xs-12 show-code-window
+    parent:content
+  _options
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
+
+  /*
+   * Checking if the "content" widget exists, and if not, and no explicit [parent] was supplied, we use "cnt"
+   * as default parent.
+   */
+  if:x:/../*/parent?value
     not
     and
       fetch:x:/0/0?value
         widget-exists:content
       not
-    set:x:/../*/_defaults/*/_parent?value
+    set:x:/../*/_options/*/parent?value
       src:cnt
-  _defaults
-    _class:col-xs-12 show-code-window
-    _parent:content
-  _options
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
 
   /*
    * Checking if user supplied an expression, and if not, showing error message
@@ -68,8 +73,8 @@ create-event:sys42.windows.show-lambda
    */
   eval-x:x:/+/*
   p5.web.widgets.create-container
-    parent:x:/../*/_options/*/_parent?value
-    class:x:/../*/_options/*/_class?value
+    parent:x:/../*/_options/*/parent?value
+    class:x:/../*/_options/*/class?value
     position:0
     widgets
       literal

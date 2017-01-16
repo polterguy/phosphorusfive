@@ -21,7 +21,7 @@ create-event:sys42.widgets.tree.select-items
      * Tree has previously selected items, making sure we un-select them.
      */
     sys42.utilities.delete-css-classes:x:/@p5.web.widgets.find-like/*/*?value
-      _class:tree-selected
+      class:tree-selected
 
   /*
    * Then adding the selected CSS class to all items requested by caller.
@@ -32,7 +32,7 @@ create-event:sys42.widgets.tree.select-items
     p5.web.widgets.find:x:/@p5.web.widgets.find/*/*?value
       element:a
     sys42.utilities.add-css-classes:x:/@p5.web.widgets.find/*/0?value
-      _class:tree-selected
+      class:tree-selected
 
   /*
    * Making sure [.on-select] lambda callback is invoked.

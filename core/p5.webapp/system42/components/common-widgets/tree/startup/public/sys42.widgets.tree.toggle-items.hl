@@ -65,9 +65,9 @@ create-event:sys42.widgets.tree.toggle-items
          * to the [_class-open] value.
          */
         sys42.utilities.delete-css-classes:x:/@p5.web.widgets.get-children/*/*/container/[1,2]?value
-          _class:tree-hidden
+          class:tree-hidden
         sys42.utilities.add-css-classes:x:/@p5.web.widgets.find/*/*?value
-          _class:tree-expanded
+          class:tree-expanded
 
         /*
          * Making sure we set the "icon span" CSS class to [_class-open].
@@ -91,13 +91,13 @@ create-event:sys42.widgets.tree.toggle-items
            * hence we hide it, by applying the "tree-hidden" class to the main "ul" HTML widget.
            */
           sys42.utilities.add-css-classes:x:/@p5.web.widgets.get-children/*/*/container/[1,2]?value
-            _class:tree-hidden
+            class:tree-hidden
 
           /*
            * Then we delete the "tree-expanded" CSS class to our main "li" HTML widget.
            */
           sys42.utilities.delete-css-classes:x:/@p5.web.widgets.find/*/*?value
-            _class:tree-expanded
+            class:tree-expanded
 
           /*
            * Finally we apply our "close icon CSS class" to the icon "span" HTML widget.
@@ -169,7 +169,7 @@ create-event:sys42.widgets.tree.toggle-items
        * Adding the "expanded" CSS class in parent widget.
        */
       sys42.utilities.add-css-classes:x:/..for-each/*/p5.web.widgets.find/*/*?value
-        _class:tree-expanded
+        class:tree-expanded
 
       /*
        * Making sure we apply the "open" CSS class to the icon item.

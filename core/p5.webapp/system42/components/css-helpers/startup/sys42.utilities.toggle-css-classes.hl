@@ -1,7 +1,7 @@
 
 /*
  * Creates the Active Event that toggles one or more CSS class(es) on widget.
- * This Active Event requires one or more CSS class(es) as [_class], and will append the specified CSS class(es) to the widget defined as [_arg],
+ * This Active Event requires one or more CSS class(es) as [class], and will append the specified CSS class(es) to the widget defined as [_arg],
  * if the class does not already exist on widget, or remove the class from widget if it already exist from before.
  */
 create-event:sys42.utilities.toggle-css-classes
@@ -9,7 +9,7 @@ create-event:sys42.utilities.toggle-css-classes
   /*
    * Splitting upon every given CSS class caller wants to toggle.
    */
-  p5.string.split:x:/../*/_class?value
+  p5.string.split:x:/../*/class?value
     =:,
     =:" "
     trim:true

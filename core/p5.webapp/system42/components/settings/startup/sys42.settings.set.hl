@@ -2,22 +2,20 @@
 /*
  * Creates the Active Event that sets application specific setting(s).
  *
- * Pass in the name of your app to set setting for as [_app], setting to set as [_arg], and new value of setting as [_src].
- * Will update app setting according to which user is currently logged in. If currently logged in user is
- * a "root account", optionally you can update (or set) settings for a specific user, by supplying user to set setting
- * for as [_username].
+ * Arguments;
  *
- * [_src] can either contain a single value, be a node hierarchy, or both. Regardless, everything in [_src] will be stored as
- * your setting(s) values/nodes.
+ * [app]          - Name of application to which setting belongs.
+ * [username]     - Username to which settings belongs to.
+ * [src]          - Value of setting. Can either be a lambda, or a simple value.
  */
 create-event:sys42.settings.set
 
   /*
    * Sanity check
    */
-  if:x:/../*/_app?value
+  if:x:/../*/app?value
     not
-    or:x:/../*/_app?value
+    or:x:/../*/app?value
       =:
     throw:No application specified!
 
@@ -27,15 +25,15 @@ create-event:sys42.settings.set
   whoami
   if:x:/@whoami/*/role?value
     =:root
-    and:x:/../*/_username?value
+    and:x:/../*/username?value
 
     /*
      * Changing user to set setting for in [delete-data] and [insert-data] below.
      */
     set:x:/../*(/delete-data/0|/insert-data/*/1)?value
-      src:x:/../*/_username?value
+      src:x:/../*/username?value
 
-  else-if:x:/../*/_username?value
+  else-if:x:/../*/username?value
 
     /*
      * Non root account tried to change setting for another user!
@@ -44,23 +42,23 @@ create-event:sys42.settings.set
 
   delete-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}""/."
     :x:/@whoami/*/username?value
-    :x:/../*/_app?value
+    :x:/../*/app?value
     :x:/../*/_arg?value
 
   /*
    * Checking if new setting was provided, or if this was a "delete setting" invocation.
    */
-  if:x:/../*/_src
+  if:x:/../*/src
     not
     return
   eval-x:x:/../*/insert-data/*/*
   add:x:/../*/insert-data/*
-    src:x:/../*/_src
-  set:x:/../*/insert-data/*/*/_src?name
+    src:x:/../*/src
+  set:x:/../*/insert-data/*/*/src?name
     src:x:/../*/_arg?value
   insert-data
     sys42.app-settings
-      app-name:x:/../*/_app?value
+      app-name:x:/../*/app?value
       username:x:/@whoami/*/username?value
 
 

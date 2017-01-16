@@ -179,7 +179,7 @@ create-event:sys42.widgets.uploader
              * Providing some visual clues, and returning early.
              */
             sys42.windows.info-tip:Unsupported file extension!
-              _class:info-window info-window-error
+              class:info-window info-window-error
             return
 
         /*
@@ -191,7 +191,7 @@ create-event:sys42.widgets.uploader
           and:x:/@_allow-multiple?value.bool
             =:bool:false
           sys42.windows.info-tip:Please only upload one file at the time!
-            _class:info-window info-window-error
+            class:info-window info-window-error
           return
 
         /*

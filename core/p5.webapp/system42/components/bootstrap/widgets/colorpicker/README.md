@@ -18,8 +18,8 @@ p5.web.widgets.create-container
 
     // Actual colorpicker.
     sys42.widgets.colorpicker:my-color-picker
-      _value:#ff00ff
-      _label:My color
+      value:#ff00ff
+      label:My color
       .onchange
         p5.web.widgets.property.set:output-widget
           style:"background-color:{0};"
@@ -52,8 +52,8 @@ p5.web.widgets.create-container
   class:col-xs-4
   widgets
     sys42.widgets.colorpicker:my-color-picker
-      _value:#ff00ff
-      _label:My color
+      value:#ff00ff
+      label:My color
 p5.web.widgets.create-container
   parent:content
   class:col-xs-8
@@ -70,6 +70,6 @@ p5.web.widgets.create-container
       innerValue:Set value
       onclick
         sys42.widgets.colorpicker.set-value:my-color-picker
-          _value:#ffff00
+          value:#ffff00
 ```
 

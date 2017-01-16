@@ -22,7 +22,7 @@ Returns the [_arg] setting to caller. Example code below.
 
 ```
 sys42.settings.get:my-setting-key
-  _app:my-app
+  app:my-app
 ```
 
 The above invocation, would return something similar to the following, assuming you have a setting for _"my-app"_ called _"my-setting-key"_.
@@ -43,16 +43,16 @@ which might either contain a single value, or a hierarchical lambda object.
 
 ```
 sys42.settings.set:my-setting-key
-  _app:my-app
-  _src:Some value for key
+  app:my-app
+  src:Some value for key
 ```
 
 To create more complex settings, which are graph/lambda objects by themselves, you could do something such as the following.
 
 ```
 sys42.settings.set:my-setting-key
-  _app:my-app
-  _src
+  app:my-app
+  src
     name:John
     address
       adr1:Foo Bar st. 23
@@ -63,7 +63,7 @@ Then to retrieve the above setting, you could do something such as the following
 
 ```
 sys42.settings.get:my-setting-key
-  _app:my-app
+  app:my-app
 ```
 
 Which would return the above created lambda object setting.
@@ -75,7 +75,7 @@ settings for the specified application, and their values.
 
 ```
 sys42.settings.list
-  _app:some-app
+  app:some-app
 ```
 
 These Active Events combined, creates a nifty shortcut for storing application specific settings and data.

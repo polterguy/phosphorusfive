@@ -12,7 +12,7 @@ create-event:sys42.widgets.datagrid.select-items
     class:selected
   if:x:/@p5.web.widgets.find-like/*/*?value
     sys42.utilities.delete-css-classes:x:/@p5.web.widgets.find-like/*/*?value
-      _class:selected
+      class:selected
 
   /*
    * Making sure all [items] passed in ass argument becomes selected, by adding the "selected" CSS class to them.
@@ -21,7 +21,7 @@ create-event:sys42.widgets.datagrid.select-items
     p5.web.widgets.find-like:x:/../*/_arg?value
       _row:x:/@_dp?value
     sys42.utilities.add-css-classes:x:/@p5.web.widgets.find-like/*/*?value
-      _class:selected
+      class:selected
 
   /*
    * Isolating our "user callback lambda" for clarity.

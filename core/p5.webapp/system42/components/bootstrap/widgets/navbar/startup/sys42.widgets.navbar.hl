@@ -4,18 +4,18 @@
  *
  * The Navbar Widget is "SEO friendly", which means that it will allow spiders to crawl the nodes in your tree, as if they were hyperlinks,
  * while  still remaining the single page app feeling for human users, through Ajax functionality. But only if you explicitly set
- * the [_crawl] paremeter to true. If you do, you can override the default name of the HTTP GET parameter, by supplying it as [_crawl-get-name].
+ * the [crawl] paremeter to true. If you do, you can override the default name of the HTTP GET parameter, by supplying it as [crawl-get-name].
  *
  * Arguments;
  * 
- * [_items]           - Collection of menu items to show.
+ * [items]            - Collection of menu items to show.
  *                      The name of its children nodes is what is displayed to the user, and the value is the "id" of the
- *                      item, used to uniquely identify the item. The id is not necessary, unless you turn on [_crawl].
+ *                      item, used to uniquely identify the item. The id is not necessary, unless you turn on [crawl].
  *                      Optionally you can supply child nodes for each item.
  *                      All items can either have an [.onclick] lambda callback, which is invoked when an item is clicked, or
- *                      its own children [_items] collection, but not both!
- * [_crawl]           - If true, the menu will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
- * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_menu_unroll".
+ *                      its own children [items] collection, but not both!
+ * [crawl]           - If true, the menu will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
+ * [crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_menu_unroll".
  */
 create-event:sys42.widgets.navbar
 
@@ -23,17 +23,17 @@ create-event:sys42.widgets.navbar
    * Applying options for widget, with default values.
    */
   _defaults
-    _crawl-get-name:sys42_widgets_navbar_unroll
-    _crawl:bool:false
+    crawl-get-name:sys42_widgets_navbar_unroll
+    crawl:bool:false
   _options
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
 
 
   /*
    * Making sure caller supplied at the very least one item.
    */
-  if:x:/../*/_options/*/_items/*
+  if:x:/../*/_options/*/items/*
     not
 
     /*
@@ -48,28 +48,28 @@ create-event:sys42.widgets.navbar
   eval-x:x:/+/*/*
   add:x:/../*/return/**/ul/*/widgets
     sys42.widgets.navbar._create-items:x:/../*/_arg?value
-      _items:x:/../*/_options/*/_items
-      _crawl:x:/../*/_options/*/_crawl?value
-      _crawl-get-name:x:/../*/_options/*/_crawl-get-name?value
+      items:x:/../*/_options/*/items
+      crawl:x:/../*/_options/*/crawl?value
+      crawl-get-name:x:/../*/_options/*/crawl-get-name?value
 
 
   /*
    * Checking if caller wants navbar to be crawlable by search engines.
    */
-  if:x:/../*/_options/*/_crawl?value.bool
+  if:x:/../*/_options/*/crawl?value.bool
 
 
     /*
      * Caller wants navbar to be "crawl SEO friendly".
      */
     set:x:/../*/return/*/*/_root-navbar?value
-      src:x:/../*/_options/*/_crawl-get-name?value
+      src:x:/../*/_options/*/crawl-get-name?value
 
 
     /*
      * Checking if the current URL is an "unroll" URL.
      */
-    p5.web.query.get:x:/../*/_options/*/_crawl-get-name?value
+    p5.web.query.get:x:/../*/_options/*/crawl-get-name?value
     if:x:/@p5.web.query.get/*?value
 
 
@@ -147,6 +147,6 @@ create-event:sys42.widgets.navbar
               class:nav navbar-nav
 
               /*
-               *This part will be dynamically populated from your [_items] collection.
+               *This part will be dynamically populated from your [items] collection.
                */
               widgets

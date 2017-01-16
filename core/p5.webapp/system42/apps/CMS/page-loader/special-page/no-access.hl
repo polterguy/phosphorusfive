@@ -110,7 +110,7 @@ else
                             p5.web.reload-location
                           else
                             sys42.windows.info-tip:Sorry, wrong credentials
-                              _class:info-window-error
+                              class:info-window-error
 
   /*
    * Making sure we entirely remove the literal:{content} widget.

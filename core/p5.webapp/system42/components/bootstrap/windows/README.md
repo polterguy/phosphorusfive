@@ -226,7 +226,7 @@ sys42.windows.modal
       // Not a valid email address!
       p5.web.widgets.get-parent:my-email
       sys42.utilities.add-css-classes:x:/-/*/*?value
-        _class:has-error
+        class:has-error
       sys42.windows.info-tip:Not a valid email address!
         _parent:sys42-windows-modal-body-wrapper
         _class:info-window info-window-error

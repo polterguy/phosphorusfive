@@ -96,7 +96,7 @@ create-widget:foo
               class:col-xs-6 prepend-bottom
               widgets
                 sys42.widgets.colorpicker
-                  _label:My color
+                  label:My color
             container
               class:col-xs-12
               widgets

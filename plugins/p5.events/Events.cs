@@ -46,7 +46,7 @@ namespace p5.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-event")]
+        [ActiveEvent (Name = "p5.events.create")]
         [ActiveEvent (Name = "create-event")]
         [ActiveEvent (Name = ".create-event")]
         public static void p5_events_create (ApplicationContext context, ActiveEventArgs e)

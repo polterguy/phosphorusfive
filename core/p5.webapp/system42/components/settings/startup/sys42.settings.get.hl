@@ -2,19 +2,19 @@
 /*
  * Creates the Active Event that returns application specific setting(s).
  *
- * Pass in the name of your app to retrieve setting for as [_app] and setting(s) to retrieve as [_arg].
- * Will return app setting according to which user is currently logged in. If currently logged in user is
- * a "root account", optionally you can retrieve settings for a specific user, by supplying user to retrieve setting
- * for as [_username]
+ * Arguments;
+ *
+ * [app]          - Name of application to which setting belongs.
+ * [username]     - Username to which settings belongs to.
  */
 create-event:sys42.settings.get
 
   /*
    * Sanity check
    */
-  if:x:/../*/_app?value
+  if:x:/../*/app?value
     not
-    or:x:/../*/_app?value
+    or:x:/../*/app?value
       =:
     throw:No application specified!
 
@@ -24,15 +24,15 @@ create-event:sys42.settings.get
   whoami
   if:x:/@whoami/*/role?value
     =:root
-    and:x:/../*/_username?value
+    and:x:/../*/username?value
 
     /*
      * Changing user to retrieve setting for in [select-data] below.
      */
     set:x:/../*/select-data/0?value
-      src:x:/../*/_username?value
+      src:x:/../*/username?value
 
-  else-if:x:/../*/_username?value
+  else-if:x:/../*/username?value
 
     /*
      * Non root account tried to change setting for another user!
@@ -41,7 +41,7 @@ create-event:sys42.settings.get
 
   select-data:x:@"/*/*/sys42.app-settings/*/username/={0}/./*/app-name/""={1}""/./*/""{2}"""
     :x:/@whoami/*/username?value
-    :x:/../*/_app?value
+    :x:/../*/app?value
     :x:/../*/_arg?value
 
   /*

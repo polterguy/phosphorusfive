@@ -9,32 +9,32 @@ create-event:sys42.widgets.navbar._create-items
   /*
    * Checking if we have items, and if not, returning early.
    */
-  if:x:/../*/_items/#/*
+  if:x:/../*/items/#/*
     not
     return
 
   /*
-   * Looping through all [_items].
+   * Looping through all [items].
    */
-  for-each:x:/../*/_items/#/*
+  for-each:x:/../*/items/#/*
 
     /*
      * Checking if this item is nested.
      */
-    if:x:/@_dp/#/*/_items
+    if:x:/@_dp/#/*/items
 
       /*
        * This item has nested children.
        *
-       * Forward evaluating [_items] collection in recursive invocation of "self" inside of [add], to make sure
-       * we recursively add children [_items] of currently iterated [_items] item.
+       * Forward evaluating [items] collection in recursive invocation of "self" inside of [add], to make sure
+       * we recursively add children [items] of currently iterated [items] item.
        */
       eval-x:x:/+/*/*
       add:x:/..if/*/add/[1,2]/*/*/*/widgets/*/ul/*/widgets
         sys42.widgets.navbar._create-items:x:/../*/_arg?value
-          _items:x:/@_dp/#/*/_items
-          _crawl:x:/../*/_crawl?value
-          _crawl-get-name:x:/../*/_crawl-get-name?value
+          items:x:/@_dp/#/*/items
+          crawl:x:/../*/crawl?value
+          crawl-get-name:x:/../*/crawl-get-name?value
 
       /*
        * Setting properties for currently iterated item, and adding item into [return] below.
@@ -42,7 +42,7 @@ create-event:sys42.widgets.navbar._create-items
       eval-x:x:/..if/*/add/[1,2]/*/*/*/widgets/*/a/*/innerValue
 
       /*
-       * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
+       * Adding currently iterated [items] to [return] below, now with the correct [innerValue] and [_item-id] according
        * to caller's request.
        */
       add:x:/../*/return
@@ -91,7 +91,7 @@ create-event:sys42.widgets.navbar._create-items
       /*
        * Checking if caller wanted to have an SEO friendly navbar.
        */
-      if:x:/../*/_crawl?value.bool
+      if:x:/../*/crawl?value.bool
         not
 
         /*
@@ -100,7 +100,7 @@ create-event:sys42.widgets.navbar._create-items
         set:x:/..else/*/add/[1,2]/*/*/*/*/*/oninit
 
       /*
-       * Adding currently iterated [_items] to [return] below, now with the correct [innerValue] and [_item-id] according
+       * Adding currently iterated [items] to [return] below, now with the correct [innerValue] and [_item-id] according
        * to caller's request.
        */
       add:x:/../*/return

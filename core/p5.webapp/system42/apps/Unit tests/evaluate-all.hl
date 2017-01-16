@@ -19,7 +19,7 @@ eval-x:x:/+
 sys42.windows.info-tip:@"{0} unit tests evaluated in {1:s\.fff} seconds"
   :x:/./-4/*?value
   :x:/./-2?value
-  _class:info-window-longer info-window
+  class:info-window-longer info-window
 p5.web.context.get:sys42.unit-test-errors
 if:x:/-/*?value
   p5.web.widgets.property.set:x:/../*/_event?value

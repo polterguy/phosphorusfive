@@ -86,8 +86,8 @@ the _"sys42"_ app. To change your CodeMirror's skin to something darker, you can
 
 ```
 sys42.settings.set:sys42.code-mirror-default-theme
-  _app:sys42
-  _src:paraiso-dark
+  app:sys42
+  src:paraiso-dark
 ```
 
 Refresh your System42/Executor after evaluating the above code, to see the "dark" skin.

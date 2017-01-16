@@ -100,10 +100,10 @@ create-event:sys42.widgets.tab
               p5.web.widgets.find-like:x:/@p5.web.widgets.find-ancestor/*/*?value
                 class:tab-header-active-item
               sys42.utilities.toggle-css-classes:x:/@p5.web.widgets.find-like/*/*?value
-                _class:tab-header-active-item
+                class:tab-header-active-item
               p5.web.widgets.get-parent:x:/../*/_event?value
               sys42.utilities.toggle-css-classes:x:/@p5.web.widgets.get-parent/*/*?value
-                _class:tab-header-active-item
+                class:tab-header-active-item
 
 
     /*

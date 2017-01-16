@@ -22,19 +22,19 @@ p5.web.widgets.create-container:my-widget
       innerValue:Add red
       onclick
         sys42.utilities.add-css-classes:my-widget
-          _class:bg-danger
+          class:bg-danger
     button
       class:btn btn-default
       innerValue:Delete red
       onclick
         sys42.utilities.delete-css-classes:my-widget
-          _class:bg-danger
+          class:bg-danger
     button
       class:btn btn-default
       innerValue:Toggle red
       onclick
         sys42.utilities.toggle-css-classes:my-widget
-          _class:bg-danger
+          class:bg-danger
 ```
 
 Notice, all Active Events can take either a constant, or an expression leading to multiple IDs for existing widgets.

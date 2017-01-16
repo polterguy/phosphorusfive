@@ -430,7 +430,7 @@ create-widget:datagrid-wrapper-5
                     p5.web.widgets.find-ancestor:x:/../*/_event?value
                       _row
                     sys42.utilities.toggle-css-classes:x:/-/*/*?value
-                      _class:selected
+                      class:selected
         return
           items
 

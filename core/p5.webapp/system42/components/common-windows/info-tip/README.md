@@ -16,12 +16,12 @@ it might look like, depending upon the CSS you use to display it.
 Arguments;
 
 * [_arg] - The text or HTML to display.
-* [_class] - CSS class to display your window with. Defaults to "info-window".
-* [_parent] - Which parent to inject your window into. Defaults to "cnt".
+* [class] - CSS class to display your window with. Defaults to "info-window".
+* [parent] - Which parent to inject your window into. Defaults to "cnt".
 
 To display an error text, which is shown for a longer period, you can do something like the following.
 
 ```
 sys42.windows.info-tip:This is your information.
-  _class:info-window info-window-error info-window-longer
+  class:info-window info-window-error info-window-longer
 ```

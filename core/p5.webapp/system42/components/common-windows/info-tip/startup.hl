@@ -5,8 +5,8 @@
  * Arguments;
  *
  * [_arg]            - Message, or epxression leading to message, you wish to display to user.
- * [_class]          - Override the default CSS class. Defaults to "info-window".
- * [_parent]         - Override the default parent widget. Defaults to "content".
+ * [class]           - Override the default CSS class. Defaults to "info-window".
+ * [parent]          - Override the default parent widget. Defaults to "content".
  *
  * You cannot show more than one instance of this window at the time
  */
@@ -19,11 +19,11 @@ create-event:sys42.windows.info-tip
    */
   _defaults
     _arg:You should really have provided some text here as value of invocation ...
-    _class:info-window
-    _parent:cnt
+    class:info-window
+    parent:cnt
   _options
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
 
   /*
    * Making sure we delete any previously created windows
@@ -41,8 +41,8 @@ create-event:sys42.windows.info-tip
    */
   eval-x:x:/+/*|/+/*/*/*
   p5.web.widgets.create-container:info-window
-    parent:x:/../*/_options/*/_parent?value
-    class:x:/../*/_options/*/_class?value
+    parent:x:/../*/_options/*/parent?value
+    class:x:/../*/_options/*/class?value
     widgets
       literal
         innerValue:x:/../*/_options/*/_arg?value

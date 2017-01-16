@@ -25,15 +25,15 @@ p5.web.widgets.create-container:my-navbar
     sys42.widgets.navbar
 
       // Setting the navbar into "SEO"/crawler-friendly mode.
-      _crawl:true
+      crawl:true
 
       // These are the root menu items.
-      _items
+      items
         Files
 
           // Any root item with its own [_items] collection, will
           // have children menu items of its own.
-          _items
+          items
             Open:open
               .onclick
                 sys42.windows.info-tip:You tried to open a file
@@ -54,7 +54,7 @@ p5.web.widgets.create-container:my-navbar
           .onclick
             sys42.windows.info-tip:Edit was clicked
         Windows
-          _items
+          items
             First Window:first-window
               .onclick
                 sys42.windows.info-tip:First window clicked
@@ -101,9 +101,9 @@ sys42.windows.modal
       class:navbar navbar-default
       widgets
         sys42.widgets.navbar
-          _items
+          items
             Files
-              _items
+              items
                 Open:open
                   .onclick
                     sys42.windows.info-tip:You tried to open a file

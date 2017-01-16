@@ -34,7 +34,7 @@ create-widget:cms-ajax-uploader
            * Oops, error. Showing user clues about error, and returning early.
            */
           sys42.windows.info-tip:Sorry, we can only handle one root element, and it must be of type [p5.page].
-            _class:info-window-error info-window info-window-longer
+            class:info-window-error info-window info-window-longer
           return
 
         /*
@@ -145,13 +145,13 @@ create-widget:cms-ajax-uploader
                  * Informing user, and returning early.
                  */
                 sys42.windows.info-tip:That page already exists
-                  _parent:sys42-windows-modal-body-wrapper
-                  _class:info-window info-window-error
+                  parent:sys42-windows-modal-body-wrapper
+                  class:info-window info-window-error
                 p5.web.widgets.find:sys42-windows-modal-body-wrapper
                   _data-field-name:url
                 p5.web.widgets.get-parent:x:/@p5.web.widgets.find/*/*?value
                 sys42.utilities.add-css-classes:x:/@p5.web.widgets.get-parent/*/*?value
-                  _class:has-error
+                  class:has-error
                 return:bool:false
 
               /*

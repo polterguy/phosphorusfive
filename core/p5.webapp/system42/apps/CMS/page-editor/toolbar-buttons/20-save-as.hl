@@ -81,7 +81,7 @@ button
            * Page exists from before, alerting user, and returning false early, to make sure window is not closed.
            */
           sys42.utilities.add-css-classes:new-page-url-wrp
-            _class:has-error
+            class:has-error
           p5.web.send-javascript:@"$('#new-page-url').focus().select();"
           return:bool:false
 

@@ -6,10 +6,10 @@
 
 Set simple string setting value
   sys42.settings.set:foo-bar
-    _app:sys42.unit-tests
-    _src:Foo Bar
+    app:sys42.unit-tests
+    src:Foo Bar
   sys42.settings.get:foo-bar
-    _app:sys42.unit-tests
+    app:sys42.unit-tests
   if:x:/@sys42.settings.get/*/foo-bar?value
     !=:Foo Bar
     throw:Assert error, [sys42.settings.set] misbehaved
@@ -17,12 +17,12 @@ Set simple string setting value
 
 Set graph object setting value
   sys42.settings.set:foo-bar
-    _app:sys42.unit-tests
-    _src
+    app:sys42.unit-tests
+    src
       name:Foo
       value:Bar
   sys42.settings.get:foo-bar
-    _app:sys42.unit-tests
+    app:sys42.unit-tests
   if:x:/@sys42.settings.get/*/foo-bar/*/name?value
     !=:Foo
     or:x:/@sys42.settings.get/*/foo-bar/*/value?value
@@ -33,27 +33,27 @@ Set graph object setting value
 
 Delete simple string setting value
   sys42.settings.set:foo-bar
-    _app:sys42.unit-tests
-    _src:Foo Bar
+    app:sys42.unit-tests
+    src:Foo Bar
   sys42.settings.set:foo-bar
-    _app:sys42.unit-tests
+    app:sys42.unit-tests
   if:x:/@sys42.settings.get/*/foo-bar
     throw:Assert error, [sys42.settings.set] misbehaved
 
 
 Update graph object setting value
   sys42.settings.set:foo-bar
-    _app:sys42.unit-tests
-    _src
+    app:sys42.unit-tests
+    src
       name:Foo
       value:Bar
   sys42.settings.set:foo-bar
-    _app:sys42.unit-tests
-    _src
+    app:sys42.unit-tests
+    src
       name:Foo2
       value:Bar2
   sys42.settings.get:foo-bar
-    _app:sys42.unit-tests
+    app:sys42.unit-tests
   if:x:/@sys42.settings.get
     !=:node:@"sys42.settings.get
   foo-bar
@@ -64,13 +64,13 @@ Update graph object setting value
 
 List settings for app
   sys42.settings.set:foo-bar1
-    _app:sys42.unit-tests-list
-    _src:Foo1
+    app:sys42.unit-tests-list
+    src:Foo1
   sys42.settings.set:foo-bar2
-    _app:sys42.unit-tests-list
-    _src:Foo2
+    app:sys42.unit-tests-list
+    src:Foo2
   sys42.settings.list
-    _app:sys42.unit-tests-list
+    app:sys42.unit-tests-list
   if:x:/@sys42.settings.list
     !=:node:@"sys42.settings.list
   foo-bar1:Foo1
