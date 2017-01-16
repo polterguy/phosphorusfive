@@ -2,7 +2,7 @@
 /*
  * Databinds the specified [_arg] datagrid.
  */
-p5.events.create:sys42.widgets.datagrid.databind
+create-event:sys42.widgets.datagrid.databind
 
   /*
    * Retrieving current page, number of items per page, and query (filter).
@@ -75,18 +75,18 @@ p5.events.create:sys42.widgets.datagrid.databind
       _class:disabled
 
   /*
-   * Multiplying current page number with number of items, and setting [_start] argument
+   * Multiplying current page number with number of items, and setting [start] argument
    * of [sys42.widgets.datagrid._get-items] invocation.
    */
-  set:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value
+  set:x:/../*/sys42.widgets.datagrid._get-items/*/start?value
     *:x:/@p5.web.widgets.property.get/*/*/_current-page?value.int
       _:x:/@p5.web.widgets.property.get/*/*/_page-size?value
 
   /*
-   * Adding number of items to [_start], and setting [_end] argument of [sys42.widgets.datagrid._get-items] invocation.
+   * Adding number of items to [start], and setting [end] argument of [sys42.widgets.datagrid._get-items] invocation.
    */
-  set:x:/../*/sys42.widgets.datagrid._get-items/*/_end?value
-    +:x:/../*/sys42.widgets.datagrid._get-items/*/_start?value.int
+  set:x:/../*/sys42.widgets.datagrid._get-items/*/end?value
+    +:x:/../*/sys42.widgets.datagrid._get-items/*/start?value.int
       _:x:/@p5.web.widgets.property.get/*/*/_page-size?value
 
   /*
@@ -96,21 +96,21 @@ p5.events.create:sys42.widgets.datagrid.databind
     eval-x:x:/+/*/*
     add:x:/../*/sys42.widgets.datagrid._get-items
       src
-        _query:x:/../*/p5.web.widgets.property.get/*/2?value
+        query:x:/../*/p5.web.widgets.property.get/*/2?value
 
   /*
    * Retrieving current page's items.
    */
   sys42.widgets.datagrid._get-items:x:/../*/_arg?value
-    _start
-    _end
+    start
+    end
 
   /*
    * Checking if we're at the end of our dataset.
    * If [.on-get-items] did not return a full page, we're at the end, and there are no more items.
    * Hence, we disable the next button.
    */
-  if:x:/@sys42.widgets.datagrid._get-items/*/_items/*?count
+  if:x:/@sys42.widgets.datagrid._get-items/*/items/*?count
     <:x:/@p5.web.widgets.property.get/*/*/_page-size?value.int
 
     /*
@@ -130,7 +130,7 @@ p5.events.create:sys42.widgets.datagrid.databind
      * Exception is, if datagrid's page is zero, which might mean user deleted last record, or filtered
      * such that no records should show, which might occur after an edit operation, where there was a filter supplied, etc.
      */
-    if:x:/@sys42.widgets.datagrid._get-items/*/_items/*?count
+    if:x:/@sys42.widgets.datagrid._get-items/*/items/*?count
       =:int:0
       and:x:/@p5.web.widgets.property.get/*/*/_current-page?value.int
         !=:int:0
@@ -162,10 +162,10 @@ p5.events.create:sys42.widgets.datagrid.databind
   p5.web.widgets.clear:x:/@p5.web.widgets.find/*/*?value
 
   /*
-   * Applying the [_items] returned above to [_append-items] invocation.
+   * Applying the [items] returned above to [_append-items] invocation.
    */
   add:x:/+
-    src:x:/../*/sys42.widgets.datagrid._get-items/*/_items
+    src:x:/../*/sys42.widgets.datagrid._get-items/*/items
   sys42.widgets.datagrid._append-items:x:/../*/_arg?value
 
   /*

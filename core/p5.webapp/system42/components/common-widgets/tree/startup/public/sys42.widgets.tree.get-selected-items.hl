@@ -7,7 +7,7 @@
  * The event will return an [items] coollection, where the name of the nodes, are the IDs of all
  * items that are currently selected in your tree.
  */
-p5.events.create:sys42.widgets.tree.get-selected-items
+create-event:sys42.widgets.tree.get-selected-items
 
   /*
    * This is the tree caller requested to retrieve selected items in.

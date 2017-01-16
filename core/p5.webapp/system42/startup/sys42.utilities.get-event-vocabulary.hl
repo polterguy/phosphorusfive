@@ -5,7 +5,7 @@
  * Basically reverse engineers one or more existing dynamically created Active Event(s), returning every single Active Event these
  * Active Events are raising internally.
  */
-p5.events.create:sys42.utilities.get-event-vocabulary
+create-event:sys42.utilities.get-event-vocabulary
 
   /*
    * First we retrieve events' entire lambda object(s).

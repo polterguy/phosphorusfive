@@ -1,4 +1,4 @@
-﻿
+
 /*
  * Startup Hyperlambda that is evaluated when server is started.
  *
@@ -10,7 +10,7 @@
 /*
  * Maps up "@BOOTSTRAP" to "/@SYS42-COMPONENTS/bootstrap"
  */
-p5.events.create:p5.io.unroll-path.@BOOTSTRAP
+create-event:p5.io.unroll-path.@BOOTSTRAP
   return:@SYS42-COMPONENTS/bootstrap
 
 
@@ -19,7 +19,7 @@ p5.events.create:p5.io.unroll-path.@BOOTSTRAP
  *
  * Notice, Bootstrap's JavaScript is dependent upon jQuery, hence we make sure jQuery is also included here.
  */
-p5.events.create:sys42.bootstrap.include-javascript
+create-event:sys42.bootstrap.include-javascript
 
   sys42.utilities.include-jquery
   p5.web.include-javascript-file:@BOOTSTRAP/js/bootstrap.min.js
@@ -30,7 +30,7 @@ p5.events.create:sys42.bootstrap.include-javascript
  *
  * Notice, by default, we also include the "bootstrap-theme" CSS file, unless [_theme] is set to false.
  */
-p5.events.create:sys42.bootstrap.include-css
+create-event:sys42.bootstrap.include-css
   p5.web.include-css-file:@BOOTSTRAP/css/bootstrap.min.css
   if:x:/../*/_theme
     not

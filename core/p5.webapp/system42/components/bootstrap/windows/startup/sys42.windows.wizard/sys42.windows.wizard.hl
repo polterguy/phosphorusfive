@@ -24,7 +24,7 @@
  * If user closes modal dialogue, without clicking OK, then the given [.onok] is not evaluated.
  * There can be only one instance of this window at the same time in your page.
  */
-p5.events.create:sys42.windows.wizard
+create-event:sys42.windows.wizard
 
   /*
    * Simply using the [sys42.windows.modal] to create our wizard window.

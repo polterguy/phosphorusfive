@@ -2,19 +2,19 @@
 /*
  * Creates an input type of control, according to cell's type.
  *
- * Expects [_arg] being ID of datagrid, [_column], [_row] and [_hyperlink] being the hyperlink that was actually clicked.
+ * Expects [_arg] being ID of datagrid, [value], [column], [row] and [hyperlink] being the hyperlink that was actually clicked.
  */
-p5.events.create:sys42.widgets.datagrid._edit-cell
+create-event:sys42.widgets.datagrid._edit-cell
 
   /*
    * Figuring our parent of hyperlink, which is "td" cell, such that we can create our textbox as a child widget of that widget.
    */
-  p5.web.widgets.get-parent:x:/../*/_hyperlink?value
+  p5.web.widgets.get-parent:x:/../*/hyperlink?value
 
   /*
    * Figuring out type of textbox to use for editing.
    */
-  p5.web.widgets.property.get:x:/../*/_hyperlink?value
+  p5.web.widgets.property.get:x:/../*/hyperlink?value
     _type
   if:x:/@p5.web.widgets.property.get/*/*?value
 
@@ -34,9 +34,9 @@ p5.events.create:sys42.widgets.datagrid._edit-cell
     type:text
     class:form-control
     parent:x:/@p5.web.widgets.get-parent/*/*?value
-    value:x:/../*/_value?value
-    _column:x:/../*/_column?value
-    _row:x:/../*/_row?value
+    value:x:/../*/value?value
+    _column:x:/../*/column?value
+    _row:x:/../*/row?value
     onkeydown:@"return p5.sys42_widgets_datagrid_onkeydown(event);"
     oninit
 
@@ -102,9 +102,9 @@ p5.events.create:sys42.widgets.datagrid._edit-cell
 
       eval-x:x:/+/*
       sys42.widgets.datagrid._edit-cell-callback:x:/@p5.web.widgets.find-ancestor/*/*?value
-        _value:x:/@p5.web.widgets.property.get/*/*/value?value
-        _column:x:/@p5.web.widgets.property.get/*/*/_column?value
-        _row:x:/@p5.web.widgets.property.get/*/*/_row?value
+        value:x:/@p5.web.widgets.property.get/*/*/value?value
+        column:x:/@p5.web.widgets.property.get/*/*/_column?value
+        row:x:/@p5.web.widgets.property.get/*/*/_row?value
 
       /*
        * Checking if callback accepted new value.

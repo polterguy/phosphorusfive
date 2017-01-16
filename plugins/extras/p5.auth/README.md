@@ -56,7 +56,7 @@ You can also create your own _"path unroll"_ active events, leading to for insta
 Active Event named *[p5.io.unroll-path.@XXX]*, returning for instance _"/my-cool-folder/xxx"_. An example is given below.
 
 ```
-p5.events.create:p5.io.unroll-path.@XXX
+create-event:p5.io.unroll-path.@XXX
   return:/my-cool-folder/xxx
 ```
 
@@ -65,7 +65,7 @@ recursively, meaning that your Active Event returns a user-specific folder. Cons
 the _"public home folder"_.
 
 ```
-p5.events.create:p5.io.unroll-path.@PUBLIC
+create-event:p5.io.unroll-path.@PUBLIC
   return:~/documents/public
 ```
 

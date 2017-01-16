@@ -7,7 +7,7 @@
  * To create your own handler, that handles a specific type of exception, create an Active Event named [p5.error.MyExceptionType],
  * and it will override this guy for all exceptions of your specified type.
  */
-p5.events.create:p5.error.Exception
+create-event:p5.error.Exception
 
   /*
    * Building up some HTML, passing in the exception message and stacktrace.

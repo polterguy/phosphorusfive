@@ -24,7 +24,7 @@ After having evaluated the above Hyperlambda in for instance the CMS/Executor, y
 the following code into a new _"lambda"_ page of System42's CMS.
 
 ```
-p5.web.widgets.create-container:datagrid-wrapper-1
+create-widget:datagrid-wrapper-1
   parent:content
   class:col-xs-12
   widgets
@@ -43,10 +43,10 @@ p5.web.widgets.create-container:datagrid-wrapper-1
           p5.data.select:x:/*/*/sample.csv/[{0},{1}]
             :x:/../*/_start?value
             :x:/../*/_end?value
-        add:x:/../*/return/*/_items
+        add:x:/../*/return/*/items
           src:x:/../**/p5.data.select/*/sample.csv
         return
-          _items
+          items
 
       // Lambda invoked when an item has beeen in-place edited.
       .on-edit-item
@@ -64,11 +64,11 @@ looks like.
 
 ![alt tag](screenshots/ajax-datagrid-example-screenshot.png)
 
-The *[_items]* collection the datagrid expects in your *[.on-get-items]* lambda callback, should look something like this.
+The *[items]* collection the datagrid expects in your *[.on-get-items]* lambda callback, should look something like this.
 
 ```
 return
-  _items
+  items
     item:some-id-1
       name:John Doe
       email:john@doe.com
@@ -87,14 +87,14 @@ child node, to your data, as you return it in your *[.on-get-items]* lambda call
 
 ```
 return
-  _items
+  items
     item:some-id-1
       name:John Doe
-        _edit:bool:false
+        edit:bool:false
       email:john@doe.com
     item:some-id-2
       name:Jane Doe
-        _edit:bool:false
+        edit:bool:false
       email:jane@doe.com
 ```
 
@@ -103,34 +103,34 @@ argument passed in with a value of "false". However, the emails can be edited, u
 that eliminates editing of the first column, but allows editing of all other columns.
 
 ```
-p5.web.widgets.create-container:datagrid-wrapper-2
+create-widget:datagrid-wrapper-2
   parent:content
   class:col-xs-12
   widgets
     sys42.widgets.datagrid
       .on-get-items
-        if:x:/../*/_query?value
+        if:x:/../*/query?value
           p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
-            :x:/../*/_query?value
-            :x:/../*/_start?value
-            :x:/../*/_end?value
+            :x:/../*/query?value
+            :x:/../*/start?value
+            :x:/../*/end?value
         else
           p5.data.select:x:/*/*/sample.csv/[{0},{1}]
-            :x:/../*/_start?value
-            :x:/../*/_end?value
-        add:x:/../*/return/*/_items
+            :x:/../*/start?value
+            :x:/../*/end?value
+        add:x:/../*/return/*/items
           src:x:/../**/p5.data.select/*/sample.csv
 
         // Here we make sure that the zero'th column is not editable.
         add:x:/../*/return/*/*/0
-          src:"_edit:bool:false"
+          src:"edit:bool:false"
         return
-          _items
+          items
       .on-edit-item
         p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
-          :x:/../*/_row?value
-          :x:/../*/_column?value
-          src:x:/../*/_value?value
+          :x:/../*/row?value
+          :x:/../*/column?value
+          src:x:/../*/value?value
         return:bool:true
 ```
 
@@ -140,18 +140,18 @@ values if you wish.
 The *[.on-edit-item]* lambda callback, is invoked when some cell of your datagrid has been successfully edited. This can be done, by
 clicking the cell, typing in a new value, and hitting carriage return. *[.on-edit-item]* will be given three important arguments;
 
-* [_row] - Which is the id of your row
-* [_column] - Which is the name of the column edited
-* [_value] - Which is the new value the user supplied
+* [row] - Which is the id of your row
+* [column] - Which is the name of the column edited
+* [value] - Which is the new value the user supplied
 
 The *[.on-get-items]* lambda callback, is given at least two arguments;
 
-* [_start] - Which is the zeroth index start of the data it wants
-* [_end] - Which is the end of the data it wants
+* [start] - Which is the zeroth index start of the data it wants
+* [end] - Which is the end of the data it wants
 
 The logic of the above two arguments, are as follows; _"from and including start, to but not including end"_.
 
-In addition, your *[.on-get-items]* callback, _might_ get a *[_query]* argument, which is a filter condition, that your dataset
+In addition, your *[.on-get-items]* callback, _might_ get a *[query]* argument, which is a filter condition, that your dataset
 somehow must match. By default, the search textbox, if the user enters a value, will pass this value into your callback.
 
 ## Row selection
@@ -167,7 +167,7 @@ In the example below, we have increased the page size to 5, and turned on row se
 a modal wizard window, allowing the user to edit his items in a modal window instead.
 
 ```
-p5.web.widgets.create-container:datagrid-wrapper-3
+create-widget:datagrid-wrapper-3
   parent:content
   class:col-xs-12
   widgets
@@ -178,7 +178,7 @@ p5.web.widgets.create-container:datagrid-wrapper-3
     sys42.widgets.datagrid:my-datagrid-3
       
       // Number of items to show per page.
-      _page-size:5
+      page-size:5
       
       /*
        * User specific callback lambda, invoked when our datagrid needs
@@ -187,26 +187,26 @@ p5.web.widgets.create-container:datagrid-wrapper-3
        * possibly also [_query], of the grid has been "filtered".
        */
       .on-get-items
-        if:x:/../*/_query?value
+        if:x:/../*/query?value
 
           // We have a query, or filter.
           p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
-            :x:/../*/_query?value
-            :x:/../*/_start?value
-            :x:/../*/_end?value
+            :x:/../*/query?value
+            :x:/../*/start?value
+            :x:/../*/end?value
         else
 
           // No filter or query was supplied.
           p5.data.select:x:/*/*/sample.csv/[{0},{1}]
-            :x:/../*/_start?value
-            :x:/../*/_end?value
+            :x:/../*/start?value
+            :x:/../*/end?value
 
-        // Adding result of above select into [return]/[_items].
-        add:x:/../*/return/*/_items
+        // Adding result of above select into [return]/[items].
+        add:x:/../*/return/*/items
           src:x:/../**/p5.data.select/*/sample.csv
 
         return
-          _items
+          items
 
       /*
        * User provided callback lambda for what happens when an 
@@ -220,9 +220,9 @@ p5.web.widgets.create-container:datagrid-wrapper-3
          * values, and ID, into our wizard window.
          */
         p5.data.select:x:@"/*/*/sample.csv/""=:guid:{0}"""
-          :x:/../*/_items/*?name
+          :x:/../*/items/*?name
         set:x:/../*/sys42.windows.wizard/**/_id?value
-          src:x:/../*/_items/*?name
+          src:x:/../*/items/*?name
         add:x:/+/*/_data
           src:x:/../*/p5.data.select/*/*
 
@@ -245,10 +245,10 @@ p5.web.widgets.create-container:datagrid-wrapper-3
             p5.data.select:x:@"/*/*/sample.csv/""=:guid:{0}"""
               :x:/@_id?value
             sys42.windows.wizard.get-values
-            set:x:/@p5.data.select/*/*?value
-              eval
-                return:x:/@_dn/#/../*/sys42.windows.wizard.get-values/*/{0}?value
-                  :x:/@_dn/#?name
+            for-each:x:/@p5.data.select/*/*
+              set:x:/@_dp/#?value
+                src:x:/@sys42.windows.wizard.get-values/*/{0}?value
+                  :x:/@_dp/#?name
 
             /*
              * Updating data, setting the source for our update operation to the
@@ -276,7 +276,7 @@ your own *[_pager-widgets]* collection, which becomes a *[widget]* collection st
 following.
 
 ```
-p5.web.widgets.create-container:datagrid-wrapper-4
+create-widget:datagrid-wrapper-4
   parent:content
   class:col-xs-12
   widgets
@@ -284,7 +284,7 @@ p5.web.widgets.create-container:datagrid-wrapper-4
     // Creates our datagrid.
     sys42.widgets.datagrid
 
-      _pager-widgets
+      pager-widgets
         a
           href:#
           role:button
@@ -294,26 +294,26 @@ p5.web.widgets.create-container:datagrid-wrapper-4
 
       // Lambda invoked when datagrid needs items.
       .on-get-items
-        if:x:/../*/_query?value
+        if:x:/../*/query?value
           p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
-            :x:/../*/_query?value
-            :x:/../*/_start?value
-            :x:/../*/_end?value
+            :x:/../*/query?value
+            :x:/../*/start?value
+            :x:/../*/end?value
         else
           p5.data.select:x:/*/*/sample.csv/[{0},{1}]
-            :x:/../*/_start?value
-            :x:/../*/_end?value
-        add:x:/../*/return/*/_items
+            :x:/../*/start?value
+            :x:/../*/end?value
+        add:x:/../*/return/*/items
           src:x:/../**/p5.data.select/*/sample.csv
         return
-          _items
+          items
 
       // Lambda invoked when an item has beeen in-place edited.
       .on-edit-item
         p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
-          :x:/../*/_row?value
-          :x:/../*/_column?value
-          src:x:/../*/_value?value
+          :x:/../*/row?value
+          :x:/../*/column?value
+          src:x:/../*/value?value
         return:bool:true
 ```
 
@@ -336,7 +336,7 @@ To create a "template column", you could return something like the following fro
 ```
 .on-get-items
   return
-    _items
+    items
       item:item1
         foo:foo1
         bar:bar1
@@ -365,7 +365,7 @@ template column datagrid, with two template columns. One row allowing you to del
 select your items.
 
 ```
-p5.web.widgets.create-container:datagrid-wrapper-5
+create-widget:datagrid-wrapper-5
   parent:content
   class:col-xs-12
   widgets
@@ -376,7 +376,7 @@ p5.web.widgets.create-container:datagrid-wrapper-5
     sys42.widgets.datagrid:my-datagrid
 
       // If false, then no paging or searching bar at the bottom will be created.
-      _show-pager:false
+      show-pager:false
 
       /*
        * User specific callback lambda, invoked when our datagrid needs
@@ -389,24 +389,24 @@ p5.web.widgets.create-container:datagrid-wrapper-5
 
           // We have a query, or filter.
           p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
-            :x:/../*/_query?value
-            :x:/../*/_start?value
-            :x:/../*/_end?value
+            :x:/../*/query?value
+            :x:/../*/start?value
+            :x:/../*/end?value
         else
 
           // No filter or query was supplied.
           p5.data.select:x:/*/*/sample.csv/[{0},{1}]
-            :x:/../*/_start?value
-            :x:/../*/_end?value
+            :x:/../*/start?value
+            :x:/../*/end?value
 
-        // Adding result of above select into [return]/[_items].
-        add:x:/../*/return/*/_items
+        // Adding result of above select into [return]/[items].
+        add:x:/../*/return/*/items
           src:x:/../**/p5.data.select/*/sample.csv
 
         /*
          * Adding a custom column at the end, allowing for deletion of items.
          */
-        insert-after:x:/../*/return/*/_items/*/0/-
+        insert-after:x:/../*/return/*/items/*/0/-
           src
             delete
               widgets
@@ -432,7 +432,7 @@ p5.web.widgets.create-container:datagrid-wrapper-5
                     sys42.utilities.toggle-css-classes:x:/-/*/*?value
                       _class:selected
         return
-          _items
+          items
 
       /*
        * User provided callback lambda code, for what happens when an
@@ -440,9 +440,9 @@ p5.web.widgets.create-container:datagrid-wrapper-5
        */
       .on-edit-item
         p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
-          :x:/../*/_row?value
-          :x:/../*/_column?value
-          src:x:/../*/_value?value
+          :x:/../*/row?value
+          :x:/../*/column?value
+          src:x:/../*/value?value
         return:bool:true
 
       /*
@@ -481,7 +481,7 @@ This is simply done by return _"false"_ from your *[.on-edit-item]* lambda callb
 if your input is _"error"_, at which point it does not accept your new value.
 
 ```
-p5.web.widgets.create-container:datagrid-wrapper-6
+create-widget:datagrid-wrapper-6
   parent:content
   class:col-xs-12
   widgets
@@ -491,31 +491,31 @@ p5.web.widgets.create-container:datagrid-wrapper-6
 
       // Lambda invoked when datagrid needs items.
       .on-get-items
-        if:x:/../*/_query?value
+        if:x:/../*/query?value
           p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
-            :x:/../*/_query?value
-            :x:/../*/_start?value
-            :x:/../*/_end?value
+            :x:/../*/query?value
+            :x:/../*/start?value
+            :x:/../*/end?value
         else
           p5.data.select:x:/*/*/sample.csv/[{0},{1}]
-            :x:/../*/_start?value
-            :x:/../*/_end?value
-        add:x:/../*/return/*/_items
+            :x:/../*/start?value
+            :x:/../*/end?value
+        add:x:/../*/return/*/items
           src:x:/../**/p5.data.select/*/sample.csv
         return
-          _items
+          items
 
       // Lambda invoked when an item has beeen in-place edited.
       .on-edit-item
 
         // Checking if user types in "error" as new value, and if so, rejecting new value.
-        if:x:/../*/_value?value
+        if:x:/../*/value?value
           =:error
           return:bool:false
         p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
-          :x:/../*/_row?value
-          :x:/../*/_column?value
-          src:x:/../*/_value?value
+          :x:/../*/row?value
+          :x:/../*/column?value
+          src:x:/../*/value?value
         return:bool:true
 ```
 
@@ -530,7 +530,7 @@ your *[.on-get-items]* callback. Below we are for instance using a number type o
 Notice, this requires that the data for your 5th column actually is a number, and not some plain text.
 
 ```
-p5.web.widgets.create-container:datagrid-wrapper-6
+create-widget:datagrid-wrapper-6
   parent:content
   class:col-xs-12
   widgets
@@ -540,33 +540,33 @@ p5.web.widgets.create-container:datagrid-wrapper-6
 
       // Lambda invoked when datagrid needs items.
       .on-get-items
-        if:x:/../*/_query?value
+        if:x:/../*/query?value
           p5.data.select:x:@"/*/*/sample.csv/*/""=:regex:/{0}/i""/./[{1},{2}]"
-            :x:/../*/_query?value
-            :x:/../*/_start?value
-            :x:/../*/_end?value
+            :x:/../*/query?value
+            :x:/../*/start?value
+            :x:/../*/end?value
         else
           p5.data.select:x:/*/*/sample.csv/[{0},{1}]
-            :x:/../*/_start?value
-            :x:/../*/_end?value
-        add:x:/../*/return/*/_items
+            :x:/../*/start?value
+            :x:/../*/end?value
+        add:x:/../*/return/*/items
           src:x:/../**/p5.data.select/*/sample.csv
 
         // Here we make sure that the 5th column in-place editor becomes a number
         // type of textbox.
-        add:x:/../*/return/*/_items/*/5
+        add:x:/../*/return/*/items/*/5
           src
-            _type:number
+            type:number
         return
-          _items
+          items
 
       // Lambda invoked when an item has beeen in-place edited.
       .on-edit-item
 
         p5.data.update:x:@"/*/*/sample.csv/""=:guid:{0}""/*/{1}?value"
-          :x:/../*/_row?value
-          :x:/../*/_column?value
-          src:x:/../*/_value?value
+          :x:/../*/row?value
+          :x:/../*/column?value
+          src:x:/../*/value?value
         return:bool:true
 ```
 

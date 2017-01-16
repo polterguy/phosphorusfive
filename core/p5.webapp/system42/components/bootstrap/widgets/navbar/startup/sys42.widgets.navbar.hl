@@ -17,7 +17,7 @@
  * [_crawl]           - If true, the menu will be rendered in SEO mode, meaning that crawling is enabled, through hyperlinks.
  * [_crawl-get-name]  - Allows you to override the default crawling HTTP GET parameter name. Its default value is "sys42_widgets_menu_unroll".
  */
-p5.events.create:sys42.widgets.navbar
+create-event:sys42.widgets.navbar
 
   /*
    * Applying options for widget, with default values.

@@ -1,8 +1,8 @@
 
 /*
- * Returns the selected items as [_items] from the specified [_arg] datagrid.
+ * Returns the selected items as [items] from the specified [_arg] datagrid.
  */
-p5.events.create:sys42.widgets.datagrid.get-selected-items
+create-event:sys42.widgets.datagrid.get-selected-items
 
   /*
    * Finding all "tr" widgets with the "selected" class.
@@ -17,7 +17,7 @@ p5.events.create:sys42.widgets.datagrid.get-selected-items
   for-each:x:/@p5.web.widgets.find-like/*/*
     p5.web.widgets.property.get:x:/@_dp/#?value
       _row
-    add:x:/../*/return/*/_items
+    add:x:/../*/return/*/items
       src:x:/@p5.web.widgets.property.get/*/*?value
   return
-    _items
+    items

@@ -2,7 +2,7 @@
 /*
  * Creates the event that retrieves all values from a modal wizard window.
  */
-p5.events.create:sys42.windows.wizard.get-values
+create-event:sys42.windows.wizard.get-values
 
   /*
    * Finding all data-fields in modal window.

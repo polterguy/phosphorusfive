@@ -18,7 +18,7 @@
 /*
  * Creates the Active Event that points to our "/system42/" folder.
  */
-p5.events.create:p5.io.unroll-path.@SYS42
+create-event:p5.io.unroll-path.@SYS42
   return:/system42
 
 
@@ -31,7 +31,7 @@ p5.events.create:p5.io.unroll-path.@SYS42
  * File to exeute can be given either as an expression, or a constant. Multiple files can be executed at the same time, 
  * by providing an expression that leads to multiple results.
  */
-p5.events.create:sys42.utilities.execute-lambda-file
+create-event:sys42.utilities.execute-lambda-file
 
   /*
    * Loading up all files given as [_arg] arguments.
@@ -73,7 +73,7 @@ p5.events.create:sys42.utilities.execute-lambda-file
  *
  * Notice, this event will not be able to return anything to caller, that was returned from the files' invocations.
  */
-p5.events.create:sys42.utilities.execute-lambda-folder
+create-event:sys42.utilities.execute-lambda-folder
 
   /*
    * Listing all Hyperlambda files in directories we're given.

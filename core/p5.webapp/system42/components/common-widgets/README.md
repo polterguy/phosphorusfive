@@ -51,7 +51,7 @@ through *[sys42.widgets.datetimepicker]* instead. The above code will resemble s
 Below is an example of how you could create your own extension widget yourself.
 
 ```
-p5.events.create:foo.my-widget
+create-event:foo.my-widget
   return
     container
       class:input-group

@@ -6,7 +6,7 @@
  * modal window on the client will not be transferred. Otherwise, the JavaScript necessary to close the window
  * on the client will be automatically transferred.
  */
-p5.events.create:sys42.windows.modal.cancel
+create-event:sys42.windows.modal.cancel
 
   /*
    * Closing modal dialogue.

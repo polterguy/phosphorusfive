@@ -10,7 +10,7 @@
  *
  * [_keep-auto-ids] - If true, will keep all automatically generated IDs, otherwise all auto IDs will be removed.
  */
-p5.events.create:sys42.utilities.get-widget
+create-event:sys42.utilities.get-widget
 
   /*
    * Used as "position node", to make sure all return values are returned in order of appearance, among other things.

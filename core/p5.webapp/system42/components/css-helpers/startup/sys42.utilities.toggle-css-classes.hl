@@ -4,7 +4,7 @@
  * This Active Event requires one or more CSS class(es) as [_class], and will append the specified CSS class(es) to the widget defined as [_arg],
  * if the class does not already exist on widget, or remove the class from widget if it already exist from before.
  */
-p5.events.create:sys42.utilities.toggle-css-classes
+create-event:sys42.utilities.toggle-css-classes
 
   /*
    * Splitting upon every given CSS class caller wants to toggle.

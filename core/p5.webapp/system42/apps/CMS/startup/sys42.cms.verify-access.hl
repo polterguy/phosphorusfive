@@ -14,7 +14,7 @@
  * Pretty simple logic, but feel free to roll your own!
  */
 
-p5.events.create:sys42.cms.verify-access
+create-event:sys42.cms.verify-access
 
   /*
    * Defaulting return value to "access granted".

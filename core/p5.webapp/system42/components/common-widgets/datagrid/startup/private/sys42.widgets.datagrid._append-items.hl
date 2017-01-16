@@ -1,11 +1,11 @@
 
 /*
- * Expects [_arg] being ID of datagrid, and [_items] being items to append to datagrid.
+ * Expects [_arg] being ID of datagrid, and [items] being items to append to datagrid.
  *
  * Invoked by e.g. [sys42.widgets.datagrid.databind] and [oninit].
  * Creates the actual datagrid table, according to arguments supplied during creation of widget.
  */
-p5.events.create:sys42.widgets.datagrid._append-items
+create-event:sys42.widgets.datagrid._append-items
 
   /*
    * Finds "tbody" widget in datagrid for later references, since we'll need to make sure "tr" widgets are children of "tbody".
@@ -58,7 +58,7 @@ p5.events.create:sys42.widgets.datagrid._append-items
           add:x:/+/*
             src:x:/@p5.web.widgets.property.get/*/*?value
           sys42.widgets.datagrid.select-items:x:/@p5.web.widgets.find-ancestor/*/*?value
-            _items
+            items
 
     /*
      * Making sure we include the necessary JavaScript to select row with carriage return.
@@ -72,17 +72,17 @@ return false;
 }"
 
   /*
-   * Loops through each item in [_items] collection, creating a "tr" widget for each.
+   * Loops through each item in [items] collection, creating a "tr" widget for each.
    */
-  for-each:x:/../*/_items/*
+  for-each:x:/../*/items/*
 
     /*
      * Lambda object for [apply], determining if this is an editable cell, which gets a hyperlink, or a non-editable cell, 
      * resulting in a span.
      */
     _apply-eval
-      if:x:/@_dn/#/*/_edit
-        and:x:/@_dn/#/*/_edit?value.bool
+      if:x:/@_dn/#/*/edit
+        and:x:/@_dn/#/*/edit?value.bool
           =:bool:false
 
         /*
@@ -123,7 +123,7 @@ return false;
             href:#
             innerValue:x:/@_dn/#?value
             _column:x:/@_dn/#?name
-            _type:x:/@_dn/#/*/_type?value
+            _type:x:/@_dn/#/*/type?value
             onclick
 
               /*

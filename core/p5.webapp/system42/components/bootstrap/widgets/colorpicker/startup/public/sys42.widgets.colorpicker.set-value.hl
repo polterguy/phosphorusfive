@@ -3,7 +3,7 @@
  * Creates the Active Event that sets the value of an Ajax ColorPicker.
  * Pass in the ID to the ColorPicker you wish to set the value of as [_arg], and its new value as [_value].
  */
-p5.events.create:sys42.widgets.colorpicker.set-value
+create-event:sys42.widgets.colorpicker.set-value
 
   /*
    * Changing the value of our textbox.

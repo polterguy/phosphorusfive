@@ -6,7 +6,7 @@
  * Expects [_hyperlink] being the ID of the widget (hyperlink) that was actually clicked, in addition to [_arg] being
  * the ID of the datagrid.
  */
-p5.events.create:sys42.widgets.datagrid._cell-clicked
+create-event:sys42.widgets.datagrid._cell-clicked
 
   /*
    * Fetching column name and innerValue.
@@ -29,7 +29,7 @@ p5.events.create:sys42.widgets.datagrid._cell-clicked
    */
   eval-x:x:/+/*
   sys42.widgets.datagrid._edit-cell:x:/../*/_arg?value
-    _hyperlink:x:/../*/_hyperlink?value
-    _column:x:/../*/p5.web.widgets.property.get/[0,1]/*/*/_column?value
-    _value:x:/../*/p5.web.widgets.property.get/[0,1]/*/*/innerValue?value
-    _row:x:/@p5.web.widgets.property.get/*/*?value
+    hyperlink:x:/../*/_hyperlink?value
+    column:x:/../*/p5.web.widgets.property.get/[0,1]/*/*/_column?value
+    value:x:/../*/p5.web.widgets.property.get/[0,1]/*/*/innerValue?value
+    row:x:/@p5.web.widgets.property.get/*/*?value

@@ -319,7 +319,7 @@ can use your Active Event as a "widget type".
 
 ```
 // This Active Event becomes a "custom widget type"
-p5.events.create:foo.bar
+create-event:foo.bar
   return
     literal
       innerValue:Howdy world

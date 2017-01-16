@@ -105,7 +105,7 @@ Set with Active Event source
 
 
 Set with dynamic Active Event source
-  p5.events.create:sys42.tests.set-single-source
+  create-event:sys42.tests.set-single-source
     return:success
   _data
   set:x:/-?value

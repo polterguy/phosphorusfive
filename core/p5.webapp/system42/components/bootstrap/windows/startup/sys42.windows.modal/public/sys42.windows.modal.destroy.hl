@@ -2,7 +2,7 @@
 /*
  * Closes dialogue, without evaluating the [.oncancel] lambda callback supplied during creation of window.
  */
-p5.events.create:sys42.windows.modal.destroy
+create-event:sys42.windows.modal.destroy
 
   /*
    * Turning OFF the hide handler, to avoid an additional Ajax request towards server, which would have evaluated [.oncancel],

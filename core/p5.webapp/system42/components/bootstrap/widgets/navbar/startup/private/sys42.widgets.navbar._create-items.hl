@@ -4,7 +4,7 @@
  *
  * This Active Event creates the Navbar items, for your menu, recursively.
  */
-p5.events.create:sys42.widgets.navbar._create-items
+create-event:sys42.widgets.navbar._create-items
 
   /*
    * Checking if we have items, and if not, returning early.

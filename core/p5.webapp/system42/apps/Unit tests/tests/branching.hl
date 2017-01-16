@@ -982,7 +982,7 @@ Misc, event condition, yields true
 
 
 Misc, dynamic event condition, yields false
-  p5.events.create:sys42.tests.branching-yields-false
+  create-event:sys42.tests.branching-yields-false
     return:bool:false
   if
     sys42.tests.branching-yields-false
@@ -990,7 +990,7 @@ Misc, dynamic event condition, yields false
 
 
 Misc, dynamic event condition, yields true
-  p5.events.create:sys42.tests.branching-yields-true
+  create-event:sys42.tests.branching-yields-true
     return:bool:true
   if
     sys42.tests.branching-yields-true

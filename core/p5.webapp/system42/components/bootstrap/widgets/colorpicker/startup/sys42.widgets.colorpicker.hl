@@ -16,7 +16,7 @@
  * [sys42.widgets.colorpicker.set-value]     - Sets the value of the widget. Expects the ID of the widget as its [_arg], in addition
  *                                             to a [_value] being the new value.
  */
-p5.events.create:sys42.widgets.colorpicker
+create-event:sys42.widgets.colorpicker
 
   /*
    * Applying options for widget, with default values.

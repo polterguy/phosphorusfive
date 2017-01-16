@@ -414,7 +414,7 @@ mind, or even install your apps in a different folder, than what you originally 
 Below is some sample code that creates such a variable Active Event, for then to consume it when creating a file.
 
 ```
-p5.events.create:p5.io.unroll-path.@my-temp
+create-event:p5.io.unroll-path.@my-temp
   return:~/temp
 p5.io.file.save:@my-temp/foo.txt
   src:Foo bar

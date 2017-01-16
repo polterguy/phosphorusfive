@@ -1,4 +1,4 @@
-﻿
+
 /*
  * Creates the Active Event that evaluates a Web Service invocation.
  *
@@ -7,7 +7,7 @@
  * otherwise a GUI will be loaded, to allow the user to play around with the web service endpoint, evaluating Hyperlambda in a CodeMirror instance,
  * according to which Active Events is whitelisted.
  */
-p5.events.create:sys42.utilities.evaluate-web-service-invocation
+create-event:sys42.utilities.evaluate-web-service-invocation
 
   /*
    * Sanity check.

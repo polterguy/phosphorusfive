@@ -26,7 +26,7 @@
  * To understand the legal values for the above arguments, please read the documentation for the Bootstrap DateTimePicker here;
  * https://eonasdan.github.io/bootstrap-datetimepicker/
  */
-p5.events.create:sys42.widgets.datetimepicker
+create-event:sys42.widgets.datetimepicker
 
   /*
    * Applying options for widget, with default values.

@@ -7,10 +7,10 @@
  *
  * Arguments;
  * 
- * [_skin]               - Skin file and class to use. Default value is "default".
- * [_page-size]          - Number of items to display per page in your datagrid. Default value is 10.
- * [_show-pager]         - Allows you to turn off the entire footer part of your datagrid, turning off both paging, and searching.
- * [_pager-widgets]      - Extra widgets, injected between previous and next page buttons.
+ * [skin]                - Skin file and class to use. Default value is "default".
+ * [page-size]           - Number of items to display per page in your datagrid. Default value is 10.
+ * [show-pager]          - Allows you to turn off the entire footer part of your datagrid, turning off both paging, and searching.
+ * [pager-widgets]       - Extra widgets, injected between previous and next page buttons.
  *                         By combining this with your own widgets for accomplishing the same, relying upon the API of the datagrid,
  *                         which is really quite extensive, you can entirely implement your own paging and/or searching logic if you wish.
  * [.on-header-clicked]  - Lambda callback evaluated when a header is clicked in your datagrid.
@@ -20,42 +20,42 @@
  *                         [_event] argument of your header, will be passed into it, allowing you to use [p5.web.widgets.property.get] too figure
  *                         out which column was clicked.
  * [.on-get-items]       - Callback lambda evaluated when the datagrid need more items.
- *                         You must return an [_items] collection here, with one child node,
+ *                         You must return an [items] collection here, with one child node,
  *                         for each of your rows, with either a name or a value being the "ID" of your data record.
  *                         Each child node of your item, becomes a column in the datagrid.
  *                         If you wish, you can turn off editing of specific columns and/or cells, by making
- *                         sure your specific cell item contains an [_edit] child, with the value of "false".
+ *                         sure your specific cell item contains an [edit] child, with the value of "false".
  *                         You can also return "template columns" here, passing in a [widgets] child, being a widgets
  *                         collection, allowing you to inject any Ajax widget you wish, into any cell of your datagrid.
  *                         The [widgets] feature of cells, is only possible to use, if you use the datagrid in "inline editing" mode.
- *                         The [.on-get-items] is given at least two argument; [_start] and [_end], in addition to an optional
- *                         argument [_query], being the "filter/search" criteria for your datagrid.
+ *                         The [.on-get-items] is given at least two argument; [start] and [end], in addition to an optional
+ *                         argument [query], being the "filter/search" criteria for your datagrid.
  * [.on-edit-item]       - Callback lambda evaluated whenever some cell's content has been edited.
- *                         This lambda will be given [_row], [_column] and [_value] as arguments. [_row] being the ID of the
- *                         row that was edited, [_column] being the column name, and [_value] being the new value.
+ *                         This lambda will be given [row], [column] and [value] as arguments. [row] being the ID of the
+ *                         row that was edited, [column] being the column name, and [value] being the new value.
  * [.on-select-items]    - Lambda callback evaluated whenever some row is selected. This argument is mutually exclusive with the
  *                         [.on-edit-item], meaning you must only supply one of these lambda callbacks.
  *                         Your [.on-select-items] callback is invoked whenever one or more rows have been selected in yoru datagrid.
- *                         It will be given an [_items] collection, which contains one or more children nodes, where their names
+ *                         It will be given an [items] collection, which contains one or more children nodes, where their names
  *                         are the ID(s) of the rows that were selected.
  */
-p5.events.create:sys42.widgets.datagrid
+create-event:sys42.widgets.datagrid
 
   /*
    * Applying options for widget, with default values.
    */
   _defaults
-    _skin:default
-    _page-size:int:10
-    _show-pager:true
-    _pager-widgets
+    skin:default
+    page-size:int:10
+    show-pager:true
+    pager-widgets
     .on-header-clicked
     .on-get-items
     .on-edit-item
     .on-select-items
   _options
-  add:x:/../*/_options
-    src:x:@"/../*(/"":regex:/^_/""|/"":regex:/^\\./""|/_defaults/*)(!/_defaults!/_options)/$"
+  add:x:/@_options
+    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
 
 
   /*
@@ -90,10 +90,10 @@ p5.events.create:sys42.widgets.datagrid
 
 
   /*
-   * Adding [_pager-widgets] content in between previous and next pager buttons.
+   * Adding [pager-widgets] content in between previous and next pager buttons.
    */
   insert-after:x:/../*/return/*/container/*/widgets/**/class/=datagrid-pager/./*/widgets/*/div/*/widgets/*/a/[0,1]
-    src:x:/../*/_options/*/_pager-widgets/*
+    src:x:/../*/_options/*/pager-widgets/*
 
 
   /*
@@ -151,8 +151,8 @@ p5.events.create:sys42.widgets.datagrid
   /*
    * Checking if user wants to disable the "pager footer" widget.
    */
-  if:x:/../*/_options/*/_show-pager
-    and:x:/../*/_options/*/_show-pager?value.bool
+  if:x:/../*/_options/*/show-pager
+    and:x:/../*/_options/*/show-pager?value.bool
       =:bool:false
 
     /*
@@ -162,9 +162,9 @@ p5.events.create:sys42.widgets.datagrid
 
 
   /*
-   * Forward evaluating class property, [_end] and [_skin] inside of [oninit], in addition to [_page-size] and [class].
+   * Forward evaluating class property, [end] and [_skin] inside of [oninit], in addition to [_page-size] and [class].
    */
-  eval-x:x:/../*/return/*/container/*(/class|/_page-size|/oninit/*(/_skin|/sys42.widgets.datagrid._get-items/*/_end))
+  eval-x:x:/../*/return/*/container/*(/class|/_page-size|/oninit/*(/_skin|/sys42.widgets.datagrid._get-items/*/end))
 
 
   /*
@@ -181,13 +181,13 @@ p5.events.create:sys42.widgets.datagrid
       /*
        * Size of page. Meaning, number of records to show in datagrid.
        */
-      _page-size:x:/../*/_options/*/_page-size?value
+      _page-size:x:/../*/_options/*/page-size?value
       class:datagrid-widget-{0}
-        :x:/../*/_options/*/_skin?value
+        :x:/../*/_options/*/skin?value
 
 
       /*
-       * [oninit], to fetch the initial items, create our headers, and include our [_skin] stylesheet.
+       * [oninit], to fetch the initial items, create our headers, and include our [skin] stylesheet.
        */
       oninit
 
@@ -195,35 +195,35 @@ p5.events.create:sys42.widgets.datagrid
          * Making sure we include our datagrid specific skin CSS file.
          * [_skin] below is forward evaluated above.
          */
-        _skin:x:/../*/_options/*/_skin?value
+        _skin:x:/../*/_options/*/skin?value
         p5.web.include-css-file:/system42/components/common-widgets/datagrid/media/skins/{0}/{0}.min.css
           :x:/../*/_skin?value
 
         /*
          * Fetching the initial items to display.
-         * [_end] is forward evaluated above.
+         * [end] is forward evaluated above.
          */
         sys42.widgets.datagrid._get-items:x:/../*/_event?value
-          _start:int:0
-          _end:x:/../*/_options/*/_page-size?value.int
+          start:int:0
+          end:x:/../*/_options/*/page-size?value.int
 
         /*
-         * Applying the [_items] returned above to invocation that create table header and main body elements.
+         * Applying the [items] returned above to invocation that create table header and main body elements.
          */
-        add:x:/+/*/_columns
-          src:x:/../*/sys42.widgets.datagrid._get-items/*/_items/0/*?name
+        add:x:/+/*/columns
+          src:x:/../*/sys42.widgets.datagrid._get-items/*/items/0/*?name
 
         /*
          * Notice, this might include [.on-header-clicked] if supplied during creation.
          */
         sys42.widgets.datagrid._create-table-widgets:x:/../*/_event?value
-          _columns
+          columns
 
         /*
-         * Applying the [_items] returned above to databind invocation.
+         * Applying the [items] returned above to databind invocation.
          */
         add:x:/+
-          src:x:/../*/sys42.widgets.datagrid._get-items/*/_items
+          src:x:/../*/sys42.widgets.datagrid._get-items/*/items
         sys42.widgets.datagrid._append-items:x:/../*/_event?value
 
 
@@ -236,7 +236,7 @@ p5.events.create:sys42.widgets.datagrid
         /*
          * Select rows in your datagrid.
          *
-         * Expects [_arg] being ID of datagrid and [_items] being items that are to be selected.
+         * Expects [_arg] being ID of datagrid and [items] being items that are to be selected.
          * The [.lambda] for this event, is created from the [.on-select-items] lambda callback, specified during creation of datagrid.
          */
         sys42.widgets.datagrid._select-items
@@ -257,7 +257,7 @@ p5.events.create:sys42.widgets.datagrid
            * Isolating our "user callback lambda" for clarity.
            */
           add:x:/+
-            src:x:/../*/_items
+            src:x:/../*/items
           .lambda
           eval:x:/@.lambda
 
@@ -265,7 +265,7 @@ p5.events.create:sys42.widgets.datagrid
         /*
          * Invoked when the user has edited a cell's content, and tried to push it to database, by e.g. pressing carriage return.
          *
-         * Expects [_arg] being ID of datagrid, [_column] being name of column, [_row] being id of record, and [_value] being new value.
+         * Expects [_arg] being ID of datagrid, [column] being name of column, [row] being id of record, and [value] being new value.
          * Contains the [.on-edit-item] lambda callback supplied when creating datagrid.
          */
         sys42.widgets.datagrid._edit-cell-callback
@@ -287,7 +287,7 @@ p5.events.create:sys42.widgets.datagrid
            */
           .lambda
           add:x:/+
-            src:x:/../*(/_column|/_row|/_value)
+            src:x:/../*(/column|/row|/value)
           eval:x:/@.lambda
 
           /*
@@ -320,7 +320,7 @@ p5.events.create:sys42.widgets.datagrid
            */
           .lambda
           add:x:/+
-            src:x:/../*(/_start|/_end|/_query)
+            src:x:/../*(/start|/end|/query)
           eval:x:/@.lambda
           add:x:/+
             src:x:/@eval/*
@@ -361,7 +361,7 @@ p5.events.create:sys42.widgets.datagrid
                   _current-page
                 eval-x:x:/+/*
                 sys42.widgets.datagrid.filter:x:/@p5.web.widgets.find-ancestor/*/*?value
-                  _query:x:/@p5.web.widgets.property.get/*/*?value
+                  query:x:/@p5.web.widgets.property.get/*/*?value
 
                 /*
                  * Selecting all text in search textbox, and setting focus to it.

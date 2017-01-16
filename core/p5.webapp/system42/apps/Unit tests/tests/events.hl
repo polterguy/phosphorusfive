@@ -5,7 +5,7 @@
 
 
 Stateful event is stateful
-  p5.events.create:sys42.tests.stateful-event
+  create-event:sys42.tests.stateful-event
     _static:node:"count:int:0"
     set:x:/@_static/#?value
       +:x:/@_static/#?value
@@ -27,7 +27,7 @@ Stateful event is stateful
 
 
 Event can return nodes
-  p5.events.create:sys42.tests.return-nodes
+  create-event:sys42.tests.return-nodes
     return
       foo:bar
   sys42.tests.return-nodes
@@ -38,7 +38,7 @@ Event can return nodes
 
 
 Delete event
-  p5.events.create:sys42.tests.event-2-delete
+  create-event:sys42.tests.event-2-delete
     return:foo
   sys42.tests.event-2-delete
   p5.events.delete:sys42.tests.event-2-delete
@@ -50,10 +50,10 @@ Delete event
 
 
 Overwrite event
-  p5.events.create:sys42.tests.overwrite-event
+  create-event:sys42.tests.overwrite-event
     return:foo1
   sys42.tests.overwrite-event
-  p5.events.create:sys42.tests.overwrite-event
+  create-event:sys42.tests.overwrite-event
     return:foo2
   sys42.tests.overwrite-event
   if:x:/../*/sys42.tests.overwrite-event/[0,1]?value
@@ -66,7 +66,7 @@ Overwrite event
 Create protected event throws 1
   _success:bool:false
   try
-    p5.events.create:.foo
+    create-event:.foo
       foo
   catch
     set:x:/@_success?value
@@ -79,7 +79,7 @@ Create protected event throws 1
 Create protected event throws 2
   _success:bool:false
   try
-    p5.events.create:_foo
+    create-event:_foo
       foo
   catch
     set:x:/@_success?value

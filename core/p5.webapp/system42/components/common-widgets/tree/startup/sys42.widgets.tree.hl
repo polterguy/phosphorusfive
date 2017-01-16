@@ -23,7 +23,7 @@
  *                      See [items] above to understand the collection the tree widget expects.
  * [.on-select]       - Callback lambda to invoke when an item is selected.
  */
-p5.events.create:sys42.widgets.tree
+create-event:sys42.widgets.tree
 
   /*
    * Applying options for widget, with default values.

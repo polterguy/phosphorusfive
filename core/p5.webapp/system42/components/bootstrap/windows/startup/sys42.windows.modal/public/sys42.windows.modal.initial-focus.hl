@@ -2,7 +2,7 @@
 /*
  * Gives initial focus to a specific widget inside of modal window during creation.
  */
-p5.events.create:sys42.windows.modal.initial-focus
+create-event:sys42.windows.modal.initial-focus
 
   /*
    * Here we make sure we give focus to the specified [_arg] widget, such that it is not given focus, before

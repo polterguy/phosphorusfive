@@ -1,9 +1,9 @@
-﻿
+
 /*
  * Creates the Active Event that imports a CSV file.
  * Imports the given [_arg] CSV file, and puts into p5.data database.
  */
-p5.events.create:sys42.csv.import
+create-event:sys42.csv.import
 
   if:x:/../*/_arg?count
     !=:int:1

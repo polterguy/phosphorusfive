@@ -2,7 +2,7 @@
 /*
  * Evaluates [.onok] lambda object passed in during creation of modal window, and closes modal window.
  */
-p5.events.create:sys42.windows.modal.ok
+create-event:sys42.windows.modal.ok
 
   /*
    * Making sure we close window without evaluating [.oncancel].

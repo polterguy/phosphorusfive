@@ -1,8 +1,8 @@
 
 /*
- * Filters specified [_arg] datagrid according to specified [_query].
+ * Filters specified [_arg] datagrid according to specified [query].
  */
-p5.events.create:sys42.widgets.datagrid.filter
+create-event:sys42.widgets.datagrid.filter
 
   /*
    * Making sure we update pager, such that the first page is displayed.
@@ -12,23 +12,23 @@ p5.events.create:sys42.widgets.datagrid.filter
 
   /*
    * Storing query in datagrid root widget, if we are given a query.
-   * Otherwise, we entirely delete [_query] property on widget.
+   * Otherwise, we entirely delete [query] property on widget.
    */
-  if:x:/../*/_query?value
-    and:x:/../*/_query?value
+  if:x:/../*/query?value
+    and:x:/../*/query?value
       !=:
 
     /*
      * We have a query, making sure we store query in datagrid main widget.
      */
     p5.web.widgets.property.set:x:/../*/_arg?value
-      _query:x:/../*/_query?value
+      _query:x:/../*/query?value
 
   else
 
     /*
      * We no not have a query, deleting [_query] property from datagrid, and making sure our [_get-items] 
-     * invocation does not specify any [_query] parameter.
+     * invocation does not specify any [query] parameter.
      */
     p5.web.widgets.property.delete:x:/../*/_arg?value
       _query

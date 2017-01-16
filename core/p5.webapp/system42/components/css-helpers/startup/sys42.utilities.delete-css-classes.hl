@@ -4,7 +4,7 @@
  * This Active Event requires one or more CSS class(es) as [_class], and will remove those CSS class(es) from the widget defined as [_arg],
  * if the class exist on widget.
  */
-p5.events.create:sys42.utilities.delete-css-classes
+create-event:sys42.utilities.delete-css-classes
 
   /*
    * Splitting upon every given CSS class caller wants to delete.

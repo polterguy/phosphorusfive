@@ -319,7 +319,7 @@ Active event returning single constant string
 
 
 Active event returning single constant node
-  p5.events.create:sys42.tests.add.return-node
+  create-event:sys42.tests.add.return-node
     return:node:"foo:bar"
   _data
   add:x:/-
@@ -331,7 +331,7 @@ Active event returning single constant node
 
 
 Active event returning multiple constant nodes
-  p5.events.create:sys42.tests.add.return-nodes
+  create-event:sys42.tests.add.return-nodes
     return
       foo1:bar1
       foo2:bar2
@@ -346,7 +346,7 @@ Active event returning multiple constant nodes
 
 
 Active event returning string that converts into single node
-  p5.events.create:sys42.tests.add.return-string
+  create-event:sys42.tests.add.return-string
     return:"foo:bar"
   _data
   add:x:/-
