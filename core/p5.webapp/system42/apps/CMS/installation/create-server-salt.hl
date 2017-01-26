@@ -13,7 +13,6 @@ p5.web.widgets.create-container:set-server-salt
      */
     literal
       element:h2
-      class:hidden-xs
       innerValue:@"Welcome to System42"
     literal
       element:p

@@ -46,8 +46,8 @@ create-event:sys42.windows.wizard
     add:x:/../*/.lambda/*
       src
         body:<p>Please supply me with some input</p>
-  if:x:/../*/_widgets
-    throw:You cannot supply a [_widgets] collection to [sys42.windows.wizard]. Use [sys42.windows.modal] instead.
+  if:x:/../*/widgets
+    throw:You cannot supply a [widgets] collection to [sys42.windows.wizard]. Use [sys42.windows.modal] instead.
 
   /*
    * Looping through each [data] items, creating an edit widget for each item.
@@ -113,7 +113,7 @@ create-event:sys42.windows.wizard
        * Forward evaluating other arguments.
        */
       eval-x:x:/+/**(/label|/select)/*
-      add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets
+      add:x:/../*/.lambda/*/sys42.windows.modal/*/widgets
         src
           container
             class:form-group
@@ -136,7 +136,7 @@ create-event:sys42.windows.wizard
        * Defaulting to "textbox".
        */
       eval-x:x:/+/**(/label|/input)/*
-      add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets
+      add:x:/../*/.lambda/*/sys42.windows.modal/*/widgets
         src
           container
             class:form-group
@@ -154,25 +154,25 @@ create-event:sys42.windows.wizard
                     _data-field-name:x:/@_dp/#?name
 
   /*
-   * Making sure we set initial focus to the first widget in our [_widgets] collection.
+   * Making sure we set initial focus to the first widget in our [widgets] collection.
    */
-  if:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/*?count
+  if:x:/../*/.lambda/*/sys42.windows.modal/*/widgets/*?count
     >:int:0
 
     /*
-     * There exists a [_widgets] collection in invocation to [sys42.windows.modal].
+     * There exists a [widgets] collection in invocation to [sys42.windows.modal].
      *
      * Making sure we give initial focus to first widget automatically.
      */
-    add:x:/../*/.lambda/*/sys42.windows.modal/*/_widgets/0/*/widgets/0/*/widgets/1
+    add:x:/../*/.lambda/*/sys42.windows.modal/*/widgets/0/*/widgets/0/*/widgets/1
       src
         oninit
           sys42.windows.modal.initial-focus:x:/../*/_event?value
 
   /*
-   * Now we can evaluate our modal window, with a dynamically built [_widgets] collection, created above.
+   * Now we can evaluate our modal window, with a dynamically built [widgets] collection, created above.
    */
   .lambda
     sys42.windows.modal
-      _widgets
+      widgets
   eval:x:/@.lambda

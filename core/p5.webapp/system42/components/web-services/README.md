@@ -23,7 +23,7 @@ invoked.
 
 ```
 sys42.utilities.evaluate-web-service-invocation
-  _whitelist
+  whitelist
     set
     add
     insert-before
@@ -87,7 +87,7 @@ since it strips away both any *[html]* nodes, in addition to any *[lambda]* node
 In the above example, the client is not interested in the actual content of the *[p5.page]* objects, but only their meta information. Hence, returning the
 actual content, would be a waste of bandwidth, both for the client, and the server.
 
-Notice, if you tried to execute an Active Event which is not in the *[_whitelist]* definition of your web service _"page"_, you would raise an exception
+Notice, if you tried to execute an Active Event which is not in the *[whitelist]* definition of your web service _"page"_, you would raise an exception
 on the server's endpoint. Try to evaluate the following code for instance, to see this in action.
 
 ```
@@ -97,7 +97,7 @@ p5.http.post:"http://localhost:1176/ws"
     p5.data.delete:x:/*/*
 ```
 
-The above invocation will be rejected by your web service, simply since its *[_whitelist]* definition does not allow it to execute the *[p5.data.delete]* event.
+The above invocation will be rejected by your web service, simply since its *[whitelist]* definition does not allow it to execute the *[p5.data.delete]* event.
 The return value from the server in such cases would resemble the following.
 
 ```
@@ -123,7 +123,7 @@ as its HTTP *[status]*, instead of _"OK"_, which it returns if invocation is suc
 
 ## Ninja tricks
 
-The above *[_whitelist]*, puts much trust in that your p5.data database exclusively contains things you'd like to share with the entire world. If you wish,
+The above *[whitelist]*, puts much trust in that your p5.data database exclusively contains things you'd like to share with the entire world. If you wish,
 you could create a *[post-condition]* to your *[p5.data.select]* whitelist entry, which restricts the types of objects to select from the database, to whatever 
 you would like to share with the entire world.
 
@@ -132,7 +132,7 @@ and make sure its URL becomes _"ws2"_.
 
 ```
 sys42.utilities.evaluate-web-service-invocation
-  _whitelist
+  whitelist
     set
     add
     insert-before

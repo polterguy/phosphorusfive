@@ -23,7 +23,7 @@ p5.web.widgets.create-container:content
   widgets
     container:guide
       class:col-xs-12
-      style:"margin-top:20%;"
+      style:"margin-top:2em;"
       widgets
 
 

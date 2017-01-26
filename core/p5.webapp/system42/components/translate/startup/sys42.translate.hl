@@ -1,11 +1,14 @@
 
 /*
  * Creates the event that allows caller to translate a piece of text from one language to another.
- * Pass in [_arg] as whatever you want to have translated, and [lang] being the language you wish to have it translated to.
+ *
+ * Pass in [_arg] as whatever you want to have translated, and [dest-lang] being the language you wish to have it translated to.
+ *
  * Optionally pass in [src-lang], for explicitly informing event of what language your source text is in.
  * If no [src-lang] is specified, then "auto" will be assumed.
  *
- * Example of some [lang]s you could use are; "en" English, and "no" for Norwegian.
+ * Example of some [lang]s you could use are; "en" English, and "no" for Norwegian, or "NB-no" for Norwegian Bokmål and "en-US"
+ * for American English.
  */
 create-event:sys42.translate
 
@@ -30,7 +33,7 @@ create-event:sys42.translate
    */
   p5.http.get:"https://translate.googleapis.com/translate_a/single?client=gtx&ie=UTF-8&sl={0}&tl={1}&dt=t&q={2}"
     :x:/../*/src-lang?value
-    :x:/../*/lang?value
+    :x:/../*/dest-lang?value
     :x:/@p5.html.url-encode?value
   split:x:/@p5.http.get/**/content?value.string
     =:@"["
@@ -51,7 +54,8 @@ create-event:sys42.translate
         :x:/@split/0?name
 
   /*
-   * Making sure we explicitly remove the [src-lang], since it might have been dynamically created, to avoid returning temporary nodes.
+   * Making sure we explicitly remove the [src-lang], since it might have been dynamically created, 
+   * to avoid returning temporary nodes.
    */
   set:x:/../*/src-lang
 
