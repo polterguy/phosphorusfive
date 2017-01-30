@@ -121,6 +121,10 @@ different plugins, can be found within the different project folders inside of t
 * [Documentation for the core](/core/) - The Ajax library, the website and the Active Event design pattern implementation.
 * [Documentation for the plugins](/plugins/) - All _"plugins"_, such as the Hyperlambda keywords, creation of Ajax widgets, etc.
 
+There also exists [a book](https://github.com/polterguy/phosphorusfive-dox), which is probably the easiest way to start learning
+P5. This is a relatively *"interactive book"*, containing links to tutorial videos, and probably the easiest way for you to
+start learning P5.
+
 ## About System42
 
 System42 is really just a folder within the _"/core/p5.webapp/"_ folder in Phosphorus Five. It serves 3 purposes. First of all it 
