@@ -79,7 +79,7 @@ button
          * Adding one table row for each item in [_active-events] collection.
          * First our "system events" (events not containing a ".").
          */
-        apply:x:/..try/*/sys42.windows.modal/*/_widgets/*/table/[0,1]/*/widgets/*/tbody/*/widgets
+        apply:x:/..try/*/sys42.windows.modal/*/widgets/*/table/[0,1]/*/widgets/*/tbody/*/widgets
           src:x:/@sort-desc/*(!/~.)
           template
             tr
@@ -92,7 +92,7 @@ button
         /*
          * Then our "extension events" (events containing a ".").
          */
-        apply:x:/..try/*/sys42.windows.modal/*/_widgets/*/table/[1,2]/*/widgets/*/tbody/*/widgets
+        apply:x:/..try/*/sys42.windows.modal/*/widgets/*/table/[1,2]/*/widgets/*/tbody/*/widgets
           src:x:/@sort-desc/*(/~.)
           template
             tr
@@ -105,8 +105,8 @@ button
         /*
          * Then our widgets created by page.
          */
-        apply:x:/..try/*/sys42.windows.modal/*/_widgets/*/table/[2,3]/*/widgets/*/tbody/*/widgets
-          src:x:/@hyper2lambda/**(/p5.web.widgets.create-literal|/p5.web.widgets.create-container|/p5.web.widgets.create-void|/widgets/*|/_widgets/*|/_buttons/*)/$
+        apply:x:/..try/*/sys42.windows.modal/*/widgets/*/table/[2,3]/*/widgets/*/tbody/*/widgets
+          src:x:/@hyper2lambda/**(/p5.web.widgets.create-literal|/p5.web.widgets.create-container|/p5.web.widgets.create-void|/widgets/*|/widgets/*|/_buttons/*)/$
           template
             tr
               widgets
@@ -117,19 +117,19 @@ button
          * Checking of page contains loops.
          */
         if:x:/@_active-events/*(/for-each|/while)
-          add:x:/..try/*/sys42.windows.modal/*/_widgets/*/ul/*/widgets
+          add:x:/..try/*/sys42.windows.modal/*/widgets/*/ul/*/widgets
             src
               li
                 innerValue:{0} loop(s)
                   :x:/@_active-events/*(/for-each|/while)?count
         else
-          add:x:/..try/*/sys42.windows.modal/*/_widgets/*/ul/*/widgets
+          add:x:/..try/*/sys42.windows.modal/*/widgets/*/ul/*/widgets
             src
               li
                 innerValue:Your page does not seem to contain loops
         if:x:/@hyper2lambda/**?count
           >:int:100
-          add:x:/..try/*/sys42.windows.modal/*/_widgets/*/ul/*/widgets
+          add:x:/..try/*/sys42.windows.modal/*/widgets/*/ul/*/widgets
             src
               li
                 innerValue:<mark>Your page is too complex</mark>, and would benefit from becoming an 'app'.
@@ -137,10 +137,10 @@ button
         /*
          * Forward evaluating "li" HTML widgets below, and creating our modal window.
          */
-        eval-x:x:/..try/*/sys42.windows.modal/*/_widgets/*/ul/*/widgets/*/li/*/innerValue
+        eval-x:x:/..try/*/sys42.windows.modal/*/widgets/*/ul/*/widgets/*/li/*/innerValue
         sys42.windows.modal
-          _header:Meta data about your page
-          _widgets
+          header:Meta data about your page
+          widgets
             p
               innerValue:Below is a rough estimate of the complexity of your page
             ul
@@ -158,7 +158,7 @@ button
                     :x:/@_active-event-no?value
                 li
                   innerValue:{0} widgets created
-                    :x:/@hyper2lambda/**(/p5.web.widgets.create-literal|/p5.web.widgets.create-container|/p5.web.widgets.create-void|/widgets/*|/_widgets/*|/_buttons/*)?count
+                    :x:/@hyper2lambda/**(/p5.web.widgets.create-literal|/p5.web.widgets.create-container|/p5.web.widgets.create-void|/widgets/*|/widgets/*|/_buttons/*)?count
                 li
                   innerValue:{0} lambda callbacks
                     :x:@"/@hyper2lambda/**/"":regex:/^\\./""?count"
