@@ -22,6 +22,8 @@ Save your page, and click _"View page"_. If you get a browser notification sayin
 have to change your browser settings for popups being allowed on localhost. If you do not have Visual Studio, P5
 works just as well on Xamarin (Mac OS X), and MonoDevelop (Linux).
 
+Notice, the main, and extensive documentation for Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
+
 ## What is that code ...?
 
 The above code, is called _"Hyperlambda"_, and is simply a key/value/children tree-structure, allowing for you
