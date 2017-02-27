@@ -50,41 +50,46 @@ namespace p5.lambda.keywords.core
             var x = e.Args.Value as Expression;
             if (x != null) {
 
-                // Source is an expression, evaluating it, and returning results back to caller.
-                var match = x.Evaluate (context, e.Args, e.Args);
-                if (match.TypeOfMatch == Match.MatchType.count) {
+                // Making sure we clean up after ourselves.
+                using (new ArgsRemover (e.Args)) {
 
-                    // Simple count expression.
-                    root.Value = match.Count;
+                    // Source is an expression, evaluating it, and returning results back to caller.
+                    var match = x.Evaluate (context, e.Args, e.Args);
+                    if (match.TypeOfMatch == Match.MatchType.count) {
 
-                } else if (match.TypeOfMatch == Match.MatchType.node) {
+                        // Simple count expression.
+                        root.Value = match.Count;
 
-                    // Node values, single or multiple is irrelevant, still need to clone them, and insert them into root.
-                    root.AddRange (match.Select (ix => ix.Node.Clone ()));
+                    } else if (match.TypeOfMatch == Match.MatchType.node) {
 
-                } else if (match.Count == 1) {
+                        // Node values, single or multiple is irrelevant, still need to clone them, and insert them into root.
+                        root.AddRange (match.Select (ix => ix.Node.Clone ()));
 
-                    // Single value, name or value type of value is irrelevant, adding to value anyways.
-                    root.Value = match[0].Value;
+                    } else if (match.Count == 1) {
 
-                } else if (match.TypeOfMatch == Match.MatchType.name) {
+                        // Single value, name or value type of value is irrelevant, adding to value anyways.
+                        root.Value = match [0].Value;
 
-                    // Multiple name values.
-                    root.AddRange (match.Select (ix => new Node (ix.Node.Name)));
+                    } else if (match.TypeOfMatch == Match.MatchType.name) {
 
-                } else {
+                        // Multiple name values.
+                        root.AddRange (match.Select (ix => new Node (ix.Node.Name)));
 
-                    // Multiple value values.
-                    root.AddRange (match.Select (ix => new Node ("", ix.Value)));
+                    } else {
 
+                        // Multiple value values.
+                        root.AddRange (match.Select (ix => new Node ("", ix.Value)));
+
+                    }
                 }
+
             } else if (e.Args.Value != null) {
 
                 // Returning formatted value.
                 root.Value = XUtil.FormatNode (context, e.Args);
             }
 
-            // Adding all children of [return] as result to evaluated rooot node, no need to clone.
+            // Adding all children of [return] as result to evaluated root node, no need to clone.
             root.InsertRange (1, e.Args.Children);
         }
     }

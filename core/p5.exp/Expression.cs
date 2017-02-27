@@ -342,6 +342,15 @@ namespace p5.exp
                     // Right shift token
                     current.AddIterator (new IteratorSiblingsYounger ());
                     break;
+                case "<-":
+
+                    // Sanity check!
+                    if (previousToken != "/")
+                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+
+                    // Right shift token
+                    current.AddIterator (new IteratorReverse ());
+                    break;
                 default:
 
                     // Sanity check!

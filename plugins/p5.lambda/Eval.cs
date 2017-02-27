@@ -35,6 +35,47 @@ namespace p5.lambda
     public static class Eval
     {
         /// <summary>
+        ///     Evaluates a lambda.
+        ///     Creates a copy of the specified lambda block, passsing in any arguments, and returning whatever it returns, if anything.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "eval")]
+        public static void eval (ApplicationContext context, ActiveEventArgs e)
+        {
+            EvalCopy (context, e.Args);
+        }
+
+        /// <summary>
+        ///     Executes a specified lambda block with the specified whitelist.
+        ///     Besides from creating a whitelist, it evaluates the exact same way as [eval].
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "eval-whitelist")]
+        public static void eval_whitelist (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure no existing whitelist has been applied earlier.
+            if (context.Ticket.Whitelist != null)
+                throw new LambdaSecurityException ("Whitelist was previously applied.", e.Args, context);
+
+            // Setting whitelist for context, making sure we deny everything by default, unless an explicit [events] node is specified.
+            context.Ticket.Whitelist = e.Args ["events"]?.UnTie () ?? new Node ();
+
+            // Making sure that whitelist is reset after evaluating its lambda.
+            try {
+
+                // Actual evaluation, which equals [eval] implementation.
+                EvalCopy (context, e.Args);
+
+            } finally {
+
+                // Resetting whitelist.
+                context.Ticket.Whitelist = null;
+            }
+        }
+
+        /// <summary>
         ///     Executes a specified lambda block mutably, meaning it has access to entire tree.
         /// 
         ///     Useful when creating keywords and such, but should very rarely be directly used from Hyperlambda.
@@ -62,51 +103,10 @@ namespace p5.lambda
             }
         }
 
-        /// <summary>
-        ///     Evaluates a lambda.
-        ///     Creates a copy of the specified lambda block, passsing in any arguments, and returning whatever it returns, if anything.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval")]
-        public static void eval (ApplicationContext context, ActiveEventArgs e)
-        {
-            EvaluateMutably (context, e.Args);
-        }
-
-        /// <summary>
-        ///     Executes a specified lambda block with the specified whitelist.
-        ///     Besides from creating a whitelist, it evaluates the exact same way as [eval].
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval-whitelist")]
-        public static void eval_whitelist (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Making sure no existing whitelist has been applied earlier.
-            if (context.Ticket.Whitelist != null)
-                throw new LambdaSecurityException ("Whitelist was previously applied.", e.Args, context);
-
-            // Setting whitelist for context, making sure we deny everything by default, unless an explicit [events] node is specified.
-            context.Ticket.Whitelist = e.Args["events"]?.UnTie () ?? new Node ();
-
-            // Making sure that whitelist is reset after evaluating its lambda.
-            try {
-
-                // Actual evaluation, which equals [eval] implementation.
-                EvaluateMutably (context, e.Args);
-
-            } finally {
-
-                // Resetting whitelist.
-                context.Ticket.Whitelist = null;
-            }
-        }
-
         /*
          * Helper for above two mutably evaluation events.
          */
-        static void EvaluateMutably (ApplicationContext context, Node args)
+        static void EvalCopy (ApplicationContext context, Node args)
         {
             // Checking if we should force evaluation of children nodes, and not evaluate expression/object in main node.
             if (args.Value == null || !args.Name.StartsWithEx ("eval")) {

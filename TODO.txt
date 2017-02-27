@@ -96,3 +96,6 @@ TODO before release
 
 * Minimize "speak.js" file.
 
+* Consider making [return] implicitly evaluate expressions returned as value of [return], to mirror the behavior of [_arg] arguments.
+
+
