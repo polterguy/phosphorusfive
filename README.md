@@ -155,3 +155,8 @@ Phosphorus Five is free and open source software, and licensed under the terms
 of the Gnu Public License, version 3, in addition to that commercially license are available for a fee. Read more about
 our Quid Pro Quo license terms at our website at [Gaiasoul](http://gaiasoul.com).
 
+## Hire me
+
+Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email :)
+
+Thomas Hansen; thomas@gaiasoul.com
