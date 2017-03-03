@@ -589,16 +589,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="common\temp\" />
-    <Folder Include="system42\apps\dsw8\navbar\" />
-    <Folder Include="system42\apps\dsw8\board\keys\" />
-    <Folder Include="system42\apps\dsw8\board\configure-key\plugins\" />
     <Folder Include="system42\components\image-helpers\" />
     <Folder Include="system42\components\image-helpers\startup\" />
     <Folder Include="system42\components\speech\" />
     <Folder Include="system42\components\speech\startup\" />
     <Folder Include="system42\components\speech\media\" />
-    <Folder Include="system42\apps\dsw8\media\empty-keys\" />
-    <Folder Include="system42\apps\dsw8\document\actions\" />
     <Folder Include="system42\components\translate\" />
     <Folder Include="system42\components\translate\startup\" />
   </ItemGroup>
@@ -904,10 +899,7 @@
     <None Include="users\root\temp\README.md" />
     <None Include="common\documents\private\README.md" />
     <None Include="common\documents\public\README.md" />
-    <None Include="system42\apps\dsw8\init\default-boards\README.md" />
-    <None Include="system42\apps\dsw8\startup\README.md" />
     <None Include="system42\components\speech\media\speech.js" />
-    <None Include="system42\apps\dsw8\startup\dsw8.utilities.execute-localized-lambda-file.hl" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
