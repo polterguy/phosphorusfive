@@ -203,7 +203,7 @@ namespace p5.ajax.core
         public void SendObject (string id, object value)
         {
             if (!IsAjaxRequest)
-                throw new ApplicationException ("You cannot return an object to the client unless you're doign so from within an Ajax request.");
+                throw new ApplicationException ("You cannot return an object to the client unless you're doing so from within an Ajax request.");
             _changes [id] = value;
         }
 

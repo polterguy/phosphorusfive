@@ -49,12 +49,12 @@ namespace p5.ajax.core.filters
         {
             // JavaScript files.
             if (Page.JSInclusionsForCurrentRequest.Count() > 0) {
-                Page.SendObject ("__p5_js_objects", Page.JSInclusionsForCurrentRequest);
+                Page.Changes ["__p5_js_objects"] = Page.JSInclusionsForCurrentRequest;
             }
 
             // Stylesheet files.
             if (Page.CSSInclusionsForCurrentRequest.Count() > 0) {
-                Page.SendObject ("__p5_css_files", Page.CSSInclusionsForCurrentRequest);
+                Page.Changes ["__p5_css_files"] = Page.CSSInclusionsForCurrentRequest;
             }
 
             // Returning JSON.
