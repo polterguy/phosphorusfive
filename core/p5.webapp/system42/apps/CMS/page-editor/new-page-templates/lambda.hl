@@ -10,11 +10,16 @@ return
  * Default [lambda] type of page.
  * Edit this page to meet your own needs.
  */
-create-widget:foo
+create-widget
   parent:content
   class:col-xs-12
   widgets
-    literal:bar
-      innerValue:Foo bar!"
+    literal:foo
+      element:button
+      class:btn btn-primary
+      innerValue:Click me!
+      onclick
+        p5.web.widgets.property.set:foo
+          innerValue:Hello world!"
 
 
