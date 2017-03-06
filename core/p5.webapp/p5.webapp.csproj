@@ -682,6 +682,10 @@
       <Project>{C68B8AA9-2F95-4F6A-946F-7A4495B06145}</Project>
       <Name>p5.imaging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.mysql\p5.mysql.csproj">
+      <Project>{5DD389EB-29B9-4965-A2F3-BF62CAAF6CB4}</Project>
+      <Name>p5.mysql</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
