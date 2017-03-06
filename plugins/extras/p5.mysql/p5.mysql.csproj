@@ -38,6 +38,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Select.cs" />
     <Compile Include="Connection.cs" />
+    <Compile Include="NonQuery.cs" />
+    <Compile Include="Scalar.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.exp\p5.exp.csproj">

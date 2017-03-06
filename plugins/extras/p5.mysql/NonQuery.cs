@@ -30,17 +30,18 @@ using MySql.Data.MySqlClient;
 namespace p5.mysql
 {
     /// <summary>
-    ///     Class wrapping [p5.mysql.select].
+    ///     Class wrapping [p5.mysql.insert] and [p5.mysql.update].
     /// </summary>
-    public static class Select
+public static class NonQuery
     {
         /// <summary>
-        ///     Selects data from the given database [p5.mysql.connect] has previously connected to.
+        ///     Inserts or updates data in the given database [p5.mysql.connect] has previously connected to.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.mysql.select")]
-        public static void p5_mysql_select (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.mysql.insert")]
+        [ActiveEvent (Name = "p5.mysql.update")]
+        public static void p5_mysql_insert_update (ApplicationContext context, ActiveEventArgs e)
         {
             // Getting connection, and doing some basic sanity check.
             var connection = Connection.Active (context);
@@ -50,25 +51,13 @@ namespace p5.mysql
             // Retrieving SQL and running query, returning result to caller. Making sure we run basic sanity check.
             var sql = e.Args.Get<string> (context);
             if (string.IsNullOrEmpty (sql))
-                throw new LambdaException ("No SQL or query given to [p5.mysql.select]", e.Args, context);
+                throw new LambdaException ("No SQL or query given to [p5.mysql.insert/update]", e.Args, context);
 
             // Creating command object.
             using (var cmd = new MySqlCommand (sql, connection)) {
 
-                // Creating reader, and iterating as long as we have resulting rows.
-                using (var reader = cmd.ExecuteReader ()) {
-                    while (reader.Read ()) {
-
-                        // Adding row.
-                        var current = e.Args.Add ("row").LastChild;
-
-                        // Looping through all columns in current result row, returning to caller.
-                        for (int ix = 0; ix < reader.FieldCount; ix++) {
-
-                            // Adding currently iterated cell for row.
-                            current.Add (reader.GetName (ix), reader [ix]);
-                        }                    }
-                }
+                // Executing non-query, returning affected records to caller.
+                e.Args.Value = cmd.ExecuteNonQuery ();
             }
         }
     }
