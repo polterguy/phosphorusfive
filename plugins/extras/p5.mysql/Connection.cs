@@ -21,7 +21,6 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System;
 using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
@@ -63,7 +62,7 @@ namespace p5.mysql
                 } finally {
 
                     // Cleaning up ...
-                    connections.RemoveAt (connections.Count - 1);
+                    connections.Remove (connection);
                     connection.Close ();
                 }
             }
@@ -83,15 +82,14 @@ namespace p5.mysql
          */
         private static List<MySqlConnection> Connections (ApplicationContext context)
         {
-            var node = context.RaiseEvent (".p5.web.context.get", new Node (".p5.web.context.get", ".p5.mysql.connections"));
-            if (node.Count == 0) {
-                var connections = new List<MySqlConnection> ();
-                context.RaiseEvent (
-                    ".p5.web.context.set",
-                    new Node (".p5.web.context.set", ".p5.mysql.connections", new Node [] { new Node ("src", connections) }));
-                return connections;
+            // Checking if our connection pool is already registered in context, and if not, making sure we create it.
+            if (!context.HasActiveEvent (".p5.mysql.connections.get")) {
+
+                // Creating a new connection pool for our context, to handle all connections created for context.
+                ConnectionPool pool = new ConnectionPool ();
+                context.RegisterListeningInstance (pool);
             }
-            return node [0].Get<List<MySqlConnection>> (context);
+            return context.RaiseEvent (".p5.mysql.connections.get").Get<List<MySqlConnection>> (context);
         }
 
         /*
@@ -105,7 +103,7 @@ namespace p5.mysql
 
                 // Sanity check, in case expression leads into oblivion, we deny connection.
                 if (args.Value != null)
-                    throw new LambdaException ("That connection string wasn't found, make sure your expressions leads to an actual connection string, if you're using expressions", args, context);
+                    throw new LambdaException ("That connection string wasn't found, make sure your expressions leads to an actual connection string when invoking [p5.mysql.connect], if you're using expressions to reference them", args, context);
 
                 // Checking if we have a "default connection string", which is the first connection string from configuration file.
                 var connectionStrings = ConfigurationManager.ConnectionStrings;
@@ -121,12 +119,12 @@ namespace p5.mysql
 
                 // Retrieving connection string from configuration file, trimming away square brackets.
                 argsValue = argsValue.Substring (1, argsValue.Length - 2);
-                var connectionStringConfigValue = ConfigurationManager.ConnectionStrings [argsValue];
-                if (connectionStringConfigValue == null)
+                var configValue = ConfigurationManager.ConnectionStrings [argsValue];
+                if (configValue == null)
                     throw new LambdaException ("[p5.mysql.connect] couldn't find the specified connection string in your configuration file", args, context);
 
                 // Initializing and opening connection.
-                return connectionStringConfigValue.ConnectionString;
+                return configValue.ConnectionString;
 
             } else {
 

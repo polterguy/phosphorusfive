@@ -61,6 +61,14 @@ namespace p5.core.internals
         }
 
         /*
+         * Returns true if specified Active Event exists.
+         */
+        internal bool HasActiveEvent (string name)
+        {
+            return _events.ContainsKey (name);
+        }
+
+        /*
          * Deletes all event handlers for the given object instance.
          */
         internal void DeleteEventsForInstance (object listenerObject)

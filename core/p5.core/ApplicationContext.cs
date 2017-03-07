@@ -83,6 +83,15 @@ namespace p5.core
         }
 
         /// <summary>
+        ///     Returns true if the specified Active Event is registered.
+        /// </summary>
+        /// <value>True if Active Event is registered in context</value>
+        public bool HasActiveEvent (string name)
+        {
+            return _registeredActiveEvents.HasActiveEvent (name);
+        }
+
+        /// <summary>
         ///     Changes the ticket for the context.
         /// </summary>
         /// <param name="ticket">New ticket</param>
