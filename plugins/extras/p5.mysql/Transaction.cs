@@ -35,8 +35,8 @@ namespace p5.mysql
     /// </summary>
     public class Transaction
     {
-        MySqlTransaction _transaction;
         MySqlConnection _connection;
+        MySqlTransaction _transaction;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:p5.mysql.Transaction"/> class.
@@ -70,7 +70,7 @@ namespace p5.mysql
                 // Cleaning up.
                 context.UnregisterListeningInstance (transaction);
 
-                // Cleaning up, making sure we by default roll back transaction, unless it's already been committed.
+                // Making sure we by default roll back transaction, unless it's already been committed.
                 transaction.Finished ();
             }
         }
@@ -107,7 +107,7 @@ namespace p5.mysql
         {
             // Sanity check.
             if (!context.HasActiveEvent (".p5.mysql.transaction.commit"))
-                throw new LambdaException ("No active MySQL database transactions for [p5.mysql.transaction.rollback]", e.Args, context);
+                throw new LambdaException ("No active MySQL database transactions for [p5.mysql.transaction.commit]", e.Args, context);
 
             // Forwarding invocation to private instance handler.
             context.RaiseEvent (".p5.mysql.transaction.commit", e.Args);
@@ -123,8 +123,8 @@ namespace p5.mysql
         {
             // Since we might have multiple instance listeners when transactions are being nested, we need to determine if the
             // current connection is the one this instance listener was registered with.
-            // Otherwise we cannot intelligently nesting multiple transaction objects, for multiple database connections, without
-            // risking rolling back all of them, when only wanting to roll back one of them.
+            // Otherwise we cannot intelligently nest multiple transaction objects, for multiple database connections, without
+            // risking rolling back all of them, when we only want to roll back one of them.
             if (!IsForCurrent (context, e.Args))
                 return;
 
@@ -149,8 +149,8 @@ namespace p5.mysql
         {
             // Since we might have multiple instance listeners when transactions are being nested, we need to determine if the
             // current connection is the one this instance listener was registered with.
-            // Otherwise we cannot intelligently nesting multiple transaction objects, for multiple database connections, without
-            // risking rolling back all of them, when only wanting to roll back one of them.
+            // Otherwise we cannot intelligently nest multiple transaction objects, for multiple database connections, without
+            // risking committing all of them, when we only want to commit one of them.
             if (!IsForCurrent (context, e.Args))
                 return;
 
