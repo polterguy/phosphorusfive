@@ -41,6 +41,7 @@
     <Compile Include="NonQuery.cs" />
     <Compile Include="Scalar.cs" />
     <Compile Include="ConnectionPool.cs" />
+    <Compile Include="Transaction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.exp\p5.exp.csproj">
