@@ -42,7 +42,7 @@ public static class NonQuery
         public static void p5_mysql_insert_update (ApplicationContext context, ActiveEventArgs e)
         {
             // Getting connection, and doing some basic sanity check.
-            var connection = Connection.Active (context);
+            var connection = Connection.Active (context, e.Args);
             if (connection == null)
                 throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
 

@@ -68,13 +68,39 @@ namespace p5.mysql
             }
         }
 
+        /// <summary>
+        ///     Returns the currently active database for MySQL, if any.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.mysql.database.get")]
+        public static void p5_mysql_database_get (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving active (top most) database, and returning to caller, if any.
+            e.Args.Value = Active (context, e.Args).Database;
+        }
+
+        /// <summary>
+        ///     Sets the currently active database for MySQL, if any.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.mysql.database.set")]
+        public static void p5_mysql_database_set (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Changing active (top most) database.
+            Active (context, e.Args).ChangeDatabase (e.Args.GetExValue<string> (context));
+        }
+
         /*
          * Returns the current (active) connection.
          */
-        internal static MySqlConnection Active (ApplicationContext context)
+        internal static MySqlConnection Active (ApplicationContext context, Node args)
         {
             var connections = Connections (context);
-            return connections.Count > 0 ? connections [connections.Count - 1] : null;
+            if (connections.Count == 0)
+                throw new LambdaException ("No active database, make sure you invoke [p5.mysql.connect]", args, context);
+            return connections [connections.Count - 1];
         }
 
         /*
