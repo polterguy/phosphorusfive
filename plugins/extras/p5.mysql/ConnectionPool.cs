@@ -21,11 +21,8 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
-using System.Configuration;
 using System.Collections.Generic;
-using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
 using MySql.Data.MySqlClient;
 
 namespace p5.mysql
@@ -39,7 +36,7 @@ namespace p5.mysql
         List<MySqlConnection> _connections = new List<MySqlConnection> ();
 
         /// <summary>
-        ///     Returns the active connection.
+        ///     Returns all active connections.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
