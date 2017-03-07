@@ -44,33 +44,28 @@ namespace p5.mysql
         [ActiveEvent (Name = "p5.mysql.connect")]
         public static void p5_mysql_connect (ApplicationContext context, ActiveEventArgs e)
         {
-            // Sanity check.
-            var configConnectionStringInput = e.Args.GetExValue<string> (context);
-            if (string.IsNullOrEmpty (configConnectionStringInput))
-                throw new LambdaException ("No connection string given to [p5.mysql.connect]", e.Args, context);
+            // Creating connection, opening it, and evaluating lambda for [p5.mysql.connect].
+            using (var connection = new MySqlConnection (ConnectionString (context, e.Args))) {
 
-            // Retrieving connection string from configuration file.
-            var connectionStringConfigValue = ConfigurationManager.ConnectionStrings [configConnectionStringInput];
-            if (connectionStringConfigValue == null)
-                throw new LambdaException ("[p5.mysql.connect] couldn't find the specified connection string in your configuration file", e.Args, context);
-
-            // Initializing and opening connection.
-            var connectionString = connectionStringConfigValue.ConnectionString;
-            using (var connection = new MySqlConnection (connectionString)) {
+                // Opening connection.
+                connection.Open ();
 
                 // Storing connection in current context, making sure it's on top of "stack of connections".
                 var connections = Connections (context);
                 connections.Add (connection);
 
-                // Opening connection.
-                connection.Open ();
+                // Evaluating lambda for current connection, making sure we are able to remove connection, even if an exception occurs.
+                try {
 
-                // Evaluating lambda for current connection.
-                context.RaiseEvent ("eval-mutable", e.Args);
+                    // Evaluating lambda for [p5.mysql.connect].
+                    context.RaiseEvent ("eval-mutable", e.Args);
 
-                // Cleaning up ...
-                connection.Close ();
-                connections.RemoveAt (connections.Count - 1);
+                } finally {
+
+                    // Cleaning up ...
+                    connections.RemoveAt (connections.Count - 1);
+                    connection.Close ();
+                }
             }
         }
 
@@ -97,6 +92,47 @@ namespace p5.mysql
                 return connections;
             }
             return node [0].Get<List<MySqlConnection>> (context);
+        }
+
+        /*
+         * Returns connection string from arguments, helper for above.
+         */
+        private static string ConnectionString (ApplicationContext context, Node args)
+        {
+            // Retrieving input connection string, or reference to connection string, or first connection string from configuration file.
+            var argsValue = args.GetExValue<string> (context);
+            if (argsValue == null) {
+
+                // Sanity check, in case expression leads into oblivion, we deny connection.
+                if (args.Value != null)
+                    throw new LambdaException ("That connection string wasn't found, make sure your expressions leads to an actual connection string, if you're using expressions", args, context);
+
+                // Checking if we have a "default connection string", which is the first connection string from configuration file.
+                var connectionStrings = ConfigurationManager.ConnectionStrings;
+                if (connectionStrings.Count == 0)
+                    throw new LambdaException ("No connection string given to [p5.mysql.connect], and no default connection string found in configuration file", args, context);
+
+                // Returning first connection string from configuration file.
+                return connectionStrings [0].ConnectionString;
+            }
+
+            // Checking if this is a reference to a connection string in our configuration file.
+            if (argsValue.StartsWithEx ("[") && argsValue.EndsWithEx ("]")) {
+
+                // Retrieving connection string from configuration file, trimming away square brackets.
+                argsValue = argsValue.Substring (1, argsValue.Length - 2);
+                var connectionStringConfigValue = ConfigurationManager.ConnectionStrings [argsValue];
+                if (connectionStringConfigValue == null)
+                    throw new LambdaException ("[p5.mysql.connect] couldn't find the specified connection string in your configuration file", args, context);
+
+                // Initializing and opening connection.
+                return connectionStringConfigValue.ConnectionString;
+
+            } else {
+
+                // Assuming input was a complete connection string in itself.
+                return argsValue;
+            }
         }
     }
 }
