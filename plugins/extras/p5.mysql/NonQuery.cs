@@ -39,7 +39,8 @@ public static class NonQuery
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.mysql.insert")]
         [ActiveEvent (Name = "p5.mysql.update")]
-        public static void p5_mysql_insert_update (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.mysql.delete")]
+        public static void p5_mysql_insert_update_delete (ApplicationContext context, ActiveEventArgs e)
         {
             // Getting connection, and doing some basic sanity check.
             var connection = Connection.Active (context, e.Args);
