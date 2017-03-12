@@ -194,10 +194,6 @@ namespace p5.webapp.code
                 if (!HandleException (err))
                     throw;
 
-            } finally {
-
-                // Making sure we "unload" page.
-                ApplicationContext.RaiseEvent ("p5.web.unload", new Node ("p5.web.unload"));
             }
         }
 

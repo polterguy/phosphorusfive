@@ -59,6 +59,7 @@ namespace p5.webapp
                     // Invoking the Active Event that actually loads our UI, now with a [_url] node being the URL of the requested page.
                     // Making sure we do it, in such a way, that we can handle any exceptions that occurs.
                     try {
+
                         ApplicationContext.RaiseEvent ("p5.web.load-ui", args);
 
                     } catch (Exception err) {
@@ -67,10 +68,7 @@ namespace p5.webapp
                         // Passing it into PhosphorusPage for handling.
                         if (!HandleException (err))
                             throw;
-                    } finally {
 
-                        // Making sure we "unload" page.
-                        ApplicationContext.RaiseEvent ("p5.web.unload", new Node ("p5.web.unload"));
                     }
 
                     // Making sure base is set for page.
@@ -80,6 +78,14 @@ namespace p5.webapp
                     Page.Header.Controls.Add (baseCtrl);
                 }
             };
+
+            // Making sure we handle "unload", to invoke any unload events.
+            Unload += delegate {
+
+                // Making sure we "unload" page.
+                ApplicationContext.RaiseEvent ("p5.web.unload", new Node ("p5.web.unload"));
+            };
+
             base.OnInit(e);
         }
     }
