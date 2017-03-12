@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 using MySql.Data.MySqlClient;
@@ -43,21 +44,25 @@ public static class NonQuery
         [ActiveEvent (Name = "p5.mysql.execute")]
         public static void p5_mysql_execute (ApplicationContext context, ActiveEventArgs e)
         {
-            // Getting connection, and doing some basic sanity check.
-            var connection = Connection.Active (context, e.Args);
-            if (connection == null)
-                throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
+            // Making sure we clean up after ourselves.
+            using (new ArgsRemover (e.Args, false)) {
 
-            // Retrieving SQL and running query, returning result to caller. Making sure we run basic sanity check.
-            var sql = e.Args.Get<string> (context);
-            if (string.IsNullOrEmpty (sql))
-                throw new LambdaException ("No SQL or query given to [p5.mysql.insert/update]", e.Args, context);
+                // Getting connection, and doing some basic sanity check.
+                var connection = Connection.Active (context, e.Args);
+                if (connection == null)
+                    throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
 
-            // Creating command object.
-            using (var cmd = new MySqlCommand (sql, connection)) {
+                // Retrieving SQL and running query, returning result to caller. Making sure we run basic sanity check.
+                var sql = e.Args.GetExValue<string> (context);
+                if (string.IsNullOrEmpty (sql))
+                    throw new LambdaException ("No SQL or query given to [p5.mysql.insert/update]", e.Args, context);
 
-                // Executing non-query, returning affected records to caller.
-                e.Args.Value = cmd.ExecuteNonQuery ();
+                // Creating command object.
+                using (var cmd = new MySqlCommand (sql, connection)) {
+
+                    // Executing non-query, returning affected records to caller.
+                    e.Args.Value = cmd.ExecuteNonQuery ();
+                }
             }
         }
     }

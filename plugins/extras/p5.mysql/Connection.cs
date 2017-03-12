@@ -43,27 +43,31 @@ namespace p5.mysql
         [ActiveEvent (Name = "p5.mysql.connect")]
         public static void p5_mysql_connect (ApplicationContext context, ActiveEventArgs e)
         {
-            // Creating connection, opening it, and evaluating lambda for [p5.mysql.connect].
-            using (var connection = new MySqlConnection (ConnectionString (context, e.Args))) {
+            // Making sure we clean up after ourselves.
+            using (new ArgsRemover (e.Args, true)) {
 
-                // Opening connection.
-                connection.Open ();
+                // Creating connection, opening it, and evaluating lambda for [p5.mysql.connect].
+                using (var connection = new MySqlConnection (ConnectionString (context, e.Args))) {
 
-                // Storing connection in current context, making sure it's on top of "stack of connections".
-                var connections = Connections (context);
-                connections.Add (connection);
+                    // Opening connection.
+                    connection.Open ();
 
-                // Evaluating lambda for current connection, making sure we are able to remove connection, even if an exception occurs.
-                try {
+                    // Storing connection in current context, making sure it's on top of "stack of connections".
+                    var connections = Connections (context);
+                    connections.Add (connection);
 
-                    // Evaluating lambda for [p5.mysql.connect].
-                    context.RaiseEvent ("eval-mutable", e.Args);
+                    // Evaluating lambda for current connection, making sure we are able to remove connection, even if an exception occurs.
+                    try {
 
-                } finally {
+                        // Evaluating lambda for [p5.mysql.connect].
+                        context.RaiseEvent ("eval-mutable", e.Args);
 
-                    // Cleaning up ...
-                    connections.Remove (connection);
-                    connection.Close ();
+                    } finally {
+
+                        // Cleaning up ...
+                        connections.Remove (connection);
+                        connection.Close ();
+                    }
                 }
             }
         }
@@ -76,15 +80,19 @@ namespace p5.mysql
         [ActiveEvent (Name = "p5.mysql.connect-stay-alive")]
         public static void p5_mysql_connect_stay_alive (ApplicationContext context, ActiveEventArgs e)
         {
-            // Creating connection, opening it, and storing into connections, at the top of the stack of connections.
-            var connection = new MySqlConnection (ConnectionString (context, e.Args));
+            // Making sure we clean up after ourselves.
+            using (new ArgsRemover (e.Args, true)) {
 
-            // Opening connection.
-            connection.Open ();
+                // Creating connection, opening it, and storing into connections, at the top of the stack of connections.
+                var connection = new MySqlConnection (ConnectionString (context, e.Args));
 
-            // Storing connection in current context, making sure it's on top of "stack of connections".
-            var connections = Connections (context);
-            connections.Add (connection);
+                // Opening connection.
+                connection.Open ();
+
+                // Storing connection in current context, making sure it's on top of "stack of connections".
+                var connections = Connections (context);
+                connections.Add (connection);
+            }
         }
 
         /// <summary>
@@ -111,8 +119,12 @@ namespace p5.mysql
         [ActiveEvent (Name = "p5.mysql.database.get")]
         public static void p5_mysql_database_get (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving active (top most) database, and returning to caller, if any.
-            e.Args.Value = Active (context, e.Args).Database;
+            // Making sure we clean up after ourselves.
+            using (new ArgsRemover (e.Args, false)) {
+
+                // Retrieving active (top most) database, and returning to caller, if any.
+                e.Args.Value = Active (context, e.Args).Database;
+            }
         }
 
         /// <summary>

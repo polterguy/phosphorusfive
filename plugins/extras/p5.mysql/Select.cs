@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 using MySql.Data.MySqlClient;
@@ -40,33 +41,37 @@ namespace p5.mysql
         [ActiveEvent (Name = "p5.mysql.select")]
         public static void p5_mysql_select (ApplicationContext context, ActiveEventArgs e)
         {
-            // Getting connection, and doing some basic sanity check.
-            var connection = Connection.Active (context, e.Args);
-            if (connection == null)
-                throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
+            // Making sure we clean up after ourselves.
+            using (new ArgsRemover (e.Args, true)) {
 
-            // Retrieving SQL and running query, returning result to caller. Making sure we run basic sanity check.
-            var sql = e.Args.Get<string> (context);
-            if (string.IsNullOrEmpty (sql))
-                throw new LambdaException ("No SQL or query given to [p5.mysql.select]", e.Args, context);
+                // Getting connection, and doing some basic sanity check.
+                var connection = Connection.Active (context, e.Args);
+                if (connection == null)
+                    throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
 
-            // Creating command object.
-            using (var cmd = new MySqlCommand (sql, connection)) {
+                // Retrieving SQL and running query, returning result to caller. Making sure we run basic sanity check.
+                var sql = e.Args.GetExValue<string> (context);
+                if (string.IsNullOrEmpty (sql))
+                    throw new LambdaException ("No SQL or query given to [p5.mysql.select]", e.Args, context);
 
-                // Creating reader, and iterating as long as we have resulting rows.
-                using (var reader = cmd.ExecuteReader ()) {
-                    while (reader.Read ()) {
+                // Creating command object.
+                using (var cmd = new MySqlCommand (sql, connection)) {
 
-                        // Adding row.
-                        var current = e.Args.Add ("row").LastChild;
+                    // Creating reader, and iterating as long as we have resulting rows.
+                    using (var reader = cmd.ExecuteReader ()) {
+                        while (reader.Read ()) {
 
-                        // Looping through all columns in current result row, returning to caller.
-                        for (int ix = 0; ix < reader.FieldCount; ix++) {
+                            // Adding row.
+                            var current = e.Args.Add ("row").LastChild;
 
-                            // Adding currently iterated cell for row.
-                            current.Add (reader.GetName (ix), reader [ix]);
-                        }                    }
-                }
+                            // Looping through all columns in current result row, returning to caller.
+                            for (int ix = 0; ix < reader.FieldCount; ix++) {
+
+                                // Adding currently iterated cell for row.
+                                current.Add (reader.GetName (ix), reader [ix]);
+                            }
+                        }
+                    }                }
             }
         }
     }
