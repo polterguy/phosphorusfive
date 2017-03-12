@@ -69,6 +69,41 @@ namespace p5.mysql
         }
 
         /// <summary>
+        ///     Connects to a MySQL database, and keeps the connection open until [p5.mysql.disconnect] is invoked.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.mysql.connect-stay-alive")]
+        public static void p5_mysql_connect_stay_alive (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Creating connection, opening it, and storing into connections, at the top of the stack of connections.
+            var connection = new MySqlConnection (ConnectionString (context, e.Args));
+
+            // Opening connection.
+            connection.Open ();
+
+            // Storing connection in current context, making sure it's on top of "stack of connections".
+            var connections = Connections (context);
+            connections.Add (connection);
+        }
+
+        /// <summary>
+        ///     Disconnects a previously opened "stay-alive" connection.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.mysql.disconnect")]
+        public static void p5_mysql_disconnect (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Storing connection in current context, making sure it's on top of "stack of connections".
+            var connections = Connections (context);
+            var last = Active (context, e.Args);
+            connections.Remove (last);
+            last.Close ();
+            last.Dispose ();
+        }
+
+        /// <summary>
         ///     Returns the currently active database for MySQL, if any.
         /// </summary>
         /// <param name="context">Application Context</param>
