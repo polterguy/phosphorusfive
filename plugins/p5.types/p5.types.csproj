@@ -63,6 +63,7 @@
     <Compile Include="types\NodeType.cs" />
     <Compile Include="types\TimeType.cs" />
     <Compile Include="types\RegexType.cs" />
+    <Compile Include="types\UIntType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
