@@ -182,16 +182,22 @@ namespace p5.webapp.code
         [WebMethod]
         protected void common_event_handler (Widget sender, Widget.AjaxEventArgs e)
         {
-            var args = new Node (sender.ID, e.Name);
-
             // Raising event, making sure we can handle any exceptions occuring.
             try {
+
+                var args = new Node (sender.ID, e.Name);
                 ApplicationContext.RaiseEvent (".p5.web.raise-ajax-event", args);
+
             } catch (Exception err) {
 
                 // Notice, we rethrow exception if handler didn't return true.
                 if (!HandleException (err))
                     throw;
+
+            } finally {
+
+                // Making sure we "unload" page.
+                ApplicationContext.RaiseEvent ("p5.web.unload", new Node ("p5.web.unload"));
             }
         }
 

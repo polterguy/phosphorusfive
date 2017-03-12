@@ -41,14 +41,18 @@ namespace p5.webapp
             // In addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx".
             HttpContext.Current.RewritePath ((string) HttpContext.Current.Items [".p5.webapp.original-url"]);
 
-            // Mapping up our Page_Load event for initial loading of web page
+            // Mapping up our Page_Load event for initial loading of web page.
             Load += delegate {
 
-                // Checking if page is not postback
+                // Raising the "load" event, which is done every time page loads.
+                // Useful for initialising things that needs to be initialized upon every page load.
+                ApplicationContext.RaiseEvent ("p5.web.load", new Node ("p5.web.load"));
+
+                // Checking if page is not postback.
                 if (!IsPostBack) {
 
                     // Raising our [p5.web.load-ui] Active Event, creating the node to pass in first,
-                    // where the [_URL] node becomes the name of the form requested
+                    // where the [_URL] node becomes the name of the form requested.
                     var args = new Node("p5.web.load-ui");
                     args.Add(new Node("_url", HttpContext.Current.Items[".p5.webapp.original-url"]));
 
@@ -63,6 +67,10 @@ namespace p5.webapp
                         // Passing it into PhosphorusPage for handling.
                         if (!HandleException (err))
                             throw;
+                    } finally {
+
+                        // Making sure we "unload" page.
+                        ApplicationContext.RaiseEvent ("p5.web.unload", new Node ("p5.web.unload"));
                     }
 
                     // Making sure base is set for page.
