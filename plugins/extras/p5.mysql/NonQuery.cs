@@ -31,7 +31,7 @@ namespace p5.mysql
     /// <summary>
     ///     Class wrapping [p5.mysql.insert] and [p5.mysql.update].
     /// </summary>
-public static class NonQuery
+    public static class NonQuery
     {
         /// <summary>
         ///     Inserts or updates data in the given database [p5.mysql.connect] has previously connected to.
@@ -60,8 +60,11 @@ public static class NonQuery
                 // Creating command object.
                 using (var cmd = new MySqlCommand (sql, connection)) {
 
-                    // Executing non-query, returning affected records to caller.
+                    // Executing non-query, returning affected records to caller, and insert id if relevant.
                     e.Args.Value = cmd.ExecuteNonQuery ();
+
+                    if (e.Name == "p5.mysql.insert")
+                        e.Args.Add ("id", cmd.LastInsertedId);
                 }
             }
         }
