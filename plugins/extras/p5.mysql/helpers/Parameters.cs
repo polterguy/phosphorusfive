@@ -21,36 +21,30 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.Linq;
+using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
 using MySql.Data.MySqlClient;
 
 namespace p5.mysql
 {
     /// <summary>
-    ///     Class wrapping [p5.mysql.scalar].
+    ///     Class helping to avoid SQL injection attacks.
     /// </summary>
-public static class Scalar
+    public static class Parameters
     {
-        /// <summary>
-        ///     Returns the resulting scalar value from specified SQL.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.mysql.scalar")]
-        public static void p5_mysql_scalar (ApplicationContext context, ActiveEventArgs e)
+        /*
+         * Creates a parametrized SQL command object.
+         */
+        internal static MySqlCommand GetSqlCommand (this Node node, ApplicationContext context, MySqlConnection connection)
         {
-            // Getting connection, and doing some basic sanity check.
-            var connection = Connection.Active (context, e.Args);
-            if (connection == null)
-                throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
+            MySqlCommand retVal = new MySqlCommand (node.GetExValue<string> (context, ""), connection);
 
-            // Creating command object.
-            using (var cmd = e.Args.GetExSqlValue (context, connection)) {
-
-                // Executing scalar, returning results to caller.
-                e.Args.Value = cmd.ExecuteScalar ();
+            // Parametrizing SQL Command with all parameters (children nodes, not having "empty names".
+            foreach (var idx in node.Children.Where (ix => ix.Name != "")) {
+                retVal.Parameters.AddWithValue (idx.Name, idx.GetExValue<object> (context, null));
             }
+            return retVal;
         }
     }
 }

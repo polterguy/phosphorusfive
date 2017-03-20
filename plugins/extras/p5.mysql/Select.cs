@@ -49,13 +49,8 @@ namespace p5.mysql
                 if (connection == null)
                     throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
 
-                // Retrieving SQL and running query, returning result to caller. Making sure we run basic sanity check.
-                var sql = e.Args.GetExValue<string> (context);
-                if (string.IsNullOrEmpty (sql))
-                    throw new LambdaException ("No SQL or query given to [p5.mysql.select]", e.Args, context);
-
                 // Creating command object.
-                using (var cmd = new MySqlCommand (sql, connection)) {
+                using (var cmd = e.Args.GetExSqlValue (context, connection)) {
 
                     // Creating reader, and iterating as long as we have resulting rows.
                     using (var reader = cmd.ExecuteReader ()) {
