@@ -43,31 +43,27 @@ namespace p5.mysql
         [ActiveEvent (Name = "p5.mysql.connect")]
         public static void p5_mysql_connect (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up after ourselves.
-            using (new ArgsRemover (e.Args, true)) {
+            // Creating connection, opening it, and evaluating lambda for [p5.mysql.connect].
+            using (var connection = new MySqlConnection (ConnectionString (context, e.Args))) {
 
-                // Creating connection, opening it, and evaluating lambda for [p5.mysql.connect].
-                using (var connection = new MySqlConnection (ConnectionString (context, e.Args))) {
+                // Opening connection.
+                connection.Open ();
 
-                    // Opening connection.
-                    connection.Open ();
+                // Storing connection in current context, making sure it's on top of "stack of connections".
+                var connections = Connections (context);
+                connections.Add (connection);
 
-                    // Storing connection in current context, making sure it's on top of "stack of connections".
-                    var connections = Connections (context);
-                    connections.Add (connection);
+                // Evaluating lambda for current connection, making sure we are able to remove connection, even if an exception occurs.
+                try {
 
-                    // Evaluating lambda for current connection, making sure we are able to remove connection, even if an exception occurs.
-                    try {
+                    // Evaluating lambda for [p5.mysql.connect].
+                    context.RaiseEvent ("eval-mutable", e.Args);
 
-                        // Evaluating lambda for [p5.mysql.connect].
-                        context.RaiseEvent ("eval-mutable", e.Args);
+                } finally {
 
-                    } finally {
-
-                        // Cleaning up ...
-                        connections.Remove (connection);
-                        connection.Close ();
-                    }
+                    // Cleaning up ...
+                    connections.Remove (connection);
+                    connection.Close ();
                 }
             }
         }
