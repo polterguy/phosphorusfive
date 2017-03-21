@@ -24,23 +24,24 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using MimeKit;
-using MailKit.Net.Pop3;
+using p5.exp;
 using p5.core;
 using p5.mail.helpers;
+using MimeKit;
+using MailKit.Net.Pop3;
 
 namespace p5.mail
 {
     /// <summary>
-    ///     Class wrapping the POP3 email features of Phosphorus Five
+    ///     Class wrapping the POP3 email features of Phosphorus Five.
     /// </summary>
     public static class Pop3
     {
-        // Contains all "standard headers", which we handle in special cases, and should not be handled by generic header handler
+        // Contains all "standard headers", which we handle in special cases, and should not be handled by generic header handler.
         private static List<HeaderId> _excludedHeaders;
 
         /*
-         * Static CTOR to initialize _excludedHeaders, containing list of all headers to not handle in generic handler
+         * Static CTOR to initialize _excludedHeaders, containing list of all headers to not handle in generic handler.
          */
         static Pop3 ()
         {
@@ -52,50 +53,53 @@ namespace p5.mail
         }
 
         /// <summary>
-        ///     Retrieves messages from a POP3 server
+        ///     Retrieves messages from a POP3 server.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.pop3.get-emails")]
-        public static void p5_pop3_get_emails (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.pop3.get")]
+        public static void p5_pop3_get (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we remove arguments supplied
+            // Making sure we remove arguments supplied.
             using (new ArgsRemover (e.Args, true)) {
 
-                // Creating our POP3 client
+                // Creating our POP3 client.
                 using (var client = new Pop3Client ()) {
 
-                    // Connecting to POP3 server using helper from Common class
+                    // Connecting to POP3 server using helper from Common class.
                     Common.ConnectServer (context, client, e.Args, "pop3");
 
-                    // Figuring out how many messages to retrieve, defaulting to "5" if not explicitly told something else by caller,
-                    // making sure we never try to retrieve more messages than server actually has
-                    int noMessages = Math.Min (client.Count, e.Args.GetChildValue ("count", context, 5));
+                    // Making sure we're able to post QUIT signal when done, regardless of what happens inside of this code.
+                    try {
 
-                    // Fetching messages from server, but not any more messages than caller requested, or number of available messages
-                    for (int idxMsg = 0; idxMsg < noMessages; idxMsg++) {
+                        // Figuring out how many messages to retrieve, defaulting to "5" if not explicitly told something else by caller,
+                        // making sure we never try to retrieve more messages than server actually has.
+                        int noMessages = Math.Min (client.Count, e.Args.GetExChildValue ("count", context, 5));
 
-                        // Process message returned from POP3 server by building Node structure wrapping message
-                        var msgNode = ProcessMessage (
-                            context, 
-                            e.Args,
-                            client.GetMessage (idxMsg),
-                            e.Args.GetChildValue ("process-envelope", context, true),
-                            e.Args.GetChildValue ("process-body", context, true));
+                        // Fetching messages from server, but not any more messages than caller requested, or number of available messages.
+                        for (int idxMsg = 0; idxMsg < noMessages; idxMsg++) {
 
-                        // Handle message after processing
-                        HandleMessage (context, msgNode, e.Args);
+                            // Process message returned from POP3 server by building Node structure wrapping message.
+                            var msgNode = ProcessMessage (
+                                context,
+                                e.Args,
+                                client.GetMessage (idxMsg));
 
-                        // Checking if we should delete message from server
-                        if (e.Args.GetChildValue ("delete", context, false)) {
+                            // Handle message after processing.
+                            e.Args.Add (msgNode);
 
-                            // Deleting message from server, making sure we wait til deletion is done before continuting execution
-                            client.DeleteMessageAsync (idxMsg).Wait ();
+                            // Checking if we should delete message from server.
+                            if (e.Args.GetExChildValue ("delete", context, false)) {
+
+                                // Deleting message from server.
+                                client.DeleteMessage (idxMsg);
+                            }
                         }
-                    }
+                    } finally {
 
-                    // Disconnecting from server, making sure we send the QUIT signal
-                    client.Disconnect (true);
+                        // Disconnecting from server, making sure we send the QUIT signal.
+                        client.Disconnect (true);
+                    }
                 }
             }
         }
@@ -103,69 +107,52 @@ namespace p5.mail
         #region [ -- Private helper methods -- ]
 
         /*
-         * Helper to process on message retrieved from POP3 server
+         * Helper to process on message retrieved from POP3 server.
          */
         private static Node ProcessMessage (
             ApplicationContext context, 
             Node args,
-            MimeMessage message,
-            bool processEnvelope,
-            bool processBody)
+            MimeMessage message)
         {
-            // Node structure containing all headers, content, and other properties of message
+            // Node structure containing all headers, content, and other properties of message.
             Node msgNode = new Node ("envelope");
 
-            // Checking if caller does NOT want to have message processed in any ways ...
-            if (!processEnvelope) {
+            // Processing message, headers first.
+            ProcessMessageHeaders (context, msgNode, message);
 
-                // Caller does NOT want to have message processed, returning entire message as string
-                msgNode.Add ("raw-envelope", message.ToString ());
-            } else {
-
-                // Processing message, headers first
-                ProcessMessageHeaders (context, msgNode, message);
-
-                // Checking if caller wants to have body processed
-                if (!processBody) {
-
-                    // Caller does NOT want to have content processed, returning raw Body as string
-                    msgNode.Add ("raw-body", message.Body.ToString ());
-                } else {
-
-                    // Then content of message, making sure MimeEntity never leaves this method
-                    msgNode.Value = message.Body;
-                    var oldValue = msgNode.Value;
-                    try {
-                        foreach (var idxNode in args.Children.Where (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys")) {
-                            msgNode.Add (idxNode.Clone ());
-                        }
-                        context.RaiseEvent (".p5.mime.parse-native", msgNode);
-                    } finally {
-                        msgNode.Value = oldValue;
-                        msgNode.RemoveAll (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys");
-                    }
+            // Then content of message, making sure MimeEntity never leaves this method.
+            msgNode.Value = message.Body;
+            try {
+                foreach (var idxNode in args.Children.Where (ix => ix.Name == "attachment-folder" || ix.Name == "decrypt")) {
+                    msgNode.Add (idxNode.Clone ());
                 }
+                context.RaiseEvent (".p5.mime.parse-native", msgNode);
+
+            } finally {
+
+                msgNode.Value = null;
+                msgNode.RemoveAll (ix => ix.Name == "attachment-folder" || ix.Name == "decrypt");
             }
 
-            // Making sure ID of email is value of [envelope] node
+            // Making sure ID of email is value of [envelope] node.
             msgNode.Value = message.MessageId;
 
-            // Return node containing processed message
+            // Return node containing processed message.
             return msgNode;
         }
 
         /*
-         * Adds up all headers into given node
+         * Adds up all headers into given node.
          */
         private static void ProcessMessageHeaders (
             ApplicationContext context, 
             Node msgNode, 
             MimeMessage message)
         {
-            // Subject
+            // Subject.
             msgNode.Add ("Subject", message.Subject);
 
-            // All address fields
+            // All address fields.
             GetAddresses (context, msgNode, message.From, "From");
             GetAddresses (context, msgNode, message.ResentFrom, "Resent-From");
             GetAddresses (context, msgNode, message.Bcc, "Bcc");
@@ -177,7 +164,7 @@ namespace p5.mail
             GetAddresses (context, msgNode, message.To, "To");
             GetAddresses (context, msgNode, message.ResentTo, "Resent-To");
 
-            // Other standard headers
+            // Other standard headers.
             msgNode.Add ("Date", message.Date.DateTime);
 
             if (!string.IsNullOrEmpty (message.ResentMessageId))
@@ -204,14 +191,14 @@ namespace p5.mail
             if (message.Priority != MessagePriority.Normal)
                 msgNode.Add ("Priority", message.Priority.ToString ());
 
-            // Looping through and adding all IDs for messages this message is referencing
+            // Looping through and adding all IDs for messages this message is referencing.
             foreach (var id in message.References) {
 
-                // Adding currently iterated References ID back to caller
+                // Adding currently iterated References ID back to caller.
                 msgNode.FindOrInsert ("References").Add (id);
             }
 
-            // Non-standard headers
+            // Non-standard headers.
             foreach (var idxHeader in message.Headers.Where (ix => _excludedHeaders.IndexOf (ix.Id) == -1)) {
 
                 // Retrieving currently iterated header
@@ -220,7 +207,7 @@ namespace p5.mail
         }
 
         /*
-         * Returns all addresses from list as name node
+         * Returns all addresses from list as name node.
          */
         private static void GetAddresses (
             ApplicationContext context, 
@@ -228,39 +215,11 @@ namespace p5.mail
             InternetAddressList list, 
             string name)
         {
-            // Looping through each address in list
+            // Looping through each address in list.
             foreach (MailboxAddress idxAdr in list) {
 
-                // Appending currently iterated address to args
+                // Appending currently iterated address to args.
                 msgNode.FindOrInsert (name).Add (idxAdr.Name, idxAdr.Address);
-            }
-        }
-
-        /*
-         * Handles message, either by returning node to caller, or invoking lambda [functor], depending upn args structure
-         */
-        private static void HandleMessage (
-            ApplicationContext context, 
-            Node msgNode,
-            Node args)
-        {
-            // Checking what to do with message, either return as [message] node to caller, 
-            // or invoke [functor] with [message] as first child
-            if (args ["functor"] != null) {
-
-                // Caller supplied [functor] object he wish to have evaluated [eval] for every message retrieved
-                Node exe = args ["functor"].Clone ();
-
-                // Making sure we avoid raising the message node as an Active Event
-                exe.Insert (0, new Node ("offset", 1));
-
-                // Adding currently iterated message to [functor] and evaluating using [eval]
-                exe.Insert (1, msgNode);
-                context.RaiseEvent ("eval", exe);
-            } else {
-
-                // Returning node with message to caller
-                args.Add (msgNode);
             }
         }
 

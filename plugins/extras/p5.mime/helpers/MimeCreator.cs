@@ -33,7 +33,7 @@ using MimeKit.Cryptography;
 namespace p5.mime.helpers
 {
     /// <summary>
-    ///     Helper to create a MimeEntity
+    ///     Helper to create a MimeEntity.
     /// </summary>
     public class MimeCreator
     {
@@ -58,30 +58,30 @@ namespace p5.mime.helpers
         }
 
         /// <summary>
-        ///     Creates a MimeEntity according to declaration in EntityNode, and returns to caller
+        ///     Creates a MimeEntity according to declaration in EntityNode, and returns to caller.
         /// </summary>
         public MimeEntity Create ()
         {
-            // Recursively creates a MimeEntity according to given EntityNode
+            // Recursively creates a MimeEntity according to given EntityNode.
             return Create (_entityNode);
         }
 
         /*
-         * Actual implementation of creation of MimeEntity, recursively runs through given node, and creates a MimeEntity accordingly
+         * Actual implementation of creation of MimeEntity, recursively runs through given node, and creates a MimeEntity accordingly.
          */
         private MimeEntity Create (Node entityNode)
         {
-            // Sanity check
+            // Sanity check.
             if (entityNode.Value == null || !(entityNode.Value is string) || string.IsNullOrEmpty (entityNode.Value as string))
                 throw new LambdaException (
                     string.Format ("No media subtype provided for '{0}' to MIME builder", entityNode.Name), 
                     entityNode, 
                     _context);
 
-            // Setting up a return value
+            // Setting up a return value.
             MimeEntity retVal = null;
 
-            // Figuring out which type to create
+            // Figuring out which type to create.
             switch (entityNode.Name) {
                 case "multipart":
                     retVal = CreateMultipart (entityNode);
@@ -103,22 +103,24 @@ namespace p5.mime.helpers
                         _context);
             }
 
-            // Figuring out if entity should be encrypted and/or signed
-            bool shouldSign = entityNode ["signature"] != null;
-            bool shouldEncrypt = entityNode ["encryption"] != null;
+            // Figuring out if entity should be encrypted and/or signed.
+            bool shouldSign = entityNode ["sign"] != null;
+            bool shouldEncrypt = entityNode ["encrypt"] != null;
 
-            // Signing and/or encrypting entity, if we should
+            // Signing and/or encrypting entity, if we should.
             if (shouldSign && !shouldEncrypt) {
 
-                // Only signing entity
+                // Only signing entity.
                 retVal = SignEntity (entityNode, retVal);
+
             } else if (shouldEncrypt && !shouldSign) {
 
-                // Only encrypting entity
+                // Only encrypting entity.
                 retVal = EncryptEntity (entityNode, retVal);
+
             } else if (shouldEncrypt && shouldSign) {
 
-                // Signing and encrypting entity
+                // Signing and encrypting entity.
                 retVal = SignAndEncryptEntity (entityNode, retVal);
             }
 
@@ -145,8 +147,8 @@ namespace p5.mime.helpers
             foreach (var idxChildNode in multipartNode.Children.Where (ix =>
                 ix.Name != "preamble" &&
                 ix.Name != "epilogue" &&
-                ix.Name != "signature" &&
-                ix.Name != "encryption" &&
+                ix.Name != "sign" &&
+                ix.Name != "encrypt" &&
                 ix.Name.ToLower () == ix.Name)) {
 
                 // Adding currently iterated part
@@ -200,22 +202,22 @@ namespace p5.mime.helpers
             Node entityNode,
             MimeEntity entity)
         {
-            // Retrieving signature node to use for signing operation
-            var signatureNode = entityNode ["signature"];
+            // Retrieving signature node to use for signing operation.
+            var signatureNode = entityNode ["sign"];
 
-            // Getting signature email as provided by caller
+            // Getting signature email as provided by caller.
             var signatureAddress = GetSignatureMailboxAddress (signatureNode);
 
-            // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha256
+            // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha256.
             var algo = signatureNode.GetChildValue ("digest-algorithm", _context, DigestAlgorithm.Sha256);
 
-            // Creating our Gnu Privacy Guard context
+            // Creating our Gnu Privacy Guard context.
             using (var ctx = new GnuPrivacyContext ()) {
 
-                // Setting password to retrieve signing certificate from GnuPG context
+                // Setting password to retrieve signing certificate from GnuPG context.
                 ctx.Password = signatureAddress.Item1;
 
-                // Signing content of email and returning to caller
+                // Signing content of email and returning to caller.
                 return MultipartSigned.Create (
                     ctx, 
                     signatureAddress.Item2, 
@@ -232,7 +234,7 @@ namespace p5.mime.helpers
             MimeEntity entity)
         {
             // Retrieving node that declares encryption settings for us
-            var encryptionNode = entityNode ["encryption"];
+            var encryptionNode = entityNode ["encrypt"];
 
             // Retrieving MailboxAddresses to encrypt message for
             var receivers = GetReceiversMailboxAddress (encryptionNode);
@@ -263,8 +265,8 @@ namespace p5.mime.helpers
             MimeEntity entity)
         {
             // Retrieving [signature] and [encryption] nodes
-            var signatureNode = entityNode ["signature"];
-            var encryptionNode = entityNode ["encryption"];
+            var signatureNode = entityNode ["sign"];
+            var encryptionNode = entityNode ["encrypt"];
 
             // Getting signature email as provided by caller
             var signatureAddress = GetSignatureMailboxAddress (signatureNode);

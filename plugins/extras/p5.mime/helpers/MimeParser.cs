@@ -58,7 +58,7 @@ namespace p5.mime.helpers
             string attachmentFolder)
         {
             // Retrieving passwords from args
-            if (args ["decryption-keys"] != null) {
+            if (args ["decrypt"] != null) {
 
                 // Caller supplied explicit decryption keys, making sure we add them up as keys to use for decrypting MIME entities
                 AddExplicitDecryptionKeys (context, args);
@@ -87,7 +87,7 @@ namespace p5.mime.helpers
             // Caller supplied decryption keys, enumerating them, and storing to list of key, making sure we DETACH them
             // from args, such that they don't leave method in case of exception
             _passwords = new List<GnuPrivacyContext.KeyPasswordMapper> ();
-            var keys = args ["decryption-keys"].UnTie ();
+            var keys = args ["decrypt"].UnTie ();
 
             // Looping through each decryption key specified by caller
             foreach (var idxKey in keys.Children) {
@@ -95,10 +95,12 @@ namespace p5.mime.helpers
 
                     // Email lookup
                     _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (new MailboxAddress ("", idxKey.Get<string> (context)), idxKey.GetChildValue<string> ("password", context)));
+
                 } else if (idxKey.Name == "fingerprint") {
 
                     // Fingerprint lookup
                     _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (new SecureMailboxAddress ("", "foo@bar.com", idxKey.Get<string> (context)), idxKey.GetChildValue<string> ("password", context)));
+
                 } else {
 
                     // Oops ...

@@ -21,13 +21,14 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using p5.exp;
 using p5.core;
 using MailKit;
 
 namespace p5.mail.helpers
 {
     /// <summary>
-    ///     Common helper class for email features of Phosphorus Five
+    ///     Common helper class for mail features of Phosphorus Five
     /// </summary>
     internal static class Common
     {
@@ -54,22 +55,22 @@ namespace p5.mail.helpers
             Node args,
             string serverType)
         {
-            // Retrieving server settings, defaulting to those found in web.config if not explicitly overridden
+            // Retrieving server settings, defaulting to those found in web.config, if not explicitly overridden.
             string server = 
-                args.GetChildValue<string> ("server", context) ??
+                args.GetExChildValue<string> ("server", context) ??
                 context.RaiseEvent (
                     ".p5.config.get",
-                    new Node ("", string.Format ("p5.{0}.server", serverType))) [0].Get<string> (context);
+                    new Node (".p5.config.get", string.Format ("p5.{0}.server", serverType))) [0].Get<string> (context);
             int port = args["port"] != null ? 
-                args.GetChildValue<int> ("port", context) :
+                args.GetExChildValue<int> ("port", context) :
                 context.RaiseEvent (
                     ".p5.config.get",
-                    new Node ("", string.Format ("p5.{0}.port", serverType)))[0].Get<int> (context);
+                    new Node (".p5.config.get", string.Format ("p5.{0}.port", serverType)))[0].Get<int> (context);
             bool useSsl = args["ssl"] != null ? 
-                args.GetChildValue<bool> ("ssl", context) :
+                args.GetExChildValue<bool> ("ssl", context) :
                 context.RaiseEvent (
                     ".p5.config.get",
-                    new Node ("", string.Format ("p5.{0}.use-ssl", serverType)))[0].Get<bool> (context);
+                    new Node (".p5.config.get", string.Format ("p5.{0}.use-ssl", serverType)))[0].Get<bool> (context);
 
             // Connecting client to server
             client.Connect (
@@ -88,17 +89,18 @@ namespace p5.mail.helpers
 
                 // Notice, this logic allows caller to supply null or empty password, in case specified server does 
                 // not require authorisation to send emails, in which case, client.Authenticate below will never be invoked!
-                username = args.GetChildValue ("username", context, "");
-                password = args.GetChildValue ("password", context, "");
+                username = args.GetExChildValue ("username", context, "");
+                password = args.GetExChildValue ("password", context, "");
+
             } else {
 
                 // Retrieving default username/password from web.config
                 username = context.RaiseEvent (
                     ".p5.config.get", 
-                    new Node ("", string.Format ("p5.{0}.username", serverType))) [0].Get<string> (context);
+                    new Node (".p5.config.get", string.Format ("p5.{0}.username", serverType))) [0].Get<string> (context);
                 password = context.RaiseEvent (
                     ".p5.config.get",
-                    new Node ("", string.Format (".p5.{0}.password", serverType))) [0].Get<string> (context);
+                    new Node (".p5.config.get", string.Format (".p5.{0}.password", serverType))) [0].Get<string> (context);
             }
 
             if (!string.IsNullOrEmpty (username)) {

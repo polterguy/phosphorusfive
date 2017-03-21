@@ -31,12 +31,12 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 namespace p5.mime.helpers
 {
     /// <summary>
-    ///     Gnu Privacy Guard context for encrypting and decrypting Mime messages using PGP
+    ///     Gnu Privacy Guard context for encrypting and decrypting Mime messages using PGP.
     /// </summary>
     public class GnuPrivacyContext : GnuPGContext
     {
         /// <summary>
-        ///     Key password mapper, for complex operations, where you might have multiple keys used to decrypt same message
+        ///     Key password mapper, for complex operations, where you might have multiple keys used to decrypt same message.
         /// </summary>
         public class KeyPasswordMapper
         {
@@ -63,7 +63,7 @@ namespace p5.mime.helpers
         }
 
         /// <summary>
-        ///     Gets or sets the password to retrieve a private key from GnuPG
+        ///     Gets or sets the password to retrieve a private key from GnuPG.
         /// </summary>
         /// <value>The password necessary to retrieve key</value>
         public string Password {
@@ -72,7 +72,7 @@ namespace p5.mime.helpers
         }
 
         /// <summary>
-        ///     Gets the last used UserId from SecretKey this instance tried to retrieve password for
+        ///     Gets the last used UserId from SecretKey this instance tried to retrieve password for.
         /// </summary>
         /// <value>The UserId of the PrivateKey this instance last requested password on behalf of</value>
         public string LastUsedUserId {
@@ -81,7 +81,7 @@ namespace p5.mime.helpers
         }
 
         /// <summary>
-        ///     Gets or sets multiple passwords, for complex operations, where you need several keys to decrypt message
+        ///     Gets or sets multiple passwords, for complex operations, where you need several keys to decrypt message.
         /// </summary>
         /// <value>The passwords.</value>
         public List<KeyPasswordMapper> Passwords {
@@ -90,7 +90,7 @@ namespace p5.mime.helpers
         }
 
         /// <summary>
-        ///     Saves the secret key ring bundle
+        ///     Saves the secret key ring bundle.
         /// </summary>
         public void SaveSecretKeyRingBundle (PgpSecretKeyRingBundle bundle)
         {
@@ -99,7 +99,7 @@ namespace p5.mime.helpers
         }
 
         /// <summary>
-        ///     Saves the public key ring bundle
+        ///     Saves the public key ring bundle.
         /// </summary>
         public void SavePublicKeyRingBundle (PgpPublicKeyRingBundle bundle)
         {
@@ -108,7 +108,7 @@ namespace p5.mime.helpers
         }
 
         /// <summary>
-        ///     Gets the password for the specified key, used as sink by MimeKit to decrypt private key
+        ///     Gets the password for the specified key, used as sink by MimeKit to decrypt private key.
         /// </summary>
         /// <returns>The password for the requested key</returns>
         /// <param name="key">The key to retrieve the password for</param>
@@ -121,43 +121,46 @@ namespace p5.mime.helpers
             LastUsedUserId = LastUsedUserId.Substring (0, LastUsedUserId.IndexOf (">"));
             if (Passwords != null) {
 
-                // Multiple passwords, need to figure out which to use to release private key
+                // Multiple passwords, need to figure out which to use to release private key.
                 return FromEmailMappedPasswords (key);
+
             } else {
 
-                // Simple password
+                // Simple password.
                 return Password;
             }
         }
 
         /*
-         * Returns the password from an email address or a fingerprint supplied
+         * Returns the password from an email address or a fingerprint supplied.
          */
         private string FromEmailMappedPasswords (PgpSecretKey key)
         {
-            // Looping through all MailboxAddresses we've got
+            // Looping through all MailboxAddresses we've got.
             foreach (var idxMailbox in Passwords) {
 
-                // Checking if we have the password for this key in our list
+                // Checking if we have the password for this key in our list.
                 if (idxMailbox.Mailbox is SecureMailboxAddress) {
 
-                    // Using fingerprint
+                    // Using fingerprint.
                     if ((idxMailbox.Mailbox as SecureMailboxAddress).Fingerprint == BitConverter.ToString (key.PublicKey.GetFingerprint ()).Replace ("-", ""))
                         return idxMailbox.Password;
+
                 } else {
 
-                    // Using UserIds
+                    // Using UserIds.
                     foreach (string idxUserId in key.UserIds) {
+
                         if (idxUserId.IndexOf (idxMailbox.Mailbox.Address) != -1) {
 
-                            // Returning associated password for key
+                            // Returning associated password for key.
                             return idxMailbox.Password;
                         }
                     }
                 }
             }
 
-            // Throwing exception since we found no password for requested key, showing user the first UserId object from Secret Key
+            // Throwing exception since we found no password for requested key, showing user the first UserId object from Secret Key.
             throw new SecurityException (string.Format("No password supplied for GnuPG private key '{0}'", LastUsedUserId));
         }
     }

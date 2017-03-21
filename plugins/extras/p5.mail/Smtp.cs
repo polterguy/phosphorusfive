@@ -34,42 +34,43 @@ using MailKit.Net.Smtp;
 namespace p5.mail
 {
     /// <summary>
-    ///     Class wrapping the SMTP email features of Phosphorus Five
+    ///     Class wrapping the SMTP email features of Phosphorus Five.
     /// </summary>
     public static class Smtp
     {
         /// <summary>
-        ///     Sends emails
+        ///     Sends emails.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.smtp.send-email")]
-        public static void p5_smtp_send_email (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.smtp.send")]
+        public static void p5_smtp_send (ApplicationContext context, ActiveEventArgs e)
         {
-            // Basic syntax checking
+            // Basic syntax checking.
             if (e.Args.Children.Count (ix => ix.Name == "envelope") == 0)
                 throw new LambdaException (
                     "No [envelope] nodes found",
                     e.Args,
                     context);
 
-            // Making sure we remove arguments supplied
+            // Making sure we remove arguments supplied.
             using (new ArgsRemover (e.Args, true)) {
 
-                // Creating our SMTP client
+                // Creating our SMTP client.
                 using (var client = new SmtpClient ()) {
 
-                    // Connecting to SMTP server
+                    // Connecting to SMTP server.
                     Common.ConnectServer (context, client, e.Args, "smtp");
 
-                    // Making sure we're able to post QUIT signal when done, regardless of what happens inside of this code
+                    // Making sure we're able to post QUIT signal when done, regardless of what happens inside of this code.
                     try {
 
-                        // Loops through all [envelopes], and creates and sends as email message over given client
+                        // Loops through all [envelopes], and creates and sends as email message over given client.
                         SendMessages (context, e.Args, client);
+
                     } finally {
 
-                        // Disconnecting client, making sure we send QUIT signal
+                        // Disconnecting client, making sure we send QUIT signal.
                         client.Disconnect (true);
                     }
                 }
@@ -79,28 +80,29 @@ namespace p5.mail
         #region [ -- Private helper methods -- ]
 
         /*
-         * Sends all [envelopes] found
+         * Sends all [envelopes] found.
          */
         private static void SendMessages (
             ApplicationContext context, 
             Node args, 
             SmtpClient client)
         {
-            // Looping through each message caller wants to send
+            // Looping through each message caller wants to send.
             foreach (var idxEnvelopeNode in args.Children.Where (ix => ix.Name == "envelope")) {
 
-                // Keeping track of any streams created during creation process of message
+                // Keeping track of any streams created during creation process of message.
                 var streams = new List<Stream> ();
                 try {
 
-                    // Creating and sending our currently iterated message
+                    // Creating and sending our currently iterated message.
                     client.Send (CreateMessage (context, idxEnvelopeNode, streams));
+
                 } finally {
 
-                    // Disposing all streams created during process of creating message
+                    // Disposing all streams created during process of creating message.
                     foreach (var idxStream in streams) {
 
-                        // Closing and disposing currently iterated stream
+                        // Closing and disposing currently iterated stream.
                         idxStream.Close ();
                         idxStream.Dispose ();
                     }
@@ -109,20 +111,20 @@ namespace p5.mail
         }
 
         /*
-         * Creates and decorates MimeMessage according to given args
+         * Creates and decorates MimeMessage according to given args.
          */
         private static MimeMessage CreateMessage (
             ApplicationContext context, 
             Node envelopeNode,
             List<Stream> streams)
         {
-            // Creating message to return
+            // Creating message to return.
             var message = new MimeMessage ();
 
-            // Deocrates headers of email
+            // Deocrates headers of email.
             DecorateMessageEnvelope (context, envelopeNode, message);
 
-            // Retrieving [body] node of envelope, and doing basic syntax checking
+            // Retrieving [body] node of envelope, and doing basic syntax checking.
             Node body = envelopeNode["body"];
             if (body == null)
                 throw new LambdaException (
@@ -130,18 +132,18 @@ namespace p5.mail
                     envelopeNode,
                     context);
 
-            // Making sure we pass in our streams to creator, such that we can dispose them after message is sent
+            // Making sure we pass in our streams to creator, such that we can dispose them after message is sent.
             body.Value = streams;
 
-            // Creating MIME message by using [create-native] MIME Active Event
+            // Creating MIME message by using [create-native] MIME Active Event.
             message.Body = context.RaiseEvent (".p5.mime.create-native", body).Get<MimeEntity> (context);
 
-            // Returning message
+            // Returning message.
             return message;
         }
 
         /*
-         * Decorates headers of MimeMessage
+         * Decorates headers of MimeMessage.
          */
         static void DecorateMessageEnvelope (
             ApplicationContext context, 
@@ -181,7 +183,7 @@ namespace p5.mail
             
             if (args ["headers"] != null) {
                 
-                // Looping through all custom headers in message, adding them to message
+                // Looping through all custom headers in message, adding them to message.
                 foreach (var idxHeader in args ["headers"].Children) {
                     message.Headers.Add (new Header (idxHeader.Name, idxHeader.Get<string> (context)));
                 }
@@ -189,21 +191,21 @@ namespace p5.mail
         }
 
         /*
-         * Retrieves all emails beneath the args node's child with the given name
+         * Retrieves all emails beneath the args node's child with the given name.
          */
         private static IEnumerable<MailboxAddress> GetAddresses (
             ApplicationContext context, 
             Node args, 
             string name)
         {
-            // Checking there exist a node with supplied name on args
+            // Checking there exist a node with supplied name on args.
             if (args [name] != null) {
 
-                // Returning all emails
+                // Returning all emails.
                 return args[name].Children.Select (ix => new MailboxAddress (ix.Name, ix.Get<string>(context)));
             }
 
-            // No addresses for this request
+            // No addresses for this request.
             return new MailboxAddress[] { };
         }
 
