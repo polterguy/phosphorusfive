@@ -1,5 +1,5 @@
-﻿/*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
+/*
+ * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -123,9 +123,7 @@ namespace p5.mail
             // Then content of message, making sure MimeEntity never leaves this method.
             msgNode.Value = message.Body;
             try {
-                foreach (var idxNode in args.Children.Where (ix => ix.Name == "attachment-folder" || ix.Name == "decrypt")) {
-                    msgNode.Add (idxNode.Clone ());
-                }
+                msgNode.AddRange (args.Children.Where (ix => ix.Name == "attachment-folder" || ix.Name == "decrypt").Select (ix => ix.Clone ()));
                 context.RaiseEvent (".p5.mime.parse-native", msgNode);
 
             } finally {

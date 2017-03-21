@@ -1,5 +1,5 @@
-﻿/*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
+/*
+ * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -54,11 +54,12 @@ namespace p5.mime
                     try {
 
                         // Creating and returning MIME message to caller as string
-                        MimeCreator creator = new MimeCreator (
+                        var creator = new MimeCreator (
                             context, 
                             idxMimeNode,
                             streams);
                         e.Args.Add ("result", creator.Create ().ToString ());
+
                     } finally {
 
                         // Disposing all streams created during process

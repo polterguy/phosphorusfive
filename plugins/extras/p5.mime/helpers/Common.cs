@@ -1,5 +1,5 @@
-﻿/*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
+/*
+ * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -26,12 +26,12 @@ using p5.core;
 namespace p5.mime.helpers
 {
     /// <summary>
-    ///     Common helper class for mime features of Phosphorus Five
+    ///     Common helper class for MIME features of Phosphorus Five.
     /// </summary>
     internal static class Common
     {
         /// <summary>
-        ///     Returns base folder for application
+        ///     Returns base folder for application.
         /// </summary>
         /// <returns>The base folder</returns>
         /// <param name="context">Application Context</param>

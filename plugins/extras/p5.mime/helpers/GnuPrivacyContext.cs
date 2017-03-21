@@ -1,5 +1,5 @@
-﻿/*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
+/*
+ * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -31,7 +31,7 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 namespace p5.mime.helpers
 {
     /// <summary>
-    ///     Gnu Privacy Guard context for encrypting and decrypting Mime messages using PGP.
+    ///     Gnu Privacy Guard context for encrypting and decrypting Mime messages using Open PGP.
     /// </summary>
     public class GnuPrivacyContext : GnuPGContext
     {

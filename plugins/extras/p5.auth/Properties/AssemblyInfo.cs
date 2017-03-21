@@ -1,5 +1,5 @@
-﻿/*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
+/*
+ * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *

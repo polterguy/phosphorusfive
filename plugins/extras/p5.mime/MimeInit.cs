@@ -1,5 +1,5 @@
-﻿/*
- * Phosphorus Five, copyright 2014 - 2016, Thomas Hansen, thomas@gaiasoul.com
+/*
+ * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
  * 
  * This file is part of Phosphorus Five.
  *
@@ -25,9 +25,6 @@ using p5.core;
 using p5.mime.helpers;
 using MimeKit.Cryptography;
 
-/// <summary>
-///     Main namespace regarding all MIME features of Phosphorus Five
-/// </summary>
 namespace p5.mime
 {
     /// <summary>
