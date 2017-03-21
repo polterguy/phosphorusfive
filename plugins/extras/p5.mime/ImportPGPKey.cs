@@ -44,13 +44,13 @@ namespace p5.mime
         private static void p5_crypto_import_public_pgp_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Creating new GnuPG context
                 using (var ctx = new GnuPrivacyContext ()) {
 
                     // Looping through each public key (in ascii armored format) and importing into GnuPG database
-                    foreach (var idxKey in XUtil.Iterate<string> (context, e.Args, true)) {
+                    foreach (var idxKey in XUtil.Iterate<string> (context, e.Args)) {
 
                         // Creating armored input stream to wrap key
                         using (var memStream = new MemoryStream (System.Text.UTF8Encoding.UTF8.GetBytes (idxKey))) {

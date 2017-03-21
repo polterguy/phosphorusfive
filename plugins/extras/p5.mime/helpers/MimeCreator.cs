@@ -405,7 +405,7 @@ namespace p5.mime.helpers
             string fileName = fileNode.Get<string> (_context);
 
             // Verifying user is authorised to read from file given
-            _context.Raise (".p5.io.authorize.read-file", new Node ("", fileName).Add ("args", fileNode));
+            _context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", fileName).Add ("args", fileNode));
 
             // Retrieving ContentEncoding to use for reading stream
             ContentEncoding encoding = ContentEncoding.Default;

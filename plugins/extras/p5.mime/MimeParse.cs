@@ -63,10 +63,10 @@ namespace p5.mime
         public static void p5_mime_parse (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Looping through each MIME message supplied
-                foreach (var idxMimeMessage in XUtil.Iterate<string> (context, e.Args, true)) {
+                foreach (var idxMimeMessage in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Sanity check
                     if (string.IsNullOrEmpty (idxMimeMessage))

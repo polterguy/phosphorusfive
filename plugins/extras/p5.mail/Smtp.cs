@@ -54,7 +54,7 @@ namespace p5.mail
                     context);
 
             // Making sure we remove arguments supplied
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Creating our SMTP client
                 using (var client = new SmtpClient ()) {
@@ -134,7 +134,7 @@ namespace p5.mail
             body.Value = streams;
 
             // Creating MIME message by using [create-native] MIME Active Event
-            message.Body = context.Raise (".p5.mime.create-native", body).Get<MimeEntity> (context);
+            message.Body = context.RaiseEvent (".p5.mime.create-native", body).Get<MimeEntity> (context);
 
             // Returning message
             return message;

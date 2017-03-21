@@ -43,16 +43,16 @@ namespace p5.mime
         public static void p5_mime_save_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Keeping base folder to application around
                 string baseFolder = Common.GetRootFolder (context);
 
                 // Retrieving filename supplied by caller to serialize MimeEntity to
-                var filename = XUtil.Single<string> (context, e.Args, true);
+                var filename = XUtil.Single<string> (context, e.Args);
 
                 // Verifying user is authorized to saving to the specified file
-                context.Raise (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
+                context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", e.Args));
 
                 // Retrieving root MIME entity from args
                 var mimeNode = e.Args [0];

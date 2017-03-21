@@ -46,7 +46,7 @@ namespace p5.mime
         private static void p5_crypto_list_private_keys (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Checking if user provided a filter
                 string filter = e.Args.GetExValue<string> (context, null);
@@ -93,7 +93,7 @@ namespace p5.mime
         private static void p5_crypto_list_public_keys (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Checking if user provided a filter
                 string filter = e.Args.GetExValue<string> (context, null);
@@ -140,7 +140,7 @@ namespace p5.mime
         private static void p5_crypto_get_key_details (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Getting key ID to look for
                 string keyID = e.Args.GetExValue<string> (context, null);
@@ -190,7 +190,7 @@ namespace p5.mime
         private static void p5_crypto_get_public_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Getting key ID to look for
                 string keyID = e.Args.GetExValue<string> (context, null);
@@ -237,7 +237,7 @@ namespace p5.mime
         private static void p5_crypto_delete_private_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Creating new GnuPG context
                 using (var ctx = new GnuPrivacyContext ()) {
@@ -247,7 +247,7 @@ namespace p5.mime
                     var bundle = ctx.SecretKeyRingBundle;
 
                     // Looping through each ID given by caller
-                    foreach (var idxId in XUtil.Iterate<string> (context, e.Args, true)) {
+                    foreach (var idxId in XUtil.Iterate<string> (context, e.Args)) {
 
                         // Looping through each public key ring in GnuPG database until we find given ID
                         foreach (PgpSecretKeyRing idxSecretKeyRing in bundle.GetKeyRings ()) {
@@ -283,7 +283,7 @@ namespace p5.mime
         private static void p5_crypto_delete_public_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Creating new GnuPG context
                 using (var ctx = new GnuPrivacyContext ()) {
@@ -293,7 +293,7 @@ namespace p5.mime
                     var bundle = ctx.PublicKeyRingBundle;
 
                     // Looping through each ID given by caller
-                    foreach (var idxId in XUtil.Iterate<string> (context, e.Args, true)) {
+                    foreach (var idxId in XUtil.Iterate<string> (context, e.Args)) {
 
                         // Looping through each public key ring in GnuPG database until we find given ID
                         foreach (PgpPublicKeyRing idxPublicKeyRing in bundle.GetKeyRings ()) {

@@ -38,7 +38,7 @@ namespace p5.mail.helpers
         /// <param name="context">Application Context</param>
         public static string GetBaseFolder (ApplicationContext context)
         {
-            return context.Raise (".p5.core.application-folder").Get<string> (context);
+            return context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
         }
 
         /// <summary>
@@ -57,17 +57,17 @@ namespace p5.mail.helpers
             // Retrieving server settings, defaulting to those found in web.config if not explicitly overridden
             string server = 
                 args.GetChildValue<string> ("server", context) ??
-                context.Raise (
+                context.RaiseEvent (
                     ".p5.config.get",
                     new Node ("", string.Format ("p5.{0}.server", serverType))) [0].Get<string> (context);
             int port = args["port"] != null ? 
                 args.GetChildValue<int> ("port", context) :
-                context.Raise (
+                context.RaiseEvent (
                     ".p5.config.get",
                     new Node ("", string.Format ("p5.{0}.port", serverType)))[0].Get<int> (context);
             bool useSsl = args["ssl"] != null ? 
                 args.GetChildValue<bool> ("ssl", context) :
-                context.Raise (
+                context.RaiseEvent (
                     ".p5.config.get",
                     new Node ("", string.Format ("p5.{0}.use-ssl", serverType)))[0].Get<bool> (context);
 
@@ -93,10 +93,10 @@ namespace p5.mail.helpers
             } else {
 
                 // Retrieving default username/password from web.config
-                username = context.Raise (
+                username = context.RaiseEvent (
                     ".p5.config.get", 
                     new Node ("", string.Format ("p5.{0}.username", serverType))) [0].Get<string> (context);
-                password = context.Raise (
+                password = context.RaiseEvent (
                     ".p5.config.get",
                     new Node ("", string.Format (".p5.{0}.password", serverType))) [0].Get<string> (context);
             }

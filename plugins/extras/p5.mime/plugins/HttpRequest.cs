@@ -45,7 +45,7 @@ namespace p5.mime.plugins
         public static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Storing decryption keys to be able to decrypt result
                 var decryptionKeys = e.Args ["decryption-keys"];
@@ -93,7 +93,7 @@ namespace p5.mime.plugins
                 createMimeNode.AddRange (args.Children);
 
                 // Returning MimeEntity to caller
-                return context.Raise (".p5.mime.create-native", createMimeNode).Get<MimeEntity> (context);
+                return context.RaiseEvent (".p5.mime.create-native", createMimeNode).Get<MimeEntity> (context);
             } finally {
 
                 // Closing and disposing all streams created during creation of MimeEntity
@@ -150,7 +150,7 @@ namespace p5.mime.plugins
             });
 
             // Invoking Active Event that create HTTP request
-            context.Raise(activeEventName, requestNode);
+            context.RaiseEvent (activeEventName, requestNode);
         }
 
         /*
@@ -181,7 +181,7 @@ namespace p5.mime.plugins
                 try {
                     result.Add (decryptionKeys);
                     result.Add (attachmentFolder);
-                    context.Raise (".p5.mime.parse-native", result);
+                    context.RaiseEvent (".p5.mime.parse-native", result);
                 } finally {
                     result.Value = oldValue;
                 }

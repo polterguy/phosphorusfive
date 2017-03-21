@@ -182,7 +182,7 @@ namespace p5.mime.helpers
             }
 
             // Verifying user is authorized to writing to destination file
-            _context.Raise (".p5.io.authorize.modify-file", new Node ("", _attachmentFolder + fileName).Add ("args", _args));
+            _context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", _attachmentFolder + fileName).Add ("args", _args));
 
             // Saving attachment to disc
             using (FileStream stream = File.Create (rootFolder + _attachmentFolder + fileName)) {
@@ -203,7 +203,7 @@ namespace p5.mime.helpers
                 return;
             
             // Verifying user is authorized to writing to destination folder
-            _context.Raise (".p5.io.authorize.modify-folder", new Node ("", _attachmentFolder).Add ("args", _args));
+            _context.RaiseEvent (".p5.io.authorize.modify-folder", new Node ("", _attachmentFolder).Add ("args", _args));
 
             // Verifies folder exist, and creates entire path if not
             string baseFolder = Common.GetRootFolder (_context).TrimEnd ('/') + "/";

@@ -44,10 +44,10 @@ namespace p5.mime
         public static void p5_mime_create (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Iterating through each node given, either as child of main node, or through expression
-                foreach (var idxMimeNode in XUtil.Iterate<Node> (context, e.Args, false, false, true)) {
+                foreach (var idxMimeNode in XUtil.Iterate<Node> (context, e.Args)) {
 
                     // Making sure we keep track of, closes, and disposes all streams created during process
                     List<Stream> streams = new List<Stream> ();
@@ -82,7 +82,7 @@ namespace p5.mime
         private static void _p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
-            if (e.Args.Children.Count != 1)
+            if (e.Args.Count != 1)
                 throw new LambdaException (
                     "You must have exactly one root node of your MIME message",
                     e.Args,

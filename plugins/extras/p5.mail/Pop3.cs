@@ -29,9 +29,6 @@ using MailKit.Net.Pop3;
 using p5.core;
 using p5.mail.helpers;
 
-/// <summary>
-///     Main namespace for everything related to sending and retrieving emails in Phosphorus Five
-/// </summary>
 namespace p5.mail
 {
     /// <summary>
@@ -63,7 +60,7 @@ namespace p5.mail
         public static void p5_pop3_get_emails (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we remove arguments supplied
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Creating our POP3 client
                 using (var client = new Pop3Client ()) {
@@ -142,10 +139,10 @@ namespace p5.mail
                         foreach (var idxNode in args.Children.Where (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys")) {
                             msgNode.Add (idxNode.Clone ());
                         }
-                        context.Raise(".p5.mime.parse-native", msgNode);
+                        context.RaiseEvent (".p5.mime.parse-native", msgNode);
                     } finally {
                         msgNode.Value = oldValue;
-                        msgNode.Children.RemoveAll (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys");
+                        msgNode.RemoveAll (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys");
                     }
                 }
             }
@@ -259,7 +256,7 @@ namespace p5.mail
 
                 // Adding currently iterated message to [functor] and evaluating using [eval]
                 exe.Insert (1, msgNode);
-                context.Raise ("eval", exe);
+                context.RaiseEvent ("eval", exe);
             } else {
 
                 // Returning node with message to caller

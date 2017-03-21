@@ -41,14 +41,14 @@ namespace p5.mime
         public static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Loading MimeEntity from request stream
                 var entity = MimeEntity.Load (
                     ContentType.Parse (HttpContext.Current.Request.ContentType), 
                     HttpContext.Current.Request.InputStream);
                 e.Args.Value = entity;
-                context.Raise (".p5.mime.parse-native", e.Args);
+                context.RaiseEvent (".p5.mime.parse-native", e.Args);
             }
         }
     }

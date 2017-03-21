@@ -46,7 +46,7 @@ public static class Scalar
                 throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
 
             // Creating command object.
-            using (var cmd = e.Args.GetExSqlValue (context, connection)) {
+            using (var cmd = e.Args.GetSqlCommand (context, connection)) {
 
                 // Executing scalar, returning results to caller.
                 e.Args.Value = cmd.ExecuteScalar ();

@@ -46,7 +46,7 @@ namespace p5.mime.plugins
         public static void echo_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it
                 HttpContext.Current.Response.Filter = null;
@@ -58,7 +58,7 @@ namespace p5.mime.plugins
 
                     // Creating MIME message
                     e.Args.Value = streams;
-                    var entity = context.Raise (".p5.mime.create-native", e.Args).Get<MimeEntity> (context);
+                    var entity = context.RaiseEvent (".p5.mime.create-native", e.Args).Get<MimeEntity> (context);
 
                     // Making sure we render the headers of root MimeEntity to response headers
                     RenderHeaders (entity);

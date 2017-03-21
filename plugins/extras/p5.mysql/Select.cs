@@ -50,7 +50,7 @@ namespace p5.mysql
                     throw new LambdaException ("No connection has been opened, use [p5.mysql.connect] before trying to invoke this event", e.Args, context);
 
                 // Creating command object.
-                using (var cmd = e.Args.GetExSqlValue (context, connection)) {
+                using (var cmd = e.Args.GetSqlCommand (context, connection)) {
 
                     // Creating reader, and iterating as long as we have resulting rows.
                     using (var reader = cmd.ExecuteReader ()) {

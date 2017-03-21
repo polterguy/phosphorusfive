@@ -85,6 +85,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.auth", "plugins\extras\p
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.mysql", "plugins\extras\p5.mysql\p5.mysql.csproj", "{5DD389EB-29B9-4965-A2F3-BF62CAAF6CB4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.mail", "plugins\extras\p5.mail\p5.mail.csproj", "{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.mime", "plugins\extras\p5.mime\p5.mime.csproj", "{2D694F51-5055-4EC8-8767-C2011E010DD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -254,6 +258,18 @@ Global
 		{5DD389EB-29B9-4965-A2F3-BF62CAAF6CB4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5DD389EB-29B9-4965-A2F3-BF62CAAF6CB4}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
 		{5DD389EB-29B9-4965-A2F3-BF62CAAF6CB4}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{2D694F51-5055-4EC8-8767-C2011E010DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D694F51-5055-4EC8-8767-C2011E010DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D694F51-5055-4EC8-8767-C2011E010DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D694F51-5055-4EC8-8767-C2011E010DD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D694F51-5055-4EC8-8767-C2011E010DD5}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{2D694F51-5055-4EC8-8767-C2011E010DD5}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -287,6 +303,8 @@ Global
 		{378663D4-1FC1-4109-8896-F72440C6C269} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
 		{1ADB1008-02F3-4D95-B1DA-628AA73B88DC} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
 		{5DD389EB-29B9-4965-A2F3-BF62CAAF6CB4} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
+		{2ED69FBE-C3DF-434D-9C30-6641B79C4A64} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
+		{2D694F51-5055-4EC8-8767-C2011E010DD5} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

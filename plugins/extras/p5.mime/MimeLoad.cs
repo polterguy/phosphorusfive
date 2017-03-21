@@ -42,16 +42,16 @@ namespace p5.mime
         public static void p5_mime_load_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Keeping base folder to application around
                 string baseFolder = Common.GetRootFolder (context).TrimEnd ('/');
 
                 // Looping through each filename supplied by caller
-                foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args, true)) {
+                foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.Raise (".p5.io.authorize.read-file", new Node ("", idxFilename).Add ("args", e.Args));
+                    context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", idxFilename).Add ("args", e.Args));
 
                     // Loading, processing and returning currently iterated message
                     var parser = new helpers.MimeParser (
