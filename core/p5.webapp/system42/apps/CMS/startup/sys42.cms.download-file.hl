@@ -1,6 +1,8 @@
 
 /*
  * Responsible for creating the Active Event that allows you to download a file from the server.
+ *
+ * Pass in optionally [_file-type] and [filename] to override type and filename.
  */
 create-event:sys42.cms.download-file
 
@@ -13,6 +15,9 @@ create-event:sys42.cms.download-file
   if:x:/../*/_file-type?value
     p5.web.session.set:sys42.cms.download-filetype
       src:x:/../*/_file-type?value
+  if:x:/../*/filename?value
+    p5.web.session.set:sys42.cms.download-filename-return
+      src:x:/../*/filename?value
 
   /*
    * Reloading location, letting [p5.web.load-ui] do the "heavy lifting".

@@ -210,8 +210,14 @@ core/p5.webapp/common/public/*
 # Excluding DSW8
 core/p5.webapp/system42/apps/dsw8
 
+# Excluding Sephia
+core/p5.webapp/system42/apps/sephia-mail
+
 # Excluding DSW8 common documents
 core/p5.webapp/common/documents/private/DSW8/**
+
+# Excluding Sephia common documents
+core/p5.webapp/common/documents/private/sephia/**
 
 # Excluding auto generated Visual Studio files
 .vs/

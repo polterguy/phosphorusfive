@@ -63,7 +63,10 @@ namespace p5.mysql
                             for (int ix = 0; ix < reader.FieldCount; ix++) {
 
                                 // Adding currently iterated cell for row.
-                                current.Add (reader.GetName (ix), reader [ix]);
+                                object val = reader [ix];
+                                if (val is System.DBNull)
+                                    val = null;
+                                current.Add (reader.GetName (ix), val);
                             }
                         }
                     }                }

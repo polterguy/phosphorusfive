@@ -98,4 +98,14 @@ TODO before release
 
 * Consider making [return] implicitly evaluate expressions returned as value of [return], to mirror the behavior of [_arg] arguments.
 
+* Check up sys42.windows.modal.hl, line 273, I think this is supposed to be "onkeydown" and not "keypressed" ...?
+
+* Possible bug in [switch], breaks [for-each] when [break] is supplied.
+
+* [sys42.utilities.get-event] doesn't seem to work as expected. Executes logic in event ...?
+
+* Make sure server salt is not empty during installation.
+
+* Pass in lambda object for [p5.pop3.get] since I suspect by not sending QUIT signal during exceptions, emails are not
+  marked as read.
 

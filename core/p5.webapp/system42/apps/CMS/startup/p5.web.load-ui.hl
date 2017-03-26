@@ -17,6 +17,7 @@ create-event:p5.web.load-ui
      * There are no users in system, making sure we run through the installation process.
      */
     sys42.utilities.execute-lambda-file:@CMS/installation/install-server.hl
+
   else
 
     /*
@@ -35,10 +36,15 @@ create-event:p5.web.load-ui
           src:x:/@p5.web.session.get/*?value
       p5.string.split:x:/./@p5.web.session.get/*?value
         =:/
+      p5.web.session.get:sys42.cms.download-filename-return
+      if:x:/-/*?value
+        set:x:/..if/..if/*/p5.web.header.set/*/*?value
+          src:x:/@p5.web.session.get/*?value
       p5.web.header.set:Content-Disposition
         src:@"attachment; filename={0}"
           :x:/@p5.string.split/0/-?name
       p5.web.session.set:sys42.cms.download-filename
+      p5.web.session.set:sys42.cms.download-filename-return
       p5.web.session.set:sys42.cms.download-filetype
       p5.web.echo-file:x:/./@p5.web.session.get/*?value
       return

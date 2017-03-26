@@ -47,7 +47,7 @@ create-event:sys42.windows.modal
     widgets
   _options
   add:x:/@_options
-    src:x:(/@_defaults(/--!/_arg)|/@_defaults/*)/$
+    src:x:(/@_defaults(/--/<-!/_arg)|/@_defaults/*)/$
 
   /*
    * Making sure we delete any previously created dialogs.
@@ -252,20 +252,26 @@ create-event:sys42.windows.modal
                     .onenterpressed
 
                       /*
-                       * Finds the first button widget in the footer of the window, if any, and raises the [onclick] Ajax event on it.
+                       * Finds the first button widget in the footer of the window, 
+                       * if any, and raises the [onclick] Ajax event on it.
+                       * Notice, we first check if footer widget actually exists.
                        */
-                      p5.web.widgets.find:sys42-windows-modal-footer
-                        element:button
-                      if:x:/@p5.web.widgets.find/*/0?value
-                        p5.web.widgets.ajax-events.raise:x:/@p5.web.widgets.find/*/0?value
-                          onclick
+                      if
+                        fetch:x:/0/0?value
+                          widget-exists:sys42-windows-modal-footer
+                        p5.web.widgets.find:sys42-windows-modal-footer
+                          element:button
+                        if:x:/@p5.web.widgets.find/*/0?value
+                          p5.web.widgets.ajax-events.raise:x:/@p5.web.widgets.find/*/0?value
+                            onclick
 
                     oninit
 
                       /*
                        * Including JavaScript to help handle carriage return key in window.
                        *
-                       * This logic, will make sure all "input" type of elements, traps carriage return, and invokes [.onenterpressed] when it occurs.
+                       * This logic, will make sure all "input" type of elements, traps carriage return, 
+                       * and invokes [.onenterpressed] when it occurs.
                        */
                       p5.web.widgets.find:x:/../*/_event?value
                         element:input

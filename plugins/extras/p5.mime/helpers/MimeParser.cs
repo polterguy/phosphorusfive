@@ -119,10 +119,14 @@ namespace p5.mime.helpers
                 // Leaf entity.
                 ProcessLeafPart (entity as MimePart, args);
 
-            } else {
+            } else if (entity is Multipart) {
 
                 // Some sort of Multipart, can also be encrypted or signed.
                 ProcessMultipart (entity as Multipart, args);
+
+            } else if (entity is MessagePart) {
+
+                // TODO: Implement...!!
             }
         }
 
@@ -323,7 +327,7 @@ namespace p5.mime.helpers
                 }
             } catch (Exception err) {
 
-                // Couldn't decrypt Multipart, returning raw cipher content.
+                // Couldn't decrypt Multipart, returning raw encrypted content.
                 entityNode.Add ("processing-message", err.Message);
                 foreach (var idxEntity in encryptedMultipart) {
                     ProcessEntity (idxEntity, entityNode);

@@ -95,6 +95,24 @@ namespace p5.mail
                                 client.DeleteMessage (idxMsg);
                             }
                         }
+
+                        // Checking to see if caller provided a lambda callback, at which case, we invoke it before exiting
+                        // scope, since handling of emails might trigger an exception, at which case we do NOT want to send the
+                        // QUIT signal to the POP3 server.
+                        var lambda = e.Args [".onfinished"];
+                        if (lambda != null) {
+
+                            // Invoking lambda callback, letting caller do his thing.
+                            context.RaiseEvent ("eval-mutable", lambda);
+                        }
+
+                    } catch {
+
+                        // Disconnecting from server, making sure we do NOT send the QUIT signal.
+                        // Otherwise emails will be registered as "read" (or deleted in fact) on POP3 server.
+                        client.Disconnect (false);
+                        throw;
+
                     } finally {
 
                         // Disconnecting from server, making sure we send the QUIT signal.
@@ -214,10 +232,13 @@ namespace p5.mail
             string name)
         {
             // Looping through each address in list.
-            foreach (MailboxAddress idxAdr in list) {
+            foreach (InternetAddress idxAdr in list) {
 
                 // Appending currently iterated address to args.
-                msgNode.FindOrInsert (name).Add (idxAdr.Name, idxAdr.Address);
+                if (idxAdr is MailboxAddress)
+                    msgNode.FindOrInsert (name).Add (idxAdr.Name, ((MailboxAddress)idxAdr).Address);
+                // TODO: UndisclosedAddress!
+                
             }
         }
 

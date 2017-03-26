@@ -53,6 +53,12 @@ namespace p5.strings.keywords
 
                 // Returning length of constant or expression, converted to string if necessary.
                 var source = XUtil.Single<string> (context, e.Args);
+
+                // Making sure we accommodate for empty values.
+                if (source == null) {
+                    e.Args.Value = null;
+                    return;
+                }
                 switch (e.Name) {
                     case "trim":
                     case "p5.string.trim":
