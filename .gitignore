@@ -211,7 +211,13 @@ core/p5.webapp/common/public/*
 core/p5.webapp/system42/apps/dsw8
 
 # Excluding Sephia
-core/p5.webapp/system42/apps/sephia-mail
+core/p5.webapp/system42/apps/sephia-five
+
+# Excluding Sulphur
+core/p5.webapp/system42/apps/sulphur-five
+
+# Excluding Camphore common documents
+core/p5.webapp/system42/components/camphora-five
 
 # Excluding DSW8 common documents
 core/p5.webapp/common/documents/private/DSW8/**

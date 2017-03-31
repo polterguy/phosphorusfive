@@ -109,3 +109,5 @@ TODO before release
 * Pass in lambda object for [p5.pop3.get] since I suspect by not sending QUIT signal during exceptions, emails are not
   marked as read.
 
+* Remove the "p5.web.onload/unload" events,they should strictly not be necessary.
+
