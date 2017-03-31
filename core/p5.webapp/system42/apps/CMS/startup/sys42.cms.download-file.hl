@@ -7,6 +7,16 @@
 create-event:sys42.cms.download-file
 
   /*
+   * Verifying file exists, and that user is legally allowed to read it.
+   *
+   * Notice, this invocation will throw an exception if user is not legally allowed to read the file.
+   */
+  file-exists:x:/../*/_arg?value
+  if:x:/@file-exists/*?value
+    not
+    throw:Couldn't find file.
+
+  /*
    * Puts the given filename and path into session, and simply reloads location, since actual download is
    * done in [p5.web.load-ui].
    */
