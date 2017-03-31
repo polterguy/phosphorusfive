@@ -50,6 +50,12 @@ create-event:sys42.windows.modal
     src:x:(/@_defaults(/--/<-!/_arg)|/@_defaults/*)/$
 
   /*
+   * Making sure we include the necessary CSS and JavaScript.
+   */
+  sys42.bootstrap.include-css
+  sys42.bootstrap.include-javascript
+
+  /*
    * Making sure we delete any previously created dialogs.
    * Notice that since we only hide the dialog when it is closed, we need to check if any previous dialogs exist, 
    * and if so, delete them, before we create this one.
