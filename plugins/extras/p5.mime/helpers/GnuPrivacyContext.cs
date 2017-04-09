@@ -143,7 +143,8 @@ namespace p5.mime.helpers
                 if (idxMailbox.Mailbox is SecureMailboxAddress) {
 
                     // Using fingerprint.
-                    if ((idxMailbox.Mailbox as SecureMailboxAddress).Fingerprint == BitConverter.ToString (key.PublicKey.GetFingerprint ()).Replace ("-", ""))
+                    if ((idxMailbox.Mailbox as SecureMailboxAddress).Fingerprint.ToLower () == 
+                        BitConverter.ToString (key.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower ())
                         return idxMailbox.Password;
 
                 } else {
