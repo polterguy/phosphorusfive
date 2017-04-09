@@ -60,7 +60,7 @@ body {
 }
 
 /*
- * Making sure [sys42.windows.info-window] display beneath navbar.
+ * Making sure [sys42.windows.info-tip] display beneath navbar.
  */
 .info-window {
     top:50px;
