@@ -51,6 +51,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.property.get")]
+        [ActiveEvent (Name = "get-widget-property")]
         public void p5_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
@@ -78,6 +79,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.property.set")]
+        [ActiveEvent (Name = "set-widget-property")]
         public void p5_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we fetch property list before we start modifying arguments.
@@ -137,6 +139,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.property.delete")]
+        [ActiveEvent (Name = "delete-widget-property")]
         public void p5_web_widgets_property_delete (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking if caller even supplied any argument.
