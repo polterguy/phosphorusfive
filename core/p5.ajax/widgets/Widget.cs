@@ -533,12 +533,12 @@ namespace p5.ajax.widgets
                 AjaxPage.RegisterWidgetChanges (
                     JsonClientID,
                     "outerHTML",
-                    string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", Element, ClientID));
+                    string.Format (@"<{0} id=""{1}"" style=""display:none;""></{0}>", Element, ClientID));
 
             } else if (!AjaxPage.IsAjaxRequest || ancestorReRendering) {
 
                 // Rendering invisible HTML.
-                writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", Element, ClientID));
+                writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none;""></{0}>", Element, ClientID));
             }
         }
 
