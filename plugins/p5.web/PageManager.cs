@@ -149,8 +149,11 @@ namespace p5.web
             // Looping through each JavaScript file supplied
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
+                // Unrolling the path to file, in case it uses "environment variables".
+                var file = context.RaiseEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context);
+
                 // Passing file to client
-                AjaxPage.IncludeJavaScriptFile (context.RaiseEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
+                AjaxPage.IncludeJavaScriptFile (file);
             }
         }
 
@@ -165,8 +168,11 @@ namespace p5.web
             // Looping through each stylesheet file supplied
             foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
-                // Register file for inclusion back to client
-                AjaxPage.IncludeCSSFile (context.RaiseEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context));
+                // Unrolling the path to file, in case it uses "environment variables".
+                var file = context.RaiseEvent (".p5.io.unroll-path", new Node ("", idxFile)).Get<string> (context);
+
+                // Register file for inclusion back to client.
+                AjaxPage.IncludeCSSFile (file);
             }
         }
 
