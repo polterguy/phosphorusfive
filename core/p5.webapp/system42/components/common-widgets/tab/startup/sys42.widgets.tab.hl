@@ -200,7 +200,7 @@ create-event:sys42.widgets.tab
          * Making sure we include our tab specific CSS file.
          */
         _skin:x:/../*/_options/*/skin?value
-        p5.web.include-css-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.min.css
+        p5.web.include-css-file:/system42/components/common-widgets/tab/media/skins/{0}/{0}.css
           :x:/../*/_skin?value
 
       /*
