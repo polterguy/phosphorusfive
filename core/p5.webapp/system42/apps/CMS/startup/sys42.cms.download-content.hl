@@ -1,0 +1,24 @@
+
+/*
+ * Responsible for creating the Active Event that allows you to download some arbitrary content from the server.
+ *
+ * Pass in [filename] file should be downloaded as, and optionally [_file-type] to override Content-Type.
+ */
+create-event:sys42.cms.download-content
+
+  /*
+   * Puts the given filename and path into session, and simply reloads location, since actual download is
+   * done in [p5.web.load-ui].
+   */
+  p5.web.session.set:sys42.cms.download-content
+    src:x:/../*/_arg?value
+  if:x:/../*/_file-type?value
+    p5.web.session.set:sys42.cms.download-content-filetype
+      src:x:/../*/_file-type?value
+  p5.web.session.set:sys42.cms.download-content-return
+    src:x:/../*/filename?value
+
+  /*
+   * Reloading location, letting [p5.web.load-ui] do the "heavy lifting".
+   */
+  p5.web.reload-location

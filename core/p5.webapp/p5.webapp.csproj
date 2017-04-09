@@ -912,6 +912,7 @@
     <None Include="common\documents\private\README.md" />
     <None Include="common\documents\public\README.md" />
     <None Include="system42\components\speech\media\speech.js" />
+    <None Include="system42\apps\CMS\startup\sys42.cms.download-content.hl" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
