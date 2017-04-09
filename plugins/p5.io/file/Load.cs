@@ -128,16 +128,16 @@ namespace p5.io.file
          * Loads a binary file and appends as blob/byte[] into args.
          */
         static void LoadBinaryFile (
-            Node args, 
-            string rootFolder,
-            string fileName)
+            Node args,
+            string fullpath,
+            string filename)
         {
-            using (FileStream stream = File.OpenRead (rootFolder + fileName)) {
+            using (FileStream stream = File.OpenRead (fullpath)) {
 
                 // Reading file content
                 var buffer = new byte [stream.Length];
                 stream.Read (buffer, 0, buffer.Length);
-                args.Add (fileName, buffer);
+                args.Add (filename, buffer);
             }
         }
     }
