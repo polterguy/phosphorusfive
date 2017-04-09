@@ -111,3 +111,12 @@ TODO before release
 
 * Remove the "p5.web.onload/unload" events,they should strictly not be necessary.
 
+* Inclusion of JavaScript and CSS files needs to support the integrity and crossorigin attributes.
+
+* Verify all widgets include minified CSS file.
+
+* Sephia Five, .onretrieve beig raise while in settings throws exception, and locks screen
+
+* Implement easy/read/write lock on AUTH file.
+
+* Clean up [sys42.cms.download-file] and associated logic.
