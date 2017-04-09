@@ -38,50 +38,20 @@ namespace p5.mime
     public static class GnuPGKeys
     {
         /// <summary>
-        ///     Lists all private keys matching the given filter from the GnuPG database
+        ///     Lists all private keys matching the given filter from the GnuPG database.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.list-private-keys")]
         private static void p5_crypto_list_private_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            // House cleaning
-            using (new ArgsRemover (e.Args, true)) {
+            // Using common helper to iterate all secret keys.
+            ObjectIterator.MatchingPrivateKeys (context, e.Args, delegate (PgpSecretKey key) {
 
-                // Checking if user provided a filter
-                string filter = e.Args.GetExValue<string> (context, null);
-
-                // Creating new GnuPG context
-                using (var ctx = new GnuPrivacyContext ()) {
-
-                    // Looping through each secret key in GnuPG database
-                    foreach (PgpSecretKeyRing idxRing in ctx.SecretKeyRingBundle.GetKeyRings ()) {
-
-                        // Looping through each secret key in keyring
-                        foreach (PgpSecretKey idxSecretKey in idxRing.GetSecretKeys ()) {
-
-                            // Looping through each UserID in key
-                            foreach (var idxIdentity in idxSecretKey.UserIds) {
-
-                                // Converting to string, before checking for a match, but only if object actually is a string
-                                if (idxIdentity is string) {
-                                    var identity = idxIdentity.ToString ();
-
-                                    // Checking if filter is not null, and if so, making sure identity of currently iterated key matches filter
-                                    if (string.IsNullOrEmpty (filter) || identity.Contains (filter)) {
-
-                                        // Returning identity and key ID to caller
-                                        e.Args.Add (identity, idxSecretKey.KeyId.ToString ("X"));
-
-                                        // We'll risk adding the same key twice unless we break here!
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                // Retrieving fingerprint of currently iterated key, and returning to caller.
+                var fingerprint = BitConverter.ToString (key.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower ();
+                e.Args.Add (fingerprint);
+            });
         }
 
         /// <summary>
@@ -92,43 +62,13 @@ namespace p5.mime
         [ActiveEvent (Name = "p5.crypto.list-public-keys")]
         private static void p5_crypto_list_public_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            // House cleaning
-            using (new ArgsRemover (e.Args, true)) {
+            // Using common helper to iterate all secret keys.
+            ObjectIterator.MatchingPublicKeys (context, e.Args, delegate (PgpPublicKey key) {
 
-                // Checking if user provided a filter
-                string filter = e.Args.GetExValue<string> (context, null);
-
-                // Creating new GnuPG context
-                using (var ctx = new GnuPrivacyContext ()) {
-
-                    // Looping through each public key in GnuPG database
-                    foreach (PgpPublicKeyRing idxRing in ctx.PublicKeyRingBundle.GetKeyRings ()) {
-
-                        // Looping through each key in keyring
-                        foreach (PgpPublicKey idxPublicKey in idxRing.GetPublicKeys ()) {
-
-                            // Finding identity of key
-                            foreach (var idxUserID in idxPublicKey.GetUserIds()) {
-
-                                // Converting to a string, before checking for a match, but only if object is a string
-                                if (idxUserID is string) {
-                                    var userID = idxUserID.ToString ();
-                                
-                                    // Checking if filter is not null, and if so, making sure identity of currently iterated key matches filter
-                                    if (string.IsNullOrEmpty (filter) || userID.Contains (filter)) {
-
-                                        // Returning identity and key ID to caller
-                                        e.Args.Add (userID, idxPublicKey.KeyId.ToString ("X"));
-
-                                        // We'll risk adding the same key twice unless we break here!
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                // Retrieving fingerprint of currently iterated key, and returning to caller.
+                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
+                e.Args.Add (fingerprint);
+            });
         }
 
         /// <summary>
@@ -139,46 +79,30 @@ namespace p5.mime
         [ActiveEvent (Name = "p5.crypto.get-key-details")]
         private static void p5_crypto_get_key_details (ApplicationContext context, ActiveEventArgs e)
         {
-            // House cleaning
-            using (new ArgsRemover (e.Args, true)) {
+            // Using common helper to iterate all secret keys.
+            ObjectIterator.MatchingPublicKeys (context, e.Args, delegate (PgpPublicKey key) {
 
-                // Getting key ID to look for
-                string keyID = e.Args.GetExValue<string> (context, null);
-                if (string.IsNullOrEmpty (keyID))
-                    throw new LambdaException ("No ID given to use for looking up key", e.Args, context);
-
-                // Creating new GnuPG context
-                using (var ctx = new GnuPrivacyContext ()) {
-
-                    // Looping through each public key in GnuPG database
-                    foreach (PgpPublicKeyRing idxRing in ctx.PublicKeyRingBundle.GetKeyRings ()) {
-
-                        // Looping through each key in keyring
-                        foreach (PgpPublicKey idxPublicKey in idxRing.GetPublicKeys ()) {
-
-                            // Checking if this is the requested key
-                            if (idxPublicKey.KeyId.ToString ("X") == keyID) {
-
-                                // This is the key we're looking for
-                                e.Args.Add ("algorithm", idxPublicKey.Algorithm.ToString ());
-                                e.Args.Add ("strength", idxPublicKey.BitStrength);
-                                e.Args.Add ("creation-time", idxPublicKey.CreationTime);
-                                e.Args.Add ("is-encryption-key", idxPublicKey.IsEncryptionKey);
-                                e.Args.Add ("is-master-key", idxPublicKey.IsMasterKey);
-                                e.Args.Add ("is-revoked", idxPublicKey.IsRevoked ());
-                                e.Args.Add ("version", idxPublicKey.Version);
-                                DateTime expires = idxPublicKey.CreationTime.AddSeconds (idxPublicKey.GetValidSeconds ());
-                                e.Args.Add ("expires", expires);
-                                e.Args.Add ("fingerprint", BitConverter.ToString (idxPublicKey.GetFingerprint ()).Replace ("-", ""));
-                                foreach (var idxUserId in idxPublicKey.GetUserIds()) {
-                                    e.Args.FindOrInsert ("user-ids").Add ("", idxUserId);
-                                }
-                                return;
-                            }
-                        }
-                    }
+                // This key is matching specified filter criteria.
+                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
+                var node = e.Args.Add (fingerprint).LastChild;
+                node.Add ("id", ((int)key.KeyId).ToString ("X"));
+                node.Add ("algorithm", key.Algorithm.ToString ());
+                node.Add ("strength", key.BitStrength);
+                node.Add ("creation-time", key.CreationTime);
+                node.Add ("is-encryption-key", key.IsEncryptionKey);
+                node.Add ("is-master-key", key.IsMasterKey);
+                node.Add ("is-revoked", key.IsRevoked ());
+                node.Add ("version", key.Version);
+                DateTime expires = key.CreationTime.AddSeconds (key.GetValidSeconds ());
+                node.Add ("expires", expires);
+                foreach (var idxUserId in key.GetUserIds ()) {
+                    if (idxUserId is string)
+                        node.FindOrInsert ("user-ids").Add ("", idxUserId);
                 }
-            }
+                foreach (PgpSignature signature in key.GetSignatures ()) {
+                    node.FindOrInsert ("signed-by").Add (((int)signature.KeyId).ToString ("X"), signature.CreationTime);
+                }
+            });
         }
 
         /// <summary>
@@ -189,43 +113,54 @@ namespace p5.mime
         [ActiveEvent (Name = "p5.crypto.get-public-key")]
         private static void p5_crypto_get_public_key (ApplicationContext context, ActiveEventArgs e)
         {
-            // House cleaning
-            using (new ArgsRemover (e.Args)) {
+            // Using common helper to iterate all secret keys.
+            ObjectIterator.MatchingPublicKeys (context, e.Args, delegate (PgpPublicKey key) {
 
-                // Getting key ID to look for
-                string keyID = e.Args.GetExValue<string> (context, null);
-                if (string.IsNullOrEmpty (keyID))
-                    throw new LambdaException ("No ID given to use for looking up key", e.Args, context);
+                // Retrieving fingerprint of currently iterated key, and returning to caller.
+                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
+                var node = e.Args.Add (fingerprint).LastChild;
 
-                // Creating new GnuPG context
-                using (var ctx = new GnuPrivacyContext ()) {
-
-                    // Looping through each public key in GnuPG database
-                    foreach (PgpPublicKeyRing idxRing in ctx.PublicKeyRingBundle.GetKeyRings ()) {
-
-                        // Looping through each key in keyring
-                        foreach (PgpPublicKey idxPublicKey in idxRing.GetPublicKeys ()) {
-
-                            // Checking if this is the requested key
-                            if (idxPublicKey.KeyId.ToString ("X") == keyID) {
-
-                                // This is the key we're looking for
-                                using (var memStream = new MemoryStream ()) {
-                                    using (var armored = new ArmoredOutputStream (memStream)) {
-                                        idxPublicKey.Encode (armored);
-                                        armored.Flush ();
-                                    }
-                                    memStream.Flush ();
-                                    memStream.Position = 0;
-                                    var sr = new StreamReader (memStream);
-                                    e.Args.Value = sr.ReadToEnd ();
-                                }
-                                return;
-                            }
-                        }
+                // This is the key we're looking for
+                using (var memStream = new MemoryStream ()) {
+                    using (var armored = new ArmoredOutputStream (memStream)) {
+                        key.Encode (armored);
+                        armored.Flush ();
                     }
+                    memStream.Flush ();
+                    memStream.Position = 0;
+                    var sr = new StreamReader (memStream);
+                    node.Value = sr.ReadToEnd ();
                 }
-            }
+            });
+        }
+
+        /// <summary>
+        ///     Lists all public keys matching the given filter from the GnuPG database
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.crypto.get-private-key")]
+        private static void p5_crypto_get_private_key (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Using common helper to iterate all secret keys.
+            ObjectIterator.MatchingPrivateKeys (context, e.Args, delegate (PgpSecretKey key) {
+
+                // Retrieving fingerprint of currently iterated key, and returning to caller.
+                var fingerprint = BitConverter.ToString (key.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower ();
+                var node = e.Args.Add (fingerprint).LastChild;
+
+                // This is the key we're looking for
+                using (var memStream = new MemoryStream ()) {
+                    using (var armored = new ArmoredOutputStream (memStream)) {
+                        key.Encode (armored);
+                        armored.Flush ();
+                    }
+                    memStream.Flush ();
+                    memStream.Position = 0;
+                    var sr = new StreamReader (memStream);
+                    node.Value = sr.ReadToEnd ();
+                }
+            });
         }
 
         /// <summary>
@@ -236,34 +171,40 @@ namespace p5.mime
         [ActiveEvent (Name = "p5.crypto.delete-private-key")]
         private static void p5_crypto_delete_private_key (ApplicationContext context, ActiveEventArgs e)
         {
-            // House cleaning
+            // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
 
-                // Creating new GnuPG context
+                // Creating new GnuPG context.
                 using (var ctx = new GnuPrivacyContext ()) {
 
-                    // Signaler boolean
+                    // Signaler boolean.
                     bool somethingWasRemoved = false;
                     var bundle = ctx.SecretKeyRingBundle;
 
-                    // Looping through each ID given by caller
+                    // Looping through each ID given by caller.
                     foreach (var idxId in XUtil.Iterate<string> (context, e.Args)) {
 
-                        // Looping through each public key ring in GnuPG database until we find given ID
+                        // Looping through each public key ring in GnuPG database until we find given ID.
                         foreach (PgpSecretKeyRing idxSecretKeyRing in bundle.GetKeyRings ()) {
 
-                            // Looping through each key in keyring
+                            // Looping through each key in keyring.
                             foreach (PgpSecretKey idxSecretKey in idxSecretKeyRing.GetSecretKeys ()) {
-                                if (idxId == idxSecretKey.KeyId.ToString ("X")) {
 
-                                    // Removing entire keyring, and signaling to save keyring bundle
+                                // Checking for a match, making sure we do not match UserIDs.
+                                if (ObjectIterator.IsMatch (idxSecretKey.PublicKey, idxId, false)) {
+
+                                    // Removing entire keyring, and signaling to save keyring bundle.
                                     somethingWasRemoved = true;
                                     bundle = PgpSecretKeyRingBundle.RemoveSecretKeyRing (bundle, idxSecretKeyRing);
 
-                                    // Breaking inner most foreach
+                                    // Breaking inner most foreach.
                                     break;
                                 }
                             }
+
+                            // Checking if currently iterated filter was found in currently iterated secret keyring.
+                            if (somethingWasRemoved)
+                                break;
                         }
                     }
 
@@ -300,7 +241,9 @@ namespace p5.mime
 
                             // Looping through each key in keyring
                             foreach (PgpPublicKey idxPublicKey in idxPublicKeyRing.GetPublicKeys ()) {
-                                if (idxId == idxPublicKey.KeyId.ToString ("X")) {
+
+                                // Checking for a match, making sure we do not match UserIDs.
+                                if (ObjectIterator.IsMatch (idxPublicKey, idxId, false)) {
 
                                     // Removing entire keyring, and signaling to save keyring bundle
                                     somethingWasRemoved = true;
@@ -310,6 +253,10 @@ namespace p5.mime
                                     break;
                                 }
                             }
+
+                            // Checking if currently iterated filter was found in currently iterated secret keyring.
+                            if (somethingWasRemoved)
+                                break;
                         }
                     }
 

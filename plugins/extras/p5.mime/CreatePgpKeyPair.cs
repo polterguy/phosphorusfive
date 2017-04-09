@@ -44,7 +44,7 @@ namespace p5.mime
     public static class CreatePgpKeyPair
     {
         /// <summary>
-        ///     Creates and saves a private PGP keypair to GnuPG context
+        ///     Creates and saves a private PGP keypair to GnuPG context.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -54,7 +54,7 @@ namespace p5.mime
             // Making sure we clean up after ourselves
             using (new ArgsRemover (e.Args, true)) {
 
-                // Retrieving identity (normally an email address) and password
+                // Retrieving identity (normally an email address) and password.
                 string identity = e.Args.GetExChildValue<string> ("identity", context);
                 string password = e.Args.GetExChildValue<string> ("password", context);
                 if (string.IsNullOrEmpty (identity) || string.IsNullOrEmpty (password))
@@ -63,13 +63,13 @@ namespace p5.mime
                         e.Args,
                         context);
 
-                // Retrieving other parameters to PGP keypair creation
+                // Retrieving other parameters to PGP keypair creation.
                 DateTime expires = e.Args.GetExChildValue ("expires", context, DateTime.Now.AddYears (3));
                 int strength = e.Args.GetExChildValue<int> ("strength", context, 4096);
                 long publicExponent = e.Args.GetExChildValue ("public-exponent", context, 65537L);
                 int certainty = e.Args.GetExChildValue ("certainty", context, 5);
 
-                // Generate public/secret keys
+                // Generate public/secret keys.
                 PgpKeyRingGenerator generator = GetKeyRingGenerator (
                                                 context,
                                                 e.Args,
@@ -94,7 +94,9 @@ namespace p5.mime
 
                 // In case no [seed] was given, we remove the automatically generated seed ...
                 e.Args ["seed"].UnTie ();
-            }
+                e.Args.Add ("fingerprint", BitConverter.ToString (publicRing.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
+                e.Args.Add ("key-id", ((int)publicRing.GetPublicKey ().KeyId).ToString ("X"));
+}
         }
 
         /*
@@ -186,38 +188,38 @@ namespace p5.mime
          */
         private static SecureRandom CreateNewSecureRandom (ApplicationContext context, Node args)
         {
-            // First we retrieve the seed provided by caller through the [seed] argument, defaulting to "foobar" if no user seed is provided
+            // First we retrieve the seed provided by caller through the [seed] argument, defaulting to "foobar" if no user seed is provided.
             string userSeed = args.GetExChildValue<string> ("seed", context, "foobar");
 
-            // Then we change the given seed by hashing it, such that each pass through this method creates a different user provided seed
+            // Then we change the given seed by hashing it, such that each pass through this method creates a different user provided seed.
             args.FindOrInsert ("seed").Value = context.RaiseEvent ("p5.crypto.hash.create-sha512", new Node ("", userSeed)).Get<string> (context);
 
-            // Then we retrieve a cryptographically secure random number of 128 bytes
+            // Then we retrieve a cryptographically secure random number of 128 bytes.
             var rndBytes = context.RaiseEvent (
                 "p5.crypto.create-random", 
                 new Node ("", null, new Node[] {
                     new Node ("resolution", 128),
                     new Node ("raw", true)})).Get<byte[]> (context);
 
-            // Then retrieving "seed generator" from BouncyCastle
+            // Then retrieving "seed generator" from BouncyCastle.
             var bcSeed = new ThreadedSeedGenerator ().GenerateSeed (128, false);
 
-            // Then we retrieve the server password salt
+            // Then we retrieve the server password salt.
             string serverPasswordSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
 
-            // Then we retrieve the ticks of server
+            // Then we retrieve the ticks of server.
             string serverSeed = DateTime.Now.Ticks.ToString ();
 
-            // Then we append the Hyperlambda for the entire code tree
-            // Notice, this will even include the GnuPG password in our seed, in sha2 hashed form!
-            // In addition, every time the Hyperlambda active Event calling this method changes, the seed will change
+            // Then we append the Hyperlambda for the entire code tree.
+            // Notice, this will even include the GnuPG password in our seed, in sha hashed form!
+            // In addition, every time the Hyperlambda Active Event calling this method changes, the seed will change.
             var code = Utilities.Convert<string> (context, args.Root);
             serverSeed += context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", code)).Get<string> (context);;
 
-            // Then adding current thread ID
+            // Then adding current thread ID.
             serverSeed += System.Threading.Thread.CurrentThread.ManagedThreadId.ToString ();
 
-            // Then appending a randomly created Guid
+            // Then appending a randomly created Guid.
             serverSeed += Guid.NewGuid ().ToString ();
 
             // Then we hash the user seed, multiple times, depending upon the length of the supplied user seed

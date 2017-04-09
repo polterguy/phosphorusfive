@@ -135,6 +135,10 @@ namespace p5.mime.helpers
          */
         private void ProcessLeafPart (MimePart part, Node args)
         {
+            // Verifying part actually has content, before trying to de-serialize it.
+            if (part.ContentObject == null)
+                return;
+
             Node entityNode = args.Add (part.ContentType.MediaType, part.ContentType.MediaSubtype).LastChild;
             ProcessHeaders (part, entityNode);
 
@@ -365,11 +369,21 @@ namespace p5.mime.helpers
             // Looping through each signature.
             foreach (var idxSignature in signatures) {
 
-                // Making sure we return email of PGP key used to sign, and true as value of node if signature is valid.
-                var signatureNode = entityNode.FindOrInsert ("signature").Add (idxSignature.SignerCertificate.Email, idxSignature.Verify ()).LastChild;
+                // We cannot verify signatures unless we have the public PGP key in GnuPG database, hence the try thingie ...
+                try {
 
-                // Adding fingerprint of PGP key used to sign entity.
-                signatureNode.Add ("fingerprint", idxSignature.SignerCertificate.Fingerprint);
+                    // Making sure we return email of PGP key used to sign, and true as value of node if signature is valid.
+                    var signatureNode = entityNode.FindOrInsert ("signature").Add (idxSignature.SignerCertificate.Email, idxSignature.Verify ()).LastChild;
+
+                    // Adding fingerprint of PGP key used to sign entity.
+                    signatureNode.Add ("fingerprint", idxSignature.SignerCertificate.Fingerprint);
+
+                } catch {
+
+                    // Inserting unknown fingerprint and signature email.
+                    var signatureNode = entityNode.FindOrInsert ("signature").Add ("unknown", false).LastChild;
+                    signatureNode.Add ("fingerprint", "unknown");
+                }
             }
         }
 

@@ -53,6 +53,9 @@
     <Compile Include="helpers\MimeCreator.cs" />
     <Compile Include="MimeInit.cs" />
     <Compile Include="GnuPGKeys.cs" />
+    <Compile Include="CreatePgpKeyPair.cs" />
+    <Compile Include="ImportPGPKey.cs" />
+    <Compile Include="helpers\ObjectIterator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">
