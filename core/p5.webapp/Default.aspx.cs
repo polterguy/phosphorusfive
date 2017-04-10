@@ -44,10 +44,6 @@ namespace p5.webapp
             // Mapping up our Page_Load event for initial loading of web page.
             Load += delegate {
 
-                // Raising the "load" event, which is done every time page loads.
-                // Useful for initialising things that needs to be initialized upon every page load.
-                ApplicationContext.RaiseEvent ("p5.web.load", new Node ("p5.web.load"));
-
                 // Checking if page is not postback.
                 if (!IsPostBack) {
 
@@ -77,13 +73,6 @@ namespace p5.webapp
                     baseCtrl.Text = string.Format (@"<base href= ""{0}""/>", baseUrl);
                     Page.Header.Controls.Add (baseCtrl);
                 }
-            };
-
-            // Making sure we handle "unload", to invoke any unload events.
-            Unload += delegate {
-
-                // Making sure we "unload" page.
-                ApplicationContext.RaiseEvent ("p5.web.unload", new Node ("p5.web.unload"));
             };
 
             base.OnInit(e);
