@@ -35,7 +35,7 @@ create-event:sys42.widgets.uploader
    * Applying options for widget, with default values.
    */
   _defaults
-    css-file:/system42/components/common-widgets/uploader/media/uploader.min.css
+    css-file:/system42/components/common-widgets/uploader/media/uploader.css
     class:uploader-widget
     dragover-class:uploader-widget-dragover
     drop-class:uploader-widget-drop

@@ -129,6 +129,9 @@
     animation-timing-function:linear;
     background-image: url(bg-uploading.svg);
     opacity:1;
+    overflow-y:auto;
+    min-height:120px;
+    height:auto;
 }
 
 

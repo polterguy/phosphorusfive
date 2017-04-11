@@ -210,8 +210,8 @@
 
             // Checking if file is an image type.
             var splits = files[idx].name.split('.');
-            var ext = splits[splits.length - 1];
-            if (splits.length > 1 && (ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png")) {
+            var ext = (splits[splits.length - 1] || "").toLowerCase ();
+            if (splits.length > 1 && (ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png" || ext == "svg" || ext == "bmp")) {
 
                 // File was an image, displaying actual image as preview.
                 var img = document.createElement('img');
