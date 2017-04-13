@@ -159,6 +159,7 @@ namespace p5.imaging
 
                 // Now saving image with encoder and parameters to encoder.
                 dest.Save (rootFolder + destination, codec, pars);
+
             } else {
 
                 // No encoder arguments given.

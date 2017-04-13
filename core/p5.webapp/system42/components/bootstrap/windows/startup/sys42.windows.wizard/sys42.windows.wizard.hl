@@ -133,9 +133,22 @@ create-event:sys42.windows.wizard
     else
 
       /*
-       * Defaulting to "textbox".
+       * Defaulting to "textbox", but first checking if it's a multiline string
        */
-      eval-x:x:/+/**(/label|/input)/*
+      if
+        fetch:x:/0/0?value
+          index-of:x:/@_dp/#?value
+            src:"\r\n"
+        or:x:/@_dp/#/*/multiline?value.bool
+        set:x:/..else/*/add/**/input/*/type
+        set:x:/..else/*/add/**/input/*/value?name
+          src:innerValue
+        add:x:/..else/*/add/**/input
+          src
+            rows:3
+        set:x:/..else/*/add/**/input?name
+          src:textarea
+      eval-x:x:/+/**(/label|/input|/textarea)/*
       add:x:/../*/.lambda/*/sys42.windows.modal/*/widgets
         src
           container
