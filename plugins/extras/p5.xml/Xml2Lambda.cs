@@ -44,10 +44,10 @@ namespace p5.xml
         public static void xml2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Loops through all documents we're supposed to transform
-                foreach (var idxXmlDoc in XUtil.Iterate<string> (context, e.Args, true)) {
+                foreach (var idxXmlDoc in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Converting currently iterated document/fragment
                     var doc = new XmlDocument ();

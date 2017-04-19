@@ -126,6 +126,7 @@ namespace p5.lambda.helpers
 
                 // Regular expression "like"
                 e.Args.Value = (rhs as Regex).IsMatch (lhs);
+
             } else {
 
                 // Simple string "like"
