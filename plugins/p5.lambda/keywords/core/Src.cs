@@ -47,6 +47,11 @@ namespace p5.lambda.keywords.core
 
                 // Source is an expression, evaluating it, and returning results back to caller.
                 var match = x.Evaluate (context, e.Args, e.Args);
+
+                // Removing all formatting nodes.
+                e.Args.RemoveAll (ix => ix.Name == "");
+
+                // Checking type of match.
                 if (match.TypeOfMatch == Match.MatchType.count) {
 
                     // Simple count expression.
