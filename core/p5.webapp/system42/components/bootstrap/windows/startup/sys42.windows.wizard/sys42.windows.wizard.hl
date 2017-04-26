@@ -55,6 +55,8 @@ create-event:sys42.windows.wizard
    * Notice, by default, this creates a textbox "input" HTML widget for each child node of [data], unless the node contains an [_options] child,
    * at which case it will create a "select" HTML widget instead, with the currently active value, being the value of the currently iterated
    * [data] child.
+   *
+   * If there's a child called [multiline] with boolean "true", it will create a textarea instead of textbox input.
    */
   for-each:x:/../*/data/*
 
