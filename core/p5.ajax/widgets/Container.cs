@@ -144,7 +144,7 @@ namespace p5.ajax.widgets
                     idxWidget.DeleteAttribute ("selected"); // DeleteAttribute will check if attribute exists before attempting to delete it.
                 }
 
-                foreach (string idxSplit in value.Split (',')) {
+                foreach (string idxSplit in (value ?? "").Split (',')) {
                     foreach (Widget idxWidget in Controls) {
                         if (idxWidget ["value"] == idxSplit || idxWidget ["value"] == value) {
                             idxWidget ["selected"] = null;
