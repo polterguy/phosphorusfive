@@ -115,8 +115,10 @@ TODO before release
 
 * Verify all widgets include minified CSS file.
 
-* Sephia Five, .onretrieve beig raise while in settings throws exception, and locks screen
+* Sephia Five, .onretrieve being raise while in settings throws exception, and locks screen
 
 * Implement easy/read/write lock on AUTH file.
 
 * Clean up [sys42.cms.download-file] and associated logic.
+
+* Sometimes two widgets have the same ID, which throws an exception. Rethink generating IDs for widgets.
