@@ -33,7 +33,7 @@ using p5.ajax.core.internals;
 /*
  * Making sure we include our "manager.js" JavaScript file as a WebResource.
  */
-[assembly: WebResource ("p5.ajax.javascript.manager.min.js", "application/javascript")]
+[assembly: WebResource ("p5.ajax.javascript.manager.js", "application/javascript")]
 
 namespace p5.ajax.core
 {
@@ -77,7 +77,7 @@ namespace p5.ajax.core
                     Response.Filter = new HtmlFilter (this);
 
                     // Making sure we include "manager.js", which is the main client-side parts of p5.ajax.
-                    IncludeJavaScriptFile (ClientScript.GetWebResourceUrl (typeof (AjaxPage), "p5.ajax.javascript.manager.min.js"));
+                    IncludeJavaScriptFile (ClientScript.GetWebResourceUrl (typeof (AjaxPage), "p5.ajax.javascript.manager.js"));
                 }
             };
         }

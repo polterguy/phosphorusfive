@@ -153,6 +153,12 @@
         },
 
 
+        checked: function (v) {
+
+            this.el.checked = true;
+        },
+
+
         /*
          * These next functions are handlers for deleting attributes.
          *
