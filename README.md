@@ -1,6 +1,8 @@
 Phosphorus Five documentation
 ===============
 
+![alt tag](/core/p5.webapp/system42/apps/media/p5.svg)
+
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
 Its _"Hello World"_, can be evaluated by making sure you have the "p5.webapp" as your startup project, start your debugger, 
 click the _"Apps/CMS"_ menu item, create a new page by clicking the _"+"_ - Choose *[lambda]* page, and paste in the following code.

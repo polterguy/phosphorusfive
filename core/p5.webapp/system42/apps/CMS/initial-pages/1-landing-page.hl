@@ -9,6 +9,8 @@ p5.page:/
   role:
   html:@"<img src=""/system42/apps/CMS/media/marvin-headshot.png"" style=""float:left;margin-right:25px;margin-top:25px;"" />
 
+<p><img src=""/system42/apps/CMS/media/p5.svg"" style=""float:right;margin-left:25px;"" /></p>
+
 <h2>Home</h2>
 
 <p>Phosphorus Five is a web operating system written in C# that helps you create rich web apps.<br>
