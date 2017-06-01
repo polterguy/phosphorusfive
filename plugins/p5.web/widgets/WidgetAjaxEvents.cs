@@ -83,6 +83,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.ajax-events.set")]
+        [ActiveEvent (Name = "p5.web.widgets.ajax-events.delete")]
         public void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
@@ -104,6 +105,10 @@ namespace p5.web.widgets
                         idxWidget.DeleteAttribute (idxEventNameNode.Name);
 
                     } else {
+
+                        // Checking if this is "delete event" invocation, at which point it is a bug.
+                        if (e.Name == "p5.web.widgets.ajax-events.delete")
+                            throw new LambdaException ("Cannot pass in content to [p5.web.widgets.ajax-events.delete]", idxEventNameNode, context);
 
                         // Setting widget's Ajax event to whatever we were given, making sure we clone the lambda supplied.
                         var clone = idxEventNameNode.Clone();

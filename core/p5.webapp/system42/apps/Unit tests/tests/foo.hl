@@ -1,0 +1,11 @@
+/*
+ * Contains unit tests for testing [whatever] in system
+ */
+
+/*
+ * Tests that [foo] behaves correctly
+ */
+foo
+  _some-test-code-goes-here
+  if:bool:false
+    throw:@"Assert error, expected [something], got [something-else]!"

@@ -48,21 +48,13 @@ TODO before release
 
 * Change the [chars] argument in [p5.string.trim] to something more intuitive.
 
-* Refactor p5.web, especially the widgets part. Try to support expressions during creation among other things.
-
-* Fix editing of unit tests, when a test is clicked, it throws due to parameters being passed in the wrong way.
-
 * Figure out why modal windows in e.g. CMS is not given focus to any controls initially.
 
 * Check out if we should allow widget Ajax events to take expressions during creation.
 
-* Consider creating [p5.web.widgets.ajax-events.delete] and [p5.web.widgets.lambda-events.delete]
-
 * Rethink widget lambda events logic, since it is impossible to have multiple handlers for the same Active Event return values.
 
 * Investigate why we're escaping property name in p5.web/WidgetProperties.CreatePropertyReturn method.
-
-* Create logo, a yeallow pentagram star, with a ring around it.
 
 * Making sure we're using the correct JS inclusions all over the place, alternatives are [p5.web.send-javascript] and [p5.web.include-javascript]
 
@@ -91,12 +83,10 @@ TODO before release
 * Check formatting strings, since for instance a [p5.types.date.now] invocation inside e.g. {0} seems to be locally formatted.
 
 * Test populating a "select" widget on client side, and see if we can retrieve its value on the server.
-  Also make sure that ONLY "empty" select widgets are possible to populate this way, to avoid as much as possible, client beig able
+  Also make sure that ONLY "empty" select widgets are possible to populate this way, to avoid as much as possible, client being able
   to "inject" logic into server.
 
 * Minimize "speak.js" file.
-
-* Consider making [return] implicitly evaluate expressions returned as value of [return], to mirror the behavior of [_arg] arguments.
 
 * Check up sys42.windows.modal.hl, line 273, I think this is supposed to be "onkeydown" and not "keypressed" ...?
 
@@ -106,18 +96,11 @@ TODO before release
 
 * Make sure server salt is not empty during installation.
 
-* Pass in lambda object for [p5.pop3.get] since I suspect by not sending QUIT signal during exceptions, emails are not
-  marked as read.
-
-* Remove the "p5.web.onload/unload" events,they should strictly not be necessary.
-
 * Inclusion of JavaScript and CSS files needs to support the integrity and crossorigin attributes.
 
 * Verify all widgets include minified CSS file.
 
 * Sephia Five, .onretrieve being raise while in settings throws exception, and locks screen
-
-* Implement easy/read/write lock on AUTH file.
 
 * Clean up [sys42.cms.download-file] and associated logic.
 

@@ -5,8 +5,8 @@
  * and if user clicks "OK", creates a new default file for user.
  */
 sys42.windows.modal
-  _header:Name of unit test file
-  _widgets
+  header:Name of unit test file
+  widgets
     container:test-filename-wrp
       class:form-group
       widgets
@@ -17,7 +17,7 @@ sys42.windows.modal
           type:text
           class:form-control
           placeholder:Name of file ...
-  _buttons
+  buttons
     button:test-create-btn
       class:btn btn-default
       innerValue:Create

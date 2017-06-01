@@ -11,6 +11,17 @@
 create-event:sys42.imaging.auto-crop-resize
 
   /*
+   * If file is SVG we return immediately.
+   */
+  split:x:/../*/_arg?value
+    =:.
+  if:x:/@split/0/-?name
+    =:svg
+    or:x:/@split/0/-?name
+      =:SVG
+    return:x:/../*/_arg?value
+
+  /*
    * Retrieving original size of image.
    */
   p5.imaging.get-size:x:/../*/_arg?value

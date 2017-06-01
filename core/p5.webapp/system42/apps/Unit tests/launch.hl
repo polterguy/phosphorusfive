@@ -199,35 +199,6 @@ p5.web.widgets.create-container:unit-test-bottom-toolbar
 
 
     /*
-     * Creates new unit test file button
-     */
-    button
-      class:btn btn-default col-xs-4
-      innerValue:+
-      title:Create new unit test file
-      onclick
-        sys42.utilities.execute-lambda-file:@TESTS/create-new-test-file.hl
-
-
-    /*
-     * Clear unit tests button
-     */
-    button
-      class:btn btn-default col-xs-4
-      innerValue:Clear
-      title:Clear unit tests
-      onclick
-
-        /*
-         * Simply deletes all widgets, and invokes "self" again.
-         * Which should reset the page.
-         */
-        p5.web.widgets.delete:unit-test-bottom-toolbar
-        p5.web.widgets.delete:unit-test-datagrid
-        sys42.utilities.execute-lambda-file:@TESTS/launch.hl
-
-
-    /*
      * Shows the coverage for the test suite button
      */
     button

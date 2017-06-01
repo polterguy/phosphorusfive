@@ -22,6 +22,7 @@
  */
 
 using System.IO;
+using System.Threading;
 using p5.core;
 
 namespace p5.auth.helpers
@@ -35,7 +36,7 @@ namespace p5.auth.helpers
         internal delegate void ModifyAuthFileDelegate (Node authFile);
 
         // Used to lock access to password file
-        static object _passwordFileLocker = new object ();
+        static ReaderWriterLockSlim _locker = new ReaderWriterLockSlim ();
 
         // Used to cache password file, for faster access
         static Node _authFileContent;
@@ -45,11 +46,15 @@ namespace p5.auth.helpers
          */
         internal static Node GetAuthFile (ApplicationContext context)
         {
-            // Making sure we lock file as we retrieve it
-            lock (_passwordFileLocker) {
+            // Making sure we lock file as we retrieve it.
+            _locker.EnterReadLock ();
+            try {
 
                 // Returning auth file
                 return GetAuthFileInternal (context);
+
+            } finally {
+                _locker.ExitReadLock ();
             }
         }
 
@@ -59,7 +64,8 @@ namespace p5.auth.helpers
         internal static void ModifyAuthFile (ApplicationContext context, ModifyAuthFileDelegate functor)
         {
             // Making sure we lock file as we retrieve it and allows caller to modify it
-            lock (_passwordFileLocker) {
+            _locker.EnterWriteLock ();
+            try {
 
                 // Retrieving auth file
                 Node authFileNode = GetAuthFileInternal (context);
@@ -69,6 +75,9 @@ namespace p5.auth.helpers
 
                 // Saves updated authFileNode
                 SaveAuthFileInternal (context, authFileNode);
+
+            } finally {
+                _locker.ExitWriteLock ();
             }
         }
         

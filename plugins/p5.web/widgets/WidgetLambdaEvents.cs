@@ -91,6 +91,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.lambda-events.set")]
+        [ActiveEvent (Name = "p5.web.widgets.lambda-events.delete")]
         public void p5_web_widgets_lambda_events_set (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
@@ -117,6 +118,10 @@ namespace p5.web.widgets
                         Manager.WidgetLambdaEventStorage.Remove (idxEventNameNode.Name, idxWidget.ID);
 
                     } else {
+
+                        // Checking if this is "delete event" invocation, at which point it is a bug.
+                        if (e.Name == "p5.web.widgets.lambda-events.delete")
+                            throw new LambdaException ("Cannot pass in content to [p5.web.widgets.lambda-events.delete]", idxEventNameNode, context);
 
                         // Setting widget's lambda event to whatever we were given, making sure we clone the lambda supplied.
                         var clone = idxEventNameNode.Clone ();
