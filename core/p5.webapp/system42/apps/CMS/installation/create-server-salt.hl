@@ -51,7 +51,16 @@ p5.web.widgets.create-container:set-server-salt
              */
             p5.web.widgets.property.get:server-salt
               value
-            p5.auth._set-server-salt:x:/../*/p5.web.widgets.property.get/*/*?value
+              
+            /*
+             * Sanity check!
+             */
+            if:x:/@p5.web.widgets.property.get/*/*?value
+              =:
+              sys42.windows.info-tip:Sorry, you're going to have to provide a server salt!
+              return
+
+            p5.auth._set-server-salt:x:/@p5.web.widgets.property.get/*/*?value
 
             /*
              * Deleting main server-salt widget, and moving on to the setting of the root password.
