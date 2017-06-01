@@ -898,14 +898,12 @@
     <Content Include="system42\components\css-helpers\startup\sys42.utilities.delete-css-classes.hl" />
     <Content Include="system42\components\css-helpers\startup\sys42.utilities.toggle-css-classes.hl" />
     <Content Include="system42\components\settings\README.md" />
-    <Content Include="system42\startup\sys42.utilities.get-event.hl" />
     <Content Include="system42\components\settings\startup\sys42.settings.list.hl" />
     <Content Include="system42\components\settings\startup\sys42.settings.set.hl" />
     <Content Include="system42\components\common-widgets\codemirror\startup\sys42.widgets.codemirror-executor.hl" />
     <None Include="system42\apps\CMS\startup\p5.web.load-ui.hl" />
     <Content Include="system42\startup\README.md" />
     <Content Include="system42\startup\startup-apps-components.hl" />
-    <Content Include="system42\startup\sys42.utilities.get-event-vocabulary.hl" />
     <None Include="system42\startup\sys42.utilities.get-widget.hl" />
     <None Include="system42\components\common-widgets\ckeditor\README.md" />
     <None Include="system42\components\common-widgets\ckeditor\media\skins\moono\readme.md" />
