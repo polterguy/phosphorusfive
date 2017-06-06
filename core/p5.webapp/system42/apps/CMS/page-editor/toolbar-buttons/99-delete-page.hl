@@ -8,23 +8,6 @@ button
   onclick
 
     /*
-     * Making sure user doesn't accidentally delete one of our "special pages".
-     */
-    sys42.cms.get-edited-page-id
-    if:x:/@sys42.cms.get-edited-page-id?value
-      =:/app-loader
-      or:x:/@sys42.cms.get-edited-page-id?value
-        =:/
-
-      /*
-       * Oops, user tried to delete "special page", warning user, and setting focus to "select page dropdown",
-       * before we return early.
-       */
-      sys42.windows.info-tip:This page cannot be deleted!
-      p5.web.send-javascript:@"$('#cms-select-page').focus().select();"
-      return
-
-    /*
      * Asking user to confirm deletion of page.
      */
     sys42.windows.confirm

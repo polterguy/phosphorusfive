@@ -72,8 +72,9 @@ create-event:p5.web.load-ui
 
     /*
      * Figuring out which page to load according to argument supplied in [_url].
+     * Notice, if page is not found, we simply load the first page we find.
      */
-    p5.data.select:x:@"/*/*/p5.page/""={0}"""
+    p5.data.select:x:@"(/*/*/p5.page/""={0}""|/*/*/p5.page/[0,1])/[0,1]"
       :x:/../*/_url?value
 
     /*
@@ -84,6 +85,7 @@ create-event:p5.web.load-ui
 
       sys42.utilities.execute-lambda-file:@CMS/page-loader/special-page/not-found.hl
         _template:@CMS/page-templates/default.hl
+
     else
 
       /*
