@@ -8,7 +8,7 @@ being [/plugins/p5.lambda/](p5.lambda), which contains the main _"keywords"_ in 
 Below is a list of all the plugins in the system as of today. Each plugin is documented in its own folder.
 
 * [p5.config](p5.config) - Configuration settings
-* [p5.data](p5.data) - A memory based,super fast, database
+* [p5.data](p5.data) - A memory based super fast database
 * [p5.events](p5.events) - Create dynamic Active Events
 * [p5.hyperlambda](p5.hyperlambda) - Hyperlambda parser
 * [p5.io](p5.io) - File input and output
