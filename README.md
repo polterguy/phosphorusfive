@@ -4,25 +4,9 @@ Phosphorus Five documentation
 <img align="right" src="p5.png">
 
 Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
-Its _"Hello World"_, can be evaluated by making sure you have the "p5.webapp" as your startup project, start your debugger, 
-click the _"Apps/CMS"_ menu item, create a new page by clicking the _"+"_ - Choose *[lambda]* page, and paste in the following code.
-
-```
-p5.web.widgets.create-literal
-  element:button
-  parent:content
-  class:btn btn-default
-  innerValue:Click me!
-  onclick
-    p5.web.widgets.property.set:x:/../*/_event?value
-      innerValue:Hello World!
-```
+Its _"Hello World"_, can be found in the _"/core/p5.webapp/application-startup.hl"_ Hyperlambda file.
 
 If you get weird errors when running P5, then stop your debugger, _TURN OFF_ "Browser Link" in Visual Studio, and restart your debugger.
-
-Save your page, and click _"View page"_. If you get a browser notification saying _"a popup was blocked"_, you might
-have to change your browser settings for popups being allowed on localhost. If you do not have Visual Studio, P5
-works just as well on Xamarin (Mac OS X), and MonoDevelop (Linux).
 
 Notice, the primary for Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
 
