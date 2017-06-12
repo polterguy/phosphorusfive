@@ -1,10 +1,11 @@
 Dynamically creating Active Events in p5.lambda
 ===============
 
-In Phosphorus Five, you can either create static Active Events in C#, by adding the *ActiveEvent* attribute to your C# methods. As
-you can see an example of [here](/samples/p5.active-event-sample-plugin/). You can also use any p5.lambda object as an "anonymous function". 
+In Phosphorus Five, you can create static Active Events in C#, by adding the *ActiveEvent* attribute to your C# methods. See
+an example of this [here](/samples/p5.active-event-sample-plugin/). You can also use any p5.lambda object as an "anonymous function". 
 In addition, you can also easily execute Hyperlambda files, the same way you'd invoke a function or method, passing in arguments, 
-and returning values, just like you would with a normal function. The latter could be accomplished using e.g. *[sys42.utilities.execute-lambda-file]*.
+and returning values, just like you would with a normal function. The latter could be accomplished using e.g. *[sys42.utilities.execute-lambda-file]*,
+if you have [System42](https://github.com/polterguy/system42) installed.
 
 However, there is also the possibility of dynamically creating globally accessible Active Events, through the *[create-event]*
 Active Event. This Active Event, allows you to modify the underlaying Active Event dictionary directly, by either modifying existing, 
