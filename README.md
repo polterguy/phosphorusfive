@@ -90,7 +90,7 @@ you intend to evaluate Hyperlambda in a terminal window, using the lambda.exe pr
 
 ## More dox
 
-Some of the folders inside of P5 have specific documentation for that particular module. Feel free to start reading up at e.g.
+Some of the folders inside of P5 have specific documentation for that particular module or folder. Feel free to start reading up at e.g.
 
 * [plugins](plugins/)
 * [core](core/)
