@@ -105,3 +105,6 @@ TODO before release
 * Clean up [sys42.cms.download-file] and associated logic.
 
 * Sometimes two widgets have the same ID, which throws an exception. Rethink generating IDs for widgets.
+
+* Investigate using .Net Core, apparently you can include System.Web in such a way, according to an email I got.
+
