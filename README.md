@@ -82,8 +82,8 @@ create a CMS web page.
 If you take this approach, which I recommend for beinngers - Make sure you put the _"system42"_ folder inside of your _"/phosphorusfive/p5.webapp/"_ folder, 
 and make sure its name is exactly _"system42"_, without any versioning numbers, etc. Then restart your web server process, and have fun!
 
-After you've played around with System42 for some time, understanding the development model, you can go more hard-core into it, and create your
-own apps, entirely from scratch if you wish.
+After you've played around with System42 for some time, understanding the development model, you can go more hard-core into it, ditch System42,
+and create your own apps, entirely from scratch if you wish.
 
 ## License
 
