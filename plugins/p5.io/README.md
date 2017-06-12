@@ -40,25 +40,26 @@ with it, is to base64 encode this data, and/or, pass it into other Active Events
 
 Below you can find the documentation for how to handle files in your system.
 
-### [p5.io.file.load], loading files
+### [load-file], loading files
 
-To load a file, simply use the *[p5.io.file.load]* Active Event. An example of this event is shown below.
+To load a file, simply use the *[load-file]* Active Event. An example of this event is shown below.
 
 ```
-p5.io.file.load:/system42/application-startup.hl
+load-file:/application-startup.hl
 ```
 
-The above invocation will load System42's startup file for you. Notice that this is a Hyperlambda file, which the *[p5.io.file.load]* Active
-Event will automatically determine, and hence parse the file for you automatically, to become a p5.lambda structure. If you do not wish to 
-automatically parse the file, but rather load the file "raw", as a piece of text, not transforming it into a p5.lambda object, you must 
+The above invocation will load P5's startup file for you. Notice that this is a Hyperlambda file, which the *[load-file]* Active
+Event will automatically determine, and hence parse the file for you automatically, to become a lambda structure. If you do not wish to 
+automatically parse the file, but rather load the file "raw", as a piece of text, not transforming it into a lambda object, you must 
 add the argument *[convert]*, and set its value to "false". An example is shown below.
 
 ```
-p5.io.file.load:/system42/application-startup.hl
+load-file:/application-startup.hl
   convert:false
 ```
 
-If you run the above Hyperlambda through your System42/executor, you will see that now it contains simply a text string, preserving all comments
+If you run the above Hyperlambda through for instance your [System42](https://github.com/polterguy/system42) Executor, you will see that 
+it now contains simply a text string, preserving all comments
 for you, among other things. Unless you explicitly inform the *[p5.io.file.load]* Active Event that you do not wish for any conversion to occur,
 then it will automatically convert all Hyperlambda for you, to p5.lambda objects. This makes it very easy for you to load Hyperlambda, and 
 immediately execute your Hyperlambda, without having to convert it yourself.
