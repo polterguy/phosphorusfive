@@ -50,7 +50,7 @@ namespace p5.webapp
                     // Raising our [p5.web.load-ui] Active Event, creating the node to pass in first,
                     // where the [_URL] node becomes the name of the form requested.
                     var args = new Node("p5.web.load-ui");
-                    args.Add(new Node("_url", HttpContext.Current.Items[".p5.webapp.original-url"]));
+                    args.Add(new Node("url", HttpContext.Current.Items[".p5.webapp.original-url"]));
 
                     // Invoking the Active Event that actually loads our UI, now with a [_url] node being the URL of the requested page.
                     // Making sure we do it, in such a way, that we can handle any exceptions that occurs.

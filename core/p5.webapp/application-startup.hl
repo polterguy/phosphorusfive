@@ -12,4 +12,4 @@ create-event:p5.web.load-ui
     parent:cnt
     element:h1
     innerValue:Hello world, URL requested was '{0}'
-      :x:/../*/_url?value
+      :x:/../*/url?value
