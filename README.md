@@ -20,7 +20,7 @@ create-widget:foo
 
 ## Hyperlambda
 
-The above code, is called _"Hyperlambda"_, and is simply a key/value/children tree-structure, allowing for you
+The above code, is called _"Hyperlambda"_, and is a simple key/value/children tree-structure, allowing for you
 to declare something, that P5 refers to as _"lambda"_ or _"Hyperlambda"_. Lambda is the foundation for an execution tree, or graph object,
 that is a Turing complete opportunity to declare your apps, through a _"non-programming model"_.
 
@@ -32,6 +32,9 @@ In fact, if you wish, you could in theory declare your execution trees, by using
 using Hyperlambda, due to its much more condens syntax, and lack of overhead.
 
 All this, while retaining your ability to create C#/VB/F# code, exactly as you're used to from before.
+
+This trait of Hyperlambda, makes it an excellent choice for creating your own domain specific programming languages. In such a regard, it arguably
+brings LISP into the 21st Century.
 
 ## 3 basic innovations
 
