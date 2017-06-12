@@ -72,8 +72,6 @@ without even as much as a trace of classic inheritance, OOP or types.
 For those only interested in using e.g. the Ajax library, and/or the Active Event implementation, there are some examples of this in 
 the [samples folder](/samples/).
 
-[C# examples](/samples/)
-
 ## Getting started
 
 The easiest way to getting started using P5, is to use it in combination with [System42](https://github.com/polterguy/system42).
@@ -81,8 +79,11 @@ This gives you an intellisense environment for your Active Events, and provides 
 of really cool extension widgets. All this in a _"non-CMS environment"_, which means you can create small apps, almost the same way you'd
 create a CMS web page.
 
-If you take this approach, which I recommend, make sure you put the _"system42"_ folder inside of your _"/phosphorusfive/p5.webapp/"_ folder, 
-and make sure its name is exactly _"system42"_, without any versioning numbers, etc.
+If you take this approach, which I recommend for beinngers - Make sure you put the _"system42"_ folder inside of your _"/phosphorusfive/p5.webapp/"_ folder, 
+and make sure its name is exactly _"system42"_, without any versioning numbers, etc. Then restart your web server process, and have fun!
+
+After you've played around with System42 for some time, understanding the development model, you can go more hard-core into it, and create your
+own apps, entirely from scratch if you wish.
 
 ## License
 
