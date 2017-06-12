@@ -1,9 +1,9 @@
-Phosphorus Five documentation
+Phosphorus Five
 ===============
 
 <img align="right" src="p5.png">
 
-Phosphorus Five is a collection of libraries for developing complex and rich Ajax centric web apps.
+Phosphorus Five is a Web Operating System for developing complex and rich Ajax centric web apps.
 Its _"Hello World"_, can be found in the [application-startup.hl](/core/p5.webapp/application-startup.hl) Hyperlambda file.
 
 Notice, the primary documentation for Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
@@ -26,7 +26,7 @@ that is a Turing complete opportunity to declare your apps, through a _"non-prog
 
 I say _"non-programming"_, because really, there is no programming language in P5. Only a bunch of loosely
 coupled Active Events, that happens to, in their combined result, create a Turing complete execution
-engine, allowing you to orchestrate your components together, as if they were _"LEGO bricks"_.
+engine, allowing for you to orchestrate your components together, as if they were _"LEGO bricks"_.
 
 In fact, if you wish, you could in theory declare your execution trees, by using XML or JSON. Although I recommend
 using Hyperlambda, due to its much more condens syntax, and lack of overhead.
@@ -67,13 +67,23 @@ without even as much as a trace of classic inheritance, OOP or types.
 For those only interested in using e.g. the Ajax library, and/or the Active Event implementation, there are some examples of this in 
 the [samples folder](/samples/).
 
-[C# examples] (/samples/)
+[C# examples](/samples/)
+
+## Getting started
+
+The easiest way to getting started using P5, is to use it in combination with [System42](https://github.com/polterguy/system42).
+This gives you an intellisense environment for your Active Events, and provides a lot of developer tools, in addition to a bunch
+of really cool extension widgets. All this in a _"non-CMS environment"_, which means you can create small apps, almost the same way you'd
+create a CMS web page.
+
+If you take this approach, which I recommend, make sure you put the _"system42"_ folder inside of your _"/phosphorusfive/p5.webapp/"_ folder, 
+and make sure its name is exactly _"system42"_, without any versioning numbers, etc.
 
 ## License
 
 Phosphorus Five is free and open source software, and licensed under the terms
 of the Gnu Public License, version 3, in addition to that commercially license are available for a fee. Read more about
-our Quid Pro Quo license terms at our website at [Gaiasoul](https://gaiasoul.com/license/).
+our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/).
 
 ## Hire me
 
