@@ -3,14 +3,22 @@ Phosphorus Five documentation
 
 <img align="right" src="p5.png">
 
-Phosphorus Five is a collection of libraries, for developing complex and rich Ajax centric web apps, among other things.
-Its _"Hello World"_, can be found in the _"/core/p5.webapp/application-startup.hl"_ Hyperlambda file.
+Phosphorus Five is a collection of libraries for developing complex and rich Ajax centric web apps.
+Its _"Hello World"_, can be found in the [application-startup.hl](/core/p5.webapp/application-startup.hl) Hyperlambda file.
 
-If you get weird errors when running P5, then stop your debugger, _TURN OFF_ "Browser Link" in Visual Studio, and restart your debugger.
+Notice, the primary documentation for Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
+An example of some Hyperlambda is given below.
 
-Notice, the primary for Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
+```
+create-widget:foo
+  element:button
+  innerValue:Click me!
+  onclick
+    set-widget-property:foo
+      innerValue:I was clicked!
+```
 
-## What is that code ...?
+## Hyperlambda
 
 The above code, is called _"Hyperlambda"_, and is simply a key/value/children tree-structure, allowing for you
 to declare something, that P5 refers to as _"lambda"_ or _"Hyperlambda"_. Lambda is the foundation for an execution tree, or graph object,
