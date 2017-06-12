@@ -7,7 +7,7 @@ Phosphorus Five is a collection of libraries for developing complex and rich Aja
 Its _"Hello World"_, can be found in the [application-startup.hl](/core/p5.webapp/application-startup.hl) Hyperlambda file.
 
 Notice, the primary documentation for Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
-An example of some Hyperlambda is given below.
+This README is just intended to give you a teaser of some of its features. An example of some Hyperlambda is given below.
 
 ```
 create-widget:foo
