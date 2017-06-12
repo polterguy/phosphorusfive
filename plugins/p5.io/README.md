@@ -28,8 +28,8 @@ In general, at the time of this writing, p5.io exclusively support UTF8 text fil
 Hyperlambda files, are considered text files.
 
 All Active Events in p5.io, will also automatically substitute a path, with "/users/logged-in-username" if it starts with `~`. For instance, 
-if you are logged in as username "root", then "~/documents/foo.txt" will unroll to "/users/root/documents/foo.txt". This allows you to
-transparently refer to files in a user's folder as "~/something.txt". This is the only exception to the rule of that any paths must start with 
+if you are logged in as username "root", then `~/documents/foo.txt` will unroll to "/users/root/documents/foo.txt". This allows you to
+transparently refer to files in a user's folder as `~/something.txt`. This is the only exception to the rule of that any paths must start with 
 a slash "/".
 
 Also notice, that although you _can_ load and save binary data with p5.io - Hyperlambda and p5.lambda, is not in general terms, very adequate
