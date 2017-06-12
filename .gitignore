@@ -187,9 +187,6 @@ p5.userprefs
 #p5.data files
 core/p5.webapp/db
 
-#ignoring doxygen output folder
-dox/doxygen-output
-
 #user files
 core/p5.webapp/users/*
 !core/p5.webapp/users/root/documents/public/README.md
@@ -207,23 +204,8 @@ core/p5.webapp/auth.hl
 core/p5.webapp/common/public/*
 !core/p5.webapp/common/public/README.md
 
-# Excluding DSW8
-core/p5.webapp/system42/apps/dsw8
-
-# Excluding Sephia
-core/p5.webapp/system42/apps/sephia-five
-
-# Excluding Sulphur
-core/p5.webapp/system42/apps/sulphur-five
-
-# Excluding Camphore common documents
-core/p5.webapp/system42/components/camphora-five
-
-# Excluding DSW8 common documents
-core/p5.webapp/common/documents/private/DSW8/**
-
-# Excluding Sephia common documents
-core/p5.webapp/common/documents/private/sephia/**
+# Excluding System42
+core/p5.webapp/system42/**
 
 # Excluding auto generated Visual Studio files
 .vs/
