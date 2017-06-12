@@ -1,8 +1,9 @@
 File IO in Phosphorus Five
 ========
 
-The p5.io library, and its Active Events, allows you to easily load, create, modify, and delete files, and folders in your system.
-It contains most methods necessary to handle your file system, for most problems you'd encounter, while using P5.
+The p5.io library, and its Active Events, allows you to easily load, create, modify, and delete files and folders in your system.
+It contains most methods necessary to handle your file system, for most problems you'd encounter, while using P5. Although mostly
+useful for text files, it also to some extent allows handling binary files.
 
 Notice, that all IO operations within Phosphorus Five, and its "p5.io" library, expects the path you supply to start with a "/". If
 what you are referring to is a folder, it also expects you to _end_ your path with a forward slash (/). Unless you create your paths
@@ -12,10 +13,11 @@ Regardless of which platform you are using underneath, you'll have to use forwar
 Windows, Linux and Mac OS.
 
 Also realize, that unless you are authorized to load, save, change, or delete a specific file, or folder, then a security exception will
-be thrown if you attempt to. For instance, a user does not by default have access to files belonging to another user, existing within 
+be thrown. For instance, a user does not by default have access to files belonging to another user, existing within 
 another user's "home" folder. (e.g. /users/username/some-folder/)
 
-This is implemented in the [p5.io.authorization](/plugins/extras/p5.io.authorization/) project.
+These authorisation and authentication features of P5 are implemented in the [p5.io.authorization](/plugins/extras/p5.io.authorization/) project,
+but can easily be exchanged with your own logic, if you need more fine-grained access control.
 
 Notice also, that all file IO Active Events in p5.io, relies upon the type conversion, normally implemented in [p5.types](/plugins/p5.types/), 
 which in turn will use UTF8 exclusively, as its conversion encoding, when for instance saving files, and also loading files. This means that
@@ -25,7 +27,7 @@ UTF8. This is true for all text files. However, binary data can still be saved a
 In general, at the time of this writing, p5.io exclusively support UTF8 text files, in addition to some rudimentary support for binary files.
 Hyperlambda files, are considered text files.
 
-All Active Events in p5.io, will also automatically substitute a path, with "/users/logged-in-username" if it starts with "~". For instance, 
+All Active Events in p5.io, will also automatically substitute a path, with "/users/logged-in-username" if it starts with `~`. For instance, 
 if you are logged in as username "root", then "~/documents/foo.txt" will unroll to "/users/root/documents/foo.txt". This allows you to
 transparently refer to files in a user's folder as "~/something.txt". This is the only exception to the rule of that any paths must start with 
 a slash "/".
