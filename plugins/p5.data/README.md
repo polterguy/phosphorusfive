@@ -19,6 +19,9 @@ You can conceptualize p5.data in comparison to relational database systems (ofte
 "tables" (2 dimensional matrixes with "rows" and "columns") - p5.data is based upon tree-structures, graph objects, or "nodes". In such a regard, the p5.data database,
 consists of "3 dimensions", where traditional databases rarely have more than "2 dimensions".
 
+Notice, the p5.data database is *not* for big data, but rather for settings types of data. If you need a more scalable database, feel free to check out
+the [MySQL adapter](../extras/p5.mysql/), or roll your own data adapter.
+
 ## Inserting data [insert-data]
 
 To insert items into your database, you can use for instance a piece of lambda, such as shown below.
