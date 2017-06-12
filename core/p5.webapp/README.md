@@ -78,10 +78,6 @@ not belonging to one specific user, but rather the server as a whole.
 
 To serve files from the private folder, use for instance the *[p5.web.echo-file]* Active Event.
 
-### The "system42" folder
-
-Contains "System42". See the documentation for [System42](/core/p5.webapp/system42/).
-
 ### The "Default.aspx" file
 
 This is the only physical wep page in your system, and responsible for serving all URLs indirectly,
@@ -92,10 +88,10 @@ will be raised. It is your responsibility of creating some sort of hook, for ins
 Hyperlambda, to handle this Active Event.
 
 When the *[p5.web.load-ui]* Active Event is raised, the actual URL requested by the client,
-will exists in the *[_url]* argument, passed into your Active Event handler.
+will exists in the *[url]* argument, passed into your Active Event handler.
 
 If you use Phosphorus Five in combination with System42, this Active Event is automatically
-handled, and will retrieve the *[p5.page]* from the p5.data database, with the ID being
+handled, and will retrieve the *[p5.page]* object from the p5.data database, with the ID being
 the URL requested.
 
 Notice, by default, only URLs _not_ containing a period "." in them, will be rewritten. Other
@@ -105,18 +101,6 @@ write a mapper for CSS files and JavaScript files etc.
 
 If you wish to change this logic, you'd have to edit the Global.asax.cs class, and more specifically,
 the `Application_BeginRequest` method.
-
-However, none of this holds any relevance, as long as you use P5 in combination with System42.
-System42 automatically handles the *[p5.web.load-ui]* Active Event, and serves documents to the
-end user, from the P5 database.
-
-The pages in your system, can be retrieved with the following code.
-
-```
-p5.data.select:x:/*/*/p5.page
-```
-
-Which of course will retrieve all *[p5.page]* objects from your database.
 
 ### The "code" folder
 

@@ -1,4 +1,4 @@
-Hyperdimensional boolean algebraic graph expressions
+Hyperdimensional boolean algebraic graph object expressions
 ========
 
 Puuh, that name was a mouthful. However, really, for most practical concerns, if you know

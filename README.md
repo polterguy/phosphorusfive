@@ -88,6 +88,13 @@ and create your own apps, entirely from scratch if you wish.
 Notice, regardless of which approach you take when you start out - You must make sure the _"/core/p5.webapp"_ project is your startup project, unless
 you intend to evaluate Hyperlambda in a terminal window, using the lambda.exe project.
 
+## More dox
+
+Some of the folders inside of P5 have specific documentation for that particular module. Feel free to start reading up at e.g.
+
+* [plugins](plugins/)
+* [core](core/)
+
 ## License
 
 Phosphorus Five is free and open source software, and licensed under the terms
