@@ -108,3 +108,4 @@ TODO before release
 
 * Investigate using .Net Core, apparently you can include System.Web in such a way, according to an email I got.
 
+* Investigate forcing correct usage of CAPS, even on Windows for files and folders in p5.io.

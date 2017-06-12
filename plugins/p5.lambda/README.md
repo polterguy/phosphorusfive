@@ -1,11 +1,11 @@
-The core p5.lambda "non-programming language" of Phosphorus Five
+The core keywords in Phosphorus Five
 ===============
 
-This is the core of the "programming language" of Phosphorus Five. Although, programming language,
-doesn't quite fit the description, since there is no "language" per se, but only an execution tree.
+This is the core of the _"non-programming language keywords"_ of Phosphorus Five. Although, programming language,
+doesn't quite fit the description, since there is no programming language per se, but only an execution tree.
 
-However, for all practical concerns, it "feels like" a programming language. It allows you to create code 
-in Hyperlambda, that will be evaluated as programming instructions. It is also Turing complete in regards 
+However, for all practical concerns, it feels like a programming language. It allows you to create code 
+in Hyperlambda, that will be evaluated as computing instructions. It is also Turing complete in regards 
 to execution, and allows you to do everything you can do in any other programming languages.
 
 ## [eval], the heart of p5.lambda
@@ -21,18 +21,19 @@ _x
   foo4:do you wish to become my friend?
 for-each:x:/../*/_x/*?value
   set:x:/+/*/innerValue?value
-    src:x:/..for-each/*/_dp?value
-  p5.web.widgets.create-literal
+    src:x:/@_dp?value
+  create-widget
     parent:content
     innerValue
 ```
 
-If you run the above code, through the "apps/executor" in System42, you will see that it creates 4 web widgets for you.
+If you run the above code, through the Executor in [System42](https://github.com/polterguy/system42), 
+you will see that it creates 4 widgets for you.
 
 The two Active Events *[for-each]* and *[set]* are declared in the p5.lambda project, and as you can see in its code, 
 actually simply Active Events, and nothing you cannot implement yourself, to extend the programming language if you wish.
 
-The third Active Event called *[p5.web.widgets.create-literal]* is declared in [p5.web](/plugins/p5.web/).
+The third Active Event called *[create-widget]* is declared in [p5.web](/plugins/p5.web/).
 
 What happens when you evaluate the above piece of Hyperlambda, is that *[eval]* is being invoked, with the root node's children
 of your above Hyperlambda, as the "instructions" to evaluate. The children nodes of this root node again, are simply references
@@ -42,15 +43,15 @@ To evaluate *[eval]* directly yourself, is quite simple, and can be achieved wit
 
 ```
 _x
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     position:0
     element:h1
     innerValue:foo bar
-eval:x:/../*/_x
+eval:x:/@_x
 ```
 
-The above code creates a node structure, or a "data-segment", containing p5.lambda instructions, which are evaluated as you invoke
+The above code creates a node structure, or a "data-segment", containing lambda instructions, which are evaluated as you invoke
 *[eval]* on the *[_x]* node. To understand expressions, check out the documentation for the [p5.exp](/core/p5.exp/) project.
 
 Notice that *[eval]* will _NOT_ evaluate any nodes, having names, starting with an underscore (_) or a period ".". This allows you to create
@@ -72,20 +73,21 @@ except nodes explicitly passed in as parameters, such as the below code demonstr
 
 ```
 _x
-  set:x:/+/*/innerValue?value
-    src:x:/../*/_argument?value
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     position:0
     element:h1
-    innerValue
+    innerValue:x:/../*/argument?value
 eval:x:/../*/_x
-  _argument:foo
+  argument:foo
 eval:x:/../*/_x
-  _argument:bar
+  argument:bar
 ```
 
 In the above code, logically the *[_x]* node is treated as an "inline function", before it is invoked twice, with different arguments.
+Notice that none of the arguments passed into *[eval]* are being raised as Active Events, since the execution instruction pointer, starts out
+with an _"offset"_ being the number of arguments you pass in. This makes it perfectly safe to pass in arguments to *[eval]*, without starting them
+with an underscore or period.
 
 *[eval]* can also return values, such as below.
 
@@ -119,15 +121,15 @@ current instruction pointer, or just before it, or after it, if you wish. Consid
 ```
 insert-after:x:
   src
-    p5.web.widgets.create-literal
+    create-widget
       element:h1
       innerValue:Foo bar
 ```
 
 What happens in the above example, is that when *[eval]* comes to the *[insert-after]* Active Event invocation,
-there exists no *[p5.web.widgets.create-literal]* in the execution tree. The invocation to the *[insert-after]* Active Event
+there exists no *[create-widget]* in the execution tree. The invocation to the *[insert-after]* Active Event
 however, injects this node just after the *[insert-after]* node in the execution tree. When the instruction pointer
-is done evaluating *[insert-after]*, it finds a new Active Event invocation, being our newly added *[p5.web.widgets.create-literal]*
+is done evaluating *[insert-after]*, it finds a new Active Event invocation, being our newly added *[create-widget]*
 Active Event reference, which in turn evaluates, creating our Literal widget.
 
 If you change the above code to using *[insert-before]* instead, there will be no Literal widget after evaluation, 
@@ -136,7 +138,7 @@ but the node hierarchy is clearly changed, as you can see in the output.
 ```
 insert-before:x:
   src
-    p5.web.widgets.create-literal
+    create-widget
       element:h1
       innerValue:Foo bar
 ```
@@ -147,10 +149,10 @@ without messing up the order of your instructions. To prove it, run the followin
 ```
 insert-before:x:
   src
-    p5.web.widgets.create-literal
+    create-widget
       element:h1
       innerValue:Foo bar
-p5.web.widgets.create-literal
+create-widget
   element:h1
   innerValue:Foo bar 2
 ```
@@ -160,7 +162,7 @@ This is where all expressions starts out.
 
 For a more thourough explanation of expressions, yet again, check out the documentation for the [p5.exp](/core/p5.exp/) project.
 
-#### Evaluating multiple lambda objects in one go
+### Evaluating multiple lambda objects in one go
 
 *[eval]* can also execute multiple sources in one evaluation. Imagine you have a node hierarchy, where
 you have several nodes you wish to evaluate. This can actually be done with one *[eval]* invocation, since
@@ -169,12 +171,12 @@ Try out the following code in your System42 evaluator to see this in action.
 
 ```
 _x
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Widget no 1
 _x
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Widget no 2
@@ -183,7 +185,7 @@ eval:x:/../*/_x
 
 The above expression will return the *[_x]* nodes in consecutive order, and *[eval]* will evaluate them
 in the order returned by the expresssion. Hence, we end up with two new widgets on our page. Similar things
-will happen if you have two *[eval]* invocations, returning some values back to caller, such as the following.
+will happen if you have two results of an *[eval]* expression, returning some values back to caller, such as the following.
 
 ```
 _x
@@ -209,18 +211,18 @@ eval:x:/../*/_x
 In the above scenarion, after evalution of our *[eval]*, only the "foo2" string will be the value of our
 eval invocation.
 
-#### Notice!
+### Notice!
 
-Nodes starting with either an underscore (_) or a period (.), are _impossible_ to evaluate with p5.lambda. Hence, Active Events starting
+Nodes starting with either an underscore (_) or a period (.), are _impossible_ to evaluate with *[eval]*. Hence, Active Events starting
 with one of these characters, are considered "protected events", and only C# code, can raise these.
 
 Realize though, you can evaluate an *[eval]* block, which has a name, starting with an underscore or period. However, the *[eval]* block
-won't raise any Active Events starting with either of these two characters.
+won't raise any nodes as Active Events that are starting with either of these two characters.
 
-The convention is to use underscore (_) for "data segment", and period (.) for "invisible Active Events", although, you can choose this for yourself.
-There are no semantic differences in whether or not you use an underscore or a period.
+The convention is to use underscore (_) for "data segment", and period (.) for invisible Active Events or lambda blocks, although you can 
+choose this for yourself. There are no semantic differences in whether or not you use an underscore or a period.
 
-#### Evaluating stuff that's not a node
+### Evaluating stuff that's not a node
 
 If you try to evaluate something that is somehow not a node, then this object will be attempted converted into a node, before it
 is evaluated. This allows you to evaluate strings, values, and even integer values for that matter, as if they were a node structure,
@@ -241,15 +243,15 @@ parser will choke, and throw an exception.
 In P5, you could in theory, evaluate any block of lambda nodes you wish. Whether or not this makes sense though, depends upon the nodes you
 try to evaluate.
 
-#### Evaluating a block of lambda instead of an expression
+### Evaluating a block of lambda instead of an expression
 
 If you do not provide a value to *[eval]*, then it will instead of handling its children as arguments, directly evaluate its children, as
-a p5.lambda block. This is often useful in combination with for instance the *[set]* and *[add]* Active Events, which we will later dive into, 
+a lambda block. This is often useful in combination with for instance the *[set]* and *[add]* Active Events, which we will later dive into, 
 further down in the document here. However, to illustrate its simplest version, imagine this code.
 
 ```
 eval
-  p5.web.widgets.create-literal
+  create-widget
     element:h3
     innerValue:Foo, bar!
 ```
@@ -260,16 +262,35 @@ having still the root node of its evaluation being the *[eval]* node itself.
 
 Later in our documentation we will dive into some use-cases where this is extremely useful. But for now, just keep it at the back of your mind.
 
+### Eval is not (necessarily) evil
+
+There exists an overload of eval called *[eval-whitelist]*, which allows you to pass in a subset of legal Active Events, as an *[events]* list.
+If either directly, or indirectly within this execution, any Active Event not in this whitelisted *[events]* list is attempted to be raised,
+a security exception will be thrown.
+
+This is highly useful for evaluating code you are uncertain of whether or not is safe, for some reasons. Example is given below.
+
+```
+_x
+  set:x:/..?value
+    src:foo
+  chokes
+eval-whitelist:x:/@_x
+  events
+    set
+    src
+```
+
 ## "Keywords" in p5.lambda
 
 p5.lambda contains several "keywords", which aren't really keywords, as previously explained, but in fact
-simply Active Events, creating an extremely extendible environment for your programming needs. But the core
+Active Events, creating an extremely extendible environment for your programming needs. But the core
 "keywords", that should exist in a default installation of Phosphorus Five are as following.
 
 ### [eval-x], forward evaluating expressions
 
 This Active Event allows you to forward evaluate expressions, and is useful when you want to use expressions,
-in Active Event invocations, where the Active Event itself, does not in general terms support expressions, or
+in Active Event invocations, where the Active Event itself, does not in general accept expressions, or
 you need to evaluate expressions for some other reasons, before the event is invoked. Consider the following
 code for instance
 
@@ -302,36 +323,6 @@ eval:x:/../*/_x
 
 When we then invoke our *[eval]* Active Event, the value of *[return]*, is no longer an expression, but contains the constant value 
 of that expression, as evaluated during our invocation of our *[eval-x]* Active Event.
-
-The above example might not seem so very useful, besides, a better way of accomplishing the above, would be to pass in values
-as arguments to our *[eval]* invocation. However, a more useful example, could imply using for instance *[p5.web.widgets.create-literal]*,
-which is an Active Event, that takes a lot of properties and children nodes, where the event does not support expressions in its arguments.
-Consider this code.
-
-```
-_x:Hello World
-p5.web.widgets.create-literal
-  parent:content
-  position:0
-  element:h1
-  innerValue:x:/../*/_x?value
-```
-
-If you simply evaluate it as is, you will have the expression, become the *[innerValue]* of your widget. However, a little bit 
-of *[eval-x]* magic, and we're all set for the type of result we really wanted.
-
-```
-_x:Hello World
-eval-x:x:/+/*
-p5.web.widgets.create-literal
-  parent:content
-  position:0
-  element:h1
-  innerValue:x:/../*/_x?value
-```
-
-Notice how we run *[eval-x]* on all nodes above, and not only the *[innerValue]*. *[eval-x]* will simply ignore nodes that does not have 
-expressions as their values.
 
 Notice also that *[eval-x]* _always_ expects a Node result set in its expression, and not a "?value" or "?name". *[eval-x]* can also only
 change values of nodes, and not names or other parts of them. This is because the type system in P5, only works for values, 

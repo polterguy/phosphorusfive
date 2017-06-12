@@ -6,7 +6,7 @@ It contains most methods necessary to handle your file system, for most problems
 useful for text files, it also to some extent allows handling binary files.
 
 Notice, that all IO operations within Phosphorus Five, and its "p5.io" library, expects the path you supply to start with a "/". If
-what you are referring to is a folder, it also expects you to _end_ your path with a forward slash (/). Unless you create your paths
+what you are referring to is a folder, it also expects you to _end_ your path with a forwardslash (/). Unless you create your paths
 like this, exceptions will be thrown during evaluation of your code.
 
 Regardless of which platform you are using underneath, you'll have to use forwards slash "/" to separate folders. This is true for both
@@ -29,8 +29,8 @@ Hyperlambda files, are considered text files.
 
 All Active Events in p5.io, will also automatically substitute a path, with "/users/logged-in-username" if it starts with `~`. For instance, 
 if you are logged in as username "root", then `~/documents/foo.txt` will unroll to "/users/root/documents/foo.txt". This allows you to
-transparently refer to files in a user's folder as `~/something.txt`. This is the only exception to the rule of that any paths must start with 
-a slash "/".
+transparently refer to files in a user's folder as `~/something.txt`. This is one of few exceptions to the rule of that any paths must start with 
+a forwardslash "/".
 
 Also notice, that although you _can_ load and save binary data with p5.io - Hyperlambda and p5.lambda, is not in general terms, very adequate
 for manipulating binary data. This means that you can load binary data, but for the most parts, the only intelligent thing you can do
@@ -198,7 +198,7 @@ p5.io.file.get-last-access-time
   /web.config:date:"2017-06-12T22:52:11"
 ```
 
-#### Changing the read-only state of a file
+### Changing the read-only state of a file
 
 You can set one or more files to "read-only" with the *[p5.io.file.read-only.set]* Active Event. In addition, you can remove the "read-only" attribute,
 using the *[p5.io.file.read-only.delete]* Active Event. Both of these Active Events takes either a constant or an expression, leading to multiple files.
@@ -313,7 +313,7 @@ list-files:/
   filter:.aspx
 ```
 
-#### Using path variables
+### Using path variables
 
 p5.io supports "unrolling paths". This feature allows you to instead of hard coding a path, you can create a variable Active Event, which is invoked
 if your path starts with an "@" character. If you defined an Active Event called for instance *[p5.io.unroll-path.@my-documents]*, then you can
@@ -329,9 +329,9 @@ save-file:@my-temp/foo.txt
   src:Foo bar
 ```
 
-After evaluating the above code, you should have a foo.txt file in your temp folder.
+After evaluating the above code, you should have a foo.txt file in your temp folder. Path variables are almost like symbolic links or shortcuts.
 
-#### Executing every Hyperlambda file within a folder
+### Executing every Hyperlambda file within a folder
 
 Combining *[list-files]* and *[eval]*, you can do some interesting things. One of these things, is that you can evaluate all Hyperlambda files within
 some specific folder, easily, with only 3-4 lines of code. Imagine the following code.
@@ -344,14 +344,14 @@ eval:x:/-/*
 ```
 
 What the above code actually does, is first of all listing every Hyperlambda file with a specific folder. Then it loads all these files.
-As we previously said, *[load-file]* will automatically convert a Hyperlambda file to a lambda structure after loading it. Then we invoke
+As we previously said, *[load-file]* will automatically convert a Hyperlambda file to a lambda structure after loading it by default. Then we invoke
 the *[eval]* event, passing in an expression leading to all children nodes of *[load-file]*, which now should be the root node of all files 
 loaded this way. The end result, is that all files in some specific folder is automatically evaluated and executed.
 
 [System42](https://github.com/polterguy/system42) contains helper Active Events, both for evaluating single Hyperlambda files, 
 in addition to recursively evaluating all Hyperlambda files within some specified folder.
 
-#### Additional helper Active Events
+### Additional helper Active Events
 
 If you create your own file plugin in C#, that uses paths, you can use the *[.p5.io.unroll-path]* Active Event, to make sure for instance `~` is
 replaced with the user's home directory. This Active Event takes a path as its input, and returns the "unrolled path" back to caller.
@@ -359,7 +359,7 @@ replaced with the user's home directory. This Active Event takes a path as its i
 ## Warning! WRITE PORTABLE CODE!
 
 The underlaying filesystem on Windows and Linux/Mac OS, have huge differences. I have tried to accommodate for most of these differences, to create a
-uniform and common way of typing out paths and such. One example is that I consistently replace backslash "\" with forward slash "/", and P5 doesn't 
+uniform and common way of typing out paths and such. One example is that I consistently replace backslash with forwardslash, and P5 doesn't 
 even accept backslash as a part of a path. However, a filename in Windows called "FOO.txt" points to the same file as "foo.TXT". Windows does not 
 differentiate between CAPS in filenames. Linux and Mac OS does however discriminate between CAPS!
 
@@ -372,3 +372,5 @@ Otherwise your code will not be portable to run on Linux servers.
 I could have verified that filenames had the right CAPS, but this would blow up the code, and use additional resources on your system. Therefor I have
 chosen to (for now) allow the underlaying filesystem take care of usage of CAPS. Have this in mind though as you create your own apps!
 
+Notice, I might even impose the correct usage of caps later, which might make your code that works on Windows today, possibly stop working in the 
+future on Windows!
