@@ -1,4 +1,4 @@
-File IO in Phosphorus Five
+﻿﻿File IO in Phosphorus Five
 ========
 
 The p5.io library, and its Active Events, allows you to easily load, create, modify, and delete files and folders in your system.
@@ -60,56 +60,56 @@ load-file:/application-startup.hl
 
 If you run the above Hyperlambda through for instance your [System42](https://github.com/polterguy/system42) Executor, you will see that 
 it now contains simply a text string, preserving all comments
-for you, among other things. Unless you explicitly inform the *[p5.io.file.load]* Active Event that you do not wish for any conversion to occur,
-then it will automatically convert all Hyperlambda for you, to p5.lambda objects. This makes it very easy for you to load Hyperlambda, and 
+for you, among other things. Unless you explicitly inform the *[load-file]* Active Event that you do not wish for any conversion to occur,
+then it will automatically convert all Hyperlambda for you, to lambda objects. This makes it very easy for you to load Hyperlambda, and 
 immediately execute your Hyperlambda, without having to convert it yourself.
 
 #### Loading multiple files at the same time
 
 Sometimes, you want to load multiple files at the same time. Often you might even want to treat them as "one aggregated" file result.
-For such cases, you can pass in an expression into your *[p5.io.file.load]* invocation, such as the following is an example of.
+For such cases, you can pass in an expression into your *[load-file]* invocation, such as the following is an example of.
 
 ```
 _files
-  file1:/system42/application-startup.hl
-  file2:/system42/startup/pf.web.load-ui.hl
-p5.io.file.load:x:/-/*?value
+  file1:/application-startup.hl
+  file2:/some-other-file.hl
+load-file:x:/-/*?value
 ```
 
-The above code, will load both of the given files, and append them into a node, beneath *[p5.io.file.load]*, having the name being the path of
+The above code, will load both of the given files, and append them into a node, beneath *[load-file]*, having the name being the path of
 the file loaded. The structure will look roughly like this.
 
 ```
 _files
-  file1:/system42/application-startup.hl
-  file2:/system42/startup/pf.web.load-ui.hl
-p5.io.file.load
-  /system42/application-startup.hl
-     ... file 1 content, p5.lambda nodes ...
-  /system42/startup/pf.web.load-ui.hl
-     ... file 2 content, p5.lambda nodes ...
+  file1:/application-startup.hl
+  file2:/some-other-file.hl
+load-file
+  /application-startup.hl
+     ... file 1 content, lambda nodes ...
+  /some-other-file.hl
+     ... file 2 content, lambda nodes ...
 ```
 
 Notice, if you try to load a file that does not exist, an exception will be thrown.
 
-### [p5.io.file.save], saving files
+### [save-file], saving files
 
-The *[p5.io.file.save]* Active Event, does the exact opposite of the *[p5.io.file.load]* event. Meaning, it saves a new file, or overwrites an existing on.
+The *[save-file]* Active Event, does the exact opposite of the *[load-file]* event. Meaning, it saves a new file, or overwrites an existing on.
 Try the following code.
 
 ```
-p5.io.file.save:~/foo.md
+save-file:~/foo.md
   src:@"Hello there file system!
 =======
 
 I am a newly created markdown file!"
 ```
 
-After evaluating the above Hyperlambda, a new file will exist within your main "~/" user's folder, called "foo.md".
+After evaluating the above Hyperlambda, a new file will exist within your main `~/` user's folder, called "foo.md".
 If the file already exists, it will be overwritten.
 
 Whatever argument you pass into the *[src]* node, will somehow be converted into a text string, or a single binary piece of blob, and
-flushed into the given file, passed in as the value of *[p5.io.file.save]*. This allows you to create a new file, or overwrite an existing file.
+flushed into the given file, passed in as the value of *[save-file]*. This allows you to create a new file, or overwrite an existing file.
 You can also use expression in your *[src]*, such as the following is an example of.
 
 ```
@@ -121,19 +121,19 @@ _data
   people:Howdy world
     first:John
     last:Doe
-p5.io.file.save:~/foo.hl
+save-file:~/foo.hl
   src:x:/../*/_data/*
-p5.io.file.load:~/foo.hl
+load-file:~/foo.hl
 ```
 
-The *[p5.io.file.load]* invocation above, is only there to show the results of your newly created file, and illustrates how only the results of
-the expression you pass into your *[src]* to *[p5.io.file.save]*, are saved to disc. This allows you to save sub-sections of your trees, and even 
+The *[load-file]* invocation above, is only there to show the results of your newly created file, and illustrates how only the results of
+the expression you pass into your *[src]* to *[save-file]*, are saved to disc. This allows you to save sub-sections of your trees, and even 
 combine multiple pieces of text, and/or p5.lambda sub-trees, and save the combined result to disc.
 
 You can also have a "static" source, containing the nodes as children of *[src]*, such as the following is an example of.
 
 ```
-p5.io.file.save:~/foo.hl
+save-file:~/foo.hl
   src
     person:1
       name:thomas
@@ -146,7 +146,7 @@ Yet even more powerful control over what is saved, can be achieved by using an A
 ```
 _exe
   return:Content of file
-p5.io.file.save:~/foo.txt
+save-file:~/foo.txt
   eval:x:/../*/_exe
 ```
 
@@ -163,7 +163,7 @@ _files
     content:Foo was here
   name:~/bar.txt
     content:Bar was here
-p5.io.file.save:x:/-/*?value
+save-file:x:/-/*?value
   eval:x:/./+
 _get-content
   return:x:/../*/_dn/#/*?value
@@ -177,8 +177,8 @@ This "Ninja trick" allows you to save multiple files, in one go.
 
 ### [p5.io.file.delete], deleting one or more files
 
-Just like *[p5.io.file.load]*, *[p5.io.file.delete]* can react upon several files at the same time. Its arguments work the same way as p5.io.file.load, except of
-course, instead of loading the file(s), it deletes them. To delete the files created above in one of our *[p5.io.file.save]* examples, you
+Just like *[load-file]*, *[p5.io.file.delete]* can react upon several files at the same time. Its arguments work the same way as load-file, except of
+course, instead of loading the file(s), it deletes them. To delete the files created above in one of our *[save-file]* examples, you
 can use the following code.
 
 ```
@@ -193,7 +193,7 @@ the user context object must be authorized to modifying the file. Otherwise, an 
 
 ### [p5.io.file.exists], checking if one or more files exist
 
-*[p5.io.file.exists]* accepts its arguments the same way *[p5.io.file.load]* does. However, *[p5.io.file.exists]* will return true for each file that
+*[p5.io.file.exists]* accepts its arguments the same way *[load-file]* does. However, *[p5.io.file.exists]* will return true for each file that
 exists, instead of returning the content of the file. Example given below.
 
 ```
@@ -211,7 +211,7 @@ With *[p5.io.file.move]*, you can either rename a file, or entirely move it into
 "source file" as its value, and the "destinatin filepath/value", as the value of a *[dest]* child node. Let's show this with an example.
 
 ```
-p5.io.file.save:~/foo.txt
+save-file:~/foo.txt
   src:foo bar
 p5.io.file.move:~/foo.txt
   dest:~/new-foo.txt
@@ -220,11 +220,11 @@ p5.io.file.move:~/foo.txt
 To move multiple files in one go, you could do something similar to this.
 
 ```
-p5.io.file.save:~/temp/foo1.txt
+save-file:~/temp/foo1.txt
   src:foo1
-p5.io.file.save:~/temp/foo2.txt
+save-file:~/temp/foo2.txt
   src:foo2
-p5.io.file.move:x:/../*/p5.io.file.save?value
+p5.io.file.move:x:/../*/save-file?value
   eval
     p5.string.split:x:/../*/_dn/#?value
       =:.
@@ -233,7 +233,7 @@ p5.io.file.move:x:/../*/p5.io.file.save?value
       :x:/../*/p5.string.split/1?name
 ```
 
-The above p5.lambda, first creates two text files. Then it uses an expression leading to each *[p5.io.file.save]*'s value for *[p5.io.file.move]*, with
+The above p5.lambda, first creates two text files. Then it uses an expression leading to each *[save-file]*'s value for *[p5.io.file.move]*, with
 an Active Event destination, utilizing the *[eval]* Active Event, which returns the old filename, with the text " - new path" appended at 
 its end. The end result being, that you end up with two files at the root of your "p5.website" folder called "foo1 - new path.txt" and
 "foo2 - new path.txt".
@@ -251,7 +251,7 @@ a destination file. Besides from that it actually copies the file(s), instead of
 The arguments to *[p5.io.file.copy]* are also the same as the arguments to *[p5.io.file.move]*. Consider this code.
 
 ```
-p5.io.file.save:~/foo.txt
+save-file:~/foo.txt
   src:foo bar
 p5.io.file.copy:~/foo.txt
   dest:~/foo-copy.txt
@@ -302,7 +302,7 @@ Creates a folder at the given path. Notice that the parent folder must exist, an
 Also notice that if the folder exist from before, an exception will be thrown.
 
 This Active Event also handles expressions, and will create all folders your expressions yields as a result, the same way for instance 
-the *[p5.io.file.load]* will load multiple files.
+the *[load-file]* will load multiple files.
 
 Every single Active Event that somehow takes a folder, requires the path to both start with a slash (/), in addition to ending with a slash (/).
 
@@ -350,9 +350,9 @@ p5.io.folder.create:~/foo-bar/
 p5.io.folder.create:~/foo-bar/foo-bar-inner/
 
 // Creating some dummy text file in folder
-p5.io.file.save:~/foo-bar/foo.txt
+save-file:~/foo-bar/foo.txt
   src:Foo bar text file
-p5.io.file.save:~/foo-bar/foo-bar-inner/foo2.txt
+save-file:~/foo-bar/foo-bar-inner/foo2.txt
   src:Foo bar text file
 
 // Then copying the folder we created
@@ -419,7 +419,7 @@ Below is some sample code that creates such a variable Active Event, for then to
 ```
 create-event:p5.io.unroll-path.@my-temp
   return:~/temp
-p5.io.file.save:@my-temp/foo.txt
+save-file:@my-temp/foo.txt
   src:Foo bar
 ```
 
@@ -433,13 +433,13 @@ some specific folder, easily, with only 3-4 lines of code. Imagine the following
 ```
 p5.io.folder.list-files:/system42/some-hyperlambda-folder/
   filter:.hl
-p5.io.file.load:x:/-/*?name
+load-file:x:/-/*?name
 eval:x:/-/*
 ```
 
 What the above code actually does, is first of all listing every Hyperlambda file with a specific folder. Then it loads all these files.
-As we previously said, *[p5.io.file.load]* will automatically convert a Hyperlambda file to a p5.lambda structure after loading it. Then we invoke
-the *[eval]* event, passing in an expression leading to all children nodes of *[p5.io.file.load]*, which now should be the root node of all files 
+As we previously said, *[load-file]* will automatically convert a Hyperlambda file to a p5.lambda structure after loading it. Then we invoke
+the *[eval]* event, passing in an expression leading to all children nodes of *[load-file]*, which now should be the root node of all files 
 loaded this way. The end result, is that all files in some specific folder is automatically evaluated and executed.
 
 System42 contains helper Active Events, both for evaluating single Hyperlambda files, in addition to recursively evaluating all Hyperlambda

@@ -1,4 +1,4 @@
-Users and roles
+﻿Users and roles
 ===============
 
 This folder contains the Active Events related to users and roles management. It allows you to create new users, associate roles with them, and 
@@ -17,8 +17,8 @@ Notice, only _"root"_ accounts can create new, edit, or delete users in your sys
 where there in general terms can only exist one root account - In P5 you can have as many root accounts as you wish, with different usernames. I encourage 
 you to keep your root accounts to a minimum though. Preferably, only one!
 
-Also notice, that only the root account(s) can actually read or modify your _"auth.hl"_ file in your system directly, using for instance *[p5.io.file.load]*
-or *[p5.io.file.save]* etc. Your _"auth.hl"_ file, or if you choose to use another filename for it, is in general terms, the by far best protected file
+Also notice, that only the root account(s) can actually read or modify your _"auth.hl"_ file in your system directly, using for instance *[load-file]*
+or *[save-file]* etc. Your _"auth.hl"_ file, or if you choose to use another filename for it, is in general terms, the by far best protected file
 in your file system.
 
 ## Users and your filesystem
@@ -33,7 +33,7 @@ In addition, each user gets his own personal _"temp"_ folder, which is used for 
 To access the currently logged in user's folder, use the tilde "~". To load the _"foo.txt"_ file from a user's folder, you can use for instance.
 
 ```
-p5.io.file.load:~/foo.txt
+load-file:~/foo.txt
 ```
 
 The tilde above (~), will be substituded with _"/users/john-doe"_, if the user attempting to evaluate the above code is our _"john-doe"_ user from the 
@@ -42,7 +42,7 @@ similar file structure, as the _"/users/"_ folder, and this folder substitution 
 or whether or not any user is logged in at all. Tilde "~" basically means the _"home folder"_. The _"home folder"_ for guests, who are not logged in, is
 the _"/common/"_ folder.
 
-Notice, the above *[p5.io.file.load]* Hyperlambda, will throw an exception, unless you actually have a _"foo.txt"_ file in your user's home folder. 
+Notice, the above *[load-file]* Hyperlambda, will throw an exception, unless you actually have a _"foo.txt"_ file in your user's home folder. 
 
 In general, you should put files you want for everyone to see, but that still belongs to a specific user, including guests visitors, into 
 the _"~/documents/public/"_ folder(s), while protected files, into the _"~/documents/private/"_ folder.
@@ -191,10 +191,10 @@ example of a callback, creating a dummy textfile when your currently logged in a
 ```
 p5.auth.my-settings.set
   .onlogin
-    p5.io.file.save:~/foo-bar-file-login.txt
+    save-file:~/foo-bar-file-login.txt
       src:"This was created when my user logged in!!"
   .onlogout
-    p5.io.file.save:~/foo-bar-file-logout.txt
+    save-file:~/foo-bar-file-logout.txt
       src:"This was created when my user logged out!!"
 ```
 

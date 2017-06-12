@@ -1,4 +1,4 @@
-Handling CSV files
+﻿Handling CSV files
 ===============
 
 This folder contains the Active Events necessary to read CSV files automatically. There are two basic Active Events, that converts between CSV and lambda.
@@ -6,11 +6,11 @@ This folder contains the Active Events necessary to read CSV files automatically
 * [p5.csv.csv2lambda] - Converts from CSV to lambda
 * [p5.csv.lambda2csv] - Converts from lambda to CSV
 
-The *[p5.io.file.load]* Active Event, will automatically invoke the *[p5.csv.csv2lambda]*, unless you explicitly tell it not to. To convert a CSV file, you can use the 
+The *[load-file]* Active Event, will automatically invoke the *[p5.csv.csv2lambda]*, unless you explicitly tell it not to. To convert a CSV file, you can use the 
 following code.
 
 ```
-p5.io.file.load:~/documents/private/sample.csv
+load-file:~/documents/private/sample.csv
 ```
 
 The above code, assumes you have a CSV file in your private documents folder.
