@@ -1,4 +1,4 @@
-A Managed Ajax library for ASP.NET and C#
+The Phosphorus Five Ajax library
 ========
 
 This project contains the main Ajax library for Phosphorus Five. This Ajax library can be consumed
@@ -7,9 +7,9 @@ _System.Web.UI.Control_ - Or indirectly, through using the [p5.web library](/plu
 allowing you to create controls with Active Events, using for instance Hyperlambda as your programming 
 language.
 
-The Hello World example application at the [root of this documentation](https://github.com/polterguy/phosphorusfive), 
-actually consumes this library indirectly, by invoking the *[p5.web.widgets.create-literal]* Active Event, which internally
-creates a _"Literal"_ widget for you, and injects it into your page.
+The Hyperlambda example at the [root of this documentation](https://github.com/polterguy/phosphorusfive), 
+actually consumes this library indirectly, by invoking the *[create-widget]* Active Event, which internally
+creates a widget for you, and injects it into your page.
 
 In our documentation here, we will assume some C# knowledge, and create our examples, as _"pure"_ ASP.NET/C#
 examples. If you wish to see it further abstracted, the way you'd probably normally use it, in combination 
@@ -42,17 +42,6 @@ persistently add and remove widgets from its children `Controls` collection, thi
 you to create any type of markup you wish, dynamically building up your website's HTML,
 exactly as you see fit.
 
-## Where is the Ajax TreeView/DataGrid/"insert-your-complex-control-here"?
-
-p5.ajax does not have a _"Tree Ajax widget"_ or a _"DataGrid Ajax widget"_, simply
-because it is not its responsibility to create such widgets. However, to
-create such extension widgets, utilizing the 3 pre-existing widgets from p5.ajax,
-could easily be done, even without having to resort to JavaScript.
-
-In fact, such an Ajax TreeView widget actually exists in System42, created exclusively
-using the 3 native widgets from p5.ajax. To see it in action, feel free to check out the documentation
-for the [Ajax TreeView widget](/core/p5.webapp/system42/components/common-widgets/tree).
-
 ## No more keeping track of your controls
 
 The Container widget, will automatically track its children `Controls` collection,
@@ -68,6 +57,9 @@ long as you use the above mentioned methods. The widgets will be automatically
 re-created upon every postback to your server. Which of course, for beginners in 
 ASP.NET, entirely removes the burdon of having to keep track of which widgets 
 have been previously created.
+
+This allows you to create a web app, with the same stateful experience, as you 
+would create a conventional desktop app.
 
 ## Example usage
 
@@ -197,12 +189,11 @@ to the client.
 
 ## No more partial rendering!!
 
-p5.ajax uses JSON internally to return updates back to the client, and a _"per attribute level"_. This means, that among
+p5.ajax uses JSON internally to return updates back to the client, on a _"per attribute level"_. This means, that among
 other things, it rarely needs to re-render your controls, using _"partial rendering"_. You can 
 also inject any new control, in a postback or Ajax callback, at any position in your 
 page, as long as its parent control, is of type `Container`, and you use the appropriate factory 
-method to create your controls. And not even a change to a widget's `Controls` collection will 
-trigger a partial rendering.
+method to create your controls. This almost completely eliminates the need for partial rendering.
 
 This means that when using p5.ajax, the bandwidth consumption becomes ridiculously small, 
 compared to frameworks built around _"partial rendering"_, which requires some portion of the page, 
@@ -213,7 +204,7 @@ it uses at least one order of magnitude less bandwidth.
 
 ## ViewState
 
-The ViewState is bye, bye in p5.ajax. Or rather, to be accurate, it is kept, but on
+The ViewState is non-existent in p5.ajax. Or rather, to be accurate, it is kept, but on
 the server. This means that the amount of data sent back and forth between your clients and your server, 
 is probably less than a fraction of that which you are used to from other Ajax frameworks, such as 
 ASP.NET Ajax, and similar frameworks.
@@ -226,7 +217,7 @@ page objects per session by default. This value can be configured though, throug
 Out of the box, without tweaking the library, this means that it is best suited
 for building single page web _"apps"_, where you don't have an extreme amount of simultaneous
 users, and most users would only request one or two pages at the same time. As a general rule, 
-I'd suggest using p5.ajax for building enterprise apps, without too many simultaneous users, 
+I'd suggest using p5.ajax for building enterprise apps, etc, without too many simultaneous users, 
 and not for instance social media websites, such as Facebook or Twitter, for the above mentioned reasons.
 
 Another consequence, is that (by default), only 5 simultaneous tabs are tolerated
@@ -247,7 +238,9 @@ As a general rule, I encourage people to use it to build enterprise apps, while
 use something else to build websites, requiring millions, of simultaneous users.
 Although p5.ajax could be tweaked to handle also such scenarios.
 
-The ViewState logic _can_ be overridden though, by tweaking your web.config.
+The ViewState logic _can_ be overridden though, by tweaking your web.config. Hint; The session 
+objects can also easily be configured to be stored in a database, which would drastically increase
+your app's scalability.
 
 ## More example code
 
@@ -267,7 +260,7 @@ JavaScript library.
 The most interesting methods and properties from `AjaxPage` are listed below for your convenience.
 
 * IsAjaxRequest - Returns true if this is a p5.ajax Ajax request.
-* IncludeCSSFile - Includes a CSS file persistently in your page. Works in both normal requests, and Ajax requests. Will also _"persist"_ (remember) the file, and re-include it during conventional postbacks, if (God forbids) such a thing should occur.
+* IncludeCSSFile - Includes a CSS file persistently in your page. Works in both normal requests, and Ajax requests. Will also _"persist"_ (remember) the file, and re-include it during conventional postbacks, if such a thing should occur.
 * IncludeJavaScriptFile - Includes a JavaScript file persistently on your page.
 * IncludeJavaScriptObject - Includes an inline JavaScript snippet persistently on your page.
 * SendJavaScript - Sends a JavaScript snippet to the client once.

@@ -176,7 +176,7 @@ The entirety of everything inside of the [plugins](/plugins/) folder in Phosphor
 p5.lambda "non-programming language" itself, is entirely created as Active Events.
 
 If you wish to see more examples of how to use Active Events, I encourage you to look at the 
-source for P5 itself, and more specifically the [plugins](/plgins/) folder, since it is the primary example 
+source for P5 itself, and more specifically the [plugins](/plugins/) folder, since it is the primary example 
 of how to use Active Events.
 
 
