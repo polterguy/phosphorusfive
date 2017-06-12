@@ -49,6 +49,7 @@ Every single Ajax widget in P5, is somehow built, by using these widgets as its 
 This is an extremely extendibe Ajax library, allowing you to create any extension Ajax widget you wish, by combining multiple widgets together, 
 and build your extension widgets incrementally on top of each other.
 
-## lambda.exe, a console program for executing Hyperlambda
+## lambda.exe
 
-The _"lambda.exe"_ project, is a simple console program, that allows you to execute Hyperlambda from the console.
+The _"lambda.exe"_ project, is a simple console program, that allows you to execute Hyperlambda from the console. It features the ability
+to evaluate Hyperlambda files, passing in parameters - In addition to immediate mode, allowing you to type in Hyperlambda, directly into the console.
