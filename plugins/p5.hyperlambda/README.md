@@ -9,7 +9,7 @@ It is among other things, used internally in the [p5.data](/plugins/p5.data/) pr
 
 The reason why Hyperlambda was invented, was because XML is too verbose to be useful for describing this "execution tree structure",
 while JSON contains too much "unnecessary syntax". Hyperlambda however, perfectly balances the needs for Phosphorus Five, being a relational
-file format, allowing for describing the tree structure, which p5.lambda is evaluating, using its p5.lammbda construct - In addition, Hyperlambda
+file format, allowing for describing the tree structure, which p5.lambda is evaluating, using its p5.lambda construct - In addition, Hyperlambda
 is easily "typed", allowing for the type structure, the underlaying execution engine depends upon, to be preserved for values of nodes.
 
 Anyway, enough of the abstract, let's see it in action!
@@ -40,7 +40,7 @@ foo
   child2-of-foo:Another value
 ```
 
-Above we have 4 nodes in total. *[foo]* has two children, and *[child1-of-foo]* has one child of its own. The *[foo]' node in the above example, 
+Above we have 4 nodes in total. *[foo]* has two children, and *[child1-of-foo]* has one child of its own. The *[foo]* node in the above example, 
 does not have a value at all, which means its value becomes "null". Notice how for most cases, the number of lines in a Hyperlambda file, 
 almost perfectly describes the number of nodes in total in your execution tree. Also notice the equivalent syntax of the above writte in XML.
 
@@ -125,9 +125,9 @@ this, use any one of the pre-existing types in "p5.types" as your starting groun
 Realize though, that in order to create your own "type extension", your type must somehow, support being serialized from object to string, 
 and vice versa.
 
-### Converting from Hyperlambda to p5.lambda, and vice versa
+### Converting from Hyperlambda to lambda, and vice versa
 
-Sometimes you are given a piece of text, which you want to convert into p5.lambda, or vice versa. For such case you can use the *[hyper2lambda]*
+Sometimes you are given a piece of text, which you want to convert into lambda, or vice versa. For such case you can use the *[hyper2lambda]*
 and *[lambda2hyper]* Active Events. Let us illustrate with an example.
 
 ```
@@ -155,19 +155,19 @@ hyper2lambda:x:/-?value
 lambda2hyper:x:/-/*
 ```
 
-This means that if you convert Hyperlambda to p5.lambda, for then to convert it back to Hyperlambda, all comments, and additional spacing, is
+This means that if you convert Hyperlambda to lambda, for then to convert it back to Hyperlambda, all comments, and additional spacing, is
 lost during the translation.
 
 This is a conscious choice, for among other things, preserving bandwidth and CPU resources, when evaluating p5.lambda, and also transmitting
-p5.lambda over a network, etc. If you wish to keep comments and additional spacing, you will have to handle your Hyperlambda as Hyperlambda, and not
-transform it to p5.lambda, for then to re-create its originating Hyperlambda again.
+lambda over a network, etc. If you wish to keep comments and additional spacing, you will have to handle your Hyperlambda as Hyperlambda, and not
+transform it to lambda, for then to re-create its originating Hyperlambda again.
 
-For the record, Hyperlambda, yet again, is the name of the file format. This file format, describes p5.lambda. Think of Hyperlambda as XML, and p5.lambda
-as its DOM (Document Object Model). The DOM is the result of parsing XML. p5.lambda is the result of parsing Hyperlambda.
+For the record, Hyperlambda, yet again, is the name of the file format. This file format, describes lambda. Think of Hyperlambda as XML, and lambda
+as its DOM (Document Object Model). The DOM is the result of parsing XML. lambda is the result of parsing Hyperlambda.
 
-The evaluation engine of Phosphorus Five, exclusively understands p5.lambda, and knows nothing about Hyperlambda in fact. This project, is the only project,
+The evaluation engine of Phosphorus Five, exclusively understands lambda, and knows nothing about Hyperlambda in fact. This project, is the only project,
 that in any ways, knows about the existence of Hyperlambda. If you wanted to, you could entirely change the underlaying file format of P5 to XML, by exchanging
-this project, with something that parses XML, through the same Active Events! BTW, don't do it! XML is not a good format for describing p5.lambda ...
+this project, with something that parses XML, through the same Active Events! BTW, don't do it! XML is not a good format for describing lambda objects!
 
 
 
