@@ -85,6 +85,9 @@ and make sure its name is exactly _"system42"_, without any versioning numbers, 
 After you've played around with System42 for some time, understanding the development model, you can go more hard-core into it, ditch System42,
 and create your own apps, entirely from scratch if you wish.
 
+Notice, regardless of which approach you take when you start out - You must make sure the _"/core/p5.webapp"_ project is your startup project, unless
+you intend to evaluate Hyperlambda in a terminal window, using the lambda.exe project.
+
 ## License
 
 Phosphorus Five is free and open source software, and licensed under the terms
