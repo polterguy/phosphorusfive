@@ -1,7 +1,7 @@
-Accessing your app's configuration settings
+Configuration settings in P5
 ===============
 
-This project allows you to access configuration settings, from either app.config, or web.config, from p5.lambda.
+This project allows you to access configuration settings, from either app.config, or web.config, from Hyperlambda.
 
 It consists of two Active Events, the first being; *[p5.config.get]* - Which has a protected alias; *[.p5.config.get]*, that
 allows you to access configuration settings, that are "protected", meaning starting with an underscore "_", or a period ".".
@@ -17,4 +17,10 @@ The above is a general pattern for all "collection type of Active Events, such a
 In addition to the above Active Event, there is also an event that will list all configuration settings for you called; *[p5.config.list]*.
 Also this Active Event has a "protected" alias, which will not list settings starting with "_" or ".".
 
+## Example
 
+```
+p5.config.get:p5.pop3.server
+```
+
+The above will retrieve the _"p5.pop3.server"_ configuration setting from your web.config.
