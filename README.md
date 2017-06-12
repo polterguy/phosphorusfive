@@ -28,8 +28,8 @@ I say _"non-programming"_, because really, there is no programming language in P
 coupled Active Events, that happens to, in their combined result, create a Turing complete execution
 engine, allowing for you to orchestrate your components together, as if they were _"LEGO bricks"_.
 
-In fact, if you wish, you could in theory declare your execution trees, by using XML or JSON. Although I recommend
-using Hyperlambda, due to its much more condens syntax, and lack of overhead.
+In fact, if you wish, you could in theory declare your execution trees by using XML or JSON. Although I recommend
+using Hyperlambda, due to its much more condens syntax and lack of overhead.
 
 All this, while retaining your ability to create C#/VB/F# code, exactly as you're used to from before.
 
@@ -47,7 +47,9 @@ Phosphorus Five consists of three basic innovations.
 The Ajax library is created on top of ASP.NET's Web Forms, allowing you to use them the same way you would create a web forms website.
 Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind. We say _"managed"_, because
 it takes care of all state, Ajax serialization, and dynamic JavaScript inclusion automatically. In fact, when you use the Ajax library, you can
-create your web apps, the same way you would normally create a desktop application.
+create your web apps, the same way you would normally create a desktop application. The Ajax library is extremely extendible, allowing you to create
+your own markup, exactly as you wish. This is because there fundamentally exists only one single Ajax widget in the library, which allows for you to
+declare its HTML tag, attributes, dynamically remove and change any parts of your DOM element, also during Ajax callbacks.
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them. Active Events is the _"heart"_ of
 Phosphorus Five, allowing for the rich plugin nature in P5. You can easily create your own Active Events, either in Hyperlambda, or in C# if you wish.
