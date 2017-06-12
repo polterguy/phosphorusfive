@@ -31,7 +31,7 @@ engine, allowing you to orchestrate your components together, as if they were _"
 In fact, if you wish, you could in theory declare your execution trees, by using XML or JSON. Although I recommend
 using Hyperlambda, due to its much more condens syntax, and lack of overhead.
 
-All this, while retaining your ability to create C#/VB/F# code, exactly as you're used to from ASP.NET.
+All this, while retaining your ability to create C#/VB/F# code, exactly as you're used to from before.
 
 ## 3 basic innovations
 
@@ -59,86 +59,12 @@ creating plugins, where you can assemble your apps, in a loosely coupled archite
 contrast to the traditional way of _"carving out"_ apps, using interfaces for plugins, which often creates a much higher degree of
 dependencies between your app's different components.
 
-In fact, the above Hello World example, is simply an invocation to an Active Event, who's name is *[p5.web.widgets.create-literal]*, which
-happens to take a set of arguments, that allows you to create an Ajax control on your page, which once clicked, changes 
-its *[innerValue]* property to; _"Hello World!"_.
-
 The paradox is, that due to neither using OOP nor inheritance, in any ways, Hyperlambda facilitates for perfect encapsulation, and polymorphism,
-without even as much as a trace of inheritance, OOP or objects.
-
-You can easily create your own Active Events, incrementally building on top of your previously created Active Events, that creates much richer
-Ajax widgets than what's shown above. Below is a piece of Hyperlambda, that creates an Ajax TreeView, which allows you to browse your folders on disc.
-This [extension widget](/core/p5.webapp/system42/components/common-widgets/tree/) is entirely created in Hyperlambda, but you can also create Active 
-Events in C#.
-
-```
-p5.web.widgets.create-container
-  parent:content
-  widgets
-    sys42.widgets.tree
-      _crawl:true
-      _items
-        root:/
-      .on-get-items
-        p5.io.folder.list-folders:x:/../*/_item-id?value
-        for-each:x:/-/*?name
-          p5.io.folder.list-folders:x:/./*/_dp?value
-          p5.string.split:x:/./*/_dp?value
-            =:/
-          add:x:/../*/return/*
-            src:@"{0}:{1}"
-              :x:/..for-each/*/p5.string.split/0/-?name
-              :x:/..for-each/*/_dp?value
-          if:x:/./*/p5.io.folder.list-folders/*
-            not
-            add:x:/../*/return/*/_items/0/-
-              src
-                _class:tree-leaf
-        return
-          _items
-```
-
-Below is a screenshot of how the above piece of Hyperlambda might look like, if you paste it into a CMS/lambda page.
-
-![alt tag](/core/p5.webapp/system42/components/common-widgets/tree/screenshots/ajax-treeview-widget-example-screenshot.png)
-
-Notice, the above Ajax TreeView is even search engine friendly, and allows for spiders to crawl your items. Try seeing this in action, by right-clicking
-any node in it, and choose _"Open in new tab"_.
-
-This _"incremental"_ development model, allows you to reuse almost everything you create in your future projects, to an extent difficult to understand,
-before you have experienced it.
-
-## Documentation
-
-To see the documentation for the different projects, open up the folder for whatever project's dox you wish to read, and check out the 
-embedded README.md file. The dox for the core, can be found in the projects folders inside of the _"core"_ folder, while the dox for the 
-different plugins, can be found within the different project folders inside of the _"plugin"_ folders.
-
-* [Documentation for the core](/core/) - The Ajax library, the website and the Active Event design pattern implementation.
-* [Documentation for the plugins](/plugins/) - All _"plugins"_, such as the Hyperlambda keywords, creation of Ajax widgets, etc.
-
-There also exists [a book](https://github.com/polterguy/phosphorusfive-dox), which is probably the easiest way to start learning
-P5. This is a relatively *"interactive book"*, containing links to tutorial videos, and probably the easiest way for you to
-start learning P5.
-
-## About System42
-
-System42 is really just a folder within the _"/core/p5.webapp/"_ folder in Phosphorus Five. It serves 3 purposes. First of all it 
-is a use-case for the C# Active Events in Phosphorus Five, showing the capability of P5. Secondly, it is a relatively complete CMS 
-by itself, and could probably be used standalone as a CMS for your website. Last, but not least, it contains a lot of components, which
-you can use in your own systems, such as the above Ajax TreeView for instance.
-
-[Browse the Hyperlambda files in System42](/core/p5.webapp/system42/) to get a feel for Hyperlambda, and see some more example code.
-
-## Removing features/plugins
-
-If you create your own plugins, and/or want to remove existing plugins, you do this by modifying your _"web.config"_, 
-in the [p5.website folder](/core/p5.webapp/). This will change the DLLs dynamically loaded during startup of your website, 
-and allow you to invoke your own custom made Active Events, possibly created in for instance C#, VB.NET, F#, or Boo for that matter.
+without even as much as a trace of classic inheritance, OOP or types.
 
 ## C# samples
 
-For those only interested in using e.g. the Ajax library, and/or the Active Event implementation, there are many examples of this in 
+For those only interested in using e.g. the Ajax library, and/or the Active Event implementation, there are some examples of this in 
 the [samples folder](/samples/).
 
 [C# examples] (/samples/)
@@ -147,10 +73,10 @@ the [samples folder](/samples/).
 
 Phosphorus Five is free and open source software, and licensed under the terms
 of the Gnu Public License, version 3, in addition to that commercially license are available for a fee. Read more about
-our Quid Pro Quo license terms at our website at [Gaiasoul](http://gaiasoul.com).
+our Quid Pro Quo license terms at our website at [Gaiasoul](https://gaiasoul.com/license/).
 
 ## Hire me
 
-Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email :)
+Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email.
 
 Thomas Hansen; thomas@gaiasoul.com
