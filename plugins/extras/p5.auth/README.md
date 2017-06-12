@@ -70,7 +70,7 @@ create-event:p5.io.unroll-path.@PUBLIC
 ```
 
 All IO Active Events in Phosphorus Five, will try to unroll the path, if necessary, according to the above logic. Meaning, you can use for instance 
-also *[p5.io.folder.list-folders]*, *[p5.io.file.copy]*, etc, with path modifiers as our examples above shows you.
+also *[list-folders]*, *[copy-file]*, etc, with path modifiers as our examples above shows you.
 
 ## Editing users
 
