@@ -1,7 +1,0 @@
-
-/*
- * Startup script that is evaluated when server is started.
- * Evaluates all Hyperlambda files in the "startup" folder.
- */
-
-sys42.utilities.execute-lambda-folder:@SYS42-COMPONENTS/common-widgets/tab/startup/

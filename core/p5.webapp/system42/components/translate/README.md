@@ -1,4 +1,0 @@
-Translate component
-===============
-
-TODO: Document ...

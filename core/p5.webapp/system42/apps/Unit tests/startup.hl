@@ -1,8 +1,0 @@
-
-/*
- * Creates some path unrolling Active Events for p5.io
- */
-
-create-event:p5.io.unroll-path.@TESTS
-  return:/system42/apps/Unit tests
-

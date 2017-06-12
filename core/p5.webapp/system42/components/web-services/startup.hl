@@ -1,5 +1,0 @@
-﻿
-/*
- * Initializing "web-services" component.
- */
-sys42.utilities.execute-lambda-folder:@SYS42-COMPONENTS/web-services/startup/

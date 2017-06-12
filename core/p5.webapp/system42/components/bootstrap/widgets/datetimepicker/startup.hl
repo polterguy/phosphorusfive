@@ -1,9 +1,0 @@
-
-/*
- * Startup Hyperlambda that is evaluated when server is started.
- *
- * Evaluates all Hyperlambda files in the "startup" folder, which again are responsible for creating the DateTimePicker,
- * and its associated Active Events.
- */
-
-sys42.utilities.execute-lambda-folder:@BOOTSTRAP/widgets/datetimepicker/startup/

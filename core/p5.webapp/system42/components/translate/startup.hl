@@ -1,5 +1,0 @@
-﻿
-/*
- * Initializing "translate" component.
- */
-sys42.utilities.execute-lambda-folder:@SYS42-COMPONENTS/translate/startup/
