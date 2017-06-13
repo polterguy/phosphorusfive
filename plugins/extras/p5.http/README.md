@@ -45,8 +45,7 @@ You will have one *[result]* node returned, for each URL you supply to it. You c
 ```
 p5.http.get:"https://httpbin.org/get"
   Foo-Bar:Some data goes here
-set:x:?value
-  src:x:/../**/content?value.string
+src:x:/../**/content?value.string
 ```
 
 There are 4 basic Active Events in this project.
@@ -78,6 +77,7 @@ p5.http.post:"https://httpbin.org/post"
     _data
       no1:Thomas
       no2:John
+src:x:/../**/content?value.string
 ```
 
 ## POSTing and PUTting files
@@ -86,9 +86,8 @@ If you have a big file you wish to POST or PUT, you can achieve it using the fol
 
 ```
 p5.http.post-file:"https://httpbin.org/post"
-  filename:/system42/application-startup.hl
-set:x:?value
-  src:x:/../**/content?value.string
+  filename:/application-startup.hl
+src:x:/../**/content?value.string
 ```
 
 Exchange the above invocation to *[p5.http.put-file]* if you wish to use PUT the file instead.
@@ -98,7 +97,7 @@ copy the stream directly from disc to the request stream. This allows you to tra
 
 ## GETting files
 
-If you instead want to retrieve a document using HTTP GET, and save it directly to file, without loading it into memory,you can use *[p5.http.get-file]*.
+If you instead want to retrieve a document using HTTP GET, and save it directly to disc, without loading it into memory, you can use *[p5.http.get-file]*.
 Consider the following code.
 
 ```
@@ -136,10 +135,10 @@ p5.web.echo:x:/@lambda2hyper?value
 Make sure you set the page's _"Role"_ to _"guest"_ in its _"Settings"_, and that you set its URL to _"/invisible-my-service"_. By starting your page's URL
 with _"/invisible-"_, you make sure it doesn't show up in the navbar or menu.
 
-Then evaluate the following code, assuming your web server is listening on port 1176.
+Then evaluate the following code, assuming your web server is listening on port 8080.
 
 ```
-p5.http.post:"http://localhost:1176/invisible-my-service"
+p5.http.post:"http://localhost:8080/invisible-my-service"
   Content-Type:application/x-hyperlambda
   content
     _data
@@ -197,7 +196,7 @@ you can require that the client invoking your web service, is trusted, by only a
 to cryptographically sign their MIME messages in a PGP mime/multipart. Still, you would need to be 100% confident in that the client's private PGP key has
 not somehow been compromised, and that you can trust the client transmitting the Hyperlambda.
 
-There are ways to further refine this, by whitewashing the Hyperlambda, only allowing a subset of keywords/events to be evaluated, and so on. But this
-is beyond the scope of this documentation. For servers you trust though, such as your own servers, the above Web Service logic, is really quite spectacular,
-and something I think Hyperlambda is the only programming language on the planet that can actually easily achieve.
+There are ways to further refine this, and increase the security, by requiring the client to only supply a sub-set of Active Events, through using 
+e.g. the *[eval-whitelist]* Active Event when evaluating the incoming and returned lambda. Please see the *[eval-whitelist]* Active Event for details
+about this, in the [p5.lambda](/plugins/p5.lambda) project for details about how to do this.
 
