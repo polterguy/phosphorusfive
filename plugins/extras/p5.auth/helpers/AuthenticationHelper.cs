@@ -218,7 +218,7 @@ namespace p5.auth.helpers
             // Verifying username is valid, since we'll need to create a folder for user
             VerifyUsernameValid (username);
 
-            // Creating user salt, and retrieving system salt
+            // Retrieving system salt before we enter write lock.
             var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
 
             // Then salting password with user salt, before salting it with system salt
@@ -323,6 +323,9 @@ namespace p5.auth.helpers
             if (args["username"] != null)
                 throw new LambdaSecurityException ("Cannot change username for user", args, context);
 
+            // Retrieving system salt before we enter write lock.
+            var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
+
             // Locking access to password file as we edit user object
             AuthFile.ModifyAuthFile (
                 context, 
@@ -339,9 +342,6 @@ namespace p5.auth.helpers
                     if (!string.IsNullOrEmpty (password)) {
 
                         // Changing user's password
-                        // Creating user salt, and retrieving system salt
-                        var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
-
                         // Then salting password with user salt and system, before salting it with system salt
                         var userPasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
                         authFile ["users"][username]["password"].Value = userPasswordFingerprint;
@@ -414,15 +414,15 @@ namespace p5.auth.helpers
             
             string username = context.Ticket.Username;
 
+            // Retrieving system salt before we enter write lock.
+            var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
+
             // Locking access to password file as we edit user object
             AuthFile.ModifyAuthFile (
                 context, 
                 delegate (Node authFile) {
 
                     // Changing user's password
-                    // Creating user salt, and retrieving system salt
-                    var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
-
                     // Then salting password with user salt and system, before salting it with system salt
                     var userPasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
                     authFile ["users"][username]["password"].Value = userPasswordFingerprint;
