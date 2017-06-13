@@ -37,7 +37,7 @@ load-file:~/foo.txt
 ```
 
 The tilde above (\~), will be substituted with _"/users/john-doe"_, if the user attempting to evaluate the above code is our _"john-doe"_ user from the 
-above Hyperlambda. If your user is a _"guest"_ account (not loggedd in), the tilde "~" will evaluate to the _"/common/"_ folder. The common folder, has a 
+above Hyperlambda. If your user is a _"guest"_ account (not loggedd in), the tilde "\~" will evaluate to the _"/common/"_ folder. The common folder, has a 
 similar file structure, as the _"/users/"_ folder, and this folder substitution can be used transparently if you wish, without caring who is logged in, 
 or whether or not any user is logged in at all. Tilde "~" basically means the _"home folder"_. The _"home folder"_ for guests, who are not logged in, is
 the _"/common/"_ folder.
@@ -49,28 +49,6 @@ the _"~/documents/public/"_ folder(s), while protected files, into the _"~/docum
 
 If you wish to create files that are accessible to all users of your system, you should put these files in your _"/p5.webapp/common/"_ folder, which is
 accessible to all users in your system.
-
-## Adding to the system PATH variable
-
-You can also create your own _"path unroll"_ active events, leading to for instance some specific folder on your server. This is done by creating an
-Active Event named *[p5.io.unroll-path.@XXX]*, returning for instance _"/my-cool-folder/xxx"_. An example is given below.
-
-```
-create-event:p5.io.unroll-path.@XXX
-  return:/my-cool-folder/xxx
-```
-
-Notice, do _not_ end the path, as returned from your Active Event with a slash "/". If you create unrolling Active Events, you can also create them 
-recursively, meaning that your Active Event returns a user-specific folder. Consider the following for instance, that will always return 
-the _"public home folder"_.
-
-```
-create-event:p5.io.unroll-path.@PUBLIC
-  return:~/documents/public
-```
-
-All IO Active Events in Phosphorus Five, will try to unroll the path, if necessary, according to the above logic. Meaning, you can use for instance 
-also *[list-folders]*, *[copy-file]*, etc, with path modifiers as our examples above shows you.
 
 ## Editing users
 
