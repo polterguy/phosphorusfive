@@ -12,10 +12,10 @@ However, to start out with the obvious, let's first take a look at how we create
 ## Creating your first Ajax web widget
 
 Below is a piece of code that allows you to create an Ajax web widget, which handles the "click" event on the server, and
-modifies the widget's text property when clicked, to becomes the server-time.
+modifies the widget's text property when clicked.
 
 ```
-p5.web.widgets.create-literal:my-widget
+create-widget:my-widget
   element:h3
   parent:content
   position:0
@@ -23,33 +23,35 @@ p5.web.widgets.create-literal:my-widget
   onclick
     p5.types.date.now
     p5.web.widgets.property.set:my-widget
-      innerValue:x:/../*/p5.types.date.now?value.string
+      innerValue:x:/@p5.types.date.now?value.string
 ```
 
-The above p5.lambda, will create an H3 HTML element, having the value of "Click me!", which when clicked, will change its value to the date and time
-at the server. The "onclick" callback to the server, is of course wrapped in an Ajax HTTP request automatically for you. Allowing you to focus on
-your domain problems, and not on the Ajax details.
+The above lambda, will create an H3 HTML element, having the value of "Click me!", which when clicked, will change its value to the server's date and time.
+The *[onclick]* callback to the server, is of course wrapped in an Ajax HTTP request automatically for you. Allowing you to focus on
+your domain problems, and not on the Ajax internals.
 
 There exists three basic Active Events for creating such mentioned Ajax widgets in P5. They are for the most parts almost identical, except for
-some small details which sets them apart.
+some minor details which sets them apart.
 
 ### The common arguments to all create widget events
 
-These arguments are common to all create widgets events, meaning *[p5.web.widgets.create-literal]*, *[p5.web.widgets.create-container]* and *[p5.web.widgets.create-void]*.
+These arguments are common to all create widgets events, meaning *[create-literal-widget]*, *[create-container-widget]* 
+and *[create-void-widget]*. Notice, if you use the generic *[create-widget]* event, your widget type will be automatically figured out, according to
+whether or not you supply an *[innerValue]*, *[widgets]* collection, or neither.
 
-The most important "argument" is the value of your create widget invocation node. This should be a string, if defined, and becomes the ID of your
-widget. Both on the client side, if you wish to access your widget using JavaScript, and on the server-side if you wish to de-reference your widget
-from your server. This "argument" is optional, and if you do not supply it, then an "automatically generated ID" will be assigned your widget.
+The most important argument is the value of your create widget invocation node. This argument becomes the ID of your
+widget, and how you will reference it, both on the server through Hyperlambda, and on the client through JavaScript.
+The ID argument is optional, and if you do not supply it, then an automatically generated ID will be assigned your widget.
 
 * [parent] - Defines the parent widget for your widget. Mutually exclusive with [after] and [before]
 * [position] - Defines the position in the parent list of widgets, only applicable if you define [parent]
-* [before] - An ID to a widget from where your widget should appear "before of". Mutually exclusive with [parent], [after] and [position]
-* [after] - An ID to a widget from where your widget should appear "after". Mutually exclusive with [parent], [before] and [position]
+* [before] - An ID to a widget from where your widget should be injected before. Mutually exclusive with [parent], [after] and [position]
+* [after] - An ID to a widget from where your widget should be injected after. Mutually exclusive with [parent], [before] and [position]
 
-Notice, you can only declare one of *[parent]*, *[before]* or *[after]*. Only if you declare a *[parent]*, you can declare a *[position]*.
+Notice, you can only declare one of *[parent]*, *[before]* or *[after]*, and only if you declare a *[parent]*, you can declare a *[position]*.
 By cleverly using the above arguments, you can insert your Ajax widgets, exactly where you wish in your page's DOM structure.
 
-In addition to the positional arguments, all widgets also _optionally_ takes some other common arguments. These are listed below.
+In addition to the positional arguments, all widgets also optionally takes some other common arguments. These are listed below.
 
 * [visible] - Boolean, defines if the widget is initially rendered as visible or invisible
 * [element] - Defines which HTML element to render your widget with
@@ -58,62 +60,62 @@ In addition to the positional arguments, all widgets also _optionally_ takes som
 ### HTML attributes and widget events
 
 In addition to these especially handled arguments, you can in addition add up any argument you wish. Depending upon the name of your argument, 
-it will either be handled as an "HTML attribute" to your widget, or an event of some sort. If your argument starts with the text "on", it will
-be assumed to be some sort of "event". Either a DOM JavaScript event, if your node as a "value", or a server-side Ajax event, if it has no value,
-but children nodes instead.
+it will either be handled as an HTML attribute to your widget, or an event of some sort. If your argument starts with the text "on", it will
+be assumed to be some sort of client side event. Either a DOM JavaScript event, if your node has a value, or a server-side Ajax event, if it has no value,
+but contains a lambda object of its own.
 
-Below is an example of how to create a widget with a "class" attribute and a "style" attribute for instance.
+Below is an example of how to create a widget with a class attribute and a style attribute for instance.
 
 ```
-p5.web.widgets.create-literal:some-other-widget
+create-widget:some-other-widget
   element:h3
   parent:content
   position:0
-  innerValue:Colors
   style:"background-color:LightBlue;"
   class:some-css-class
+  innerValue:Colors
 ```
 
-Since neither of our "custom arguments" above (the "style" argument and "class" argument) starts out with "on", they are treated as custom HTML
+Since neither of our custom arguments above (the style and class arguments) starts out with "on", they are treated as custom HTML
 attributes, and not as events.
 
 If you want to create an Ajax event instead, you could do this like the following code illustrates.
 
 ```
-p5.web.widgets.create-literal
+create-widget
   element:h3
   parent:content
   position:0
   innerValue:Colors, hover your mouse over me!
   onmouseover
-    p5.web.widgets.property.set:x:/../*/_event?value
+    set-widget-property:x:/../*/_event?value
       style:"background-color:LightGreen"
 ```
 
-Since our above argument starts out with "on", P5 automatically creates an Ajax server-side event, evaluating the associated p5.lambda every time
+Since our above argument starts out with "on", P5 automatically creates an Ajax server-side event, evaluating the associated lambda every time
 this event is raised.
 
-Notice one detail in the above p5.lambda, which is that it does not declare an explicit ID. This means that the widget will have an "automatically
-assigned ID", looking something like this; "x3833968". This means that we do not know the ID of our widget inside of our *[onmouseover]* event.
-However, this is not a problem for us, since the ID of the widget will be forwarded into all Ajax events, and lambda events (which we will speak 
-about later) automatically. Each time an event is raised, it will have an *[_event]* argument passed into it, which is the server-side and client-side 
-ID of our widget. By referencing this *[_event]* argument in our *[p5.web.widgets.property.set]* expression above, we are able to modify the widget's
+Notice one detail in the above lambda, which is that it does not declare an explicit ID. This means that the widget will have an automatically
+assigned ID, looking something like this; "x3833968". This means that we do not know the ID of our widget from inside our *[onmouseover]* event.
+However, this is not a problem for us, since the ID of the widget will be forwarded into all Ajax events, and lambda events automatically. 
+Each time an event is raised, it will have an *[_event]* argument passed into it, which is the server-side and client-side 
+ID of our widget. By referencing this *[_event]* argument in our *[set-widget-property]* expression above, we are able to modify the widget's
 properties.
 
 In fact, if you have a list of widgets, automatically created, inside for instance a loop, which creates rows and cells for a table for instance - 
-Then you _should not_ give these widgets an "explicit ID", but rather rely upon the automatically generated ID, to avoid the problem of having
-multiple widgets on your page, with the same ID - Which would be a severe logical error! If you use your own "explicit IDs", you should also take
-great care making sure they are unique for your page. Which means that you would probably end up creating some sort of "namespacing logic" for 
-things that are used on multiple pages, and injected as "reusable controls" into your page. Which is a very common pattern for development in P5.
+Then you _should not_ give these widgets an explicit ID, but rather rely upon the automatically generated ID, to avoid the problem of having
+multiple widgets on your page, with the same ID - Which would be a severe logical error! If you use your own explicit IDs, you should also take
+great care making sure they are unique for your page. Which means that you would probably end up creating some sort of namespacing logic for 
+things that are used on multiple pages, and injected as reusable controls into your page - Which is a common pattern when using P5.
 
 ### JavaScript and client-side DOM events
 
 If you create an argument that starts out with the text "on", and have a value, instead of children nodes, you can put any arbitrary JavaScript you wish
 into this value. This would inject your JavaScript into the attribute of your widget, as rendered on the client-side, allowing you to create
-"JavaScript hooks" for DOM HTML events. Imagine something like this for instance.
+JavaScript hooks for DOM HTML events. Imagine something like this for instance.
 
 ```
-p5.web.widgets.create-literal
+create-widget
   element:h3
   parent:content
   position:0
@@ -121,15 +123,15 @@ p5.web.widgets.create-literal
   onmouseover:"alert ('foo');"
 ```
 
-The above p5.lambda, will render an HTML element for you which when the mouse hovers over it, creates an "alert" JavaScript message box. Any JavaScript
+The above lambda, will render an HTML element for you which when the mouse hovers over it, creates an alert JavaScript message box. Any JavaScript
 you can legally put into an "onmouseover" attribute of your HTML elements, you can legally put into the above value of *[onmouseover]*. Using this
-logic, you could completely circumvent the "server-side Ajax parts" of Phosphorus Five, if you wish. Still get to use all the other nice features
-of the library, by rolling your own JavaScript handlers, doing whatever you wish for your widgets to do.
+logic, you could completely circumvent the server-side Ajax parts of Phosphorus Five, and roll your own logic - While still retaining the ability 
+to use all the other nice features of the library.
 
-### "In-visible" properties and events
+### In-visible properties and events
 
-Sometimes you have some value or event for that matter, which you want to associate with your widget, but you don't want to render it back to the
-client, but instead only access it from your server. Or as would be the case for "in-visible events", not render them as your widget's HTML, but
+Sometimes you have some value, or event for that matter, which you want to associate with your widget, but you don't want to render it back to the
+client, but instead only access it from your server. Or as would be the case for in-visible events, not render them as your widget's HTML, but
 be able to access them through the JavaScript API of P5.
 
 This is easily done, by simply prepending an underscore (_) in front of your widget's attribute or event. This would ensure that this attribute or
@@ -138,45 +140,47 @@ event is not rendered as a part of your markup, but only accessible on the serve
 For instance, to create a value, which you can only access on the server, you could do something like this.
 
 ```
-p5.web.widgets.create-literal
+create-widget
   element:h3
   parent:content
   position:0
   innerValue:Click me to see the server-side value of [_foo]
   _foo:foo value
   onclick
-    p5.web.widgets.property.get:x:/../*/_event?value
+    get-widget-property:x:/../*/_event?value
       _foo
-    p5.web.widgets.property.set:x:/../*/_event?value
+    set-widget-property:x:/../*/_event?value
       innerValue:Value of [_foo] is '{0}'
-        :x:/../*/p5.web.widgets.property.get/*/*?value
+        :x:/@get-widget-property/*/*?value
 ```
 
-Notice how the *[p5.web.widgets.property.get]* retrieves the *[_foo]* value, while the *[p5.web.widgets.property.set]* sets the *[innerValue]* of the widget
+Notice how the *[get-widget-property]* retrieves the *[_foo]* value, while the *[set-widget-property]* sets the *[innerValue]* of the widget
 to a string formatted value, where the "{0}" parts becomes the value retrieved from the widget's *[_foo]*'s value. Notice also how this value is
 only acessible from the server, and not visible or possible to retrieve on the client. Neither by inspecting the DOM, HTML or by using JavaScript.
 
 By starting an attribute with an underscore (_), it is completely invisible for the client, in every possible way.
 
-If you prepend an event with underscore (_), the results are similar. Consider this code.
+If you prepend an event with underscore (_), or a period (.) - The results are similar. Consider this code.
 
 ```
-p5.web.widgets.create-literal:some-invisible-event
+create-widget:some-invisible-event
   element:h3
   parent:content
   position:0
   innerValue:Click me to see the server-side value of [_foo]
-  _onfoo
-    p5.web.widgets.property.set:x:/../*/_event?value
-      innerValue:[_onfoo] was raised
-  onclick:@"p5.$('some-invisible-event').raise('_onfoo');"
+  .onfoo
+    set-widget-property:x:/../*/_event?value
+      innerValue:[.onfoo] was raised
+  onclick:@"p5.$('some-invisible-event').raise('.onfoo');"
 ```
 
-Notice that if you inspect the DOM or HTML of the above output, the *[_onfoo]* widget event is completely invisible in all regards. Only when you
-attempt to raise it, you realize it's there, since it is invoked, and no exception occurs.
+Notice that if you inspect the DOM or HTML of the above output, the *[.onfoo]* widget event is completely invisible in all regards. Only when you
+attempt to raise it, you realize it's there, since it is invoked, and no exception occurs. Semantically, there is no difference between prepending 
+a period (.), or an underscore (_) in front of neither your widget's properties or events. However, by convention, I recommend people use periods (.)
+for in-visible events, and underscores (_) for in-visible property values.
 
-The above code also uses some parts of P5's JavaScript API in its *[onclick]* value, which is documented in p5.ajax, if you're interested in the details.
-But basically, it raises an Ajax widget's server side event through the JavaScript API, instead of automatically mapping up the event on your behalf.
+The above code also uses some parts of P5's JavaScript API in its *[onclick]* value, which is documented in [p5.ajax](../../core/p5.ajax), 
+if you're interested in the details.
 
 For the record, almost all arguments to your widgets are optional. We've added in our examples the *[element]*, *[parent]* and *[position]* simply
 to make sure it stands out if you evaluate it in the System42/executor.
