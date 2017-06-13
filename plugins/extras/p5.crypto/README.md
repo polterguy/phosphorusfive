@@ -3,8 +3,7 @@ Cryptography in Phosphorus Five
 
 Actually, most cryptography features in Phosphorus Five, can be found indirectly, in the [p5.mime](/plugins/extras/p5.mime/) project.
 p5.mime is using MimeKit internally, and allows for PGP encryption, decryption, and cryptographically signing MIME messages. However, some
-Active Events, which doesn't necessarily belong together with MIME, can be found in this p5.crypto. These Active Events are mostly events
-related to creating a cryptographically secure hash, in addition to creating a cryptographic random number.
+Active Events, which doesn't necessarily belong together with MIME, can be found in this component.
 
 ## Creating a cryptographic hash
 
@@ -21,7 +20,7 @@ p5.crypto.hash.create-sha256:x:/-?value
 p5.crypto.hash.create-sha512:x:/-2?value
 ```
 
-The first invocation, will create a 512 bit long SHA of the given data, the second a 512 bit long SHA. Hashed values are used in P5, among other things,
+The first invocation, will create a 256 bit long SHA of the given data, the second a 512 bit long SHA. Hashed values are used in P5, among other things,
 when storing passwords and such. To understand how hashed values work, and when and how to use them, feel free to check them out at e.g. WikiPedia
 or something similar.
 
@@ -38,8 +37,8 @@ p5.crypto.create-random
 ```
 
 The above invocation, will fill the return value of the invocation node, with 10 bytes of random numbers, ranging from 0-255. Then it will base64 encode
-its result, and return to caller. This event is internally used in P5 to "seed" the generator when creating PGP keypairs, among other things. For those
-curious, it is not the only seed source used.
+its result, and return to caller. This event is internally used in P5 to seed the random number generator when creating PGP keypairs, among other things. 
+For the record, it is _not the only_ seed source used.
 
 
 
