@@ -134,7 +134,7 @@ Sometimes you have some value, or event for that matter, which you want to assoc
 client, but instead only access it from your server. Or as would be the case for in-visible events, not render them as your widget's HTML, but
 be able to access them through the JavaScript API of P5.
 
-This is easily done, by simply prepending an underscore (_) in front of your widget's attribute or event. This would ensure that this attribute or
+This is easily done, by simply prepending an underscore (\_) in front of your widget's attribute or event. This would ensure that this attribute or
 event is not rendered as a part of your markup, but only accessible on the server (for attributes) or through the JavaScript API (for events).
 
 For instance, to create a value, which you can only access on the server, you could do something like this.
@@ -158,9 +158,9 @@ Notice how the *[get-widget-property]* retrieves the *[_foo]* value, while the *
 to a string formatted value, where the "{0}" parts becomes the value retrieved from the widget's *[_foo]*'s value. Notice also how this value is
 only acessible from the server, and not visible or possible to retrieve on the client. Neither by inspecting the DOM, HTML or by using JavaScript.
 
-By starting an attribute with an underscore (_), it is completely invisible for the client, in every possible way.
+By starting an attribute with an underscore (\_), it is completely invisible for the client, in every possible way.
 
-If you prepend an event with underscore (_), or a period (.) - The results are similar. Consider this code.
+If you prepend an event with underscore (\_), or a period (.) - The results are similar. Consider this code.
 
 ```
 create-widget:some-invisible-event
@@ -176,8 +176,8 @@ create-widget:some-invisible-event
 
 Notice that if you inspect the DOM or HTML of the above output, the *[.onfoo]* widget event is completely invisible in all regards. Only when you
 attempt to raise it, you realize it's there, since it is invoked, and no exception occurs. Semantically, there is no difference between prepending 
-a period (.), or an underscore (_) in front of neither your widget's properties or events. However, by convention, I recommend people use periods (.)
-for in-visible events, and underscores (_) for in-visible property values.
+a period (.), or an underscore (\_) in front of neither your widget's properties or events. However, by convention, I recommend people use periods (.)
+for in-visible events, and underscores (\_) for in-visible property values.
 
 The above code also uses some parts of P5's JavaScript API in its *[onclick]* value, which is documented in [p5.ajax](../../core/p5.ajax), 
 if you're interested in the details.
@@ -611,7 +611,7 @@ rendered back to the client in any ways.
 It can be useful for populating a "select" HTML widget, with "option" items, created dynamically from data in your database, for instance. But there
 are many other useful scenarios for this event. Semantically, it behaves similar to an Ajax event, but it cannot be raised from the client. And it 
 renders no additional data back to the client neither. When *[oninit]* fires, all other events and properties have already been created for your widget.
-This allows you to invoke widget lambda events associated with your widget, and retreieve their properties, from within your *[oninit]* lambda object.
+This allows you to invoke widget lambda events associated with your widget, and retrieve their properties, from within your *[oninit]* lambda object.
 
 Below is an example of *[oninit]* in action.
 
@@ -999,7 +999,7 @@ complex objects, in addition to that storing stuff you'd normally store in your 
 header. But all of the above events, obeys by the same set of rules, and "API".
 
 Most of the above Active Events also have "native alias versions", which allows you to invoke them with a "." in front of their name. If you do,
-then you are allowed to retrieve, list and modify "protected data", which is really data starting with either an underscore (_) or a period (.).
+then you are allowed to retrieve, list and modify "protected data", which is really data starting with either an underscore (\_) or a period (.).
 
 This ensures that you can store things into these objects, which is only accessible through C#. Which is an additional security feature, for things
 you do not wish some random piece of p5.lambda to access.
