@@ -63,3 +63,17 @@ _no2:int:3
 The above code will first subtract the number 1 from *[_no2]*'s value, then add that result to *[_no1]*, and put the end result into the value of 
 our *[+]* node.
 
+## Types and math
+
+In theory, you can supply any type from your supported types into a math operation, as long as it has the operator overload for the specific
+math operator you are using. To add two strings for instance, can be done with the following code.
+
+```
+_foo:thomas
+_bar:" hansen"
++:x:/@_foo?value
+  _:x:/@_bar?value
+```
+
+However, for strings, such as our above example - Probably a more suitable solution would be to use formatting expressions, which you can read about
+in the [p5.exp](../../core/p5.exp) project.
