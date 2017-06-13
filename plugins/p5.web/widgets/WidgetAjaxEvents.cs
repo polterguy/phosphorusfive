@@ -118,7 +118,7 @@ namespace p5.web.widgets
                         Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = clone;
 
                         // Notice, since [oninit] is a special server-side event, we do not map it up as an Ajax event.
-                        if (idxEventNameNode.Name != "oninit")
+                        if (idxEventNameNode.Name != "oninit" && idxWidget [idxEventNameNode.Name] != "common_event_handler")
                             idxWidget [idxEventNameNode.Name] = "common_event_handler";
                     }
                 }

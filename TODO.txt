@@ -111,3 +111,6 @@ TODO before release
 * Investigate forcing correct usage of CAPS, even on Windows for files and folders in p5.io.
 
 * Consider moving [p5.string.decode-base64] out from p5.strings, since it's not actually a "string type of event", but rather "blob type of event".
+
+* Verify creating an Ajax event that does not already exists using [p5.web.widgets.ajax-events.set] actually works.
+  I suspect it does not work, since there is something fishy with the "common_event_handler" logic.
