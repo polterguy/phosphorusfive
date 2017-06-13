@@ -6,8 +6,7 @@ Phosphorus Five
 Phosphorus Five is a Web Operating System for developing complex and rich Ajax centric web apps.
 Its _"Hello World"_, can be found in the [application-startup.hl](/core/p5.webapp/application-startup.hl) Hyperlambda file.
 
-Notice, the primary documentation for Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
-This README is just intended to give you a teaser of some of its features. An example of some Hyperlambda is given below.
+This README is intended to give you a teaser of some of its features. An example of some Hyperlambda is given below.
 
 ```
 create-widget:foo
@@ -17,6 +16,14 @@ create-widget:foo
     set-widget-property:foo
       innerValue:I was clicked!
 ```
+
+Notice, the primary documentation for Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
+In addition, the reference documentation can be found as specific README files for each project. To see the documentation for P5, please
+refer to these links.
+
+* [Main documentation](https://github.com/polterguy/phosphorusfive-dox), tutorial style dox
+* [plugins](plugins/)
+* [core](core/)
 
 ## Hyperlambda
 
