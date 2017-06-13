@@ -109,3 +109,5 @@ TODO before release
 * Investigate using .Net Core, apparently you can include System.Web in such a way, according to an email I got.
 
 * Investigate forcing correct usage of CAPS, even on Windows for files and folders in p5.io.
+
+* Consider moving [p5.string.decode-base64] out from p5.strings, since it's not actually a "string type of event", but rather "blob type of event".
