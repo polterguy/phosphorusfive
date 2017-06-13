@@ -24,8 +24,8 @@ refer to these links.
 * [core](core/), reference documentation
 * [plugins](plugins/), reference documentation
 
-I recommend you start out with ["the guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation,
-as the need surface.
+I recommend you start out with ["the guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation
+for the [plugins](plugins/), as the need surface.
 
 ## Hyperlambda
 
