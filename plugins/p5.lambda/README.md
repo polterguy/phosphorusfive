@@ -11,7 +11,7 @@ to execution, and allows you to do everything you can do in any other programmin
 ## [eval], the heart of p5.lambda
 
 The main Active Event in p5.lambda, and probably most important event in P5, is definitely *[eval]*. 
-With *[eval]*, you can evaluate any Node hierarchy, such as the one illustrated below
+With *[eval]*, you can evaluate any Node hierarchy, such as illustrated below.
 
 ```
 _x
@@ -31,7 +31,7 @@ If you run the above code, through the Executor in [System42](https://github.com
 you will see that it creates 4 widgets for you.
 
 The two Active Events *[for-each]* and *[set]* are declared in the p5.lambda project, and as you can see in its code, 
-actually simply Active Events, and nothing you cannot implement yourself, to extend the programming language if you wish.
+they're actually quite simple Active Events, and nothing you cannot implement yourself, to extend the programming language if you wish.
 
 The third Active Event called *[create-widget]* is declared in [p5.web](/plugins/p5.web/).
 
@@ -60,7 +60,7 @@ not starting with an underscore or period, will be raised as Active Events by *[
 if you do not start your data-segments with an underscore, and there just so happens to exist an Active Event, with the same name 
 as the name of your data-segment.
 
-A good rule of thumb, is to always start your "data-segments" with an underscore for the above reasons.
+A good rule of thumb, is to always start your data-segments with an underscore for the above reasons.
 
 Notice though that if you explicitly invoke *[eval]* on a node, that starts with an underscore (_) or period (.), then *[eval]* will evaluate 
 that node's children, making your evaluated node become the root node of its execution context (stack of execution).
@@ -87,7 +87,7 @@ eval:x:/../*/_x
 In the above code, logically the *[_x]* node is treated as an "inline function", before it is invoked twice, with different arguments.
 Notice that none of the arguments passed into *[eval]* are being raised as Active Events, since the execution instruction pointer, starts out
 with an _"offset"_ being the number of arguments you pass in. This makes it perfectly safe to pass in arguments to *[eval]*, without starting them
-with an underscore or period.
+with an underscore or period. Notice also that *[eval]* doesn't actually execute the node(s) given itself, but rather a shallow copy of these nodes.
 
 *[eval]* can also return values, such as below.
 
@@ -130,7 +130,7 @@ What happens in the above example, is that when *[eval]* comes to the *[insert-a
 there exists no *[create-widget]* in the execution tree. The invocation to the *[insert-after]* Active Event
 however, injects this node just after the *[insert-after]* node in the execution tree. When the instruction pointer
 is done evaluating *[insert-after]*, it finds a new Active Event invocation, being our newly added *[create-widget]*
-Active Event reference, which in turn evaluates, creating our Literal widget.
+Active Event reference, which it in turn evaluates, creating our Literal widget.
 
 If you change the above code to using *[insert-before]* instead, there will be no Literal widget after evaluation, 
 but the node hierarchy is clearly changed, as you can see in the output.
@@ -214,12 +214,12 @@ eval invocation.
 ### Notice!
 
 Nodes starting with either an underscore (_) or a period (.), are _impossible_ to evaluate with *[eval]*. Hence, Active Events starting
-with one of these characters, are considered "protected events", and only C# code, can raise these.
+with one of these characters, are considered "protected events", and only C# code can raise these.
 
 Realize though, you can evaluate an *[eval]* block, which has a name, starting with an underscore or period. However, the *[eval]* block
 won't raise any nodes as Active Events that are starting with either of these two characters.
 
-The convention is to use underscore (_) for "data segment", and period (.) for invisible Active Events or lambda blocks, although you can 
+The convention is to use underscore (_) for "data segment", and period (.) for lambda blocks, although you can 
 choose this for yourself. There are no semantic differences in whether or not you use an underscore or a period.
 
 ### Evaluating stuff that's not a node
@@ -281,9 +281,12 @@ eval-whitelist:x:/@_x
     src
 ```
 
+Notice in the above code, that regardless of that there actually doesn't exist a *[chokes]* Active Event in your vocabulary, it will still try
+to raise this as an Active Event, and since it is not in the whitelist, it will literally choke.
+
 ## "Keywords" in p5.lambda
 
-p5.lambda contains several "keywords", which aren't really keywords, as previously explained, but in fact
+p5.lambda contains several "keywords", which aren't really keywords as previously explained, but in fact
 Active Events, creating an extremely extendible environment for your programming needs. But the core
 "keywords", that should exist in a default installation of Phosphorus Five are as following.
 
@@ -324,9 +327,24 @@ eval:x:/../*/_x
 When we then invoke our *[eval]* Active Event, the value of *[return]*, is no longer an expression, but contains the constant value 
 of that expression, as evaluated during our invocation of our *[eval-x]* Active Event.
 
-Notice also that *[eval-x]* _always_ expects a Node result set in its expression, and not a "?value" or "?name". *[eval-x]* can also only
-change values of nodes, and not names or other parts of them. This is because the type system in P5, only works for values, 
-and *[eval-x]* can only change expression types, and nothing else. Everything that is not an expression, will be left as it was.
+Notice also that *[eval-x]* _always_ expects a Node result set in its expression, and not a "?value" or "?name". This is because *[eval-x]* can
+only evaluate expressions, which can only be found in values of nodes. Below is a more useful useful example that uses System42's modal confirmation window.
+
+```
+_header:This is the header
+_body:This is the body
+
+// Try removing the invocation below, and see the difference in result
+eval-x:x:/+/*
+
+sys42.windows.confirm
+  header:x:/@_header?value
+  body:x:/@_body?value
+```
+
+The above example, is an extremely useful feature, since within our *[sys42.windows.confirm]* event, we have no access to any nodes outside of the root
+node for our event invocation. Hence both *[_header]* and *[_body]* are inaccessible. However, by evaluating the expressions in these nodes before we
+invoke the Active Event, it is no longer necessary for the event to access anything outside of its event invocation node.
 
 ### [add], adding nodes to your trees
 
