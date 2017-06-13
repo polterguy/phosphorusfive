@@ -524,28 +524,28 @@ The ".string" parts at the end of our expression above, will convert the results
 a match for our conditional statement, since this value of our expression, will equal the constant string value of "5" in our '=' condition.
 
 There exists 8 comparison "operators" in p5.lambda. "=", "!=", ">", "<", ">=", "<=", in addition to the two "like comparison" operators 
-"\~" and "!\~". The first 6 of these "operators", does what you'd expect them to do, and works the same way in most other programming languages,
-while the two latter "like comparison" operators, works the same way as the tilde (\~) works in expressions, and are logically the equivalent 
-of asking "does this string exist in the condition". Imagine the following code as an illustration.
+"\~" and "!\~". The first 6 of these "operators", does what you'd expect them to do, and works the same way in most other programming 
+languages - While the two latter "like comparison" operators, works the same way as the tilde (\~) works in expressions, and are logically 
+the equivalent of asking "does this string exist in the condition". Imagine the following code as an illustration.
 
 ```
 _x:thomas hansen
 if:x:/../*/_x?value
   ~:hans
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
 
-The above condition will yield "true", since the string of "hans" truly do exist in the return value of the initial expression. Notice, that this
+The above condition will yield "true", since the string of "hans" do exist in the return value of the initial expression. Notice, that this
 is a case sensitive string comparison, and only works for string comparisons. Or to be more precise, the values of both the constant, and the 
 expression, will be automatically converted to "strings" before they're compared for a match.
 
 For the record, all "comparison operators" are actually Active Events, and you can easily create your own "extension comparison operators",
 creating your own Active Events, simply making sure you return "true" if they are supposed to evaluate to true.
 
-#### More conditions, compound comparisons
+### More conditions, compound comparisons
 
 In addition to these comparison operators, there is also all four boolean algebraic operations on comparisons. Allowing you to do things logically
 equivalent to "if x equals some-value _AND_ y not-equals some-other-value", for instance. Imagine the following code.
@@ -557,25 +557,24 @@ if:x:/../*/_foo1?value
   =:bar1
   and:x:/../*/_foo2?value
     =:bar2
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
 
 In the above code, both the conditions for the *[if]* and the *[and]* comparisons, must yield true, for the condition as a whole to yield true.
-Meaning, if you change for instance the *[_foo2]*'s value to "bar3", the branch will not occur. This allows you to create "compound conditions", 
-where the entire condition as a whole, must yield true, for the branch to occur.
+Meaning, if you change for instance the *[_foo2]*'s value to "bar3", the branch will not occur. This allows you to create compound conditions, 
+where the entire condition as a whole must yield true, for the branch to occur.
 
-The four basic algebraic operations are as following
+The 3 basic algebraic operations are as following
 
 * [and]
 * [or]
-* [xor]
 * [not]
 
-Each boolean operator, must be a direct child of the comparison it is supposed to elgraicly fuse with. This becomes the equivalent of paratheses in
-traditional programming languages, allowing you to "scope" together conditions, the same way you'd use parantheses in other languages. Imagine the
+Each boolean operator, must be a direct child of the comparison it is supposed to algebraicly fuse with. This becomes the equivalent of paratheses in
+traditional programming languages, allowing you to scope together conditions, the same way you'd use parantheses in other languages. Imagine the
 following code for instance.
 
 ```
@@ -589,7 +588,7 @@ if:x:/../*/_name?value
     =:john
     and:x:/../*/_surname?value
       =:doe
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -597,56 +596,50 @@ if:x:/../*/_name?value
 
 In the above example, the branch will only occur if either the *[_name]* is "thomas" and the *[_surname]* is "hansen", or the *[_name]* is
 "john" and the *[_surname]* is "doe". If the values are for instance "thomas" and "doe", then the branch will not occur. This is because the last
-*[and]* operator, is a child of the *[or]*, and hence these are scoped together.
+*[and]* operator, is a child of the *[or]*, and hence these are scoped together, the same way they'd normally be using parantheses in other
+programming languages.
 
 If you have both *[and]* and *[or]* operators, in the same scope, then *[and]* will get presedence, as in other programming languages.
 
-Notice though that the syntax for p5.lambda, creates very "verbose" code, for complex conditions. This is due to that Hyperlambda is a simple
-key/value/children file format, and in fact not a "programming language" per se. This means that each node can only have one name, and one value. In
-addition to a list of children.
+Notice though that the syntax for branching in P5, creates verbose code for complex conditions. This is due to that Hyperlambda is a simple
+key/value/children file format, and in fact not a programming language per se. This means that each node can only have one name, and one value. In
+addition to a list of children. This has the benefit though of being able to logically traverse your branching code, in code, understanding
+its conditions, without having to do any parsing of conditional expressions.
 
 This is intentionally created this way, to allow for intelligently and semantically make it possible for the machine itself, to understand the code
 from a semantic point of view, before it evaluates the lambda objects.
 
-So even though this sometimes creates relatively "verbose" code, compared to other more consice programming languages, it also has some pretty
+So even though this sometimes creates relatively "verbose" code, compared to other less verbose programming languages, it also has some pretty
 amazing side-effects. Such as making it very easy for your machine to understand what it is evaluating, by intelligently traversing the execution
-tree, before it evaluates your code. Allowing for it to modify the execution tree, directly itself, before it evaluates your lambda object, etc, 
-etc, etc.
+tree, before it evaluates your code. Allowing for it to modify the execution tree, directly itself, before it evaluates your lambda object etc.
 
-However, the negative side-effect, is that sometimes the code becomes more verbose, and longer, for tasks that in other programming languages would
-require far less code. On average though, the amount of code necessary to create some piece of logic, would often be far less in p5.lambda, than
-what it would be in other programming languages. The above code example though, is the "trade-off price" you pay for this feature.
+However, the negative side-effect, is that sometimes the code becomes more verbose and longer, for tasks that in other programming languages would
+require far less code. On average though, the amount of code necessary to create some piece of logic, would often be far less in P5, than
+what it would be in other programming languages. The above code example though, is the trade-off price you pay for this feature.
 
-To understand why, realize that there literally "is no programming language, only the execution tree", so what you see in p5.lambda, is what a 
-compiler, or an interpreter would produce, after having parsed your "code". In p5.lambda, "code" does in fact not really exist! You are modifying
-the execution tree directly, without any steps inbetween you, and your machine, as would be the case in all other programming languages. Both 
+To understand why, realize that there literally is no programming language, only the execution tree, so what you see in P5, is what a 
+compiler, or an interpreter would produce, after having parsed your code. In P5, code does not in fact exist! You are modifying
+the execution tree directly, without any steps inbetween you, and your machine, as would be the case in all other programming languages - Both 
 compiled languages, and interpreted languages.
 
 Some of the consequences of this, is that it to a much larger extent, allows the machine to produce its own code, in the long run, facilitating for
 off-loading the burdon from the programmer, creating a much more "intention driven" environment for the programmer, where the programmer can simply
-state his "intentions", and the machine creates the code that implements his intentions.
+state his intentions, and the machine creates the code that implements these intentions.
 
-If ythe above paragraphs sounds like lots of "mumbo jumbo" to you, simply ignore it, run with p5.lambda, and watch your future change, to the better,
-and making you more productive, as you start realizing how you can reuse code, to an extent never seen before in other programming languages after
+If the above paragraphs sounds like lots of mumbo jumbo to you, simply ignore it, run with P5, and watch your future change, to the better,
+making you more productive, as you start realizing how you can reuse code, to an extent never seen before in other programming languages after
 a while.
 
-One example of this, is the "control type of page" in the CMS parts of System42, where the machine is literally doing all the programming for you.
-This can of course be taken _MUCH_ further than what I have done so far. And we will take it much further too. In a traditional programming language,
-you have to play all the instruments. In p5.lambda, you are the conductor, having a complete symphonical orchestra at your disposal, allowing
-you to "conduct" your pieces of logic together, where the machine to a much larger extent takes care of the "programming" for you.
+### [not]
 
-However, before you can come to that point, you must first understand how, and why, the machine does what it does.
-
-#### [not], slightly special, not ...
-
-The *[not]* operator, due to the above reasoning, is slightly special in p5.lambda. This is because it needs to be the "name" of a node. Hence,
+The *[not]* operator, due to the above reasoning, is slightly special in P5. This is because it needs to be the name of a node. Hence,
 it will as a result always have to _FOLLOW_ the condition it is supposed to negate. Let us illustrate with an example.
 
 ```
 _x:bool:false
 if:x:/../*/_x?value
   not
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -654,7 +647,7 @@ if:x:/../*/_x?value
 
 In the above example, the return value of the expression in the *[if]* invocation, would normally return "false". However, this value is "negated"
 due to the *[not]* boolean we're adding up on the line afterwards. Hence, the condition as a whole, will in fact yield "true", and the branching
-occurs.
+occurs, even though the result of the expression in our if, actually is true. Not will hence negate the results of its previous condition.
 
 You can also "not" more complex conditions, such as the following is an example of.
 
@@ -663,30 +656,60 @@ _x:thomas
 if:x:/../*/_x?value
   =:thomas
   not
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
 
-The above branch would normally occur, since the constant of "thomas" in the *[_x]* node's value, and the constant of our *[=]* operator, 
-would ccompare to true, normally yielding "true" as the results of the comparison. However, since the entire comparison is "negated" due
-to our *[not]* operator at the end of our comparison, the branch does not occur, since the "true" value of our comparison, becomes "negated"
-to false, yielding "false" as the product of our condition as a whole.
+The above branch would normally occur, since the constant of "thomas" in our *[_x]* node's value, and the constant of our *[=]* operator, 
+would yield true. However, since the entire comparison is negated due to our *[not]* operator at the end of our comparison, 
+the branch does not occur, since the "true" value of our comparison, becomes "negated" to false, yielding "false" as the product of our 
+condition as a whole.
 
 The *[not]* operator, should always be _the last_ operator in the scope where it appears. It cannot take any arguments. Neither constants, nor 
 expressions.
 
-#### [else-if] and [else]
+### [else-if] and [else]
 
 The *[else-if]* is similar to the *[if]* Active Event, except it will only evaluate its condition(s) if the matching *[if]* yields false.
 *[else]* will evaluate to true, if all of its matching and previously declared *[if]* and *[else-if]*s before it evaluated to false.
 
-#### [while] my guitar gently weeps
+### [while]
 
-The *[while]* Active Event, is similar to the *[if]* and *[else-if]*, except it will check its conditions upon every iteration. And only when
-the condition yields false, it will break out of its scope, evaluating the next node in its scope. A *[while]* loop, can be explicitly stopped, 
+The *[while]* Active Event, is similar to the *[if]* and *[else-if]*, except it will check its conditions upon every iteration. And only as
+the condition somehow yields false, it will break out of its scope, evaluating the next node in its scope. A *[while]* loop, can be explicitly stopped, 
 using the *[break]* Active Event.
+
+Below is an example.
+
+```
+_data
+  foo1
+  foo2
+  foo3
+while:x:/@_data/0
+  create-widget
+    innerValue:x:/@_data/0?name
+  set:x:/@_data/0
+```
+
+Notice that *[while]* will not iterate more than 5.000 iterations by default. If you remove the last *[set]* invocation above for instance, you will
+have an exception. Try out the following code.
+
+```
+_data
+  foo1
+  foo2
+  foo3
+while:x:/@_data/0
+  create-widget
+    innerValue:x:/@_data/0?name
+```
+
+The above code will throw an exception after some time. This is to safeguard against infinite loops, which would make your CPU end up stalling, 
+if a logical bug existed in your code. You can override this behavior though, by adding up *[_unchecked]* as an argument to your *[while]*. If you did, 
+you could iterate for as long as you wished, but this would also possibly create infinite loops for you, unless you're careful with your code.
 
 *** [for-each], iterating over a resulting node-set
 
@@ -697,27 +720,27 @@ inject a *[_dp]* node as its child, having the value of whatever is iterated ove
 _data
   foo1:thomas
   foo2:hansen
-for-each:x:/../*/_data/*?value
+for-each:x:/@_data/*?value
   eval-x:x:/+/*
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
-    innerValue:x:/..for-each/*/_dp?value
+    innerValue:x:/@_dp?value
 ```
 
 The above code, will iterate the values of each children node of the *[_data]* node, creating one literal widget for each iteration.
 If you add more nodes beneath the *[_data]* segment, you will have more iterations, and hence more widgets in your page.
 
 Notice that the *[_dp]* is special, according to what type of result-set you're iterating over. If you iterate over a node, instead of a 
-value and/or a name, as we do above, the *[_dp]* node will store the currently iterated node by reference, in the value of itself. To illustrate
+value and/or a name as we do above, the *[_dp]* node will store the currently iterated node by reference, in the value of itself. To illustrate
 with some code.
 
 ```
 _data
   foo1:thomas
   foo2:hansen
-for-each:x:/../*/_data/*
-  set:x:/..for-each/*/_dp/#?value
+for-each:x:/@_data/*
+  set:x:/@_dp/#?value
     src:COOL GUY!!
 ```
 
@@ -725,14 +748,27 @@ If you watch the output of the above code in your System42/executor, you will se
 *[_data]* will become "COOL GUY!!" after evaluation.
 
 The "#" (hash character), is a special iterator in your expressions, yielding the value of the currently iterated node, as a node by itself,
-somehow. Since this node is passed into our *[for-each]* by reference, we can change this node accordingly in our *[set]* invocation.
+somehow. Since this node is passed into our *[for-each]* by reference, we can change this node in our *[set]* invocation.
 
 For more about iterators, check out the documentation for the "p5.exp" project.
 
 To summarize; If you're iterating a value or name, the iterated value will be in the value of the *[_dp]* node. If you're iterating a node-set
 in your expressions instead, then the node will be passed in by reference to your *[for-each]*, through its *[_dp]* node.
 
-Every place where a *[_dp]* node is being used somehow, this is the logic to expect.
+The *[_dp]* node, is dynamically injected into your lambda object for each iteration of your result set.
+
+Notice that the results of your expression, is evaluated as a copy of the resulting nodes, allowing you to inject nodes into your result set,
+without entering an inifinite loop. The following illustrates that fact.
+
+```
+_data
+  foo1:thomas
+  foo2:hansen
+for-each:x:/@_data/*
+  insert-after:x:/@_dp/#
+    src
+      is:cool
+```
 
 ### [insert-before] and [insert-after]
 
@@ -745,18 +781,18 @@ Imagine the following code.
 _data
   foo1:thomas
   foo2:hansen
-add:x:/../*/_data/*/foo1
+add:x:/@_data/*/foo1
   src
     this-was-add
-insert-before:x:/../*/_data/*/foo1
+insert-before:x:/@_data/*/foo1
   src
     this-was-insert-before
-insert-after:x:/../*/_data/*/foo1
+insert-after:x:/@_data/*/foo1
   src
     this-was-insert-after
 ```
 
-The results of the above p5.lambda, if evaluated in the System42/executor will look like this.
+If you evaluate the above code in e.g. your System42/executor, it will look like this.
 
 ```
 _data
@@ -768,16 +804,13 @@ _data
 ... rest of your code ...
 ```
 
-Nothing unexpected here hopefully ...
+Besides from this *[insert-before]* and *[insert-after]* works identical to *[add]* in regards to parameters they can take, and how they treat 
+these parameters.
 
-Besides from that, both *[insert-before]* and *[insert-after]* works similarly to *[add]*, and can take all the same sets of sources as
-[add] can.
-
-### [set], changing name or values of nodes, or the nodes themselves
+### [set]
 
 The *[set]* Active Event requires an existing node, which it will modify somehow. You can set the name, value or the node itself as you please.
-The *[set]* Active Event, is in these regards probably the most basic and fundamental Active Event in p5.lambda, besides from *[add]*.
-Imagine the following code.
+The *[set]* Active Event, is in these regards probably the most basic and fundamental Active Event in P5. Imagine the following code.
 
 ```
 _data:foo
@@ -785,7 +818,7 @@ set:x:/-?value
   src:bar
 ```
 
-As previously said, *[set]* can also change names of nodes, it can also change the nodes themselves, such as this example illustrates.
+As previously said, *[set]* can also change names of nodes, and it can also change the nodes themselves, such as this example illustrates.
 
 ```
 _data:foo
@@ -793,7 +826,7 @@ set:x:/-
   src:node:"howdy:world"
 ```
 
-After evaluating the above p5.lambda, the results will look like this.
+After evaluating the above lambda, the results will look like this.
 
 ```
 howdy:world
@@ -803,14 +836,12 @@ set:x:/-
 
 Notice that the *[_data]* node is now completely gone, and replaced with a *[howdy]* node, having the value of "world". This also works for entire
 node hierarchies, and regardless of how many children the original *[_data]* node had, the entire node, including its children, would be replaced 
-by the above p5.lambda object.
+by the above *[src]* object.
 
 Notice in the above code, that the static *[src]* declaration of *[set]*, is actually type declared as a "node" itself. Meaning, the value of 
 *[src]*, is itself a node, with the name of "howdy" and the value of "world".
 
 *[set]* can also change the names of nodes, if the destination expression is type declared as "?name".
-
-### Remove nodes or values with [set]
 
 If you want to remove a node, or remove a value for that matter, then you can use *[set]* without a source at all. This will remove the 
 destination, instead of changing it. For instance to remove a node you could use something like the code below.
@@ -820,21 +851,21 @@ _data:foo
 set:x:/-
 ```
 
-Notice that the p5.lambda execution engine perfectly tolerates tha above code, without cluttering the execution instrucction pointer, or
+Notice that the p5.lambda execution engine perfectly tolerates the above code, without cluttering the execution instruction pointer, or
 messing up the order of the nodes that are supposed to be evaluated. The same way it'll do if you add or change nodes just below its current
 instruction pointer.
 
-The p5.lambda execution engine is extremely tolerant in regards to changes in the tree. You can even remove the currently iterated pointer,
+The lambda execution engine is extremely tolerant in regards to changes in the tree. You can even remove the currently iterated pointer,
 and still have the engine perfectly continue its normal execution flow. Consider this code.
 
 ```
 _data
 set:x:
-set:x:/../*/_data?value
+set:x:/@_data?value
   src:foo
 ```
 
-If you run the above code through the System42/executor, it'll perfectly evaluate, and change the *[_data]* node's value to "foo". Realize 
+If you run the above code through your System42/executor, it'll perfectly evaluate, and change the *[_data]* node's value to "foo". Realize 
 though, that since the tree is changed after our first *[set]* invocation, expressions might change as a result. Consider this code for 
 instance.
 
@@ -850,8 +881,8 @@ the first [set] is gone. Hence, the "2nd younger sibling iterator" (/-2) will no
 beginning of the tree, realizing it's don a round-trip, wrapping around to the eldest node in the tree, ending up with having the value of the 
 second *[set]* node change its value, and not the *[_data]* as might be assumed at first glance.
 
-This occurs since expressions are not evaluated before the instruction pointer reaches them. Which allowss you to reference nodes in your code,
-which are later created, as a consequence of the code being evaluated. It is said that "expressions are lazily evaluated".
+This occurs since expressions are not evaluated before the instruction pointer reaches them. Which allows you to reference nodes in your code,
+which are later created, as a consequence of the code being evaluated. Logically "expressions are lazily evaluated".
 
 ### Using an Active Event source for your [set], [add] or [insert-x] invocations
 
@@ -867,21 +898,15 @@ _data
     first:John
     last:Doe
 _exe
-  eval-x:x:/+/*
   return
-    full-name:{0}, {1}
-      :x:/../*/_dn/#/*/last?value
-      :x:/../*/_dn/#/*/first?value
-add:x:/../*/_data/*
-  eval:x:/../*/_exe
+    full-name:foo
+add:x:/@_data/*
+  eval:x:/@_exe
 ```
 
-In the above code, the *[_exe]* lambda object will be invoked once for each destination of our *[add]*. The invocation of our _exe block, will
-have a *[_dn]* (data node) passed into it, each time, beving the destination source currently being iterated. This allowss us to have a 
-"relative source" for each iteration, where what gets added into our destination, depends upon the destination itself.
-
-You can use any Active Event you wish instead of a *[src]* node, including your custom Active Events. Regardless of which Active Event you 
-choose to use as your source, each invocation of your Active Event will be passed in the *[_dn]* pointing to its current destination.
+In the above code, the *[_exe]* lambda object will be invoked once for each destination of our *[add]*. However, our *[eval]* will be invoked,
+before the *[add]* tries to determine what its source actually is. You can use any Active Event you wish instead of a *[src]* node, including your 
+own custom Active Events.
 
 ### [switch], a shorthand for multiple if invocations
 
@@ -909,12 +934,12 @@ switch:x:/-?value
       body:Stranger ...?
 ```
 
-In the above example, unless the name os either "thomas", "jane" or "john" in the value of the *[_foo]* node, then the *[default]* lambda block
-will be evaluated. If the name is "thomas", then the first *[case]* block will be evaluated. And so on ...
+In the above example, unless the name os either "thomas", "jane" or "john" in the value of the *[_foo]* node, then our *[default]* lambda block
+will be evaluated. If the name is "thomas", then the first *[case]* block will be evaluated, etc. This allows you to more easily create complex
+branching lambda objects, where you are checking the same expression, for multiple results. The *[default]* block is what is evaluated, if none 
+of the other alternatives applies.
 
-The *[default]* block is what is evaluated, if none of the other alternatives applies.
-
-In a *[switch]* Active Event invocation, you can also create what's commonly referred to as "fall through". By having no block in one or more of
+In a *[switch]* Active Event invocation, you can also create what's commonly referred to as fall through. By having no block in one or more of
 your *[case]* nodes, the lambda block of the next *[case]*, that has a lambda block, will be evaluated for a match. Consider this code.
 
 ```
@@ -932,22 +957,23 @@ switch:x:/-?value
 ```
 
 In the above example, the lambda block of "jane" will evaluate, for both the value of "jane", and the value of "john". As you can see in the 
-above example, the *[default]* block is optional. If you provide a *[default]* block however, a common convention is to put it as the last 
-block in your *[switch]* logic.
+above example, the *[default]* block is optional, and excluded in the above example. If you provide a *[default]* block however, a common convention 
+is to put it as the last block in your *[switch]* logic.
 
-### Exception handling in p5.lambda
+### [try], [catch], [finally] and [throw]
 
-No programming language is complete, without at least some form of exception handling. p5.lambda support exceptions through these Active Events
+No programming language is complete, without at least some sort of basic exception handling. P5 support exceptions through these Active Events.
 
 * [try]
 * [catch]
 * [finally]
 * [throw]
 
-They do what you'd expect them to do from other programming languages. The *[try]* Active Event creates a "safe block", where no exceptions will
-penetrate through, without invoking any coupled *[catch]* blocks. The *[throw]* Active Event, raises an exception, unwinding the stack, all the
-way to the next *[catch]* block, evaluating the lambda code inside of that catch. The *[finally]* block evaluates, regardless of whether or not an 
-exception occurs. If an exception occurs, the exception is re-thrown after evaluation of the *[finally]* block though.
+They do what you'd expect them to do from other programming languages. The *[try]* Active Event creates a safe block, where no exceptions will
+penetrate through, without invoking any coupled *[catch]* and/or *[finally]* blocks. The *[throw]* Active Event, raises an exception, unwinds the stack, 
+all the way to the next *[catch]* block, evaluating the lambda code inside of that catch, if existing. The *[finally]* block evaluates, regardless of 
+whether or not an exception occurs. If an exception occurs, the exception is re-thrown after evaluation of the *[finally]* block though, unless 
+a *[catch]* block also exists.
 
 Consider the following.
 
@@ -968,27 +994,40 @@ some code.
 try
   throw:Darn it, my head hurts!!
 catch
-  set:x:/+/*/_body?value
+  set:x:/+/*/body?value
     src:x:/..catch/*/message?value
   sys42.windows.confirm
     header:ERROR!
     body
 ```
 
+Notice, the above would also provide a perfect example of where you'd probably want to use *[eval-x]* instead. Consider the following code,
+which arguably is much more easily understood.
+
+```
+try
+  throw:Darn it, my head hurts!!
+catch
+  eval-x:x:/+/*
+  sys42.windows.confirm
+    header:ERROR!
+    body:x:/@message?value
+```
+
 In addition to the *[message]* argument passed into your *[catch]* block, you also get the *[type]* of exception thrown, which is the 
-fully qualified class name of it from .Net/Mono, and the entire *[stack-trace]*. The type of an exception thrown from Hyperlambda, will always
-be "p5.exp.exceptions.LambdaException".
+fully qualified class name of it from .Net/Mono, and the entire *[stack-trace]*. The type of an exception thrown from Hyperlambda using *[throw]*, 
+will always be "p5.exp.exceptions.LambdaException".
 
 When you *[throw]* an exception from Hyperlambda, you can also pass in an expression as its message.
 
-### [return],  returning from a lambda object evaluation
+### [return]
 
-Functions or methods does not really exist in p5.lambda. However, you can treat any lambda object or node structure, as if it was a "function",
+Functions or methods does not really exist in P5. However, you can treat any lambda object or node structure, as if it was a "function",
 and invoke it using for instance *[eval]*. Sometimes when you do, you might want to return early from the evaluation of your lambda objects.
-This can be accomplished with the *[return]* Active Event invocation.
+This can be accomplished with the *[return]* Active Event.
 
-This Active Event will return whatever you choose to return to the caller of the lambda evaluation, and end the execution of the outer most
-lambda evaluation. To illustrate with some code.
+This Active Event will return whatever you choose to return to the caller of the lambda evaluation, if any, and end the execution of the outer most
+lambda block. To illustrate with some code.
 
 ```
 _exe
@@ -1000,7 +1039,7 @@ eval:x:/-
 
 After evaluating the above code in e.g. the System42/executor, the value of the *[eval]* node will contain the string of "foo". In addition,
 the *[sys42-confirm-window]* invocation will never be invoked, since when the evaluation of *[return]* is done, no further evaluation inside of
-the outer most evaluated scope will be done. Since the outer most evaluated scope in the above example, is the evaluation of the *[_exe]* node,
+the inner most evaluated scope will be done. Since the outer most evaluated scope in the above example, is the evaluation of the *[_exe]* node,
 this means that the control will be returned back to the *[eval]*, invoking the *[_exe]* node.
 
 You can also return multiple nodes back to caller, and complex tree structures, using something like this for instance.
@@ -1017,7 +1056,9 @@ eval:x:/-
 After evaluation of the above code, every child node of the above *[return]* invocation, will be appended into the *[eval]* node that invoked
 the *[_exe]* block.
 
-### [break], stopping the execution of loops
+Notice, you don't need to return anything. You can of course also use a simple empty *[return]*, to avoid further execution of your lambda block.
+
+### [break]
 
 *[break]* works similar to the *[return]* Active Event, except it only carries meaning inside of either a *[while]* or a *[for-each]*. Instead
 of returning though, it stops all further execution of all code within the first ancestor *[for-each]* or *[while]* block, and returns control
@@ -1032,24 +1073,19 @@ _data
   foo3:STOP
   foo4:bar4
 _dest
-for-each:x:/../*/_data/*
-  if:x:/./*/_dp/#?value
+for-each:x:/@_data/*
+  if:x:/@_dp/#?value
     =:STOP
     break
-  add:x:/../*/_dest
-    src:x:/..for-each/*/_dp/#
+  add:x:/@_dest
+    src:x:/@_dp/#
 ```
 
 The above code iterates the *[_data]* segment's children, appending each child node into *[_dest]*, stopping further execution if it encounters
 a value of "STOP". After evaluation of the above lambda, the *[_dest]* node will contain the "bar1" node, and the "bar2" node, but none of the other
 two nodes from the *[_data]* segment.
 
-*[break]* works similarly for *[while]* loops.
-
-### [continue], continuing the next iteration of a loop
-
-The *[continue]* Active Event will instead of breaking the entire loop, stop further execution of its current iteration, and continue on the
-_NEXT_ iteration for the loop. Imagine the exact same code as in our *[break]* example, except we use a *[continue]* instead.
+*[break]* works similarly for *[while]* loops. Below is an example.
 
 ```
 _data
@@ -1058,35 +1094,55 @@ _data
   foo3:STOP
   foo4:bar4
 _dest
-for-each:x:/../*/_data/*
-  if:x:/./*/_dp/#?value
+while:x:/@_data/0
+  if:x:/@_data/0?value
+    =:STOP
+    break
+  add:x:/@_dest
+    src:x:/@_data/0
+  set:x:/@_data/0
+```
+
+### [continue]
+
+The *[continue]* Active Event will instead of breaking the entire loop, stop further execution of its current iteration, and continue on the
+_NEXT_ iteration for the loop. Imagine the exact same code as from our *[break]* example, except we use a *[continue]* instead.
+
+```
+_data
+  foo1:bar1
+  foo2:bar2
+  foo3:STOP
+  foo4:bar4
+_dest
+for-each:x:/@_data/*
+  if:x:/@_dp/#?value
     =:STOP
     continue
-  add:x:/../*/_dest
-    src:x:/..for-each/*/_dp/#
+  add:x:/@_dest
+    src:x:/@_dp/#
 ```
 
 If you execute the above code, you will have the *[foo4]* node appended into your *[_dest]* node, because this time, instead of stopping all
 further execution of your loop, the *[continue]* invocation instead simply stops the currently iterated execution, and continues with the next
 iteration.
 
-### [apply], modifying your tree on steroids
+### [apply]
 
-With the *[apply]* Active Event, you are able to to "apply" one *[src]* node, expression or constant, to your "destination", acccording to 
-a *[template]*, referencing nodes and values from your *[src]*. Let's look at an example.
+With the *[apply]* Active Event, you are able to "apply" one *[src]* node, expression or constant, to your "destination", acccording to 
+a *[template]*, referencing nodes and values from your *[src]*. It is kind of the "superman version of add". Let's look at an example.
 
 ```
 _people
   thomas
   john
   jane
-apply:x:/../*/p5.web.widgets.create-container/*/widgets
+apply:x:/../*/create-widget/*/widgets
   src:x:/../*/_people/*
   template
     literal
-      element:h3
       {innerValue}:x:?name
-p5.web.widgets.create-container
+create-widget
   parent:content
   widgets
 ```
@@ -1094,10 +1150,12 @@ p5.web.widgets.create-container
 To understand the above code, realize that the *[apply]* Active Event will iterate over its *[src]* expresssion node-set, and "apply" the
 *[template]* for each iteration into the "destination" expression, which is the value of the *[apply]* node itself. While each node,
 having a name surrounded with braces "{}" inside of your *[template]*, will be expected to be dynamically fetched from the *[src]*, which
-must be relative to the currently iterated *[src]* node-set.
+must be a relative expression, relative to the currently iterated *[src]* node-set.
 
 Since the *[src]* in the above example, is iterating each children node beneath the *[_people]* node, this means that the ":x:?name" 
-expression, for the above *[{innerValue}]* node, will fetch the names of these nodes ("thomas", "john" and "jane") as the loop iterates.
+expression, for the above *[{innerValue}]* node, will fetch the names of these nodes ("thomas", "john" and "jane") as the loop iterates. The *[apply]*
+event is therefor quite useful for iterating stuff, where you wish to "apply" some parts of the results from your iteration, into some destination.
+In fact, that last sentence largely defines its purpose. Whenever you want to "loop and add", you could probably benefit from rather using *[apply]*.
 
 It sometimes helps to "unroll one iteration" in your mind, to understand the expressions inside of a *[template]* argument.
 
@@ -1119,13 +1177,12 @@ _people
     name:John Doe
   person3
     name:Jane Doe
-apply:x:/../*/p5.web.widgets.create-container/*/widgets
-  src:x:/../*/_people/*
+apply:x:/../*/create-widget/*/widgets
+  src:x:/@_people/*
   template
     literal
-      element:h3
       {innerValue}:x:/*/name?value
-p5.web.widgets.create-container
+create-widget
   parent:content
   widgets
 ```
@@ -1141,7 +1198,7 @@ If this was the complete feature list of *[apply]*, it wouldn't be very powerful
 are created dynamically. The *[template]* seems to be static for all items. Secondly, we cannot return different nodes, according to the 
 data result-set currently being iterated. This too though is easily accomplished using *[apply]*. To understand how, realize that you can 
 invoke any Active Event you wish during an apply iteration, including also for instance *[eval]*. This allows you to evaluate some lambda 
-object, for each iteration of an apply iteration, passing in the currently iterated node-set. This is being done byt prepending an alpha 
+object, for each iteration of an apply iteration, passing in the currently iterated node-set. This is being done by prepending an alpha 
 character in front of the name of your databound node, at which point your entire databound node will be discarded, and replaced by whatever 
 (if anything), returned from the evaluation of your lambda object. Let us illustrate with some code.
 
@@ -1160,23 +1217,22 @@ _exe
   eval-x:x:/+/*/*/innerValue
   return
     literal
-      element:h3
       innerValue:{0}, {1}
-        :x:/../*/_dn/#/*/surname?value
-        :x:/../*/_dn/#/*/name?value
-apply:x:/../*/p5.web.widgets.create-container/*/widgets
-  src:x:/../*/_people/*
+        :x:/@_dn/#/*/surname?value
+        :x:/@_dn/#/*/name?value
+apply:x:/../*/create-widget/*/widgets
+  src:x:/@_people/*
   template
-    {@eval}:x:/../*/_exe
+    {@eval}:x:/@_exe
     hr
-p5.web.widgets.create-container
+create-widget
   parent:content
   widgets
 ```
 
 Basically, to invoke an Active Event for a databound node, use syntax like this; "{@some-active-event}". The Active Event you invoke, can
 be any Active Event you wish. And whatever your Active Event returns as nodes, will replace the databound node entirely after evaluation 
-of your Active Event. If you watch the output of the above code in e.g. System42/executor, you will see that there are no traces of
+of your Active Event. If you watch the output of the above code in e.g. your System42/executor, you will see that there are no traces of
 our original *[{@eval}]* node after evaluation.
 
 You can combine Active Event invocation sources, with plain databound sources, as we started out with, and/or static nodes, as you see with
@@ -1184,7 +1240,7 @@ the *[br]* node in the above example.
 
 Notice that although we are creating a widget hierarchy above, you can create any node structure you wish with *[apply]*, including
 insertions into your database, etc, etc, etc. Any node structure you want to create, is easily accomplished using *[apply]*.
-Databinding in p5.lambda is not in any ways restricted to graphical objects, such as you're probably used to with "databinding" from 
+"Databinding" using *[apply]* in P5, is not in any ways restricted to graphical objects, such as you're probably used to with "databinding" from 
 other programming languages.
 
 #### Escaping databound template value
@@ -1210,14 +1266,13 @@ _output1-exe
   eval-x:x:/+/*
   return
     innerValue:{0}, {1}
-      :x:/../*/_dn/#/*/last?value
-      :x:/../*/_dn/#/*/first?value
-apply:x:/../*/_output1
-  src:x:/../*/_data/*
+      :x:/@_dn/#/*/last?value
+      :x:/@_dn/#/*/first?value
+apply:x:/@_output1
+  src:x:/@_data/*
   template
-    p5.web.widgets.create-literal
-      element:h3
-      {@eval}:x:/../*/_output1-exe
+    create-widget
+      {@eval}:x:/@_output1-exe
       onclick
         {_foo}:x:/*/first?value
         apply:x:/../*/_exe
@@ -1231,11 +1286,11 @@ eval:x:/../*/_output1
 ```
 
 The above code might seem difficult to understand when you first look at it. The important point though, is that we have two nested *[apply]*
-invocations above. Unless we had added the back-slash at line 29, then this databound node would have been databound in the first apply
+invocations above. Unless we had added the back-slash at line 29, then this databound node would have been databound in our first apply
 invocation. Which obviously was not our intention. Hence, we add a back-slash in front of it, which will be removed during the first databound,
-but also make sure our node is not databound during the first apply invocation.
+and hence make sure our node is not databound during the first apply invocation.
 
-The code creates one *[p5.web.widgets.create-literal]* invocation, for each child node of our *[_data]* segment, having the *[innerValue]* created
+The code creates one *[create-widget]* invocation, for each child node of our *[_data]* segment, having the *[innerValue]* created
 as a combination of the *[last]* and *[first]* name of our persons.
 
 Then we handle the *[onclick]* Ajax event for our widgets, from where we invoke *[apply]* towards an invocation of *[sys42.windows.info-tip]*.
@@ -1266,21 +1321,21 @@ _people
 _exe
   eval-x:x:/+/*
   return
-    @name:x:/../*/_dn/#/*/name?value
-apply:x:/../*/_out
-  src:x:/../*/_people/*
-  template
-    {@eval}:x:/../*/_exe
+    @name:x:/@_dn/#/*/name?value
 _out
+apply:x:/@_out
+  src:x:/@_people/*
+  template
+    {@eval}:x:/@_exe
 ```
 
 #### Warning!
 
 The *[apply]* Active Event is extremely powerful. But this power, comes with a cost, which is that it is very easy to create extremely 
-difficult to understand code, unless you are careful. Understanding how *[apply]* works, also requires some very good visualization skills,
-to understand what happens, and when it happens.
+difficult to understand and obfuscated code, unless you are careful. Understanding how *[apply]* works, also requires some very good 
+visualization skills.
 
-### [fetch], evaluating lambda and fetching the requested result
+### [fetch]
 
 The *[fetch]* Active Event, allows you to declare a piece of lambda, have it evaluated, and fetch some parts of its result into the value
 of your *[fetch]* node. This is highly useful when you for instance have a *[set]* of *[if]* invocation, where you have a piece of code,
@@ -1294,7 +1349,7 @@ _exe
       name:Thomas
       surname:Hansen
 fetch:x:/0/0/*/surname?value
-  eval:x:/../*/_exe
+  eval:x:/@_exe
 ```
 
 After evaluation of the above code, the value of *[fetch]* will be "Hansen". This allows you to "pre-fetch" one or more node's values, which
@@ -1310,7 +1365,7 @@ _exe
       surname:Hansen
 if
   fetch:x:/0/0/*/surname?value
-    eval:x:/../*/_exe
+    eval:x:/@_exe
   =:Hansen
   sys42.windows.confirm
     header:Are you my brother?
@@ -1342,16 +1397,16 @@ _exe
       surname:Hansen
       address:Foo str. 24
 _result
-add:x:/../*/_result
-  fetch:x:/0/0/*(!/address)
-    eval:x:/../*/_exe
+add:x:/@_result
+  fetch:x:/0/0/*/name
+    eval:x:/@_exe
 ```
 
-### [sort]ing your nodes
+### [sort]
 
-In p5.lambda there is an Active Event which allows you to sort your nodes, and supply your own "sort callback". You callback will be invoked
+In P5 there is an Active Event which allows you to sort your nodes, and supply your own "sort callback". Your callback will be invoked
 with an *[_lhs]* and an *[_rhs]* node, asking you to determine which node comes "before the other" of these two given arguments. Both 
-the *[_lhs]* and the *[_rhs]* node passed into your lambda block, will be passed by reference, allowing you to traverse the tree, both up and
+the *[_lhs]* and the *[_rhs]* node passed into your lambda block, will be passed in by reference, allowing you to traverse the tree, both up and
 down from the nodes you wish to sort on.
 
 Imagine the following code, and let us sort them according to their names.
@@ -1364,36 +1419,27 @@ _data
     name:John Doe
   person:3
     name:Abraham Lincoln
-sort:x:/../*/_data/*
-  if:x:/../*/_lhs/#/*/name?value
-    <:x:/../*/_rhs/#/*/name?value
+sort:x:/@_data/*
+  if:x:/@_lhs/#/*/name?value
+    <:x:/@_rhs/#/*/name?value
     return:int:-1
-  else-if:x:/../*/_lhs/#/*/name?value
-    >:x:/../*/_rhs/#/*/name?value
+  else-if:x:/@_lhs/#/*/name?value
+    >:x:/@_rhs/#/*/name?value
     return:int:1
   else
     return:int:0
 ```
 
-After evaluating the above p5.lambda, "Abraham Lincoln" will be the first child beneath *[sort]*. Then you will find "John Doe", before
+After evaluating the above lambda, "Abraham Lincoln" will be the first child beneath *[sort]*. Then you will find "John Doe", before
 finally "Thomas Hansen". This is the alphabetical sort order of them, according to their names.
 
 Notice that your *[sort]* callback expects you to return either -1, 1 or 0. -1 for those cases when *[_lhs]* should come before *[_rhs]*,
 1 for vice versa, and 0 for when the nodes are supposed to be handled as equals.
 
 Also notice that *[sort]* does not change the original node-set, but handles it immutable, and returns the sorted version as children of itself,
-after evaluation.
-
-After evaluation of the above code for instance, your resulting node-set will look like this.
+after evaluation. After evaluation of the above code for instance, your resulting node-set will look like this.
 
 ```
-_data
-  person:1
-    name:Thomas Hansen
-  person:2
-    name:John Doe
-  person:3
-    name:Abraham Lincoln
 sort
   person:3
     name:Abraham Lincoln
@@ -1411,55 +1457,12 @@ your *[sort]* Active Event implements.
 
 ## Ninja tricks
 
-Below you can find some "tricks" with p5.lambda, helping you achieve some special thing, maybe not completely intuitive unless explained.
-
-### Having a relative [src] node with Active Event sources
-
-Sometimes you wish to either *[add]*, *[set]* or use one of the *[insert-xxx]* Active Events, with a "relative source", which is relative
-to the destination. This can actually easily be achieved, using one of the p5.lambda "Ninja tricks" with a little help from our *[eval]*
-friend.
-
-Imagine you have a node list, containing first name and last names. Then you wish to create a third node, which is the last name combined
-with the first name, for some reasons. Let's show that with some code.
-
-```
-_data
-  person
-    first-name:Thomas
-    last-name:Hansen
-  person
-    first-name:John
-    last-name:Doe
-add:x:/../*/_data/*
-  eval
-    eval-x:x:/+
-    return:"full-name:{0}, {1}"
-      :x:/../*/_dn/#/*/last-name?value
-      :x:/../*/_dn/#/*/first-name?value
-```
-
-After evaluating the above lambda block, the output will look like this.
-
-```
-_data
-  person
-    first-name:Thomas
-    last-name:Hansen
-    full-name:Hansen, Thomas
-  person
-    first-name:John
-    last-name:Doe
-    full-name:Doe, John
-/* ... rest of code ... */
-```
-
-The above example allows us to create a "relative source" for our *[set]*, *[add]* and *[insert-xxx]* invocations. Where the source 
-is "relative" to the destination of our operation.
+Below you can find some "tricks" with P5, helping you achieve some special thing, maybe not completely intuitive unless explained.
 
 ### Parametrizing your expressions
 
 Sometimes you do not know the exact expression during runtime, but want to parametrize your expressions, according to some argument passed
-into your code. Imagine something like this for instance, which is probably a relatively common use-case when consuming Phosphorus Five.
+into your code. Imagine something like this for instance, which is probably a relatively common use-case when consuming P5.
 
 ```
 _parameter:last
@@ -1468,9 +1471,9 @@ _data
   person
     first:Thomas
     last:Hansen
-set:x:/../*/_data/*/*/{0}?value
+set:x:/@_data/*/*/{0}?value
   :x:/../*/_parameter?value
-  src:x:/../*/_new-value?value
+  src:x:/@_new-value?value
 ```
 
 In the above code, we do not know which node beneath our *[person]* is supposed to be updated, but the actual node is passed in as a 
@@ -1480,6 +1483,4 @@ our *[_parameter]* node as an argument, we can deduct exactly which node beneath
 Now of course, in the above example, the *[_parameter]* node is statically declared, but it doesn't matter if it is passed into a lambda
 object by value, or used as a constant, which is shown in the above code.
 
-To understand how formatting expressions work, check out the documentation for the "p5.exp" project.
-
-
+To understand how formatting expressions work, check out the documentation for the [p5.exp](/core/p5.exp/) project.
