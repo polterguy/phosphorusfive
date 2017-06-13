@@ -76,4 +76,38 @@ _bar:" hansen"
 ```
 
 However, for strings, such as our above example - Probably a more suitable solution would be to use formatting expressions, which you can read about
-in the [p5.exp](../../core/p5.exp) project.
+in the [p5.exp](../../core/p5.exp#formatting-expressions) project. A more useful example, would be if you created your own type, wrapping for instance
+a System type from .Net such as BigInt, or something similar. Or if you added a TimeSpan to a DateTime object.
+
+Notice, the type of the value of whatever math operator Active Event you're using, become the _"driving type"_, and decides the type of your result. If
+you wish to make sure it has a specific type, you can use a type conversion in your expressions, referencing the value you're using as the main object.
+An example can be found below.
+
+```
+_str:4
++:x:/@_str?value.int
+  _:1
+```
+
+Notice also in the above example, that the string value of "1", will be automatically converted into the type expected from the value of 
+our *[+]* invocation. Since the expression in our *[+]* is type converted into an _"int"_, this means that the string value of "1", is converted
+to an integer, and added to the integer converted value of the *[_str]* node's value. Try removing the type conversion, to see a very much different
+result.
+
+```
+_str:4
++:x:/@_str?value
+  _:1
+```
+
+The above will simply add both the left hand side and the right hand side as simple string. The same would be true, even if you explicitly
+told the execution engine that the right hand side is of type int. Such as the following illustrates.
+
+```
+_str:4
++:x:/@_str?value
+  _:int:1
+```
+
+The above illustrates how the _"left hand side"_ decides the type for the operation. The left hand side here, meaning the value of the operator
+being used.
