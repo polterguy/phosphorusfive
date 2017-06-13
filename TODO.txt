@@ -114,3 +114,5 @@ TODO before release
 
 * Verify creating an Ajax event that does not already exists using [p5.web.widgets.ajax-events.set] actually works.
   I suspect it does not work, since there is something fishy with the "common_event_handler" logic.
+
+* Pull in p5.threading and p5.io.zip, and stabilize them before release.
