@@ -27,6 +27,8 @@ refer to these links.
 I recommend you start out with ["the guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation
 for the [plugins](plugins/), as the need surface.
 
+Most of the examples in the core and plugin documentation, assumes you are using [System42](https://github.com/polterguy/system42).
+
 ## Hyperlambda
 
 The above code, is called _"Hyperlambda"_, and is a simple key/value/children tree-structure, allowing for you

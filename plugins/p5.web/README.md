@@ -1,10 +1,11 @@
-Creating web widgets with Phosphorus Five
+Ajax widgets in Phosphorus Five
 ===============
 
-p5.web is the Ajax web widget "GUI library" for Phosphorus Five. This is the part that makes it possible for you to use
-Active Events such as *[p5.web.widgets.create]* and *[p5.web.widgets.property.set]*. In addition, it contains helper Active Events which
+p5.web is the Ajax web widget GUI library for Phosphorus Five and Hyperlambda. This is the part that makes it possible for you to use
+Active Events such as *[create-widget]* and *[set-widget-property]*. In addition, it contains helper Active Events which
 allows you to modify stuff such as the response HTTP headers, access the session object, and even entirely take control
-over the returned response through events such as *[p5.web.echo]* and *[p5.web.echo-file]*.
+over the returned response through events such as *[p5.web.echo]* and *[p5.web.echo-file]*. To a large extent, it wraps p5.ajax, 
+allowing you to use Active Events to create, delete and manipulate Ajax widgets.
 
 However, to start out with the obvious, let's first take a look at how we create a basic Ajax widget.
 
