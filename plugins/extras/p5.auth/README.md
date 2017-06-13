@@ -1,8 +1,8 @@
 ﻿Users and roles
 ===============
 
-This folder contains the Active Events related to users and roles management. It allows you to create new users, associate roles with them, and 
-all associated concepts. All users are stored in the _"auth.hl"_ file at the root of p5.webapp, but this can be overridden in your web.config.
+This folder contains the Active Events related to users and roles management. It allows you to create new users and associate roles with them.
+All users are stored in the _"auth.hl"_ file at the root of p5.webapp folder, but this can be overridden in your web.config.
 Passwords are stored in salted hashed values, to increase security. To create a new user, you can use the following code.
 
 ```
@@ -11,15 +11,15 @@ p5.auth.users.create:john-doe
   role:plain-user
 ```
 
-The above code will create "john-doe" as a user in your system, and store him into your _"auth.hl"_ file.
+The above code will create "john-doe" as a user in your system, and store him into your _"auth.hl"_ file, with the role of "plain-user".
 
 Notice, only _"root"_ accounts can create new, edit, or delete users in your systems. Notice also, that we say root accounts in plural form. Contrary to on Linux,
-where there in general terms can only exist one root account - In P5 you can have as many root accounts as you wish, with different usernames. I encourage 
-you to keep your root accounts to a minimum though. Preferably, only one!
+where there in general terms can only exist one root account - In P5 you can have as many root accounts as you wish, with different usernames. I still encourage 
+you to keep your root accounts to a minimum though - Preferably, only one!
 
 Also notice, that only the root account(s) can actually read or modify your _"auth.hl"_ file in your system directly, using for instance *[load-file]*
 or *[save-file]* etc. Your _"auth.hl"_ file, or if you choose to use another filename for it, is in general terms, the by far best protected file
-in your file system.
+in your file system, together with your web.config.
 
 ## Users and your filesystem
 
@@ -36,7 +36,7 @@ To access the currently logged in user's folder, use the tilde "~". To load the 
 load-file:~/foo.txt
 ```
 
-The tilde above (~), will be substituded with _"/users/john-doe"_, if the user attempting to evaluate the above code is our _"john-doe"_ user from the 
+The tilde above (\~), will be substituted with _"/users/john-doe"_, if the user attempting to evaluate the above code is our _"john-doe"_ user from the 
 above Hyperlambda. If your user is a _"guest"_ account (not loggedd in), the tilde "~" will evaluate to the _"/common/"_ folder. The common folder, has a 
 similar file structure, as the _"/users/"_ folder, and this folder substitution can be used transparently if you wish, without caring who is logged in, 
 or whether or not any user is logged in at all. Tilde "~" basically means the _"home folder"_. The _"home folder"_ for guests, who are not logged in, is
@@ -50,7 +50,7 @@ the _"~/documents/public/"_ folder(s), while protected files, into the _"~/docum
 If you wish to create files that are accessible to all users of your system, you should put these files in your _"/p5.webapp/common/"_ folder, which is
 accessible to all users in your system.
 
-## Adding to the system "PATH" variable
+## Adding to the system PATH variable
 
 You can also create your own _"path unroll"_ active events, leading to for instance some specific folder on your server. This is done by creating an
 Active Event named *[p5.io.unroll-path.@XXX]*, returning for instance _"/my-cool-folder/xxx"_. An example is given below.
@@ -98,7 +98,8 @@ The above Active Events, can only be evaluated by a root account.
 ## User settings
 
 In addition to *[role]* and *[password]*, you can associate any data you wish with your user, such as a user's personal settings, by simply adding these 
-as nodes beneath you *[p5.auth.users.edit]* and *[p5.auth.users.create]* invocations. Consider this for instance.
+as nodes beneath you *[p5.auth.users.edit]* and *[p5.auth.users.create]* invocations. This is a relatively secure placemenet of user data, not intended to be publicly
+visible, such as POP3 account passwords, etc. Consider this for instance.
 
 ```
 p5.auth.users.edit:john-doe
@@ -125,7 +126,7 @@ p5.auth.my-settings.set
 ```
 
 The difference is that *[p5.auth.users.edit]* can only be invoked by root accounts, while the latter, *[p5.auth.my-settings.set]* can be invoked by all users, except
-"guest" users of course (which actually aren't "real users").
+guest users of course (which actually aren't real users).
 
 To get your user's settings, use the *[p5.auth.my-settings.get]* Active Event.
 
@@ -137,27 +138,28 @@ p5.auth.misc.change-my-password:bar
 
 The above Hyperlambda will change the passsword for the currentlylogged in user to _"bar"_.
 
-## [p5.auth.misc.whoami], figuring out who you are
+## [whoami], figuring out who you are
 
-To see who you are, you can invoke *[p5.auth.misc.whoami]*, like the following code illustrates.
+To see who you are, you can invoke *[whoami]*, like the following code illustrates.
 
 ```
-p5.auth.misc.whoami
+whoami
 ```
 
 The above Hyperlambda will return the following.
 
 ```
-p5.auth.misc.whoami
+whoami
   username:root
   role:root
   default:bool:false
 ```
 
-For the default guest user, meaning somebody who is not logged in, it will return the following.
+For the default guest user, meaning somebody who is not logged in, it will return something like the following, unless you've modified the default guest context
+in your web.config.
 
 ```
-p5.auth.misc.whoami
+whoami
   username:guest
   role:guest
   default:bool:true
@@ -166,7 +168,7 @@ p5.auth.misc.whoami
 Notice the *[default]* node above, which is the correct way to check if a user is logged in or not, since the name of the guest role, at least in theory,
 can be changed to something else than "guest". Although, this is not recommended, it is possible to do.
 
-Notice, if you wish, you can invoke an Active Event that deletes the currently logged in user. This Active Event is called *[p5.auth.misc.delete-my-user]*, and
+If you wish, you can invoke an Active Event that deletes the currently logged in user. This Active Event is called *[p5.auth.misc.delete-my-user]*, and
 will completely delete the currently logged in user, including his or hers files. This will (obviously), also log you out of the system. Notice, this
 Active Event will not destroy the session associated with the user though. Make sure you remove all session values if you choose to use it.
 
@@ -201,7 +203,7 @@ p5.auth.my-settings.set
 If you evaluate the above Hyperlambda, for then to logout and back into your system, you will find two files in your user's folder 
 called "foo-bar-file-login.txt", and "foo-bar-file-logout.txt". These files were created when your user logged in and out of the system.
 
-Notice, these are user specific lambda callbacks, and not globally for all users.
+Notice, these are user specific lambda callbacks, and not global for all users.
 
 ## The role system
 
@@ -230,10 +232,7 @@ p5.auth.roles.list
 
 The integer number behind the role's name, is the number of users belonging to that role. Besides from that, there's not really much to say about the
 role system in Phosphorus Five. If you wish, you can roll your own, much more complex role system though. This is easily done, by exchanging this entire
-project. If you do, you will still probably want to at least provide all Active Events, following at least as close to as possible, the same rough API
-as this project does, to make sure you don't break existing code.
+component out with your own. If you do, you will still probably want to at least provide all Active Events, following at least as close to as possible, 
+the same rough API as this project does, to make sure you don't break existing code.
 
 If you want a more advanced access right system, you might also want to replace the [p5.io.authorization](../p5.io.authorization/) project.
-
-In addition, p5.security also defines some "protected" Active Events, which are only accessible for C# code. These events are beyond the scope
-of this documentation. Check out the source code if you're interested.
