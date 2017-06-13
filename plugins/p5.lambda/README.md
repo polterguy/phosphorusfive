@@ -348,7 +348,7 @@ invoke the Active Event, it is no longer necessary for the event to access anyth
 
 ### [add], adding nodes to your trees
 
-The *[add]* Active Event, allows you to dynamically add nodes into your p5.lambda objects (tree node hierarchy).
+The *[add]* Active Event, allows you to dynamically add nodes into your lambda objects.
 
 This active event must be given an expression as its destination, and can optionally take many different forms of sources through its *[src]*.
 For instance, to add up a static source, into some node destination, you could accomplish that doing the following.
@@ -361,68 +361,50 @@ add:x:/-
     foo2:bar2
 ```
 
-A static source, can be as complex as you wish, and contain any tree hierarchy you can possibly declare in your p5.lambda structures.
+A static source, can be as complex as you wish, and contain any tree hierarchy you can possibly declare in your lambda objects.
 
-And as previously explained at the top of this document, modifying the instruction pointer will work perfectly well, allowing you to
-create code that modifies itself, before it evaluates the parts it nodified/added to itself. Imagine the following code
+As previously explained at the top of this document, modifying the instruction pointer will work perfectly well, allowing you to
+create code that modifies itself, before it evaluates the parts it notified/added to itself. Imagine the following code.
 
 ```
 _x
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Original, static widget
   add:x:/..
-    src:x:/../*/_arg/*
-eval:x:/../*/_x
-  _arg
-    p5.web.widgets.create-literal
+    src:x:/../*/argument/*
+eval:x:/@_x
+  argument
+    create-widget
       parent:content
       element:h1
       innerValue:Dynamically injected into lambda object
 ```
 
-What happens in the above lambda object, is that the *[eval]* invocation, passes in an *[_arg]* argument, which contains a *[p5.web.widgets.create-literal]*
-invocation. After evaluating the first *[p5.web.widgets.create-literal]* node, inside of our *[_x]* node, the *[add]* invocation appends the content of
-our *[_arg]* node, which was passed into *[eval]* into the "root node" for our tree, which during the evaluation of *[_x]* is actuall *[_x]*
-itself. Then the instruction pointer moves on, realizing it has _ANOTHER_ (newly dynamically added) *[p5.web.widgets.create-literal]* node, which
+What happens in the above lambda object, is that the *[eval]* invocation, passes in an *[argument]* argument, which contains a *[create-widget]*
+invocation. After evaluating the first *[create-widget]* node, inside of our *[_x]* node, the *[add]* invocation appends the content of
+our *[_arg]* node, which was passed into *[eval]* into the "root node" for our tree, which during the evaluation of *[_x]* is actually *[_x]*
+itself. Then the instruction pointer moves on, realizing it has _ANOTHER_ (newly dynamically added) *[create-widget]* node, which
 is then evaluated finally, before the instruction pointer returns from *[_x]*.
 
 This feature of course, is true for all Active Events that modifies the execution tree somehow. In the above code, you also see how to create
 a "dynamic source" for your *[add]*, having an expression leading to the source, and not a constant hierarchy.
 
-For the record, the above features I think is something completely unique to p5.lambda and P5, allowing injection of additional code,
+For the record, the above features I think is something completely unique to P5, allowing injection of additional code,
 into "methods and functions" (lambda objects), through modifying the execution tree it is currently executing directly, without any "parsing" 
-of "code" occurring. This dynamic nature of p5.lambda objects, is as far as I know, completely unique to p5.lambda.
+of "code" occurring. This dynamic nature of lambda objects, is as far as I know, completely unique to P5. Other languages can take anonymous delegates,
+and function lambda objects - But modifying an existing function object is completely unique to P5 as far as I know.
 
-For the record, we could also have dropped the *[add]* invocation in the above code, since all arguments passed into an *[eval]*, automatically
-becomes "root nodes" of the lambda object evaluated. Such as we show in the code below.
+### [if], [else-if], [else] and [while]
 
-```
-_x
-  p5.web.widgets.create-literal
-    parent:content
-    element:h1
-    innerValue:Original, static widget
-eval:x:/../*/_x
-  p5.web.widgets.create-literal
-    parent:content
-    element:h1
-    innerValue:Dynamically injected into lambda object
-```
-
-However, if you evaluated the above code, you will see that now the "Dynamically injected" widget is created _FIRST_. This is because any
-arguments passed into *[eval]*, will be inserted at the beginning of the lambda object, and not appended into it at the back.
-
-### [if], [else-if], [else] - [while] my branches gently weeps
-
-These Active Events is what allows you to control the flow of your program, using what's traditionally referred to as "branching" your code.
+These Active Events is what allows you to control the flow of your program, using what's traditionally referred to as branching your code.
 Logically they work roughly the same as most other branching keywords you've seen in other programming languages. With some subtle differences 
 though. However, let's create the simplest if lambda object we possibly can, to see them in action first.
 
 ```
 if:bool:true
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -430,23 +412,23 @@ if:bool:true
 
 The above *[if]* will yield true, since it is given a constant, having the value of boolean true. If we exchanged the value to false, it would
 not create our widget. If you exchange the type declaration of your object though, to string, which is the implicit type, with the following code,
-you would see something else.
+you would see something different.
 
 ```
 if:false
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
 
-This is because all string literals, automatically converts to _true_ for your conditional Active Events. Think of this as "implicit conversion"
-to boolean values, according to "does there exist something". Meaning, not equals null is the implicit logic of your conditional events. You could
+This is because all string literals, automatically converts to _true_ for your conditional Active Events. Think of this as implicit conversion
+to boolean values, according to _"does there exist something"_. Meaning, not equals null is the implicit logic of your conditional events. You could
 do this with any other types you wish, for instance integer numbers too.
 
 ```
 if:int:1
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -457,20 +439,20 @@ Notice though, that if you remove the ":int:1" part above, and exchange it with 
 
 ```
 if
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
 
-The reason why the branch occurs, is because the conditional Active Events of P%, will if not given a condition as their values, use the
+The reason why the branch occurs, is because the conditional Active Events of P5, will if not given a condition as their values, use the
 return value of the first node, treated as an Active Event itself, to check if the condition yields true. This allows you to embed event
 invocations, as the conditions to conditional events. To understand how this works, try the folloing code.
 
 ```
 if
   foo
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -482,20 +464,20 @@ the branch would occur, and we would have our widget created. Since *[foo]* abov
 making its value still being "null" after evaluation of itself, meaning the condition for *[if]* yields false, and no widget is created, since
 the branch does not occur.
 
-However, to use constants as your conditions for your conditional events, often makes little or no sense. A more useful approach, would be to use
+To use constants as your conditions for your conditional events, often makes little or no sense. A more useful approach, would be to use
 an expression, yielding the results of some node-set, such as the following.
 
 ```
 _x:bool:true
 if:x:/../*/_x?value
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
 
 If you change the value of the above *[_x]* node to false, or "null", the branch will not occur. If you change it to for instance the integer
-5, the branch will occur though, since there "exists an object", which means the implicit "not equals null" logic kicks in.
+5, the branch will occur though, since the implicit conversion to boolean will yield true.
 
 Now a more useful approach, would be to compare it against, either some sort of constant value, or the results of another expression. Imagine 
 the following code.
@@ -510,8 +492,8 @@ if:x:/../*/_x?value
     innerValue:Yup, we branched!
 ```
 
-In the above code, the return value of the expression in if, will be compared against the constant of "5", and the result will yield a match.
-Hence, the branch occurs.
+In the above code, the return value of the expression in our if, will be compared against the constant of the integer valur of 5, 
+and the result will yield a match. Hence, the branch occurs.
 
 Notice, that branching conditions in p5.lambda are type sensitive, which means if you run the following code, where you compare an integer to
 a string, it will _NOT_ yield true, since their types are different.
@@ -520,7 +502,7 @@ a string, it will _NOT_ yield true, since their types are different.
 _x:int:5
 if:x:/../*/_x?value
   =:5
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
@@ -532,18 +514,18 @@ You could however type cast the results of your expression above, to make them b
 _x:int:5
 if:x:/../*/_x?value.string
   =:5
-  p5.web.widgets.create-literal
+  create-widget
     parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
 
 The ".string" parts at the end of our expression above, will convert the results of our expression, into a string, which of course will create 
-a match for our conditional statement, since this value of our expression, will equal the constant string value of "5" in our "=" condition.
+a match for our conditional statement, since this value of our expression, will equal the constant string value of "5" in our '=' condition.
 
 There exists 8 comparison "operators" in p5.lambda. "=", "!=", ">", "<", ">=", "<=", in addition to the two "like comparison" operators 
-"~" and "!~". The first 6 of these "operators", does what you'd expect them to do, and works the same way in most other programming languages,
-while the two latter "like comparison" operators, works the same way as the tilde (~) works in expressions, and are logically the equivalent 
+"\~" and "!\~". The first 6 of these "operators", does what you'd expect them to do, and works the same way in most other programming languages,
+while the two latter "like comparison" operators, works the same way as the tilde (\~) works in expressions, and are logically the equivalent 
 of asking "does this string exist in the condition". Imagine the following code as an illustration.
 
 ```
