@@ -262,7 +262,7 @@ Which of course results in the following
 trim:Thomas Hansen
 ```
 
-## Handling base64 encoded values
+## Base64 encoding and decoding
 
 The *[p5.string.decode-base64]* Active Event, allows you to decode a piece of base64 encoded data. This can be useful for scenarios
 where you are somehow given base64 encoded data, and need to retrieve its original value. Usage is as simple as the following illustrates.

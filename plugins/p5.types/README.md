@@ -1,8 +1,8 @@
-p5.types, main type support library of Phosphorus Five
+p5.types, types in Phosphorus Five
 ========
 
 This library's Active Events are rarely used directly, but rather used when converting from one type to another, indirectly.
-Among other things, the Hyperlambda parser is dependent upon this library, to convert from string representation to object representation
+Among other things, the Hyperlambda parser is dependent upon this library, to convert from string representation, to object representation
 for your objects, and vice versa.
 
 To extend the typing system, you will normally have to implement three different Active Events
@@ -25,7 +25,6 @@ which implements the "x" (p5.exp expressions). Copy this class, and implement it
 
 Out of the box, P5 supports most native types you'll need. Below is a list of thee types supported in P5.
 
-* BigInteger, typename "bigint"
 * byte[], typename "blob"
 * bool, typename "bool"
 * byte, typename "byte"
@@ -40,18 +39,15 @@ Out of the box, P5 supports most native types you'll need. Below is a list of th
 * long, typename "long"
 * Node, typename "node"
 * Regex, typename "regex"
-* sbyte, typename "sbyte"
-* short, typename "short"
-* string, typename "string" - Also the default typename for Hyperlambda, if no type is explicitly declared
 * TimeSpan, typename "time"
 * uint, typename "uint"
 * ulong, typename "ulong"
-* ushort, typename "ushort"
 
 ### Helper Active Events for the date type
 
-Some types also have helper Active Events, such as for instance DateTime, which has the *[p5.types.date.now]* and the *[p5.types.date.format]* Active Event, 
-which allows you to get the current date, and format a date object, supplying a *[cultur]* and a *[format]*. Example code below.
+Some types also have additional helper Active Events, such as for instance DateTime, which has the *[p5.types.date.now]* and 
+the *[p5.types.date.format]* Active Event, which allows you to get the current date, and format a date object, supplying 
+a *[cultur]* and a *[format]*. Example code below.
 
 ```
 p5.types.date.now
@@ -63,7 +59,7 @@ p5.types.date.format:x:/-2?value
 
 ### Common helper Active Events
 
-The *[p5.types.can-convert]* Active Event, determines if some value can somehow, legally, be converted into "something else", or if a conversion attempt
+The *[p5.types.can-convert]* Active Event, determines if some value can somehow legally be converted into "something else", or if a conversion attempt
 will throw an exception. Example can be found below.
 
 ```
@@ -76,7 +72,3 @@ p5.types.can-convert:x:/-?value
 ```
 
 In the above example the first invocation to *[p5.types.can-convert]* will yields false, while the second invocation will yield true.
-
-
-
-
