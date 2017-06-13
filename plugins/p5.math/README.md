@@ -100,7 +100,7 @@ _str:4
   _:1
 ```
 
-The above will simply add both the left hand side and the right hand side as simple string. The same would be true, even if you explicitly
+The above will simply add both the left hand side and the right hand side as simple strings. The same would be true, even if you explicitly
 told the execution engine that the right hand side is of type int. Such as the following illustrates.
 
 ```
@@ -111,3 +111,18 @@ _str:4
 
 The above illustrates how the _"left hand side"_ decides the type for the operation. The left hand side here, meaning the value of the operator
 being used.
+
+## Active Event sources
+
+The math operators does not in any way discriminate between any Active Event and the internal math operators. If you wish, you could for instance
+easily use an Active Event you create yourself, as the source for any parts of your math operators. The following illustrates an example.
+
+```
+_x
+  return:1
++:int:4
+  eval:x:/@_x
+```
+
+Of course, using your own Active Events here, is just was easily accomplished - As long as your event returns some simple value, convertible into
+something that can legally be the right hand side of your math operation.
