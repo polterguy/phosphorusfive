@@ -19,12 +19,10 @@ _x
   foo2:there
   foo3:stranger
   foo4:do you wish to become my friend?
-for-each:x:/../*/_x/*?value
-  set:x:/+/*/innerValue?value
-    src:x:/@_dp?value
+for-each:x:/@_x/*?value
   create-widget
     parent:content
-    innerValue
+    innerValue:x:/@_dp?value
 ```
 
 If you run the above code, through the Executor in [System42](https://github.com/polterguy/system42), 
