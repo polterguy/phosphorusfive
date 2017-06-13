@@ -21,8 +21,11 @@ In addition, the reference documentation can be found as specific README files f
 refer to these links.
 
 * [Main documentation](https://github.com/polterguy/phosphorusfive-dox), tutorial style dox
-* [plugins](plugins/)
-* [core](core/)
+* [core](core/), reference documentation
+* [plugins](plugins/), reference documentation
+
+I recommend you start out with ["the guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation,
+as the need surface.
 
 ## Hyperlambda
 
