@@ -61,7 +61,7 @@ namespace p5.io.zip
                     context);
 
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Getting root folder
                 var rootFolder = Helpers.GetBaseFolder (context);
@@ -70,7 +70,7 @@ namespace p5.io.zip
                 var destFolder = GetDestinationFolder (context, e);
 
                 // Getting source files
-                var source = XUtil.Source (context, e.Args, e.Args, "src", new string[] { "password" }.ToList ());
+                var source = XUtil.Sources (context, e.Args, "password");
 
                 // Looping through each source zip file given
                 foreach (var idxZipFilePath in source) {
@@ -99,7 +99,7 @@ namespace p5.io.zip
             var destFolder = Helpers.GetSystemPath (context, e.Args.GetExValue<string> (context));
 
             // Verifying user is authorized to writing to destination folder
-            context.Raise (".p5.io.authorize.modify-folder", new Node ("", destFolder).Add ("args", e.Args));
+            context.RaiseEvent (".p5.io.authorize.modify-folder", new Node ("", destFolder).Add ("args", e.Args));
             return destFolder;
         }
 
@@ -115,7 +115,7 @@ namespace p5.io.zip
             string password)
         {
             // Verifying user is allowed to read from zipfile given
-            context.Raise (".p5.io.authorize.read-file", new Node ("", zipFilePath).Add ("args", args));
+            context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", zipFilePath).Add ("args", args));
 
             // Creating ZipFile, wrapping a file stream, denoting the path to physical file on disc
             using (var zipFile = new ZipFile (File.OpenRead (rootFolder + zipFilePath)) {
@@ -170,7 +170,7 @@ namespace p5.io.zip
                 curPath += idxSplit + "/";
 
                 // Verifies user is authorized to writing to currently iterated destination folder
-                context.Raise (".p5.io.authorize.modify-folder", new Node ("", curPath).Add ("args", args));
+                context.RaiseEvent (".p5.io.authorize.modify-folder", new Node ("", curPath).Add ("args", args));
 
                 // Verifies folder exist, and if not, creates it
                 if (!Directory.Exists (rootFolder + curPath)) {

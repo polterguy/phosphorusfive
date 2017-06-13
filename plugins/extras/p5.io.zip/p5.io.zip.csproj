@@ -29,7 +29,10 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="cp ${TargetFile} ${SolutionDir}/lib/plugins" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>cp ${TargetFile} ${SolutionDir}/lib/plugins</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

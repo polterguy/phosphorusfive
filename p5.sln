@@ -91,6 +91,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.mime", "plugins\extras\p
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.xml", "plugins\extras\p5.xml\p5.xml.csproj", "{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.threading", "plugins\extras\p5.threading\p5.threading.csproj", "{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.io.zip", "plugins\extras\p5.io.zip\p5.io.zip.csproj", "{1D57B094-2569-4899-A33A-E0A6E067EAD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -278,6 +282,18 @@ Global
 		{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
 		{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{1D57B094-2569-4899-A33A-E0A6E067EAD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D57B094-2569-4899-A33A-E0A6E067EAD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D57B094-2569-4899-A33A-E0A6E067EAD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D57B094-2569-4899-A33A-E0A6E067EAD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D57B094-2569-4899-A33A-E0A6E067EAD3}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{1D57B094-2569-4899-A33A-E0A6E067EAD3}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -314,17 +330,13 @@ Global
 		{2ED69FBE-C3DF-434D-9C30-6641B79C4A64} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
 		{2D694F51-5055-4EC8-8767-C2011E010DD5} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
 		{045D3D94-7A30-445D-B578-1DE5A5BE5C3B} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
+		{1D57B094-2569-4899-A33A-E0A6E067EAD3} = {E0968D62-5DFE-4F03-B8B8-E4EFEDDEF16C}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
-		$1.DirectoryNamespaceAssociation = None
-		$1.ResourceNamePolicy = FileFormatDefault
 		$0.TextStylePolicy = $41
-		$41.FileWidth = 120
-		$41.TabsToSpaces = False
-		$41.inheritsSet = VisualStudio
-		$41.inheritsScope = text/plain
 		version = 1.0
 		StartupItem = core\p5.webapp\p5.webapp.csproj
 	EndGlobalSection

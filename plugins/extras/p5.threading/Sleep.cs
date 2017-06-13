@@ -40,7 +40,7 @@ namespace p5.threading
         [ActiveEvent (Name = "sleep")]
         public static void sleep (ApplicationContext context, ActiveEventArgs e)
         {
-            Thread.Sleep (XUtil.Single<int> (context, e.Args, true));
+            Thread.Sleep (XUtil.Single<int> (context, e.Args));
         }
     }
 }

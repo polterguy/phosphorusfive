@@ -121,7 +121,7 @@ namespace p5.threading.helpers
          */
         private void Execute ()
         {
-            Context.Raise ("eval-mutable", Lambda);
+            Context.RaiseEvent ("eval-mutable", Lambda);
         }
     }
 }

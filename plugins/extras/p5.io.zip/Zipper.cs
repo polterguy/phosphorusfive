@@ -42,7 +42,7 @@ namespace p5.io.zip
         [ActiveEvent (Name = "zip")]
         public static void zip (ApplicationContext context, ActiveEventArgs e)
         {
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Getting root folder
                 var rootFolder = Helpers.GetBaseFolder (context);
@@ -58,7 +58,7 @@ namespace p5.io.zip
                     destination);
 
                 // Getting source file(s)
-                var source = XUtil.Source (context, e.Args, e.Args, "src", new string[] { "compression-level", "password", "key-size" }.ToList ());
+                var source = XUtil.Sources (context, e.Args, "compression-level", "password", "key-size");
 
                 // Making sure we are able to delete zip file, if an exception occurs
                 try {

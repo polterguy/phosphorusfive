@@ -55,7 +55,7 @@ namespace p5.threading
             // Recursively waits for each locker to be unlocked, evaluating given lambda, once all lockers are unlocked
             LockNext (
                 lockers, delegate {
-                    context.Raise ("eval-mutable", e.Args);
+                    context.RaiseEvent ("eval-mutable", e.Args);
                 });
         }
 

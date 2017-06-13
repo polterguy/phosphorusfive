@@ -39,7 +39,7 @@ namespace p5.io.zip.helpers
         /// <param name="context">application context</param>
         public static string GetBaseFolder (ApplicationContext context)
         {
-            return context.Raise (".p5.core.application-folder").Get<string> (context);
+            return context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
         }
 
         /*
@@ -47,7 +47,7 @@ namespace p5.io.zip.helpers
          */
         public static string GetSystemPath (ApplicationContext context, string path)
         {
-            return context.Raise (".p5.io.unroll-path", new Node ("", path)).Get<string> (context);
+            return context.RaiseEvent (".p5.io.unroll-path", new Node ("", path)).Get<string> (context);
         }
 
         /*
@@ -68,7 +68,7 @@ namespace p5.io.zip.helpers
             }
 
             // Verifying user is authorized to writing to destination
-            context.Raise (".p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
+            context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
 
             // Returning possibly new path to caller
             return destinationFile;
@@ -88,11 +88,11 @@ namespace p5.io.zip.helpers
             if (Directory.Exists (rootFolder + sourceFileFolder)) {
 
                 // Verifies user is authorised to reading folder
-                context.Raise (".p5.io.authorize.read-folder", new Node ("", sourceFileFolder).Add ("args", args));
+                context.RaiseEvent (".p5.io.authorize.read-folder", new Node ("", sourceFileFolder).Add ("args", args));
             } else {
 
                 // Verifies user is authorised to reading file
-                context.Raise (".p5.io.authorize.read-file", new Node ("", sourceFileFolder).Add ("args", args));
+                context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", sourceFileFolder).Add ("args", args));
             }
 
             // Checking that destination is not underneath source
