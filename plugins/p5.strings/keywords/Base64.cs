@@ -33,7 +33,23 @@ namespace p5.types.types
     public static class Base64
     {
         /// <summary>
-        ///     Creates a bool from its string representation
+        ///     Creates a base64 encoded string of the given object
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.string.encode-base64")]
+        static void p5_string_encode_base64 (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up after ourselves.
+            using (new ArgsRemover (e.Args)) {
+
+                // Encoding given value to base64 and returning results to caller.
+                e.Args.Value = Convert.ToBase64String (XUtil.Single<byte[]> (context, e.Args));
+            }
+        }
+
+        /// <summary>
+        ///     Decodes a base64 encoded string, into its byte[] content.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

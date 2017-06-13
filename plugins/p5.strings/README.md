@@ -265,7 +265,7 @@ trim:Thomas Hansen
 ## Handling base64 encoded values
 
 The *[p5.string.decode-base64]* Active Event, allows you to decode a piece of base64 encoded data. This can be useful for scenarios
-where you are somehow given base64 encoded data, and need to retrieve its original value. Usage is as simple as this.
+where you are somehow given base64 encoded data, and need to retrieve its original value. Usage is as simple as the following illustrates.
 
 ```
 _data:dGhvbWFzIGhhbnNlbiB3YXMgaGVyZQ==
@@ -276,3 +276,10 @@ src:x:/@p5.string.decode-base64?value.string
 Notice, since *[p5.string.decode-base64]* will actually return a byte array, or a "blob", we need to convert this blob into a string to actually
 see its result. The above example hence simply base64 decodes a value, which contains the text _"thomas hansen was here"_ into a blob, for then
 to use a *[src]* invocation, with an expression, converting its result into a string.
+
+To encode a blob into a base64 encoded string, is just as easy.
+
+```
+_data:blob:dGhvbWFzIGhhbnNlbiB3YXMgaGVyZQ==
+p5.string.encode-base64:x:/-?value
+```
