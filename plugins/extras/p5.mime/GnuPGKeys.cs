@@ -135,7 +135,7 @@ namespace p5.mime
         }
 
         /// <summary>
-        ///     Lists all public keys matching the given filter from the GnuPG database
+        ///     Lists all private keys matching the given filter from the GnuPG database
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>

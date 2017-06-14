@@ -426,7 +426,231 @@ p5.pop3.get
 ```
 
 Notice, we are using GMail in these examples, assuming you have a GMail account. You can of course use any POP3/SMTP servers you wish, including the
-ones from your ISP, or servers you have set up for yourselves. You can also supply an *[attachment-folder]* when fetching emails from your POP3
+ones from your ISP, or servers you have set up for yourselves.
+
+You can also supply an *[attachment-folder]* when fetching emails from your POP3
 server, which will be passed into the MIME parser automatically for you, and never load up attachments into memory - Which will conserve a significant
 amount of resources on your server, for big attachments fetched from your POP3 server.
+
+## Additional PGP related Active Events
+
+There are also many other PGP related Active Events in this component. Below is an exhaustive list.
+
+* [p5.crypto.create-pgp-keypair] - Creates a PGP keypair, and installs into your GnuPG database
+* [p5.crypto.list-private-keys] - List all private keys from GnuPG
+* [p5.crypto.list-public-keys] - List all public keys from GnuPG
+* [p5.crypto.get-key-details] - Returns the details for a PGP key
+* [p5.crypto.get-public-key] - Returns one or more public PGP keys
+* [p5.crypto.get-private-key] - Returns one or more private PGP keys
+* [p5.crypto.delete-private-key] - Delets a private PGP key
+* [p5.crypto.delete-public-key] - Delets a public PGP key
+* [p5.crypto.import-public-pgp-key] - Imports a public PGP key
+* [p5.crypto.import-private-pgp-key] - Imports a private PGP key
+* [.p5.mime.parse-native] - C# special Active Event for hooking into library for C# developers
+* [.p5.mime.create-native] - C# special Active Event for hooking into library for C# developers
+
+The last two Active Events are only for extension developers, who wants to use MIME natively in their own components, and hence beyond the
+scope of this documentation. To see example usage of them though, feel free to check out for instance the code of p5.mail project, that uses
+them internally.
+
+The first 10 Active Events in the above list, allows you to manage your GnuPG database, by creating new keys, and modifying existing keys.
+Below is the documentation for them.
+
+### [p5.crypto.create-pgp-keypair]
+
+This event creates a private/public keypair for you, and installs it into your GnuPG database. To use it, you could use something like the
+following.
+
+```
+p5.crypto.create-pgp-keypair
+
+  // Mandatory arguments
+  identity:foo@bar.com
+  password:Your-GnuPG-Password
+  
+  // Optional arguments
+  expires:date:"2020-06-14T10:51:59.018"
+  strength:1024
+  public-exponent:long:65537
+  certainty:5
+  seed:xyzqwerty124233456&$%
+```
+
+The above will create a PGP keypair for you, with the identity of "foo@bar.com", and the password of "Your-GnuPG-Password", and install it into
+your GnuPG database. The rest of the arguments are optional, with "sane defaults". One detail though, is that you can explicitly add to the seeding
+of the randomb number generator by adding a *[seed]* argument - Which is probably wise, to make sure your random numbers used to generate the keypair
+is less predictable. The last point of course, makes your keypair much more difficult to predict. Preferably this should be some user supplied
+string, of a certain length, for every time you create a keypair. Notice that the seed is by default relatively unique, with a very large entropy,
+but further adding to it, makes it even less predictable.
+
+### [p5.crypto.list-private-keys] and [p5.crypto.list-public-keys]
+
+These two Active Events simply lists your private and public PGP keys from your GnuPG database. Below is an example of usage.
+
+```
+p5.crypto.list-private-keys
+p5.crypto.list-public-keys
+```
+
+The above will result in something like the following.
+
+```
+p5.crypto.list-private-keys
+  3a043739292f87e371116352a7e80e18964db381
+  883c57f331661a58b2af5aa8a9ea8f251c05c160
+  7fa6f6f56a37840bb4c5a820ee1646290fa70f72
+  aabea2c7ecf44174f918e569968463c52ad8d65f
+p5.crypto.list-public-keys
+  3a043739292f87e371116352a7e80e18964db381
+  883c57f331661a58b2af5aa8a9ea8f251c05c160
+  7fa6f6f56a37840bb4c5a820ee1646290fa70f72
+  aabea2c7ecf44174f918e569968463c52ad8d65f
+```
+
+Notice that what you get back from these Active Events, are the fingerprints of your keys. Both of these Active Events takes an optional filter,
+for fingerprints you wish to look for. E.g., assuming you have a private key with the specified fingerprint, you could use something like the following.
+
+```
+_fingerprints
+  3a043739292f87e371116352a7e80e18964db381
+  883c57f331661a58b2af5aa8a9ea8f251c05c160
+p5.crypto.list-public-keys:x:/-/*?name
+```
+
+You can also supply one or more identities to look for as a filter condition. Example is given below.
+
+```
+// Looking for a specific ID
+p5.crypto.list-private-keys:phosphorusfive@gmail.com
+
+// Or listing all gmail.com keys
+p5.crypto.list-private-keys:@gmail.com
+```
+
+### [p5.crypto.get-key-details]
+
+This Active Event will return the details of one or more keys. Below is an example.
+
+```
+p5.crypto.get-key-details:phosphorusfive@gmail.com
+```
+
+The above code will return something like the following.
+
+```
+p5.crypto.get-key-details
+  3a043739292f87e371116352a7e80e18964db381
+    id:964DB381
+    algorithm:RsaGeneral
+    strength:int:1024
+    creation-time:date:"2017-06-01T17:22:32"
+    is-encryption-key:bool:true
+    is-master-key:bool:true
+    is-revoked:bool:false
+    version:int:4
+    expires:date:"2020-06-01T17:22:31"
+    user-ids
+      :Thomas Hansen <phosphorusfive@gmail.com>
+    signed-by
+      964DB381:date:"2017-06-01T17:22:32"
+```
+
+This event can also return multiple results. For instance, to return all details from all GMail keys, can be done with something resembling
+the following.
+
+```
+p5.crypto.get-key-details:@gmail.com
+```
+
+### [p5.crypto.get-public-key] and [p5.crypto.get-private-key]
+
+These two Active Events will return the actual key content. Usage can be found below.
+
+```
+p5.crypto.get-public-key:phosphorusfive@gmail.com
+p5.crypto.get-private-key:phosphorusfive@gmail.com
+```
+
+Which will result in something like the following.
+
+```
+p5.crypto.get-public-key
+  3a043739292f87e371116352a7e80e18964db381:@"-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: BCPG C# v1.8.1.0
+
+mI0EWTBNWAEEAMhVnsHog1ZcFUD17SyEV5jt+OR7oRgLpozvl4cLtni9cMHx338d
+ybY/u765u0weYx8gRWguRmJq0d4aDNq1z31iICAbooTKs1wWUPCD6iSAwWfnI1Ie
+2Gk2S8PMqaKGKvpzaeIEajn6gvfAs5/Ud3iWsrP/gLVAlSrR7qKQERTvABEBAAG0
+KFRob21hcyBIYW5zZW4gPHBob3NwaG9ydXNmaXZlQGdtYWlsLmNvbT6IsQQQAQIA
+GwUCWTBNWAIbAwQLCQgHBhUIAgkKCwUJBaTr/wAKCRCn6A4Ylk2zgXIZBAChmCpX
+P8mXcsvXpr9E0MfvlshY9Z15a54tEhrMpe6eICOemh61W0vFfCPoJvRO52/0gSot
+RwGjtetMDN5PyTZhpkUEiAP+fKTPLlGJyTWmAcrIXaGYuPE0lmo/mc3DAlU2FGcl
+AsLtZrGjPRdoBoyhZVH/+vkYANj9gnwnvcHMMQ==
+=oHRj
+-----END PGP PUBLIC KEY BLOCK-----
+"
+p5.crypto.get-private-key
+  3a043739292f87e371116352a7e80e18964db381:@"-----BEGIN PGP PRIVATE KEY BLOCK-----
+Version: BCPG C# v1.8.1.0
+
+lQIGBFkwTVgBBADIVZ7B6INWXBVA9e0shFeY7fjke6EYC6aM75eHC7Z4vXDB8d9/
+Hcm2P7u+ubtMHmMfIEVoLkZiatHeGgzatc99YiAgG6KEyrNcFlDwg+okgMFn5yNS
+HthpNkvDzKmihir6c2niBGo5+oL3wLOf1Hd4lrKz/4C1QJUq0e6ikBEU7wARAQAB
+/gkDApNbDFq6Sf3aYMCehK38l9siFlzy8VzBBgjVm5/fqRHYTj4YVOamzaN67mZk
+fgHMHT2zZsqPrlNxVk0lXdK6hGtkB7tpr+zNV3jfGTctNUTClApzflJTQ0EIDAEX
+IqHgR//jLs/mBnTvIF7BDDBjN6wljrrdriU+O96MEGwRI/Dkxq6ovk2U3Kr9D/hK
+Xh3pGEcx2nQKGCquyqasGq0Eb4PpY8Qt3HtkSNh/u1o3C8HKqGLKj6wYsiIvOFxS
+qjmDhM3uKXVVufuVLtIVC7T3HTvwDtDH7snwgdo01C05mQKPpU7W0hPWoyRNOgmC
+O6rA7v8sE6poVLVl9sijVcS55HKDClYRoZ6+V5TapXuFJrK9A23dO6jaGAeXFCyf
+VgA1lvqNjHSOhC4a+uuh+R0sIcKnv5L+cR6O6dsAhoWZRWsTfOlTl1fJ55f7ZMK7
+8XMmdCAt5wWWxEW2aEu9BxEP13HAXy6ksvZ6miWvqtFmdrOWADMMzj+0KFRob21h
+cyBIYW5zZW4gPHBob3NwaG9ydXNmaXZlQGdtYWlsLmNvbT6IsQQQAQIAGwUCWTBN
+WAIbAwQLCQgHBhUIAgkKCwUJBaTr/wAKCRCn6A4Ylk2zgXIZBAChmCpXP8mXcsvX
+pr9E0MfvlshY9Z15a54tEhrMpe6eICOemh61W0vFfCPoJvRO52/0gSotRwGjtetM
+DN5PyTZhpkUEiAP+fKTPLlGJyTWmAcrIXaGYuPE0lmo/mc3DAlU2FGclAsLtZrGj
+PRdoBoyhZVH/+vkYANj9gnwnvcHMMQ==
+=vGHI
+-----END PGP PRIVATE KEY BLOCK-----
+"
+```
+
+Notice, my private key above, is (obviously) a bogus testing key, and not my real actual PGP key.
+
+This allows you to export your private and public keys, to create backups or something out of them.
+Realize though that private keys, will be exported in "armored format", which means you will still need the 
+password to the key, to retrieve its actual content.
+
+### [p5.crypto.delete-private-key] and [p5.crypto.delete-public-key]
+
+These Active Events simply deletes the specified public or private key(s).
+For these Active events you must supply the fingerprint, and none of them will tolerate an identity, such as an email address, etc.
+This is to make sure you actually delete the right key, and not accidentally delete a private key, which is still in use.
+
+### [p5.crypto.import-public-pgp-key] and [p5.crypto.import-private-pgp-key]
+
+These Active Events allows you to import a private and public key. Below we are importing a public and private key, with the
+identity of "foo@bar.com".
+
+```
+p5.crypto.import-public-pgp-key:@"-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: BCPG C# v1.8.1.0
+
+mI0EWUEVnAEEAMQWCN96diwls+9SR/XMEFWppRo8ktzOTKQZV/qYjakH5yZxMwXF
+sS2I8Zxw4DfLy3TDqPY2ogHICJXnCAfPQFS8kbDoRPe2KUkGvhfg56qlErCqOXEk
+0fCngUDTnhxL3eKOILSDbKIUDFGFpebkKacaOGmYtnkLNwz2VRtr/1lNABEBAAG0
+C2Zvb0BiYXIuY29tiLEEEAECABsFAllBFZ0CGwMECwkIBwYVCAIJCgsFCQWkwYIA
+CgkQ7hZGKQ+nD3KPLwQAg2S1LlA3V6XUkzDVwQ+eUA5lMTFLq5Avbx11ucAbd+/c
+osk1QmZR9/B3x8LCLfoA7MKPf71PNirFC64htjAqErWjFy5JANAvntPSbU7AeniJ
+CecA7GNaupQwLVLkidKxhLF0IT9gNkK//8ns8TWRe6j8GmkDTxe2VsFHq4eI9LI=
+=Bzbm
+-----END PGP PUBLIC KEY BLOCK-----"
+```
+
+Check out your GnuPG database afterwards, by doing for instance something like
+the following.
+
+```
+p5.crypto.get-key-details:foo@bar.com
+```
+
 
