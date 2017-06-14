@@ -141,6 +141,9 @@ I have also written two MSDN Magazine articles about Phosphorus Five for Microso
 * [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
 * [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
 
+If you wish to read these articles, you should probably read them sequentially, to make sure you understand Active Events, 
+before you dive into Hyperlambda.
+
 ## License
 
 Phosphorus Five is free and open source software, and licensed under the terms
