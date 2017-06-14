@@ -659,5 +659,9 @@ Notice, if none of these last parts makes any sense for you at all - I encourage
 for e.g. "GnuPG" or "PGP", "Public key cryptography", etc, to understand how PGP and GnuPG works. These last Active Events 
 are simply thin wrappers around your existing GnuPG database, which holds your Open PGP keys.
 
+## Technical details
 
+The MIME parser in P5 is internally using [MimeKit](https://github.com/jstedfast/MimeKit), and MimeKit internally again
+is using [BouncyCastle](https://www.bouncycastle.org/) for its cryptography features. Especially the MIME parts of
+P5 is therefor probably orders of magnitudes faster than most other MIME parser out there.
 
