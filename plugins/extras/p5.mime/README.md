@@ -261,9 +261,10 @@ p5.mime.create
 
 You can of course, _both_ sign and encrypt a MIME entity, supplying both an *[encrypt]* argument, in addition to a *[sign]* argument.
 
-Notice, _do not_ mark your multipart as "multipart:encrypted" or "multipart:signed", since the encryption/signing process automatically wraps 
-your entire message into another wrapping "multipart:encrypted/signed" MIME entity. To see this in action, run the following code through your
-System42's Executor, and see how your single "text:plain" entity, is wrapped inside an outer "multipart/signed" entity.
+Notice, _do not_ mark your encrypted/signed multiparts explicitly as "multipart:encrypted" or "multipart:signed", since the encryption/signing 
+process automatically wraps your entire message into another wrapping "multipart:encrypted/signed" MIME entity. To see this in action, 
+run the following code through your System42's Executor, and see how your single "text:plain" entity, 
+is wrapped inside an outer "multipart/signed" entity.
 
 ```
 p5.mime.create
@@ -328,7 +329,7 @@ p5.mime.parse:x:/@p5.mime.create/*/result?value
 When you parse a MIME message, you can supply a lot of optional arguments. The most important ones being.
 
 * [attachment-folder] - A folder on disc where you want to store attachments
-* [decrypt] - One or more decryption emails, with passwords, to decrypt any encrypted emails.
+* [decrypt] - One or more decryption emails/fingerprints, with passwords, to decrypt encrypted emails
 
 The *[attachment-folder]* argument, allows you to specify an explicit folder, where you want to store attachments. If you do, then
 the attachments from your MIME message will not be loaded into memory, but rather saved directly to disc, and its path will be returned.
@@ -425,5 +426,7 @@ p5.pop3.get
 ```
 
 Notice, we are using GMail in these examples, assuming you have a GMail account. You can of course use any POP3/SMTP servers you wish, including the
-ones from your ISP, or servers you have set up for yourselves.
+ones from your ISP, or servers you have set up for yourselves. You can also supply an *[attachment-folder]* when fetching emails from your POP3
+server, which will be passed into the MIME parser automatically for you, and never load up attachments into memory - Which will conserve a significant
+amount of resources on your server, for big attachments fetched from your POP3 server.
 
