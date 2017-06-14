@@ -93,3 +93,21 @@ an exception, if something goes wrong inside of your transaction lambda object.
 
 The *[p5.mysql.database.get]* and *[p5.mysql.database.set]* Active Events, simply allows you to get and set the currently active database.
 
+## Best practices
+
+You should probably not supply the database connection string directly into your code, but rather rely on a web.config setting, and reference it
+using the square bracket notation demonstrated above. If you do, the correct way to create a MySQL connection string in your web.config, is as follows.
+
+```xml
+  <connectionStrings>
+    <add name="your_database" connectionString="server=localhost;User Id=root;password=YOUR_PASSWORD;database=YOUR_DATABASE" providerName="MySql.Data.MySqlClient" />
+  </connectionStrings>
+```
+
+Stuff the above settings into your web.config, somewhere for instance above your `<system.web>` parts. Then reference the connection string indirectly
+from your code as the following illustrates.
+
+```
+p5.mysql.connect:[your_database]
+```
+
