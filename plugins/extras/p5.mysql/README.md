@@ -100,7 +100,10 @@ using the square bracket notation demonstrated above. If you do, the correct way
 
 ```xml
   <connectionStrings>
-    <add name="your_database" connectionString="server=localhost;User Id=root;password=YOUR_PASSWORD;database=YOUR_DATABASE" providerName="MySql.Data.MySqlClient" />
+    <add 
+      name="your_database" 
+      connectionString="server=localhost;User Id=root;password=YOUR_PASSWORD;database=YOUR_DATABASE" 
+      providerName="MySql.Data.MySqlClient" />
   </connectionStrings>
 ```
 
