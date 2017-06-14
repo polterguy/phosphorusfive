@@ -279,7 +279,7 @@ aggressively reduce the quality, and hence the size of your image, you could do 
 
 ```
 p5.imaging.transform:~/thomas.jpg
-  dest:~/thomas-compact.jpg
+  destination:~/thomas-compact.jpg
   quality:5
 ```
 
