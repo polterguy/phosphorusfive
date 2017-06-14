@@ -1,4 +1,4 @@
-Image manipulation
+Image manipulation in Phosphorus Five
 ===============
 
 This folder contains Active Events that allows you to manipulate images in Phosphorus Five. Currently there are two Active Events in this plugin.
@@ -90,9 +90,9 @@ p5.imaging.transform:~/thomas.jpg
 
 The above code, will not in any ways _"clip"_ your image, but keep the entire source image, only resizing it, probably making it _"skewed"_ in the process.
 
-### Applying additional transformations
+### Applying other transformations
 
-When you invoke *[p5.imaging.transform]*, you can also apply additional transformations. These are transformations to your destination image, 
+When you invoke *[p5.imaging.transform]*, you can also apply other transformations. These are transformations to your destination image, 
 applied after creating your destination image, but before it is saved to disc. The following transformations exist in Phosphorus Five out of the box.
 
 * [rotate] - Requires a [degrees] argument, with the legal values of "90", "180" or "270".
@@ -123,7 +123,7 @@ resize the image in the same operation, such as the following illustrates. Reali
 rotating it 90 degrees, will have changed. The width after rotating your image 90 degrees will be its former height, and vice versa.
 
 Notice, at the current time, only angles of 90, 180 and 270 are supported for rotating the image. In the future, we might add up support for
-any angles, depending upon the needs from our users.
+any angles, depending upon the needs from users. Below is an example of both rotating and resizing an image in one go.
 
 ```
 p5.imaging.transform:~/thomas.jpg
@@ -140,7 +140,7 @@ p5.imaging.transform:~/thomas.jpg
       degrees:90
 ```
 
-Tranformations will be applied sequentially, in the order they appear in your Hyperlambda.
+Tranformations will be applied sequentially, in the order they appear in your Hyperlambda, except for resizing that wil always be done first.
 
 #### Creating a grayscale of your image
 
@@ -259,7 +259,7 @@ p5.imaging.transform:~/donald.png
 
 ### Converting an image
 
-If you wish, you can use the *[p5.imaging.resize]* Active Event to convert between image types, without resizing your image. In such a case, you only
+If you wish, you can use the *[p5.imaging.transform]* Active Event to convert between image types, without resizing your image. In such a case, you only
 need to supply a *[destination]* argument, and not pass in any *[dest-width]* or *[dest-height]*, at which case, the height and width of your new image, will be the
 same as your source image. Consider this.
 

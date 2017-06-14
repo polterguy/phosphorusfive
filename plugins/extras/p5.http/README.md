@@ -198,5 +198,5 @@ not somehow been compromised, and that you can trust the client transmitting the
 
 There are ways to further refine this, and increase the security, by requiring the client to only supply a sub-set of Active Events, through using 
 e.g. the *[eval-whitelist]* Active Event when evaluating the incoming and returned lambda. Please see the *[eval-whitelist]* Active Event for details
-about this, in the [p5.lambda](/plugins/p5.lambda) project for details about how to do this.
+about this. You can find the *[eval-whitelist]* event in the [p5.lambda](/plugins/p5.lambda) project.
 
