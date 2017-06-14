@@ -107,32 +107,33 @@ Some of the folders inside of P5 have specific documentation for that particular
 * [plugins](plugins/)
 * [core](core/)
 
-Below is an extensive list of the documentation to all plugins, in on single list, for your convenience.
+Below is an extensive list of the documentation to all plugins in the core, in on single list, for your convenience. But there might also exist
+other P5 components out there, in addition to that it is extremely easy to [roll your own plugin](), if you know C# from before.
 
-* [p5.config](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.config) - Accessing your app's configuration settings
-* [p5.data](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.data) - A super fast memory based database
-* [p5.events](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.events) - Creating custom Active Events from Hyperlambda
-* [p5.hyperlambda](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.hyperlambda) - The Hyperlambda parser
-* [p5.io](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.io) - File input and output, in addition to folder management
-* [p5.lambda](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.lambda) - The core "keywords" in P5
-* [p5.math](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.math) - Math Active Events
-* [p5.strings](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.strings) - String manipulation in P5
-* [p5.types](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.types) - The types supported by P5
-* [p5.web](https://github.com/polterguy/phosphorusfive/tree/master/plugins/p5.web) - Everything related to web (Ajax widgets among other things)
-* [p5.auth](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.auth) - User and role management
-* [p5.crypto](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.crypto) - Some of the cryptography features of P5, other parts of the cryptography features can be found in p5.mime and p5.io.zip
-* [p5.csv](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.csv) - Handling CSV files in P5
-* [p5.flickr](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.flickrnet) - Searching for images on Flickr
-* [p5.html](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.html) - Parsing and creating HTML in P5
-* [p5.http](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.http) - HTTP REST support in P5
-* [p5.imaging](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.imaging) - Managing and manipulating images from P5
-* [p5.authorization](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.io.authorization) - Authorization features in P5
-* [p5.io.zip](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.io.zip) - Zip'ing and unzip'ing files, also supports AES cryptography
-* [p5.mail](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.mail) - Complex and rich SMTP and POP3 support, which is far better than the internal .Net classes for accomplishing the same
-* [p5.mime](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.mime) - MIME support, in addition to PGP, and handling your GnuPG database
-* [p5.mysql](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.mysql) - MySQL data adapter
-* [p5.threading](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.threading) - Threading support in P5
-* [p5.xml](https://github.com/polterguy/phosphorusfive/tree/master/plugins/extras/p5.xml) - XML support in P5
+* [p5.config](/plugins/p5.config) - Accessing your app's configuration settings
+* [p5.data](/plugins/p5.data) - A super fast memory based database
+* [p5.events](/plugins/p5.events) - Creating custom Active Events from Hyperlambda
+* [p5.hyperlambda](/plugins/p5.hyperlambda) - The Hyperlambda parser
+* [p5.io](/plugins/p5.io) - File input and output, in addition to folder management
+* [p5.lambda](/plugins/p5.lambda) - The core "keywords" in P5
+* [p5.math](/plugins/p5.math) - Math Active Events
+* [p5.strings](/plugins/p5.strings) - String manipulation in P5
+* [p5.types](/plugins/p5.types) - The types supported by P5
+* [p5.web](/plugins/p5.web) - Everything related to web (Ajax widgets among other things)
+* [p5.auth](/plugins/extras/p5.auth) - User and role management
+* [p5.crypto](/plugins/extras/p5.crypto) - Some of the cryptography features of P5, other parts of the cryptography features can be found in p5.mime and p5.io.zip
+* [p5.csv](/plugins/extras/p5.csv) - Handling CSV files in P5
+* [p5.flickr](/plugins/extras/p5.flickrnet) - Searching for images on Flickr
+* [p5.html](/plugins/extras/p5.html) - Parsing and creating HTML in P5
+* [p5.http](/plugins/extras/p5.http) - HTTP REST support in P5
+* [p5.imaging](/plugins/extras/p5.imaging) - Managing and manipulating images from P5
+* [p5.authorization](/plugins/extras/p5.io.authorization) - Authorization features in P5
+* [p5.io.zip](/plugins/extras/p5.io.zip) - Zip'ing and unzip'ing files, also supports AES cryptography
+* [p5.mail](/plugins/extras/p5.mail) - Complex and rich SMTP and POP3 support, which is far better than the internal .Net classes for accomplishing the same
+* [p5.mime](/plugins/extras/p5.mime) - MIME support, in addition to PGP, and handling your GnuPG database
+* [p5.mysql](/plugins/extras/p5.mysql) - MySQL data adapter
+* [p5.threading](/plugins/extras/p5.threading) - Threading support in P5
+* [p5.xml](/plugins/extras/p5.xml) - XML support in P5
 
 ## License
 
