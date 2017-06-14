@@ -381,7 +381,7 @@ p5.mime.parse
 
 ## Sending an encrypted and signed email
 
-If you are using p5.mime in combination with [p5.mail](/plugins/extras/p5.mail/), you can use the following code to send an encrypted and signes
+If you are using p5.mime in combination with [p5.mail](/plugins/extras/p5.mail/), you can use the following code to send an encrypted and signed
 email. Please change the settings to your settings, and the private/public PGP keypair to something existing in your own GnuPG database.
 
 ```
@@ -434,7 +434,7 @@ amount of resources on your server, for big attachments fetched from your POP3 s
 
 ## Additional PGP related Active Events
 
-There are also many other PGP related Active Events in this component. Below is an exhaustive list.
+There are also many other PGP related Active Events in p5.mime. Below is an exhaustive list.
 
 * [p5.crypto.create-pgp-keypair] - Creates a PGP keypair, and installs into your GnuPG database
 * [p5.crypto.list-private-keys] - List all private keys from GnuPG
@@ -450,8 +450,8 @@ There are also many other PGP related Active Events in this component. Below is 
 * [.p5.mime.create-native] - C# special Active Event for hooking into library for C# developers
 
 The last two Active Events are only for extension developers, who wants to use MIME natively in their own components, and hence beyond the
-scope of this documentation. To see example usage of them though, feel free to check out for instance the code of p5.mail project, that uses
-them internally.
+scope of this documentation. To see example usage of them though, feel free to check out for instance the code of 
+the [p5.mail project](/plugins/extras/p5.mail), that consumes them internally.
 
 The first 10 Active Events in the above list, allows you to manage your GnuPG database, by creating new keys, and modifying existing keys.
 Below is the documentation for them.
@@ -478,10 +478,12 @@ p5.crypto.create-pgp-keypair
 
 The above will create a PGP keypair for you, with the identity of "foo@bar.com", and the password of "Your-GnuPG-Password", and install it into
 your GnuPG database. The rest of the arguments are optional, with "sane defaults". One detail though, is that you can explicitly add to the seeding
-of the randomb number generator by adding a *[seed]* argument - Which is probably wise, to make sure your random numbers used to generate the keypair
+of the random number generator by adding a *[seed]* argument - Which is probably wise, to make sure your random numbers used to generate the keypair
 is less predictable. The last point of course, makes your keypair much more difficult to predict. Preferably this should be some user supplied
-string, of a certain length, for every time you create a keypair. Notice that the seed is by default relatively unique, with a very large entropy,
-but further adding to it, makes it even less predictable.
+string, of a certain length, for every time you create a keypair. Notice that the default seed is by default relatively unique, with a very 
+large entropy, but further adding to it, makes it even less predictable, and hence more secure.
+
+Notice, if you use 4096 bit strength, or more - Then creating your key might take several minutes!
 
 ### [p5.crypto.list-private-keys] and [p5.crypto.list-public-keys]
 
@@ -520,7 +522,7 @@ p5.crypto.list-public-keys:x:/-/*?name
 You can also supply one or more identities to look for as a filter condition. Example is given below.
 
 ```
-// Looking for a specific ID
+// Looking for a specific identity
 p5.crypto.list-private-keys:phosphorusfive@gmail.com
 
 // Or listing all gmail.com keys
@@ -628,7 +630,7 @@ This is to make sure you actually delete the right key, and not accidentally del
 
 ### [p5.crypto.import-public-pgp-key] and [p5.crypto.import-private-pgp-key]
 
-These Active Events allows you to import a private and public key. Below we are importing a public and private key, with the
+These Active Events allows you to import one or more private and/or public key(s). Below we are importing a public key, with the
 identity of "foo@bar.com".
 
 ```
@@ -652,5 +654,10 @@ the following.
 ```
 p5.crypto.get-key-details:foo@bar.com
 ```
+
+Notice, if none of these last parts makes any sense for you at all - I encourage you to go to e.g. YouTube and do a search
+for e.g. "GnuPG" or "PGP", etc, to understand how PGP and GnuPG works. These last Active Events are simply thin wrappers 
+around your existing GnuPG database, which holds your Open PGP keys.
+
 
 
