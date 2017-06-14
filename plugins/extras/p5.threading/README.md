@@ -1,7 +1,7 @@
 Threading support in Phosphorus Five
 ===============
 
-This project contains the thread supporting Active Events for Phosphorus Five. These Active Events, are plugins to the core "non-programming language",
+This project contains the thread supporting Active Events for Phosphorus Five. These Active Events, are plugins to the core non-programming language,
 and allows you to create threads, wait for multiple threads, lock access to shared objects, and most other things, expected from a modern 
 multi-threaded library.
 
@@ -178,6 +178,19 @@ file, at a point in time, when none of the other threads had gotten to save its 
 
 To illustrate the problem, and more easily grasp it - I simply adore this little joke, 
 a friend of mine told me once; _"What do we want? Now! When? Fewer race conditions!"_
+
+Notice, the above "foo.txt" file, will have the 3 different threads, modify it in an undetermined order. Meaning, you might just as well have the 
+third thread add its changes, then the first thread, before finally the second thread. Ending up with something like the following
+
+```
+initial value
+third thread
+first thread
+second thread
+```
+
+Every time you execute the above lambda, you might have different results, since there is no way to determine which threads starts and ends its job, 
+before the next one gets going.
 
 ## Example usage
 
