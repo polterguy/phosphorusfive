@@ -180,7 +180,7 @@ To illustrate the problem, and more easily grasp it - I simply adore this little
 a friend of mine told me once; _"What do we want? Now! When? Fewer race conditions!"_
 
 Notice, the above "foo.txt" file, will have the 3 different threads, modify it in an undetermined order. Meaning, you might just as well have the 
-third thread add its changes, then the first thread, before finally the second thread. Ending up with something like the following
+third thread add its changes, then the first thread, before finally the second thread. Ending up with something like the following.
 
 ```
 initial value
@@ -190,7 +190,8 @@ second thread
 ```
 
 Every time you execute the above lambda, you might have different results, since there is no way to determine which threads starts and ends its job, 
-before the next one gets going.
+before the next one gets going. It basically depends upon which thread invokes its *[lock]* event first! But thanx to the above lock invocation,
+you do have a guarantee of that all threads will have their changes applied, and stored into the shared "foo.txt" file.
 
 ## Example usage
 
