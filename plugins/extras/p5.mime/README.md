@@ -108,13 +108,13 @@ own media sub type, according to whatever sub type is legal for the specific typ
 * [example]
 * [model]
 
-Check up the MIME standard, to understand exactly what the different types represents, and how to use them. However, for most usage, understanding
-the multipart, text and application types is probably sufficient.
+Check up the MIME standard, to understand exactly what the different types represents, and how to use them. However, for most uses, understanding
+the multipart, text, and application types, is probably sufficient.
 
 ### Leaf MIME types dissected
 
 Except for the multipart, all of the above MIME types are leaf mime types. This means that they cannot have children of their own, but are considered
-to be the leaf entities of a MIME message.
+to be "leaf" entities of a MIME message.
 
 They all share the same set of arguments, which are MIME headers, and you can create any MIME header you wish. Though, realize, a valid MIME header 
 is defined, as having a name, where it contains at least one UPPERCASE letter, where every word is separated by a hyphen (-), and each new
@@ -128,7 +128,7 @@ Below is an example of creating a leaf entity from a filename.
 
 ```
 p5.mime.create
-  application:Hyperlambda
+  application:X-Hyperlambda
     filename:/system42/application-startup.hl
 ```
 
@@ -142,9 +142,8 @@ the file into memory first. Which of course, means saving significant amounts of
 
 ### The Multipart type dissected
 
-A multipart MIME type is special. First of all, because it can contain multiple children MIME entities. Secondly because it can be cryptographically
-signed, and encrypted. In addition, a multipart can optionally contain a *[preamble]* and an *[epilogue]*. To create a basic multipart, with two 
-children MIME entities, having a preamble and an epilogue, could be done like this.
+A multipart MIME type is special, since it can contain multiple children MIME entities, in addition to a *[preamble]* and an *[epilogue]*. 
+To create a basic multipart, with two children MIME entities, having a preamble and an epilogue, could be done like this.
 
 ```
 p5.mime.create
@@ -221,7 +220,7 @@ You can of course, _both_ sign and encrypt a MIME entity, supplying both an *[en
 
 Notice, _do not_ mark your multipart as "multipart:encrypted" or "multipart:signed", since the encryption/signing process automatically wraps 
 your entire message into another wrapping "multipart:encrypted/signed" MIME entity. To see this in action, run the following code through your
-System42's Executor, and see how your single "text:plain" entity, is wrapped inside an outer "multipart:signed" entity.
+System42's Executor, and see how your single "text:plain" entity, is wrapped inside an outer "multipart/signed" entity.
 
 ```
 p5.mime.create
@@ -262,7 +261,8 @@ m8xshsVW8KnvhdpLBp0wmNIqg0d3COrorkbT
 "
 ```
 
-Notice how your single text entity is wrapped inside a "multipart/signed" entity.
+Notice how your single text entity is wrapped inside a "multipart/signed" entity above. This is necessary to make sure we also attach the actual
+signature of your MIME message.
 
 ## Parsing MIME messages
 
@@ -334,6 +334,23 @@ p5.mime.parse
           prefix:e8b4ea8eddb94c7ea9caffad6a4982b6-
           folder:/users/root/temp/
 ```
+
+## Binary MIME entities
+
+You can override the Content-Transfer-Encoding of your MIME messages, which is useful for binary data. Below is an example of creating
+a MIME message, with one binary attachment, transferred as a base64 encoded MIME entity.
+
+```
+p5.mime.create
+  multipart:mixed
+    text:plain
+      content:Foo bar 1
+    image:png
+      Content-Transfer-Encoding:base64
+      filename:/system42/apps/CMS/media/p5.png
+```
+
+You can also use "binary", and all other Content-Transfer-Encoding values supported by the MIME standard.
 
 ## Sending an encrypted and signed email
 
