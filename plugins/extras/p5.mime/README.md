@@ -150,6 +150,37 @@ Some of the Active Events in P5, such as the *[p5.smtp.send]* event, from [p5.ma
 serialize the file to the socket, and never load the file into memory, if you use the above *[filename]* argument, instead of loading
 the file into memory first. Which of course, means saving significant amounts of resources for your P5 server.
 
+### Binary MIME entities
+
+You can override the Content-Transfer-Encoding of your MIME messages, which is useful for binary data. Below is an example of creating
+a MIME message, with one binary attachment, transferred as a base64 encoded MIME entity.
+
+```
+p5.mime.create
+  image:png
+    Content-Transfer-Encoding:base64
+    filename:/system42/apps/CMS/media/p5.png
+```
+
+The above lambda would result in something like the following.
+
+```
+p5.mime.create
+  result:@"Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=p5.png
+
+iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAABmJLR0QA/wD/AP+gvaeTAAAA
+CXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QUZBzIy1NXmlgAAGflJREFUeNrtXWmYXGWV
+[ ... snipped away ...]
+rpAnmP5EO3XgV70+R8ozZ5F3Zc4WB21VNXz92xBI/4erfNndgryqgD4h3C9DJHsByDwrLSFm
+rE6ChAnCHc4SsvP81Cheo1ggQwiqvybkbifvq4ZDcZmH3iUfug+7tuDim6si6/8BAk2DFgFq
+oVgAAAAASUVORK5CYII=
+"
+```
+
+You can also use "binary", and all other Content-Transfer-Encoding values supported by the MIME standard.
+
 ### The Multipart type dissected
 
 A multipart MIME type is special, since it can contain multiple children MIME entities, in addition to a *[preamble]* and an *[epilogue]*. 
@@ -185,23 +216,6 @@ Foo bar 2
 This is the epilogue
 "
 ```
-
-### Binary MIME entities
-
-You can override the Content-Transfer-Encoding of your MIME messages, which is useful for binary data. Below is an example of creating
-a MIME message, with one binary attachment, transferred as a base64 encoded MIME entity.
-
-```
-p5.mime.create
-  multipart:mixed
-    text:plain
-      content:Foo bar 1
-    image:png
-      Content-Transfer-Encoding:base64
-      filename:/system42/apps/CMS/media/p5.png
-```
-
-You can also use "binary", and all other Content-Transfer-Encoding values supported by the MIME standard.
 
 ### Encrypting and signing your MIME messages
 
