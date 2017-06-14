@@ -96,9 +96,7 @@ namespace p5.mail
                             }
                         }
 
-                        // Checking to see if caller provided a lambda callback, at which case, we invoke it before exiting
-                        // scope, since handling of emails might trigger an exception, at which case we do NOT want to send the
-                        // QUIT signal to the POP3 server.
+                        // Checking to see if caller provided a lambda callback, at which case, we invoke it before exiting scope.
                         var lambda = e.Args [".onfinished"];
                         if (lambda != null) {
 
