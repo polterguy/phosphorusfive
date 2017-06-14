@@ -56,7 +56,7 @@ namespace p5.imaging
                     using (var src = Image.FromFile (rootFolder + source)) {
 
                         // Returning width and height to caller.
-                        var resultNode = e.Args.Add (idxPath).LastChild;
+                        var resultNode = e.Args.Add (source).LastChild;
                         resultNode.Add ("width", src.Width);
                         resultNode.Add ("height", src.Height);
                     }
