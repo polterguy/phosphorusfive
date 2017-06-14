@@ -194,11 +194,11 @@ p5.mime.create
 ```
 
 Internally, the cryptography features of P5, uses GnuPG (Gnu Privacy Guard) to retrieve certificates and private keys used in cryptography and
-signing of messages. This means you'll have to have GnuPG installed on your system to use cyrptography in combination with MIME creation.
+signing of messages. This means you'll have to have GnuPG installed on your system to use cryptography in combination with MIME creation.
 
 You would also (obviously) have to have the certificate used for encryption installed into your GnuPG database. The above lambda, will throw an
-exception, simply because it won't find the certificate needed to encrypt your message (assuming you don't have a public key
-for "thomas@gaiasoul.com")
+exception, simply because it won't find the public PGP key needed to encrypt your message (assuming you don't have a public key
+for "thomas@gaiasoul.com").
 
 Signing a multipart, with a private PGP key, is just as simple. Except, this time you would have to declare which _private key_ to use. Which requires
 you to also supply a *[password]* node, beneath the *[email]/[fingerprint]* argument you supply, to have the GnuPG database release your private key.
@@ -217,10 +217,52 @@ p5.mime.create
       content:Foo bar 2
 ```
 
-You can of course, _both_ sign and encrypt a multipart, supplying both an *[encrypt]* argument, in addition to a *[sign]* argument.
+You can of course, _both_ sign and encrypt a MIME entity, supplying both an *[encrypt]* argument, in addition to a *[sign]* argument.
 
-Only multipart MIME entities can be encrypted and/or signed though. If you wish to encrypt a leaf entity, you'll have to first put it into
-a multipart somehow.
+Notice, _do not_ mark your multipart as "multipart:encrypted" or "multipart:signed", since the encryption/signing process automatically wraps 
+your entire message into another wrapping "multipart:encrypted/signed" MIME entity. To see this in action, run the following code through your
+System42's Executor, and see how your single "text:plain" entity, is wrapped inside an outer "multipart:signed" entity.
+
+```
+p5.mime.create
+  text:plain
+    sign
+      email:YOUR_GMAIL_EMAIL@gmail.com
+        password:Your-GnuPG-password
+    content:Foo bar 1
+```
+
+The above results in something resembling the following.
+
+```
+p5.mime.create
+  result:@"Content-Type: multipart/signed; boundary=""=-+2ZNhGoLEPVT/UQIzXf0PA=="";
+    protocol=""application/pgp-signature""; micalg=pgp-sha256
+
+--=-+2ZNhGoLEPVT/UQIzXf0PA==
+Content-Type: text/plain
+
+Foo bar 1
+--=-+2ZNhGoLEPVT/UQIzXf0PA==
+Content-Type: application/pgp-signature; name=signature.pgp
+Content-Disposition: attachment; filename=signature.pgp
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP MESSAGE-----
+Version: BCPG C# v1.8.1.0
+
+owJ4nAGeAGH/iJwEAQEIAAYFAllBBcsACgkQp+gOGJZNs4GcNQP+KxdJKpUXHb6v
+smR86C+chDzrRqLcKI5O44xL44c3o74SBF3K1mUP2Cupf4UG12SmgzCh45lGxrzc
+tF1NQZ+GLEQnPeqkeqFzm21IBWsEg/hcH+YTNDXPmhQ48CebHzv13uazw1f+B0rR
+m8xshsVW8KnvhdpLBp0wmNIqg0d3COrorkbT
+=7LsO
+-----END PGP MESSAGE-----
+
+--=-+2ZNhGoLEPVT/UQIzXf0PA==--
+"
+```
+
+Notice how your single text entity is wrapped inside a "multipart/signed" entity.
 
 ## Parsing MIME messages
 
