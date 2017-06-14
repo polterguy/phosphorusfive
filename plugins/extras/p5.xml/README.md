@@ -1,8 +1,8 @@
 XML parsing
 ===============
 
-This folder contains the Active Events necessary to parse and create XML files and snippets. There is one Active Event in this project,
-that allows you to parse an XML snippet, and create a lambda structure out of it. Its name is *[xml2lambda]*. BBelow is an example of using it.
+This folder contains the Active Events necessary to parse XML files and snippets. There is one Active Event in this project,
+that allows you to parse an XML snippet, and create a lambda structure out of it. Its name is *[xml2lambda]*. Below is an example of using it.
 
 ```
 _xml:@"<x>
