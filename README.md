@@ -108,7 +108,8 @@ Some of the folders inside of P5 have specific documentation for that particular
 * [core](core/)
 
 Below is an extensive list of the documentation to all plugins in the core, in on single list, for your convenience. But there might also exist
-other P5 components out there, in addition to that it is extremely easy to [roll your own plugin](), if you know C# from before.
+other P5 components out there, in addition to that it is extremely easy to [roll your own plugin](/samples/p5.active-event-sample-plugin), 
+if you know some C# from before.
 
 * [p5.config](/plugins/p5.config) - Accessing your app's configuration settings
 * [p5.data](/plugins/p5.data) - A super fast memory based database
