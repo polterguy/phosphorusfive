@@ -656,8 +656,8 @@ p5.crypto.get-key-details:foo@bar.com
 ```
 
 Notice, if none of these last parts makes any sense for you at all - I encourage you to go to e.g. YouTube and do a search
-for e.g. "GnuPG" or "PGP", etc, to understand how PGP and GnuPG works. These last Active Events are simply thin wrappers 
-around your existing GnuPG database, which holds your Open PGP keys.
+for e.g. "GnuPG" or "PGP", "Public key cryptography", etc, to understand how PGP and GnuPG works. These last Active Events 
+are simply thin wrappers around your existing GnuPG database, which holds your Open PGP keys.
 
 
 
