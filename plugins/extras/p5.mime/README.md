@@ -264,6 +264,23 @@ m8xshsVW8KnvhdpLBp0wmNIqg0d3COrorkbT
 Notice how your single text entity is wrapped inside a "multipart/signed" entity above. This is necessary to make sure we also attach the actual
 signature of your MIME message.
 
+### Binary MIME entities
+
+You can override the Content-Transfer-Encoding of your MIME messages, which is useful for binary data. Below is an example of creating
+a MIME message, with one binary attachment, transferred as a base64 encoded MIME entity.
+
+```
+p5.mime.create
+  multipart:mixed
+    text:plain
+      content:Foo bar 1
+    image:png
+      Content-Transfer-Encoding:base64
+      filename:/system42/apps/CMS/media/p5.png
+```
+
+You can also use "binary", and all other Content-Transfer-Encoding values supported by the MIME standard.
+
 ## Parsing MIME messages
 
 Parsing MIME messages is, if possible, even more easy than creating them. Simply use the *[p5.mime.parse]* Active Event. In the example below,
@@ -334,23 +351,6 @@ p5.mime.parse
           prefix:e8b4ea8eddb94c7ea9caffad6a4982b6-
           folder:/users/root/temp/
 ```
-
-## Binary MIME entities
-
-You can override the Content-Transfer-Encoding of your MIME messages, which is useful for binary data. Below is an example of creating
-a MIME message, with one binary attachment, transferred as a base64 encoded MIME entity.
-
-```
-p5.mime.create
-  multipart:mixed
-    text:plain
-      content:Foo bar 1
-    image:png
-      Content-Transfer-Encoding:base64
-      filename:/system42/apps/CMS/media/p5.png
-```
-
-You can also use "binary", and all other Content-Transfer-Encoding values supported by the MIME standard.
 
 ## Sending an encrypted and signed email
 
