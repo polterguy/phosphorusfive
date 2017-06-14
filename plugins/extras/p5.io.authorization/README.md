@@ -29,12 +29,16 @@ all other files, which (of course) is necessary to be able to execute Hyperlambd
 * Any file ending with ".config"
 
 Now of course, this is the "low level disc IO authorization" features, and simply there as an additional layer of protection for disc IO. In addition
-to these authorization features, a user still needs some ways to evaluate some arbitrary piece of p5.lambda in your system, to be able to invoke Active
+to these authorization features, a user still needs some ways to evaluate some arbitrary piece of lambda in your system, to be able to invoke Active
 Events, that actually is able to read these files, and return them to the user. Which for most cases, would be impossible, unless you create some sort
 of bug in your system, allowing any "normal" user to gain access to for instance the "System42/executor", or some similar piece of Hyperlambda evaluator.
 
 Even if you created such a bug though, to access files and/or folders, or modify files and/or folders, the user is not authorized to read/modify,
 would still be prevented by this project, as long as it is included in your end result as a "plugin".
 
+## Rolling your own
 
+The authorisation logic in P5 is intentionally kept highly naive, to make it more eaily understood. If you wish to have more fine-grained authorisation,
+you might want to exchange this project, in addition to also probably the [p5.auth](/plugins/extras/p5.auth) plugin. By doing this correctly, you could 
+completely exchange the entire logic of authorisation as you see fit, and still retain compatibility with existing code.
 
