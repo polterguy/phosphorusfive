@@ -75,6 +75,58 @@ namespace p5.mime
         }
 
         /// <summary>
+        ///     Creates a MIME message according to given arguments and saves to the given file.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.mime.save")]
+        public static void p5_mime_save (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving output filename, and doing some basic sanity checking.
+            var filePath = e.Args.GetExValue<string> (context);
+            filePath = context.RaiseEvent (".p5.io.unroll-path", new Node ("", filePath)).Get<string> (context);
+            context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", filePath).Add ("args", e.Args));
+
+            // We have to remove value of node, to make sure our iteration process below doesn't prioritize the value of the node.
+            e.Args.Value = null;
+
+            // Making sure we clean up after ourselves
+            using (new ArgsRemover (e.Args, true)) {
+
+                // Notice, we open up our output stream, before we start iterating, in case multiple MIME envelopes are to be created,
+                // and inserted into the same output file.
+                using (var output = File.Create (Common.GetRootFolder (context) + filePath)) {
+
+                    // Iterating through each node given, either as child of main node, or through expression
+                    foreach (var idxMimeNode in XUtil.Iterate<Node> (context, e.Args)) {
+
+                        // Making sure we keep track of, closes, and disposes all streams created during process
+                        List<Stream> streams = new List<Stream> ();
+                        try {
+
+                            // Creating and returning MIME message to caller as string
+                            var creator = new MimeCreator (
+                                context,
+                                idxMimeNode,
+                                streams);
+                            creator.Create().WriteTo(output);
+
+                        } finally {
+
+                            // Disposing all streams created during process
+                            foreach (var idxStream in streams) {
+
+                                // Closing and disposing currently iterated stream
+                                idxStream.Close ();
+                                idxStream.Dispose ();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity
         /// </summary>
         /// <param name="context">Application Context</param>

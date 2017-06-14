@@ -24,6 +24,7 @@
 using System.IO;
 using p5.exp;
 using p5.core;
+using p5.mime.helpers;
 using p5.exp.exceptions;
 using MimeKit;
 
@@ -55,7 +56,7 @@ namespace p5.mime
         }
 
         /// <summary>
-        ///     Parsess the MIME message given as string
+        ///     Parses the MIME message given as string.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -93,7 +94,57 @@ namespace p5.mime
                             context, 
                             e.Args, 
                             entity, 
-                            e.Args.GetExChildValue<string> ("attachment-folder", context));
+                            e.Args.GetExChildValue<string> ("attachment-folder", context),
+                            e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
+
+                        // Parses the MimeEntity and stuffs results into e.Args node
+                        parser.Process ();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Loads the file given as a string, and creates a MIME message from it.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.mime.load")]
+        public static void p5_mime_load (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up after ourselves
+            using (new ArgsRemover (e.Args, true)) {
+
+                // Looping through each MIME message supplied
+                foreach (var idxMimeMessage in XUtil.Iterate<string> (context, e.Args)) {
+
+                    // Sanity check
+                    if (string.IsNullOrEmpty (idxMimeMessage))
+                        throw new LambdaException (
+                            "No MIME message provided to [p5.mime.parse]",
+                            e.Args,
+                            context);
+
+		            // Retrieving output filename, and doing some basic sanity checking.
+		            var filePath = idxMimeMessage;
+		            filePath = context.RaiseEvent (".p5.io.unroll-path", new Node ("", filePath)).Get<string> (context);
+		            context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filePath).Add ("args", e.Args));
+		
+                    // Loading MIME entity from currentl iterated file.
+                    using (var reader = File.OpenRead (Common.GetRootFolder(context) + filePath)) {
+
+                        // Loading MimeEntity from MemoryStream
+                        MimeEntity entity = null;
+                        if (e.Args["Content-Type"] != null)
+                            entity = MimeEntity.Load (ContentType.Parse (e.Args["Content-Type"].Get<string> (context)), reader);
+                        else
+                            entity = MimeEntity.Load (reader);
+                        var parser = new helpers.MimeParser (
+                            context, 
+                            e.Args, 
+                            entity, 
+                            e.Args.GetExChildValue<string> ("attachment-folder", context),
+                            e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
 
                         // Parses the MimeEntity and stuffs results into e.Args node
                         parser.Process ();

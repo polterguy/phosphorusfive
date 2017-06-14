@@ -41,6 +41,7 @@ namespace p5.mime.helpers
         private MimeEntity _rootEntity;
         private int _noNameAttachments;
         private string _attachmentFolder;
+        private bool _addPrefixToAttachmentPath;
         private List<GnuPrivacyContext.KeyPasswordMapper> _passwords;
 
         /// <summary>
@@ -51,10 +52,11 @@ namespace p5.mime.helpers
         /// <param name="entity">MimeEntity to process</param>
         /// <param name="attachmentFolder">path to attachment folder, where to save any attachments.</param>
         public MimeParser (
-            ApplicationContext context, 
-            Node args, 
-            MimeEntity entity, 
-            string attachmentFolder)
+            ApplicationContext context,
+            Node args,
+            MimeEntity entity,
+            string attachmentFolder,
+            bool addPrefixToAttachmentPath = true)
         {
             // Retrieving passwords from args.
             if (args ["decrypt"] != null) {
@@ -69,6 +71,7 @@ namespace p5.mime.helpers
             _rootEntity = entity;
             if (!string.IsNullOrEmpty (attachmentFolder))
                 _attachmentFolder = context.RaiseEvent (".p5.io.unroll-path", new Node ("", attachmentFolder)).Get<string> (context, null);
+            _addPrefixToAttachmentPath = addPrefixToAttachmentPath;
         }
 
         /// <summary>
@@ -196,20 +199,35 @@ namespace p5.mime.helpers
                 fileName = part.ContentDisposition.FileName;
             }
 
-            // Making sure we create a unique file "prefix", such that files with similar names, doesn't overwrite each other.
-            var unique = Guid.NewGuid ().ToString ().Replace ("-", "") + "-";
+            // Checking if we should add a prefix to attachment path.
+            var physical_full_filename = "";
+            if (_addPrefixToAttachmentPath) {
 
-            // Verifying user is authorized to writing to destination file.
-            _context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", _attachmentFolder + unique + fileName).Add ("args", _args));
+                // Making sure we create a unique file "prefix", such that files with similar names, doesn't overwrite each other.
+                var unique = Guid.NewGuid().ToString().Replace("-", "") + "-";
+                physical_full_filename = _attachmentFolder + unique + fileName;
 
-            // Saving attachment to disc.
-            using (FileStream stream = File.Create (rootFolder + _attachmentFolder + unique + fileName)) {
-                part.ContentObject.DecodeTo (stream);
+	            // Making sure we return to caller the entire filename that was used to persist the file.
+	            // In addition, we make sure we also return the prefix, such that caller can actually find file on disc.
+	            entityNode.Add ("filename", fileName).LastChild.Add ("prefix", unique).Add ("folder", _attachmentFolder);
+
+            } else {
+
+                // No prefix should be used.
+                physical_full_filename = _attachmentFolder + fileName;
+
+                // Making sure we return to caller the entire filename that was used to persist the file.
+                // In addition, we make sure we also return the prefix, such that caller can actually find file on disc.
+                entityNode.Add ("filename", fileName).LastChild.Add ("folder", _attachmentFolder);
             }
 
-            // Making sure we return to caller the entire filename that was used to persist the file.
-            // In addition, we make sure we also return the prefix, such that caller can actually find file on disc.
-            entityNode.Add ("filename", fileName).LastChild.Add ("prefix", unique).Add ("folder", _attachmentFolder);
+            // Verifying user is authorized to writing to destination file.
+            _context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", physical_full_filename).Add ("args", _args));
+
+            // Saving attachment to disc.
+            using (FileStream stream = File.Create (rootFolder + physical_full_filename)) {
+                part.ContentObject.DecodeTo (stream);
+            }
         }
 
         /*

@@ -39,7 +39,7 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="MimeKit">
-      <HintPath>..\..\..\packages\MimeKit.1.12.0\lib\net45\MimeKit.dll</HintPath>
+      <HintPath>..\..\..\packages\MimeKit.1.16.1\lib\net45\MimeKit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
