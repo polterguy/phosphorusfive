@@ -25,10 +25,8 @@ refer to these links.
 * [plugins](plugins/), reference documentation
 
 I recommend you start out with ["the guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation
-for the [plugins](plugins/), as the need surface.
-
-Most of the examples in the core and plugin documentation, assumes you are using [System42](https://github.com/polterguy/system42), and either its
-Executor or CMS apps.
+for the [plugins](plugins/), as the need surface. Most of the examples in the core and plugin documentation, assumes you are 
+using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps.
 
 ## Hyperlambda
 
@@ -136,7 +134,7 @@ if you know some C# from before.
 * [p5.threading](/plugins/extras/p5.threading) - Threading support in P5
 * [p5.xml](/plugins/extras/p5.xml) - XML support in P5
 
-I have also written two MSDN Magazine articles about Phosphorus Five for Microsoft, which can be read below.
+I have also been published twice in Microsoft's MSDN Magazine because of Phosphorus Five. Read the articles below.
 
 * [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
 * [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
@@ -155,3 +153,7 @@ our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/).
 Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email.
 
 Thomas Hansen; thomas@gaiasoul.com
+
+## More information
+
+I occasionally blog about P5, when I do, I do so [here](https://gaiasoul.com).
