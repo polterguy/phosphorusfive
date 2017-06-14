@@ -95,7 +95,7 @@ Content-Type: text/html
 "
 ```
 
-By default, p5.mime supports 9 different MIME media types. These are Content-Types from the MIME standard, and can each have their 
+By default, p5.mime supports 9 different MIME media types. These are the different Content-Type values from the MIME standard, and can each have their 
 own media sub type, according to whatever sub type is legal for the specific type. The list of media types are as following.
 
 * [multipart] - Used for MIME entities that have children MIME entities
@@ -134,10 +134,20 @@ p5.mime.create
 
 Notice how the above code, would by default create a "Content-Disposition" MIME header for you, putting in the original filename into its
 "filename" argument, and making sure the entity is marked as an "attachment". You can explicitly override this behavior, by creating your own
-Content-Disposition MIME header.
+Content-Disposition MIME header. Below is what the above lambda would result in.
+
+```
+p5.mime.create
+  result:@"Content-Type: application/X-Hyperlambda
+Content-Disposition: attachment; filename=application-startup.hl
+
+
+... file content ...
+"
+```
 
 Some of the Active Events in P5, such as the *[p5.smtp.send]* event, from [p5.mail](/plugins/extras/p5.mail/), will actually directly
-serialize the file to the socket, and never load the (whole) file into memory, if you use the above *[filename]* argument, instead of loading
+serialize the file to the socket, and never load the file into memory, if you use the above *[filename]* argument, instead of loading
 the file into memory first. Which of course, means saving significant amounts of resources for your P5 server.
 
 ### The Multipart type dissected
