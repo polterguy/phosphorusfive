@@ -66,7 +66,7 @@ declare its HTML tag, attributes, dynamically remove and change any parts of you
 Active Events allows you to loosely couple your modules together, without having any dependencies between them. Active Events is the _"heart"_ of
 Phosphorus Five, allowing for the rich plugin nature in P5. You can easily create your own Active Events, either in Hyperlambda, or in C# if you wish.
 
-Hyperlambda, and p5.lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
+Hyperlambda, and lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
 together, as shown above in the Hello World example.
 
 ## Perfect encapsulation and polymorphism
@@ -91,7 +91,7 @@ This gives you an intellisense environment for your Active Events, and provides 
 of really cool extension widgets. All this in a _"non-CMS environment"_, which means you can create small apps, almost the same way you'd
 create a CMS web page.
 
-If you take this approach, which I recommend for beinngers - Make sure you put the _"system42"_ folder inside of your _"/phosphorusfive/p5.webapp/"_ folder, 
+If you take this approach, which I recommend for beginners - Make sure you put the _"system42"_ folder inside of your _"/phosphorusfive/p5.webapp/"_ folder, 
 and make sure its name is exactly _"system42"_, without any versioning numbers, etc. Then restart your web server process, and have fun!
 
 After you've played around with System42 for some time, understanding the development model, you can go more hard-core into it, ditch System42,
@@ -135,6 +135,11 @@ if you know some C# from before.
 * [p5.mysql](/plugins/extras/p5.mysql) - MySQL data adapter
 * [p5.threading](/plugins/extras/p5.threading) - Threading support in P5
 * [p5.xml](/plugins/extras/p5.xml) - XML support in P5
+
+I have also written two MSDN Magazine articles about Phosphorus Five for Microsoft, which can be read below.
+
+* [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
+* [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
 
 ## License
 
