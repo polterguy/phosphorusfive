@@ -76,6 +76,14 @@ p5.http.post:"https://httpbin.org/post"
 src:x:/../**/content?value.string
 ```
 
+If you wish to POST or PUT simple content, you can do such a thing with something resembling the following.
+
+```
+p5.http.post:"https://httpbin.org/post"
+  content:"foo bar"
+src:x:/../**/content?value.string
+```
+
 ## POST'ing and PUT'ing files
 
 If you have a big file you wish to POST or PUT, you can achieve it using the following syntax.
