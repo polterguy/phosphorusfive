@@ -61,15 +61,10 @@ In addition to the above Active Events, there are 3 additional public events.
 * [p5.http.post-file] - Posts a file, without loading it into memory
 * [p5.http.put-file] - Puts a file, without loading it into memory
 
-And if you are using C#, you can find 3 additional _"protected"_ events.
 
-* [.p5.http.get-native]
-* [.p5.http.post-native]
-* [.p5.http.put-native]
-
-The three latter events, are exclusively for C# invocations, and beyond the scope of this documentation. The POST and PUT events, automatically recognize
-Hyperlambda, and allows you to transmit a lambda node structure, without first creating text from it. To transmit a piece of code to another server, you could
-use something like the following for instance.
+The POST and PUT events, automatically recognize Hyperlambda, and allows you to transmit a lambda node structure, 
+without first creating text from it. To transmit a piece of code to another server, you could use something like the 
+following for instance.
 
 ```
 p5.http.post:"https://httpbin.org/post"

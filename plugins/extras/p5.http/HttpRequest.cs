@@ -72,17 +72,6 @@ namespace p5.http
             CreateRequest (context, e.Args, RenderRequest, RenderFileResponse);
         }
 
-        /// <summary>
-        ///     Creates a new HTTP REST request of specified type for native callers, wanting to do their own rendering
-        /// </summary>
-        [ActiveEvent (Name = ".p5.http.get-native")]
-        [ActiveEvent (Name = ".p5.http.post-native")]
-        [ActiveEvent (Name = ".p5.http.put-native")]
-        public static void _p5_http_get_post_put_native (ApplicationContext context, ActiveEventArgs e)
-        {
-            CreateRequest (context, e.Args, RenderRequestNative, RenderResponseNative);
-        }
-
         /*
          * Actual implementation of creation of HTTP request
          */
@@ -155,7 +144,7 @@ namespace p5.http
                         context);
 
                 // Checking to see if this is Hyperlambda content, since we're by default setting Content-Type to application/x-hyperlambda if it is
-                bool isHyperlisp = args ["content"].Value == null && args ["content"].Count > 0;
+                bool isHyperlambda = args ["content"].Value == null && args ["content"].Count > 0;
 
                 // Retrieving actual content to post or put
                 var content = GetRequestContent (context, args ["content"]);
@@ -177,6 +166,7 @@ namespace p5.http
 
                             // Binary content
                             stream.Write (byteContent, 0, byteContent.Length);
+
                         } else {
 
                             // Some sort of "text" type of content, can also be Hyperlambda.
@@ -184,7 +174,7 @@ namespace p5.http
                             request.ContentType = args.GetExChildValue (
                                 "Content-Type", 
                                 context, 
-                                isHyperlisp ? "application/x-hyperlambda" : "text/plain");
+                                isHyperlambda ? "application/x-hyperlambda" : "text/plain");
 
                             // Any other type of content, such as string/integer/boolean etc
                             using (TextWriter writer = new StreamWriter (stream)) {
@@ -203,42 +193,6 @@ namespace p5.http
                             args, 
                             context);
                 }
-            } else {
-
-                // Checking if this is a POST request, at which case not supplying content is a bug
-                if (method == "POST" || method == "PUT")
-                    throw new LambdaException (
-                        "No content supplied with '" + method + "' request", 
-                        args, 
-                        context);
-            }
-        }
-
-        /*
-         * Renders normal HTTP request
-         */
-        static void RenderRequestNative (
-            ApplicationContext context, 
-            HttpWebRequest request, 
-            Node args, 
-            string method)
-        {
-            // Setting request headers
-            SetRequestHeaders (context, request, args);
-
-            // Retrieving native request delegate, if any
-            if (args ["request-native"] != null) {
-
-                // We've got content to post or put, making sure caller is not trying to submit content over HTTP get requests
-                if (method != "PUT" && method != "POST")
-                    throw new LambdaException (
-                        "You cannot have content with 'GET' type of request", 
-                        args, 
-                        context);
-
-                // Retrieving delegate which caller should have supplied for rendering request, and invoking it
-                var functor = args["request-native"].Value as EventHandler;
-                functor (request, new EventArgs ());
             } else {
 
                 // Checking if this is a POST request, at which case not supplying content is a bug
@@ -322,8 +276,7 @@ namespace p5.http
             Node args)
         {
             // Redmond, this is ridiculous! Why can't we set headers in a uniform way ...?
-            foreach (var idxHeader in 
-                     args.Children.Where (idxArg => idxArg.Name != "content" && idxArg.Name != "Content-Type" && idxArg.Name != "")) {
+            foreach (var idxHeader in args.Children.Where (idxArg => idxArg.Name != "content" && idxArg.Name != "Content-Type" && idxArg.Name != "")) {
                 switch (idxHeader.Name) {
                 case "Accept":
                     request.Accept = XUtil.Single<string> (context, idxHeader, idxHeader);
@@ -395,6 +348,7 @@ namespace p5.http
                             Node convert = context.RaiseEvent ("hyper2lambda", new Node ("content", reader.ReadToEnd ()));
                             convert.Value = null;
                             result.Add (convert);
+
                         } else {
 
                             // Caller explicitly said he did NOT want to convert
@@ -422,27 +376,6 @@ namespace p5.http
                     }
                 }
             }
-        }
-
-        /*
-         * Renders response into given Node
-         */
-        static void RenderResponseNative (
-            ApplicationContext context, 
-            HttpWebRequest request, 
-            Node args)
-        {
-            // Retrieving response and creating our [result] node
-            var response = request.GetResponseNoException ();
-            Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
-
-            // Getting response HTTP headers
-            GetResponseHeaders (context, response, result, request);
-
-            // Invoking callback that should have been supplied by caller
-            var functor = args["response-native"].Value as EventHandler;
-            result.Add ("response-native", response);
-            functor (result, new EventArgs ());
         }
 
         /*
@@ -525,7 +458,7 @@ namespace p5.http
         /*
          * Helper to retrieve response without exception, if possible
          */
-        static HttpWebResponse GetResponseNoException(this HttpWebRequest req)
+        static HttpWebResponse GetResponseNoException (this HttpWebRequest req)
         {
             try
             {
