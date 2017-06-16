@@ -157,3 +157,6 @@ Thomas Hansen; thomas@gaiasoul.com
 ## More information
 
 I occasionally blog about P5, when I do, I do so [here](https://gaiasoul.com).
+
+There exists a [code of conduct](CODE_OF_CONDUCT.md) for the project, you should read, if you wish to participate 
+one way or another. But basically what it says, is _"be nice"_.

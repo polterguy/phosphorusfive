@@ -70,7 +70,7 @@ In addition to the above Active Events, there are 3 additional public events.
 ## POST and PUT
 
 The POST and PUT events, automatically recognize Hyperlambda, and allows you to transmit a lambda node structure, 
-without first creating text from it. To transmit a piece of code to another server, you could use something like the 
+without first creating text from it. To transmit a piece of Hyperlambda to another server, you could use something like the 
 following for instance.
 
 ```
@@ -103,7 +103,9 @@ src:x:/../**/content?value.string
 Exchange the above invocation to *[p5.http.put-file]* if you wish to use PUT the file instead.
 
 The above _"put-file"_ and _"post-file"_ invocations, will not read the files into memory, before they're transmitted to your HTTP endpoint. But rather,
-copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources.
+copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources. These two 
+Active Events does not take any type of **[content]** argument, but rather a **[filename]**, expected to point to a file, you are legally allowed to
+read, according to the authorization for your user, invoking the Active Events.
 
 ## MIME support for POST and PUT
 
