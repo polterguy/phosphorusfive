@@ -80,7 +80,7 @@ If you wish to POST or PUT simple content, you can do such a thing with somethin
 
 ```
 p5.http.post:"https://httpbin.org/post"
-  content:"foo bar"
+  content:foo bar
 src:x:/../**/content?value.string
 ```
 
@@ -99,7 +99,54 @@ Exchange the above invocation to *[p5.http.put-file]* if you wish to use PUT the
 The above _"put-file"_ and _"post-file"_ invocations, will not read the files into memory, before they're transmitted to your REST endpoint. But rather,
 copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources.
 
-## GETting files
+## MIME support for POST and PUT
+
+Notice, instead of supplying a **[content]** or **[filename]** for your POST and PUT operations, you can alternatively have a MIME message automatically
+created for you, using the automatic plugin into [p5.mime](/plugins/extras/p5.mime), and POST or put a MIME message. If you wish to use this feature,
+you would instead of supplying a **[content]** or **[filename]** argument, supply one of the MIME types supported by p5.mime. Below is an example.
+
+```
+p5.http.post:"https://httpbin.org/post"
+  multipart:mixed
+    text:plain
+      content:Foo bar
+    text:html
+      content:<p>Foo bar</p>
+src:x:/../**/content?value.string
+```
+
+Notice, the above construct, allows you to use the full feature set from [p5.mime](/plusing/extras/p5.mime), which among other things, allows you to
+create PGP encrypted and cryptographically signed MIME envelopes, such as the following is an example of.
+
+```
+// Checking is PGP key exists from before, and if not, creating it.
+p5.crypto.list-public-keys:SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM
+if:x:/-/*
+  not
+  p5.crypto.create-pgp-keypair
+    identity:John Doe <SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM>
+    strength:1024
+    password:foo
+
+// Creating our POST request, making sure we encrypt it with the above PGP key
+p5.http.post:"https://httpbin.org/post"
+  multipart:mixed
+    encrypt
+      email:SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM
+    sign
+      email:SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM
+        password:foo
+    text:plain
+      content:Foo bar
+    text:html
+      content:<p>Foo bar</p>
+src:x:/../**/content?value.string
+```
+
+This is a pretty kick ass cool feature, allowing you to create PGP encrypted web services, in addition to cryptographically sign your web service
+invocations.
+
+## GET'ing files
 
 If you instead want to retrieve a document using HTTP GET, and save it directly to disc, without loading it into memory, you can use *[p5.http.get-file]*.
 Consider the following code.

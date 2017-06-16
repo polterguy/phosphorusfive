@@ -118,3 +118,5 @@ TODO before release
 * Pull in p5.threading and p5.io.zip, and stabilize them before release.
 
 * Importing private PGP key doesn't seem to work.
+
+* Clean up "identity" in PGP parts, since we're using [email] as argument, which technically is not right, since it's an "identity" rather.

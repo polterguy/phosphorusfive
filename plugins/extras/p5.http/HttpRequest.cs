@@ -26,6 +26,7 @@ using System.IO;
 using System.Net;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -134,7 +135,13 @@ namespace p5.http
             // Setting request headers
             SetRequestHeaders (context, request, args);
 
-            if (args ["content"] != null) {
+            // Checking if this is a "content" request, which also might be the case if it is an HTTP MIME request.
+            // Notice we must ignore previously created results here, in addition to formatting expression.
+            // We are also ignoring everything that has the structure of an HTTP header.
+            var contentNode = args.Children.FirstOrDefault (ix => ix.Name != "" && ix.Name != "result" && ix.Name.ToLower () == ix.Name);
+
+            // Checking if there exists content for request.
+            if (contentNode != null) {
 
                 // We've got content to post or put, making sure caller is not trying to submit content over HTTP get or delete requests
                 if (method != "PUT" && method != "POST")
@@ -143,57 +150,12 @@ namespace p5.http
                         args, 
                         context);
 
-                // Checking to see if this is Hyperlambda content, since we're by default setting Content-Type to application/x-hyperlambda if it is
-                bool isHyperlambda = args ["content"].Value == null && args ["content"].Count > 0;
+                using (var stream = request.GetRequestStream ()) {
 
-                // Retrieving actual content to post or put
-                var content = GetRequestContent (context, args ["content"]);
-
-                if (content != null) {
-
-                    // Caller supplied actual content in [content] node (as opposed to for instance an expression leading to oblivion)
-                    using (Stream stream = request.GetRequestStream ()) {
-
-                        // Checking if this is binary content
-                        var byteContent = content as byte[];
-                        if (byteContent != null) {
-
-                            // Setting our Content-Type header, defaulting to "application/octet-stream", in addition to other headers
-                            request.ContentType = args.GetExChildValue (
-                                "Content-Type", 
-                                context, 
-                                "application/octet-stream");
-
-                            // Binary content
-                            stream.Write (byteContent, 0, byteContent.Length);
-
-                        } else {
-
-                            // Some sort of "text" type of content, can also be Hyperlambda.
-                            // Setting our Content-Type header, defaulting to "text/plain", unless Hyperlambda is given
-                            request.ContentType = args.GetExChildValue (
-                                "Content-Type", 
-                                context, 
-                                isHyperlambda ? "application/x-hyperlambda" : "text/plain");
-
-                            // Any other type of content, such as string/integer/boolean etc
-                            using (TextWriter writer = new StreamWriter (stream)) {
-
-                                // Converting to string before we write
-                                writer.Write (Utilities.Convert (context, content, ""));
-                            }
-                        }
-                    }
-                } else {
-
-                    // Checking if this is a POST request, at which case not supplying content is a bug
-                    if (method == "POST" || method == "PUT")
-                        throw new LambdaException (
-                            "No content supplied with '" + method + "' request", 
-                            args, 
-                            context);
+                    // Serializing request into stream.
+                    SerializeRequest (context, contentNode, stream);
                 }
-            } else {
+			} else {
 
                 // Checking if this is a POST request, at which case not supplying content is a bug
                 if (method == "POST" || method == "PUT")
@@ -205,6 +167,41 @@ namespace p5.http
         }
 
         /*
+         * Helper for above.
+         */
+        static void SerializeRequest (ApplicationContext context, Node contentNode, Stream stream)
+        {
+            // Checking type of content.
+            if (contentNode.Name == "content") {
+
+                // Hyperlambda or plain text content.
+                var content = GetRequestContent (context, contentNode);
+				var byteContent = content as byte [];
+				if (byteContent != null) {
+
+					// Binary content.
+					stream.Write (byteContent, 0, byteContent.Length);
+
+				} else {
+
+					// Some sort of "text" type of content.
+					using (TextWriter writer = new StreamWriter (stream)) {
+
+						// Converting to string before we write.
+						writer.Write (Utilities.Convert (context, content, ""));
+					}
+				}
+
+			} else {
+
+				// Attempting to create MIME envelope out of content, and serialize directly into Stream.
+				var mimeNode = new Node ("", stream);
+				mimeNode.Add ("", contentNode);
+				context.RaiseEvent (".p5.mime.save2stream", mimeNode);
+			}
+        }
+
+        /*
          * Renders HTTP post/put file request
          */
         static void RenderFileRequest (
@@ -213,8 +210,8 @@ namespace p5.http
             Node args, 
             string method)
         {
-            // Verifying caller supplied [file] node
-            if (args["filename"] == null)
+            // Verifying caller supplied [filename] node.
+            if (args["filename"] == null || args["filename"].Value == null)
                 throw new LambdaException (
                     "No [filename] node given", 
                     args, 
@@ -228,12 +225,6 @@ namespace p5.http
 
             // Opening request stream, and render file as content of request
             using (Stream stream = request.GetRequestStream ()) {
-
-                // Setting Content-Type to "application/octet-stream", unless file ends with ".hl", or Content-Type is explicitly supplied
-                request.ContentType = args.GetExChildValue (
-                    "Content-Type", 
-                    context, 
-                    filename.EndsWithEx (".hl") ? "application/x-hyperlambda" : "application/octet-stream");
 
                 // Setting other HTTP request headers
                 SetRequestHeaders (context, request, args);
@@ -257,13 +248,14 @@ namespace p5.http
             ApplicationContext context, 
             Node content)
         {
+            // Checking for Hyperlambda.
             if (content.Value == null && content.Count > 0) {
 
-                // Hyperlambda content
-                return context.RaiseEvent ("lambda2hyper", content.UnTie ()).Value;
+                // Hyperlambda content.
+                return context.RaiseEvent ("lambda2hyper", content.Clone ()).Value;
             }
 
-            // Some sort of "value" content, either text or binary (byte[])
+            // Some sort of "value" content, either text content, or binary blob (byte[])
             return XUtil.Single<object> (context, content);
         }
 
@@ -276,7 +268,7 @@ namespace p5.http
             Node args)
         {
             // Redmond, this is ridiculous! Why can't we set headers in a uniform way ...?
-            foreach (var idxHeader in args.Children.Where (idxArg => idxArg.Name != "content" && idxArg.Name != "Content-Type" && idxArg.Name != "")) {
+            foreach (var idxHeader in args.Children.Where (idxArg => idxArg.Name.ToLower () != idxArg.Name)) {
                 switch (idxHeader.Name) {
                 case "Accept":
                     request.Accept = XUtil.Single<string> (context, idxHeader, idxHeader);

@@ -156,7 +156,7 @@ namespace p5.mime.helpers
                     if (userID != null) {
 
                         // Checking if currently iterated userID contains specified filter.
-                        if (userID.ToLower ().Contains (filter))
+                        if (userID.ToLower ().Contains (filter.ToLower()))
                             return true;
                     }
                 }

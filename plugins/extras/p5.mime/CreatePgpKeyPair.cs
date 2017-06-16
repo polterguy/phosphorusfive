@@ -54,7 +54,7 @@ namespace p5.mime
             // Making sure we clean up after ourselves
             using (new ArgsRemover (e.Args, true)) {
 
-                // Retrieving identity (normally an email address) and password.
+                // Retrieving identity (normally an email address), in addition to password.
                 string identity = e.Args.GetExChildValue<string> ("identity", context);
                 string password = e.Args.GetExChildValue<string> ("password", context);
                 if (string.IsNullOrEmpty (identity) || string.IsNullOrEmpty (password))
@@ -63,8 +63,8 @@ namespace p5.mime
                         e.Args,
                         context);
 
-                // Retrieving other parameters to PGP keypair creation.
-                DateTime expires = e.Args.GetExChildValue ("expires", context, DateTime.Now.AddYears (3));
+				// Retrieving other parameters to PGP keypair creation.
+				DateTime expires = e.Args.GetExChildValue ("expires", context, DateTime.Now.AddYears (3));
                 int strength = e.Args.GetExChildValue<int> ("strength", context, 4096);
                 long publicExponent = e.Args.GetExChildValue ("public-exponent", context, 65537L);
                 int certainty = e.Args.GetExChildValue ("certainty", context, 5);

@@ -104,8 +104,8 @@ namespace p5.mime
                         List<Stream> streams = new List<Stream> ();
                         try {
 
-                            // Creating and returning MIME message to caller as string
-                            var creator = new MimeCreator (
+							// Creating MIME message and serializing to file.
+							var creator = new MimeCreator (
                                 context,
                                 idxMimeNode,
                                 streams);
@@ -126,12 +126,50 @@ namespace p5.mime
             }
         }
 
-        /// <summary>
-        ///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = ".p5.mime.create-native")]
+		/// <summary>
+		///     Creates a MIME message according to given arguments and saves to the given file.
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Active Event arguments</param>
+		[ActiveEvent(Name = ".p5.mime.save2stream")]
+		public static void _p5_mime_save2stream(ApplicationContext context, ActiveEventArgs e)
+		{
+            // Retrieving output filename, and doing some basic sanity checking.
+            var output = e.Args.Value as Stream;
+
+			// Making sure we clean up after ourselves
+			using (new ArgsRemover(e.Args, true)) {
+
+				// Making sure we keep track of, closes, and disposes all streams created during process
+				List<Stream> streams = new List<Stream>();
+				try {
+
+					// Creating MIME message and serializing to stream.
+					var creator = new MimeCreator(
+                        context,
+                        e.Args.FirstChild.Get<Node>(context),
+						streams);
+					creator.Create().WriteTo (output);
+
+				} finally {
+
+					// Disposing all streams created during process
+					foreach (var idxStream in streams) {
+
+						// Closing and disposing currently iterated stream
+						idxStream.Close();
+						idxStream.Dispose();
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Active Event arguments</param>
+		[ActiveEvent (Name = ".p5.mime.create-native")]
         private static void _p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
