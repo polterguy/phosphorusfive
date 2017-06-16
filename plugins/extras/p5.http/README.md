@@ -40,7 +40,9 @@ _urls
 p5.http.get:x:/-/*?value
 ```
 
-You will have one *[result]* node returned, for each URL you supply to it. You can also supply any HTTP headers you wish, as illustrated below.
+Notice, this will create your requests sequentially, and not in parallel. If you wish to create parallel requests, you'll have to dive into
+the [p5.threading](/plugins/extras/p5.threading) parts of P5. You will have one *[result]* node returned, for each URL you supply to it. 
+You can also supply any HTTP headers you wish, as illustrated below.
 
 ```
 p5.http.get:"https://httpbin.org/get"
