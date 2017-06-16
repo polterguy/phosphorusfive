@@ -61,6 +61,7 @@ In addition to the above Active Events, there are 3 additional public events.
 * [p5.http.post-file] - Posts a file, without loading it into memory
 * [p5.http.put-file] - Puts a file, without loading it into memory
 
+## POST and PUT
 
 The POST and PUT events, automatically recognize Hyperlambda, and allows you to transmit a lambda node structure, 
 without first creating text from it. To transmit a piece of code to another server, you could use something like the 
@@ -75,7 +76,7 @@ p5.http.post:"https://httpbin.org/post"
 src:x:/../**/content?value.string
 ```
 
-## POSTing and PUTting files
+## POST'ing and PUT'ing files
 
 If you have a big file you wish to POST or PUT, you can achieve it using the following syntax.
 
@@ -152,7 +153,7 @@ p5.http.post:"http://localhost:8080/invisible-my-service"
 eval:x:/../**/content
 ```
 
-After evaluating the above HTTP POST request,the return value should look something like the following.
+After evaluating the above HTTP POST request, the return value should look something like the following.
 
 ```
 p5.http.post
