@@ -50,6 +50,10 @@ p5.http.get:"https://httpbin.org/get"
 src:x:/../**/content?value.string
 ```
 
+p5.http recognizes an HTTP header as a child node, containing _at least one CAPITAL letter_. Have that in mind, since it means to supply
+HTTP headers, your headers must have at least one capital letter in them. If you don't, it will assume you've provided some sort of content,
+which will probably make your request malfunction.
+
 There are 4 basic Active Events in this project.
 
 * [p5.http.get] - HTTP GET - Returns document
@@ -98,30 +102,36 @@ src:x:/../**/content?value.string
 
 Exchange the above invocation to *[p5.http.put-file]* if you wish to use PUT the file instead.
 
-The above _"put-file"_ and _"post-file"_ invocations, will not read the files into memory, before they're transmitted to your REST endpoint. But rather,
+The above _"put-file"_ and _"post-file"_ invocations, will not read the files into memory, before they're transmitted to your HTTP endpoint. But rather,
 copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources.
 
 ## MIME support for POST and PUT
 
 Notice, instead of supplying a **[content]** or **[filename]** for your POST and PUT operations, you can alternatively have a MIME message automatically
 created for you, using the automatic plugin into [p5.mime](/plugins/extras/p5.mime), and POST or put a MIME message. If you wish to use this feature,
-you would instead of supplying a **[content]** or **[filename]** argument, supply one of the MIME types supported by p5.mime. Below is an example.
+you would instead of supplying a **[content]** or **[filename]** argument, supply a **[.p5.mime.save2stream]** node, containing one or more of the MIME 
+types supported by p5.mime. Below is an example of creating a multipart/mixed MIME message, with two leaf nodes.
 
 ```
 p5.http.post:"https://httpbin.org/post"
-  multipart:mixed
-    text:plain
-      content:Foo bar
-    text:html
-      content:<p>Foo bar</p>
+  .p5.mime.save2stream
+    multipart:mixed
+      text:plain
+        content:Foo bar
+      text:html
+        content:<p>Foo bar</p>
 src:x:/../**/content?value.string
 ```
 
-Notice, the above construct, allows you to use the full feature set from [p5.mime](/plusing/extras/p5.mime), which among other things, allows you to
-create PGP encrypted and cryptographically signed MIME envelopes, such as the following is an example of.
+You can only provide one MIME message to the **[.p5.mime.save2stream]** Active Event, but this MIME entity could be a multipart, containing
+several leaf entities, as the above code illustrates. The above construct, allows you to use the full feature set 
+from [p5.mime](/plugins/extras/p5.mime), which among other things allows you to create PGP encrypted and cryptographically signed 
+HTTP MIME requests, such as the following is an example of.
 
 ```
-// Checking is PGP key exists from before, and if not, creating it.
+/*
+ * Checking if PGP key exists from before, and if not, creating it.
+ */
 p5.crypto.list-public-keys:SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM
 if:x:/-/*
   not
@@ -130,23 +140,38 @@ if:x:/-/*
     strength:1024
     password:foo
 
-// Creating our POST request, making sure we encrypt it with the above PGP key
+/*
+ * Creating our POST request, making sure we encrypt and sign it with the above PGP key.
+ */
 p5.http.post:"https://httpbin.org/post"
-  multipart:mixed
-    encrypt
-      email:SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM
-    sign
-      email:SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM
-        password:foo
-    text:plain
-      content:Foo bar
-    text:html
-      content:<p>Foo bar</p>
+  .p5.mime.save2stream
+    multipart:mixed
+      encrypt
+        email:SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM
+      sign
+        email:SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM
+          password:foo
+      text:plain
+        content:Foo bar
+      text:html
+        content:<p>Foo bar</p>
 src:x:/../**/content?value.string
 ```
 
 This is a pretty kick ass cool feature, allowing you to create PGP encrypted web services, in addition to cryptographically sign your web service
 invocations.
+
+## Rolling your own serializer in C#
+
+The above also allows you to create your own C# plugins entirely from scratch, using the above construct to serialize into the HTTP Request 
+stream the content one way or another. This is because the above **[.p5.mime.save2stream]** node, becomes an Active Event invocation, 
+that passes in the HTTP request stream of the HTTP request as its value, and the entire **[.p5.mime.save2stream]** node directly as its parameters 
+to the event.
+
+This feature allows you to create your own serialization logic for the p5.http component, serializing any types of content you wish during your requests
+from C#, by injecting your own serializer logic. If you do, your Active Event will have the HTTP request stream passed in as the value of the
+main argument invocation node. Notice, if you do, you do not gain ownership of the stream, and you should hence not close it or dispose of it any ways,
+but simply serialize into it, and let it pass out of your Active Event, being still alive and open.
 
 ## GET'ing files
 

@@ -136,7 +136,7 @@ namespace p5.http
             SetRequestHeaders (context, request, args);
 
             // Checking if this is a "content" request, which also might be the case if it is an HTTP MIME request.
-            // Notice we must ignore previously created results here, in addition to formatting expression.
+            // Notice we must ignore previously created [result] nodes here, in addition to formatting expression.
             // We are also ignoring everything that has the structure of an HTTP header.
             var contentNode = args.Children.FirstOrDefault (ix => ix.Name != "" && ix.Name != "result" && ix.Name.ToLower () == ix.Name);
 
@@ -184,7 +184,7 @@ namespace p5.http
 
 				} else {
 
-					// Some sort of "text" type of content.
+					// Some sort of "text" type of content, could also be Hyperlambda.
 					using (TextWriter writer = new StreamWriter (stream)) {
 
 						// Converting to string before we write.
@@ -194,10 +194,13 @@ namespace p5.http
 
 			} else {
 
-				// Attempting to create MIME envelope out of content, and serialize directly into Stream.
-				var mimeNode = new Node ("", stream);
-				mimeNode.Add ("", contentNode);
-				context.RaiseEvent (".p5.mime.save2stream", mimeNode);
+                // Attempting to create MIME envelope out of content, and serialize directly into Stream.
+                contentNode.Value = stream;
+                try {
+                    context.RaiseEvent (contentNode.Name, contentNode);
+                } finally {
+                    contentNode.Value = null;
+                }
 			}
         }
 

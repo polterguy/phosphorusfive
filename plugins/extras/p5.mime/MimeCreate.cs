@@ -22,6 +22,7 @@
  */
 
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -137,17 +138,23 @@ namespace p5.mime
             // Retrieving output filename, and doing some basic sanity checking.
             var output = e.Args.Value as Stream;
 
+            // Have to remove value of node, before iteration starts.
+            e.Args.Value = null;
+
 			// Making sure we clean up after ourselves
 			using (new ArgsRemover(e.Args, true)) {
 
+				// Iterating through each node given, either as child of main node, or through expression
+                var mimeNode = XUtil.Iterate<Node> (context, e.Args).First ();
+
 				// Making sure we keep track of, closes, and disposes all streams created during process
-				List<Stream> streams = new List<Stream>();
+				List<Stream> streams = new List<Stream> ();
 				try {
 
-					// Creating MIME message and serializing to stream.
+					// Creating MIME message and serializing to file.
 					var creator = new MimeCreator(
-                        context,
-                        e.Args.FirstChild.Get<Node>(context),
+						context,
+						mimeNode,
 						streams);
 					creator.Create().WriteTo (output);
 
