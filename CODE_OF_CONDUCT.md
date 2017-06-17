@@ -31,6 +31,9 @@ itself - leapt straight up through his neck and throttled his brain. The very wo
 poetry of all perished along with its creator, Paula Nancy Millstone Jennings of Sussex, 
 in the destruction of the planet Earth. Vogon poetry is mild by comparison.
 
+My reasoning for doing such a thing, is explained 
+[here](https://gaiasoul.com/2017/06/17/does-humor-belong-in-software-development/).
+
 ## Our Standards
 
 Examples of behavior that contributes to creating a positive environment
