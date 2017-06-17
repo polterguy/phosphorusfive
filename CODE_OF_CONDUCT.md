@@ -10,6 +10,26 @@ size, disability, ethnicity, gender identity and expression, level of experience
 nationality, personal appearance, race, religion, or sexual identity and
 orientation.
 
+As an addendum to the original code of conduct this one was based upon, we have
+added the pre-requisite for being funny when asking for help, and/or helping others,
+though never on other people's behalf must I add! This is defined in paragraph
+16-4, article b, under the pre-requisite of that _"unless you are funny, without
+hurting anyone, Vogon poetry shall be recited to you, for no less than 2 minutes."_
+
+To understand the consequences of this, realise what the guide teaches us about poetry.
+
+> Vogon poetry is, of course, the third worst in the universe. The second worst is 
+that of the Azgoths of Kria. During a recitation by their poet master Grunthos the 
+Flatulent of his poem _"Ode to a Small Lump of Green Putty I Found in My Armpit One 
+Midsummer Morning"_, four of the audience members died of internal hemorrhaging and 
+the president of the Mid-Galactic Arts Nobbling Council survived only by gnawing one 
+of his own legs off. Grunthos was reported to have been _"disappointed"_ by the poem's 
+reception, and was about to embark on a reading of his 12-book epic entitled _"My Favourite 
+Bathtime Gurgles"_ when his own large intestine - in a desperate attempt to save life 
+itself - leapt straight up through his neck and throttled his brain. The very worst 
+poetry of all perished along with its creator, Paula Nancy Millstone Jennings of Sussex, 
+in the destruction of the planet Earth. Vogon poetry is mild by comparison.
+
 ## Our Standards
 
 Examples of behavior that contributes to creating a positive environment
