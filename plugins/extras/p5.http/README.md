@@ -1,7 +1,7 @@
 HTTP REST from Hyperlambda
 ===============
 
-This folder contains the Active Events necessary to invoke HTTP REST WebServices. It contains full support for all four basic HTTP verbs.
+This component contains the Active Events necessary to create HTTP REST requests. It contains full support for all four basic HTTP verbs.
 
 * [GET]
 * [POST]
@@ -41,8 +41,9 @@ p5.http.get:x:/-/*?value
 ```
 
 Notice, this will create your requests sequentially, and not in parallel. If you wish to create parallel requests, you'll have to dive into
-the [p5.threading](/plugins/extras/p5.threading) parts of P5. You will have one *[result]* node returned, for each URL you supply to it. 
-You can also supply any HTTP headers you wish, as illustrated below.
+the [p5.threading](/plugins/extras/p5.threading) parts of P5.
+
+You will have one *[result]* node returned, for each URL you supply to it. You can also supply any HTTP headers you wish, as illustrated below.
 
 ```
 p5.http.get:"https://httpbin.org/get"
@@ -50,9 +51,7 @@ p5.http.get:"https://httpbin.org/get"
 src:x:/../**/content?value.string
 ```
 
-p5.http recognizes an HTTP header as a child node, containing _at least one CAPITAL letter_. Have that in mind, since it means to supply
-HTTP headers, your headers must have at least one capital letter in them. If you don't, it will assume you've provided some sort of content,
-which will probably make your request malfunction.
+p5.http handles every argument to its events that are not **[result]**, **[.onrequest]**, **[.onresponse]** and **[content]** as an HTTP header.
 
 There are 4 basic Active Events in this project.
 

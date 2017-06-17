@@ -185,7 +185,8 @@ namespace p5.http
             Node args)
         {
             // Redmond, this is ridiculous! Why can't we set headers in a uniform way ...?
-            foreach (var idxHeader in args.Children.Where (idxArg => idxArg.Name.ToLower () != idxArg.Name)) {
+            foreach (var idxHeader in args.Children.Where (
+                idxArg => idxArg.Name != ".onrequest" && idxArg.Name != ".onresponse" && idxArg.Name != "result" && idxArg.Name != "content")) {
                 switch (idxHeader.Name) {
 				case "Accept":
 					request.Accept = XUtil.Single<string> (context, idxHeader, idxHeader);
