@@ -16,7 +16,8 @@ though never on other people's behalf must I add! This is defined in paragraph
 16-4, article b, under the pre-requisite of that _"unless you are funny, without
 hurting anyone, Vogon poetry shall be recited to you, for no less than 2 minutes."_
 
-To understand the consequences of this, realise what the guide teaches us about poetry.
+To understand the consequences of this, realise what the guide teaches us about 
+Vogon poetry.
 
 > Vogon poetry is, of course, the third worst in the universe. The second worst is 
 that of the Azgoths of Kria. During a recitation by their poet master Grunthos the 
