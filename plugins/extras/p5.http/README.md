@@ -61,11 +61,9 @@ There are 4 basic Active Events in this project.
 * [p5.http.put] - HTTP PUT - Puts data
 * [p5.http.delete] - HTTP DELETE - Deletes data
 
-In addition to the above Active Events, there are 3 additional public events.
+In addition to the above Active Events, there is also 1 additional public event.
 
 * [p5.http.get-file] - Retrieves a document, and saves it to a specified file, without loading it into memory
-* [p5.http.post-file] - Posts a file, without loading it into memory
-* [p5.http.put-file] - Puts a file, without loading it into memory
 
 ## POST and PUT
 
@@ -95,24 +93,25 @@ src:x:/../**/content?value.string
 If you have a big file you wish to POST or PUT, you can achieve it using the following syntax.
 
 ```
-p5.http.post-file:"https://httpbin.org/post"
-  filename:/application-startup.hl
+p5.http.post:"https://httpbin.org/post"
+  .p5.io.file.save2stream:/application-startup.hl
 src:x:/../**/content?value.string
 ```
 
-Exchange the above invocation to *[p5.http.put-file]* if you wish to use PUT the file instead.
+Exchange the above invocation to *[p5.http.put]* if you wish to use PUT the file instead.
 
-The above _"put-file"_ and _"post-file"_ invocations, will not read the files into memory, before they're transmitted to your HTTP endpoint. But rather,
-copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources. These two 
-Active Events does not take any type of **[content]** argument, but rather a **[filename]**, expected to point to a file, you are legally allowed to
-read, according to the authorization for your user, invoking the Active Events.
+The above _"post"_ invocation, will not read the files into memory, before they're transmitted to your HTTP endpoint. But rather,
+copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources. This will use
+a plugin from [p5.io](/plugins/p5.io), which takes a stream as an argument, allowing you to copy a file directly into the HTTP request stream, instead
+of loading the file into memory first. This is highly useful when you want to transfer large files, without exhausting your server's memory, or resources 
+in any ways.
 
-## MIME support for POST and PUT
+## MIME and PGP cryptography support for POST and PUT
 
-Notice, instead of supplying a **[content]** or **[filename]** for your POST and PUT operations, you can alternatively have a MIME message automatically
-created for you, using the automatic plugin into [p5.mime](/plugins/extras/p5.mime), and POST or put a MIME message. If you wish to use this feature,
-you would instead of supplying a **[content]** or **[filename]** argument, supply a **[.p5.mime.save2stream]** node, containing one or more of the MIME 
-types supported by p5.mime. Below is an example of creating a multipart/mixed MIME message, with two leaf nodes.
+Notice, instead of supplying a **[content]** or **[.p5.io.file.save2stream]** argument for your POST and PUT operations, you can alternatively have a 
+MIME message automatically created for you, using the automatic plugin into [p5.mime](/plugins/extras/p5.mime), and POST or PUT a MIME message. 
+If you wish to use this feature, you would instead of supplying a **[content]** argument, supply a **[.p5.mime.save2stream]** node, 
+containing one or more of the MIME types supported by p5.mime. Below is an example of creating a multipart/mixed MIME message, with two leaf nodes.
 
 ```
 p5.http.post:"https://httpbin.org/post"
@@ -132,7 +131,7 @@ HTTP MIME requests, such as the following is an example of.
 
 ```
 /*
- * Checking if PGP key exists from before, and if not, creating it.
+ * Checking if our dummy PGP key exists from before, and if not, creating it.
  */
 p5.crypto.list-public-keys:SOME_DUMMY_PGP_KEYPAIR@SOMEWHERE.COM
 if:x:/-/*
@@ -161,19 +160,24 @@ src:x:/../**/content?value.string
 ```
 
 This is a pretty kick ass cool feature, allowing you to create PGP encrypted web services, in addition to cryptographically sign your web service
-invocations.
+invocations. Yet again, the MIME message is serialized directly into the stream, and never loaded into memory, which means you can create humongously
+large HTTP MIME REST requests, without exhausting your server's memory.
 
 ## Rolling your own serializer in C#
 
-The above also allows you to create your own C# plugins entirely from scratch, using the above construct to serialize into the HTTP Request 
-stream the content one way or another. This is because the above **[.p5.mime.save2stream]** node, becomes an Active Event invocation, 
-that passes in the HTTP request stream of the HTTP request as its value, and the entire **[.p5.mime.save2stream]** node directly as its parameters 
-to the event.
+The above logic also allows you to create your own C# plugins entirely from scratch, using the above construct to serialize into the HTTP Request 
+stream your content one way or another. This is because the above **[.p5.mime.save2stream]** node and **[.p5.io.file.save2stream]**, becomes an 
+Active Event invocation, that passes in the HTTP request stream of the HTTP request and the entire **[.p5.mime.save2stream]** node directly as its 
+parameters to the event.
+
+If you wish to use the above construct to create your own plugin, realise that the arguments passed into your own Active Events becomes 
+a `Tuple<object, Stream>`, where you can find the old value of your `e.Args.Value` as the object in Item1, and the HTTP request stream as Item2.
+This is necessary to support Active Events that contains values in their main `Node` argument, and preserve their values.
 
 This feature allows you to create your own serialization logic for the p5.http component, serializing any types of content you wish during your requests
 from C#, by injecting your own serializer logic. If you do, your Active Event will have the HTTP request stream passed in as the value of the
-main argument invocation node. Notice, if you do, you do not gain ownership of the stream, and you should hence not close it or dispose of it any ways,
-but simply serialize into it, and let it pass out of your Active Event, being still alive and open.
+main argument invocation node. Notice, if you do, you do not gain ownership of the HTTP request stream, and you should hence not close it or dispose of 
+it any ways, but simply serialize into it, and let it pass out of your Active Event, being still alive and open.
 
 ## GET'ing files
 

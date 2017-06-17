@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.IO;
 using p5.exp;
 using p5.core;
@@ -68,10 +69,49 @@ namespace p5.io.file
             });
         }
 
-        /*
+		/// <summary>
+		///     Loads one or more file(s) from local disc and saves into given stream.
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Parameters passed into Active Event</param>
+		[ActiveEvent (Name = ".p5.io.file.save2stream")]
+		public static void _p5_io_file_save2stream (ApplicationContext context, ActiveEventArgs e)
+		{
+            // Retrieving stream argument.
+            var tuple = e.Args.Value as Tuple<object, Stream>;
+            e.Args.Value = tuple.Item1;
+            var output = tuple.Item2;
+
+            // Iterating through files specified.
+			ObjectIterator.Iterate (
+				context,
+				e.Args,
+				true,
+				"read-file",
+				delegate (string filename, string fullpath) {
+
+					if (File.Exists (fullpath)) {
+
+                        // Serializing file into stream.
+                        using (FileStream stream = File.OpenRead (fullpath)) {
+                            stream.CopyTo (output); 
+                        }
+
+					} else {
+
+						// Oops, file didn't exist.
+						throw new LambdaException (
+							string.Format ("Couldn't find file '{0}'", filename),
+							e.Args,
+							context);
+					}
+				});
+		}
+
+		/*
          * Determines if file is text according to the most common file extensions
          */
-        static bool IsTextFile (string fileName)
+		static bool IsTextFile (string fileName)
         {
             switch (Path.GetExtension (fileName)) {
                 case ".txt":

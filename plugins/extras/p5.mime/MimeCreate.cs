@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -136,7 +137,8 @@ namespace p5.mime
 		public static void _p5_mime_save2stream(ApplicationContext context, ActiveEventArgs e)
 		{
             // Retrieving output filename, and doing some basic sanity checking.
-            var output = e.Args.Value as Stream;
+            var tuple = e.Args.Value as Tuple<object, Stream>;
+            var output = tuple.Item2;
 
             // Have to remove value of node, before iteration starts.
             e.Args.Value = null;

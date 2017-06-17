@@ -39,7 +39,6 @@ namespace p5.http
     public static class HttpRequest
     {
         // Specialized delegate functors for rendering request and response
-        delegate void RenderRequestFunctor (ApplicationContext context, HttpWebRequest request, Node args, string method);
         delegate void RenderResponseFunctor (ApplicationContext context, HttpWebRequest request, Node args);
 
         /// <summary>
@@ -51,17 +50,7 @@ namespace p5.http
         [ActiveEvent (Name = "p5.http.delete")]
         public static void p5_net_http_get_post_put_delete (ApplicationContext context, ActiveEventArgs e)
         {
-            CreateRequest (context, e.Args, RenderRequest, RenderResponse);
-        }
-
-        /// <summary>
-        ///     Posts or puts a file over an HTTP request
-        /// </summary>
-        [ActiveEvent (Name = "p5.http.post-file")]
-        [ActiveEvent (Name = "p5.http.put-file")]
-        public static void p5_http_post_put_file (ApplicationContext context, ActiveEventArgs e)
-        {
-            CreateRequest (context, e.Args, RenderFileRequest, RenderResponse);
+            CreateRequest (context, e.Args, RenderResponse);
         }
 
         /// <summary>
@@ -70,7 +59,7 @@ namespace p5.http
         [ActiveEvent (Name = "p5.http.get-file")]
         public static void p5_http_get_file (ApplicationContext context, ActiveEventArgs e)
         {
-            CreateRequest (context, e.Args, RenderRequest, RenderFileResponse);
+            CreateRequest (context, e.Args, RenderFileResponse);
         }
 
         /*
@@ -79,7 +68,6 @@ namespace p5.http
         static void CreateRequest (
             ApplicationContext context, 
             Node args, 
-            RenderRequestFunctor renderRequest, 
             RenderResponseFunctor renderResponse)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -101,7 +89,7 @@ namespace p5.http
                         request.Method = method;
 
                         // Writing content to request, if any
-                        renderRequest (context, request, args, method);
+                        RenderRequest (context, request, args, method);
 
                         // Returning response to caller
                         renderResponse (context, request, args);
@@ -195,53 +183,13 @@ namespace p5.http
 			} else {
 
                 // Attempting to create MIME envelope out of content, and serialize directly into Stream.
-                contentNode.Value = stream;
+                contentNode.Value = new Tuple<object, Stream> (contentNode.Value, stream);
                 try {
                     context.RaiseEvent (contentNode.Name, contentNode);
                 } finally {
                     contentNode.Value = null;
                 }
 			}
-        }
-
-        /*
-         * Renders HTTP post/put file request
-         */
-        static void RenderFileRequest (
-            ApplicationContext context, 
-            HttpWebRequest request, 
-            Node args, 
-            string method)
-        {
-            // Verifying caller supplied [filename] node.
-            if (args["filename"] == null || args["filename"].Value == null)
-                throw new LambdaException (
-                    "No [filename] node given", 
-                    args, 
-                    context);
-
-            // Getting file to post or put, verifying expression does not lead into oblivion
-            var filename = context.RaiseEvent (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, args["filename"]))).Get<string> (context);
-
-            // Making sure user is authorized to read the file request should send
-            context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", args));
-
-            // Opening request stream, and render file as content of request
-            using (Stream stream = request.GetRequestStream ()) {
-
-                // Setting other HTTP request headers
-                SetRequestHeaders (context, request, args);
-
-                // Retrieving root node of web application
-                var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
-
-                // Copying FileStream to RequestStream
-                using (Stream fileStream = File.OpenRead (rootFolder + filename)) {
-
-                    // Sending file to server end-point
-                    fileStream.CopyTo (stream);
-                }
-            }
         }
 
         /*
