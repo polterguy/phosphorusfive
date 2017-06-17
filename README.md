@@ -134,7 +134,7 @@ if you know some C# from before.
 * [p5.threading](/plugins/extras/p5.threading) - Threading support in P5
 * [p5.xml](/plugins/extras/p5.xml) - XML support in P5
 
-I have also been published twice in Microsoft's MSDN Magazine because of Phosphorus Five. Read the articles below.
+I have also been published twice in Microsoft's MSDN Magazine about of Phosphorus Five. Read the articles below.
 
 * [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
 * [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
@@ -148,15 +148,15 @@ Phosphorus Five is free and open source software, and licensed under the terms
 of the Gnu Public License, version 3, in addition to that commercially license are available for a fee. Read more about
 our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/).
 
+## More information
+
+I occasionally blog about P5, when I do, I do so [here](https://gaiasoul.com).
+
+There exists a [code of conduct](CODE_OF_CONDUCT.md) for the project you should read if you wish to participate 
+in the project. But basically what it says, is _"be nice"_.
+
 ## Hire me
 
 Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email.
 
 Thomas Hansen; thomas@gaiasoul.com
-
-## More information
-
-I occasionally blog about P5, when I do, I do so [here](https://gaiasoul.com).
-
-There exists a [code of conduct](CODE_OF_CONDUCT.md) for the project, you should read, if you wish to participate 
-one way or another. But basically what it says, is _"be nice"_.
