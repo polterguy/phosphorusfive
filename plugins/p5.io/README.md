@@ -357,8 +357,8 @@ If you create your own file plugin in C#, that uses paths, you can use the *[.p5
 replaced with the user's home directory. This Active Event takes a path as its input, and returns the "unrolled path" back to caller.
 
 In addition, there exists a pure C# plugin Active Event called **[.p5.io.file.serialize-to-stream]**, which among other things is used when creating
-HTTP REST requests through [p5.http](/plugins/extras/p5.http) to allow serialising files directly into the HTTP request stream, without loading them
-into memory first. See the documentation for p5.http to understand how this works.
+HTTP REST requests through [p5.http](/plugins/extras/p5.http) to allow serializing files directly into the HTTP request stream, without loading them
+into memory first. See the documentation for [p5.http](/plugins/extras/p5.http) to understand how this works.
 
 ## Warning! WRITE PORTABLE CODE!
 

@@ -452,7 +452,7 @@ There are also many other PGP related Active Events in p5.mime. Below is an exha
 
 The last 3 Active Events are only for extension developers, who wants to use MIME natively in their own components, and hence beyond the
 scope of this documentation. To see example usage of them though, feel free to check out for instance the code of 
-the [p5.mail project](/plugins/extras/p5.mail), that consumes them internally.
+[p5.mail](/plugins/extras/p5.mail) or [p5.http](/plugins/extras/p5.http) that consumes these events internally.
 
 The first 10 Active Events in the above list, allows you to manage your GnuPG database, by creating new keys, and modifying existing keys.
 Below is the documentation for them.
