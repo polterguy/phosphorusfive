@@ -26,7 +26,6 @@ using System.IO;
 using System.Net;
 using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -38,9 +37,6 @@ namespace p5.http
     /// </summary>
     public static class HttpRequest
     {
-        // Specialized delegate functors for rendering request and response
-        delegate void RenderResponseFunctor (ApplicationContext context, HttpWebRequest request, Node args);
-
         /// <summary>
         ///     Creates a new HTTP REST request of specified type
         /// </summary>
@@ -48,68 +44,46 @@ namespace p5.http
         [ActiveEvent (Name = "p5.http.post")]
         [ActiveEvent (Name = "p5.http.put")]
         [ActiveEvent (Name = "p5.http.delete")]
-        public static void p5_net_http_get_post_put_delete (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_net_http_rest (ApplicationContext context, ActiveEventArgs e)
         {
-            CreateRequest (context, e.Args, RenderResponse);
-        }
+			// Making sure we clean up and remove all arguments passed in after execution
+            using (new ArgsRemover (e.Args, true)) {
 
-        /// <summary>
-        ///     Gets a file from an HTTP request
-        /// </summary>
-        [ActiveEvent (Name = "p5.http.get-file")]
-        public static void p5_http_get_file (ApplicationContext context, ActiveEventArgs e)
-        {
-            CreateRequest (context, e.Args, RenderFileResponse);
-        }
+				// Figuring out which HTTP method to use
+				string method = e.Args.Name.Split ('.').Last ().ToUpper ();
+				if (method.Contains ("-"))
+					method = method.Substring (0, method.IndexOfEx ("-"));
+				try {
+					// Iterating through each request URL given
+					foreach (var idxUrl in XUtil.Iterate<string> (context, e.Args)) {
 
-        /*
-         * Actual implementation of creation of HTTP request
-         */
-        static void CreateRequest (
-            ApplicationContext context, 
-            Node args, 
-            RenderResponseFunctor renderResponse)
-        {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new ArgsRemover (args, true)) {
+						// Creating request
+						var request = WebRequest.Create (idxUrl) as HttpWebRequest;
 
-                // Figuring out which HTTP method to use
-                string method = args.Name.Split ('.').Last ().ToUpper ();
-                if (method.Contains ("-"))
-                    method = method.Substring (0, method.IndexOfEx ("-"));
-                try
-                {
-                    // Iterating through each request URL given
-                    foreach (var idxUrl in XUtil.Iterate<string> (context, args)) {
+						// Setting HTTP method
+						request.Method = method;
 
-                        // Creating request
-                        var request = WebRequest.Create (idxUrl) as HttpWebRequest;
+						// Writing content to request, if any
+						RenderRequest (context, request, e.Args, method);
 
-                        // Setting HTTP method
-                        request.Method = method;
+						// Returning response to caller
+						RenderResponse (context, request, e.Args);
+					}
+				} catch (Exception err) {
 
-                        // Writing content to request, if any
-                        RenderRequest (context, request, args, method);
+					// Trying to avoid throwing a new exception, unless we have to
+					if (err is LambdaException)
+						throw;
 
-                        // Returning response to caller
-                        renderResponse (context, request, args);
-                    }
-                }
-                catch (Exception err)
-                {
-                    // Trying to avoid throwing a new exception, unless we have to
-                    if (err is LambdaException)
-                        throw;
-
-                    // Making sure we re-throw as LambdaException, to get more detailed information about what went wrong ...
-                    throw new LambdaException (
-                        string.Format ("Something went wrong with request, error message was; '{0}'", err.Message), 
-                        args, 
-                        context, 
-                        err);
-                }
-            }
-        }
+					// Making sure we re-throw as LambdaException, to get more detailed information about what went wrong ...
+					throw new LambdaException (
+						string.Format ("Something went wrong with request, error message was; '{0}'", err.Message),
+						e.Args,
+						context,
+						err);
+				}
+			}
+		}
 
         /*
          * Renders normal HTTP request
@@ -120,29 +94,59 @@ namespace p5.http
             Node args, 
             string method)
         {
-            // Setting request headers
+            // Setting request headers.
             SetRequestHeaders (context, request, args);
 
             // Checking if this is a "content" request, which also might be the case if it is an HTTP MIME request.
-            // Notice we must ignore previously created [result] nodes here, in addition to formatting expression.
-            // We are also ignoring everything that has the structure of an HTTP header.
-            var contentNode = args.Children.FirstOrDefault (ix => ix.Name != "" && ix.Name != "result" && ix.Name.ToLower () == ix.Name);
+            var contentNode = args.Children.FirstOrDefault (ix => ix.Name == "content" || ix.Name == ".onrequest");
 
             // Checking if there exists content for request.
             if (contentNode != null) {
 
-                // We've got content to post or put, making sure caller is not trying to submit content over HTTP get or delete requests
+                // We've got content to post or put, making sure caller is not trying to submit content over HTTP GET or DELETE requests.
                 if (method != "PUT" && method != "POST")
                     throw new LambdaException (
-                        "You cannot have content with 'GET' and 'DELETE' types of requests", 
+                        "You cannot have content with '" + method + "' types of requests", 
                         args, 
                         context);
 
                 using (var stream = request.GetRequestStream ()) {
 
-                    // Serializing request into stream.
-                    SerializeRequest (context, contentNode, stream);
-                }
+					// Serializing request into stream, checking type of content first.
+					if (contentNode.Name == "content") {
+
+						// Hyperlambda or plain text content.
+						var content = GetRequestContent (context, contentNode);
+						var byteContent = content as byte [];
+						if (byteContent != null) {
+
+							// Binary content.
+							stream.Write (byteContent, 0, byteContent.Length);
+
+						} else {
+
+							// Some sort of "text" type of content, could also be Hyperlambda.
+							using (TextWriter writer = new StreamWriter (stream)) {
+
+								// Converting to string before we write.
+								writer.Write (Utilities.Convert (context, content, ""));
+							}
+						}
+
+					} else {
+
+						// Using plugin Active Events to serialize content of HTTP request directly into request stream.
+						contentNode.FirstChild.Value = new Tuple<object, Stream> (contentNode.FirstChild.Value, stream);
+						try {
+							context.RaiseEvent (contentNode.FirstChild.Name, contentNode.FirstChild);
+						} finally {
+
+							// Notice, we must remove the value of our invocation node here, otherwise we'll end up having a Stream object in our node structure
+							// as we leave the event.
+							contentNode.FirstChild.Value = null;
+						}
+					}
+				}
 			} else {
 
                 // Checking if this is a POST request, at which case not supplying content is a bug
@@ -152,44 +156,6 @@ namespace p5.http
                         args, 
                         context);
             }
-        }
-
-        /*
-         * Helper for above.
-         */
-        static void SerializeRequest (ApplicationContext context, Node contentNode, Stream stream)
-        {
-            // Checking type of content.
-            if (contentNode.Name == "content") {
-
-                // Hyperlambda or plain text content.
-                var content = GetRequestContent (context, contentNode);
-				var byteContent = content as byte [];
-				if (byteContent != null) {
-
-					// Binary content.
-					stream.Write (byteContent, 0, byteContent.Length);
-
-				} else {
-
-					// Some sort of "text" type of content, could also be Hyperlambda.
-					using (TextWriter writer = new StreamWriter (stream)) {
-
-						// Converting to string before we write.
-						writer.Write (Utilities.Convert (context, content, ""));
-					}
-				}
-
-			} else {
-
-                // Attempting to create MIME envelope out of content, and serialize directly into Stream.
-                contentNode.Value = new Tuple<object, Stream> (contentNode.Value, stream);
-                try {
-                    context.RaiseEvent (contentNode.Name, contentNode);
-                } finally {
-                    contentNode.Value = null;
-                }
-			}
         }
 
         /*
@@ -206,12 +172,12 @@ namespace p5.http
                 return context.RaiseEvent ("lambda2hyper", content.Clone ()).Value;
             }
 
-            // Some sort of "value" content, either text content, or binary blob (byte[])
+            // Some sort of "value" content, either text content, or binary blob (byte[]).
             return XUtil.Single<object> (context, content);
         }
 
         /*
-         * Decorates all headers for request, except Content-Type, which should be handled by caller
+         * Decorating all HTTP headers for request.
          */
         static void SetRequestHeaders (
             ApplicationContext context, 
@@ -221,10 +187,10 @@ namespace p5.http
             // Redmond, this is ridiculous! Why can't we set headers in a uniform way ...?
             foreach (var idxHeader in args.Children.Where (idxArg => idxArg.Name.ToLower () != idxArg.Name)) {
                 switch (idxHeader.Name) {
-                case "Accept":
-                    request.Accept = XUtil.Single<string> (context, idxHeader, idxHeader);
-                    break;
-                case "Connection":
+				case "Accept":
+					request.Accept = XUtil.Single<string> (context, idxHeader, idxHeader);
+					break;
+				case "Connection":
                     request.Connection = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
                 case "Content-Length":
@@ -264,95 +230,50 @@ namespace p5.http
         /*
          * Renders response into given Node
          */
-        static void RenderResponse (
-            ApplicationContext context, 
-            HttpWebRequest request, 
-            Node args)
+        static void RenderResponse (ApplicationContext context, HttpWebRequest request, Node args)
         {
+            // Retrieving response and creating our [result] node.
             var response = request.GetResponseNoException ();
             Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
 
-            // Getting response HTTP headers
+            // Getting response HTTP headers.
             GetResponseHeaders (context, response, result, request);
 
-            // Retrieving response stream, and parsing content
+            // Retrieving response stream, and parsing content.
             using (Stream stream = response.GetResponseStream ()) {
 
-                // Checking type of response
-                if (response.ContentType.StartsWithEx ("application/x-hyperlambda")) {
+                // Checking if caller supplied his own [.onresponse] callback, and if not, checking the type of response.
+                var responseCallback = args [".onresponse"];
+                if (responseCallback != null) {
 
-                    // Hyperlambda, possibly special treatment
+					// Using plugin Active Events to serialize content of HTTP request directly into request stream.
+					responseCallback.FirstChild.Value = new Tuple<object, Stream> (responseCallback.FirstChild.Value, stream);
+					try {
+                        context.RaiseEvent (responseCallback.FirstChild.Name, responseCallback.FirstChild);
+					} finally {
+
+						// Notice, we must remove the value of our invocation node here, otherwise we'll end up having a Stream object in our node structure
+						// as we leave the event.
+						responseCallback.FirstChild.Value = null;
+					}
+
+				} else if (response.ContentType.StartsWithEx ("text")) {
+
+                    // Text response.
                     using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
 
-                        // Checking if caller wants to automatically convert to p5 lambda, which is default behavior
-                        if (args.GetExChildValue ("convert", context, true)) {
-
-                            // Converting from Hyperlambda to p5 lambda
-                            Node convert = context.RaiseEvent ("hyper2lambda", new Node ("content", reader.ReadToEnd ()));
-                            convert.Value = null;
-                            result.Add (convert);
-
-                        } else {
-
-                            // Caller explicitly said he did NOT want to convert
-                            result.Add ("content", reader.ReadToEnd());
-                        }
-                    }
-                } else if (response.ContentType.StartsWithEx ("text") || 
-                    response.ContentType.StartsWithEx ("application/rss+xml") ||
-                    response.ContentType.StartsWithEx ("application/xml")) {
-
-                    // Text response
-                    using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
-
-                        // Simply adding as text
+                        // Simply adding as text.
                         result.Add ("content", reader.ReadToEnd ());
                     }
                 } else {
 
-                    // Defaulting to binary
+                    // Defaulting to binary.
                     using (MemoryStream memStream = new MemoryStream ()) {
 
                         // Simply adding as byte[]
                         stream.CopyTo (memStream);
                         result.Add ("content", memStream.ToArray ());
                     }
-                }
-            }
-        }
-
-        /*
-         * Saves response into filename given
-         */
-        static void RenderFileResponse (
-            ApplicationContext context, 
-            HttpWebRequest request, 
-            Node args)
-        {
-            // Getting filename user wants to save response as
-            var filename = context.RaiseEvent (".p5.io.unroll-path", new Node ("", XUtil.Single<string> (context, args ["filename"]))).Get<string>(context);
-
-            // Making sure user is authorized to write/overwrite the file response should be saved to
-            context.RaiseEvent (".p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));
-
-            // Retrieving HTTP response
-            var response = request.GetResponseNoException ();
-            Node result = args.Add ("result").LastChild;
-
-            // Getting HTTP response headers
-            GetResponseHeaders (context, response, result, request);
-
-            // Retrieving response content stream, and parsing as expected by caller
-            using (Stream stream = response.GetResponseStream ()) {
-
-                // Retrieving root folder of web application
-                var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
-
-                // Copying response content stream to file stream encapsualting file caller requested to save content to
-                using (Stream fileStream = File.Create (rootFolder + filename)) {
-
-                    // Copy response stream to file stream
-                    stream.CopyTo (fileStream);
                 }
             }
         }

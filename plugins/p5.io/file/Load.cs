@@ -74,8 +74,8 @@ namespace p5.io.file
 		/// </summary>
 		/// <param name="context">Application Context</param>
 		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = ".p5.io.file.save2stream")]
-		public static void _p5_io_file_save2stream (ApplicationContext context, ActiveEventArgs e)
+		[ActiveEvent (Name = ".p5.io.file.serialize-to-stream")]
+		public static void _p5_io_file_serialize_to_stream (ApplicationContext context, ActiveEventArgs e)
 		{
             // Retrieving stream argument.
             var tuple = e.Args.Value as Tuple<object, Stream>;

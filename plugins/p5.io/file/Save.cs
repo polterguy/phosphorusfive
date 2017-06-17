@@ -21,6 +21,7 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System;
 using System.IO;
 using p5.exp;
 using p5.core;
@@ -52,7 +53,7 @@ namespace p5.io.file
 
                 // Getting root folder, and converting content to blob, making sure user does use [src] and not [dest] as file content.
                 var rootFolder = Common.GetRootFolder (context);
-                var content = Utilities.Convert<byte[]> (context, XUtil.Source (context, e.Args, "dest"));
+                var content = Utilities.Convert<byte[]> (context, XUtil.Source (context, e.Args));
 
                 // Iterating through each destination file path, which probably doesn't make that much sense, but to be consistent in how we
                 // handle files, we still do this, such that "API" is similar to [load-file], etc.
@@ -70,5 +71,45 @@ namespace p5.io.file
                 }
             }
         }
-    }
+
+		/// <summary>
+		///     Creates a file from the given stream.
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Parameters passed into Active Event</param>
+		[ActiveEvent (Name = ".p5.io.file.save-to-stream")]
+		public static void _p5_io_file_save_to_stream (ApplicationContext context, ActiveEventArgs e)
+		{
+			// Retrieving stream argument.
+			var tuple = e.Args.Value as Tuple<object, Stream>;
+			e.Args.Value = tuple.Item1;
+			var input = tuple.Item2;
+
+			// Sanity check.
+			if (e.Args.Value == null)
+				throw new LambdaException ("[.p5.io.file.save-to-stream] requires a constant or an expression leading to its path", e.Args, context);
+
+			// Making sure we clean up and remove all arguments passed in after execution.
+			using (new ArgsRemover (e.Args)) {
+
+				// Getting root folder, and converting content to blob, making sure user does use [src] and not [dest] as file content.
+				var rootFolder = Common.GetRootFolder (context);
+
+				// Iterating through each destination file path, which probably doesn't make that much sense, but to be consistent in how we
+				// handle files, we still do this, such that "API" is similar to [load-file], etc.
+				foreach (var idxDestination in XUtil.Iterate<string> (context, e.Args)) {
+
+					// Verifying user is allowed to save to file.
+					Common.RaiseAuthorizeEvent (context, e.Args, "modify-file", idxDestination);
+
+					// Saving file.
+					using (FileStream stream = File.Create (rootFolder + Common.GetSystemPath (context, idxDestination))) {
+
+                        // Writing content to file stream.
+                        input.CopyTo (stream); 
+					}
+				}
+			}
+		}
+	}
 }

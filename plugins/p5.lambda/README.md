@@ -260,7 +260,7 @@ having still the root node of its evaluation being the *[eval]* node itself.
 
 Later in our documentation we will dive into some use-cases where this is extremely useful. But for now, just keep it at the back of your mind.
 
-### Eval is not (necessarily) evil
+### [eval-whitelist] - Eval is not (necessarily) evil
 
 There exists an overload of eval called *[eval-whitelist]*, which allows you to pass in a subset of legal Active Events, as an *[events]* list.
 If either directly, or indirectly within this execution, any Active Event not in this whitelisted *[events]* list is attempted to be raised,

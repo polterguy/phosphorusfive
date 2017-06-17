@@ -448,7 +448,7 @@ There are also many other PGP related Active Events in p5.mime. Below is an exha
 * [p5.crypto.import-private-pgp-key] - Imports a private PGP key
 * [.p5.mime.parse-native] - C# special Active Event for hooking into library for C# developers
 * [.p5.mime.create-native] - C# special Active Event for hooking into library for C# developers
-* [.p5.mime.save2stream] - Plugin Active Event for other C# components, such as e.g. the [p5.http](/plugins/extras/p5.http) component
+* [.p5.mime.serialize-to-stream] - Plugin Active Event for other C# components, such as e.g. the [p5.http](/plugins/extras/p5.http) component
 
 The last 3 Active Events are only for extension developers, who wants to use MIME natively in their own components, and hence beyond the
 scope of this documentation. To see example usage of them though, feel free to check out for instance the code of 
