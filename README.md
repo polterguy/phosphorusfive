@@ -133,8 +133,9 @@ if you know some C# from before.
 * [p5.mysql](/plugins/extras/p5.mysql) - MySQL data adapter
 * [p5.threading](/plugins/extras/p5.threading) - Threading support in P5
 * [p5.xml](/plugins/extras/p5.xml) - XML support in P5
+* [p5.markdown](/plugins/extras/p5.markdown) - Parsing Markdown snippets
 
-I have also been published twice in Microsoft's MSDN Magazine about of Phosphorus Five. Read the articles below.
+P5 have also been published twice in Microsoft's MSDN Magazine. Read the articles below by yours truly.
 
 * [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
 * [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
