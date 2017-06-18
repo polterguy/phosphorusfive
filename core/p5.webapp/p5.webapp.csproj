@@ -228,6 +228,10 @@
       <Project>{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}</Project>
       <Name>p5.threading</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.markdown\p5.markdown.csproj">
+      <Project>{045D3D94-7730-445D-B578-1DE5A5BE5C3B}</Project>
+      <Name>p5.markdown</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />

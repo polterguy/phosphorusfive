@@ -25,9 +25,6 @@ using System.Xml;
 using p5.exp;
 using p5.core;
 
-/// <summary>
-///     Main namespace for handling XML
-/// </summary>
 namespace p5.xml
 {
     /// <summary>
