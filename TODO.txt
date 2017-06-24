@@ -2,8 +2,6 @@
 TODO before release
 ===================
 
-* Dox for all projects
-
 * Clean up the p5.core Utilities class!
 
 * Investigate the p5.threading, and find out why [fork] is not the root node, when using a [wait] invocation. Which MIGHT be the corrrect way to
@@ -11,22 +9,12 @@ TODO before release
 
 * Investigate why a "shared reference node" won't have its reference node updated for multiple [fork] inside of a single [wait]
 
-* Simplify p5.mail and p5.mime
-
-* Finish dox for p5.mime, p5.strings, and all other projects
-
 * Consider moving "PGP key" Active Events into p5.crypto ...?
-
-* Create some sort of "persistent login" (remember me functionality)
-
-* Consider documenting all Active Events by adding a [_dox] node, allowing consumers to invoke them with [add] trickery to retrieve dox.
 
 * Replace Hyperlambda parser, with option to preserve comments as [#comment] nodes, such that we can parse files, without loosing comments,
   and create automated refactoring features, etc. Also make it more stable. It's not 100% today ...
 
 * Create sample folder in System42, with some example lambda pages, showing of some feature for users.
-
-* Make support for children widgets in tree view widget.
 
 * Create [lambda2xml] and [p5.csv.lambda2csv] events.
 
@@ -34,29 +22,11 @@ TODO before release
 
 * Clean up all of the above conversion projects.
 
-* Create [delete-from-row-id] for Datagrid widget.
-
 * Make sure [join] works without arguments, to simply concatenate strings.
-
-* Icon support for Navbar through _class on items. Also add support for other types of widgets, such as textbox search, buttons, etc...
-
-* Make sure all widgets that are crawlable use the same "get URL" logic, if we can ...
-
-* Make sure datagrid can be set into "read only" mode, without neither [.on-edit-item] nor [.on-select-items]
-
-* Change the [src] and [dest] argument names to [p5.string.replace] to something more intuitive.
-
-* Change the [chars] argument in [p5.string.trim] to something more intuitive.
-
-* Figure out why modal windows in e.g. CMS is not given focus to any controls initially.
-
-* Check out if we should allow widget Ajax events to take expressions during creation.
 
 * Rethink widget lambda events logic, since it is impossible to have multiple handlers for the same Active Event return values.
 
 * Investigate why we're escaping property name in p5.web/WidgetProperties.CreatePropertyReturn method.
-
-* Making sure we're using the correct JS inclusions all over the place, alternatives are [p5.web.send-javascript] and [p5.web.include-javascript]
 
 * Make sure deletion of attribute and/or widget in p5.ajax, removes all other relevant changes in "_changes" such that we don't send redundant data back.
 
@@ -68,17 +38,13 @@ TODO before release
 
 * Why aren't arguments to evaluation of lambda files passed into the order they're supplied ...?
 
-* [load-file] cannot handle a "?node.string" [src] expression returning multiple nodes.
+* [save-file] cannot handle a "?node.string" [src] expression returning multiple nodes.
 
 * Creates unit test for invoking dynamic Active Event, with expression [_arg], leading to multiple values, making sure
   lambda injection is not possible. This was a severe bug found in XUtil.EvaluateLambda, which I think is fixed, but not entirely certain.
 
-* Go through all Active Event, including widgets/windows, and check if we should remove "_" in front of arguments, etc ...
-
 * Make sure we do not pass in attributes back to client that was not actually changed during Ajax request, for cases where an
   an attribute is changed to its already existing value.
-
-* Make sure uploader widget uses minified version of JavaScript. Had to change it to create fix on Mac.
 
 * Check formatting strings, since for instance a [p5.types.date.now] invocation inside e.g. {0} seems to be locally formatted.
 
@@ -86,19 +52,11 @@ TODO before release
   Also make sure that ONLY "empty" select widgets are possible to populate this way, to avoid as much as possible, client being able
   to "inject" logic into server.
 
-* Minimize "speak.js" file.
-
 * Check up sys42.windows.modal.hl, line 273, I think this is supposed to be "onkeydown" and not "keypressed" ...?
 
 * Possible bug in [switch], breaks [for-each] when [break] is supplied.
 
-* [sys42.utilities.get-event] doesn't seem to work as expected. Executes logic in event ...?
-
-* Make sure server salt is not empty during installation.
-
 * Inclusion of JavaScript and CSS files needs to support the integrity and crossorigin attributes.
-
-* Verify all widgets include minified CSS file.
 
 * Sephia Five, .onretrieve being raise while in settings throws exception, and locks screen
 
@@ -114,8 +72,6 @@ TODO before release
 
 * Verify creating an Ajax event that does not already exists using [p5.web.widgets.ajax-events.set] actually works.
   I suspect it does not work, since there is something fishy with the "common_event_handler" logic.
-
-* Pull in p5.threading and p5.io.zip, and stabilize them before release.
 
 * Importing private PGP key doesn't seem to work.
 
