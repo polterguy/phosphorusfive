@@ -236,7 +236,6 @@
   <ItemGroup>
     <Content Include="README.md" />
     <Content Include="common\README.md" />
-    <None Include="bundleconfig.json" />
     <None Include="users\root\documents\public\README.md" />
     <None Include="users\root\documents\private\README.md" />
     <None Include="users\root\temp\README.md" />
