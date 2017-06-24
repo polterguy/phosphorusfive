@@ -14,3 +14,7 @@ This is another paragraph!"
 markdown2html:x:/-?value
 ```
 
+## URL resolving
+
+Optionally, you can supply a **[root-url]** to this Active Event, which will resolve all relative URLs to the specified URL.
+

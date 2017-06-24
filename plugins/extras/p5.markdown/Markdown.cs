@@ -43,9 +43,25 @@ namespace p5.markdown
             // Making sure we clean up and remove all arguments passed in after execution
             using (new ArgsRemover (e.Args, false)) {
 
-                // Loops through all documents we're supposed to transform
+                // Assumes there's only one document, or creates one result of it.
                 var md = XUtil.Single<string> (context, e.Args);
-                e.Args.Value = CommonMarkConverter.Convert (md);
+
+                // Making sure we correctly resolve URLs, if user specified a [root-url] argument.
+                var root = e.Args.GetExChildValue ("root-url", context, "").TrimEnd ('/');
+				CommonMarkSettings settings = CommonMarkSettings.Default;
+				if (root != "") {
+
+                    // To make sure we don't change global settings.
+                    settings = settings.Clone (); 
+                    settings.UriResolver = delegate (string arg) {
+                        if (arg.StartsWithEx ("http://") || arg.StartsWithEx ("https://"))
+                            return arg;
+                        return root + "/" + arg.TrimStart ('/');
+                    };
+                }
+
+                // Doing actual conversion.
+                e.Args.Value = CommonMarkConverter.Convert (md, settings);
             }
         }
     }
