@@ -202,10 +202,15 @@ core/p5.webapp/auth.hl
 
 #common files
 core/p5.webapp/common/public/*
-!core/p5.webapp/common/public/README.md
+!core/p5.webapp/common/documents/public/README.md
+!core/p5.webapp/common/documents/private/README.md
+!core/p5.webapp/common/documents/private/web.config
 
 # Excluding System42
 core/p5.webapp/system42/**
+
+# Excluding Micro-Widgets
+core/p5.webapp/micro/**
 
 # Excluding auto generated Visual Studio files
 .vs/
