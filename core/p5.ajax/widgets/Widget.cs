@@ -537,8 +537,9 @@ namespace p5.ajax.widgets
 
             } else if (!AjaxPage.IsAjaxRequest || ancestorReRendering) {
 
-                // Rendering invisible HTML.
-                writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none !important;""></{0}>", Element, ClientID));
+				// Rendering invisible HTML, making sure we indent invisible HTML.
+				IndentWidgetRendering (writer);
+				writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none !important;""></{0}>", Element, ClientID));
             }
         }
 
