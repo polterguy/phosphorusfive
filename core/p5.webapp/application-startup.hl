@@ -1,15 +1,47 @@
 ﻿
 
 /*
- * Example startup file, that creates the [p5.web.load-ui] Active Event, which is invoked whenever a URL is requested.
+ * Loader, loads all "startup.hl" files in folders at root.
  */
-create-event:p5.web.load-ui
+
+
+/*
+ * Listing all folders at root.
+ */
+list-folders:/
+
+
+/*
+ * Listing all "startup.hl" files inside of the results of our above folder listing operation.
+ */
+list-files:x:/@list-folders/*?name
+  filter:startup.hl
+
+
+/*
+ * Loading and evaluating all files from above result.
+ */
+load-file:x:/@list-files/*?name
+if:x:/@load-file/*?count
+  >:int:0
 
   /*
-   * Creates a widget, simply displaying the URL that was requested, and nothing more.
+   * We have something!
    */
-  create-widget
-    parent:cnt
-    element:h1
-    innerValue:Hello world, URL requested was '{0}'
-      :x:/../*/url?value
+  eval:x:/@load-file/*
+
+else
+
+  /*
+   * It's awfully empty around here, just creating some "default Hello World" thing ...
+   */
+  create-event:p5.web.load-ui
+
+    /*
+     * Creates a widget, simply displaying the URL that was requested, and nothing more.
+     */
+    create-widget
+      parent:cnt
+      element:h1
+      innerValue:Hello world, URL requested was '{0}'
+        :x:/../*/url?value
