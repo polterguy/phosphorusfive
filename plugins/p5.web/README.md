@@ -108,6 +108,48 @@ multiple widgets on your page, with the same ID - Which would be a severe logica
 great care making sure they are unique for your page. Which means that you would probably end up creating some sort of namespacing logic for 
 things that are used on multiple pages, and injected as reusable controls into your page - Which is a common pattern when using P5.
 
+### [create-widgets]
+
+There exists a plural overload Active Event for creating widgets, which at first sight might not seem as useful. However, every now and then, 
+it fits just perfect. Its name is **[create-widgets]**, and it just takes a bunch of widgets, such as **[literal]**, **[void]**, **[container]**, etc.
+
+The **[create-widgets]** overload allows you to create multiple widgets in one go, each having a separate **[parent]**, etc. But more importanly, 
+it allows you to create extension widgets, without being forced to create a "wrapper widget" wrapping your extension widget.
+
+Every now and then, this ability is crucial, to keep your DOM tidy, and not having to create redundant widgets, simply to get to the widget you 
+wish to create immediately. So even though its name might be misleading, since you would expect to be using it to create _multiple_ widgets - It actually
+allows you to create _fewer_ widgets sometimes, than what you'd have to create if you were using the default **[create-widget]**, or one of its overloads.
+
+Below is an example of using it, which assumes you have [Micro](https://github.com/polterguy/micro) installed.
+
+```
+create-widgets
+  micro.widgets.modal:modal-widget
+    class:micro-modal
+    widgets
+      h3
+        innerValue:Modal widget
+      p
+        innerValue:@"Notice, there is no custom JavaScript for the modal widget in Micro.
+By intelligently combining CSS with the Managed Ajax parts of P5, we're able to get away with creating a modal widget, 
+without adding any overhead to our page at all."
+      p
+        innerValue:@"Which is in stark contrast to Bootstrap, that requires jQuery and hundreds
+of kilobytes of custom JavaScript and CSS to display a simple modal window."
+      p
+        innerValue:@"You can put any other widgets you wish into the modal widget in Micro."
+      div
+        class:right
+        widgets
+          button
+            innerValue:Close
+            onclick
+              delete-widget:modal-widget
+```
+
+Notice, the above won't look as beautiful if you evaluate it in the System42's Executor, since the Executor uses Bootstrap CSS, which doesn't mix
+very well with Micro.
+ 
 ### JavaScript and client-side DOM events
 
 If you create an argument that starts out with the text "on", and have a value, instead of children nodes, you can put any arbitrary JavaScript you wish

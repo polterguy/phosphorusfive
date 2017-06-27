@@ -95,6 +95,61 @@ namespace p5.web.widgets
             CreateWidget (context, e.Args, type);
         }
 
+        /// <summary>
+        ///     Creates one or more Ajax widgets according to its children.
+        /// </summary>
+        /// <param name="context">Context for current request</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "create-widgets")]
+        [ActiveEvent (Name = "p5.web.widgets.create-many")]
+        public void p5_web_widgets_create_many (ApplicationContext context, ActiveEventArgs e)
+        {
+            CreateManyWidgets (context, e.Args);
+        }
+
+        /*
+         * Helper for above.
+         */
+        private void CreateManyWidgets (ApplicationContext context, Node args)
+        {
+            // Looping through each argument, assuming each is a widget creation statement.
+            foreach (var idxWidget in XUtil.Iterate<Node> (context, args)) {
+                switch (idxWidget.Name) {
+                case "literal":
+                    CreateWidget (context, idxWidget, "literal");
+                    break;
+                case "container":
+                    CreateWidget (context, idxWidget, "container");
+                    break;
+				case "void":
+					CreateWidget (context, idxWidget, "void");
+					break;
+                default:
+
+					// Making sure we store the ID for widget, since lambda event invocation will delete it after evaluation.
+					var id = idxWidget.Value;
+
+                    // Making sure we remove all special properties for widget, before we invoke custom Active Event, to avoid confusion.
+                    var list = idxWidget.Children.Where (ix => ix.Name == "parent" || ix.Name == "position" || ix.Name == "before" || ix.Name == "after").Select (ix => ix.UnTie ());
+
+                    // Raising extension widget event.
+					context.RaiseEvent (idxWidget.Name, idxWidget);
+					if (idxWidget.Count != 1)
+						throw new LambdaException ("Custom widget event did not return exactly one child value", idxWidget, context);
+
+					// Making sure we decorate the ID for widget automatically.
+					idxWidget.FirstChild.Value = id;
+
+                    // Passing in the list of properties extracted above, into the child widget, which should now be decorated according to the custom extension widget event.
+                    idxWidget.FirstChild.AddRange (list); 
+
+                    // Recursively invoking self for simplicity.
+                    CreateManyWidgets (context, idxWidget);
+					break;
+				}
+            }
+        }
+
         /*
          * Helper method for creating widgets.
          */
