@@ -124,7 +124,10 @@ namespace p5.web.widgets
 				case "void":
 					CreateWidget (context, idxWidget, "void");
 					break;
-                default:
+				case "text":
+					CreateWidget (context, idxWidget, "text");
+					break;
+				default:
 
 					// Making sure we store the ID for widget, since lambda event invocation will delete it after evaluation.
 					var id = idxWidget.Value;
