@@ -121,6 +121,12 @@ namespace p5.lambda.helpers
             // Retrieving right hand side
             var rhs = e.Args.GetExValue<object> (context, null);
 
+            // Simple version.
+            if (lhs == null) {
+                e.Args.Value = rhs == null;
+                return;
+            }
+
             // Checking if we were given a regex, or "anything else"
             if (rhs is Regex) {
 
