@@ -26,7 +26,10 @@ refer to these links.
 
 I recommend you start out with ["the guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation
 for the [plugins](plugins/), as the need surface. Most of the examples in the core and plugin documentation, assumes you are 
-using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps.
+using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps. Below is a screenshot of Phosphorus Five
+used in combination with [Micro](https://github.com/polterguy/micro).
+
+![alt screenshot](main-p5-screenshot.png)
 
 ## Hyperlambda
 
