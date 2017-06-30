@@ -40,6 +40,7 @@ namespace p5.webapp
             // This ensures that our HTML form element stays correct. Basically "undoing" what was done in Global.asax.cs.
             // In addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx".
             HttpContext.Current.RewritePath ((string) HttpContext.Current.Items [".p5.webapp.original-url"]);
+            Form.Action = (string)HttpContext.Current.Items [".p5.webapp.original-url"];
 
             // Mapping up our Page_Load event for initial loading of web page.
             Load += delegate {

@@ -71,13 +71,13 @@ namespace p5
             {
                 // Rewriting path such that "x.com/somefolder/somefile" becomes "x.com?file=somefolder/somefile"
                 // Notice, "ToLower"!
-                var localPath = HttpContext.Current.Request.Url.LocalPath;
+                var url = HttpContext.Current.Request.Url.PathAndQuery;
 
                 // Checking to see if we should rewrite the URL/path to page
-                if (localPath.ToLower () == "/default.aspx" || !localPath.Contains (".")) {
+                if (url.ToLower () == "/default.aspx" || !HttpContext.Current.Request.Url.LocalPath.Contains (".")) {
 
                     // Rewriting path (URL) of request
-                    RewritePath (localPath);
+                    RewritePath (url);
                 }
             }
 
