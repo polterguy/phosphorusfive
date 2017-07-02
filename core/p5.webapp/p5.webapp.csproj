@@ -216,10 +216,6 @@
       <Project>{2D694F51-5055-4EC8-8767-C2011E010DD5}</Project>
       <Name>p5.mime</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\extras\p5.xml\p5.xml.csproj">
-      <Project>{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
-      <Name>p5.xml</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\extras\p5.io.zip\p5.io.zip.csproj">
       <Project>{1D57B094-2569-4899-A33A-E0A6E067EAD3}</Project>
       <Name>p5.io.zip</Name>
@@ -231,6 +227,14 @@
     <ProjectReference Include="..\..\plugins\extras\p5.markdown\p5.markdown.csproj">
       <Project>{045D3D94-7730-445D-B578-1DE5A5BE5C3B}</Project>
       <Name>p5.markdown</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.json\p5.json.csproj">
+      <Project>{738D3E94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
+      <Name>p5.json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.xml\p5.xml.csproj">
+      <Project>{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
+      <Name>p5.xml</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

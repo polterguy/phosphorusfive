@@ -28,7 +28,7 @@ using p5.core;
 namespace p5.xml
 {
     /// <summary>
-    ///     Class to help transform XML to a p5.lambda structure
+    ///     Class to help transform XML to a lambda structure
     /// </summary>
     public static class Xml2Lambda
     {
