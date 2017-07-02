@@ -23,6 +23,7 @@
 
 using p5.exp;
 using p5.core;
+using p5.exp.exceptions;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -47,43 +48,70 @@ namespace p5.json
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
-                // Creating our return value.
-                if (e.Args.Value != null) {
-
-                    // Expression or static value being node.
-                    var tmp = new Node ();
-                    tmp.AddRange (XUtil.Iterate<Node> (context, e.Args).Select (ix => ix.Clone ()));
-                    e.Args.Value = SerializeNode (context, tmp).ToString ();
-
-                } else {
-
-                    // Iterating children.
-                    e.Args.Value = SerializeNode (context, e.Args).ToString ();
-                }
+				// Creating our return value.
+                e.Args.Value = SerializeRootNodes (context, XUtil.Iterate<Node> (context, e.Args)).ToString ();
             }
         }
 
         /*
          * Helper for above.
          */
-        static object SerializeNode (ApplicationContext context, Node node)
+        static JToken SerializeRootNodes (ApplicationContext context, IEnumerable<Node> nodes)
         {
-            var ret = new JObject ();
-            if (node.Value != null)
-                ret.Add (new JProperty ("__value", JToken.FromObject (node.Value))); 
-            foreach (var idx in node.Children) {
-                if (idx.Count > 0) {
+            if (!nodes.Any ())
+                return new JObject (); // Empty object.
+            else if (nodes.First ().Name == "")
+                return new JArray (nodes.Select (ix => ArrayHelper (context, ix))); // Simple array
 
-                    // Recursively invoking self.
-                    ret.Add (new JProperty (idx.Name, SerializeNode (context, idx)));
-
-                } else {
-
-                    // Simple key/value pair.
-					ret.Add (idx.Name, idx.Value == null ? null : JToken.FromObject (idx.Value));
-				}
+            // Complex object of some sort.
+            JObject retVal = new JObject ();
+            foreach (var idx in nodes) {
+                retVal.Add (new JProperty (idx.Name, SerializeNode (context, idx)));
             }
-            return ret;
+            return retVal;
+        }
+
+        /*
+         * Helper for above.
+         */
+        static JToken SerializeNode (ApplicationContext context, Node node)
+        {
+            if (node.Count == 0)
+                return JToken.FromObject (node.Value); // Simple object.
+
+            if (node.FirstChild.Name == "") {
+
+                // Sanity check.
+                if (node.Value != null)
+                    throw new LambdaException ("Cannot mix value with arrays when creating JSON from lambda", node, context);
+
+                return new JArray (node.Children.Select (ix => ArrayHelper (context, ix)));
+            }
+
+            // Complex object.
+            var retVal = new JObject ();
+            if (node.Value != null)
+                retVal.Add ("__value", JToken.FromObject (node.Value)); // Value AND Children, preserving value as "__value".
+
+            // Looping through children, creating one property for each child.
+            foreach (var idx in node.Children) {
+                retVal.Add (new JProperty (idx.Name, SerializeNode (context, idx)));
+            }
+            return retVal;
+        }
+
+        /*
+         * Helper for above.
+         */
+        static JToken ArrayHelper (ApplicationContext context, Node node)
+        {
+            if (node.Name == "")
+                return JToken.FromObject (node.Value); // Simply value token
+
+            // Complex object.
+            var retVal = new JObject ();
+            retVal.Add (new JProperty (node.Name, SerializeNode (context, node)));
+            return retVal;
         }
     }
 }
