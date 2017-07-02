@@ -6,7 +6,8 @@ This folder contains the Active Events necessary to parse and create JSON. There
 * [json2lambda] - Creates one or more lambda objects from one or more JSON snippets
 * [lambda2json] - Creates a JSON snippet from one or more lambda objects.
 
-Below you can see an example of using **[json2lambda]** to convert a JSON snippet to a lambda object.
+Both of these Active Events can take expressions, leading to what you'd like to transform. Below you can see an example of 
+using **[json2lambda]** to convert a JSON snippet to a lambda object.
 
 ```
 json2lambda:@"{
@@ -39,7 +40,8 @@ json2lambda
       foo:bar
 ```
 
-Below you can see an example of using **[lambda2json]** to go the opposite way.
+Notice, each JSON snippet you transform like this, will end up in a separate **[result]** node as illustrated above. Below you can see an example of 
+using **[lambda2json]** to go the opposite way.
 
 ```
 lambda2json
@@ -76,7 +78,7 @@ lambda2json:@"{
 **Notice**; There's a mismatch between the structure of a JSON object and a lambda object. A JSON object is a simple key/value object, while
 a lambda object is a key/value/children object. This mismatch implies that not everything that is possible to describe in lambda, is possible 
 to describe with the same structure in JSON. For instance, if a lambda object has both a value and a children collection, the value must be
-stored in JSON as a part of its value, together with its children. Below is an example of how this might look like if converting from lambda to JSON.
+stored in JSON, together with its children properties. Below is an example of how this might look like if converting from lambda to JSON.
 
 ```
 lambda2json
@@ -135,7 +137,7 @@ lambda2json:@"[
 ]"
 ```
 
-Alternatively.
+Alternatively something like the following.
 
 ```
 lambda2json
@@ -144,7 +146,7 @@ lambda2json
     :other-bar
 ```
 
-Which would result in the following.
+Which would result in the following result.
 
 ```
 lambda2json:@"{
@@ -156,20 +158,20 @@ lambda2json:@"{
 ```
 
 These weaknesses ignored, the JSON support in Phosphorus Five is in general terms quite strong, using Newtonsoft's JSON.Net library beneath its 
-hoods - And should be able to create most JSON objects you would want to create, and/or parse most JSON objects you'd encounter out there.
+hoods - And should be able to create any JSON object you would want to create, and/or parse any JSON object you'd encounter out there.
 
 Notice, we could of course have serialized the lambda structure directly, re-creating the entire hierarchy, to defeat the above problems.
 However, since the **[lambda2json]** event will probably mostly be used to create JSON which is meant to interact with other services, I feel at the
-moment, that being able to create a JSON structure, for the most parts, resembling the JSON you'd eventually would want to end up with, is more
+moment, that being able to create a JSON structure, resembling the JSON you'd eventually would want to end up with, is more
 important than being able to create a perfect serialization method for lambda objects as such. This makes it easy for you to create JSON structures,
 which you for instance use as return values from web services and such, interacting with JSON clients - While at the same time, it makes 
-it impossible to by the very definition of these mismatches to be able to serialize *any* lambda object you would want to serialize, and you'll have
-to be careful when structuring your lambda objects, if you want them to be serialized to JSON.
+it impossible to by the very definition of these mismatches to be able to serialize *all* lambda objects due to these structural deifferences, 
+and you'll have to be careful when structuring your lambda objects, if you want them to be serialized to JSON.
 
-Basically what this means, is that any JSON object can be de-serialized to a lambda object, but the opposite is not necessarily true.
+Basically what this means, is that any **JSON object can be de-serialized to a lambda object, but the opposite is not necessarily true**.
 In future versions, there might be created an override, which perfectly preserves the lambda object's structure, which would be possible by 
-serializing the lambda object directly as is. However, since this would create a much more noisy JSON structure, more difficult to understand for
-clients consuming it - I have postponed this for future versions of Phosphorus Five.
+serializing the lambda object directly as is. However, since this would create a much more _"noisy"_ JSON structure, more difficult to understand for
+clients consuming it - I have postponed this for future versions of Phosphorus Five, to focus on what I feel is of most importance at the moment.
 
 **Rule of thumbs**
 
