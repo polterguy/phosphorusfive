@@ -76,3 +76,8 @@ TODO before release
 * Importing private PGP key doesn't seem to work.
 
 * Clean up "identity" in PGP parts, since we're using [email] as argument, which technically is not right, since it's an "identity" rather.
+
+* Overrides for perfectly preserving lambda structure in p5.json, and be able to create any lambda structure you wish, by creating
+  override Active Events, that perfectly preserves the structure of the given lambda, and allows to create JSON that will create any 
+  lambda object structure you wish.
+

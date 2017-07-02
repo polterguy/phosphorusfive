@@ -1,6 +1,8 @@
 JSON parsing and creation
 ===============
 
+**This document describes features not yet released in P5, but coming up in the next release!**
+
 This folder contains the Active Events necessary to parse and create JSON. There are 2 Active Events in this project.
 
 * [json2lambda] - Creates one or more lambda objects from one or more JSON snippets
