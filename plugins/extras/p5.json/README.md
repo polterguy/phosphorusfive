@@ -71,7 +71,8 @@ lambda2json:@"{
       ""foo"": ""bar""
     }
   ]
-}"```
+}"
+```
 
 ## Concerns
 
