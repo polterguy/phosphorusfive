@@ -137,6 +137,7 @@ if you know some C# from before.
 * [p5.threading](/plugins/extras/p5.threading) - Threading support in P5
 * [p5.xml](/plugins/extras/p5.xml) - XML support in P5
 * [p5.markdown](/plugins/extras/p5.markdown) - Parsing Markdown snippets
+* [p5.json](/plugins/extras/p5.json) - Parsing and creating JSON. __NOT YET RELEASED!!__
 
 P5 have also been published twice in Microsoft's MSDN Magazine. Read the articles below by yours truly.
 
