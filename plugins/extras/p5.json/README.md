@@ -169,14 +169,18 @@ which you for instance use as return values from web services and such, interact
 it impossible to by the very definition of these mismatches to be able to serialize *all* lambda objects due to these structural deifferences, 
 and you'll have to be careful when structuring your lambda objects, if you want them to be serialized to JSON.
 
-Basically what this means, is that any **JSON object can be de-serialized to a lambda object, but the opposite is not necessarily true**.
+Basically what this means, is that **any JSON object can be de-serialized to a lambda object, but the opposite is not necessarily true**.
 In future versions, there might be created an override, which perfectly preserves the lambda object's structure, which would be possible by 
 serializing the lambda object directly as is. However, since this would create a much more _"noisy"_ JSON structure, more difficult to understand for
 clients consuming it - I have postponed this for future versions of Phosphorus Five, to focus on what I feel is of most importance at the moment.
 
-**Rule of thumbs**
+**Rule of thumb**
 
 * You can create any JSON structure you wish by carefully structuring your lambda
 * You can parse any JSON structure into a lambda
 * You can _not necessarily_ transform all lambda objects into JSON
+* You can _not necessarily_ create any lambda object structure you wish from JSON
+
+However, these traits are on my TODO list for future versions, which might have some sort of alternative serialization events,
+for solving also the latter two above problems from the above list.
 
