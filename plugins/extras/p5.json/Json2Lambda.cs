@@ -74,7 +74,7 @@ namespace p5.json
 
                 var val = token as JValue;
                 node.Value = val.Value; 
-			}
+            }
         }
 
         /*
@@ -82,41 +82,41 @@ namespace p5.json
          */
         static void HandleObject (Node node, JObject obj)
         {
-			// Special treatment for "__value" property.
-			var val = obj.Children().FirstOrDefault (ix => ix is JProperty && (ix as JProperty).Name == "__value") as JProperty;
-			if (val != null) {
+            // Special treatment for "__value" property.
+            var val = obj.Children().FirstOrDefault (ix => ix is JProperty && (ix as JProperty).Name == "__value") as JProperty;
+            if (val != null) {
 
-				// Handling "__value" by setting the root node for object to "__value" property's value.
-				node.Value = (val.Value as JValue).Value;
-				obj.Remove ("__value");
-			}
-			foreach (var idx in obj) {
-				HandleToken (node.Add (idx.Key).LastChild, idx.Value);
-			}
-		}
+                // Handling "__value" by setting the root node for object to "__value" property's value.
+                node.Value = (val.Value as JValue).Value;
+                obj.Remove ("__value");
+            }
+            foreach (var idx in obj) {
+                HandleToken (node.Add (idx.Key).LastChild, idx.Value);
+            }
+        }
 
         /*
          * Helper for above.
          */
         static void HandleArray (Node node, JArray arr)
         {
-			foreach (var idx in arr) {
+            foreach (var idx in arr) {
 
-				// Special treatment for JObjects with only one property.
-				if (idx is JObject) {
+                // Special treatment for JObjects with only one property.
+                if (idx is JObject) {
 
-					// Checking if object has only one property.
-					var obj = idx as JObject;
-					if (obj.Count == 1 && obj.First is JProperty) {
+                    // Checking if object has only one property.
+                    var obj = idx as JObject;
+                    if (obj.Count == 1 && obj.First is JProperty) {
 
-						// Object is a simple object with a single value.
-						var prop = obj.First as JProperty;
-						node.Add (prop.Name, (prop.Value as JValue).Value);
-						continue;
-					}
-				}
-				HandleToken (node.Add ("").LastChild, idx);
-			}
-		}
+                        // Object is a simple object with a single value.
+                        var prop = obj.First as JProperty;
+                        node.Add (prop.Name, (prop.Value as JValue).Value);
+                        continue;
+                    }
+                }
+                HandleToken (node.Add ("").LastChild, idx);
+            }
+        }
     }
 }
