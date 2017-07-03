@@ -47,6 +47,9 @@ namespace p5.json
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
+                // Figuring out if we should nicely format our JSON.
+                var format = e.Name == "lambda2json" ? Formatting.None : Formatting.Indented;
+
                 // Extracting nodes.
                 var nodes = XUtil.Iterate<Node> (context, e.Args);
 
@@ -59,12 +62,12 @@ namespace p5.json
                 } else if (nodes.First ().Name == "") {
 
                     // Simple array value not wrapped in an object.
-                    e.Args.Value = new JArray (nodes.Select (ix => ArrayHelper (context, ix))).ToString (e.Name == "lambda2json" ? Formatting.None : Formatting.Indented);
+                    e.Args.Value = new JArray (nodes.Select (ix => ArrayHelper (context, ix))).ToString (format);
 
                 } else {
 
                     // Complex object of some sort.
-                    e.Args.Value = new JObject (nodes.Select (ix => new JProperty (ix.Name, SerializeNode (context, ix)))).ToString (e.Name == "lambda2json" ? Formatting.None : Formatting.Indented);
+                    e.Args.Value = new JObject (nodes.Select (ix => new JProperty (ix.Name, SerializeNode (context, ix)))).ToString (format);
                 }
             }
         }
@@ -92,8 +95,8 @@ namespace p5.json
          */
         static JToken ArrayHelper (ApplicationContext context, Node node)
         {
-            if (node.Name == "" && node.Value != null)
-                return JToken.FromObject (node.Value); // Simply value token
+            if (node.Name == "" && node.Count == 0)
+                return node.Value == null ? null : JToken.FromObject (node.Value); // Simply value token
 
             // Checking if array instance is a complex object.
             if (node.Name == "")
