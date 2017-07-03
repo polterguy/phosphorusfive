@@ -186,3 +186,99 @@ clients consuming it - I have postponed this for future versions of Phosphorus F
 However, these traits are on my TODO list for future versions, which might have some sort of alternative serialization events,
 for solving also the latter two above problems from the above list.
 
+## HOWTO create a specific JSON structure
+
+If you wish to create a simple JSON array, you can do that by simply appending the values of your array as the value of the root node.
+
+```
+lambda2json
+  :long:1
+  :long:2
+  :long:3
+```
+
+Which will result in the following.
+
+```
+lambda2json:[1,2,3]
+```
+
+You can also create a property of another node being an array, like the following illustrates.
+
+```
+lambda2json
+  foo:bar
+  array
+    :thomas
+    :hansen
+```
+
+Which results in the following.
+
+```
+lambda2json:@"{""foo"":""bar"",""array"":[""thomas"",""hansen""]}"
+```
+
+If you wish to create an array of complex objects, you can do that with the following.
+
+```
+lambda2json
+  ""
+    prop1:val1
+    prop2:val2
+  ""
+    prop1:val1
+    prop2:val2
+```
+
+Which results in the following
+
+```
+lambda2json:@"[{""prop1"":""val1"",""prop2"":""val2""},{""prop1"":""val1"",""prop2"":""val2""}]"
+```
+
+Of course, you can have an array of complex objects being a member of another object, like the following illustrates
+
+```
+lambda2json
+  foo:bar
+  array
+    ""
+      prop1:val1:
+      prop2:val2
+    ""
+      prop1:val1
+      prop2:val2
+```
+
+Which results in the following.
+
+```
+lambda2json:@"{""foo"":""bar"",""array"":[{""prop1"":"""",""prop2"":""val2""},{""prop1"":""val1"",""prop2"":""val2""}]}"
+```
+
+You can also mix objects in your arrays, such as the following illustrates.
+
+```
+lambda2json
+  foo:bar
+  array
+    :hello
+    :world
+    prop-x:val-y
+    ""
+      prop1:val1
+      prop2:val2
+```
+
+Which results in the following.
+
+```
+lambda2json:@"{""foo"":""bar"",""array"":[""hello"",""world"",{""prop-x"":""val-y""},{""prop1"":""val1"",""prop2"":""val2""}]}"
+```
+
+Notice, the above example, also illustrates how you can create a simple object as an array member, having only one property, by shorthanding
+the array object with its single property being the value of the array member, and the name of the property its name. This is because once
+the **[lambda2json]** event has started iterating an array JSON construction, it will assume every single child of the root array node is
+an object in that array. You can see this effect on the _"prop-x"_ above.
+

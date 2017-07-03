@@ -48,27 +48,31 @@ namespace p5.json
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
+                // Extracting nodes.
+                var nodes = XUtil.Iterate<Node> (context, e.Args);
+
+                if (!nodes.Any ()) {
+
+                    // Empty object.
+                    e.Args.Value = "{}";
+                    return;
+
+                } else if (nodes.First ().Name == "") {
+
+                    // Simple array value.
+                    e.Args.Value = new JArray (nodes.Select (ix => ArrayHelper (context, ix))).ToString (Formatting.None);
+                    return;
+                }
+
+				// Complex object of some sort.
+				var retVal = new JObject ();
+				foreach (var idx in nodes) {
+					retVal.Add (new JProperty (idx.Name, SerializeNode (context, idx)));
+				}
+
 				// Creating our return value.
-                e.Args.Value = SerializeRootNodes (context, XUtil.Iterate<Node> (context, e.Args)).ToString ();
+                e.Args.Value = retVal.ToString (Formatting.None);
             }
-        }
-
-        /*
-         * Helper for above.
-         */
-        static JToken SerializeRootNodes (ApplicationContext context, IEnumerable<Node> nodes)
-        {
-            if (!nodes.Any ())
-                return new JObject (); // Empty object.
-            else if (nodes.First ().Name == "")
-                return new JArray (nodes.Select (ix => ArrayHelper (context, ix))); // Simple array
-
-            // Complex object of some sort.
-            JObject retVal = new JObject ();
-            foreach (var idx in nodes) {
-                retVal.Add (new JProperty (idx.Name, SerializeNode (context, idx)));
-            }
-            return retVal;
         }
 
         /*
@@ -105,8 +109,19 @@ namespace p5.json
          */
         static JToken ArrayHelper (ApplicationContext context, Node node)
         {
-            if (node.Name == "")
+            if (node.Name == "" && node.Value != null)
                 return JToken.FromObject (node.Value); // Simply value token
+
+            // Checking if array object is a complex object.
+            if (node.Name == "") {
+
+                // Complex array object, where neither value nor name plays any role.
+                var tmp = new JObject ();
+                foreach (var idxChild in node.Children) {
+                    tmp.Add (new JProperty (idxChild.Name, SerializeNode (context, idxChild)));
+                }
+                return tmp;
+            }
 
             // Complex object.
             var retVal = new JObject ();
