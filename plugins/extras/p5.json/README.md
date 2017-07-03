@@ -42,8 +42,10 @@ json2lambda
       foo:bar
 ```
 
-Notice, each JSON snippet you transform like this, will end up in a separate **[result]** node as illustrated above. Below you can see an example of 
-using **[lambda2json]** to go the opposite way.
+Notice, each JSON snippet you transform like this, will end up in a separate **[result]** node as illustrated above. This is because you can
+use **[json2lambda]** to transform multiple JSON objects at the same time, by supplying an expression leading to multiple JSON snippets.
+
+Below you can see an example of using **[lambda2json]** to go the opposite way.
 
 ```
 lambda2json
@@ -59,7 +61,8 @@ lambda2json
 Which of course results in the following.
 
 ```
-lambda2json:@"{""name"":""John Doe"",""address"":{""zip"":5789,""str"":""Dunbar Road""},""list"":[57,77]}"```
+lambda2json:@"{""name"":""John Doe"",""address"":{""zip"":5789,""str"":""Dunbar Road""},""list"":[57,77]}"
+```
 
 ## Concerns
 
