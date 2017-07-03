@@ -221,7 +221,7 @@ lambda2json
   foo:bar
   array
     ""
-      prop1:val1:
+      prop1:val1
       prop2:val2
     ""
       prop1:val1
@@ -231,7 +231,7 @@ lambda2json
 Which results in the following.
 
 ```
-lambda2json:@"{""foo"":""bar"",""array"":[{""prop1"":"""",""prop2"":""val2""},{""prop1"":""val1"",""prop2"":""val2""}]}"
+lambda2json:@"{""foo"":""bar"",""array"":[{""prop1"":""val1"",""prop2"":""val2""},{""prop1"":""val1"",""prop2"":""val2""}]}"
 ```
 
 You can also mix objects in your arrays, such as the following illustrates.
