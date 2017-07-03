@@ -23,6 +23,7 @@
 
 using p5.exp;
 using p5.core;
+using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
@@ -51,67 +52,71 @@ namespace p5.json
 					var result = e.Args.Add ("result").LastChild;
 
 					// Using Json.NET to parse JSON.
-					var jObject = JObject.Parse (idxFragment);
-
-                    // Recursively iterating through result, adding nodes into [result].
-                    foreach (var idx in jObject) {
-                        ParseJSON (result, idx);
-                    }
+                    HandleToken (result, JToken.Parse (idxFragment));
                 }
             }
         }
 
         /*
-         * Helper for above to recursively traverse JObject.
-         * TODO: Refactor, too complex.
+         * Helper for above.
          */
-        static void ParseJSON (Node node, KeyValuePair<string, JToken> cur)
+        static void HandleToken (Node node, JToken token)
         {
-            // Checking type of value.
-            var jObject = cur.Value as JObject;
-            if (jObject != null) {
+            if (token is JArray) {
 
-                // Value is some sort of complex object.
-                var curNode = node.Add (cur.Key).LastChild; 
-                foreach (var idx in jObject) {
-                    ParseJSON (curNode, idx);
-                }
+                HandleArray (node, token as JArray);
 
-            } else {
+            } else if (token is JObject) {
 
-                var jArray = cur.Value as JArray;
-                if (jArray != null) {
+                HandleObject (node, token as JObject);
 
-                    // Value is an array of some sort.
-                    var parent = node.Add (cur.Key).LastChild; 
-                    foreach (var idx in jArray) {
+            } else if (token is JValue) {
 
-                        // Retrieving value of currently iterated object.
-                        var val = idx.ToObject<object> ();
-
-						// Checking if currently iterated idx value is a JObject.
-						jObject = val as JObject;
-                        if (jObject != null) {
-							foreach (var idxObj in jObject) {
-								ParseJSON (parent, idxObj);
-							}
-						} else {
-
-                            // Simple type.
-                            parent.Add ("", val);
-                        }
-                    }
-
-                } else {
-
-                    // Value is a simple .Net type of some sort, making sure we check for [_value], 
-                    // to avoid impediance type mismatch between conversions.
-                    if (cur.Key == "__value")
-                        node.Value = cur.Value.ToObject<object> ();
-                    else
-                        node.Add (cur.Key, cur.Value.ToObject<object> ());
-                }
-            }
+                var val = token as JValue;
+                node.Value = val.Value; 
+			}
         }
+
+        /*
+         * Helper for above.
+         */
+        static void HandleObject (Node node, JObject obj)
+        {
+			// Special treatment for "__value" property.
+			var val = obj.Children().FirstOrDefault (ix => ix is JProperty && (ix as JProperty).Name == "__value") as JProperty;
+			if (val != null) {
+
+				// Handling "__value" by setting the root node for object to "__value" property's value.
+				node.Value = (val.Value as JValue).Value;
+				obj.Remove ("__value");
+			}
+			foreach (var idx in obj) {
+				HandleToken (node.Add (idx.Key).LastChild, idx.Value);
+			}
+		}
+
+        /*
+         * Helper for above.
+         */
+        static void HandleArray (Node node, JArray arr)
+        {
+			foreach (var idx in arr) {
+
+				// Special treatment for JObjects with only one property.
+				if (idx is JObject) {
+
+					// Checking if object has only one property.
+					var obj = idx as JObject;
+					if (obj.Count == 1 && obj.First is JProperty) {
+
+						// Object is a simple object with a single value.
+						var prop = obj.First as JProperty;
+						node.Add (prop.Name, (prop.Value as JValue).Value);
+						continue;
+					}
+				}
+				HandleToken (node.Add ("").LastChild, idx);
+			}
+		}
     }
 }

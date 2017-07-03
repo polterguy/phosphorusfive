@@ -112,10 +112,11 @@ namespace p5.json
             if (node.Name == "" && node.Value != null)
                 return JToken.FromObject (node.Value); // Simply value token
 
-            // Checking if array object is a complex object.
+            // Checking if array instance is a complex object.
             if (node.Name == "") {
 
                 // Complex array object, where neither value nor name plays any role.
+                // This instance in your array does not have a value, due to the above if statement having already checked for that.
                 var tmp = new JObject ();
                 foreach (var idxChild in node.Children) {
                     tmp.Add (new JProperty (idxChild.Name, SerializeNode (context, idxChild)));
