@@ -41,7 +41,8 @@ namespace p5.json
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lambda2json")]
-        public static void lambda2json (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.json.lambda2json.indented")]
+		public static void lambda2json (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
@@ -49,27 +50,22 @@ namespace p5.json
                 // Extracting nodes.
                 var nodes = XUtil.Iterate<Node> (context, e.Args);
 
+                // Checking type of JSON object we should return.
                 if (!nodes.Any ()) {
 
-                    // Empty object.
-                    e.Args.Value = "{}";
+                    // No input given.
                     return;
 
                 } else if (nodes.First ().Name == "") {
 
-                    // Simple array value.
-                    e.Args.Value = new JArray (nodes.Select (ix => ArrayHelper (context, ix))).ToString (Formatting.None);
-                    return;
-                }
+                    // Simple array value not wrapped in an object.
+                    e.Args.Value = new JArray (nodes.Select (ix => ArrayHelper (context, ix))).ToString (e.Name == "lambda2json" ? Formatting.None : Formatting.Indented);
 
-                // Complex object of some sort.
-                var retVal = new JObject ();
-                foreach (var idx in nodes) {
-                    retVal.Add (new JProperty (idx.Name, SerializeNode (context, idx)));
-                }
+                } else {
 
-                // Creating our return value.
-                e.Args.Value = retVal.ToString (Formatting.None);
+                    // Complex object of some sort.
+                    e.Args.Value = new JObject (nodes.Select (ix => new JProperty (ix.Name, SerializeNode (context, ix)))).ToString (e.Name == "lambda2json" ? Formatting.None : Formatting.Indented);
+                }
             }
         }
 

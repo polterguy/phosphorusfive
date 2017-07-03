@@ -211,6 +211,32 @@ Which would result in the following.
 lambda2json:@"[{""prop1"":""val-x""},{""prop1"":""val-y""},{""prop1"":""val-z""}]"
 ```
 
+### Nicely indenting your JSON
+
+There is an override to **[lambda2json]** which is called **[p5.json.lambda2json.indented]**. The latter will do the exact same thing as the
+first, except it will return the JSON nicely indented. Compare the results of these two different invocation, having the exact same arguments.
+
+```
+lambda2json
+  :foo
+  :bar
+p5.json.lambda2json.indented
+  :foo
+  :bar
+```
+
+The results of the above code should resemble the following.
+
+```
+lambda2json:@"[""foo"",""bar""]"
+p5.json.lambda2json.indented:@"[
+  ""foo"",
+  ""bar""
+]"
+```
+
+The last invocation of course, being nicely indented, and more easy to read on the eye. Which might be helpful during debugging sessions among other things.
+
 ## Concerns
 
 **Notice**; There's a mismatch between the structure of a JSON object and a lambda object. A JSON object is a simple key/value object, while
