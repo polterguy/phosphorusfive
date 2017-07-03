@@ -64,6 +64,9 @@ Which of course results in the following.
 lambda2json:@"{""name"":""John Doe"",""address"":{""zip"":5789,""str"":""Dunbar Road""},""list"":[57,77]}"
 ```
 
+You can also use expressions leading to multiple node results for the **[lambda2json]** event. However, if you do, it will create only
+one JSON object for you.
+
 ## Creating arrays
 
 When the parser checks to see if it should create an array or a complex object, it will check the name of the first node, and if empty, it will
