@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("p5.threading")]
-[assembly: AssemblyCopyright("Copyright © Thomas Hansen 2016")]
+[assembly: AssemblyCopyright("Copyright © Thomas Hansen 2016 - 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

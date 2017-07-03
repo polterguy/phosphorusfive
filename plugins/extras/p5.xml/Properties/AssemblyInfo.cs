@@ -31,7 +31,7 @@ using System.Reflection;
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("")]
 [assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("Copyright © Thomas Hansen 2016")]
+[assembly: AssemblyCopyright ("Copyright © Thomas Hansen 2016 - 2017")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 

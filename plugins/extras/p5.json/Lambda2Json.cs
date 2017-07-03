@@ -64,13 +64,13 @@ namespace p5.json
                     return;
                 }
 
-				// Complex object of some sort.
-				var retVal = new JObject ();
-				foreach (var idx in nodes) {
-					retVal.Add (new JProperty (idx.Name, SerializeNode (context, idx)));
-				}
+                // Complex object of some sort.
+                var retVal = new JObject ();
+                foreach (var idx in nodes) {
+                    retVal.Add (new JProperty (idx.Name, SerializeNode (context, idx)));
+                }
 
-				// Creating our return value.
+                // Creating our return value.
                 e.Args.Value = retVal.ToString (Formatting.None);
             }
         }
