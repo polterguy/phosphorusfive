@@ -48,10 +48,10 @@ namespace p5.json
                 // Iterating through each fragment.
                 foreach (var idxFragment in XUtil.Iterate<string> (context, e.Args)) {
 
-					// Creating a result node for currently iterated JSON fragment.
-					var result = e.Args.Add ("result").LastChild;
+                    // Creating a result node for currently iterated JSON fragment.
+                    var result = e.Args.Add ("result").LastChild;
 
-					// Using Json.NET to parse JSON.
+                    // Using Json.NET to parse JSON.
                     HandleToken (result, JToken.Parse (idxFragment));
                 }
             }
