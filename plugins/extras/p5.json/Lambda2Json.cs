@@ -79,26 +79,15 @@ namespace p5.json
         static JToken SerializeNode (ApplicationContext context, Node node)
         {
             if (node.Count == 0)
-                return JToken.FromObject (node.Value); // Simple object.
+                return node.Value == null ? null : JToken.FromObject (node.Value); // Simple object.
 
-            if (node.FirstChild.Name == "") {
-
-                // Sanity check.
-                if (node.Value != null)
-                    throw new LambdaException ("Cannot mix value with arrays when creating JSON from lambda", node, context);
-
+            if (node.FirstChild.Name == "" && node.Value == null)
                 return new JArray (node.Children.Select (ix => ArrayHelper (context, ix)));
-            }
 
             // Complex object.
-            var retVal = new JObject ();
+            var retVal = new JObject (node.Children.Select (ix => new JProperty (ix.Name, SerializeNode (context, ix))));
             if (node.Value != null)
-                retVal.Add ("__value", JToken.FromObject (node.Value)); // Value AND Children, preserving value as "__value".
-
-            // Looping through children, creating one property for each child.
-            foreach (var idx in node.Children) {
-                retVal.Add (new JProperty (idx.Name, SerializeNode (context, idx)));
-            }
+                retVal.AddFirst (new JProperty ("__value", JToken.FromObject (node.Value))); // Value AND Children, preserving value as "__value".
             return retVal;
         }
 
@@ -111,21 +100,11 @@ namespace p5.json
                 return JToken.FromObject (node.Value); // Simply value token
 
             // Checking if array instance is a complex object.
-            if (node.Name == "") {
-
-                // Complex array object, where neither value nor name plays any role.
-                // This instance in your array does not have a value, due to the above if statement having already checked for that.
-                var tmp = new JObject ();
-                foreach (var idxChild in node.Children) {
-                    tmp.Add (new JProperty (idxChild.Name, SerializeNode (context, idxChild)));
-                }
-                return tmp;
-            }
+            if (node.Name == "")
+                return new JObject (node.Children.Select (ix => new JProperty (ix.Name, SerializeNode (context, ix))));
 
             // Complex object.
-            var retVal = new JObject ();
-            retVal.Add (new JProperty (node.Name, SerializeNode (context, node)));
-            return retVal;
+            return new JObject (new JProperty (node.Name, SerializeNode (context, node)));
         }
     }
 }
