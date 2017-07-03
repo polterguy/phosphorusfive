@@ -62,6 +62,7 @@ Which of course results in the following.
 
 ```
 lambda2json:@"{""name"":""John Doe"",""address"":{""zip"":5789,""str"":""Dunbar Road""},""list"":[57,77]}"
+```
 
 ## Creating arrays
 
