@@ -85,7 +85,8 @@ lambda2json:@"{""foo"":{""__value"":""bar-value"",""child-1"":""value-1"",""chil
 ```
 
 Notice how the *"__value"* node above becomes a property of our _"foo"_. When you go the other way, from JSON to lambda, a *"__value"* JSON
-property, will be automatically assumed to be the value of your lambda object.
+property, will be automatically assumed to be the value of your lambda object. Hence, transforming a piece of lambda to JSON, and back to 
+lambda again, will always return the same resulting structure as you started out with.
 
 There are also other difficulties, such as JSON not preserving any type information. This implies that if you convert from a lambda object having
 an integer value to JSON, and then back again - During the conversion back to lambda, the JSON parser will assume your integer value
@@ -102,36 +103,6 @@ will throw an exception during evaluation for you.
 lambda2json
   foo:bar
   foo:other-bar
-```
-
-When the parser checks to see if it should create an array or a complex object, it will check the name of the first node, and if empty, it will
-assume the caller wants to create an array. Hence, the above non-working code, could be changed into the following, and would then work perfectly.
-
-```
-lambda2json
-  :bar
-  :other-bar
-```
-
-Which will result in the following.
-
-```
-lambda2json:@"[""bar"",""other-bar""]"
-```
-
-Alternatively something like the following.
-
-```
-lambda2json
-  foo
-    :bar
-    :other-bar
-```
-
-Which would result in the following result.
-
-```
-lambda2json:@"{""foo"":[""bar"",""other-bar""]}"
 ```
 
 These weaknesses ignored, the JSON support in Phosphorus Five is in general terms quite strong, using Newtonsoft's JSON.Net library beneath its 
@@ -159,6 +130,38 @@ clients consuming it - I have postponed this for future versions of Phosphorus F
 
 However, these traits are on my TODO list for future versions, which might have some sort of alternative serialization events,
 for solving also the latter two above problems from the above list.
+
+## Creating arrays
+
+When the parser checks to see if it should create an array or a complex object, it will check the name of the first node, and if empty, it will
+assume the caller wants to create an array.
+
+```
+lambda2json
+  :bar
+  :other-bar
+```
+
+Which will result in the following.
+
+```
+lambda2json:@"[""bar"",""other-bar""]"
+```
+
+Alternatively something like the following.
+
+```
+lambda2json
+  foo
+    :bar
+    :other-bar
+```
+
+Which would result in a complex object having a property named _"foo"_, being a JSON array. Below is the JSON result of the above code.
+
+```
+lambda2json:@"{""foo"":[""bar"",""other-bar""]}"
+```
 
 ## HOWTO create a specific JSON structure
 
