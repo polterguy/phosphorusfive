@@ -1,12 +1,12 @@
-JSON parsing and creation
+JSON support in Phosphorus Five
 ===============
 
 **This document describes features not yet released in P5, but coming up in the next release!**
 
 This folder contains the Active Events necessary to parse and create JSON. There are 2 Active Events in this project.
 
-* [json2lambda] - Creates one or more lambda objects from one or more JSON snippets
-* [lambda2json] - Creates a JSON snippet from one or more lambda objects.
+* __[json2lambda]__ - Creates one or more lambda objects from one or more JSON snippets
+* __[lambda2json]__ - Creates a JSON snippet from one or more lambda objects.
 
 Both of these Active Events can take expressions, leading to what you'd like to transform. Below you can see an example of 
 using **[json2lambda]** to convert a JSON snippet to a lambda object.
