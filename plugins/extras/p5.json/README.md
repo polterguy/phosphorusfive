@@ -54,27 +54,12 @@ lambda2json
   list
     :long:57
     :long:77
-    foo:bar
 ```
 
 Which of course results in the following.
 
 ```
-lambda2json:@"{
-  ""name"": ""John Doe"",
-  ""address"": {
-    ""zip"": 5789,
-    ""str"": ""Dunbar Road""
-  },
-  ""list"": [
-    57,
-    77,
-    {
-      ""foo"": ""bar""
-    }
-  ]
-}"
-```
+lambda2json:@"{""name"":""John Doe"",""address"":{""zip"":5789,""str"":""Dunbar Road""},""list"":[57,77]}"```
 
 ## Concerns
 
@@ -93,13 +78,7 @@ lambda2json
 Which will end up looking like the following.
 
 ```
-lambda2json:@"{
-  ""foo"": {
-    ""__value"": ""bar-value"",
-    ""child-1"": ""value-1"",
-    ""child-2"": ""value-2""
-  }
-}"
+lambda2json:@"{""foo"":{""__value"":""bar-value"",""child-1"":""value-1"",""child-2"":""value-2""}}"
 ```
 
 Notice how the *"__value"* node above becomes a property of our _"foo"_. When you go the other way, from JSON to lambda, a *"__value"* JSON
@@ -134,10 +113,7 @@ lambda2json
 Which will result in the following.
 
 ```
-lambda2json:@"[
-  ""bar"",
-  ""other-bar""
-]"
+lambda2json:@"[""bar"",""other-bar""]"
 ```
 
 Alternatively something like the following.
@@ -152,12 +128,7 @@ lambda2json
 Which would result in the following result.
 
 ```
-lambda2json:@"{
-  ""foo"": [
-    ""bar"",
-    ""other-bar""
-  ]
-}"
+lambda2json:@"{""foo"":[""bar"",""other-bar""]}"
 ```
 
 These weaknesses ignored, the JSON support in Phosphorus Five is in general terms quite strong, using Newtonsoft's JSON.Net library beneath its 
