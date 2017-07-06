@@ -216,7 +216,7 @@ namespace p5.web.widgets
                         break;
                     default:
 
-                        // Checking if this is a "custom widget", which it is, if name contains a ".".
+                        // Checking if this is a "custom widget", which it is, if its name contains a ".".
                         if (idxChild.Name.IndexOfEx (".") > 0) {
 
                             // Making sure we store the ID for widget, since lambda event invocation will delete it after evaluation.
