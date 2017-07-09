@@ -209,8 +209,11 @@ core/p5.webapp/common/public/*
 # Excluding System42
 core/p5.webapp/system42/**
 
-# Excluding Micro-Widgets
+# Excluding Micro
 core/p5.webapp/micro/**
+
+# Excluding Micro
+core/p5.webapp/sephia-five/**
 
 # Excluding auto generated Visual Studio files
 .vs/
