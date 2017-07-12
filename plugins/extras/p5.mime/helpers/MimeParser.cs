@@ -207,9 +207,9 @@ namespace p5.mime.helpers
                 var unique = Guid.NewGuid().ToString().Replace("-", "") + "-";
                 physical_full_filename = _attachmentFolder + unique + fileName;
 
-	            // Making sure we return to caller the entire filename that was used to persist the file.
-	            // In addition, we make sure we also return the prefix, such that caller can actually find file on disc.
-	            entityNode.Add ("filename", fileName).LastChild.Add ("prefix", unique).Add ("folder", _attachmentFolder);
+                // Making sure we return to caller the entire filename that was used to persist the file.
+                // In addition, we make sure we also return the prefix, such that caller can actually find file on disc.
+                entityNode.Add ("filename", fileName).LastChild.Add ("prefix", unique).Add ("folder", _attachmentFolder);
 
             } else {
 
@@ -248,9 +248,26 @@ namespace p5.mime.helpers
                 // Checking how to handle content, which can be either binary or text.
                 if (HandlePartAsText (part)) {
 
-                    // Content is text of some kind, decoding to text through StringReader
+                    // Content is text of some kind, decoding to text through StringReader.
                     StreamReader reader = new StreamReader (stream);
                     buffer = reader.ReadToEnd ();
+
+                    // Checking if we need to convert between encodings.
+                    // For some reasons, some email programs seems to send also QuotedPrintable 
+                    // even when Content-Transfer-Encoding is explicitly set to base64 ...?
+                    // Since it doesn't seem to create any harm doing a redundant conversion even if it's not QuotedPrintable, 
+                    // we attempt to convert even though the part is base64 encoded and not QuotedPrintable.
+                    if ((part.ContentTransferEncoding == ContentEncoding.QuotedPrintable || part.ContentTransferEncoding == ContentEncoding.Base64) && 
+                        part.ContentType.Charset != null) {
+
+                        // Deocding from QuotedPrintable.
+                        var decoder = new MimeKit.Encodings.QuotedPrintableDecoder ();
+                        var buf = System.Text.Encoding.ASCII.GetBytes (buffer as string);
+                        var output = new byte [decoder.EstimateOutputLength (buf.Length)];
+                        int used = decoder.Decode (buf, 0, buf.Length, output);
+                        var encoding = System.Text.Encoding.GetEncoding (part.ContentType.Charset);
+                        buffer = encoding.GetString (output, 0, used);
+                    }
 
                 } else {
 
