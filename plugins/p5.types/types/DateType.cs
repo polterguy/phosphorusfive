@@ -42,7 +42,7 @@ namespace p5.types.types
         [ActiveEvent (Name = "p5.types.date.now")]
         public static void p5_types_date_now (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = DateTime.Now.ToUniversalTime ();
+            e.Args.Value = e.Args.GetExChildValue ("local", context, false) ? DateTime.Now : DateTime.Now.ToUniversalTime ();
         }
 
         /// <summary>
