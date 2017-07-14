@@ -190,6 +190,8 @@ namespace p5.mime
         {
             // First we retrieve the seed provided by caller through the [seed] argument, defaulting to "foobar" if no user seed is provided.
             string userSeed = args.GetExChildValue<string> ("seed", context, "foobar");
+            if (string.IsNullOrEmpty(userSeed))
+                userSeed = "xyz"; // For some reasons BC throws "divisionby zero" exception if we try to seed with empty seed ...!!
 
             // Then we change the given seed by hashing it, such that each pass through this method creates a different user provided seed.
             args.FindOrInsert ("seed").Value = context.RaiseEvent ("p5.crypto.hash.create-sha512", new Node ("", userSeed)).Get<string> (context);
