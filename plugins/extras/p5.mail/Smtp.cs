@@ -53,26 +53,22 @@ namespace p5.mail
                     e.Args,
                     context);
 
-            // Making sure we remove arguments supplied.
-            using (new ArgsRemover (e.Args, true)) {
+            // Creating our SMTP client.
+            using (var client = new SmtpClient ()) {
 
-                // Creating our SMTP client.
-                using (var client = new SmtpClient ()) {
+                // Connecting to SMTP server.
+                Common.ConnectServer (context, client, e.Args, "smtp");
 
-                    // Connecting to SMTP server.
-                    Common.ConnectServer (context, client, e.Args, "smtp");
+                // Making sure we're able to post QUIT signal when done, regardless of what happens inside of this code.
+                try {
 
-                    // Making sure we're able to post QUIT signal when done, regardless of what happens inside of this code.
-                    try {
+                    // Loops through all [envelopes], and creates and sends as email message over given client.
+                    SendMessages (context, e.Args, client);
 
-                        // Loops through all [envelopes], and creates and sends as email message over given client.
-                        SendMessages (context, e.Args, client);
+                } finally {
 
-                    } finally {
-
-                        // Disconnecting client, making sure we send QUIT signal.
-                        client.Disconnect (true);
-                    }
+                    // Disconnecting client, making sure we send QUIT signal.
+                    client.Disconnect (true);
                 }
             }
         }
@@ -106,6 +102,9 @@ namespace p5.mail
                         idxStream.Close ();
                         idxStream.Dispose ();
                     }
+
+                    // Removing arguments to [envelope] node.
+                    idxEnvelopeNode.Clear ();
                 }
             }
         }
@@ -120,6 +119,9 @@ namespace p5.mail
         {
             // Creating message to return.
             var message = new MimeMessage ();
+
+            // Making sure we return MIME ID to caller for [envelope] node.
+            envelopeNode.Value = message.MessageId;
 
             // Deocrates headers of email.
             DecorateMessageEnvelope (context, envelopeNode, message);
