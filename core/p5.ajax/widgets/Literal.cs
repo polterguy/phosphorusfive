@@ -200,7 +200,12 @@ namespace p5.ajax.widgets
         {
             // Checking if this widget is a "textarea", and if so, loading its HTTP POST form data, if we should.
             if (Visible && AreAncestorsVisible () && Element == "textarea" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
-                Attributes.SetAttributeFormData ("innerValue", Page.Request.Form [this ["name"]]);
+                var data = Page.Request.Form [this ["name"]];
+
+                // Making sure Carriage Returns are in "uniform way", which implies having all become \r\n - CR+LF that is.
+                if (data != null)
+                    data = data.Replace ("\r\n", "\n").Replace ("\n", "\r\n");  
+                Attributes.SetAttributeFormData ("innerValue", data);
             }
         }
 
