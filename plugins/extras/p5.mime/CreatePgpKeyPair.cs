@@ -96,7 +96,7 @@ namespace p5.mime
                 e.Args ["seed"].UnTie ();
                 e.Args.Add ("fingerprint", BitConverter.ToString (publicRing.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
                 e.Args.Add ("key-id", ((int)publicRing.GetPublicKey ().KeyId).ToString ("X"));
-}
+            }
         }
 
         /*
