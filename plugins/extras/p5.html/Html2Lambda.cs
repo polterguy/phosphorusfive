@@ -34,13 +34,14 @@ namespace p5.html
     /// </summary>
     public static class Html2Lambda
     {
-        /// <summary>
-        ///     Parses an HTML document, and creates a p5 lambda node structure from the results
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.html.html2lambda")]
-        public static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
+		/// <summary>
+		///     Parses an HTML document, and creates a p5 lambda node structure from the results
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Parameters passed into Active Event</param>
+		[ActiveEvent (Name = "html2lambda")]
+		[ActiveEvent (Name = "p5.html.html2lambda")]
+		public static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new ArgsRemover (e.Args, true)) {
