@@ -211,7 +211,7 @@ namespace p5.auth.helpers
             // Basic syntax checking
             if (string.IsNullOrEmpty (username) || string.IsNullOrEmpty (password) || string.IsNullOrEmpty (role))
                 throw new LambdaException (
-                    "User must have [username], [password] and [role] at the very least",
+                    "User must have username as value, [password] and [role] at the very least",
                     args,
                     context);
 
