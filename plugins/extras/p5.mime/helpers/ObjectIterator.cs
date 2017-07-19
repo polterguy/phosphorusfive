@@ -104,6 +104,11 @@ namespace p5.mime.helpers
                         // Iterating all keys in currently iterated secret keyring.
                         foreach (PgpPublicKey idxPublicKey in idxRing.GetPublicKeys ()) {
 
+                            // Verifying that this is a normal plain public key.
+                            // Notice, we only return keys with at least one User ID.
+                            if (!idxPublicKey.GetUserIds().GetEnumerator().MoveNext())
+                                continue; // Probably just a signature for another key, or something.
+
                             // Checking if caller provided filters, and if not, yielding "everything".
                             if (filters.Count == 0) {
 
@@ -137,7 +142,7 @@ namespace p5.mime.helpers
         {
             // Checking fingerprint.
             var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
-            if (fingerprint == filter.ToLower ())
+            if (fingerprint == filter.ToLower ().ToLower ())
                 return true;
 
             // Checking keyID.

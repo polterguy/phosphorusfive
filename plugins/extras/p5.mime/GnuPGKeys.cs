@@ -163,12 +163,103 @@ namespace p5.mime
             });
         }
 
-        /// <summary>
-        ///     Removes a private key from GnuPG database
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.delete-private-key")]
+		/// <summary>
+		///     Signs the given public key(s).
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Active Event arguments</param>
+		[ActiveEvent(Name = "p5.crypto.sign-public-key")]
+		private static void p5_crypto_sign_public_key(ApplicationContext context, ActiveEventArgs e)
+		{
+			// Figuring out which private key to use for signing, and doing some basic sanity check.
+			var fingerprint = e.Args.GetExChildValue("private-key", context, "").ToLower ();
+			if (fingerprint == "")
+		    	throw new LambdaException("No [private-key] argument supplied to [p5.crypto.sign-public-key]", e.Args, context);
+
+			// Finding password to use to extract private key from GnuPG context, and doing some basic sanity check.
+			var password = e.Args.GetExChildValue("password", context, "");
+			if (password == "")
+		    	throw new LambdaException("No [password] argument supplied to [p5.crypto.sign-public-key] to extract your private key", e.Args, context);
+
+			// Retrieving our private key to use for signing public key from GnuPG database.
+			PgpSecretKey signingKey = null;
+				using (var ctx = new GnuPrivacyContext()) {
+
+					// Iterating all secret keyrings.
+					foreach (PgpSecretKeyRing idxRing in ctx.SecretKeyRingBundle.GetKeyRings()) {
+
+						// Iterating all keys in currently iterated secret keyring.
+						foreach (PgpSecretKey idxSecretKey in idxRing.GetSecretKeys ()) {
+
+							// Checking if caller provided filters, and if not, yielding "everything".
+							if (BitConverter.ToString (idxSecretKey.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower() == fingerprint) {
+
+								// No filters provided, matching everything.
+								signingKey = idxSecretKey;
+								break;
+							}
+						}
+					if (signingKey != null)
+		    			break;
+				}
+			}
+
+			// Using common helper to iterate all public keys caller wants to sign.
+			PgpPublicKeyRing sRing = null;
+			ObjectIterator.MatchingPublicKeys (context, e.Args, delegate (PgpPublicKey idxKey) {
+
+				// Retrieving fingerprint of currently iterated key, and returning to caller.
+				var node = e.Args.Add (BitConverter.ToString (idxKey.GetFingerprint ()).Replace ("-", "").ToLower ()).LastChild;
+
+				// Doing the actual signing of currently iterated public key.
+				sRing = new PgpPublicKeyRing (new MemoryStream (SignPublicKey (signingKey, password, idxKey), false));
+			});
+
+			// Creating new GnuPG context and importing signed key into context.
+			using (var ctx = new GnuPrivacyContext()) {
+
+				// Importing signed key.
+				ctx.Import(sRing);
+
+				// Returning the fingerprint of the key just signed.
+				e.Args.Add(BitConverter.ToString (sRing.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
+			}
+		}
+
+		/*
+		 * Helper for above.
+		 */
+		private static byte[] SignPublicKey(
+		    PgpSecretKey secretKey,
+		    string password,
+		    PgpPublicKey keyToBeSigned)
+		{
+			// Extracting private key, and getting ready to create a signature.
+			PgpPrivateKey pgpPrivKey = secretKey.ExtractPrivateKey (password.ToCharArray());
+			PgpSignatureGenerator sGen = new PgpSignatureGenerator (secretKey.PublicKey.Algorithm, HashAlgorithmTag.Sha1);
+			sGen.InitSign (PgpSignature.DirectKey, pgpPrivKey);
+
+			// Creating a stream to wrap the results of operation.
+			Stream os = new MemoryStream();
+			BcpgOutputStream bOut = new BcpgOutputStream (os);
+			sGen.GenerateOnePassVersion (false).Encode (bOut);
+
+			// Creating a generator.
+			PgpSignatureSubpacketGenerator spGen = new PgpSignatureSubpacketGenerator();
+			PgpSignatureSubpacketVector packetVector = spGen.Generate();
+			sGen.SetHashedSubpackets (packetVector);
+			bOut.Flush();
+
+			// Returning the signed public key.
+			return PgpPublicKey.AddCertification (keyToBeSigned, sGen.Generate()).GetEncoded();
+		}
+
+		/// <summary>
+		///     Removes a private key from GnuPG database
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Active Event arguments</param>
+		[ActiveEvent (Name = "p5.crypto.delete-private-key")]
         private static void p5_crypto_delete_private_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning.
@@ -266,6 +357,6 @@ namespace p5.mime
                 }
             }
         }
-    }
+	}
 }
 
