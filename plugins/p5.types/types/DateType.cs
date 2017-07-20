@@ -73,9 +73,8 @@ namespace p5.types.types
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.date")]
         static void p5_hyperlisp_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value is DateTime) {
+            if (e.Args.Value is DateTime)
                 return;
-            }
             var strValue = e.Args.Get<string> (context);
             if (strValue != null) {
                 switch (strValue.Length) {
