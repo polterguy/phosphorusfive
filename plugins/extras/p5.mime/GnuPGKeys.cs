@@ -172,16 +172,19 @@ namespace p5.mime
 		private static void p5_crypto_sign_public_key(ApplicationContext context, ActiveEventArgs e)
 		{
 			// Figuring out which private key to use for signing, and doing some basic sanity check.
-			var fingerprint = e.Args.GetExChildValue("private-key", context, "").ToLower ();
+			var fingerprint = e.Args.GetExChildValue ("private-key", context, "").ToLower ();
 			if (fingerprint == "")
 		    	throw new LambdaException("No [private-key] argument supplied to [p5.crypto.sign-public-key]", e.Args, context);
 
 			// Finding password to use to extract private key from GnuPG context, and doing some basic sanity check.
-			var password = e.Args.GetExChildValue("password", context, "");
+			var password = e.Args.GetExChildValue ("password", context, "");
 			if (password == "")
-		    	throw new LambdaException("No [password] argument supplied to [p5.crypto.sign-public-key] to extract your private key", e.Args, context);
+				throw new LambdaException("No [password] argument supplied to [p5.crypto.sign-public-key] to extract your private key", e.Args, context);
 
 			// Retrieving our private key to use for signing public key from GnuPG database.
+			// Finding password to use to extract private key from GnuPG context, and doing some basic sanity check.
+            var certain = e.Args.GetExChildValue ("certain", context, false);
+
 			PgpSecretKey signingKey = null;
 				using (var ctx = new GnuPrivacyContext()) {
 
@@ -212,17 +215,14 @@ namespace p5.mime
 				var node = e.Args.Add (BitConverter.ToString (idxKey.GetFingerprint ()).Replace ("-", "").ToLower ()).LastChild;
 
 				// Doing the actual signing of currently iterated public key.
-				sRing = new PgpPublicKeyRing (new MemoryStream (SignPublicKey (signingKey, password, idxKey), false));
+                sRing = new PgpPublicKeyRing (new MemoryStream (SignPublicKey (signingKey, password, idxKey, certain), false));
 			});
 
 			// Creating new GnuPG context and importing signed key into context.
-			using (var ctx = new GnuPrivacyContext()) {
+			using (var ctx = new GnuPrivacyContext ()) {
 
 				// Importing signed key.
-				ctx.Import(sRing);
-
-				// Returning the fingerprint of the key just signed.
-				e.Args.Add(BitConverter.ToString (sRing.GetPublicKey ().GetFingerprint ()).Replace ("-", ""));
+				ctx.Import (sRing);
 			}
 		}
 
@@ -232,12 +232,13 @@ namespace p5.mime
 		private static byte[] SignPublicKey(
 		    PgpSecretKey secretKey,
 		    string password,
-		    PgpPublicKey keyToBeSigned)
+		    PgpPublicKey keyToBeSigned,
+            bool isCertain)
 		{
 			// Extracting private key, and getting ready to create a signature.
 			PgpPrivateKey pgpPrivKey = secretKey.ExtractPrivateKey (password.ToCharArray());
 			PgpSignatureGenerator sGen = new PgpSignatureGenerator (secretKey.PublicKey.Algorithm, HashAlgorithmTag.Sha1);
-			sGen.InitSign (PgpSignature.DirectKey, pgpPrivKey);
+            sGen.InitSign (isCertain ? PgpSignature.PositiveCertification : PgpSignature.CasualCertification, pgpPrivKey);
 
 			// Creating a stream to wrap the results of operation.
 			Stream os = new MemoryStream();
