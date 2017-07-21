@@ -43,16 +43,18 @@ namespace p5.html
 		[ActiveEvent (Name = "p5.html.html2lambda")]
 		public static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args, true)) {
 
-                // Loops through all documents we're supposed to transform
+                // Loops through all documents we're supposed to transform.
                 foreach (var idxHtmlDoc in XUtil.Iterate<string> (context, e.Args)) {
 
-                    // Converting currently iterated document/fragment
-                    var doc = new HtmlDocument ();
-                    doc.LoadHtml (idxHtmlDoc);
-                    ParseHtmlDocument (e.Args, doc.DocumentNode);
+                    // Converting currently iterated document/fragment, making sure it yielded a value.
+                    if (!string.IsNullOrEmpty (idxHtmlDoc)) {
+                        var doc = new HtmlDocument ();
+                        doc.LoadHtml (idxHtmlDoc);
+                        ParseHtmlDocument (e.Args, doc.DocumentNode);
+                    }
                 }
             }
         }
