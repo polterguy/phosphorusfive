@@ -435,7 +435,7 @@ namespace p5.exp
             // Making sure we return all nodes that was created during evaluation of event back to caller, in addition to value.
             // Notice Clear invocation, since eventNode still might contain formatting parameters.
             eventNode.Clear ().AddRange (lambda.Children);
-            eventNode.Value = lambda.Value == eventNode.Value ? null : lambda.Value;
+            eventNode.Value = lambda.Value;
         }
 
         /*
