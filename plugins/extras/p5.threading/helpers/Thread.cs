@@ -103,6 +103,7 @@ namespace p5.threading.helpers
 
                 // Executing current scope only
                 yield return args;
+
             } else {
 
                 // Iterating each result from expression or value

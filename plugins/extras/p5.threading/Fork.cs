@@ -24,9 +24,6 @@
 using p5.core;
 using p5t = p5.threading.helpers;
 
-/// <summary>
-///     Main namespace for all things related to threading in Phosphorus Five
-/// </summary>
 namespace p5.threading
 {
     /// <summary>
@@ -45,7 +42,7 @@ namespace p5.threading
             // Looping through each lambda object in fork statement
             foreach (var idxThreadLambda in p5t.Thread.GetForkObjects (context, e.Args)) {
 
-                // Starts a new thread, notice CLONE, to avoid thread having access to nodes outside of itself,
+                // Starts a new thread, notice Clone, to avoid thread having access to nodes outside of itself,
                 // or lambda object being manipulated after evaluation of thread has started
                 new p5t.Thread (context, idxThreadLambda.Clone ()).Start ();
             }

@@ -107,6 +107,7 @@ namespace p5.threading
 
                     // Waiting indefinitely!
                     idxThread.Join ();
+
                 } else {
 
                     // Calculating delta, such that we can pass in correct amount of milliseconds to each Join
