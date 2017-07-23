@@ -22,6 +22,7 @@
  */
 
 using System.Linq;
+using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using MySql.Data.MySqlClient;
@@ -42,9 +43,39 @@ namespace p5.mysql
 
             // Parametrizing SQL Command with all parameters (children nodes, not having "empty names".
             foreach (var idx in node.Children.Where (ix => ix.Name != "")) {
-                retVal.Parameters.AddWithValue (idx.Name, idx.GetExValue<object> (context, null));
+
+                // Checking if this is an "array parameter".
+                if (idx.Children.Any (ix => ix.Name != "")) {
+
+                    // Array parameter.
+                    AddArrayParameters (retVal, idx.Name, idx.Children.Select (ix => ix.Value != null ? ix.Value : ix.Name));
+
+				} else {
+
+                    // Simple parameter.
+                    retVal.Parameters.AddWithValue (idx.Name, idx.GetExValue<object> (context, null));
+                }
             }
             return retVal;
         }
+
+        /*
+         * Helper for above, to add arrays of parameters to SQL command.
+         */
+		private static void AddArrayParameters(
+            MySqlCommand cmd,
+            string originalParamName, 
+            IEnumerable<object> parameterValues)
+		{
+            var names = new List<string>();
+            var idxNo = 1;
+            foreach (var idxVal in parameterValues) {
+                var name = string.Format ("{0}{1}", originalParamName, idxNo++);
+				names.Add (name);
+                cmd.Parameters.AddWithValue (name, idxVal);
+			}
+
+			cmd.CommandText = cmd.CommandText.Replace (originalParamName, string.Join (",", names));
+		}
     }
 }
