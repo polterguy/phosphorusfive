@@ -21,6 +21,8 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -33,7 +35,7 @@ namespace p5.threading
     public static class Lock
     {
         // Wraps all lockers in system
-        private static readonly Dictionary<string, object> Lockers = new Dictionary<string, object> ();
+        private static readonly Dictionary<string, ReaderWriterLockSlim> Lockers = new Dictionary<string, ReaderWriterLockSlim> ();
 
         // Locks access to above dictionary, to make sure access to "Lockers" is thread safe in itself
         private static readonly object GlobalLocker = new object ();
@@ -41,61 +43,124 @@ namespace p5.threading
         // Delegate used for callback to execute once locker(s) is/are unlocked
         private delegate void LockFunctor ();
 
-        /// <summary>
-        ///     Locks the locker(s) with the given name(s)
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "lock")]
-        public static void p5_lock (ApplicationContext context, ActiveEventArgs e)
+		/// <summary>
+		///     Locks the locker(s) with the given name(s).
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Parameters passed into Active Event</param>
+		[ActiveEvent (Name = "lock")]
+		[ActiveEvent (Name = "write-lock")]
+		[ActiveEvent (Name = "p5.threading.lock")]
+		[ActiveEvent (Name = "p5.threading.write-lock")]
+		public static void p5_lock (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving all lockers caller wants to lock
-            var lockers = new List<string> (XUtil.Iterate<string> (context, e.Args));
+            var lockers = XUtil.Iterate<string> (context, e.Args).ToList ();
 
             // Recursively waits for each locker to be unlocked, evaluating given lambda, once all lockers are unlocked
-            LockNext (
+            WriteLock (
                 lockers, delegate {
                     context.RaiseEvent ("eval-mutable", e.Args);
                 });
         }
 
-        /*
+		/// <summary>
+		///     Locks the locker(s) with the given name(s).
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Parameters passed into Active Event</param>
+		[ActiveEvent (Name = "read-lock")]
+		[ActiveEvent (Name = "p5.threading.read-lock")]
+		public static void p5_read_lock (ApplicationContext context, ActiveEventArgs e)
+		{
+			// Retrieving all lockers caller wants to lock
+			var lockers = XUtil.Iterate<string> (context, e.Args).ToList ();
+
+			// Recursively waits for each locker to be unlocked, evaluating given lambda, once all lockers are unlocked
+			ReadLock (
+				lockers, delegate {
+					context.RaiseEvent ("eval-mutable", e.Args);
+				});
+		}
+
+		/*
          * Locks first string object in array, and pops it off list, before recursively calling self, until
          * no more objects remains. When all objects are unlocked, then it will execute given "functor" delegate
          */
-        private static void LockNext (List<string> lockers, LockFunctor functor)
+		private static void WriteLock (List<string> lockers, LockFunctor functor)
         {
-            // Checking if there are any more lockers to wait for
+            // Checking if there are any more lockers to wait for.
             if (lockers.Count == 0) {
 
-                // No more lockers to wait for, evaluating lambda
+                // No more lockers to wait for, evaluating lambda.
                 functor ();
+
             } else {
 
-                // Retrieves next locker, and locks it again, once it is unlocked
-                lock (GetLocker (lockers [0])) {
+                // Retrieves next locker, and locks it as a write lock.
+                var locker = GetLocker (lockers [0]);
+                locker.EnterWriteLock ();
+                try {
 
-                    // Removing current locker from list
+                    // Removing current lock from list.
                     lockers.RemoveAt (0);
 
-                    // Recursively invoking "self", now with one locker less in list of lockers to wait for
-                    LockNext (lockers, functor);
+                    // Recursively invoking "self", now with one locker less in list of lockers to wait for.
+                    WriteLock (lockers, functor);
+
+                } finally {
+
+                    // Opening locker.
+                    locker.ExitWriteLock ();
                 }
             }
         }
 
-        /*
+		/*
+         * Locks first string object in array, and pops it off list, before recursively calling self, until
+         * no more objects remains. When all objects are unlocked, then it will execute given "functor" delegate
+         */
+		private static void ReadLock (List<string> lockers, LockFunctor functor)
+		{
+			// Checking if there are any more lockers to wait for.
+			if (lockers.Count == 0) {
+
+				// No more lockers to wait for, evaluating lambda.
+				functor ();
+
+			} else {
+
+				// Retrieves next locker, and locks it as a write lock.
+				var locker = GetLocker (lockers [0]);
+                locker.EnterReadLock ();
+                try {
+
+                    // Removing current lock from list.
+                    lockers.RemoveAt (0);
+
+                    // Recursively invoking "self", now with one locker less in list of lockers to wait for.
+                    ReadLock (lockers, functor);
+
+                } finally {
+
+                    // Opening locker.
+                    locker.ExitReadLock ();
+                }
+			}
+		}
+
+		/*
          * Returns the locker with the given name. If locker does not exist, it will be created
          */
-        private static object GetLocker (string name)
+		private static ReaderWriterLockSlim GetLocker (string name)
         {
-            // Locking access to lockers, to avoid race conditions by multiple threads 
-            // trying to create or retrieve locker(s)
+            // Synchronizing access to lockers, to avoid having multiple threads 
+            // trying to create or retrieve locker(s) at the same time
             lock (GlobalLocker) {
 
                 // Making sure currently requested locker is created if it does not exist
                 if (!Lockers.ContainsKey (name))
-                    Lockers [name] = new object ();
+                    Lockers [name] = new ReaderWriterLockSlim ();
 
                 // Returning locker with given name
                 return Lockers [name];
