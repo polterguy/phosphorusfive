@@ -58,6 +58,7 @@ namespace phosphorus.crypto
 
                         // Returning raw bytes
                         e.Args.Value = buffer;
+
                     } else {
 
                         // Converting buffer bytes to base64 encoded string and returning to caller
