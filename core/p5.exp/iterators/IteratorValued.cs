@@ -48,10 +48,12 @@ namespace p5.exp.iterators
                 // "Like" equality
                 _value = value.Substring (1);
                 _like = true;
+
             } else if (value.StartsWithEx ("\\")) {
 
                 // Escaped "like operator"
                 _value = value.Substring (1);
+
             } else {
 
                 // "Plain" and simple
