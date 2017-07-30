@@ -53,6 +53,8 @@ public static class Scalar
 
 	                // Executing scalar, returning results to caller.
 	                e.Args.Value = cmd.ExecuteScalar ();
+                    if (e.Args.Value is System.DBNull)
+                        e.Args.Value = null;
 	            }
             }
         }
