@@ -44,7 +44,8 @@ namespace p5.types.types
             using (new ArgsRemover (e.Args)) {
 
                 // Encoding given value to base64 and returning results to caller.
-                e.Args.Value = Convert.ToBase64String (XUtil.Single<byte[]> (context, e.Args));
+                var bytes = XUtil.Single<byte []> (context, e.Args);
+                e.Args.Value = bytes == null ? null : Convert.ToBase64String (bytes);
             }
         }
 
@@ -60,7 +61,8 @@ namespace p5.types.types
             using (new ArgsRemover (e.Args)) {
 
                 // Decoding given value from base64 and returning to caller.
-                e.Args.Value = Convert.FromBase64String (XUtil.Single<string> (context, e.Args));
+                var str = XUtil.Single<string> (context, e.Args);
+                e.Args.Value = str == null ? null : Convert.FromBase64String (str);
             }
         }
     }

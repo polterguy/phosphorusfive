@@ -42,10 +42,6 @@ namespace p5.strings.keywords
         [ActiveEvent (Name = "p5.string.replace")]
         public static void p5_string__replace (ApplicationContext context, ActiveEventArgs e)
         {
-            // Sanity check.
-            if (e.Args.Value == null)
-                throw new LambdaException ("[p5.string.replace] requires an expression or constant as its value", e.Args, context);
-
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 

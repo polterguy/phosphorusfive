@@ -44,7 +44,7 @@ namespace p5.strings.keywords
             using (new ArgsRemover (e.Args)) {
 
                 // Returning to lowers of expression or constant.
-                e.Args.Value = XUtil.Single<string> (context, e.Args).ToLowerInvariant ();
+                e.Args.Value = XUtil.Single<string> (context, e.Args)?.ToLowerInvariant () ?? null;
             }
         }
     }

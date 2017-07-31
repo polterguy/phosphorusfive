@@ -44,7 +44,8 @@ namespace p5.strings.keywords
             using (new ArgsRemover (e.Args)) {
 
                 // Returning length of constant or expression, converted to string if necessary.
-                e.Args.Value = (XUtil.Single<string> (context, e.Args) ?? "").Length;
+                var str = XUtil.Single<string> (context, e.Args);
+                e.Args.Value = str == null ? null : (object)str.Length;
             }
         }
     }

@@ -44,14 +44,10 @@ namespace p5.strings.keywords
         [ActiveEvent (Name = "p5.string.index-of")]
         public static void p5_string_index_of (ApplicationContext context, ActiveEventArgs e)
         {
-            // Sanity check.
-            if (e.Args.Value == null)
-                throw new LambdaException ("[p5.string.index-of] requires an expression or constant as its value", e.Args, context);
-
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args, true)) {
 
-                // Figuring out source value for [p5.string.index-of], and returning early if there is no source.
+                // Figuring out source value for [index-of], and returning early if there is no source.
                 string source = XUtil.Single<string> (context, e.Args);
                 if (source == null)
                     return;
