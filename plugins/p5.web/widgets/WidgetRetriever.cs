@@ -330,10 +330,10 @@ namespace p5.web.widgets
                     } else if (idxCriteria.Name == "before") {
 
                         // Matching widget, only if widget immediately after matches criteria with its ID.
-                        var value = idxCriteria.GetExValue<string> (context, null);
+                        var val = idxCriteria.GetExValue<string> (context, null);
 
                         // Basic sanity check.
-                        if (value == null)
+                        if (val == null)
                             throw new LambdaException ("You cannot query for 'before exists', since (allmost) all widgets have another widget after them.", criteria, context);
 
                         var indexOfWidget = widget.Parent.Controls.IndexOf (widget);
@@ -341,23 +341,23 @@ namespace p5.web.widgets
                             match = false;
                         else
                             match = likeMatch ? 
-                                (widget.Parent.Controls [indexOfWidget + 1].ID ?? "").Contains (value) : 
-                                 widget.Parent.Controls [indexOfWidget + 1].ID == value;
+                                (widget.Parent.Controls [indexOfWidget + 1].ID ?? "").Contains (val) : 
+                                 widget.Parent.Controls [indexOfWidget + 1].ID == val;
 
                     } else if (idxCriteria.Name == "after") {
 
                         // Matching widget, only if widget immediately after matches criteria with its ID.
-                        var value = idxCriteria.GetExValue<string> (context, null);
+                        var val = idxCriteria.GetExValue<string> (context, null);
 
                         // Basic sanity check.
-                        if (value == null)
+                        if (val == null)
                             throw new LambdaException ("You cannot query for 'after exists', since (allmost) all widgets have another widget before them.", criteria, context);
 
                         var indexOfWidget = widget.Parent.Controls.IndexOf (widget);
                         if (indexOfWidget == 0)
                             match = false;
                         else
-                            match = likeMatch ?                                (widget.Parent.Controls [indexOfWidget - 1].ID ?? "").Contains (value) :                                 widget.Parent.Controls [indexOfWidget - 1].ID == value;
+                            match = likeMatch ?                                (widget.Parent.Controls [indexOfWidget - 1].ID ?? "").Contains (val) :                                 widget.Parent.Controls [indexOfWidget - 1].ID == val;
 
                     } else if (!widget.HasAttribute (idxCriteria.Name)) {
 
