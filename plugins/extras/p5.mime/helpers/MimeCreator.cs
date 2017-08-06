@@ -212,7 +212,7 @@ namespace p5.mime.helpers
             var algo = signatureNode.GetChildValue ("digest-algorithm", _context, DigestAlgorithm.Sha256);
 
             // Creating our Gnu Privacy Guard context.
-            using (var ctx = new GnuPrivacyContext ()) {
+            using (var ctx = new GnuPrivacyContext (false)) {
 
                 // Setting password to retrieve signing certificate from GnuPG context.
                 ctx.Password = signatureAddress.Item1;
@@ -239,7 +239,7 @@ namespace p5.mime.helpers
 
             // Creating our Gnu Privacy Guard context.
             // Notice, no password necessary when doing encryption, since we're only using public certificates.
-            using (var ctx = new GnuPrivacyContext ()) {
+            using (var ctx = new GnuPrivacyContext (false)) {
 
                 // Encrypting content of email and returning to caller.
                 var retVal = MultipartEncrypted.Encrypt (
@@ -277,7 +277,7 @@ namespace p5.mime.helpers
             var algo = signatureNode.GetChildValue ("digest-algorithm", _context, DigestAlgorithm.Sha256);
 
             // Creating our Gnu Privacy Guard context.
-            using (var ctx = new GnuPrivacyContext ()) {
+            using (var ctx = new GnuPrivacyContext (false)) {
 
                 // Setting password to retrieve signing certificate from GnuPG context.
                 ctx.Password = signatureAddress.Item1;

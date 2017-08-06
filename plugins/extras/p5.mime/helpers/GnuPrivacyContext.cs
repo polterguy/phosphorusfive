@@ -23,10 +23,12 @@
 
 using System;
 using System.Security;
+using System.Threading;
 using System.Collections.Generic;
 using MimeKit;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using p5.exp;
 
 namespace p5.mime.helpers
 {
@@ -60,6 +62,26 @@ namespace p5.mime.helpers
                 get;
                 set;
             }
+        }
+
+        /*
+         * Used to synchornize access to context.
+         */
+        private static ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private bool _write;
+
+        public GnuPrivacyContext(bool write)
+        {
+            _write = write;
+            if (write)
+                _lock.EnterWriteLock ();
+            else
+                _lock.EnterReadLock ();
+        }
+
+        public GnuPrivacyContext ()
+        {
+            _lock.EnterReadLock ();
         }
 
         /// <summary>
@@ -117,8 +139,8 @@ namespace p5.mime.helpers
             var enumerator = key.UserIds.GetEnumerator ();
             enumerator.MoveNext ();
             LastUsedUserId = enumerator.Current.ToString ();
-            LastUsedUserId = LastUsedUserId.Substring (LastUsedUserId.IndexOf ("<") + 1);
-            LastUsedUserId = LastUsedUserId.Substring (0, LastUsedUserId.IndexOf (">"));
+            LastUsedUserId = LastUsedUserId.Substring (LastUsedUserId.IndexOfEx ("<") + 1);
+            LastUsedUserId = LastUsedUserId.Substring (0, LastUsedUserId.IndexOfEx (">"));
             if (Passwords != null) {
 
                 // Multiple passwords, need to figure out which to use to release private key.
@@ -152,7 +174,7 @@ namespace p5.mime.helpers
                     // Using UserIds.
                     foreach (string idxUserId in key.UserIds) {
 
-                        if (idxUserId.IndexOf (idxMailbox.Mailbox.Address) != -1) {
+                        if (idxUserId.IndexOfEx (idxMailbox.Mailbox.Address) != -1) {
 
                             // Returning associated password for key.
                             return idxMailbox.Password;
@@ -163,6 +185,22 @@ namespace p5.mime.helpers
 
             // Throwing exception since we found no password for requested key, showing user the first UserId object from Secret Key.
             throw new SecurityException (string.Format("No password supplied for GnuPG private key '{0}'", LastUsedUserId));
+        }
+
+        /// <summary>
+        ///     Overridden to make sure we release our lock.
+        /// </summary>
+        /// <returns>The dispose.</returns>
+        /// <param name="disposing">If set to <c>true</c> disposing.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) {
+                if (_write)
+                    _lock.ExitWriteLock ();
+                else
+                    _lock.ExitReadLock ();
+            }
+            base.Dispose(disposing);
         }
     }
 }

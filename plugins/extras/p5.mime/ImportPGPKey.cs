@@ -95,7 +95,7 @@ namespace p5.mime
 			using (new ArgsRemover (e.Args, true)) {
 
 				// Creating new GnuPG context
-				using (var ctx = new GnuPrivacyContext ()) {
+                using (var ctx = new GnuPrivacyContext (true)) {
 
 					// Looping through each public key (in ascii armored format) and importing into GnuPG database
 					foreach (var idxKey in XUtil.Iterate<string> (context, e.Args)) {
@@ -125,7 +125,7 @@ namespace p5.mime
             using (new ArgsRemover (e.Args, true)) {
 
                 // Creating new GnuPG context
-                using (var ctx = new GnuPrivacyContext ()) {
+                using (var ctx = new GnuPrivacyContext (true)) {
 
                     // Looping through each public key (in ascii armored format) and importing into GnuPG database
                     foreach (var idxKey in XUtil.Iterate<string> (context, e.Args)) {

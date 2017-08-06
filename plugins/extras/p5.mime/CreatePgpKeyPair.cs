@@ -84,7 +84,7 @@ namespace p5.mime
                 PgpSecretKeyRing secretRing = generator.GenerateSecretKeyRing ();
 
                 // Creating GnuPG context to let MimeKit import keys into GnuPG database
-                using (var ctx = new GnuPrivacyContext ()) {
+                using (var ctx = new GnuPrivacyContext (true)) {
 
                     // Saves public keyring
                     ctx.Import (publicRing);

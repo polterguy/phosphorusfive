@@ -41,7 +41,7 @@ namespace p5.mime.helpers
         /*
          * Iterates all secret keys in all keyrings in GnuPrivacyContext, and invokes given delegate for every key matching filter condition.
          */
-        internal static void MatchingPrivateKeys (ApplicationContext context, Node args, MatchingPrivateKeysDelegate functor)
+        internal static void MatchingPrivateKeys (ApplicationContext context, Node args, MatchingPrivateKeysDelegate functor, bool write)
         {
             // House cleaning.
             using (new ArgsRemover (args, true)) {
@@ -50,7 +50,7 @@ namespace p5.mime.helpers
                 var filters = XUtil.Iterate<string> (context, args).Where (ix => ix != null).ToList ();
 
                 // Creating new GnuPG context.
-                using (var ctx = new GnuPrivacyContext ()) {
+                using (var ctx = new GnuPrivacyContext (write)) {
 
                     // Iterating all secret keyrings.
                     foreach (PgpSecretKeyRing idxRing in ctx.SecretKeyRingBundle.GetKeyRings ()) {
@@ -87,7 +87,7 @@ namespace p5.mime.helpers
         /*
          * Iterates all public keys in all keyrings in GnuPrivacyContext, and invokes given delegate for every key matching filter condition.
          */
-        internal static void MatchingPublicKeys (ApplicationContext context, Node args, MatchingPublicKeysDelegate functor)
+        internal static void MatchingPublicKeys (ApplicationContext context, Node args, MatchingPublicKeysDelegate functor, bool write)
         {
             // House cleaning.
             using (new ArgsRemover (args, true)) {
@@ -96,7 +96,7 @@ namespace p5.mime.helpers
                 var filters = XUtil.Iterate<string> (context, args).Where (ix => ix != null).ToList ();
 
                 // Creating new GnuPG context.
-                using (var ctx = new GnuPrivacyContext ()) {
+                using (var ctx = new GnuPrivacyContext (write)) {
 
                     // Iterating all secret keyrings.
                     foreach (PgpPublicKeyRing idxRing in ctx.PublicKeyRingBundle.GetKeyRings ()) {

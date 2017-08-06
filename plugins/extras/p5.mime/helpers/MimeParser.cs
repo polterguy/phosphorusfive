@@ -329,7 +329,7 @@ namespace p5.mime.helpers
         {
             try {
                 // Creating cryptographic context.
-                using (var ctx = new GnuPrivacyContext ()) {
+                using (var ctx = new GnuPrivacyContext (false)) {
 
                     // Associating our KeyPasswordMapper collection with GnuPG CryptographyContext.
                     ctx.Passwords = _passwords;
@@ -363,7 +363,7 @@ namespace p5.mime.helpers
         private void ProcessSignedMultipart (MultipartSigned signedMultipart, Node entityNode)
         {
             // Creating cryptographic context.
-            using (var ctx = new GnuPrivacyContext ()) {
+            using (var ctx = new GnuPrivacyContext (false)) {
 
                 // Adding signatures.
                 ProcessSignatures (entityNode, signedMultipart.Verify (ctx));

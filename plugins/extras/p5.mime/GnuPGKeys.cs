@@ -49,9 +49,9 @@ namespace p5.mime
             ObjectIterator.MatchingPrivateKeys (context, e.Args, delegate (PgpSecretKey key) {
 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
-                var fingerprint = BitConverter.ToString (key.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower ();
-                e.Args.Add (fingerprint);
-            });
+                var fingerprint = BitConverter.ToString(key.PublicKey.GetFingerprint()).Replace("-", "").ToLower();
+                e.Args.Add(fingerprint);
+            }, false);
         }
 
         /// <summary>
@@ -66,9 +66,9 @@ namespace p5.mime
             ObjectIterator.MatchingPublicKeys (context, e.Args, delegate (PgpPublicKey key) {
 
                 // Retrieving fingerprint of currently iterated key, and returning to caller.
-                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
-                e.Args.Add (fingerprint);
-            });
+                var fingerprint = BitConverter.ToString(key.GetFingerprint()).Replace("-", "").ToLower();
+                e.Args.Add(fingerprint);
+            }, false);
         }
 
         /// <summary>
@@ -83,26 +83,26 @@ namespace p5.mime
             ObjectIterator.MatchingPublicKeys (context, e.Args, delegate (PgpPublicKey key) {
 
                 // This key is matching specified filter criteria.
-                var fingerprint = BitConverter.ToString (key.GetFingerprint ()).Replace ("-", "").ToLower ();
-                var node = e.Args.Add (fingerprint).LastChild;
-                node.Add ("id", ((int)key.KeyId).ToString ("X"));
-                node.Add ("algorithm", key.Algorithm.ToString ());
-                node.Add ("strength", key.BitStrength);
-                node.Add ("creation-time", key.CreationTime);
-                node.Add ("is-encryption-key", key.IsEncryptionKey);
-                node.Add ("is-master-key", key.IsMasterKey);
-                node.Add ("is-revoked", key.IsRevoked ());
-                node.Add ("version", key.Version);
-                DateTime expires = key.CreationTime.AddSeconds (key.GetValidSeconds ());
-                node.Add ("expires", expires);
-                foreach (var idxUserId in key.GetUserIds ()) {
+                var fingerprint = BitConverter.ToString(key.GetFingerprint()).Replace("-", "").ToLower();
+                var node = e.Args.Add(fingerprint).LastChild;
+                node.Add("id", ((int)key.KeyId).ToString("X"));
+                node.Add("algorithm", key.Algorithm.ToString());
+                node.Add("strength", key.BitStrength);
+                node.Add("creation-time", key.CreationTime);
+                node.Add("is-encryption-key", key.IsEncryptionKey);
+                node.Add("is-master-key", key.IsMasterKey);
+                node.Add("is-revoked", key.IsRevoked());
+                node.Add("version", key.Version);
+                DateTime expires = key.CreationTime.AddSeconds(key.GetValidSeconds());
+                node.Add("expires", expires);
+                foreach (var idxUserId in key.GetUserIds()) {
                     if (idxUserId is string)
-                        node.FindOrInsert ("user-ids").Add ("", idxUserId);
+                        node.FindOrInsert("user-ids").Add("", idxUserId);
                 }
-                foreach (PgpSignature signature in key.GetSignatures ()) {
-                    node.FindOrInsert ("signed-by").Add (((int)signature.KeyId).ToString ("X"), signature.CreationTime);
+                foreach (PgpSignature signature in key.GetSignatures()) {
+                    node.FindOrInsert("signed-by").Add(((int)signature.KeyId).ToString("X"), signature.CreationTime);
                 }
-            });
+            }, false);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace p5.mime
                     var sr = new StreamReader (memStream);
                     node.Value = sr.ReadToEnd ();
                 }
-            });
+            }, false);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace p5.mime
                     var sr = new StreamReader (memStream);
                     node.Value = sr.ReadToEnd ();
                 }
-            });
+            }, false);
         }
 
 		/// <summary>
@@ -186,22 +186,22 @@ namespace p5.mime
             var certain = e.Args.GetExChildValue ("certain", context, false);
 
 			PgpSecretKey signingKey = null;
-				using (var ctx = new GnuPrivacyContext()) {
+			using (var ctx = new GnuPrivacyContext(false)) {
 
-					// Iterating all secret keyrings.
-					foreach (PgpSecretKeyRing idxRing in ctx.SecretKeyRingBundle.GetKeyRings()) {
+				// Iterating all secret keyrings.
+				foreach (PgpSecretKeyRing idxRing in ctx.SecretKeyRingBundle.GetKeyRings()) {
 
-						// Iterating all keys in currently iterated secret keyring.
-						foreach (PgpSecretKey idxSecretKey in idxRing.GetSecretKeys ()) {
+					// Iterating all keys in currently iterated secret keyring.
+					foreach (PgpSecretKey idxSecretKey in idxRing.GetSecretKeys ()) {
 
-							// Checking if caller provided filters, and if not, yielding "everything".
-							if (BitConverter.ToString (idxSecretKey.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower() == fingerprint) {
+						// Checking if caller provided filters, and if not, yielding "everything".
+						if (BitConverter.ToString (idxSecretKey.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower() == fingerprint) {
 
-								// No filters provided, matching everything.
-								signingKey = idxSecretKey;
-								break;
-							}
+							// No filters provided, matching everything.
+							signingKey = idxSecretKey;
+							break;
 						}
+					}
 					if (signingKey != null)
 		    			break;
 				}
@@ -216,10 +216,11 @@ namespace p5.mime
 
 				// Doing the actual signing of currently iterated public key.
                 sRing = new PgpPublicKeyRing (new MemoryStream (SignPublicKey (signingKey, password, idxKey, certain), false));
-			});
+
+			}, false);
 
 			// Creating new GnuPG context and importing signed key into context.
-			using (var ctx = new GnuPrivacyContext ()) {
+			using (var ctx = new GnuPrivacyContext (true)) {
 
 				// Importing signed key.
 				ctx.Import (sRing);
@@ -267,7 +268,7 @@ namespace p5.mime
             using (new ArgsRemover (e.Args, true)) {
 
                 // Creating new GnuPG context.
-                using (var ctx = new GnuPrivacyContext ()) {
+                using (var ctx = new GnuPrivacyContext (true)) {
 
                     // Signaler boolean.
                     bool somethingWasRemoved = false;
@@ -319,7 +320,7 @@ namespace p5.mime
             using (new ArgsRemover (e.Args, true)) {
 
                 // Creating new GnuPG context
-                using (var ctx = new GnuPrivacyContext ()) {
+                using (var ctx = new GnuPrivacyContext (true)) {
 
                     // Signaler boolean
                     bool somethingWasRemoved = false;
