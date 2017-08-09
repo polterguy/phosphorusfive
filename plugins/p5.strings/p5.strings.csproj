@@ -86,6 +86,8 @@
     <Compile Include="keywords\ToLower.cs" />
     <Compile Include="keywords\ToUpper.cs" />
     <Compile Include="keywords\Trim.cs" />
+    <Compile Include="keywords\EndsWith.cs" />
+    <Compile Include="keywords\StartsWith.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
