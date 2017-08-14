@@ -69,11 +69,8 @@ namespace p5.io.zip
                 // Getting destination folder
                 var destFolder = GetDestinationFolder (context, e);
 
-                // Getting source files
-                var source = XUtil.Sources (context, e.Args, "password");
-
                 // Looping through each source zip file given
-                foreach (var idxZipFilePath in source) {
+                foreach (var idxZipFilePath in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Unzips currently iterated file
                     UnzipFile (
@@ -96,7 +93,7 @@ namespace p5.io.zip
         private static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving detination folder
-            var destFolder = Helpers.GetSystemPath (context, e.Args.GetExValue<string> (context));
+            var destFolder = Helpers.GetSystemPath (context, e.Args.GetExChildValue<string> ("dest", context));
 
             // Verifying user is authorized to writing to destination folder
             context.RaiseEvent (".p5.io.authorize.modify-folder", new Node ("", destFolder).Add ("args", e.Args));
