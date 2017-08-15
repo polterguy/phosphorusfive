@@ -179,9 +179,17 @@ namespace p5.auth.helpers
          */
         public static string ServerSalt (ApplicationContext context)
         {
-            // Retrieving "auth" file in node format
+            // Retrieving "auth" file in node format.
             var authFile = AuthFile.GetAuthFile(context);
-            return authFile.GetChildValue<string> ("server-salt", context);
+            var authSalt = authFile.GetChildValue<string> ("server-salt", context);
+
+            // Notice, if "auth file" salt is not (yet) set, we return null to caller, to
+            // signal that no salt has been initialized yet.
+            if (string.IsNullOrEmpty(authSalt))
+                return null;
+
+            var configSalt = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.crypto.salt")).Get (context, "$41t-goes-here-4U"); 
+            return authSalt + configSalt;
         }
 
         /*
