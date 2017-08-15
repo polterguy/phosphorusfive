@@ -5,7 +5,8 @@
  * allowing the user to load apps, according to their names, by clicking 
  * their "desktop icon".
  *
- * This way we become independent upon System42.
+ * Notice, first we must (potentially) setup server, by allowing user to supply
+ * his own server salt, and root password.
  */
 create-event:p5.web.load-ui
 
@@ -45,6 +46,6 @@ create-event:p5.web.load-ui
       /*
        * A specific application was requested, loading it's "launch.hl" file.
        */
-      load-file:{0}/launch.hl
+      load-file:{0}launch.hl
         :x:/../*/url?value
       eval:x:/-/*
