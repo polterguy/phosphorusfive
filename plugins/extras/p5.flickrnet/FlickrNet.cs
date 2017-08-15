@@ -39,7 +39,7 @@ namespace p5.flickrnet
 
                 // Instantiating Flickr.NET and doing search, supplying tags user wants to see
                 var flickr = new Flickr ();
-                flickr.ApiKey = e.Args.GetExChildValue<string>("api-key", context),
+                flickr.ApiKey = e.Args.GetExChildValue<string>("api-key", context);
                 var options = new PhotoSearchOptions { 
                     Text = e.Args.GetExChildValue<string> ("text", context),
                     Tags = e.Args.GetExChildValue<string> ("tags", context),
