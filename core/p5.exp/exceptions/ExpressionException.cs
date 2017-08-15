@@ -1,0 +1,68 @@
+/*
+ * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
+ * 
+ * This file is part of Phosphorus Five.
+ *
+ * Phosphorus Five is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ *
+ * Phosphorus Five is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Phosphorus Five.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * If you cannot for some reasons use the GPL license, Phosphorus
+ * Five is also commercially available under Quid Pro Quo terms. Check 
+ * out our website at http://gaiasoul.com for more details.
+ */
+
+using System;
+
+namespace p5.exp.exceptions
+{
+    /// <summary>
+    ///     Exception thrown when expressions contains syntax errors.
+    /// </summary>
+    public class ExpressionException : ArgumentException
+    {
+        readonly string _expression;
+        readonly string _message;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ExpressionException" /> class.
+        /// </summary>
+        /// <param name="expression">Expression that caused exception</param>
+        public ExpressionException (string expression)
+            : this (expression, null)
+        { }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ExpressionException" /> class.
+        /// </summary>
+        /// <param name="expression">Expression that caused exception</param>
+        /// <param name="message">Message providing additional information</param>
+        public ExpressionException (string expression, string message)
+        {
+            _message = message;
+            _expression = expression;
+        }
+
+        /*
+         * Overriding Message to provide expression that malfunctioned as an additional piece of contextual information.
+         */
+        public override string Message
+        {
+            get {
+                var retVal = string.Format ("Expression '{0}' is not a valid expression", _expression);
+                if (_message != null)
+                    retVal = _message + "\r\n" + retVal;
+                return retVal;
+            }
+        }
+    }
+}

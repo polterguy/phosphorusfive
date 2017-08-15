@@ -1,0 +1,56 @@
+﻿
+
+/*
+ * Loads all "startup.hl" files inside all folders at root of p5.webapp.
+ *
+ * In addition it creates our "main desktop", unless there exists another 
+ * app, that have already during startup created a [p5.web.load-ui] event.
+ *
+ * This way, the default "desktop" will at least allow people to launch 
+ * their apps, without being depdent upon System42.
+ */
+
+
+/*
+ * Listing all folders at root.
+ */
+list-folders:/
+
+
+
+
+
+/*
+ * Listing all "startup.hl" files inside of the results of our above folder listing operation.
+ */
+list-files:x:/@list-folders/*?name
+  filter:startup.hl
+
+
+
+
+
+/*
+ * Loading and evaluating all files from above result.
+ */
+load-file:x:/@list-files/*?name
+eval:x:/@load-file/*
+
+
+
+
+
+/*
+ * Then checking if there exists a [p5.web.load-ui] event, and if not, 
+ * creating one, by evaluating our "create desktop" Hyperlambda file.
+ */
+vocabulary:p5.web.load-ui
+if:x:/-/*
+  not
+
+  /*
+   * There exists no [p5.web.load-ui] event, creating one by evaluating file responsible
+   * for loading the "main desktop".
+   */
+  load-file:/desktop/create-desktop.hl
+  eval:x:/-/*

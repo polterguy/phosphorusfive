@@ -1,0 +1,70 @@
+/*
+ * Phosphorus Five, copyright 2014 - 2017, Thomas Hansen, thomas@gaiasoul.com
+ * 
+ * This file is part of Phosphorus Five.
+ *
+ * Phosphorus Five is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ *
+ * Phosphorus Five is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Phosphorus Five.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * If you cannot for some reasons use the GPL license, Phosphorus
+ * Five is also commercially available under Quid Pro Quo terms. Check 
+ * out our website at http://gaiasoul.com for more details.
+ */
+
+h3 {
+    margin:5px;
+    margin-top:25px;
+}
+
+input[type=button] {
+    width:80px;
+}
+
+#tests {
+    border-collapse:collapse;
+    width:100%;
+}
+
+#tests tr:nth-child(odd) {
+    background-color:#fefefe;
+}
+
+#tests tr:nth-child(even) {
+    background-color:#eaeaea;
+}
+
+#tests tr.spacer {
+    background-color:#ffffff;
+}
+
+#tests tr th {
+    text-align:left;
+}
+
+#tests tr td {
+    padding:3px;
+    margin:0;
+}
+
+#tests tr th:nth-child(2),
+#tests tr td:nth-child(2) {
+    text-align:right;
+}
+
+.failed {
+    background-color:Red;
+}
+
+.success {
+    background-color:LightGreen;
+}

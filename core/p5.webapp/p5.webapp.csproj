@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <UseGlobalApplicationHostFile />
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}</ProjectGuid>
+    <ProjectTypeGuids>{349C5851-65DF-11DA-9384-00065B846F21};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>p5.webapp</RootNamespace>
+    <AssemblyName>p5.webapp</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="web.config" />
+    <Content Include="Default.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="common\documents\private\web.config" />
+    <Content Include="users\root\documents\private\web.config" />
+    <Content Include="desktop\main.css" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy FileWidth="120" TabWidth="4" IndentWidth="4" RemoveTrailingWhitespace="True" NoTabsAfterNonTabs="False" TabsToSpaces="True" EolMarker="Windows" scope="text/plain">
+            <inheritsSet />
+            <inheritsScope />
+          </TextStylePolicy>
+          <TextStylePolicy inheritsSet="null" scope="text/x-csharp" />
+          <CSharpFormattingPolicy IndentBlock="True" IndentBraces="False" IndentSwitchCaseSection="True" LabelPositioning="OneLess" NewLinesForBracesInTypes="True" NewLinesForBracesInMethods="True" SpaceWithinMethodDeclarationParenthesis="False" SpaceBetweenEmptyMethodDeclarationParentheses="False" SpaceWithinMethodCallParentheses="False" SpaceBetweenEmptyMethodCallParentheses="False" SpaceAfterControlFlowStatementKeyword="True" SpaceWithinExpressionParentheses="False" SpaceWithinCastParentheses="False" SpaceWithinOtherParentheses="False" SpaceAfterCast="False" SpacesIgnoreAroundVariableDeclaration="False" SpaceBetweenEmptySquareBrackets="False" SpaceWithinSquareBrackets="False" SpaceAfterColonInBaseTypeDeclaration="True" SpaceAfterComma="True" SpaceAfterDot="False" SpaceAfterSemicolonsInForStatement="True" SpaceBeforeColonInBaseTypeDeclaration="True" SpaceBeforeComma="False" SpaceBeforeDot="False" SpaceBeforeSemicolonsInForStatement="False" SpacingAroundBinaryOperator="Single" WrappingPreserveSingleLine="True" WrappingKeepStatementsOnSingleLine="True" PlaceSystemDirectiveFirst="True" IndentSwitchSection="False" NewLinesForBracesInProperties="False" NewLinesForBracesInAccessors="False" NewLinesForBracesInAnonymousMethods="False" NewLinesForBracesInControlBlocks="False" NewLinesForBracesInAnonymousTypes="False" NewLinesForBracesInObjectCollectionArrayInitializers="False" NewLinesForBracesInLambdaExpressionBody="False" NewLineForElse="False" NewLineForCatch="False" NewLineForFinally="False" NewLineForMembersInObjectInit="False" NewLineForMembersInAnonymousTypes="False" NewLineForClausesInQuery="False" SpacingAfterMethodDeclarationName="True" SpaceAfterMethodCallName="True" SpaceBeforeOpenSquareBracket="True" scope="text/x-csharp">
+            <inheritsSet />
+            <inheritsScope />
+          </CSharpFormattingPolicy>
+        </Policies>
+        <XspParameters Port="8080" Address="127.0.0.1" SslMode="None" SslProtocol="Default" KeyType="None" CertFile="" KeyFile="" PasswordOptions="None" Password="" Verbose="True" />
+      </Properties>
+    </MonoDevelop>
+    <VisualStudio>
+      <FlavorProperties GUID="{349C5851-65DF-11DA-9384-00065B846F21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>1176</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:1176/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <ItemGroup>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="code\configuration\ActiveEventAssembly.cs" />
+    <Compile Include="code\configuration\ActiveEventAssemblyCollection.cs" />
+    <Compile Include="code\configuration\PhosphorusConfiguration.cs" />
+    <Compile Include="code\PhosphorusPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="common\temp\" />
+    <Folder Include="desktop\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
+      <Project>{1adb1008-02f3-4d95-b1da-628aa73b88dc}</Project>
+      <Name>p5.auth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.csv\p5.csv.csproj">
+      <Project>{045d3d94-7a30-445d-b578-fee5a5be5c3b}</Project>
+      <Name>p5.csv</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.http\p5.http.csproj">
+      <Project>{378663d4-1fc1-4109-8896-f72440c6c269}</Project>
+      <Name>p5.http</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.config\p5.config.csproj">
+      <Project>{f27d30f1-86c0-4b44-8108-b3049bc94cec}</Project>
+      <Name>p5.config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.data\p5.data.csproj">
+      <Project>{ca83a3ed-bd5d-4557-aa1b-a7c04abd4d4f}</Project>
+      <Name>p5.data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.events\p5.events.csproj">
+      <Project>{8eb5fdea-d073-4147-ae65-397a01b463df}</Project>
+      <Name>p5.events</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.hyperlambda\p5.hyperlambda.csproj">
+      <Project>{c02d30a6-7da2-4045-8644-9710ab40b629}</Project>
+      <Name>p5.hyperlambda</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.strings\p5.strings.csproj">
+      <Project>{8eb5fdea-d073-4147-ae65-376a03b463da}</Project>
+      <Name>p5.strings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.web\p5.web.csproj">
+      <Project>{0f68bfa7-1cf7-4737-9058-ced4a9ed3427}</Project>
+      <Name>p5.web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\p5.ajax\p5.ajax.csproj">
+      <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
+      <Name>p5.ajax</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\p5.core\p5.core.csproj">
+      <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
+      <Name>p5.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\p5.exp\p5.exp.csproj">
+      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
+      <Name>p5.exp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.lambda\p5.lambda.csproj">
+      <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
+      <Name>p5.lambda</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.types\p5.types.csproj">
+      <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>
+      <Name>p5.types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.math\p5.math.csproj">
+      <Project>{E7026921-524B-4B2E-A549-251A5AEB4D89}</Project>
+      <Name>p5.math</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.crypto\p5.crypto.csproj">
+      <Project>{46D8DEF8-01ED-4058-B2D5-689890865494}</Project>
+      <Name>p5.crypto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.html\p5.html.csproj">
+      <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
+      <Name>p5.html</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.io\p5.io.csproj">
+      <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
+      <Name>p5.io</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.io.authorization\p5.io.authorization.csproj">
+      <Project>{1D3C2CCC-F27C-4525-96E3-65E83D2E92A6}</Project>
+      <Name>p5.io.authorization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.flickrnet\p5.flickrnet.csproj">
+      <Project>{DC2195C7-E1BA-41DA-B2B9-DAFA19ED333C}</Project>
+      <Name>p5.flickrnet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.imaging\p5.imaging.csproj">
+      <Project>{C68B8AA9-2F95-4F6A-946F-7A4495B06145}</Project>
+      <Name>p5.imaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.mysql\p5.mysql.csproj">
+      <Project>{5DD389EB-29B9-4965-A2F3-BF62CAAF6CB4}</Project>
+      <Name>p5.mysql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.mail\p5.mail.csproj">
+      <Project>{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}</Project>
+      <Name>p5.mail</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.mime\p5.mime.csproj">
+      <Project>{2D694F51-5055-4EC8-8767-C2011E010DD5}</Project>
+      <Name>p5.mime</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.io.zip\p5.io.zip.csproj">
+      <Project>{1D57B094-2569-4899-A33A-E0A6E067EAD3}</Project>
+      <Name>p5.io.zip</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.threading\p5.threading.csproj">
+      <Project>{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}</Project>
+      <Name>p5.threading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.markdown\p5.markdown.csproj">
+      <Project>{045D3D94-7730-445D-B578-1DE5A5BE5C3B}</Project>
+      <Name>p5.markdown</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.json\p5.json.csproj">
+      <Project>{738D3E94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
+      <Name>p5.json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.xml\p5.xml.csproj">
+      <Project>{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
+      <Name>p5.xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="common\README.md" />
+    <None Include="users\root\documents\public\README.md" />
+    <None Include="users\root\documents\private\README.md" />
+    <None Include="users\root\temp\README.md" />
+    <None Include="common\documents\private\README.md" />
+    <None Include="common\documents\public\README.md" />
+    <None Include="application-startup.hl" />
+    <None Include="desktop\create-desktop.hl" />
+    <None Include="desktop\initialise-server.hl" />
+    <None Include="desktop\load-desktop.hl" />
+    <None Include="desktop\install-micro.hl" />
+    <None Include="desktop\login.hl" />
+  </ItemGroup>
+  <ItemGroup />
+</Project>

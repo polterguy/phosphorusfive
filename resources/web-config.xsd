@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="configuration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="configSections">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="section">
+                <xs:complexType>
+                  <xs:attribute name="name" type="xs:string" use="required" />
+                  <xs:attribute name="type" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name=“phosphorus”>
+          <xs:complexType>
+            <xs:attribute name="assemblyDirectory" type="xs:string" />
+            <xs:attribute name="defaultContextUsername" type="xs:string" />
+            <xs:attribute name="defaultContextRole" type="xs:string" />
+            <xs:attribute name="authFile" type="xs:string" />
+            <xs:attribute name="loginCoolOffSeconds" type="xs:int” />
+            <xs:attribute name="persistCredentialCookieDays" type="xs:int” />
+            <xs:attribute name=“smtpServer” type="xs:string" />
+            <xs:attribute name=“smtpPort” type="xs:int” />
+            <xs:attribute name=“smtpUseSsl” type="xs:bool” />
+            <xs:attribute name=“pop3Server” type="xs:string" />
+            <xs:attribute name=“pop3Port” type="xs:int” />
+            <xs:attribute name=“pop3UseSsl” type="xs:bool” />
+            <xs:attribute name=“marvinPgpKey” type="xs:string" />
+            <xs:attribute name=“marvinPgpKeyPassword” type="xs:string" />
+            <xs:attribute name=“passwordSalt” type="xs:string" />
+            <xs:attribute name=“webServiceInvocationsFreshTime” type="xs:string" />
+            <xs:sequence>
+              <xs:element name="assemblies">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="add">
+                      <xs:complexType>
+                        <xs:attribute name="assembly" type="xs:string" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="appSettings">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="add">
+                <xs:complexType>
+                  <xs:attribute name="key" type="xs:string" use="required" />
+                  <xs:attribute name="value" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="system.web">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="compilation">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="assemblies">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="add">
+                            <xs:complexType>
+                              <xs:attribute name="assembly" type="xs:string" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="defaultLanguage" type="xs:string" use="required" />
+                  <xs:attribute name="debug" type="xs:boolean" use="required" />
+                  <xs:attribute name="targetFramework" type="xs:decimal" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="customErrors">
+                <xs:complexType>
+                  <xs:attribute name="mode" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="authentication">
+                <xs:complexType>
+                  <xs:attribute name="mode" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="authorization">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="allow">
+                      <xs:complexType>
+                        <xs:attribute name="users" type="xs:string" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="httpHandlers" />
+              <xs:element name="trace">
+                <xs:complexType>
+                  <xs:attribute name="enabled" type="xs:boolean" use="required" />
+                  <xs:attribute name="localOnly" type="xs:boolean" use="required" />
+                  <xs:attribute name="pageOutput" type="xs:boolean" use="required" />
+                  <xs:attribute name="requestLimit" type="xs:unsignedByte" use="required" />
+                  <xs:attribute name="traceMode" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="sessionState">
+                <xs:complexType>
+                  <xs:attribute name="mode" type="xs:string" use="required" />
+                  <xs:attribute name="cookieless" type="xs:boolean" use="required" />
+                  <xs:attribute name="timeout" type="xs:unsignedByte" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="globalization">
+                <xs:complexType>
+                  <xs:attribute name="requestEncoding" type="xs:string" use="required" />
+                  <xs:attribute name="responseEncoding" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="pages">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="controls">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="add">
+                            <xs:complexType>
+                              <xs:attribute name="assembly" type="xs:string" use="required" />
+                              <xs:attribute name="namespace" type="xs:string" use="required" />
+                              <xs:attribute name="tagPrefix" type="xs:string" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="clientIDMode" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="httpRuntime">
+                <xs:complexType>
+                  <xs:attribute name="requestValidationMode" type="xs:decimal" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
