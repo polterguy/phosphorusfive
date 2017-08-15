@@ -156,7 +156,7 @@ namespace p5.io.zip
             string fileNameFullPath)
         {
             // Splitting filename path on "/" to create folder entities
-            var splits = new List<string> ((fileNameFullPath).Split ('/'));
+            var splits = new List<string> ((fileNameFullPath).Split (new char[] { '/' }, System.StringSplitOptions.RemoveEmptyEntries));
 
             // Removing filename
             splits.RemoveAt (splits.Count - 1);
