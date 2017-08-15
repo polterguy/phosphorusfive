@@ -20,7 +20,7 @@ Also this Active Event has a "protected" alias, which will not list settings sta
 ## Example
 
 ```
-p5.config.get:p5.pop3.server
+p5.config.get:some-appSetting-config-key
 ```
 
-The above will retrieve the _"p5.pop3.server"_ configuration setting from your web.config.
+The above will retrieve the _"some-appSetting-config-key"_ configuration setting from your web.config.
