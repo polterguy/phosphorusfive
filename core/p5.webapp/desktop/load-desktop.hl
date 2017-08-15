@@ -26,6 +26,10 @@ if:x:/@vocabulary/*
 
   /*
    * Now our setup process is finished, and we can logout user from system.
+   *
+   * Notice, we choose to do this explicitly, since the root user might not necessary
+   * enjoyt it particularly much, if we keep him logged in at the localhost, or whatever client
+   * he were using to setup the system.
    */
   load-file:/desktop/logout.hl
   eval:x:/-/*
@@ -35,8 +39,8 @@ if:x:/@vocabulary/*
 
 
 /*
- * Including main Micro CSS file, and making sure root "cnt" widget 
- * has the "container" CSS class.
+ * Including main Micro CSS files, and making sure root "cnt" widget 
+ * has the "container-fullscreen" CSS class.
  */
 p5.web.include-css-file:@MICRO/media/main.css
 p5.web.include-css-file:@MICRO/media/ext.css
@@ -80,10 +84,24 @@ if:x:/-/*/default?value
 
 
 /*
- * Listing all folders at root.
+ * Now we can determine all "apps" the user has installed on his system, and create a "desktop icon" for
+ * each of these apps, to allow the user to actually launch his apps.
+ *
+ * First we start by listing all folders at root.
  */
 list-folders:/
-set:x:/-/*/~db
+
+
+
+
+
+/*
+ * Then we remove folders that we know for sure does not contain any apps.
+ *
+ * Notice, the below "/db/" removal, will fissle, if you override your default p5.data database folder.
+ * Hence, if you do, you must also explicitly change the "/db/" value below.
+ */
+set:x:@"/@list-folders/*(/""/db/""|/""/obj/""|/""/bin/""|/""/users/""|/""/common/""|/""/code/""|/""/desktop/""|/""/Properties/"")"
 
 
 
@@ -104,19 +122,42 @@ list-files:x:/@list-folders/*?name
  * that will invoke the file, once clicked.
  */
 for-each:x:/@list-files/*?name
-  split:x:/@_dp?value
-    =:/
-  eval-x:x:/+/**
-  add:x:/../*/create-widget/*/widgets/*/div/*/widgets
-    src
-      container
-        element:a
-        href:/{0}
-          :x:/@split/0?name
-        class:desktop-app shaded rounded success air-inner
-        widgets
-          span
-            innerValue:x:/@split/0?name
+
+  /*
+   * Checking if currently iterated "app" has a "desktop.hl" widget file.
+   */
+  replace:x:/@_dp?value
+    what:launch.hl
+  if
+    fetch:x:/0/0?value
+      file-exists:{0}/desktop.hl
+        :x:/@replace?value
+
+    /*
+     * Currently iterated app has a desktop widget declaration file.
+     *
+     * Using this widget instead of our generic "app" widget.
+     */
+
+  else
+
+    /*
+     * Currently iterated app does not have a desktop widget, hence we use the generic one.
+     */
+    split:x:/@_dp?value
+      =:/
+    eval-x:x:/+/**
+    add:x:/../*/create-widget/*/widgets/*/div/*/widgets
+      src
+        container
+          element:a
+          href:/{0}
+            :x:/@split/0?name
+          class:desktop-app shaded rounded air-inner bg
+          widgets
+            span
+              class:desktop-app-name
+              innerValue:x:/@split/0?name
 
 
 
@@ -136,6 +177,7 @@ create-widget
           role:button
           class:desktop-logout
           innerValue:@"<span class=""icon-power-off""></span>"
+          title:Log out
           onclick
 
             /*
