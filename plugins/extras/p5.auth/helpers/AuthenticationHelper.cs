@@ -88,10 +88,10 @@ namespace p5.auth.helpers
             var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
 
             // Then creating system fingerprint from given password
-            var cookiePasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
+            var hashedPassword = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
 
             // Checking for match on password
-            if (userNode["password"].Get<string> (context) != cookiePasswordFingerprint)
+            if (userNode["password"].Get<string> (context) != hashedPassword)
                 throw new LambdaSecurityException ("Credentials not accepted", args, context); // Exact same wording as above! IMPORTANT!!
 
             // Success, creating our ticket
@@ -119,7 +119,7 @@ namespace p5.auth.helpers
                 // The "system salted fingerprint" hence never leaves the server
                 // If this was not the case, then the system fingerprint would effectively BE the password, allowing anyone
                 // who somehow gets access to "auth" file also to log in by creating false cookies
-                cookie.Value = username + " " + cookiePasswordFingerprint;
+                cookie.Value = username + " " + hashedPassword;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
 
@@ -625,7 +625,7 @@ namespace p5.auth.helpers
                 throw new SecurityException ("Cookie not accepted");
 
             string cookieUsername = cookieSplits[0];
-            string cookieHashSaltedPwd = cookieSplits[1];
+            string hashedPassword = cookieSplits[1];
             Node pwdFile = AuthFile.GetAuthFile(context);
 
             // Checking if user exist
@@ -633,15 +633,9 @@ namespace p5.auth.helpers
             if (userNode == null)
                 throw new SecurityException ("Cookie not accepted");
 
-            // Getting system salt
-            var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
-
-            // Then creating system fingerprint from given password
-            var systemFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + cookieHashSaltedPwd)).Get<string> (context);
-
             // Notice, we do NOT THROW if passwords do not match, since it might simply mean that user has explicitly created a new "salt"
             // to throw out other clients that are currently persistently logged into system under his account
-            if (systemFingerprint == userNode["password"].Get<string> (context)) {
+            if (hashedPassword   == userNode["password"].Get<string> (context)) {
 
                 // MATCH, discarding previous Context Ticket and creating a new Ticket
                 SetTicket (new ContextTicket(
