@@ -1,0 +1,73 @@
+﻿
+
+/*
+ * Downloads and installs Micro.
+ */
+
+
+
+
+
+/*
+ * Retrieving main HTML page for "releases" page for Micro,
+ * such that we can determine the latest version, download it, 
+ * and install it automatically.
+ */
+p5.http.get:"https://github.com/polterguy/micro/releases"
+
+
+
+
+
+/*
+ * Converting results of above invocation into a lambda structure,
+ * such that we can intelligently and semantically parse it, to find
+ * the URL to the latest version of Micro.
+ */
+html2lambda:x:/-/*/result/*/content?value
+
+
+
+
+
+/*
+ * This invocation should download the latest version of Micro,
+ * which should be the first hyperlink ending with a ".zip" extension.
+ */
+p5.http.get:"https://github.com/{0}"
+  :x:/@html2lambda/**/a/*/\@href/=~.zip/[0,1]?value
+
+
+
+
+
+/*
+ * Saving zip file we downloaded above to user's temp folder.
+ */
+save-file:~/temp/micro.zip
+  src:x:/@p5.http.get/*/result/*/content?value
+
+
+
+
+
+/*
+ * Unzipping Micro into root folder.
+ */
+unzip:~/temp/micro.zip
+  dest:/
+
+
+
+
+
+/*
+ * Making sure we evaluate "startup.hl" file for Micro.
+ *
+ * Notice, we don't actually know its exact name, 
+ * hence we'll need to apply a little "trick".
+ */
+list-folders:/
+load-file:{0}/startup.hl
+  :x:/@list-folders/*/~micro
+eval:x:/-/*

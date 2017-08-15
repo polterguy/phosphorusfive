@@ -1,0 +1,12 @@
+﻿
+
+/*
+ * Main CSS file for our little "desktop" app.
+ */
+.desktop-app {
+    width:200px;
+    height:200px;
+    float:left;
+    margin-right:15px;
+    margin-bottom:15px;
+}

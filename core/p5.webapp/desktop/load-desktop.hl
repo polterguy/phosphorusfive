@@ -1,0 +1,126 @@
+﻿
+
+/*
+ * Creates our "desktop", which basically just allows the user to select which application
+ * he wants to start.
+ *
+ * Plus also some apps, and/or components, the user probably wants to download.
+ */
+
+
+
+
+
+/*
+ * Verifying Micro is installed, and if not, automatically installing it.
+ */
+vocabulary:p5.io.unroll-path.@MICRO
+if:x:/@vocabulary/*
+  not
+
+  /*
+   * Micro is not installed, making sure we download it, and install it automatically.
+   */
+  load-file:/desktop/install-micro.hl
+  eval:x:/-/*
+
+
+
+
+
+/*
+ * Including main Micro CSS file, and making sure root "cnt" widget 
+ * has the "container" CSS class.
+ */
+p5.web.include-css-file:@MICRO/media/main.css
+p5.web.include-css-file:@MICRO/media/ext.css
+p5.web.include-css-file:@MICRO/media/skins/serious.css
+set-widget-property:cnt
+  class:container
+
+
+
+
+
+/*
+ * Including main desktop CSS file.
+ */
+p5.web.include-css-file:/desktop/main.css
+
+
+
+
+
+/*
+ * Making sure user is logged in, and if not, forcing him to login, before we display the desktop.
+ */
+whoami
+if:x:/-/*/default?value
+
+  /*
+   * User is not logged in, forcing him to login, before we allow him to continue.
+   */
+  load-file:/desktop/login.hl
+  eval:x:/-/*
+
+  /*
+   * Returning early to avoid evaluating the rest of our file.
+   */
+  return
+
+
+
+
+
+/*
+ * Listing all folders at root.
+ */
+list-folders:/
+set:x:/-/*/~db
+
+
+
+
+
+/*
+ * Listing all "launch.hl" files inside of the results of our above folder listing operation.
+ */
+list-files:x:/@list-folders/*?name
+  filter:launch.hl
+
+
+
+
+
+/*
+ * Looping through all "launch.hl" files from above, and creating a widget wrapping each of them, 
+ * that will invoke the file, once clicked.
+ */
+for-each:x:/@list-files/*?name
+  split:x:/@_dp?value
+    =:/
+  eval-x:x:/+/**
+  add:x:/../*/create-widget/*/widgets/*/div/*/widgets
+    src
+      container
+        element:a
+        href:/{0}
+          :x:/@split/0?name
+        class:desktop-app shaded rounded success air-inner
+        widgets
+          span
+            innerValue:x:/@split/0?name
+
+
+
+
+
+/*
+ * Creating actual desktop widget.
+ */
+create-widget
+  class:row
+  widgets
+    div
+      class:col
+      widgets

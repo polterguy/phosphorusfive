@@ -1,0 +1,86 @@
+﻿
+
+/*
+ * Displays a modal window allowing the user to login.
+ */
+create-widgets
+  micro.widgets.modal:desktop-login
+    widgets
+      h3
+        innerValue:Please login
+      micro.widgets.wizard-form:desktop-wizared-form
+
+        /*
+         * Username widget
+         */
+        text:desktop-username
+          info:Username
+          .data-field:username
+          onkeydown:@"if (event.keyCode == 13) {p5.$('desktop-login-button').raise('onclick');return false;}"
+          oninit
+
+            /*
+             * Setting initial focus to username textbox.
+             */
+            micro.page.set-focus:x:/../*/_event?value
+
+        /*
+         * Password widget
+         */
+        text:desktop-password
+          info:Password
+          .data-field:password
+          type:password
+          onkeydown:@"if (event.keyCode == 13) {p5.$('desktop-login-button').raise('onclick');return false;}"
+
+        /*
+         * Remember me checkbox.
+         */
+        checkbox
+          info:Remember me
+          .data-field:persist
+          style:"margin-bottom:0;"
+          title:Only check this box if you are using your own client, such as your personal computer or phone
+
+      div
+        class:right
+        widgets
+          button:desktop-login-button
+            innerValue:OK
+            style:"margin-bottom:0;"
+            onclick
+
+              /*
+               * Retrieving username and password, and attempting to log user into system.
+               */
+              micro.widgets.wizard-form.value:desktop-wizared-form
+              add:x:/../*/try/*/login
+                src:x:/@micro.widgets.wizard-form.value/*
+
+              /*
+               * Wrapping login attempt in try/catch block, since login throws if login is unsuccessful.
+               */
+              try
+
+                /*
+                 * Now that we have parametrised our invocation, we can attempt to login.
+                 */
+                login
+
+                /*
+                 * If we come this far, without an exception, our login attempt was successful, and
+                 * we can reload URL for simplicity.
+                 */
+                p5.web.reload-location
+
+              catch
+
+                /*
+                 * Displaying error to user.
+                 */
+                p5.web.widgets.find-first:desktop-login
+                  class:micro-modal-content
+                eval-x:x:/+/*
+                micro.windows.info:x:/..catch/*/message?value
+                  class:micro-windows-info warning
+                  parent:x:/@p5.web.widgets.find-first/*/*?value

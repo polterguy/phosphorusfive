@@ -1,0 +1,126 @@
+﻿
+
+/*
+ * Initialises server, by allowing user to set server salt, and/or set root password.
+ *
+ * First making sure our main "cnt" widget is empty.
+ */
+clear-widget:cnt
+if
+  p5.auth._has-salt
+  not
+
+  /*
+   * No server salt, asking user to provide one.
+   */
+  create-widget
+    widgets
+      h3
+        innerValue:Please provide a random server salt
+        style:"width:50%;margin-left:auto;margin-right:auto;"
+      p:salt-description
+        innerValue:You don't need to remember your salt, but to maximise the security of your system, it should to be as random as possible ...
+        style:"width:50%;margin-left:auto;margin-right:auto;"
+      literal:server-salt
+        element:textarea
+        placeholder:Provide a random server salt ...
+        rows:10
+        style:"display:block;width:50%;margin-left:auto;margin-right:auto;"
+      div
+        style:"width:50%;margin-left:auto;margin-right:auto;text-align:right;"
+        widgets
+          button
+            innerValue:Save
+            onclick
+
+              /*
+               * Retrieving server salt, and setting it.
+               */
+              get-widget-property:server-salt
+                value
+              if:x:/@get-widget-property/*/*?value
+                =:
+
+                /*
+                 * No salt, cannot proceed ...
+                 */
+                set-widget-property:salt-description
+                  innerValue:@"<strong>Provide server salt!!</strong>"
+                return
+
+              /*
+               * Setting salt.
+               */
+              p5.auth._set-server-salt:x:/@get-widget-property/*/*?value
+
+              /*
+               * Reloading URL for simplicity, which will ask the user for a root password.
+               */
+              p5.web.reload-location
+
+else-if
+  p5.auth._root-password-is-null
+
+  /*
+   * Root password is null, asking user to provide one.
+   */
+  create-widget
+    widgets
+      h3
+        innerValue:Please provide a root password
+        style:"width:50%;margin-left:auto;margin-right:auto;"
+      p:root-description
+        innerValue:Please make sure you remember your password, otherwise you will not be able to access your system!
+        style:"width:50%;margin-left:auto;margin-right:auto;"
+      input:root-password
+        type:text
+        placeholder:Root password ...
+        style:"display:block;width:50%;margin-left:auto;margin-right:auto;"
+      input:root-password-repeat
+        type:text
+        placeholder:Repeat password ...
+        style:"display:block;margin-top:15px;width:50%;margin-left:auto;margin-right:auto;"
+      div
+        style:"width:50%;margin-left:auto;margin-right:auto;text-align:right;margin-top:15px;"
+        widgets
+          button
+            innerValue:Save
+            onclick
+
+              /*
+               * Retrieving password(s), making sure they're not empty, and that they match.
+               */
+              get-widget-property:root-password
+                value
+              get-widget-property:root-password-repeat
+                value
+              if:x:/../*/get-widget-property/*/root-password/*?value
+                =:
+                or:x:/../*/get-widget-property/*/root-password/*?value
+                  !=:x:/../*/get-widget-property/*/root-password-repeat/*?value
+
+                /*
+                 * Password were not given, or textboxes values' did not match.
+                 */
+                set-widget-property:root-description
+                  innerValue:@"<strong>Provide a password, and make sure you repeat it exactly!!</strong>"
+                return
+
+              /*
+               * Setting password.
+               */
+              eval-x:x:/+/*
+              p5.auth._set-root-password
+                password:x:/@get-widget-property/*/*?value
+
+              /*
+               * Automatically logging in user.
+               */
+              login
+                username:root
+                password:x:/@get-widget-property/*/*?value
+
+              /*
+               * Reloading URL for simplicity, since we're now done with setting up server.
+               */
+              p5.web.reload-location

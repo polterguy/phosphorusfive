@@ -1,1 +1,0 @@
-<%@ Application Codebehind="Global.asax.cs" Inherits="p5.webapp.Global" Language="C#" %>
