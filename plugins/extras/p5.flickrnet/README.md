@@ -6,6 +6,7 @@ do something like the following.
 
 ```
 p5.flickr.search
+  api-key:YOUR_FLICKR_API_KEY
   text:foo bar
 ```
 
@@ -62,5 +63,4 @@ The Active Event *[p5.flickr.search]*, will by default, only return _"free"_ ima
 * Public Domain Mark
 * United states government work
 
-To use it, make sure you provide your own Flickr API key, which can be done by modifying the _"web.config"_ file in your p5.webapp project, and
-change the _".p5.flickr.api-key"_ value. You can get your own API key, by applying for one at [Flickr](https://www.flickr.com/).
+To use it, make sure you provide your own Flickr API key. You can get your own API key, by applying for one at [Flickr](https://www.flickr.com/).
