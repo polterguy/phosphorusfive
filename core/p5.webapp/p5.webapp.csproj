@@ -247,7 +247,7 @@
     <None Include="users\root\temp\README.md" />
     <None Include="common\documents\private\README.md" />
     <None Include="common\documents\public\README.md" />
-    <None Include="application-startup.hl" />
+    <None Include="startup.hl" />
     <None Include="desktop\create-desktop.hl" />
     <None Include="desktop\initialise-server.hl" />
     <None Include="desktop\load-desktop.hl" />
