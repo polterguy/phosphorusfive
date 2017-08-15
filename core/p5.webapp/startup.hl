@@ -15,6 +15,7 @@
  * Listing all folders at root.
  */
 list-folders:/
+set:x:@"/-/*(/""/db/""|/""/obj/""|/""/bin/""|/""/users/""|/""/common/"")"
 
 
 
@@ -43,6 +44,13 @@ eval:x:/@load-file/*
 /*
  * Then checking if there exists a [p5.web.load-ui] event, and if not, 
  * creating one, by evaluating our "create desktop" Hyperlambda file.
+ *
+ * This implies, that if you have an application installed, which overrides
+ * the [p5.web.load-ui] event yourself, the desktop will "disappear", and your
+ * own app will do the URL loading/handling.
+ *
+ * Refer to your "web.config" file for "p5.webapp" to understand more about this process,
+ * and how you could create your own loader.
  */
 vocabulary:p5.web.load-ui
 if:x:/-/*
