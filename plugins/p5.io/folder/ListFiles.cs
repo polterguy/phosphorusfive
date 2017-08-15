@@ -74,15 +74,30 @@ namespace p5.io.folder
             bool retVal = filter == "";
             foreach (var idxFilter in filter.Split ('|')) {
                 if (idxFilter.StartsWithEx (".")) {
+
+                    // Filter is a file extension type of filter.
                     if (Path.GetExtension (filename).ToLower () == idxFilter.ToLower ()) {
                         retVal = true;
                         break;
                     }
                 } else {
-                    if (Path.GetFileName (filename).Contains (idxFilter)) {
-                        retVal = true;
-                        break;
-                    }
+
+                    // Filter is anything but a file extension filter.
+                    if (idxFilter.StartsWithEx ("~")) {
+
+                        // Filter is a "like" type of filter.
+                        if (Path.GetFileName (filename).Contains (idxFilter.Substring (1))) {
+                            retVal = true;
+                            break;
+                        }
+                    } else {
+
+                        // Filter is an "exact match" type of filter.
+						if (Path.GetFileName (filename) == idxFilter) {
+							retVal = true;
+							break;
+						}
+					}
                 }
             }
             return retVal;
