@@ -5,6 +5,7 @@
  */
 create-widgets
   micro.widgets.modal:desktop-login
+    class:micro-modal micro-modal-smaller
     widgets
       h3
         innerValue:Please login
@@ -47,7 +48,6 @@ create-widgets
         widgets
           button:desktop-login-button
             innerValue:OK
-            style:"margin-bottom:0;"
             onclick
 
               /*

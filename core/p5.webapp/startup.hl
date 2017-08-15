@@ -1,64 +1,72 @@
 ﻿
 
 /*
- * Loads all "startup.hl" files inside all folders at root of p5.webapp.
+ * Loads all "startup.hl" files inside all relevant "app" folders at root of "p5.webapp".
  *
  * In addition it creates our "main desktop", unless there exists another 
  * app, that have already during startup created a [p5.web.load-ui] event.
  *
- * This way, the default "desktop" will at least allow people to launch 
+ * This way, the default "desktop", will at least allow people to launch 
  * their apps, without being depdent upon System42.
- */
-
-
-/*
- * Listing all folders at root.
- */
-list-folders:/
-set:x:@"/-/*(/""/db/""|/""/obj/""|/""/bin/""|/""/users/""|/""/common/"")"
-
-
-
-
-
-/*
- * Listing all "startup.hl" files inside of the results of our above folder listing operation.
- */
-list-files:x:/@list-folders/*?name
-  filter:startup.hl
-
-
-
-
-
-/*
- * Loading and evaluating all files from above result.
- */
-load-file:x:/@list-files/*?name
-eval:x:/@load-file/*
-
-
-
-
-
-/*
- * Then checking if there exists a [p5.web.load-ui] event, and if not, 
- * creating one, by evaluating our "create desktop" Hyperlambda file.
  *
- * This implies, that if you have an application installed, which overrides
- * the [p5.web.load-ui] event yourself, the desktop will "disappear", and your
- * own app will do the URL loading/handling.
- *
- * Refer to your "web.config" file for "p5.webapp" to understand more about this process,
- * and how you could create your own loader.
+ * Basically, a "micro operating system", allowing you to easily host your apps,
+ * without being dependent upon System42, or other systems.
  */
-vocabulary:p5.web.load-ui
-if:x:/-/*
-  not
+
+
+
+
+
+/*
+ * Making sure we've got synchronised access to server.
+ *
+ * This little bugger, will prevent loading of a web page, until server has been properly initialised.
+ */
+write-lock:p5.core.server-startup
 
   /*
-   * There exists no [p5.web.load-ui] event, creating one by evaluating file responsible
-   * for loading the "main desktop".
+   * Listing all folders at root.
    */
-  load-file:/desktop/create-desktop.hl
-  eval:x:/-/*
+  list-folders:/
+
+  /*
+   * Removing folders that obviously does not have "apps" within them.
+   *
+   * Notice, the below "/db/" removal, will fissle, if you override your default p5.data database folder.
+   * Hence, if you do, you must also explicitly change the "/db/" value below.
+   */
+  set:x:@"/@list-folders/*(/""/db/""|/""/obj/""|/""/bin/""|/""/users/""|/""/common/""|/""/code/""|/""/desktop/""|/""/Properties/"")"
+
+  /*
+   * Listing all "startup.hl" files inside of the results of our above folder listing operation.
+   */
+  list-files:x:/@list-folders/*?name
+    filter:startup.hl
+
+  /*
+   * Loading and evaluating all files from above result.
+   */
+  load-file:x:/@list-files/*?name
+  eval:x:/@load-file/*
+
+  /*
+   * Then checking if there exists a [p5.web.load-ui] event, and if not, 
+   * creating one, by evaluating our "create desktop" Hyperlambda file.
+   *
+   * This implies, that if you have an application installed, which overrides
+   * the [p5.web.load-ui] event yourself, the desktop will "disappear", and your
+   * own app will do the URL loading/handling.
+   *
+   * Refer to your "web.config" file for "p5.webapp" to understand more about this process,
+   * and how you could create your own loader.
+   */
+  vocabulary:p5.web.load-ui
+  if:x:/-/*
+    not
+
+    /*
+     * There exists no [p5.web.load-ui] event, creating one by evaluating file responsible
+     * for loading the "main desktop".
+     */
+    load-file:/desktop/create-load-ui.hl
+    eval:x:/-/*

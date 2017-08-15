@@ -2,6 +2,8 @@
 
 /*
  * Downloads and installs Micro.
+ *
+ * Expects the root account to be logged into the system.
  */
 
 
@@ -68,6 +70,6 @@ unzip:~/temp/micro.zip
  * hence we'll need to apply a little "trick".
  */
 list-folders:/
-load-file:{0}/startup.hl
-  :x:/@list-folders/*/~micro
+load-file:{0}startup.hl
+  :x:/@list-folders/*/~micro?name
 eval:x:/-/*
