@@ -124,3 +124,23 @@ create-widget
     div
       class:col
       widgets
+        a
+          href:#
+          role:button
+          class:desktop-logout
+          innerValue:Log out
+          onclick
+
+            /*
+             * Deleting all of user's temporary files, and logging out.
+             */
+            list-files:~/temp/
+            delete-file:x:/-/*?name
+            list-folders:~/temp/
+            delete-folder:x:/-/*?name
+            logout
+
+            /*
+             * Reloading location for simplicity.
+             */
+            p5.web.reload-location
