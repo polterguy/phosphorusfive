@@ -51,8 +51,8 @@ body {
 .bazar-wrapper {
 }
 .bazar-app {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
     float: left;
     margin-right: 15px;
     margin-bottom: 15px;
@@ -65,5 +65,17 @@ body {
 .bazar-app-description {
     font-size: .8rem;
     display: block;
-    text-align: justify;
+    text-align: left;
+}
+.bazar-leave {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 2rem;
+    color: rgba(255,255,0,1);
+}
+.bazar-leave:hover,
+.bazar-leave:active,
+.bazar-leave:focus {
+    color: rgb(255,128,0);
 }

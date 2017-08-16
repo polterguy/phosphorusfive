@@ -178,6 +178,19 @@ create-widget
     div
       class:col
       widgets
+        a
+          class:bazar-leave
+          innerValue:@"<span class=""icon-close""></span>"
+          title:Leave Bazar
+          oninit
+
+            /*
+             * Setting URL of hyperlink to main root URL of P5.
+             */
+            p5.web.get-root-location
+            set-widget-property:x:/../*/_event?value
+              href:x:/@p5.web.get-root-location?value
+
         div
           class:bazar-wrapper
           widgets
