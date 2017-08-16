@@ -1,0 +1,9 @@
+
+/*
+ * List of available Bazar apps.
+ */
+app
+  name:Sephia Five
+  description:Cryptographically secure email system
+  condition:p5.io.unroll-path.@SEPHIA
+  url:"https://github.com/polterguy/sephia-five"

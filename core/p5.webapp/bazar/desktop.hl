@@ -1,0 +1,21 @@
+
+/*
+ * Desktop widget file for server management.
+ */
+container
+  element:a
+  class:desktop-app shaded rounded air-inner bg
+  style:"position:absolute;bottom:1rem;right:1rem;"
+  title:Bazar
+  oninit
+
+    /*
+     * Getting link URL to point correctly.
+     */
+    set-widget-property:x:/../*/_event?value
+      href:/bazar
+
+  widgets
+    span
+      class:desktop-app-name
+      innerValue:@"<span style=""margin-top:19%;display:block;font-size:4rem;"" class=""icon-gift""></span><span style=""position:absolute;top:10px;right:10px;"">Bazar</span>"

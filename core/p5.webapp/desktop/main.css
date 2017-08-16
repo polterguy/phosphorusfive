@@ -3,13 +3,14 @@
 /*
  * Main CSS file for our little "desktop" app.
  */
-body, html {
-    min-height: 100%;
+body, html, form {
+    height: 100%;
 }
 body {
     background: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,1));
 }
 .container-fullscreen {
+    height:100%;
 }
 .desktop-app {
     width:150px;

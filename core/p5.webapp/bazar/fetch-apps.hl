@@ -1,0 +1,30 @@
+﻿
+/*
+ * File responsible for retrieving available Bazar apps.
+ */
+
+
+
+
+
+/*
+ * Checking cache.
+ */
+p5.web.cache.get:p5.bazar.apps
+if:x:/-/*/*/*
+
+  /*
+   * Apps are already cached.
+   */
+  add:x:/./*/return
+    src:x:/@p5.web.cache.get/*/*/*
+  return
+
+
+
+
+
+/*
+ * Fetching available apps from GitHub.
+ */
+p5.http.get:""

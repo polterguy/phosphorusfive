@@ -40,7 +40,7 @@ if:x:/@vocabulary/*
 
 /*
  * Including main Micro CSS files, and making sure root "cnt" widget 
- * has the "container-fullscreen" CSS class.
+ * has the "container-fullscreen" CSS class, in addition to that it's empty.
  */
 p5.web.include-css-file:@MICRO/media/main.css
 p5.web.include-css-file:@MICRO/media/ext.css
@@ -48,6 +48,7 @@ p5.web.include-css-file:@MICRO/media/fonts.css
 p5.web.include-css-file:@MICRO/media/skins/serious.css
 set-widget-property:cnt
   class:container-fullscreen
+clear-widget:cnt
 
 
 
@@ -185,6 +186,8 @@ create-widget
 
             /*
              * Loggin user out of system, by evaluating file responsible for doing just that.
+             *
+             * This will delete all temporary files for user, log user out, and reload the current URL.
              */
             load-file:/desktop/logout.hl
             eval:x:/-/*

@@ -1,0 +1,73 @@
+﻿
+/*
+ * File responsible for launching the "server manager", which among other things,
+ * allows you to install new apps, by downloading the from the "bazar".
+ */
+
+
+
+
+
+/*
+ * Clearing out anything previously added to page, to make sure we start
+ * out with a blank slate.
+ */
+clear-widget:cnt
+
+
+
+
+
+/*
+ * Including Micro, and adding Awesome Fonts.
+ */
+p5.web.include-css-file:@MICRO/media/main.css
+p5.web.include-css-file:@MICRO/media/ext.css
+p5.web.include-css-file:@MICRO/media/skins/serious.css
+p5.web.include-css-file:@MICRO/media/fonts.css
+
+
+
+
+
+/*
+ * Verifying user is logged in, and if not, redirecting the user to the root URL
+ * of server.
+ */
+whoami
+if:x:/@whoami/*/default?value
+
+  /*
+   * User is not logged in, forcing him to do just that.
+   */
+  load-file:/desktop/login.hl
+  eval:x:/-/*
+    message:You must login with a root account to access server settings
+  return
+
+
+
+
+
+/*
+ * Verifying user is root, and if not, allowing him to attempt to log in with a root account.
+ */
+if:x:/@whoami/*/role?value
+  !=:root
+
+  /*
+   * User is not root, displaying a simple message
+   */
+  load-file:/desktop/login.hl
+  eval:x:/-/*
+    message:You must login with a root account to access server settings
+  return
+
+
+
+
+
+/*
+ * Retrieving available apps.
+ */
+micro.evaluate.file:/bazar/fetch-apps.hl
