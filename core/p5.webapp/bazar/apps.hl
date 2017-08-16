@@ -7,12 +7,14 @@ app
   description:Cryptographically secure email system with PGP support, and lots of privacy features
   condition:p5.io.unroll-path.@SEPHIA
   url:"https://github.com/polterguy/sephia-five/archive/v0.7.zip"
-  author-readme:@"Sephia Five is a cryptographically secure webmail and email client, with PGP support, which is built with your privacy in mind. Among other things, it does not display HTML emails, to avoid marketing gibberish and _'crapware'_. It features the following features
+  author-readme:@"Sephia Five is a cryptographically secure webmail and email client, with PGP support, which is built with your privacy in mind. Among other things, it does not display HTML emails, to avoid marketing gibberish and _'crapware'_. It has the following features.
 
 * PGP cryptography
 * Virus and malware protection
 * Phishing protection
 * Extremly secure PGP cryptography
 
-Sephia Five is Free Software and Open Source, and Gratis for individuals. For companies, who wants to host it on their own server, a fee will apply for the _'User Module addon'_, to make it possible to create multiple users."
+Sephia Five is also ridiculously easy to use. You can see a video demonstrating some of its features [here](https://www.youtube.com/watch?v=0F4SVEoD1HE).
+
+Sephia Five is Free Software, Open Source, and Gratis for individuals. For companies and organisations, who wants to host it on their own server, a fee will apply for the _'User Module addon'_, to make it possible to create and maintain users within the system. For individuals, either professional users, or home users, it is completely free of charge."
 
