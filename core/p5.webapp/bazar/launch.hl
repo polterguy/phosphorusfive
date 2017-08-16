@@ -100,9 +100,17 @@ for-each:x:/@micro.evaluate.file/*
     continue
 
   /*
+   * HTML encoding values, to prevent man in the middle attack.
+   */
+  p5.html.html-encode:x:/@_dp/#/*/name?value
+  p5.html.html-encode:x:/@_dp/#/*/url?value
+  p5.html.html-encode:x:/@_dp/#/*/author-readme?value
+  markdown2html:x:/-?value
+
+  /*
    * Adding app to [create-widget] invocation below, to allow user to install it.
    */
-  eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description)/./*/innerValue|/onclick/*(/_app-name|/_app-url))
+  eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description))
   add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets
     src
       container
@@ -115,8 +123,9 @@ for-each:x:/@micro.evaluate.file/*
           /*
            * Forward evaluate above.
            */
-          _app-name:x:/@_dp/#/*/name?value
-          _app-url:x:/@_dp/#/*/url?value
+          _app-name:x:/..for-each/*/p5.html.html-encode/[0,1]?value
+          _app-url:x:/..for-each/*/p5.html.html-encode/[1,2]?value
+          _app-author-description:x:/@markdown2html?value
 
           /*
            * Asking user to confirm installation, and initiating download and 
@@ -126,10 +135,17 @@ for-each:x:/@micro.evaluate.file/*
             micro.widgets.modal:bazar-confirm-installation
               widgets
                 h3
-                  innerValue:Please confirm ...
-                p
-                  innerValue:Are you sure you want to install '{0}'
+                  innerValue:Confirm installation of {0} ...
                     :x:/@_app-name?value
+                p
+                  innerValue:@"Are you sure you want to install {0}?"
+                    :x:/@_app-name?value
+                div
+                  class:success rounded air-inner
+                  innerValue:x:/@_app-author-description?value
+                p
+                  innerValue:@"If you choose 'Yes', you will be redirected to either a purchase link, or a download link, 
+giving you access to a zip file. When the file has been downloaded, simply upload it to your system using the 'Install' button."
                 div
                   class:right
                   widgets
@@ -173,7 +189,7 @@ for-each:x:/@micro.evaluate.file/*
  * Checking if user have all apps installed, and if so, giving him a simple
  * notification about that.
  */
-if:x:/../*/create-widgets/*/widgets/*/div/*/widgets/*/div/*/widgets/*
+if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/*
   not
 
   /*
@@ -184,25 +200,19 @@ if:x:/../*/create-widgets/*/widgets/*/div/*/widgets/*/div/*/widgets/*
     micro.widgets.modal
       widgets
         h3
-          innerValue:Information ...
+          innerValue:It's awfully empty around here ...
         p
           innerValue:@"It seems you've already got all available apps installed. Now of course, if you're a geek, you could probably
 create some of your own, and have me host them for you. If so, feel free to create it, and toss me an email at <a href=""mailto:thomas@gaiasoul.com"">thomas@gaiasoul.com</a>, to
-inform me about your app, requesting me to host it for you."
+inform me about your app, requesting me to host it for you. But please, before you do, <a target=""_blank"" href=""https://gaiasoul.com/2017/08/16/bazar-rules-of-engagement/"">read the guidelines for an app submission</a>!"
         p
-          innerValue:Notice, this implies allowing me to scrutinize your app carefully, to make sure it is in no ways harmful!
-        p
-          innerValue:If you distribute your app for a fee, I will also take a 25% commission to host it.
-        p
-          innerValue:Regardless, I will still need to have access to your app's entire source code, to make sure it is not malicious in any ways.
-        p
-          innerValue:@"I will also choose to not host your app, if it does not seem to provide a value, or for other reasons does not fit in with my existing model, GUI styles, user flow styles, etc. 
-Hence, I give no guarantees that your app will be hosted by me."
+          innerValue:Notice, this implies allowing me to scrutinize your app's source code carefully among other things, to make sure it is in no ways harmful.
         div
           class:right
           widgets
             button
               innerValue:Close
+              style:"margin-bottom:0;"
               oninit
 
                 /*

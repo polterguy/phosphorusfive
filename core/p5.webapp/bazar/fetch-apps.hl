@@ -26,8 +26,17 @@ if:x:/-/*/*/*
 
 /*
  * Fetching available apps from GitHub.
+ *
+ * Creating one fetcher thread for each configured Bazar.
  */
-p5.http.get:"https://raw.githubusercontent.com/polterguy/phosphorusfive/master/core/p5.webapp/bazar/apps.hl"
+load-file:/bazar/configuration/bazars.hl
+apply:x:/../*/wait
+  src:x:/@load-file/*/*/bazar
+  template
+    fork
+      {p5.http.get}:x:?value
+wait
+
 
 
 
@@ -36,7 +45,7 @@ p5.http.get:"https://raw.githubusercontent.com/polterguy/phosphorusfive/master/c
 /*
  * Transforming result to lambda.
  */
-hyper2lambda:x:/@p5.http.get/*/result/*/content?value
+hyper2lambda:x:/@wait/**/p5.http.get/*/result/*/content?value
 
 
 
@@ -44,10 +53,13 @@ hyper2lambda:x:/@p5.http.get/*/result/*/content?value
 
 /*
  * Making sure we cache results, in case user does another roundtrip later.
+ *
+ * Notice, we only cache it for 10 minutes.
  */
 add:x:/../*/p5.web.cache.set/*/*
   src:x:/@hyper2lambda/*
 p5.web.cache.set:p5.bazar.apps
+  minutes:10
   src
     apps
 

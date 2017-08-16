@@ -1,0 +1,13 @@
+
+/*
+ * List of available Bazars.
+ */
+
+
+
+
+
+/*
+ * Main Phosphorus Five Bazar.
+ */
+bazar:"https://raw.githubusercontent.com/polterguy/phosphorusfive/master/core/p5.webapp/bazar/configuration/apps.hl"
