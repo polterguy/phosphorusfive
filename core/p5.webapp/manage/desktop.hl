@@ -1,0 +1,38 @@
+
+/*
+ * Desktop widget file for Sephia Five.
+ */
+container
+  element:a
+  class:desktop-app shaded rounded air-inner bg
+  style:"position:relative;"
+  title:Open emails
+  oninit
+
+    /*
+     * Getting link URL to point correctly.
+     */
+    p5.io.unroll-path:@SEPHIA/
+    set-widget-property:x:/../*/_event?value
+      href:x:/@p5.io.unroll-path?value
+
+  widgets
+    span
+      class:desktop-app-name
+      innerValue:Email
+      oninit
+
+        /*
+         * Doing a count of unread emails for user, and adding to [innerValue].
+         */
+        whoami
+        p5.mysql.connect:[sephia]
+          p5.mysql.scalar:@"select count(*) from emails where username = @username and isread = 0 and type = 'received'"
+            @username:x:/@whoami/*/username?value
+
+          /*
+           * Setting widget's innerValue.
+           */
+          set-widget-property:x:/../*/_event?value
+            innerValue:@"<span style=""margin-top:19%;display:block;font-size:4rem;"" class=""icon-envelope""></span><span style=""position:absolute;top:10px;right:10px;"">{0}</span>"
+              :x:/@p5.mysql.scalar?value

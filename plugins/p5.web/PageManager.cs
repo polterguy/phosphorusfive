@@ -187,13 +187,17 @@ namespace p5.web
             // Checking if this is ajax callback, which means we'll have to redirect using JavaScript
             if (AjaxPage.IsAjaxRequest) {
 
-                // Redirecting using JavaScript
+                // Redirecting using JavaScript.
                 AjaxPage.SendJavaScript (string.Format ("window.location='{0}';", XUtil.Single<string> (context, e.Args).Replace ("'", "\\'")));
 
             } else {
 
-                // Redirecting using Response object
-                AjaxPage.Response.Redirect (XUtil.Single<string> (context, e.Args));
+                // Redirecting using Response object.
+                try {
+                    AjaxPage.Response.Redirect (XUtil.Single<string> (context, e.Args));
+                } catch (System.Threading.ThreadAbortException) {
+                    ; // Silently catching, no reasons to allow it to penetrate ...
+                }
             }
         }
 
