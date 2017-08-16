@@ -104,13 +104,15 @@ for-each:x:/@micro.evaluate.file/*
    */
   p5.html.html-encode:x:/@_dp/#/*/name?value
   p5.html.html-encode:x:/@_dp/#/*/url?value
+  p5.html.html-encode:x:/@_dp/#/*/description?value
   p5.html.html-encode:x:/@_dp/#/*/author-readme?value
   markdown2html:x:/-?value
+  p5.html.html-encode:x:/@_dp/#/*/price?value
 
   /*
    * Adding app to [create-widget] invocation below, to allow user to install it.
    */
-  eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description))
+  eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description))
   add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets
     src
       container
@@ -145,7 +147,7 @@ for-each:x:/@micro.evaluate.file/*
                   innerValue:x:/@_app-author-description?value
                 p
                   innerValue:@"If you choose 'Yes', you will be redirected to either a purchase link, or a download link, 
-giving you access to a zip file. When the file has been downloaded, simply upload it to your system using the 'Install' button."
+automatically starting the purchasing/installation process."
                 div
                   class:right
                   widgets
@@ -163,6 +165,12 @@ giving you access to a zip file. When the file has been downloaded, simply uploa
                              */
                             micro.page.set-focus:x:/../*/_event?value
 
+                          onclick
+
+                            /*
+                             * Redirecting browser to download URL.
+                             */
+
                         button
                           innerValue:No
                           style:"margin-bottom:0;"
@@ -176,10 +184,13 @@ giving you access to a zip file. When the file has been downloaded, simply uploa
         widgets
           literal
             class:bazar-app-name
-            innerValue:x:/@_dp/#/*/name?value
+            innerValue:x:/..for-each/*/p5.html.html-encode/[0,1]?value
           literal
             class:bazar-app-description
-            innerValue:x:/@_dp/#/*/description?value
+            innerValue:x:/..for-each/*/p5.html.html-encode/[2,3]?value
+          literal
+            class:bazar-app-price
+            innerValue:x:/..for-each/*/p5.html.html-encode/[4,5]?value
 
 
 
