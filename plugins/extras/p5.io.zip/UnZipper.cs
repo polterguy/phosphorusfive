@@ -49,30 +49,30 @@ namespace p5.io.zip
         public static void unzip (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving password, if there is one, and untying it, 
-            // to make sure it never leaves method, in case of an exception, etc
+            // to make sure it never leaves method, in case of an exception, etc.
             string password = e.Args.GetExChildValue<string>("password", context, null);
-            e.Args.FindOrInsert ("password").UnTie (); // Making sure password NEVER LEAVES METHOD!!
+            e.Args.FindOrInsert ("password").UnTie (); // Making sure password never leaved method, in case of exceptions, etc ...
 
-            // Basic syntax checking
+            // Basic syntax checking.
             if (e.Args.Value == null)
                 throw new LambdaException (
                     "[unzip] needs both a destination as its value",
                     e.Args,
                     context);
 
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new ArgsRemover (e.Args)) {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new ArgsRemover (e.Args, true)) {
 
-                // Getting root folder
+                // Getting root folder.
                 var rootFolder = Helpers.GetBaseFolder (context);
 
-                // Getting destination folder
+                // Getting destination folder.
                 var destFolder = GetDestinationFolder (context, e);
 
-                // Looping through each source zip file given
-                foreach (var idxZipFilePath in XUtil.Iterate<string> (context, e.Args)) {
+                // Looping through each source zip file given.
+                foreach (var idxZipFilePath in XUtil.Iterate<string> (context, e.Args).ToList ()) {
 
-                    // Unzips currently iterated file
+                    // Unzips currently iterated file.
                     UnzipFile (
                         context, 
                         e.Args,
@@ -81,21 +81,18 @@ namespace p5.io.zip
                         destFolder,
                         password);
                 }
-
-                // Returning folder path of where files where unzipped to caller
-                e.Args.Value = destFolder;
             }
         }
 
         /*
-         * Retrieves destination folder, and verifies user has write access to it
+         * Retrieves destination folder, and verifies user has write access to it.
          */
         private static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving detination folder
+            // Retrieving destination folder.
             var destFolder = Helpers.GetSystemPath (context, e.Args.GetExChildValue<string> ("dest", context));
 
-            // Verifying user is authorized to writing to destination folder
+            // Verifying user is authorized to writing to destination folder.
             context.RaiseEvent (".p5.io.authorize.modify-folder", new Node ("", destFolder).Add ("args", e.Args));
             return destFolder;
         }
@@ -111,34 +108,41 @@ namespace p5.io.zip
             string destPath,
             string password)
         {
-            // Verifying user is allowed to read from zipfile given
+            // Verifying user is allowed to read from zipfile given.
             context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", zipFilePath).Add ("args", args));
 
-            // Creating ZipFile, wrapping a file stream, denoting the path to physical file on disc
+            // Creating ZipFile, wrapping a file stream, denoting the path to physical file on disc.
             using (var zipFile = new ZipFile (File.OpenRead (rootFolder + zipFilePath)) {
                 IsStreamOwner = true,
                 Password = password
             }) {
-                // Looping through entries in zip file
+                // Looping through entries in zip file.
                 foreach (ZipEntry idxZipEntry in zipFile) {
 
-                    // Making sure entry is a file
+                    // Making sure entry is a file.
                     if (idxZipEntry.IsFile) {
 
-                        // Getting full path of currently iterated file/folder
+                        // Getting full path of currently iterated file/folder.
                         var idxDestPath = destPath + idxZipEntry.Name.TrimStart ('/');
 
-                        // Entry is file, making sure "full path" exist
+                        // Making sure we return all unique folder names created during process to caller.
+                        if (idxZipEntry.Name.TrimStart ('/').Contains ("/")) {
+                            var folders = idxZipEntry.Name.TrimStart('/').Split('/');
+                            if (args [destPath + folders [0] + "/"] == null)
+                                args.Add (destPath + folders[0] + "/");
+                        }
+
+                        // Entry is file, making sure "full path" exist.
                         EnsureFolderExist (
                             context, 
                             args, 
                             rootFolder,
                             idxDestPath);
 
-                        // Serialise file to stream
+                        // Serialise file to stream.
                         using (var outputStream = File.Create (rootFolder + idxDestPath)) {
 
-                            // Serialising zipfile to stream
+                            // Serialising zipfile to stream.
                             zipFile.GetInputStream (idxZipEntry).CopyTo (outputStream);
                         }
                     }
@@ -147,7 +151,7 @@ namespace p5.io.zip
         }
 
         /*
-         * Ensures that the given file's folder exist, and creates it if necessary
+         * Ensures that the given file's folder exist, and creates it if necessary.
          */
         static void EnsureFolderExist (
             ApplicationContext context, 
@@ -155,24 +159,24 @@ namespace p5.io.zip
             string rootFolder,
             string fileNameFullPath)
         {
-            // Splitting filename path on "/" to create folder entities
+            // Splitting filename path on "/" to create folder entities.
             var splits = new List<string> ((fileNameFullPath).Split (new char[] { '/' }, System.StringSplitOptions.RemoveEmptyEntries));
 
-            // Removing filename
+            // Removing filename.
             splits.RemoveAt (splits.Count - 1);
             var curPath = "/";
             foreach (var idxSplit in splits) {
 
-                // Adding currently iterated folder
+                // Adding currently iterated folder.
                 curPath += idxSplit + "/";
 
-                // Verifies user is authorized to writing to currently iterated destination folder
+                // Verifies user is authorized to writing to currently iterated destination folder.
                 context.RaiseEvent (".p5.io.authorize.modify-folder", new Node ("", curPath).Add ("args", args));
 
-                // Verifies folder exist, and if not, creates it
+                // Verifies folder exist, and if not, creates it.
                 if (!Directory.Exists (rootFolder + curPath)) {
 
-                    // Folder did not exist, creating it
+                    // Folder did not exist, creating it.
                     Directory.CreateDirectory (rootFolder + curPath);
                 }
             }
