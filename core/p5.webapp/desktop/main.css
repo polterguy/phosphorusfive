@@ -43,3 +43,27 @@ body {
     transition-duration:.2s;
     transition-timing-function:ease-in-out;
 }
+
+
+/*
+ * Bazar styles.
+ */
+.bazar-wrapper {
+}
+.bazar-app {
+    width: 150px;
+    height: 150px;
+    float: left;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+.bazar-app-name {
+    font-size: 1.2rem;
+    display: block;
+    text-align: center;
+}
+.bazar-app-description {
+    font-size: .8rem;
+    display: block;
+    text-align: justify;
+}

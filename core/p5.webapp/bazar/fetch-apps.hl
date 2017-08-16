@@ -27,4 +27,37 @@ if:x:/-/*/*/*
 /*
  * Fetching available apps from GitHub.
  */
-p5.http.get:""
+p5.http.get:"https://raw.githubusercontent.com/polterguy/phosphorusfive/master/core/p5.webapp/bazar/apps.hl"
+
+
+
+
+
+/*
+ * Transforming result to lambda.
+ */
+hyper2lambda:x:/@p5.http.get/*/result/*/content?value
+
+
+
+
+
+/*
+ * Making sure we cache results, in case user does another roundtrip later.
+ */
+add:x:/../*/p5.web.cache.set/*/*
+  src:x:/@hyper2lambda/*
+p5.web.cache.set:p5.bazar.apps
+  src
+    apps
+
+
+
+
+
+/*
+ * Returning results to caller.
+ */
+add:x:/../*/return
+  src:x:/@hyper2lambda/*
+return

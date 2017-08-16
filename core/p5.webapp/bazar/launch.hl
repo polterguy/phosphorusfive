@@ -10,9 +10,12 @@
 
 /*
  * Clearing out anything previously added to page, to make sure we start
- * out with a blank slate.
+ * out with a blank slate, in addition to making sure we've got our 
+ * "container-fullscreen" CSS class on main container.
  */
 clear-widget:cnt
+set-widget-property:cnt
+  class:container-fullscreen
 
 
 
@@ -25,6 +28,7 @@ p5.web.include-css-file:@MICRO/media/main.css
 p5.web.include-css-file:@MICRO/media/ext.css
 p5.web.include-css-file:@MICRO/media/skins/serious.css
 p5.web.include-css-file:@MICRO/media/fonts.css
+p5.web.include-css-file:/desktop/main.css
 
 
 
@@ -42,7 +46,7 @@ if:x:/@whoami/*/default?value
    */
   load-file:/desktop/login.hl
   eval:x:/-/*
-    message:You must login with a root account to access server settings
+    message:You must login with a root account to access the Bazar
   return
 
 
@@ -60,7 +64,7 @@ if:x:/@whoami/*/role?value
    */
   load-file:/desktop/login.hl
   eval:x:/-/*
-    message:You must login with a root account to access server settings
+    message:You must login with a root account to access the Bazar
   return
 
 
@@ -71,3 +75,109 @@ if:x:/@whoami/*/role?value
  * Retrieving available apps.
  */
 micro.evaluate.file:/bazar/fetch-apps.hl
+
+
+
+
+
+/*
+ * Looping through each available app, checking if its condition is not met,
+ * at which point the app is not installed, and we can add it to our [create-widget]
+ * invocation below, allowing user to install the app.
+ */
+for-each:x:/@micro.evaluate.file/*
+
+  /*
+   * Checking "condition" of app, which basically is assumed to be an Active Event,
+   * which if existing, implies the app is already installed.
+   */
+  vocabulary:x:/@_dp/#/*/condition?value
+  if:x:/-/*
+
+    /*
+     * App is already installed (since it's [condition] event was found on server from before).
+     */
+    continue
+
+  /*
+   * Adding app to [create-widget] invocation below, to allow user to install it.
+   */
+  eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description)/./*/innerValue|/onclick/*(/_app-name|/_app-url))
+  add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets
+    src
+      container
+        element:a
+        href:#
+        role:button
+        class:bazar-app shaded rounded air-inner bg
+        onclick
+
+          /*
+           * Forward evaluate above.
+           */
+          _app-name:x:/@_dp/#/*/name?value
+          _app-url:x:/@_dp/#/*/url?value
+
+          /*
+           * Asking user to confirm installation, and initiating download and 
+           * installation process.
+           */
+          create-widgets
+            micro.widgets.modal:bazar-confirm-installation
+              widgets
+                h3
+                  innerValue:Please confirm ...
+                p
+                  innerValue:Are you sure you want to install '{0}'
+                    :x:/@_app-name?value
+                div
+                  class:right
+                  widgets
+                    div
+                      class:strip
+                      style:"display:inline-block;"
+                      widgets
+                        button
+                          innerValue:Yes
+                          style:"margin-bottom:0;"
+                          oninit
+
+                            /*
+                             * Setting initial focus to button.
+                             */
+                            micro.page.set-focus:x:/../*/_event?value
+
+                        button
+                          innerValue:No
+                          style:"margin-bottom:0;"
+                          onclick
+
+                            /*
+                             * Simply deleting modal widget.
+                             */
+                            delete-widget:bazar-confirm-installation
+
+        widgets
+          literal
+            class:bazar-app-name
+            innerValue:x:/@_dp/#/*/name?value
+          literal
+            class:bazar-app-description
+            innerValue:x:/@_dp/#/*/description?value
+      
+
+
+
+
+/*
+ * Creating actual Bazar widget, wrapping all available apps from Bazar.
+ */
+create-widget
+  class:row
+  widgets
+    div
+      class:col
+      widgets
+        div
+          class:bazar-wrapper
+          widgets

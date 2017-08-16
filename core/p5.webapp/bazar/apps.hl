@@ -4,6 +4,6 @@
  */
 app
   name:Sephia Five
-  description:Cryptographically secure email system
+  description:Cryptographically secure email system with PGP support, and lots of privacy features
   condition:p5.io.unroll-path.@SEPHIA
   url:"https://github.com/polterguy/sephia-five"
