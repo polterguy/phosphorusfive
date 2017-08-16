@@ -84,3 +84,22 @@ create-widgets
                 micro.windows.info:x:/..catch/*/message?value
                   class:micro-windows-info warning
                   parent:x:/@p5.web.widgets.find-first/*/*?value
+
+
+
+
+
+/*
+ * Checking if caller supplied a message, and if so, making sure we alert user
+ */
+if:x:/../*/message?value
+
+  /*
+   * Caller supplied a message, making sure we apply it.
+   */
+  p5.web.widgets.find-first
+    class:micro-modal-content
+  eval-x:x:/+/*
+  micro.windows.info:x:/../*/message?value
+    parent:x:/@p5.web.widgets.find-first/*/*?value
+    class:micro-windows-info warning
