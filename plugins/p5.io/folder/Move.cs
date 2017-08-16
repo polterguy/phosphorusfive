@@ -41,7 +41,7 @@ namespace p5.io.folder
         [ActiveEvent (Name = "p5.io.folder.move")]
         public static void p5_io_folder_move (ApplicationContext context, ActiveEventArgs e)
         {
-            // Using our common helper for actual implementation
+            // Using our common helper for actual implementation.
             MoveCopyHelper.CopyMoveFileObject (
                 context, 
                 e.Args, 
@@ -49,8 +49,9 @@ namespace p5.io.folder
                 "modify-folder", 
                 delegate (string rootFolder, string source, string destination) {
 
-                // Actually moving (or renaming) folder
+                // Actually moving (or renaming) folder.
                 Directory.Move (rootFolder + source, rootFolder + destination);
+
             }, Directory.Exists);
         }
     }
