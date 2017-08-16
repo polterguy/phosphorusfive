@@ -164,7 +164,65 @@ for-each:x:/@micro.evaluate.file/*
           literal
             class:bazar-app-description
             innerValue:x:/@_dp/#/*/description?value
-      
+
+
+
+
+
+/*
+ * Checking if user have all apps installed, and if so, giving him a simple
+ * notification about that.
+ */
+if:x:/../*/create-widgets/*/widgets/*/div/*/widgets/*/div/*/widgets/*
+  not
+
+  /*
+   * User have all apps already installed, informing him about that fact in a modal widget,
+   * and returning early.
+   */
+  create-widgets
+    micro.widgets.modal
+      widgets
+        h3
+          innerValue:Information ...
+        p
+          innerValue:@"It seems you've already got all available apps installed. Now of course, if you're a geek, you could probably
+create some of your own, and have me host them for you. If so, feel free to create it, and toss me an email at <a href=""mailto:thomas@gaiasoul.com"">thomas@gaiasoul.com</a>, to
+inform me about your app, requesting me to host it for you."
+        p
+          innerValue:Notice, this implies allowing me to scrutinize your app carefully, to make sure it is in no ways harmful!
+        p
+          innerValue:If you distribute your app for a fee, I will also take a 25% commission to host it.
+        p
+          innerValue:Regardless, I will still need to have access to your app's entire source code, to make sure it is not malicious in any ways.
+        p
+          innerValue:@"I will also choose to not host your app, if it does not seem to provide a value, or for other reasons does not fit in with my existing model, GUI styles, user flow styles, etc. 
+Hence, I give no guarantees that your app will be hosted by me."
+        div
+          class:right
+          widgets
+            button
+              innerValue:Close
+              oninit
+
+                /*
+                 * Setting initial focus to button, to allow easy closing and return to root URL of server.
+                 */
+                micro.page.set-focus:x:/../*/_event?value
+
+              onclick
+
+                /*
+                 * Redirecting user to root URL.
+                 */
+                p5.web.get-root-location
+                p5.web.set-location:x:/-?value
+
+  /*
+   * Returning early, to avoid evaluation of the rest of our file.
+   */
+  return
+
 
 
 
