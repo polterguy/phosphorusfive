@@ -111,7 +111,7 @@ namespace p5.mime
                                 context,
                                 idxMimeNode,
                                 streams);
-                            creator.Create().WriteTo(output);
+                            creator.Create ().WriteTo (output);
 
                         } finally {
 
