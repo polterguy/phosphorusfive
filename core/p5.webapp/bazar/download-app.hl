@@ -1,0 +1,127 @@
+
+/*
+ * File responsible for downloading app, and then installing it after download is complete.
+ *
+ * Expects [url] to app.
+ */
+
+
+
+
+
+/*
+ * Sanity checking arguments.
+ */
+micro.lambda.contract.min:x:/..
+  url:string
+
+
+
+
+
+/*
+ * Retrieving file and saving it to user's temp folder.
+ */
+p5.http.get:x:/../*/url?value
+  .onresponse
+    .p5.io.file.save-to-stream:~/temp/app.mime
+
+
+
+
+
+/*
+ * Parsing file, and verifying PGP signature of it.
+ */
+p5.mime.load:~/temp/app.mime
+  attachment-folder:~/temp/
+  attachment-folder-no-prefix:false
+if:x:/@p5.mime.load/*/multipart/=signed/*/signature/0?value
+  !=:bool:true
+
+  /*
+   * Signature fissled, cannot proceed.
+   */
+  throw:Sorry, this application's cryptographic signature was not verified
+
+
+
+
+
+/*
+ * Verifying PGP signature is on trusted list of app distributors.
+ */
+load-file:/bazar/configuration/trusted-app-distributors.hl
+if:x:/@load-file/*/*/fingerprint/={0}
+  :x:/@p5.mime.load/*/multipart/=signed/*/signature/0/*/fingerprint?value
+  not
+
+  /*
+   * App was not signed by a trusted app distributor.
+   */
+  throw:Sorry, we do not trust that app vendor. If you wish to change this, please edit your 'trusted-app-distributor.hl' file inside the '/bazar/configuration/' folder, and add up the PGP signature for the vendor that distributed this app.
+
+
+
+
+
+/*
+ * Now we can safely unzip file, and actually install application.
+ */
+unzip:~/temp/{0}
+  :x:/@p5.mime.load/*/multipart/=signed/*/application/=zip/*/filename?value
+  dest:/
+
+
+
+
+
+/*
+ * Making sure we un-install any previously installed version of app,
+ * if there exists an old version of app, and an "uninstall.hl" file for the old version.
+ */
+p5.web.session.get:bazar.local-url
+if
+  fetch:x:/0/0?value
+    folder-exist:x:/@p5.web.session.get/*?value
+
+  /*
+   * An old version of app exists.
+   * Now checking if there is an uninstall file for it.
+   */
+  if
+    fetch:x:/0/0?value
+      file-exists:{0}uninstall.hl
+        :x:/@p5.web.session.get/*?value
+    micro.evaluate.file:{0}uninstall.hl
+      :x:/@p5.web.session.get/*?value
+
+  /*
+   * Then deleting old files for app.
+   */
+  delete-folder:x:/@p5.web.session.get/*?value
+
+
+
+
+
+/*
+ * Then renaming folder for our unzip operation to app's friendly folder name.
+ */
+move-folder:x:/@unzip/0?name
+  dest:/{0}/
+    :x:/@p5.web.session.get/*?value
+
+
+
+
+
+/*
+ * Then evaluating any startup Hyperlambda scripts for our newly installed app.
+ */
+if
+  fetch:x:/0/0?value
+    file-exists:/{0}/startup.hl
+      :x:/@p5.web.session.get/*?value
+  micro.evaluate.file:/{0}/startup.hl
+    :x:/@p5.web.session.get/*?value

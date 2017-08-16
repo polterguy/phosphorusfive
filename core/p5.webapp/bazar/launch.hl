@@ -72,6 +72,25 @@ if:x:/@whoami/*/role?value
 
 
 /*
+ * Checking if this is a "return to download" invocation, after having purchased
+ * an app at PayPal.
+ */
+p5.web.query.get:app-url
+if:x:/-/*?value
+
+  /*
+   * This is a redirect from PayPal, invoking file responsible for downloading 
+   * and installing app.
+   */
+  eval-x:x:/+/*
+  micro.evaluate.file:/bazar/download-app.hl
+    url:x:/@p5.web.query.get/*?value
+
+
+
+
+
+/*
  * Retrieving available apps.
  */
 micro.evaluate.file:/bazar/fetch-apps.hl
@@ -95,7 +114,9 @@ for-each:x:/@micro.evaluate.file/*
   if:x:/-/*
 
     /*
-     * App is already installed (since it's [condition] event was found on server from before).
+     * App is already installed.
+     *
+     * It's [condition] event was found on server from before.
      */
     continue
 
@@ -108,11 +129,13 @@ for-each:x:/@micro.evaluate.file/*
   p5.html.html-encode:x:/@_dp/#/*/author-readme?value
   markdown2html:x:/-?value
   p5.html.html-encode:x:/@_dp/#/*/price?value
+  p5.html.html-encode:x:/@_dp/#/*/paypal-id?value
+  p5.html.html-encode:x:/@_dp/#/*/local-url?value
 
   /*
    * Adding app to [create-widget] invocation below, to allow user to install it.
    */
-  eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description))
+  eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_paypal-id|/_local-url))
   add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets
     src
       container
@@ -128,11 +151,14 @@ for-each:x:/@micro.evaluate.file/*
           _app-name:x:/..for-each/*/p5.html.html-encode/[0,1]?value
           _app-url:x:/..for-each/*/p5.html.html-encode/[1,2]?value
           _app-author-description:x:/@markdown2html?value
+          _paypal-id:x:/..for-each/*/p5.html.html-encode/[5,6]?value
+          _local-url:x:/..for-each/*/p5.html.html-encode/[6,7]?value
 
           /*
            * Asking user to confirm installation, and initiating download and 
            * installation process.
            */
+          eval-x:x:/+/**(/_url|/_paypal-id|/_local-url)
           create-widgets
             micro.widgets.modal:bazar-confirm-installation
               widgets
@@ -168,8 +194,17 @@ automatically starting the purchasing/installation process."
                           onclick
 
                             /*
-                             * Redirecting browser to download URL.
+                             * Passing in URL to file responsible for downloading and
+                             * installing the app.
                              */
+                            _url:x:/@_app-url?value
+                            _paypal-id:x:/@_paypal-id?value
+                            _local-url:x:/@_local-url?value
+                            eval-x:x:/+/*
+                            micro.evaluate.file:/bazar/install-app.hl
+                              url:x:/@_url?value
+                              paypal-id:x:/@_paypal-id?value
+                              local-url:x:/@_local-url?value
 
                         button
                           innerValue:No
@@ -205,7 +240,7 @@ if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/*
 
   /*
    * User have all apps already installed, informing him about that fact in a modal widget,
-   * and returning early.
+   * and returning early, while also encouraging developers to start creating apps.
    */
   create-widgets
     micro.widgets.modal

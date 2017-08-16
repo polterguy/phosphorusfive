@@ -1,0 +1,18 @@
+
+/*
+ * List of trusted app distributors.
+ *
+ * This is basically the PGP fingerprint of the PGP key you would use to sign your apps.
+ * Unless the key used to sign an app's download file, can somehow be found in this list,
+ * Phosphorus Five will by default reject the app, and not allow the user to install it.
+ *
+ * PS!
+ * The way you'd sign a zip file, which is the expected app file format for distributing apps,
+ * is by using the [p5.mime.save] Active Event, supplying a [sign] node, with a [fingerprint] argument,
+ * containing the [password] necessary to retreieve your key.
+ *
+ * Which basically implies, that the format of the file for your app, is actually a cryptographically
+ * signed MIME envelope file, containing one multipart/signed entity, having the zip file as its
+ * only leaf entity, in addition to your PGP signature for the file.
+ */
+fingerprint:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
