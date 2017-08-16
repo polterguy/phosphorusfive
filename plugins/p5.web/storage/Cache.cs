@@ -47,12 +47,16 @@ namespace p5.web.storage
             // Retrieving for how long the value should be set in cache, before removed
             var minutes = e.Args.GetExChildValue ("minutes", context, 30);
 
+            // We must untie [minutes] to avoid having multiple sources for our iteration below.
+            e.Args ["minutes"]?.UnTie (); 
+
             // Settings cache value
             XUtil.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // Removal
                     HttpContext.Current.Cache.Remove (key);
+
                 } else {
 
                     // Setting or updating
