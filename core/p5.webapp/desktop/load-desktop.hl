@@ -127,17 +127,20 @@ for-each:x:/@list-files/*?name
    * Checking if currently iterated "app" has a "desktop.hl" widget file.
    */
   replace:x:/@_dp?value
-    what:launch.hl
+    src:/launch.hl
+    dest:/desktop.hl
   if
     fetch:x:/0/0?value
-      file-exists:{0}/desktop.hl
-        :x:/@replace?value
+      file-exists:x:/@replace?value
 
     /*
      * Currently iterated app has a desktop widget declaration file.
      *
      * Using this widget instead of our generic "app" widget.
      */
+    load-file:x:/@replace?value
+    add:x:/../*/create-widget/*/widgets/*/div/*/widgets
+      src:x:/@load-file/*/*
 
   else
 
