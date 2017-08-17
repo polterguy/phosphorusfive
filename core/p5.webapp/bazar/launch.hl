@@ -80,11 +80,12 @@ if:x:/-/*?value
 
   /*
    * This is a redirect from PayPal, invoking file responsible for downloading 
-   * and installing app.
+   * and installing app, after first having retrieved the app's download URL.
    */
+  p5.web.session.get:x:/@p5.web.query.get/*?value
   eval-x:x:/+/*
   micro.evaluate.file:/bazar/download-app.hl
-    url:x:/@p5.web.query.get/*?value
+    url:x:/@p5.web.session.get/*?value
 
 
 

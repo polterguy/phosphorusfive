@@ -66,17 +66,10 @@ if:x:/@load-file/*/*/fingerprint/={0}
 
 
 /*
- * Now we can safely unzip file, and actually install application.
- */
-unzip:~/temp/{0}
-  :x:/@p5.mime.load/*/multipart/=signed/*/application/=zip/*/filename?value
-  dest:/
-
-
-
-
-
-/*
+ * Now that we have verified that the above app is cryptographicall signed correctly,
+ * and that it is created by a trusted app distributor, we can uninstall any previous versions
+ * of the app.
+ *
  * Making sure we un-install any previously installed version of app,
  * if there exists an old version of app, and an "uninstall.hl" file for the old version.
  */
@@ -97,7 +90,7 @@ if
       :x:/@p5.web.session.get/*?value
 
   /*
-   * Then deleting old files for app.
+   * Then deleting the folder that contains the old version of our app.
    */
   delete-folder:x:/@p5.web.session.get/*?value
 
@@ -106,18 +99,42 @@ if
 
 
 /*
- * Then renaming folder for our unzip operation to app's friendly folder name.
+ * Now we can safely unzip file, and actually install application.
  */
-move-folder:x:/@unzip/0?name
-  dest:/{0}/
-    :x:/@p5.web.session.get/*?value
+unzip:~/temp/{0}
+  :x:/@p5.mime.load/*/multipart/=signed/*/application/=zip/*/filename?value
+  dest:/
 
 
 
 
 
 /*
- * Then evaluating any startup Hyperlambda scripts for our newly installed app.
+ * Then renaming folder for our unzip operation to app's friendly folder name.
+ *
+ * However, we only do this, if the app's zip file contained a folder that had
+ * a different name than the name the floder of our app should have.
+ */
+if:x:/@unzip/0?name
+  !=:x:/@p5.web.session.get/*?value
+
+  /*
+   * The folder our [unzip] operation created was different than the folder
+   * we want to actually host our app within.
+   *
+   * Hence, we rename the folder, before we proceed.
+   */
+  move-folder:x:/@unzip/0?name
+    dest:/{0}/
+      :x:/@p5.web.session.get/*?value
+
+
+
+
+
+/*
+ * Then evaluating any startup Hyperlambda scripts for our newly installed app,
+ * if there exists such a thing.
  */
 if
   fetch:x:/0/0?value

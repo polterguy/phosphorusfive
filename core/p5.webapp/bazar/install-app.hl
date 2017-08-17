@@ -21,6 +21,7 @@
  */
 micro.lambda.contract.min:x:/..
   url:string
+  local-url:string
 micro.lambda.contract.optional:x:/..
   paypal-id:string
 
@@ -49,13 +50,23 @@ if:x:/../*/paypal-id?value
   /*
    * This is a PayPal link, creating a form, which allows PayPal to redirect
    * the client back to ourselves, after having purchased, passing in the URL
-   * of the app to be downloaded as an HTTP GET argument when transaction is finished.
+   * of the app to be downloaded, indirectly as an HTTP GET argument when transaction 
+   * is finished.
    *
-   * Making sure PayPal redirects to server's Bazar URL, passing in a GET parameter to
-   * actually download file afterwards.
+   * Notice, we do this by storing the actual URL in the user's session, with a randomly
+   * generated GUID being the "app-id".
+   *
+   * First creating a random GUID.
    */
+  p5.types.guid.new
+
+  /*
+   * Then storing our app's download URL in user's session, with the GUID being its key.
+   */
+  p5.web.session.set:x:/@p5.types.guid.new?value
+    src:x:/../*/url?value
+
   p5.web.get-root-location
-  p5.html.url-encode:x:/../*/url?value
   p5.web.send-javascript:@"
 var f = document.createElement('div');
 f.innerHTML = '<form id=""paypal_form"" action=""https://www.paypal.com/cgi-bin/webscr"" method=""post""><input type=""hidden"" name=""cmd"" value=""_s-xclick""><input type=""hidden"" name=""hosted_button_id"" value=""{0}""><input type=""hidden"" name=""return"" value=""{1}/bazar?app-url={2}""><img alt="""" border=""0"" src=""https://www.paypalobjects.com/en_US/i/scr/pixel.gif"" width=""1"" height=""1""></form>';
@@ -63,7 +74,7 @@ document.body.appendChild(f);
 document.forms['paypal_form'].submit();"
     :x:/../*/paypal-id?value
     :x:/@p5.web.get-root-location?value
-    :x:/@p5.html.url-encode?value
+    :x:/@p5.types.guid.new?value
 
 else
 
