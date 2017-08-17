@@ -29,7 +29,7 @@ for the [plugins](plugins/), as the need surface. Most of the examples in the co
 using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps. Below is a screenshot of Phosphorus Five
 used in combination with [Micro](https://github.com/polterguy/micro).
 
-![alt screenshot](main-p5-screenshot.png)
+![alt screenshot](main-p5-screenshot-2.png)
 
 ## Hyperlambda
 
