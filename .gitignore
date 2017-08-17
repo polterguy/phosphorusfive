@@ -187,24 +187,11 @@ p5.userprefs
 #p5.data files
 core/p5.webapp/db
 
-#user files
-core/p5.webapp/users/*
-!core/p5.webapp/users/root/documents/public/README.md
-!core/p5.webapp/users/root/documents/private/web.config
-!core/p5.webapp/users/root/documents/private/README.md
-!core/p5.webapp/users/root/temp/README.md
-
 #all MAC directory files
 **/.DS_Store
 
 #auth file
 core/p5.webapp/auth.hl
-
-#common files
-core/p5.webapp/common/public/*
-!core/p5.webapp/common/documents/public/README.md
-!core/p5.webapp/common/documents/private/README.md
-!core/p5.webapp/common/documents/private/web.config
 
 # Excluding System42
 core/p5.webapp/system42/**
