@@ -254,6 +254,14 @@
     <None Include="desktop\install-micro.hl" />
     <None Include="desktop\login.hl" />
     <None Include="desktop\logout.hl" />
+    <None Include="bazar\desktop.hl" />
+    <None Include="bazar\download-app.hl" />
+    <None Include="bazar\fetch-apps.hl" />
+    <None Include="bazar\install-app.hl" />
+    <None Include="bazar\launch.hl" />
+    <None Include="bazar\configuration\apps.hl" />
+    <None Include="bazar\configuration\bazars.hl" />
+    <None Include="bazar\configuration\trusted-app-distributors.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
