@@ -1,10 +1,10 @@
 Phosphorus Five
 ===============
 
-Phosphorus Five is a Web Application Framework for developing rich and highly interactive Ajax centric web apps.
-It contains an entirely unique programming language called _"Hyperlambda"_, which allows you to orchestrate your
-apps together, almost as if they were made out of LEGO bricks. For a 4 minutes long introduction and how to
-get started, watch the following [YouTube video](https://www.youtube.com/watch?v=KP69OnVz4vs). 
+Phosphorus Five is a Web Operating System and Application Framework, for consuming and developing rich and highly 
+interactive Ajax centric web apps. It contains an entirely unique programming language called _"Hyperlambda"_, which 
+allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks. For a 4 minutes long 
+introduction and how to get started, watch the following [YouTube video](https://www.youtube.com/watch?v=KP69OnVz4vs). 
 An example of some Hyperlambda can be found below.
 
 ```
