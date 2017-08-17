@@ -132,7 +132,7 @@ for-each:x:/@micro.evaluate.file/*
   p5.html.html-encode:x:/@_dp/#/*/price?value
   p5.html.html-encode:x:/@_dp/#/*/paypal-id?value
   p5.html.html-encode:x:/@_dp/#/*/local-url?value
-  p5.html.html-encode:x:/@_dp/#/*/bg-image?value
+  p5.html.html-encode:x:/@_dp/#/*/image?value
 
   /*
    * Making sure we apply icon-image to markdown results.
