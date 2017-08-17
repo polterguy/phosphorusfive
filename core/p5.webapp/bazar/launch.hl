@@ -132,6 +132,22 @@ for-each:x:/@micro.evaluate.file/*
   p5.html.html-encode:x:/@_dp/#/*/price?value
   p5.html.html-encode:x:/@_dp/#/*/paypal-id?value
   p5.html.html-encode:x:/@_dp/#/*/local-url?value
+  p5.html.html-encode:x:/@_dp/#/*/bg-image?value
+
+  /*
+   * Making sure we apply icon-image to markdown results.
+   */
+  html2lambda:x:/@markdown2html?value
+  eval-x:x:/+/**
+  insert-before:x:/@html2lambda/0
+    src
+      img
+        @src:x:/..for-each/*/p5.html.html-encode/[7,8]?value
+        @style:"max-width:30%;float:right;margin-left:1rem;margin-bottom:1rem;"
+        @class:shaded rounded
+  lambda2html:x:/@html2lambda/*
+  set:x:/@markdown2html?value
+    src:x:/@lambda2html?value
 
   /*
    * Adding app to [create-widget] invocation below, to allow user to install it.
@@ -164,17 +180,16 @@ for-each:x:/@micro.evaluate.file/*
             micro.widgets.modal:bazar-confirm-installation
               widgets
                 h3
-                  innerValue:Confirm installation of {0} ...
+                  innerValue:Confirm installation of {0}
                     :x:/@_app-name?value
                 p
-                  innerValue:@"Are you sure you want to install {0}?"
+                  innerValue:@"Are you sure you want to install {0}? Its developer has the following to say about it."
                     :x:/@_app-name?value
                 div
                   class:success rounded air-inner
                   innerValue:x:/@_app-author-description?value
                 p
-                  innerValue:@"If you choose 'Yes', you will be redirected to either a purchase link, or a download link, 
-automatically starting the purchasing/installation process."
+                  innerValue:@"Notice, this process might take some time. Please allow Phosphorus Five to finish it without interruptions."
                 div
                   class:right
                   widgets
@@ -185,6 +200,7 @@ automatically starting the purchasing/installation process."
                         button
                           innerValue:Yes
                           style:"margin-bottom:0;"
+                          onclick:@"return p5.bazar_download_app(event);"
                           oninit
 
                             /*
@@ -192,7 +208,30 @@ automatically starting the purchasing/installation process."
                              */
                             micro.page.set-focus:x:/../*/_event?value
 
-                          onclick
+                            /*
+                             * Including JavaScript necessary to create a "please wait"
+                             * screen, as user clicks the "Yes" button.
+                             */
+                            p5.web.include-javascript:@"
+p5.bazar_download_app = function(e) {
+  var obsc = document.createElement('div');
+  obsc.id = 'bazar-obscurer';
+  obsc.className = 'bazar-ajax-wait';
+  var header = document.createElement('h1');
+  var cnt = document.createTextNode('Please wait ...');
+  header.appendChild(cnt);
+  obsc.appendChild(header);
+  document.body.appendChild(obsc);
+  p5.$(e.currentTarget.id).raise('.onclick', {
+    onsuccess:function(){
+      var obsc = p5.$('bazar-obscurer').el;
+      obsc.parentElement.removeChild(obsc);
+    }});
+  e.stopPropagation();
+  return false;
+}"
+
+                          .onclick
 
                             /*
                              * Passing in URL to file responsible for downloading and
@@ -206,6 +245,13 @@ automatically starting the purchasing/installation process."
                               url:x:/@_url?value
                               paypal-id:x:/@_paypal-id?value
                               local-url:x:/@_local-url?value
+
+                            /*
+                             * Redirecting user to desktop, after installation process if
+                             * finished.
+                             */
+                            p5.web.get-root-location
+                            p5.web.set-location:x:/-?value
 
                         button
                           innerValue:No
