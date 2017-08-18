@@ -43,10 +43,10 @@ if:x:/@whoami/*/role?value
   !=:root
 
   /*
-   * User is not logged in with a root account, therefor we force him to do just that.
+   * User is not logged in with a root account, therefor we force him to do just that, and return early,
+   * to avoid evaluation of the rest of the file.
    */
-  load-file:/desktop/login.hl
-  eval:x:/-/*
+  p5.core.login
     message:You must login with a root account to access the Bazar
   return
 

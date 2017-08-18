@@ -245,9 +245,7 @@
     <None Include="common\documents\private\README.md" />
     <None Include="common\documents\public\README.md" />
     <None Include="startup.hl" />
-    <None Include="desktop\load-desktop.hl" />
-    <None Include="desktop\login.hl" />
-    <None Include="desktop\logout.hl" />
+    <None Include="desktop\launch.hl" />
     <None Include="modules\README.md" />
     <None Include="modules\bazar\configuration\apps.hl" />
     <None Include="modules\bazar\configuration\bazars.hl" />
@@ -260,6 +258,9 @@
     <None Include="desktop\initialize\initialize-server.hl" />
     <None Include="desktop\initialize\install-micro.hl" />
     <None Include="desktop\startup.hl" />
+    <None Include="desktop\startup\p5.web.load-ui.hl" />
+    <None Include="desktop\startup\p5.core.login.hl" />
+    <None Include="desktop\startup\p5.core.logout.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
