@@ -96,11 +96,11 @@ else-if
        * Then our textbox widgets, asking user to provide a root password for his system.
        */
       input:root-password
-        type:text
+        type:password
         placeholder:Root password ...
         style:"display:block;width:50%;margin-left:auto;margin-right:auto;"
       input:root-password-repeat
-        type:text
+        type:password
         placeholder:Repeat password ...
         style:"display:block;margin-top:15px;width:50%;margin-left:auto;margin-right:auto;"
 
