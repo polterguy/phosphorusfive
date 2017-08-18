@@ -130,6 +130,6 @@ create-event:p5.web.load-ui
       /*
        * A specific application was requested, evaluating it's "launch.hl" file.
        */
-      load-file:/modules{0}launch.hl
+      load-file:/modules{0}/launch.hl
         :x:/../*/url?value
       eval:x:/-/*

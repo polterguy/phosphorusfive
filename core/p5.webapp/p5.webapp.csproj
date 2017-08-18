@@ -245,7 +245,6 @@
     <None Include="common\documents\private\README.md" />
     <None Include="common\documents\public\README.md" />
     <None Include="startup.hl" />
-    <None Include="desktop\create-load-ui.hl" />
     <None Include="desktop\load-desktop.hl" />
     <None Include="desktop\login.hl" />
     <None Include="desktop\logout.hl" />
