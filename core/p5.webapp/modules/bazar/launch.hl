@@ -136,7 +136,7 @@ for-each:x:/@micro.evaluate.file/*
    * Adding app to [create-widget] invocation below, to allow user to install it.
    */
   eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_paypal-id|/_local-url))
-  add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets
+  add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps
     src
       container
         element:a
@@ -304,19 +304,133 @@ create-widget
     div
       class:col
       widgets
-        a
-          class:bazar-leave
-          innerValue:@"<span class=""icon-close""></span>"
-          title:Leave Bazar
-          oninit
 
-            /*
-             * Setting URL of hyperlink to main root URL of P5.
-             */
-            p5.web.get-root-location
-            set-widget-property:x:/../*/_event?value
-              href:x:/@p5.web.get-root-location?value
-
+        /*
+         * Add Bazar wrapper.
+         */
         div
-          class:bazar-wrapper
+          class:bazar-add
           widgets
+            div
+              class:right
+              widgets
+                div
+                  class:strip
+                  style:"display:inline-block;"
+                  widgets
+                    button
+                      innerValue:@"<span class=""icon-plus""></span>"
+                      style:"margin-bottom:0;"
+                      onclick
+
+                        /*
+                         * Allowing user to add a Bazar manifest URL.
+                         */
+                        create-widgets
+                          micro.widgets.modal:bazar-add-bazar
+                            widgets
+                              h3
+                                innerValue:Add new Bazar
+                              p
+                                innerValue:@"Please only add Bazars you trust 100%, since downloading code from sources outside of your own server, 
+might be dangerous, and allow an adversary to evaluate malicious code on your system!"
+
+                              /*
+                               * Using a wizard window for simplicity.
+                               */
+                              micro.widgets.wizard-form:bazar-add-bazar-wizard
+                                text:bazar-bazar-url
+                                  .data-field:url
+                                  info:Bazar URL
+                                  onkeydown:@"if (event.keyCode == 13) {p5.$('bazar-add-bazar-btn').raise('onclick');return false;}"
+                                  oninit
+                                    micro.page.set-focus:x:/../*/_event?value
+
+                              /*
+                               * Wrapper for "Add" and "Close" buttons.
+                               */
+                              div
+                                class:right
+                                widgets
+                                  div
+                                    class:strip
+                                    style:"display:inline-block;"
+                                    widgets
+
+                                      /*
+                                       * Add Bazar button
+                                       */
+                                      button:bazar-add-bazar-btn
+                                        innerValue:Add Bazar
+                                        style:"margin-bottom:0;"
+                                        onclick
+
+                                          /*
+                                           * Loading Bazar file, to see if it has additional suggested PGP fingerprints.
+                                           *
+                                           * Making sure we do this in a try/catch block
+                                           */
+                                          micro.widgets.wizard-form.value:bazar-add-bazar-wizard
+                                          try
+                                            p5.http.get:x:/@micro.widgets.wizard-form.value/*/url?value
+                                            create-widget
+                                              element:pre
+                                              innerValue:x:/..
+
+                                          catch
+
+                                            /*
+                                             * Oops ...!!
+                                             *
+                                             * Displaying error window to user, and returning early.
+                                             */
+                                            p5.web.widgets.find-first:bazar-add-bazar
+                                              class:micro-modal-content
+                                            eval-x:x:/+/*
+                                            micro.windows.info:Oops, not a valid Bazar URL
+                                              class:micro-windows-info warning
+                                              parent:x:/@p5.web.widgets.find-first/*/*?value
+
+                                            /*
+                                             * Setting focus to textbox, and returning early.
+                                             */
+                                            micro.page.set-focus:bazar-bazar-url
+                                            return
+
+                                          /*
+                                           * Deleting modal widget.
+                                           */
+                                          delete-widget:bazar-add-bazar
+
+                                      /*
+                                       * Close add new Bazar modal window.
+                                       */
+                                      button
+                                        innerValue:Close
+                                        style:"margin-bottom:0;"
+                                        onclick
+
+                                          /*
+                                           * Deleting modal widget.
+                                           */
+                                          delete-widget:bazar-add-bazar
+
+                    button
+                      innerValue:@"<span class=""icon-close""></span>"
+                      style:"margin-bottom:0;"
+                      onclick
+
+                        /*
+                         * Redirecting client back to root URL of P5.
+                         */
+                        p5.web.get-root-location
+                        p5.web.set-location:x:/-?value
+
+        /*
+         * Bazar(s) apps wrapper.
+         */
+        div
+          style:"clear:both;"
+          class:bazar-wrapper
+          widgets:apps
+
