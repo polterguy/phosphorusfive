@@ -37,6 +37,16 @@ eval:x:/-/*
 
 /*
  * Evaluating our desktop/micro web os "startup.hl" file.
+ *
+ * But only if file actually exists, which allows developers and distributors to simply delete the "desktop" folder,
+ * to start out with a clean slate.
  */
-load-file:/desktop/startup.hl
-eval:x:/-/*
+if
+  fetch:x:/0/0?value
+    file-exists:/desktop/startup.hl
+
+  /*
+   * "Desktop" app exists.
+   */
+  load-file:/desktop/startup.hl
+  eval:x:/-/*
