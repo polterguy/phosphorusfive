@@ -2,6 +2,33 @@
 /*
  * List of available Bazar apps.
  */
+
+
+
+
+
+/*
+ * First the current Bazar name.
+ */
+name:GaiaSoul main repository
+
+
+
+
+
+/*
+ * First all "suggested trusted PGP keys".
+ */
+suggested-keys
+  key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+
+
+
+
+
+/*
+ * Then the list of apps in current manifest.
+ */
 app
   name:Sephia Five
   description:A secure webmail client with PGP cryptography, virus protection, spam filter, and ad removal

@@ -8,8 +8,9 @@
  *
  * PS!
  * The way you'd sign a zip file, which is the expected app file format for distributing apps,
- * is by using the [p5.mime.save] Active Event, supplying a [sign] node, with a [fingerprint] argument,
- * containing the [password] necessary to retreieve your key.
+ * is by using the [p5.mime.save] Active Event, creating an application/zip MIME entity,
+ * supplying a [sign] node, with a [fingerprint] argument, containing the [password] necessary 
+ * to retreieve your key.
  *
  * Which basically implies, that the format of the file for your app, is actually a cryptographically
  * signed MIME envelope file, containing one multipart/signed entity, having the zip file as its
