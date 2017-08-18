@@ -28,39 +28,22 @@ p5.web.include-css-file:@MICRO/media/main.css
 p5.web.include-css-file:@MICRO/media/ext.css
 p5.web.include-css-file:@MICRO/media/skins/serious.css
 p5.web.include-css-file:@MICRO/media/fonts.css
-p5.web.include-css-file:/desktop/main.css
+p5.web.include-css-file:/desktop/media/main.css
 
 
 
 
 
 /*
- * Verifying user is logged in, and if not, redirecting the user to the root URL
- * of server.
+ * Verifying user is logged in with a root account, and if not, 
+ * forcing user to login before proceeding.
  */
 whoami
-if:x:/@whoami/*/default?value
-
-  /*
-   * User is not logged in, forcing him to do just that.
-   */
-  load-file:/desktop/login.hl
-  eval:x:/-/*
-    message:You must login with a root account to access the Bazar
-  return
-
-
-
-
-
-/*
- * Verifying user is root, and if not, allowing him to attempt to log in with a root account.
- */
 if:x:/@whoami/*/role?value
   !=:root
 
   /*
-   * User is not root, displaying a simple message
+   * User is not logged in with a root account, therefor we force him to do just that.
    */
   load-file:/desktop/login.hl
   eval:x:/-/*
@@ -84,7 +67,7 @@ if:x:/-/*?value
    */
   p5.web.session.get:x:/@p5.web.query.get/*?value
   eval-x:x:/+/*
-  micro.evaluate.file:/bazar/download-app.hl
+  micro.evaluate.file:/modules/bazar/download-app.hl
     url:x:/@p5.web.session.get/*?value
 
 
@@ -94,7 +77,7 @@ if:x:/-/*?value
 /*
  * Retrieving available apps.
  */
-micro.evaluate.file:/bazar/fetch-apps.hl
+micro.evaluate.file:/modules/bazar/fetch-apps.hl
 
 
 
@@ -241,7 +224,7 @@ p5.bazar_download_app = function(e) {
                             _paypal-id:x:/@_paypal-id?value
                             _local-url:x:/@_local-url?value
                             eval-x:x:/+/*
-                            micro.evaluate.file:/bazar/install-app.hl
+                            micro.evaluate.file:/modules/bazar/install-app.hl
                               url:x:/@_url?value
                               paypal-id:x:/@_paypal-id?value
                               local-url:x:/@_local-url?value

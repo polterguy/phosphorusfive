@@ -82,5 +82,5 @@ else
    * This is a free app, hence we can download it immediately.
    */
   eval-x:x:/+/*
-  micro.evaluate.file:/bazar/download-app.hl
+  micro.evaluate.file:/modules/bazar/download-app.hl
     url:x:/../*/url?value

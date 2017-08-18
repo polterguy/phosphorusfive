@@ -197,10 +197,13 @@ core/p5.webapp/auth.hl
 core/p5.webapp/system42/**
 
 # Excluding Micro
-core/p5.webapp/micro/**
+core/p5.webapp/modules/micro/**
 
 # Excluding Micro
-core/p5.webapp/sephia-five/**
+core/p5.webapp/modules/sephia-five/**
+
+# Excluding users files
+core/p5.webapp/users/**
 
 # Excluding auto generated Visual Studio files
 .vs/

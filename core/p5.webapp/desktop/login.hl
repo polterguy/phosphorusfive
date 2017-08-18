@@ -9,6 +9,10 @@ create-widgets
     widgets
       h3
         innerValue:Please login
+
+      /*
+       * Using a wizard widget for simplicity.
+       */
       micro.widgets.wizard-form:desktop-wizared-form
 
         /*

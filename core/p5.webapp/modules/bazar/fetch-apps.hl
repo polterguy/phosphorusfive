@@ -29,7 +29,7 @@ if:x:/-/*/*/*
  *
  * Creating one fetcher thread for each configured Bazar.
  */
-load-file:/bazar/configuration/bazars.hl
+load-file:/modules/bazar/configuration/bazars.hl
 apply:x:/../*/wait
   src:x:/@load-file/*/*/bazar
   template

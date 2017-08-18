@@ -1,16 +1,10 @@
 ﻿
 
 /*
- * Loads all "startup.hl" files inside all relevant "app" folders at root of "p5.webapp".
+ * Initialises our "components" and "apps", in addition to the core micro web operating system.
  *
- * In addition it creates our "main desktop", unless there exists another 
- * app, that have already during startup created a [p5.web.load-ui] event.
- *
- * This way, the default "desktop", will at least allow people to launch 
- * their apps, without being depdent upon System42.
- *
- * Basically, a "micro operating system", allowing you to easily host your apps,
- * without being dependent upon System42, or other systems.
+ * This will basically create our [p5.web.load-ui] event, in addition to evaluating all "startup.hl" files,
+ * for each module installed in the core web operating system.
  */
 
 
@@ -18,55 +12,124 @@
 
 
 /*
- * Making sure we've got synchronised access to server.
- *
- * This little bugger, will prevent loading of a web page, until server has been properly initialised.
+ * Retrieving all "startup.hl" files, inside all of our installed modules.
  */
-write-lock:p5.core.server-startup
+list-folders:/modules/
+list-files:x:/@list-folders/*?name
+  filter:startup.hl
+
+
+
+
+
+/*
+ * Evaluating all files from above result, to make sure we initialise all apps.
+ *
+ * Notice, since we do this before we create our [p5.web.load-ui] event, there will be no race conditions,
+ * making the system crash, due to a non-initialized event or something.
+ */
+load-file:x:/@list-files/*?name
+eval:x:/-/*
+
+
+
+
+
+/*
+ * Notice, some modules, such as System42 etc, would want to create their own [p5.web.load-ui] event, at which
+ * point the event would already have been created, overriding the default event implementation. If this is true, 
+ * we simply avoid evaluating the rest of the file.
+ */
+vocabulary:p5.web.load-ui
+if:x:/-/*
 
   /*
-   * Listing all folders at root.
+   * Another "module" has already overridden our default [p5.web.load-ui] event, hence returning early, 
+   * to avoid evaluation of the rest of our file.
    */
-  list-folders:/
+  return
+
+
+
+
+
+/*
+ * Now we can safely create our default [p5.web.load-ui] event.
+ *
+ * If you wish to entirely bypass the default "web operating system", with its desktop, and its Bazar, feel free
+ * to create your own module, which overrides the default [p5.web.load-ui] event.
+ *
+ * Just remember to somehow make sure you're able to setup the server salt, and have the user supply a root password.
+ *
+ * Hint; You can make sure your users are setting up a server salt and root password, by invoking the 
+ * "/desktop/initialize/initialize-server.hl" file, which will do nothing, if the server salt and root password has 
+ * already been setup, and return "false" if it is safe to proceed to your own app, and the server salt and root 
+ * password has already been setup.
+ *
+ * Or, you can see the logic this event provides for checking if the server salt and root pasword has already been setup.
+ * The latter would probably be slightly more efficient, and require less resources.
+ */
+create-event:p5.web.load-ui
 
   /*
-   * Removing folders that obviously does not have "apps" within them.
-   *
-   * Notice, the below "/db/" removal, will fissle, if you override your default p5.data database folder.
-   * Hence, if you do, you must also explicitly change the "/db/" value below.
+   * First we must check if server has been setup, with a root password, 
+   * and a server salt - And if not, we do so.
    */
-  set:x:@"/@list-folders/*(/""/db/""|/""/obj/""|/""/bin/""|/""/users/""|/""/common/""|/""/code/""|/""/desktop/""|/""/Properties/"")"
-
-  /*
-   * Listing all "startup.hl" files inside of the results of our above folder listing operation.
-   */
-  list-files:x:/@list-folders/*?name
-    filter:startup.hl
-
-  /*
-   * Loading and evaluating all files from above result.
-   */
-  load-file:x:/@list-files/*?name
-  eval:x:/@load-file/*
-
-  /*
-   * Then checking if there exists a [p5.web.load-ui] event, and if not, 
-   * creating one, by evaluating our "create desktop" Hyperlambda file.
-   *
-   * This implies, that if you have an application installed, which overrides
-   * the [p5.web.load-ui] event yourself, the desktop will "disappear", and your
-   * own app will do the URL loading/handling.
-   *
-   * Refer to your "web.config" file for "p5.webapp" to understand more about this process,
-   * and how you could create your own loader.
-   */
-  vocabulary:p5.web.load-ui
-  if:x:/-/*
+  if
+    p5.auth._has-salt
     not
+    or
+      p5.auth._root-password-is-null
 
     /*
-     * There exists no [p5.web.load-ui] event, creating one by evaluating file responsible
-     * for loading the "main desktop".
+     * No server salt, or no root password, hence server needs to be initialized.
      */
-    load-file:/desktop/create-load-ui.hl
+    load-file:/desktop/initialize/initialise-server.hl
     eval:x:/-/*
+
+  else
+
+    /*
+     * Verifying Micro is installed, and if not, automatically installing it.
+     */
+    vocabulary:p5.io.unroll-path.@MICRO
+    if:x:/@vocabulary/*
+      not
+
+      /*
+       * Micro is not installed, making sure we download it, and install it automatically.
+       */
+      load-file:/desktop/initialize/install-micro.hl
+      eval:x:/-/*
+
+      /*
+       * Now our setup process is finished, and we can logout the user from system.
+       *
+       * Notice, we choose to do this explicitly, since the root user might not necessary
+       * particularly enjoy it, if we keep him logged in at the localhost, or whatever client
+       * he were using to setup the system.
+       */
+      load-file:/desktop/logout.hl
+      eval:x:/-/*
+
+    /*
+     * Server has been initialized, hence we can load our desktop, or requested application,
+     * depending upon which [url] was specified.
+     */
+    if:x:/../*/url?value
+      =:/
+
+      /*
+       * Loading desktop.
+       */
+      load-file:/desktop/load-desktop.hl
+      eval:x:/-/*
+
+    else
+
+      /*
+       * A specific application was requested, evaluating it's "launch.hl" file.
+       */
+      load-file:/modules{0}launch.hl
+        :x:/../*/url?value
+      eval:x:/-/*

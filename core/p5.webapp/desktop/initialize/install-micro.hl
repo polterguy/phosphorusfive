@@ -1,0 +1,58 @@
+﻿
+
+/*
+ * Downloads and installs Micro.
+ *
+ * Expects the root account to be logged into the system.
+ */
+
+
+
+
+
+/*
+ * Downloading Micro.
+ */
+p5.http.get:"https://github.com/polterguy/micro/archive/v4.0-BETA1.zip"
+
+
+
+
+
+/*
+ * Saving zip file we downloaded above to user's temp folder.
+ *
+ * TODO: Check hash of file's content!!
+ */
+save-file:~/temp/micro.zip
+  src:x:/@p5.http.get/*/result/*/content?value
+
+
+
+
+
+/*
+ * Unzipping Micro into modules folder.
+ */
+unzip:~/temp/micro.zip
+  dest:/modules/
+
+
+
+
+
+/*
+ * Renaming the Micro main folder, to remove any versioning numbers, etc.
+ */
+move-folder:x:/@unzip/0?name
+  dest:/modules/micro/
+
+
+
+
+
+/*
+ * Making sure we evaluate the "startup.hl" file for Micro.
+ */
+load-file:/modules/micro/startup.hl
+eval:x:/-/*

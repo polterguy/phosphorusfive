@@ -1,38 +1,10 @@
 ﻿
 
 /*
- * Creates our "desktop", which basically just allows the user to select which application
- * he wants to start.
+ * Creates our "desktop", which basically just allows the user to select which application he wants to start.
  *
- * Plus also some apps, and/or components, the user probably wants to download.
+ * By default, there's only one application (or module) in P5, which is the Bazar.
  */
-
-
-
-
-
-/*
- * Verifying Micro is installed, and if not, automatically installing it.
- */
-vocabulary:p5.io.unroll-path.@MICRO
-if:x:/@vocabulary/*
-  not
-
-  /*
-   * Micro is not installed, making sure we download it, and install it automatically.
-   */
-  load-file:/desktop/install-micro.hl
-  eval:x:/-/*
-
-  /*
-   * Now our setup process is finished, and we can logout user from system.
-   *
-   * Notice, we choose to do this explicitly, since the root user might not necessary
-   * enjoyt it particularly much, if we keep him logged in at the localhost, or whatever client
-   * he were using to setup the system.
-   */
-  load-file:/desktop/logout.hl
-  eval:x:/-/*
 
 
 
@@ -41,6 +13,8 @@ if:x:/@vocabulary/*
 /*
  * Including main Micro CSS files, and making sure root "cnt" widget 
  * has the "container-fullscreen" CSS class, in addition to that it's empty.
+ *
+ * Notice, we also include the "serious" skin at this point.
  */
 p5.web.include-css-file:@MICRO/media/main.css
 p5.web.include-css-file:@MICRO/media/ext.css
@@ -57,7 +31,7 @@ clear-widget:cnt
 /*
  * Including main desktop CSS file.
  */
-p5.web.include-css-file:/desktop/main.css
+p5.web.include-css-file:/desktop/media/main.css
 
 
 
@@ -85,31 +59,20 @@ if:x:/-/*/default?value
 
 
 /*
- * Now we can determine all "apps" the user has installed on his system, and create a "desktop icon" for
- * each of these apps, to allow the user to actually launch his apps.
+ * Now we can determine all modules the user has installed on his system, and create a "desktop icon" for
+ * each of these modules, that have a "launch.hl" file, to allow the user to actually launch his apps.
  *
- * First we start by listing all folders at root.
+ * Hint, a module doesn't necessary have to include a "launch.hl" file, but if it doesn't, it won't have its
+ * own desktop icon created, and will be treated as an invisible "component" instead of an "app".
  */
-list-folders:/
+list-folders:/modules/
 
 
 
 
 
 /*
- * Then we remove folders that we know for sure does not contain any apps.
- *
- * Notice, the below "/db/" removal, will fissle, if you override your default p5.data database folder.
- * Hence, if you do, you must also explicitly change the "/db/" value below.
- */
-set:x:@"/@list-folders/*(/""/db/""|/""/obj/""|/""/bin/""|/""/users/""|/""/common/""|/""/code/""|/""/desktop/""|/""/Properties/"")"
-
-
-
-
-
-/*
- * Listing all "launch.hl" files inside of the results of our above folder listing operation.
+ * Listing all "launch.hl" files inside the results of our above folder listing operation.
  */
 list-files:x:/@list-folders/*?name
   filter:launch.hl
@@ -125,7 +88,8 @@ list-files:x:/@list-folders/*?name
 for-each:x:/@list-files/*?name
 
   /*
-   * Checking if currently iterated "app" has a "desktop.hl" widget file.
+   * Checking if currently iterated "app" has a "desktop.hl" widget file, at which point we use this "desktop.hl"
+   * file, instead of our "generic" launch widget.
    */
   replace:x:/@_dp?value
     src:/launch.hl
@@ -137,7 +101,7 @@ for-each:x:/@list-files/*?name
     /*
      * Currently iterated app has a desktop widget declaration file.
      *
-     * Using this widget instead of our generic "app" widget.
+     * Using this widget instead of our generic "launch app" widget.
      */
     load-file:x:/@replace?value
     add:x:/../*/create-widget/*/widgets/*/div/*/widgets
@@ -169,6 +133,8 @@ for-each:x:/@list-files/*?name
 
 /*
  * Creating actual desktop widget.
+ *
+ * This widget basically becomes your "desktop", with one icon, for each "component" that has a "launch.hl" file.
  */
 create-widget
   class:row

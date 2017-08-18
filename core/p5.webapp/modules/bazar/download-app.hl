@@ -51,7 +51,7 @@ if:x:/@p5.mime.load/*/multipart/=signed/*/signature/0?value
 /*
  * Verifying PGP signature is on trusted list of app distributors.
  */
-load-file:/bazar/configuration/trusted-app-distributors.hl
+load-file:/modules/bazar/configuration/trusted-app-distributors.hl
 if:x:/@load-file/*/*/fingerprint/={0}
   :x:/@p5.mime.load/*/multipart/=signed/*/signature/0/*/fingerprint?value
   not
@@ -103,7 +103,7 @@ if
  */
 unzip:~/temp/{0}
   :x:/@p5.mime.load/*/multipart/=signed/*/application/=zip/*/filename?value
-  dest:/
+  dest:/modules/
 
 
 
@@ -125,7 +125,7 @@ if:x:/@unzip/0?name
    * Hence, we rename the folder, before we proceed.
    */
   move-folder:x:/@unzip/0?name
-    dest:/{0}/
+    dest:/modules/{0}/
       :x:/@p5.web.session.get/*?value
 
 
@@ -138,7 +138,7 @@ if:x:/@unzip/0?name
  */
 if
   fetch:x:/0/0?value
-    file-exists:/{0}/startup.hl
+    file-exists:/modules/{0}/startup.hl
       :x:/@p5.web.session.get/*?value
-  micro.evaluate.file:/{0}/startup.hl
+  micro.evaluate.file:/modules/{0}/startup.hl
     :x:/@p5.web.session.get/*?value

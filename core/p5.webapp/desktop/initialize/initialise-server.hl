@@ -3,9 +3,9 @@
 /*
  * Initialises server, by allowing user to set server salt, and/or set root password.
  *
- * First making sure our main "cnt" widget is empty.
+ * If the server needs to be setup before allowing the user to proceed to your app, or the micro web os desktop,
+ * this event will return "true".
  */
-clear-widget:cnt
 if
   p5.auth._has-salt
   not
@@ -72,6 +72,11 @@ if
                * Reloading URL for simplicity, which will ask the user for a root password.
                */
               p5.web.reload-location
+
+  /*
+   * Returning true to caller, to signal that server is in setup/initialize phase.
+   */
+  return:bool:true
 
 else-if
   p5.auth._root-password-is-null
@@ -160,3 +165,17 @@ else-if
                * Reloading URL for simplicity, since we're now done with setting up server.
                */
               p5.web.reload-location
+
+  /*
+   * Returning true to caller, to signal that server is in setup/initialize phase.
+   */
+  return:bool:true
+
+
+
+
+
+/*
+ * Returning false to caller, to signal that the server salt and root password has already been setup.
+ */
+return:bool:false
