@@ -17,7 +17,7 @@ name:GaiaSoul main repository
 
 
 /*
- * First all "suggested trusted PGP keys".
+ * Then all "suggested trusted PGP keys".
  */
 suggested-keys
   key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
@@ -47,3 +47,4 @@ Sephia Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, 
   price:Free/GPL
   local-url:sephia-five
   image:"https://phosphorusfive.files.wordpress.com/2017/08/vault-icon-2.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
