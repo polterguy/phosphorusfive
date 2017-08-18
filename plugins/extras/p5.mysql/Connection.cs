@@ -150,8 +150,21 @@ namespace p5.mysql
                 // Retrieving connection string from configuration file, trimming away square brackets.
                 argsValue = argsValue.Substring (1, argsValue.Length - 2);
                 var configValue = ConfigurationManager.ConnectionStrings [argsValue];
-                if (configValue == null)
-                    throw new LambdaException ("[p5.mysql.connect] couldn't find the specified connection string in your configuration file", args, context);
+                if (configValue == null) {
+
+                    // Checking if "generic" connection string exists.
+                    var generic = ConfigurationManager.ConnectionStrings ["MYSQL_GENERIC_CONNECTION_STRING"];
+                    if (generic != null) {
+
+                        // Generic string exists, appending database name to it, before we return it to caller.
+                        var retVal = generic.ConnectionString.TrimEnd (';') + ";";
+                        retVal += "database=" + argsValue + ";";
+                        return retVal;
+
+                    } else {
+                        throw new LambdaException ("[p5.mysql.connect] couldn't find the specified connection string in your configuration file", args, context);
+                    }
+                }
 
                 // Initializing and opening connection.
                 return configValue.ConnectionString;
