@@ -129,7 +129,20 @@ create-event:p5.web.load-ui
 
       /*
        * A specific application was requested, evaluating it's "launch.hl" file.
+       *
+       * Notice, to create some basic URL rewriting support, for all apps, we only us the first part of the URL
+       * when determining which app to load. This allows any app to create sub URLs, with its own folders, etc, and
+       * then do its own internal mapping, by fetching the URL itself.
+       *
+       * In addition to that it makes our URL resolver better, not relying upon some specific format, with "/" neither
+       * before nor after the name of the app.
+       *
+       * For instance, to load some sub folder in Sephia Five, the URL could be "/sephia-five/foo/bar", etc ...
+       * However, determining the URL, and doing the actual resolving, is up to the specific application itself, 
+       * and not done by this startup file.
        */
-      load-file:/modules{0}/launch.hl
-        :x:/../*/url?value
+      split:x:/../*/url?value
+        =:/
+      load-file:/modules/{0}/launch.hl
+        :x:/@split/0?name
       eval:x:/-/*
