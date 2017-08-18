@@ -46,8 +46,7 @@ if:x:/-/*/default?value
   /*
    * User is not logged in, forcing him to login, before we allow him to continue.
    */
-  load-file:/desktop/login.hl
-  eval:x:/-/*
+  p5.core.login
 
   /*
    * Returning early to avoid evaluating the rest of our file.
@@ -158,5 +157,4 @@ create-widget
              *
              * This will delete all temporary files for user, log user out, and reload the current URL.
              */
-            load-file:/desktop/logout.hl
-            eval:x:/-/*
+            p5.core.logout
