@@ -257,8 +257,9 @@
     <None Include="modules\bazar\fetch-apps.hl" />
     <None Include="modules\bazar\install-app.hl" />
     <None Include="modules\bazar\launch.hl" />
-    <None Include="desktop\initialize\initialise-server.hl" />
+    <None Include="desktop\initialize\initialize-server.hl" />
     <None Include="desktop\initialize\install-micro.hl" />
+    <None Include="desktop\startup.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

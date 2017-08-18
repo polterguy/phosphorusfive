@@ -26,7 +26,7 @@ if
         innerValue:You don't need to remember your salt, but to maximise the security of your system, it should to be as random as possible.
         style:"width:50%;margin-left:auto;margin-right:auto;"
       p:salt-description-2
-        innerValue:The server salt is used to hash your passwords, in addition to seed the random number generator, when cryptographically secure random number are needed.
+        innerValue:The server salt is used to hash your passwords, in addition to seed the random number generator, when cryptographically secure random numbers are needed.
         style:"width:50%;margin-left:auto;margin-right:auto;"
 
       /*
@@ -96,6 +96,9 @@ else-if
       p:root-description
         innerValue:Please make sure you remember your password, otherwise you will not be able to access your system!
         style:"width:50%;margin-left:auto;margin-right:auto;"
+      p:root-description-2
+        innerValue:@"When you click 'Save', your server will be automatically setup. Please let it finish its job without interruptions!"
+        style:"width:50%;margin-left:auto;margin-right:auto;"
 
       /*
        * Then our textbox widgets, asking user to provide a root password for his system.
@@ -135,7 +138,7 @@ else-if
                  * Password were not given, or textbox values did not match.
                  */
                 set-widget-property:root-description
-                  innerValue:@"<strong>Provide a password, and make sure you repeat it exactly!!</strong>"
+                  innerValue:@"<strong>Provide a password, and make sure you repeat it exactly, character for character!!</strong>"
                 return
 
               /*
@@ -146,23 +149,29 @@ else-if
                 password:x:/@get-widget-property/*/*?value
 
               /*
-               * Automatically logging in user.
+               * Logging in user, to make sure we've got write access, while downloading and installing Micro.
                *
-               * Notice, in case there's a bug occurring during the rest of our setup process,
-               * we need to explicitly persist the credentials, since otherwise the user cannot
-               * continue with his setup process, after having fixed his bug, since the rest of
-               * our server setup process, is dependent upon that the user is logged into his system.
-               *
-               * We fix this though, by explicitly logging user out after the setup process is finished,
-               * to destroy the persistent cookie, to further tighten the system's security.
+               * In addition, to avoid forcing user to login at the current client.
                */
               login
                 username:root
                 password:x:/@get-widget-property/*/*?value
-                persist:true
 
               /*
-               * Reloading URL for simplicity, since we're now done with setting up server.
+               * Verifying Micro is installed, and if not, automatically installing it.
+               */
+              vocabulary:p5.io.unroll-path.@MICRO
+              if:x:/@vocabulary/*
+                not
+
+                /*
+                 * Micro is not installed, making sure we download it, and install it automatically.
+                 */
+                load-file:/desktop/initialize/install-micro.hl
+                eval:x:/-/*
+
+              /*
+               * Reloading URL for simplicity, since we're now done with setting up the server.
                */
               p5.web.reload-location
 

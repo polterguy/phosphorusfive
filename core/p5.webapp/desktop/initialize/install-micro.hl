@@ -4,7 +4,16 @@
  * Downloads and installs Micro.
  *
  * Expects the root account to be logged into the system.
+ *
+ * Notice, when a new release is created, the two next variables needs to be updated,
+ * if a new version of Micro has been created, to make sure the SHA value of Micro's zip file, is
+ * the expected value, in addition to the URL to Micro's zip file download.
+ *
+ * To create a new SHA for your Micro zip file, use [load-file] and [p5.crypto.hash.create-sha512]
+ * on the results.
  */
+_micro-url:"https://github.com/polterguy/micro/archive/v4.0-BETA1.zip"
+_micro-sha:kEodnzlrp0JN1sdvcF2IxAlj+baCr2txnNBONuQDYQ+k77TgdGXXFd6MGfJqwcSh8tvPd6p8h0Pc32WJfTUWvg==
 
 
 
@@ -13,7 +22,7 @@
 /*
  * Downloading Micro.
  */
-p5.http.get:"https://github.com/polterguy/micro/archive/v4.0-BETA1.zip"
+p5.http.get:x:/@_micro-url?value
 
 
 
@@ -21,11 +30,22 @@ p5.http.get:"https://github.com/polterguy/micro/archive/v4.0-BETA1.zip"
 
 /*
  * Saving zip file we downloaded above to user's temp folder.
- *
- * TODO: Check hash of file's content!!
  */
 save-file:~/temp/micro.zip
   src:x:/@p5.http.get/*/result/*/content?value
+
+
+
+
+
+/*
+ * Verifying sha-512 value of zip file.
+ */
+load-file:~/temp/micro.zip
+p5.crypto.hash.create-sha512:x:/-/*?value
+if:x:/-?value
+  !=:x:/@_micro-sha?value
+  throw:Wrong sha-512 value of Micro's zip file!! No known ways to recover!! Major security breach is possible, such as a 'Man in the Middle' attack between your server, and the GitHub server where Micro is hosted!!
 
 
 

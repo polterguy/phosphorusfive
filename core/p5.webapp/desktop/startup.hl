@@ -1,0 +1,111 @@
+﻿
+
+/*
+ * File responsible for creating our default [p5.web.load-ui] event, which basically is our default URL resolver,
+ * and "micro web operating system", allowing the user to see his desktop, installed apps, and visit the Bazar.
+ *
+ * Notice, this event is only create if no previous module has already overridden it, by creating 
+ * another [p5.web.load-ui] event.
+ */
+
+
+
+
+
+/*
+ * Notice, some modules, such as System42 etc, would want to create their own [p5.web.load-ui] event, at which
+ * point the event would already have been created, overriding the default event implementation. If this is true, 
+ * we simply avoid evaluating the rest of the file.
+ *
+ * This allows you to create a module, which entirely bypasses the default "micro web operating system" desktop, 
+ * URL resolver, and loader.
+ *
+ * I do not encourage you to do this, since among other things, it would render all your other apps potentially "dead",
+ * but it is possible if you wish!!
+ */
+vocabulary:p5.web.load-ui
+if:x:/-/*
+
+  /*
+   * Another "module" has already overridden our default [p5.web.load-ui] event, hence returning early, 
+   * to avoid evaluation of the rest of our file.
+   */
+  return
+
+
+
+
+
+/*
+ * Creating the default [p5.web.load-ui] URL resolver and Active Event.
+ *
+ * If you wish to entirely bypass the default "web operating system", with its desktop, and its Bazar, feel free
+ * to create your own module, which overrides the default [p5.web.load-ui] event.
+ *
+ * Just remember to somehow make sure you're able to setup the server salt, and have the user supply a root password.
+ *
+ * Hint; You can make sure your users are setting up a server salt and root password, by invoking the 
+ * "/desktop/initialize/initialize-server.hl" file, which will do nothing, if the server salt and root password has 
+ * already been setup, and return "false" if it is safe to proceed to your own app, and the server salt and root 
+ * password has already been setup.
+ *
+ * Or, you can see the logic this event provides for checking if the server salt and root pasword has already been setup.
+ * The latter would probably be slightly more efficient, and require less resources.
+ */
+create-event:p5.web.load-ui
+
+  /*
+   * First we must check if server has been setup, with a root password, 
+   * and a server salt - And if not, we do so.
+   */
+  if
+    p5.auth._has-salt
+    not
+    or
+      p5.auth._root-password-is-null
+
+    /*
+     * No server salt, or no root password, hence server needs to be initialized.
+     */
+    load-file:/desktop/initialize/initialize-server.hl
+    eval:x:/-/*
+
+  else
+
+    /*
+     * Server has been initialized, hence we can load our desktop, or requested application,
+     * depending upon which [url] was specified.
+     */
+    if:x:/../*/url?value
+      =:/
+
+      /*
+       * Loading desktop.
+       */
+      load-file:/desktop/load-desktop.hl
+      eval:x:/-/*
+
+    else
+
+      /*
+       * A specific application was requested, evaluating it's "launch.hl" file.
+       *
+       * Notice, to create some basic URL rewriting support, for all apps, we only us the first part of the URL
+       * when determining which app to load. This allows any app to create sub URLs, with its own folders, etc, and
+       * then do its own internal mapping, by using the URL itself, which is passed in as [url] into the app's
+       * "launch.hl" file.
+       *
+       * In addition to that it makes our URL resolver better, not relying upon some specific format, with "/" neither
+       * before nor after the name of the app.
+       *
+       * For instance, to load some sub folder in Sephia Five, the URL could be "/sephia-five/foo/bar", etc ...
+       * However, determining the URL, and doing the actual resolving, is up to the specific application itself, 
+       * and not done by this startup file.
+       */
+      split:x:/../*/url?value
+        =:/
+      load-file:/modules/{0}/launch.hl
+        :x:/@split/0?name
+      eval-x:x:/+/*
+      eval:x:/@load-file/*
+        url:x:/../*/url?value

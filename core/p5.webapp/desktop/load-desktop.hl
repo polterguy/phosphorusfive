@@ -102,6 +102,9 @@ for-each:x:/@list-files/*?name
      * Currently iterated app has a desktop widget declaration file.
      *
      * Using this widget instead of our generic "launch app" widget.
+     *
+     * Notice, this allows you to create pure "desktop widgets", among other things,
+     * which doesn't do anything else, but actually show some piece of widget on your desktop.
      */
     load-file:x:/@replace?value
     add:x:/../*/create-widget/*/widgets/*/div/*/widgets
