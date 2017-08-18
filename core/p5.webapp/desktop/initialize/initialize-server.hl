@@ -97,7 +97,7 @@ else-if
         innerValue:Please make sure you remember your password, otherwise you will not be able to access your system!
         style:"width:50%;margin-left:auto;margin-right:auto;"
       p:root-description-2
-        innerValue:@"When you click 'Save', your server will be automatically setup. Please let it finish its job without interruptions!"
+        innerValue:@"When you click 'Save', your server will be automatically setup. This might take some few minutes. Please let it finish its job without interruptions!"
         style:"width:50%;margin-left:auto;margin-right:auto;"
 
       /*
