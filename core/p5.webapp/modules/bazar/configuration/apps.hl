@@ -19,8 +19,7 @@ name:GaiaSoul main repository
 /*
  * Then all "suggested trusted PGP keys".
  */
-suggested-keys
-  key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+suggested-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
 
 
 
