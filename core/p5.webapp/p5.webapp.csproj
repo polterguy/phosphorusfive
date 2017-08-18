@@ -261,6 +261,8 @@
     <None Include="desktop\startup\p5.web.load-ui.hl" />
     <None Include="desktop\startup\p5.core.login.hl" />
     <None Include="desktop\startup\p5.core.logout.hl" />
+    <None Include="modules\bazar\README.md" />
+    <None Include="desktop\README.md" />
   </ItemGroup>
   <ItemGroup />
 </Project>

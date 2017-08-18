@@ -282,7 +282,7 @@ if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/*
 create some of your own, and have me host them for you. If so, feel free to create it, and toss me an email at <a href=""mailto:thomas@gaiasoul.com"">thomas@gaiasoul.com</a>, to
 inform me about your app, requesting me to host it for you. But please, before you do, <a target=""_blank"" href=""https://gaiasoul.com/2017/08/16/bazar-rules-of-engagement/"">read the guidelines for an app submission</a>!"
         p
-          innerValue:Notice, this implies allowing me to scrutinize your app's source code carefully among other things, to make sure it is in no ways harmful.
+          innerValue:Notice, this implies allowing me to scrutinize your app's source code carefully among other things, to make sure it is not harmful in any ways.
         div
           class:right
           widgets

@@ -62,7 +62,7 @@ if:x:/-/*/default?value
  * each of these modules, that have a "launch.hl" file, to allow the user to actually launch his apps.
  *
  * Hint, a module doesn't necessary have to include a "launch.hl" file, but if it doesn't, it won't have its
- * own desktop icon created, and will be treated as an invisible "component" instead of an "app".
+ * own desktop icon created, and will be treated as an invisible "component", instead of an "app".
  */
 list-folders:/modules/
 

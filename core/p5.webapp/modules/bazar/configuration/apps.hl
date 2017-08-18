@@ -4,7 +4,7 @@
  */
 app
   name:Sephia Five
-  description:An extremely secure email client with PGP cryptography, virus protection, spam filter, and ad removal
+  description:A secure webmail client with PGP cryptography, virus protection, spam filter, and ad removal
   condition:p5.io.unroll-path.@SEPHIA
   url:"https://github.com/polterguy/sephia-five/releases/download/v4.0-BETA1/sephia-five-beta2-zeus.mime"
   author-readme:@"Sephia Five is a cryptographically secure webmail and email client, with PGP support, which is built with your privacy in mind. Among other things, it does not display HTML emails, to avoid marketing gibberish and _'crapware'_, interrupting your privacy. It has the following features.
