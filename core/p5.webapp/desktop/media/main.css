@@ -19,10 +19,30 @@ body {
     margin-right:15px;
     margin-bottom:15px;
 }
+.desktop-app:hover,
+.desktop-app:active,
+.desktop-app:focus {
+    color:#8080ca;
+}
 .desktop-app-name {
     font-size:1.2rem;
     display:block;
     text-align:center;
+}
+.desktop-app:hover,
+.desktop-app:active,
+.desktop-app:focus {
+    color: #c0c0fa;
+}
+.desktop-app:hover span[class^=icon-],
+.desktop-app:active span[class^=icon-],
+.desktop-app:focus span[class^=icon-] {
+    transform:rotate(10deg);
+}
+.desktop-app:hover:nth-child(2n+1) span[class^=icon-],
+.desktop-app:active:nth-child(2n+1) span[class^=icon-],
+.desktop-app:focus:nth-child(2n+1) span[class^=icon-] {
+    transform:rotate(-10deg);
 }
 .desktop-logout {
     position:absolute;

@@ -265,7 +265,7 @@ p5.bazar_download_app = function(e) {
  * Checking if user have all apps installed, and if so, giving him a simple
  * notification about that.
  */
-if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/*
+if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps/*
   not
 
   /*
@@ -280,16 +280,30 @@ if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/*
         widgets
           div
             class:rounded shaded bg air-inner
-            style:"margin:10% 25%;"
+            style:"margin:5% 15%;"
             widgets
               h3
                 innerValue:It's awfully empty around here ...
               p
-                innerValue:@"It seems you've already got all available apps installed. Now of course, if you're a geek, you could probably
-create some of your own, and have me host them for you. If so, feel free to create it, and toss me an email at <a href=""mailto:thomas@gaiasoul.com"">thomas@gaiasoul.com</a>, to
-inform me about your app, requesting me to host it for you. But please, before you do, <a target=""_blank"" href=""https://gaiasoul.com/2017/08/16/bazar-rules-of-engagement/"">read the guidelines for an app submission</a>!"
+                innerValue:@"It seems you've already got all available apps installed. There might exist other repositories out there, which you could add to your Bazar though.
+If you know the URL to another Bazar you trust, feel free to click the '+' button at the top right corner, to add another Bazar."
+
               p
-                innerValue:Notice, this implies allowing me to scrutinize your app's source code carefully among other things, to make sure it is not harmful in any ways.
+                innerValue:@"Now of course, if you're a geek, you could also create your own Bazar, or create your own app, and have me host it for you. If the latter, 
+feel free to create your app, and toss me an email at <a href=""mailto:thomas@gaiasoul.com"">thomas@gaiasoul.com</a>, to inform me about your app, 
+requesting me to host it for you. But please, before you do, <a target=""_blank"" href=""https://gaiasoul.com/2017/08/16/bazar-rules-of-engagement/"">read the guidelines for an app submission</a>
+to my Bazar. If you want me to check out your Bazar, and maybe blog about it, feel free to send me a link to it, such that I can have a look at it. I love bragging about other people's work,
+created on top of my stuff."
+              p
+                innerValue:@"Alternatively, create your own app, and your own Bazar declaration, and host your Bazar e.g. at WordPress, GitHub or Google Disc. It is also easy to link your Bazar apps towards PayPal, 
+accepting payments for your app, before it's installed on anybody's systems."
+              p
+                innerValue:@"If you choose to <a href=""https://gaiasoul.com"" target=""_blank"">subscribe to my blog</a>, you might be given tips about new apps, and Bazars out there every now and then."
+              p
+                innerValue:@"<strong>Notice</strong>, just because you've installed everything there is to install today, doesn't mean there won't be new apps in the Bazar a week from now. You should make it a habit to visit your Bazar, 
+at least once a week, to see if there are any new apps, and/or updates to your existing apps. Updates to your apps, will also be possible to download from your Bazar."
+              p
+                innerValue:@"Feeling grateful about what you were just given for free? Feel free to <a target=""_blank"" href=""https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L6FEM7JPPQZXW"">give a small donation</a>."
 
 
 
@@ -299,6 +313,7 @@ inform me about your app, requesting me to host it for you. But please, before y
  * Creating actual Bazar widget, wrapping all available apps from Bazar.
  */
 create-widget
+  position:0
   class:row
   widgets
     div
@@ -347,6 +362,8 @@ create-widget
                             widgets
                               h3
                                 innerValue:Add new Bazar
+                              p
+                                innerValue:@"If you have a link to an existing Bazar, you can add it to your own list of available Bazars here."
 
                               /*
                                * Using a wizard window for simplicity.
