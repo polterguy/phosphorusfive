@@ -116,7 +116,8 @@ unzip:~/temp/{0}
  * a different name than the name the floder of our app should have.
  */
 if:x:/@unzip/0?name
-  !=:x:/@p5.web.session.get/*?value
+  !=:/modules/{0}/
+    :x:/@p5.web.session.get/*?value
 
   /*
    * The folder our [unzip] operation created was different than the folder
