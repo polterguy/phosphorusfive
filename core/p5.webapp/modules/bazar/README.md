@@ -32,3 +32,17 @@ Each app you declare in your Bazar, can also optionally have a **[paypal-id]**, 
 to PayPal when they try to install the app, instead of directly to your app's cryptographically signed zip file. This PayPal ID,
 must be the ID of your PayPal button. Only after a user performs a valid purchase, the app's URL will be downloaded, and
 automatically installed in your user's _"modules"_ folder.
+
+You should clearly mark your apps in your _"install app icon"_, whether or not they're free/GPL licensed products, or
+commercial/proprietary products. In addition, it would probably be considered polite, to also supply the price in your
+Bazar app declaration file, such that users aren't tricked to doing a PayPal request, without realising they'll be asked
+to purchase your product.
+
+However, all in all, basically everything you need, more or less, to become a productive _"app developer"_, having your
+own _"AppStore"_, distributing whatever types of apps you'd like to distribute for yourself. If you've created a really
+cool app yourself, and you want me to distribute it for you, in my default Bazar declaration file, I am willing to do
+so, as long as you obey by [my personal Bazar rules](https://gaiasoul.com/2017/08/16/bazar-rules-of-engagement/), which
+admittedly are kind of _"Nazi"_, since I do not want to allow myself to compromise my user's systems in any ways. This might
+give you additional downloads/purchases, since it'll be distributed in each upgrade/download of the main Phosphorus Five
+core. However, you're also perfectly welcome to host your own Bazar, and ditribute your own version of Phosphorus Five,
+having a default Bazar declaration of your own.
