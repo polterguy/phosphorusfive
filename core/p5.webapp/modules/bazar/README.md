@@ -44,5 +44,21 @@ cool app yourself, and you want me to distribute it for you, in my default Bazar
 so, as long as you obey by [my personal Bazar rules](https://gaiasoul.com/2017/08/16/bazar-rules-of-engagement/), which
 admittedly are kind of _"Nazi"_, since I do not want to allow myself to compromise my user's systems in any ways. This might
 give you additional downloads/purchases, since it'll be distributed in each upgrade/download of the main Phosphorus Five
-core. However, you're also perfectly welcome to host your own Bazar, and ditribute your own version of Phosphorus Five,
+core. However, you're also perfectly welcome to host your own Bazar, and distribute your own version of Phosphorus Five,
 having a default Bazar declaration of your own.
+
+If you create your own app, it's probably also considered polite, to allow your users to give you feedback, by either
+providing a link to your support forum, and/or providing your email address, such that they can contact you, if they need help.
+
+## The Bazar is simply an app itself
+
+Notice, the Bazar is simply an app itself, which though comes pre-installed in the Phosphorus Five main download. This allows
+me to upgrade it automatically, the same way I'd upgrade any apps automatically, that are hosted in my Bazar. This implies
+that any missing features, which admittedly there are, will be added in future versions of the Bazar. Removing trusted app
+distributors and/or Bazars comes to mind for instance. Search is another feature that comes to mind. Also more robust
+downloading of apps, and/or Bazar declarations, are features that are on my TODO list.
+
+I will also add more developer tools in the future, that allows you to automatically package your own cryptographically
+signed apps, and further reduce the pain-level as you create your own apps. In addition to developer tools, allowing you
+to create your apps entirely from within the Phosphorus Five main environment. A R.A.D. IDE for instance, is among some
+of the features I am considering.
