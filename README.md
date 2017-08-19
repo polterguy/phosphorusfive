@@ -47,7 +47,7 @@ if you'd like to provide apps in your Bazar for a fee.
 
 ## Hyperlambda
 
-The above code, is called _"Hyperlambda"_, and is a simple key/value/children tree-structure, allowing for you
+The code at the top of this page, is called _"Hyperlambda"_, and is a simple key/value/children tree-structure, allowing for you
 to declare something, that P5 refers to as _"lambda"_ or _"Hyperlambda"_. Lambda is the foundation for an execution tree, or graph object,
 that is a Turing complete opportunity to declare your apps, through a _"non-programming model"_.
 
@@ -61,7 +61,12 @@ using Hyperlambda, due to its much more condens syntax and lack of overhead.
 All this, while retaining your ability to create C#/VB/F# code, exactly as you're used to from before.
 
 This trait of Hyperlambda, makes it an excellent choice for creating your own domain specific programming languages. In such a regard, it arguably
-brings LISP into the 21st Century.
+brings LISP into the 21st Century. However, don't be fooled by its simplicity. It's extremely powerful. Below is a screenshot 
+of [Sephia Five](https://github.com/polterguy/sephia-five), that is entirely built in Hyperlambda.
+
+![alt screenshot](tree/master/core/p5.webapp/modules/bazar/screenshots/screenshot-sephia.png)
+
+Sephia Five is a military grade webmail client, with PGP cryptography, extreme security, and some very unique usability traits.
 
 ## 3 basic innovations
 
