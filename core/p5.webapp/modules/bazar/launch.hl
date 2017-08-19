@@ -321,6 +321,22 @@ create-widget
                     button
                       innerValue:@"<span class=""icon-plus""></span>"
                       style:"margin-bottom:0;"
+                      oninit
+
+                        /*
+                         * Checking main configuration file, to verify users are allowed to add new Bazars,
+                         * and if not, disable the button.
+                         */
+                        p5.config.get:bazar.allow-users-adding-bazar
+                        if:x:/-/*?value
+                          !=:true
+
+                          /*
+                           * Current distro does not allow users to add new Bazars, simply disabling the "add" button.
+                           */
+                          set-widget-property:x:/../*/_event?value
+                            disabled
+
                       onclick
 
                         /*
