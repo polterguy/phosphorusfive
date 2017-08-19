@@ -61,6 +61,7 @@
     <Content Include="common\documents\private\web.config" />
     <Content Include="users\root\documents\private\web.config" />
     <Content Include="desktop\media\main.css" />
+    <Content Include="modules\bazar\screenshots\screenshot-1.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

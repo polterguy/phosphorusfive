@@ -18,8 +18,14 @@ name:GaiaSoul main repository
 
 /*
  * Then the list of apps in current manifest.
+ *
+ * Notice, the [app] node's value, is used as the "ID" of the app, and should be globally unique, 
+ * and contain versioning numbers, to avoid adding the same app twice, in case it exists in two different Bazars,
+ * and user has added more than one Bazar.
+ *
+ * Hence, everytime an app is upgraded, this unique app ID should also be bumped, somehow.
  */
-app
+app:sephia-five-4-0-zeus
   name:Sephia Five
   description:A secure webmail client with PGP cryptography, virus protection, spam filter, and ad removal
   condition:p5.io.unroll-path.@SEPHIA
