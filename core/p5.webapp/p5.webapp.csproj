@@ -264,7 +264,6 @@
     <None Include="modules\bazar\README.md" />
     <None Include="desktop\README.md" />
     <None Include="modules\bazar\bazars\apps.hl" />
-    <None Include="modules\bazar\bazars\dev-tools.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
