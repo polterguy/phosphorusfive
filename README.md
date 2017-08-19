@@ -53,13 +53,11 @@ that is a Turing complete opportunity to declare your apps, through a _"non-prog
 
 I say _"non-programming"_, because really, there is no programming language in P5. Only a bunch of loosely
 coupled Active Events, that happens to, in their combined result, create a Turing complete execution
-engine, allowing for you to orchestrate your components together, as if they were _"LEGO bricks"_.
+engine, allowing for you to orchestrate your components together, as if they were _"LEGO bricks"_. All this, while retaining your ability 
+to create C#/VB/F# code, exactly as you're used to from before.
 
 In fact, if you wish, you could in theory declare your execution trees by using XML or JSON. Although I recommend
 using Hyperlambda, due to its much more condens syntax and lack of overhead.
-
-All this, while retaining your ability to create C#/VB/F# code, exactly as you're used to from before.
-
 This trait of Hyperlambda, makes it an excellent choice for creating your own domain specific programming languages. In such a regard, it arguably
 brings LISP into the 21st Century. However, don't be fooled by its simplicity. It's extremely powerful. Below is a screenshot 
 of [Sephia Five](https://github.com/polterguy/sephia-five), that is entirely built in Hyperlambda.
