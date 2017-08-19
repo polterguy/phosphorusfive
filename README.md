@@ -34,8 +34,14 @@ used in combination with [Micro](https://github.com/polterguy/micro).
 ![alt screenshot](main-p5-screenshot-2.png)
 
 Notice, Phosphorus Five comes with an integrated _"AppStore"_ out of the box, which allows you to create your own Bazars, where you distribute
-your apps and components, either for a fee, or as Open Source projects. This approach, makes it extremely modularized, allowing you to incrementally
-create your systems, allowing its users to automatically choose to upgrade theirs, as you create new versions of your projects.
+your apps and components, either for a fee, or as open source projects. This approach, makes it extremely modularized, allowing you to incrementally
+create your systems, allowing its users to automatically choose to upgrade theirs, as you create new versions of your projects, or create additional
+app, and/or components.
+
+Please refer to [the Bazar](core/p5.webapp/modules/bazar/) to see how this part of P5 works. However, everything is open source, and you can
+actually host your Bazar, without any other requirements but being able to publicly distribute a simple Hyperlambda file, on some web server somewhere.
+This parts of P5 is also extremely secure, only allowing installations of modules that have been cryptographically signed, with a trusted PGP key.
+Making it very hard for a malicious adversary to being able to execute malicious code on your user's installations.
 
 ## Hyperlambda
 
