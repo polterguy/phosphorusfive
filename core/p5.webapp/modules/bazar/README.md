@@ -38,7 +38,7 @@ commercial/proprietary products. In addition, it would probably be considered po
 Bazar app declaration file, such that users aren't tricked to doing a PayPal request, without realising they'll be asked
 to purchase your product.
 
-However, all in all, basically everything you need, more or less, to become a productive _"app developer"_, having your
+However, all in all, the Bazar is basically everything you need, more or less, to become a productive _"app developer"_, having your
 own _"AppStore"_, distributing whatever types of apps you'd like to distribute for yourself. If you've created a really
 cool app yourself, and you want me to distribute it for you, in my default Bazar declaration file, I am willing to do
 so, as long as you obey by [my personal Bazar rules](https://gaiasoul.com/2017/08/16/bazar-rules-of-engagement/), which
@@ -62,3 +62,10 @@ I will also add more developer tools in the future, that allows you to automatic
 signed apps, and further reduce the pain-level as you create your own apps. In addition to developer tools, allowing you
 to create your apps entirely from within the Phosphorus Five main environment. A R.A.D. IDE for instance, is among some
 of the features I am considering.
+
+However, the reasons why I am saying this, is because that's possibly the coolest feature of the Bazar, allowing users
+to automatically upgrade their system, with never versions of their tools, adding to their existing environment,
+even after I have distributed the main P5 core myself!
+
+For an example of how to create an app, please look at _"Sephia Five"_, which is to be considered the _"reference implementation"_
+for a Bazar type of app. Sephia Five can be automatically downloaded and installed from your Bazar.
