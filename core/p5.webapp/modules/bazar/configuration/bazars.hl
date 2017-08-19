@@ -13,4 +13,4 @@
  * Notice, you could of course fork Phosphorus Five, and create your own Bazar app declaration file.
  * However, if you do, you would probably want to add your PGP key's fingerprint to the "/bazar/configuration/trusted-app-distributors.hl"
  */
-bazar:"https://raw.githubusercontent.com/polterguy/phosphorusfive/master/core/p5.webapp/modules/bazar/configuration/apps.hl"
+bazar:"https://raw.githubusercontent.com/polterguy/phosphorusfive/master/core/p5.webapp/modules/bazar/bazars/apps.hl"

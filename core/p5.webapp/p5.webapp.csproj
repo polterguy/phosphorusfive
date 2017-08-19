@@ -117,6 +117,7 @@
     <Folder Include="modules\bazar\" />
     <Folder Include="desktop\initialize\" />
     <Folder Include="desktop\media\" />
+    <Folder Include="modules\bazar\bazars\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
@@ -247,7 +248,6 @@
     <None Include="startup.hl" />
     <None Include="desktop\launch.hl" />
     <None Include="modules\README.md" />
-    <None Include="modules\bazar\configuration\apps.hl" />
     <None Include="modules\bazar\configuration\bazars.hl" />
     <None Include="modules\bazar\configuration\trusted-app-distributors.hl" />
     <None Include="modules\bazar\desktop.hl" />
@@ -263,6 +263,8 @@
     <None Include="desktop\startup\p5.core.logout.hl" />
     <None Include="modules\bazar\README.md" />
     <None Include="desktop\README.md" />
+    <None Include="modules\bazar\bazars\apps.hl" />
+    <None Include="modules\bazar\bazars\dev-tools.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

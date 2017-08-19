@@ -1,6 +1,6 @@
 
 /*
- * List of available Bazar apps.
+ * List of available Bazar apps in main Bazar declaration file.
  */
 
 
@@ -10,16 +10,7 @@
 /*
  * First the current Bazar name.
  */
-name:GaiaSoul main repository
-
-
-
-
-
-/*
- * Then all "suggested trusted PGP keys".
- */
-suggested-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+name:GaiaSoul developer's repository
 
 
 
@@ -29,9 +20,9 @@ suggested-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
  * Then the list of apps in current manifest.
  */
 app
-  name:Sephia Five
-  description:A secure webmail client with PGP cryptography, virus protection, spam filter, and ad removal
-  condition:p5.io.unroll-path.@SEPHIA
+  name:Foo Bar
+  description:A foo bar app!
+  condition:p5.io.unroll-path.@FOOBAR
   url:"https://github.com/polterguy/sephia-five/releases/download/v4.0-BETA1/sephia-five-beta2-zeus.mime"
   author-readme:@"Sephia Five is a cryptographically secure webmail and email client, with PGP support, which is built with your privacy in mind. Among other things, it does not display HTML emails, to avoid marketing gibberish and _'crapware'_, interrupting your privacy. It has the following features.
 
@@ -46,4 +37,4 @@ Sephia Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, 
   price:Free/GPL
   local-url:sephia-five
   image:"https://phosphorusfive.files.wordpress.com/2017/08/vault-icon-2.png"
-  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AADxxx
