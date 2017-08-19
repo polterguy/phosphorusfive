@@ -55,9 +55,11 @@ hyper2lambda:x:/@wait/**/p5.http.get/*/result/*/content?value
  * Making sure we cache results, in case user does another roundtrip later.
  *
  * Notice, we only cache it for 10 minutes.
+ *
+ * Notice, we only cache unique app IDs.
  */
 add:x:/../*/p5.web.cache.set/*/*
-  src:x:/@hyper2lambda/*
+  src:x:/@hyper2lambda/*/=$
 p5.web.cache.set:p5.bazar.apps
   minutes:10
   src
@@ -71,5 +73,5 @@ p5.web.cache.set:p5.bazar.apps
  * Returning results to caller.
  */
 add:x:/../*/return
-  src:x:/@hyper2lambda/*
+  src:x:/@hyper2lambda/*/=$
 return
