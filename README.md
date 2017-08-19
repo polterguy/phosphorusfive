@@ -64,7 +64,7 @@ This trait of Hyperlambda, makes it an excellent choice for creating your own do
 brings LISP into the 21st Century. However, don't be fooled by its simplicity. It's extremely powerful. Below is a screenshot 
 of [Sephia Five](https://github.com/polterguy/sephia-five), that is entirely built in Hyperlambda.
 
-![alt screenshot](tree/master/core/p5.webapp/modules/bazar/screenshots/screenshot-sephia.png)
+![alt screenshot](core/p5.webapp/modules/bazar/screenshots/screenshot-sephia.png)
 
 Sephia Five is a military grade webmail client, with PGP cryptography, extreme security, and some very unique usability traits.
 
