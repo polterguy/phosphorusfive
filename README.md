@@ -23,6 +23,8 @@ refer to these links.
 * [Main documentation](https://github.com/polterguy/phosphorusfive-dox), tutorial style dox
 * [core](core/), reference documentation
 * [plugins](plugins/), reference documentation
+* [modules](modules/), how the modularized parts of Phosphorus Five works
+* [The Bazar](modules/bazar/), the integrated _"AppStore"_ that comes with P5 out of the box
 
 I recommend you start out with ["the guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation
 for the [plugins](plugins/), as the need surface. Most of the examples in the core and plugin documentation, assumes you are 
