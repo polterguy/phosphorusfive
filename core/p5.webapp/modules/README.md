@@ -17,3 +17,6 @@ own apps. If your app doesn't have a launcher (launch.hl file), it would be cons
 invisible components, that are intended to be used by other apps. Micro is an example of such a component, which doesn't have any app icons or 
 launcher, but is intended to be used by other apps. Micro is installed by default when you start Phosphorus Five for the first time. To create
 a component, please refer to Micro as an example and reference implementation of such.
+
+By default, the only module that is pre-installed with Phosphorus Five, is the _"Bazar"_, which allows you to securely install new apps on your system.
+Please refer to [the Bazar](bazar/) for a more detailed explanation.
