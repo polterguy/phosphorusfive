@@ -42,7 +42,7 @@ Please refer to [the Bazar](core/p5.webapp/modules/bazar/) to see how this part 
 actually host your Bazar, without any other requirements but being able to publicly distribute a simple Hyperlambda file, on some web server somewhere.
 This parts of P5 is also extremely secure, only allowing installations of modules that have been cryptographically signed, with a trusted PGP key.
 Making it very hard for a malicious adversary to being able to execute malicious code on your user's installations. The Bazar is highly configurable,
-and you can easily create your own repository of apps, and distribute yourself, using the Bazar. The Bazar features automatica PayPal integration,
+and you can easily create your own repository of apps, and distribute yourself, using the Bazar. The Bazar features automatic PayPal integration,
 if you'd like to provide apps in your Bazar for a fee.
 
 ## Hyperlambda
