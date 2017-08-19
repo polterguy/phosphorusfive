@@ -64,7 +64,9 @@ of [Sephia Five](https://github.com/polterguy/sephia-five), that is entirely bui
 
 ![alt screenshot](core/p5.webapp/modules/bazar/screenshots/screenshot-sephia.png)
 
-Sephia Five is a military grade webmail client, with PGP cryptography, extreme security, and some very unique usability traits.
+Sephia Five is a military grade webmail client, with PGP cryptography, extreme security, and some very unique usability traits. Sephia Five
+is the _"reference implemantation"_ for an example application built with Phosphorus Five. Sephia Five is also open source, and can be 
+found [here](https://github.com/polterguy/sephia-five).
 
 ## 3 basic innovations
 
