@@ -14,9 +14,9 @@ There are three special files an app optionally could have.
 All of the above files are optional, but of course, if all of them are omitted, your app probably wouldn't do much. Sephia Five, which is the
 reference implementation of an "app", contains all three files, and can be used as an example of how to create such files, and/or create your
 own apps. If your app doesn't have a launcher (launch.hl file), it would be considered an invisible _"component"_, which allows you to create
-invisible components, that are intended to be used by other apps. Micro is an example of such a component, which doesn't have any app icons or 
-launcher, but is intended to be used by other apps. Micro is installed by default when you start Phosphorus Five for the first time. To create
-a component, please refer to Micro as an example and reference implementation of such.
+invisible components, that are intended to be used by other apps. [Micro](https://github.com/polterguy/micro) is an example of such a component, 
+which doesn't have any app icons or launcher, but is intended to be used by other apps. Micro is installed by default when you start Phosphorus 
+Five for the first time. To create a component, please refer to Micro as an example and reference implementation of such.
 
 By default, the only module that is pre-installed with Phosphorus Five, is the _"Bazar"_, which allows you to securely install new apps on your system.
 Please refer to [the Bazar](bazar/) for a more detailed explanation.
