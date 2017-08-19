@@ -331,9 +331,6 @@ create-widget
                             widgets
                               h3
                                 innerValue:Add new Bazar
-                              p
-                                innerValue:@"Please only add Bazars you trust 100%, since downloading code from sources outside of your own server, 
-might be dangerous, and allow an adversary to evaluate malicious code on your system!"
 
                               /*
                                * Using a wizard window for simplicity.
