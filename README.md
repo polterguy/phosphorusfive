@@ -33,6 +33,10 @@ used in combination with [Micro](https://github.com/polterguy/micro).
 
 ![alt screenshot](main-p5-screenshot-2.png)
 
+Notice, Phosphorus Five comes with an integrated _"AppStore"_ out of the box, which allows you to create your own Bazars, where you distribute
+your apps and components, either for a fee, or as Open Source projects. This approach, makes it extremely modularized, allowing you to incrementally
+create your systems, allowing its users to automatically choose to upgrade theirs, as you create new versions of your projects.
+
 ## Hyperlambda
 
 The above code, is called _"Hyperlambda"_, and is a simple key/value/children tree-structure, allowing for you
