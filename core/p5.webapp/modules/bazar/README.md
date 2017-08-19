@@ -71,4 +71,4 @@ For an example of how to create an app, please look at _"Sephia Five"_, which is
 for a Bazar type of app. Sephia Five can be automatically downloaded and installed from your Bazar. Sephia Five is a
 webmail client, with PGP cryptography, and lots of other features out of the box. Below is a screenshot of how it'll look like.
 
-![alt screenshot](screenshots/screenshot-2.png)
+![alt screenshot](screenshots/screenshot-sephia.png)
