@@ -1,0 +1,31 @@
+
+/*
+ * Configuration file for which PGP key server to use.
+ *
+ * This file contains the configuration settings for which PGP key server to
+ * use, and how to use it. It is used when downloading a PGP key from a
+ * key server.
+ *
+ * [http-verb] is the HTTP REST verb to use for all these settings.
+ */
+
+
+
+
+
+/*
+ * Configuration section for downloading a key from key server.
+ *
+ * Expected to return the actual KEY data from its [.get-results] lambda object,
+ * given the [result] node from the HTTP REST invocation as its argument.
+ *
+ * [query-arg-name] is the HTTP REST argument name for the key to search for, 
+ * and is expected to hold the ID of the key (not the fingerprint).
+ */
+download-key-url:"https://keyserver.ubuntu.com/pks/lookup?op=get&"
+  http-verb:get
+  query-arg-name:search
+  .get-results
+    html2lambda:x:/../*/result/#?value
+    return:x:/@html2lambda/*/html/*/body/*/pre/*/\#text?value
+
