@@ -209,7 +209,7 @@ namespace p5.http
                 case "Host":
                     request.Host = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
-                case "If-Modifies-Since":
+                case "If-Modified-Since":
                     request.IfModifiedSince = XUtil.Single<DateTime> (context, idxHeader, idxHeader);
                     break;
                 case "Referer":
