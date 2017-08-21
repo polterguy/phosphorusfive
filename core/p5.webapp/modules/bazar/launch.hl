@@ -84,118 +84,147 @@ micro.evaluate.file:/modules/bazar/fetch-apps.hl
 
 
 /*
- * Looping through each available app, checking if its condition is not met,
- * at which point the app is not installed, and we can add it to our [create-widget]
- * invocation below, allowing user to install the app.
+ * Looping through each available Bazar.
  */
 for-each:x:/@micro.evaluate.file/*
 
   /*
-   * Checking "condition" of app, which basically is assumed to be an Active Event,
-   * which if existing, implies the app is already installed.
+   * Looping through each available app, checking if its condition is not met,
+   * at which point the app is not installed, and we can add it to our [create-widget]
+   * invocation below, allowing user to install the app.
    */
-  vocabulary:x:/@_dp/#/*/condition?value
-  if:x:/-/*
+  _first:bool:true
+  for-each:x:/@_dp/#/*/app
 
     /*
-     * App is already installed.
-     *
-     * It's [condition] event was found on server from before.
+     * Checking "condition" of app, which basically is assumed to be an Active Event,
+     * which if existing, implies the app is already installed.
      */
-    continue
+    vocabulary:x:/@_dp/#/*/condition?value
+    if:x:/-/*
 
-  /*
-   * HTML encoding values, to prevent man in the middle attack.
-   */
-  p5.html.html-encode:x:/@_dp/#/*/name?value
-  p5.html.html-encode:x:/@_dp/#/*/url?value
-  p5.html.html-encode:x:/@_dp/#/*/description?value
-  p5.html.html-encode:x:/@_dp/#/*/author-readme?value
-  markdown2html:x:/-?value
-  p5.html.html-encode:x:/@_dp/#/*/price?value
-  p5.html.html-encode:x:/@_dp/#/*/paypal-id?value
-  p5.html.html-encode:x:/@_dp/#/*/local-url?value
-  p5.html.html-encode:x:/@_dp/#/*/image?value
+      /*
+       * App is already installed.
+       *
+       * It's [condition] event was found on server from before.
+       */
+      continue
 
-  /*
-   * Making sure we apply icon-image to markdown results.
-   */
-  html2lambda:x:/@markdown2html?value
-  eval-x:x:/+/**
-  insert-before:x:/@html2lambda/0
-    src
-      img
-        @src:x:/..for-each/*/p5.html.html-encode/[7,8]?value
-        @style:"max-width:30%;float:right;margin-left:1rem;margin-bottom:1rem;"
-        @class:shaded rounded
-  lambda2html:x:/@html2lambda/*
-  set:x:/@markdown2html?value
-    src:x:/@lambda2html?value
+    /*
+     * Checking if this is our first addition from currently iterated Bazar, and if so,
+     * making sure we add an H3 header with its name.
+     */
+    if:x:/@_first?value
 
-  /*
-   * Adding app to [create-widget] invocation below, to allow user to install it.
-   */
-  eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_paypal-id|/_local-url))
-  add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps
-    src
-      container
-        element:a
-        href:#
-        role:button
-        class:bazar-app shaded rounded air-inner bg
-        onclick
+      /*
+       * Making sure consecutive iterations doesn't add the header.
+       */
+      set:x:/@_first?value
+        src:bool:false
 
-          /*
-           * Forward evaluate above.
-           */
-          _app-name:x:/..for-each/*/p5.html.html-encode/[0,1]?value
-          _app-url:x:/..for-each/*/p5.html.html-encode/[1,2]?value
-          _app-author-description:x:/@markdown2html?value
-          _paypal-id:x:/..for-each/*/p5.html.html-encode/[5,6]?value
-          _local-url:x:/..for-each/*/p5.html.html-encode/[6,7]?value
+      /*
+       * Adding a header for the currently iterated Bazar.
+       */
+      p5.html.html-encode:x:/@_dp/#/./*/name?value
+      eval-x:x:/+/*/*/*
+      add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps
+        src
+          h3
+            class:bazar-name
+            innerValue:x:/@p5.html.html-encode?value
 
-          /*
-           * Asking user to confirm installation, and initiating download and 
-           * installation process.
-           */
-          eval-x:x:/+/**(/_url|/_paypal-id|/_local-url)
-          create-widgets
-            micro.widgets.modal:bazar-confirm-installation
-              widgets
-                h3
-                  innerValue:Confirm installation of {0}
-                    :x:/@_app-name?value
-                p
-                  innerValue:@"Are you sure you want to install {0}? Its developer has the following to say about it."
-                    :x:/@_app-name?value
-                div
-                  class:success rounded air-inner
-                  innerValue:x:/@_app-author-description?value
-                p
-                  innerValue:@"Notice, this process might take some time. Please allow Phosphorus Five to finish it without interruptions."
-                div
-                  class:right
-                  widgets
-                    div
-                      class:strip
-                      style:"display:inline-block;"
-                      widgets
-                        button
-                          innerValue:Yes
-                          style:"margin-bottom:0;"
-                          onclick:@"return p5.bazar_download_app(event);"
-                          oninit
+    /*
+     * HTML encoding values, to prevent man in the middle attack.
+     */
+    p5.html.html-encode:x:/@_dp/#/*/name?value
+    p5.html.html-encode:x:/@_dp/#/*/url?value
+    p5.html.html-encode:x:/@_dp/#/*/description?value
+    p5.html.html-encode:x:/@_dp/#/*/author-readme?value
+    markdown2html:x:/-?value
+    p5.html.html-encode:x:/@_dp/#/*/price?value
+    p5.html.html-encode:x:/@_dp/#/*/paypal-id?value
+    p5.html.html-encode:x:/@_dp/#/*/local-url?value
+    p5.html.html-encode:x:/@_dp/#/*/image?value
 
-                            /*
-                             * Setting initial focus to button.
-                             */
-                            micro.page.set-focus:x:/../*/_event?value
+    /*
+     * Making sure we apply icon-image to markdown results.
+     */
+    html2lambda:x:/@markdown2html?value
+    eval-x:x:/+/**
+    insert-before:x:/@html2lambda/0
+      src
+        img
+          @src:x:/..for-each/*/p5.html.html-encode/[7,8]?value
+          @style:"max-width:30%;float:right;margin-left:1rem;margin-bottom:1rem;"
+          @class:shaded rounded
+    lambda2html:x:/@html2lambda/*
+    set:x:/@markdown2html?value
+      src:x:/@lambda2html?value
 
-                            /*
-                             * Including JavaScript necessary to create a "please wait"
-                             * screen, as user clicks the "Yes" button.
-                             */
-                            p5.web.include-javascript:@"
+    /*
+     * Adding app to [create-widget] invocation below, to allow user to install it.
+     */
+    eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_paypal-id|/_local-url))
+    add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps
+      src
+        container
+          element:a
+          href:#
+          role:button
+          class:bazar-app shaded rounded air-inner bg
+          onclick
+
+            /*
+             * Forward evaluate above.
+             */
+            _app-name:x:/..for-each/*/p5.html.html-encode/[0,1]?value
+            _app-url:x:/..for-each/*/p5.html.html-encode/[1,2]?value
+            _app-author-description:x:/@markdown2html?value
+            _paypal-id:x:/..for-each/*/p5.html.html-encode/[5,6]?value
+            _local-url:x:/..for-each/*/p5.html.html-encode/[6,7]?value
+
+            /*
+             * Asking user to confirm installation, and initiating download and 
+             * installation process.
+             */
+            eval-x:x:/+/**(/_url|/_paypal-id|/_local-url)
+            create-widgets
+              micro.widgets.modal:bazar-confirm-installation
+                widgets
+                  h3
+                    innerValue:Confirm installation of {0}
+                      :x:/@_app-name?value
+                  p
+                    innerValue:@"Are you sure you want to install {0}? Its developer has the following to say about it."
+                      :x:/@_app-name?value
+                  div
+                    class:success rounded air-inner
+                    innerValue:x:/@_app-author-description?value
+                  p
+                    innerValue:@"Notice, this process might take some time. Please allow Phosphorus Five to finish it without interruptions."
+                  div
+                    class:right
+                    widgets
+                      div
+                        class:strip
+                        style:"display:inline-block;"
+                        widgets
+                          button
+                            innerValue:Yes
+                            style:"margin-bottom:0;"
+                            onclick:@"return p5.bazar_download_app(event);"
+                            oninit
+
+                              /*
+                               * Setting initial focus to button.
+                               */
+                              micro.page.set-focus:x:/../*/_event?value
+
+                              /*
+                               * Including JavaScript necessary to create a "please wait"
+                               * screen, as user clicks the "Yes" button.
+                               */
+                              p5.web.include-javascript:@"
 p5.bazar_download_app = function(e) {
   var obsc = document.createElement('div');
   obsc.id = 'bazar-obscurer';
@@ -214,48 +243,48 @@ p5.bazar_download_app = function(e) {
   return false;
 }"
 
-                          .onclick
+                            .onclick
 
-                            /*
-                             * Passing in URL to file responsible for downloading and
-                             * installing the app.
-                             */
-                            _url:x:/@_app-url?value
-                            _paypal-id:x:/@_paypal-id?value
-                            _local-url:x:/@_local-url?value
-                            eval-x:x:/+/*
-                            micro.evaluate.file:/modules/bazar/install-app.hl
-                              url:x:/@_url?value
-                              paypal-id:x:/@_paypal-id?value
-                              local-url:x:/@_local-url?value
+                              /*
+                               * Passing in URL to file responsible for downloading and
+                               * installing the app.
+                               */
+                              _url:x:/@_app-url?value
+                              _paypal-id:x:/@_paypal-id?value
+                              _local-url:x:/@_local-url?value
+                              eval-x:x:/+/*
+                              micro.evaluate.file:/modules/bazar/install-app.hl
+                                url:x:/@_url?value
+                                paypal-id:x:/@_paypal-id?value
+                                local-url:x:/@_local-url?value
 
-                            /*
-                             * Redirecting user to desktop, after installation process if
-                             * finished.
-                             */
-                            p5.web.get-root-location
-                            p5.web.set-location:x:/-?value
+                              /*
+                               * Redirecting user to desktop, after installation process if
+                               * finished.
+                               */
+                              p5.web.get-root-location
+                              p5.web.set-location:x:/-?value
 
-                        button
-                          innerValue:No
-                          style:"margin-bottom:0;"
-                          onclick
+                          button
+                            innerValue:No
+                            style:"margin-bottom:0;"
+                            onclick
 
-                            /*
-                             * Simply deleting modal widget.
-                             */
-                            delete-widget:bazar-confirm-installation
+                              /*
+                               * Simply deleting modal widget.
+                               */
+                              delete-widget:bazar-confirm-installation
 
-        widgets
-          literal
-            class:bazar-app-name
-            innerValue:x:/..for-each/*/p5.html.html-encode/[0,1]?value
-          literal
-            class:bazar-app-description
-            innerValue:x:/..for-each/*/p5.html.html-encode/[2,3]?value
-          literal
-            class:bazar-app-price
-            innerValue:x:/..for-each/*/p5.html.html-encode/[4,5]?value
+          widgets
+            literal
+              class:bazar-app-name
+              innerValue:x:/..for-each/*/p5.html.html-encode/[0,1]?value
+            literal
+              class:bazar-app-description
+              innerValue:x:/..for-each/*/p5.html.html-encode/[2,3]?value
+            literal
+              class:bazar-app-price
+              innerValue:x:/..for-each/*/p5.html.html-encode/[4,5]?value
 
 
 

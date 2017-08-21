@@ -199,7 +199,10 @@ core/p5.webapp/system42/**
 # Excluding Micro
 core/p5.webapp/modules/micro/**
 
-# Excluding Micro
+# Excluding Bazar cache files
+core/p5.webapp/modules/bazar/cache/**
+
+# Excluding Sephia Five
 core/p5.webapp/modules/sephia-five/**
 
 # Excluding users files

@@ -1,4 +1,5 @@
 ﻿
+
 /*
  * File responsible for retrieving available Bazar apps.
  */
@@ -8,62 +9,136 @@
 
 
 /*
- * Checking cache.
+ * Notice, we're doing some intelligent caching of our Bazars' content.
+ * This caching depends upon the HTTP "If-Modified-Since" HTTP header, and not all web servers are setup to handle that
+ * header correctly though, so we avoid polling data from our Bazar URLs more than once every 5 hours.
+ *
+ * The way we do this, is by storing the last "poll date" in our server's application object, and if it
+ * is less than 5 hours since the server updated its cache, we avoid updating the cache.
+ *
+ * This means, that if you add an app to a Bazar, it might take 5 hours before all clients will get to know
+ * about it.
+ *
+ * Without this feature, populating the cache of server Bazars' content, would potentially have taken a lot of time.
+ * And every time the user opens up the Bazar, it would feel slow and sluggish, if there's a single Bazar declaration
+ * that is stored on a server, that doesn't support the "If-Modified-Since" HTTP header.
+ *
+ * Notice, all Bazars' content, is cached physically on disc, in our "/cache" folder.
  */
-p5.web.cache.get:p5.bazar.apps
-if:x:/-/*/*/*
+p5.web.application.get:bazar.last-poll-date
+p5.types.date.now
+-:x:/-?value
+  _:time:"5:00:00.000"
+if:x:/@p5.web.application.get/*
+  not
+  or:x:/@p5.web.application.get/*?value
+    <:x:/@-?value
 
   /*
-   * Apps are already cached.
+   * Either there was no "last poll date" in application object, or it is more than 5 hours since
+   * we polled our servers to check for updates.
+   *
+   * Hence, fetching available apps from Bazar declaration.
+   *
+   * Creating one fetcher thread for each configured Bazar.
    */
-  add:x:/./*/return
-    src:x:/@p5.web.cache.get/*/*/*
-  return
+  load-file:/modules/bazar/configuration/bazars.hl
+  apply:x:/..if/*/wait
+    src:x:/@load-file/*/*/bazar
+    template
+      fork
+
+        /*
+         * Making sure exceptions never leaves thread.
+         */
+        try
+
+          /*
+           * In order to pass in the correct "If-Modified-Since" HTTP header to GET invocation, we must check our
+           * cache of previously fetched Bazars, and pass in the file creation date to our [p5.http.get] invocation.
+           *
+           * The files are cached locally, in our "/cache/" folder, as the SHA256 hashed version of their URLs.
+           * Hence, first we must determine the local cache filename, by hashing our URL, and remove any non-valid
+           * filename characters.
+           */
+          {_url}:x:?value
+          p5.crypto.hash.create-sha256:x:/@_url?value
+          replace:x:/@p5.crypto.hash.create-sha256?value
+            src:+
+          replace:x:/@replace?value
+            src:=
+
+          /*
+           * Then checking if there even exists a local cache of file from our currently iterated Bazar.
+           */
+          if
+            fetch:x:/0/0?value
+              file-exists:/modules/bazar/cache/{0}.hl
+                :x:/@replace?value
+
+            /*
+             * There exists a cache of currently iterated Bazar, now reading its "last write time", and making
+             * sure we pass in that date as the value of our "If-Modified-Since" HTTP header.
+             */
+            p5.io.file.get-last-write-time:/modules/bazar/cache/{0}.hl
+              :x:/@replace?value
+            eval-x:x:/+/*/*
+            add:x:/..try/*/p5.http.get
+              src
+                If-Modified-Since:x:/@p5.io.file.get-last-write-time/*?value
+
+          /*
+           * Now we can invoke our HTTP GET to retrieve the actual Bazar's content.
+           */
+          {p5.http.get}:x:?value
+
+          /*
+           * Checking server's response.
+           */
+          if:x:/@p5.http.get/*/status?value.int
+            !=:int:304
+
+            /*
+             * File has been modified on server since it was cached.
+             *
+             * Making sure we cache Bazar file's content locally.
+             */
+            save-file:/modules/bazar/cache/{0}.hl
+              :x:/@replace?value
+              src:x:/@p5.http.get/*/result/*/content?value
+
+        catch
+
+          /*
+           * We don't really have any intelligent courses of action here, but cache will hopefully
+           * provide our Bazar's content, although technically it might be old.
+           */
+
+  /*
+   * Databound above, with one [fork] for each file.
+   */
+  wait
+
+  /*
+   * Making sure we store "last fetch time", to avoid next roundtrip creating another bunch of HTTP GET requests,
+   * for 5 hours.
+   *
+   * See comments above, for entire lambda object.
+   */
+  p5.web.application.set:bazar.last-poll-date
+    src:x:/@p5.types.date.now?value
+
 
 
 
 
 
 /*
- * Fetching available apps from GitHub.
- *
- * Creating one fetcher thread for each configured Bazar.
+ * Then loading each cache file.
  */
-load-file:/modules/bazar/configuration/bazars.hl
-apply:x:/../*/wait
-  src:x:/@load-file/*/*/bazar
-  template
-    fork
-      {p5.http.get}:x:?value
-wait
-
-
-
-
-
-
-/*
- * Transforming result to lambda.
- */
-hyper2lambda:x:/@wait/**/p5.http.get/*/result/*/content?value
-
-
-
-
-
-/*
- * Making sure we cache results, in case user does another roundtrip later.
- *
- * Notice, we only cache it for 10 minutes.
- *
- * Notice, we only cache unique app IDs.
- */
-add:x:/../*/p5.web.cache.set/*/*
-  src:x:/@hyper2lambda/*/=$
-p5.web.cache.set:p5.bazar.apps
-  minutes:10
-  src
-    apps
+list-files:/modules/bazar/cache/
+  filter:.hl
+load-file:x:/-/*?name
 
 
 
@@ -73,5 +148,7 @@ p5.web.cache.set:p5.bazar.apps
  * Returning results to caller.
  */
 add:x:/../*/return
-  src:x:/@hyper2lambda/*/=$
+  src:x:/@load-file/*
+set:x:/../*/return/*?name
+  src:bazar
 return

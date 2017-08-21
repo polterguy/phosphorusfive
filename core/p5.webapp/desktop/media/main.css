@@ -70,6 +70,11 @@ body {
  */
 .bazar-wrapper {
 }
+.bazar-name {
+    color:#fefefe;
+    clear:both;
+    text-align:center;
+}
 .bazar-app {
     width: 200px;
     height: 200px;
