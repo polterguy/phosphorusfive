@@ -30,7 +30,7 @@ namespace p5.web.storage
     /// <summary>
     ///     Helper to retrieve and set global application wide values
     /// </summary>
-    public static class Globals
+    public static class Application
     {
         /// <summary>
         ///     Sets one or more global application wide object(s)
