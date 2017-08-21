@@ -183,7 +183,9 @@ namespace p5.math
          */
         internal static object ChangeType (object value, Type resultType)
         {
-            if (value.GetType () == resultType)
+            // DateTime can subtract TimeSpans, hence we don't change type if
+            // resultType is DateTime.
+            if (value.GetType () == resultType || (resultType == typeof (DateTime)))
                 return value;
             return Convert.ChangeType (value, resultType);
         }
