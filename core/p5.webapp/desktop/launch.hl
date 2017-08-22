@@ -38,26 +38,6 @@ p5.web.include-css-file:/desktop/media/main.css
 
 
 /*
- * Making sure user is logged in, and if not, forcing him to login, before we display the desktop.
- */
-whoami
-if:x:/-/*/default?value
-
-  /*
-   * User is not logged in, forcing him to login, before we allow him to continue.
-   */
-  p5.core.login
-
-  /*
-   * Returning early to avoid evaluating the rest of our file.
-   */
-  return
-
-
-
-
-
-/*
  * Now we can determine all modules the user has installed on his system, and create a "desktop icon" for
  * each of these modules, that have a "launch.hl" file, to allow the user to actually launch his apps.
  *
@@ -144,17 +124,43 @@ create-widget
     div
       class:col
       widgets
-        a
+        literal
+          element:a
           href:#
           role:button
           class:desktop-logout
-          innerValue:@"<span class=""icon-power-off""></span>"
           title:Log out
+          oninit
+
+            /*
+             * Dislpaying either "login" button or "logout" button, depending upon user's current status.
+             */
+            whoami
+            if:x:/@whoami/*/default?value
+
+              /*
+               * User is not logged in.
+               */
+              set-widget-property:x:/../*/_event?value
+                innerValue:@"<span class=""icon-key""></span>"
+                title:Log in
+
+            else
+
+              /*
+               * User is logged in.
+               */
+              set-widget-property:x:/../*/_event?value
+                innerValue:@"<span class=""icon-power-off""></span>"
+                title:Log out
+
           onclick
 
             /*
-             * Loggin user out of system, by evaluating file responsible for doing just that.
-             *
-             * This will delete all temporary files for user, log user out, and reload the current URL.
+             * Either logging user in, or out, depending upon his current status.
              */
-            p5.core.logout
+            whoami
+            if:x:/@whoami/*/default?value
+              p5.core.login
+            else
+              p5.core.logout

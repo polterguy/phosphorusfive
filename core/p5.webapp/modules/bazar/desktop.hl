@@ -10,6 +10,18 @@ container
   oninit
 
     /*
+     * Verifying user is logged in, and if not, deleting widget altogether, and returning early.
+     */
+    whoami
+    if:x:/@whoami/*/default?value
+
+      /*
+       * User is not logged in, simply deleting entire icon.
+       */
+      delete-widget:x:/../*/_event?value
+      return
+
+    /*
      * Getting link URL to point correctly.
      */
     set-widget-property:x:/../*/_event?value
