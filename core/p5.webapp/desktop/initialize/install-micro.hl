@@ -63,9 +63,17 @@ unzip:~/temp/micro.zip
 
 /*
  * Renaming the Micro main folder, to remove any versioning numbers, etc.
+ *
+ * Notice, we only do this, if filename actually is different.
  */
-move-folder:x:/@unzip/0?name
-  dest:/modules/micro/
+if:x:/@unzip/0?name
+  !=:/modules/micro/
+
+  /*
+   * Actual download folder, after unzip, had a different name than what we'd expect it to have.
+   */
+  move-folder:x:/@unzip/0?name
+    dest:/modules/micro/
 
 
 
