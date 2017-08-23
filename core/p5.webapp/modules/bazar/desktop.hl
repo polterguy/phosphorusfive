@@ -5,7 +5,6 @@
 container
   element:a
   class:desktop-app shaded rounded air-inner bg
-  style:"position:absolute;bottom:1rem;right:1rem;"
   title:Bazar
   oninit
 
@@ -30,4 +29,4 @@ container
   widgets
     span
       class:desktop-app-name
-      innerValue:@"<span style=""margin-top:19%;display:block;font-size:4rem;"" class=""icon-gift""></span><span style=""position:absolute;top:10px;right:10px;"">Bazar</span>"
+      innerValue:@"<span class=""icon-gift desktop-app-icon""></span><span style=""position:absolute;top:5px;right:5px;font-size:.8rem;"">Bazar</span>"

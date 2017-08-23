@@ -14,12 +14,12 @@
  * Including main Micro CSS files, and making sure root "cnt" widget 
  * has the "container-fullscreen" CSS class, in addition to that it's empty.
  *
- * Notice, we also include the "serious" skin at this point.
+ * Notice, we also include the "Sea Breeze" skin at this point.
  */
 p5.web.include-css-file:@MICRO/media/main.css
 p5.web.include-css-file:@MICRO/media/ext.css
 p5.web.include-css-file:@MICRO/media/fonts.css
-p5.web.include-css-file:@MICRO/media/skins/serious.css
+p5.web.include-css-file:@MICRO/media/skins/sea-breeze.css
 set-widget-property:cnt
   class:container-fullscreen
 clear-widget:cnt
@@ -122,7 +122,7 @@ create-widget
   class:row
   widgets
     div
-      class:col
+      class:col desktop-apps
       widgets
         literal
           element:a

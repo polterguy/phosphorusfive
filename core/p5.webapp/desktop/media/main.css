@@ -1,5 +1,6 @@
 ﻿
 
+
 /*
  * Main CSS file for our little "desktop" app.
  */
@@ -12,12 +13,15 @@ body {
 .container-fullscreen {
     height:100%;
 }
+.desktop-apps {
+    margin-top:40px;
+}
 .desktop-app {
-    width:150px;
-    height:150px;
-    float:left;
-    margin-right:15px;
-    margin-bottom:15px;
+    overflow: visible;
+    float: left;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    position: relative;
 }
 .desktop-app:hover,
 .desktop-app:active,
@@ -25,9 +29,17 @@ body {
     color:#8080ca;
 }
 .desktop-app-name {
-    font-size:1.2rem;
+    font-size:1rem;
     display:block;
     text-align:center;
+}
+.desktop-app-icon {
+    margin-top: 5%;
+    display: block;
+    font-size: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding:0;
 }
 .desktop-app:hover,
 .desktop-app:active,
@@ -62,6 +74,21 @@ body {
     transition-property:transform,color;
     transition-duration:.2s;
     transition-timing-function:ease-in-out;
+}
+@media screen and (min-width:500px) {
+.desktop-app-icon {
+    font-size: 3rem;
+}
+}
+@media screen and (min-width:800px) {
+    .desktop-app-icon {
+        font-size: 4rem;
+    }
+}
+@media screen and (min-width:1024px) {
+    .desktop-app-icon {
+        font-size: 5rem;
+    }
 }
 
 
