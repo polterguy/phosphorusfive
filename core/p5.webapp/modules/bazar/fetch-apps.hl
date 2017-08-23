@@ -42,6 +42,10 @@ if:x:/@p5.web.application.get/*
    *
    * Creating one fetcher thread for each configured Bazar.
    */
+  .exe
+    return:@"{0}:""{1}"""
+      :x:/@_dn/#?name
+      :x:/@_dn/#?value
   load-file:/modules/bazar/configuration/bazars.hl
   apply:x:/..if/*/wait
     src:x:/@load-file/*/*/bazar
@@ -91,6 +95,8 @@ if:x:/@p5.web.application.get/*
            * Now we can invoke our HTTP GET to retrieve the actual Bazar's content.
            */
           {p5.http.get}:x:?value
+            {template}:x:/*
+              {@eval}:x:/@.exe
 
           /*
            * Checking server's response.

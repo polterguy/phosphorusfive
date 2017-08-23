@@ -1,0 +1,15 @@
+﻿
+/*
+ * Executed when Bazar is initialized during startup.
+ */
+
+
+
+
+
+/*
+ * Emptying cache of bazars.
+ */
+list-files:/modules/bazar/cache/
+  filter:.hl
+delete-file:x:/-/*?name
