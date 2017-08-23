@@ -252,18 +252,48 @@ p5.bazar_download_app = function(e) {
                               _url:x:/@_app-url?value
                               _paypal-id:x:/@_paypal-id?value
                               _local-url:x:/@_local-url?value
-                              eval-x:x:/+/*
-                              micro.evaluate.file:/modules/bazar/install-app.hl
-                                url:x:/@_url?value
-                                paypal-id:x:/@_paypal-id?value
-                                local-url:x:/@_local-url?value
 
                               /*
-                               * Redirecting user to desktop, after installation process if
-                               * finished.
+                               * Making sure we trap any exceptions occurring during installation process.
                                */
-                              p5.web.get-root-location
-                              p5.web.set-location:x:/-?value
+                              try
+                                eval-x:x:/+/*
+                                micro.evaluate.file:/modules/bazar/install-app.hl
+                                  url:x:/@_url?value
+                                  paypal-id:x:/@_paypal-id?value
+                                  local-url:x:/@_local-url?value
+
+                                /*
+                                 * Redirecting user to desktop, after installation process if
+                                 * finished.
+                                 */
+                                p5.web.get-root-location
+                                p5.web.set-location:x:/-?value
+
+                              catch
+
+                                /*
+                                 * Destroying old modal window, and creating a new one, displaying our error.
+                                 */
+                                delete-widget:bazar-confirm-installation
+                                eval-x:x:/+/**/innerValue
+                                create-widgets
+                                  micro.widgets.modal:bazar-error-installation
+                                    widgets
+                                      h3
+                                        innerValue:Oops ...!!
+                                      p
+                                        innerValue:x:/@message?value
+                                      div
+                                        class:right
+                                        widgets
+                                          button
+                                            style:"margin-bottom:0;"
+                                            innerValue:OK
+                                            oninit
+                                              micro.page.set-focus:x:/../*/_event?value
+                                            onclick
+                                              delete-widget:bazar-error-installation
 
                           button
                             innerValue:No
