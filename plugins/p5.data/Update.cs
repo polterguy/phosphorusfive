@@ -51,32 +51,34 @@ namespace p5.data
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
-                // Acquiring write lock on database, and making sure we keep track of which files are changed, and how many items were affected.
-                var changed = new List<Node> ();
-                int affectedItems = 0;
-                Common.Locker.EnterWriteLock ();
-                try {
+                // Acquiring write lock on database.
+                using (new Common.Lock (true)) {
 
-                    // Retrieving source, and iterating through each destination, updating with source value.
-                    var source = XUtil.Source (context, e.Args);
-                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
+                    // Storing affected nodes, and number of affected items.
+					var changed = new List<Node> ();
+					int affectedItems = 0;
 
-                        // Updates the destination with the source, making sure we can keep track of files that are changed, and that we throw is update is unsuccessful.
-                        if (!UpdateDestination (context, source, idxDestination))
-                            throw new LambdaException ("[p5.data.update] requires your new node needs to have a unique ID, or use its old ID by not providing one", e.Args, context);
-                        Common.AddNodeToChanges (idxDestination.Node, changed);
-                        affectedItems += 1;
-                    }
-                } finally {
+					// Retrieving source, and iterating through each destination, updating with source value.
+                    // Notice, we don't provide transaction support here, but we do make sure at least any changes
+                    // that actually occurs, are serialized to disc!
+					var source = XUtil.Source (context, e.Args);
+                    try {
 
-                    // Saving all affected files.
-                    // Notice, we do this even though an exception has occurred, since exception is thrown before nodes are updated with any "bad data".
-                    // This means that if you update several nodes, some might become updated though, while others are not updated.
-                    // Hence, [p5.data.update] does not feature any sorts of "transactional update support" at the moment.
-                    Common.SaveAffectedFiles (context, changed);
-                    e.Args.Value = affectedItems;
-                    Common.Locker.ExitWriteLock ();
-                }
+                        foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
+
+                            // Updates the destination with the source, making sure we can keep track of files that are changed, and that we throw if update is unsuccessful.
+                            if (!UpdateDestination (context, source, idxDestination))
+                                throw new LambdaException ("[p5.data.update] requires your new node needs to have a unique ID, or use its old ID by not providing one", e.Args, context);
+
+                            Common.AddNodeToChanges (idxDestination.Node, changed);
+                            affectedItems += 1;
+                        }
+					} finally {
+                        
+                        Common.SaveAffectedFiles (context, changed);
+						e.Args.Value = affectedItems;
+					}
+				}
             }
         }
 

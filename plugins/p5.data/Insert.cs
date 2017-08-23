@@ -48,34 +48,33 @@ namespace p5.data
         [ActiveEvent (Name = "p5.data.append")]
         public static void p5_data_insert_append (ApplicationContext context, ActiveEventArgs e)
         {
-            // Acquiring write lock on database, and making sure we keep track of which files are changed, and how many items were affected.
-            var changed = new List<Node> ();
-            int affectedItems = 0;
-            Common.Locker.EnterWriteLock ();
-            try {
+            // Acquiring write lock on database.
+            using (new Common.Lock (true)) {
 
-                // Checking if we should force insertion at the end or not.
-                var forceAppend = e.Name == "p5.data.append" || e.Name == "append-data";
+				// Making sure we keep track of which files are changed, and how many items were affected.
+				var changed = new List<Node> ();
+				int affectedItems = 0;
 
-                // Looping through all nodes given as children, value, or as the result of an expression.
-                foreach (var idx in XUtil.Iterate<Node> (context, e.Args)) {
+				// Checking if we should force insertion at the end or not.
+				var forceAppend = e.Name == "p5.data.append" || e.Name == "append-data";
 
-                    // Inserting node, clearing children, and incrementing number of affected items.
-                    InsertNode (idx, context, changed, forceAppend);
-                    idx.Clear ();
-                    affectedItems += 1;
-                }
+                // Notice, we don't provide any transactional support here, but at least we make sure any changes are serialized to disc.
+                try {
 
-            } finally {
+                    // Looping through all nodes given as children, value, or as the result of an expression.
+                    foreach (var idx in XUtil.Iterate<Node> (context, e.Args)) {
 
-                // Saving all affected files.
-                // Notice, we do this even though an exception has occurred, since exception is thrown before any illegal nodes are attempted to insert.
-                // This means that if you insert several nodes, some might become inserted though, while others are not inserted.
-                // Hence, [p5.data.insert] does not feature any sorts of "transactional insert support" at the moment.
-                Common.SaveAffectedFiles (context, changed);
-                e.Args.Value = affectedItems;
-                Common.Locker.ExitWriteLock ();
-            }
+                        // Inserting node, clearing children, and incrementing number of affected items.
+                        InsertNode (idx, context, changed, forceAppend);
+                        idx.Clear ();
+                        affectedItems += 1;
+                    }
+                } finally {
+
+                    Common.SaveAffectedFiles (context, changed);
+					e.Args.Value = affectedItems;
+				}
+			}
         }
 
         /*
@@ -87,8 +86,8 @@ namespace p5.data
             List<Node> changed,
             bool forceAppend)
         {
-            // Syntax checking insert node.
-            SyntaxCheckInsertNode (node, context);
+            // Syntax checking and decorating insert node.
+            DecorateNode (node, context);
 
             // Finding next available database file node.
             var fileNode = Common.GetAvailableFileNode (context, forceAppend);
@@ -104,7 +103,7 @@ namespace p5.data
         /*
          * Syntax checks node before insertion is allowed.
          */
-        static void SyntaxCheckInsertNode (Node node, ApplicationContext context)
+        static void DecorateNode (Node node, ApplicationContext context)
         {
             // Making sure it is impossible to insert items without a name into database.
             if (string.IsNullOrEmpty (node.Name))

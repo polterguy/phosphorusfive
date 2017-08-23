@@ -53,8 +53,7 @@ namespace p5.data
             using (new ArgsRemover (e.Args)) {
 
                 // Acquiring read lock on database.
-                Common.Locker.EnterReadLock ();
-                try {
+                using (new Common.Lock (false)) {
 
                     // Retrieving match object, and checking what type of match it was.
                     var match = ex.Evaluate (context, Common.Database, e.Args);
@@ -75,10 +74,6 @@ namespace p5.data
                             e.Args.AddRange (match.Select (ix => new Node ("", ix.Value)));
                             break;
                     }
-                } finally {
-
-                    // Releasing write lock.
-                    Common.Locker.ExitReadLock ();
                 }
             }
         }
