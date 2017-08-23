@@ -194,7 +194,7 @@ core/p5.webapp/db
 core/p5.webapp/auth.hl
 
 # Excluding System42
-core/p5.webapp/system42/**
+core/p5.webapp/modules/system42/**
 
 # Excluding Micro
 core/p5.webapp/modules/micro/**
