@@ -25,11 +25,11 @@ echo ""
 
 # Then asking user to confirm installation.
 while true; do
-    read -p "Do you still wish to install this program?" yn
+    read -p "Do you still wish to install this program? " yn
     case $yn in
         [Yy]* ) break;;
         [Nn]* ) exit;;
-        * ) echo "Please answer yes or no.";;
+        * ) echo "Please answer y for yes, or n for no";;
     esac
 done
 
