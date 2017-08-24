@@ -102,12 +102,16 @@ for-each:x:/@list-files/*?name
         container
           element:a
           href:/{0}
-            :x:/@split/0?name
+            :x:/@split/0/-2?name
           class:desktop-app shaded rounded air-inner bg
           widgets
             span
               class:desktop-app-name
-              innerValue:x:/@split/0?name
+              href:x:/@split/0/-2?name
+              widgets
+                span
+                  class:desktop-app-name
+                  innerValue:@"<span class=""icon-home desktop-app-icon""></span><span style=""position:absolute;top:5px;right:5px;font-size:.8rem;"">Welcome</span>"
 
 
 
