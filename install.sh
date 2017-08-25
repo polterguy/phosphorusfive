@@ -34,7 +34,7 @@ while true; do
 done
 
 # Installing Apache
-sudo apt-get --assume-yes install apache2
+apt-get --assume-yes install apache2
 
 # Informing user that his MySQL password can be found in web.config
 echo "Your MySQL password can be found in the file '/var/www/html/web.config'"
@@ -42,39 +42,39 @@ echo "Your MySQL password can be found in the file '/var/www/html/web.config'"
 # Installing MySQL server.
 # Notice, by default MySQL is setup without networking, hence unless user explicitly opens it
 # up later, this should be perfectly safe.
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password SomeRandomPassword'
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password SomeRandomPassword'
-sudo apt-get -y install mysql-server
+debconf-set-selections <<< 'mysql-server mysql-server/root_password password SomeRandomPassword'
+debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password SomeRandomPassword'
+apt-get -y install mysql-server
 
 # Installing Mono and mon_mono
-sudo apt-get --assume-yes install mono-complete
-sudo apt-get --assume-yes install libapache2-mod-mono
+apt-get --assume-yes install mono-complete
+apt-get --assume-yes install libapache2-mod-mono
 
 # Installing zip, since main P5 file is distributed as a zip file.
-sudo apt-get --assume-yes install unzip
+apt-get --assume-yes install unzip
 
 # Download P5, and unzipping, in addition to moving it into main www/html folder.
 wget https://github.com/polterguy/phosphorusfive/releases/download/v4.1/binaries.zip
 unzip binaries.zip
-sudo cp -R p5/* /var/www/html
+cp -R p5/* /var/www/html
 
 # Removing default index.html file
-sudo rm /var/www/html/index.html
+rm /var/www/html/index.html
 
 # Editing web.config file, passing in the password user selected during process further up.
 sed -i 's/User Id=root;/User Id=root;password=SomeRandomPassword;/g' /var/www/html/web.config
 
 # Giving ownership (recursively) to Apache user for entire folder.
 # Necessary since P5 will create and modify its own file structure.
-sudo chown -R www-data:www-data /var/www/html
+chown -R www-data:www-data /var/www/html
 
 # Installing GnuPG, and making sure Apache has its GnuPG folder.
-sudo apt-get --assume-yes install gnupg2
-sudo mkdir /var/www/.gnupg
-sudo chown -R www-data:www-data /var/www/.gnupg
+apt-get --assume-yes install gnupg2
+mkdir /var/www/.gnupg
+chown -R www-data:www-data /var/www/.gnupg
 
 # Configuring mod_mono
-sudo echo "
+echo "
 <FilesMatch \"^[^\.]+$\">
     ForceType application/x-asp-net
 </FilesMatch>
@@ -93,4 +93,4 @@ sudo echo "
 " >> /etc/apache2/mods-enabled/mod_mono_auto.conf
 
 # Restarting Apache
-sudo service apache2 restart
+service apache2 restart
