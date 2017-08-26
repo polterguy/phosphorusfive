@@ -20,58 +20,52 @@ echo "If you followed the default installation process, when you setup Ubuntu,"
 echo "and you didn't add any extra packages, it should work flawlessly though."
 echo "It has only been tested with Ubuntu Servers, and only the latest version,"
 echo "which is version 'Ubuntu Server 16.04.3 LTS'."
+echo ""
+echo "THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESSED"
+echo "OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF"
+echo "MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-"
+echo "INFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR ANYONE"
+echo "DISTRIBUTING THE SOFTWARE BE LIABLE FOR ANY DAMAGES OR OTHER LIABILITY,"
+echo "WHETHER IN CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN"
+echo "CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE"
+echo "SOFTWARE."
 echo "================================================================================"
 echo ""
 
+# Download P5, and showing SHA1 to user, asking if he wants to proceed.
+wget https://github.com/polterguy/phosphorusfive/releases/download/v4.1/binaries.zip
+sha1sum binaries.zip
+
 # Then asking user to confirm installation.
-while true; do
-    read -p "Do you still wish to install this program? " yn
-    case $yn in
-        [Yy]* ) break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer y for yes, or n for no";;
-    esac
-done
-
-# Installing Apache
-apt-get --assume-yes install apache2
-
-# Informing user that his MySQL password can be found in web.config
-echo "Your MySQL password can be found in the file '/var/www/html/web.config'"
+read -p "SHA1 of downloaded P5 zip file can be found above, continue? [y/n] " yn
+if [[ ! $yn =~ ^[Yy]$ ]]; then
+  exit
+fi
 
 # Installing MySQL server.
 # Notice, by default MySQL is setup without networking, hence unless user explicitly opens it
 # up later, this should be perfectly safe.
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password SomeRandomPassword'
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password SomeRandomPassword'
-apt-get -y install mysql-server
-
-# Installing Mono and mon_mono
-apt-get --assume-yes install mono-complete
-apt-get --assume-yes install libapache2-mod-mono
-
-# Installing zip, since main P5 file is distributed as a zip file.
-apt-get --assume-yes install unzip
-
-# Download P5, and unzipping, in addition to moving it into main www/html folder.
-wget https://github.com/polterguy/phosphorusfive/releases/download/v4.1/binaries.zip
-unzip binaries.zip
-cp -R p5/* /var/www/html
+apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip gnupg2
 
 # Removing default index.html file
 rm /var/www/html/index.html
 
-# Editing web.config file, passing in the password user selected during process further up.
+# Unzipping P5, in addition to moving it into main www/html folder.
+unzip binaries.zip
+cp -R p5/* /var/www/html
+
+# Removing both zip file, and folder created during above process.
+rm -f binaries.zip
+rm -f -r p5
+
+# Editing web.config file, making sure we get the password correctly.
 sed -i 's/User Id=root;/User Id=root;password=SomeRandomPassword;/g' /var/www/html/web.config
 
 # Giving ownership (recursively) to Apache user for entire folder.
 # Necessary since P5 will create and modify its own file structure.
-chown -R www-data:www-data /var/www/html
-
-# Installing GnuPG, and making sure Apache has its GnuPG folder.
-apt-get --assume-yes install gnupg2
-mkdir /var/www/.gnupg
-chown -R www-data:www-data /var/www/.gnupg
+chown -R www-data:www-data /var/www
 
 # Configuring mod_mono
 echo "
@@ -94,3 +88,6 @@ echo "
 
 # Restarting Apache
 service apache2 restart
+
+# Informing user that his MySQL password can be found in web.config
+echo "Your MySQL password can be found in the file '/var/www/html/web.config'"
