@@ -71,6 +71,8 @@ if:x:/@p5.web.application.get/*
             src:+
           replace:x:/@replace?value
             src:=
+          replace:x:/@replace?value
+            src:/
 
           /*
            * Then checking if there even exists a local cache of file from our currently iterated Bazar.
@@ -133,7 +135,6 @@ if:x:/@p5.web.application.get/*
    */
   p5.web.application.set:bazar.last-poll-date
     src:x:/@p5.types.date.now?value
-
 
 
 
