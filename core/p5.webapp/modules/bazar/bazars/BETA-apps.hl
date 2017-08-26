@@ -1,0 +1,33 @@
+
+/*
+ * List of available Bazar apps in main Bazar declaration file.
+ */
+
+
+
+
+
+/*
+ * First the current Bazar name.
+ */
+name:GaiaSoul BETA repository
+
+
+
+
+
+/*
+ * These are BETA apps, not ready for production yet.
+ */
+app:peeples-0.8
+  name:Peeples
+  description:A user management module for Phosphorus Five
+  condition:p5.io.unroll-path.@PEEPLES
+  url:"https://github.com/polterguy/peeples/releases/download/v0.8/peeples.zip.pgp"
+  author-readme:@"Peeples is a User Management module for Phosphorus Five, that allows you to create, edit and delete users in your installation. It comes with 5 free user tickets, and allows you to automatically purchase additional tickets, according to your needs.
+
+Peeples is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
+  price:Free for 5 users
+  local-url:peeples
+  image:"https://phosphorusfive.files.wordpress.com/2017/08/vault-icon-2.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
