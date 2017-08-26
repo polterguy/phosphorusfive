@@ -678,7 +678,7 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
                                           delete-widget:bazar-add-bazar
 
                     button
-                      innerValue:@"<span class=""icon-close""></span>"
+                      innerValue:@"<span class=""icon-home""></span>"
                       style:"margin-bottom:0;"
                       onclick
 
