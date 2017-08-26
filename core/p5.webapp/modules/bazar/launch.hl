@@ -15,7 +15,7 @@
  */
 clear-widget:cnt
 set-widget-property:cnt
-  class:container-fullscreen
+  class:container
 
 
 
