@@ -59,7 +59,6 @@
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="common\documents\private\web.config" />
-    <Content Include="users\root\documents\private\web.config" />
     <Content Include="desktop\media\main.css" />
     <Content Include="modules\bazar\screenshots\screenshot-1.png" />
   </ItemGroup>
@@ -269,6 +268,7 @@
     <None Include="desktop\configuration\key-server.hl" />
     <None Include="modules\bazar\cache\README.md" />
     <None Include="modules\bazar\startup.hl" />
+    <None Include="modules\bazar\bazars\BETA-apps.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

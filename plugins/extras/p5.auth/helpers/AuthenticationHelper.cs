@@ -604,10 +604,6 @@ namespace p5.auth.helpers
             if (!Directory.Exists (rootFolder + "/users/" + username + "/temp"))
                 Directory.CreateDirectory(rootFolder + "/users/" + username + "/temp");
 
-            if (!File.Exists (rootFolder + "/users/" + username + "/documents/private/web.config"))
-                File.Copy (
-                    rootFolder + "/users/root/documents/private/web.config", 
-                    rootFolder + "/users/" + username + "/documents/private/web.config");
             if (!File.Exists (rootFolder + "/users/" + username + "/documents/private/README.md"))
                 File.Copy (
                     rootFolder + "/users/root/documents/private/README.md", 
