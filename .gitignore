@@ -205,6 +205,9 @@ core/p5.webapp/modules/bazar/cache/**
 # Excluding Sephia Five
 core/p5.webapp/modules/sephia-five/**
 
+# Excluding Peeples
+core/p5.webapp/modules/peeples/**
+
 # Excluding users files
 core/p5.webapp/users/**
 
