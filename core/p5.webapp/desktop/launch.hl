@@ -21,7 +21,7 @@ p5.web.include-css-file:@MICRO/media/ext.css
 p5.web.include-css-file:@MICRO/media/fonts.css
 p5.web.include-css-file:@MICRO/media/skins/sea-breeze.css
 set-widget-property:cnt
-  class:container-fullscreen
+  class:container
 clear-widget:cnt
 
 
