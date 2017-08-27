@@ -106,6 +106,7 @@ create-event:p5.web.load-ui
        */
       split:x:/../*/url?value
         =:/
+        =:?
 
       /*
        * Checking if app exists, and if not, returning some simple 404 Not found.
