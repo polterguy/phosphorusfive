@@ -5,13 +5,14 @@
  * Main CSS file for our little "desktop" app.
  */
 body, html, form {
-    height: 100%;
+    min-height: 100%;
 }
 body {
     background: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,1));
 }
 .container-fullscreen {
-    height:100%;
+    min-height:100%;
+    overflow:auto;
 }
 .desktop-apps {
     margin-top:40px;
@@ -34,11 +35,9 @@ body {
     text-align:center;
 }
 .desktop-app-icon {
-    margin-top: 5%;
+    margin: .4rem .3rem 0 .3rem;
     display: block;
     font-size: 2rem;
-    margin-left: auto;
-    margin-right: auto;
     padding:0;
 }
 .desktop-app:hover,
