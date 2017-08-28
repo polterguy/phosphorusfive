@@ -12,8 +12,8 @@
  * To create a new SHA for your Micro zip file, use [load-file] and [p5.crypto.hash.create-sha512]
  * on the results.
  */
-_micro-url:"https://github.com/polterguy/micro/releases/download/v4.2/micro.zip"
-_micro-sha:4LeHZVRKTHgtfBOjZT66QwgNaABoDI+BN92tc0gXeMqYiucu6Jz2htb9aXwRG2Xb1xndafoKYZfTfzPgL0l3QA==
+_micro-url:"https://github.com/polterguy/micro/releases/download/v4.4/micro-4-4.zip"
+_micro-sha:oP2P3k3d4hfQhu4bcwG3tm+HDWvt26CCz6e1OKEWoKHiNqTb2HoLlmdXyUsQoINrW/LTGxjcyZX+Ona1JIHB8A==
 
 
 
