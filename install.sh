@@ -68,7 +68,21 @@ sed -i 's/User Id=root;/User Id=root;password=SomeRandomPassword;/g' /var/www/ht
 chown -R www-data:www-data /var/www
 
 # Configuring mod_mono
-echo "
+echo "MonoAutoApplication enabled
+AddType application/x-asp-net .aspx
+AddType application/x-asp-net .asmx
+AddType application/x-asp-net .ashx
+AddType application/x-asp-net .asax
+AddType application/x-asp-net .ascx
+AddType application/x-asp-net .soap
+AddType application/x-asp-net .rem
+AddType application/x-asp-net .axd
+AddType application/x-asp-net .cs
+AddType application/x-asp-net .config
+AddType application/x-asp-net .dll
+DirectoryIndex index.aspx
+DirectoryIndex Default.aspx
+DirectoryIndex default.aspx
 <FilesMatch \"^[^\.]+$\">
     ForceType application/x-asp-net
 </FilesMatch>
@@ -84,7 +98,7 @@ echo "
     Order allow,deny
     Deny from all
 </Location>
-" >> /etc/apache2/mods-enabled/mod_mono_auto.conf
+" > /etc/apache2/mods-enabled/mod_mono_auto.conf
 
 # Restarting Apache
 service apache2 restart
