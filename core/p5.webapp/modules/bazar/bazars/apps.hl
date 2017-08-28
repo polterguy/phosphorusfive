@@ -17,19 +17,13 @@ name:GaiaSoul main repository
 
 
 /*
- * Then the list of apps in current manifest.
- *
- * Notice, the [app] node's value, is used as the "ID" of the app, and should be globally unique, 
- * and contain versioning numbers, to avoid adding the same app twice, in case it exists in two different Bazars,
- * and user has added more than one Bazar.
- *
- * Hence, everytime an app is upgraded, this unique app ID should also be bumped, somehow.
+ * Sephia Five
  */
-app:sephia-five-4-1-zeus
+app:sephia-five-4-2-zeus
   name:Sephia Five
   description:A secure webmail client with PGP cryptography, virus protection, spam filter, and ad removal
   condition:p5.io.unroll-path.@SEPHIA
-  url:"https://github.com/polterguy/sephia-five/releases/download/v4.1/sephia-five.zip.pgp"
+  url:"https://github.com/polterguy/sephia-five/releases/download/v4.2/sephia-five.zip.pgp"
   author-readme:@"Sephia Five is a cryptographically secure webmail and email client, with PGP support, which is built with your privacy in mind. Among other things, it does not display HTML emails, to avoid marketing gibberish and _'crapware'_, interrupting your privacy. It has the following features.
 
 * PGP cryptography
@@ -39,8 +33,34 @@ app:sephia-five-4-1-zeus
 
 You can see a video demonstrating some of its features [here](https://www.youtube.com/watch?v=0F4SVEoD1HE). Sephia Five is Free Software, Open Source, and Gratis for individuals.
 
+**Notice**, this release requires the latest version of Phosphorus Five, which is version 4.2! Make sure you update your P5 core, before you install this module.
+
 Sephia Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
   price:Free/GPL
   local-url:sephia-five
   image:"https://phosphorusfive.files.wordpress.com/2017/08/vault-icon-2.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+
+
+
+
+
+/*
+ * Peeples
+ */
+app:peeples-1-0-zeus
+  name:Peeples
+  description:A user management module for Phosphorus Five. Allows you to create, edit and delete users.
+  condition:p5.io.unroll-path.@PEEPLES
+  url:"https://github.com/polterguy/peeples/releases/download/v1.0/peeples.zip.pgp"
+  author-readme:@"Peeples is a User Management module for Phosphorus Five, that allows you to create, edit and delete users in your installation. It comes with 5 free user tickets, and allows you to automatically purchase additional tickets, according to your needs.
+
+This is the module you need if you want to create additional user accounts in your Phosphorus Five installation.
+
+**Notice**, this release requires the latest version of Phosphorus Five, which is version 4.2! Make sure you update your P5 core, before you install this module.
+
+Peeples is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
+  price:Free
+  local-url:peeples
+  image:"https://phosphorusfive.files.wordpress.com/2017/08/users.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD

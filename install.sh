@@ -10,7 +10,7 @@ echo ""
 echo "Please let it finish, without interruptions, which might take some time!"
 echo ""
 echo "Warning, this script will install P5 'greadily' on your server,"
-echo "taking over your entire Apache installation."
+echo "taking over your entire Apache installation, deleting all existing files."
 echo "It also expect a 'virgin' Ubuntu service, without MySQL, or anything"
 echo "besides the bare minimums installed from before."
 echo ""
@@ -50,7 +50,7 @@ debconf-set-selections <<< 'mysql-server mysql-server/root_password_again passwo
 apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip gnupg2
 
 # Removing default index.html file
-rm /var/www/html/index.html
+rm -r -f /var/www/html/*
 
 # Unzipping P5, in addition to moving it into main www/html folder.
 unzip binaries.zip
