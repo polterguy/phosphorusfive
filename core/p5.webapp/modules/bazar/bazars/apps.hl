@@ -52,7 +52,7 @@ app:peeples-4-7-zeus
   name:Peeples
   description:A user management module for Phosphorus Five. Allows you to create, edit and delete users.
   condition:p5.io.unroll-path.@PEEPLES
-  url:"https://github.com/polterguy/peeples/releases/download/v4.7/peeples.zip.pgp"
+  url:"https://github.com/polterguy/peeples/releases/download/v4.7/peeples-2.zip.pgp"
   author-readme:@"Peeples is a User Management module for Phosphorus Five, that allows you to create, edit and delete users in your installation. It comes with 5 free user tickets, and allows you to automatically purchase additional tickets, according to your needs.
 
 This is the module you need if you want to create additional user accounts in your Phosphorus Five installation.
