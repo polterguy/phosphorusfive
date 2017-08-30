@@ -23,6 +23,7 @@ body {
     margin-right: 15px;
     margin-bottom: 15px;
     position: relative;
+    background: linear-gradient(#fafafa, #ffffff);
 }
 .desktop-app:hover,
 .desktop-app:active,

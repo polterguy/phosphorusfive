@@ -60,6 +60,7 @@ create-event:p5.core.login
           widgets
             button:desktop-login-button
               innerValue:OK
+              style:"margin-bottom:0;"
               onclick
 
                 /*

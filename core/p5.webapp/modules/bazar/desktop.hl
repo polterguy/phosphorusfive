@@ -4,7 +4,7 @@
  */
 container
   element:a
-  class:desktop-app shaded rounded air-inner bg
+  class:desktop-app shaded rounded air-inner
   title:Bazar
   oninit
 
