@@ -211,8 +211,17 @@ core/p5.webapp/modules/peeples/**
 # Excluding Pay2play
 core/p5.webapp/modules/pay2play/**
 
+# Excluding Sulphur Five
+core/p5.webapp/modules/sulphur-five/**
+
 # Excluding users files
 core/p5.webapp/users/**
+
+# Exluding common folder
+core/p5.webapp/common/documents/private/*
+core/p5.webapp/common/documents/public/*
+!core/p5.webapp/common/documents/private/README.md
+!core/p5.webapp/common/documents/private/web.config
 
 # Excluding auto generated Visual Studio files
 .vs/
