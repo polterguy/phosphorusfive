@@ -69,8 +69,7 @@ create-event:p5.web.load-ui
     /*
      * No server salt, or no root password, hence the server needs to be initialized with a server salt, and a root password.
      */
-    load-file:/desktop/initialize/initialize-server.hl
-    eval:x:/-/*
+    micro.evaluate.file:/desktop/initialize/initialize-server.hl
 
   else
 
@@ -84,8 +83,7 @@ create-event:p5.web.load-ui
       /*
        * Root URL was requested, loading the main desktop.
        */
-      load-file:/desktop/launch.hl
-      eval:x:/-/*
+      micro.evaluate.file:/desktop/launch.hl
 
     else
 

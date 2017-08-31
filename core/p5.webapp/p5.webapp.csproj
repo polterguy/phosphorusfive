@@ -256,7 +256,6 @@
     <None Include="modules\bazar\install-app.hl" />
     <None Include="modules\bazar\launch.hl" />
     <None Include="desktop\initialize\initialize-server.hl" />
-    <None Include="desktop\initialize\install-micro.hl" />
     <None Include="desktop\startup.hl" />
     <None Include="desktop\startup\p5.web.load-ui.hl" />
     <None Include="desktop\startup\p5.core.login.hl" />

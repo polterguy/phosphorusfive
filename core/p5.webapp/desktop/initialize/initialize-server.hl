@@ -180,28 +180,6 @@ else-if
                         password:x:/@get-widget-property/*/*?value
 
                       /*
-                       * Logging in user, to make sure we've got write access, while downloading and installing Micro.
-                       *
-                       * In addition, to avoid forcing user to login at the current client.
-                       */
-                      login
-                        username:root
-                        password:x:/@get-widget-property/*/*?value
-
-                      /*
-                       * Verifying Micro is installed, and if not, automatically installing it.
-                       */
-                      vocabulary:p5.io.unroll-path.@MICRO
-                      if:x:/@vocabulary/*
-                        not
-
-                        /*
-                         * Micro is not installed, making sure we download it, and install it automatically.
-                         */
-                        load-file:/desktop/initialize/install-micro.hl
-                        eval:x:/-/*
-
-                      /*
                        * Reloading URL for simplicity, since we're now done with setting up the server.
                        */
                       p5.web.reload-location
