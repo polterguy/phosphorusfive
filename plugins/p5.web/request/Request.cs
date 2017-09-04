@@ -79,12 +79,29 @@ namespace p5.web.ui.request {
             }
         }
 
-        /// <summary>
-        ///     Saves the current HTTP request's body to a specified file.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.request.save-body")]
+		/// <summary>
+		///     Parser the current HTTP request's body as a MIME entity.
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Parameters passed into Active Event</param>
+		[ActiveEvent (Name = "p5.web.request.parse-mime")]
+		public static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
+		{
+            // Retrieving content type, which is not a part of the body, but the "Content-Type" of the request
+            // passed in as an HTTP header.
+            var contentType = HttpContext.Current.Request.ContentType;
+            e.Args.Add ("Content-Type", contentType);
+            e.Args.Value = HttpContext.Current.Request.InputStream;
+            context.RaiseEvent (".p5.mime.load-from-stream", e.Args);
+            e.Args ["Content-Type"]?.UnTie (); 
+		}
+
+		/// <summary>
+		///     Saves the current HTTP request's body to a specified file.
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Parameters passed into Active Event</param>
+		[ActiveEvent (Name = "p5.web.request.save-body")]
         public static void p5_web_request_save_body (ApplicationContext context, ActiveEventArgs e)
         {
             // Getting filename.
