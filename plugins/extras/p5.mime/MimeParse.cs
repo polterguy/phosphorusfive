@@ -56,11 +56,48 @@ namespace p5.mime
         }
 
         /// <summary>
-        ///     Parses the MIME message given as string.
+        ///     Parses the MIME message given as a stream.
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.parse")]
+        [ActiveEvent(Name = ".p5.mime.load-from-stream")]
+        public static void _p5_mime_load_from_stream (ApplicationContext context, ActiveEventArgs e)
+		{
+			// Making sure we clean up after ourselves.
+			using (new ArgsRemover(e.Args, true))
+			{
+                // Sanity check.
+                var stream = e.Args.Value as Stream;
+                if (e.Args.Value == null)
+					throw new LambdaException(
+						"No stream provided to [.p5.mime.parse-from-stream]",
+						e.Args,
+						context);
+
+				// Loading MimeEntity from specified stream.
+				MimeEntity entity = null;
+				if (e.Args["Content-Type"] != null)
+					entity = MimeEntity.Load (ContentType.Parse (e.Args["Content-Type"].Get<string> (context)), stream);
+				else
+					entity = MimeEntity.Load (stream);
+				var parser = new helpers.MimeParser(
+					context,
+					e.Args,
+					entity,
+					e.Args.GetExChildValue<string>("attachment-folder", context),
+					e.Args.GetExChildValue<bool>("attachment-folder-no-prefix", context, true));
+
+				// Parses the MimeEntity and stuffs results into e.Args node
+				parser.Process();
+			}
+		}
+
+		/// <summary>
+		///     Parses the MIME message given as string.
+		/// </summary>
+		/// <param name="context">Application Context</param>
+		/// <param name="e">Active Event arguments</param>
+		[ActiveEvent (Name = "p5.mime.parse")]
         public static void p5_mime_parse (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
