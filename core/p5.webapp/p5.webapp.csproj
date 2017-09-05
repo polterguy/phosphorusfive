@@ -267,7 +267,6 @@
     <None Include="desktop\configuration\key-server.hl" />
     <None Include="modules\bazar\cache\README.md" />
     <None Include="modules\bazar\startup.hl" />
-    <None Include="modules\bazar\bazars\BETA-apps.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

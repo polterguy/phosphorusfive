@@ -29,7 +29,7 @@ echo "==========================================================================
 echo ""
 
 # Download P5, and showing SHA1 to user, asking if he wants to proceed.
-wget https://github.com/polterguy/phosphorusfive/releases/download/v4.7/binaries.zip
+wget https://github.com/polterguy/phosphorusfive/releases/download/v4.8BETA/binaries.zip
 sha1sum binaries.zip
 
 # Then asking user to confirm installation.
