@@ -70,7 +70,7 @@ refer to these links.
 
 * [Main documentation](https://github.com/polterguy/phosphorusfive-dox), tutorial style dox
 * [core](core/), reference documentation
-* [plugins](core/p5.webapp/plugins/), reference documentation
+* [plugins](plugins/), reference documentation
 * [modules](core/p5.webapp/modules/), how the modularized parts of Phosphorus Five works
 * [The Bazar](core/p5.webapp/modules/bazar/), the integrated _"AppStore"_ that comes with P5 out of the box
 
