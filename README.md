@@ -1,4 +1,4 @@
-Phosphorus Five - A full stack web framework and operating system
+Phosphorus Five - A web app framework and operating system
 ===============
 
 Phosphorus Five is a Web Operating System and a full stack Web Application Development Framework, for consuming and developing rich and highly 
