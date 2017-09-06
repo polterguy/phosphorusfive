@@ -266,7 +266,6 @@
     <None Include="desktop\startup\p5.core._internals.pgp.download-key.hl" />
     <None Include="desktop\configuration\key-server.hl" />
     <None Include="modules\bazar\cache\README.md" />
-    <None Include="modules\bazar\startup.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
