@@ -37,7 +37,14 @@ Below is the [Peeples](https://github.com/polterguy/peeples) module, which allow
 
 To download the source code for the system, go to [Releases](https://github.com/polterguy/phosphorusfive/releases), download
 the latest source code for Phosphorus Five, and then download e.g. [Sephia Five](https://github.com/polterguy/sephia-five), and/or
-[Sulphur Five](https://github.com/polterguy/sulphur-five), and put the unzipped folders into your _"core/p5.webapp/modules"_ folder.
+[Sulphur Five](https://github.com/polterguy/sulphur-five), and put the unzipped folders into your _"core/p5.webapp/modules/"_ folder.
+In addition, you will have to also download [Micro](https://github.com/polterguy/micro), and put the unzipped folder into your _"/modules/"_ folder.
+You would probably want to make sure your folders are called _"sephia-five"_, _"sulphur-five"_ and _"micro"_ as you put these modules into
+your _"/modules/"_ folder. By default, GitHub adds versioning number to the folders when you create a release, and this is highly likely
+not something you'd like to keep in your own folder structure, as you download the code for P5.
+
+Having Micro in your _"modules"_ folder is **crucial** - Since most other modules depends upon Micro being installed. Other modules are
+optional.
 
 ## Creating your own apps
 
