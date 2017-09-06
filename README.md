@@ -1,16 +1,16 @@
 Phosphorus Five
 ===============
 
-Phosphorus Five is a Web Operating System and Application Framework, for consuming and developing rich and highly 
+Phosphorus Five is a Web Operating System and a full stack Web Application Development Framework, for consuming and developing rich and highly 
 interactive Ajax centric web apps. It contains an entirely unique programming language called _"Hyperlambda"_, which 
 allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks. This facilitates for
-an extremely modularised model of _"orchestrating"_ your applications together.
+an extremely modularised model of _"orchestrating"_ your applications together. Below is a screenshot of its _"desktop"_.
 
 ![alt screenshot](resources/screenshot-desktop.png)
 
 ## Installation
 
-To install the latest version of the system in production, run the following commands in a Linux/Ubuntu vanilla server terminal window, 
+To install the latest binary version of the system, run the following commands in a Linux/Ubuntu vanilla server terminal window, 
 in order of appearance.
 
 ```
@@ -33,6 +33,13 @@ Below is the [Peeples](https://github.com/polterguy/peeples) module, which allow
 
 ![alt screenshot](resources/screenshot-peeples.png)
 
+The framework, and its apps, are built with the _"mobile first"_ approach, and renders responsively on every device you have. When you start
+Phosphorus Five for the first time, you will be asked for a _"server salt"_ and a _"root"_ password. The system is initially installed completely
+empty, which allows you to decide which apps you want to install on top of it, after you have started it. Installing apps is done through the _"Bazar"_,
+and the process is cryptographically secured, by demanding apps to be cryptographically signed, with a private PGP key, belonging to the app
+developer. By default, only apps developed by T.H. Rose Home Cloud, or more explicitly _me_ that is, are allowed to be installed into your system.
+But this is easily modified by adding up a reference to your own private PGP key's fingerprint.
+
 ## Downloading the source for the system
 
 To download the source code for the system, go to [Releases](https://github.com/polterguy/phosphorusfive/releases), download
@@ -44,10 +51,10 @@ your _"/modules/"_ folder. By default, GitHub adds versioning number to the fold
 not something you'd like to keep in your own folder structure, as you download the code for P5.
 
 Having Micro in your _"modules"_ folder is **crucial** - Since most other modules depends upon Micro being installed. Other modules are
-optional.
+optional. Any module you build yourself, must be put into the _"/core/p5.webapp/modules/"_ folder of your installation.
 
 When you have downloaded the source code, simply open Visual Studio, Xamarin or MonoDevelop, and browse for the _"p5.sln"_ file inside
-if your Phosphorus Five source code folder.
+if your Phosphorus Five source code folder, and open up this solution.
 
 ## Creating your own apps
 
@@ -104,7 +111,7 @@ to create C#/VB/F# code, exactly as you're used to from before.
 In fact, if you wish, you could in theory declare your execution trees by using XML or JSON. Although I recommend
 using Hyperlambda, due to its much more condens syntax, and lack of overhead.
 This trait of Hyperlambda, makes it an excellent choice for creating your own domain specific programming languages. In such a regard, it arguably
-brings LISP into the 21st Century. However, don't be fooled by its simplicity. It's extremely powerful. Below is a screenshot 
+brings LISP into the 21st Century. However, don't be fooled by its simplicity. It's extremely powerful and secure. Below is a screenshot 
 of Sephia Five's settings, that are entirely built in Hyperlambda.
 
 ![alt screenshot](resources/screenshot-sephia-settings.png)
@@ -157,8 +164,9 @@ This gives you an intellisense environment for your Active Events, and provides 
 of really cool extension widgets. All this in a _"non-CMS environment"_, which means you can create small apps, almost the same way you'd
 create a CMS web page.
 
-If you take this approach, which I recommend for beginners - Make sure you put the _"system42"_ folder inside of your _"/phosphorusfive/p5.webapp/"_ folder, 
-and make sure its name is exactly _"system42"_, without any versioning numbers, etc. Then restart your web server process, and have fun!
+If you take this approach, which I recommend for beginners - Make sure you put the _"system42"_ folder inside of 
+your _"/phosphorusfive/core/p5.webapp/modules/"_ folder, and make sure its name is exactly _"system42"_, without any versioning numbers, 
+etc. Then restart your web server process, and have fun!
 
 After you've played around with System42 for some time, understanding the development model, you can go more hard-core into it, ditch System42,
 and create your own apps, entirely from scratch if you wish. The latter approach is what I recommend for building real apps, which you intend
