@@ -46,6 +46,9 @@ not something you'd like to keep in your own folder structure, as you download t
 Having Micro in your _"modules"_ folder is **crucial** - Since most other modules depends upon Micro being installed. Other modules are
 optional.
 
+When you have downloaded the source code, simply open Visual Studio, Xamarin or MonoDevelop, and browse for the _"p5.sln"_ file inside
+if your Phosphorus Five source code folder.
+
 ## Creating your own apps
 
 Phosphorus Five is created in C#, but relies upon _"Hyperlambda"_, which is a modularised web application programming language, for
