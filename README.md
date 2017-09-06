@@ -76,8 +76,7 @@ refer to these links.
 
 I recommend you start out with ["the guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation
 for the [plugins](plugins/), as the need surface. Most of the examples in the core and plugin documentation, assumes you are 
-using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps. Below is a screenshot of Phosphorus Five
-used in combination with [Micro](https://github.com/polterguy/micro).
+using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps.
 
 Notice, Phosphorus Five comes with an integrated _"AppStore"_ out of the box, which allows you to create your own Bazars, where you distribute
 your apps and components, either for a fee, or as open source projects. This approach, makes it extremely modularized, allowing you to incrementally
