@@ -49,11 +49,13 @@ namespace p5.io.authorization.helpers
                     context);
 
             // Making sure web.config file is safe!
-            if (Path.GetFileName (filename.ToLower ()) == "web.config")
-				throw new LambdaException(
-					"Sorry, your web.config file is off limits, even for root accounts!",
-					stack,
-					context);
+            if (context.Ticket.Role != "root") {
+                if (Path.GetFileName (filename.ToLower ()) == "web.config")
+    				throw new LambdaException(
+    					"Sorry, your web.config file is off limits!",
+    					stack,
+    					context);
+            }
 
 			// Verifying auth file is safe.
 			if (filename.ToLower() == GetAuthFile(context).ToLower())
@@ -105,11 +107,13 @@ namespace p5.io.authorization.helpers
                     context);
 
 			// Making sure web.config file is safe!
-			if (Path.GetFileName (filename.ToLower ()) == "web.config")
-				throw new LambdaException (
-					"Sorry, your web.config file is off limits, even for root accounts!",
-					stack,
-					context);
+            if (context.Ticket.Role != "root") {
+    			if (Path.GetFileName (filename.ToLower ()) == "web.config")
+    				throw new LambdaException (
+    					"Sorry, your web.config file is off limits!",
+    					stack,
+    					context);
+            }
 
 			// Extra security for non-root users.
 			if (context.Ticket.Role != "root") {

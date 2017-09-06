@@ -75,7 +75,7 @@ namespace p5.io.common
 
                     // Making sure destination file does not already exist.
                     if (functorObjectExist (rootFolder + destinationFile))
-                        throw new LambdaException (string.Format ("The file '{0}' already exist from before", destinationFile), args, context);
+                        throw new LambdaException (string.Format ("The file/folder '{0}' already exist from before", destinationFile), args, context);
 
                     functorMoveObject (
                         rootFolder, 
