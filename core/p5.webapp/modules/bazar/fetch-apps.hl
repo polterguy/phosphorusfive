@@ -2,14 +2,9 @@
 
 /*
  * File responsible for retrieving available Bazar apps.
- */
-
-
-
-
-
-/*
+ *
  * Notice, we're doing some intelligent caching of our Bazars' content.
+ *
  * This caching depends upon the HTTP "If-Modified-Since" HTTP header, and not all web servers are setup to handle that
  * header correctly though, so we avoid polling data from our Bazar URLs more than once every 5 hours.
  *
@@ -20,10 +15,35 @@
  * about it.
  *
  * Without this feature, populating the cache of server Bazars' content, would potentially have taken a lot of time.
- * And every time the user opens up the Bazar, it would feel slow and sluggish, if there's a single Bazar declaration
- * that is stored on a server, that doesn't support the "If-Modified-Since" HTTP header.
+ * And every time the user opens up the Bazar, it would feel slow and sluggish, especially if there's a Bazar declaration
+ * that is stored on a server, that doesn't support the "If-Modified-Since" HTTP header, and/or is slow for other reasons.
  *
- * Notice, all Bazars' content, is cached physically on disc, in our "/cache" folder.
+ * Notice, all Bazars' content, is cached physically on disc, in your "~/documents/private/bazar-cache/" folder.
+ */
+
+
+
+
+
+/*
+ * Making sure we have our "cache" folder for user.
+ */
+if
+  fetch:x:/0/0?value
+    folder-exists:~/documents/private/bazar-cache/
+  not
+
+  /*
+   * Creating cache folder.
+   */
+  create-folder:~/documents/private/bazar-cache/
+
+
+
+
+
+/*
+ * Checking if it's more than 5 hours since we polled bazars, and if so, initiating a poll operation.
  */
 p5.web.application.get:bazar.last-poll-date
 p5.types.date.now
@@ -61,7 +81,7 @@ if:x:/@p5.web.application.get/*
            * In order to pass in the correct "If-Modified-Since" HTTP header to GET invocation, we must check our
            * cache of previously fetched Bazars, and pass in the file creation date to our [p5.http.get] invocation.
            *
-           * The files are cached locally, in our "/cache/" folder, as the SHA256 hashed version of their URLs.
+           * The files are cached locally, in your "~/documents/private/bazar-cache/" folder, as the SHA256 hashed version of their URLs.
            * Hence, first we must determine the local cache filename, by hashing our URL, and remove any non-valid
            * filename characters.
            */
@@ -79,14 +99,14 @@ if:x:/@p5.web.application.get/*
            */
           if
             fetch:x:/0/0?value
-              file-exists:/modules/bazar/cache/{0}.hl
+              file-exists:~/documents/private/bazar-cache/{0}.hl
                 :x:/@replace?value
 
             /*
              * There exists a cache of currently iterated Bazar, now reading its "last write time", and making
              * sure we pass in that date as the value of our "If-Modified-Since" HTTP header.
              */
-            p5.io.file.get-last-write-time:/modules/bazar/cache/{0}.hl
+            p5.io.file.get-last-write-time:~/documents/private/bazar-cache/{0}.hl
               :x:/@replace?value
             eval-x:x:/+/*/*
             add:x:/..try/*/p5.http.get
@@ -111,7 +131,7 @@ if:x:/@p5.web.application.get/*
              *
              * Making sure we cache Bazar file's content locally.
              */
-            save-file:/modules/bazar/cache/{0}.hl
+            save-file:~/documents/private/bazar-cache/{0}.hl
               :x:/@replace?value
               src:x:/@p5.http.get/*/result/*/content?value
 
@@ -143,7 +163,7 @@ if:x:/@p5.web.application.get/*
 /*
  * Then loading each cache file.
  */
-list-files:/modules/bazar/cache/
+list-files:~/documents/private/bazar-cache/
   filter:.hl
 load-file:x:/-/*?name
 
