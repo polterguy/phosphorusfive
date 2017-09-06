@@ -30,4 +30,4 @@ container
   widgets
     span
       class:desktop-app-name
-      innerValue:@"<span class=""icon-gift desktop-app-icon""></span><span style=""position:absolute;top:5px;right:5px;font-size:.8rem;"">Bazar</span>"
+      innerValue:@"<span class=""icon-gift desktop-app-icon""></span><span style=""position:absolute;top:5px;right:5px;font-size:.7rem;"">Bazar</span>"

@@ -111,7 +111,7 @@ for-each:x:/@list-files/*?name
               widgets
                 span
                   class:desktop-app-name
-                  innerValue:@"<span class=""icon-home desktop-app-icon""></span><span style=""position:absolute;top:5px;right:5px;font-size:.8rem;text-transform:capitalize;"">{0}</span>"
+                  innerValue:@"<span class=""icon-home desktop-app-icon""></span><span style=""position:absolute;top:5px;right:5px;font-size:.7rem;text-transform:capitalize;"">{0}</span>"
                     :x:/@split/0/-2?name
 
 
