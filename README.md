@@ -3,9 +3,47 @@ Phosphorus Five
 
 Phosphorus Five is a Web Operating System and Application Framework, for consuming and developing rich and highly 
 interactive Ajax centric web apps. It contains an entirely unique programming language called _"Hyperlambda"_, which 
-allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks. For a 4 minutes long 
-introduction and how to get started, watch the following [YouTube video](https://www.youtube.com/watch?v=KP69OnVz4vs). 
-An example of some Hyperlambda can be found below.
+allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks. This facilitates for
+an extremely modularised model of _"orchestrating"_ your applications together.
+
+![alt screenshot](resources/screenshot-desktop.png)
+
+## Installation
+
+To install the latest version of the system in production, run the following commands in a Linux/Ubuntu vanilla server terminal window, 
+in order of appearance.
+
+```
+wget https://github.com/polterguy/phosphorusfive/releases/download/v4.8BETA/install.sh
+chmod +x install.sh
+sudo ./install.sh
+```
+
+When you're done with the above, visit the _"Bazar"_ through your browser, and fill up your system with whatever apps you want to install. Below are
+screenshots of some of the more important apps you can fill up your system with. First [Sephia Five](https://github.com/polterguy/sephia-five),
+which is a military grade PGP cryptographically secured webmail client.
+
+![alt screenshot](resources/screenshot-sephia.png)
+
+Then a screenshot of a secure file sharing system, called [Sulphur Five](https://github.com/polterguy/sulphur-five).
+
+![alt screenshot](resources/screenshot-sulphur.png)
+
+Below is the [Peeples](https://github.com/polterguy/peeples) module, which allows you to manage users in your system.
+
+![alt screenshot](resources/screenshot-peeples.png)
+
+## Downloading the source for the system
+
+To download the source code for the system, go to [Releases](https://github.com/polterguy/phosphorusfive/releases), download
+the latest source code for Phosphorus Five, and then download e.g. [Sephia Five](https://github.com/polterguy/sephia-five), and/or
+[Sulphur Five](https://github.com/polterguy/sulphur-five), and put the unzipped folders into your _"core/p5.webapp/modules"_ folder.
+
+## Creating your own apps
+
+Phosphorus Five is created in C#, but relies upon _"Hyperlambda"_, which is a modularised web application programming language, for
+creating highly modularised components, seemlessly integrating these together, to create a uniform whole. An example of some 
+Hyperlambda can be found below.
 
 ```
 create-widget:foo
@@ -16,7 +54,7 @@ create-widget:foo
       innerValue:I was clicked!
 ```
 
-Notice, the primary starting ground for learning Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
+Notice, the primary starting ground for learning how to code in Phosphorus Five can be found [here](https://github.com/polterguy/phosphorusfive-dox).
 In addition, the reference documentation can be found as specific README files for each project. To see the documentation for P5, please
 refer to these links.
 
@@ -31,8 +69,6 @@ for the [plugins](plugins/), as the need surface. Most of the examples in the co
 using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps. Below is a screenshot of Phosphorus Five
 used in combination with [Micro](https://github.com/polterguy/micro).
 
-![alt screenshot](main-p5-screenshot-2.png)
-
 Notice, Phosphorus Five comes with an integrated _"AppStore"_ out of the box, which allows you to create your own Bazars, where you distribute
 your apps and components, either for a fee, or as open source projects. This approach, makes it extremely modularized, allowing you to incrementally
 create your systems, allowing its users to automatically choose to upgrade theirs, as you create new versions of your projects, or create additional
@@ -41,13 +77,13 @@ app, and/or components.
 Please refer to [the Bazar](core/p5.webapp/modules/bazar/) to see how this part of P5 works. However, everything is open source, and you can
 actually host your Bazar, without any other requirements but being able to publicly distribute a simple Hyperlambda file, on some web server somewhere.
 This parts of P5 is also extremely secure, only allowing installations of modules that have been cryptographically signed, with a trusted PGP key.
-Making it very hard for a malicious adversary to being able to execute malicious code on your user's installations. The Bazar is highly configurable,
+Making it very hard for a malicious adversary to being able to execute malicious code on your user's servers. The Bazar is highly configurable,
 and you can easily create your own repository of apps, and distribute yourself, using the Bazar. The Bazar features automatic PayPal integration,
 if you'd like to provide apps in your Bazar for a fee.
 
 ## Hyperlambda
 
-The code at the top of this page, is called _"Hyperlambda"_, and is a simple key/value/children tree-structure, allowing for you
+The code further up in this page, is called _"Hyperlambda"_, and is a simple key/value/children tree-structure, allowing for you
 to declare something, that P5 refers to as _"lambda"_ or _"Hyperlambda"_. Lambda is the foundation for an execution tree, or graph object,
 that is a Turing complete opportunity to declare your apps, through a _"non-programming model"_.
 
@@ -57,12 +93,12 @@ engine, allowing for you to orchestrate your components together, as if they wer
 to create C#/VB/F# code, exactly as you're used to from before.
 
 In fact, if you wish, you could in theory declare your execution trees by using XML or JSON. Although I recommend
-using Hyperlambda, due to its much more condens syntax and lack of overhead.
+using Hyperlambda, due to its much more condens syntax, and lack of overhead.
 This trait of Hyperlambda, makes it an excellent choice for creating your own domain specific programming languages. In such a regard, it arguably
 brings LISP into the 21st Century. However, don't be fooled by its simplicity. It's extremely powerful. Below is a screenshot 
-of [Sephia Five](https://github.com/polterguy/sephia-five), that is entirely built in Hyperlambda.
+of Sephia Five's settings, that are entirely built in Hyperlambda.
 
-![alt screenshot](core/p5.webapp/modules/bazar/screenshots/screenshot-sephia.png)
+![alt screenshot](resources/screenshot-sephia-settings.png)
 
 Sephia Five is a military grade webmail client, with PGP cryptography, extreme security, and some very unique usability traits. Sephia Five
 is the _"reference implemantation"_ for an example application built with Phosphorus Five. Sephia Five is also open source, and can be 
@@ -97,7 +133,8 @@ contrast to the traditional way of _"carving out"_ apps, using interfaces for pl
 dependencies between your app's different components.
 
 The paradox is, that due to neither using OOP nor inheritance, in any ways, Hyperlambda facilitates for perfect encapsulation, and polymorphism,
-without even as much as a trace of classic inheritance, OOP or types.
+without even as much as a trace of classic inheritance, OOP or types. Hyperlambda is a _"functional programming language"_ on top of the CLR,
+making the act of orchestrating CLR modules, loosely coupled together, in a super-dynamic environment, as simple as a walk in the park.
 
 ## C# samples
 
@@ -115,7 +152,8 @@ If you take this approach, which I recommend for beginners - Make sure you put t
 and make sure its name is exactly _"system42"_, without any versioning numbers, etc. Then restart your web server process, and have fun!
 
 After you've played around with System42 for some time, understanding the development model, you can go more hard-core into it, ditch System42,
-and create your own apps, entirely from scratch if you wish.
+and create your own apps, entirely from scratch if you wish. The latter approach is what I recommend for building real apps, which you intend
+to distribute, and use in real live production sites.
 
 Notice, regardless of which approach you take when you start out - You must make sure the _"/core/p5.webapp"_ project is your startup project, unless
 you intend to evaluate Hyperlambda in a terminal window, using the lambda.exe project.
@@ -158,7 +196,7 @@ if you know some C# from before.
 * [p5.markdown](/plugins/extras/p5.markdown) - Parsing Markdown snippets
 * [p5.json](/plugins/extras/p5.json) - Parsing and creating JSON. __NOT YET RELEASED!!__
 
-P5 have also been published twice in Microsoft's MSDN Magazine. Read the articles below by yours truly.
+P5 have also been published twice in Microsoft's MSDN Magazine. Read the articles below written by yours truly.
 
 * [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
 * [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
@@ -177,10 +215,17 @@ our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/).
 I occasionally blog about P5, when I do, I do so [here](https://gaiasoul.com).
 
 There exists a [code of conduct](CODE_OF_CONDUCT.md) for the project you should read if you wish to participate 
-in the project. But basically what it says, is _"be nice"_.
+in the project. But basically what it says, is _"be nice"_ and preferably if you can, _"apply humor"_.
+
+I have also deployed Phosphorus Five on my own personal home cloud, which is actually just an old discarded Windows laptop,
+which I have upgraded to become a Linux/Ubuntu/Phosphorus Five web server. If you'd like to test it, feel free 
+to [vist it here](https://home.gaiasoul.com) - However, be warned, I am running this thing out of my living room, on an old
+discarded laptop, with a plain average internet connection.
 
 ## Hire me
 
 Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email.
 
 Thomas Hansen; thomas@gaiasoul.com
+
+There also exists a [commercial license](https://gaiasoul.com/license/) for those who cannot use the GPL license for some reasons.
