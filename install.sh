@@ -29,7 +29,7 @@ echo "==========================================================================
 echo ""
 
 # Download P5, and showing SHA1 to user, asking if he wants to proceed.
-wget https://github.com/polterguy/phosphorusfive/releases/download/v4.8BETA/binaries.zip
+wget https://github.com/polterguy/phosphorusfive/releases/download/v4.9/binaries.zip
 sha1sum binaries.zip
 
 # Then asking user to confirm installation.
@@ -49,7 +49,9 @@ apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip gnup
 rm -r -f /var/www/html/*
 
 # Unzipping P5, in addition to moving it into main www/html folder.
-unzip binaries.zip
+rm -f -r p5
+mkdir p5
+unzip binaries.zip -d p5
 cp -R p5/* /var/www/html
 
 # Removing both zip file, and folder created during above process.
