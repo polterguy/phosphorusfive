@@ -86,13 +86,8 @@ if:x:/@p5.web.application.get/*
            * filename characters.
            */
           {_url}:x:?value
-          p5.crypto.hash.create-sha256:x:/@_url?value
-          replace:x:/@p5.crypto.hash.create-sha256?value
-            src:+
-          replace:x:/@replace?value
-            src:=
-          replace:x:/@replace?value
-            src:/
+          p5.crypto.hash.create-sha1:x:/@_url?value
+            hex:true
 
           /*
            * Then checking if there even exists a local cache of file from our currently iterated Bazar.
@@ -100,14 +95,14 @@ if:x:/@p5.web.application.get/*
           if
             fetch:x:/0/0?value
               file-exists:~/documents/private/bazar-cache/{0}.hl
-                :x:/@replace?value
+                :x:/@p5.crypto.hash.create-sha1?value
 
             /*
              * There exists a cache of currently iterated Bazar, now reading its "last write time", and making
              * sure we pass in that date as the value of our "If-Modified-Since" HTTP header.
              */
             p5.io.file.get-last-write-time:~/documents/private/bazar-cache/{0}.hl
-              :x:/@replace?value
+              :x:/@p5.crypto.hash.create-sha1?value
             eval-x:x:/+/*/*
             add:x:/..try/*/p5.http.get
               src
@@ -123,8 +118,8 @@ if:x:/@p5.web.application.get/*
           /*
            * Checking server's response.
            */
-          if:x:/@p5.http.get/*/status?value.int
-            !=:int:304
+          if:x:/@p5.http.get/*/result/*/status?value
+            =:OK
 
             /*
              * File has been modified on server since it was cached.
@@ -132,7 +127,7 @@ if:x:/@p5.web.application.get/*
              * Making sure we cache Bazar file's content locally.
              */
             save-file:~/documents/private/bazar-cache/{0}.hl
-              :x:/@replace?value
+              :x:/@p5.crypto.hash.create-sha1?value
               src:x:/@p5.http.get/*/result/*/content?value
 
         catch

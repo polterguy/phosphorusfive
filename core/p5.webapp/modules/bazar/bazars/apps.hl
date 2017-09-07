@@ -17,9 +17,9 @@ name:GaiaSoul main repository
 
 
 /*
- * Sephia Five
+ * Sephia Five.
  */
-app:sephia-five-4-8-zeus
+app:sephia-five-4-9-zeus
   name:Sephia Five
   description:A secure webmail client with PGP cryptography, virus protection, spam filter, and ad removal
   condition:p5.io.unroll-path.@SEPHIA
@@ -33,8 +33,6 @@ app:sephia-five-4-8-zeus
 
 You can see a video demonstrating some of its features [here](https://www.youtube.com/watch?v=0F4SVEoD1HE). Sephia Five is Free Software, Open Source, and Gratis for individuals.
 
-**Notice**, this release requires the latest version of Phosphorus Five, which is version 4.8! Make sure you update your P5 core, before you install this module.
-
 Sephia Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
   price:Free/GPL
   local-url:sephia-five
@@ -46,21 +44,21 @@ Sephia Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, 
 
 
 /*
- * Sulphur Five
+ * Sulphur Five.
  */
-app:sulphur-five-4-8-zeus
-  name:Sulphur Five BETA
-  description:A secure file sharing system.
+app:sulphur-five-4-9-zeus
+  name:Sulphur Five
+  description:A secure file sharing system, allowing you to share files publicly, protected and private.
   condition:p5.io.unroll-path.@SULPHUR
   url:"https://github.com/polterguy/sulphur-five/releases/download/v0.9BETA/sulphur-five.zip.pgp"
-  author-readme:@"Sulphur Five is a secure file sharing system, which is built with your privacy in mind.
+  author-readme:@"Sulphur Five is a secure file sharing system built with your privacy in mind.
 
-**Notice**, this release requires the latest version of Phosphorus Five, which is version 4.8! Make sure you update your P5 core, before you install this module.
+Sulphur Five allows you to share files privately with only yourself, protected which means with any registered user in your system, or publicly which means the world at large.
 
-Sephia Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
+Sulphur Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
   price:Free/GPL
   local-url:sulphur-five
-  image:"https://phosphorusfive.files.wordpress.com/2017/08/vault-icon-2.png"
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/secure-file-sharing.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
 
 
@@ -68,9 +66,9 @@ Sephia Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, 
 
 
 /*
- * Peeples
+ * Peeples.
  */
-app:peeples-4-7-zeus
+app:peeples-4-9-zeus
   name:Peeples
   description:A user management module for Phosphorus Five. Allows you to create, edit and delete users.
   condition:p5.io.unroll-path.@PEEPLES
@@ -79,10 +77,8 @@ app:peeples-4-7-zeus
 
 This is the module you need if you want to create additional user accounts in your Phosphorus Five installation.
 
-**Notice**, this release requires the latest version of Phosphorus Five, which is version 4.8! Make sure you update your P5 core, before you install this module.
-
 Peeples is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
-  price:Free
+  price:Free/GPL
   local-url:peeples
   image:"https://phosphorusfive.files.wordpress.com/2017/08/users.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD

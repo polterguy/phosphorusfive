@@ -1,0 +1,35 @@
+
+/*
+ * List of available Bazar apps in developer tools Bazar declaration file.
+ */
+
+
+
+
+
+/*
+ * First the current Bazar name.
+ */
+name:GaiaSoul X-Tools
+
+
+
+
+
+/*
+ * Hyperbuild.
+ */
+app:hyperbuild-4-9-zeus
+  name:Hyperbuild
+  description:Phosphorus' build system, which allows you to create your own distribution of Phosphorus Five
+  condition:p5.io.unroll-path.@HYPERBUILD
+  url:"https://github.com/polterguy/sephia-five/releases/download/v4.8BETA/sephia-five.zip.pgp"
+  author-readme:@"Hyperbuild is the main build system for Phosphorus Five, and allows you to create your own distribution of the system, including cryptographically sign modules and such, with your own PGP key.
+
+Basically, if you want to create your own distribution, and/or modules, this module significantly simplifies that process, by automatically packaging any modules, and creating a distro of your system's current state.
+
+Hyperlambda is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
+  price:Free/GPL
+  local-url:hyperbuild
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/hyperbuild.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
