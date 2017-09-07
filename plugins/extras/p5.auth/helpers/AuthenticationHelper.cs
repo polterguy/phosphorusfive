@@ -603,19 +603,6 @@ namespace p5.auth.helpers
 
             if (!Directory.Exists (rootFolder + "/users/" + username + "/temp"))
                 Directory.CreateDirectory(rootFolder + "/users/" + username + "/temp");
-
-            if (!File.Exists (rootFolder + "/users/" + username + "/documents/private/README.md"))
-                File.Copy (
-                    rootFolder + "/users/root/documents/private/README.md", 
-                    rootFolder + "/users/" + username + "/documents/private/README.md");
-            if (!File.Exists (rootFolder + "/users/" + username + "/documents/public/README.md"))
-                File.Copy (
-                    rootFolder + "/users/root/documents/public/README.md", 
-                    rootFolder + "/users/" + username + "/documents/public/README.md");
-            if (!File.Exists (rootFolder + "/users/" + username + "/temp/README.md"))
-                File.Copy (
-                    rootFolder + "/users/root/temp/README.md", 
-                    rootFolder + "/users/" + username + "/temp/README.md");
         }
 
         /*
