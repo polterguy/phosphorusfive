@@ -23,7 +23,7 @@ app:sephia-five-4-9-zeus
   name:Sephia Five
   description:A secure webmail client with PGP cryptography, virus protection, spam filter, and ad removal
   condition:p5.io.unroll-path.@SEPHIA
-  url:"https://github.com/polterguy/sephia-five/releases/download/v4.8BETA/sephia-five.zip.pgp"
+  url:"https://github.com/polterguy/sephia-five/releases/download/v4.9/sephia-five.zip.pgp"
   author-readme:@"Sephia Five is a cryptographically secure webmail and email client, with PGP support, which is built with your privacy in mind. Among other things, it does not display HTML emails, to avoid marketing gibberish and _'crapware'_, interrupting your privacy. It has the following features.
 
 * PGP cryptography
@@ -50,7 +50,7 @@ app:sulphur-five-4-9-zeus
   name:Sulphur Five
   description:A secure file sharing system, allowing you to share files publicly, protected and private.
   condition:p5.io.unroll-path.@SULPHUR
-  url:"https://github.com/polterguy/sulphur-five/releases/download/v0.9BETA/sulphur-five.zip.pgp"
+  url:"https://github.com/polterguy/sulphur-five/releases/download/v4.9/sulphur-five.zip.pgp"
   author-readme:@"Sulphur Five is a secure file sharing system built with your privacy in mind.
 
 Sulphur Five allows you to share files privately with only yourself, protected which means with any registered user in your system, or publicly which means the world at large.
@@ -72,7 +72,7 @@ app:peeples-4-9-zeus
   name:Peeples
   description:A user management module for Phosphorus Five. Allows you to create, edit and delete users.
   condition:p5.io.unroll-path.@PEEPLES
-  url:"https://github.com/polterguy/peeples/releases/download/v4.7/peeples-2.zip.pgp"
+  url:"https://github.com/polterguy/peeples/releases/download/v4.9/peeples.zip.pgp"
   author-readme:@"Peeples is a User Management module for Phosphorus Five, that allows you to create, edit and delete users in your installation. It comes with 5 free user tickets, and allows you to automatically purchase additional tickets, according to your needs.
 
 This is the module you need if you want to create additional user accounts in your Phosphorus Five installation.
