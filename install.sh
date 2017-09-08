@@ -6,20 +6,7 @@ clear
 
 echo "================================================================================"
 echo "Automatic installation script for Phosphorus Five"
-echo ""
-echo "Please let it finish, without interruptions, which might take some time!"
-echo ""
-echo "Warning, this script will install P5 'greadily' on your server,"
-echo "taking over your entire Apache installation, deleting all existing files."
-echo "It also expect a 'virgin' Ubuntu service, without MySQL, or anything"
-echo "besides the bare minimums installed from before."
-echo ""
-echo "If this is not OK with you, you should end the script now!"
-echo ""
-echo "If you followed the default installation process, when you setup Ubuntu,"
-echo "and you didn't add any extra packages, it should work flawlessly though."
-echo "It has only been tested with Ubuntu Servers, and only the latest version,"
-echo "which is version 'Ubuntu Server 16.04.3 LTS'."
+echo "Please let it finish, without interruptions, which might take some time."
 echo ""
 echo "The software is distributed in the hope that it will be useful,"
 echo "but WITHOUT ANY WARRANTY; without even the implied warranty of"
@@ -45,16 +32,26 @@ debconf-set-selections <<< 'mysql-server mysql-server/root_password password Som
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password SomeRandomPassword'
 apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip gnupg2
 
-# Removing default index.html file
-rm -r -f /var/www/html/*
+# Removing any old files.
+# Notice, we don't remove "/common" and "/users" here.
+# This allows for a nice upgrading process (hopefully) without loosing old data in your system.
+rm /var/www/html/index.html
+rm /var/www/html/Default.aspx
+rm /var/www/html/Global.asax
+rm /var/www/html/README.md
+rm /var/www/html/startup.hl
+rm -r -f /var/www/html/bin
+rm -r -f /var/www/html/desktop
+rm -r -f /var/www/html/modules
+
+# Creating a temporary folder to hold output.
+mkdir p5
 
 # Unzipping P5, in addition to moving it into main www/html folder.
-rm -f -r p5
-mkdir p5
 unzip binaries.zip -d p5
 cp -R p5/* /var/www/html
 
-# Removing both zip file, and folder created during above process.
+# Removing both zip file, and temp folder created during above process.
 rm -f binaries.zip
 rm -f -r p5
 
