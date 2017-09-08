@@ -187,7 +187,9 @@ namespace p5.math
             // resultType is DateTime.
             if (value.GetType () == resultType || (resultType == typeof (DateTime)))
                 return value;
-            return Convert.ChangeType (value, resultType);
+
+            // We need to convert our type, making sure we use the InvariantLocale
+            return Convert.ChangeType (value, resultType, System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }
