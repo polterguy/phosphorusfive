@@ -25,9 +25,12 @@ list-files:x:/@list-folders/*?name
 /*
  * Evaluating all files from above result, to make sure we initialise all apps.
  *
- * Notice, since we do this before we create our [p5.web.load-ui] event, there will be no race conditions,
- * making the system crash, due to a non-initialized event or something.
+ * Notice, we explicitly check for Micro and System42, and if found, we evaluate these first, before
+ * we evaluate any of the other modules, since other modules might be dependent upon these modules during startup.
  */
+load-file:x:@"/@list-files/*(/""~/system42/""|/""~/micro/"")?name"
+eval:x:/-/*
+set:x:@"/@list-files/*(/""~/system42/""|/""~/micro/"")"
 load-file:x:/@list-files/*?name
 eval:x:/-/*
 
