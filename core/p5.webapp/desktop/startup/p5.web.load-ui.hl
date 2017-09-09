@@ -81,9 +81,14 @@ create-event:p5.web.load-ui
       =:/
 
       /*
-       * Root URL was requested, loading the main desktop.
+       * Root URL was requested, loading the main desktop, but first checking if system has been configured with
+       * a "default app".
        */
-      micro.evaluate.file:/desktop/launch.hl
+      p5.config.get:p5.core.default-app
+      if:x:/@p5.config.get/*?value
+        micro.evaluate.file:x:/@p5.config.get/*?value
+      else
+        micro.evaluate.file:/desktop/launch.hl
 
     else
 
