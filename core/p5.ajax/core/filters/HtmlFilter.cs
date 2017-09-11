@@ -48,13 +48,6 @@ namespace p5.ajax.core.filters
         /// <returns>The HTML response returned back to client</returns>
         protected override string RenderResponse ()
         {
-            // Checking if we have been redirected.
-            if (Page.Response.StatusCode == 302) {
-
-                // No reasons to proceed ...
-                return "Redirecting your client ...";
-            }
-
             // Retrieving entire HTML from stream.
             TextReader reader = new StreamReader (this, ContentEncoding);
             var content = reader.ReadToEnd ();
