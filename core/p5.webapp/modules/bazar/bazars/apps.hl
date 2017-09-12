@@ -1,14 +1,10 @@
-
 /*
- * List of available Bazar apps in main Bazar declaration file.
- */
-
-
-
-
-
-/*
- * First the current Bazar name.
+ * This is the Bazar's name.
+ *
+ * Notice, you should edit this file, an especially update the URLs, to point
+ * to your apps correctly - In addition to updating the PGP keys to reflect your own key.
+ *
+ * When you have done so, make sure you host the file at a URL matching your Bazar declaration somehow.
  */
 name:GaiaSoul main repository
 
@@ -17,7 +13,15 @@ name:GaiaSoul main repository
 
 
 /*
- * Sephia Five.
+ * Below here we have listed all apps that are available in this Bazar.
+ */
+
+
+
+
+
+/*
+ * Sephia Five
  */
 app:sephia-five-4-9-zeus
   name:Sephia Five
@@ -44,7 +48,7 @@ Sephia Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, 
 
 
 /*
- * Sulphur Five.
+ * Sulphur Five
  */
 app:sulphur-five-4-9-zeus
   name:Sulphur Five
@@ -66,7 +70,7 @@ Sulphur Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com,
 
 
 /*
- * Peeples.
+ * Peeples
  */
 app:peeples-4-9-zeus
   name:Peeples
