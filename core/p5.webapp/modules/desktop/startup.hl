@@ -1,0 +1,35 @@
+﻿
+
+/*
+ * Startup file for main desktop "app".
+ *
+ * Simply evaluates all files in "startup" folder for "desktop" app.
+ *
+ * Notice, we don't know for sure if Micro is installed at this time, and hence we cannot use [micro.evaluate.file] yet.
+ */
+
+
+/*
+ * Creates the "path" Active Event that points to our "/micro/" folder.
+ * This is done in such a way that we can install Micro in any folder we wish.
+ */
+split:x:/..?name
+  =:/
+set:x:/@split/0/-
+join:x:/@split/*?name
+  sep:/
+eval-x:x:/+/*
+create-event:p5.io.unroll-path.@DESKTOP
+  return:/{0}
+    :x:/@join?value
+
+
+
+
+
+/*
+ * Evaluating all startup files for desktop.
+ */
+list-files:@DESKTOP/startup/
+load-file:x:/-/*?name
+eval:x:/-/*

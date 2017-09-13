@@ -25,31 +25,11 @@ list-files:x:/@list-folders/*?name
 /*
  * Evaluating all files from above result, to make sure we initialise all apps.
  *
- * Notice, we explicitly check for Micro and System42, and if found, we evaluate these first, before
+ * Notice, we explicitly check for micro, desktop and system42 here, and if found, we evaluate these first, before
  * we evaluate any of the other modules, since other modules might be dependent upon these modules during startup.
  */
-load-file:x:@"/@list-files/*(/""~/system42/""|/""~/micro/"")?name"
+load-file:x:@"/@list-files/*(/""~/system42/""|/""~/micro/""|/""~/desktop/"")?name"
 eval:x:/-/*
-set:x:@"/@list-files/*(/""~/system42/""|/""~/micro/"")"
+set:x:@"/@list-files/*(/""~/system42/""|/""~/micro/""|/""~/desktop/"")"
 load-file:x:/@list-files/*?name
 eval:x:/-/*
-
-
-
-
-
-/*
- * Evaluating our desktop/micro web os "startup.hl" file.
- *
- * But only if file actually exists, which allows developers and distributors to simply delete the "desktop" folder,
- * to start out with a clean slate.
- */
-if
-  fetch:x:/0/0?value
-    file-exists:/desktop/startup.hl
-
-  /*
-   * "Desktop" app exists.
-   */
-  load-file:/desktop/startup.hl
-  eval:x:/-/*

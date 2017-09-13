@@ -47,7 +47,7 @@ if:x:/-/*
  * Just remember to somehow make sure you're able to setup the server salt, and have the user supply a root password.
  *
  * Hint; You can make sure your users are setting up a server salt and root password, by invoking the 
- * "/desktop/initialize/initialize-server.hl" file, which will do nothing, if the server salt and root password has 
+ * "@DESKTOP/initialize/initialize-server.hl" file, which will do nothing, if the server salt and root password has 
  * already been setup, and return "false" if it is safe to proceed to your own app, and the server salt and root 
  * password has already been setup.
  *
@@ -69,7 +69,7 @@ create-event:p5.web.load-ui
     /*
      * No server salt, or no root password, hence the server needs to be initialized with a server salt, and a root password.
      */
-    micro.evaluate.file:/desktop/initialize/initialize-server.hl
+    micro.evaluate.file:@DESKTOP/initialize/initialize-server.hl
 
   else
 
@@ -88,7 +88,7 @@ create-event:p5.web.load-ui
       if:x:/@p5.config.get/*?value
         micro.evaluate.file:x:/@p5.config.get/*?value
       else
-        micro.evaluate.file:/desktop/launch.hl
+        throw:No default app configured in your web.config, feel free to add up e.g. '<add key="p5.core.default-app" value="/modules/desktop/launch.hl" />' to make sure your desktop starts initially, in your <appSettings> section.
 
     else
 

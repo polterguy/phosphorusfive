@@ -15,7 +15,7 @@ create-event:p5.core._internals.pgp.download-key
   /*
    * Loading key server configuration setting.
    */
-  load-file:/desktop/configuration/key-server.hl
+  load-file:@DESKTOP/configuration/key-server.hl
 
   /*
    * Using HTTP GET to query for key on server, making sure we URL encode query.

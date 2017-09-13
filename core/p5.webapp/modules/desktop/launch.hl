@@ -31,7 +31,7 @@ clear-widget:cnt
 /*
  * Including main desktop CSS file.
  */
-p5.web.include-css-file:/desktop/media/main.css
+p5.web.include-css-file:@DESKTOP/media/main.css
 
 
 
@@ -43,8 +43,11 @@ p5.web.include-css-file:/desktop/media/main.css
  *
  * Hint, a module doesn't necessary have to include a "launch.hl" file, but if it doesn't, it won't have its
  * own desktop icon created, and will be treated as an invisible "component", instead of an "app".
+ *
+ * Notice, we explicitly remove the "desktop" app, for obvious reasons.
  */
 list-folders:/modules/
+set:x:@"/@list-folders/*/""~/desktop/"""
 
 
 
