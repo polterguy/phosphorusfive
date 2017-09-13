@@ -58,9 +58,9 @@ if your Phosphorus Five source code folder, and open up this solution.
 
 ## Creating your own apps
 
-Phosphorus Five is created in C#, but relies upon _"Hyperlambda"_, which is a modularised web application programming language, for
-creating highly modularised components, seemlessly integrating these together, to create a uniform whole. An example of some 
-Hyperlambda can be found below.
+Phosphorus Five is created in C#, but relies upon _"Hyperlambda"_. Hyperlambda is a modularised web application programming language, for
+creating highly modularised components. Hyperlambda allows you to seemlessly integrate your modules together, and _"orchestrate"_ building blocks -
+Similarly to how you would create things out of LEGO. An example of some Hyperlambda can be found below.
 
 ```
 create-widget:foo
