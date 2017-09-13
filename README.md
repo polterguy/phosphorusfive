@@ -81,18 +81,18 @@ refer to these links.
 * [modules](core/p5.webapp/modules/), how the modularized parts of Phosphorus Five works
 * [The Bazar](core/p5.webapp/modules/bazar/), the integrated _"AppStore"_ that comes with P5 out of the box
 
-I recommend you start out with ["the guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation
+I recommend you start out with ["The Guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation
 for the [plugins](plugins/), as the need surface. Most of the examples in the core and plugin documentation, assumes you are 
 using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps.
 
 Notice, Phosphorus Five comes with an integrated _"AppStore"_ out of the box, which allows you to create your own Bazars, where you distribute
 your apps and components, either for a fee, or as open source projects. This approach, makes it extremely modularized, allowing you to incrementally
 create your systems, allowing its users to automatically choose to upgrade theirs, as you create new versions of your projects, or create additional
-app, and/or components.
+apps, and/or components.
 
 Please refer to [the Bazar](core/p5.webapp/modules/bazar/) to see how this part of P5 works. However, everything is open source, and you can
 actually host your Bazar, without any other requirements but being able to publicly distribute a simple Hyperlambda file, on some web server somewhere.
-This parts of P5 is also extremely secure, only allowing installations of modules that have been cryptographically signed, with a trusted PGP key.
+These parts of P5 is also extremely secure, only allowing installations of modules that have been cryptographically signed, with a trusted PGP key.
 Making it very hard for a malicious adversary to being able to execute malicious code on your user's servers. The Bazar is highly configurable,
 and you can easily create your own repository of apps, and distribute yourself, using the Bazar. The Bazar features automatic PayPal integration,
 if you'd like to provide apps in your Bazar for a fee.
@@ -111,13 +111,13 @@ to create C#/VB/F# code, exactly as you're used to from before.
 In fact, if you wish, you could in theory declare your execution trees by using XML or JSON. Although I recommend
 using Hyperlambda, due to its much more condens syntax, and lack of overhead.
 This trait of Hyperlambda, makes it an excellent choice for creating your own domain specific programming languages. In such a regard, it arguably
-brings LISP into the 21st Century. However, don't be fooled by its simplicity. It's extremely powerful and secure. Below is a screenshot 
+brings LISP into the 21st Century. However, don't be fooled by its simplicity. P5 extremely powerful and secure. Below is a screenshot 
 of Sephia Five's settings, that are entirely built in Hyperlambda.
 
 ![alt screenshot](resources/screenshot-sephia-settings.png)
 
 Sephia Five is a military grade webmail client, with PGP cryptography, extreme security, and some very unique usability traits. Sephia Five
-is the _"reference implemantation"_ for an example application built with Phosphorus Five. Sephia Five is also open source, and can be 
+is one of the _"reference implemantations"_ for example applications built with Phosphorus Five. Sephia Five is also open source, and can be 
 found [here](https://github.com/polterguy/sephia-five).
 
 ## 3 basic innovations
@@ -132,14 +132,17 @@ The Ajax library is created on top of ASP.NET's Web Forms, allowing you to use t
 Simply inject them declaratively into your markup, and change their properties and attributes in your codebehind. We say _"managed"_, because
 it takes care of all state, Ajax serialization, and dynamic JavaScript inclusion automatically. In fact, when you use the Ajax library, you can
 create your web apps, the same way you would normally create a desktop application. The Ajax library is extremely extendible, allowing you to create
-your own markup, exactly as you wish. This is because there fundamentally exists only one single Ajax widget in the library, which allows for you to
-declare its HTML tag, attributes, dynamically remove and change any parts of your DOM element, also during Ajax callbacks.
+your own markup, exactly as you wish. This is because there fundamentally exists only one single Ajax widget in the library. This approach allows 
+you to declare your HTML tags, attributes, dynamically remove and change any parts of your DOM element, also during Ajax callbacks.
 
 Active Events allows you to loosely couple your modules together, without having any dependencies between them. Active Events is the _"heart"_ of
 Phosphorus Five, allowing for the rich plugin nature in P5. You can easily create your own Active Events, either in Hyperlambda, or in C# if you wish.
+You can read an MSDN article about Active Events [here](https://msdn.microsoft.com/en-us/magazine/mt795187).
 
 Hyperlambda, and lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
-together, as shown above in the Hello World example.
+together, as shown above in the Hello World example. By combining Active Events together with Managed Ajax and Hyperlambda - Your apps truly
+_"comes alive"_, and creating rich web apps, becomes ridiculously easy. You can read an MSDN article about 
+Hyperlambda [here](https://msdn.microsoft.com/en-us/magazine/mt809119).
 
 ## Perfect encapsulation and polymorphism
 
@@ -225,7 +228,9 @@ before you dive into Hyperlambda.
 
 Phosphorus Five is free and open source software, and licensed under the terms
 of the Gnu Public License, version 3, in addition to that commercially license are available for a fee. Read more about
-our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/).
+our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/). But basically, to make a long story short, you will
+have to acquire the right to create closed source applications, by [purchasing a license](https://gaiasoul.com/license/).
+If you only want to create open source applications, and/or plugins, this is not relevant, and you can simply use the Open Source version.
 
 ## More information
 
@@ -244,5 +249,3 @@ discarded laptop, with a plain average internet connection.
 Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email.
 
 Thomas Hansen; thomas@gaiasoul.com
-
-There also exists a [commercial license](https://gaiasoul.com/license/) for those who cannot use the GPL license for some reasons.
