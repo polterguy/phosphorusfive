@@ -128,19 +128,38 @@ for-each:x:/@bazar.bazars.get-apps/*
 
     /*
      * Checking "condition" of app, which basically is assumed to be an Active Event,
-     * which if existing, implies the app is already installed.
+     * which if exists, implies the app is already installed.
      */
+    _where:apps
     vocabulary:x:/@_dp/#/*/condition?value
     if:x:/-/*
 
       /*
        * App is already installed.
-       *
        * It's [condition] event was found on server from before.
        *
-       * TODO: Implement version handling here, to allow for upgrading existing apps, that has upgrades.
+       * Now checking if the server's version is newer than what's locally installed.
        */
-      continue
+      set:x:/./*/.exe?name
+        src:x:/@_dp/#/*/version/*/event?value
+      .exe
+      if:x:/-?value
+        <:x:/@_dp/#/*/version?value
+
+        /*
+         * There's a newer version on remote server than what's locally installed on user's system.
+         *
+         * Making sure this app is appended into "updates" wrapper widget.
+         */
+        set:x:/@_where?value
+          src:updates
+
+      else
+
+        /*
+         * App is already installed, and there are no newer versions on server.
+         */
+        continue
 
     /*
      * Checking if this is our first addition from currently iterated Bazar, and if so,
@@ -195,7 +214,8 @@ for-each:x:/@bazar.bazars.get-apps/*
      * Adding app to [create-widget] invocation below, to allow user to install it.
      */
     eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_local-url))
-    add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps
+    add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/={0}
+      :x:/@_where?value
       src
         container
           element:a
@@ -351,7 +371,7 @@ p5.bazar_download_app = function(e) {
  * Checking if user have all apps installed, and if so, giving him a simple
  * notification about that.
  */
-if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps/*
+if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets(/=apps|/=updates)/*
   not
 
   /*
@@ -369,12 +389,11 @@ if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps/*
             style:"margin:5% auto;max-width:800px;"
             widgets
               h3
-                innerValue:It's awfully empty around here ...
+                innerValue:You've cleaned us out!
               p
-                innerValue:@"Oops, you've cleaned out all your Bazars.
-If you know the URL to another Bazar you trust, feel free to click the '+' button at the top right corner, to add another Bazar.
-Or <a href=""https://gaiasoul.com"" target=""_blank"">subscribe to/read my blog</a>, at which point I might tip you about alternative Bazars in the future.
-If you have a zip file, containing an app, you can also upload it in the top/right corner, using the 'upload' button."
+                innerValue:@"If you know the URL to another Bazar you trust, feel free to click the '+' button at the top right corner, to add another Bazar.
+If you have a zip file, containing an app, you can also upload it in the top/right corner, using the 'upload' button, or simply
+drag and drop your zip file, containing your app, unto the surface of your browser."
 
 
 
@@ -720,6 +739,15 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
                          */
                         p5.web.get-root-location
                         p5.web.set-location:x:/-?value
+
+        /*
+         * Bazar(s) updates wrapper.
+         */
+        div
+          style:"clear:both;"
+          class:bazar-wrapper bazar-updates-wrapper
+          widgets:updates
+
 
         /*
          * Bazar(s) apps wrapper.
