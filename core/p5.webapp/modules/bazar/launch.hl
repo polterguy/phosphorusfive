@@ -106,7 +106,7 @@ eval-x:x:/+/*
 micro.page.create-dropzone
   url:{0}upload
     :x:/@_app-root-url?value
-  .onfinish:@"function(uid, no_files, no_errors) {{window.location.replace('{0}');}}"
+  .onfinish:@"function(uid, no_files, no_errors) {{if (no_errors != 0) {{alert('Some of your apps were not accepted');}} window.location.replace('{0}');}}"
     :x:/@p5.web.get-root-location?value
 
 

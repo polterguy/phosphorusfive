@@ -28,6 +28,26 @@ split:x:/@p5.web.request.parse-mime/*/multipart/=form-data/*/application/=zip/*/
 
 
 /*
+ * Sanity checking app's name.
+ */
+match:x:/@split/0?name
+  src:regex:@"/^[-a-z]*/"
+if:x:/@match/*?count
+  =:int:0
+  or:x:/@match/0?name
+    =:
+
+  /*
+   * App's name is not valid
+   */
+  p5.web.echo:ERROR
+  return
+
+
+
+
+
+/*
  * Installing app.
  */
 eval-x:x:/+/*/local-url
@@ -35,4 +55,4 @@ bazar.install-app:{0}{1}{2}
   :x:/@p5.web.request.parse-mime/*/multipart/=form-data/*/application/=zip/*/filename/*/folder?value
   :x:/@p5.web.request.parse-mime/*/multipart/=form-data/*/application/=zip/*/filename/*/prefix?value
   :x:/@p5.web.request.parse-mime/*/multipart/=form-data/*/application/=zip/*/filename?value
-  local-url:x:/@split/0?name
+  local-url:x:/@match/0?name
