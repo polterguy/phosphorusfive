@@ -115,8 +115,6 @@
     <Folder Include="common\temp\" />
     <Folder Include="modules\bazar\" />
     <Folder Include="modules\bazar\bazars\" />
-    <Folder Include="modules\micro\startup\" />
-    <Folder Include="modules\micro\" />
     <Folder Include="modules\desktop\" />
     <Folder Include="modules\bazar\startup\" />
     <Folder Include="modules\bazar\helpers\" />
