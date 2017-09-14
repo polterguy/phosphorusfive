@@ -110,4 +110,7 @@ app:micro
 * Tab control
 * Modal window
 * Wizard form
-* And many more"
+* A beautiful (and skinnable) grid CSS system
+* And much more
+
+In addition, Micro also features a lot of additional components and helper Active Events, such as events allowing you to manipulate CSS classes of widgets, turning your page into a 'dropzone', etc, etc, etc. You can find the documentation for Micro [here](https://github.com/polterguy/micro)."
