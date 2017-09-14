@@ -22,6 +22,17 @@ bazar:"https://api.github.com/repos/polterguy/phosphorusfive/contents/core/p5.we
 
 
 /*
+ * Phosphorus Five core modules Bazar.
+ */
+bazar:"https://api.github.com/repos/polterguy/phosphorusfive/contents/core/p5.webapp/modules/bazar/bazars/core.hl?ref=master"
+  Accept:application/vnd.github.v3.raw
+  User-Agent:Phosphorus-Five
+
+
+
+
+
+/*
  * Phosphorus Five developer tools Bazar.
  */
 bazar:"https://api.github.com/repos/polterguy/phosphorusfive/contents/core/p5.webapp/modules/bazar/bazars/developer-tools.hl?ref=master"

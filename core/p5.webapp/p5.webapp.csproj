@@ -274,6 +274,7 @@
     <None Include="modules\bazar\helpers\upload-app.hl" />
     <None Include="modules\bazar\startup\bazar.version.hl" />
     <None Include="modules\desktop\startup\desktop.version.hl" />
+    <None Include="modules\bazar\bazars\core.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>
