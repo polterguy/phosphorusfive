@@ -196,6 +196,7 @@ for-each:x:/@bazar.bazars.get-apps/*
     markdown2html:x:/-?value
     p5.html.html-encode:x:/@_dp/#/*/price?value
     p5.html.html-encode:x:/@_dp/#/*/local-url?value
+    p5.html.html-encode:x:/@_dp/#/*/version?value
 
     /*
      * Making sure we apply icon-image to markdown results.
@@ -215,7 +216,7 @@ for-each:x:/@bazar.bazars.get-apps/*
     /*
      * Adding app to [create-widget] invocation below, to allow user to install it.
      */
-    eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_local-url))
+    eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_local-url|/_app-version))
     add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/={0}
       :x:/@_where?value
       src
@@ -233,6 +234,7 @@ for-each:x:/@bazar.bazars.get-apps/*
             _app-url:x:/..for-each/*/p5.html.html-encode/[1,2]?value
             _app-author-description:x:/@markdown2html?value
             _local-url:x:/..for-each/*/p5.html.html-encode/[5,6]?value
+            _app-version:x:/..for-each/*/p5.html.html-encode/[6,7]?value
 
             /*
              * Asking user to confirm installation, and initiating download and 
@@ -243,8 +245,9 @@ for-each:x:/@bazar.bazars.get-apps/*
               micro.widgets.modal:bazar-confirm-installation
                 widgets
                   h3
-                    innerValue:Confirm installation of {0}
+                    innerValue:Confirm installation of {0} version {1}
                       :x:/@_app-name?value
+                      :x:/@_app-version?value
                   p
                     innerValue:@"Are you sure you want to install {0}? Its developer has the following to say about it."
                       :x:/@_app-name?value

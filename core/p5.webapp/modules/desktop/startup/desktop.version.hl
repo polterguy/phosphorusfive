@@ -1,0 +1,7 @@
+﻿
+/*
+ * Creates our version Active Event.
+ */
+create-event:desktop.version
+
+  return:decimal:4.9

@@ -273,6 +273,7 @@
     <None Include="modules\bazar\startup\bazar.install-app.hl" />
     <None Include="modules\bazar\helpers\upload-app.hl" />
     <None Include="modules\bazar\startup\bazar.version.hl" />
+    <None Include="modules\desktop\startup\desktop.version.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

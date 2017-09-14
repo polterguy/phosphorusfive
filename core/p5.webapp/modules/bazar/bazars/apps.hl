@@ -141,3 +141,29 @@ app:bazar
 * And much more
 
 You can read its README file [here](https://github.com/polterguy/phosphorusfive/tree/master/core/p5.webapp/modules/bazar)."
+
+
+
+
+
+/*
+ * Desktop
+ */
+app:desktop
+  name:Desktop
+  description:This is the main administrative module for your Phosphorus Five installation, or your 'desktop' environment.
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.9/desktop.zip.pgp"
+  price:Free/GPL
+  local-url:desktop
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/desktop-icon.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@DESKTOP
+  version:decimal:5.0
+    event:desktop.version
+  author-readme:@"The Desktop is the module in Phosphorus Five that is your main administrative interface, allowing you to easily start your apps, from a desktop type of environment.
+
+* Automatic determining of which apps are installed
+* Login functions
+* And much more
+
+You can read its README file [here](https://github.com/polterguy/phosphorusfive/tree/master/core/p5.webapp/modules/desktop)."
