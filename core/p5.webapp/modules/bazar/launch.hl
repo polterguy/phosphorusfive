@@ -394,10 +394,9 @@ if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets(/=apps|/=upda
             style:"margin:5% auto;max-width:800px;"
             widgets
               h3
-                innerValue:You've cleaned us out!
+                innerValue:Update and install apps and modules
               p
-                innerValue:@"If you know the URL to another Bazar you trust, feel free to click the '+' button at the top right corner, to add another Bazar.
-If you have a zip file, containing an app, you can also upload it in the top/right corner, using the 'upload' button, or simply
+                innerValue:@"If you have a zip file, containing an app, you can upload it in the top/right corner, using the 'upload' button, or simply
 drag and drop your zip file, containing your app, unto the surface of your browser."
 
 
