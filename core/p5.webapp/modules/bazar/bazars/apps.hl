@@ -105,4 +105,9 @@ app:micro
   condition:p5.io.unroll-path.@MICRO
   version:decimal:5.0
     event:micro.version
-  author-readme:@"Micro is a microscopic CSS framework, and a component library for Phosphorus Five. It features many extension widgets and component Active Events, significantly easing your experience as you create Phosphorus Five apps."
+  author-readme:@"Micro is a microscopic CSS framework, and a component library for Phosphorus Five. It features many extension widgets and component Active Events, significantly easing your experience as you create Phosphorus Five apps.
+
+* Tab control
+* Modal window
+* Wizard form
+* And many more"
