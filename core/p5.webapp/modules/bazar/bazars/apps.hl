@@ -63,9 +63,7 @@ app:sulphur-five
     event:sulphur.version
   author-readme:@"Sulphur Five is a secure file sharing system built with your privacy in mind.
 
-Sulphur Five allows you to share files privately with only yourself, protected which means with any registered user in your system, or publicly which means the world at large.
-
-Sulphur Five is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
+Sulphur Five allows you to share files privately with only yourself, protected which means with any registered user in your system, or publicly which means the world at large."
 
 
 
@@ -87,6 +85,24 @@ app:peeples
     event:peeples.version
   author-readme:@"Peeples is a User Management module for Phosphorus Five, that allows you to create, edit and delete users in your installation. It comes with 5 free user tickets, and allows you to automatically purchase additional tickets, according to your needs.
 
-This is the module you need if you want to create additional user accounts in your Phosphorus Five installation.
+This is the module you need if you want to create additional user accounts in your Phosphorus Five installation."
 
-Peeples is developed and maintained by Thomas Hansen - thomas@gaiasoul.com, the PGP fingerprint for its developer is '5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD'"
+
+
+
+
+/*
+ * Micro
+ */
+app:micro
+  name:Micro
+  description:A microscopic CSS framework and component library for P5
+  url:"https://github.com/polterguy/micro/releases/download/v4.9/micro.zip.pgp"
+  price:Free/GPL
+  local-url:micro
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/micro-symbol.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@MICRO
+  version:decimal:5.0
+    event:micro.version
+  author-readme:@"Micro is a microscopic CSS framework, and a component library for Phosphorus Five. It features many extension widgets and component Active Events, significantly easing your experience as you create Phosphorus Five apps."

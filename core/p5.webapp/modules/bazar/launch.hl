@@ -149,7 +149,7 @@ for-each:x:/@bazar.bazars.get-apps/*
         /*
          * There's a newer version on remote server than what's locally installed on user's system.
          *
-         * Making sure this app is appended into "updates" wrapper widget.
+         * Making sure this app is appended into "updates" wrapper widget, and not "apps" widget.
          */
         set:x:/@_where?value
           src:updates
@@ -166,6 +166,8 @@ for-each:x:/@bazar.bazars.get-apps/*
      * making sure we add an H3 header with its name.
      */
     if:x:/@_first?value
+      and:x:/@_where?value
+        =:apps
 
       /*
        * Making sure consecutive iterations doesn't add the header.
@@ -747,7 +749,25 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
           style:"clear:both;"
           class:bazar-wrapper bazar-updates-wrapper
           widgets:updates
+          oninit
 
+            /*
+             * Checking if there are any widgets inside of current widget, and if so, we have updates, at which
+             * point we make sure the current widget is given a header.
+             */
+            p5.web.widgets.get-children:x:/../*/_event?value
+            if:x:/@p5.web.widgets.get-children/*/*
+
+              /*
+               * There are updates that could be installed, making sure we create an h3 header, signaling that fact to
+               * user.
+               */
+              create-widget
+                position:0
+                parent:x:/../*/_event?value
+                element:h3
+                innerValue:Updates
+                class:bazar-name
 
         /*
          * Bazar(s) apps wrapper.
