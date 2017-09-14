@@ -1,0 +1,38 @@
+
+/*
+ * File responsible for handling an upload request, of a zip file, or pgp file, user wants to install.
+ */
+
+
+
+
+
+/*
+ * Parsing HTTP request, downloading file attachments to user's "temp" folder.
+ */
+p5.web.request.parse-mime
+  attachment-folder:~/temp/
+
+
+
+
+
+/*
+ * Figuring out app's name, by assuming its file name is its [local-url].
+ */
+split:x:/@p5.web.request.parse-mime/*/multipart/=form-data/*/application/=zip/*/filename?value
+  =:.
+
+
+
+
+
+/*
+ * Installing app.
+ */
+eval-x:x:/+/*/local-url
+bazar.install-app:{0}{1}{2}
+  :x:/@p5.web.request.parse-mime/*/multipart/=form-data/*/application/=zip/*/filename/*/folder?value
+  :x:/@p5.web.request.parse-mime/*/multipart/=form-data/*/application/=zip/*/filename/*/prefix?value
+  :x:/@p5.web.request.parse-mime/*/multipart/=form-data/*/application/=zip/*/filename?value
+  local-url:x:/@split/0?name

@@ -119,6 +119,7 @@
     <Folder Include="modules\micro\" />
     <Folder Include="modules\desktop\" />
     <Folder Include="modules\bazar\startup\" />
+    <Folder Include="modules\bazar\helpers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
@@ -270,6 +271,7 @@
     <None Include="modules\bazar\startup\bazar.uninstall-app.hl" />
     <None Include="modules\bazar\startup\bazar.ensure-trusted-fingerprints.hl" />
     <None Include="modules\bazar\startup\bazar.install-app.hl" />
+    <None Include="modules\bazar\helpers\upload-app.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

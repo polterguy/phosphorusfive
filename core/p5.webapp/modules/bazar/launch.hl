@@ -54,9 +54,60 @@ if:x:/@whoami/*/role?value
 
 
 /*
+ * Checking if this is an upload operation of a zip file, user wants to install as app.
+ */
+split:x:/../*/url?value
+  =:/
+if:x:/@split/0/-?name
+  =:upload
+
+  /*
+   * This is an upload request of a zip/pgp file.
+   * Evaluating file responsible for handling request, installing app, and returning early
+   * to avoid evaluation of the rest of our file.
+   */
+  micro.evaluate.file:@BAZAR/helpers/upload-app.hl
+  return
+
+
+
+
+
+/*
  * Retrieving available apps.
  */
 bazar.bazars.get-apps
+
+
+
+
+
+/*
+ * Storing the app's "root" URL for later references, to allow us to create relative
+ * URLs and hyperlinks.
+ */
+_app-root-url
+p5.io.unroll-path:@BAZAR/
+split:x:/-?value
+  =:/
+set:x:/@_app-root-url?value
+  src:/{0}/
+    :x:/@split/0/-?name
+
+
+
+
+
+/*
+ * Creating dropzone for uploading ZIP files to install as app.
+ */
+p5.web.get-root-location
+eval-x:x:/+/*
+micro.page.create-dropzone
+  url:{0}upload
+    :x:/@_app-root-url?value
+  .onfinish:@"function(uid, no_files, no_errors) {{window.location.replace('{0}');}}"
+    :x:/@p5.web.get-root-location?value
 
 
 
@@ -322,7 +373,8 @@ if:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps/*
               p
                 innerValue:@"Oops, you've cleaned out all your Bazars.
 If you know the URL to another Bazar you trust, feel free to click the '+' button at the top right corner, to add another Bazar.
-Or <a href=""https://gaiasoul.com"" target=""_blank"">subscribe to/read my blog</a>, at which point I might tip you about alternative Bazars in the future."
+Or <a href=""https://gaiasoul.com"" target=""_blank"">subscribe to/read my blog</a>, at which point I might tip you about alternative Bazars in the future.
+If you have a zip file, containing an app, you can also upload it in the top/right corner, using the 'upload' button."
 
 
 
@@ -340,7 +392,7 @@ create-widget
       widgets
 
         /*
-         * Add Bazar wrapper.
+         * Add Bazar, home button, and upload app wrapper.
          */
         div
           class:bazar-add
@@ -653,6 +705,11 @@ Adding a key to an app distributor that you don't know for sure you can trust, m
                                            */
                                           delete-widget:bazar-add-bazar
 
+                    button
+                      innerValue:@"<span class=""icon-upload""></span>"
+                      title:Upload app
+                      style:"margin-bottom:0;padding-left:35px;padding-right:35px;"
+                      onclick:@"p5.dropzone.browse();event.stopPropagation(true);return false;"
                     button
                       innerValue:@"<span class=""icon-home""></span>"
                       style:"margin-bottom:0;"
