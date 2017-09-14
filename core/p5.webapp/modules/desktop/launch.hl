@@ -137,7 +137,6 @@ create-widget
           href:#
           role:button
           class:desktop-logout
-          title:Log out
           oninit
 
             /*

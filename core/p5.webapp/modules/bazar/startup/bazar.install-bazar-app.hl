@@ -1,0 +1,76 @@
+
+/*
+ * Creates the Active Event that's responsible for downloading Bazar app, and installing it.
+ *
+ * Expects [url] to app pointing to a cryptographically signed zip file, in addition to [local-url] being 
+ * the local folder name for app after installation.
+ *
+ * Notice, the content being downloaded from the [url] is expected to be a PGP cryptographically signed zip file, 
+ * that is signed by a PGP key, that must be found in our "configuration/trusted-app-distributors.hl" file.
+ * Otherwise the app will not be installed, and an exception will be raised.
+ */
+create-event:bazar.install-bazar-app
+
+  /*
+   * Sanity checking arguments.
+   */
+  micro.lambda.contract.min:x:/..
+    url:string
+    local-url:string
+
+  /*
+   * Making sure we retrieve all PGP keys for all of our trusted app distributors.
+   */
+  bazar.ensure-trusted-fingerprints
+
+  /*
+   * Retrieving file from its URL, and saving it to user's temp folder.
+   */
+  p5.http.get:x:/../*/url?value
+    .onresponse
+      .p5.io.file.save-to-stream:~/temp/app.mime
+
+  /*
+   * Parsing file, and verifying PGP signature of it.
+   */
+  p5.mime.load:~/temp/app.mime
+    attachment-folder:~/temp/
+    attachment-folder-no-prefix:false
+  if:x:/@p5.mime.load/*/multipart/=signed/*/signature/0?value
+    !=:bool:true
+
+    /*
+     * Signature fissled, cannot proceed.
+     */
+    throw:The app's cryptographic signature was not verified
+
+  /*
+   * Loading configuration file for trusted app distributors, to make sure app was signed by a trusted distributor.
+   */
+  load-file:/modules/bazar/configuration/trusted-app-distributors.hl
+
+  /*
+   * Verifying PGP signature is on trusted list of app distributors.
+   */
+  if:x:/@load-file/*/*/fingerprint/={0}
+    :x:/@p5.mime.load/*/multipart/=signed/*/signature/0/*/fingerprint?value
+    not
+
+    /*
+     * App was not signed by a trusted app distributor.
+     */
+    throw:@"We do not trust this app's vendor.
+If you wish to change this, please edit your 'trusted-app-distributor.hl' file inside your '/bazar/configuration/' folder, 
+and add up the PGP fingerprint for the vendor that distributed this app."
+
+  /*
+   * Now that we have verified that the above app is cryptographically signed correctly,
+   * and that it is created by a trusted app distributor, we can uninstall any previous versions
+   * of the app.
+   *
+   * TODO: Support multiple zip files inside the same cryptographically signed "manifest".
+   */
+  eval-x:x:/+/*/local-url
+  bazar.install-app:~/temp/{0}
+    :x:/@p5.mime.load/*/multipart/=signed/*/application/=zip/*/filename?value
+    local-url:x:/../*/local-url?value

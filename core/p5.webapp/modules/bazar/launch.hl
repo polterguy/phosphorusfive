@@ -9,11 +9,8 @@
 
 
 /*
- * Clearing out anything previously added to page, to make sure we start
- * out with a blank slate, in addition to making sure we've got our 
- * "container-fullscreen" CSS class on main container.
+ * Making sure main container has the "container" CSS class from Micro.
  */
-clear-widget:cnt
 set-widget-property:cnt
   class:container
 
@@ -22,7 +19,9 @@ set-widget-property:cnt
 
 
 /*
- * Including Micro, and adding Awesome Fonts.
+ * Including Micro CSS, adding Awesome Fonts, and including main CSS file for Bazar.
+ *
+ * Which for the record, is the same CSS file as the main "desktop" app's CSS file.
  */
 p5.web.include-css-file:@MICRO/media/main.css
 p5.web.include-css-file:@MICRO/media/ext.css
@@ -55,29 +54,9 @@ if:x:/@whoami/*/role?value
 
 
 /*
- * Checking if this is a "return to download" invocation, after having purchased
- * an app at PayPal.
- */
-p5.web.query.get:app-url
-if:x:/-/*?value
-
-  /*
-   * This is a redirect from PayPal, invoking file responsible for downloading 
-   * and installing app, after first having retrieved the app's download URL.
-   */
-  p5.web.session.get:x:/@p5.web.query.get/*?value
-  eval-x:x:/+/*
-  micro.evaluate.file:/modules/bazar/download-app.hl
-    url:x:/@p5.web.session.get/*?value
-
-
-
-
-
-/*
  * Retrieving available apps.
  */
-micro.evaluate.file:/modules/bazar/fetch-apps.hl
+bazar.bazars.get-apps
 
 
 
@@ -86,7 +65,7 @@ micro.evaluate.file:/modules/bazar/fetch-apps.hl
 /*
  * Looping through each available Bazar.
  */
-for-each:x:/@micro.evaluate.file/*
+for-each:x:/@bazar.bazars.get-apps/*
 
   /*
    * Looping through each available app, checking if its condition is not met,
@@ -107,6 +86,8 @@ for-each:x:/@micro.evaluate.file/*
        * App is already installed.
        *
        * It's [condition] event was found on server from before.
+       *
+       * TODO: Implement version handling here, to allow for upgrading existing apps, that has upgrades.
        */
       continue
 
@@ -142,9 +123,7 @@ for-each:x:/@micro.evaluate.file/*
     p5.html.html-encode:x:/@_dp/#/*/author-readme?value
     markdown2html:x:/-?value
     p5.html.html-encode:x:/@_dp/#/*/price?value
-    p5.html.html-encode:x:/@_dp/#/*/paypal-id?value
     p5.html.html-encode:x:/@_dp/#/*/local-url?value
-    p5.html.html-encode:x:/@_dp/#/*/image?value
 
     /*
      * Making sure we apply icon-image to markdown results.
@@ -154,7 +133,7 @@ for-each:x:/@micro.evaluate.file/*
     insert-before:x:/@html2lambda/0
       src
         img
-          @src:x:/..for-each/*/p5.html.html-encode/[7,8]?value
+          @src:x:/@_dp/#/*/image?value
           @style:"max-width:30%;float:right;margin-left:1rem;margin-bottom:1rem;"
           @class:shaded rounded
     lambda2html:x:/@html2lambda/*
@@ -164,7 +143,7 @@ for-each:x:/@micro.evaluate.file/*
     /*
      * Adding app to [create-widget] invocation below, to allow user to install it.
      */
-    eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_paypal-id|/_local-url))
+    eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_local-url))
     add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/=apps
       src
         container
@@ -180,14 +159,13 @@ for-each:x:/@micro.evaluate.file/*
             _app-name:x:/..for-each/*/p5.html.html-encode/[0,1]?value
             _app-url:x:/..for-each/*/p5.html.html-encode/[1,2]?value
             _app-author-description:x:/@markdown2html?value
-            _paypal-id:x:/..for-each/*/p5.html.html-encode/[5,6]?value
-            _local-url:x:/..for-each/*/p5.html.html-encode/[6,7]?value
+            _local-url:x:/..for-each/*/p5.html.html-encode/[5,6]?value
 
             /*
              * Asking user to confirm installation, and initiating download and 
              * installation process.
              */
-            eval-x:x:/+/**(/_url|/_paypal-id|/_local-url)
+            eval-x:x:/+/**(/_url|/_local-url)
             create-widgets
               micro.widgets.modal:bazar-confirm-installation
                 widgets
@@ -250,7 +228,6 @@ p5.bazar_download_app = function(e) {
                                * installing the app.
                                */
                               _url:x:/@_app-url?value
-                              _paypal-id:x:/@_paypal-id?value
                               _local-url:x:/@_local-url?value
 
                               /*
@@ -258,13 +235,12 @@ p5.bazar_download_app = function(e) {
                                */
                               try
                                 eval-x:x:/+/*
-                                micro.evaluate.file:/modules/bazar/install-app.hl
+                                bazar.install-bazar-app
                                   url:x:/@_url?value
-                                  paypal-id:x:/@_paypal-id?value
                                   local-url:x:/@_local-url?value
 
                                 /*
-                                 * Redirecting user to desktop, after installation process if
+                                 * Redirecting user to desktop, after installation process is
                                  * finished.
                                  */
                                 p5.web.get-root-location

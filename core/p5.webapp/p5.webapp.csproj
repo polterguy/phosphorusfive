@@ -118,6 +118,7 @@
     <Folder Include="modules\micro\startup\" />
     <Folder Include="modules\micro\" />
     <Folder Include="modules\desktop\" />
+    <Folder Include="modules\bazar\startup\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\extras\p5.auth\p5.auth.csproj">
@@ -250,9 +251,6 @@
     <None Include="modules\bazar\configuration\bazars.hl" />
     <None Include="modules\bazar\configuration\trusted-app-distributors.hl" />
     <None Include="modules\bazar\desktop.hl" />
-    <None Include="modules\bazar\download-app.hl" />
-    <None Include="modules\bazar\fetch-apps.hl" />
-    <None Include="modules\bazar\install-app.hl" />
     <None Include="modules\bazar\launch.hl" />
     <None Include="modules\bazar\README.md" />
     <None Include="modules\bazar\bazars\apps.hl" />
@@ -266,6 +264,12 @@
     <None Include="modules\desktop\startup\p5.core.logout.hl" />
     <None Include="modules\desktop\startup\p5.web.load-ui.hl" />
     <None Include="modules\desktop\startup.hl" />
+    <None Include="modules\bazar\startup.hl" />
+    <None Include="modules\bazar\startup\bazar.bazars.get-apps.hl" />
+    <None Include="modules\bazar\startup\bazar.install-bazar-app.hl" />
+    <None Include="modules\bazar\startup\bazar.uninstall-app.hl" />
+    <None Include="modules\bazar\startup\bazar.ensure-trusted-fingerprints.hl" />
+    <None Include="modules\bazar\startup\bazar.install-app.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

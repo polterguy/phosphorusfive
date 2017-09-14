@@ -1,0 +1,39 @@
+
+/*
+ * Creates the Active Event that's responsible for making sure all "trusted app distributor's" PGP keys
+ * are imported into GnuPG database.
+ *
+ * Expects [url] to app, in addition to [local-url] being the local folder name for app after installation.
+ *
+ * Notice, the content being downloaded from the [url] is expected to be a PGP cryptographically signed zip file, 
+ * that is signed by a PGP key, that must be found in our "configuration/trusted-app-distributors.hl" file.
+ * Otherwise the app will not be installed, and an exception will be raised.
+ */
+create-event:bazar.ensure-trusted-fingerprints
+
+  /*
+   * Loading "trusted-app-distributors.hl", and verifying all PGP keys have been installed in GnuPG database.
+   */
+  load-file:/modules/bazar/configuration/trusted-app-distributors.hl
+  for-each:x:/@load-file/*/*/fingerprint
+
+    /*
+     * Checking if key already exists in local GnuPG database.
+     */
+    p5.crypto.list-public-keys:x:/@_dp/#?value
+    if:x:/-/*
+      not
+
+      /*
+       * Key doesn't exist, downloading it from key server, and installing into GnuPG,
+       * after having verified that its fingerprint is correct.
+       */
+      p5.core._internals.pgp.download-key:x:/@_dp/#/*/key-id?value
+      p5.crypto.preview-public-pgp-key:x:/@p5.core._internals.pgp.download-key?value
+      if:x:/@p5.crypto.preview-public-pgp-key/0?name
+        =:x:/@_dp/#?value
+
+        /*
+         * Key matches, importing it into GnuPG database.
+         */
+        p5.crypto.import-public-pgp-key:x:/@p5.core._internals.pgp.download-key?value

@@ -1,0 +1,59 @@
+
+/*
+ * Creates the Active Event that's responsible for installing an app from a zip file.
+ *
+ * Expects [local-url] being the local folder name for app after installation, in addition to [_arg] pointing
+ * to the zip file containing the app.
+ */
+create-event:bazar.install-app
+
+  /*
+   * Sanity checking arguments.
+   */
+  micro.lambda.contract.min:x:/..
+    _arg:string
+    local-url:string
+
+  /*
+   * Uninstalling any previous versions of app.
+   */
+  bazar.uninstall-app:x:/../*/local-url?value
+
+  /*
+   * Unzipping app's zip file into "/modules/" folder.
+   *
+   * TODO: Verify zip file contains exactly one folder and no additional files.
+   */
+  unzip:x:/../*/_arg?value
+    dest:/modules/
+
+  /*
+   * Then renaming folder for our unzip operation to app's friendly folder name.
+   *
+   * However, we only do this, if the app's zip file contained a folder that had
+   * a different name than what was expected.
+   */
+  if:x:/@unzip/0?name
+    !=:/modules/{0}/
+      :x:/../*/local-url?value
+
+    /*
+     * The folder our [unzip] operation created was different than the folder
+     * we want to actually host our app within.
+     *
+     * Hence, we rename the folder, before we proceed.
+     */
+    move-folder:x:/@unzip/0?name
+      dest:/modules/{0}/
+        :x:/../*/local-url?value
+
+  /*
+   * Then evaluating any startup Hyperlambda scripts for our newly installed app,
+   * if there exists such a thing.
+   */
+  if
+    fetch:x:/0/0?value
+      file-exists:/modules/{0}/startup.hl
+        :x:/../*/local-url?value
+    micro.evaluate.file:/modules/{0}/startup.hl
+      :x:/../*/local-url?value

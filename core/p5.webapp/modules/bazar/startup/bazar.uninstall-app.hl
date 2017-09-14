@@ -1,0 +1,33 @@
+
+/*
+ * Creates the Active Event that's responsible for uninstalling an app.
+ *
+ * Expects [_arg] being the local folder's name, from within our "/modules/" folder.
+ */
+create-event:bazar.uninstall-app
+
+  /*
+   * Checking to see if app is even installed.
+   */
+  if
+    fetch:x:/0/0?value
+      folder-exist:x:/../*/_arg?value
+
+    /*
+     * App exists, now checking if there is an "uninstall.hl" file for it.
+     */
+    if
+      fetch:x:/0/0?value
+        file-exists:{0}uninstall.hl
+          :x:/../*/_arg?value
+
+      /*
+       * Evaluating "uninstall.hl" file for app.
+       */
+      micro.evaluate.file:{0}uninstall.hl
+        :x:/../*/_arg?value
+
+    /*
+     * Then deleting the folder that contains the old version of our app.
+     */
+    delete-folder:x:/../*/_arg?value
