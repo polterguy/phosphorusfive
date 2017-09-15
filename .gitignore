@@ -217,6 +217,9 @@ core/p5.webapp/modules/sulphur-five/**
 # Excluding Hyperbuild
 core/p5.webapp/modules/hyperbuild/**
 
+# Excluding Camphora Five
+core/p5.webapp/modules/camphora-five/**
+
 # Excluding DSW8
 core/p5.webapp/modules/dsw8/**
 
