@@ -136,7 +136,7 @@ namespace p5.web.widgets
                         var id = idxWidget.Value;
 
                         // Making sure we remove all special properties for widget, before we invoke custom Active Event, to avoid confusion.
-                        var list = idxWidget.Children.Where (ix => ix.Name == "parent" || ix.Name == "position" || ix.Name == "before" || ix.Name == "after").Select (ix => ix.UnTie ());
+                        var list = idxWidget.Children.ToList ().Where (ix => ix.Name == "parent" || ix.Name == "position" || ix.Name == "before" || ix.Name == "after").Select (ix => ix.UnTie ());
 
                         // Raising extension widget event.
                         context.RaiseEvent (idxWidget.Name, idxWidget);
