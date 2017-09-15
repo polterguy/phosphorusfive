@@ -156,9 +156,12 @@ namespace p5.mysql
                     var generic = ConfigurationManager.ConnectionStrings ["MYSQL_GENERIC_CONNECTION_STRING"];
                     if (generic != null) {
 
-                        // Generic string exists, appending database name to it, before we return it to caller.
+                        // Checking if there exists a database "prefix".
+                        var prefix = ConfigurationManager.AppSettings ["p5.data.prefix"] ?? "";
+
+                        // Generic string exists, appending prefix + database name to it, before we return it to caller.
                         var retVal = generic.ConnectionString.TrimEnd (';') + ";";
-                        retVal += "database=" + argsValue + ";";
+                        retVal += "database=" + (argsValue == "sys" ? argsValue : prefix + argsValue) + ";";
                         return retVal;
 
                     } else {
