@@ -47,25 +47,26 @@ namespace p5.csv
                 var builder = new StringBuilder ();
                 bool first = true;
                 foreach (var idxLambda in XUtil.Iterate<Node> (context, e.Args)) {
-                    var content = "";
                     if (first) {
 
-                        // Adding headers.
-                        foreach (var idxInnerHeader in idxLambda.Children) {
-                            content += idxInnerHeader.Name + ",";
+						// Adding headers.
+						foreach (var idxInnerHeader in idxLambda.Children) {
+                            if (builder.Length > 0)
+                                builder.Append (","); 
+                            builder.Append (idxInnerHeader.Name); 
                         }
-                        builder.Append (content.Substring (0, content.Length - 1) + "\r\n");
+                        builder.Append ("\r\n");
                         first = false;
                     }
 
                     // Adding values.
-                    content = "";
+                    var content = "";
                     foreach (var idxInner in idxLambda.Children) {
-                        var value = idxInner.Get<string> (context);
-                        if (value.Contains (",")) {
-                            content += "\"" + value.Replace ("\"", "\"\"") + "\",";
+                        var val = idxInner.Get<string> (context);
+                        if (val.Contains (",") || val.Contains ("\n")) {
+                            content += "\"" + val.Replace ("\"", "\"\"") + "\",";
                         } else {
-                            content += value + ",";
+                            content += val + ",";
                         }
                     }
                     builder.Append (content.Substring (0, content.Length - 1) + "\r\n");
