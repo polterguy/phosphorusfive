@@ -44,10 +44,10 @@ namespace p5.io.common
             e.Args.Value = GetSystemPath (context, e.Args.GetExValue<string> (context));
         }
 
-        /*
+		/*
          * Returns the root folder of application pool back to caller.
          */
-        internal static string GetRootFolder (ApplicationContext context)
+		internal static string GetRootFolder (ApplicationContext context)
         {
             return context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
         }
