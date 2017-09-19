@@ -232,5 +232,9 @@ core/p5.webapp/common/documents/public/*
 !core/p5.webapp/common/documents/private/README.md
 !core/p5.webapp/common/documents/private/web.config
 
+# Excluding common/temp folder
+core/p5.webapp/common/temp/*
+!core/p5.webapp/common/temp/README.md
+
 # Excluding auto generated Visual Studio files
 .vs/
