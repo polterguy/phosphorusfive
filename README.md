@@ -178,6 +178,15 @@ to distribute, and use in real live production sites.
 Notice, regardless of which approach you take when you start out - You must make sure the _"/core/p5.webapp"_ project is your startup project, unless
 you intend to evaluate Hyperlambda in a terminal window, using the lambda.exe project.
 
+### Pre-requisites
+
+If you'd like to start using the source code directly, obviously you'll need some sort of .Net building environment. If you're using a Mac or 
+a Windows machine, this would probably imply using Visual Studio. On Linux you can use MonoDevelop. In addition, depending upon which apps you'd
+like to install, you might also need some sort of GnuPG environment wrapper. I personally use the [GPG Suite](https://gpgtools.org/) for my Mac.
+Which you'd like to use, depends upon your main operating system - But it must be something that is compatible with _"GPG"_ or "GNU Privacy Guard"_.
+
+In addition, you might need to install MySQL if you'd like to use MySQL, either in your own applications, or in Sephia Five, Sulphur Five or Camphora.
+
 ## More dox
 
 Some of the folders inside of P5 have specific documentation for that particular module or folder. Feel free to start reading up at e.g.
