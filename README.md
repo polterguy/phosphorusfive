@@ -190,7 +190,8 @@ or Camphora, etc.
 
 However, the absolutely easiest way of getting started, is actually to start out with a Linux server, and simply execute the installation script
 which can be found [here](https://github.com/polterguy/phosphorusfive/releases). This might sound absurd for the uninitiated, but for the most parts,
-you actually don't need an IDE to create your own apps in Phosphorus Five!
+you actually don't need an IDE to create your own apps in Phosphorus Five. And the installation script, will pull in automatically all references
+for you, as you execute it on a Debian based Linux server.
 
 ## More dox
 
