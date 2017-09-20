@@ -185,7 +185,12 @@ a Windows machine, this would probably imply using Visual Studio. On Linux you c
 like to install, you might also need some sort of GnuPG environment wrapper. I personally use the [GPG Suite](https://gpgtools.org/) for my Mac.
 Which you'd like to use, depends upon your main operating system - But it must be something that is compatible with _"GPG"_ or "GNU Privacy Guard"_.
 
-In addition, you might need to install MySQL if you'd like to use MySQL, either in your own applications, or in Sephia Five, Sulphur Five or Camphora.
+In addition, you might need to install MySQL if you'd like to use MySQL, either in your own applications, or in Sephia Five, Sulphur Five 
+or Camphora, etc.
+
+However, the absolutely easiest way of getting started, is actually to start out with a Linux server, and simply execute the installation script
+which can be found [here](https://github.com/polterguy/phosphorusfive/releases). This might sound absurd for the uninitiated, but for the most parts,
+you actually don't need an IDE to create your own apps in Phosphorus Five!
 
 ## More dox
 
