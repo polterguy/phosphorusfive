@@ -263,4 +263,4 @@ discarded laptop, with a plain average internet connection.
 
 Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email.
 
-Thomas Hansen; thomas@gaiasoul.com
+thomas@gaiasoul.com
