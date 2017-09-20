@@ -74,7 +74,7 @@ namespace p5.io.zip.helpers
         /*
          * Adds the given file to archive
          */
-        public void AddToArchive (string fileFolderName, Node args)
+        public void AddToArchive (string fileFolderName, Node args, string asFileName)
         {
             // We don't zip Linux hidden files or backup files
             if (fileFolderName.Contains ("/.") || fileFolderName.Contains ("~/"))
@@ -86,13 +86,13 @@ namespace p5.io.zip.helpers
             fileFolderName = fileFolderName.Substring (fileFolderName.LastIndexOf ("/") + 1);
 
             // Now we have separated folder and file name, and can call internal implementation
-            AddToArchive (fileFolderName, rootFolder, args);
+            AddToArchive (fileFolderName, rootFolder, args, asFileName);
         }
 
         /*
          * Adds given file/folder from root folder into archive
          */
-        private void AddToArchive (string fileFolderName, string rootFolder, Node args)
+        private void AddToArchive (string fileFolderName, string rootFolder, Node args, string asFileName)
         {
             // Checking if this is directory
             if (Directory.Exists (rootFolder + fileFolderName)) {
@@ -110,7 +110,8 @@ namespace p5.io.zip.helpers
                         PutFileToArchive (
                             rootFolder + idxFile, 
                             idxFile,
-                            args);
+                            args,
+                            asFileName);
                     }
                 }
 
@@ -122,7 +123,7 @@ namespace p5.io.zip.helpers
 
                     // Verifying file-/folder name is not Linux backup file/folder or hidden file/folder
                     if (!idxFolder.Contains ("/.") && !idxFolder.EndsWith ("~"))
-                        AddToArchive (idxFolder, rootFolder, args);
+                        AddToArchive (idxFolder, rootFolder, args, asFileName);
                 }
             } else {
 
@@ -130,18 +131,19 @@ namespace p5.io.zip.helpers
                 PutFileToArchive (
                     rootFolder + fileFolderName, 
                     fileFolderName,
-                    args);
+                    args,
+                    asFileName);
             }
         }
 
         /*
          * Puts the given file to the ZIP archive
          */
-        private void PutFileToArchive (string fullFileName, string relativeFileName, Node args)
+        private void PutFileToArchive (string fullFileName, string relativeFileName, Node args, string asFileName)
         {
             // Creating entry, and setting properties of new entry
             FileInfo fileInfo = new FileInfo (fullFileName);
-            ZipEntry entry = new ZipEntry (relativeFileName) {
+            ZipEntry entry = new ZipEntry (asFileName == null ? relativeFileName : asFileName) {
                 DateTime = fileInfo.LastWriteTime,
                 Size = fileInfo.Length
             };

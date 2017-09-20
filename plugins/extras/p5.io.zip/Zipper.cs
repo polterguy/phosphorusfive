@@ -85,7 +85,9 @@ namespace p5.io.zip
                                 idxSource);
 
                             // Adding currently iterated file/folder to zip file stream
-                            creator.AddToArchive (rootFolder + idxSource, e.Args);
+                            creator.AddToArchive (rootFolder + idxSource, 
+                                                  e.Args, 
+                                                  e.Args.Children.First (ix => idxSourceFileFolder.Name == (string)ix.Value).GetExChildValue <string>("as", context, null));
                         }
                     }
 
