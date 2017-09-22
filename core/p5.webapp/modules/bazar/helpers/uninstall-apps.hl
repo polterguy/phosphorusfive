@@ -1,0 +1,118 @@
+
+/*
+ * Allows user to uninstall an app.
+ */
+
+
+
+
+
+/*
+ * Creating a modal widget to allow user to type in a new Bazar URL.
+ */
+create-widgets
+  micro.widgets.modal:bazar-uninstall-app
+    widgets
+      h3
+        innerValue:Uninstall app
+      micro.widgets.grid:bazar-uninstall-app-grid
+        oninit
+
+          /*
+           * Checking which apps are installed, and creating one grid row for each app.
+           */
+          list-folders:/modules/
+          for-each:x:/@list-folders/*?name
+
+            /*
+             * Figuring out app's name.
+             */
+            split:x:/@_dp?value
+              =:/
+
+            /*
+             * Adding item to grid
+             */
+            eval-x:x:/+/*/*/*|/+/**/_app-name
+            add:x:/../*/micro.widgets.grid.databind
+              src
+                item
+                  .row
+                    .app-row
+                  Name:x:/@split/0/-?name
+                  Uninstall
+                    style:"width:5px;"
+                    widgets
+                      button
+                        innerValue:@"<span class=""icon-trash""></span>"
+                        title:Uninstall this app
+                        style:"margin-bottom:0;"
+                        onclick
+
+                          /*
+                           * Forward evaluated above.
+                           */
+                          _app-name:x:/@split/0/-?name
+
+                          /*
+                           * Checking if app has an "uninstall.hl" file.
+                           */
+                          if
+                            fetch:x:/0/0?value
+                              file-exists:/modules/{0}/uninstall.hl
+                                :x:/@_app-name?value
+
+                            /*
+                             * Evaluating uninstallation file.
+                             */
+                            micro.evaluate.file:/modules/{0}/uninstall.hl
+                              :x:/@_app-name?value
+
+                          /*
+                           * Deleting app's folder.
+                           */
+                          delete-folder:/modules/{0}/
+                            :x:/@_app-name?value
+
+                          /*
+                           * Deleting grid row.
+                           */
+                          p5.web.widgets.find-first-ancestor:x:/../*/_event?value
+                            .app-row
+                          delete-widget:x:/-/*/*?value
+
+                          /*
+                           * Giving feedback to user.
+                           */
+                          micro.windows.info:App was successfully uninstalled
+                            class:micro-windows-info success
+
+          /*
+           * Databinding grid.
+           */
+          micro.widgets.grid.databind:bazar-uninstall-app-grid
+
+      div
+        class:right
+        widgets
+          div
+            class:strip
+            style:"display:inline-block;"
+            widgets
+              button
+                innerValue:Close
+                style:"margin-bottom:0;"
+                oninit
+
+                  /*
+                   * Setting focus to close button initially.
+                   */
+                  micro.page.set-focus:x:/../*/_event?value
+
+                onclick
+
+                  /*
+                   * Deleting modal widget.
+                   */
+                  delete-widget:bazar-uninstall-app
+
