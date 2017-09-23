@@ -309,6 +309,11 @@ p5.bazar_download_app = function(e) {
                               _condition-event:x:/@_dp/#/*/condition?value
 
                               /*
+                               * Checking if this is our second invocation.
+                               */
+                              p5.web.viewstate.get:bazar.has-purchase
+
+                              /*
                                * Checking if user already has installed an older version, at which point our [condition]
                                * event will exist, an we allow user to upgrade for free.
                                */
@@ -319,12 +324,13 @@ p5.bazar_download_app = function(e) {
                                 not
                                 and:x:/@_app-price?value
                                   !=:Free
+                                and:x:/@p5.web.viewstate.get/*?value
                                   not
 
                                 /*
                                  * User needs to be guided through purchasing process.
                                  */
-                                eval-x:x:/+/*/*/*/h3/*/innerValue|/+/**(/micro.widgets.paypal-button/*(/price|/.onok/*(/_widget|/_condition-event)))
+                                eval-x:x:/+/*/*/*/h3/*/innerValue|/+/**(/micro.widgets.paypal-button/*(/price|/.onok/*/_widget))
                                 create-widgets
                                   micro.widgets.modal:bazar-purchase
                                     widgets
@@ -338,16 +344,28 @@ p5.bazar_download_app = function(e) {
                                         price:x:/@_app-price?value
                                         custom:Bazar purchase
                                         .onok
-                                          _widget:x:/../*/_event?value
-                                          _condition-event:x:/@_condition-event?value
 
                                           /*
-                                           * Faking condition by creating a dummy Active Event being our condition, for
-                                           * then to re-raise our [.onclick] on the main button widget, which will install
-                                           * the app.
+                                           * Forward evaluated above, to allow us to re-raise [.onclick] after a successful
+                                           * purchase.
                                            */
-                                          create-event:x:/@_condition?value
-                                            _foo
+                                          _widget:x:/../*/_event?value
+
+                                          /*
+                                           * Re-raising our [.onclick] on the main button widget, now after having set
+                                           * our ViewState value, which will force installation of our app.
+                                           */
+                                          p5.web.viewstate.set:bazar.has-purchase
+                                            src:bool:true
+
+                                          /*
+                                           * Deleting purchasing modal widget.
+                                           */
+                                          delete-widget:bazar-purchase
+
+                                          /*
+                                           * Re-raising widget's event, to go through download process.
+                                           */
                                           p5.web.widgets.ajax-events.raise:x:/@_widget?value
                                             .onclick
 
@@ -355,6 +373,11 @@ p5.bazar_download_app = function(e) {
                                  * Returning early to abort evaluation of the rest of our file.
                                  */
                                 return
+
+                              /*
+                               * Deleting purchase ViewState value.
+                               */
+                              p5.web.viewstate.set:bazar.has-purchase
 
                               /*
                                * Making sure we trap any exceptions occurring during installation process.
