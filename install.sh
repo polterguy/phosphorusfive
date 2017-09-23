@@ -58,6 +58,9 @@ rm -f -r p5
 # Editing web.config file, making sure we get the password correctly.
 sed -i 's/User Id=root;/User Id=root;password=SomeRandomPassword;/g' /var/www/html/web.config
 
+# Making GnuPG folder for Apache process.
+mkdir /var/www/.gnupg
+
 # Giving ownership (recursively) to Apache user for entire folder.
 # Necessary since P5 will create and modify its own file structure.
 chown -R www-data:www-data /var/www
