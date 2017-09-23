@@ -76,7 +76,7 @@ app:peeples
   name:Peeples
   description:A user management module for Phosphorus Five. Allows you to create, edit and delete users.
   url:"https://github.com/polterguy/peeples/releases/download/v4.9/peeples.zip.pgp"
-  price:Free
+  price:50.0
   local-url:peeples
   image:"https://phosphorusfive.files.wordpress.com/2017/08/users.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
