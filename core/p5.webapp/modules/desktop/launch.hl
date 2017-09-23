@@ -20,9 +20,6 @@ p5.web.include-css-file:@MICRO/media/main.css
 p5.web.include-css-file:@MICRO/media/ext.css
 p5.web.include-css-file:@MICRO/media/fonts.css
 p5.web.include-css-file:@MICRO/media/skins/serious.css
-set-widget-property:cnt
-  class:container
-clear-widget:cnt
 
 
 
@@ -32,6 +29,16 @@ clear-widget:cnt
  * Including main desktop CSS file.
  */
 p5.web.include-css-file:@DESKTOP/media/main.css
+
+
+
+
+
+/*
+ * Creating main content container.
+ */
+create-container-widget:desktop-main-container
+  class:container
 
 
 
@@ -127,6 +134,7 @@ for-each:x:/@list-files/*?name
  * This widget basically becomes your "desktop", with one icon, for each "component" that has a "launch.hl" file.
  */
 create-widget
+  parent:desktop-main-container
   class:row
   widgets
     div

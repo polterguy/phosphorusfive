@@ -6,8 +6,24 @@
  * If the server needs to be setup before allowing the user to proceed to your app, or the micro web os desktop,
  * this event will return "true".
  */
-set-widget-property:cnt
+
+
+
+
+
+/*
+ * Creating main content container.
+ */
+create-container-widget:desktop-main-container
   class:container
+
+
+
+
+
+/*
+ * Checking if we should create server salt, or ask for root password.
+ */
 if
   p5.auth._has-salt
   not
@@ -25,6 +41,7 @@ if
    * No server salt, asking user to provide one.
    */
   create-widget
+    parent:desktop-main-container
     widgets
       div
         class:row air-top
@@ -51,7 +68,6 @@ if
                 placeholder:Provide a random server salt ...
                 rows:10
                 class:fill
-                style:"margin-bottom:0;"
 
               /*
                * Wrapper for our "save" server salt button.
@@ -109,6 +125,7 @@ else-if
    * Root password is null, asking user to provide one.
    */
   create-widget
+    parent:desktop-main-container
     widgets
       div
         class:row air-top
@@ -140,7 +157,6 @@ else-if
                 type:password
                 placeholder:Repeat password ...
                 class:fill
-                style:"margin-bottom:0;"
                 onkeydown:@"if (event.keyCode == 13) {p5.$('setup-save-btn').raise('onclick');return false;}"
 
               /*

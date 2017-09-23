@@ -76,7 +76,24 @@ create-event:p5.web.load-ui
     /*
      * Server has been initialized, hence we can load our desktop, or requested application,
      * depending upon which [url] was specified.
+     *
+     * However, before we do, we check if user has a proprietary license, and if not, we inject a watermark on page,
+     * explaining all users that this is Free Software and so on.
      */
+    if
+      license.is-valid
+      not
+
+      /*
+       * User does not have a valid license.
+       */
+      create-widget
+        class:micro-license-watermark
+        element:a
+        href:"https://gaiasoul.com/license"
+        target:_blank
+        innerValue:GaiaSoul is Free Software
+
     if:x:/../*/url?value
       =:/
 
