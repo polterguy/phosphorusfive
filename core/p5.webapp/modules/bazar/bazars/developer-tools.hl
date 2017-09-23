@@ -22,7 +22,7 @@ name:GaiaSoul dev tools repository
 app:hyperbuild
   name:Hyperbuild 5.0
   description:Phosphorus' build system, which allows you to create your own distribution of Phosphorus Five
-  url:"https://github.com/polterguy/hyperbuild/releases/download/v4.9/hyperbuild.zip.pgp"
+  url:"https://github.com/polterguy/hyperbuild/releases/download/v4.95/hyperbuild.zip.pgp"
   price:Free
   local-url:hyperbuild
   image:"https://phosphorusfive.files.wordpress.com/2017/09/hyperbuild.png"

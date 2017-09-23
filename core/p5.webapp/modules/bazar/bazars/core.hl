@@ -26,7 +26,7 @@ name:GaiaSoul core modules repository
 app:micro
   name:Micro 5.0
   description:A microscopic CSS framework and component library for P5.
-  url:"https://github.com/polterguy/micro/releases/download/v4.9/micro.zip.pgp"
+  url:"https://github.com/polterguy/micro/releases/download/v4.95/micro.zip.pgp"
   price:Free
   local-url:micro
   image:"https://phosphorusfive.files.wordpress.com/2017/09/micro-symbol.png"
@@ -54,7 +54,7 @@ In addition, Micro also features a lot of additional components and helper Activ
 app:bazar
   name:Bazar 5.0
   description:A Phosphorus Five module allowing you to easily install new, and update existing apps and modules.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.9/bazar.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/bazar.zip.pgp"
   price:Free
   local-url:bazar
   image:"https://phosphorusfive.files.wordpress.com/2017/09/bazar-icon.jpg"
@@ -81,7 +81,7 @@ You can read its README file [here](https://github.com/polterguy/phosphorusfive/
 app:desktop
   name:Desktop 5.0
   description:This is the main administrative module for your Phosphorus Five installation, or your 'desktop' environment.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.9/desktop.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/desktop.zip.pgp"
   price:Free
   local-url:desktop
   image:"https://phosphorusfive.files.wordpress.com/2017/09/desktop-icon.png"
@@ -96,3 +96,29 @@ app:desktop
 * And much more
 
 You can read its README file [here](https://github.com/polterguy/phosphorusfive/tree/master/core/p5.webapp/modules/desktop)."
+
+
+
+
+
+/*
+ * License
+ */
+app:license
+  name:License 5.x
+  description:Obtain a proprietary license for Phosphorus Five
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/desktop.zip.pgp"
+  price:198
+  local-url:license
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/license.jpg"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:license.is-valid
+  version:decimal:5.99
+    event:license.version
+  author-readme:@"If you wish to create proprietary apps (closed source), or you want to remove the GaiaSoul Suite link, this is the module you'll need. This module allows you to.
+
+* Create closed source applications
+* Remove the GaiaSoul Suite hyperlink
+* Receive professional support
+
+Notice, you get all 5.x upgrades to all apps, and Phosphorus Five automatically for free, if you purchase a proprietary license. You can read more about the _'Quid Pro Quo'_ terms of the GaiaSoul Suite [here](https://gaiasoul.com/license)."
