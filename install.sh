@@ -16,7 +16,7 @@ echo "==========================================================================
 echo ""
 
 # Download P5, and showing SHA1 to user, asking if he wants to proceed.
-wget https://github.com/polterguy/phosphorusfive/releases/download/v4.9/binaries.zip
+wget https://github.com/polterguy/phosphorusfive/releases/download/v4.95/binaries.zip
 sha1sum binaries.zip
 
 # Then asking user to confirm installation.
@@ -85,11 +85,19 @@ DirectoryIndex default.aspx
     Order allow,deny
     Deny from all
 </Files>
-<Location \"/users\">
+<Location \"/users/[^/]/documents/private/\">
     Order allow,deny
     Deny from all
 </Location>
-<Location \"/common\">
+<Location \"/users/[^/]/temp/\">
+    Order allow,deny
+    Deny from all
+</Location>
+<Location \"/common/documents/private/\">
+    Order allow,deny
+    Deny from all
+</Location>
+<Location \"/common/temp/\">
     Order allow,deny
     Deny from all
 </Location>

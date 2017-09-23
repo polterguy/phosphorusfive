@@ -26,7 +26,7 @@ name:GaiaSoul core modules repository
 app:micro
   name:Micro 5.0
   description:A microscopic CSS framework and component library for P5.
-  url:"https://github.com/polterguy/micro/releases/download/v4.95/micro.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/micro.zip.pgp"
   price:Free
   local-url:micro
   image:"https://phosphorusfive.files.wordpress.com/2017/09/micro-symbol.png"
@@ -107,7 +107,7 @@ You can read its README file [here](https://github.com/polterguy/phosphorusfive/
 app:license
   name:License 5.x
   description:Obtain a proprietary license for Phosphorus Five
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/desktop.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/license.zip.pgp"
   price:198
   local-url:license
   image:"https://phosphorusfive.files.wordpress.com/2017/09/license.jpg"
