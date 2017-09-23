@@ -14,7 +14,7 @@ create-widgets
   micro.widgets.modal:bazar-uninstall-app
     widgets
       h3
-        innerValue:Uninstall app
+        innerValue:Delete app
       micro.widgets.grid:bazar-uninstall-app-grid
         oninit
 
@@ -45,7 +45,7 @@ create-widgets
                     widgets
                       button
                         innerValue:@"<span class=""icon-trash""></span>"
-                        title:Uninstall this app
+                        title:Delete this app. Warning, this action is permanent!
                         style:"margin-bottom:0;"
                         onclick
 
