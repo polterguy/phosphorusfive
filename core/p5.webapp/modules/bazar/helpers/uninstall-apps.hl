@@ -55,37 +55,21 @@ create-widgets
                           _app-name:x:/@split/0/-?name
 
                           /*
-                           * Checking if app has an "uninstall.hl" file.
+                           * Uninstalling app.
                            */
-                          if
-                            fetch:x:/0/0?value
-                              file-exists:/modules/{0}/uninstall.hl
-                                :x:/@_app-name?value
-
-                            /*
-                             * Evaluating uninstallation file.
-                             */
-                            micro.evaluate.file:/modules/{0}/uninstall.hl
-                              :x:/@_app-name?value
-
-                          /*
-                           * Deleting app's folder.
-                           */
-                          delete-folder:/modules/{0}/
+                          bazar.uninstall-app:/modules/{0}/
                             :x:/@_app-name?value
-
-                          /*
-                           * Deleting grid row.
-                           */
-                          p5.web.widgets.find-first-ancestor:x:/../*/_event?value
-                            .app-row
-                          delete-widget:x:/-/*/*?value
 
                           /*
                            * Giving feedback to user.
                            */
                           micro.windows.info:App was successfully uninstalled
                             class:micro-windows-info success
+
+                          /*
+                           * Reloading location for simplicity.
+                           */
+                          p5.web.reload-location
 
           /*
            * Databinding grid.

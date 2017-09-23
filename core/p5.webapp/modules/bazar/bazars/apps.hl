@@ -24,7 +24,7 @@ name:GaiaSoul main app repository
  * Sephia Five
  */
 app:sephia-five
-  name:Sephia Five
+  name:Sephia Five 5.0
   description:A secure webmail client with PGP cryptography, virus protection, spam filterint, and more
   price:Free
   local-url:sephia-five
@@ -51,7 +51,7 @@ You can see a video demonstrating some of its features [here](https://www.youtub
  * Sulphur Five
  */
 app:sulphur-five
-  name:Sulphur Five
+  name:Sulphur Five 5.0
   description:A secure file sharing system, allowing you to share files publicly, protected and private.
   url:"https://github.com/polterguy/sulphur-five/releases/download/v4.9/sulphur-five.zip.pgp"
   price:Free
@@ -73,7 +73,7 @@ Sulphur Five allows you to share files privately with only yourself, protected w
  * Peeples
  */
 app:peeples
-  name:Peeples
+  name:Peeples 5.0
   description:A user management module for Phosphorus Five. Allows you to create, edit and delete users.
   url:"https://github.com/polterguy/peeples/releases/download/v4.9/peeples.zip.pgp"
   price:Free

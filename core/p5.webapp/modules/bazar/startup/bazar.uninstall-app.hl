@@ -11,7 +11,7 @@ create-event:bazar.uninstall-app
    */
   if
     fetch:x:/0/0?value
-      folder-exist:x:/../*/_arg?value
+      folder-exists:x:/../*/_arg?value
 
     /*
      * App exists, now checking if there is an "uninstall.hl" file for it.
@@ -31,3 +31,13 @@ create-event:bazar.uninstall-app
      * Then deleting the folder that contains the old version of our app.
      */
     delete-folder:x:/../*/_arg?value
+
+    /*
+     * Returning success to caller.
+     */
+    return:bool:true
+
+  /*
+   * App didn't exist
+   */
+  return:bool:false

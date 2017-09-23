@@ -24,7 +24,7 @@ name:GaiaSoul core modules repository
  * Micro
  */
 app:micro
-  name:Micro
+  name:Micro 5.0
   description:A microscopic CSS framework and component library for P5.
   url:"https://github.com/polterguy/micro/releases/download/v4.9/micro.zip.pgp"
   price:Free
@@ -52,7 +52,7 @@ In addition, Micro also features a lot of additional components and helper Activ
  * Bazar
  */
 app:bazar
-  name:Bazar
+  name:Bazar 5.0
   description:A Phosphorus Five module allowing you to easily install new, and update existing apps and modules.
   url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.9/bazar.zip.pgp"
   price:Free
@@ -79,7 +79,7 @@ You can read its README file [here](https://github.com/polterguy/phosphorusfive/
  * Desktop
  */
 app:desktop
-  name:Desktop
+  name:Desktop 5.0
   description:This is the main administrative module for your Phosphorus Five installation, or your 'desktop' environment.
   url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.9/desktop.zip.pgp"
   price:Free
