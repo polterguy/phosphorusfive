@@ -23,7 +23,7 @@ app:hyperbuild
   name:Hyperbuild
   description:Phosphorus' build system, which allows you to create your own distribution of Phosphorus Five
   url:"https://github.com/polterguy/hyperbuild/releases/download/v4.9/hyperbuild.zip.pgp"
-  price:Free/GPL
+  price:Free
   local-url:hyperbuild
   image:"https://phosphorusfive.files.wordpress.com/2017/09/hyperbuild.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD

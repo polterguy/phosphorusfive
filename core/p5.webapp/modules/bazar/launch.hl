@@ -216,7 +216,7 @@ for-each:x:/@bazar.bazars.get-apps/*
     /*
      * Adding app to [create-widget] invocation below, to allow user to install it.
      */
-    eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|/onclick/*(/_app-name|/_app-url|/_app-author-description|/_local-url|/_app-version))
+    eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|(/onclick|/.onclick)/*(/_app-name|/_app-url|/_app-author-description|/_local-url|/_app-version|/_app-price|/_condition-event))
     add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/={0}
       :x:/@_where?value
       src
@@ -305,6 +305,42 @@ p5.bazar_download_app = function(e) {
                                */
                               _url:x:/@_app-url?value
                               _local-url:x:/@_local-url?value
+                              _app-price:x:/..for-each/*/p5.html.html-encode/[4,5]?value
+                              _condition-event:x:/@_dp/#/*/condition?value
+
+                              /*
+                               * Checking if user already has installed an older version, at which point our [condition]
+                               * event will exist, an we allow user to upgrade for free.
+                               */
+                              set:x:/+?name
+                                src:x:/@_condition-event?value
+                              foo
+                              if:x:/-/*
+                                not
+                                and:x:/@_app-price?value
+                                  !=:Free
+
+                                /*
+                                 * User needs to be guided through purchasing process.
+                                 */
+                                eval-x:x:/+/*/*/*/h3/*/innerValue
+                                create-widgets
+                                  micro.widgets.modal:bazar-purchase
+                                    widgets
+                                      h3
+                                        innerValue:This module will cost you €{0}
+                                          :x:/@_app-price?value
+                                      p
+                                        innerValue:Do you wish to proceed?
+
+                                /*
+                                 * Returning early to abort evaluation of the rest of our file.
+                                 */
+                                return
+                              create-widget
+                                element:pre
+                                innerValue:x:/..
+                              return
 
                               /*
                                * Making sure we trap any exceptions occurring during installation process.
