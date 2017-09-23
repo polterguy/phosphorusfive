@@ -275,6 +275,8 @@
     <None Include="modules\bazar\bazars\core.hl" />
     <None Include="modules\bazar\helpers\add-bazar.hl" />
     <None Include="modules\bazar\helpers\uninstall-apps.hl" />
+    <None Include="modules\desktop\uninstall.hl" />
+    <None Include="modules\bazar\uninstall.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

@@ -1,0 +1,13 @@
+
+/*
+ * Uninstall file.
+ */
+
+
+
+
+
+/*
+ * Making sure user cannot uninstall desktop by throwing an exception.
+ */
+throw:You can't uninstall your desktop

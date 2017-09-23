@@ -1,0 +1,14 @@
+
+/*
+ * Uninstall file.
+ */
+
+
+
+
+
+/*
+ * Deleting all relevant Active Events, and that's it.
+ */
+vocabulary:bazar.
+delete-event:x:/-/*?name
