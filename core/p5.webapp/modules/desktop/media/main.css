@@ -8,7 +8,7 @@ body, html, form {
     min-height: 100%;
 }
 .strip > label:first-child {
-    min-width: 120px;
+    min-width: 100px;
 }
 .container-fullscreen {
     min-height:100%;
@@ -24,6 +24,9 @@ body, html, form {
     margin-bottom: 15px;
     position: relative;
     background: linear-gradient(#fefefe, #f0f0f0);
+    width: 35px;
+    box-sizing: content-box;
+    text-align:center;
 }
 .desktop-app:hover,
 .desktop-app:active,
@@ -36,7 +39,7 @@ body, html, form {
     text-align:center;
 }
 .desktop-app-icon {
-    margin: .4rem .3rem 0 .3rem;
+    margin-top: .30rem;
     display: block;
     font-size: 2rem;
     padding:0;
@@ -76,19 +79,22 @@ body, html, form {
     transition-timing-function:ease-in-out;
 }
 @media screen and (min-width:500px) {
+.desktop-app {
+    width: 55px;
+}
 .desktop-app-icon {
     font-size: 3rem;
+    margin-top: .4rem;
 }
 }
 @media screen and (min-width:800px) {
-    .desktop-app-icon {
-        font-size: 4rem;
-    }
+.desktop-app {
+    width: 75px;
+    margin-top: .5rem;
 }
-@media screen and (min-width:1024px) {
-    .desktop-app-icon {
-        font-size: 5rem;
-    }
+.desktop-app-icon {
+    font-size: 4rem;
+}
 }
 
 
