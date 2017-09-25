@@ -223,7 +223,7 @@ for-each:x:/@bazar.bazars.get-apps/*
           element:a
           href:#
           role:button
-          class:bazar-app shaded rounded air-inner bg
+          class:bazar-app shaded rounded air-inner
           onclick
 
             /*
@@ -244,17 +244,11 @@ for-each:x:/@bazar.bazars.get-apps/*
               micro.widgets.modal:bazar-confirm-installation
                 widgets
                   h3
-                    innerValue:Confirm installation of {0} version {1}
-                      :x:/@_app-name?value
-                      :x:/@_app-version?value
-                  p
-                    innerValue:@"Are you sure you want to install {0}? Its developer has the following to say about it."
+                    innerValue:Confirm installation of {0}
                       :x:/@_app-name?value
                   div
                     class:success rounded air-inner
                     innerValue:x:/@_app-author-description?value
-                  p
-                    innerValue:@"Notice, this process might take some time. Please allow Phosphorus Five to finish it without interruptions."
                   div
                     class:right
                     widgets

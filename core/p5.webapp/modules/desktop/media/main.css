@@ -7,9 +7,6 @@
 body, html, form {
     min-height: 100%;
 }
-body {
-    background: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,1));
-}
 .container-fullscreen {
     min-height:100%;
     overflow:auto;
@@ -23,7 +20,6 @@ body {
     margin-right: 15px;
     margin-bottom: 15px;
     position: relative;
-    background: linear-gradient(#fafafa, #ffffff);
 }
 .desktop-app:hover,
 .desktop-app:active,
@@ -46,15 +42,15 @@ body {
 .desktop-app:focus {
     color: #c0c0fa;
 }
-.desktop-app:hover span[class^=icon-],
-.desktop-app:active span[class^=icon-],
-.desktop-app:focus span[class^=icon-] {
-    transform:rotate(10deg);
+.desktop-app:hover,
+.desktop-app:active,
+.desktop-app:focus {
+    transform:rotate(5deg);
 }
-.desktop-app:hover:nth-child(2n+1) span[class^=icon-],
-.desktop-app:active:nth-child(2n+1) span[class^=icon-],
-.desktop-app:focus:nth-child(2n+1) span[class^=icon-] {
-    transform:rotate(-10deg);
+.desktop-app:hover:nth-child(2n+1),
+.desktop-app:active:nth-child(2n+1),
+.desktop-app:focus:nth-child(2n+1) {
+    transform:rotate(-5deg);
 }
 .desktop-logout {
     position:absolute;
@@ -98,17 +94,17 @@ body {
 .bazar-wrapper {
 }
 .bazar-name {
-    color:#fefefe;
+    color:#a0a0a0;
     clear:both;
-    text-align:center;
 }
 .bazar-app {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 160px;
     float: left;
     margin-right: 15px;
     margin-bottom: 15px;
     position:relative;
+    background: linear-gradient(#fefefe, #f0f0f0);
 }
 .bazar-app-name {
     font-size: 1.2rem;
