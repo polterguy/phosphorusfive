@@ -46,57 +46,136 @@ create-event:p5.core.login
             type:password
             onkeydown:@"if (event.keyCode == 13) {p5.$('desktop-login-button').raise('onclick');return false;}"
 
+          collection:p5-core-change-pwd-wrapper
+            visible:false
+            text:p5-core-new-pwd
+              .data-field:new-pwd
+              info:New pwd
+              type:password
+              autocomplete:new-password
+              onkeydown:@"if (event.keyCode == 13) {p5.$('desktop-login-button').raise('onclick');return false;}"
+            text
+              .data-field:new-pwd-repeat
+              info:Repeat
+              type:password
+              autocomplete:new-password
+              onkeydown:@"if (event.keyCode == 13) {p5.$('desktop-login-button').raise('onclick');return false;}"
+
           /*
            * Remember me checkbox.
            */
-          checkbox
-            info:Remember me
-            .data-field:persist
-            style:"margin-bottom:0;"
-            title:Only check this box if you are using your own client, such as your personal computer or phone
+          div
+            widgets
+              label
+                style:"margin-bottom:0;"
+                widgets
+                  input
+                    type:checkbox
+                    style:"margin-bottom:0;"
+                    .data-field:persist
+                    title:Only check this box if you are using your own client, such as your personal computer or phone
+                  span
+                    innerValue:Remember me
+              label
+                style:"margin-bottom:0;"
+                widgets
+                  input
+                    type:checkbox
+                    style:"margin-bottom:0;"
+                    .data-field:change
+                    title:Check this box if you'd like to change your existing password
+                    onchange
 
-        div
-          class:right
-          widgets
-            button:desktop-login-button
-              innerValue:OK
-              style:"margin-bottom:0;"
-              onclick
+                      /*
+                       * Showing or hiding "supply new password wrapper", depending upon whether or not checkbox
+                       * was actually checked or not.
+                       */
+                      get-widget-property:x:/../*/_event?value
+                        checked
+                      if:x:/@get-widget-property/*/*
 
-                /*
-                 * Retrieving username and password, and attempting to log user into system.
-                 */
-                micro.widgets.wizard-form.value:desktop-wizared-form
-                add:x:/../*/try/*/login
-                  src:x:/@micro.widgets.wizard-form.value/*
+                        /*
+                         * Showing "change password" wrapper.
+                         */
+                        set-widget-property:p5-core-change-pwd-wrapper
+                          visible:true
+                        micro.page.set-focus:p5-core-new-pwd
 
-                /*
-                 * Wrapping login attempt in try/catch block, since login throws if login is unsuccessful.
-                 */
-                try
+                      else
+
+                        /*
+                         * Hiding "change password" wrapper.
+                         */
+                        set-widget-property:p5-core-change-pwd-wrapper
+                          visible:false
+                        micro.page.set-focus:desktop-username
+
+                  span
+                    innerValue:Change password
+
+              button:desktop-login-button
+                innerValue:Login
+                style:"margin-bottom:0;float:right;"
+                onclick
 
                   /*
-                   * Now that we have parametrised our invocation, we can attempt to login.
+                   * Retrieving username and password, and attempting to log user into system.
                    */
-                  login
+                  micro.widgets.wizard-form.value:desktop-wizared-form
+                  add:x:/../*/try/*/login
+                    src:x:/@micro.widgets.wizard-form.value/*(/username|/password|/persist)
 
                   /*
-                   * If we come this far, without an exception, our login attempt was successful, and
-                   * we can reload URL for simplicity.
+                   * Wrapping login attempt in try/catch block, since login throws if login is unsuccessful.
                    */
-                  p5.web.reload-location
+                  try
 
-                catch
+                    /*
+                     * Now that we have parametrised our invocation, we can attempt to login.
+                     */
+                    login
 
-                  /*
-                   * Displaying error to user.
-                   */
-                  p5.web.widgets.find-first:desktop-login
-                    class:micro-modal-content
-                  eval-x:x:/+/*
-                  micro.windows.info:x:/..catch/*/message?value
-                    class:micro-windows-info warning
-                    parent:x:/@p5.web.widgets.find-first/*/*?value
+                    /*
+                     * Checking if user requested to have his password changed.
+                     */
+                    if:x:/@micro.widgets.wizard-form.value/*/change?value
+
+                      /*
+                       * Verifying passwords are a match before proceeding.
+                       */
+                      if:x:/@micro.widgets.wizard-form.value/*/new-pwd?value
+                        !=:x:/@micro.widgets.wizard-form.value/*/new-pwd-repeat?value
+
+                        /*
+                         * Warning user, and aborting the rest of the evaluation of the current lambda.
+                         */
+                        micro.windows.info:Passwords didn't match
+                          class:micro-windows-info warning
+                        micro.page.set-focus:p5-core-new-pwd
+                        return
+
+                      /*
+                       * Changing user's password.
+                       */
+                      p5.auth.misc.change-my-password:x:/@micro.widgets.wizard-form.value/*/new-pwd?value
+
+                    /*
+                     * If we come this far, without an exception, our login attempt was successful, and
+                     * we can reload URL for simplicity.
+                     */
+                    p5.web.reload-location
+
+                  catch
+
+                    /*
+                     * Displaying error to user.
+                     */
+                    p5.web.widgets.find-first:desktop-login
+                      class:micro-modal-content
+                    eval-x:x:/+/*
+                    micro.windows.info:x:/..catch/*/message?value
+                      class:micro-windows-info warning
+                      parent:x:/@p5.web.widgets.find-first/*/*?value
 
 
 
