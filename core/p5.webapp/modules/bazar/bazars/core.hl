@@ -118,7 +118,7 @@ app:license
   author-readme:@"If you wish to create proprietary apps (closed source), or you want to remove the GaiaSoul Suite link, this is the module you'll need. This module allows you to.
 
 * Create closed source applications
-* Remove the GaiaSoul Suite hyperlink
+* Remove the _'GaiaSoul is Free Software'_ hyperlink
 * Receive professional support
 
 Notice, you get all 5.x upgrades to all apps, and Phosphorus Five automatically for free, if you purchase a proprietary license. You can read more about the _'Quid Pro Quo'_ terms of the GaiaSoul Suite [here](https://gaiasoul.com/license)."
