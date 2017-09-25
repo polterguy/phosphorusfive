@@ -7,6 +7,9 @@
 body, html, form {
     min-height: 100%;
 }
+.strip > label:first-child {
+    min-width: 120px;
+}
 .container-fullscreen {
     min-height:100%;
     overflow:auto;
@@ -20,6 +23,7 @@ body, html, form {
     margin-right: 15px;
     margin-bottom: 15px;
     position: relative;
+    background: linear-gradient(#fefefe, #f0f0f0);
 }
 .desktop-app:hover,
 .desktop-app:active,
