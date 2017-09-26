@@ -173,7 +173,7 @@ namespace p5.mime.helpers
                     return false; // No need to save these parts to disc.
 
                 return true;
-            } else if (!string.IsNullOrEmpty (part.FileName) && part.ContentDisposition.Disposition == "form-data") {
+            } else if (!string.IsNullOrEmpty (part.FileName) && part.ContentDisposition != null && part.ContentDisposition.Disposition == "form-data") {
 
                 // Form data file attachment.
                 return true;
