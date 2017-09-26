@@ -20,9 +20,9 @@ name:GaiaSoul dev tools repository
  * Hyperbuild.
  */
 app:hyperbuild
-  name:Hyperbuild 5.0
+  name:Hyperbuild 5.0 BETA
   description:Phosphorus' build system, which allows you to create your own distribution of Phosphorus Five
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/hyperbuild.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.96/hyperbuild.zip.pgp"
   price:Free
   local-url:hyperbuild
   image:"https://phosphorusfive.files.wordpress.com/2017/09/hyperbuild.png"
@@ -42,9 +42,9 @@ Basically, if you want to create your own distribution, and/or modules, this mod
  * Camphora Five.
  */
 app:camphora-five
-  name:Camphora 5.0
+  name:Camphora 5.0 BETA
   description:Create data drive apps without coding
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/camphora-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.96/camphora-five.zip.pgp"
   price:Free
   local-url:camphora-five
   image:"https://phosphorusfive.files.wordpress.com/2017/09/legos-hero.png"

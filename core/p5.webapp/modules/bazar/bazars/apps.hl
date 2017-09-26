@@ -24,13 +24,13 @@ name:GaiaSoul main app repository
  * Sephia Five
  */
 app:sephia-five
-  name:Sephia Five 5.0
+  name:Sephia Five 5.0 BETA
   description:A secure webmail client with PGP cryptography, virus protection, spam filterint, and more
   price:Free
   local-url:sephia-five
   image:"https://phosphorusfive.files.wordpress.com/2017/08/vault-icon-2.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/sephia-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.96/sephia-five.zip.pgp"
   condition:p5.io.unroll-path.@SEPHIA
   version:decimal:5.0
     event:sephia.version
@@ -51,9 +51,9 @@ You can see a video demonstrating some of its features [here](https://www.youtub
  * Sulphur Five
  */
 app:sulphur-five
-  name:Sulphur Five 5.0
+  name:Sulphur Five 5.0 BETA
   description:A secure file sharing system, allowing you to share files publicly, protected and private.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/sulphur-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.96/sulphur-five.zip.pgp"
   price:Free
   local-url:sulphur-five
   image:"https://phosphorusfive.files.wordpress.com/2017/09/secure-file-sharing.png"
@@ -73,9 +73,9 @@ Sulphur Five allows you to share files privately with only yourself, protected w
  * Peeples
  */
 app:peeples
-  name:Peeples 5.0
+  name:Peeples 5.0 BETA
   description:A user management module for Phosphorus Five. Allows you to create, edit and delete users.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/peeples.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.96/peeples.zip.pgp"
   price:Free
   local-url:peeples
   image:"https://phosphorusfive.files.wordpress.com/2017/08/users.png"

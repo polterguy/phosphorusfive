@@ -24,9 +24,9 @@ name:GaiaSoul core modules repository
  * Micro
  */
 app:micro
-  name:Micro 5.0
+  name:Micro 5.0 BETA
   description:A microscopic CSS framework and component library for P5.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/micro.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.96/micro.zip.pgp"
   price:Free
   local-url:micro
   image:"https://phosphorusfive.files.wordpress.com/2017/09/micro-symbol.png"
@@ -52,9 +52,9 @@ In addition, Micro also features a lot of additional components and helper Activ
  * Bazar
  */
 app:bazar
-  name:Bazar 5.0
+  name:Bazar 5.0 BETA
   description:A Phosphorus Five module allowing you to easily install new, and update existing apps and modules.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/bazar.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.96/bazar.zip.pgp"
   price:Free
   local-url:bazar
   image:"https://phosphorusfive.files.wordpress.com/2017/09/bazar-icon.jpg"
@@ -79,9 +79,9 @@ You can read its README file [here](https://github.com/polterguy/phosphorusfive/
  * Desktop
  */
 app:desktop
-  name:Desktop 5.0
+  name:Desktop 5.0 BETA
   description:This is the main administrative module for your Phosphorus Five installation, or your 'desktop' environment.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.95/desktop.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.96/desktop.zip.pgp"
   price:Free
   local-url:desktop
   image:"https://phosphorusfive.files.wordpress.com/2017/09/desktop-icon.png"
