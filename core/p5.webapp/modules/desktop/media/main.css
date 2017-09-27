@@ -64,7 +64,6 @@ body, html, form {
     top:15px;
     right:25px;
     font-size:2rem;
-    color:rgba(255,255,0,1);
     transition-property:transform, color;
     transition-duration:.2s;
     transition-timing-function:ease-in-out;
@@ -72,7 +71,6 @@ body, html, form {
 .desktop-logout:hover,
 .desktop-logout:active,
 .desktop-logout:focus {
-    color:rgb(255,128,0);
     transform:rotate(25deg) scale(1.5);
     transition-property:transform,color;
     transition-duration:.2s;
