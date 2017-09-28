@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		LICENSE = LICENSE
 		install.sh = install.sh
+		resources\p5-raw.png = resources\p5-raw.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}"
