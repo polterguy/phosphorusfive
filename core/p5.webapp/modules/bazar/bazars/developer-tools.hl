@@ -43,7 +43,7 @@ Basically, if you want to create your own distribution, and/or modules, this mod
  */
 app:camphora-five
   name:Camphora 5.0 BETA
-  description:Create data drive apps without coding
+  description:Create data driven CRUD apps without coding, and import/export data to and from Excel etc
   url:"https://github.com/polterguy/phosphorusfive/releases/download/v4.96/camphora-five.zip.pgp"
   price:Free
   local-url:camphora-five
