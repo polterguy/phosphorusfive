@@ -8,6 +8,8 @@ an extremely modularised model of _"orchestrating"_ your applications together. 
 
 ![alt screenshot](resources/screenshot-desktop.png)
 
+You can test its [Hello World application online here](https://samples.gaiasoul.com/hello-world).
+
 ## Installation
 
 To install the latest binary version of the system, run the following commands in a Linux/Ubuntu vanilla server terminal window, 
