@@ -174,9 +174,11 @@ creating plugins, where you can assemble your apps, in a loosely coupled archite
 contrast to the traditional way of _"carving out"_ apps, using interfaces for plugins, which often creates a much higher degree of
 dependencies between your app's different components.
 
-The paradox is, that due to neither using OOP nor inheritance, in any ways, Hyperlambda facilitates for perfect encapsulation, and polymorphism,
-without even as much as a trace of classic inheritance, OOP or types. Hyperlambda is a _"functional programming language"_ on top of the CLR,
+The paradox is, that due to neither using OOP nor inheritance or types, in any ways, Hyperlambda facilitates for perfect encapsulation, and polymorphism,
+without even as much as a trace of classic inheritance, OOP, or types. Hyperlambda is a _"functional programming language"_ on top of the CLR,
 making the act of orchestrating CLR modules, loosely coupled together, in a super-dynamic environment, as simple as a walk in the park.
+
+And for the record, I don't mean _"functional"_ as in F#, I mean **truly functional**!! Hyperlambda makes F# seem hopelessly obsolete!
 
 ## C# samples
 
