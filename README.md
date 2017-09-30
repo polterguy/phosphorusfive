@@ -299,13 +299,13 @@ You can also find a more professional type of [example server installation of Ph
 a username/password to the server, there's not really much you can do, besides checking out the _"Hello World"_ application, and seeing my publicly
 deployed apps/data.
 
-## Hire me
-
-Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email.
-
 ## Yet again, Phosphorus Five is Free Software
 
 If you're a system developer, and you want to create apps for Phosphorus Five - **You don't need a license** - You can simply use the Open Source version,
 and have your client(s) pay for a license!
+
+## Hire me
+
+Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email.
 
 thomas@gaiasoul.com
