@@ -277,6 +277,10 @@ our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/). B
 have to acquire the right to create closed source applications, by [purchasing a license](https://gaiasoul.com/license/).
 If you only want to create open source applications, and/or plugins, this is not relevant, and you can simply use the Open Source version.
 
+**Hint** - If you're a system developer, and you're creating apps for clients of yours - You **don't need a license** - Since you can simply
+use the Open Source version yourself, and have your client(s) pay for a server license. Purchasing a license, is automated through the Bazar, and optional,
+unless you need support beyond what I can provide you with [here](https://github.com/polterguy/phosphorusfive/issues).
+
 ## More information
 
 I occasionally blog about P5, when I do, I do so [here](https://gaiasoul.com).
