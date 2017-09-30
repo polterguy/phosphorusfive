@@ -218,6 +218,9 @@ which can be found [here](https://github.com/polterguy/phosphorusfive/releases).
 you actually don't need an IDE to create your own apps in Phosphorus Five. And the installation script, will automatically pull in all dependencies
 for you, as you execute it on a Debian based Linux server.
 
+In fact, a simple text editor, such as Notepad+, or something similar, is all the _"IDE"_ you need to create Hyperlambda and Phosphorus Five apps.
+And you can create your apps, directly on a production/development server, without even having Visual Studio or anything else installed - If you wish.
+
 ## More dox
 
 Some of the folders inside of P5 have specific documentation for that particular module or folder. Feel free to start reading up at e.g.
