@@ -59,3 +59,27 @@ app:camphora-five
 * C.R.U.D - Create, Read, Update and Delete
 
 Basically, Camphora Five allows you to create a data driven app, which you can use to collect, edit, read and delete data, using any internet capable device you wish."
+
+
+
+
+
+/*
+ * Hello World.
+ */
+app:hello-world
+  name:Hello World 5.0
+  description:The 'Hello World' app for system developers
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.0/hello-world.zip.pgp"
+  price:Free
+  local-url:hello-world
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/hello-world.jpg"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@HELLO
+  version:decimal:5.0
+    event:hello.version
+  author-readme:@"This is a nice app to start out with if you wish to create your own apps for Phosphorus Five.
+
+It creates a nice starting ground, and is a _'wire frame'_, or a _'template'_ for creating your own apps.
+
+Install it, check out its code, and modify it to accommodate for your own needs. After you've created your own app, you can use _'Hyperbuild'_ to create your own distribution, containing your app."
