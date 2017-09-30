@@ -259,12 +259,14 @@ if you know some C# from before.
 * [p5.markdown](/plugins/extras/p5.markdown) - Parsing Markdown snippets
 * [p5.json](/plugins/extras/p5.json) - Parsing and creating JSON. __NOT YET RELEASED!!__
 
-P5 have also been published twice in Microsoft's MSDN Magazine. Read the articles below written by yours truly.
+## MSDN Magazine articles
+
+P5 have been published twice in Microsoft's MSDN Magazine, with a third article coming up. Read the articles below written by yours truly.
 
 * [Active Events: One design pattern instead of a dozen](https://msdn.microsoft.com/en-us/magazine/mt795187)
 * [Make C# more dynamic with Hyperlambda](https://msdn.microsoft.com/en-us/magazine/mt809119)
 
-If you wish to read these articles, you should probably read them sequentially, to make sure you understand Active Events, 
+If you wish to read these articles, you might benefit from reading them sequentially, to make sure you understand Active Events, 
 before you dive into Hyperlambda.
 
 ## License
