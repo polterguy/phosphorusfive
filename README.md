@@ -293,6 +293,12 @@ which I have upgraded to become a Linux/Ubuntu/Phosphorus Five web server. If yo
 to [vist it here](https://home.gaiasoul.com) - However, be warned, I am running this thing out of my living room, on an old
 discarded laptop, with a plain average internet connection.
 
+## Examples
+
+You can also find a more professional type of [example server installation of Phosphorus Five here](https://samples.gaiasoul.com/). However, without
+a username/password to the server, there's not really much you can do, besides checking out the _"Hello World"_ application, and seeing my publicly
+deployed apps/data.
+
 ## Hire me
 
 Need more training or personal assistance in regards to Phosphorus Five, don't hesitate to pass me an email.
