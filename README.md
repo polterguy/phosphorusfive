@@ -162,6 +162,8 @@ together, as shown above in the Hello World example. By combining Active Events 
 _"comes alive"_, and creating rich web apps, becomes ridiculously easy. You can read an MSDN article about 
 Hyperlambda [here](https://msdn.microsoft.com/en-us/magazine/mt809119).
 
+### C#, a dynamic programming language!
+
 These three innovations combined, makes C# become a _"dynamic"_ programming language. In fact, much more dynamic than any other dynamic programming
 languages you have ever used.
 
