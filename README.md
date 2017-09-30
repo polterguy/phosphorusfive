@@ -119,6 +119,8 @@ The code further up in this page, is called _"Hyperlambda"_, and is a simple key
 to declare something, that P5 refers to as _"lambda"_ or _"Hyperlambda"_. Lambda is the foundation for an execution tree, or graph object,
 that is a Turing complete opportunity to declare your apps, through a _"non-programming model"_.
 
+Yet again, you can check out the [Hello World application here](https://samples.gaiasoul.com/hello-world) - Which also allows you to see its code.
+
 I say _"non-programming"_, because really, there is no programming language in P5. Only a bunch of loosely
 coupled Active Events, that happens to, in their combined result, create a Turing complete execution
 engine, allowing for you to orchestrate your components together, as if they were _"LEGO bricks"_. All this, while retaining your ability 
