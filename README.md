@@ -67,6 +67,8 @@ MySQL installed, and that you've modified your web.config file such that the con
 When you have downloaded the source code for Phosphorus Five and Micro, and installed GnuPG, and optionally MySQL, simply open Visual Studio, 
 Xamarin or MonoDevelop, and browse for the _"p5.sln"_ file inside your Phosphorus Five source code folder, and open up this solution.
 
+All of the above dependencies are automatically taken care of when you install the binary version of Phosphorus Five on for instance a Linux/Ubuntu server.
+
 ## Creating your own apps
 
 Phosphorus Five is created in C#, but relies upon _"Hyperlambda"_. Hyperlambda is a modularised web application programming language, for
