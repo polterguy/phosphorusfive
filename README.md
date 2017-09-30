@@ -48,6 +48,8 @@ But this is easily modified by adding up a reference to your own private PGP key
 To download the source code for the system, go to [Releases](https://github.com/polterguy/phosphorusfive/releases), download
 the latest source code for Phosphorus Five. Phosphorus Five (by default) depends upon [Micro](https://github.com/polterguy/micro/releases), 
 so make sure you also download Micro, and put the unzipped folder into your _"/p5.webapp/modules/"_ folder, if you intend to use the source version.
+It is probably wise to rename your Micro folder to become **exactly** _"micro"_ as you move it into the _"p5.webapp/modules/"_ folder of your Phosphorus
+Five root folder - Since this makes upgrades and such easier for you.
 
 Having Micro in your _"modules"_ folder is **crucial** - Since most other modules depends upon Micro being installed. Other modules are
 optional. Any module you build yourself, must be put into the _"/core/p5.webapp/modules/"_ folder of your installation. To create your own apps,
