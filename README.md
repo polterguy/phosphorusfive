@@ -46,18 +46,16 @@ But this is easily modified by adding up a reference to your own private PGP key
 ## Downloading the source for the system
 
 To download the source code for the system, go to [Releases](https://github.com/polterguy/phosphorusfive/releases), download
-the latest source code for Phosphorus Five, and then download e.g. [Sephia Five](https://github.com/polterguy/sephia-five), and/or
-[Sulphur Five](https://github.com/polterguy/sulphur-five), and put the unzipped folders into your _"core/p5.webapp/modules/"_ folder.
-In addition, you will have to also download [Micro](https://github.com/polterguy/micro), and put the unzipped folder into your _"/modules/"_ folder.
-You would probably want to make sure your folders are called _"sephia-five"_, _"sulphur-five"_ and _"micro"_ as you put these modules into
-your _"/modules/"_ folder. By default, GitHub adds versioning number to the folders when you create a release, and this is highly likely
-not something you'd like to keep in your own folder structure, as you download the code for P5.
+the latest source code for Phosphorus Five. Phosphorus Five (by default) depends upon [Micro](https://github.com/polterguy/micro/releases), 
+so make sure you also download Micro, and put the unzipped folder into your _"/p5.webapp/modules/"_ folder, if you intend to use the source version.
 
 Having Micro in your _"modules"_ folder is **crucial** - Since most other modules depends upon Micro being installed. Other modules are
-optional. Any module you build yourself, must be put into the _"/core/p5.webapp/modules/"_ folder of your installation.
+optional. Any module you build yourself, must be put into the _"/core/p5.webapp/modules/"_ folder of your installation. To create your own apps,
+you can start out with the [Hello World app](https://github.com/polterguy/hello-world/releases), which creates a _"template"_ for you when creating 
+your own apps.
 
 When you have downloaded the source code, simply open Visual Studio, Xamarin or MonoDevelop, and browse for the _"p5.sln"_ file inside
-if your Phosphorus Five source code folder, and open up this solution.
+your Phosphorus Five source code folder, and open up this solution.
 
 ## Creating your own apps
 
