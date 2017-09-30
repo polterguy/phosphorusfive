@@ -100,8 +100,9 @@ using [System42](https://github.com/polterguy/system42), and either its Executor
 
 Notice, Phosphorus Five comes with an integrated _"AppStore"_ out of the box, which allows you to create your own Bazars, where you distribute
 your apps and components, either for a fee, or as open source projects. This approach, makes it extremely modularized, allowing you to incrementally
-create your systems, allowing its users to automatically choose to upgrade theirs, as you create new versions of your projects, or create additional
-apps, and/or components.
+create your systems, allowing its users to automatically choose to upgrade theirs, as you create new versions of your apps, or create additional
+apps, and/or components. The Bazar features automatic PayPal integration, and such allows you to charge for your apps automatically. This is easily
+setup by changing two simple settings in your web.config as you create your own distributions, using e.g. [Hyperbuild](https://github.com/polterguy/hyperbuild).
 
 Please refer to [the Bazar](core/p5.webapp/modules/bazar/) to see how this part of P5 works. However, everything is open source, and you can
 actually host your Bazar, without any other requirements but being able to publicly distribute a simple Hyperlambda file, on some web server somewhere.
