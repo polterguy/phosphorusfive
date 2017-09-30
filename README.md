@@ -7,7 +7,7 @@ allows you to orchestrate your apps together, almost as if they were made out of
 its [Hello World application online here](https://samples.gaiasoul.com/hello-world). Phosphorus Five facilitates for
 an extremely modularised model of _"orchestrating"_ your applications together. Below is a screenshot of its _"desktop"_.
 
-![alt screenshot](resources/screenshot-desktop.png)
+![alt screenshot](resources/screenshot-desktop-2.png)
 
 ## Installation
 
@@ -15,7 +15,7 @@ To install the latest binary version of the system, run the following commands i
 in order of appearance.
 
 ```
-wget https://github.com/polterguy/phosphorusfive/releases/download/v4.8BETA/install.sh
+wget https://github.com/polterguy/phosphorusfive/releases/download/v5.0/install.sh
 chmod +x install.sh
 sudo ./install.sh
 ```
