@@ -4,8 +4,10 @@ Phosphorus Five - A Web Operating System
 Phosphorus Five is a Web Operating System and a full stack Web Application Development Framework, for consuming and developing rich and highly 
 interactive and secure web apps. It contains an entirely unique programming language called _"Hyperlambda"_, which 
 allows you to orchestrate your apps together, almost as if they were made out of LEGO bricks. You can test 
-its [Hello World application online here](https://samples.gaiasoul.com/hello-world). Phosphorus Five facilitates for
-an extremely modularised model of _"orchestrating"_ your applications together. Below is a screenshot of its _"desktop"_.
+its [Hello World application online here](https://samples.gaiasoul.com/hello-world).
+
+Phosphorus Five facilitates for an extremely modularised model of _"orchestrating"_ your applications together. 
+Below is a screenshot of its _"desktop"_.
 
 ![alt screenshot](resources/screenshot-desktop-2.png)
 
