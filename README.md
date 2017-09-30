@@ -98,6 +98,8 @@ I recommend you start out with ["The Guide"](https://github.com/polterguy/phosph
 for the [plugins](plugins/), as the need surface. Most of the examples in the core and plugin documentation, assumes you are 
 using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps.
 
+### Creating your own "AppStore"
+
 Notice, Phosphorus Five comes with an integrated _"AppStore"_ out of the box, which allows you to create your own Bazars, where you distribute
 your apps and components, either for a fee, or as open source projects. This approach, makes it extremely modularized, allowing you to incrementally
 create your systems, allowing its users to automatically choose to upgrade theirs, as you create new versions of your apps, or create additional
