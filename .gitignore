@@ -226,6 +226,9 @@ core/p5.webapp/modules/dsw8/**
 # Excluding license
 core/p5.webapp/modules/license/**
 
+# Excluding ‘hello-world’
+core/p5.webapp/modules/hello-world/**
+
 # Excluding users files
 core/p5.webapp/users/**
 
