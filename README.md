@@ -54,8 +54,16 @@ optional. Any module you build yourself, must be put into the _"/core/p5.webapp/
 you can start out with the [Hello World app](https://github.com/polterguy/hello-world/releases), which creates a _"template"_ for you when creating 
 your own apps.
 
-When you have downloaded the source code, simply open Visual Studio, Xamarin or MonoDevelop, and browse for the _"p5.sln"_ file inside
-your Phosphorus Five source code folder, and open up this solution.
+**Notice** - If you intend to use the source version of Phosphorus Five, you must make sure you install GnuPG, since GnuPG is used to manage PGP keys,
+which among other things is required when you download and install apps through its _"Bazar"_. For the record, whether or not you install apps through
+the _"Bazar"_ or download the zip source files for your apps, doesn't really matter, since the Hyperlambda files for your apps, is distributed as is, 
+also when you install apps through the Bazar.
+
+If you intend to use MySQL, either indirectly through e.g. Sephia Five or Sulphur Five etc, or directly in your own code - You must make sure you have
+MySQL installed, and that you've modified your web.config file such that the connection string to your MySQL instance is correctly setup.
+
+When you have downloaded the source code for Phosphorus Five and Micro, and installed GnuPG, and optionally MySQL, simply open Visual Studio, 
+Xamarin or MonoDevelop, and browse for the _"p5.sln"_ file inside your Phosphorus Five source code folder, and open up this solution.
 
 ## Creating your own apps
 
