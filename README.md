@@ -307,7 +307,7 @@ If you wish to truly test the system, you can easily setup your own Virtual Priv
 with [three simple clicks](https://samples.gaiasoul.com/auto-deployment). This gives you a _"free"_ VPS server with Phosporus Five
 pre-installed, where you can play around with it as much as you wish, including test your own apps, or install any of the apps that
 comes in the _"Bazar"_ out of the box for free. This is probably the easiest and simplest way to test Phosphorus Five, but it'll cost
-you €49 for 2 weeks ot testing, and it requires you to pay €49 through PayPal.
+you €49 for 2 weeks ot testing, and it requires you to pay €49 through PayPal. [Read more here](https://gaiasoul.com/2017/10/02/get-a-private-phosphorus-five-server-for-e49/).
 
 ## Yet again, Phosphorus Five is Free Software
 
