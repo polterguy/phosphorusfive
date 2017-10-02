@@ -303,6 +303,12 @@ You can also find a more professional type of [example server installation of Ph
 a username/password to the server, there's not really much you can do, besides checking out the _"Hello World"_ application, and seeing my publicly
 deployed apps/data.
 
+If you wish to truly test the system, you can easily setup your own Virtual Private Server with Phosphorus Five pre-installed,
+with [three simple clicks](https://samples.gaiasoul.com/auto-deployment). This gives you a _"free"_ VPS server with Phosporus Five
+pre-installed, where you can play around with it as much as you wish, including test your own apps, or install any of the apps that
+comes in the _"Bazar"_ out of the box for free. This is probably the easiest and simplest way to test Phosphorus Five, but it'll cost
+you €49 for 2 weeks ot testing, and it requires you to pay €49 through PayPal.
+
 ## Yet again, Phosphorus Five is Free Software
 
 If you're a system developer, and you want to create apps for Phosphorus Five - **You don't need a license** - You can simply use the Open Source version,
