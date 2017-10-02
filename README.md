@@ -13,6 +13,10 @@ Below is a screenshot of its _"desktop"_.
 
 ## Installation
 
+If you want to try out Phosphorus Five, you can do a _single click deployment_ of it to your own Virtual Private Server 
+[here](https://samples.gaiasoul.com/auto-deployment). This gives you two weeks of testing for _"free"_, and includes server 
+resource usage of up to $100 included.
+
 To install the latest binary version of the system, run the following commands in a Linux/Ubuntu vanilla server terminal window, 
 in order of appearance.
 
