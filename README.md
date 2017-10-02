@@ -17,8 +17,8 @@ If you want to try out Phosphorus Five, you can do a _single click deployment_ o
 [here](https://samples.gaiasoul.com/auto-deployment). This gives you two weeks of testing for _"free"_, and includes server 
 resource usage of up to $100 included.
 
-To install the latest binary version of the system, run the following commands in a Linux/Ubuntu vanilla server terminal window, 
-in order of appearance.
+Alternatively, to install the latest binary version of the system on your own Linux/Ubuntu server, run the following commands 
+in a Linux/Ubuntu vanilla server terminal window, in order of appearance.
 
 ```
 wget https://github.com/polterguy/phosphorusfive/releases/download/v5.0/install.sh
@@ -26,9 +26,9 @@ chmod +x install.sh
 sudo ./install.sh
 ```
 
-When you're done with the above, visit the _"Bazar"_ through your browser, and fill up your system with whatever apps you want to install. Below are
-screenshots of some of the more important apps you can fill up your system with. First [Sephia Five](https://github.com/polterguy/sephia-five),
-which is a military grade PGP cryptographically secured webmail client.
+When you're done with one of the above, visit the _"Bazar"_ through your browser, and fill up your system with whatever apps you 
+want to install. Below are screenshots of some of the more important apps you can fill up your system with. 
+First [Sephia Five](https://github.com/polterguy/sephia-five), which is a military grade PGP cryptographically secured webmail client.
 
 ![alt screenshot](resources/screenshot-sephia.png)
 
