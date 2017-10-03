@@ -86,3 +86,27 @@ app:peeples
   author-readme:@"Peeples is a User Management module for Phosphorus Five, that allows you to create, edit and delete users in your installation. It comes with 5 free user tickets, and allows you to automatically purchase additional tickets, according to your needs.
 
 This is the module you need if you want to create additional user accounts in your Phosphorus Five installation."
+
+
+
+
+
+/*
+ * Harvester
+ */
+app:harvester
+  name:Harvester 5.0
+  description:The Harvester gives you a Direct 2 Customer Marketing opportunity
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.0/harvester.zip.pgp"
+  price:Free
+  local-url:harvester
+  image:"https://phosphorusfive.files.wordpress.com/2017/10/star.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@HARVESTER
+  version:decimal:5.0
+    event:harvester.version
+  author-readme:@"The Harvester allows you to collect your customers email addresses, by allowing them to rate your location/product/service, and share with their friends on Twitter/Facebook. In the process, you also get opt-in permission to do direct marketing towards them, by sending them marketing emails.
+
+Hint; It's often vise to use in combination with a QR code leading directly to its _'rate'_ page, which you can stick on your retail location, to allow your loyal customers to share their experience with their friends.
+
+Notice, the harvester requires a Camphora Five app called _'star-rater'_. Check out [its documentation](https://github.com/polterguy/harvester) for details."
