@@ -170,12 +170,8 @@ create-event:p5.core.login
                     /*
                      * Displaying error to user.
                      */
-                    p5.web.widgets.find-first:desktop-login
-                      class:micro-modal-content
-                    eval-x:x:/+/*
                     micro.windows.info:x:/..catch/*/message?value
                       class:micro-windows-info warning
-                      parent:x:/@p5.web.widgets.find-first/*/*?value
 
 
 
@@ -189,9 +185,5 @@ create-event:p5.core.login
     /*
      * Caller supplied a message, making sure we apply it.
      */
-    p5.web.widgets.find-first
-      class:micro-modal-content
-    eval-x:x:/+/*
     micro.windows.info:x:/../*/message?value
-      parent:x:/@p5.web.widgets.find-first/*/*?value
       class:micro-windows-info warning
