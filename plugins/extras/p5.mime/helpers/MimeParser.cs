@@ -239,32 +239,27 @@ namespace p5.mime.helpers
          */
         private void ProcessMimePartInline (MimePart part, Node entityNode)
         {
-            // Creating a stream to decode our entity to.
-            using (MemoryStream stream = new MemoryStream ()) {
+            var txtPart = part as TextPart;
+            if (txtPart != null) {
 
-                // Decoding content to memory.
-                part.ContentObject.DecodeTo (stream);
+                // Part is text part.
+                entityNode.Add("content", txtPart.Text);
 
-                // Resetting position and setting up a buffer object to hold content.
-                stream.Position = 0;
-                object buffer = null;
+            } else {
 
-                // Checking how to handle content, which can be either binary or text.
-                if (HandlePartAsText (part)) {
+				// Creating a stream to decode our entity to.
+				using (MemoryStream stream = new MemoryStream()) {
 
-                    // Content is text of some kind, decoding to text through StringReader.
-                    StreamReader reader = new StreamReader (stream);
-                    buffer = reader.ReadToEnd ();
+					// Decoding content to memory.
+					part.ContentObject.DecodeTo(stream);
 
-                } else {
+					// Resetting position and setting up a buffer object to hold content.
+					stream.Position = 0;
 
-                    // Content is binary, simply returning byte[] value raw.
-                    buffer = stream.ToArray ();
-                }
-
-                // Putting content into return node for MimeEntity.
-                entityNode.Add ("content", buffer);
-            }
+					// Putting content into return node for MimeEntity.
+					entityNode.Add("content", stream.ToArray ());
+				}
+			}
         }
 
         /*
@@ -272,23 +267,9 @@ namespace p5.mime.helpers
          */
         private bool HandlePartAsText (MimePart part)
         {
-            switch (part.ContentType.MediaType + "/" + part.ContentType.MediaSubtype) {
-
-                // Some "application" types are actually text, and should be handled as such
-                // Making sure we handle the most common text application types as such, to save caller from a conversion roundtrip
-                case "application/x-hyperlambda":
-                case "application/javascript":
-                case "application/x-javascript":
-                case "application/ecmascript":
-                case "application/json":
-                case "application/pgp-signature":
-                case "application/pgp-encrypted":
-                    return true;
-                default:
-                    if (part.ContentType.MediaType == "text")
-                        return true;
-                    return false;
-            }
+            if (part is TextPart)
+                return true;
+            return false;
         }
 
         /*
