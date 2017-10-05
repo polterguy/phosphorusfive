@@ -57,7 +57,7 @@ namespace p5.ajax.core.internals
             if (page.IsAjaxRequest) return;
 
             // Adding the viewstate ID to the form, such that we can retrieve it again when the client does a postback
-            var literal = new LiteralControl {Text = string.Format ("\t<input type=\"hidden\" value=\"{0}\" name=\"_p5_state_key\">\r\n\t\t", _viewStateId)};
+            var literal = new LiteralControl { Text = string.Format ("\t<input type=\"hidden\" value=\"{0}\" name=\"_p5_state_key\">\r\n\t\t", _viewStateId) };
             page.Form.Controls.Add (literal);
         }
 
@@ -113,7 +113,7 @@ namespace p5.ajax.core.internals
 
             // Making sure we never have more than "_numberOfViewStateEntries" entries
             while (viewState.Count > _numberOfViewStateEntries) {
-                
+
                 // Removing oldest entry
                 viewState.RemoveAt (0);
             }

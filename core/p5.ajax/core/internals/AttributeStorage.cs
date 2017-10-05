@@ -134,8 +134,7 @@ namespace p5.ajax.core.internals
         ///     Returns all attribute keys.
         /// </summary>
         /// <value>The names of all attributes stored in this instance</value>
-        internal IEnumerable<string> Keys
-        {
+        internal IEnumerable<string> Keys {
             get {
 
                 // In order to not yield the same attribute several times, we need to keep track of which attributes we have already seen.
@@ -214,7 +213,7 @@ namespace p5.ajax.core.internals
             if (viewStateObject == null)
                 return;
 
-            var vals = viewStateObject as string[][];
+            var vals = viewStateObject as string [] [];
             foreach (var idx in vals) {
 
                 // Skipping "id" attribute, which might end up in our list, whenever a widget has its ID changed.
@@ -233,7 +232,7 @@ namespace p5.ajax.core.internals
             if (viewstateObject == null)
                 return;
 
-            var vals = viewstateObject as string[];
+            var vals = viewstateObject as string [];
             foreach (var idx in vals) {
                 _viewStatePersistedRemoved.Add (new Attribute (idx));
             }
@@ -267,10 +266,10 @@ namespace p5.ajax.core.internals
                 return null;
 
             // Returning attributes, as a two dimensional array back to caller.
-            var retVal = new string[atrs.Count][];
+            var retVal = new string [atrs.Count] [];
             for (var idx = 0; idx < atrs.Count; idx++) {
 
-                retVal [idx] = new string[2];
+                retVal [idx] = new string [2];
                 retVal [idx] [0] = atrs [idx].Name;
                 retVal [idx] [1] = atrs [idx].Value;
             }
@@ -294,7 +293,7 @@ namespace p5.ajax.core.internals
 
             // Returing attribute names as an array, to serialize into ViewState.
             // Notice, no need to serialize value (obviously!)
-            var retVal = new string[atrs.Count];
+            var retVal = new string [atrs.Count];
             for (var idx = 0; idx < atrs.Count; idx++) {
                 retVal [idx] = atrs [0].Name;
             }

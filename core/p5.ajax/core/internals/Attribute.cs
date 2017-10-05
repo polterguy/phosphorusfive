@@ -52,8 +52,7 @@ namespace p5.ajax.core.internals
         ///     Gets the name of your attribute.
         /// </summary>
         /// <value>The name</value>
-        internal string Name
-        {
+        internal string Name {
             get;
             private set;
         }
@@ -62,8 +61,7 @@ namespace p5.ajax.core.internals
         ///     Gets the value of your attribute.
         /// </summary>
         /// <value>The value</value>
-        internal string Value
-        {
+        internal string Value {
             get;
             private set;
         }
