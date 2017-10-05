@@ -84,12 +84,11 @@ namespace p5.exp.iterators
         ///     Returns the parent group
         /// </summary>
         /// <value>the parent group</value>
-        public IteratorGroup ParentGroup
-        {
+        public IteratorGroup ParentGroup {
             get;
             private set;
         }
-        
+
         internal Node GroupRootNode {
             get { return ((IteratorIdentity)_groupRoot).RootNode; }
             set { ((IteratorIdentity)_groupRoot).RootNode = value; }
@@ -99,8 +98,7 @@ namespace p5.exp.iterators
         ///     Gets the last iterator in the group
         /// </summary>
         /// <value>the last iterator</value>
-        internal Iterator LastIterator
-        {
+        internal Iterator LastIterator {
             get { return _logicals [_logicals.Count - 1].Iterator; }
         }
 
