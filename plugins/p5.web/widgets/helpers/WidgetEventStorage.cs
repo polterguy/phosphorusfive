@@ -34,16 +34,15 @@ namespace p5.web.widgets.helpers
     [Serializable]
     public class WidgetEventStorage
     {
-        readonly Dictionary<string, List<Node>> _events = new Dictionary<string, List<Node>>();
+        readonly Dictionary<string, List<Node>> _events = new Dictionary<string, List<Node>> ();
 
         /*
          * Returns all items that matches "key1".
          */
-        internal IEnumerable<Node> this [string key1]
-        {
+        internal IEnumerable<Node> this [string key1] {
             get {
                 if (_events.ContainsKey (key1))
-                    return _events[key1];
+                    return _events [key1];
                 return null;
             }
         }
@@ -60,10 +59,9 @@ namespace p5.web.widgets.helpers
         /*
          * Returns item that matches both "key1" and "key2"
          */
-        internal Node this [string key1, string key2]
-        {
+        internal Node this [string key1, string key2] {
             get {
-                if (!_events.ContainsKey(key1))
+                if (!_events.ContainsKey (key1))
                     return null;
                 return _events [key1].Find (delegate (Node idx) { return idx.Name == key2; });
             }
@@ -110,7 +108,7 @@ namespace p5.web.widgets.helpers
             // If it does not work, you've probably written what's defined as "bad Hyperlambda" anyway ...!
 
             // Looping through all Ajax Events on widget
-            foreach (var idxChildNode in _events[newKey]) {
+            foreach (var idxChildNode in _events [newKey]) {
 
                 // Looping through all children nodes of Ajax Events that matches the "oldKey" and the name of [_event]
                 // updating the values of these nodes to the new ID
@@ -126,7 +124,7 @@ namespace p5.web.widgets.helpers
         internal void ChangeKey2 (string oldKey, string newKey)
         {
             foreach (var idxKey1 in _events.Keys) {
-                foreach (var idxKey2 in _events[idxKey1]) {
+                foreach (var idxKey2 in _events [idxKey1]) {
                     if (idxKey2.Name == oldKey) {
                         idxKey2.Name = newKey;
                     }
@@ -149,19 +147,19 @@ namespace p5.web.widgets.helpers
          */
         internal void RemoveFromKey1 (string key1)
         {
-            if (_events.ContainsKey(key1))
-                _events.Remove(key1);
+            if (_events.ContainsKey (key1))
+                _events.Remove (key1);
         }
-                
+
         /*
          * Removes from key2
          */
         internal void RemoveFromKey2 (string key2)
         {
             foreach (var key1 in _events.Keys.ToList ()) {
-                _events[key1].RemoveAll(ix => ix.Name == key2);
-                if (_events[key1].Count == 0)
-                    _events.Remove(key1);
+                _events [key1].RemoveAll (ix => ix.Name == key2);
+                if (_events [key1].Count == 0)
+                    _events.Remove (key1);
             }
         }
 

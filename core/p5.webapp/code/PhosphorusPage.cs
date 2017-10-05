@@ -63,17 +63,17 @@ namespace p5.webapp.code
         /*
          * Invokes initialize page Active Event
          */
-        protected override void OnLoad(EventArgs e)
+        protected override void OnLoad (EventArgs e)
         {
             // Creating args for event
-            var args = new Node();
+            var args = new Node ();
             args.Add ("page", this);
 
             // Raising our "page initialized" active event
             ApplicationContext.RaiseEvent (".p5.web.initialize-page", args);
 
             // Calling base
-            base.OnLoad(e);
+            base.OnLoad (e);
         }
 
         #endregion
@@ -90,14 +90,16 @@ namespace p5.webapp.code
         public void p5_web_viewstate_set (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Set (context, e.Args, delegate (string key, object value) {
+
                 if (value == null) {
 
                     // Removal
                     ViewState.Remove (key);
+
                 } else {
 
                     // Setting or updating
-                    ViewState[key] = value;
+                    ViewState [key] = value;
                 }
             });
         }
@@ -139,14 +141,14 @@ namespace p5.webapp.code
         public void p5_web_page_set_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving new Title of page
-            var title = XUtil.Single<string>(context, e.Args);
+            var title = XUtil.Single<string> (context, e.Args);
 
             // Checking if this is ajax request, at which point we'll have to update title using JavaScript
             if (IsAjaxRequest) {
 
                 // Passing title to client as JavaScript update, making sure we escape string
-                SendJavaScript(
-                    string.Format("document.title='{0}';", title.Replace("\\", "\\\\").Replace("'", "\\'")));
+                SendJavaScript (string.Format ("document.title='{0}';", title.Replace ("\\", "\\\\").Replace ("'", "\\'")));
+
             } else {
 
                 // Updating Title element of page
@@ -154,7 +156,7 @@ namespace p5.webapp.code
             }
 
             // Storing Title in ViewState such that we can retrieve correct title later
-            ViewState["_pf_title"] = Title;
+            ViewState ["_pf_title"] = Title;
         }
 
         /// <summary>
@@ -170,7 +172,7 @@ namespace p5.webapp.code
 
                 // ViewState title has presedence, since it might have been changed, 
                 // and "Title" property of page is not serialized into ViewState
-                e.Args.Value = ViewState["_pf_title"] ?? Title;
+                e.Args.Value = ViewState ["_pf_title"] ?? Title;
             }
         }
 

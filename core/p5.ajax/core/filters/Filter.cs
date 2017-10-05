@@ -60,8 +60,7 @@ namespace p5.ajax.core.filters
         ///     Returns the owning AjaxPage for our filter.
         /// </summary>
         /// <value>the manager</value>
-        protected AjaxPage Page
-        {
+        protected AjaxPage Page {
             get;
             private set;
         }
@@ -70,8 +69,7 @@ namespace p5.ajax.core.filters
         ///     Gets the encoding used when rendering the response.
         /// </summary>
         /// <value>The encoding</value>
-        protected Encoding ContentEncoding
-        {
+        protected Encoding ContentEncoding {
             get;
             private set;
         }
@@ -101,8 +99,7 @@ namespace p5.ajax.core.filters
         ///     Returns a value indicating whether this instance can read.
         /// </summary>
         /// <value><c>true</c> if this instance can read; otherwise, <c>false</c></value>
-        public override bool CanRead
-        {
+        public override bool CanRead {
             get { return _stream.CanRead; }
         }
 
@@ -110,8 +107,7 @@ namespace p5.ajax.core.filters
         ///     Returns a value indicating whether this instance can seek.
         /// </summary>
         /// <value><c>true</c> if this instance can seek; otherwise, <c>false</c></value>
-        public override bool CanSeek
-        {
+        public override bool CanSeek {
             get { return _stream.CanSeek; }
         }
 
@@ -119,8 +115,7 @@ namespace p5.ajax.core.filters
         ///     Returns a value indicating whether this instance can write.
         /// </summary>
         /// <value><c>true</c> if this instance can write; otherwise, <c>false</c></value>
-        public override bool CanWrite
-        {
+        public override bool CanWrite {
             get { return _stream.CanWrite; }
         }
 
@@ -128,8 +123,7 @@ namespace p5.ajax.core.filters
         ///     Returns the length of the stream.
         /// </summary>
         /// <value>The length</value>
-        public override long Length
-        {
+        public override long Length {
             get { return _stream.Length; }
         }
 
@@ -137,8 +131,7 @@ namespace p5.ajax.core.filters
         ///     Gets or sets the position of the stream.
         /// </summary>
         /// <value>The position</value>
-        public override long Position
-        {
+        public override long Position {
             get { return _stream.Position; }
             set { _stream.Position = value; }
         }
@@ -147,8 +140,7 @@ namespace p5.ajax.core.filters
         ///     Returns a value indicating whether this instance can timeout.
         /// </summary>
         /// <value><c>true</c> if this instance can timeout; otherwise, <c>false</c></value>
-        public override bool CanTimeout
-        {
+        public override bool CanTimeout {
             get { return _stream.CanTimeout; }
         }
 
@@ -156,8 +148,7 @@ namespace p5.ajax.core.filters
         ///     Gets or sets the read timeout.
         /// </summary>
         /// <value>The read timeout</value>
-        public override int ReadTimeout
-        {
+        public override int ReadTimeout {
             get { return _stream.ReadTimeout; }
             set { _stream.ReadTimeout = value; }
         }
@@ -166,8 +157,7 @@ namespace p5.ajax.core.filters
         ///     Gets or sets the write timeout.
         /// </summary>
         /// <value>The write timeout</value>
-        public override int WriteTimeout
-        {
+        public override int WriteTimeout {
             get { return _stream.WriteTimeout; }
             set { _stream.WriteTimeout = value; }
         }
@@ -217,7 +207,7 @@ namespace p5.ajax.core.filters
         /// <param name="buffer">Buffer to hold the content you wish to read</param>
         /// <param name="offset">Offset from where you start reading</param>
         /// <param name="count">Number of bytes to read</param>
-        public override int Read (byte[] buffer, int offset, int count)
+        public override int Read (byte [] buffer, int offset, int count)
         {
             return _stream.Read (buffer, offset, count);
         }
@@ -228,7 +218,7 @@ namespace p5.ajax.core.filters
         /// <param name="buffer">Buffer containing bytes to write</param>
         /// <param name="offset">Offset from where to start reading from the buffer</param>
         /// <param name="count">Number of bytes to write</param>
-        public override void Write (byte[] buffer, int offset, int count)
+        public override void Write (byte [] buffer, int offset, int count)
         {
             _stream.Write (buffer, offset, count);
         }

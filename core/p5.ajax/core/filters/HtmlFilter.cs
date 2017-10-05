@@ -84,7 +84,7 @@ namespace p5.ajax.core.filters
                 // Defaulting to only removing __VIEWSTATE input
                 startOffset = html.IndexOf ("__VIEWSTATE", StringComparison.InvariantCulture);
                 endOffset = html.IndexOf ('>', startOffset);
-                while (html[startOffset] != '<')
+                while (html [startOffset] != '<')
                     startOffset -= 1;
             }
 
@@ -113,7 +113,7 @@ namespace p5.ajax.core.filters
             // Looping through HTML between <head> and </head>, appending each element nicely formatted into result buffer.
             string element = "";
             while (indexOfHeadStart <= indexOfHeadEnd) {
-                element += html[indexOfHeadStart++];
+                element += html [indexOfHeadStart++];
 
                 // Checking if we're at end of element.
                 if (element.EndsWith ("/>", StringComparison.InvariantCulture) || (element.EndsWith (">", StringComparison.InvariantCulture) && element.Contains ("</"))) {
@@ -174,14 +174,14 @@ namespace p5.ajax.core.filters
             // Figuring out where <body> ends, by iterating backwards from end of HTML, until we've found </body>
             var endBuffer = "";
             var positionOfEndBody = html.Length - 1;
-            for (;; positionOfEndBody --) {
+            for (; ; positionOfEndBody--) {
                 endBuffer = html [positionOfEndBody] + endBuffer;
                 if (endBuffer.StartsWith ("<", StringComparison.InvariantCulture) && endBuffer.StartsWith ("</body>", StringComparison.InvariantCulture))
                     break;
             }
 
             // Creating a StringBuilder holding everything up until </body> in its content.
-            var builder = new StringBuilder (html.Substring (0, positionOfEndBody).TrimEnd());
+            var builder = new StringBuilder (html.Substring (0, positionOfEndBody).TrimEnd ());
 
             // Then we include actual JavaScript into our HTML. Notice, order counts!
             // First we include files, then "inclusions" (which are persistent inline inclusions, supposed to be re-included in e.g. postbacks).
@@ -196,7 +196,7 @@ namespace p5.ajax.core.filters
             }
 
             // Then including inline JavaScript inclusions, and [p5.web.send-javascript] bursts, if there are any.
-            if (Page.SendScripts.Count() > 0 || Page.PersistensJSObjectInclusions.Count () > 0) {
+            if (Page.SendScripts.Count () > 0 || Page.PersistensJSObjectInclusions.Count () > 0) {
 
                 builder.Append ("\r\n\t\t<script type=\"text/javascript\">\r\nwindow.onload = function() {\r\n\r\n");
 

@@ -41,7 +41,7 @@ namespace p5.events
         [ActiveEvent (Name = ".p5.config.get")]
         public static void p5_config_get (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Get (context, e.Args, ix => ConfigurationManager.AppSettings[ix]);
+            XUtil.Get (context, e.Args, ix => ConfigurationManager.AppSettings [ix]);
         }
 
         /// <summary>

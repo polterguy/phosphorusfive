@@ -37,8 +37,7 @@ namespace p5.mysql
         /*
          * Creates a parametrized SQL command object.
          */
-        internal static MySqlCommand GetSqlCommand (this Node node, ApplicationContext context, MySqlConnection connection)
-        {
+        internal static MySqlCommand GetSqlCommand (this Node node, ApplicationContext context, MySqlConnection connection) {
             MySqlCommand retVal = new MySqlCommand (node.GetExValue<string> (context, ""), connection);
 
             // Parametrizing SQL Command with all parameters (children nodes, not having "empty names".
@@ -50,7 +49,7 @@ namespace p5.mysql
                     // Array parameter.
                     AddArrayParameters (retVal, idx.Name, idx.Children.Select (ix => ix.Value != null ? ix.Value : ix.Name));
 
-				} else {
+                } else {
 
                     // Simple parameter.
                     retVal.Parameters.AddWithValue (idx.Name, idx.GetExValue<object> (context, null));
@@ -62,20 +61,19 @@ namespace p5.mysql
         /*
          * Helper for above, to add arrays of parameters to SQL command.
          */
-		private static void AddArrayParameters(
+        private static void AddArrayParameters (
             MySqlCommand cmd,
-            string originalParamName, 
-            IEnumerable<object> parameterValues)
-		{
-            var names = new List<string>();
+            string originalParamName,
+            IEnumerable<object> parameterValues) {
+            var names = new List<string> ();
             var idxNo = 1;
             foreach (var idxVal in parameterValues) {
                 var name = string.Format ("{0}{1}", originalParamName, idxNo++);
-				names.Add (name);
+                names.Add (name);
                 cmd.Parameters.AddWithValue (name, idxVal);
-			}
+            }
 
-			cmd.CommandText = cmd.CommandText.Replace (originalParamName, string.Join (",", names));
-		}
+            cmd.CommandText = cmd.CommandText.Replace (originalParamName, string.Join (",", names));
+        }
     }
 }

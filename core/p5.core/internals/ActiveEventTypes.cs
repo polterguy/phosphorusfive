@@ -62,8 +62,7 @@ namespace p5.core.internals
         /*
          * Operator overload to make class behave like a Dictionary.
          */
-        internal IEnumerable<Tuple<string, MethodInfo>> this [Type key]
-        {
+        internal IEnumerable<Tuple<string, MethodInfo>> this [Type key] {
             get { return _types [key]; }
         }
 
@@ -78,8 +77,7 @@ namespace p5.core.internals
         /*
          * Returns all Type keys for instance.
          */
-        internal IEnumerable<Type> Keys
-        {
+        internal IEnumerable<Type> Keys {
             get { return _types.Keys; }
         }
     }

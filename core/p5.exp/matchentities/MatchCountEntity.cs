@@ -34,13 +34,12 @@ namespace p5.exp.matchentities
         internal MatchCountEntity (Node node, Match match)
             : base (node, match)
         { }
-        
+
         public override Match.MatchType TypeOfMatch {
             get { return Match.MatchType.count; }
         }
 
-        public override object Value
-        {
+        public override object Value {
             get {
                 throw new ApplicationException ("Retrieving the value of a 'count' entity is not possible.");
             }

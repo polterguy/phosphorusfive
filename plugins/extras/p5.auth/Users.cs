@@ -39,8 +39,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.auth.users.create")]
-        public static void p5_auth_users_create (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_auth_users_create (ApplicationContext context, ActiveEventArgs e) {
             if (context.Ticket.IsDefault || context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to create new user", e.Args, context);
             AuthenticationHelper.CreateUser (context, e.Args);
@@ -53,8 +52,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.auth.users.get")]
-        public static void p5_auth_users_get (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_auth_users_get (ApplicationContext context, ActiveEventArgs e) {
             if (context.Ticket.IsDefault || context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to retrieve existing user", e.Args, context);
             using (new ArgsRemover (e.Args, true)) {
@@ -69,8 +67,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.auth.users.edit")]
-        public static void p5_auth_users_edit (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_auth_users_edit (ApplicationContext context, ActiveEventArgs e) {
             if (context.Ticket.IsDefault || context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to edit existing user", e.Args, context);
             AuthenticationHelper.EditUser (context, e.Args);
@@ -83,8 +80,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.auth.users.delete")]
-        public static void p5_auth_users_delete (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_auth_users_delete (ApplicationContext context, ActiveEventArgs e) {
             if (context.Ticket.IsDefault || context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to delete existing user", e.Args, context);
             AuthenticationHelper.DeleteUser (context, e.Args);
@@ -97,8 +93,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.auth.users.list")]
-        public static void p5_auth_users_list (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_auth_users_list (ApplicationContext context, ActiveEventArgs e) {
             if (context.Ticket.IsDefault || context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to list all users", e.Args, context);
             AuthenticationHelper.ListUsers (context, e.Args);

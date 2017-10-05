@@ -35,8 +35,7 @@ namespace p5.mime.helpers
         /// </summary>
         /// <returns>The base folder</returns>
         /// <param name="context">Application Context</param>
-        public static string GetRootFolder (ApplicationContext context)
-        {
+        public static string GetRootFolder (ApplicationContext context) {
             return context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
         }
     }

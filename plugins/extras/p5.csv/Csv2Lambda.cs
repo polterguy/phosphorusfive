@@ -39,8 +39,7 @@ namespace p5.csv
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.csv.csv2lambda")]
-        public static void p5_csv_csv2lambda (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_csv_csv2lambda (ApplicationContext context, ActiveEventArgs e) {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args, true)) {
 
@@ -65,7 +64,7 @@ namespace p5.csv
                             // Adding current line into return value.
                             var curLine = curFile.Add ("").LastChild;
                             for (int idxCell = 0; idxCell < row.Length; idxCell++) {
-                                curLine.Add (row[idxCell]);
+                                curLine.Add (row [idxCell]);
                             }
                         }
                     }

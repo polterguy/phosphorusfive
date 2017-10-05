@@ -43,8 +43,7 @@ namespace p5.core
         ///     Arguments passed in and returned from Active Events.
         /// </summary>
         /// <value>Node arguments</value>
-        public Node Args
-        {
+        public Node Args {
             get;
             private set;
         }
@@ -53,8 +52,7 @@ namespace p5.core
         ///     Name of the Active Event raised.
         /// </summary>
         /// <value>Active Event name</value>
-        public string Name
-        {
+        public string Name {
             get;
             private set;
         }

@@ -46,11 +46,10 @@ namespace p5.io.zip
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "unzip")]
-        public static void unzip (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void unzip (ApplicationContext context, ActiveEventArgs e) {
             // Retrieving password, if there is one, and untying it, 
             // to make sure it never leaves method, in case of an exception, etc.
-            string password = e.Args.GetExChildValue<string>("password", context, null);
+            string password = e.Args.GetExChildValue<string> ("password", context, null);
             e.Args.FindOrInsert ("password").UnTie (); // Making sure password never leaved method, in case of exceptions, etc ...
 
             // Basic syntax checking.
@@ -74,7 +73,7 @@ namespace p5.io.zip
 
                     // Unzips currently iterated file.
                     UnzipFile (
-                        context, 
+                        context,
                         e.Args,
                         rootFolder,
                         Helpers.GetSystemPath (context, Utilities.Convert<string> (context, idxZipFilePath)),
@@ -87,8 +86,7 @@ namespace p5.io.zip
         /*
          * Retrieves destination folder, and verifies user has write access to it.
          */
-        private static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e)
-        {
+        private static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e) {
             // Retrieving destination folder.
             var destFolder = Helpers.GetSystemPath (context, e.Args.GetExChildValue<string> ("dest", context));
 
@@ -101,13 +99,12 @@ namespace p5.io.zip
          * Unzips a single file
          */
         static void UnzipFile (
-            ApplicationContext context, 
+            ApplicationContext context,
             Node args,
             string rootFolder,
             string zipFilePath,
             string destPath,
-            string password)
-        {
+            string password) {
             // Verifying user is allowed to read from zipfile given.
             context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", zipFilePath).Add ("args", args));
 
@@ -127,15 +124,15 @@ namespace p5.io.zip
 
                         // Making sure we return all unique folder names created during process to caller.
                         if (idxZipEntry.Name.TrimStart ('/').Contains ("/")) {
-                            var folders = idxZipEntry.Name.TrimStart('/').Split('/');
+                            var folders = idxZipEntry.Name.TrimStart ('/').Split ('/');
                             if (args [destPath + folders [0] + "/"] == null)
-                                args.Add (destPath + folders[0] + "/");
+                                args.Add (destPath + folders [0] + "/");
                         }
 
                         // Entry is file, making sure "full path" exist.
                         EnsureFolderExist (
-                            context, 
-                            args, 
+                            context,
+                            args,
                             rootFolder,
                             idxDestPath);
 
@@ -154,13 +151,12 @@ namespace p5.io.zip
          * Ensures that the given file's folder exist, and creates it if necessary.
          */
         static void EnsureFolderExist (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             string rootFolder,
-            string fileNameFullPath)
-        {
+            string fileNameFullPath) {
             // Splitting filename path on "/" to create folder entities.
-            var splits = new List<string> ((fileNameFullPath).Split (new char[] { '/' }, System.StringSplitOptions.RemoveEmptyEntries));
+            var splits = new List<string> ((fileNameFullPath).Split (new char [] { '/' }, System.StringSplitOptions.RemoveEmptyEntries));
 
             // Removing filename.
             splits.RemoveAt (splits.Count - 1);

@@ -43,21 +43,21 @@ namespace p5.webapp
          */
         static Default ()
         {
-			ServicePointManager.ServerCertificateValidationCallback = delegate (
-                object s, 
-                X509Certificate certificate, 
-                X509Chain chain, 
+            ServicePointManager.ServerCertificateValidationCallback = delegate (
+                object s,
+                X509Certificate certificate,
+                X509Chain chain,
                 SslPolicyErrors sslPolicyErrors) {
-                return true;
-            };
+                    return true;
+                };
         }
 
-        protected override void OnInit(EventArgs e)
+        protected override void OnInit (EventArgs e)
         {
             // Rewriting path, to what was actually requested, such that HTML form element's action doesn't become garbage.
             // This ensures that our HTML form element stays correct. Basically "undoing" what was done in Global.asax.cs.
             // In addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx".
-            HttpContext.Current.RewritePath ((string) HttpContext.Current.Items [".p5.webapp.original-url"]);
+            HttpContext.Current.RewritePath ((string)HttpContext.Current.Items [".p5.webapp.original-url"]);
             Form.Action = (string)HttpContext.Current.Items [".p5.webapp.original-url"];
 
             // Mapping up our Page_Load event for initial loading of web page.
@@ -68,8 +68,8 @@ namespace p5.webapp
 
                     // Raising our [p5.web.load-ui] Active Event, creating the node to pass in first,
                     // where the [_URL] node becomes the name of the form requested.
-                    var args = new Node("p5.web.load-ui");
-                    args.Add(new Node("url", HttpContext.Current.Items[".p5.webapp.original-url"]));
+                    var args = new Node ("p5.web.load-ui");
+                    args.Add (new Node ("url", HttpContext.Current.Items [".p5.webapp.original-url"]));
 
                     // Invoking the Active Event that actually loads our UI, now with a [_url] node being the URL of the requested page.
                     // Making sure we do it, in such a way, that we can handle any exceptions that occurs.
@@ -94,7 +94,7 @@ namespace p5.webapp
                 }
             };
 
-            base.OnInit(e);
+            base.OnInit (e);
         }
     }
 }

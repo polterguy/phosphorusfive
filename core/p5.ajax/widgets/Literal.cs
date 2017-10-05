@@ -47,8 +47,7 @@ namespace p5.ajax.widgets
         /// </summary>
         /// <value>The innerHTML equivalent from JavaScript</value>
         [PersistenceMode (PersistenceMode.InnerDefaultProperty)]
-        public string innerValue
-        {
+        public string innerValue {
             get { return base.GetAttribute ("innerValue"); }
             set { base.SetAttribute ("innerValue", value); }
         }
@@ -170,26 +169,26 @@ namespace p5.ajax.widgets
             // Making sure element name is legal for this widget.
             switch (elementName) {
 
-                // Although technically the Literal widget could be used for a "select" element, we prevent it, to avoid messing up FORM data loading, 
-                // and setting/getting of its value property, which is done by iterating its children widgets, looking for a "selected" attribute.
-                case "select":
-                case "input":
-                case "br":
-                case "col":
-                case "hr":
-                case "link":
-                case "meta":
-                case "area":
-                case "base":
-                case "command":
-                case "embed":
-                case "img":
-                case "keygen":
-                case "param":
-                case "source":
-                case "track":
-                case "wbr":
-                    throw new ArgumentException ("You cannot use this Element for the Literal widget", nameof (Element));
+            // Although technically the Literal widget could be used for a "select" element, we prevent it, to avoid messing up FORM data loading, 
+            // and setting/getting of its value property, which is done by iterating its children widgets, looking for a "selected" attribute.
+            case "select":
+            case "input":
+            case "br":
+            case "col":
+            case "hr":
+            case "link":
+            case "meta":
+            case "area":
+            case "base":
+            case "command":
+            case "embed":
+            case "img":
+            case "keygen":
+            case "param":
+            case "source":
+            case "track":
+            case "wbr":
+                throw new ArgumentException ("You cannot use this Element for the Literal widget", nameof (Element));
             }
         }
 
@@ -204,7 +203,7 @@ namespace p5.ajax.widgets
 
                 // Making sure Carriage Returns are in "uniform way", which implies having all become \r\n - CR+LF that is.
                 if (data != null)
-                    data = data.Replace ("\r\n", "\n").Replace ("\n", "\r\n");  
+                    data = data.Replace ("\r\n", "\n").Replace ("\n", "\r\n");
                 Attributes.SetAttributeFormData ("innerValue", data);
             }
         }

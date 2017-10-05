@@ -115,7 +115,7 @@ namespace p5.ajax.widgets
                 // Notice, a "select" HTML element, unless it has an explicit value, or is in "multiple" mode, 
                 // will automatically yield its first option elemt's value as "value".
                 if (retVal == "" && !base.HasAttribute ("multiple") && Controls.Count > 0)
-                    return (Controls [0] as Widget)["value"];
+                    return (Controls [0] as Widget) ["value"];
                 if (!found)
                     return base.GetAttribute (key);
                 return retVal.Substring (0, retVal.Length - 1); // Removing last comma ",".
@@ -195,7 +195,7 @@ namespace p5.ajax.widgets
         /// <param name="id">ID of your control. If null, an automatic id will be created and assigned control.</param>
         /// <param name="index">Index of where to insert control. If -1, the control will be appended into Controls collection.</param>
         /// <typeparam name="T">The type of control you want to create.</typeparam>
-        public T CreatePersistentControl<T> (string id = null, int index = -1) where T : Control, new ()
+        public T CreatePersistentControl<T> (string id = null, int index = -1) where T : Control, new()
         {
             // Then we must make sure we store our original controls, before we start adding new ones to the Controls collection.
             // Notice, this is only done the first time we create a new child control for a Container widget.
@@ -269,26 +269,26 @@ namespace p5.ajax.widgets
             // Making sure element name is legal for this widget.
             switch (elementName) {
 
-                // Although the "textarea" element technically could be rendered using a Container widget, we explicitly deny it,
-                // to avoid making the user believe he can change parts of the textarea's content, by modifying a "textarea" widget's children collection.
-                case "textarea":
-                case "input":
-                case "br":
-                case "col":
-                case "hr":
-                case "link":
-                case "meta":
-                case "area":
-                case "base":
-                case "command":
-                case "embed":
-                case "img":
-                case "keygen":
-                case "param":
-                case "source":
-                case "track":
-                case "wbr":
-                    throw new ArgumentException ("You cannot use this Element for the Container widget", nameof (Element));
+            // Although the "textarea" element technically could be rendered using a Container widget, we explicitly deny it,
+            // to avoid making the user believe he can change parts of the textarea's content, by modifying a "textarea" widget's children collection.
+            case "textarea":
+            case "input":
+            case "br":
+            case "col":
+            case "hr":
+            case "link":
+            case "meta":
+            case "area":
+            case "base":
+            case "command":
+            case "embed":
+            case "img":
+            case "keygen":
+            case "param":
+            case "source":
+            case "track":
+            case "wbr":
+                throw new ArgumentException ("You cannot use this Element for the Container widget", nameof (Element));
             }
         }
 
@@ -298,7 +298,7 @@ namespace p5.ajax.widgets
         protected override void LoadFormData ()
         {
             // Checking if this widget is a "select", and if so, loading its HTTP POST form data, if we should.
-            if (Visible && AreAncestorsVisible () && Element == "select" && !string.IsNullOrEmpty (this ["name"]) && 
+            if (Visible && AreAncestorsVisible () && Element == "select" && !string.IsNullOrEmpty (this ["name"]) &&
                 !HasAttribute ("disabled") && !string.IsNullOrEmpty (Page.Request.Form [this ["name"]])) {
 
                 // Splitting up value of HTTP param on comma ",", to allow for "multiple" select widgets, with multiple selected "option" elements.
@@ -347,12 +347,12 @@ namespace p5.ajax.widgets
         protected override void LoadViewState (object savedState)
         {
             // Reloading persisted controls, if there are any.
-            var tmp = savedState as object[];
-            if (tmp != null && tmp.Length > 0 && tmp [0] is string[][]) {
+            var tmp = savedState as object [];
+            if (tmp != null && tmp.Length > 0 && tmp [0] is string [] []) {
 
                 // We're managing our own controls collection, and need to reload from ViewState all the 
                 // control types and ids. First figuring out which controls actually exists in this control at the moment.
-                var ctrlsViewstate = (from idx in (string[][]) tmp [0] select new Tuple<string, string> (idx [0], idx [1])).ToList ();
+                var ctrlsViewstate = (from idx in (string [] [])tmp [0] select new Tuple<string, string> (idx [0], idx [1])).ToList ();
 
                 // Then removing all controls that are not persisted, and all LiteralControls since they tend to mess up their IDs.
                 var toRemove = Controls.Cast<Control> ().Where (
@@ -547,15 +547,15 @@ namespace p5.ajax.widgets
             foreach (var idx in Controls.Cast<Widget> ().Where (ix => !_originalCollection.Contains (ix) && !string.IsNullOrEmpty (ix.ID))) {
 
                 // Getting control's HTML, by rendering it into a MemoryStream, and for then to pass it on as an "insertion" to our AjaxPage.
-                using (var stream = new MemoryStream()) {
-                    using (var txt = new HtmlTextWriter(new StreamWriter(stream))) {
+                using (var stream = new MemoryStream ()) {
+                    using (var txt = new HtmlTextWriter (new StreamWriter (stream))) {
                         idx.RenderControl (txt);
                         txt.Flush ();
                     }
 
                     // Now we can read the HTML from our MemoryStream.
                     stream.Seek (0, SeekOrigin.Begin);
-                    using (TextReader reader = new StreamReader(stream)) {
+                    using (TextReader reader = new StreamReader (stream)) {
 
                         // Registering currently iterated widget's HTML as an insertion on client side.
                         AjaxPage.RegisterWidgetChanges (JsonClientID, "__p5_add_" + Controls.IndexOf (idx), reader.ReadToEnd ());
@@ -580,7 +580,7 @@ namespace p5.ajax.widgets
          * 
          * The Creator<T> which is returned from here, is responsible for creating Widgets according to values found in ViewState, among other things.
          */
-        static ICreator GetCreator<T> () where T : Control, new ()
+        static ICreator GetCreator<T> () where T : Control, new()
         {
             var fullName = typeof (T).FullName;
             if (!_creators.ContainsKey (fullName))

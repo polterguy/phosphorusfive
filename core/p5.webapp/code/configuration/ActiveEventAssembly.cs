@@ -35,8 +35,7 @@ namespace p5.webapp.code.configuration
         /// </summary>
         /// <value>The assembly</value>
         [ConfigurationProperty ("assembly", IsRequired = true)]
-        public string Assembly
-        {
+        public string Assembly {
             get { return this ["assembly"] as string; }
         }
     }

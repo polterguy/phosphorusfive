@@ -71,8 +71,7 @@ namespace p5.exp.exceptions
         /*
          * Overiding StackTrace from Exception class to provide "Hyperlambda stack trace", instead of default stacktrace.
          */
-        public override string StackTrace
-        {
+        public override string StackTrace {
             get {
                 var convert = new Node ();
                 convert.Add (_node);

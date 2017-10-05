@@ -35,8 +35,7 @@ namespace p5.imaging.helpers
         /// </summary>
         /// <returns>the root folder</returns>
         /// <param name="context">application context</param>
-        public static string GetBaseFolder (ApplicationContext context)
-        {
+        public static string GetBaseFolder (ApplicationContext context) {
             return context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
         }
     }

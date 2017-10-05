@@ -38,8 +38,7 @@ namespace p5.csv
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.csv.lambda2csv")]
-        public static void p5_csv_lambda2csv (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_csv_lambda2csv (ApplicationContext context, ActiveEventArgs e) {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
@@ -49,11 +48,11 @@ namespace p5.csv
                 foreach (var idxLambda in XUtil.Iterate<Node> (context, e.Args)) {
                     if (first) {
 
-						// Adding headers.
-						foreach (var idxInnerHeader in idxLambda.Children) {
+                        // Adding headers.
+                        foreach (var idxInnerHeader in idxLambda.Children) {
                             if (builder.Length > 0)
-                                builder.Append (","); 
-                            builder.Append (idxInnerHeader.Name); 
+                                builder.Append (",");
+                            builder.Append (idxInnerHeader.Name);
                         }
                         builder.Append ("\r\n");
                         first = false;

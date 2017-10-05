@@ -28,21 +28,6 @@
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-Linux|AnyCPU' ">
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Release-Linux</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <CustomCommands>
-      <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetFile} ${SolutionDir}/lib</command>
-        </Command>
-      </CustomCommands>
-    </CustomCommands>
-    <Commandlineparameters>-f hello.hl</Commandlineparameters>
-    <Externalconsole>true</Externalconsole>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>

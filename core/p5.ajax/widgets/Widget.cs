@@ -123,8 +123,7 @@ namespace p5.ajax.widgets
         ///     Returns the owning AjaxPage for current widget.
         /// </summary>
         /// <value>The ajax page.</value>
-        public AjaxPage AjaxPage
-        {
+        public AjaxPage AjaxPage {
             get {
                 if (_page == null) {
                     _page = Page as AjaxPage;
@@ -141,8 +140,7 @@ namespace p5.ajax.widgets
         ///     Set this value to whatever HTML element name you wish for your widget to render as, e.g. "p", "div", "span", etc.
         /// </summary>
         /// <value>The HTML element used to render widget</value>
-        public string Element
-        {
+        public string Element {
             get { return Attributes.GetAttribute ("Element"); }
             set {
 
@@ -169,8 +167,7 @@ namespace p5.ajax.widgets
         ///     value to "null", it will still exist on widget, as an "empty attribute".
         /// </summary>
         /// <param name="name">Name of attribute to retrieve or set value of.</param>
-        public string this [string name]
-        {
+        public string this [string name] {
             get { return GetAttribute (name); }
             set { SetAttribute (name, value); }
         }
@@ -229,8 +226,7 @@ namespace p5.ajax.widgets
         ///     Returns all attribute keys for widget.
         /// </summary>
         /// <value>All attribute keys for widget</value>
-        public virtual IEnumerable<string> AttributeKeys
-        {
+        public virtual IEnumerable<string> AttributeKeys {
             get { return Attributes.Keys; }
         }
 
@@ -291,8 +287,7 @@ namespace p5.ajax.widgets
         ///     back to the client for a widget, using JSON updates, we must use this property, and not the ClientID.
         /// </summary>
         /// <value>The JSON client identifier.</value>
-        protected string JsonClientID
-        {
+        protected string JsonClientID {
             get { return _oldClientID ?? ClientID; }
         }
 
@@ -374,8 +369,7 @@ namespace p5.ajax.widgets
         ///     Overridden to make it possible to change an element's ID during an Ajax callback.
         /// </summary>
         /// <value>The new ID</value>
-        public override string ID
-        {
+        public override string ID {
             get { return base.ID; }
             set {
                 // Storing old ID of element, since this is the stuff that'll be rendered over the wire,
@@ -397,8 +391,7 @@ namespace p5.ajax.widgets
         ///     Overridden from base, to make sure we can automatically set rendering mode for widget, during changes to visibility.
         /// </summary>
         /// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
-        public override bool Visible
-        {
+        public override bool Visible {
             // Notice, we cannot use base implementation, since this won't be persisted, if one of the current widget's ancestors are IN-visible!!
             get { return ViewState ["Visible"] == null ? true : (bool)ViewState ["Visible"]; }
             set {
@@ -537,9 +530,9 @@ namespace p5.ajax.widgets
 
             } else if (!AjaxPage.IsAjaxRequest || ancestorReRendering) {
 
-				// Rendering invisible HTML, making sure we indent invisible HTML.
-				IndentWidgetRendering (writer);
-				writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none !important;""></{0}>", Element, ClientID));
+                // Rendering invisible HTML, making sure we indent invisible HTML.
+                IndentWidgetRendering (writer);
+                writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none !important;""></{0}>", Element, ClientID));
             }
         }
 

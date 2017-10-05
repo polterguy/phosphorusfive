@@ -46,10 +46,8 @@ namespace p5.hyperlambda.helpers
         /*
          * Returns p5 lambda tokens created from Hyperlambda passed in through CTOR
          */
-        internal IEnumerable<Token> Tokens
-        {
-            get
-            {
+        internal IEnumerable<Token> Tokens {
+            get {
                 var previousToken = new Token (Token.TokenType.CarriageReturn, "\r\n"); // We start out with a CR/LF token
                 while (true) {
 
@@ -177,7 +175,7 @@ namespace p5.hyperlambda.helpers
             var buffer = " ";
             var nextChar = _reader.Peek ();
             while (nextChar == ' ') {
-                buffer += (char) _reader.Read ();
+                buffer += (char)_reader.Read ();
                 nextChar = _reader.Peek ();
             }
             return new Token (Token.TokenType.Spacer, buffer);
@@ -205,7 +203,7 @@ namespace p5.hyperlambda.helpers
                 return new Token (GetTokenType (previousToken), Utilities.ReadSingleLineStringLiteral (_reader)); // single line string literal
             }
             if (nextChar == '@') {
-                if ((char) _reader.Peek () == '"') {
+                if ((char)_reader.Peek () == '"') {
                     _reader.Read (); // multiline string literal, skipping '"' part
                     return new Token (GetTokenType (previousToken), Utilities.ReadMultiLineStringLiteral (_reader));
                 }
@@ -213,10 +211,10 @@ namespace p5.hyperlambda.helpers
 
             // Default token type, no string quoting here
             var builder = new StringBuilder ();
-            builder.Append ((char) nextChar);
+            builder.Append ((char)nextChar);
             nextChar = _reader.Peek ();
-            while (nextChar != -1 && "\r\n:".IndexOf ((char) nextChar) == -1) {
-                builder.Append ((char) _reader.Read ());
+            while (nextChar != -1 && "\r\n:".IndexOf ((char)nextChar) == -1) {
+                builder.Append ((char)_reader.Read ());
                 nextChar = _reader.Peek ();
             }
 

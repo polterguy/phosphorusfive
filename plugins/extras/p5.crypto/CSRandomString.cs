@@ -48,7 +48,7 @@ namespace phosphorus.crypto
                 using (RNGCryptoServiceProvider csRandomGenerator = new RNGCryptoServiceProvider ()) {
 
                     // Creating buffer byte array to hold results, in specified resolution, defaulting to 24 bytes
-                    byte[] buffer = new byte [e.Args.GetExChildValue ("resolution", context, 24)];
+                    byte [] buffer = new byte [e.Args.GetExChildValue ("resolution", context, 24)];
 
                     // Filling buffer with random bytes
                     csRandomGenerator.GetBytes (buffer);

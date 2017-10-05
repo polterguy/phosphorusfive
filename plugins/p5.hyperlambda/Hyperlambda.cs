@@ -45,7 +45,7 @@ namespace p5.hyperlambda
             using (new ArgsRemover (e.Args, true)) {
 
                 // Concatenating all Hyperlambda submitted, injecting CR/LF between each component
-                var builder = new StringBuilder();
+                var builder = new StringBuilder ();
                 foreach (var idxHyperlisp in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Making sure we put in a carriage return between each Hyperlambda entity
@@ -74,7 +74,7 @@ namespace p5.hyperlambda
 
                 // Using HyperlispBuilder to create Hyperlambda from p5 lambda
                 e.Args.Value = new HyperlambdaBuilder (
-                    context, 
+                    context,
                     XUtil.Iterate<Node> (context, e.Args))
                     .Hyperlambda;
             }

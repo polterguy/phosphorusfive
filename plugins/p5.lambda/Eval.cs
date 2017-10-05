@@ -158,7 +158,7 @@ namespace p5.lambda
             // Notice, this means clearing the evalNode's children collection.
             return clone.Children.Where (ix => !originalNodes.Contains (ix));
         }
-        
+
         /*
          * Executes one execution statement
          */
@@ -181,10 +181,10 @@ namespace p5.lambda
 
                     // Checking if we're supposed to return from evaluation.
                     switch (lambdaObj.Root.FirstChild?.Name) {
-                        case "_return":
-                        case "_break":
-                        case "_continue":
-                            return;
+                    case "_return":
+                    case "_break":
+                    case "_continue":
+                        return;
                     }
                 }
 

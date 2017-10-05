@@ -46,10 +46,10 @@ namespace p5.core
         readonly List<Assembly> _assemblies = new List<Assembly> ();
 
         // Types that have instance Active Event handlers.
-        readonly ActiveEventTypes _instanceActiveEvents = new ActiveEventTypes();
+        readonly ActiveEventTypes _instanceActiveEvents = new ActiveEventTypes ();
 
         // Types that have static Active Event handlers.
-        readonly ActiveEventTypes _staticActiveEvents = new ActiveEventTypes();
+        readonly ActiveEventTypes _staticActiveEvents = new ActiveEventTypes ();
 
         /*
          * Private constructor, to prevent other classes from instantiating this class.
@@ -257,7 +257,7 @@ namespace p5.core
          * Loops through all MethodInfo objects given, and adds them to the associated dictionary with type as key, 
          * if they have ActiveEventAttribute declared, once or more.
          */
-        void AddActiveEventsForType (Type type, MethodInfo[] methods, ActiveEventTypes activeEventTypes)
+        void AddActiveEventsForType (Type type, MethodInfo [] methods, ActiveEventTypes activeEventTypes)
         {
             // Looping through all MethodInfos from type we currently are iterating.
             foreach (var idxMethod in methods) {

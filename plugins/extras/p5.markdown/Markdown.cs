@@ -32,15 +32,14 @@ namespace p5.markdown
     /// </summary>
     public static class Markdown
     {
-		/// <summary>
-		///     Parses a Markdown snippet, and creates an HTML snippet from the result.
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent(Name = "markdown2html")]
-		[ActiveEvent(Name = "p5.markdown.markdown2html")]
-		public static void markdown2html (ApplicationContext context, ActiveEventArgs e)
-        {
+        /// <summary>
+        ///     Parses a Markdown snippet, and creates an HTML snippet from the result.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "markdown2html")]
+        [ActiveEvent (Name = "p5.markdown.markdown2html")]
+        public static void markdown2html (ApplicationContext context, ActiveEventArgs e) {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new ArgsRemover (e.Args, false)) {
 
@@ -50,10 +49,10 @@ namespace p5.markdown
                 // Making sure we correctly resolve URLs, if user specified a [root-url] argument.
                 var root = e.Args.GetExChildValue ("root-url", context, "");
                 CommonMarkSettings settings = CommonMarkSettings.Default;
-				if (root != "") {
+                if (root != "") {
 
                     // Unrolling path.
-                    root = context.RaiseEvent ("p5.io.unroll-path", new Node ("", root)).Get<string>(context);
+                    root = context.RaiseEvent ("p5.io.unroll-path", new Node ("", root)).Get<string> (context);
 
                     // To make sure we don't change global settings.
                     settings = settings.Clone ();

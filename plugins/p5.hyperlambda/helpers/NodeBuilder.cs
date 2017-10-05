@@ -52,18 +52,15 @@ namespace p5.hyperlambda.helpers
         ///     Creates a list of <see cref="Node" />s from the given Hyperlambda
         /// </summary>
         /// <returns>The Hyperlambda converted to p5 lambda</returns>
-        public List<Node> Nodes
-        {
-            get
-            {
+        public List<Node> Nodes {
+            get {
                 if (string.IsNullOrEmpty (_hyperlisp))
-                    return new List<Node> (new[] {new Node ("")}); // Empty result
+                    return new List<Node> (new [] { new Node ("") }); // Empty result
 
                 // Creating root node such that we have access to it outside of iteration of tokens
                 var node = new Node ();
 
-                try
-                {
+                try {
                     // Creating tokenizer
                     using (var tokenizer = new Tokenizer (_hyperlisp)) {
 
@@ -78,9 +75,7 @@ namespace p5.hyperlambda.helpers
                         // Return list of nodes back to caller
                         return node.Root.Children.ToList ();
                     }
-                }
-                catch (Exception err)
-                {
+                } catch (Exception err) {
                     // Since we want to have LambaException leave this bugger, and not "whatever exception", we transform
                     // current eception into LambdaException to give user intelligent feedback with stack trace
                     if (err is LambdaException)
@@ -97,16 +92,16 @@ namespace p5.hyperlambda.helpers
         Node TokensToNode (Node node, Token token, Token previousToken)
         {
             switch (token.Type) {
-                case Token.TokenType.Name:
+            case Token.TokenType.Name:
 
-                    // This is the name of the node
-                    node = NameTokenToNode (node, token, previousToken);
-                    break;
-                case Token.TokenType.TypeOrContent:
+                // This is the name of the node
+                node = NameTokenToNode (node, token, previousToken);
+                break;
+            case Token.TokenType.TypeOrContent:
 
-                    // This might either be the value or the type information of our node
-                    HandleContentOrTypeToken (node, token);
-                    break;
+                // This might either be the value or the type information of our node
+                HandleContentOrTypeToken (node, token);
+                break;
             }
             return node;
         }
@@ -130,8 +125,8 @@ namespace p5.hyperlambda.helpers
 
                 // More than two consecutive spaces offset from previous token's name, which is a syntax error
                 throw new LambdaException (
-                    string.Format ("Too many consecutive spaces in opening of child collection in Hyperlambda near '{0}'", token.Value), 
-                    node, 
+                    string.Format ("Too many consecutive spaces in opening of child collection in Hyperlambda near '{0}'", token.Value),
+                    node,
                     _context);
             }
 
@@ -164,7 +159,7 @@ namespace p5.hyperlambda.helpers
 
             // Converting our string to the actual object, and returning back to caller
             return _context.RaiseEvent (
-                ".p5.hyperlambda.get-object-value." + (typeInfo == "node" ? "abs.node" : typeInfo), 
+                ".p5.hyperlambda.get-object-value." + (typeInfo == "node" ? "abs.node" : typeInfo),
                 new Node ("", value, new Node [] { new Node ("decode", true) })).Value;
         }
     }

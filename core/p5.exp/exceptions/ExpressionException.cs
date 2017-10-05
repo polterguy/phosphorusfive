@@ -55,8 +55,7 @@ namespace p5.exp.exceptions
         /*
          * Overriding Message to provide expression that malfunctioned as an additional piece of contextual information.
          */
-        public override string Message
-        {
+        public override string Message {
             get {
                 var retVal = string.Format ("Expression '{0}' is not a valid expression", _expression);
                 if (_message != null)

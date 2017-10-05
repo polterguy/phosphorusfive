@@ -53,17 +53,16 @@ namespace lambda_exe
         [ActiveEvent (Name = "p5.console.read-line")]
         public static void p5_console_read_line (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Console.ReadLine();
+            e.Args.Value = Console.ReadLine ();
         }
 
         /// <summary>
         ///     Entry point for application.
         /// </summary>
         /// <param name="args">Command line arguments</param>
-        public static void Main (string[] args)
+        public static void Main (string [] args)
         {
-            try
-            {
+            try {
                 // Checking to see if we're given any arguments at all.
                 if (args == null || args.Length == 0) {
 
@@ -100,9 +99,7 @@ namespace lambda_exe
                         context.RaiseEvent ("eval", exeNode);
                     }
                 }
-            }
-            catch (Exception err)
-            {
+            } catch (Exception err) {
                 // Writing exception and stack trace to console before exiting.
                 Console.WriteLine (err.Message);
                 Console.WriteLine ();
@@ -120,9 +117,9 @@ namespace lambda_exe
         static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving location for currently executed assembly, and making sure we remove the trailing slash "/".
-            string retVal = Assembly.GetExecutingAssembly().Location.Replace ("\\", "/");
+            string retVal = Assembly.GetExecutingAssembly ().Location.Replace ("\\", "/");
             if (retVal.EndsWithEx ("/"))
-                retVal = retVal.Substring(0, retVal.Length - 1);
+                retVal = retVal.Substring (0, retVal.Length - 1);
             e.Args.Value = retVal;
         }
 
@@ -132,7 +129,7 @@ namespace lambda_exe
         static void LoadDefaultPlugins ()
         {
             // Initializing the default plugins, including executing assembly, to wire up the console read-line/write-line events.
-            Loader.Instance.RegisterAssembly (Assembly.GetExecutingAssembly());
+            Loader.Instance.RegisterAssembly (Assembly.GetExecutingAssembly ());
             Loader.Instance.LoadAssembly ("plugins/", "p5.hyperlambda");
             Loader.Instance.LoadAssembly ("plugins/", "p5.types");
             Loader.Instance.LoadAssembly ("plugins/", "p5.lambda");
@@ -143,7 +140,7 @@ namespace lambda_exe
         /*
          * Starts immediate mode, allowing user to type in a bunch of Hyperlambda, executing lambda when empty line is submitted,
          * and exiting when user types in "exit" as Hyperlambda.
-         */ 
+         */
         static void ImmediateMode (ApplicationContext context)
         {
             // Looping until user types "exit".
@@ -182,13 +179,13 @@ namespace lambda_exe
         static string GetNextHyperlambda (ApplicationContext context)
         {
             // Used as buffer to hold Hyperlambda.
-            var builder = new StringBuilder();
+            var builder = new StringBuilder ();
 
             // Looping until user types in an empty line.
             while (true) {
 
                 // Making sure user understands where he is.
-                Console.Write("p5>");
+                Console.Write ("p5>");
 
                 // Reading next line of input.
                 string line = Console.ReadLine ();
@@ -241,7 +238,7 @@ namespace lambda_exe
          * Returns filename to evaluate as value of returned node, alternatively sets "immediate" to true, if user requested
          * to initiate "immediate mode".
          */
-        static Node ParseArguments (string[] args, out bool immediate)
+        static Node ParseArguments (string [] args, out bool immediate)
         {
             immediate = false;
             var exeNode = new Node ("input-file");

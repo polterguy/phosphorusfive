@@ -84,7 +84,7 @@ namespace p5.exp.iterators
             }
 
             if (_like) {
-                
+
                 // Special case for empty value, making sure we return either empty or null values
                 if (string.IsNullOrEmpty (_value)) {
 

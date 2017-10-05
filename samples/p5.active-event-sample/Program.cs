@@ -37,7 +37,7 @@ namespace p5_active_event_sample
 {
     public static class Program
     {
-        public static void Main (string[] args)
+        public static void Main (string [] args)
         {
             // First we must load our plugin assembly. This must be done, even if the assembly is linked in as a reference, to
             /// initialize the assembly's Active Event handlers and such.

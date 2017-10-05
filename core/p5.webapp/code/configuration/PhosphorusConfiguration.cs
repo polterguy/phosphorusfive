@@ -35,8 +35,7 @@ namespace p5.webapp.code.configuration
         /// </summary>
         /// <value>The plugin directory</value>
         [ConfigurationProperty ("assemblyDirectory", DefaultValue = "/bin/", IsRequired = false)]
-        public string PluginDirectory
-        {
+        public string PluginDirectory {
             get { return this ["assemblyDirectory"] as string; }
         }
 
@@ -45,8 +44,7 @@ namespace p5.webapp.code.configuration
         /// </summary>
         /// <value>The plugin directory</value>
         [ConfigurationProperty ("defaultContextUsername", IsRequired = false, DefaultValue = "guest")]
-        public string DefaultContextUsername
-        {
+        public string DefaultContextUsername {
             get { return this ["defaultContextUsername"] as string; }
         }
 
@@ -55,8 +53,7 @@ namespace p5.webapp.code.configuration
         /// </summary>
         /// <value>Default context role</value>
         [ConfigurationProperty ("defaultContextRole", IsRequired = false, DefaultValue = "guest")]
-        public string DefaultContextRole
-        {
+        public string DefaultContextRole {
             get { return this ["defaultContextRole"] as string; }
         }
 
@@ -65,8 +62,7 @@ namespace p5.webapp.code.configuration
         /// </summary>
         /// <value>Path to auth file</value>
         [ConfigurationProperty ("authFile", IsRequired = false, DefaultValue = "/auth.hl")]
-        public string AuthFile
-        {
+        public string AuthFile {
             get { return this ["authFile"] as string; }
         }
 
@@ -75,8 +71,7 @@ namespace p5.webapp.code.configuration
         /// </summary>
         /// <value>The assemblies</value>
         [ConfigurationProperty ("assemblies")]
-        public ActiveEventAssemblyCollection Assemblies
-        {
+        public ActiveEventAssemblyCollection Assemblies {
             get { return this ["assemblies"] as ActiveEventAssemblyCollection; }
         }
     }

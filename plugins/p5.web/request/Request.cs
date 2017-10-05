@@ -26,7 +26,8 @@ using System.Web;
 using p5.exp;
 using p5.core;
 
-namespace p5.web.ui.request {
+namespace p5.web.ui.request
+{
     /// <summary>
     ///     Class wrapping Active Events related to the HTTP request
     /// </summary>
@@ -79,29 +80,29 @@ namespace p5.web.ui.request {
             }
         }
 
-		/// <summary>
-		///     Parser the current HTTP request's body as a MIME entity.
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "p5.web.request.parse-mime")]
-		public static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
-		{
+        /// <summary>
+        ///     Parser the current HTTP request's body as a MIME entity.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.request.parse-mime")]
+        public static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
+        {
             // Retrieving content type, which is not a part of the body, but the "Content-Type" of the request
             // passed in as an HTTP header.
             var contentType = HttpContext.Current.Request.ContentType;
             e.Args.Add ("Content-Type", contentType);
             e.Args.Value = HttpContext.Current.Request.InputStream;
             context.RaiseEvent (".p5.mime.load-from-stream", e.Args);
-            e.Args ["Content-Type"]?.UnTie (); 
-		}
+            e.Args ["Content-Type"]?.UnTie ();
+        }
 
-		/// <summary>
-		///     Saves the current HTTP request's body to a specified file.
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "p5.web.request.save-body")]
+        /// <summary>
+        ///     Saves the current HTTP request's body to a specified file.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.request.save-body")]
         public static void p5_web_request_save_body (ApplicationContext context, ActiveEventArgs e)
         {
             // Getting filename.
@@ -131,14 +132,14 @@ namespace p5.web.ui.request {
         public static void p5_web_request_is_mobile (ApplicationContext context, ActiveEventArgs e)
         {
             var userAgent = HttpContext.Current.Request.UserAgent.ToLower ();
-            if (userAgent.Contains ("blackberry") || 
-                userAgent.Contains ("iphone") || 
-                userAgent.Contains ("ppc") || 
-                userAgent.Contains ("windows ce") || 
-                userAgent.Contains ("mobile") || 
-                userAgent.Contains ("palm") || 
-                userAgent.Contains ("portable") || 
-                userAgent.Contains ("opera mobi") || 
+            if (userAgent.Contains ("blackberry") ||
+                userAgent.Contains ("iphone") ||
+                userAgent.Contains ("ppc") ||
+                userAgent.Contains ("windows ce") ||
+                userAgent.Contains ("mobile") ||
+                userAgent.Contains ("palm") ||
+                userAgent.Contains ("portable") ||
+                userAgent.Contains ("opera mobi") ||
                 userAgent.Contains ("android")) {
 
                 // This is a mobile device, probably not on .Net's list of devices

@@ -51,7 +51,7 @@ namespace p5.core
 
             // Checking to see if conversion is even necessary.
             if (value is T)
-                return (T) value;
+                return (T)value;
 
             // Then checking if we're doing a "ToString" conversion.
             if (typeof (T) == typeof (string))
@@ -85,7 +85,7 @@ namespace p5.core
 
             // Notice, if Active Event conversion yields null, we invoke "System.Convert.ToString" as a failsafe default, which means Active Event conversions
             // does not need to be implemented for types where this method yields something sane, such as integers, Guids, floats, etc ...
-            return context.RaiseEvent (".p5.hyperlambda.get-string-value." + value.GetType ().FullName, new Node ("", value)).Value as string 
+            return context.RaiseEvent (".p5.hyperlambda.get-string-value." + value.GetType ().FullName, new Node ("", value)).Value as string
                           ?? System.Convert.ToString (value, CultureInfo.InvariantCulture);
         }
 
@@ -154,17 +154,17 @@ namespace p5.core
             var builder = new StringBuilder ();
             for (var c = reader.Read (); c != -1; c = reader.Read ()) {
                 switch (c) {
-                    case '"':
-                        return builder.ToString ();
-                    case '\\':
-                        builder.Append (AppendEscapeCharacter (reader));
-                        break;
-                    case '\n':
-                    case '\r':
-                        throw new ApplicationException (string.Format ("Syntax error, string literal unexpected CR/LF near '{0}'", builder));
-                    default:
-                        builder.Append ((char) c);
-                        break;
+                case '"':
+                    return builder.ToString ();
+                case '\\':
+                    builder.Append (AppendEscapeCharacter (reader));
+                    break;
+                case '\n':
+                case '\r':
+                    throw new ApplicationException (string.Format ("Syntax error, string literal unexpected CR/LF near '{0}'", builder));
+                default:
+                    builder.Append ((char)c);
+                    break;
                 }
             }
             throw new ApplicationException (string.Format ("Syntax error, string literal not closed before end of input near '{0}'", builder));
@@ -180,23 +180,23 @@ namespace p5.core
             var builder = new StringBuilder ();
             for (var c = reader.Read (); c != -1; c = reader.Read ()) {
                 switch (c) {
-                    case '"':
-                        if ((char) reader.Peek () == '"')
-                            builder.Append ((char) reader.Read ());
-                        else
-                            return builder.ToString ();
-                        break;
-                    case '\n':
-                        builder.Append ("\r\n"); // Normalizing carriage return
-                        break;
-                    case '\r':
-                        if ((char) reader.Read () != '\n')
-                            throw new ArgumentException (string.Format ("Unexpected CR found without any matching LF near '{0}'", builder));
-                        builder.Append ("\r\n");
-                        break;
-                    default:
-                        builder.Append ((char) c);
-                        break;
+                case '"':
+                    if ((char)reader.Peek () == '"')
+                        builder.Append ((char)reader.Read ());
+                    else
+                        return builder.ToString ();
+                    break;
+                case '\n':
+                    builder.Append ("\r\n"); // Normalizing carriage return
+                    break;
+                case '\r':
+                    if ((char)reader.Read () != '\n')
+                        throw new ArgumentException (string.Format ("Unexpected CR found without any matching LF near '{0}'", builder));
+                    builder.Append ("\r\n");
+                    break;
+                default:
+                    builder.Append ((char)c);
+                    break;
                 }
             }
             throw new ArgumentException (string.Format ("String literal not closed before end of input near '{0}'", builder));
@@ -208,35 +208,35 @@ namespace p5.core
         static string AppendEscapeCharacter (StringReader reader)
         {
             switch (reader.Read ()) {
-                case -1:
-                    throw new ArgumentException ("End of input found when looking for escape character in single line string literal");
-                case '"':
-                    return "\"";
-                case '\'':
-                    return "'";
-                case '\\':
-                    return "\\";
-                case 'a':
-                    return "\a";
-                case 'b':
-                    return "\b";
-                case 'f':
-                    return "\f";
-                case 't':
-                    return "\t";
-                case 'v':
-                    return "\v";
-                case 'n':
-                    return "\r\n"; // Normalizing carriage return
-                case 'r':
-                    // CR must be followed by LF.
-                    if ((char) reader.Read () != '\\' || (char) reader.Read () != 'n')
-                        throw new ArgumentException ("CR found, but no matching LF found");
-                    return "\r\n";
-                case 'x':
-                    return HexaCharacter (reader);
-                default:
-                    throw new ArgumentException ("Invalid escape sequence found in string literal");
+            case -1:
+                throw new ArgumentException ("End of input found when looking for escape character in single line string literal");
+            case '"':
+                return "\"";
+            case '\'':
+                return "'";
+            case '\\':
+                return "\\";
+            case 'a':
+                return "\a";
+            case 'b':
+                return "\b";
+            case 'f':
+                return "\f";
+            case 't':
+                return "\t";
+            case 'v':
+                return "\v";
+            case 'n':
+                return "\r\n"; // Normalizing carriage return
+            case 'r':
+                // CR must be followed by LF.
+                if ((char)reader.Read () != '\\' || (char)reader.Read () != 'n')
+                    throw new ArgumentException ("CR found, but no matching LF found");
+                return "\r\n";
+            case 'x':
+                return HexaCharacter (reader);
+            default:
+                throw new ArgumentException ("Invalid escape sequence found in string literal");
             }
         }
 
@@ -247,7 +247,7 @@ namespace p5.core
         {
             var hexNumberString = "";
             for (var idxNo = 0; idxNo < 4; idxNo++)
-                hexNumberString += (char) reader.Read ();
+                hexNumberString += (char)reader.Read ();
             var integerNo = System.Convert.ToInt32 (hexNumberString, 16);
             return Encoding.UTF8.GetString (BitConverter.GetBytes (integerNo).Reverse ().ToArray ());
         }

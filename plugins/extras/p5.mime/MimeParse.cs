@@ -41,14 +41,13 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.mime.parse-native")]
-        private static void _p5_mime_parse_native (ApplicationContext context, ActiveEventArgs e)
-        {
+        private static void _p5_mime_parse_native (ApplicationContext context, ActiveEventArgs e) {
             // Retrieving MimeEntity from caller's arguments
             var entity = e.Args.Get<MimeEntity> (context);
             var parser = new helpers.MimeParser (
-                context, 
-                e.Args, 
-                entity, 
+                context,
+                e.Args,
+                entity,
                 e.Args.GetExChildValue<string> ("attachment-folder", context));
 
             // Parses the MimeEntity and stuffs results into e.Args node
@@ -60,46 +59,43 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent(Name = ".p5.mime.load-from-stream")]
-        public static void _p5_mime_load_from_stream (ApplicationContext context, ActiveEventArgs e)
-		{
-			// Making sure we clean up after ourselves.
-			using (new ArgsRemover(e.Args, true))
-			{
+        [ActiveEvent (Name = ".p5.mime.load-from-stream")]
+        public static void _p5_mime_load_from_stream (ApplicationContext context, ActiveEventArgs e) {
+            // Making sure we clean up after ourselves.
+            using (new ArgsRemover (e.Args, true)) {
                 // Sanity check.
                 var stream = e.Args.Value as Stream;
                 if (e.Args.Value == null)
-					throw new LambdaException(
-						"No stream provided to [.p5.mime.parse-from-stream]",
-						e.Args,
-						context);
+                    throw new LambdaException (
+                        "No stream provided to [.p5.mime.parse-from-stream]",
+                        e.Args,
+                        context);
 
-				// Loading MimeEntity from specified stream.
-				MimeEntity entity = null;
-				if (e.Args["Content-Type"] != null)
-					entity = MimeEntity.Load (ContentType.Parse (e.Args["Content-Type"].Get<string> (context)), stream);
-				else
-					entity = MimeEntity.Load (stream);
-				var parser = new helpers.MimeParser(
-					context,
-					e.Args,
-					entity,
-					e.Args.GetExChildValue<string>("attachment-folder", context),
-					e.Args.GetExChildValue<bool>("attachment-folder-no-prefix", context, true));
+                // Loading MimeEntity from specified stream.
+                MimeEntity entity = null;
+                if (e.Args ["Content-Type"] != null)
+                    entity = MimeEntity.Load (ContentType.Parse (e.Args ["Content-Type"].Get<string> (context)), stream);
+                else
+                    entity = MimeEntity.Load (stream);
+                var parser = new helpers.MimeParser (
+                    context,
+                    e.Args,
+                    entity,
+                    e.Args.GetExChildValue<string> ("attachment-folder", context),
+                    e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
 
-				// Parses the MimeEntity and stuffs results into e.Args node
-				parser.Process();
-			}
-		}
+                // Parses the MimeEntity and stuffs results into e.Args node
+                parser.Process ();
+            }
+        }
 
-		/// <summary>
-		///     Parses the MIME message given as string.
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Active Event arguments</param>
-		[ActiveEvent (Name = "p5.mime.parse")]
-        public static void p5_mime_parse (ApplicationContext context, ActiveEventArgs e)
-        {
+        /// <summary>
+        ///     Parses the MIME message given as string.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.mime.parse")]
+        public static void p5_mime_parse (ApplicationContext context, ActiveEventArgs e) {
             // Making sure we clean up after ourselves
             using (new ArgsRemover (e.Args, true)) {
 
@@ -123,14 +119,14 @@ namespace p5.mime
 
                         // Loading MimeEntity from MemoryStream
                         MimeEntity entity = null;
-                        if (e.Args["Content-Type"] != null)
-                            entity = MimeEntity.Load (ContentType.Parse (e.Args["Content-Type"].Get<string> (context)), writer.BaseStream);
+                        if (e.Args ["Content-Type"] != null)
+                            entity = MimeEntity.Load (ContentType.Parse (e.Args ["Content-Type"].Get<string> (context)), writer.BaseStream);
                         else
                             entity = MimeEntity.Load (writer.BaseStream);
                         var parser = new helpers.MimeParser (
-                            context, 
-                            e.Args, 
-                            entity, 
+                            context,
+                            e.Args,
+                            entity,
                             e.Args.GetExChildValue<string> ("attachment-folder", context),
                             e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
 
@@ -147,8 +143,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.mime.load")]
-        public static void p5_mime_load (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_mime_load (ApplicationContext context, ActiveEventArgs e) {
             // Making sure we clean up after ourselves
             using (new ArgsRemover (e.Args, true)) {
 
@@ -162,24 +157,24 @@ namespace p5.mime
                             e.Args,
                             context);
 
-		            // Retrieving output filename, and doing some basic sanity checking.
-		            var filePath = idxMimeMessage;
-		            filePath = context.RaiseEvent (".p5.io.unroll-path", new Node ("", filePath)).Get<string> (context);
-		            context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filePath).Add ("args", e.Args));
-		
+                    // Retrieving output filename, and doing some basic sanity checking.
+                    var filePath = idxMimeMessage;
+                    filePath = context.RaiseEvent (".p5.io.unroll-path", new Node ("", filePath)).Get<string> (context);
+                    context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filePath).Add ("args", e.Args));
+
                     // Loading MIME entity from currentl iterated file.
-                    using (var reader = File.OpenRead (Common.GetRootFolder(context) + filePath)) {
+                    using (var reader = File.OpenRead (Common.GetRootFolder (context) + filePath)) {
 
                         // Loading MimeEntity from MemoryStream
                         MimeEntity entity = null;
-                        if (e.Args["Content-Type"] != null)
-                            entity = MimeEntity.Load (ContentType.Parse (e.Args["Content-Type"].Get<string> (context)), reader);
+                        if (e.Args ["Content-Type"] != null)
+                            entity = MimeEntity.Load (ContentType.Parse (e.Args ["Content-Type"].Get<string> (context)), reader);
                         else
                             entity = MimeEntity.Load (reader);
                         var parser = new helpers.MimeParser (
-                            context, 
-                            e.Args, 
-                            entity, 
+                            context,
+                            e.Args,
+                            entity,
                             e.Args.GetExChildValue<string> ("attachment-folder", context),
                             e.Args.GetExChildValue<bool> ("attachment-folder-no-prefix", context, true));
 

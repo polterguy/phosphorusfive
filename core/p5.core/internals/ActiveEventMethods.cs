@@ -101,7 +101,7 @@ namespace p5.core.internals
                 // Constructing EventArgs to pass into event handler.
                 // If no Node is null, we create a new Node, such that event handlers are never given null node, and can return
                 // values, even though caller did not pass in a Node into handler.
-                var e = new ActiveEventArgs (activeEventName, args ?? new Node());
+                var e = new ActiveEventArgs (activeEventName, args ?? new Node ());
 
                 // Checking if we have any Active Event handlers for the given name.
                 if (_events.ContainsKey (activeEventName)) {
@@ -110,7 +110,7 @@ namespace p5.core.internals
                     // Notice, we must iterate the events using "ToList", since an Active Event, theoretically, might create a new Active Event,
                     // invalidating the enumerator for our foreach loop.
                     foreach (var idxMethod in _events [activeEventName].ToList ()) {
-                        idxMethod.Item1.Invoke (idxMethod.Item2, new object[] { context, e });
+                        idxMethod.Item1.Invoke (idxMethod.Item2, new object [] { context, e });
                     }
                 }
 
@@ -119,7 +119,7 @@ namespace p5.core.internals
 
                     // Active Event was not protected, and we have a "null event handler".
                     foreach (var idxMethod in _events [""].ToList ()) {
-                        idxMethod.Item1.Invoke (idxMethod.Item2, new object[] { context, e });
+                        idxMethod.Item1.Invoke (idxMethod.Item2, new object [] { context, e });
                     }
                 }
 
@@ -129,7 +129,7 @@ namespace p5.core.internals
             } catch (TargetInvocationException err) {
 
                 // Making sure we transform reflection exceptions into actual exceptions thrown.
-                ExceptionDispatchInfo.Capture (err.InnerException).Throw();
+                ExceptionDispatchInfo.Capture (err.InnerException).Throw ();
 
                 // Never reached, but needed for compiler to not choke, since it doesn't realize the above invocation to Capture will always throw ...!!
                 throw;
@@ -139,8 +139,7 @@ namespace p5.core.internals
         /*
          * Returns all registered Active Event names in the given instance.
          */
-        internal IEnumerable<string> ActiveEventNames
-        {
+        internal IEnumerable<string> ActiveEventNames {
             get {
                 return _events.Keys;
             }

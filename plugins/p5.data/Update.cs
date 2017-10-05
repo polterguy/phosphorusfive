@@ -55,13 +55,13 @@ namespace p5.data
                 using (new Common.Lock (true)) {
 
                     // Storing affected nodes, and number of affected items.
-					var changed = new List<Node> ();
-					int affectedItems = 0;
+                    var changed = new List<Node> ();
+                    int affectedItems = 0;
 
-					// Retrieving source, and iterating through each destination, updating with source value.
+                    // Retrieving source, and iterating through each destination, updating with source value.
                     // Notice, we don't provide transaction support here, but we do make sure at least any changes
                     // that actually occurs, are serialized to disc!
-					var source = XUtil.Source (context, e.Args);
+                    var source = XUtil.Source (context, e.Args);
                     try {
 
                         foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
@@ -73,12 +73,12 @@ namespace p5.data
                             Common.AddNodeToChanges (idxDestination.Node, changed);
                             affectedItems += 1;
                         }
-					} finally {
-                        
+                    } finally {
+
                         Common.SaveAffectedFiles (context, changed);
-						e.Args.Value = affectedItems;
-					}
-				}
+                        e.Args.Value = affectedItems;
+                    }
+                }
             }
         }
 
@@ -86,8 +86,8 @@ namespace p5.data
          * Updates a single destination with the given source.
          */
         static bool UpdateDestination (
-            ApplicationContext context, 
-            object source, 
+            ApplicationContext context,
+            object source,
             exp.matchentities.MatchEntity destination)
         {
             // Figuring out if source is a Node.

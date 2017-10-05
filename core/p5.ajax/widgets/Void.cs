@@ -88,27 +88,27 @@ namespace p5.ajax.widgets
 
             // Making sure element name is legal for this widget.
             switch (elementName) {
-                case "input":
-                case "br":
-                case "col":
-                case "hr":
-                case "link":
-                case "meta":
-                case "area":
-                case "base":
-                case "command":
-                case "embed":
-                case "img":
-                case "keygen":
-                case "param":
-                case "source":
-                case "track":
-                case "wbr":
-                    break; // Legal "void" element.
-                default:
-                    if (elementName == "textarea")
-                        throw new ArgumentException ("You cannot use the Void widget here, use the Literal widget instead", nameof (Element));
-                    throw new ArgumentException ("You cannot use Void widget here, use the Container or the Literal widget instead", nameof (Element));
+            case "input":
+            case "br":
+            case "col":
+            case "hr":
+            case "link":
+            case "meta":
+            case "area":
+            case "base":
+            case "command":
+            case "embed":
+            case "img":
+            case "keygen":
+            case "param":
+            case "source":
+            case "track":
+            case "wbr":
+                break; // Legal "void" element.
+            default:
+                if (elementName == "textarea")
+                    throw new ArgumentException ("You cannot use the Void widget here, use the Literal widget instead", nameof (Element));
+                throw new ArgumentException ("You cannot use Void widget here, use the Container or the Literal widget instead", nameof (Element));
             }
         }
 
@@ -118,36 +118,36 @@ namespace p5.ajax.widgets
         protected override void LoadFormData ()
         {
             // Checking if this widget is a "input", and if so, loading its HTTP POST form data, if we should.
-            if (Visible && AreAncestorsVisible() && Element == "input" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
+            if (Visible && AreAncestorsVisible () && Element == "input" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
 
                 // Figuring out what to do, according to what "type" of input element this is.
                 switch (this ["type"]) {
-                    case "radio":
-                    case "checkbox":
+                case "radio":
+                case "checkbox":
 
-                        // Notice, both checkboxes and radio buttons can be "grouped", by making them have the same "name" attribute value.
-                        // If they do, they will be serialized as one HTTP POST parameter, with each checked element's value, separated by comma.
-                        // Also here, we apply the same "trick" to allow for "value"s of these widgets to contains "," 
-                        // as we do in the Container widget for an "option" element.
-                        var val = Page.Request.Form [this ["name"]];
-                        if (string.IsNullOrEmpty (val)) {
+                    // Notice, both checkboxes and radio buttons can be "grouped", by making them have the same "name" attribute value.
+                    // If they do, they will be serialized as one HTTP POST parameter, with each checked element's value, separated by comma.
+                    // Also here, we apply the same "trick" to allow for "value"s of these widgets to contains "," 
+                    // as we do in the Container widget for an "option" element.
+                    var val = Page.Request.Form [this ["name"]];
+                    if (string.IsNullOrEmpty (val)) {
 
-                            // Definitely unchcked!
+                        // Definitely unchcked!
+                        Attributes.DeleteAttribute ("checked", false);
+
+                    } else {
+                        var splits = val.Split (',');
+                        if (splits.Length == 1 && splits [0] == "on")
+                            Attributes.SetAttributeFormData ("checked", null);
+                        else if (splits.Any (ix => Page.Server.UrlDecode (ix) == this ["value"]))
+                            Attributes.SetAttributeFormData ("checked", null);
+                        else
                             Attributes.DeleteAttribute ("checked", false);
-
-                        } else {
-                            var splits = val.Split (',');
-                            if (splits.Length == 1 && splits [0] == "on")
-                                Attributes.SetAttributeFormData ("checked", null);
-                            else if (splits.Any (ix => Page.Server.UrlDecode (ix) == this ["value"]))
-                                Attributes.SetAttributeFormData ("checked", null);
-                            else
-                                Attributes.DeleteAttribute ("checked", false);
-                        }
-                        break;
-                    default:
-                        Attributes.SetAttributeFormData ("value", Page.Request.Form [this ["name"]]);
-                        break;
+                    }
+                    break;
+                default:
+                    Attributes.SetAttributeFormData ("value", Page.Request.Form [this ["name"]]);
+                    break;
                 }
             }
         }

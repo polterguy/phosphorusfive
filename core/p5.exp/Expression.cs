@@ -92,8 +92,8 @@ namespace p5.exp
          * Tokenizes and initializes expression object
          */
         IteratorGroup BuildExpression (
-            ApplicationContext context, 
-            Node evaluatedNode, 
+            ApplicationContext context,
+            Node evaluatedNode,
             Node exNode)
         {
             // Setting up a return value
@@ -186,15 +186,15 @@ namespace p5.exp
                 typeOfExpression = token;
             }
             switch (typeOfExpression) {
-                case "name":
-                case "value":
-                case "node":
-                case "count":
-                    break;
-                default:
-                    throw new ExpressionException (Value, "Type declaration of expression was not valid");
+            case "name":
+            case "value":
+            case "node":
+            case "count":
+                break;
+            default:
+                throw new ExpressionException (Value, "Type declaration of expression was not valid");
             }
-            _expressionType = (Match.MatchType)Enum.Parse (typeof(Match.MatchType), typeOfExpression);
+            _expressionType = (Match.MatchType)Enum.Parse (typeof (Match.MatchType), typeOfExpression);
         }
 
         /*
@@ -207,194 +207,194 @@ namespace p5.exp
             string previousToken)
         {
             switch (token) {
-                case "(":
+            case "(":
 
-                    // Opening new group, checking for empty name iterator first
-                    if (previousToken == "/")
-                        current.AddIterator (new IteratorNamed (""));
-                    return new IteratorGroup (current);
-                case ")":
+                // Opening new group, checking for empty name iterator first
+                if (previousToken == "/")
+                    current.AddIterator (new IteratorNamed (""));
+                return new IteratorGroup (current);
+            case ")":
 
-                    // Closing group, checking for empty name iterator first and missing group opening first
-                    if (current.ParentGroup == null) // making sure there's actually an open group first
-                        throw new ExpressionException (
-                            Value,
-                            "Closing parenthesis ')' has no matching '(' in expression.");
-                    if (previousToken == "/")
-                        current.AddIterator (new IteratorNamed (""));
-                    return current.ParentGroup;
-                case "/":
+                // Closing group, checking for empty name iterator first and missing group opening first
+                if (current.ParentGroup == null) // making sure there's actually an open group first
+                    throw new ExpressionException (
+                        Value,
+                        "Closing parenthesis ')' has no matching '(' in expression.");
+                if (previousToken == "/")
+                    current.AddIterator (new IteratorNamed (""));
+                return current.ParentGroup;
+            case "/":
 
-                    // New token iterator
-                    if (previousToken == "/") {
+                // New token iterator
+                if (previousToken == "/") {
 
-                        // Two slashes "//" preceding each other, hence we're looking for a named value,
-                        // where its name is ""
-                        current.AddIterator (new IteratorNamed (""));
-                    } // Else, ignoring token, since it's simply declaring the beginning (or the end) of another token
-                    break;
-                case "|":
-                case "&":
-                case "^":
-                case "!":
+                    // Two slashes "//" preceding each other, hence we're looking for a named value,
+                    // where its name is ""
+                    current.AddIterator (new IteratorNamed (""));
+                } // Else, ignoring token, since it's simply declaring the beginning (or the end) of another token
+                break;
+            case "|":
+            case "&":
+            case "^":
+            case "!":
 
-                    // Boolean algebraic operator, opening up a new sibling-expression, checking for empty name iterator first
-                    if (previousToken == "/")
-                        current.AddIterator (new IteratorNamed (""));
-                    LogicalToken (current, token);
-                    break;
-                case "..":
+                // Boolean algebraic operator, opening up a new sibling-expression, checking for empty name iterator first
+                if (previousToken == "/")
+                    current.AddIterator (new IteratorNamed (""));
+                LogicalToken (current, token);
+                break;
+            case "..":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Root node token
-                    current.AddIterator (new IteratorRoot ());
-                    break;
-                case "*":
+                // Root node token
+                current.AddIterator (new IteratorRoot ());
+                break;
+            case "*":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // All children token
-                    current.AddIterator (new IteratorChildren ());
-                    break;
-                case "**":
+                // All children token
+                current.AddIterator (new IteratorChildren ());
+                break;
+            case "**":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Flatten descendants token
-                    current.AddIterator (new IteratorDescendants ());
-                    break;
-                case ".":
+                // Flatten descendants token
+                current.AddIterator (new IteratorDescendants ());
+                break;
+            case ".":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Parent node token
-                    current.AddIterator (new IteratorParent ());
-                    break;
-                case "#":
+                // Parent node token
+                current.AddIterator (new IteratorParent ());
+                break;
+            case "#":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Reference node token
-                    current.AddIterator (new IteratorReference ());
-                    break;
-                case "<":
+                // Reference node token
+                current.AddIterator (new IteratorReference ());
+                break;
+            case "<":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Left shift token
-                    current.AddIterator (new IteratorShiftLeft ());
-                    break;
-                case ">":
+                // Left shift token
+                current.AddIterator (new IteratorShiftLeft ());
+                break;
+            case ">":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Right shift token
-                    current.AddIterator (new IteratorShiftRight ());
-                    break;
-                case "=$":
+                // Right shift token
+                current.AddIterator (new IteratorShiftRight ());
+                break;
+            case "=$":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Right shift token
-                    current.AddIterator (new IteratorDistinctValue ());
-                    break;
-                case "$":
+                // Right shift token
+                current.AddIterator (new IteratorDistinctValue ());
+                break;
+            case "$":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Right shift token
-                    current.AddIterator (new IteratorDistinctName ());
-                    break;
-                case "++":
+                // Right shift token
+                current.AddIterator (new IteratorDistinctName ());
+                break;
+            case "++":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Right shift token
-                    current.AddIterator (new IteratorSiblingsOlder ());
-                    break;
-                case "--":
+                // Right shift token
+                current.AddIterator (new IteratorSiblingsOlder ());
+                break;
+            case "--":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Right shift token
-                    current.AddIterator (new IteratorSiblingsYounger ());
-                    break;
-                case "<-":
+                // Right shift token
+                current.AddIterator (new IteratorSiblingsYounger ());
+                break;
+            case "<-":
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Right shift token
-                    current.AddIterator (new IteratorReverse ());
-                    break;
-                default:
+                // Right shift token
+                current.AddIterator (new IteratorReverse ());
+                break;
+            default:
 
-                    // Sanity check!
-                    if (previousToken != "/")
-                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+                // Sanity check!
+                if (previousToken != "/")
+                    throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
-                    // Handles everything else
-                    if (token.StartsWithEx ("=")) {
+                // Handles everything else
+                if (token.StartsWithEx ("=")) {
 
-                        // Some type of value token, either normal value, or regex value
-                        ValueToken (current, token);
-                    } else if (token.StartsWithEx ("[")) {
+                    // Some type of value token, either normal value, or regex value
+                    ValueToken (current, token);
+                } else if (token.StartsWithEx ("[")) {
 
-                        // Range iterator token
-                        RangeToken (current, token);
-                    } else if (token.StartsWithEx ("..") && token.Length > 2) {
+                    // Range iterator token
+                    RangeToken (current, token);
+                } else if (token.StartsWithEx ("..") && token.Length > 2) {
 
-                        // Named ancestor token
-                        current.AddIterator (new IteratorNamedAncestor (token.Substring (2)));
-                    } else if (token.StartsWithEx ("%")) {
+                    // Named ancestor token
+                    current.AddIterator (new IteratorNamedAncestor (token.Substring (2)));
+                } else if (token.StartsWithEx ("%")) {
 
-                        // Modulo token
-                        ModuloToken (current, token);
-                    } else if (token.StartsWithEx ("-") || token.StartsWithEx ("+")) {
+                    // Modulo token
+                    ModuloToken (current, token);
+                } else if (token.StartsWithEx ("-") || token.StartsWithEx ("+")) {
 
-                        // Sibling offset
-                        SiblingToken (current, token);
-                    } else if (token.StartsWithEx ("@")) {
+                    // Sibling offset
+                    SiblingToken (current, token);
+                } else if (token.StartsWithEx ("@")) {
 
-                        // Sibling offset
-                        ElderRelativeToken (current, token);
+                    // Sibling offset
+                    ElderRelativeToken (current, token);
+                } else {
+
+                    if (IsNumber (token)) {
+
+                        // Numbered child token
+                        current.AddIterator (new IteratorNumberedChild (int.Parse (token)));
                     } else {
 
-                        if (IsNumber (token)) {
-
-                            // Numbered child token
-                            current.AddIterator (new IteratorNumberedChild (int.Parse (token)));
-                        } else {
-
-                            // Defaulting to "named iterator"
-                            current.AddIterator (new IteratorNamed (token));
-                        }
+                        // Defaulting to "named iterator"
+                        current.AddIterator (new IteratorNamed (token));
                     }
-                    break;
+                }
+                break;
             }
 
             // Defaulting to returning what we came in with
@@ -407,26 +407,26 @@ namespace p5.exp
         static void LogicalToken (IteratorGroup current, string token)
         {
             switch (token) {
-                case "|":
+            case "|":
 
-                    // OR logical boolean algebraic operator
-                    current.AddLogical (new Logical (Logical.LogicalType.Or));
-                    break;
-                case "&":
+                // OR logical boolean algebraic operator
+                current.AddLogical (new Logical (Logical.LogicalType.Or));
+                break;
+            case "&":
 
-                    // AND logical boolean algebraic operator
-                    current.AddLogical (new Logical (Logical.LogicalType.And));
-                    break;
-                case "!":
+                // AND logical boolean algebraic operator
+                current.AddLogical (new Logical (Logical.LogicalType.And));
+                break;
+            case "!":
 
-                    // NOT logical boolean algebraic operator
-                    current.AddLogical (new Logical (Logical.LogicalType.Not));
-                    break;
-                case "^":
+                // NOT logical boolean algebraic operator
+                current.AddLogical (new Logical (Logical.LogicalType.Not));
+                break;
+            case "^":
 
-                    // XOR logical boolean algebraic operator
-                    current.AddLogical (new Logical (Logical.LogicalType.Xor));
-                    break;
+                // XOR logical boolean algebraic operator
+                current.AddLogical (new Logical (Logical.LogicalType.Xor));
+                break;
             }
         }
 
@@ -521,7 +521,7 @@ namespace p5.exp
         void SiblingToken (IteratorGroup current, string token)
         {
             var intValue = token.Substring (1);
-            var oper = token[0];
+            var oper = token [0];
             var value = 1;
             if (intValue.Length > 0 && !IsNumber (intValue))
                 throw new ExpressionException (
@@ -548,7 +548,7 @@ namespace p5.exp
                 return 1;
             return CompareTo (rhsNode);
         }
-        
+
         public int CompareTo (Expression rhs)
         {
             if (_expressionType != rhs._expressionType)

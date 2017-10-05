@@ -94,8 +94,7 @@ namespace p5.ajax.core
         ///     Returns true if this request is an Ajax request.
         /// </summary>
         /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c></value>
-        public bool IsAjaxRequest
-        {
+        public bool IsAjaxRequest {
             get { return !string.IsNullOrEmpty (Page.Request.Params ["_p5_event"]); }
         }
 
@@ -222,8 +221,7 @@ namespace p5.ajax.core
         ///     Gets the page state persister.
         /// </summary>
         /// <value>The page state persister</value>
-        protected override PageStatePersister PageStatePersister
-        {
+        protected override PageStatePersister PageStatePersister {
             get {
                 // Notice, if consumer of class has declared in his web.config that he wishes to have zero "0" ViewState entries stored in session, 
                 // we completely bypass our custom PageStatePersister, and simply returns the base implementation from System.Web.UI,
@@ -238,8 +236,7 @@ namespace p5.ajax.core
          * Contains all changes, and other objects, that needs to be pushed as JSON to client during this request.
          * Has no effect unless we're in an Ajax request.
          */
-        internal OrderedDictionary Changes
-        {
+        internal OrderedDictionary Changes {
             get { return _changes; }
         }
 
@@ -248,8 +245,7 @@ namespace p5.ajax.core
          * This is normally only used when we're having a normal postback, or initial request, using e.g. the HtmlFilter for filtering our response.
          * It keeps track of all CSS files included on page, during page's entire lifetime.
          */
-        internal List<string> PersistentCSSInclusions
-        {
+        internal List<string> PersistentCSSInclusions {
             get {
                 if (ViewState ["__p5_css_files"] == null)
                     ViewState ["__p5_css_files"] = new List<string> ();
@@ -262,8 +258,7 @@ namespace p5.ajax.core
          * This is normally only used if we're in a JsonFilter type of request, and only returns the new CSS inclusions, that was added during the
          * current request.
          */
-        internal IEnumerable<string> CSSInclusionsForCurrentRequest
-        {
+        internal IEnumerable<string> CSSInclusionsForCurrentRequest {
             get { return _cssFileForCurrentRequest; }
         }
 
@@ -272,16 +267,14 @@ namespace p5.ajax.core
          * This is normally only used if we're in a JsonFilter type of request, and only returns the new JS inclusions, that was added during the
          * current request.
          */
-        internal IEnumerable<Tuple<string, bool>> JSInclusionsForCurrentRequest
-        {
+        internal IEnumerable<Tuple<string, bool>> JSInclusionsForCurrentRequest {
             get { return _javaScriptObjectsForCurrentRequest; }
         }
 
         /*
          * Returns all persistently included JavaScript files.
          */
-        internal IEnumerable<string> PersistensJSFileInclusions
-        {
+        internal IEnumerable<string> PersistensJSFileInclusions {
             get {
                 return PersistentJSInclusions.Where (ix => ix.Item2).Select (ix => ix.Item1);
             }
@@ -290,8 +283,7 @@ namespace p5.ajax.core
         /*
          * Returns all persistently included JavaScript objects.
          */
-        internal IEnumerable<string> PersistensJSObjectInclusions
-        {
+        internal IEnumerable<string> PersistensJSObjectInclusions {
             get {
                 return PersistentJSInclusions.Where (ix => !ix.Item2).Select (ix => ix.Item1);
             }
@@ -302,8 +294,7 @@ namespace p5.ajax.core
          * These are the JavaScript objects that user wants to send to the client, not in a persistent way, but simply as a single one-time send
          * operation.
          */
-        internal List<string> SendScripts
-        {
+        internal List<string> SendScripts {
             get {
                 if (!_changes.Contains ("__p5_scripts"))
                     _changes ["__p5_scripts"] = new List<string> ();
@@ -368,8 +359,7 @@ namespace p5.ajax.core
          * This is normally only used when we're having a normal postback, or initial request, using e.g. the HtmlFilter for filtering our response.
          * It keeps track of all CSS files included on page, during page's entire lifetime.
          */
-        List<Tuple<string, bool>> PersistentJSInclusions
-        {
+        List<Tuple<string, bool>> PersistentJSInclusions {
             get {
                 if (ViewState ["__p5_js_objects"] == null)
                     ViewState ["__p5_js_objects"] = new List<Tuple<string, bool>> ();

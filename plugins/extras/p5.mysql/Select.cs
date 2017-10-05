@@ -39,8 +39,7 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.mysql.select")]
-        public static void p5_mysql_select (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_mysql_select (ApplicationContext context, ActiveEventArgs e) {
             // Making sure we clean up after ourselves.
             using (new ArgsRemover (e.Args, true)) {
 

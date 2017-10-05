@@ -32,25 +32,24 @@ namespace p5.flickrnet
     public static class FlickrNet
     {
         [ActiveEvent (Name = "p5.flickr.search")]
-        public static void p5_flickr_search (ApplicationContext context, ActiveEventArgs e)
-        {
+        public static void p5_flickr_search (ApplicationContext context, ActiveEventArgs e) {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new ArgsRemover (e.Args, true)) {
 
                 // Instantiating Flickr.NET and doing search, supplying tags user wants to see
                 var flickr = new Flickr ();
-                flickr.ApiKey = e.Args.GetExChildValue<string>("api-key", context);
-                var options = new PhotoSearchOptions { 
+                flickr.ApiKey = e.Args.GetExChildValue<string> ("api-key", context);
+                var options = new PhotoSearchOptions {
                     Text = e.Args.GetExChildValue<string> ("text", context),
                     Tags = e.Args.GetExChildValue<string> ("tags", context),
-                    Username = e.Args.GetExChildValue<string> ("username", context), 
-                    PerPage = e.Args.GetExChildValue ("per-page", context, 50), 
-                    Page = e.Args.GetExChildValue ("page", context, 0) + 1, 
-                    Extras = 
-                        PhotoSearchExtras.Tags | 
-                        PhotoSearchExtras.Description | 
-                        PhotoSearchExtras.OriginalUrl | 
-                        PhotoSearchExtras.Medium640Url | 
+                    Username = e.Args.GetExChildValue<string> ("username", context),
+                    PerPage = e.Args.GetExChildValue ("per-page", context, 50),
+                    Page = e.Args.GetExChildValue ("page", context, 0) + 1,
+                    Extras =
+                        PhotoSearchExtras.Tags |
+                        PhotoSearchExtras.Description |
+                        PhotoSearchExtras.OriginalUrl |
+                        PhotoSearchExtras.Medium640Url |
                         PhotoSearchExtras.ThumbnailUrl |
                         PhotoSearchExtras.License,
                     SafeSearch = (SafetyLevel)Enum.Parse (typeof (SafetyLevel), e.Args.GetExChildValue ("safety-level", context, "None")),

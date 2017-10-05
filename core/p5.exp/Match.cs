@@ -38,7 +38,7 @@ namespace p5.exp
         /// </summary>
         public enum MatchType
         {
-            
+
             /// <summary>
             ///     Returns <see cref="Node">count</see> themselves
             /// </summary>
@@ -100,8 +100,7 @@ namespace p5.exp
         ///     Returns number of nodes in match
         /// </summary>
         /// <value>Number of nodes in match</value>
-        public int Count
-        {
+        public int Count {
             get { return _matchEntities.Count; }
         }
 
@@ -109,9 +108,8 @@ namespace p5.exp
         ///     Gets the type of match
         /// </summary>
         /// <value>The type declaration of your Expression</value>
-        public MatchType TypeOfMatch
-        {
-            get; 
+        public MatchType TypeOfMatch {
+            get;
             private set;
         }
 
@@ -120,9 +118,8 @@ namespace p5.exp
         /// </summary>
         /// <value>Type to convert to, can be any of your Hyperlambda types, defined through your [.p5.hyperlambda.get-type-name.xxx] 
         /// Active Events</value>
-        public string Convert
-        {
-            get; 
+        public string Convert {
+            get;
             private set;
         }
 
@@ -130,16 +127,14 @@ namespace p5.exp
         ///     Returns the MatchEntity at the index position
         /// </summary>
         /// <param name="index">Which position you wish to retrieve</param>
-        public MatchEntity this [int index]
-        {
+        public MatchEntity this [int index] {
             get { return _matchEntities [index]; }
         }
 
         /*
          * Used by MatchEntity class for converting values
          */
-        internal ApplicationContext Context
-        {
+        internal ApplicationContext Context {
             get { return _context; }
         }
 

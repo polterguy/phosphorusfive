@@ -39,7 +39,7 @@ namespace p5.events
         static readonly Dictionary<string, Node> _events = new Dictionary<string, Node> ();
 
         // Used to create lock when creating, deleting and consuming events.
-        static readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        static readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim ();
 
         /// <summary>
         ///     Creates (or deletes) an Active Event, depending upon whether or not any lambda objects were supplied.
@@ -133,7 +133,7 @@ namespace p5.events
 
             // Checking if there exists a whitelist, and if so, removing everything not in our whitelist.
             if (context.Ticket.Whitelist != null)
-                e.Args.RemoveAll (ix => context.Ticket.Whitelist[ix.Get<string> (context)] == null);
+                e.Args.RemoveAll (ix => context.Ticket.Whitelist [ix.Get<string> (context)] == null);
 
             // Sorting such that static events comes first, and then having keywords coming.
             e.Args.Sort (delegate (Node lhs, Node rhs) {
@@ -168,7 +168,7 @@ namespace p5.events
                 if (_events.ContainsKey (e.Name)) {
 
                     // Keep a reference to all lambda objects in current event, such that we can later delete them
-                    lambda = _events[e.Name].Clone ();
+                    lambda = _events [e.Name].Clone ();
                 }
 
             } finally {
@@ -196,7 +196,7 @@ namespace p5.events
                 throw new LambdaException ("Tried to create an event that is already a system event", args, context);
 
             // Making sure we have a key for Active Event name.
-            _events[name] = new Node (name);
+            _events [name] = new Node (name);
 
             // Adding event to dictionary.
             _events [name].AddRange (args.Clone ().Children);
@@ -221,10 +221,10 @@ namespace p5.events
          * Returns Active Events from source given, using name as type of Active Event
          */
         static void ListActiveEvents (
-            IEnumerable<string> source, 
-            Node args, 
+            IEnumerable<string> source,
+            Node args,
             List<string> filter,
-            string eventTypeName, 
+            string eventTypeName,
             ApplicationContext context)
         {
             // Looping through each Active Event from IEnumerable
