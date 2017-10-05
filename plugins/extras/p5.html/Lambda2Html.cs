@@ -34,14 +34,14 @@ namespace p5.html
     /// </summary>
     public static class Lambda2Html
     {
-		/// <summary>
-		///     Creates an HTML document from the given p5 lambda object
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "lambda2html")]
-		[ActiveEvent (Name = "p5.html.lambda2html")]
-		public static void p5_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
+        /// <summary>
+        ///     Creates an HTML document from the given p5 lambda object
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "lambda2html")]
+        [ActiveEvent (Name = "p5.html.lambda2html")]
+        public static void p5_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new ArgsRemover (e.Args)) {
@@ -61,13 +61,13 @@ namespace p5.html
          * Helper for above
          */
         static void Convert (
-            ApplicationContext context, 
-            IEnumerable<Node> nodes, 
+            ApplicationContext context,
+            IEnumerable<Node> nodes,
             StringBuilder builder)
         {
             foreach (Node idxNode in nodes) {
                 if (idxNode.Name == "#text") {
-                    builder.Append (idxNode.Get<string>(context));
+                    builder.Append (idxNode.Get<string> (context));
                     continue;
                 }
                 builder.Append (string.Format ("<{0}{1}>", idxNode.Name, GetAttributes (idxNode)));

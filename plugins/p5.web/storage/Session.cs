@@ -46,10 +46,11 @@ namespace p5.web.storage
 
                     // Removal
                     HttpContext.Current.Session.Remove (key);
+
                 } else {
 
                     // Setting or updating
-                    HttpContext.Current.Session[key] = value;
+                    HttpContext.Current.Session [key] = value;
                 }
             });
         }

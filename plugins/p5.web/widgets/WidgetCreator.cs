@@ -66,29 +66,29 @@ namespace p5.web.widgets
             // Figuring out which type of widget we're creating.
             string type = null;
             switch (e.Name) {
-                case "create-void-widget":
-                case "p5.web.widgets.create-void":
-                    type = "void";
-                    break;
-                case "create-literal-widget":
-                case "p5.web.widgets.create-literal":
-                    type = "literal";
-                    break;
-                case "create-container-widget":
-                case "p5.web.widgets.create-container":
-                    type = "container";
-                    break;
-                case "create-widget":
-                case "p5.web.widgets.create":
+            case "create-void-widget":
+            case "p5.web.widgets.create-void":
+                type = "void";
+                break;
+            case "create-literal-widget":
+            case "p5.web.widgets.create-literal":
+                type = "literal";
+                break;
+            case "create-container-widget":
+            case "p5.web.widgets.create-container":
+                type = "container";
+                break;
+            case "create-widget":
+            case "p5.web.widgets.create":
 
-                    // Generic versions, figuring out type according to whether or not [innerValue] or [widgets] exists as arguments.
-                    if (e.Args.Children.Any (ix => ix.Name == "innerValue"))
-                        type = "literal";
-                    else if (e.Args.Children.Any (ix => ix.Name == "widgets"))
-                        type = "container";
-                    else
-                        type = "void";
-                    break;
+                // Generic versions, figuring out type according to whether or not [innerValue] or [widgets] exists as arguments.
+                if (e.Args.Children.Any (ix => ix.Name == "innerValue"))
+                    type = "literal";
+                else if (e.Args.Children.Any (ix => ix.Name == "widgets"))
+                    type = "container";
+                else
+                    type = "void";
+                break;
             }
 
             // Creating widget of specified type.
@@ -107,10 +107,10 @@ namespace p5.web.widgets
             CreateManyWidgets (context, e.Args);
         }
 
-		/*
+        /*
          * Helper for above.
          */
-		private void CreateManyWidgets (ApplicationContext context, Node args)
+        private void CreateManyWidgets (ApplicationContext context, Node args)
         {
             // Looping through each argument, assuming each is a widget creation statement.
             foreach (var idxWidget in XUtil.Iterate<Node> (context, args)) {
@@ -121,13 +121,13 @@ namespace p5.web.widgets
                 case "container":
                     CreateWidget (context, idxWidget, "container");
                     break;
-				case "void":
-					CreateWidget (context, idxWidget, "void");
-					break;
-				case "text":
-					CreateWidget (context, idxWidget, "text");
-					break;
-				default:
+                case "void":
+                    CreateWidget (context, idxWidget, "void");
+                    break;
+                case "text":
+                    CreateWidget (context, idxWidget, "text");
+                    break;
+                default:
 
                     // Checking if this is a "custom widget", which it is, if its name contains a ".".
                     if (idxWidget.Name.IndexOfEx (".") > 0) {
@@ -156,13 +156,13 @@ namespace p5.web.widgets
 
                         // This is the "HTML element" helper syntax, declaring the element of the widget as the node's name.
                         // Checking type of widget, before we invoke creation event.
-                        if (idxWidget["widgets"] != null) {
+                        if (idxWidget ["widgets"] != null) {
 
                             CreateWidget (context, idxWidget, "container");
 
-						} else if (idxWidget ["innerValue"] != null) {
+                        } else if (idxWidget ["innerValue"] != null) {
 
-							CreateWidget (context, idxWidget, "literal");
+                            CreateWidget (context, idxWidget, "literal");
 
                         } else {
 
@@ -170,8 +170,8 @@ namespace p5.web.widgets
 
                         }
                     }
-					break;
-				}
+                    break;
+                }
             }
         }
 
@@ -179,8 +179,8 @@ namespace p5.web.widgets
          * Helper method for creating widgets.
          */
         void CreateWidget (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             string type)
         {
             // Retrieving [position] and [parent]/[before]/[after] widget, and doing some basic sanity check inside of GetParent.
@@ -270,7 +270,7 @@ namespace p5.web.widgets
 
             // Checking if currently iterated widget has children widgets, since its children might also have [oninit] lambdas.
             if (args ["widgets"] != null) {
-                foreach (var idxNode in args["widgets"].Children) {
+                foreach (var idxNode in args ["widgets"].Children) {
 
                     // Notice, we need to recursively find the first widget which is not a "custom widget", hence the while loop.
                     var cur = idxNode;

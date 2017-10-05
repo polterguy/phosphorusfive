@@ -43,7 +43,8 @@ namespace p5.auth.helpers
         /*
          * Returns user Context Ticket (Context "user")
          */
-        public static ContextTicket GetTicket (ApplicationContext context) {
+        public static ContextTicket GetTicket (ApplicationContext context)
+        {
             if (HttpContext.Current.Session [".p5.auth.context-ticket"] == null) {
 
                 // No user is logged in, using default impersonated user
@@ -64,7 +65,8 @@ namespace p5.auth.helpers
         /*
          * Tries to login user according to given user credentials
          */
-        public static void Login (ApplicationContext context, Node args) {
+        public static void Login (ApplicationContext context, Node args)
+        {
             // Defaulting result of Active Event to unsuccessful
             args.Value = false;
 
@@ -132,7 +134,8 @@ namespace p5.auth.helpers
         /*
          * Logs out user
          */
-        public static void Logout (ApplicationContext context) {
+        public static void Logout (ApplicationContext context)
+        {
             // Making sure we invoke an [.onlogin] lambda callbacks for user.
             var onLogout = new Node ();
             GetSettings (context, onLogout);
@@ -157,7 +160,8 @@ namespace p5.auth.helpers
         /*
          * Lists all users in system
          */
-        public static void ListUsers (ApplicationContext context, Node args) {
+        public static void ListUsers (ApplicationContext context, Node args)
+        {
             // Retrieving "auth" file in node format
             var authFile = AuthFile.GetAuthFile (context);
 
@@ -172,7 +176,8 @@ namespace p5.auth.helpers
         /*
          * Returns server-salt for application
          */
-        public static string ServerSalt (ApplicationContext context) {
+        public static string ServerSalt (ApplicationContext context)
+        {
             // Retrieving "auth" file in node format.
             var authFile = AuthFile.GetAuthFile (context);
             var authSalt = authFile.GetChildValue<string> ("server-salt", context);
@@ -189,7 +194,8 @@ namespace p5.auth.helpers
         /*
          * Sets the server salt for application
          */
-        public static void SetServerSalt (ApplicationContext context, Node args, string salt) {
+        public static void SetServerSalt (ApplicationContext context, Node args, string salt)
+        {
             AuthFile.ModifyAuthFile (context, delegate (Node node) {
                 if (node.Children.Any (ix => ix.Name == "server-salt"))
                     throw new LambdaSecurityException ("Tried to change server salt after initial creation", args, context);
@@ -200,7 +206,8 @@ namespace p5.auth.helpers
         /*
          * Creates a new user
          */
-        public static void CreateUser (ApplicationContext context, Node args) {
+        public static void CreateUser (ApplicationContext context, Node args)
+        {
             string username = args.GetExValue<string> (context);
             string password = args.GetExChildValue<string> ("password", context);
             string role = args.GetExChildValue<string> ("role", context);
@@ -261,7 +268,8 @@ namespace p5.auth.helpers
         /*
          * Retrieves a specific user from system
          */
-        public static void GetUser (ApplicationContext context, Node args) {
+        public static void GetUser (ApplicationContext context, Node args)
+        {
             // Retrieving "auth" file in node format
             var authFile = AuthFile.GetAuthFile (context);
 
@@ -284,7 +292,8 @@ namespace p5.auth.helpers
         /*
          * Retrieves a specific user from system
          */
-        public static void DeleteUser (ApplicationContext context, Node args) {
+        public static void DeleteUser (ApplicationContext context, Node args)
+        {
 
             // Locking access to password file as we create new user object
             AuthFile.ModifyAuthFile (
@@ -313,7 +322,8 @@ namespace p5.auth.helpers
         /*
          * Edits an existing user
          */
-        public static void EditUser (ApplicationContext context, Node args) {
+        public static void EditUser (ApplicationContext context, Node args)
+        {
             string username = args.GetExValue<string> (context);
             string password = args.GetExChildValue<string> ("password", context);
             string userRole = args.GetExChildValue<string> ("role", context);
@@ -363,7 +373,8 @@ namespace p5.auth.helpers
         /*
          * Retrieves settings for currently logged in user
          */
-        public static void GetSettings (ApplicationContext context, Node args) {
+        public static void GetSettings (ApplicationContext context, Node args)
+        {
             // Retrieving "auth" file in node format
             var authFile = AuthFile.GetAuthFile (context);
 
@@ -380,7 +391,8 @@ namespace p5.auth.helpers
         /*
          * Changes the settings for currently logged in user
          */
-        public static void ChangeSettings (ApplicationContext context, Node args) {
+        public static void ChangeSettings (ApplicationContext context, Node args)
+        {
             string username = context.Ticket.Username;
 
             // Locking access to password file as we edit user object
@@ -401,7 +413,8 @@ namespace p5.auth.helpers
         /*
          * Changes the password for currently logged in user
          */
-        public static void ChangePassword (ApplicationContext context, Node args) {
+        public static void ChangePassword (ApplicationContext context, Node args)
+        {
             string password = args.GetExValue (context, "");
             if (string.IsNullOrEmpty (password))
                 throw new LambdaException ("No password supplied", args, context);
@@ -426,7 +439,8 @@ namespace p5.auth.helpers
         /*
          * Deletes the currently logged in user
          */
-        public static void DeleteMyUser (ApplicationContext context, Node args) {
+        public static void DeleteMyUser (ApplicationContext context, Node args)
+        {
             // Retrieving username to delete.
             string username = context.Ticket.Username;
 
@@ -450,7 +464,8 @@ namespace p5.auth.helpers
         /*
          * Returns all existing roles in system
          */
-        public static void GetRoles (ApplicationContext context, Node args) {
+        public static void GetRoles (ApplicationContext context, Node args)
+        {
             // Making sure default role is added first.
             string defaultRole = context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context);
             if (!string.IsNullOrEmpty (defaultRole)) {
@@ -481,7 +496,8 @@ namespace p5.auth.helpers
          * Changes password of "root" account, but only if existing root account's password 
          * is null. Used during setup of system
          */
-        public static void SetRootPassword (ApplicationContext context, Node args) {
+        public static void SetRootPassword (ApplicationContext context, Node args)
+        {
             // Retrieving password given
             string password = args.GetExChildValue<string> ("password", context);
             if (string.IsNullOrEmpty (password))
@@ -497,7 +513,8 @@ namespace p5.auth.helpers
         /*
          * Returns true if root account's password is null, which means that server is not setup yet
          */
-        public static bool NoExistingRootAccount (ApplicationContext context) {
+        public static bool NoExistingRootAccount (ApplicationContext context)
+        {
             // Retrieving password file, and making sure we lock access to file as we do
             Node rootPwdNode = AuthFile.GetAuthFile (context) ["users"] ["root"];
 
@@ -508,7 +525,8 @@ namespace p5.auth.helpers
         /*
          * Will try to login from persistent cookie
          */
-        public static void TryLoginFromPersistentCookie (ApplicationContext context) {
+        public static void TryLoginFromPersistentCookie (ApplicationContext context)
+        {
             try {
                 // Making sure we do NOT try to login from persistent cookie if root password is null, at which
                 // case the system has been reset, and cookie (obviously) is not valid!
@@ -548,14 +566,16 @@ namespace p5.auth.helpers
         /*
          * Sets user Context Ticket (context "user")
          */
-        static void SetTicket (ContextTicket ticket) {
+        static void SetTicket (ContextTicket ticket)
+        {
             HttpContext.Current.Session [".p5.auth.context-ticket"] = ticket;
         }
 
         /*
          * Verifies that given username is valid
          */
-        static void VerifyUsernameValid (string username) {
+        static void VerifyUsernameValid (string username)
+        {
             foreach (var charIdx in username) {
                 if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-".IndexOf (charIdx) == -1)
                     throw new SecurityException ("Sorry, you cannot use character '" + charIdx + "' in username");
@@ -565,7 +585,8 @@ namespace p5.auth.helpers
         /*
          * Creates folder structure for user
          */
-        static void CreateUserDirectory (string rootFolder, string username) {
+        static void CreateUserDirectory (string rootFolder, string username)
+        {
             // Creating folders for user, and making sure private directory stays private ...
             if (!Directory.Exists (rootFolder + "/users/" + username))
                 Directory.CreateDirectory (rootFolder + "/users/" + username);
@@ -586,7 +607,8 @@ namespace p5.auth.helpers
         /*
          * Tries to login with the given cookie as credentials
          */
-        static void LoginFromCookie (HttpCookie cookie, ApplicationContext context) {
+        static void LoginFromCookie (HttpCookie cookie, ApplicationContext context)
+        {
             // User has persistent cookie associated with client
             var cookieSplits = cookie.Value.Split (' ');
             if (cookieSplits.Length != 2)
@@ -617,7 +639,8 @@ namespace p5.auth.helpers
         /*
          * Creates default Context Ticket according to settings from config file
          */
-        static ContextTicket CreateDefaultTicket (ApplicationContext context) {
+        static ContextTicket CreateDefaultTicket (ApplicationContext context)
+        {
             return new ContextTicket (
                 context.RaiseEvent (".p5.auth.get-default-context-username").Get<string> (context),
                 context.RaiseEvent (".p5.auth.get-default-context-role").Get<string> (context),

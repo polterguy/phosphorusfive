@@ -60,7 +60,7 @@ namespace p5.lambda.keywords.core
             if (value == null)
                 lambdaObj = e.Args.Children.FirstOrDefault (ix => ix.Value == null);
             else
-                lambdaObj = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && value.Equals (ix.Value)) ?? e.Args["default"];
+                lambdaObj = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && value.Equals (ix.Value)) ?? e.Args ["default"];
 
             // Checking if we have a match, and if so, evaluate lambda belonging to match.
             if (lambdaObj != null) {
@@ -123,11 +123,11 @@ namespace p5.lambda.keywords.core
                 throw new LambdaException ("[switch] must have at least one [default] or [case] lambda", args, context);
 
             // Sanity check, [default], if given, has null value.
-            if ((args["default"]?.Value ?? null) != null)
+            if ((args ["default"]?.Value ?? null) != null)
                 throw new LambdaException ("[default] cannot have a value", args, context);
 
             // Sanity checking that [default], if provided, is our last lambda.
-            if (args["default"] != null && args.IndexOf (args["default"]) != args.Count - 1)
+            if (args ["default"] != null && args.IndexOf (args ["default"]) != args.Count - 1)
                 throw new LambdaException ("[default] must be the last lambda in a [switch]", args, context);
 
             // Unrolling case values, and sanity checking them, that each [case] holds a unique value, after having evaluated their values.
@@ -138,7 +138,7 @@ namespace p5.lambda.keywords.core
                 idx.RemoveAll (ix => ix.Name == "");
 
                 // Making sure there's only one [case] in the children collection with the given value.
-                if (args.Children.Count (ix => (ix.Value == null && idx.Value == null) || (ix.Value != null && ix.Value.Equals (idx.Value) )) > 1)
+                if (args.Children.Count (ix => (ix.Value == null && idx.Value == null) || (ix.Value != null && ix.Value.Equals (idx.Value))) > 1)
                     throw new LambdaException ("All your [case] lambdas must have unique values within your [switch]", idx, context);
             }
 

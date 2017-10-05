@@ -39,7 +39,8 @@ namespace p5.markdown
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "markdown2html")]
         [ActiveEvent (Name = "p5.markdown.markdown2html")]
-        public static void markdown2html (ApplicationContext context, ActiveEventArgs e) {
+        public static void markdown2html (ApplicationContext context, ActiveEventArgs e)
+        {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new ArgsRemover (e.Args, false)) {
 

@@ -38,7 +38,8 @@ namespace p5.mysql
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:p5.mysql.Transaction"/> class.
         /// </summary>
-        public Transaction (ApplicationContext context, Node args) {
+        public Transaction (ApplicationContext context, Node args)
+        {
             _connection = Connection.Active (context, args);
             _transaction = _connection.BeginTransaction ();
         }
@@ -49,7 +50,8 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.mysql.transaction.begin")]
-        public static void p5_mysql_transaction_begin (ApplicationContext context, ActiveEventArgs e) {
+        public static void p5_mysql_transaction_begin (ApplicationContext context, ActiveEventArgs e)
+        {
             // Creating a new transaction instance listener.
             var transaction = new Transaction (context, e.Args);
             context.RegisterListeningInstance (transaction);
@@ -82,7 +84,8 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.mysql.transaction.rollback")]
-        public static void p5_mysql_transaction_rollback (ApplicationContext context, ActiveEventArgs e) {
+        public static void p5_mysql_transaction_rollback (ApplicationContext context, ActiveEventArgs e)
+        {
             // Sanity check.
             if (!context.HasActiveEvent (".p5.mysql.transaction.rollback"))
                 throw new LambdaException ("No active MySQL database transactions for [p5.mysql.transaction.rollback]", e.Args, context);
@@ -97,7 +100,8 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.mysql.transaction.commit")]
-        public static void p5_mysql_transaction_commit (ApplicationContext context, ActiveEventArgs e) {
+        public static void p5_mysql_transaction_commit (ApplicationContext context, ActiveEventArgs e)
+        {
             // Sanity check.
             if (!context.HasActiveEvent (".p5.mysql.transaction.commit"))
                 throw new LambdaException ("No active MySQL database transactions for [p5.mysql.transaction.commit]", e.Args, context);
@@ -112,7 +116,8 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.mysql.transaction.rollback")]
-        private void _p5_mysql_transaction_rollback (ApplicationContext context, ActiveEventArgs e) {
+        private void _p5_mysql_transaction_rollback (ApplicationContext context, ActiveEventArgs e)
+        {
             // Since we might have multiple instance listeners when transactions are being nested, we need to determine if the
             // current connection is the one this instance listener was registered with.
             // Otherwise we cannot intelligently nest multiple transaction objects, for multiple database connections, without
@@ -137,7 +142,8 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.mysql.transaction.commit")]
-        private void _p5_mysql_transaction_commit (ApplicationContext context, ActiveEventArgs e) {
+        private void _p5_mysql_transaction_commit (ApplicationContext context, ActiveEventArgs e)
+        {
             // Since we might have multiple instance listeners when transactions are being nested, we need to determine if the
             // current connection is the one this instance listener was registered with.
             // Otherwise we cannot intelligently nest multiple transaction objects, for multiple database connections, without
@@ -159,7 +165,8 @@ namespace p5.mysql
         /*
          * Helper for above, to determine if current invocation is for current instance.
          */
-        private bool IsForCurrent (ApplicationContext context, Node args) {
+        private bool IsForCurrent (ApplicationContext context, Node args)
+        {
             // Making sure we perform an object reference comparison, to determine if current invocation is for current instance.
             return (object)Connection.Active (context, args) == (object)_connection;
         }
@@ -167,7 +174,8 @@ namespace p5.mysql
         /*
          * Executed when transaction is finished, meaning rolling back, unless _transaction is set to null.
          */
-        private void Finished () {
+        private void Finished ()
+        {
             _transaction?.Rollback ();
         }
     }

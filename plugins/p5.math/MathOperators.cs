@@ -85,7 +85,7 @@ namespace p5.math
                     return sum * ChangeType (input, sum.GetType ());
                 });
         }
-        
+
         /// <summary>
         ///     Divides zero or more objects with another object
         /// </summary>
@@ -101,7 +101,7 @@ namespace p5.math
                     return sum / ChangeType (input, sum.GetType ());
                 });
         }
-        
+
         /// <summary>
         ///     Returns the exponent of zero or more objects
         /// </summary>
@@ -114,7 +114,7 @@ namespace p5.math
                 context,
                 e.Args,
                 delegate (dynamic sum, dynamic input) {
-                    return Math.Pow (ChangeType (sum, typeof(double)), ChangeType (input, typeof(double)));
+                    return Math.Pow (ChangeType (sum, typeof (double)), ChangeType (input, typeof (double)));
                 });
         }
 

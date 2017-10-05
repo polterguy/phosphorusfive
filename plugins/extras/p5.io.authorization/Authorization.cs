@@ -37,7 +37,8 @@ namespace p5.io.authorization
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.io.authorize.read-file")]
-        static void _p5_io_authorize_read_file (ApplicationContext context, ActiveEventArgs e) {
+        static void _p5_io_authorize_read_file (ApplicationContext context, ActiveEventArgs e)
+        {
             AuthorizationHelper.AuthorizeReadFile (
                 context,
                 e.Args.Get<string> (context),
@@ -50,7 +51,8 @@ namespace p5.io.authorization
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.io.authorize.modify-file")]
-        static void _p5_io_authorize_modify_file (ApplicationContext context, ActiveEventArgs e) {
+        static void _p5_io_authorize_modify_file (ApplicationContext context, ActiveEventArgs e)
+        {
             AuthorizationHelper.AuthorizeModifyFile (
                 context,
                 e.Args.Get<string> (context),
@@ -63,7 +65,8 @@ namespace p5.io.authorization
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.io.authorize.read-folder")]
-        static void _authorize_read_folder (ApplicationContext context, ActiveEventArgs e) {
+        static void _authorize_read_folder (ApplicationContext context, ActiveEventArgs e)
+        {
             AuthorizationHelper.AuthorizeReadFolder (
                 context,
                 e.Args.Get<string> (context),
@@ -76,7 +79,8 @@ namespace p5.io.authorization
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.io.authorize.modify-folder")]
-        static void _p5_io_authorize_modify_folder (ApplicationContext context, ActiveEventArgs e) {
+        static void _p5_io_authorize_modify_folder (ApplicationContext context, ActiveEventArgs e)
+        {
             AuthorizationHelper.AuthorizeModifyFolder (
                 context,
                 e.Args.Get<string> (context),

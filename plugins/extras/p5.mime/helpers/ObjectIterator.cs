@@ -106,7 +106,7 @@ namespace p5.mime.helpers
 
                             // Verifying that this is a normal plain public key.
                             // Notice, we only return keys with at least one User ID.
-                            if (!idxPublicKey.GetUserIds().GetEnumerator().MoveNext())
+                            if (!idxPublicKey.GetUserIds ().GetEnumerator ().MoveNext ())
                                 continue; // Probably just a signature for another key, or something.
 
                             // Checking if caller provided filters, and if not, yielding "everything".
@@ -161,7 +161,7 @@ namespace p5.mime.helpers
                     if (userID != null) {
 
                         // Checking if currently iterated userID contains specified filter.
-                        if (userID.ToLower ().Contains (filter.ToLower()))
+                        if (userID.ToLower ().Contains (filter.ToLower ()))
                             return true;
                     }
                 }

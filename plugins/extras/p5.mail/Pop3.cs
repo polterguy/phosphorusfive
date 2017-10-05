@@ -46,9 +46,9 @@ namespace p5.mail
         static Pop3 ()
         {
             _excludedHeaders = new List<HeaderId> (new HeaderId [] {
-                HeaderId.Bcc, HeaderId.Cc, HeaderId.Date, HeaderId.From, HeaderId.Importance, HeaderId.InReplyTo, HeaderId.MessageId, 
-                HeaderId.MimeVersion, HeaderId.Priority, HeaderId.References, HeaderId.ReplyTo, HeaderId.ResentBcc, HeaderId.ResentCc, 
-                HeaderId.ResentDate, HeaderId.ResentFrom, HeaderId.ResentReplyTo, HeaderId.ResentSender, HeaderId.ResentTo, 
+                HeaderId.Bcc, HeaderId.Cc, HeaderId.Date, HeaderId.From, HeaderId.Importance, HeaderId.InReplyTo, HeaderId.MessageId,
+                HeaderId.MimeVersion, HeaderId.Priority, HeaderId.References, HeaderId.ReplyTo, HeaderId.ResentBcc, HeaderId.ResentCc,
+                HeaderId.ResentDate, HeaderId.ResentFrom, HeaderId.ResentReplyTo, HeaderId.ResentSender, HeaderId.ResentTo,
                 HeaderId.Sender, HeaderId.Subject, HeaderId.To, HeaderId.XPriority});
         }
 
@@ -126,7 +126,7 @@ namespace p5.mail
          * Helper to process on message retrieved from POP3 server.
          */
         private static Node ProcessMessage (
-            ApplicationContext context, 
+            ApplicationContext context,
             Node args,
             MimeMessage message)
         {
@@ -159,8 +159,8 @@ namespace p5.mail
          * Adds up all headers into given node.
          */
         private static void ProcessMessageHeaders (
-            ApplicationContext context, 
-            Node msgNode, 
+            ApplicationContext context,
+            Node msgNode,
             MimeMessage message)
         {
             // Subject.
@@ -185,10 +185,10 @@ namespace p5.mail
                 msgNode.Add ("Resent-Message-ID", message.ResentMessageId);
 
             if (message.Sender != null)
-                msgNode.Add ("Sender", null, new Node[] { new Node (message.Sender.Name ?? "", message.Sender.Address) });
+                msgNode.Add ("Sender", null, new Node [] { new Node (message.Sender.Name ?? "", message.Sender.Address) });
 
             if (message.ResentSender != null)
-                msgNode.Add ("Resent-Sender", null, new Node[] { new Node (message.ResentSender.Name ?? "", message.ResentSender.Address) });
+                msgNode.Add ("Resent-Sender", null, new Node [] { new Node (message.ResentSender.Name ?? "", message.ResentSender.Address) });
 
             if (message.MimeVersion != null)
                 msgNode.Add ("MIME-Version", message.MimeVersion.ToString ());
@@ -224,9 +224,9 @@ namespace p5.mail
          * Returns all addresses from list as name node.
          */
         private static void GetAddresses (
-            ApplicationContext context, 
-            Node msgNode, 
-            InternetAddressList list, 
+            ApplicationContext context,
+            Node msgNode,
+            InternetAddressList list,
             string name)
         {
             // Looping through each address in list.
@@ -236,7 +236,7 @@ namespace p5.mail
                 if (idxAdr is MailboxAddress)
                     msgNode.FindOrInsert (name).Add (idxAdr.Name, ((MailboxAddress)idxAdr).Address);
                 // TODO: UndisclosedAddress!
-                
+
             }
         }
 

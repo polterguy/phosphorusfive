@@ -64,8 +64,8 @@ namespace p5.mime
                         e.Args,
                         context);
 
-				// Retrieving other parameters to PGP keypair creation.
-				DateTime expires = e.Args.GetExChildValue ("expires", context, DateTime.Now.AddYears (3));
+                // Retrieving other parameters to PGP keypair creation.
+                DateTime expires = e.Args.GetExChildValue ("expires", context, DateTime.Now.AddYears (3));
                 int strength = e.Args.GetExChildValue<int> ("strength", context, 4096);
                 long publicExponent = e.Args.GetExChildValue ("public-exponent", context, 65537L);
                 int certainty = e.Args.GetExChildValue ("certainty", context, 5);
@@ -74,11 +74,11 @@ namespace p5.mime
                 PgpKeyRingGenerator generator = GetKeyRingGenerator (
                                                 context,
                                                 e.Args,
-                                                identity, 
-                                                password, 
-                                                expires, 
-                                                strength, 
-                                                publicExponent, 
+                                                identity,
+                                                password,
+                                                expires,
+                                                strength,
+                                                publicExponent,
                                                 certainty);
                 PgpPublicKeyRing publicRing = generator.GeneratePublicKeyRing ();
                 PgpSecretKeyRing secretRing = generator.GenerateSecretKeyRing ();
@@ -106,9 +106,9 @@ namespace p5.mime
         public static PgpKeyRingGenerator GetKeyRingGenerator (
             ApplicationContext context,
             Node args,
-            string identity, 
-            string password, 
-            DateTime expires, 
+            string identity,
+            string password,
+            DateTime expires,
             int strength,
             long publicExponent,
             int certainty)
@@ -119,10 +119,10 @@ namespace p5.mime
             // Creating our generator
             IAsymmetricCipherKeyPairGenerator generator = GeneratorUtilities.GetKeyPairGenerator ("RSA");
             generator.Init (
-                new RsaKeyGenerationParameters(
-                    BigInteger.ValueOf(publicExponent), 
-                    sr, 
-                    strength, 
+                new RsaKeyGenerationParameters (
+                    BigInteger.ValueOf (publicExponent),
+                    sr,
+                    strength,
                     certainty));
 
             // Creates the master key (signing-only key)
@@ -132,14 +132,14 @@ namespace p5.mime
                 DateTime.UtcNow);
 
             PgpSignatureSubpacketGenerator masterSubPacketGenerator = new PgpSignatureSubpacketGenerator ();
-            masterSubPacketGenerator.SetKeyFlags(false, PgpKeyFlags.CanSign | PgpKeyFlags.CanCertify);
-            masterSubPacketGenerator.SetPreferredSymmetricAlgorithms(false,
-                new SymmetricKeyAlgorithmTag[] {
+            masterSubPacketGenerator.SetKeyFlags (false, PgpKeyFlags.CanSign | PgpKeyFlags.CanCertify);
+            masterSubPacketGenerator.SetPreferredSymmetricAlgorithms (false,
+                new SymmetricKeyAlgorithmTag [] {
                     SymmetricKeyAlgorithmTag.Aes256,
                     SymmetricKeyAlgorithmTag.Aes192,
                     SymmetricKeyAlgorithmTag.Aes128
                 }.Select (ix => (int)ix).ToArray ());
-            masterSubPacketGenerator.SetPreferredHashAlgorithms(false,
+            masterSubPacketGenerator.SetPreferredHashAlgorithms (false,
                 new HashAlgorithmTag [] {
                     HashAlgorithmTag.Sha256,
                     HashAlgorithmTag.Sha1,
@@ -153,20 +153,20 @@ namespace p5.mime
             sr = CreateNewSecureRandom (context, args);
 
             // Create signing and encryption key, for daily use
-            PgpKeyPair encryptionKeyPair = new PgpKeyPair(
+            PgpKeyPair encryptionKeyPair = new PgpKeyPair (
                 PublicKeyAlgorithmTag.RsaGeneral,
                 generator.GenerateKeyPair (),
                 DateTime.UtcNow);
 
             PgpSignatureSubpacketGenerator encryptionSubPacketGenerator = new PgpSignatureSubpacketGenerator ();
-            encryptionSubPacketGenerator.SetKeyFlags(false, 
-                PgpKeyFlags.CanEncryptCommunications | 
-                PgpKeyFlags.CanEncryptStorage | 
+            encryptionSubPacketGenerator.SetKeyFlags (false,
+                PgpKeyFlags.CanEncryptCommunications |
+                PgpKeyFlags.CanEncryptStorage |
                 PgpKeyFlags.CanSign);
             encryptionSubPacketGenerator.SetKeyExpirationTime (false, (long)(expires - DateTime.Now).TotalSeconds);
 
             // Creating keyring
-            PgpKeyRingGenerator keyRingGenerator = new PgpKeyRingGenerator(
+            PgpKeyRingGenerator keyRingGenerator = new PgpKeyRingGenerator (
                 PgpSignature.DefaultCertification,
                 masterKeyPair,
                 identity,
@@ -178,7 +178,7 @@ namespace p5.mime
                 sr);
 
             // Add encryption subkey
-            keyRingGenerator.AddSubKey (encryptionKeyPair, encryptionSubPacketGenerator.Generate(), null);
+            keyRingGenerator.AddSubKey (encryptionKeyPair, encryptionSubPacketGenerator.Generate (), null);
 
             // Returning keyring to caller
             return keyRingGenerator;
@@ -196,7 +196,7 @@ namespace p5.mime
             seed.AddRange (Encoding.UTF8.GetBytes (args.GetExChildValue<string> ("seed", context, "foobar") ?? "foobar"));
 
             // Then we retrieve a cryptographically secure random number of 128 bytes.
-            seed.AddRange (context.RaiseEvent ("p5.crypto.create-random", new Node ("", null, new Node[] {new Node ("resolution", 128), new Node ("raw", true)})).Get<byte[]> (context));
+            seed.AddRange (context.RaiseEvent ("p5.crypto.create-random", new Node ("", null, new Node [] { new Node ("resolution", 128), new Node ("raw", true) })).Get<byte []> (context));
 
             // Then retrieving "seed generator" from BouncyCastle.
             seed.AddRange (new ThreadedSeedGenerator ().GenerateSeed (128, false));

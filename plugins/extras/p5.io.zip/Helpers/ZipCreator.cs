@@ -52,7 +52,7 @@ namespace p5.io.zip.helpers
         /// <param name="password">Password, to use for AES encryption of file. Null equals "no encryption"</param>
         /// <param name="keySize">Key size to use for AES encryption. 128 or 256. 256 is significantly stronger, but spends twice as much resources</param>
         public ZipCreator (
-            ApplicationContext context, 
+            ApplicationContext context,
             Stream stream,
             int compressionLevel,
             string password,
@@ -108,7 +108,7 @@ namespace p5.io.zip.helpers
 
                         // Puts the currently iterated file to the archive
                         PutFileToArchive (
-                            rootFolder + idxFile, 
+                            rootFolder + idxFile,
                             idxFile,
                             args,
                             asFileName);
@@ -129,7 +129,7 @@ namespace p5.io.zip.helpers
 
                 // Puts the file to the archive
                 PutFileToArchive (
-                    rootFolder + fileFolderName, 
+                    rootFolder + fileFolderName,
                     fileFolderName,
                     args,
                     asFileName);

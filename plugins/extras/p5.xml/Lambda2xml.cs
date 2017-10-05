@@ -50,7 +50,7 @@ namespace p5.xml
                 foreach (var idx in XUtil.Iterate<Node> (context, e.Args)) {
                     BuildNode (context, idx, builder, 0);
                 }
-                e.Args.Value = builder.ToString (); 
+                e.Args.Value = builder.ToString ();
             }
         }
 
@@ -58,23 +58,23 @@ namespace p5.xml
         {
             for (var idxNo = 0; idxNo < sp; idxNo++)
                 builder.Append (" ");
-            
+
             builder.Append ("<" + node.Name);
             foreach (var idx in node.Children.Where (ix => ix.Name.StartsWithEx ("@"))) {
-                builder.Append (" " + idx.Name.Substring (1) + "=\"" + idx.Value + "\""); 
+                builder.Append (" " + idx.Name.Substring (1) + "=\"" + idx.Value + "\"");
             }
             if (!node.Children.Any (ix => !ix.Name.StartsWithEx ("@"))) {
-                builder.Append(" />\r\n");
+                builder.Append (" />\r\n");
             } else {
                 builder.Append (">\r\n");
-                foreach (var idx in node.Children.Where (ix => !ix.Name.StartsWithEx("@") && !ix.Name.StartsWithEx("#"))) {
+                foreach (var idx in node.Children.Where (ix => !ix.Name.StartsWithEx ("@") && !ix.Name.StartsWithEx ("#"))) {
                     BuildNode (context, idx, builder, sp + 1);
                 }
                 if (node.Children.Any (ix => ix.Name == "#text"))
                     builder.Append (node.Children.First (ix => ix.Name == "#text").Value);
-				for (var idxNo = 0; idxNo < sp; idxNo++)
-					builder.Append (" ");
-				builder.Append ("</" + node.Name + ">\r\n");
+                for (var idxNo = 0; idxNo < sp; idxNo++)
+                    builder.Append (" ");
+                builder.Append ("</" + node.Name + ">\r\n");
             }
         }
     }

@@ -74,8 +74,7 @@ namespace p5.exp
         ///     Returns the last <see cref="Iterator" /> in the list of iterators belonging to this logical
         /// </summary>
         /// <value>The last iterator in the chain of iterators</value>
-        public Iterator Iterator
-        {
+        public Iterator Iterator {
             get;
             private set;
         }
@@ -84,8 +83,7 @@ namespace p5.exp
         ///     Gets the type of logical
         /// </summary>
         /// <value>The type of logical</value>
-        LogicalType TypeOfLogical
-        {
+        LogicalType TypeOfLogical {
             get;
             set;
         }
@@ -105,26 +103,26 @@ namespace p5.exp
             var rhs = new List<Node> (Iterator.Evaluate (context));
             var retVal = new List<Node> ();
             switch (TypeOfLogical) {
-                case LogicalType.Or:
-                    retVal.AddRange (nodes);
-                    foreach (var idx in rhs.Where (idx => !retVal.Contains (idx))) {
-                        retVal.Add (idx);
-                    }
-                    break;
-                case LogicalType.And:
-                    retVal.AddRange (nodes.FindAll (
-                        idx => rhs.Contains (idx)));
-                    break;
-                case LogicalType.Xor:
-                    retVal.AddRange (nodes.FindAll (
-                        idx => !rhs.Contains (idx)));
-                    retVal.AddRange (rhs.FindAll (
-                        idx => !nodes.Contains (idx)));
-                    break;
-                case LogicalType.Not:
-                    retVal.AddRange (nodes.FindAll (
-                        idx => !rhs.Contains (idx)));
-                    break;
+            case LogicalType.Or:
+                retVal.AddRange (nodes);
+                foreach (var idx in rhs.Where (idx => !retVal.Contains (idx))) {
+                    retVal.Add (idx);
+                }
+                break;
+            case LogicalType.And:
+                retVal.AddRange (nodes.FindAll (
+                    idx => rhs.Contains (idx)));
+                break;
+            case LogicalType.Xor:
+                retVal.AddRange (nodes.FindAll (
+                    idx => !rhs.Contains (idx)));
+                retVal.AddRange (rhs.FindAll (
+                    idx => !nodes.Contains (idx)));
+                break;
+            case LogicalType.Not:
+                retVal.AddRange (nodes.FindAll (
+                    idx => !rhs.Contains (idx)));
+                break;
             }
             return retVal;
         }

@@ -113,7 +113,7 @@ namespace p5.types.types
             if ((regex.Options & RegexOptions.ExplicitCapture) == RegexOptions.ExplicitCapture)
                 retVal += "x";
             return retVal;
-            
+
         }
 
         /*
@@ -130,35 +130,35 @@ namespace p5.types.types
             // Looping through each character in option string, converting to RegexOption enum, and appending to return value
             foreach (var idxChar in optStr) {
                 switch (idxChar) {
-                case 'o':
-                    retVal |= RegexOptions.Compiled;
-                    break;
-                case 'c':
-                    retVal |= RegexOptions.CultureInvariant;
-                    break;
-                case 'e':
-                    retVal |= RegexOptions.ECMAScript;
-                    break;
-                case 'i':
-                    retVal |= RegexOptions.IgnoreCase;
-                    break;
-                case 'm':
-                    retVal |= RegexOptions.Multiline;
-                    break;
-                case 'r':
-                    retVal |= RegexOptions.RightToLeft;
-                    break;
-                case 's':
-                    retVal |= RegexOptions.Singleline;
-                    break;
-                case 'w':
-                    retVal |= RegexOptions.IgnorePatternWhitespace;
-                    break;
-                case 'x':
-                    retVal |= RegexOptions.ExplicitCapture;
-                    break;
-                default:
-                    throw new LambdaException ("Unknown option supplied for regex type '" + idxChar + "'. Legal values are 'oceimrswx'", args, context);
+                    case 'o':
+                        retVal |= RegexOptions.Compiled;
+                        break;
+                    case 'c':
+                        retVal |= RegexOptions.CultureInvariant;
+                        break;
+                    case 'e':
+                        retVal |= RegexOptions.ECMAScript;
+                        break;
+                    case 'i':
+                        retVal |= RegexOptions.IgnoreCase;
+                        break;
+                    case 'm':
+                        retVal |= RegexOptions.Multiline;
+                        break;
+                    case 'r':
+                        retVal |= RegexOptions.RightToLeft;
+                        break;
+                    case 's':
+                        retVal |= RegexOptions.Singleline;
+                        break;
+                    case 'w':
+                        retVal |= RegexOptions.IgnorePatternWhitespace;
+                        break;
+                    case 'x':
+                        retVal |= RegexOptions.ExplicitCapture;
+                        break;
+                    default:
+                        throw new LambdaException ("Unknown option supplied for regex type '" + idxChar + "'. Legal values are 'oceimrswx'", args, context);
                 }
             }
 

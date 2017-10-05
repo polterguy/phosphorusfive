@@ -39,9 +39,9 @@ namespace p5.io.common
          * Allows you to iterate files and folders.
          */
         internal static void Iterate (
-            ApplicationContext context, 
-            Node args, 
-            bool removeArgsValue, 
+            ApplicationContext context,
+            Node args,
+            bool removeArgsValue,
             string authorizeEvent,
             ObjectIteratorDelegate functor)
         {

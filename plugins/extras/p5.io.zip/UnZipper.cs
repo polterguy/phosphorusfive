@@ -46,7 +46,8 @@ namespace p5.io.zip
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "unzip")]
-        public static void unzip (ApplicationContext context, ActiveEventArgs e) {
+        public static void unzip (ApplicationContext context, ActiveEventArgs e)
+        {
             // Retrieving password, if there is one, and untying it, 
             // to make sure it never leaves method, in case of an exception, etc.
             string password = e.Args.GetExChildValue<string> ("password", context, null);
@@ -86,7 +87,8 @@ namespace p5.io.zip
         /*
          * Retrieves destination folder, and verifies user has write access to it.
          */
-        private static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e) {
+        private static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e)
+        {
             // Retrieving destination folder.
             var destFolder = Helpers.GetSystemPath (context, e.Args.GetExChildValue<string> ("dest", context));
 
@@ -104,7 +106,8 @@ namespace p5.io.zip
             string rootFolder,
             string zipFilePath,
             string destPath,
-            string password) {
+            string password)
+        {
             // Verifying user is allowed to read from zipfile given.
             context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", zipFilePath).Add ("args", args));
 
@@ -154,7 +157,8 @@ namespace p5.io.zip
             ApplicationContext context,
             Node args,
             string rootFolder,
-            string fileNameFullPath) {
+            string fileNameFullPath)
+        {
             // Splitting filename path on "/" to create folder entities.
             var splits = new List<string> ((fileNameFullPath).Split (new char [] { '/' }, System.StringSplitOptions.RemoveEmptyEntries));
 

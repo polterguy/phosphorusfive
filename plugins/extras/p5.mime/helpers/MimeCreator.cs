@@ -74,8 +74,8 @@ namespace p5.mime.helpers
             // Sanity check.
             if (entityNode.Value == null || !(entityNode.Value is string) || string.IsNullOrEmpty (entityNode.Value as string))
                 throw new LambdaException (
-                    string.Format ("No media subtype provided for '{0}' to MIME builder", entityNode.Name), 
-                    entityNode, 
+                    string.Format ("No media subtype provided for '{0}' to MIME builder", entityNode.Name),
+                    entityNode,
                     _context);
 
             // Setting up a return value.
@@ -98,8 +98,8 @@ namespace p5.mime.helpers
                     break;
                 default:
                     throw new LambdaException (
-                        string.Format ("Unknown media type '{0}' for MIME builder", entityNode.Name), 
-                        entityNode, 
+                        string.Format ("Unknown media type '{0}' for MIME builder", entityNode.Name),
+                        entityNode,
                         _context);
             }
 
@@ -219,9 +219,9 @@ namespace p5.mime.helpers
 
                 // Signing content of email and returning to caller.
                 return MultipartSigned.Create (
-                    ctx, 
-                    signatureAddress.Item2, 
-                    algo, 
+                    ctx,
+                    signatureAddress.Item2,
+                    algo,
                     entity);
             }
         }
@@ -243,8 +243,8 @@ namespace p5.mime.helpers
 
                 // Encrypting content of email and returning to caller.
                 var retVal = MultipartEncrypted.Encrypt (
-                    ctx, 
-                    receivers, 
+                    ctx,
+                    receivers,
                     entity);
 
                 // Setting preamble and epilogue AFTER encryption, to give opportunity to give hints to receiver.
@@ -284,10 +284,10 @@ namespace p5.mime.helpers
 
                 // Signing and Encrypting content of email.
                 var retVal = MultipartEncrypted.SignAndEncrypt (
-                    ctx, 
-                    signatureAddress.Item2, 
-                    algo, 
-                    receivers, 
+                    ctx,
+                    signatureAddress.Item2,
+                    algo,
+                    receivers,
                     entity);
 
                 // Setting preamble and epilogue AFTER encryption, to give opportunity to give receiver hints.
@@ -342,7 +342,7 @@ namespace p5.mime.helpers
          * Decorates headers for given MimeEntity.
          */
         private void DecorateEntityHeaders (
-            MimeEntity entity, 
+            MimeEntity entity,
             Node entityNode)
         {
             // Looping through all child nodes of MimeEntity node, making sure ONLY use those children that
@@ -364,10 +364,10 @@ namespace p5.mime.helpers
             _streams.Add (stream);
 
             // Applying content object, but first checking type of object, special handling of blob/byte[].
-            if (contentNode.Value is byte[]) {
+            if (contentNode.Value is byte []) {
 
                 // This is byte[] array (blob).
-                byte[] value = contentNode.Value as byte [];
+                byte [] value = contentNode.Value as byte [];
                 stream.Write (value, 0, value.Length);
                 stream.Position = 0;
 
@@ -386,7 +386,7 @@ namespace p5.mime.helpers
             // Retrieving ContentEncoding to use for reading stream.
             ContentEncoding encoding = ContentEncoding.Default;
             if (contentNode ["Content-Encoding"] != null)
-                encoding = (ContentEncoding)Enum.Parse (typeof(ContentEncoding), contentNode ["Content-Encoding"].Get<string> (_context));
+                encoding = (ContentEncoding)Enum.Parse (typeof (ContentEncoding), contentNode ["Content-Encoding"].Get<string> (_context));
 
             // Creating a ContentObject for MimePart from MemoryStream.
             entity.ContentObject = new ContentObject (stream, encoding);
@@ -409,13 +409,13 @@ namespace p5.mime.helpers
             // Retrieving ContentEncoding to use for reading stream.
             ContentEncoding encoding = ContentEncoding.Default;
             if (fileNode ["Content-Encoding"] != null)
-                encoding = (ContentEncoding)Enum.Parse (typeof(ContentEncoding), fileNode ["Content-Encoding"].Get<string> (_context));
+                encoding = (ContentEncoding)Enum.Parse (typeof (ContentEncoding), fileNode ["Content-Encoding"].Get<string> (_context));
 
             // Defaulting Filename of Content-Disposition, unless explicitly given.
             if (entity.ContentDisposition == null) {
 
                 // Defaulting Content-Disposition to; "attachment; filename=whatever.xyz"
-                entity.ContentDisposition = new ContentDisposition("attachment");
+                entity.ContentDisposition = new ContentDisposition ("attachment");
                 entity.ContentDisposition.FileName = Path.GetFileName (fileName);
             }
 

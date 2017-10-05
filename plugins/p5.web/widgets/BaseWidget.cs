@@ -81,13 +81,13 @@ namespace p5.web.widgets
             foreach (var idxWidgetID in XUtil.Iterate<string> (context, args)) {
 
                 // Retrieving Widget with currently iterated ID.
-                var idxWidget = FindControl<T>(idxWidgetID, Manager.AjaxPage);
+                var idxWidget = FindControl<T> (idxWidgetID, Manager.AjaxPage);
 
                 // Throwing exception if widget does not exist.
                 if (idxWidget == null)
-                    throw new LambdaException(
+                    throw new LambdaException (
                         string.Format ("Couldn't find widget with ID '{0}', are you sure it exists and is an actual p5.ajax widget?", idxWidgetID),
-                        args, 
+                        args,
                         context);
 
                 // Returning widget to caller.

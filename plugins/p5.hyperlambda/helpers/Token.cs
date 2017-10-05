@@ -91,10 +91,8 @@ namespace p5.hyperlambda.helpers
         /*
          * Only valid if type is "Spacer", returns the offset from the root node for the current token
          */
-        internal int Scope
-        {
-            get
-            {
+        internal int Scope {
+            get {
                 if (Type != TokenType.Spacer)
                     return -1;
                 return Value.Length / 2;

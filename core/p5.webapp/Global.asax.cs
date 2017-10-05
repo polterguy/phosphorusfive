@@ -142,7 +142,7 @@ namespace p5
                 // Execute our "startup file", if there is one defined
                 var appStartupFiles = context.RaiseEvent (
                     ".p5.config.get",
-                    new Node (".p5.config.get", ".p5.webapp.application-startup-file"))[0].Get<string> (context);
+                    new Node (".p5.config.get", ".p5.webapp.application-startup-file")) [0].Get<string> (context);
                 if (!string.IsNullOrEmpty (appStartupFiles)) {
 
                     // There is an application-startup-file declared in web.config, executing it as a Hyperlambda file
@@ -189,7 +189,7 @@ namespace p5
             static void ExecuteHyperlispFile (ApplicationContext context, string filePath)
             {
                 // Loading file, converting to Lambda, for then to evaluate as p5 lambda
-                context.RaiseEvent ("eval", context.RaiseEvent ("p5.io.file.load", new Node("", filePath)) [0]);
+                context.RaiseEvent ("eval", context.RaiseEvent ("p5.io.file.load", new Node ("", filePath)) [0]);
             }
 
             /*

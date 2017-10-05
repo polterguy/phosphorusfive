@@ -43,12 +43,12 @@ namespace p5.strings.keywords
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
-				// Retrieving what to look for, and returning early if we have no source.
-				var src = XUtil.Source (context, e.Args);
-				if (src == null)
-					return;
+                // Retrieving what to look for, and returning early if we have no source.
+                var src = XUtil.Source (context, e.Args);
+                if (src == null)
+                    return;
 
-				// Returning to lowers of expression or constant.
+                // Returning to lowers of expression or constant.
                 e.Args.Value = XUtil.Single<string> (context, e.Args)?.StartsWithEx (Utilities.Convert<string> (context, src)) ?? false;
             }
         }

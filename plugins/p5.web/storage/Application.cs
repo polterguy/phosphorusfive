@@ -46,10 +46,11 @@ namespace p5.web.storage
 
                     // Removal
                     HttpContext.Current.Application.Remove (key);
+
                 } else {
 
                     // Setting or updating
-                    HttpContext.Current.Application[key] = value;
+                    HttpContext.Current.Application [key] = value;
                 }
             });
         }

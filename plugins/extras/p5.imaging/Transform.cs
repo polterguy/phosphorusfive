@@ -105,7 +105,7 @@ namespace p5.imaging
                 return;
 
             // Looping through each transformation, applying them sequentially.
-            foreach (var idxTransNode in args["transformations"].Children) {
+            foreach (var idxTransNode in args ["transformations"].Children) {
 
                 // Finding Active Event name, and invoking Active Event.
                 var activeEventName = ".p5.imaging.transformations." + idxTransNode.Name;
@@ -128,11 +128,11 @@ namespace p5.imaging
          * Saves destination image.
          */
         static void SaveDestinationImage (
-            ApplicationContext context, 
-            Node args, 
-            string destination, 
-            string rootFolder, 
-            ImageFormat format, 
+            ApplicationContext context,
+            Node args,
+            string destination,
+            string rootFolder,
+            ImageFormat format,
             Bitmap dest)
         {
             var quality = args.GetExChildValue ("quality", context, -1L);
@@ -155,7 +155,7 @@ namespace p5.imaging
                 // Then finding our encoder, according to quality requested by caller.
                 Encoder encoder = Encoder.Quality;
                 var pars = new EncoderParameters (1);
-                pars.Param[0] = new EncoderParameter (encoder, quality);
+                pars.Param [0] = new EncoderParameter (encoder, quality);
 
                 // Now saving image with encoder and parameters to encoder.
                 dest.Save (rootFolder + destination, codec, pars);
@@ -171,10 +171,10 @@ namespace p5.imaging
          * Draws source image unto destination image.
          */
         static void BlitSourceImage (
-            int destinationWidth, 
-            int destinationHeight, 
-            Image srcImage, 
-            Rectangle srcRect, 
+            int destinationWidth,
+            int destinationHeight,
+            Image srcImage,
+            Rectangle srcRect,
             Bitmap dest)
         {
             using (var graphics = Graphics.FromImage (dest)) {
@@ -221,7 +221,7 @@ namespace p5.imaging
          */
         static Rectangle GetSourceRect (ApplicationContext context, Node args, Image srcImage)
         {
-            var srcRectNode = args["src-rect"];
+            var srcRectNode = args ["src-rect"];
             var srcRect = srcRectNode == null ?
                 new Rectangle (0, 0, srcImage.Width, srcImage.Height) :
                 new Rectangle (

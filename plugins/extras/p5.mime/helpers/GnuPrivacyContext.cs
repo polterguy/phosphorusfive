@@ -67,10 +67,10 @@ namespace p5.mime.helpers
         /*
          * Used to synchornize access to context.
          */
-        private static ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private static ReaderWriterLockSlim _lock = new ReaderWriterLockSlim ();
         private bool _write;
 
-        public GnuPrivacyContext(bool write)
+        public GnuPrivacyContext (bool write)
         {
             _write = write;
             if (write)
@@ -165,7 +165,7 @@ namespace p5.mime.helpers
                 if (idxMailbox.Mailbox is SecureMailboxAddress) {
 
                     // Using fingerprint.
-                    if ((idxMailbox.Mailbox as SecureMailboxAddress).Fingerprint.ToLower () == 
+                    if ((idxMailbox.Mailbox as SecureMailboxAddress).Fingerprint.ToLower () ==
                         BitConverter.ToString (key.PublicKey.GetFingerprint ()).Replace ("-", "").ToLower ())
                         return idxMailbox.Password;
 
@@ -184,7 +184,7 @@ namespace p5.mime.helpers
             }
 
             // Throwing exception since we found no password for requested key, showing user the first UserId object from Secret Key.
-            throw new SecurityException (string.Format("No password supplied for GnuPG private key '{0}'", LastUsedUserId));
+            throw new SecurityException (string.Format ("No password supplied for GnuPG private key '{0}'", LastUsedUserId));
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace p5.mime.helpers
         /// </summary>
         /// <returns>The dispose.</returns>
         /// <param name="disposing">If set to <c>true</c> disposing.</param>
-        protected override void Dispose(bool disposing)
+        protected override void Dispose (bool disposing)
         {
             if (disposing) {
                 if (_write)
@@ -200,7 +200,7 @@ namespace p5.mime.helpers
                 else
                     _lock.ExitReadLock ();
             }
-            base.Dispose(disposing);
+            base.Dispose (disposing);
         }
     }
 }

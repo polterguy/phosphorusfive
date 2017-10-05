@@ -298,7 +298,6 @@ Global
 		$42.NoTabsAfterNonTabs = True
 		$42.EolMarker = Windows
 		$0.CSharpFormattingPolicy = $43
-		$43.NewLinesForBracesInMethods = False
 		$43.NewLinesForBracesInProperties = False
 		$43.NewLinesForBracesInAccessors = False
 		$43.NewLinesForBracesInAnonymousMethods = False

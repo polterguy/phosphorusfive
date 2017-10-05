@@ -43,16 +43,16 @@ namespace p5.threading
         // Delegate used for callback to execute once locker(s) is/are unlocked
         private delegate void LockFunctor ();
 
-		/// <summary>
-		///     Locks the locker(s) with the given name(s).
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "lock")]
-		[ActiveEvent (Name = "write-lock")]
-		[ActiveEvent (Name = "p5.threading.lock")]
-		[ActiveEvent (Name = "p5.threading.write-lock")]
-		public static void p5_lock (ApplicationContext context, ActiveEventArgs e)
+        /// <summary>
+        ///     Locks the locker(s) with the given name(s).
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "lock")]
+        [ActiveEvent (Name = "write-lock")]
+        [ActiveEvent (Name = "p5.threading.lock")]
+        [ActiveEvent (Name = "p5.threading.write-lock")]
+        public static void p5_lock (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving all lockers caller wants to lock
             var lockers = XUtil.Iterate<string> (context, e.Args).ToList ();
@@ -64,30 +64,30 @@ namespace p5.threading
                 });
         }
 
-		/// <summary>
-		///     Locks the locker(s) with the given name(s).
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "read-lock")]
-		[ActiveEvent (Name = "p5.threading.read-lock")]
-		public static void p5_read_lock (ApplicationContext context, ActiveEventArgs e)
-		{
-			// Retrieving all lockers caller wants to lock
-			var lockers = XUtil.Iterate<string> (context, e.Args).ToList ();
+        /// <summary>
+        ///     Locks the locker(s) with the given name(s).
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "read-lock")]
+        [ActiveEvent (Name = "p5.threading.read-lock")]
+        public static void p5_read_lock (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving all lockers caller wants to lock
+            var lockers = XUtil.Iterate<string> (context, e.Args).ToList ();
 
-			// Recursively waits for each locker to be unlocked, evaluating given lambda, once all lockers are unlocked
-			ReadLock (
-				lockers, delegate {
-					context.RaiseEvent ("eval-mutable", e.Args);
-				});
-		}
+            // Recursively waits for each locker to be unlocked, evaluating given lambda, once all lockers are unlocked
+            ReadLock (
+                lockers, delegate {
+                    context.RaiseEvent ("eval-mutable", e.Args);
+                });
+        }
 
-		/*
+        /*
          * Locks first string object in array, and pops it off list, before recursively calling self, until
          * no more objects remains. When all objects are unlocked, then it will execute given "functor" delegate
          */
-		private static void WriteLock (List<string> lockers, LockFunctor functor)
+        private static void WriteLock (List<string> lockers, LockFunctor functor)
         {
             // Checking if there are any more lockers to wait for.
             if (lockers.Count == 0) {
@@ -116,22 +116,22 @@ namespace p5.threading
             }
         }
 
-		/*
+        /*
          * Locks first string object in array, and pops it off list, before recursively calling self, until
          * no more objects remains. When all objects are unlocked, then it will execute given "functor" delegate
          */
-		private static void ReadLock (List<string> lockers, LockFunctor functor)
-		{
-			// Checking if there are any more lockers to wait for.
-			if (lockers.Count == 0) {
+        private static void ReadLock (List<string> lockers, LockFunctor functor)
+        {
+            // Checking if there are any more lockers to wait for.
+            if (lockers.Count == 0) {
 
-				// No more lockers to wait for, evaluating lambda.
-				functor ();
+                // No more lockers to wait for, evaluating lambda.
+                functor ();
 
-			} else {
+            } else {
 
-				// Retrieves next locker, and locks it as a write lock.
-				var locker = GetLocker (lockers [0]);
+                // Retrieves next locker, and locks it as a write lock.
+                var locker = GetLocker (lockers [0]);
                 locker.EnterReadLock ();
                 try {
 
@@ -146,13 +146,13 @@ namespace p5.threading
                     // Opening locker.
                     locker.ExitReadLock ();
                 }
-			}
-		}
+            }
+        }
 
-		/*
+        /*
          * Returns the locker with the given name. If locker does not exist, it will be created
          */
-		private static ReaderWriterLockSlim GetLocker (string name)
+        private static ReaderWriterLockSlim GetLocker (string name)
         {
             // Synchronizing access to lockers, to avoid having multiple threads 
             // trying to create or retrieve locker(s) at the same time

@@ -87,7 +87,7 @@ namespace p5.lambda.keywords.core
         {
             // Syntax checking statement, making sure it has either an [if] or [else-if] as its previous sibling
             VerifyElseSyntax (e.Args, context);
-            
+
             // Checking if previous conditional statement yielded true, and if not, evaluating current node
             if (!PreviousConditionEvaluatedTrue (e.Args, context)) {
 

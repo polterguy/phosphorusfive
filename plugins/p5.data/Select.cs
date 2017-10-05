@@ -61,18 +61,18 @@ namespace p5.data
                     // Retrieving result of match.
                     e.Args.Value = null;
                     switch (match.TypeOfMatch) {
-                        case Match.MatchType.count:
-                            e.Args.Value = match.Count;
-                            break;
-                        case Match.MatchType.node:
-                            e.Args.AddRange (match.Select (ix => ix.Node.Clone ()));
-                            break;
-                        case Match.MatchType.name:
-                            e.Args.AddRange (match.Select (ix => new Node (ix.Node.Name)));
-                            break;
-                        case Match.MatchType.value:
-                            e.Args.AddRange (match.Select (ix => new Node ("", ix.Value)));
-                            break;
+                    case Match.MatchType.count:
+                        e.Args.Value = match.Count;
+                        break;
+                    case Match.MatchType.node:
+                        e.Args.AddRange (match.Select (ix => ix.Node.Clone ()));
+                        break;
+                    case Match.MatchType.name:
+                        e.Args.AddRange (match.Select (ix => new Node (ix.Node.Name)));
+                        break;
+                    case Match.MatchType.value:
+                        e.Args.AddRange (match.Select (ix => new Node ("", ix.Value)));
+                        break;
                     }
                 }
             }

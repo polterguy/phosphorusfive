@@ -281,8 +281,8 @@ namespace p5.samples
         {
             // removing three controls
             container.RemoveControlPersistentAt (1); // sandbox_invoke_remove_many_2
-            ((p5.Container) container.Controls [1]).RemoveControlPersistentAt (2); // sandbox_invoke_remove_many_6
-            ((p5.Container) ((p5.Container) container.Controls [1]).Controls [1]).RemoveControlPersistentAt (1); // sandbox_invoke_remove_many_9
+            ((p5.Container)container.Controls [1]).RemoveControlPersistentAt (2); // sandbox_invoke_remove_many_6
+            ((p5.Container)((p5.Container)container.Controls [1]).Controls [1]).RemoveControlPersistentAt (1); // sandbox_invoke_remove_many_9
 
             // creating two new controls
 
@@ -292,11 +292,11 @@ namespace p5.samples
             lit1.innerValue = "howdy";
 
             // parent is sandbox_invoke_remove_many_5
-            var lit2 = ((p5.Container) ((p5.Container) container.Controls [2]).Controls [1]).CreatePersistentControl<p5.Literal> ();
+            var lit2 = ((p5.Container)((p5.Container)container.Controls [2]).Controls [1]).CreatePersistentControl<p5.Literal> ();
             lit2.Element = "em";
             lit2.innerValue = "world";
         }
-        
+
         [WebMethod]
         protected void sandbox_invoke_add_similar_onclick (p5.Container container, EventArgs e)
         {
@@ -318,13 +318,13 @@ namespace p5.samples
                 throw new ApplicationException ("control count not correct on postback");
             if (container.Controls [2].Controls [1].Controls.Count != 3)
                 throw new ApplicationException ("control count not correct on postback");
-            if (((p5.Literal) container.Controls [0]).innerValue != "howdy")
+            if (((p5.Literal)container.Controls [0]).innerValue != "howdy")
                 throw new ApplicationException ("control value not correct on postback");
-            if (((p5.Literal) container.Controls [0]).Element != "strong")
+            if (((p5.Literal)container.Controls [0]).Element != "strong")
                 throw new ApplicationException ("control element not correct on postback");
-            if (((p5.Literal) container.Controls [2].Controls [1].Controls [2]).innerValue != "world")
+            if (((p5.Literal)container.Controls [2].Controls [1].Controls [2]).innerValue != "world")
                 throw new ApplicationException ("control value not correct on postback");
-            if (((p5.Literal) container.Controls [2].Controls [1].Controls [2]).Element != "em")
+            if (((p5.Literal)container.Controls [2].Controls [1].Controls [2]).Element != "em")
                 throw new ApplicationException ("control element not correct on postback");
         }
     }

@@ -91,8 +91,8 @@ namespace p5.lambda.keywords.extras
          * Processes a single template child node, by applying entire node, and children of node, recursively.
          */
         static IEnumerable<Node> ProcessTemplateItem (
-            ApplicationContext context, 
-            Node child, 
+            ApplicationContext context,
+            Node child,
             Node source)
         {
             // Checking type of template node.
@@ -116,8 +116,8 @@ namespace p5.lambda.keywords.extras
                 // Creating our default return value, making sure we support escaping node names, which among other things is necessary to
                 // support creating one [apply] from within another [apply].
                 yield return new Node (
-                    child.Name.StartsWithEx ("\\") ? child.Name.Substring (1) : child.Name, 
-                    child.Value, 
+                    child.Name.StartsWithEx ("\\") ? child.Name.Substring (1) : child.Name,
+                    child.Value,
                     ProcessItemChildren (context, child, source));
             }
         }

@@ -80,7 +80,7 @@ namespace p5.lambda.helpers
             var previous = EnsureParentFindPreviousCondition (context, e.Args);
 
             // Checking if we've previously seen an [or], to make sure [and] has presedence.
-            if (e.Args.Parent ["_p5_conditions_state_"]?["_or_maybe_"]?.Get (context, false) ?? false) {
+            if (e.Args.Parent ["_p5_conditions_state_"]? ["_or_maybe_"]?.Get (context, false) ?? false) {
 
                 // No need to evaluate this condition.
                 e.Args.Value = true;
@@ -119,7 +119,7 @@ namespace p5.lambda.helpers
             var previous = EnsureParentFindPreviousCondition (context, e.Args);
 
             // Removing "maybe" condition, if it exists.
-            e.Args.Parent["_p5_conditions_state_"]?["_or_maybe_"]?.UnTie ();
+            e.Args.Parent ["_p5_conditions_state_"]? ["_or_maybe_"]?.UnTie ();
 
             // Negate the previous condition's results.
             e.Args.Value = !previous.Get<bool> (context);

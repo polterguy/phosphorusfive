@@ -57,7 +57,7 @@ namespace p5.web.widgets
             using (new ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given.
-                foreach (var idxWidget in FindWidgets <Control> (context, e.Args)) {
+                foreach (var idxWidget in FindWidgets<Control> (context, e.Args)) {
 
                     // Returning parent of widget, and parent's typename.
                     e.Args.Add (idxWidget.ID).LastChild.Add (GetTypeName (idxWidget.Parent), idxWidget.Parent.ID);
@@ -77,7 +77,7 @@ namespace p5.web.widgets
             using (new ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given.
-                foreach (var idxWidget in FindWidgets <Control> (context, e.Args)) {
+                foreach (var idxWidget in FindWidgets<Control> (context, e.Args)) {
 
                     // Adding currently iterated widget's ID.
                     var widgetResultNode = e.Args.Add (idxWidget.ID).LastChild;
@@ -107,8 +107,8 @@ namespace p5.web.widgets
             // Sanity check.
             if (e.Args.Children.Count (ix => ix.Name != "") == 0)
                 throw new LambdaException (
-                    string.Format ("[{0}] requires at least one child argument, being some property/attribute to look for", e.Name), 
-                    e.Args, 
+                    string.Format ("[{0}] requires at least one child argument, being some property/attribute to look for", e.Name),
+                    e.Args,
                     context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
@@ -204,7 +204,7 @@ namespace p5.web.widgets
             using (new ArgsRemover (e.Args, true)) {
 
                 // Retrieving filter, if any.
-                var filter = XUtil.Iterate<string>(context, e.Args).ToList ();
+                var filter = XUtil.Iterate<string> (context, e.Args).ToList ();
                 if ((e.Args.Value != null || e.Args.Count > 0) && filter.Count == 0)
                     return; // Possibly a filter expression, leading into oblivion.
 
@@ -240,8 +240,8 @@ namespace p5.web.widgets
          * the string from one of the specified filters.
          */
         static void ListWidgets (
-            List<string> filter, 
-            Node args, 
+            List<string> filter,
+            Node args,
             Control ctrl,
             bool exactMatch)
         {
@@ -267,8 +267,8 @@ namespace p5.web.widgets
          * TODO: Refactor, way too long ...!!
          */
         IEnumerable<Widget> FindWidgetsMatchingCriteria (
-            Node criteria, 
-            Control startControl, 
+            Node criteria,
+            Control startControl,
             ApplicationContext context,
             bool likeMatch,
             bool upwardsInAncestors)
@@ -340,8 +340,8 @@ namespace p5.web.widgets
                         if (indexOfWidget + 1 >= widget.Parent.Controls.Count)
                             match = false;
                         else
-                            match = likeMatch ? 
-                                (widget.Parent.Controls [indexOfWidget + 1].ID ?? "").Contains (val) : 
+                            match = likeMatch ?
+                                (widget.Parent.Controls [indexOfWidget + 1].ID ?? "").Contains (val) :
                                  widget.Parent.Controls [indexOfWidget + 1].ID == val;
 
                     } else if (idxCriteria.Name == "after") {

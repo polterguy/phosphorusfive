@@ -47,14 +47,14 @@ namespace p5.imaging.transformations
             var destination = new Bitmap (original.Width, original.Height);
 
             // Sanity check.
-            if (e.Args["matrix"] == null || 
-                e.Args["matrix"].Count != 5)
+            if (e.Args ["matrix"] == null ||
+                e.Args ["matrix"].Count != 5)
                 throw new LambdaException ("[colorize] requires a [matrix] argument, with 5 children nodes, each with a comma separated value having 5 floating point values.", e.Args, context);
 
             using (Graphics g = Graphics.FromImage (destination)) {
 
                 // ColorMatrix creation.
-                float[][] colors = e.Args["matrix"].Children.Select (ix => ix.GetExValue<string> (context).Split (',').Select(ix2 => float.Parse(ix2)).ToArray ()).ToArray ();
+                float [] [] colors = e.Args ["matrix"].Children.Select (ix => ix.GetExValue<string> (context).Split (',').Select (ix2 => float.Parse (ix2)).ToArray ()).ToArray ();
                 var matrix = new ColorMatrix (colors);
 
                 // Image attributes, to apply colors to blit operation.
@@ -63,13 +63,13 @@ namespace p5.imaging.transformations
 
                 // Blitting original image to destination image.
                 g.DrawImage (
-                    original, 
+                    original,
                     new Rectangle (0, 0, original.Width, original.Height),
-                    0, 
-                    0, 
-                    original.Width, 
-                    original.Height, 
-                    GraphicsUnit.Pixel, 
+                    0,
+                    0,
+                    original.Width,
+                    original.Height,
+                    GraphicsUnit.Pixel,
                     attrs);
 
                 // Returning new image, notice caller is responsible for disposing both images.

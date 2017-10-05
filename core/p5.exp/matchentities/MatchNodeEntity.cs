@@ -34,15 +34,13 @@ namespace p5.exp.matchentities
         internal MatchNodeEntity (Node node, Match match)
             : base (node, match)
         { }
-        
+
         public override Match.MatchType TypeOfMatch {
             get { return Match.MatchType.node; }
         }
-        
-        public override object Value
-        {
-            get
-            {
+
+        public override object Value {
+            get {
                 object retVal = Node;
                 if (!string.IsNullOrEmpty (_match.Convert)) {
 
@@ -53,8 +51,7 @@ namespace p5.exp.matchentities
                 }
                 return retVal;
             }
-            set
-            {
+            set {
                 if (value == null) {
 
                     // Simply removing node

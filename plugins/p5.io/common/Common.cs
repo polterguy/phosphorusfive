@@ -44,10 +44,10 @@ namespace p5.io.common
             e.Args.Value = GetSystemPath (context, e.Args.GetExValue<string> (context));
         }
 
-		/*
+        /*
          * Returns the root folder of application pool back to caller.
          */
-		internal static string GetRootFolder (ApplicationContext context)
+        internal static string GetRootFolder (ApplicationContext context)
         {
             return context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
         }
@@ -83,22 +83,22 @@ namespace p5.io.common
          * Raises the specified authorize event for given path.
          */
         internal static void RaiseAuthorizeEvent (
-            ApplicationContext context, 
-            Node args, 
-            string eventName, 
+            ApplicationContext context,
+            Node args,
+            string eventName,
             string path)
         {
             switch (eventName) {
-                case "read-folder":
-                case "read-file":
-                case "modify-folder":
-                case "modify-file":
-                    context.RaiseEvent (".p5.io.authorize." + eventName, new Node ("", GetSystemPath (context, path)).Add ("args", args));
-                    break;
-                default:
+            case "read-folder":
+            case "read-file":
+            case "modify-folder":
+            case "modify-file":
+                context.RaiseEvent (".p5.io.authorize." + eventName, new Node ("", GetSystemPath (context, path)).Add ("args", args));
+                break;
+            default:
                 throw new LambdaException (
-                    string.Format ("Unknown authorize event '{0}' given to '{1}'.", eventName, args.Name), 
-                    args, 
+                    string.Format ("Unknown authorize event '{0}' given to '{1}'.", eventName, args.Name),
+                    args,
                     context);
             }
         }

@@ -52,9 +52,9 @@ namespace p5.io.zip
 
                 // Getting destination path, and verify path can be legally written to
                 var destinationFile = Helpers.GetLegalDestinationFilename (
-                    context, 
-                    e.Args, 
-                    rootFolder, 
+                    context,
+                    e.Args,
+                    rootFolder,
                     destination);
 
                 // Getting source file(s)
@@ -65,8 +65,8 @@ namespace p5.io.zip
 
                     // Creating zip file, supplying FileStream as stream to store results into
                     using (ZipCreator creator = new ZipCreator (
-                        context, 
-                        File.Create (rootFolder + destinationFile), 
+                        context,
+                        File.Create (rootFolder + destinationFile),
                         e.Args.GetExChildValue ("compression-level", context, 3),
                         e.Args.GetExChildValue<string> ("password", context, null),
                         e.Args.GetExChildValue ("key-size", context, 256))) {
@@ -78,16 +78,16 @@ namespace p5.io.zip
 
                             // Verifies source folder can be read from
                             Helpers.VerfifySourceFileFolderCanBeReadFrom (
-                                context, 
-                                e.Args, 
+                                context,
+                                e.Args,
                                 rootFolder,
                                 destinationFile,
                                 idxSource);
 
                             // Adding currently iterated file/folder to zip file stream
-                            creator.AddToArchive (rootFolder + idxSource, 
-                                                  e.Args, 
-                                                  e.Args.Children.First (ix => idxSourceFileFolder.Name == (string)ix.Value).GetExChildValue <string>("as", context, null));
+                            creator.AddToArchive (rootFolder + idxSource,
+                                                  e.Args,
+                                                  e.Args.Children.First (ix => idxSourceFileFolder.Name == (string)ix.Value).GetExChildValue<string> ("as", context, null));
                         }
                     }
 

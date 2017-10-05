@@ -92,7 +92,7 @@ namespace p5.lambda.helpers
                     _args.Value = _args.Value != null;
 
                 // House cleaning.
-                _args["_p5_conditions_state_"]?.UnTie ();
+                _args ["_p5_conditions_state_"]?.UnTie ();
             }
 
             // Returning results of evaluation of conditional chain.

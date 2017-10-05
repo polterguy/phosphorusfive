@@ -56,7 +56,7 @@ namespace p5.io.folder
                         // Notice, unless [show-all] is true, we explicitly remove all files starting with a "." as a part of their filename.
                         if (!showAll && Path.GetFileName (idxFile).StartsWithEx ("."))
                             continue;
-                        
+
                         var fileName = idxFile.Replace ("\\", "/");
                         fileName = fileName.Replace (rootFolder, "");
                         e.Args.Add (fileName);
@@ -93,11 +93,11 @@ namespace p5.io.folder
                     } else {
 
                         // Filter is an "exact match" type of filter.
-						if (Path.GetFileName (filename) == idxFilter) {
-							retVal = true;
-							break;
-						}
-					}
+                        if (Path.GetFileName (filename) == idxFilter) {
+                            retVal = true;
+                            break;
+                        }
+                    }
                 }
             }
             return retVal;

@@ -41,7 +41,8 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.mime.parse-native")]
-        private static void _p5_mime_parse_native (ApplicationContext context, ActiveEventArgs e) {
+        private static void _p5_mime_parse_native (ApplicationContext context, ActiveEventArgs e)
+        {
             // Retrieving MimeEntity from caller's arguments
             var entity = e.Args.Get<MimeEntity> (context);
             var parser = new helpers.MimeParser (
@@ -60,7 +61,8 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.mime.load-from-stream")]
-        public static void _p5_mime_load_from_stream (ApplicationContext context, ActiveEventArgs e) {
+        public static void _p5_mime_load_from_stream (ApplicationContext context, ActiveEventArgs e)
+        {
             // Making sure we clean up after ourselves.
             using (new ArgsRemover (e.Args, true)) {
                 // Sanity check.
@@ -95,7 +97,8 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.mime.parse")]
-        public static void p5_mime_parse (ApplicationContext context, ActiveEventArgs e) {
+        public static void p5_mime_parse (ApplicationContext context, ActiveEventArgs e)
+        {
             // Making sure we clean up after ourselves
             using (new ArgsRemover (e.Args, true)) {
 
@@ -143,7 +146,8 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.mime.load")]
-        public static void p5_mime_load (ApplicationContext context, ActiveEventArgs e) {
+        public static void p5_mime_load (ApplicationContext context, ActiveEventArgs e)
+        {
             // Making sure we clean up after ourselves
             using (new ArgsRemover (e.Args, true)) {
 

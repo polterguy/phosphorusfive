@@ -26,7 +26,8 @@ using System.Web;
 using p5.exp;
 using p5.core;
 
-namespace p5.web.ui.response {
+namespace p5.web.ui.response
+{
     /// <summary>
     ///     Class encapsulating the [p5.web.response.p5.web.echo] Active Event
     /// </summary>
@@ -45,11 +46,12 @@ namespace p5.web.ui.response {
             HttpContext.Current.Response.ClearContent ();
 
             // Rendering content back on wire
-            var val = e.Args.Value as byte[];
+            var val = e.Args.Value as byte [];
             if (val != null) {
 
                 // Content is binary type of content
                 HttpContext.Current.Response.BinaryWrite (val);
+
             } else {
 
                 // Content is string, integer, etc type of content

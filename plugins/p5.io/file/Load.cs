@@ -45,10 +45,10 @@ namespace p5.io.file
         public static void p5_io_file_load (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (
-                context, 
-                e.Args, 
-                true, 
-                "read-file", 
+                context,
+                e.Args,
+                true,
+                "read-file",
                 delegate (string filename, string fullpath) {
                     if (File.Exists (fullpath)) {
 
@@ -66,66 +66,66 @@ namespace p5.io.file
                             e.Args,
                             context);
                     }
-            });
+                });
         }
 
-		/// <summary>
-		///     Loads one or more file(s) from local disc and saves into given stream.
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = ".p5.io.file.serialize-to-stream")]
-		public static void _p5_io_file_serialize_to_stream (ApplicationContext context, ActiveEventArgs e)
-		{
+        /// <summary>
+        ///     Loads one or more file(s) from local disc and saves into given stream.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = ".p5.io.file.serialize-to-stream")]
+        public static void _p5_io_file_serialize_to_stream (ApplicationContext context, ActiveEventArgs e)
+        {
             // Retrieving stream argument.
             var tuple = e.Args.Value as Tuple<object, Stream>;
             e.Args.Value = tuple.Item1;
             var output = tuple.Item2;
 
             // Iterating through files specified.
-			ObjectIterator.Iterate (
-				context,
-				e.Args,
-				true,
-				"read-file",
-				delegate (string filename, string fullpath) {
+            ObjectIterator.Iterate (
+                context,
+                e.Args,
+                true,
+                "read-file",
+                delegate (string filename, string fullpath) {
 
-					if (File.Exists (fullpath)) {
+                    if (File.Exists (fullpath)) {
 
                         // Serializing file into stream.
                         using (FileStream stream = File.OpenRead (fullpath)) {
-                            stream.CopyTo (output); 
+                            stream.CopyTo (output);
                         }
 
-					} else {
+                    } else {
 
-						// Oops, file didn't exist.
-						throw new LambdaException (
-							string.Format ("Couldn't find file '{0}'", filename),
-							e.Args,
-							context);
-					}
-				});
-		}
+                        // Oops, file didn't exist.
+                        throw new LambdaException (
+                            string.Format ("Couldn't find file '{0}'", filename),
+                            e.Args,
+                            context);
+                    }
+                });
+        }
 
-		/*
+        /*
          * Determines if file is text according to the most common file extensions
          */
-		static bool IsTextFile (string fileName)
+        static bool IsTextFile (string fileName)
         {
             switch (Path.GetExtension (fileName)) {
-                case ".txt":
-                case ".md":
-                case ".css":
-                case ".js":
-                case ".html":
-                case ".htm":
-                case ".hl":
-                case ".xml":
-                case ".csv":
-                    return true;
-                default:
-                    return false;
+            case ".txt":
+            case ".md":
+            case ".css":
+            case ".js":
+            case ".html":
+            case ".htm":
+            case ".hl":
+            case ".xml":
+            case ".csv":
+                return true;
+            default:
+                return false;
             }
         }
 
@@ -133,8 +133,8 @@ namespace p5.io.file
          * Loads specified file as text and appends into args, possibly converting into lambda.
          */
         static void LoadTextFile (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             string fullpath,
             string fileName)
         {
@@ -154,7 +154,7 @@ namespace p5.io.file
                     // Automatically converting to lambda before returning.
                     var csvLambda = new Node ("", fileContent);
                     context.RaiseEvent ("p5.csv.csv2lambda", csvLambda);
-                    args.Add (fileName, null, csvLambda["result"].Children);
+                    args.Add (fileName, null, csvLambda ["result"].Children);
 
                 } else {
 

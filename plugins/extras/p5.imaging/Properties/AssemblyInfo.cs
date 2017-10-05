@@ -27,22 +27,22 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("p5.imaging")]
-[assembly: AssemblyDescription("Active Events for modifying images")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("p5.imaging")]
-[assembly: AssemblyCopyright("Copyright © Thomas Hansen 2016 - 2017")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyTitle ("p5.imaging")]
+[assembly: AssemblyDescription ("Active Events for modifying images")]
+[assembly: AssemblyConfiguration ("")]
+[assembly: AssemblyCompany ("")]
+[assembly: AssemblyProduct ("p5.imaging")]
+[assembly: AssemblyCopyright ("Copyright © Thomas Hansen 2016 - 2017")]
+[assembly: AssemblyTrademark ("")]
+[assembly: AssemblyCulture ("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+[assembly: ComVisible (false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4007d761-51b4-4f10-96d9-3aee81782130")]
+[assembly: Guid ("4007d761-51b4-4f10-96d9-3aee81782130")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -51,5 +51,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion ("1.0.0.0")]
+[assembly: AssemblyFileVersion ("1.0.0.0")]

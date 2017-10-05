@@ -208,7 +208,7 @@ namespace p5.mime.helpers
             if (_addPrefixToAttachmentPath) {
 
                 // Making sure we create a unique file "prefix", such that files with similar names, doesn't overwrite each other.
-                var unique = Guid.NewGuid().ToString().Replace("-", "") + "-";
+                var unique = Guid.NewGuid ().ToString ().Replace ("-", "") + "-";
                 physical_full_filename = _attachmentFolder + unique + fileName;
 
                 // Making sure we return to caller the entire filename that was used to persist the file.
@@ -243,23 +243,23 @@ namespace p5.mime.helpers
             if (txtPart != null) {
 
                 // Part is text part.
-                entityNode.Add("content", txtPart.Text);
+                entityNode.Add ("content", txtPart.Text);
 
             } else {
 
-				// Creating a stream to decode our entity to.
-				using (MemoryStream stream = new MemoryStream()) {
+                // Creating a stream to decode our entity to.
+                using (MemoryStream stream = new MemoryStream ()) {
 
-					// Decoding content to memory.
-					part.ContentObject.DecodeTo(stream);
+                    // Decoding content to memory.
+                    part.ContentObject.DecodeTo (stream);
 
-					// Resetting position and setting up a buffer object to hold content.
-					stream.Position = 0;
+                    // Resetting position and setting up a buffer object to hold content.
+                    stream.Position = 0;
 
-					// Putting content into return node for MimeEntity.
-					entityNode.Add("content", stream.ToArray ());
-				}
-			}
+                    // Putting content into return node for MimeEntity.
+                    entityNode.Add ("content", stream.ToArray ());
+                }
+            }
         }
 
         /*

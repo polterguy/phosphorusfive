@@ -47,7 +47,7 @@ namespace p5.imaging.transformations
 
                 // Grayscale ColorMatrix creation.
                 var colors = new ColorMatrix (
-                   new float[][] {
+                   new float [] [] {
                          new float[] {.3f, .3f, .3f, 0, 0},
                          new float[] {.59f, .59f, .59f, 0, 0},
                          new float[] {.11f, .11f, .11f, 0, 0},
@@ -61,13 +61,13 @@ namespace p5.imaging.transformations
 
                 // Blitting original image to destination image.
                 g.DrawImage (
-                    original, 
+                    original,
                     new Rectangle (0, 0, original.Width, original.Height),
-                    0, 
-                    0, 
-                    original.Width, 
-                    original.Height, 
-                    GraphicsUnit.Pixel, 
+                    0,
+                    0,
+                    original.Width,
+                    original.Height,
+                    GraphicsUnit.Pixel,
                     attrs);
 
                 // Returning new image, notice caller is responsible for disposing both images.

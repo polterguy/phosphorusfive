@@ -213,7 +213,7 @@ namespace p5.web
             using (new ArgsRemover (e.Args)) {
 
                 // Returning current URL
-                e.Args.Value = AjaxPage.Request.Url.ToString();
+                e.Args.Value = AjaxPage.Request.Url.ToString ();
             }
         }
 
@@ -242,10 +242,10 @@ namespace p5.web
         public void p5_web_get_root_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new ArgsRemover(e.Args)) {
+            using (new ArgsRemover (e.Args)) {
 
                 // Returning web apps root URL
-                e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart (UriPartial.Authority) + AjaxPage.ResolveUrl("~/");
+                e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart (UriPartial.Authority) + AjaxPage.ResolveUrl ("~/");
             }
         }
 
@@ -286,7 +286,7 @@ namespace p5.web
         {
             var widgetID = e.Args.Name;
             var eventName = e.Args.Get<string> (context);
-            context.RaiseEvent("eval", WidgetAjaxEventStorage[widgetID, eventName].Clone());
+            context.RaiseEvent ("eval", WidgetAjaxEventStorage [widgetID, eventName].Clone ());
         }
 
         /*
@@ -300,33 +300,33 @@ namespace p5.web
             if (!AjaxPage.IsPostBack) {
 
                 // Initial loading of page, creating storage for widget lambda events
-                WidgetLambdaEventStorage = new WidgetEventStorage();
+                WidgetLambdaEventStorage = new WidgetEventStorage ();
 
                 // Associating lambda event storage with page by creating a "page value"
-                context.RaiseEvent(
+                context.RaiseEvent (
                     ".p5.web.viewstate.set",
-                    new Node(".p5.web.viewstate.set", ".WidgetLambdaEventStorage", new Node[] { new Node("src", WidgetLambdaEventStorage) }));
+                    new Node (".p5.web.viewstate.set", ".WidgetLambdaEventStorage", new Node [] { new Node ("src", WidgetLambdaEventStorage) }));
 
                 // Creating storage for widget ajax events
-                WidgetAjaxEventStorage = new WidgetEventStorage();
+                WidgetAjaxEventStorage = new WidgetEventStorage ();
 
                 // Associating ajax event storage with page by creating a "page value"
-                context.RaiseEvent(
+                context.RaiseEvent (
                     ".p5.web.viewstate.set",
-                    new Node(".p5.web.viewstate.set", ".WidgetAjaxEventStorage", new Node[] { new Node("src", WidgetAjaxEventStorage) }));
+                    new Node (".p5.web.viewstate.set", ".WidgetAjaxEventStorage", new Node [] { new Node ("src", WidgetAjaxEventStorage) }));
             } else {
 
                 // Retrieving existing widget lambda event storage
                 WidgetLambdaEventStorage = context.RaiseEvent (
                     ".p5.web.viewstate.get",
-                    new Node(".p5.web.viewstate.get", ".WidgetLambdaEventStorage"))[0]
-                    .Get<WidgetEventStorage>(context);
+                    new Node (".p5.web.viewstate.get", ".WidgetLambdaEventStorage")) [0]
+                    .Get<WidgetEventStorage> (context);
 
                 // Retrieving existing widget ajax event storage
                 WidgetAjaxEventStorage = context.RaiseEvent (
                     ".p5.web.viewstate.get",
-                    new Node(".p5.web.viewstate.get", ".WidgetAjaxEventStorage"))[0]
-                    .Get<WidgetEventStorage>(context);
+                    new Node (".p5.web.viewstate.get", ".WidgetAjaxEventStorage")) [0]
+                    .Get<WidgetEventStorage> (context);
             }
         }
 

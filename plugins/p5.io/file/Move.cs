@@ -48,10 +48,10 @@ namespace p5.io.file
 
             // Using our common helper for actual implementation.
             MoveCopyHelper.CopyMoveFileObject (
-                context, 
-                e.Args, 
-                "modify-file", 
-                "modify-file", 
+                context,
+                e.Args,
+                "modify-file",
+                "modify-file",
                 delegate (string rootFolder, string source, string destination) {
                     File.Move (rootFolder + source, rootFolder + destination);
                 },

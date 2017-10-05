@@ -32,7 +32,8 @@ namespace p5.flickrnet
     public static class FlickrNet
     {
         [ActiveEvent (Name = "p5.flickr.search")]
-        public static void p5_flickr_search (ApplicationContext context, ActiveEventArgs e) {
+        public static void p5_flickr_search (ApplicationContext context, ActiveEventArgs e)
+        {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new ArgsRemover (e.Args, true)) {
 

@@ -37,7 +37,8 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-object-value.ulong")]
-        static void p5_hyperlisp_get_object_value_ulong (ApplicationContext context, ActiveEventArgs e) {
+        static void p5_hyperlisp_get_object_value_ulong (ApplicationContext context, ActiveEventArgs e)
+        {
             if (e.Args.Value is ulong) {
                 return;
             }
@@ -50,7 +51,8 @@ namespace p5.types.types
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.hyperlambda.get-type-name.System.UInt64")]
-        static void p5_hyperlisp_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e) {
+        static void p5_hyperlisp_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e)
+        {
             e.Args.Value = "ulong";
         }
     }

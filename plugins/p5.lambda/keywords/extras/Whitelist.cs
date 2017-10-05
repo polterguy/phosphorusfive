@@ -41,8 +41,8 @@ namespace p5.lambda.keywords.extras
         public static void _p5_lambda_whitelist_post_condition_children_are_one_of (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving condition and lambda node from args.
-            var condition = e.Args["post-condition"].Get<Node> (context);
-            var lambdaObj = e.Args["lambda"].Get<Node> (context);
+            var condition = e.Args ["post-condition"].Get<Node> (context);
+            var lambdaObj = e.Args ["lambda"].Get<Node> (context);
 
             // Looping through each children of lambda, making sure it's name can be found in condition's children.
             foreach (var idxLambda in lambdaObj.Children) {
@@ -66,8 +66,8 @@ namespace p5.lambda.keywords.extras
         public static void _p5_lambda_whitelist_pre_condition_evaluates_to_true (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving condition and lambda node from args, cloning it since we'll evaluate it using [eval].
-            var condition = e.Args["pre-condition"].Get<Node> (context).Clone ();
-            var lambdaObj = e.Args["lambda"].Get<Node> (context);
+            var condition = e.Args ["pre-condition"].Get<Node> (context).Clone ();
+            var lambdaObj = e.Args ["lambda"].Get<Node> (context);
 
             // Evaluating [pre-condition], asserting it yields true, detaching whitelist first, making sure we attach it afterwards.
             var old = context.Ticket.Whitelist;

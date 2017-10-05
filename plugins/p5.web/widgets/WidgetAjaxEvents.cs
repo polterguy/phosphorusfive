@@ -70,8 +70,8 @@ namespace p5.web.widgets
 
                         // Checking if the currently iterated widget has the currently iterated Ajax event, 
                         // and if so, making sure we return a cloned version of its lambda.
-                        if (Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] != null)
-                            e.Args.FindOrInsert(idxWidget.ID).Add(Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name].Clone());
+                        if (Manager.WidgetAjaxEventStorage [idxWidget.ID, idxEventNameNode.Name] != null)
+                            e.Args.FindOrInsert (idxWidget.ID).Add (Manager.WidgetAjaxEventStorage [idxWidget.ID, idxEventNameNode.Name].Clone ());
                     }
                 }
             }
@@ -111,11 +111,11 @@ namespace p5.web.widgets
                             throw new LambdaException ("Cannot pass in content to [p5.web.widgets.ajax-events.delete]", idxEventNameNode, context);
 
                         // Setting widget's Ajax event to whatever we were given, making sure we clone the lambda supplied.
-                        var clone = idxEventNameNode.Clone();
+                        var clone = idxEventNameNode.Clone ();
 
                         // Making sure updated Ajax event is parametrized with [_event] node.
                         clone.FindOrInsert ("_event", 0).Value = idxWidget.ID;
-                        Manager.WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = clone;
+                        Manager.WidgetAjaxEventStorage [idxWidget.ID, idxEventNameNode.Name] = clone;
 
                         // Notice, since [oninit] is a special server-side event, we do not map it up as an Ajax event.
                         if (idxEventNameNode.Name != "oninit" && idxWidget [idxEventNameNode.Name] != "common_event_handler")

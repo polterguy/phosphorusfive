@@ -56,20 +56,24 @@ namespace p5.lambda.keywords.core
 
                     // Simple count expression.
                     e.Args.Value = match.Count;
+
                 } else if (match.TypeOfMatch == Match.MatchType.node) {
 
                     // Node values, single or multiple is irrelevant, still need to clone them.
                     e.Args.AddRange (match.Select (ix => ix.Node.Clone ()));
                     e.Args.Value = null;
+
                 } else if (match.Count == 1) {
 
                     // Single value, name or value type of value is irrelevant, adding to value anyways.
                     e.Args.Value = match [0].Value;
+
                 } else if (match.TypeOfMatch == Match.MatchType.name) {
 
                     // Multiple name values.
                     e.Args.AddRange (match.Select (ix => new Node (ix.Node.Name)));
                     e.Args.Value = null;
+
                 } else {
 
                     // Multiple value values.

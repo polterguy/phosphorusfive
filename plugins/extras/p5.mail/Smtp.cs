@@ -79,8 +79,8 @@ namespace p5.mail
          * Sends all [envelopes] found.
          */
         private static void SendMessages (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             SmtpClient client)
         {
             // Looping through each message caller wants to send.
@@ -113,7 +113,7 @@ namespace p5.mail
          * Creates and decorates MimeMessage according to given args.
          */
         private static MimeMessage CreateMessage (
-            ApplicationContext context, 
+            ApplicationContext context,
             Node envelopeNode,
             List<Stream> streams)
         {
@@ -127,7 +127,7 @@ namespace p5.mail
             DecorateMessageEnvelope (context, envelopeNode, message);
 
             // Retrieving [body] node of envelope, and doing basic syntax checking.
-            Node body = envelopeNode["body"];
+            Node body = envelopeNode ["body"];
             if (body == null)
                 throw new LambdaException (
                     "No [body] found inside of [envelope]",
@@ -148,8 +148,8 @@ namespace p5.mail
          * Decorates headers of MimeMessage.
          */
         static void DecorateMessageEnvelope (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             MimeMessage message)
         {
             message.Subject = args.GetChildValue ("Subject", context, "");
@@ -167,24 +167,24 @@ namespace p5.mail
 
             if (args ["Sender"] != null)
                 message.Sender = new MailboxAddress (args ["Sender"] [0].Name, args ["Sender"] [0].Get<string> (context));
-            
+
             if (args ["In-Reply-To"] != null)
                 message.InReplyTo = args.GetChildValue ("In-Reply-To", context, "");
-            
+
             if (args ["Resent-Message-ID"] != null)
                 message.ResentMessageId = args.GetChildValue ("Resent-Message-Id", context, "");
-            
+
             if (args ["Resent-Sender"] != null)
                 message.ResentSender = new MailboxAddress (args ["Resent-Sender"] [0].Name, args ["Resent-Sender"] [0].Get<string> (context));
-            
+
             if (args ["Importance"] != null)
-                message.Importance = (MessageImportance)Enum.Parse (typeof(MessageImportance), args.GetChildValue ("Importance", context, ""));
-            
+                message.Importance = (MessageImportance)Enum.Parse (typeof (MessageImportance), args.GetChildValue ("Importance", context, ""));
+
             if (args ["Priority"] != null)
-                message.Priority = (MessagePriority)Enum.Parse (typeof(MessagePriority), args.GetChildValue ("Priority", context, ""));
-            
+                message.Priority = (MessagePriority)Enum.Parse (typeof (MessagePriority), args.GetChildValue ("Priority", context, ""));
+
             if (args ["headers"] != null) {
-                
+
                 // Looping through all custom headers in message, adding them to message.
                 foreach (var idxHeader in args ["headers"].Children) {
                     message.Headers.Add (new Header (idxHeader.Name, idxHeader.Get<string> (context)));
@@ -196,19 +196,19 @@ namespace p5.mail
          * Retrieves all emails beneath the args node's child with the given name.
          */
         private static IEnumerable<MailboxAddress> GetAddresses (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             string name)
         {
             // Checking there exist a node with supplied name on args.
             if (args [name] != null) {
 
                 // Returning all emails.
-                return args[name].Children.Select (ix => new MailboxAddress (ix.Name, ix.Get<string>(context)));
+                return args [name].Children.Select (ix => new MailboxAddress (ix.Name, ix.Get<string> (context)));
             }
 
             // No addresses for this request.
-            return new MailboxAddress[] { };
+            return new MailboxAddress [] { };
         }
 
         #endregion

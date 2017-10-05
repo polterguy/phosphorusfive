@@ -60,6 +60,7 @@ namespace p5.types
 
                     // No exception occurred, conversion is possible
                     e.Args.Value = true;
+
                 } catch {
 
                     // Oops, conversion is not possible!

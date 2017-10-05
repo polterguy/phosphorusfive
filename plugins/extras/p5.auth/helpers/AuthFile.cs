@@ -80,11 +80,11 @@ namespace p5.auth.helpers
                 _locker.ExitWriteLock ();
             }
         }
-        
+
         /*
          * Creates a new "salt" for use with hashing of passwords
          */
-        internal static string CreateNewSalt(ApplicationContext context)
+        internal static string CreateNewSalt (ApplicationContext context)
         {
             return context.RaiseEvent ("p5.crypto.create-random").Get<string> (context);
         }

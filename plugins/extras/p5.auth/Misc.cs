@@ -41,9 +41,9 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.misc.whoami")]
         public static void p5_auth_misc_whoami (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Add("username", AuthenticationHelper.GetTicket (context).Username);
-            e.Args.Add("role", AuthenticationHelper.GetTicket (context).Role);
-            e.Args.Add("default", AuthenticationHelper.GetTicket (context).IsDefault);
+            e.Args.Add ("username", AuthenticationHelper.GetTicket (context).Username);
+            e.Args.Add ("role", AuthenticationHelper.GetTicket (context).Role);
+            e.Args.Add ("default", AuthenticationHelper.GetTicket (context).IsDefault);
         }
 
         /// <summary>

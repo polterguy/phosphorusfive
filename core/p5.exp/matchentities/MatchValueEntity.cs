@@ -33,15 +33,13 @@ namespace p5.exp.matchentities
         internal MatchValueEntity (Node node, Match match)
             : base (node, match)
         { }
-        
+
         public override Match.MatchType TypeOfMatch {
             get { return Match.MatchType.value; }
         }
 
-        public override object Value
-        {
-            get
-            {
+        public override object Value {
+            get {
                 object retVal = Node.Value;
                 if (!string.IsNullOrEmpty (_match.Convert)) {
                     retVal = _match.Convert == "string" ?
@@ -50,8 +48,7 @@ namespace p5.exp.matchentities
                 }
                 return retVal;
             }
-            set
-            {
+            set {
                 Node.Value = value; // ps, not cloned!
             }
         }

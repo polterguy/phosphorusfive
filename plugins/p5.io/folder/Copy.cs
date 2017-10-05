@@ -46,16 +46,16 @@ namespace p5.io.folder
         {
             // Using our common helper for actual implementation.
             MoveCopyHelper.CopyMoveFileObject (
-                context, 
-                e.Args, 
-                "read-folder", 
-                "modify-folder", 
+                context,
+                e.Args,
+                "read-folder",
+                "modify-folder",
                 delegate (string rootFolder, string source, string destination) {
                     CopyFolder (
-                        context, 
-                        e.Args, 
-                        GetSourceFileObjects (rootFolder + source, ""), 
-                        rootFolder + source, 
+                        context,
+                        e.Args,
+                        GetSourceFileObjects (rootFolder + source, ""),
+                        rootFolder + source,
                         rootFolder + destination);
                 }, Directory.Exists);
         }
@@ -67,8 +67,8 @@ namespace p5.io.folder
         static void CopyFolder (
             ApplicationContext context,
             Node args,
-            List<Tuple<string, bool>> sourceFileObjects, 
-            string sourceFolder, 
+            List<Tuple<string, bool>> sourceFileObjects,
+            string sourceFolder,
             string destinationFolder)
         {
             // Verifying currently traversed source folder exists.
@@ -84,7 +84,7 @@ namespace p5.io.folder
                 if (idxFileObj.Item2) {
 
                     // Currently iterated object is a folder, verifying each folder up to current exist.
-                    string[] entities = idxFileObj.Item1.Split (new char [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+                    string [] entities = idxFileObj.Item1.Split (new char [] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                     string fullPath = "";
                     foreach (var idxFolder in entities) {
 
@@ -106,7 +106,7 @@ namespace p5.io.folder
          * Folders are "true" in Item2 of Tuple.
          */
         static List<Tuple<string, bool>> GetSourceFileObjects (
-            string rootFolder, 
+            string rootFolder,
             string source)
         {
             // Creating our return value.

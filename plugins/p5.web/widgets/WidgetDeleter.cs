@@ -87,8 +87,8 @@ namespace p5.web.widgets
          * Removes all Ajax and lambda events, recursively, for the specified widget, and all of its children widgets.
          */
         void DeleteWidget (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             Widget widget)
         {
             // Sanity check.
@@ -115,10 +115,10 @@ namespace p5.web.widgets
             if (control is Widget) {
 
                 // Deleting all Ajax events for widget.
-                Manager.WidgetAjaxEventStorage.RemoveFromKey1(control.ID);
+                Manager.WidgetAjaxEventStorage.RemoveFromKey1 (control.ID);
 
                 // Deleting all lambda events for widget.
-                Manager.WidgetLambdaEventStorage.RemoveFromKey2(control.ID);
+                Manager.WidgetLambdaEventStorage.RemoveFromKey2 (control.ID);
             }
 
             // Recursively invoking "self" for all children controls.

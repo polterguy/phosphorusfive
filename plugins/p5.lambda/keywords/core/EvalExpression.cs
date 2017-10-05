@@ -53,6 +53,7 @@ namespace p5.lambda.keywords.core
 
                         // Making sure we remove all formatting parameters for clarity.
                         idxMatch.Node.RemoveAll (ix => ix.Name == "");
+
                     } else if (idxMatch.Node.Value != null) {
 
                         // Formats value, and substitutes value with formatting result.

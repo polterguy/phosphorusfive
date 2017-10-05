@@ -99,26 +99,26 @@ namespace p5.web.widgets
          * Creates a widget from the given node, and inserts it into the specified [_parent] widget in args.
          */
         void CreateWidget<T> (
-            ApplicationContext context, 
-            Node args, 
-            string elementType) where T : Widget, new ()
+            ApplicationContext context,
+            Node args,
+            string elementType) where T : Widget, new()
         {
             switch (args.Name) {
-                case "container":
-                case "literal":
-                case "void":
-                case "create-widget":
-                case "create-void-widget":
-                case "create-literal-widget":
-                case "create-container-widget":
-                case "p5.web.widgets.create":
-                case "p5.web.widgets.create-void":
-                case "p5.web.widgets.create-literal":
-                case "p5.web.widgets.create-container":
-                    break;
-                default:
-                    elementType = args.Name;
-                    break;
+            case "container":
+            case "literal":
+            case "void":
+            case "create-widget":
+            case "create-void-widget":
+            case "create-literal-widget":
+            case "create-container-widget":
+            case "p5.web.widgets.create":
+            case "p5.web.widgets.create-void":
+            case "p5.web.widgets.create-literal":
+            case "p5.web.widgets.create-container":
+                break;
+            default:
+                elementType = args.Name;
+                break;
             }
             // Figuring out which container widget is the created widget's parent, and which position we should inject the widget at.
             var parent = args.GetChildValue<Container> ("_parent", context);
@@ -157,35 +157,35 @@ namespace p5.web.widgets
             foreach (var idxArg in args.Children) {
 
                 switch (idxArg.Name) {
-                    case "visible":
-                        widget.Visible = idxArg.GetExValue<bool> (context);
-                        break;
-                    case "element":
-                        widget.Element = idxArg.GetExValue<string> (context);
-                        break;
-                    case "widgets":
-                        CreateChildWidgets (context, widget, idxArg);
-                        break;
-                    case "events":
-                        CreateWidgetLambdaEvents (context, widget, idxArg);
-                        break;
-                    case "_parent":
-                    case "position":
-                    case "parent":
-                    case "before":
-                    case "after":
-                        // Skipping these buggers, since they're handled elsewhere, being "special properties".
-                        break;
-                    case "oninit":
+                case "visible":
+                    widget.Visible = idxArg.GetExValue<bool> (context);
+                    break;
+                case "element":
+                    widget.Element = idxArg.GetExValue<string> (context);
+                    break;
+                case "widgets":
+                    CreateChildWidgets (context, widget, idxArg);
+                    break;
+                case "events":
+                    CreateWidgetLambdaEvents (context, widget, idxArg);
+                    break;
+                case "_parent":
+                case "position":
+                case "parent":
+                case "before":
+                case "after":
+                    // Skipping these buggers, since they're handled elsewhere, being "special properties".
+                    break;
+                case "oninit":
 
-                        // Adding lambda event to lambda event storage.
-                        Manager.WidgetAjaxEventStorage [widget.ID, "oninit"] = idxArg.Clone ();
-                        break;
-                    default:
+                    // Adding lambda event to lambda event storage.
+                    Manager.WidgetAjaxEventStorage [widget.ID, "oninit"] = idxArg.Clone ();
+                    break;
+                default:
 
-                        // This might be an event, or an arbitrary attribute.
-                        HandleDefaultProperty (context, widget, idxArg);
-                        break;
+                    // This might be an event, or an arbitrary attribute.
+                    HandleDefaultProperty (context, widget, idxArg);
+                    break;
                 }
             }
         }
@@ -200,55 +200,56 @@ namespace p5.web.widgets
 
                 // Figuring out type of widget to create.
                 switch (idxChild.Name) {
-                    case "literal":
-                    case "container":
-                    case "void":
-                    case "text":
+                case "literal":
+                case "container":
+                case "void":
+                case "text":
 
-                        // Sanity check, before invoking "create native widget" event.                        if (idxChild.Children.Count (ix => ix.Name == "parent" || ix.Name == "_parent" || ix.Name == "before" || ix.Name == "after" || ix.Name == "position") > 0)
-                            throw new LambdaException ("You cannot specify [parent], [_parent], [before], [after] or [position] for a child widget", idxChild, context);
+                    // Sanity check, before invoking "create native widget" event.
+                    if (idxChild.Children.Count (ix => ix.Name == "parent" || ix.Name == "_parent" || ix.Name == "before" || ix.Name == "after" || ix.Name == "position") > 0)
+                        throw new LambdaException ("You cannot specify [parent], [_parent], [before], [after] or [position] for a child widget", idxChild, context);
+                    idxChild.Insert (0, new Node ("_parent", widget));
+                    try {
+                        context.RaiseEvent (".p5.web.widgets." + idxChild.Name, idxChild);
+                    } finally {
+                        idxChild ["_parent"].UnTie ();
+                    }
+                    break;
+                default:
+
+                    // Checking if this is a "custom widget", which it is, if its name contains a ".".
+                    if (idxChild.Name.IndexOfEx (".") > 0) {
+
+                        // Making sure we store the ID for widget, since lambda event invocation will delete it after evaluation.
+                        var id = idxChild.Value;
+                        context.RaiseEvent (idxChild.Name, idxChild);
+                        if (idxChild.Count != 1)
+                            throw new LambdaException ("Custom widget event did not return exactly one child value", idxChild, context);
+
+                        // Making sure we decorate the ID for widget automatically.
+                        idxChild.FirstChild.Value = id;
+
+                        // Recursively invoking self, with the children widget, that should now be declared as the first child node of idxChild.
+                        CreateChildWidgets (context, widget, idxChild);
+
+                    } else {
+
+                        // This is the "HTML element" helper syntax, declaring the element of the widget as the node's name.
+                        // Checking type of widget, before we invoke creation event.
                         idxChild.Insert (0, new Node ("_parent", widget));
                         try {
-                            context.RaiseEvent (".p5.web.widgets." + idxChild.Name, idxChild);
+                            if (idxChild ["innerValue"] != null) {
+                                context.RaiseEvent (".p5.web.widgets.literal", idxChild);
+                            } else if (idxChild ["widgets"] != null) {
+                                context.RaiseEvent (".p5.web.widgets.container", idxChild);
+                            } else {
+                                context.RaiseEvent (".p5.web.widgets.void", idxChild);
+                            }
                         } finally {
                             idxChild ["_parent"].UnTie ();
                         }
-                        break;
-                    default:
-
-                        // Checking if this is a "custom widget", which it is, if its name contains a ".".
-                        if (idxChild.Name.IndexOfEx (".") > 0) {
-
-                            // Making sure we store the ID for widget, since lambda event invocation will delete it after evaluation.
-                            var id = idxChild.Value;
-                            context.RaiseEvent (idxChild.Name, idxChild);
-                            if (idxChild.Count != 1)
-                                throw new LambdaException ("Custom widget event did not return exactly one child value", idxChild, context);
-
-                            // Making sure we decorate the ID for widget automatically.
-                            idxChild.FirstChild.Value = id;
-
-                            // Recursively invoking self, with the children widget, that should now be declared as the first child node of idxChild.
-                            CreateChildWidgets (context, widget, idxChild);
-
-                        } else {
-
-                            // This is the "HTML element" helper syntax, declaring the element of the widget as the node's name.
-                            // Checking type of widget, before we invoke creation event.
-                            idxChild.Insert (0, new Node ("_parent", widget));
-                            try {
-                                if (idxChild ["innerValue"] != null) {
-                                    context.RaiseEvent (".p5.web.widgets.literal", idxChild);
-                                } else if (idxChild ["widgets"] != null) {
-                                    context.RaiseEvent (".p5.web.widgets.container", idxChild);
-                                } else {
-                                    context.RaiseEvent (".p5.web.widgets.void", idxChild);
-                                }
-                            } finally {
-                                idxChild ["_parent"].UnTie ();
-                            }
-                        }
-                        break;
+                    }
+                    break;
                 }
             }
         }
@@ -286,7 +287,7 @@ namespace p5.web.widgets
             } else {
 
                 // This is a normal attribute, making sure we escape attribute if necessary.
-                widget [node.Name.StartsWithEx ("\\") ? node.Name.Substring(1) : node.Name] = node.GetExValue<string> (context);
+                widget [node.Name.StartsWithEx ("\\") ? node.Name.Substring (1) : node.Name] = node.GetExValue<string> (context);
             }
         }
 

@@ -50,10 +50,8 @@ namespace p5.hyperlambda.helpers
         ///     Parses and retrieves the Hyperlambda
         /// </summary>
         /// <value>hyperlambda</value>
-        public string Hyperlambda
-        {
-            get
-            {
+        public string Hyperlambda {
+            get {
                 var builder = new StringBuilder ();
                 Nodes2Hyperlisp (builder, _nodes, 0);
                 return builder.ToString ().TrimEnd ();
@@ -85,7 +83,7 @@ namespace p5.hyperlambda.helpers
         {
             if (node.Name.Contains ("\n")) {
                 builder.Append (string.Format (@"@""{0}""", node.Name.Replace (@"""", @"""""")));
-            } else if ((node.Name == "" && node.Value == null) || 
+            } else if ((node.Name == "" && node.Value == null) ||
                        node.Name.Contains (":") || node.Name.Trim () != node.Name) {
                 builder.Append (string.Format (@"""{0}""", node.Name.Replace (@"""", @"\""")));
             } else {

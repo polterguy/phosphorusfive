@@ -55,9 +55,9 @@ namespace p5.io.zip.helpers
          * and verifies user is authorized to writing to new path
          */
         public static string GetLegalDestinationFilename (
-            ApplicationContext context, 
-            Node args, 
-            string rootFolder, 
+            ApplicationContext context,
+            Node args,
+            string rootFolder,
             string destinationFile)
         {
             // Checking if file exist
@@ -78,10 +78,10 @@ namespace p5.io.zip.helpers
          * Verifies source file or folder can be legally read from
          */
         public static void VerfifySourceFileFolderCanBeReadFrom (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             string rootFolder,
-            string destinationFile, 
+            string destinationFile,
             string sourceFileFolder)
         {
             // Verify path is correctly ending with a trailing slash "/" if object is a folder
@@ -98,8 +98,8 @@ namespace p5.io.zip.helpers
             // Checking that destination is not underneath source
             if (destinationFile.IndexOf (sourceFileFolder) == 0 && destinationFile.Length != sourceFileFolder.Length + 4)
                 throw new LambdaException (
-                    string.Format ("Destination file '{0}' is beneath source '{1}', which is logically impossible to perform", destinationFile, sourceFileFolder), 
-                    args, 
+                    string.Format ("Destination file '{0}' is beneath source '{1}', which is logically impossible to perform", destinationFile, sourceFileFolder),
+                    args,
                     context);
         }
 
@@ -109,7 +109,7 @@ namespace p5.io.zip.helpers
         private static string CreateNewUniqueFileName (ApplicationContext context, string destination)
         {
             string basepath = GetBaseFolder (context);
-            string[] parts = destination.Split ('.');
+            string [] parts = destination.Split ('.');
 
             // Getting suffix of filename
             string suffix = parts.Length == 1 ? "" : parts [parts.Length - 1];

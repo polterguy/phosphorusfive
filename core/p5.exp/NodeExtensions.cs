@@ -40,10 +40,10 @@ namespace p5.exp
         /// <param name="defaultValue">Default value to return</param>
         /// <typeparam name="T">The type to return the evaluated result as</typeparam>
         public static T GetExChildValue<T> (
-            this Node node, 
-            string name, 
+            this Node node,
+            string name,
             ApplicationContext context,
-            T defaultValue = default(T))
+            T defaultValue = default (T))
         {
             if (node [name] == null || node [name].Value == null)
                 return defaultValue;
@@ -59,9 +59,9 @@ namespace p5.exp
         /// <param name="defaultValue">Default value to return</param>
         /// <typeparam name="T">The type to return the evaluated result as</typeparam>
         public static T GetExValue<T> (
-            this Node node, 
-            ApplicationContext context, 
-            T defaultValue = default(T))
+            this Node node,
+            ApplicationContext context,
+            T defaultValue = default (T))
         {
             if (node.Value == null)
                 return defaultValue;

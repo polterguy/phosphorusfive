@@ -33,27 +33,24 @@ namespace p5.exp.matchentities
         internal MatchNameEntity (Node node, Match match)
             : base (node, match)
         { }
-        
+
         public override Match.MatchType TypeOfMatch {
             get { return Match.MatchType.name; }
         }
 
-        public override object Value
-        {
-            get
-            {
+        public override object Value {
+            get {
                 object retVal = Node.Name;
                 if (!string.IsNullOrEmpty (_match.Convert) && _match.Convert != "string") {
 
                     // We need to convert value before returning to caller
                     retVal = _match.Context.RaiseEvent (
-                        ".p5.hyperlambda.get-object-value." + _match.Convert, 
+                        ".p5.hyperlambda.get-object-value." + _match.Convert,
                         new Node ("", retVal)).Value;
                 }
                 return retVal;
             }
-            set
-            {
+            set {
                 Node.Name = Utilities.Convert (_match.Context, value, "");
             }
         }

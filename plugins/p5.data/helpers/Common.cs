@@ -44,19 +44,19 @@ namespace p5.data.helpers
         // Content of database.
         public static Node Database { get; private set; }
 
-		// Used to synchronize access to database.
-		internal sealed class Lock : IDisposable
+        // Used to synchronize access to database.
+        internal sealed class Lock : IDisposable
         {
             readonly bool _write;
             readonly static ReaderWriterLockSlim _lock = new ReaderWriterLockSlim ();
-			public Lock (bool write = false)
+            public Lock (bool write = false)
             {
                 _write = write;
                 if (_write)
                     _lock.EnterWriteLock ();
                 else
                     _lock.EnterReadLock ();
-			}
+            }
 
             public void Dispose ()
             {
@@ -81,7 +81,7 @@ namespace p5.data.helpers
             }
         }
 
-		/*
+        /*
          * Make sure database is properly initialized
          */
         static void Initialize (ApplicationContext context)
@@ -98,17 +98,17 @@ namespace p5.data.helpers
                     new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
                 _dbFullPath = GetRootFolder (context) + dbPath;
 
-				// Figuring out other settings.
+                // Figuring out other settings.
                 _maxObjects = context.RaiseEvent (
-					".p5.config.get",
-					new Node (".p5.config.get", ".p5.data.nodes-per-file")) [0].Get (context, 32);
+                    ".p5.config.get",
+                    new Node (".p5.config.get", ".p5.data.nodes-per-file")) [0].Get (context, 32);
                 _maxFiles = context.RaiseEvent (
-					".p5.config.get",
-					new Node (".p5.config.get", ".p5.data.files-per-folder")) [0].Get (context, 256);
+                    ".p5.config.get",
+                    new Node (".p5.config.get", ".p5.data.files-per-folder")) [0].Get (context, 256);
 
 
-				// Checking to see if database directory exist.
-				if (!Directory.Exists (_dbFullPath)) {
+                // Checking to see if database directory exist.
+                if (!Directory.Exists (_dbFullPath)) {
 
                     // Database folder did not exist, therefor we need to create it.
                     Directory.CreateDirectory (_dbFullPath);
@@ -129,25 +129,25 @@ namespace p5.data.helpers
             }
         }
 
-		/*
+        /*
          * Loads a file from "path" and returns as Node.
          */
-		static Node LoadFile (ApplicationContext context, string path)
-		{
-			// Reading file from disc.
-			using (TextReader reader = File.OpenText (path)) {
+        static Node LoadFile (ApplicationContext context, string path)
+        {
+            // Reading file from disc.
+            using (TextReader reader = File.OpenText (path)) {
 
-				// Converting file to lambda.
-				Node retVal = context.RaiseEvent ("hyper2lambda", new Node ("", reader.ReadToEnd ()));
+                // Converting file to lambda.
+                Node retVal = context.RaiseEvent ("hyper2lambda", new Node ("", reader.ReadToEnd ()));
                 retVal.Value = "/" + path.Substring (_dbFullPath.Length).Trim ('/');
-				return retVal;
-			}
-		}
+                return retVal;
+            }
+        }
 
-		/*
+        /*
          * Adds the file node to changes, unless it already has been added.
          */
-		public static void AddNodeToChanges (Node idxDest, List<Node> changed)
+        public static void AddNodeToChanges (Node idxDest, List<Node> changed)
         {
             // Finding file node.
             var dnaFile = idxDest;
@@ -161,7 +161,7 @@ namespace p5.data.helpers
             }
         }
 
-		/*
+        /*
          * Saves the affected files.
          */
         public static void SaveAffectedFiles (ApplicationContext context, List<Node> changed)
@@ -174,7 +174,7 @@ namespace p5.data.helpers
             }
         }
 
-		/*
+        /*
          * Gets the first available file node.
          */
         public static Node GetAvailableFileNode (ApplicationContext context, bool forceAppend)
@@ -210,7 +210,7 @@ namespace p5.data.helpers
         /*
          * Saves a database node to disc, or deletes it if it is empty
          */
-		static void SaveFileNode (ApplicationContext context, Node fileNode)
+        static void SaveFileNode (ApplicationContext context, Node fileNode)
         {
             // Checking to see if we should remove file entirely, due to it having no more content.
             if (fileNode.Count == 0) {

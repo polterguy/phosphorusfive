@@ -55,7 +55,7 @@ namespace p5.lambda.keywords.core
                 if (first) {
                     first = false;
                 } else {
-                    e.Args.Clear ().AddRange (originalLambda.Clone().Children);
+                    e.Args.Clear ().AddRange (originalLambda.Clone ().Children);
                 }
 
                 // Perform a single iteration.

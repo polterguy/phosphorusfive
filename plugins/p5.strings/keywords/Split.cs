@@ -57,8 +57,8 @@ namespace p5.strings.keywords
                     return;
 
                 // Checking if we should explicitly keep empty items.
-                StringSplitOptions options = e.Args.GetExChildValue ("keep-empty", context, false) ? 
-                    StringSplitOptions.None : 
+                StringSplitOptions options = e.Args.GetExChildValue ("keep-empty", context, false) ?
+                    StringSplitOptions.None :
                     StringSplitOptions.RemoveEmptyEntries;
 
                 // Checking if each item should be trimmed before returned.
@@ -89,11 +89,11 @@ namespace p5.strings.keywords
          * Implementation of actual split operation.
          */
         static void RunSplit (
-            ApplicationContext context, 
-            Node args, 
-            string source, 
-            StringSplitOptions options, 
-            bool trim, 
+            ApplicationContext context,
+            Node args,
+            string source,
+            StringSplitOptions options,
+            bool trim,
             List<object> sepObjects)
         {
             // We have separator objects, now checking type of separator objects.
@@ -128,13 +128,14 @@ namespace p5.strings.keywords
 
         /*
          * Splitting upon one or more strings.
-         */        static void StringSplit (
-            ApplicationContext context,
-            Node args,
-            string source,
-            StringSplitOptions options,
-            bool trim,
-            List<object> sepObjects)
+         */
+        static void StringSplit (
+ApplicationContext context,
+Node args,
+string source,
+StringSplitOptions options,
+bool trim,
+List<object> sepObjects)
         {
             var sepStrings = sepObjects.Select (ix => Utilities.Convert<string> (context, ix)).ToList ();
             args.AddRange (
@@ -158,12 +159,13 @@ namespace p5.strings.keywords
 
         /*
          * Integer split operation.
-         */        static void IntegerSplit (
-            ApplicationContext context, 
-            Node args, 
-            string source, 
-            bool trim, 
-            List<object> sepObjects)
+         */
+        static void IntegerSplit (
+ApplicationContext context,
+Node args,
+string source,
+bool trim,
+List<object> sepObjects)
         {
             var sepIntegers = sepObjects.Select (ix => Utilities.Convert (context, ix, -1)).ToList ();
             sepIntegers.Sort ();
@@ -180,17 +182,17 @@ namespace p5.strings.keywords
          * Regex split operation.
          */
         static void RegexSplit (
-            ApplicationContext context, 
-            Node args, 
-            string source, 
-            bool trim, 
+            ApplicationContext context,
+            Node args,
+            string source,
+            bool trim,
             List<object> sepObjects)
         {
             // Sanity check.
             if (sepObjects.Count > 1)
                 throw new LambdaException (
-                    "When supplying a regex to [p5.string.split], only one [=] operator is allowed", 
-                    args, 
+                    "When supplying a regex to [p5.string.split], only one [=] operator is allowed",
+                    args,
                     context);
 
             // Doing regex split.

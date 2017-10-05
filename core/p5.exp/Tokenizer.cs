@@ -50,8 +50,7 @@ namespace p5.exp
         ///     Returns all tokens in expression
         /// </summary>
         /// <value>The tokens consisting your Expression</value>
-        public IEnumerable<string> Tokens
-        {
+        public IEnumerable<string> Tokens {
             get {
                 while (true) {
                     var token = GetNextToken ();
@@ -69,7 +68,7 @@ namespace p5.exp
         {
             Dispose (true);
         }
-        
+
         /*
          * Disposes the tokenizer
          */
@@ -88,8 +87,7 @@ namespace p5.exp
         {
             // Left trimming white spaces from StringReader, and putting first non-white-space character in "buffer"
             var nextChar = _reader.Read ();
-            for (; nextChar != -1 && "\r\n \t".IndexOf ((char) nextChar) != -1; nextChar = _reader.Read ())
-            { }
+            for (; nextChar != -1 && "\r\n \t".IndexOf ((char)nextChar) != -1; nextChar = _reader.Read ()) { }
             if (nextChar == -1)
                 return null;
             var builder = new StringBuilder ();
@@ -110,10 +108,10 @@ namespace p5.exp
 
             // Looping until "end of token", which is defined as either "/|&^!()?" or "end of stream"
             bool lastEscaped = nextChar == '\\';
-            for (nextChar = _reader.Peek (); 
-                nextChar != -1 && ("/|&^!()?".IndexOf ((char) nextChar) == -1 || lastEscaped); 
+            for (nextChar = _reader.Peek ();
+                nextChar != -1 && ("/|&^!()?".IndexOf ((char)nextChar) == -1 || lastEscaped);
                 nextChar = _reader.Peek ()) {
-                builder.Append ((char) _reader.Read ());
+                builder.Append ((char)_reader.Read ());
                 if (lastEscaped)
                     lastEscaped = false;
                 else if (nextChar == '\\')

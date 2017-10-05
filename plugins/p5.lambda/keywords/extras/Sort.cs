@@ -53,7 +53,7 @@ namespace p5.lambda.keywords.extras
                 if (e.Args.Children.Count (ix => ix.Name != "") == 0) {
 
                     // Defaulting to sorting nodes by "value" casted to IComparable
-                    nodeList.Sort (delegate(Node lhs, Node rhs) {
+                    nodeList.Sort (delegate (Node lhs, Node rhs) {
                         if (e.Name == "sort")
                             return string.Compare (lhs.Name, rhs.Name, System.StringComparison.InvariantCulture);
                         return string.Compare (rhs.Name, lhs.Name, System.StringComparison.InvariantCulture);
@@ -61,7 +61,7 @@ namespace p5.lambda.keywords.extras
                 } else {
 
                     // We have a lambda delegate here
-                    nodeList.Sort (delegate(Node lhs, Node rhs) {
+                    nodeList.Sort (delegate (Node lhs, Node rhs) {
 
                         // Cloning [sort] node, using clone for [eval] for each node in result
                         var exeNode = e.Args.Clone ();

@@ -41,7 +41,8 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.mysql.connect")]
-        public static void p5_mysql_connect (ApplicationContext context, ActiveEventArgs e) {
+        public static void p5_mysql_connect (ApplicationContext context, ActiveEventArgs e)
+        {
             // Creating connection, opening it, and evaluating lambda for [p5.mysql.connect].
             using (var connection = new MySqlConnection (ConnectionString (context, e.Args))) {
 
@@ -73,7 +74,8 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.mysql.database.get")]
-        public static void p5_mysql_database_get (ApplicationContext context, ActiveEventArgs e) {
+        public static void p5_mysql_database_get (ApplicationContext context, ActiveEventArgs e)
+        {
             // Making sure we clean up after ourselves.
             using (new ArgsRemover (e.Args, false)) {
 
@@ -88,7 +90,8 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.mysql.database.set")]
-        public static void p5_mysql_database_set (ApplicationContext context, ActiveEventArgs e) {
+        public static void p5_mysql_database_set (ApplicationContext context, ActiveEventArgs e)
+        {
             // Changing active (top most) database.
             Active (context, e.Args).ChangeDatabase (e.Args.GetExValue<string> (context));
         }
@@ -96,7 +99,8 @@ namespace p5.mysql
         /*
          * Returns the current (active) connection.
          */
-        internal static MySqlConnection Active (ApplicationContext context, Node args) {
+        internal static MySqlConnection Active (ApplicationContext context, Node args)
+        {
             var connections = Connections (context);
             if (connections.Count == 0)
                 throw new LambdaException ("No active database, make sure you invoke [p5.mysql.connect]", args, context);
@@ -106,7 +110,8 @@ namespace p5.mysql
         /*
          * List of connections.
          */
-        private static List<MySqlConnection> Connections (ApplicationContext context) {
+        private static List<MySqlConnection> Connections (ApplicationContext context)
+        {
             // Checking if our connection pool is already registered in context, and if not, making sure we create it.
             if (!context.HasActiveEvent (".p5.mysql.connections.get")) {
 
@@ -120,7 +125,8 @@ namespace p5.mysql
         /*
          * Returns connection string from arguments, helper for above.
          */
-        private static string ConnectionString (ApplicationContext context, Node args) {
+        private static string ConnectionString (ApplicationContext context, Node args)
+        {
             // Retrieving input connection string, or reference to connection string, or first connection string from configuration file.
             var argsValue = args.GetExValue<string> (context);
             if (argsValue == null) {

@@ -42,18 +42,18 @@ namespace p5.io.common
          * Common helper for iterating files/folders for move/copy/rename operation.
          */
         internal static void CopyMoveFileObject (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             string sourceAuthorizeEvent,
             string destinationAuthorizeEvent,
-            MoveCopyDelegate functorMoveObject, 
+            MoveCopyDelegate functorMoveObject,
             ObjectExistDelegate functorObjectExist)
         {
             // Sanity check.
             if (args.Value == null)
                 throw new LambdaException (
-                    string.Format("[{0}] requires a value being the source file(s) to operate upon", args.Name), 
-                    args, 
+                    string.Format ("[{0}] requires a value being the source file(s) to operate upon", args.Name),
+                    args,
                     context);
 
             // Making sure we clean up and remove all arguments passed in after execution.
@@ -78,7 +78,7 @@ namespace p5.io.common
                         throw new LambdaException (string.Format ("The file/folder '{0}' already exist from before", destinationFile), args, context);
 
                     functorMoveObject (
-                        rootFolder, 
+                        rootFolder,
                         Common.GetSystemPath (context, Utilities.Convert<string> (context, idxSource)),
                         destinationFile);
                 }

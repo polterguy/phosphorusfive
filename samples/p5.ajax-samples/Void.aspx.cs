@@ -36,7 +36,7 @@ namespace p5.samples
         [WebMethod]
         protected void btn_onclick (p5.Widget sender, EventArgs e)
         {
-            lbl.innerValue = "Value of textbox was; '" + txtBox["value"] + "'";
+            lbl.innerValue = "Value of textbox was; '" + txtBox ["value"] + "'";
         }
     }
 }

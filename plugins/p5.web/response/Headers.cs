@@ -45,6 +45,7 @@ namespace p5.web.ui.response
 
                     // Removal
                     HttpContext.Current.Response.Headers.Remove (key);
+
                 } else {
 
                     // Setting or updating

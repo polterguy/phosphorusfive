@@ -42,7 +42,7 @@ namespace p5.web
 
             // Creating an instance of this class, registering it as event listener in App Context
             var instance = new PageManager (
-                context, 
+                context,
                 page);
             context.RegisterListeningInstance (instance);
         }

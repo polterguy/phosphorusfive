@@ -31,25 +31,25 @@ namespace p5.strings.keywords
     /// </summary>
     public static class EndsWith
     {
-		/// <summary>
-		///     The [p5.string.ends-with] event, allows you to check if a string ends with another string.
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "ends-with")]
+        /// <summary>
+        ///     The [p5.string.ends-with] event, allows you to check if a string ends with another string.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "ends-with")]
         [ActiveEvent (Name = "p5.string.ends-with")]
         public static void p5_string_ends_with (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
-				// Retrieving what to look for, and returning early if we have no source.
-				var src = XUtil.Source (context, e.Args);
-				if (src == null)
-					return;
+                // Retrieving what to look for, and returning early if we have no source.
+                var src = XUtil.Source (context, e.Args);
+                if (src == null)
+                    return;
 
-				// Returning to lowers of expression or constant.
-				e.Args.Value = XUtil.Single<string> (context, e.Args)?.EndsWithEx (Utilities.Convert<string> (context, src)) ?? false;
+                // Returning to lowers of expression or constant.
+                e.Args.Value = XUtil.Single<string> (context, e.Args)?.EndsWithEx (Utilities.Convert<string> (context, src)) ?? false;
             }
         }
     }

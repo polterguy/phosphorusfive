@@ -36,6 +36,7 @@ namespace p5.samples
             if (sender.innerValue == "Click me for hello world") {
                 sender.innerValue = "Click me again, while inspecting the HTTP request using your browser";
                 sender ["class"] = "change-is-the-only-constant";
+
             } else {
                 sender.innerValue = "Click me for hello world";
                 sender.DeleteAttribute ("class");

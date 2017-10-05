@@ -43,10 +43,10 @@ namespace p5.io.file
         public static void p5_io_file_delete (ApplicationContext context, ActiveEventArgs e)
         {
             ObjectIterator.Iterate (
-                context, 
-                e.Args, 
-                true, 
-                "modify-file", 
+                context,
+                e.Args,
+                true,
+                "modify-file",
                 delegate (string filename, string fullpath) {
                     if (File.Exists (fullpath)) {
 
@@ -68,7 +68,7 @@ namespace p5.io.file
                             e.Args,
                             context);
                     }
-            });
+                });
         }
     }
 }

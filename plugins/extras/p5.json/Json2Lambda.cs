@@ -72,7 +72,7 @@ namespace p5.json
             } else if (token is JValue) {
 
                 var val = token as JValue;
-                node.Value = val.Value; 
+                node.Value = val.Value;
             }
         }
 
@@ -82,7 +82,7 @@ namespace p5.json
         static void HandleObject (Node node, JObject obj)
         {
             // Special treatment for "__value" property.
-            var val = obj.Children().FirstOrDefault (ix => ix is JProperty && (ix as JProperty).Name == "__value") as JProperty;
+            var val = obj.Children ().FirstOrDefault (ix => ix is JProperty && (ix as JProperty).Name == "__value") as JProperty;
             if (val != null) {
 
                 // Handling "__value" by setting the root node for object to "__value" property's value.

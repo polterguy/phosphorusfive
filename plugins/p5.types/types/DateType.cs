@@ -58,7 +58,7 @@ namespace p5.types.types
 
                 // Retrieving DateTime given, and returning formatted date accordingly, defaulting to "full date and time" format
                 DateTime date = e.Args.GetExValue<DateTime> (context);
-                CultureInfo culture = 
+                CultureInfo culture =
                     CultureInfo.CreateSpecificCulture (
                         e.Args.GetExChildValue ("culture", context, CultureInfo.CurrentUICulture.Name));
                 e.Args.Value = date.ToString (e.Args.GetExChildValue ("format", context, "f"), culture);
@@ -96,7 +96,7 @@ namespace p5.types.types
             } else {
                 throw new LambdaException (
                     "Don't know how to convert that to a date",
-                    e.Args, 
+                    e.Args,
                     context);
             }
         }

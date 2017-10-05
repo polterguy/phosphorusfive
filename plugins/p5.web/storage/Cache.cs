@@ -48,7 +48,7 @@ namespace p5.web.storage
             var minutes = e.Args.GetExChildValue ("minutes", context, 30);
 
             // We must untie [minutes] to avoid having multiple sources for our iteration below.
-            e.Args ["minutes"]?.UnTie (); 
+            e.Args ["minutes"]?.UnTie ();
 
             // Settings cache value
             XUtil.Set (context, e.Args, delegate (string key, object value) {

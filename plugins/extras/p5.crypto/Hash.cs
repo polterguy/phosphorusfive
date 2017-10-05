@@ -34,102 +34,102 @@ namespace phosphorus.crypto
     /// </summary>
     public static class Hash
     {
-		/// <summary>
-		///     Creates a Sha1 hash of input given
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "p5.crypto.hash.create-sha1")]
-		public static void p5_crypto_hash_create_sha1 (ApplicationContext context, ActiveEventArgs e)
-		{
-			// Making sure we clean up and remove all arguments passed in after execution.
-			using (new ArgsRemover (e.Args)) {
+        /// <summary>
+        ///     Creates a Sha1 hash of input given
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.hash.create-sha1")]
+        public static void p5_crypto_hash_create_sha1 (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new ArgsRemover (e.Args)) {
 
-				// Retrieving value to hash as a single string.
-				var whatToHash = XUtil.Single<byte []> (context, e.Args);
+                // Retrieving value to hash as a single string.
+                var whatToHash = XUtil.Single<byte []> (context, e.Args);
 
-				// Creating Sha256 hash, and returning as value of args.
+                // Creating Sha256 hash, and returning as value of args.
                 using (var sha1 = SHA1.Create ()) {
 
-					// Checking if caller wants "raw bytes".
-					if (e.Args.GetExChildValue ("raw", context, false)) {
+                    // Checking if caller wants "raw bytes".
+                    if (e.Args.GetExChildValue ("raw", context, false)) {
 
-						// Returning Sha256 hash as raw bytes.
-						e.Args.Value = sha1.ComputeHash (whatToHash);
+                        // Returning Sha256 hash as raw bytes.
+                        e.Args.Value = sha1.ComputeHash (whatToHash);
 
-					} else if (e.Args.GetExChildValue ("hex", context, false)) {
+                    } else if (e.Args.GetExChildValue ("hex", context, false)) {
 
-						// Returning value as hexadecimal string.
-						e.Args.Value = BitConverter.ToString (sha1.ComputeHash (whatToHash)).Replace ("-", string.Empty);
+                        // Returning value as hexadecimal string.
+                        e.Args.Value = BitConverter.ToString (sha1.ComputeHash (whatToHash)).Replace ("-", string.Empty);
 
-					} else {
+                    } else {
 
-						// Returning Sha256 hash as base64 encoded string.
-						e.Args.Value = Convert.ToBase64String (sha1.ComputeHash (whatToHash));
-					}
-				}
-			}
-		}
+                        // Returning Sha256 hash as base64 encoded string.
+                        e.Args.Value = Convert.ToBase64String (sha1.ComputeHash (whatToHash));
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		///     Creates a Sha1 hash of given filename
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "p5.crypto.hash.create-sha1-file")]
-		public static void p5_crypto_hash_create_sha1_file (ApplicationContext context, ActiveEventArgs e)
-		{
-			// Making sure we clean up and remove all arguments passed in after execution.
-			using (new ArgsRemover (e.Args)) {
+        /// <summary>
+        ///     Creates a Sha1 hash of given filename
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.hash.create-sha1-file")]
+        public static void p5_crypto_hash_create_sha1_file (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new ArgsRemover (e.Args)) {
 
-				// Retrieving filename user wants to hash, unrolling filename, and making sure user has read access to the file.
-				var filename = e.Args.GetExValue (context, "");
-				filename = context.RaiseEvent ("p5.io.unroll-path", new Node ("", filename).Add ("args", e.Args)).Get<string> (context);
-				context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
+                // Retrieving filename user wants to hash, unrolling filename, and making sure user has read access to the file.
+                var filename = e.Args.GetExValue (context, "");
+                filename = context.RaiseEvent ("p5.io.unroll-path", new Node ("", filename).Add ("args", e.Args)).Get<string> (context);
+                context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
 
-				// Retrieving root folder of P5.
-				var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
+                // Retrieving root folder of P5.
+                var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
 
-				// Opening file for read access, making sure we dispose it afterwards.
-				using (var stream = File.OpenRead (rootFolder + filename)) {
+                // Opening file for read access, making sure we dispose it afterwards.
+                using (var stream = File.OpenRead (rootFolder + filename)) {
 
-					// Creating Sha256 hash, and returning hash of file as value of args.
+                    // Creating Sha256 hash, and returning hash of file as value of args.
                     using (var sha1 = SHA1.Create ()) {
 
-						// Checking if caller wants "raw bytes".
-						if (e.Args.GetExChildValue ("raw", context, false)) {
+                        // Checking if caller wants "raw bytes".
+                        if (e.Args.GetExChildValue ("raw", context, false)) {
 
-							// Returning Sha256 hash as raw bytes.
-							e.Args.Value = sha1.ComputeHash (stream);
+                            // Returning Sha256 hash as raw bytes.
+                            e.Args.Value = sha1.ComputeHash (stream);
 
-						} else if (e.Args.GetExChildValue ("hex", context, false)) {
+                        } else if (e.Args.GetExChildValue ("hex", context, false)) {
 
-							// Returning value as hexadecimal string.
-							e.Args.Value = BitConverter.ToString (sha1.ComputeHash (stream)).Replace ("-", string.Empty);
+                            // Returning value as hexadecimal string.
+                            e.Args.Value = BitConverter.ToString (sha1.ComputeHash (stream)).Replace ("-", string.Empty);
 
-						} else {
+                        } else {
 
-							// Returning Sha256 hash as base64 encoded string.
-							e.Args.Value = Convert.ToBase64String (sha1.ComputeHash (stream));
-						}
-					}
-				}
-			}
-		}
+                            // Returning Sha256 hash as base64 encoded string.
+                            e.Args.Value = Convert.ToBase64String (sha1.ComputeHash (stream));
+                        }
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		///     Creates a Sha256 hash of input given
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "p5.crypto.hash.create-sha256")]
+        /// <summary>
+        ///     Creates a Sha256 hash of input given
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.hash.create-sha256")]
         public static void p5_crypto_hash_create_sha256 (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
                 // Retrieving value to hash as a single string.
-                var whatToHash = XUtil.Single<byte[]> (context, e.Args);
+                var whatToHash = XUtil.Single<byte []> (context, e.Args);
 
                 // Creating Sha256 hash, and returning as value of args.
                 using (var sha256 = SHA256.Create ()) {
@@ -143,7 +143,7 @@ namespace phosphorus.crypto
                     } else if (e.Args.GetExChildValue ("hex", context, false)) {
 
                         // Returning value as hexadecimal string.
-                        e.Args.Value = BitConverter.ToString (sha256.ComputeHash (whatToHash)).Replace ("-", string.Empty); 
+                        e.Args.Value = BitConverter.ToString (sha256.ComputeHash (whatToHash)).Replace ("-", string.Empty);
 
                     } else {
 
@@ -154,65 +154,65 @@ namespace phosphorus.crypto
             }
         }
 
-		/// <summary>
-		///     Creates a Sha256 hash of given filename
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "p5.crypto.hash.create-sha256-file")]
-		public static void p5_crypto_hash_create_sha256_file (ApplicationContext context, ActiveEventArgs e)
-		{
-			// Making sure we clean up and remove all arguments passed in after execution.
-			using (new ArgsRemover (e.Args)) {
+        /// <summary>
+        ///     Creates a Sha256 hash of given filename
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.hash.create-sha256-file")]
+        public static void p5_crypto_hash_create_sha256_file (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new ArgsRemover (e.Args)) {
 
-				// Retrieving filename user wants to hash, unrolling filename, and making sure user has read access to the file.
-				var filename = e.Args.GetExValue (context, "");
-				filename = context.RaiseEvent ("p5.io.unroll-path", new Node ("", filename).Add ("args", e.Args)).Get<string> (context);
-				context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
+                // Retrieving filename user wants to hash, unrolling filename, and making sure user has read access to the file.
+                var filename = e.Args.GetExValue (context, "");
+                filename = context.RaiseEvent ("p5.io.unroll-path", new Node ("", filename).Add ("args", e.Args)).Get<string> (context);
+                context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
 
-				// Retrieving root folder of P5.
-				var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
+                // Retrieving root folder of P5.
+                var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
 
-				// Opening file for read access, making sure we dispose it afterwards.
-				using (var stream = File.OpenRead (rootFolder + filename)) {
+                // Opening file for read access, making sure we dispose it afterwards.
+                using (var stream = File.OpenRead (rootFolder + filename)) {
 
-					// Creating Sha256 hash, and returning hash of file as value of args.
-					using (var sha256 = SHA256.Create ()) {
+                    // Creating Sha256 hash, and returning hash of file as value of args.
+                    using (var sha256 = SHA256.Create ()) {
 
-						// Checking if caller wants "raw bytes".
-						if (e.Args.GetExChildValue ("raw", context, false)) {
+                        // Checking if caller wants "raw bytes".
+                        if (e.Args.GetExChildValue ("raw", context, false)) {
 
-							// Returning Sha256 hash as raw bytes.
-							e.Args.Value = sha256.ComputeHash (stream);
+                            // Returning Sha256 hash as raw bytes.
+                            e.Args.Value = sha256.ComputeHash (stream);
 
-						} else if (e.Args.GetExChildValue ("hex", context, false)) {
+                        } else if (e.Args.GetExChildValue ("hex", context, false)) {
 
-							// Returning value as hexadecimal string.
-							e.Args.Value = BitConverter.ToString (sha256.ComputeHash (stream)).Replace ("-", string.Empty);
+                            // Returning value as hexadecimal string.
+                            e.Args.Value = BitConverter.ToString (sha256.ComputeHash (stream)).Replace ("-", string.Empty);
 
-						} else {
+                        } else {
 
-							// Returning Sha256 hash as base64 encoded string.
-							e.Args.Value = Convert.ToBase64String (sha256.ComputeHash (stream));
-						}
-					}
-				}
-			}
-		}
+                            // Returning Sha256 hash as base64 encoded string.
+                            e.Args.Value = Convert.ToBase64String (sha256.ComputeHash (stream));
+                        }
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		///     Creates a Sha256 hash of input given
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "p5.crypto.hash.create-sha512")]
+        /// <summary>
+        ///     Creates a Sha256 hash of input given
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.hash.create-sha512")]
         public static void p5_crypto_hash_create_sha512 (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
             using (new ArgsRemover (e.Args)) {
 
                 // Retrieving value to hash as a single string.
-                var whatToHash = XUtil.Single<byte[]> (context, e.Args);
+                var whatToHash = XUtil.Single<byte []> (context, e.Args);
 
                 // Creating Sha256 hash, and returning as value of args.
                 using (var sha512 = SHA512.Create ()) {
@@ -223,13 +223,13 @@ namespace phosphorus.crypto
                         // Returning Sha512 hash as raw bytes.
                         e.Args.Value = sha512.ComputeHash (whatToHash);
 
-					} else if (e.Args.GetExChildValue ("hex", context, false)) {
+                    } else if (e.Args.GetExChildValue ("hex", context, false)) {
 
-						// Returning value as hexadecimal string.
-						e.Args.Value = BitConverter.ToString (sha512.ComputeHash (whatToHash)).Replace ("-", string.Empty);
+                        // Returning value as hexadecimal string.
+                        e.Args.Value = BitConverter.ToString (sha512.ComputeHash (whatToHash)).Replace ("-", string.Empty);
 
 
-					} else {
+                    } else {
 
                         // Returning Sha512 hash as base64 encoded string.
                         e.Args.Value = Convert.ToBase64String (sha512.ComputeHash (whatToHash));
@@ -238,50 +238,50 @@ namespace phosphorus.crypto
             }
         }
 
-		/// <summary>
-		///     Creates a Sha256 hash of given filename
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Parameters passed into Active Event</param>
-		[ActiveEvent (Name = "p5.crypto.hash.create-sha512-file")]
-		public static void p5_crypto_hash_create_sha512_file (ApplicationContext context, ActiveEventArgs e)
-		{
-			// Making sure we clean up and remove all arguments passed in after execution.
-			using (new ArgsRemover (e.Args)) {
+        /// <summary>
+        ///     Creates a Sha256 hash of given filename
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.crypto.hash.create-sha512-file")]
+        public static void p5_crypto_hash_create_sha512_file (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution.
+            using (new ArgsRemover (e.Args)) {
 
-				// Retrieving filename user wants to hash, unrolling filename, and making sure user has read access to the file.
-				var filename = e.Args.GetExValue (context, "");
-				filename = context.RaiseEvent ("p5.io.unroll-path", new Node ("", filename).Add ("args", e.Args)).Get<string> (context);
-				context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
+                // Retrieving filename user wants to hash, unrolling filename, and making sure user has read access to the file.
+                var filename = e.Args.GetExValue (context, "");
+                filename = context.RaiseEvent ("p5.io.unroll-path", new Node ("", filename).Add ("args", e.Args)).Get<string> (context);
+                context.RaiseEvent (".p5.io.authorize.read-file", new Node ("", filename).Add ("args", e.Args));
 
-				// Retrieving root folder of P5.
-				var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
+                // Retrieving root folder of P5.
+                var rootFolder = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
 
-				// Opening file for read access, making sure we dispose it afterwards.
-				using (var stream = File.OpenRead (rootFolder + filename)) {
+                // Opening file for read access, making sure we dispose it afterwards.
+                using (var stream = File.OpenRead (rootFolder + filename)) {
 
-					// Creating Sha512 hash, and returning hash of file as value of args.
-					using (var sha512 = SHA512.Create ()) {
+                    // Creating Sha512 hash, and returning hash of file as value of args.
+                    using (var sha512 = SHA512.Create ()) {
 
-						// Checking if caller wants "raw bytes".
-						if (e.Args.GetExChildValue ("raw", context, false)) {
+                        // Checking if caller wants "raw bytes".
+                        if (e.Args.GetExChildValue ("raw", context, false)) {
 
-							// Returning Sha512 hash as raw bytes.
-							e.Args.Value = sha512.ComputeHash (stream);
+                            // Returning Sha512 hash as raw bytes.
+                            e.Args.Value = sha512.ComputeHash (stream);
 
-						} else if (e.Args.GetExChildValue ("hex", context, false)) {
+                        } else if (e.Args.GetExChildValue ("hex", context, false)) {
 
-							// Returning value as hexadecimal string.
-							e.Args.Value = BitConverter.ToString (sha512.ComputeHash (stream)).Replace ("-", string.Empty);
+                            // Returning value as hexadecimal string.
+                            e.Args.Value = BitConverter.ToString (sha512.ComputeHash (stream)).Replace ("-", string.Empty);
 
-						} else {
+                        } else {
 
-							// Returning Sha256 hash as base64 encoded string.
-							e.Args.Value = Convert.ToBase64String (sha512.ComputeHash (stream));
-						}
-					}
-				}
-			}
-		}
-	}
+                            // Returning Sha256 hash as base64 encoded string.
+                            e.Args.Value = Convert.ToBase64String (sha512.ComputeHash (stream));
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

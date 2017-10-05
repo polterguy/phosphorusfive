@@ -43,16 +43,16 @@ namespace p5.io.folder
         {
             // Using our common helper for actual implementation.
             MoveCopyHelper.CopyMoveFileObject (
-                context, 
-                e.Args, 
-                "modify-folder", 
-                "modify-folder", 
+                context,
+                e.Args,
+                "modify-folder",
+                "modify-folder",
                 delegate (string rootFolder, string source, string destination) {
 
-                // Actually moving (or renaming) folder.
-                Directory.Move (rootFolder + source, rootFolder + destination);
+                    // Actually moving (or renaming) folder.
+                    Directory.Move (rootFolder + source, rootFolder + destination);
 
-            }, Directory.Exists);
+                }, Directory.Exists);
         }
     }
 }

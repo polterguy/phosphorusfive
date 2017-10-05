@@ -30,7 +30,7 @@ namespace p5.mysql
     /// <summary>
     ///     Class wrapping [p5.mysql.scalar].
     /// </summary>
-public static class Scalar
+    public static class Scalar
     {
         /// <summary>
         ///     Returns the resulting scalar value from specified SQL.
@@ -48,14 +48,14 @@ public static class Scalar
             // Making sure we clean up after ourselves.
             using (new ArgsRemover (e.Args, false)) {
 
-	            // Creating command object.
-	            using (var cmd = e.Args.GetSqlCommand (context, connection)) {
+                // Creating command object.
+                using (var cmd = e.Args.GetSqlCommand (context, connection)) {
 
-	                // Executing scalar, returning results to caller.
-	                e.Args.Value = cmd.ExecuteScalar ();
+                    // Executing scalar, returning results to caller.
+                    e.Args.Value = cmd.ExecuteScalar ();
                     if (e.Args.Value is System.DBNull)
                         e.Args.Value = null;
-	            }
+                }
             }
         }
     }

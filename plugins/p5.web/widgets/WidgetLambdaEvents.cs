@@ -73,12 +73,12 @@ namespace p5.web.widgets
                     foreach (var idxEventNameNode in eventList) {
 
                         // Returning lambda object for widget lambda event, if it exists, making sure we clone it.
-                        if (Manager.WidgetLambdaEventStorage[idxEventNameNode.Name, idxWidget.ID] != null) {
+                        if (Manager.WidgetLambdaEventStorage [idxEventNameNode.Name, idxWidget.ID] != null) {
 
                             // We found a lambda event with the currently iterated name for the currently iterated widget.
-                            var evtNode = Manager.WidgetLambdaEventStorage[idxEventNameNode.Name, idxWidget.ID].Clone();
+                            var evtNode = Manager.WidgetLambdaEventStorage [idxEventNameNode.Name, idxWidget.ID].Clone ();
                             evtNode.Name = idxEventNameNode.Name;
-                            e.Args.FindOrInsert (idxWidget.ID).Add(evtNode);
+                            e.Args.FindOrInsert (idxWidget.ID).Add (evtNode);
                         }
                     }
                 }
@@ -143,7 +143,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_lambda_events_list (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
-            using (new ArgsRemover(e.Args, true)) {
+            using (new ArgsRemover (e.Args, true)) {
 
                 // Iterating through all widgets caller specified.
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args)) {

@@ -37,7 +37,8 @@ namespace p5.mysql
         /*
          * Creates a parametrized SQL command object.
          */
-        internal static MySqlCommand GetSqlCommand (this Node node, ApplicationContext context, MySqlConnection connection) {
+        internal static MySqlCommand GetSqlCommand (this Node node, ApplicationContext context, MySqlConnection connection)
+        {
             MySqlCommand retVal = new MySqlCommand (node.GetExValue<string> (context, ""), connection);
 
             // Parametrizing SQL Command with all parameters (children nodes, not having "empty names".
@@ -64,7 +65,8 @@ namespace p5.mysql
         private static void AddArrayParameters (
             MySqlCommand cmd,
             string originalParamName,
-            IEnumerable<object> parameterValues) {
+            IEnumerable<object> parameterValues)
+        {
             var names = new List<string> ();
             var idxNo = 1;
             foreach (var idxVal in parameterValues) {

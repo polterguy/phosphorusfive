@@ -70,7 +70,7 @@ namespace p5.types.types
                 // Oops, error!
                 throw new LambdaException (
                     "Cannot convert string to 'abs' Node, since it would create more than one resulting root node",
-                    e.Args, 
+                    e.Args,
                     context);
             } else {
 

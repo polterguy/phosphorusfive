@@ -71,6 +71,7 @@ namespace p5.web.widgets.helpers
 
                     // First Ajax event for Widget
                     _events [key1] = new List<Node> ();
+
                 } else if (_events.ContainsKey (key1)) {
 
                     // Making sure we remove any previously added Ajax events with same name for Widget
@@ -82,6 +83,7 @@ namespace p5.web.widgets.helpers
                     // Adding a new lambda object for widget's event
                     value.Name = key2; // just to be sure!
                     _events [key1].Add (value);
+
                 } else if (_events.ContainsKey (key1) && _events [key1].Count == 0) {
 
                     // Removing Widget storage entirely

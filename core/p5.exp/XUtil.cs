@@ -241,7 +241,7 @@ namespace p5.exp
         static public object Source (
             ApplicationContext context,
             Node args,
-            params string[] avoidNodes)
+            params string [] avoidNodes)
         {
             // Finding source nodes.
             var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWithEx (".") && !ix.Name.StartsWithEx ("_") && !avoidNodes.Contains (ix.Name)).ToList ();
@@ -253,14 +253,14 @@ namespace p5.exp
                 return null;
 
             // Raising source Active Event, and returning results.
-            context.RaiseEvent (srcNodes[0].Name, srcNodes[0]);
+            context.RaiseEvent (srcNodes [0].Name, srcNodes [0]);
 
             // Sanity check
-            if (srcNodes[0].Value == null && srcNodes[0].Count > 1)
+            if (srcNodes [0].Value == null && srcNodes [0].Count > 1)
                 throw new LambdaException ("Source Active Event returned multiple source", args, context);
 
             // Returning value
-            return srcNodes[0].Value ?? srcNodes[0].FirstChild;
+            return srcNodes [0].Value ?? srcNodes [0].FirstChild;
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace p5.exp
         static public List<Node> Sources (
             ApplicationContext context,
             Node args,
-            params string[] avoidNodes)
+            params string [] avoidNodes)
         {
             // Finding source nodes.
             var srcNodes = args.Children.Where (ix => ix.Name != "" && !ix.Name.StartsWithEx (".") && !ix.Name.StartsWithEx ("_") && !avoidNodes.Contains (ix.Name)).ToList ();
@@ -305,8 +305,8 @@ namespace p5.exp
         /// <param name="args"></param>
         /// <param name="functor"></param>
         public static void Get (
-            ApplicationContext context, 
-            Node args, 
+            ApplicationContext context,
+            Node args,
             GetDelegate functor)
         {
             // Making sure we clean up and remove all arguments passed in after execution.
@@ -319,8 +319,8 @@ namespace p5.exp
                     // us with a "." as the name of the node.
                     if (!args.Name.StartsWithEx (".") && (idxKey.StartsWithEx ("_") || idxKey.StartsWithEx (".")))
                         throw new LambdaException (
-                            string.Format ("Tried to access protected key in [{0}], key name was '{1}' ", args.Name, idxKey), 
-                            args, 
+                            string.Format ("Tried to access protected key in [{0}], key name was '{1}' ", args.Name, idxKey),
+                            args,
                             context);
 
                     // Retrieving object by invoking delegate functor with key, and returning as child of args, if there is a value.
@@ -350,7 +350,7 @@ namespace p5.exp
             ApplicationContext context,
             Node args,
             SetDelegate functor,
-            params string[] exclusionArgs)
+            params string [] exclusionArgs)
         {
             // Retrieving source.
             var source = Source (context, args);

@@ -57,7 +57,7 @@ namespace p5.mime
 
                         // Creating and returning MIME message to caller as string
                         var creator = new MimeCreator (
-                            context, 
+                            context,
                             idxMimeNode,
                             streams);
                         e.Args.Add ("result", creator.Create ().ToString ());
@@ -106,8 +106,8 @@ namespace p5.mime
                         List<Stream> streams = new List<Stream> ();
                         try {
 
-							// Creating MIME message and serializing to file.
-							var creator = new MimeCreator (
+                            // Creating MIME message and serializing to file.
+                            var creator = new MimeCreator (
                                 context,
                                 idxMimeNode,
                                 streams);
@@ -128,14 +128,14 @@ namespace p5.mime
             }
         }
 
-		/// <summary>
-		///     Creates a MIME message according to given arguments and saves to the given file.
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Active Event arguments</param>
-		[ActiveEvent(Name = ".p5.mime.serialize-to-stream")]
-		public static void _p5_mime_serialize_to_stream (ApplicationContext context, ActiveEventArgs e)
-		{
+        /// <summary>
+        ///     Creates a MIME message according to given arguments and saves to the given file.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = ".p5.mime.serialize-to-stream")]
+        public static void _p5_mime_serialize_to_stream (ApplicationContext context, ActiveEventArgs e)
+        {
             // Retrieving output filename, and doing some basic sanity checking.
             var tuple = e.Args.Value as Tuple<object, Stream>;
             var output = tuple.Item2;
@@ -143,42 +143,42 @@ namespace p5.mime
             // Have to remove value of node, before iteration starts.
             e.Args.Value = null;
 
-			// Making sure we clean up after ourselves
-			using (new ArgsRemover(e.Args, true)) {
+            // Making sure we clean up after ourselves
+            using (new ArgsRemover (e.Args, true)) {
 
-				// Iterating through each node given, either as child of main node, or through expression
+                // Iterating through each node given, either as child of main node, or through expression
                 var mimeNode = XUtil.Iterate<Node> (context, e.Args).First ();
 
-				// Making sure we keep track of, closes, and disposes all streams created during process
-				List<Stream> streams = new List<Stream> ();
-				try {
+                // Making sure we keep track of, closes, and disposes all streams created during process
+                List<Stream> streams = new List<Stream> ();
+                try {
 
-					// Creating MIME message and serializing to file.
-					var creator = new MimeCreator(
-						context,
-						mimeNode,
-						streams);
-					creator.Create().WriteTo (output);
+                    // Creating MIME message and serializing to file.
+                    var creator = new MimeCreator (
+                        context,
+                        mimeNode,
+                        streams);
+                    creator.Create ().WriteTo (output);
 
-				} finally {
+                } finally {
 
-					// Disposing all streams created during process
-					foreach (var idxStream in streams) {
+                    // Disposing all streams created during process
+                    foreach (var idxStream in streams) {
 
-						// Closing and disposing currently iterated stream
-						idxStream.Close();
-						idxStream.Dispose();
-					}
-				}
-			}
-		}
+                        // Closing and disposing currently iterated stream
+                        idxStream.Close ();
+                        idxStream.Dispose ();
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity
-		/// </summary>
-		/// <param name="context">Application Context</param>
-		/// <param name="e">Active Event arguments</param>
-		[ActiveEvent (Name = ".p5.mime.create-native")]
+        /// <summary>
+        ///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = ".p5.mime.create-native")]
         private static void _p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
@@ -190,7 +190,7 @@ namespace p5.mime
 
             // Creating and returning MIME message to caller as MimeEntity
             MimeCreator creator = new MimeCreator (
-                context, 
+                context,
                 e.Args.FirstChild,
                 (List<Stream>)e.Args.Value);
             e.Args.Value = creator.Create ();
