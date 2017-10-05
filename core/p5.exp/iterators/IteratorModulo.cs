@@ -48,7 +48,7 @@ namespace p5.exp.iterators
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
             var idxNo = 0;
-            return Left.Evaluate (context).Where (idxCurrent => (++idxNo)%_modulo == 0);
+            return Left.Evaluate (context).Where (idxCurrent => (++idxNo) % _modulo == 0);
         }
     }
 }
