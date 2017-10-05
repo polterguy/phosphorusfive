@@ -105,7 +105,7 @@ namespace p5.web.widgets
         public void p5_web_widgets_find (ApplicationContext context, ActiveEventArgs e)
         {
             // Sanity check.
-            if (e.Args.Children.Count (ix => ix.Name != "") == 0)
+            if (!e.Args.Children.Any (ix => ix.Name != ""))
                 throw new LambdaException (
                     string.Format ("[{0}] requires at least one child argument, being some property/attribute to look for", e.Name),
                     e.Args,
@@ -161,7 +161,7 @@ namespace p5.web.widgets
             using (new ArgsRemover (e.Args, true)) {
 
                 // Sanity check.
-                if (e.Args.Children.Count (ix => ix.Name != "") == 0)
+                if (!e.Args.Children.Any (ix => ix.Name != ""))
                     throw new LambdaException ("No criteria submitted to [" + e.Name + "]", e.Args, context);
                 if (e.Args.Value == null)
                     throw new LambdaException ("No starting widget submitted to [" + e.Name + "]", e.Args, context);
@@ -246,7 +246,7 @@ namespace p5.web.widgets
             bool exactMatch)
         {
             // Checking if current ctrl is mathing filters supplied, alternative there are no filters, at which point everything should match.
-            if (filter.Count == 0 || filter.Count (ix => (exactMatch ? ix == ctrl.ID : (ctrl.ID != null && ctrl.ID.Contains (ix)))) > 0) {
+            if (filter.Count == 0 || filter.Any (ix => (exactMatch ? ix == ctrl.ID : (ctrl.ID != null && ctrl.ID.Contains (ix))))) {
 
                 // Current control is matching one of our filters, or there are no filters.
                 // Making sure control is a widget, before we return it to caller.

@@ -102,7 +102,7 @@ namespace p5.web.widgets
                     context);
 
             // Making sure caller does not try to create "protected" lambda event(s).
-            if (e.Args.Children.Count (ix => ix.Name.StartsWithEx (".") || ix.Name.StartsWithEx ("_")) > 0)
+            if (e.Args.Children.Any (ix => ix.Name.StartsWithEx (".") || ix.Name.StartsWithEx ("_")))
                 throw new LambdaException ("Caller tried to create a protected lambda event starting with '_' or '.' for widget", e.Args, context);
 
             // Iterating through all widgets.

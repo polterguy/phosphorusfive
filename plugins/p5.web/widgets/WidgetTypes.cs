@@ -263,7 +263,7 @@ namespace p5.web.widgets
             foreach (var idxEvt in events.Children) {
 
                 // Making sure there actually is a lambda for currently iterated event.
-                if (idxEvt.Children.Count (ix => ix.Name != "") > 0) {
+                if (idxEvt.Children.Any (ix => ix.Name != "")) {
 
                     // Cloning lambda and inserting [_event] node, before storing its lambda in lambda event storage for page.
                     var clone = idxEvt.Clone ();

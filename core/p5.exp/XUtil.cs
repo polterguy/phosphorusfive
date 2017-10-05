@@ -74,7 +74,7 @@ namespace p5.exp
             Node dataSource)
         {
             // Making sure node contains formatting values, and if not, returning as is to avoid formatting or changing type.
-            if (evaluatedNode.Children.Count (ix => ix.Name == "") == 0)
+            if (!evaluatedNode.Children.Any (ix => ix.Name == ""))
                 return evaluatedNode.Value;
 
             var childrenValues = evaluatedNode.Children

@@ -48,12 +48,12 @@ namespace p5.ajax.core.filters
         protected override string RenderResponse ()
         {
             // JavaScript files.
-            if (Page.JSInclusionsForCurrentRequest.Count () > 0) {
+            if (Page.JSInclusionsForCurrentRequest.Any ()) {
                 Page.Changes ["__p5_js_objects"] = Page.JSInclusionsForCurrentRequest;
             }
 
             // Stylesheet files.
-            if (Page.CSSInclusionsForCurrentRequest.Count () > 0) {
+            if (Page.CSSInclusionsForCurrentRequest.Any ()) {
                 Page.Changes ["__p5_css_files"] = Page.CSSInclusionsForCurrentRequest;
             }
 

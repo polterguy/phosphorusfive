@@ -196,7 +196,7 @@ namespace p5.ajax.core.filters
             }
 
             // Then including inline JavaScript inclusions, and [p5.web.send-javascript] bursts, if there are any.
-            if (Page.SendScripts.Count () > 0 || Page.PersistensJSObjectInclusions.Count () > 0) {
+            if (Page.SendScripts.Any () || Page.PersistensJSObjectInclusions.Any ()) {
 
                 builder.Append ("\r\n\t\t<script type=\"text/javascript\">\r\nwindow.onload = function() {\r\n\r\n");
 

@@ -56,7 +56,7 @@ namespace p5.events
             try {
 
                 // Checking to see if this event has no lambda objects, at which case it is a delete event invocation.
-                if (e.Args.Children.Count (ix => ix.Name != "") == 0) {
+                if (!e.Args.Children.Any (ix => ix.Name != "")) {
 
                     // Deleting event, if existing, since it doesn't have any lambda objects associated with it.
                     DeleteEvent (XUtil.Single<string> (context, e.Args), context, e.Args);
@@ -192,7 +192,7 @@ namespace p5.events
                 throw new LambdaException ("Tried to create a 'protected' event", args, context);
 
             // Cannot create an event which is already a native event.
-            if (context.ActiveEvents.Count (ix => ix == name) > 0)
+            if (context.ActiveEvents.Any (ix => ix == name))
                 throw new LambdaException ("Tried to create an event that is already a system event", args, context);
 
             // Making sure we have a key for Active Event name.

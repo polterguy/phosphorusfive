@@ -45,7 +45,7 @@ namespace p5.threading
         public static void wait (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
-            if (e.Args.Children.Count (ix => ix.Name != "fork" && ix.Name != "") != 0)
+            if (e.Args.Children.Any (ix => ix.Name != "fork" && ix.Name != ""))
                 throw new LambdaException (
                     "[wait] cannot have any other types of children but [fork] nodes",
                     e.Args,
