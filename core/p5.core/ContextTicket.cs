@@ -54,8 +54,7 @@ namespace p5.core
         ///     Notice, is "IsDefault" is true, then this is an impersonated user, and not a real user.
         /// </summary>
         /// <value>The username</value>
-        public string Username
-        {
+        public string Username {
             get;
             private set;
         }
@@ -66,8 +65,7 @@ namespace p5.core
         ///     Notice, is "IsDefault" is true, then this is an impersonated role, and not a real role.
         /// </summary>
         /// <value>The password</value>
-        public string Role
-        {
+        public string Role {
             get;
             private set;
         }
@@ -76,8 +74,7 @@ namespace p5.core
         ///     Gets whether or not this is an impersonated ticket or not.
         /// </summary>
         /// <value>Whethere or not user is impersonated, and not a real user object</value>
-        public bool IsDefault
-        {
+        public bool IsDefault {
             get;
             private set;
         }
@@ -87,8 +84,7 @@ namespace p5.core
         /// 
         ///     This can further restrict which authorization the given ticket has for evaluating code.
         /// </summary>
-        public Node Whitelist
-        {
+        public Node Whitelist {
             get;
             set;
         }

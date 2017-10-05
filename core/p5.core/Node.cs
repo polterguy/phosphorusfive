@@ -80,7 +80,7 @@ namespace p5.core
         /// <param name="name">Name of node, cannot be null</param>
         /// <param name="value">Value of node, can be any object, including null</param>
         /// <param name="children">Initial children collection for node</param>
-        public Node (string name, object value, params Node[] children)
+        public Node (string name, object value, params Node [] children)
         {
             Name = name;
             Value = value;
@@ -92,8 +92,7 @@ namespace p5.core
         ///     Gets or sets the name of the Node.
         /// </summary>
         /// <value>The Node's new name</value>
-        public string Name
-        {
+        public string Name {
             get {
                 return _name;
             }
@@ -108,8 +107,7 @@ namespace p5.core
         ///     Gets or sets the value of the node.
         /// </summary>
         /// <value>The Node's new value</value>
-        public object Value
-        {
+        public object Value {
             get;
             set;
         }
@@ -118,8 +116,7 @@ namespace p5.core
         ///     Returns the children of current Node.
         /// </summary>
         /// <value>Its children nodes</value>
-        public IEnumerable<Node> Children
-        {
+        public IEnumerable<Node> Children {
             get {
                 return _children;
             }
@@ -135,8 +132,7 @@ namespace p5.core
         ///     Returns the number of children node this instance has.
         /// </summary>
         /// <value>Number of children</value>
-        public int Count
-        {
+        public int Count {
             get { return _children.Count; }
         }
 
@@ -146,8 +142,7 @@ namespace p5.core
         ///     Notice, if you try to get a node, outside of the boundaries of children, this method will return null to caller, and not throw.
         /// </summary>
         /// <param name="index">Index of node to retrieve or set</param>
-        public Node this [int index]
-        {
+        public Node this [int index] {
             get {
                 return _children.Count > index && index >= 0 ? _children [index] : null;
             }
@@ -160,8 +155,7 @@ namespace p5.core
         ///     Gets or sets the first node in the children collection matching the given name.
         /// </summary>
         /// <param name="name">Name of node to retrieve or set</param>
-        public Node this [string name]
-        {
+        public Node this [string name] {
             get {
                 return Children.FirstOrDefault (ix => ix.Name == name);
             }
@@ -174,8 +168,7 @@ namespace p5.core
         ///     Returns the first child of the node, if there are any children.
         /// </summary>
         /// <value>The current node's first child node, or null of node has no children</value>
-        public Node FirstChild
-        {
+        public Node FirstChild {
             get {
                 return Children.FirstOrDefault ();
             }
@@ -185,8 +178,7 @@ namespace p5.core
         ///     Returns the last child of the node, of there are any children.
         /// </summary>
         /// <value>The current node's last child node, or null of node has no children</value>
-        public Node LastChild
-        {
+        public Node LastChild {
             get {
                 return Children.LastOrDefault ();
             }
@@ -196,8 +188,7 @@ namespace p5.core
         ///     Returns the previous sibling of the current node, if there are any.
         /// </summary>
         /// <value>The current node's previous sibling node, or null of node has no younger siblings</value>
-        public Node PreviousSibling
-        {
+        public Node PreviousSibling {
             get {
                 return Parent? [Parent.IndexOf (this) - 1] ?? null;
             }
@@ -207,8 +198,7 @@ namespace p5.core
         ///     Returns the next sibling of the current node, if there are any.
         /// </summary>
         /// <value>The current node's next sibling node, or null of node has no elder siblings</value>
-        public Node NextSibling
-        {
+        public Node NextSibling {
             get {
                 return Parent? [Parent.IndexOf (this) + 1] ?? null;
             }
@@ -220,8 +210,7 @@ namespace p5.core
         ///     The previous node, is the previous node in the tree as a graph object, using breadth first search.
         /// </summary>
         /// <value>The current node's previous node</value>
-        public Node PreviousNode
-        {
+        public Node PreviousNode {
             get {
                 var idx = PreviousSibling;
                 for (; idx != null && idx.Count > 0; idx = idx.LastChild) { }
@@ -235,8 +224,7 @@ namespace p5.core
         ///     The next node, is the next node in the tree as a graph object, using breadth first search.
         /// </summary>
         /// <value>The current node's next node</value>
-        public Node NextNode
-        {
+        public Node NextNode {
             get {
 
                 // Simple cases first.
@@ -258,8 +246,7 @@ namespace p5.core
         ///     Returns the root node of the tree.
         /// </summary>
         /// <value>The root node of the tree the current node belongs to</value>
-        public Node Root
-        {
+        public Node Root {
             get {
                 var idxNode = this;
                 for (; idxNode.Parent != null; idxNode = idxNode.Parent) { }
@@ -271,8 +258,7 @@ namespace p5.core
         ///     Gets the number of ancestors from this node to root.
         /// </summary>
         /// <value>The offset to root</value>
-        public int OffsetToRoot
-        {
+        public int OffsetToRoot {
             get {
                 var idxNo = 0;
                 for (var idxNode = this; idxNode.Parent != null; idxNo += 1, idxNode = idxNode.Parent) { }
@@ -355,7 +341,7 @@ namespace p5.core
                 return retVal;
             if (index == -1)
                 return Add (new Node (name)).LastChild;
-            return Insert (index, new Node (name))[index];
+            return Insert (index, new Node (name)) [index];
         }
 
         /// <summary>
@@ -424,7 +410,7 @@ namespace p5.core
         /// <param name="value">Value of node to add</param>
         /// <param name="nodes">Initial child collection of node</param>
         /// <returns>Self</returns>
-        public Node Add (string name, object value, params Node[] nodes)
+        public Node Add (string name, object value, params Node [] nodes)
         {
             return Add (new Node (name, value, nodes));
         }
@@ -459,7 +445,7 @@ namespace p5.core
         /// </summary>
         /// <param name="nodes">Nodes to add</param>
         /// <returns>Self</returns>
-        public Node AddRange (params Node[] nodes)
+        public Node AddRange (params Node [] nodes)
         {
             // Sanity check.
             if (nodes == null)
@@ -506,7 +492,7 @@ namespace p5.core
         /// <param name="index">Where to insert</param>
         /// <param name="nodes">Nodes to add</param>
         /// <returns>Self</returns>
-        public Node InsertRange (int index, params Node[] nodes)
+        public Node InsertRange (int index, params Node [] nodes)
         {
             foreach (var idx in nodes) {
                 idx.UnTie ();
@@ -605,7 +591,7 @@ namespace p5.core
 
             // Both nodes have similar values, names and number of children.
             // Hence, we need to compare one child against the other, looking for inequalities.
-            for (var idxNo = 0; idxNo < _children.Count; idxNo ++) {
+            for (var idxNo = 0; idxNo < _children.Count; idxNo++) {
 
                 // Doing comparison on currently iterated nodes.
                 retVal = this [idxNo].CompareTo (rhs [idxNo]);

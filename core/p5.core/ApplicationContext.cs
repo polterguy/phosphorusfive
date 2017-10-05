@@ -68,8 +68,7 @@ namespace p5.core
         ///     Returns the context ticket for this instance.
         /// </summary>
         /// <value>The context ticket</value>
-        public ContextTicket Ticket
-        {
+        public ContextTicket Ticket {
             get { return _ticket; }
         }
 
@@ -77,8 +76,7 @@ namespace p5.core
         ///     Returns all Active Events registered within the current ApplicationContext object.
         /// </summary>
         /// <value>The active events</value>
-        public IEnumerable<string> ActiveEvents
-        {
+        public IEnumerable<string> ActiveEvents {
             get { return _registeredActiveEvents.ActiveEventNames; }
         }
 
@@ -213,7 +211,7 @@ namespace p5.core
             }
 
             // Raising "initialize" Application Context Active Event, in case there are any listeners being interested in such things.
-            RaiseEvent(".p5.core.initialize-application-context");
+            RaiseEvent (".p5.core.initialize-application-context");
         }
     }
 }
