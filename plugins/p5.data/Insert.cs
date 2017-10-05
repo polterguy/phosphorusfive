@@ -51,12 +51,12 @@ namespace p5.data
             // Acquiring write lock on database.
             using (new Common.Lock (true)) {
 
-				// Making sure we keep track of which files are changed, and how many items were affected.
-				var changed = new List<Node> ();
-				int affectedItems = 0;
+                // Making sure we keep track of which files are changed, and how many items were affected.
+                var changed = new List<Node> ();
+                int affectedItems = 0;
 
-				// Checking if we should force insertion at the end or not.
-				var forceAppend = e.Name == "p5.data.append" || e.Name == "append-data";
+                // Checking if we should force insertion at the end or not.
+                var forceAppend = e.Name == "p5.data.append" || e.Name == "append-data";
 
                 // Notice, we don't provide any transactional support here, but at least we make sure any changes are serialized to disc.
                 try {
@@ -72,17 +72,17 @@ namespace p5.data
                 } finally {
 
                     Common.SaveAffectedFiles (context, changed);
-					e.Args.Value = affectedItems;
-				}
-			}
+                    e.Args.Value = affectedItems;
+                }
+            }
         }
 
         /*
          * Inserts one node into database.
          */
         static void InsertNode (
-            Node node, 
-            ApplicationContext context, 
+            Node node,
+            ApplicationContext context,
             List<Node> changed,
             bool forceAppend)
         {
