@@ -53,9 +53,9 @@ namespace p5.data
                 // Acquiring write lock on database.
                 using (new Common.Lock (true)) {
 
-					// Making sure we keep track of nodes that are changed, and how many items were deleted.
-					var changed = new List<Node> ();
-					int affectedItems = 0;
+                    // Making sure we keep track of nodes that are changed, and how many items were deleted.
+                    var changed = new List<Node> ();
+                    int affectedItems = 0;
 
                     // Notice, we don't provide any transaction support, but at least we serialize any changes to disc.
                     try {
@@ -67,22 +67,22 @@ namespace p5.data
                             if (idxDest.Node.OffsetToRoot < 2)
                                 throw new LambdaException ("[p5.data.delete] can only delete items, not files, or entire database", e.Args, context);
 
-							// Figuring out which file Node updated belongs to, and storing in changed list.
-							Common.AddNodeToChanges (idxDest.Node, changed);
+                            // Figuring out which file Node updated belongs to, and storing in changed list.
+                            Common.AddNodeToChanges (idxDest.Node, changed);
 
-							// Setting value to null, which works if user chooses to delete "value", "name" or "node".
-							// Count though will throw an exception though.
-							idxDest.Value = null;
+                            // Setting value to null, which works if user chooses to delete "value", "name" or "node".
+                            // Count though will throw an exception though.
+                            idxDest.Value = null;
 
-							// Incrementing affected items.
-							affectedItems += 1;
+                            // Incrementing affected items.
+                            affectedItems += 1;
                         }
-					} finally {
+                    } finally {
 
                         Common.SaveAffectedFiles (context, changed);
-						e.Args.Value = affectedItems;
-					}
-				}
+                        e.Args.Value = affectedItems;
+                    }
+                }
             }
         }
     }
