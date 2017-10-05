@@ -62,7 +62,7 @@ namespace p5.mysql
         /*
          * Helper for above, to add arrays of parameters to SQL command.
          */
-        private static void AddArrayParameters (
+        static void AddArrayParameters (
             MySqlCommand cmd,
             string originalParamName,
             IEnumerable<object> parameterValues)

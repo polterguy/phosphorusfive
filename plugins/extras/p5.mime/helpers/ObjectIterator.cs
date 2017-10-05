@@ -32,7 +32,7 @@ namespace p5.mime.helpers
     /*
      * Common helper class for enumerations in a GnuPrivacyContext.
      */
-    internal static class ObjectIterator
+    static class ObjectIterator
     {
         // Delegates to use as callback during iteration.
         internal delegate void MatchingPrivateKeysDelegate (PgpSecretKey ctx);

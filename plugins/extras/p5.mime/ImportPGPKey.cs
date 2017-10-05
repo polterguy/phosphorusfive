@@ -43,7 +43,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.preview-public-pgp-key")]
-        private static void p5_crypto_preview_public_pgp_key (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_preview_public_pgp_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new ArgsRemover (e.Args, true)) {
@@ -89,7 +89,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.import-public-pgp-key")]
-        private static void p5_crypto_import_public_pgp_key (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_import_public_pgp_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new ArgsRemover (e.Args, true)) {
@@ -119,7 +119,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.import-private-pgp-key")]
-        private static void p5_crypto_import_private_pgp_key (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_import_private_pgp_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new ArgsRemover (e.Args, true)) {

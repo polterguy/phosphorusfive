@@ -35,13 +35,13 @@ namespace p5.threading
     public static class Lock
     {
         // Wraps all lockers in system
-        private static readonly Dictionary<string, ReaderWriterLockSlim> Lockers = new Dictionary<string, ReaderWriterLockSlim> ();
+        static readonly Dictionary<string, ReaderWriterLockSlim> Lockers = new Dictionary<string, ReaderWriterLockSlim> ();
 
         // Locks access to above dictionary, to make sure access to "Lockers" is thread safe in itself
-        private static readonly object GlobalLocker = new object ();
+        static readonly object GlobalLocker = new object ();
 
         // Delegate used for callback to execute once locker(s) is/are unlocked
-        private delegate void LockFunctor ();
+        delegate void LockFunctor ();
 
         /// <summary>
         ///     Locks the locker(s) with the given name(s).
@@ -87,7 +87,7 @@ namespace p5.threading
          * Locks first string object in array, and pops it off list, before recursively calling self, until
          * no more objects remains. When all objects are unlocked, then it will execute given "functor" delegate
          */
-        private static void WriteLock (List<string> lockers, LockFunctor functor)
+        static void WriteLock (List<string> lockers, LockFunctor functor)
         {
             // Checking if there are any more lockers to wait for.
             if (lockers.Count == 0) {
@@ -120,7 +120,7 @@ namespace p5.threading
          * Locks first string object in array, and pops it off list, before recursively calling self, until
          * no more objects remains. When all objects are unlocked, then it will execute given "functor" delegate
          */
-        private static void ReadLock (List<string> lockers, LockFunctor functor)
+        static void ReadLock (List<string> lockers, LockFunctor functor)
         {
             // Checking if there are any more lockers to wait for.
             if (lockers.Count == 0) {
@@ -152,7 +152,7 @@ namespace p5.threading
         /*
          * Returns the locker with the given name. If locker does not exist, it will be created
          */
-        private static ReaderWriterLockSlim GetLocker (string name)
+        static ReaderWriterLockSlim GetLocker (string name)
         {
             // Synchronizing access to lockers, to avoid having multiple threads 
             // trying to create or retrieve locker(s) at the same time

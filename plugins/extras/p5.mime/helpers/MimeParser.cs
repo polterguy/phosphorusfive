@@ -36,13 +36,13 @@ namespace p5.mime.helpers
     /// </summary>
     public class MimeParser
     {
-        private ApplicationContext _context;
-        private Node _args;
-        private MimeEntity _rootEntity;
-        private int _noNameAttachments;
-        private string _attachmentFolder;
-        private bool _addPrefixToAttachmentPath;
-        private List<GnuPrivacyContext.KeyPasswordMapper> _passwords;
+        ApplicationContext _context;
+        Node _args;
+        MimeEntity _rootEntity;
+        int _noNameAttachments;
+        string _attachmentFolder;
+        bool _addPrefixToAttachmentPath;
+        List<GnuPrivacyContext.KeyPasswordMapper> _passwords;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.mime.helpers.MimeParser"/> class.
@@ -85,7 +85,7 @@ namespace p5.mime.helpers
         /*
          * Adds up explicitly given decryption keys and passwords to retrieve key from GnuPG.
          */
-        private void AddExplicitDecryptionKeys (ApplicationContext context, Node args)
+        void AddExplicitDecryptionKeys (ApplicationContext context, Node args)
         {
             // Caller supplied decryption keys, enumerating them, and storing to list of key, making sure we DETACH them
             // from args, such that they don't leave method in case of exception - (they probably contain passwords in plain form).
@@ -115,7 +115,7 @@ namespace p5.mime.helpers
         /*
          * Processes one MimeEntity.
          */
-        private void ProcessEntity (MimeEntity entity, Node args)
+        void ProcessEntity (MimeEntity entity, Node args)
         {
             if (entity is MimePart) {
 
@@ -136,7 +136,7 @@ namespace p5.mime.helpers
         /*
          * Processes a MimePart (leaf entity).
          */
-        private void ProcessLeafPart (MimePart part, Node args)
+        void ProcessLeafPart (MimePart part, Node args)
         {
             // Verifying part actually has content, before trying to de-serialize it.
             if (part.ContentObject == null)
@@ -161,7 +161,7 @@ namespace p5.mime.helpers
         /*
          * Returns true if part should be treated like an attachment, otherwise false.
          */
-        private bool TreatAsAttachment (MimePart part)
+        bool TreatAsAttachment (MimePart part)
         {
             if (string.IsNullOrEmpty (_attachmentFolder))
                 return false; // We cannot store attachments, unless caller supplies an [attachment-folder] argument.
@@ -184,7 +184,7 @@ namespace p5.mime.helpers
         /*
          * Stores attachment to [attachment-folder] supplied by caller.
          */
-        private void SaveMimePartToDisc (MimePart part, Node entityNode)
+        void SaveMimePartToDisc (MimePart part, Node entityNode)
         {
             // Creating an intelligent filename.
             string rootFolder = Common.GetRootFolder (_context).TrimEnd ('/');
@@ -237,7 +237,7 @@ namespace p5.mime.helpers
         /*
          * Returns a MimePart as inline content to caller.
          */
-        private void ProcessMimePartInline (MimePart part, Node entityNode)
+        void ProcessMimePartInline (MimePart part, Node entityNode)
         {
             var txtPart = part as TextPart;
             if (txtPart != null) {
@@ -265,7 +265,7 @@ namespace p5.mime.helpers
         /*
          * Returns true if MimePart should be handled as text.
          */
-        private bool HandlePartAsText (MimePart part)
+        bool HandlePartAsText (MimePart part)
         {
             if (part is TextPart)
                 return true;
@@ -275,7 +275,7 @@ namespace p5.mime.helpers
         /*
          * Processes a Multipart, which can be either signed, encrypted, or any other types of Multipart MimeEntity.
          */
-        private void ProcessMultipart (Multipart multipart, Node args)
+        void ProcessMultipart (Multipart multipart, Node args)
         {
             Node entityNode = args.Add (multipart.ContentType.MediaType, multipart.ContentType.MediaSubtype).LastChild;
             ProcessHeaders (multipart, entityNode);
@@ -310,7 +310,7 @@ namespace p5.mime.helpers
         /*
          * Processes an encrypted Multipart.
          */
-        private void ProcessEncryptedMultipart (MultipartEncrypted encryptedMultipart, Node entityNode)
+        void ProcessEncryptedMultipart (MultipartEncrypted encryptedMultipart, Node entityNode)
         {
             try {
                 // Creating cryptographic context.
@@ -345,7 +345,7 @@ namespace p5.mime.helpers
         /*
          * Processes a signed Multipart.
          */
-        private void ProcessSignedMultipart (MultipartSigned signedMultipart, Node entityNode)
+        void ProcessSignedMultipart (MultipartSigned signedMultipart, Node entityNode)
         {
             // Creating cryptographic context.
             using (var ctx = new GnuPrivacyContext (false)) {
@@ -363,7 +363,7 @@ namespace p5.mime.helpers
         /*
          * Processes the given signature collection.
          */
-        private void ProcessSignatures (Node entityNode, DigitalSignatureCollection signatures)
+        void ProcessSignatures (Node entityNode, DigitalSignatureCollection signatures)
         {
             // Making sure there are any signatures.
             if (signatures == null)
@@ -393,7 +393,7 @@ namespace p5.mime.helpers
         /*
          * Processes the MIME headers of the given MimeEntity.
          */
-        private void ProcessHeaders (MimeEntity entity, Node args)
+        void ProcessHeaders (MimeEntity entity, Node args)
         {
             // Looping through all headers.
             foreach (var idxHeader in entity.Headers) {

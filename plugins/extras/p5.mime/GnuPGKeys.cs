@@ -43,7 +43,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.list-private-keys")]
-        private static void p5_crypto_list_private_keys (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_list_private_keys (ApplicationContext context, ActiveEventArgs e)
         {
             // Using common helper to iterate all secret keys.
             ObjectIterator.MatchingPrivateKeys (context, e.Args, delegate (PgpSecretKey key) {
@@ -60,7 +60,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.list-public-keys")]
-        private static void p5_crypto_list_public_keys (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_list_public_keys (ApplicationContext context, ActiveEventArgs e)
         {
             // Using common helper to iterate all secret keys.
             ObjectIterator.MatchingPublicKeys (context, e.Args, delegate (PgpPublicKey key) {
@@ -77,7 +77,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.get-key-details")]
-        private static void p5_crypto_get_key_details (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_get_key_details (ApplicationContext context, ActiveEventArgs e)
         {
             // Using common helper to iterate all secret keys.
             ObjectIterator.MatchingPublicKeys (context, e.Args, delegate (PgpPublicKey key) {
@@ -111,7 +111,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.get-public-key")]
-        private static void p5_crypto_get_public_key (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_get_public_key (ApplicationContext context, ActiveEventArgs e)
         {
             // Using common helper to iterate all secret keys.
             ObjectIterator.MatchingPublicKeys (context, e.Args, delegate (PgpPublicKey key) {
@@ -140,7 +140,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.get-private-key")]
-        private static void p5_crypto_get_private_key (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_get_private_key (ApplicationContext context, ActiveEventArgs e)
         {
             // Using common helper to iterate all secret keys.
             ObjectIterator.MatchingPrivateKeys (context, e.Args, delegate (PgpSecretKey key) {
@@ -169,7 +169,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.sign-public-key")]
-        private static void p5_crypto_sign_public_key (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_sign_public_key (ApplicationContext context, ActiveEventArgs e)
         {
             // Figuring out which private key to use for signing, and doing some basic sanity check.
             var fingerprint = e.Args.GetExChildValue ("private-key", context, "").ToLower ();
@@ -230,7 +230,7 @@ namespace p5.mime
         /*
 		 * Helper for above.
 		 */
-        private static byte [] SignPublicKey (
+        static byte [] SignPublicKey (
             PgpSecretKey secretKey,
             string password,
             PgpPublicKey keyToBeSigned,
@@ -262,7 +262,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.delete-private-key")]
-        private static void p5_crypto_delete_private_key (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_delete_private_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning.
             using (new ArgsRemover (e.Args, true)) {
@@ -314,7 +314,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.crypto.delete-public-key")]
-        private static void p5_crypto_delete_public_key (ApplicationContext context, ActiveEventArgs e)
+        static void p5_crypto_delete_public_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new ArgsRemover (e.Args, true)) {

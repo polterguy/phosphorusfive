@@ -87,7 +87,7 @@ namespace p5.io.zip
         /*
          * Retrieves destination folder, and verifies user has write access to it.
          */
-        private static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e)
+        static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving destination folder.
             var destFolder = Helpers.GetSystemPath (context, e.Args.GetExChildValue<string> ("dest", context));

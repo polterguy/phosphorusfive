@@ -54,7 +54,7 @@ namespace p5.xml
             }
         }
 
-        private static void BuildNode (ApplicationContext context, Node node, StringBuilder builder, int sp)
+        static void BuildNode (ApplicationContext context, Node node, StringBuilder builder, int sp)
         {
             for (var idxNo = 0; idxNo < sp; idxNo++)
                 builder.Append (" ");

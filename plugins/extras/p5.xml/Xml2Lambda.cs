@@ -57,7 +57,7 @@ namespace p5.xml
         /*
          * Helper for above, recursively parses HTML node given
          */
-        private static void ParseXmlNode (Node resultNode, XmlNode xmlNode)
+        static void ParseXmlNode (Node resultNode, XmlNode xmlNode)
         {
             // Adding all attributes
             if (xmlNode.Attributes != null) {

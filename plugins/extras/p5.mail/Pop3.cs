@@ -38,7 +38,7 @@ namespace p5.mail
     public static class Pop3
     {
         // Contains all "standard headers", which we handle in special cases, and should not be handled by generic header handler.
-        private static List<HeaderId> _excludedHeaders;
+        static List<HeaderId> _excludedHeaders;
 
         /*
          * Static CTOR to initialize _excludedHeaders, containing list of all headers to not handle in generic handler.
@@ -125,7 +125,7 @@ namespace p5.mail
         /*
          * Helper to process on message retrieved from POP3 server.
          */
-        private static Node ProcessMessage (
+        static Node ProcessMessage (
             ApplicationContext context,
             Node args,
             MimeMessage message)
@@ -158,7 +158,7 @@ namespace p5.mail
         /*
          * Adds up all headers into given node.
          */
-        private static void ProcessMessageHeaders (
+        static void ProcessMessageHeaders (
             ApplicationContext context,
             Node msgNode,
             MimeMessage message)
@@ -223,7 +223,7 @@ namespace p5.mail
         /*
          * Returns all addresses from list as name node.
          */
-        private static void GetAddresses (
+        static void GetAddresses (
             ApplicationContext context,
             Node msgNode,
             InternetAddressList list,

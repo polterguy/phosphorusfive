@@ -179,7 +179,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.mime.create-native")]
-        private static void _p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
+        static void _p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
             if (e.Args.Count != 1)

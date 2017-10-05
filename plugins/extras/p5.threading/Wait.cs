@@ -64,7 +64,7 @@ namespace p5.threading
         /*
          * Creates and spawns all threads given lambda
          */
-        private static IEnumerable<p5t.Thread> CreateThreads (ApplicationContext context, Node args)
+        static IEnumerable<p5t.Thread> CreateThreads (ApplicationContext context, Node args)
         {
             // Return value
             var retVal = new List<p5t.Thread> ();
@@ -94,7 +94,7 @@ namespace p5.threading
          * Waits for all threads to finish, or for the specified amount of milliseconds supplied. 
          * If "-1" is supplied, will wait for all threads to finish, for an "infinite2 amount of time
          */
-        private static void WaitForAll (int milliseconds, IEnumerable<p5t.Thread> threads)
+        static void WaitForAll (int milliseconds, IEnumerable<p5t.Thread> threads)
         {
             // Iterating through each thread created above, joining all with main thread.
             // Notice, we need to do weird math here to make the milliseconds property function properly,

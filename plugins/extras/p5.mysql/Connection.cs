@@ -110,7 +110,7 @@ namespace p5.mysql
         /*
          * List of connections.
          */
-        private static List<MySqlConnection> Connections (ApplicationContext context)
+        static List<MySqlConnection> Connections (ApplicationContext context)
         {
             // Checking if our connection pool is already registered in context, and if not, making sure we create it.
             if (!context.HasActiveEvent (".p5.mysql.connections.get")) {
@@ -125,7 +125,7 @@ namespace p5.mysql
         /*
          * Returns connection string from arguments, helper for above.
          */
-        private static string ConnectionString (ApplicationContext context, Node args)
+        static string ConnectionString (ApplicationContext context, Node args)
         {
             // Retrieving input connection string, or reference to connection string, or first connection string from configuration file.
             var argsValue = args.GetExValue<string> (context);

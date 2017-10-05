@@ -187,7 +187,7 @@ namespace p5.mime
         /*
          * Creates and seeds a new SecureRandom to be used for keypair creation
          */
-        private static SecureRandom CreateNewSecureRandom (ApplicationContext context, Node args)
+        static SecureRandom CreateNewSecureRandom (ApplicationContext context, Node args)
         {
             // Used to to hold seed for random number generator.
             List<byte> seed = new List<byte> ();

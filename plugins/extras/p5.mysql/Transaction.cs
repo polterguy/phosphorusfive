@@ -116,7 +116,7 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.mysql.transaction.rollback")]
-        private void _p5_mysql_transaction_rollback (ApplicationContext context, ActiveEventArgs e)
+        void _p5_mysql_transaction_rollback (ApplicationContext context, ActiveEventArgs e)
         {
             // Since we might have multiple instance listeners when transactions are being nested, we need to determine if the
             // current connection is the one this instance listener was registered with.
@@ -142,7 +142,7 @@ namespace p5.mysql
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = ".p5.mysql.transaction.commit")]
-        private void _p5_mysql_transaction_commit (ApplicationContext context, ActiveEventArgs e)
+        void _p5_mysql_transaction_commit (ApplicationContext context, ActiveEventArgs e)
         {
             // Since we might have multiple instance listeners when transactions are being nested, we need to determine if the
             // current connection is the one this instance listener was registered with.
@@ -165,7 +165,7 @@ namespace p5.mysql
         /*
          * Helper for above, to determine if current invocation is for current instance.
          */
-        private bool IsForCurrent (ApplicationContext context, Node args)
+        bool IsForCurrent (ApplicationContext context, Node args)
         {
             // Making sure we perform an object reference comparison, to determine if current invocation is for current instance.
             return (object)Connection.Active (context, args) == (object)_connection;
@@ -174,7 +174,7 @@ namespace p5.mysql
         /*
          * Executed when transaction is finished, meaning rolling back, unless _transaction is set to null.
          */
-        private void Finished ()
+        void Finished ()
         {
             _transaction?.Rollback ();
         }

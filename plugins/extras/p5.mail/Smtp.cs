@@ -78,7 +78,7 @@ namespace p5.mail
         /*
          * Sends all [envelopes] found.
          */
-        private static void SendMessages (
+        static void SendMessages (
             ApplicationContext context,
             Node args,
             SmtpClient client)
@@ -112,7 +112,7 @@ namespace p5.mail
         /*
          * Creates and decorates MimeMessage according to given args.
          */
-        private static MimeMessage CreateMessage (
+        static MimeMessage CreateMessage (
             ApplicationContext context,
             Node envelopeNode,
             List<Stream> streams)
@@ -195,7 +195,7 @@ namespace p5.mail
         /*
          * Retrieves all emails beneath the args node's child with the given name.
          */
-        private static IEnumerable<MailboxAddress> GetAddresses (
+        static IEnumerable<MailboxAddress> GetAddresses (
             ApplicationContext context,
             Node args,
             string name)

@@ -37,9 +37,9 @@ namespace p5.mime.helpers
     /// </summary>
     public class MimeCreator
     {
-        private ApplicationContext _context;
-        private Node _entityNode;
-        private List<Stream> _streams;
+        ApplicationContext _context;
+        Node _entityNode;
+        List<Stream> _streams;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.mime.helpers.MimeCreator"/> class.
@@ -69,7 +69,7 @@ namespace p5.mime.helpers
         /*
          * Actual implementation of creation of MimeEntity, recursively runs through given node, and creates a MimeEntity accordingly.
          */
-        private MimeEntity Create (Node entityNode)
+        MimeEntity Create (Node entityNode)
         {
             // Sanity check.
             if (entityNode.Value == null || !(entityNode.Value is string) || string.IsNullOrEmpty (entityNode.Value as string))
@@ -131,7 +131,7 @@ namespace p5.mime.helpers
         /*
          * Creates a Multipart MimeEntity, which might be encrypted, signed, or both.
          */
-        private Multipart CreateMultipart (Node multipartNode)
+        Multipart CreateMultipart (Node multipartNode)
         {
             // Setting up a return value.
             Multipart multipart = new Multipart (multipartNode.Get<string> (_context));
@@ -165,7 +165,7 @@ namespace p5.mime.helpers
         /*
          * Creates a leaf MimePart.
          */
-        private MimePart CreateLeafPart (Node mimePartNode)
+        MimePart CreateLeafPart (Node mimePartNode)
         {
             // Setting up a return value.
             MimePart retVal = new MimePart (ContentType.Parse (mimePartNode.Name + "/" + mimePartNode.Value));
@@ -200,7 +200,7 @@ namespace p5.mime.helpers
         /*
          * Only signs the given MimeEntity.
          */
-        private MultipartSigned SignEntity (Node entityNode, MimeEntity entity)
+        MultipartSigned SignEntity (Node entityNode, MimeEntity entity)
         {
             // Retrieving signature node to use for signing operation.
             var signatureNode = entityNode ["sign"];
@@ -229,7 +229,7 @@ namespace p5.mime.helpers
         /*
          * Only encrypts the given MimeEntity.
          */
-        private MultipartEncrypted EncryptEntity (Node entityNode, MimeEntity entity)
+        MultipartEncrypted EncryptEntity (Node entityNode, MimeEntity entity)
         {
             // Retrieving node that declares encryption settings for us.
             var encryptionNode = entityNode ["encrypt"];
@@ -259,7 +259,7 @@ namespace p5.mime.helpers
         /*
          * Signs and encrypts the given MimeEntity.
          */
-        private MultipartEncrypted SignAndEncryptEntity (
+        MultipartEncrypted SignAndEncryptEntity (
             Node entityNode,
             MimeEntity entity)
         {
@@ -302,7 +302,7 @@ namespace p5.mime.helpers
         /*
          * Returns list of MailboxAddresses according to given node.
          */
-        private List<MailboxAddress> GetReceiversMailboxAddress (Node encryptionNode)
+        List<MailboxAddress> GetReceiversMailboxAddress (Node encryptionNode)
         {
             var retVal = new List<MailboxAddress> ();
             foreach (var idx in encryptionNode.Children) {
@@ -326,7 +326,7 @@ namespace p5.mime.helpers
         /*
          * Returns email for signing entity, and password to release private key from GnuPG.
          */
-        private Tuple<string, MailboxAddress> GetSignatureMailboxAddress (Node signatureNode)
+        Tuple<string, MailboxAddress> GetSignatureMailboxAddress (Node signatureNode)
         {
             // Figuring out which private key to use for signing entity.
             string email = "foo@bar.com", fingerprint = "", password = "";
@@ -341,7 +341,7 @@ namespace p5.mime.helpers
         /*
          * Decorates headers for given MimeEntity.
          */
-        private void DecorateEntityHeaders (
+        void DecorateEntityHeaders (
             MimeEntity entity,
             Node entityNode)
         {
@@ -357,7 +357,7 @@ namespace p5.mime.helpers
         /*
          * Creates a ContentObject for MimePart from [content] supplied.
          */
-        private void CreateContentObjectFromContent (Node contentNode, MimePart entity)
+        void CreateContentObjectFromContent (Node contentNode, MimePart entity)
         {
             // Creating stream to hold content, and adding to list of streams, such that stream can be disposed later.
             var stream = new MemoryStream ();
@@ -395,7 +395,7 @@ namespace p5.mime.helpers
         /*
          * Creates a ContentObject for MimePart from some file name given.
          */
-        private void CreateContentObjectFromFilename (
+        void CreateContentObjectFromFilename (
             Node fileNode,
             MimePart entity)
         {

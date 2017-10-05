@@ -110,7 +110,7 @@ namespace p5.web.widgets
         /*
          * Helper for above.
          */
-        private void CreateManyWidgets (ApplicationContext context, Node args)
+        void CreateManyWidgets (ApplicationContext context, Node args)
         {
             // Looping through each argument, assuming each is a widget creation statement.
             foreach (var idxWidget in XUtil.Iterate<Node> (context, args)) {

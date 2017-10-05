@@ -30,7 +30,7 @@ namespace p5.mail.helpers
     /// <summary>
     ///     Common helper class for mail features of Phosphorus Five
     /// </summary>
-    internal static class Common
+    static class Common
     {
         /// <summary>
         ///     Returns base folder for application

@@ -38,7 +38,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = ".p5.core.application-start")]
-        private static void _p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
+        static void _p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
         {
             // Registering our Cryptography context, which is wrapping the local installation of Gnu Privacy Guard
             CryptographyContext.Register (typeof (GnuPrivacyContext));

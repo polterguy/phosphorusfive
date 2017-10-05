@@ -37,7 +37,7 @@ namespace p5.threading.helpers
     public class Thread
     {
         // Actual thread wrapped by this instance
-        private sys.Thread _thread;
+        sys.Thread _thread;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.threading.helpers.Thread"/> class.
@@ -120,7 +120,7 @@ namespace p5.threading.helpers
          * Notice, [eval-immutable], which allows for [wait] to give access to nodes outside of actual thread, while
          * forcing [fork] without [wait] to create a Cloned instance of lambda upon creation
          */
-        private void Execute ()
+        void Execute ()
         {
             Context.RaiseEvent ("eval-mutable", Lambda);
         }

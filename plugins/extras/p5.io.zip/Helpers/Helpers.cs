@@ -30,7 +30,7 @@ namespace p5.io.zip.helpers
     /// <summary>
     ///     Class containing common methods for p5.io namespace
     /// </summary>
-    internal static class Helpers
+    static class Helpers
     {
         /// <summary>
         ///     Returns the root folder of application pool back to caller
@@ -106,7 +106,7 @@ namespace p5.io.zip.helpers
         /*
          * Creates a new unique filename, and returns it to caller
          */
-        private static string CreateNewUniqueFileName (ApplicationContext context, string destination)
+        static string CreateNewUniqueFileName (ApplicationContext context, string destination)
         {
             string basepath = GetBaseFolder (context);
             string [] parts = destination.Split ('.');

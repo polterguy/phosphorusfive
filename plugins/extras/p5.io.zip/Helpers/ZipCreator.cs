@@ -35,10 +35,10 @@ namespace p5.io.zip.helpers
     public class ZipCreator : IDisposable
     {
         // Used for tracking if instance is disposed
-        private bool _disposed;
+        bool _disposed;
 
         // AES key size, 128 or 256
-        private int _keySize;
+        int _keySize;
 
         // Actual Zip stream
         ZipOutputStream _zipStream;
@@ -66,7 +66,7 @@ namespace p5.io.zip.helpers
             _keySize = keySize;
         }
 
-        private ApplicationContext Context {
+        ApplicationContext Context {
             get;
             set;
         }
@@ -92,7 +92,7 @@ namespace p5.io.zip.helpers
         /*
          * Adds given file/folder from root folder into archive
          */
-        private void AddToArchive (string fileFolderName, string rootFolder, Node args, string asFileName)
+        void AddToArchive (string fileFolderName, string rootFolder, Node args, string asFileName)
         {
             // Checking if this is directory
             if (Directory.Exists (rootFolder + fileFolderName)) {
@@ -139,7 +139,7 @@ namespace p5.io.zip.helpers
         /*
          * Puts the given file to the ZIP archive
          */
-        private void PutFileToArchive (string fullFileName, string relativeFileName, Node args, string asFileName)
+        void PutFileToArchive (string fullFileName, string relativeFileName, Node args, string asFileName)
         {
             // Creating entry, and setting properties of new entry
             FileInfo fileInfo = new FileInfo (fullFileName);
@@ -178,7 +178,7 @@ namespace p5.io.zip.helpers
         /*
          * Actual implementation of Dispose method
          */
-        private void Dispose (bool disposing)
+        void Dispose (bool disposing)
         {
             if (!_disposed && disposing) {
                 _disposed = true;

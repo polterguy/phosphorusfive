@@ -67,8 +67,8 @@ namespace p5.mime.helpers
         /*
          * Used to synchornize access to context.
          */
-        private static ReaderWriterLockSlim _lock = new ReaderWriterLockSlim ();
-        private bool _write;
+        static ReaderWriterLockSlim _lock = new ReaderWriterLockSlim ();
+        bool _write;
 
         public GnuPrivacyContext (bool write)
         {
@@ -156,7 +156,7 @@ namespace p5.mime.helpers
         /*
          * Returns the password from an email address or a fingerprint supplied.
          */
-        private string FromEmailMappedPasswords (PgpSecretKey key)
+        string FromEmailMappedPasswords (PgpSecretKey key)
         {
             // Looping through all MailboxAddresses we've got.
             foreach (var idxMailbox in Passwords) {

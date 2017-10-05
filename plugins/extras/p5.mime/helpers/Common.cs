@@ -28,7 +28,7 @@ namespace p5.mime.helpers
     /// <summary>
     ///     Common helper class for MIME features of Phosphorus Five.
     /// </summary>
-    internal static class Common
+    static class Common
     {
         /// <summary>
         ///     Returns base folder for application.
