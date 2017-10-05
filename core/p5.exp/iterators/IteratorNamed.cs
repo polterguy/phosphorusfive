@@ -47,16 +47,21 @@ namespace p5.exp.iterators
         {
             if (name.StartsWithEx ("~")) {
 
-                // "Like" equality
+                // "Like" equality.
                 Name = name.Substring (1);
                 _like = true;
+
             } else if (name.StartsWithEx (":regex:")) {
+
+                // Regex comparison.
                 _regex = true;
                 Name = name.Substring (7);
+
             } else if (name.StartsWithEx ("\\")) {
 
                 // Escaped "named operator"
                 Name = name.Substring (1);
+
             } else {
 
                 // Plain and simple
