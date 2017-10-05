@@ -67,8 +67,8 @@ namespace p5.mime.helpers
         /*
          * Used to synchornize access to context.
          */
-        static ReaderWriterLockSlim _lock = new ReaderWriterLockSlim ();
-        bool _write;
+        static readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim ();
+        readonly bool _write;
 
         public GnuPrivacyContext (bool write)
         {

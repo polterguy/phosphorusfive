@@ -41,7 +41,7 @@ namespace p5.io.zip.helpers
         int _keySize;
 
         // Actual Zip stream
-        ZipOutputStream _zipStream;
+        readonly ZipOutputStream _zipStream;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.io.zip.helpers.ZipCreator"/> class.

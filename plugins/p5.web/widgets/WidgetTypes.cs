@@ -206,8 +206,9 @@ namespace p5.web.widgets
                 case "text":
 
                     // Sanity check, before invoking "create native widget" event.
-                    if (idxChild.Children.Count (ix => ix.Name == "parent" || ix.Name == "_parent" || ix.Name == "before" || ix.Name == "after" || ix.Name == "position") > 0)
+                    if (idxChild.Children.Any (ix => ix.Name == "parent" || ix.Name == "_parent" || ix.Name == "before" || ix.Name == "after" || ix.Name == "position"))
                         throw new LambdaException ("You cannot specify [parent], [_parent], [before], [after] or [position] for a child widget", idxChild, context);
+
                     idxChild.Insert (0, new Node ("_parent", widget));
                     try {
                         context.RaiseEvent (".p5.web.widgets." + idxChild.Name, idxChild);

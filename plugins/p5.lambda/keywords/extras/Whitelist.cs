@@ -48,7 +48,7 @@ namespace p5.lambda.keywords.extras
             foreach (var idxLambda in lambdaObj.Children) {
 
                 // Verifying currently iterated lambda child node's name can be found in [post-condition] of whitelist.
-                if (condition.Children.Count (ix => ix.Name == idxLambda.Name) == 0) {
+                if (!condition.Children.Any (ix => ix.Name == idxLambda.Name)) {
 
                     // Child of lambda was not found in [post-condition], making sure we remove all children of lambda, before we throw an exception.
                     lambdaObj.Clear ();

@@ -50,7 +50,7 @@ namespace p5.lambda.keywords.extras
                 var nodeList = XUtil.Iterate<Node> (context, e.Args).Where (ix => ix.Name != "").Select (ix => ix.Clone ()).ToList ();
 
                 // Special case for empty [sort] node, at which case we use "default sorting", sorting by value
-                if (e.Args.Children.Count (ix => ix.Name != "") == 0) {
+                if (!e.Args.Children.Any (ix => ix.Name != "")) {
 
                     // Defaulting to sorting nodes by "value" casted to IComparable
                     nodeList.Sort (delegate (Node lhs, Node rhs) {

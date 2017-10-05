@@ -47,7 +47,7 @@ namespace p5.mail
         public static void p5_smtp_send (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking.
-            if (e.Args.Children.Count (ix => ix.Name == "envelope") == 0)
+            if (!e.Args.Children.Any (ix => ix.Name == "envelope"))
                 throw new LambdaException (
                     "No [envelope] nodes found",
                     e.Args,

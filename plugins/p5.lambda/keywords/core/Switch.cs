@@ -111,7 +111,7 @@ namespace p5.lambda.keywords.core
         static void ForwardEvaluateValuesAndSanityCheck (ApplicationContext context, Node args)
         {
             // Sanity check, only [case], [default], and formatting parameters are legal as children nodes.
-            if (args.Children.Count (ix => ix.Name != "" && ix.Name != "case" && ix.Name != "default") > 0)
+            if (args.Children.Any (ix => ix.Name != "" && ix.Name != "case" && ix.Name != "default"))
                 throw new LambdaException ("Only [case] and [default] lambdas are legal beneath [switch]", args, context);
 
             // Sanity check, only one [default] lambda is allowed.
@@ -119,7 +119,7 @@ namespace p5.lambda.keywords.core
                 throw new LambdaException ("[switch] can only have one [default] lambda", args, context);
 
             // Sanity check, at least one [case] or [default] exists.
-            if (args.Children.Count (ix => ix.Name == "default" || ix.Name == "case") == 0)
+            if (!args.Children.Any (ix => ix.Name == "default" || ix.Name == "case"))
                 throw new LambdaException ("[switch] must have at least one [default] or [case] lambda", args, context);
 
             // Sanity check, [default], if given, has null value.

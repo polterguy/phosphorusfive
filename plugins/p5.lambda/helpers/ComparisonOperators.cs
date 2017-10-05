@@ -200,9 +200,7 @@ namespace p5.lambda.helpers
             // Checking for "null items" (which logically are equal)
             // This means that an expression yielding exclusively "null values", will be equal to anything else that somehow
             // yields only "null values"
-            if (lhs.Count (ix => ix != null) == 0 && rhs.Count (ix => ix != null) == 0)
-                return 0;
-            if (rhs.Count (ix => ix != null) == 0 && lhs.Count (ix => ix != null) == 0)
+            if (!lhs.Any (ix => ix != null) && !rhs.Any (ix => ix != null))
                 return 0;
 
             // Checking count of both sides

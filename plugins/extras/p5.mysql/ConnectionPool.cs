@@ -33,7 +33,7 @@ namespace p5.mysql
     public class ConnectionPool
     {
         // All active connections.
-        List<MySqlConnection> _connections = new List<MySqlConnection> ();
+        readonly List<MySqlConnection> _connections = new List<MySqlConnection> ();
 
         /// <summary>
         ///     Returns all active connections.

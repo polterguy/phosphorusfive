@@ -37,9 +37,9 @@ namespace p5.mime.helpers
     /// </summary>
     public class MimeCreator
     {
-        ApplicationContext _context;
+        readonly ApplicationContext _context;
         Node _entityNode;
-        List<Stream> _streams;
+        readonly List<Stream> _streams;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.mime.helpers.MimeCreator"/> class.
