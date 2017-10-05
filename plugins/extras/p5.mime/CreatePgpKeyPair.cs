@@ -145,7 +145,7 @@ namespace p5.mime
                     HashAlgorithmTag.Sha1,
                     HashAlgorithmTag.Sha384,
                     HashAlgorithmTag.Sha512,
-                    HashAlgorithmTag.Sha224,
+                    HashAlgorithmTag.Sha224
                 }.Select (ix => (int)ix).ToArray ());
             masterSubPacketGenerator.SetKeyExpirationTime (false, (long)(expires - DateTime.Now).TotalSeconds);
 

@@ -146,11 +146,10 @@ namespace p5.mime.helpers
                 // Multiple passwords, need to figure out which to use to release private key.
                 return FromEmailMappedPasswords (key);
 
-            } else {
-
-                // Simple password.
-                return Password;
             }
+
+            // Simple password.
+            return Password;
         }
 
         /*

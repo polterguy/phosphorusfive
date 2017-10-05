@@ -164,19 +164,17 @@ namespace p5.mysql
                         retVal += "database=" + (argsValue == "sys" ? argsValue : prefix + argsValue) + ";";
                         return retVal;
 
-                    } else {
-                        throw new LambdaException ("[p5.mysql.connect] couldn't find the specified connection string in your configuration file", args, context);
                     }
+                    throw new LambdaException ("[p5.mysql.connect] couldn't find the specified connection string in your configuration file", args, context);
                 }
 
                 // Initializing and opening connection.
                 return configValue.ConnectionString;
 
-            } else {
-
-                // Assuming input was a complete connection string in itself.
-                return argsValue;
             }
+
+            // Assuming input was a complete connection string in itself.
+            return argsValue;
         }
     }
 }

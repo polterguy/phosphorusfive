@@ -143,7 +143,7 @@ namespace p5.io.zip.helpers
         {
             // Creating entry, and setting properties of new entry
             FileInfo fileInfo = new FileInfo (fullFileName);
-            ZipEntry entry = new ZipEntry (asFileName == null ? relativeFileName : asFileName) {
+            ZipEntry entry = new ZipEntry (asFileName ?? relativeFileName) {
                 DateTime = fileInfo.LastWriteTime,
                 Size = fileInfo.Length
             };
