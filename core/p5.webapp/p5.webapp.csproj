@@ -273,7 +273,6 @@
     <None Include="modules\bazar\startup.hl" />
     <None Include="modules\bazar\startup\bazar.bazars.get-apps.hl" />
     <None Include="modules\bazar\startup\bazar.install-bazar-app.hl" />
-    <None Include="modules\bazar\startup\bazar.uninstall-app.hl" />
     <None Include="modules\bazar\startup\bazar.ensure-trusted-fingerprints.hl" />
     <None Include="modules\bazar\startup\bazar.install-app.hl" />
     <None Include="modules\bazar\helpers\upload-app.hl" />
@@ -287,6 +286,7 @@
     <None Include="browserconfig.xml" />
     <None Include="favicon.ico" />
     <None Include="manifest.json" />
+    <None Include="modules\desktop\startup\desktop.uninstall-app.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

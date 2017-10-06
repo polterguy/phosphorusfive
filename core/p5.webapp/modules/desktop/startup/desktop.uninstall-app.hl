@@ -4,7 +4,7 @@
  *
  * Expects [_arg] being the local folder's name, from within our "/modules/" folder.
  */
-create-event:bazar.uninstall-app
+create-event:desktop.uninstall-app
 
   /*
    * Checking to see if app is even installed.

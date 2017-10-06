@@ -17,7 +17,7 @@ create-event:bazar.install-app
   /*
    * Uninstalling any previous versions of app.
    */
-  bazar.uninstall-app:/modules/{0}/
+  desktop.uninstall-app:/modules/{0}/
     :x:/../*/local-url?value
 
   /*
