@@ -353,7 +353,7 @@ namespace p5.exp
             params string [] exclusionArgs)
         {
             // Retrieving source.
-            var source = Source (context, args);
+            var source = Source (context, args, exclusionArgs);
 
             // Iterating through each result of expression.
             foreach (var idxKey in Iterate<string> (context, args)) {
