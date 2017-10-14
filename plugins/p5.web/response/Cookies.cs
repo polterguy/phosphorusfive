@@ -47,7 +47,9 @@ namespace p5.web.ui.response
 
                     // Removal
                     var httpCookie = HttpContext.Current.Response.Cookies [key];
-                    if (httpCookie != null) httpCookie.Expires = DateTime.Now.Date.AddDays (-1);
+                    if (httpCookie != null)
+                        httpCookie.Expires = DateTime.Now.Date.AddDays (-1);
+
                 } else {
 
                     // Setting or updating
