@@ -145,18 +145,6 @@ create-event:p5.web.load-ui
         return
 
       /*
-       * Checking if user has access to specified URL.
-       */
-      p5.core.has-access:x:/../*/url?value
-      if:x:/-?value
-        =:bool:false
-
-        /*
-         * Aborting evaluation of the rest of event.
-         */
-        return
-
-      /*
        * Loading the file, and evaluating it.
        */
       eval-x:x:/+/*/url
