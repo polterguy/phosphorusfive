@@ -37,7 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="request\GetParameters.cs" />
+    <Compile Include="request\QueryParameters.cs" />
     <Compile Include="response\Echo.cs" />
     <Compile Include="response\Headers.cs" />
     <Compile Include="request\Cookies.cs" />
