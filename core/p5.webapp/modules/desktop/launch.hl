@@ -45,83 +45,36 @@ create-container-widget:desktop-main-container
 
 /*
  * Now we can determine all modules the user has installed on his system, and create a "desktop icon" for
- * each of these modules, that have a "launch.hl" file, to allow the user to actually launch his apps.
- *
- * Hint, a module doesn't necessary have to include a "launch.hl" file, but if it doesn't, it won't have its
- * own desktop icon created, and will be treated as an invisible "component", instead of an "app".
- *
- * Notice, we explicitly remove the "desktop" app, for obvious reasons.
+ * each of these modules that has a "desktop.hl" file.
  */
 list-folders:/modules/
-set:x:@"/@list-folders/*/""~/desktop/"""
 
 
 
 
 
 /*
- * Listing all "launch.hl" files inside the results of our above folder listing operation.
+ * Listing all "desktop.hl" files inside the results of our above folder listing operation.
  */
 list-files:x:/@list-folders/*?name
-  filter:launch.hl
+  filter:desktop.hl
 
 
 
 
 
 /*
- * Looping through all "launch.hl" files from above, and creating a widget wrapping each of them, 
- * that will invoke the file, once clicked.
+ * Looping through all "desktop.hl" files from above, and creating a widget wrapping each of them, 
+ * that will invoke its associated "launch.hl" file, once clicked.
  */
 for-each:x:/@list-files/*?name
 
   /*
-   * Checking if currently iterated "app" has a "desktop.hl" widget file, at which point we use this "desktop.hl"
-   * file, instead of our "generic" launch widget.
+   * Currently iterated app has a desktop widget declaration file.
    */
-  replace:x:/@_dp?value
-    src:/launch.hl
-    dest:/desktop.hl
-  if
-    fetch:x:/0/0?value
-      file-exists:x:/@replace?value
-
-    /*
-     * Currently iterated app has a desktop widget declaration file.
-     *
-     * Using this widget instead of our generic "launch app" widget.
-     *
-     * Notice, this allows you to create pure "desktop widgets", among other things,
-     * which doesn't do anything else, but actually show some piece of widget on your desktop.
-     */
-    load-file:x:/@replace?value
-    add:x:/../*/create-widget/*/widgets/*/div/*/widgets
-      src:x:/@load-file/*/*
-
-  else
-
-    /*
-     * Currently iterated app does not have a desktop widget, hence we use the generic one.
-     */
-    split:x:/@_dp?value
-      =:/
-    eval-x:x:/+/**
-    add:x:/../*/create-widget/*/widgets/*/div/*/widgets
-      src
-        container
-          element:a
-          href:/{0}
-            :x:/@split/0/-2?name
-          class:desktop-app shaded rounded air-inner
-          widgets
-            span
-              class:desktop-app-name
-              href:x:/@split/0/-2?name
-              widgets
-                span
-                  class:desktop-app-name
-                  innerValue:@"<span class=""icon-home desktop-app-icon""></span><span style=""position:absolute;top:5px;right:5px;font-size:.7rem;text-transform:capitalize;"">{0}</span>"
-                    :x:/@split/0/-2?name
+  load-file:x:/@_dp?value
+  add:x:/../*/create-widget/*/widgets/*/div/*/widgets
+    src:x:/@load-file/*/*
 
 
 
@@ -130,7 +83,7 @@ for-each:x:/@list-files/*?name
 /*
  * Creating actual desktop widget.
  *
- * This widget basically becomes your "desktop", with one icon, for each "component" that has a "launch.hl" file.
+ * This widget basically becomes your "desktop", with one icon, for each "component" that has a "desktop.hl" file.
  */
 create-widget
   parent:desktop-main-container
