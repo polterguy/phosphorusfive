@@ -34,7 +34,7 @@ namespace p5.webapp.code.configuration
         ///     Gets the plugin directory
         /// </summary>
         /// <value>The plugin directory</value>
-        [ConfigurationProperty ("assemblyDirectory", DefaultValue = "/bin/", IsRequired = false)]
+        [ConfigurationProperty ("assemblyDirectory", DefaultValue = "bin/", IsRequired = false)]
         public string PluginDirectory {
             get { return this ["assemblyDirectory"] as string; }
         }
