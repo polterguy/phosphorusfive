@@ -139,6 +139,9 @@ namespace p5.io.zip
                             rootFolder,
                             idxDestPath);
 
+                        // Making sure we return unzipped file to caller.
+                        args.Add (idxDestPath); 
+
                         // Serialise file to stream.
                         using (var outputStream = File.Create (rootFolder + idxDestPath)) {
 
