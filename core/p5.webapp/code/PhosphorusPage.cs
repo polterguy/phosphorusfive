@@ -22,8 +22,10 @@
  */
 
 using System;
+using System.Linq;
 using p5.exp;
 using p5.core;
+using p5.exp.exceptions;
 using p5.ajax.core;
 using p5.ajax.widgets;
 
@@ -173,6 +175,31 @@ namespace p5.webapp.code
                 // ViewState title has presedence, since it might have been changed, 
                 // and "Title" property of page is not serialized into ViewState
                 e.Args.Value = ViewState ["_pf_title"] ?? Title;
+            }
+        }
+
+        /// <summary>
+        ///     Adds a head/meta tag to the page.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.page.add-meta-tag")]
+        public void p5_web_page_add_meta_tag (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new ArgsRemover (e.Args)) {
+
+                // Verifying this is not an Ajax request, and if it is, we throw an exception.
+                if (IsAjaxRequest)
+                    throw new LambdaException ("You can't add a meta tag during an Ajax request", e.Args, context);
+
+                var lit = new System.Web.UI.LiteralControl ();
+                var attrs = "";
+                foreach (var idxAtr in e.Args.Children.Where (ix => ix.Name != "")) {
+                    attrs += string.Format ("{0}=\"{1}\" ", idxAtr.Name, idxAtr.GetExValue<string> (context));
+                }
+                lit.Text = string.Format ("<{0} {1}/>", e.Args.GetExValue<string> (context), attrs);
+                Header.Controls.Add (lit);
             }
         }
 
