@@ -33,6 +33,16 @@ p5.web.include-css-file:@DESKTOP/media/main.css
 
 
 /*
+ * In case user chooses to install an app he needs to pay for, we need to ensure PayPal's JavaScript
+ * file is included in the main initial loading of our page.
+ */
+micro.widgets.paypal-button.ensure-checkout-js
+
+
+
+
+
+/*
  * Verifying user is logged in with a root account, and if not, 
  * forcing user to login before proceeding.
  */
