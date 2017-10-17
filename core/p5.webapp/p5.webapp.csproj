@@ -243,6 +243,10 @@
       <Project>{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
       <Name>p5.xml</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.pdf\p5.pdf.csproj">
+      <Project>{045D3D94-7730-445D-B578-1DE5A5BE5C9C}</Project>
+      <Name>p5.pdf</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
