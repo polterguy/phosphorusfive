@@ -21,9 +21,15 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.IO;
+using System.Linq;
+using System.Text;
 using p5.exp;
 using p5.core;
 using CommonMark;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
 
 namespace p5.markdown
 {
@@ -66,6 +72,58 @@ namespace p5.markdown
 
                 // Doing actual conversion.
                 e.Args.Value = CommonMarkConverter.Convert (md, settings);
+            }
+        }
+
+        /// <summary>
+        ///     Parses a Markdown snippet, and creates PDF document from it.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "markdown2pdf")]
+        [ActiveEvent (Name = "p5.markdown.markdown2pdf")]
+        public static void markdown2pdf (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new ArgsRemover (e.Args, true)) {
+
+                // Assumes there's only one document, or creates one result of it.
+                var filename = XUtil.Single<string> (context, e.Args);
+                filename = context.RaiseEvent (".p5.io.unroll-path", new Node ("", filename)).Get<string> (context);
+
+                // Figuring out source.
+                var md = XUtil.Source (context, e.Args, "css-file");
+
+                // Retrieving root path of app.
+                var rootPath = context.RaiseEvent (".p5.core.application-folder").Get<string> (context);
+
+                // Converting markdown to HTML, which is expected by iTextSharp.
+                var html = context.RaiseEvent ("markdown2html", new Node ("", md)).Get<string> (context);
+
+                // Loading up all CSS, which we'll need to pass into ParseXhtml further down.
+                var css = "";
+                foreach (var idxCssFile in e.Args.Children.Where (ix => ix.Name == "css-file")) {
+                    var cssFile = idxCssFile.GetExValue<string> (context);
+                    cssFile = context.RaiseEvent (".p5.io.unroll-path", new Node ("", cssFile)).Get<string> (context);
+                    using (TextReader reader = File.OpenText (rootPath + cssFile)) {
+                        css += reader.ReadToEnd () + "\r\n";
+                    }
+                }
+
+                // Creating our document.
+                using (var stream = new FileStream (rootPath + filename, FileMode.Create)) {
+                    using (var document = new Document (PageSize.A4, 55, 55, 70, 70)) {
+                        using (var writer = PdfWriter.GetInstance (document, stream)) {
+                            document.Open ();
+                            using (var htmlStream = new MemoryStream (Encoding.UTF8.GetBytes (html))) {
+                                using (var cssStream = new MemoryStream (Encoding.UTF8.GetBytes (css))) {
+                                    XMLWorkerHelper.GetInstance ().ParseXHtml (writer, document, htmlStream, cssStream);
+                                }
+                            }
+                            document.Close ();
+                        }
+                    }
+                }
             }
         }
     }
