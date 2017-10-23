@@ -245,7 +245,7 @@ namespace p5.web
             using (new ArgsRemover (e.Args)) {
 
                 // Returning web apps root URL
-                e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart (UriPartial.Authority) + AjaxPage.ResolveUrl ("~/");
+                e.Args.Value = HttpContext.Current.Request.Url.GetLeftPart (UriPartial.Authority) + "/";
             }
         }
 
