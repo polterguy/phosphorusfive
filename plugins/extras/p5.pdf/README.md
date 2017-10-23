@@ -17,3 +17,10 @@ html2pdf:~/temp/my-pdf-files.pdf
 
 Optionally, you can supply one or more **[css-file]** arguments to this Active Event, which will use the CSS files when creating the PDF.
 
+## License
+
+Notice, although P5 is released under the terms of GPL, it utilises iTextSharp, which is released under the terms of
+the Affero GPL license. This implies that even if you purchase a proprietary license of P5, you'll still (unfortunately) need
+to link to the source code of p5.pdf. However, due to the modularised properties of P5, this should have no consequences
+for the rest of your code.
+

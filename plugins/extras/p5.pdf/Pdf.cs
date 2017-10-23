@@ -19,6 +19,12 @@
  * If you cannot for some reasons use the GPL license, Phosphorus
  * Five is also commercially available under Quid Pro Quo terms. Check 
  * out our website at http://gaiasoul.com for more details.
+ * 
+ * Notice, this module consumes iTextSharp, which is licensed as Affero GPL.
+ * Please notice, that this has some consequences for your own code, if you
+ * choose to use it. Primarily that you'll need to link to its source code,
+ * regardless of whether or not you've bought a commercial license of P5 or 
+ * not.
  */
 
 using System.IO;
