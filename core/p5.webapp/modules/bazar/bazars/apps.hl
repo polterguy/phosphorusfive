@@ -110,3 +110,27 @@ app:harvester
 Hint; It's often vise to use in combination with a QR code leading directly to its _'rate'_ page, which you can stick on your retail location, to allow your loyal customers to share their experience with their friends.
 
 Notice, the harvester requires a Camphora Five app called _'star-rater'_. Check out [its documentation](https://github.com/polterguy/harvester) for details."
+
+
+
+
+
+/*
+ * Pay2Play
+ */
+app:pay2play
+  name:Pay2Play 5.1
+  description:Pay2Play allows you to write a book, publish it, and charge for its content
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/pay2play.zip.pgp"
+  price:Free
+  local-url:pay2play
+  image:"https://phosphorusfive.files.wordpress.com/2017/10/generic_book.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@PAY2PLAY
+  version:decimal:5.1
+    event:pay2play.version
+  author-readme:@"Pay2Play allows you to create content, publish it, and charge for access to it. It is useful both for learning materials and tutors, in addition to authors, simply wanting a larger cut of the pie they themselves creates.
+
+It features a very simple to understand, and arguably _'naive'_ writing experience, based upon Markup, making it extremely easy to use.
+
+You can check out its [documentation here](https://github.com/polterguy/pay2play)."
