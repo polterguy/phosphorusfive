@@ -62,12 +62,16 @@
     <Content Include="modules\bazar\screenshots\screenshot-1.png" />
     <Content Include="modules\desktop\media\main.css" />
     <Content Include="android-chrome-192x192.png" />
-    <Content Include="android-chrome-256x256.png" />
     <Content Include="apple-touch-icon.png" />
     <Content Include="favicon-16x16.png" />
     <Content Include="favicon-32x32.png" />
     <Content Include="mstile-150x150.png" />
     <Content Include="safari-pinned-tab.svg" />
+    <Content Include="android-chrome-512x512.png" />
+    <Content Include="mstile-144x144.png" />
+    <Content Include="mstile-310x150.png" />
+    <Content Include="mstile-310x310.png" />
+    <Content Include="mstile-70x70.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
