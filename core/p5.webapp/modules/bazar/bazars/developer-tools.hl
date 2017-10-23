@@ -68,7 +68,7 @@ Basically, Camphora Five allows you to create a data driven app, which you can u
  * Hello World.
  */
 app:hello-world
-  name:Hello World 5.0
+  name:Hello World 5.1
   description:The 'Hello World' app for system developers
   url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/hello-world.zip.pgp"
   price:Free
@@ -76,7 +76,7 @@ app:hello-world
   image:"https://phosphorusfive.files.wordpress.com/2017/09/hello-world.jpg"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HELLO
-  version:decimal:5.0
+  version:decimal:5.1
     event:hello.version
   author-readme:@"This is a nice app to start out with if you wish to create your own apps for Phosphorus Five.
 
