@@ -229,6 +229,9 @@ core/p5.webapp/modules/license/**
 # Excluding ‘hello-world’
 core/p5.webapp/modules/hello-world/**
 
+# Excluding ‘Hypereval’
+core/p5.webapp/modules/hypereval/**
+
 # Excluding ‘auto-deployment’
 core/p5.webapp/modules/auto-deployment/**
 
