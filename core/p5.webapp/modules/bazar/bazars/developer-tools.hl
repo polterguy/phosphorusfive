@@ -46,7 +46,7 @@ Basically, Camphora Five allows you to create a data driven app, which you can u
  * Hypereval.
  */
 app:hypereval
-  name:Hypereval 1.0
+  name:Hypereval 1.1
   description:A Hyperlambda terminal module, allowing you to evaluate Hyperlambda from your browser
   url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/hypereval.zip.pgp"
   price:Free
@@ -54,7 +54,7 @@ app:hypereval
   image:"https://phosphorusfive.files.wordpress.com/2017/07/lambda.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HYPEREVAL
-  version:decimal:1.0
+  version:decimal:1.1
     event:hypereval.version
   author-readme:@"Hypereval allows you to evaluate Hyperlambda from your browser. It features intellisense, syntax highlighting, skinning, and tons of other features.
 
