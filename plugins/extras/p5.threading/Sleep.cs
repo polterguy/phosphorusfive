@@ -38,6 +38,7 @@ namespace p5.threading
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "sleep")]
+        [ActiveEvent (Name = "p5.threading.sleep")]
         public static void sleep (ApplicationContext context, ActiveEventArgs e)
         {
             Thread.Sleep (XUtil.Single<int> (context, e.Args));

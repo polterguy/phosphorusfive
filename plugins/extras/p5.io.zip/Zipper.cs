@@ -40,6 +40,7 @@ namespace p5.io.zip
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "zip")]
+        [ActiveEvent (Name = "p5.io.zip")]
         public static void zip (ApplicationContext context, ActiveEventArgs e)
         {
             using (new ArgsRemover (e.Args)) {

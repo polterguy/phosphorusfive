@@ -38,6 +38,7 @@ namespace p5.xml
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "xml2lambda")]
+        [ActiveEvent (Name = "p5.xml.xml2lambda")]
         public static void xml2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

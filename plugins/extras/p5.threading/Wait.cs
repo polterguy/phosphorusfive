@@ -42,6 +42,7 @@ namespace p5.threading
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "wait")]
+        [ActiveEvent (Name = "p5.threading.wait")]
         public static void wait (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking

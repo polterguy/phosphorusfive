@@ -46,6 +46,7 @@ namespace p5.io.zip
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "unzip")]
+        [ActiveEvent (Name = "p5.io.unzip")]
         public static void unzip (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving password, if there is one, and untying it, 
