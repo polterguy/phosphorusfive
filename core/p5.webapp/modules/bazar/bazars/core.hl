@@ -26,7 +26,7 @@ name:GaiaSoul core modules repository
 app:micro
   name:Micro 5.2
   description:A microscopic CSS framework and component library for P5.
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/micro.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/micro-52.zip.pgp"
   price:Free
   local-url:micro
   image:"https://phosphorusfive.files.wordpress.com/2017/09/micro-symbol.png"
