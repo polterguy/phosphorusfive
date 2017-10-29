@@ -73,7 +73,7 @@ for-each:x:/@list-files/*?name
    * Currently iterated app has a desktop widget declaration file.
    */
   load-file:x:/@_dp?value
-  add:x:/../*/create-widget/*/widgets/*/div/*/widgets
+  add:x:/../*/create-widget/*/widgets/*/div/=desktop-apps/*/widgets
     src:x:/@load-file/*/*
 
 
@@ -90,44 +90,51 @@ create-widget
   class:row
   widgets
     div
-      class:col desktop-apps
+      class:col-100
       widgets
-        literal
-          element:a
-          href:#
-          role:button
-          class:desktop-logout
-          oninit
+        div
+          class:right
+          widgets
+            div
+              class:strip toolbar
+              style:"display:inline-block;"
+              widgets
+                literal
+                  element:button
+                  oninit
 
-            /*
-             * Dislpaying either "login" button or "logout" button, depending upon user's current status.
-             */
-            whoami
-            if:x:/@whoami/*/default?value
+                    /*
+                     * Dislpaying either "login" button or "logout" button, depending upon user's current status.
+                     */
+                    whoami
+                    if:x:/@whoami/*/default?value
 
-              /*
-               * User is not logged in.
-               */
-              set-widget-property:x:/../*/_event?value
-                innerValue:@"<span class=""icon-key""></span>"
-                title:Log in
+                      /*
+                       * User is not logged in.
+                       */
+                      set-widget-property:x:/../*/_event?value
+                        innerValue:@"<span class=""icon-key""></span>"
+                        title:Log in
 
-            else
+                    else
 
-              /*
-               * User is logged in.
-               */
-              set-widget-property:x:/../*/_event?value
-                innerValue:@"<span class=""icon-power-off""></span>"
-                title:Log out
+                      /*
+                       * User is logged in.
+                       */
+                      set-widget-property:x:/../*/_event?value
+                        innerValue:@"<span class=""icon-power-off""></span>"
+                        title:Log out
 
-          onclick
+                  onclick
 
-            /*
-             * Either logging user in, or out, depending upon his current status.
-             */
-            whoami
-            if:x:/@whoami/*/default?value
-              p5.core.login
-            else
-              p5.core.logout
+                    /*
+                     * Either logging user in, or out, depending upon his current status.
+                     */
+                    whoami
+                    if:x:/@whoami/*/default?value
+                      p5.core.login
+                    else
+                      p5.core.logout
+    div:desktop-apps
+      class:col-100 desktop-apps
+      widgets
