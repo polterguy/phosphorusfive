@@ -500,9 +500,14 @@ create-widget
               class:right
               widgets
                 div
-                  class:strip
+                  class:strip toolbar
                   style:"display:inline-block;"
                   widgets
+                    button
+                      innerValue:@"<span class=""icon-upload""></span>"
+                      title:Upload app
+                      style:"margin-bottom:0;padding-left:35px;padding-right:35px;"
+                      onclick:@"p5.dropzone.browse();event.stopPropagation(true);return false;"
                     button
                       innerValue:@"<span class=""icon-plus""></span>"
                       style:"margin-bottom:0;"
@@ -540,12 +545,6 @@ create-widget
                          * Evaluating file responsible for allowing user to uninstall apps.
                          */
                         micro.evaluate.file:/modules/bazar/helpers/uninstall-apps.hl
-
-                    button
-                      innerValue:@"<span class=""icon-upload""></span>"
-                      title:Upload app
-                      style:"margin-bottom:0;padding-left:35px;padding-right:35px;"
-                      onclick:@"p5.dropzone.browse();event.stopPropagation(true);return false;"
                     button
                       innerValue:@"<span class=""icon-home""></span>"
                       style:"margin-bottom:0;"
