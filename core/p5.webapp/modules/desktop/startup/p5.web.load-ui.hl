@@ -94,6 +94,15 @@ create-event:p5.web.load-ui
         target:_blank
         innerValue:GaiaSoul is Free Software
 
+    /*
+     * Loading "pre" plugins, making sure we pass in [url] to all plugin events.
+     */
+    vocabulary:~desktop.plugins.pre.
+    for-each:x:/@vocabulary/*?value
+      eval-x:x:/+/*
+      eval:x:/@_dp?value
+        url:x:/../*/url?value
+
     if:x:/../*/url?value
       =:/
 
@@ -150,4 +159,13 @@ create-event:p5.web.load-ui
       eval-x:x:/+/*/url
       micro.evaluate.file:/modules/{0}/launch.hl
         :x:/@split/0?name
+        url:x:/../*/url?value
+
+    /*
+     * Loading "post" plugins, making sure we pass in [url] to all plugin events.
+     */
+    vocabulary:~desktop.plugins.post.
+    for-each:x:/@vocabulary/*?value
+      eval-x:x:/+/*
+      eval:x:/@_dp?value
         url:x:/../*/url?value
