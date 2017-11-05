@@ -77,7 +77,7 @@ namespace p5.html
                 foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Changing to 'safe HTML'
-                    builder.Append (HttpUtility.UrlEncode (idx));
+                    builder.Append (HttpUtility.UrlDecode (idx));
                 }
 
                 // Returning decoded HTML to caller
