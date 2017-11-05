@@ -1,0 +1,124 @@
+/*
+ * This is the Bazar's name.
+ *
+ * Notice, you should edit this file, an especially update the URLs, to point
+ * to your apps correctly - In addition to updating the PGP keys to reflect your own key.
+ *
+ * When you have done so, make sure you host the file at a URL matching your Bazar declaration somehow.
+ */
+name:GaiaSoul core modules repository
+
+
+
+
+
+/*
+ * Below here we have listed all apps that are available in this Bazar.
+ */
+
+
+
+
+
+/*
+ * Micro
+ */
+app:micro
+  name:Micro 5.2
+  description:A microscopic CSS framework and component library for P5.
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/micro-52.zip.pgp"
+  price:Free
+  local-url:micro
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/micro-symbol.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@MICRO
+  version:decimal:5.2
+    event:micro.version
+  author-readme:@"Micro is a microscopic CSS framework, and a component library for Phosphorus Five. It features many extension widgets and component Active Events, significantly easing your experience as you create Phosphorus Five apps.
+
+* Tab control
+* Modal window
+* Wizard form
+* A beautiful (and skinnable) grid CSS system
+* And much more
+
+In addition, Micro also features a lot of additional components and helper Active Events, such as events allowing you to manipulate CSS classes of widgets, turning your page into a _'dropzone'_, etc, etc, etc. You can find the documentation for Micro [here](https://github.com/polterguy/micro)."
+
+
+
+
+
+/*
+ * Bazar
+ */
+app:bazar
+  name:Bazar 5.1
+  description:A Phosphorus Five module allowing you to easily install new, and update existing apps and modules.
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/bazar.zip.pgp"
+  price:Free
+  local-url:bazar
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/bazar-icon.jpg"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@BAZAR
+  version:decimal:5.1
+    event:bazar.version
+  author-readme:@"The Bazar is the module in Phosphorus Five that allows you to securely install new apps, and upgrade existing apps, in your own Phosphorus Five installation. It features the following features.
+
+* Automatic updating of your apps
+* Possibility of drag'n'drop install new apps, or updates to existing apps
+* Cryptograhically signed app manifests, to avoid installation of malicious code
+* And much more
+
+You can read its README file [here](https://github.com/polterguy/phosphorusfive/tree/master/core/p5.webapp/modules/bazar)."
+
+
+
+
+
+/*
+ * Desktop
+ */
+app:desktop
+  name:Desktop 5.1
+  description:This is the main administrative module for your Phosphorus Five installation, or your 'desktop' environment.
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/desktop.zip.pgp"
+  price:Free
+  local-url:desktop
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/desktop-icon.png"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:p5.io.unroll-path.@DESKTOP
+  version:decimal:5.1
+    event:desktop.version
+  author-readme:@"The Desktop is the module in Phosphorus Five that is your main administrative interface, allowing you to easily start your apps, from a desktop type of environment.
+
+* Automatic determining of which apps are installed
+* Login functions
+* And much more
+
+You can read its README file [here](https://github.com/polterguy/phosphorusfive/tree/master/core/p5.webapp/modules/desktop)."
+
+
+
+
+
+/*
+ * License
+ */
+app:license
+  name:License 5.x
+  description:Obtain a proprietary license for Phosphorus Five
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/license.zip.pgp"
+  price:198
+  local-url:license
+  image:"https://phosphorusfive.files.wordpress.com/2017/09/license.jpg"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  condition:license.is-valid
+  version:decimal:5.99
+    event:license.version
+  author-readme:@"If you wish to create proprietary apps (closed source), or you want to remove the GaiaSoul Suite link, this is the module you'll need. This module allows you to.
+
+* Create closed source applications
+* Remove the _'GaiaSoul is Free Software'_ hyperlink
+* Receive professional support
+
+Notice, you get all 5.x upgrades to all apps, and Phosphorus Five automatically for free, if you purchase a proprietary license. You can read more about the _'Quid Pro Quo'_ terms of the GaiaSoul Suite [here](https://gaiasoul.com/license)."

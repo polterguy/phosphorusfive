@@ -4,4 +4,4 @@
  */
 create-event:bazar.version
 
-  return:decimal:5.1
+  return:decimal:5.2
