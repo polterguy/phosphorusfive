@@ -38,7 +38,10 @@ app:hyperlang
 
 There are really no words in existence to accurately describe this. However, this is one of those things you simply have to see in action to believe in.
 
-It supports most common languages on the planet, and can literally do anything. It basically allows your Phosphorus Five installation to understand human language, and translate it into computer code, automatically for you."
+It supports most common languages on the planet, and can literally do anything. It basically allows your Phosphorus Five installation to understand human language, and translate it into computer code, automatically for you.
+
+You can download and install a dictionary file from [here](https://github.com/polterguy/phosphorusfive/releases/download/v5.5/hyperlang-backup.zip). You would also
+highly probably need to install Hypereval, since many of the snippets in Hyperlang depends upon Hypereval being installed, in addition to some snippets for Hypereval which you can download and install from [here](https://github.com/polterguy/phosphorusfive/releases/download/v5.5/hypereval-export.zip)."
 
 
 
