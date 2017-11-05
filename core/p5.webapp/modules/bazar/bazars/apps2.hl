@@ -21,6 +21,30 @@ name:GaiaSoul main app repository
 
 
 /*
+ * Hyperlang
+ */
+app:hyperlang
+  name:Hyperlang 1.0
+  description:A Hyperlambda to natural speech bridge for evaluating code
+  price:Free
+  local-url:hyperlang
+  image:"https://phosphorusfive.files.wordpress.com/2017/11/odtssey2001_16.jpg"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.5/hyperlang.zip.pgp"
+  condition:p5.io.unroll-path.@HYPERLANG
+  version:decimal:1.0
+    event:hyperlang.version
+  author-readme:@"Hyperlang is a bridge between computer code and natural spoken language, allowing you to evaluate Hyperlambda, as a response to spoken language, through speaking phrases and words.
+
+There are really no words in existence to accurately describe this. However, this is one of those things you simply have to see in action to believe in.
+
+It supports most common languages on the planet, and can literally do anything. It basically allows your Phosphorus Five installation to understand human language, and translate it into coputer code, automatically for you."
+
+
+
+
+
+/*
  * Sephia Five
  */
 app:sephia-five
