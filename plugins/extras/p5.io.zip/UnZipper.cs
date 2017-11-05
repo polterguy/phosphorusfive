@@ -57,7 +57,7 @@ namespace p5.io.zip
             // Basic syntax checking.
             if (e.Args.Value == null)
                 throw new LambdaException (
-                    "[unzip] needs both a destination as its value",
+                    "[unzip] needs at least one source zip file as its value",
                     e.Args,
                     context);
 
@@ -91,7 +91,13 @@ namespace p5.io.zip
         static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving destination folder.
-            var destFolder = Helpers.GetSystemPath (context, e.Args.GetExChildValue<string> ("dest", context));
+            var destFolder = e.Args.GetExChildValue<string> ("dest", context);
+            if (string.IsNullOrEmpty (destFolder))
+                throw new LambdaException (
+                    "[unzip] needs a destination as [dest]",
+                    e.Args,
+                    context);
+            destFolder = Helpers.GetSystemPath (context, destFolder);
 
             // Verifying user is authorized to writing to destination folder.
             context.RaiseEvent (".p5.io.authorize.modify-folder", new Node ("", destFolder).Add ("args", e.Args));
