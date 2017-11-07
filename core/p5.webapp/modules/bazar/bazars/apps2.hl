@@ -34,7 +34,7 @@ app:hyperlang
   condition:p5.io.unroll-path.@HYPERLANG
   version:decimal:1.0
     event:hyperlang.version
-  author-readme:@"Hyperlang is a bridge between computer code and natural spoken language, allowing you to evaluate Hyperlambda, as a response to spoken language, through speaking phrases and words.
+  author-readme:@"Hyperlang is a bridge between computer code and natural spoken language, allowing you to evaluate Hyperlambda, as a response to spoken language, by speaking phrases and words, in your own language if you wish.
 
 There are really no words in existence to accurately describe this. However, this is one of those things you simply have to see in action to believe in.
 
