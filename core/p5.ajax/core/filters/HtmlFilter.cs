@@ -34,13 +34,18 @@ namespace p5.ajax.core.filters
     /// </summary>
     public class HtmlFilter : Filter
     {
+        private bool _removeViewState;
+
         /// <summary>
         ///     Initializes a new instance of the HtmlFilter class.
         /// </summary>
         /// <param name="page">The AjaxPage this instance is rendering for</param>
-        public HtmlFilter (AjaxPage page)
+        /// <param name="removeViewState">If true, all traces of ViewState will be removed from the page</param>
+        public HtmlFilter (AjaxPage page, bool removeViewState)
             : base (page)
-        { }
+        {
+            _removeViewState = removeViewState;
+        }
 
         /// <summary>
         ///     Renders the response.
@@ -53,7 +58,9 @@ namespace p5.ajax.core.filters
             var content = reader.ReadToEnd ();
 
             // Cleaning up HTML, which means removing __VIEWSTATE input and nicely formatting <head> section
-            content = RemoveViewState (content);
+            if (_removeViewState)
+                content = RemoveViewState (content);
+
             content = CleanHead (content);
 
             // Including CSS files.
@@ -79,6 +86,7 @@ namespace p5.ajax.core.filters
 
                 // Removing entire "__VIEWSTATE wrapper div".
                 endOffset = html.IndexOf ("</div>", startOffset, StringComparison.InvariantCulture) + 6;
+
             } else {
 
                 // Defaulting to only removing __VIEWSTATE input

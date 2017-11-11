@@ -49,6 +49,7 @@
                     <li><a href="Void.aspx">Void widget example</a>
                     <li><a href="JavaScript.aspx">JavaScript example</a>
                     <li><a href="DynamicControls.aspx">Dynamic controls example (Container widget)</a>
+                    <li><a href="Postback.aspx">Combining conventional postback controls and p5.ajax</a>
                 </ul>
 
                 <p>

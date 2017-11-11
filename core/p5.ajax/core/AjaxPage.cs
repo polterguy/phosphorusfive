@@ -50,6 +50,9 @@ namespace p5.ajax.core
         // Responsible for persisting the ViewState for page.
         PageStatePersister _statePersister;
 
+        // Whether or not ViewState should be removed entirely from page or not.
+        bool _removeViewState = true;
+
         // Contains the list of new JavaScript objects to include in current request.
         // If Item2 of Tuple is true, it means that it is a JavaScript file inclusion, otherwise it's an inline JavaScript content inclusion.
         List<Tuple<string, bool>> _javaScriptObjectsForCurrentRequest = new List<Tuple<string, bool>> ();
@@ -74,12 +77,23 @@ namespace p5.ajax.core
                 } else {
 
                     // Rendering HTML back to client, by making sure we use the correct Response filter.
-                    Response.Filter = new HtmlFilter (this);
+                    Response.Filter = new HtmlFilter (this, _removeViewState);
 
                     // Making sure we include "manager.js", which is the main client-side parts of p5.ajax.
                     IncludeJavaScriptFile (ClientScript.GetWebResourceUrl (typeof (AjaxPage), "p5.ajax.javascript.manager.min.js"));
                 }
             };
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this <see cref="T:p5.ajax.core.AjaxPage"/> removes view state entirely or not.
+        ///     Notice, if you wish to combine p5.ajax with conventional ASP.NET WebControls, you'll need to explicitly set this value
+        ///     to "false", in for instance your page directive.
+        /// </summary>
+        /// <value><c>true</c> if remove view state; otherwise, <c>false</c>.</value>
+        public bool RemoveViewState {
+            get { return _removeViewState; }
+            set { _removeViewState = value; }
         }
 
         /// <summary>

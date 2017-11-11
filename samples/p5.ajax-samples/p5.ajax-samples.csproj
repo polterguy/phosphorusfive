@@ -66,6 +66,7 @@
     <Content Include="UnitTests.aspx" />
     <Content Include="media\tests.js" />
     <Content Include="media\tests.css" />
+    <Content Include="Postback.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -95,6 +96,9 @@
     <Compile Include="UnitTests.aspx.cs">
       <DependentUpon>UnitTests.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Postback.aspx.cs">
+      <DependentUpon>Postback.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <PropertyGroup>
