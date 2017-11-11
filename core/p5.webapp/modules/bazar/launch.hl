@@ -504,7 +504,7 @@ create-widget
                   style:"display:inline-block;"
                   widgets
                     button
-                      innerValue:@"<span class=""icon-upload""></span>"
+                      innerValue:@"<span class=""icon-upload2""></span>"
                       title:Upload app
                       style:"margin-bottom:0;padding-left:35px;padding-right:35px;"
                       onclick:@"p5.dropzone.browse();event.stopPropagation(true);return false;"
@@ -546,7 +546,7 @@ create-widget
                          */
                         micro.evaluate.file:/modules/bazar/helpers/uninstall-apps.hl
                     button
-                      innerValue:@"<span class=""icon-home""></span>"
+                      innerValue:@"<span class=""icon-home3""></span>"
                       style:"margin-bottom:0;"
                       onclick
 

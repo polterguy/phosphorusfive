@@ -122,7 +122,7 @@ create-widget
                        * User is logged in.
                        */
                       set-widget-property:x:/../*/_event?value
-                        innerValue:@"<span class=""icon-power-off""></span>"
+                        innerValue:@"<span class=""icon-switch""></span>"
                         title:Log out
 
                   onclick
