@@ -238,8 +238,8 @@ core/p5.webapp/modules/auto-deployment/**
 # Excluding ‘harvester’
 core/p5.webapp/modules/harvester/**
 
-# Excluding ‘Hyperlang’
-core/p5.webapp/modules/hyperlang/**
+# Excluding ‘Magic Menu’
+core/p5.webapp/modules/magic-menu/**
 
 # Excluding users files
 core/p5.webapp/users/**
