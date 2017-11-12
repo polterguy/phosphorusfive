@@ -50,6 +50,7 @@
                     <li><a href="JavaScript.aspx">JavaScript example</a>
                     <li><a href="DynamicControls.aspx">Dynamic controls example (Container widget)</a>
                     <li><a href="Postback.aspx">Combining conventional postback controls and p5.ajax</a>
+                    <li><a href="MasterSample.aspx">p5.ajax used in combination with master pages</a>
                 </ul>
 
                 <p>

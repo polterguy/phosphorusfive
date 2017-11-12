@@ -1,0 +1,26 @@
+<%@ Master 
+    Language="C#" 
+    AutoEventWireup="true" 
+    CodeBehind="DemoMaster.master.cs" 
+    Inherits="p5.samples.MasterSampleMaster" %>
+
+<!DOCTYPE html>
+<html>
+    <head runat="server">
+        <title>Master page example</title>
+        <asp:ContentPlaceHolder ID="head" runat="server" />
+    </head>
+    <body>
+        <form id="form1" runat="server">
+            Current Date: <%= System.DateTime.Now %>
+            <div>
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+                <p5:Literal 
+                    runat="server"
+                    id="bar"
+                    onclick="bar_onclick"
+                    Element="button">Click me too!</p5:Literal>    
+            </div>
+        </form>
+    </body>
+</html>

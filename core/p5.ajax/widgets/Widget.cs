@@ -248,31 +248,45 @@ namespace p5.ajax.widgets
 
             // Finding out at what context to invoke the method within, which means iterating upwards in Control hierarchy, 
             // until we find a UserControl, or the Page itself.
-            var owner = Parent;
-            while (!(owner is UserControl) && !(owner is Page))
-                owner = owner.Parent;
 
             // Retrieving the MethodInfo, such that we can invoke it using Reflection.
-            var method = owner.GetType ().GetMethod (eventHandlerName,
-                BindingFlags.Instance |
-                BindingFlags.Public |
-                BindingFlags.NonPublic |
-                BindingFlags.FlattenHierarchy);
+            Control owner;
+            var method = FindEventHandlerInstance (this, eventHandlerName, out owner);
+
+            // Checking for existance of method, and if not, throwing an exception.
             if (method == null)
-                throw new ApplicationException ("Method + '" + eventHandlerName + "' could not be found");
-
-            // Verifying method has the WebMethod attribute.
-            // For security reasons we want method to be explicitly marked as WebMethod, and not allow inherited methods to be implicitly legal.
-            var atrs = method.GetCustomAttributes (typeof (WebMethod), false);
-
-            // Notice, to not give away any information to malicious requests, allowing them to figure out which methods exists on UserControl/Page,
-            // we throw the exact same exception as above.
-            if (atrs == null || atrs.Length == 0)
                 throw new ApplicationException ("Method + '" + eventHandlerName + "' could not be found");
 
             // Invoking methods with the "this" widget, and an AjaxEventArg, passing in the name of the event that was raised on the client, to allow
             // for reusing the same event handler, for multiple events.
             method.Invoke (owner, new object [] { this, new AjaxEventArgs (eventName) });
+        }
+
+        /*
+         * Helper for recursively traversing upwards in hierarchy, until we find method requested.
+         */
+        private MethodInfo FindEventHandlerInstance (Control current, string eventHandlerName, out Control owner)
+        {
+            if (current == null) {
+                owner = null;
+                return null;
+            }
+            var method = current.GetType ().GetMethod (eventHandlerName,
+                BindingFlags.Instance |
+                BindingFlags.Public |
+                BindingFlags.NonPublic |
+                BindingFlags.FlattenHierarchy);
+            if (method != null) {
+
+                // Verifying method has the WebMethod attribute.
+                // For security reasons we want method to be explicitly marked as WebMethod, and not allow inherited methods to be implicitly legal.
+                var atrs = method.GetCustomAttributes (typeof (WebMethod), false);
+                if (atrs != null && atrs.Length > 0) {
+                    owner = current;
+                    return method;
+                }
+            }
+            return FindEventHandlerInstance (current.Parent, eventHandlerName, out owner);
         }
 
         #endregion

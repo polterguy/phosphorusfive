@@ -67,6 +67,8 @@
     <Content Include="media\tests.js" />
     <Content Include="media\tests.css" />
     <Content Include="Postback.aspx" />
+    <Content Include="MasterSample.aspx" />
+    <Content Include="MasterSample.master" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -99,6 +101,12 @@
     </Compile>
     <Compile Include="Postback.aspx.cs">
       <DependentUpon>Postback.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MasterSample.aspx.cs">
+      <DependentUpon>MasterSample.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MasterSample.master.cs">
+      <DependentUpon>MasterSample.master</DependentUpon>
     </Compile>
   </ItemGroup>
   <PropertyGroup>

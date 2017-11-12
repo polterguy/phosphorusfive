@@ -25,6 +25,8 @@ using System;
 using System.IO;
 using System.Text;
 using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
 using System.Collections.Generic;
 
 namespace p5.ajax.core.internals
@@ -58,7 +60,46 @@ namespace p5.ajax.core.internals
 
             // Adding the viewstate ID to the form, such that we can retrieve it again when the client does a postback
             var literal = new LiteralControl { Text = string.Format ("\t<input type=\"hidden\" value=\"{0}\" name=\"_p5_state_key\">\r\n\t\t", _viewStateId) };
-            page.Form.Controls.Add (literal);
+            if (page.Master != null) {
+
+                // Need to add control to the first ContentPlaceholder that's inside of our main form.
+                // Notice, if there are none, we default to the page's Form.
+                var parent = FindFormControl (page.Master) ?? page.Form;
+                parent.Controls.Add (literal);
+
+            } else {
+                
+                page.Form.Controls.Add (literal);
+            }
+        }
+
+        /*
+         * Used above, if master pages are being used.
+         * 
+         * Basically, we'll need to find the first ContentPlaceholder that's inside of our form, if any.
+         */
+        private Control FindFormControl (Control ctrl)
+        {
+            if (ctrl is ContentPlaceHolder && FindParentForm (ctrl.Parent) != null)
+                return ctrl;
+            foreach (Control idx in ctrl.Controls) {
+                var tmp = FindFormControl (idx);
+                if (tmp != null)
+                    return tmp;
+            }
+            return null;
+        }
+
+        /*
+         * Used above if master pages are being used.
+         */
+        private Control FindParentForm (Control ctrl)
+        {
+            if (ctrl is HtmlForm)
+                return ctrl;
+            if (ctrl.Parent != null)
+                return FindParentForm (ctrl.Parent);
+            return null;
         }
 
         /// <summary>
