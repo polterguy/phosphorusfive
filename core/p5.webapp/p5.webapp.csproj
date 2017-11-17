@@ -298,6 +298,7 @@
     <None Include="modules\bazar\bazars\apps.hl" />
     <None Include="modules\bazar\bazars\core.hl" />
     <None Include="modules\bazar\bazars\developer-tools.hl" />
+    <None Include="modules\bazar\startup\empty-bazar-cache.hl" />
   </ItemGroup>
   <ItemGroup />
 </Project>

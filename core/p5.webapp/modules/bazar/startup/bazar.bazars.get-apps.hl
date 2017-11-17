@@ -18,7 +18,7 @@
  * And every time the user opens up the Bazar, it would feel slow and sluggish, especially if there's a Bazar declaration
  * that is stored on a server, that doesn't support the "If-Modified-Since" HTTP header, and/or is slow for other reasons.
  *
- * Notice, all Bazars' content, is cached physically on disc, in your "~/documents/private/bazar-cache/" folder.
+ * Notice, all Bazars' content, is cached physically on disc, in your "/common/documents/private/bazar-cache/" folder.
  */
 create-event:bazar.bazars.get-apps
 
@@ -27,13 +27,13 @@ create-event:bazar.bazars.get-apps
    */
   if
     fetch:x:/0/0?value
-      folder-exists:~/documents/private/bazar-cache/
+      folder-exists:/common/documents/private/bazar-cache/
     not
 
     /*
      * Creating cache folder.
      */
-    create-folder:~/documents/private/bazar-cache/
+    create-folder:/common/documents/private/bazar-cache/
 
   /*
    * Checking if it's more than 5 hours since we polled bazars, and if so, initiating a poll operation.
@@ -74,7 +74,7 @@ create-event:bazar.bazars.get-apps
              * In order to pass in the correct "If-Modified-Since" HTTP header to GET invocation, we must check our
              * cache of previously fetched Bazars, and pass in the file creation date to our [p5.http.get] invocation.
              *
-             * The files are cached locally, in your "~/documents/private/bazar-cache/" folder, as the SHA256 hashed version of their URLs.
+             * The files are cached locally, in your "/common/documents/private/bazar-cache/" folder, as the SHA256 hashed version of their URLs.
              * Hence, first we must determine the local cache filename, by hashing our URL, and remove any non-valid
              * filename characters.
              */
@@ -87,14 +87,14 @@ create-event:bazar.bazars.get-apps
              */
             if
               fetch:x:/0/0?value
-                file-exists:~/documents/private/bazar-cache/{0}.hl
+                file-exists:/common/documents/private/bazar-cache/{0}.hl
                   :x:/@p5.crypto.hash.create-sha1?value
 
               /*
                * There exists a cache of currently iterated Bazar, now reading its "last write time", and making
                * sure we pass in that date as the value of our "If-Modified-Since" HTTP header.
                */
-              p5.io.file.get-last-write-time:~/documents/private/bazar-cache/{0}.hl
+              p5.io.file.get-last-write-time:/common/documents/private/bazar-cache/{0}.hl
                 :x:/@p5.crypto.hash.create-sha1?value
               eval-x:x:/+/*/*
               add:x:/..try/*/p5.http.get
@@ -119,7 +119,7 @@ create-event:bazar.bazars.get-apps
                *
                * Making sure we cache Bazar file's content locally.
                */
-              save-file:~/documents/private/bazar-cache/{0}.hl
+              save-file:/common/documents/private/bazar-cache/{0}.hl
                 :x:/@p5.crypto.hash.create-sha1?value
                 src:x:/@p5.http.get/*/result/*/content?value
 
@@ -147,7 +147,7 @@ create-event:bazar.bazars.get-apps
   /*
    * Then loading each cache file.
    */
-  list-files:~/documents/private/bazar-cache/
+  list-files:/common/documents/private/bazar-cache/
     filter:.hl
   load-file:x:/-/*?name
 
