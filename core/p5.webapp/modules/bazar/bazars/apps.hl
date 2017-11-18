@@ -21,18 +21,42 @@ name:GaiaSoul main app repository
 
 
 /*
+ * Hyperlang
+ */
+app:magic-menu
+  name:Magic Menu
+  description:A common menu system for all your navigational needs
+  price:Free
+  local-url:magic-menu
+  image:"https://phosphorusfive.files.wordpress.com/2017/11/odtssey2001_16.jpg"
+  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/magic-menu.zip.pgp"
+  condition:p5.io.unroll-path.@MAGIC
+  version:decimal:1.1
+    event:magic-menu.version
+  author-readme:@"Magic Menu is a bridge between natural spoken language and computer code, allowing you to evaluate Hyperlambda, as a response to natural language, by speaking phrases and words, in your own language if you wish - Or chosing menu items.
+
+There are really no words in existence to accurately describe this. However, this is one of those things you simply have to see in action to believe in.
+
+It supports most common languages on the planet, and can literally do anything. It basically allows your Phosphorus Five installation to understand human language, and translate it into computer code, almost automatically for you."
+
+
+
+
+
+/*
  * Sephia Five
  */
 app:sephia-five
-  name:Sephia Five 5.1
+  name:Sephia Five 5.3
   description:A secure webmail client with PGP cryptography, virus protection, spam filterint, and more
   price:Free
   local-url:sephia-five
   image:"https://phosphorusfive.files.wordpress.com/2017/08/vault-icon-2.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/sephia-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/sephia-five.zip.pgp"
   condition:p5.io.unroll-path.@SEPHIA
-  version:decimal:5.1
+  version:decimal:5.3
     event:sephia.version
   author-readme:@"Sephia Five is a cryptographically secure webmail and email client, with PGP support, which is built with your privacy in mind. Among other things, it does not display HTML emails unless absolutely necessary, to avoid marketing gibberish and _'crapware'_, interrupting your privacy. It has the following features.
 
@@ -51,15 +75,15 @@ You can see a video demonstrating some of its features [here](https://www.youtub
  * Sulphur Five
  */
 app:sulphur-five
-  name:Sulphur Five 5.1
+  name:Sulphur Five 5.3
   description:A secure file sharing system, allowing you to share files publicly, protected and private
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/sulphur-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/sulphur-five.zip.pgp"
   price:Free
   local-url:sulphur-five
   image:"https://phosphorusfive.files.wordpress.com/2017/09/secure-file-sharing.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@SULPHUR
-  version:decimal:5.1
+  version:decimal:5.3
     event:sulphur.version
   author-readme:@"Sulphur Five is a secure file sharing system built with your privacy in mind.
 
@@ -73,15 +97,15 @@ Sulphur Five allows you to share files privately with only yourself, protected w
  * Peeples
  */
 app:peeples
-  name:Peeples 5.1
+  name:Peeples 5.3
   description:A user management module for Phosphorus Five. Allows you to create, edit and delete users
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/peeples.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/peeples.zip.pgp"
   price:Free
   local-url:peeples
   image:"https://phosphorusfive.files.wordpress.com/2017/08/users.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@PEEPLES
-  version:decimal:5.1
+  version:decimal:5.3
     event:peeples.version
   author-readme:@"Peeples is a User Management module for Phosphorus Five, that allows you to create, edit and delete users in your installation. It comes with 5 free user tickets, and allows you to automatically purchase additional tickets, according to your needs.
 
@@ -95,15 +119,15 @@ This is the module you need if you want to create additional user accounts in yo
  * Harvester
  */
 app:harvester
-  name:Harvester 5.1
+  name:Harvester 5.2
   description:The Harvester gives you a Direct 2 Customer Marketing opportunity
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/harvester.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/harvester.zip.pgp"
   price:Free
   local-url:harvester
   image:"https://phosphorusfive.files.wordpress.com/2017/10/star.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HARVESTER
-  version:decimal:5.1
+  version:decimal:5.2
     event:harvester.version
   author-readme:@"The Harvester allows you to collect your customers email addresses, by allowing them to rate your location/product/service, and share with their friends on Twitter/Facebook. In the process, you also get opt-in permission to do direct marketing towards them, by sending them marketing emails.
 
@@ -119,15 +143,15 @@ Notice, the harvester requires a Camphora Five app called _'star-rater'_. Check 
  * Pay2Play
  */
 app:pay2play
-  name:Pay2Play 5.1
+  name:Pay2Play 5.3
   description:Pay2Play allows you to write a book, publish it, and charge for access to it
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/pay2play.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/pay2play.zip.pgp"
   price:Free
   local-url:pay2play
   image:"https://phosphorusfive.files.wordpress.com/2017/10/generic_book.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@PAY2PLAY
-  version:decimal:5.1
+  version:decimal:5.3
     event:pay2play.version
   author-readme:@"Pay2Play allows you to create content, publish it, and charge for access to it. It is useful both for learning materials and tutors, in addition to authors, simply wanting a larger cut of the pie they themselves creates.
 

@@ -267,8 +267,8 @@
     <None Include="modules\bazar\desktop.hl" />
     <None Include="modules\bazar\launch.hl" />
     <None Include="modules\bazar\README.md" />
-    <None Include="modules\bazar\bazars\apps2.hl" />
-    <None Include="modules\bazar\bazars\developer-tools2.hl" />
+    <None Include="modules\bazar\bazars\apps.hl" />
+    <None Include="modules\bazar\bazars\developer-tools.hl" />
     <None Include="modules\desktop\configuration\key-server.hl" />
     <None Include="modules\desktop\initialize\initialize-server.hl" />
     <None Include="modules\desktop\launch.hl" />
@@ -286,7 +286,7 @@
     <None Include="modules\bazar\helpers\upload-app.hl" />
     <None Include="modules\bazar\startup\bazar.version.hl" />
     <None Include="modules\desktop\startup\desktop.version.hl" />
-    <None Include="modules\bazar\bazars\core2.hl" />
+    <None Include="modules\bazar\bazars\core.hl" />
     <None Include="modules\bazar\helpers\add-bazar.hl" />
     <None Include="modules\bazar\helpers\uninstall-apps.hl" />
     <None Include="modules\desktop\uninstall.hl" />
@@ -295,9 +295,6 @@
     <None Include="favicon.ico" />
     <None Include="manifest.json" />
     <None Include="modules\desktop\startup\desktop.uninstall-app.hl" />
-    <None Include="modules\bazar\bazars\apps.hl" />
-    <None Include="modules\bazar\bazars\core.hl" />
-    <None Include="modules\bazar\bazars\developer-tools.hl" />
     <None Include="modules\bazar\startup\empty-bazar-cache.hl" />
   </ItemGroup>
   <ItemGroup />

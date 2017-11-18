@@ -20,15 +20,15 @@ name:GaiaSoul dev tools repository
  * Camphora Five.
  */
 app:camphora-five
-  name:Camphora 5.1
+  name:Camphora 5.3
   description:Create data driven CRUD apps without coding, and import/export data to and from Excel etc
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/camphora-five.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/camphora-five.zip.pgp"
   price:Free
   local-url:camphora-five
   image:"https://phosphorusfive.files.wordpress.com/2017/09/legos-hero.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@CAMPHORA
-  version:decimal:5.1
+  version:decimal:5.3
     event:camphora.version
   author-readme:@"Camphora Five allows you to rapidly create data driven web applications, without having to code or understand complex subjects.
 
@@ -46,15 +46,15 @@ Basically, Camphora Five allows you to create a data driven app, which you can u
  * Hypereval.
  */
 app:hypereval
-  name:Hypereval 1.1
+  name:Hypereval 1.3
   description:A Hyperlambda terminal module, allowing you to evaluate Hyperlambda from your browser
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/hypereval-11.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/hypereval.zip.pgp"
   price:Free
   local-url:hypereval
   image:"https://phosphorusfive.files.wordpress.com/2017/07/lambda.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HYPEREVAL
-  version:decimal:1.1
+  version:decimal:1.3
     event:hypereval.version
   author-readme:@"Hypereval allows you to evaluate Hyperlambda from your browser. It features intellisense, syntax highlighting, skinning, and tons of other features.
 
@@ -68,15 +68,15 @@ Basically, it works more or less like a _'terminal window'_ for Hyperlambda. Use
  * Hyperbuild.
  */
 app:hyperbuild
-  name:Hyperbuild 5.1
+  name:Hyperbuild 5.3
   description:Phosphorus' build system, which allows you to create your own distribution of Phosphorus Five
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/hyperbuild.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/hyperbuild.zip.pgp"
   price:Free
   local-url:hyperbuild
   image:"https://phosphorusfive.files.wordpress.com/2017/09/hyperbuild.png"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HYPERBUILD
-  version:decimal:5.1
+  version:decimal:5.3
     event:hyperbuild.version
   author-readme:@"Hyperbuild is the main build system for Phosphorus Five, and allows you to create your own distribution of the system, including cryptographically sign modules and such, with your own PGP key.
 
@@ -90,15 +90,15 @@ Basically, if you want to create your own distribution, and/or modules, this mod
  * Hello World.
  */
 app:hello-world
-  name:Hello World 5.1
+  name:Hello World 5.2
   description:The 'Hello World' app for system developers
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.1/hello-world.zip.pgp"
+  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/hello-world.zip.pgp"
   price:Free
   local-url:hello-world
   image:"https://phosphorusfive.files.wordpress.com/2017/09/hello-world.jpg"
   developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
   condition:p5.io.unroll-path.@HELLO
-  version:decimal:5.1
+  version:decimal:5.2
     event:hello.version
   author-readme:@"This is a nice app to start out with if you wish to create your own apps for Phosphorus Five.
 
