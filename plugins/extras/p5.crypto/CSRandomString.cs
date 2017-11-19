@@ -59,6 +59,12 @@ namespace phosphorus.crypto
                         // Returning raw bytes
                         e.Args.Value = buffer;
 
+                    } else if (e.Args.GetExChildValue ("hex", context, false)) {
+
+                        // Returning value as hexadecimal string.
+                        e.Args.Value = BitConverter.ToString (buffer).Replace ("-", string.Empty);
+
+
                     } else {
 
                         // Converting buffer bytes to base64 encoded string and returning to caller
