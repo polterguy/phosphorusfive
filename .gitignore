@@ -219,6 +219,7 @@ core/p5.webapp/modules/hyperbuild/**
 
 # Excluding Camphora Five
 core/p5.webapp/modules/camphora-five/**
+core/p5.webapp/modules/camphora-common/**
 
 # Excluding DSW8
 core/p5.webapp/modules/dsw8/**
