@@ -480,8 +480,10 @@ drag and drop your zip file, containing your app, unto the surface of your brows
 
 
 /*
- * Creating actual Bazar widget, wrapping all available apps from Bazar.
+ * Creating actual Bazar widget, wrapping all available apps from Bazar, making sure we also set page's
+ * title in the process.
  */
+p5.web.page.set-title:The Bazar
 create-widget
   position:0
   class:row
