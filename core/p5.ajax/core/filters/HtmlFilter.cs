@@ -91,6 +91,8 @@ namespace p5.ajax.core.filters
 
                 // Defaulting to only removing __VIEWSTATE input
                 startOffset = html.IndexOf ("__VIEWSTATE", StringComparison.InvariantCulture);
+                if (startOffset == -1)
+                    return html;
                 endOffset = html.IndexOf ('>', startOffset);
                 while (html [startOffset] != '<')
                     startOffset -= 1;
