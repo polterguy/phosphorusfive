@@ -91,7 +91,7 @@ namespace p5.web.widgets
             var position = e.Args.GetChildValue ("position", context, -1);
 
             var ctrl = new LiteralControl ();
-            ctrl.Text = e.Args.Get<string> (context);
+            ctrl.Text = e.Args.GetExValue<string> (context);
             parent.Controls.AddAt (position, ctrl);
         }
 
