@@ -57,6 +57,10 @@ namespace p5.ajax.core.filters
             TextReader reader = new StreamReader (this, ContentEncoding);
             var content = reader.ReadToEnd ();
 
+            // Checking if this is a redirect, at which point no further massage is necessary.
+            if (content.IndexOf ("<form", StringComparison.InvariantCulture) == -1)
+                return content;
+
             // Cleaning up HTML, which means removing __VIEWSTATE input and nicely formatting <head> section
             if (_removeViewState)
                 content = RemoveViewState (content);
@@ -91,8 +95,6 @@ namespace p5.ajax.core.filters
 
                 // Defaulting to only removing __VIEWSTATE input
                 startOffset = html.IndexOf ("__VIEWSTATE", StringComparison.InvariantCulture);
-                if (startOffset == -1)
-                    return html;
                 endOffset = html.IndexOf ('>', startOffset);
                 while (html [startOffset] != '<')
                     startOffset -= 1;
