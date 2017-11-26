@@ -64,7 +64,7 @@ namespace p5.csv
                     var content = "";
                     foreach (var idxInner in idxLambda.Children) {
                         var val = idxInner.Get<string> (context);
-                        if (val.Contains (",") || val.Contains ("\n")) {
+                        if (val != null && (val.Contains (",") || val.Contains ("\n"))) {
                             content += "\"" + val.Replace ("\"", "\"\"") + "\",";
                         } else {
                             content += val + ",";
