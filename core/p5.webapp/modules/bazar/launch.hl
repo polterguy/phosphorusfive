@@ -547,6 +547,7 @@ create-widget
                          * Evaluating file responsible for allowing user to uninstall apps.
                          */
                         micro.evaluate.file:/modules/bazar/helpers/uninstall-apps.hl
+
                     button
                       innerValue:@"<span class=""icon-home3""></span>"
                       style:"margin-bottom:0;"
