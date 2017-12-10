@@ -1354,7 +1354,6 @@ In addition to the above mentioned Active Event, you also have the following eve
 
 * [p5.web.request.is-ajax-callback] - Returns true if this is an Ajax request
 * [p5.web.send-javascript] - Send a piece of JavaScript to the client
-* [p5.web.remove-send-javascript] - Removes a previously JavaScript snippet, sent within the same request, using the above event
 * [p5.web.include-javascript] - Includes a piece of JavaScript snippet persistently on page
 * [p5.web.include-javascript-file] - Includes a JavaScript file persistently on the client
 * [p5.web.include-css-file] - Includes a CSS file persistently on the client
