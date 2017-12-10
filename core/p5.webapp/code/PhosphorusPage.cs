@@ -142,10 +142,10 @@ namespace p5.webapp.code
         [ActiveEvent (Name = "p5.web.page.set-title")]
         public void p5_web_page_set_title (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving new Title of page
+            // Retrieving the new Title of our page.
             var title = XUtil.Single<string> (context, e.Args);
 
-            // Checking if this is ajax request, at which point we'll have to update title using JavaScript
+            // Checking if this is ajax request, at which point we'll have to update title using JavaScript.
             if (IsAjaxRequest) {
 
                 // Passing title to client as JavaScript update, making sure we escape string
@@ -153,11 +153,11 @@ namespace p5.webapp.code
 
             } else {
 
-                // Updating Title element of page
+                // Updating Title element of page.
                 Title = title;
             }
 
-            // Storing Title in ViewState such that we can retrieve correct title later
+            // Storing Title in ViewState such that we can retrieve the correct title later.
             ViewState ["_pf_title"] = Title;
         }
 
