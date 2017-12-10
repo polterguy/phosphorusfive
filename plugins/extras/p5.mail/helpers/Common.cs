@@ -58,19 +58,13 @@ namespace p5.mail.helpers
             // Retrieving server settings, defaulting to those found in web.config, if not explicitly overridden.
             string server =
                 args.GetExChildValue<string> ("server", context) ??
-                context.RaiseEvent (
-                    ".p5.config.get",
-                    new Node (".p5.config.get", string.Format ("p5.{0}.server", serverType))) [0].Get<string> (context);
+                "localhost";
             int port = args ["port"] != null ?
                 args.GetExChildValue<int> ("port", context) :
-                context.RaiseEvent (
-                    ".p5.config.get",
-                    new Node (".p5.config.get", string.Format ("p5.{0}.port", serverType))) [0].Get<int> (context);
+                25;
             bool useSsl = args ["ssl"] != null ?
                 args.GetExChildValue<bool> ("ssl", context) :
-                context.RaiseEvent (
-                    ".p5.config.get",
-                    new Node (".p5.config.get", string.Format ("p5.{0}.use-ssl", serverType))) [0].Get<bool> (context);
+                false;
 
             // Connecting client to server
             client.Connect (
@@ -92,21 +86,9 @@ namespace p5.mail.helpers
                 username = args.GetExChildValue ("username", context, "");
                 password = args.GetExChildValue ("password", context, "");
 
-            } else {
-
-                // Retrieving default username/password from web.config
-                username = context.RaiseEvent (
-                    ".p5.config.get",
-                    new Node (".p5.config.get", string.Format ("p5.{0}.username", serverType))) [0].Get<string> (context);
-                password = context.RaiseEvent (
-                    ".p5.config.get",
-                    new Node (".p5.config.get", string.Format (".p5.{0}.password", serverType))) [0].Get<string> (context);
-            }
-
-            if (!string.IsNullOrEmpty (username)) {
-
-                // Authenticating
-                client.Authenticate (username, password);
+                // Authenticating, unless username is empty or null
+                if (!string.IsNullOrEmpty (username))
+                    client.Authenticate (username, password);
             }
         }
     }
