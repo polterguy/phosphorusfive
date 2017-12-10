@@ -23,6 +23,7 @@
 
 using System;
 using System.Web;
+using System.Threading;
 using System.Reflection;
 using System.Configuration;
 using p5.exp;
@@ -39,6 +40,7 @@ namespace p5
         public class Global : HttpApplication
         {
             static string _applicationBasePath;
+            ReaderWriterLockSlim _lock = new ReaderWriterLockSlim ();
 
             /*
              * Loads up all plugins assemblies, raises the [.p5.core.application-start] Active Event, and
@@ -46,22 +48,38 @@ namespace p5
              */
             protected void Application_Start (object sender, EventArgs e)
             {
-                // Making sure we set the base path for app for later usage.
-                GetBasePath ();
+                /*
+                 * To avoid a bug in Mono, we'll need to lock the website while we're initialising our application.
+                 * 
+                 * This is done in case there are multiple requests going towards our server as it is starting up,
+                 * at which point the requests will fail, due to a "race condition" (or something).
+                 */
+                _lock.EnterWriteLock ();
 
-                // Loading our plugin assemblies.
-                LoadPluginAssemblies ();
+                try {
 
-                // Creating our App Context
-                // Notice, the Application_Start's ApplicationContext is evaluated from within the context of "root" to have extended rights
-                // during startup.
-                var context = Loader.Instance.CreateApplicationContext (new ContextTicket ("root", "root", false));
+                    // Making sure we set the base path for app for later usage.
+                    GetBasePath ();
 
-                // Raising the application start Active Event, making sure we do it with a "root" Context Ticket
-                context.RaiseEvent (".p5.core.application-start");
+                    // Loading our plugin assemblies.
+                    LoadPluginAssemblies ();
 
-                // Executing our startup files.
-                ExecuteStartupFiles (context);
+                    // Creating our App Context
+                    // Notice, the Application_Start's ApplicationContext is evaluated from within the context of "root" to have extended rights
+                    // during startup.
+                    var context = Loader.Instance.CreateApplicationContext (new ContextTicket ("root", "root", false));
+
+                    // Raising the application start Active Event, making sure we do it with a "root" Context Ticket
+                    context.RaiseEvent (".p5.core.application-start");
+
+                    // Executing our startup files.
+                    ExecuteStartupFiles (context);
+
+                } finally {
+
+                    // Allowing requests to be handled.
+                    _lock.ExitWriteLock ();
+                }
             }
 
             /*
@@ -69,15 +87,47 @@ namespace p5
              */
             protected void Application_BeginRequest (object sender, EventArgs e)
             {
-                // Rewriting path such that "x.com/somefolder/somefile" becomes "x.com?file=somefolder/somefile"
-                // Notice, "ToLower"!
-                var url = HttpContext.Current.Request.Url.PathAndQuery;
+                /*
+                 * Checking to see if we should rewrite the URL/path to page.
+                 *
+                 * Notice, a request for some "page" is defined as something not containing a "." in its filename.
+                 * This stops our logic from rewriting paths to things such as CSS files, JavaScript files, etc.
+                 *
+                 * First we'll need to figure out our filename.
+                 */
+                var filename = HttpContext.Current.Request.RawUrl;
 
-                // Checking to see if we should rewrite the URL/path to page
-                if (url.ToLower () == "/default.aspx" || !HttpContext.Current.Request.Url.LocalPath.Contains (".")) {
+                // Stripping HTTP GET query parameters, if there are any.
+                filename = filename.Contains ("?") ? filename.Split ('?') [0] : filename;
 
-                    // Rewriting path (URL) of request
-                    RewritePath (url);
+                // Finding our last "entity", which serves as our "filename".
+                var entities = filename.Split (new char [] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                filename = entities.Length == 0 ? "" : entities [entities.Length - 1];
+
+                /*
+                 * Then we'll need to figure out if our filename does not contain a ".", at which point we need to rewrite its path.
+                 */
+                if (!filename.Contains (".")) {
+
+                    /*
+                     * This is a request for a rewritten URL, which we need to route to our Default.aspx page.
+                     * 
+                     * Making sure we don't handle any requests while application is being started.
+                     */
+                    _lock.EnterReadLock ();
+
+                    // Making sure we're able to release our read lock, regardless of what happens during our request.
+                    try {
+
+                        // Rewriting path (URL) of request to our "single handler", which handles all of our page requests,
+                        // and arguably everything in our app, except static resources though.
+                        HttpContext.Current.RewritePath ("~/Default.aspx");
+
+                    } finally {
+
+                        // Cleaning up by releasing our read lock.
+                        _lock.ExitReadLock ();
+                    }
                 }
             }
 
@@ -190,22 +240,6 @@ namespace p5
             {
                 // Loading file, converting to Lambda, for then to evaluate as p5 lambda
                 context.RaiseEvent ("eval", context.RaiseEvent ("p5.io.file.load", new Node ("", filePath)) [0]);
-            }
-
-            /*
-             * Rewrites URL/path to web page request
-             */
-            static void RewritePath (string url)
-            {
-                // If file requested is Default.aspx, we change it to simply "?file=/"
-                if (url.ToLower () == "/default.aspx")
-                    url = "/";
-
-                // Storing original path
-                HttpContext.Current.Items [".p5.webapp.original-url"] = url;
-
-                // Rewriting path
-                HttpContext.Current.RewritePath ("~/Default.aspx");
             }
 
             #endregion
