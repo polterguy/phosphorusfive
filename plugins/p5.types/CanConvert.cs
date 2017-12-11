@@ -68,5 +68,29 @@ namespace p5.types
                 }
             }
         }
+
+        /// <summary>
+        ///     Returns true if value(s) can be converted to type of [type]
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.types.get-typename")]
+        public static void p5_types_get_typename (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new ArgsRemover (e.Args)) {
+
+                // Syntax checking invocation
+                if (!(e.Args.Value is Expression))
+                    throw new ArgumentException ("[p5.types.get-typename] needs an expression as its value");
+
+                // Getting value of expression.
+                var val = e.Args.GetExValue<object> (context);
+                if (val == null)
+                    e.Args.Value = "unknown";
+                else
+                    e.Args.Value = context.RaiseEvent (".p5.hyperlambda.get-type-name." + val.GetType ().FullName).Value ?? "string";
+            }
+        }
     }
 }
