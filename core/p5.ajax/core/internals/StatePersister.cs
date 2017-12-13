@@ -38,6 +38,12 @@ namespace p5.ajax.core.internals
     /// </summary>
     class StatePersister : PageStatePersister
     {
+        /// <summary>
+        ///     Session timeout exception.
+        /// </summary>
+        class SessionTimeoutException : Exception
+        { }
+
         // Becomes the Session key for all ViewState entires for current session.
         const string SessionKey = ".p5.ajax.ViewState.Session-Key";
         readonly int _numberOfViewStateEntries;
@@ -107,24 +113,34 @@ namespace p5.ajax.core.internals
         /// </summary>
         public override void Load ()
         {
-            if (Page.Session [SessionKey] == null)
-                throw new ApplicationException ("Session timeout");
+            try {
 
-            // To avoid session clogging up with an infinite number of viewstate values, one for each initial loading of a page,
-            // we have a list of viewstates, not allowing to exceed "_numberOfViewStateEntries" per session.
-            // This means that we have a practical limit of "_numberOfViewStateEntries" open browser windows per session, or more
-            // accurately; user cannot reload the same page without invalidating viewstates older than "_numberOfViewStateEntries"
-            var viewState = Page.Session [SessionKey] as List<Tuple<Guid, string>>;
+                if (Page.Session [SessionKey] == null)
+                    throw new SessionTimeoutException ();
 
-            var entry = viewState.Find (ix => ix.Item1 == _viewStateId);
-            if (entry == null) {
-                throw new ApplicationException ("The state for this page is not longer valid, please reload your page");
+                // To avoid session clogging up with an infinite number of viewstate values, one for each initial loading of a page,
+                // we have a list of viewstates, not allowing to exceed "_numberOfViewStateEntries" per session.
+                // This means that we have a practical limit of "_numberOfViewStateEntries" open browser windows per session, or more
+                // accurately; user cannot reload the same page without invalidating viewstates older than "_numberOfViewStateEntries"
+                var viewState = Page.Session [SessionKey] as List<Tuple<Guid, string>>;
+
+                var entry = viewState.Find (ix => ix.Item1 == _viewStateId);
+                if (entry == null) {
+                    throw new SessionTimeoutException ();
+                }
+
+                var formatter = new LosFormatter ();
+                var pair = formatter.Deserialize (entry.Item2) as Pair;
+                ControlState = pair.First;
+                ViewState = pair.Second;
+
+            } catch (SessionTimeoutException) {
+
+                // Making sure we inform client about session timeout, in an adequate way.
+                Page.Response.StatusCode = 457;
+                Page.Response.StatusDescription = "Session timeout";
+                Page.Response.End ();
             }
-
-            var formatter = new LosFormatter ();
-            var pair = formatter.Deserialize (entry.Item2) as Pair;
-            ControlState = pair.First;
-            ViewState = pair.Second;
         }
 
         /// <summary>

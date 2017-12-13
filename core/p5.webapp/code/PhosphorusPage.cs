@@ -236,7 +236,7 @@ namespace p5.webapp.code
             var idxType = err.GetType ();
             while (idxType != typeof (object)) {
 
-                // Checkng if we have exceptions handlers for current type of exception.
+                // Checking if we have exceptions handlers for current type of exception.
                 var idxTypeName = idxType.Name;
                 var args = new Node ();
                 args.Add ("_message", message);

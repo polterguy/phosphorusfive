@@ -428,29 +428,29 @@
          */
         onerror: function(statusCode, statusText, responseHtml) {
 
-            // Creating a semi-transparent wrapper element, to stuff our error iframe into
-            var err = document.createElement("div");
-            err.id = "__p5_error";
-            err.className = "p5-exception";
+            // Checking if this is our "session timeout exception", which we treat specially.
+            if (statusCode == 457) {
 
-            // Creating a button, such that we can close our error window
-            var btn = document.createElement("button");
-            btn.innerHTML = "Close";
-            btn.onclick = function() {
-                var el = p5.$("__p5_error").el;
-                el.parentNode.removeChild(el);
-            };
-            btn.onkeyup = function(e) {
-                if (e.keyCode === 27) {
-                    var el = p5.$("__p5_error").el;
-                    el.parentNode.removeChild(el);
-                }
-            };
-            err.innerHTML = responseHtml;
-            err.appendChild(btn);
-            var body = document.getElementsByTagName("body")[0];
-            body.appendChild(err);
-            btn.focus();
+                // Session timeout exception.
+                var err = document.createElement("div");
+                err.id = "__p5_error";
+                err.className = "p5-exception micro-modal";
+
+                err.innerHTML = "<div class='micro-modal-content'><h1>Session timeout</h1><p>You can either reload your page, at which point you'll loose any form data you have supplied. Or close this window, copy your form data, and manually reload your page.</p><div class='right'><div class='strip' style='display:inline-block;'><button style='margin-bottom:0;' onclick='window.location.replace(window.location.href);'>Reload</button><button style='margin-bottom:0;' onclick='var el=p5.$(\"__p5_error\").el;el.parentElement.removeChild(el);'>Close</button></div></div></div>";
+                var body = document.getElementsByTagName("body")[0];
+                body.appendChild(err);
+
+            } else {
+
+                // Creating our error window.
+                var err = document.createElement("div");
+                err.id = "__p5_error";
+                err.className = "p5-exception micro-modal";
+
+                err.innerHTML = "<div class='micro-modal-content'>" + responseHtml + "<div class='right'><div class='strip' style='display:inline-block;'><button style='margin-bottom:0;' onclick='window.location.replace(window.location.href);'>Reload</button><button style='margin-bottom:0;' onclick='var el=p5.$(\"__p5_error\").el;el.parentElement.removeChild(el);'>Close</button></div></div></div>";
+                var body = document.getElementsByTagName("body")[0];
+                body.appendChild(err);
+            }
         },
 
 
