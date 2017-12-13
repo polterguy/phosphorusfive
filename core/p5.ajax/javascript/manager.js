@@ -447,7 +447,7 @@
                 err.id = "__p5_error";
                 err.className = "p5-exception micro-modal";
 
-                err.innerHTML = "<div class='micro-modal-content'>" + responseHtml + "<div class='right'><div class='strip' style='display:inline-block;'><button style='margin-bottom:0;' onclick='window.location.replace(window.location.href);'>Reload</button><button style='margin-bottom:0;' onclick='var el=p5.$(\"__p5_error\").el;el.parentElement.removeChild(el);'>Close</button></div></div></div>";
+                err.innerHTML = "<div class='micro-modal-content'>" + responseHtml + "<div class='right'><div class='strip' style='display:inline-block;'><button style='margin-bottom:0;' onclick='var el=p5.$(\"__p5_error\").el;el.parentElement.removeChild(el);'>Close</button></div></div></div>";
                 var body = document.getElementsByTagName("body")[0];
                 body.appendChild(err);
             }
