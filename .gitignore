@@ -236,8 +236,8 @@ core/p5.webapp/modules/hypereval/**
 # Excluding ‘auto-deployment’
 core/p5.webapp/modules/auto-deployment/**
 
-# Excluding ‘harvester’
-core/p5.webapp/modules/harvester/**
+# Excluding ‘hyper-ide’
+core/p5.webapp/modules/hyper-ide/**
 
 # Excluding ‘Magic Menu’
 core/p5.webapp/modules/magic-menu/**
