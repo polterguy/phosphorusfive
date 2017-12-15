@@ -34,6 +34,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Security" />
+    <Reference Include="AjaxMin">
+      <HintPath>..\..\packages\AjaxMin.5.14.5506.26202\lib\net40\AjaxMin.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -62,10 +65,12 @@
     <Compile Include="widgets\BaseWidget.cs" />
     <Compile Include="widgets\WidgetDeleter.cs" />
     <Compile Include="request\PostParameters.cs" />
+    <Compile Include="misc\Minify.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -92,5 +97,8 @@
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
       <Name>p5.exp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="misc\" />
   </ItemGroup>
 </Project>
