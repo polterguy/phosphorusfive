@@ -68,7 +68,7 @@ namespace p5.web.ui.misc
                 // Turning off ALL comments.
                 var options = new Microsoft.Ajax.Utilities.CssSettings ();
                 options.CommentMode = Microsoft.Ajax.Utilities.CssComment.None;
-                e.Args.Value = minifier.MinifyStyleSheet (css);
+                e.Args.Value = minifier.MinifyStyleSheet (css, options);
             }
         }
     }
