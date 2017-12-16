@@ -225,11 +225,13 @@ for-each:x:/@bazar.bazars.get-apps/*
     /*
      * Adding app to [create-widget] invocation below, to allow user to install it.
      */
-    eval-x:x:/+/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|(/onclick|/.onclick)/*(/_app-name|/_app-url|/_app-author-description|/_local-url|/_app-version|/_app-price|/_condition-event))
+    eval-x:x:/+2/*/*/container/**(/literal/*/class(/=bazar-app-name|/=bazar-app-description|/=bazar-app-price)/./*/innerValue|(/onclick|/.onclick)/*(/_app-name|/_app-url|/_app-author-description|/_local-url|/_app-version|/_app-price|/_condition-event))
+    eval-x:x:/+/*/*/container
     add:x:/../*/create-widget/*/widgets/*/div/*/widgets/*/div/*/widgets/={0}
       :x:/@_where?value
       src
-        container
+        container:get-app-{0}
+          :x:/..for-each/*/p5.html.html-encode/[5,6]?value
           element:a
           href:#
           role:button
@@ -594,3 +596,15 @@ create-widget
           class:bazar-wrapper
           widgets:apps
 
+
+
+
+
+/*
+ * Checking if we have a query parameter, specifying a specific app.
+ */
+p5.web.query.get:app
+if:x:/@p5.web.query.get/*?value
+  p5.web.widgets.ajax-events.raise:get-app-{0}
+    :x:/@p5.web.query.get/*?value
+    onclick
