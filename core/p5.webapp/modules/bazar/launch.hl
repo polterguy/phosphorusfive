@@ -601,10 +601,32 @@ create-widget
 
 
 /*
- * Checking if we have a query parameter, specifying a specific app.
+ * Checking if we have a query parameter, specifying a specific app for installation.
  */
 p5.web.query.get:app
 if:x:/@p5.web.query.get/*?value
+
+  /*
+   * Checking that app actually exists in available app list.
+   */
+  if
+    fetch:x:/0/0?value
+      widget-exists:get-app-{0}
+        :x:/@p5.web.query.get/*?value
+    not
+
+    /*
+     * Informing user that app is already installed, and returning early.
+     */
+    micro.windows.info:Requested app is already installed
+      class:micro-windows-info success
+    return
+
+  /*
+   * App is not installed, it exists, and it was requested by URL query parameter.
+   *
+   * Hence, displaying its "purchase" information.
+   */
   p5.web.widgets.ajax-events.raise:get-app-{0}
     :x:/@p5.web.query.get/*?value
     onclick
