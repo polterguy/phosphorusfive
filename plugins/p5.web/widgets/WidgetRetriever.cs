@@ -131,6 +131,9 @@ namespace p5.web.widgets
                     // Retrieving start widget from where to start searching for widgets matching criteria.
                     var startControl = FindControl<Widget> (idxStartWidgetId, Manager.AjaxPage);
 
+                    if (startControl == null)
+                        continue;
+
                     // Retrieving all widgets having properties matching whatever criteria are supplied.
                     foreach (var idxWidget in FindWidgetsMatchingCriteria (e.Args, startControl, context, e.Name.Contains ("-like"), false)) {
 
