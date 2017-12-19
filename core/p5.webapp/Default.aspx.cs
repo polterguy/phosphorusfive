@@ -17,7 +17,7 @@
  * along with Phosphorus Five.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * If you cannot for some reasons use the GPL license, Phosphorus
- * Five is also commercially available under Quid Pro Quo terms. Check 
+ * Five is also commercially available under Quid Pro Quo terms. Check
  * out our website at http://gaiasoul.com for more details.
  */
 
