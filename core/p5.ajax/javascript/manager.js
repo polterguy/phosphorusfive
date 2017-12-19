@@ -155,7 +155,13 @@
 
         checked: function (v) {
 
-            this.el.checked = true;
+            this.el.checked = v === false || v === "false" || v === "False" ? false : true;
+        },
+
+
+        disabled: function (v) {
+
+            this.el.disabled = v === false || v === "false" || v === "False" ? false : true;
         },
 
 
@@ -191,6 +197,11 @@
             } else {
                 this.el.innerHTML = '';
             }
+        },
+
+
+        _p5_del_disabled: function() {
+            this.el.disabled = false;
         },
 
 
