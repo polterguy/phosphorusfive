@@ -1,6 +1,3 @@
-[submodule "core/p5.webapp/modules/camphora-five"]
-	path = core/p5.webapp/modules/camphora-five
-	url = https://github.com/polterguy/camphora-five
 [submodule "core/p5.webapp/modules/hyper-ide"]
 	path = core/p5.webapp/modules/hyper-ide
 	url = https://github.com/polterguy/hyper-ide
@@ -28,3 +25,6 @@
 [submodule "core/p5.webapp/modules/sulphur-five"]
 	path = core/p5.webapp/modules/sulphur-five
 	url = https://github.com/polterguy/sulphur-five
+[submodule "core/p5.webapp/modules/camphora-five"]
+	path = core/p5.webapp/modules/camphora-five
+	url = https://github.com/polterguy/camphora-five
