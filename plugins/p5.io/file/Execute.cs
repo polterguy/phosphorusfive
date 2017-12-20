@@ -60,8 +60,14 @@ namespace p5.io.file
                     // Retrieving actual system path.
                     var file = Common.GetSystemPath (context, idxFile);
 
+                    // Retrieving current folder, defaulting to folder where file being executed is.
+                    var workingFolder = rootFolder + e.Args.GetExChildValue (
+                        "working-folder", 
+                        context, 
+                        file.Substring (0, file.LastIndexOf ("/", StringComparison.InvariantCulture) + 1));
+
                     // Executing file, and making sure we return whatever result it creates.
-                    e.Args.Add (idxFile, ExcuteScript (rootFolder + file, e.Args, context, waitForExit)); 
+                    e.Args.Add (idxFile, ExcuteScript (rootFolder + file, e.Args, context, waitForExit, workingFolder)); 
                 }
             }
         }
@@ -69,7 +75,7 @@ namespace p5.io.file
         /*
          * Helper for above.
          */
-        private static string ExcuteScript (string file, Node args, ApplicationContext context, bool waitForExit)
+        private static string ExcuteScript (string file, Node args, ApplicationContext context, bool waitForExit, string workingFolder)
         {
             // Creating process info pointing to bash, making sure we capture results.
             ProcessStartInfo procInfo = new ProcessStartInfo ();
@@ -91,7 +97,7 @@ namespace p5.io.file
 
             procInfo.ErrorDialog = false;
             procInfo.UseShellExecute = false;
-            procInfo.WorkingDirectory = file.Substring (0, file.LastIndexOf ("/", StringComparison.InvariantCulture) + 1);
+            procInfo.WorkingDirectory = workingFolder;
             procInfo.RedirectStandardOutput = true;
             procInfo.RedirectStandardError = true;
             procInfo.CreateNoWindow = true;
