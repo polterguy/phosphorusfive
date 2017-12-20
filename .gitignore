@@ -196,51 +196,8 @@ core/p5.webapp/auth.hl
 # Excluding System42
 core/p5.webapp/modules/system42/**
 
-# Excluding Micro
-core/p5.webapp/modules/micro/**
-
-# Excluding Bazar cache files
-core/p5.webapp/modules/bazar/cache/**
-
-# Excluding Sephia Five
-core/p5.webapp/modules/sephia-five/**
-
-# Excluding Peeples
-core/p5.webapp/modules/peeples/**
-
-# Excluding Pay2play
-core/p5.webapp/modules/pay2play/**
-
-# Excluding Sulphur Five
-core/p5.webapp/modules/sulphur-five/**
-
-# Excluding Hyperbuild
-core/p5.webapp/modules/hyperbuild/**
-
-# Excluding Camphora Five
-core/p5.webapp/modules/camphora-five/**
-core/p5.webapp/modules/camphora-common/**
-
 # Excluding DSW8
 core/p5.webapp/modules/dsw8/**
-
-# Excluding license
-core/p5.webapp/modules/license/**
-
-# Excluding ‘hello-world’
-core/p5.webapp/modules/hello-world/**
-
-# Excluding ‘Hypereval’
-core/p5.webapp/modules/hypereval/**
-
-# Excluding ‘auto-deployment’
-core/p5.webapp/modules/auto-deployment/**
-
-# Excluding ‘hyper-ide’
-core/p5.webapp/modules/hyper-ide/**
-
-# Excluding ‘Magic Menu’
-core/p5.webapp/modules/magic-menu/**
 
 # Excluding users files
 core/p5.webapp/users/**
