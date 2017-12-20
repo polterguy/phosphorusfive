@@ -55,6 +55,7 @@
     <Compile Include="file\Exist.cs" />
     <Compile Include="folder\Exists.cs" />
     <Compile Include="file\file-state\LastWriteTime.cs" />
+    <Compile Include="file\Execute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
