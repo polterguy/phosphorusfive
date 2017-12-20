@@ -22,3 +22,9 @@
 [submodule "core/p5.webapp/modules/camphora-five"]
 	path = core/p5.webapp/modules/camphora-five
 	url = https://github.com/polterguy/camphora-five
+[submodule "core/p5.webapp/modules/sephia-five"]
+	path = core/p5.webapp/modules/sephia-five
+	url = https://github.com/polterguy/sephia-five
+[submodule "core/p5.webapp/modules/sulphur-five"]
+	path = core/p5.webapp/modules/sulphur-five
+	url = https://github.com/polterguy/sulphur-five
