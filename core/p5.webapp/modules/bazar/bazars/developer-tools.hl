@@ -1,4 +1,3 @@
-
 /*
  * List of available Bazar apps in developer tools Bazar declaration file.
  */
@@ -81,27 +80,3 @@ app:hyperbuild
   author-readme:@"Hyperbuild is the main build system for Phosphorus Five, and allows you to create your own distribution of the system, including cryptographically sign modules and such, with your own PGP key.
 
 Basically, if you want to create your own distribution, and/or modules, this module significantly simplifies that process, by automatically packaging any modules, and creating a distribution of your system's current state."
-
-
-
-
-
-/*
- * Hello World.
- */
-app:hello-world
-  name:Hello World 5.2
-  description:The 'Hello World' app for system developers
-  url:"https://github.com/polterguy/phosphorusfive/releases/download/v5.7/hello-world.zip.pgp"
-  price:Free
-  local-url:hello-world
-  image:"https://phosphorusfive.files.wordpress.com/2017/09/hello-world.jpg"
-  developer-key:5E11AEF421CDB0A7A9A5C6B4AED9D04F43BE2AAD
-  condition:p5.io.unroll-path.@HELLO
-  version:decimal:5.2
-    event:hello.version
-  author-readme:@"This is a nice app to start out with if you wish to create your own apps for Phosphorus Five.
-
-It creates a nice starting ground, and is a _'wire frame'_, or a _'template'_ for creating your own apps.
-
-Install it, check out its code, and modify it to accommodate for your own needs. After you've created your own app, you can use _'Hyperbuild'_ to create your own distribution, containing your app."
