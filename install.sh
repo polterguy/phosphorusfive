@@ -5,8 +5,11 @@ clear
 # First giving user some information about what this script actually does.
 
 echo "================================================================================"
-echo "Automatic installation script for Phosphorus Five"
+echo "Automatic installation script for Phosphorus Five."
 echo "Please let it finish, without interruptions, which might take some time."
+echo "Notice, Phosphorus Five is licensed as GPLv3."
+echo ""
+echo "This script will also update, upgrade, and further secure your system."
 echo ""
 echo "The software is distributed in the hope that it will be useful,"
 echo "but WITHOUT ANY WARRANTY; without even the implied warranty of"
@@ -15,66 +18,71 @@ echo "GNU General Public License for more details."
 echo "================================================================================"
 echo ""
 
-# Making sure we update and upgrade our server
-apt-get update
-apt-get upgrade
-apt-get dist-upgrade
-
-# Download P5, and showing SHA1 to user, asking if he wants to proceed.
-wget https://github.com/polterguy/phosphorusfive/releases/download/v5.7/binaries.zip
-sha1sum binaries.zip
-
-# Then asking user to confirm installation.
-read -p "SHA1 of downloaded P5 zip file can be found above, continue? [y/n] " yn
+# Asking user if he wants to continue.
+read -p "Do you wish to proceed? [y/n] " yn
 if [[ ! $yn =~ ^[Yy]$ ]]; then
   exit
 fi
 
-# Installing MySQL server.
-# Notice, by default MySQL is setup without networking, hence unless user explicitly opens it
-# up later, this should be perfectly safe.
-debconf-set-selections <<< 'mysql-server mysql-server/root_password password SomeRandomPassword'
-debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password SomeRandomPassword'
-apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip gnupg2
+# Making sure we update and upgrade our server.
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
 
-# Disabling mod_mono_auto to make sure we create an "advanced" configuration for mod_mono
-a2dismod mod_mono_auto
+# Checking if there exists a binary release file from before, and if not, 
+# downloading the latest release.
+if [ -f /binaries.zip ]
+then
+    wget https://github.com/polterguy/phosphorusfive/releases/download/v5.7/binaries.zip
+fi
+
+# Installing MySQL server.
+# Notice, by default MySQL is setup without networking, hence unless user explicitly opens it.
+# up later, this should be perfectly safe.
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password SomeRandomPassword'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password SomeRandomPassword'
+sudo apt-get --assume-yes install apache2 mysql-server libapache2-mod-mono unzip gnupg2
+
+# Disabling mod_mono_auto to make sure we create an "advanced" configuration for mod_mono.
+sudo a2dismod mod_mono_auto
 
 # Removing any old files.
 # Notice, we don't remove "/common" and "/users" here.
 # This allows for a nice upgrading process (hopefully) without loosing old data in your system.
-rm /var/www/html/index.html
-rm /var/www/html/Default.aspx
-rm /var/www/html/Global.asax
-rm /var/www/html/README.md
-rm /var/www/html/startup.hl
-rm -r -f /var/www/html/bin
-rm -r -f /var/www/html/desktop
-rm -r -f /var/www/html/modules
+sudo rm /var/www/html/index.html
+sudo rm /var/www/html/Default.aspx
+sudo rm /var/www/html/Global.asax
+sudo rm /var/www/html/README.md
+sudo rm /var/www/html/startup.hl
+sudo rm -r -f /var/www/html/bin
+sudo rm -r -f /var/www/html/modules/desktop
+sudo rm -r -f /var/www/html/modules/bazar
+sudo rm -r -f /var/www/html/modules/micro
 
 # Creating a temporary folder to hold output.
 mkdir p5
 
-# Unzipping P5, in addition to moving it into main www/html folder.
+# Unzipping P5, in addition to moving it into main www/html folder, and making sure
+# the Apache user has full control over folders.
 unzip binaries.zip -d p5
-cp -R p5/* /var/www/html
+sudo cp -R p5/* /var/www/html
 
 # Removing both zip file, and temp folder created during above process.
 rm -f binaries.zip
 rm -f -r p5
 
 # Editing web.config file, making sure we get the password correctly.
-sed -i 's/User Id=root;/User Id=root;password=SomeRandomPassword;/g' /var/www/html/web.config
+sudo sed -i 's/User Id=root;/User Id=root;password=SomeRandomPassword;/g' /var/www/html/web.config
 
 # Making GnuPG folder for Apache process.
-    
+sudo mkdir /var/www/.gnupg    
 
 # Giving ownership (recursively) to Apache user for entire folder.
 # Necessary since P5 will create and modify its own file structure.
-chown -R www-data:www-data /var/www
+sudo chown -R www-data:www-data /var/www
 
 # Configuring mod_mono app
-echo "
+sudo echo "
 <apps>
         <web-application>
                 <name>P5</name>
@@ -86,11 +94,19 @@ echo "
 " > /etc/mono-server4/p5.webapp
 
 # Configuring apache to accept requests for ASP.NET, and route them into Mono
-echo "
+sudo echo "
 
 
+
+
+
+#############################################################
+#
 # Phosphorus Five configurations
-# These parts was added as a part of the install.sh script while installing Phosphorus Five.
+# These parts was added as a part of the install.sh script 
+# while installing Phosphorus Five.
+#
+#############################################################
 
 MonoAutoApplication disabled
 AddHandler mono .aspx .axd .config
@@ -98,12 +114,13 @@ MonoApplications \"/:/var/www/html\"
 DirectoryIndex Default.aspx
 
 # Turning OFF all options, and making sure they're impossible to override using .htaccess files, to be absolutely certain.
+# These are simple security measures that further tights down our web app.
 <Location />
     Options None
     AllowOverride None
 </Location>
 
-# Making sure Mono handles all requests that doesn't have an extension, to make our URL rewriting logic work.
+# Making sure Mono handles all requests that doesn't contain a dot (.), to make our URL rewriting logic work.
 <Location ~ \"^[^\.]*$\">
     SetHandler mono
 </Location>
@@ -114,14 +131,19 @@ DirectoryIndex Default.aspx
     Deny from all
 </Files>
 
+# Notice, these next steps will make sure our users and common folders have
+# the right type of protection for direct file access.
+# Basically, anything in 'public' whatever is available through a direct link,
+# everything else will never be served
+
 # Making user's private documents just that.
-<Location ~ \"/users/[^/]/documents/private/\">
+<Location ~ \"/users/[^/]+/documents/private/\">
     Order allow,deny
     Deny from all
 </Location>
 
 # Making all temp files for users inaccessible.
-<Location ~ \"/users/[^/]/temp/\">
+<Location ~ \"/users/[^/]+/temp/\">
     Order allow,deny
     Deny from all
 </Location>
@@ -141,12 +163,6 @@ DirectoryIndex Default.aspx
 
 # Phosphorus Five, further tightening server, to make it more secure.
 
-# Disabling SSL2.0 and 3.0
-SSLProtocol -ALL +TLSv1
-
-# Disabling all handshakes on lower cipher suites
-SSLCipherSuite ALL:!aNULL:!ADH:!eNULL:!LOW:!EXP:RC4+RSA:+HIGH:+MEDIUM
-
 # Turning OFF tracing
 TraceEnable off
 
@@ -156,42 +172,24 @@ ServerTokens Prod
 
 # Turning OFF ETags, to avoid information leaking.
 FileETag None
-
-# Making sure server never returns a cookie which is not secure and HTTP only.
-Header edit Set-Cookie ^(.*)$ \$1;HttpOnly;Secure
-
-# Turning OFF mod_security for WebResource.axd
-<Location \"/WebResource.axd\">
-    <IfModule security2_module>
-        SecRuleEngine Off
-    </IfModule>
-</Location>
-
-# Turning OFF mod_security for folders where we need more slack.
-<Location ~ \"/[^/]+/settings\">
-    <IfModule security2_module>
-        SecRuleEngine Off
-    </IfModule>
-</Location>
-<Location \"/hypereval\">
-    <IfModule security2_module>
-        SecRuleEngine Off
-    </IfModule>
-</Location>
 " >> /etc/apache2/apache2.conf
 
-# Enabling headers modules in apache
-a2enmod headers
+# Installing SSL keys, if user wants to.
 
-# Installing SSL keys
-apt-get install software-properties-common
-add-apt-repository ppa:certbot/certbot
-apt-get update
-apt-get install python-certbot-apache
-sudo certbot --apache
+# Then asking user to confirm installation.
+echo "Do you wish to install an SSL keypair on your server?"
+echo "This step requires a pre-configured domain and DNS record."
+read -p "[y/n] " yn
+if [[ $yn =~ ^[Yy]$ ]]; then
+  sudo apt-get install software-properties-common
+  sudo add-apt-repository ppa:certbot/certbot
+  sudo apt-get update
+  sudo apt-get install python-certbot-apache
+  sudo certbot --apache
+fi
 
-# Restarting Apache
-service apache2 restart
+# Restarting Apache.
+sudo service apache2 restart
 
-# Informing user that his MySQL password can be found in web.config
+# Informing user that his MySQL password can be found in web.config.
 echo "Your MySQL password can be found in the file '/var/www/html/web.config'"
