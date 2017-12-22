@@ -171,11 +171,12 @@ namespace p5.io.authorization.helpers
         
         /*
          * Verifies non-root user has access to reading file.
+         * The default is "true".
          */
         private static bool UserHasReadAccessToFile (ApplicationContext context, string filename)
         {
             // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder.
-            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) != 0)
+            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                 return false;
 
             // Verify all database files are safe.
@@ -196,18 +197,24 @@ namespace p5.io.authorization.helpers
         }
         
         /*
-         * Verifies non-root user has access to reading file.
+         * Verifies non-root user has access to writing file.
+         * The default is "false"
          */
         private static bool UserHasWriteAccessToFile (ApplicationContext context, string filename)
         {
             // Checking if this is user's file.
-            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) == 0)
+            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) == 0)
                 return true;
 
-            // Special check for role "developer".
-            // TODO: Create some sort of web.config mapping between roles and folders here, or something.
-            if (context.Ticket.Role == "developer" && filename.StartsWith ("/modules/"))
-                return true;
+            // Checking access right.
+            var access = new Node ();
+            context.RaiseEvent ("p5.auth.access.get", access);
+            if (access [context.Ticket.Role] != null) {
+                foreach (var idx in access [context.Ticket.Role].Children) {
+                    if (idx.Name == "write-folder" && filename.StartsWithEx (idx.GetExValue (context, "")))
+                        return true;
+                }
+            }
 
             // Failure.
             return false;
@@ -219,7 +226,7 @@ namespace p5.io.authorization.helpers
         private static bool UserHasReadAccessToFolder (ApplicationContext context, string foldername)
         {
             // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder.
-            if (foldername.StartsWithEx ("/users/") && foldername.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) != 0)
+            if (foldername.StartsWithEx ("/users/") && foldername.Length > "/users/".Length && foldername.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                 return false;
 
             // Verify all database files are safe.
@@ -234,16 +241,22 @@ namespace p5.io.authorization.helpers
         /*
          * Verifies non-root user has access to modify folder.
          */
-        private static bool UserHasWriteAccessToFolder (ApplicationContext context, string filename)
+        private static bool UserHasWriteAccessToFolder (ApplicationContext context, string foldername)
         {
             // Checking if this is user's file.
-            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) == 0)
+            if (foldername.StartsWithEx ("/users/") && foldername.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) == 0)
                 return true;
-
-            // Special check for role "developer".
-            // TODO: Create some sort of web.config mapping between roles and folders here, or something.
-            if (context.Ticket.Role == "developer" && filename.StartsWithEx ("/modules/"))
-                return true;
+            
+            // Checking access right.
+            var access = new Node ();
+            context.RaiseEvent ("p5.auth.access.get", access);
+            if (access [context.Ticket.Role] != null) {
+                foreach (var idx in access [context.Ticket.Role].Children) {
+                    var tmp = idx.GetExValue (context, "");
+                    if (idx.Name == "write-folder" && foldername.StartsWithEx (tmp) && foldername.Length > tmp.Length)
+                        return true;
+                }
+            }
 
             // Failure.
             return false;

@@ -40,10 +40,23 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.roles.list")]
         public static void p5_auth_roles_list (ApplicationContext context, ActiveEventArgs e)
         {
-            if (context.Ticket.IsDefault || context.Ticket.Role != "root")
+            if (context.Ticket.Role != "root")
                 throw new LambdaSecurityException ("Non-root user tried to list all roles in system", e.Args, context);
             using (new ArgsRemover (e.Args, true)) {
                 AuthenticationHelper.GetRoles (context, e.Args);
+            }
+        }
+
+        /// <summary>
+        ///     Returns all access rights in system.
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.auth.access.get")]
+        public static void p5_auth_access_get (ApplicationContext context, ActiveEventArgs e)
+        {
+            using (new ArgsRemover (e.Args, true)) {
+                AuthenticationHelper.GetAccess (context, e.Args);
             }
         }
     }

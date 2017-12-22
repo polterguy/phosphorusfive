@@ -491,6 +491,26 @@ namespace p5.auth.helpers
                 args.FindOrInsert (role).Value = args [role].Get (context, 0) + 1;
             }
         }
+        
+        /*
+         * Returns all access objects for system.
+         */
+        public static void GetAccess (ApplicationContext context, Node args)
+        {
+            // Getting password file in Node format, such that we can traverse file for all roles
+            Node pwdFile = AuthFile.GetAuthFile (context);
+
+            // Checking if we have any custom access rights in system.
+            if (pwdFile ["access"] == null)
+                return;
+
+            // Looping through each user object in password file, retrieving all roles
+            foreach (var idxUserNode in pwdFile ["access"].Children) {
+
+                // Adding currently iterated access to return args,
+                args.Add (idxUserNode.Clone ());
+            }
+        }
 
         /*
          * Changes password of "root" account, but only if existing root account's password 
