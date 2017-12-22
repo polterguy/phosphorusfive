@@ -36,56 +36,22 @@ namespace p5.io.authorization.helpers
         /*
          * Verifies user is authorized reading from the specified file.
          */
-        internal static void AuthorizeReadFile (
-            ApplicationContext context,
-            string filename,
-            Node stack)
+        internal static void AuthorizeReadFile (ApplicationContext context, string filename, Node stack)
         {
             // Verifies filename is valid.
-            if (string.IsNullOrEmpty (filename) || !filename.StartsWithEx ("/") || filename.Contains ("\\") || filename.Contains ("//") || filename.Contains (".."))
+            if (!VerifySaneFileName (filename))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid file path", filename),
                     stack,
                     context);
-
-            // Making sure web.config file is safe!
+            
+            // Checking role of user, and invoking relevant check.
             if (context.Ticket.Role != "root") {
-                if (Path.GetFileName (filename.ToLower ()) == "web.config")
+                
+                // Making sure we do a lowers comparison.
+                if (!UserHasReadAccessToFile (context, filename.ToLowerInvariant ()))
                     throw new LambdaException (
-                        "Sorry, your web.config file is off limits!",
-                        stack,
-                        context);
-            }
-
-            // Verifying auth file is safe.
-            if (filename.ToLower () == GetAuthFile (context).ToLower ())
-                throw new LambdaSecurityException (
-                    string.Format ("User '{0}' tried to access auth file", context.Ticket.Username),
-                    stack,
-                    context);
-
-            // Extra security for non-root users.
-            if (context.Ticket.Role != "root") {
-
-                // Checking if this is "common folder", at which point we return immediately,
-                // since all users have access to this folder.
-                if (filename.ToLower ().StartsWithEx ("/common/"))
-                    return; // Legal!
-
-                // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder.
-                if (filename.ToLower ().StartsWithEx ("/users/") &&
-                    filename.ToLower ().IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
-                    throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to read file '{1}'", context.Ticket.Username, filename),
-                        stack,
-                        context);
-
-                // Verify all database files are safe.
-                if (filename.ToLower ().StartsWithEx (context.RaiseEvent (
-                    ".p5.config.get",
-                    new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/")))
-                    throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to read from database file '{1}'", context.Ticket.Username, filename),
+                        string.Format ("File '{0}' is off limits", filename),
                         stack,
                         context);
             }
@@ -94,152 +60,194 @@ namespace p5.io.authorization.helpers
         /*
          * Verifies user is authorized modifying the specified file.
          */
-        internal static void AuthorizeModifyFile (
-            ApplicationContext context,
-            string filename,
-            Node stack)
+        internal static void AuthorizeModifyFile (ApplicationContext context, string filename, Node stack)
         {
             // Verifies filename is valid.
-            if (string.IsNullOrEmpty (filename) || !filename.StartsWithEx ("/") || filename.Contains ("\\") || filename.Contains ("//") || filename.Contains (".."))
+            if (!VerifySaneFileName (filename))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid file path", filename),
                     stack,
                     context);
 
-            // Making sure web.config file is safe!
+            // Checking role of user, and invoking relevant check.
             if (context.Ticket.Role != "root") {
-                if (Path.GetFileName (filename.ToLower ()) == "web.config")
+
+                // Making sure we do a lowers comparison.
+                if (!UserHasWriteAccessToFile (context, filename.ToLowerInvariant ()))
                     throw new LambdaException (
-                        "Sorry, your web.config file is off limits!",
-                        stack,
-                        context);
-            }
-
-            // Extra security for non-root users.
-            if (context.Ticket.Role != "root") {
-
-                // Verifying suffix of file is a type of file that user is allowed to save.
-                switch (Path.GetExtension (filename).ToLower ()) {
-
-                    // Blacklisted ...!
-                    case ".config":
-                        throw new LambdaSecurityException (
-                            string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename),
-                            stack,
-                            context);
-                }
-
-                // Checking if this is "common folder", at which point we return immediately,
-                // since all users have access to this folder.
-                if (filename.ToLower ().StartsWithEx ("/common/"))
-                    return; // Legal
-
-                // Verifying file is not underneath ANOTHER user's folder, which is not legal!
-                if (filename.ToLower ().StartsWithEx ("/users/") &&
-                    filename.ToLower ().IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username.ToLower ())) != 0)
-                    throw new LambdaSecurityException (
-                        string.Format ("Root user '{0}' tried to write to file '{1}'", context.Ticket.Username, filename),
-                        stack,
-                        context);
-
-                // Verifying "auth file" is safe.
-                if (filename.ToLower () == GetAuthFile (context).ToLower ())
-                    throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to access 'auth' file", context.Ticket.Username),
-                        stack,
-                        context);
-
-                // Verifies only root account can write to anything but "user files".
-                if (!filename.ToLower ().StartsWithEx ("/users/"))
-                    throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename),
+                        string.Format ("File '{0}' is off limits", filename),
                         stack,
                         context);
             }
         }
-
+        
         /*
          * Verifies user is authorized reading from the specified folder.
          */
-        internal static void AuthorizeReadFolder (
-            ApplicationContext context,
-            string foldername,
-            Node stack)
+        internal static void AuthorizeReadFolder (ApplicationContext context, string foldername, Node stack)
         {
             // Verifies foldername is a valid foldername.
-            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWithEx ("/") || !foldername.EndsWithEx ("/") || foldername.Contains ("\\") || foldername.Contains ("//") || foldername.Contains (".."))
+            if (!VerifySaneFolderName (foldername))
                 throw new LambdaException (
                     string.Format ("Path '{0}' was not a valid folder path", foldername),
                     stack,
                     context);
 
-            // Verifies nobody can read from database folder.
-            if (foldername.ToLower ().StartsWithEx (context.RaiseEvent (
-                ".p5.config.get",
-                new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/")))
-                throw new LambdaSecurityException (
-                    string.Format ("User '{0}' tried to read from database folder '{1}'", context.Ticket.Username, foldername),
-                    stack,
-                    context);
-
-            // Extra security for non-root users.
+            // Checking role of user, and invoking relevant check.
             if (context.Ticket.Role != "root") {
 
-                // Checking if this is "common folder", at which point we return immediately,
-                // since all users have access to this folder.
-                if (foldername.ToLower ().StartsWithEx ("/common/"))
-                    return; // Legal
-
-                // Verifies file is underneath authorized user's folder, if it is underneath "/users/" folders.
-                if (foldername.ToLower ().StartsWithEx ("/users/") &&
-                    foldername.ToLower () != "/users/" &&
-                    foldername.ToLower ().IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
-                    throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to read from another user's folder; '{1}'", context.Ticket.Username, foldername),
+                // Making sure we do a lowers comparison.
+                if (!UserHasReadAccessToFolder (context, foldername.ToLowerInvariant ()))
+                    throw new LambdaException (
+                        string.Format ("Folder '{0}' is off limits", foldername),
                         stack,
                         context);
             }
+
         }
 
         /*
          * Verifies user is authorized writing to the specified folder
          */
-        internal static void AuthorizeModifyFolder (
-            ApplicationContext context,
-            string foldername,
-            Node stack)
+        internal static void AuthorizeModifyFolder (ApplicationContext context, string foldername, Node stack)
         {
             // Verifies foldername is valid.
-            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWithEx ("/") || !foldername.EndsWithEx ("/") || foldername.Contains ("\\") || foldername.Contains ("//") || foldername.Contains (".."))
+            if (!VerifySaneFolderName (foldername))
                 throw new LambdaException (
-                    string.Format ("Path '{0}' was not a valid folder path", foldername),
+                    string.Format ("Folder '{0}' was not a valid folder path", foldername),
                     stack,
                     context);
 
-            // Verifies nobody can write to database folder.
-            if (foldername.ToLower ().StartsWithEx (context.RaiseEvent (
-                ".p5.config.get",
-                new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/")))
-                throw new LambdaSecurityException (
-                    string.Format ("User '{0}' tried to write to database folder '{1}'", context.Ticket.Username, foldername),
-                    stack,
-                    context);
-
-            // Checking if user is root (root is authorized to do almost everything!)
+            // Checking role of user, and invoking relevant check.
             if (context.Ticket.Role != "root") {
 
-                // Checking if this is "common folder", at which point we return immediately,
-                // since all users have access to this folder
-                if (foldername.ToLower ().StartsWithEx ("/common/"))
-                    return; // Legal
-
-                // Verifying folder is not underneath ANOTHER user's folder, which is not legal even for root account!
-                if (foldername.ToLower ().StartsWithEx ("/users/") && foldername.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
-                    throw new LambdaSecurityException (
-                        string.Format ("Root user '{0}' tried to write to folder '{1}'", context.Ticket.Username, foldername),
+                // Making sure we do a lowers comparison.
+                if (!UserHasReadAccessToFolder (context, foldername.ToLowerInvariant ()))
+                    throw new LambdaException (
+                        string.Format ("Folder '{0}' is off limits", foldername),
                         stack,
                         context);
             }
+        }
+
+        /*
+         * Private helper methods below here.
+         */
+
+        /*
+         * Verifies filename is sane.
+         */
+        private static bool VerifySaneFileName (string filename)
+        {
+            // Basic sanity check of given filename.
+            if (string.IsNullOrEmpty (filename))
+                return false;
+            if (filename [0] != '/')
+                return false;
+            if (filename.Contains ("//"))
+                return false;
+            if (filename.Contains ("\\"))
+                return false;
+            if (filename.Contains (".."))
+                return false;
+
+            // Success.
+            return true;
+        }
+
+        /*
+         * Verifies foldername is sane.
+         */
+        private static bool VerifySaneFolderName (string foldername)
+        {
+            // A sane foldername has the same rules as a sane filename, except it must end with a "/".
+            if (!VerifySaneFileName (foldername))
+                return false;
+            if (foldername [foldername.Length - 1] != '/')
+                return false;
+
+            // Success.
+            return true;
+        }
+        
+        /*
+         * Verifies non-root user has access to reading file.
+         */
+        private static bool UserHasReadAccessToFile (ApplicationContext context, string filename)
+        {
+            // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder.
+            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) != 0)
+                return false;
+
+            // Verify all database files are safe.
+            var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
+            if (filename.StartsWithEx (dbPath))
+                return false;
+
+            // Verify web.config is safe.
+            if (filename == "/web.config")
+                return false;
+
+            // Verifying "auth" file is safe.
+            if (filename == GetAuthFile (context).ToLower ())
+                return false;
+
+            // Success.
+            return true;
+        }
+        
+        /*
+         * Verifies non-root user has access to reading file.
+         */
+        private static bool UserHasWriteAccessToFile (ApplicationContext context, string filename)
+        {
+            // Checking if this is user's file.
+            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) == 0)
+                return true;
+
+            // Special check for role "developer".
+            // TODO: Create some sort of web.config mapping between roles and folders here, or something.
+            if (context.Ticket.Role == "developer" && filename.StartsWith ("/modules/"))
+                return true;
+
+            // Failure.
+            return false;
+        }
+
+        /*
+         * Verifies non-root user has access to reading folder.
+         */
+        private static bool UserHasReadAccessToFolder (ApplicationContext context, string foldername)
+        {
+            // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder.
+            if (foldername.StartsWithEx ("/users/") && foldername.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) != 0)
+                return false;
+
+            // Verify all database files are safe.
+            var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
+            if (foldername.StartsWithEx (dbPath))
+                return false;
+
+            // Success.
+            return true;
+        }
+
+        /*
+         * Verifies non-root user has access to modify folder.
+         */
+        private static bool UserHasWriteAccessToFolder (ApplicationContext context, string filename)
+        {
+            // Checking if this is user's file.
+            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) == 0)
+                return true;
+
+            // Special check for role "developer".
+            // TODO: Create some sort of web.config mapping between roles and folders here, or something.
+            if (context.Ticket.Role == "developer" && filename.StartsWithEx ("/modules/"))
+                return true;
+
+            // Failure.
+            return false;
         }
 
         /*
