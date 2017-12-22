@@ -201,7 +201,7 @@ namespace p5.ajax.widgets
             if (Visible && AreAncestorsVisible () && Element == "textarea" && !string.IsNullOrEmpty (this ["name"]) && !HasAttribute ("disabled")) {
                 var data = Page.Request.Form [this ["name"]];
 
-                // Making sure Carriage Returns are in "uniform way", which implies having all become \r\n - CR+LF that is.
+                // Making sure Carriage Returns are in "uniform way", which implies having all \n become \r\n - CR+LF that is.
                 if (data != null)
                     data = data.Replace ("\r\n", "\n").Replace ("\n", "\r\n");
                 Attributes.SetAttributeFormData ("innerValue", data);
