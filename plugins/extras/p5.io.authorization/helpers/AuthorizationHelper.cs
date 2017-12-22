@@ -206,9 +206,13 @@ namespace p5.io.authorization.helpers
             if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) == 0)
                 return true;
 
+            // Checking if this is a common folder.
+            if (filename.StartsWithEx ("/common/"))
+                return true;
+
             // Checking access right.
             var access = new Node ();
-            context.RaiseEvent ("p5.auth.access.get", access);
+            context.RaiseEvent ("p5.auth.access.list", access);
             if (access [context.Ticket.Role] != null) {
                 foreach (var idx in access [context.Ticket.Role].Children) {
                     if (idx.Name == "write-folder" && filename.StartsWithEx (idx.GetExValue (context, "")))
@@ -247,9 +251,13 @@ namespace p5.io.authorization.helpers
             if (foldername.StartsWithEx ("/users/") && foldername.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Role)) == 0)
                 return true;
             
+            // Checking if this is a common folder.
+            if (foldername.StartsWithEx ("/common/"))
+                return true;
+            
             // Checking access right.
             var access = new Node ();
-            context.RaiseEvent ("p5.auth.access.get", access);
+            context.RaiseEvent ("p5.auth.access.list", access);
             if (access [context.Ticket.Role] != null) {
                 foreach (var idx in access [context.Ticket.Role].Children) {
                     var tmp = idx.GetExValue (context, "");

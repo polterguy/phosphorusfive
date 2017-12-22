@@ -46,18 +46,5 @@ namespace p5.auth
                 AuthenticationHelper.GetRoles (context, e.Args);
             }
         }
-
-        /// <summary>
-        ///     Returns all access rights in system.
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.auth.access.get")]
-        public static void p5_auth_access_get (ApplicationContext context, ActiveEventArgs e)
-        {
-            using (new ArgsRemover (e.Args, true)) {
-                AuthenticationHelper.GetAccess (context, e.Args);
-            }
-        }
     }
 }
