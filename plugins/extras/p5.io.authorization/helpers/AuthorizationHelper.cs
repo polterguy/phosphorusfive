@@ -192,6 +192,7 @@ namespace p5.io.authorization.helpers
 
                 // Verifies file is underneath authorized user's folder, if it is underneath "/users/" folders.
                 if (foldername.ToLower ().StartsWithEx ("/users/") &&
+                    foldername.ToLower () != "/users/" &&
                     foldername.ToLower ().IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to read from another user's folder; '{1}'", context.Ticket.Username, foldername),
