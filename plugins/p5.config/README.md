@@ -9,10 +9,11 @@ with an underscore "_", or a period ".".
 ## About "protected" events
 
 If you try to access settings starting with an underscore or a period from Hyperlambda, an exception will be thrown. This allows
-you to create _"protected"_ settings, which are not possible to access from p5.lambda, which for security reasons never should be
+you to create _"protected"_ settings, which are not possible to access from Hyperlambda, which for security reasons never should be
 exposed to a programming language of the _"dynamic nature"_ of Hyperlambda. Examples are database connections, passwords, etc ...
 
 The above is a general pattern for all "collection type of Active Events, such as **[p5.web.session.get]** from [p5.web](/plugins/p5.web/).
+To create a _"protected"_ setting, make sure you start its key with a ".".
 
 ## Listing all configuration settings
 

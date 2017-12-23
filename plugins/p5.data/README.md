@@ -4,22 +4,25 @@ The Phosphorus Five database
 Phosphorus Five has its own database. This is a memory based persistent database, which is extremely fast. This project encapsulates that database. 
 It consists of 4 Active Events.
 
-* [insert-data] - Inserts new p5.lambda nodes into your database
-* [select-data] - Selects existing p5.lambda nodes/values/names from your database
-* [update-data] - Updates existing p5.lambda nodes/values/names in your database
-* [delete-data] - Deletes existing p5.lambda nodes from your database
+* __[insert-data]__ - Inserts new lambda nodes into your database
+* __[select-data]__ - Selects existing lambda nodes/values/names from your database
+* __[update-data]__ - Updates existing lambda nodes/values/names in your database
+* __[delete-data]__ - Deletes existing lambda nodes from your database
 
-Together, they create a tree-based persistent, still memory based, storage for your p5.lambda objects. This means that you can put both "data" and "code" in
-it. It is relatively fast (obviously, since it is memory based), but the flipside, is that (obviously) it does not scale beyond whatever amount of memory you
-have in the machine that's running your Phosphorus Five installation.
+Together, they create a tree-based, persistent, still memory based, storage for your lambda objects. This means that you can put both _"data"_ and _"code"_ in
+it. It is relatively fast (obviously, since it is memory based), but the flipside, is that it does not scale beyond whatever amount of memory you
+have in the machine that's running your Phosphorus Five installation. Hence, I only use it myself for things such as configurations and settings.
+Notice, that private settings for users, should in general term be stored in the _"auth file"_, since they will be protected, and not accessible
+to other users, besides the user himself, and any _"root user accounts"_. Check out the documentation for the _"auth file"_ [here](../extras/p5.auth/).
 
-The query language you use to access items within it, is p5.lambda expressions, which is documented in the [p5.exp](/core/p5.exp/) project.
+### Lambda "query language"
 
+The query language you use to access items within it, is called lambda expressions, which is documented in the [p5.exp](/core/p5.exp/) project.
 You can conceptualize p5.data in comparison to relational database systems (often SQL based), in that where a relational database is normally based upon "sets" or
 "tables" (2 dimensional matrixes with "rows" and "columns") - p5.data is based upon tree-structures, graph objects, or "nodes". In such a regard, the p5.data database,
 consists of "3 dimensions", where traditional databases rarely have more than "2 dimensions".
 
-Notice, the p5.data database is *not* for big data, but rather for settings types of data. If you need a more scalable database, feel free to check out
+**Warning**, the p5.data database is **not** for big data, but rather for settings types of data. If you need a more scalable database, feel free to check out
 the [MySQL adapter](../extras/p5.mysql/), or roll your own data adapter.
 
 ## Inserting data [insert-data]
