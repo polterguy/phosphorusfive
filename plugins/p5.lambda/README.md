@@ -1,17 +1,17 @@
-The core keywords in Phosphorus Five
+The core ""keywords" in Phosphorus Five
 ===============
 
 This is the core of the _"non-programming language keywords"_ of Phosphorus Five. Although, programming language,
 doesn't quite fit the description, since there is no programming language per se, but only an execution tree.
-
 However, for all practical concerns, it feels like a programming language. It allows you to create code 
 in Hyperlambda, that will be evaluated as computing instructions. It is also Turing complete in regards 
-to execution, and allows you to do everything you can do in any other programming languages.
+to execution, and allows you to do everything you can do in any other programming languages, although it is not
+suited to solve all your needs.
 
 ## [eval], the heart of p5.lambda
 
-The main Active Event in p5.lambda, and probably most important event in P5, is definitely *[eval]*. 
-With *[eval]*, you can evaluate any Node hierarchy, such as illustrated below.
+The main Active Event in p5.lambda, and probably most important event in P5, is definitely **[eval]**. 
+With **[eval]**, you can evaluate any Node hierarchy, such as illustrated below.
 
 ```
 _x
@@ -21,81 +21,71 @@ _x
   foo4:do you wish to become my friend?
 for-each:x:/@_x/*?value
   create-widget
-    parent:content
     innerValue:x:/@_dp?value
 ```
 
-If you run the above code, through the Executor in [System42](https://github.com/polterguy/system42), 
-you will see that it creates 4 widgets for you.
-
-The two Active Events *[for-each]* and *[set]* are declared in the p5.lambda project, and as you can see in its code, 
+If you run the above code, you will see that it creates 4 widgets for you. This is because the above Hyperlambda is
+first converted to a lambda structure, and then passed into **[eval]** for evaluation.
+The two Active Events **[for-each]** and **[set]** are declared in the p5.lambda project, and as you can see in its code, 
 they're actually quite simple Active Events, and nothing you cannot implement yourself, to extend the programming language if you wish.
+The third Active Event called **[create-widget]** is declared in [p5.web](/plugins/p5.web/), and simply created an Ajax widget
+of some type for you.
 
-The third Active Event called *[create-widget]* is declared in [p5.web](/plugins/p5.web/).
-
-What happens when you evaluate the above piece of Hyperlambda, is that *[eval]* is being invoked, with the root node's children
-of your above Hyperlambda, as the "instructions" to evaluate. The children nodes of this root node again, are simply references
+What happens when you evaluate the above piece of Hyperlambda, is that **[eval]** is being invoked, with the root node's children
+of your above Hyperlambda, as its _"instructions"_ to evaluate. The children nodes of this root node again, are simply references
 to Active Events, having the same names as their node names, and are being raised sequentially in order of appearance.
-
-To evaluate *[eval]* directly yourself, is quite simple, and can be achieved with the following code
+To evaluate **[eval]** directly yourself, is quite simple, and can be achieved with the following code
 
 ```
-_x
+.x
   create-widget
-    parent:content
     position:0
     element:h1
     innerValue:foo bar
-eval:x:/@_x
+eval:x:/@.x
 ```
 
-The above code creates a node structure, or a "data-segment", containing lambda instructions, which are evaluated as you invoke
-*[eval]* on the *[_x]* node. To understand expressions, check out the documentation for the [p5.exp](/core/p5.exp/) project.
+The above code creates a node structure, or a _"data segment"_, containing lambda instructions, which are evaluated as you invoke
+**[eval]** on the **[.x]** node. To understand expressions, check out the documentation for the [p5.exp](/core/p5.exp/) project.
 
-Notice that *[eval]* will _NOT_ evaluate any nodes, having names, starting with an underscore (_) or a period ".". This allows you to create
+Notice that **[eval]** will _NOT_ evaluate any nodes, having names, starting with an underscore (_) or a period (.). This allows you to create
 data-segments in your code, where these data-segments will not be raised as Active Events. All nodes having a name,
-not starting with an underscore or period, will be raised as Active Events by *[eval]*. This might produce weird results for you, 
+not starting with an underscore or period, will be raised as Active Events by **[eval]**. This might produce weird results for you, 
 if you do not start your data-segments with an underscore, and there just so happens to exist an Active Event, with the same name 
-as the name of your data-segment.
+as the name of your data-segment. A good rule of thumb, is to always start your data-segments with an underscore for the above reasons.
 
-A good rule of thumb, is to always start your data-segments with an underscore for the above reasons.
+Notice though that if you explicitly invoke **[eval]** on a node, that starts with an underscore (_) or period (.), at which point **[eval]** 
+will **evaluate that node's children nodes**. There also exists an **[eval-mutable]** Active Event, which allows you access to the entire 
+main root graph object, but this Active Event is for the most parts for keyword implementors, and rarely something you'd consume yourself 
+from Hyperlambda.
 
-Notice though that if you explicitly invoke *[eval]* on a node, that starts with an underscore (_) or period (.), then *[eval]* will evaluate 
-that node's children, making your evaluated node become the root node of its execution context (stack of execution).
-
-There also exists an *[eval-mutable]* Active Event, which allows you access to the entire main root graph object, but
-this Active Event is for the most parts for keyword implementors, and rarely something you'd consume yourself from Hyperlambda.
-
-*[eval]* creates a new root node hierarchy, not allowing the execution to gain access to any nodes from the outside of itself, 
-except nodes explicitly passed in as parameters, such as the below code demonstrates.
+**Notice**, **[eval]** creates a new root node hierarchy, not allowing the execution to gain access to any nodes from the outside of itself, 
+except nodes explicitly passed in as parameters. It also **evaluates a shallow copy** of your lambda.
 
 ```
-_x
+.x
   create-widget
-    parent:content
     position:0
     element:h1
     innerValue:x:/../*/argument?value
-eval:x:/../*/_x
+eval:x:/../*/.x
   argument:foo
-eval:x:/../*/_x
+eval:x:/../*/.x
   argument:bar
 ```
 
-In the above code, logically the *[_x]* node is treated as an "inline function", before it is invoked twice, with different arguments.
-Notice that none of the arguments passed into *[eval]* are being raised as Active Events, since the execution instruction pointer, starts out
-with an _"offset"_ being the number of arguments you pass in. This makes it perfectly safe to pass in arguments to *[eval]*, without starting them
-with an underscore or period. Notice also that *[eval]* doesn't actually execute the node(s) given itself, but rather a shallow copy of these nodes.
-
-*[eval]* can also return values, such as below.
+In the above code, logically the **[.x]** node is treated as an _"inline function"_, before it is invoked twice, with different arguments.
+Notice that none of the arguments passed into **[eval]** are being raised as Active Events, since the execution instruction pointer, starts out
+with an _"offset"_ being the number of arguments you pass in. This makes it perfectly safe to pass in arguments to **[eval]**, without starting them
+with an underscore or period. Notice also that **[eval]** doesn't actually execute the node(s) given itself, but rather a shallow copy of these nodes.
+**[eval]** can also return values, such as below.
 
 ```
-_x
+.x
   return:Hello World
 set:x:/+/*/innerValue?value
-  eval:x:/../*/_x
+  eval:x:/../*/.x
 p5.web.widgets.create-literal
-  parent:content
   position:0
   element:h1
   innerValue
@@ -104,16 +94,15 @@ p5.web.widgets.create-literal
 To return more than one node, simply insert your return values into the root node, somehow, such as below for instance
 
 ```
-_x
+.x
   return
     foo1:bar1
     foo2:bar2
-eval:x:/../*/_x
+eval:x:/../*/.x
 ```
 
-Notice in the latter example, how there are two new children nodes of *[eval]* after it has evaluated.
-
-*[eval]* is also extremely flexible, and allows for you to add, remove and change nodes, including at the
+Notice in the latter example, how there are two new children nodes of **[eval]** after it has evaluated.
+**[eval]** is also extremely flexible, and allows for you to add, remove and change nodes, including at the
 current instruction pointer, or just before it, or after it, if you wish. Consider the following code
 
 ```
@@ -124,13 +113,13 @@ insert-after:x:
       innerValue:Foo bar
 ```
 
-What happens in the above example, is that when *[eval]* comes to the *[insert-after]* Active Event invocation,
-there exists no *[create-widget]* in the execution tree. The invocation to the *[insert-after]* Active Event
-however, injects this node just after the *[insert-after]* node in the execution tree. When the instruction pointer
-is done evaluating *[insert-after]*, it finds a new Active Event invocation, being our newly added *[create-widget]*
-Active Event reference, which it in turn evaluates, creating our Literal widget.
+What happens in the above example, is that when **[eval]** comes to the **[insert-after]** Active Event invocation,
+there exists no **[create-widget]** in the execution tree. The invocation to the **[insert-after]** Active Event
+however, injects this node just after the **[insert-after]** node in the execution tree. When the instruction pointer
+is done evaluating **[insert-after]**, it finds a new Active Event invocation, being our newly added **[create-widget]**
+Active Event reference, which it in turn evaluates, creating our literal widget.
 
-If you change the above code to using *[insert-before]* instead, there will be no Literal widget after evaluation, 
+If you change the above code to using **[insert-before]** instead, there will be no literal widget after evaluation, 
 but the node hierarchy is clearly changed, as you can see in the output.
 
 ```
@@ -141,7 +130,7 @@ insert-before:x:
       innerValue:Foo bar
 ```
 
-The instruction pointer for *[eval]*, managed to perfectly keep track, of where in the execution tree it currently is, 
+The instruction pointer for **[eval]**, managed to perfectly keep track, of where in the execution tree it currently is, 
 without messing up the order of your instructions. To prove it, run the following code, which shows that only one widget is created.
 
 ```
@@ -155,96 +144,87 @@ create-widget
   innerValue:Foo bar 2
 ```
 
-For the record, the above `:x:` expression, is the *"identity expression"* in the p5 expression engine, and simply means the "current node". 
-This is where all expressions starts out.
-
-For a more thourough explanation of expressions, yet again, check out the documentation for the [p5.exp](/core/p5.exp/) project.
+For the record, the above `:x:` expression, is the _"identity expression"_ in the p5 expression engine, and simply means the _"current node"_. 
+This is where all expressions starts out. For a more thourough explanation of expressions, yet again, check out the documentation for 
+the [p5.exp](/core/p5.exp/) project.
 
 ### Evaluating multiple lambda objects in one go
 
-*[eval]* can also execute multiple sources in one evaluation. Imagine you have a node hierarchy, where
-you have several nodes you wish to evaluate. This can actually be done with one *[eval]* invocation, since
+**[eval]** can also execute multiple sources in one evaluation. Imagine you have a node hierarchy, where
+you have several nodes you wish to evaluate. This can actually be done with one **[eval]** invocation, since
 each result of your expression will be evaluated in order, according to how they were fetched by your expression.
-Try out the following code in your System42 evaluator to see this in action.
+Try out the following code.
 
 ```
-_x
+.x
   create-widget
-    parent:content
     element:h1
     innerValue:Widget no 1
-_x
+.x
   create-widget
-    parent:content
     element:h1
     innerValue:Widget no 2
-eval:x:/../*/_x
+eval:x:/../*/.x
 ```
 
-The above expression will return the *[_x]* nodes in consecutive order, and *[eval]* will evaluate them
+The above expression will return the **[.x]** nodes in consecutive order, and **[eval]** will evaluate them
 in the order returned by the expresssion. Hence, we end up with two new widgets on our page. Similar things
-will happen if you have two results of an *[eval]* expression, returning some values back to caller, such as the following.
+will happen if you have two results of an **[eval]** expression, returning some values back to caller, such as the following.
 
 ```
-_x
+.x
   return
     foo1:bar1
-_x
+.x
   return
     foo2:bar2
-eval:x:/../*/_x
+eval:x:/../*/.x
 ```
 
-Of course, if one of our *[eval]* invocations, returns a simple value, then only the latter's return value
+Of course, if one of our **[eval]** invocations, returns a simple value, then only the latter's return value
 will end up in our tree, after evaluation. Imagine the following.
 
 ```
-_x
+.x
   return:foo1
-_x
+.x
   return:foo2
-eval:x:/../*/_x
+eval:x:/../*/.x
 ```
 
-In the above scenarion, after evalution of our *[eval]*, only the "foo2" string will be the value of our
+In the above scenarion, after evalution of our **[eval]**, only the _"foo2"_ string will be the value of our
 eval invocation.
 
 ### Notice!
 
-Nodes starting with either an underscore (_) or a period (.), are _impossible_ to evaluate with *[eval]*. Hence, Active Events starting
-with one of these characters, are considered "protected events", and only C# code can raise these.
-
-Realize though, you can evaluate an *[eval]* block, which has a name, starting with an underscore or period. However, the *[eval]* block
+Nodes starting with either an underscore (_) or a period (.), are _impossible_ to evaluate with **[eval]**. Hence, Active Events starting
+with one of these characters, are considered _"protected events"_, and only C# code can raise these.
+Realize though, you can evaluate an **[eval]** block, which has a name, starting with an underscore or period. However, the **[eval]** block
 won't raise any nodes as Active Events that are starting with either of these two characters.
-
-The convention is to use underscore (_) for "data segment", and period (.) for lambda blocks, although you can 
+The convention is to use underscore (_) for _"data segment"_, and period (.) for _"lambda blocks"_, although you can 
 choose this for yourself. There are no semantic differences in whether or not you use an underscore or a period.
 
 ### Evaluating stuff that's not a node
 
 If you try to evaluate something that is somehow not a node, then this object will be attempted converted into a node, before it
 is evaluated. This allows you to evaluate strings, values, and even integer values for that matter, as if they were a node structure,
-making *[eval]* perform an automatic conversion (attempt) on your values before evaluating your object. Example below illustrates this.
+making **[eval]** perform an automatic conversion (attempt) on your values before evaluating your object. Example below illustrates this.
 
 ```
-_x:@"sys42.windows.confirm
-  header:Howdy from string
-  body:Yup, I've got a body. Do you ...?
+.x:@"micro.windows.info:Hello World
 return:Returned from string!"
-eval:x:/../*/_x?value
+eval:x:/../*/.x?value
 ```
 
 You can still return values and nodes as usual. There is actually no difference in regards to logic of evaluating a node or lambda object,
 or evaluating a string, except that unless the string you try to evaluate does not for some reasons convert legally into a node, the Hyperlambda
-parser will choke, and throw an exception.
-
-In P5, you could in theory, evaluate any block of lambda nodes you wish. Whether or not this makes sense though, depends upon the nodes you
-try to evaluate.
+parser will choke, and throw an exception. In P5, you could in theory, evaluate any block of lambda nodes you wish. Whether or not this makes 
+sense though, depends upon the nodes you try to evaluate.
 
 ### Evaluating a block of lambda instead of an expression
 
-If you do not provide a value to *[eval]*, then it will instead of handling its children as arguments, directly evaluate its children, as
-a lambda block. This is often useful in combination with for instance the *[set]* and *[add]* Active Events, which we will later dive into, 
+If you do not provide a value to **[eval]**, then it will instead of handling its children as arguments, directly evaluate its children, as
+a lambda block. This is often useful in combination with for instance the **[set]** and **[add]** Active Events, which we will later dive into, 
 further down in the document here. However, to illustrate its simplest version, imagine this code.
 
 ```
@@ -254,39 +234,37 @@ eval
     innerValue:Foo, bar!
 ```
 
-In the above code, the p5.lambda execution engine will see that our *[eval]* invocation does not have any expression, or anything in its
+In the above code, the p5.lambda execution engine will see that our **[eval]** invocation does not have any expression, or anything in its
 value, that can be converted into a node in any ways. Therefor it will simply evaluate its own children nodes, as a piece of lambda block,
-having still the root node of its evaluation being the *[eval]* node itself.
-
-Later in our documentation we will dive into some use-cases where this is extremely useful. But for now, just keep it at the back of your mind.
+having still the root node of its evaluation being the **[eval]** node itself. Later in our documentation we will dive into some use-cases 
+where this is extremely useful. But for now, just keep it at the back of your mind.
 
 ### [eval-whitelist] - Eval is not (necessarily) evil
 
-There exists an overload of eval called *[eval-whitelist]*, which allows you to pass in a subset of legal Active Events, as an *[events]* list.
-If either directly, or indirectly within this execution, any Active Event not in this whitelisted *[events]* list is attempted to be raised,
-a security exception will be thrown.
-
-This is highly useful for evaluating code you are uncertain of whether or not is safe, for some reasons. Example is given below.
+There exists an overload of eval called **[eval-whitelist]**, which allows you to pass in a subset of legal Active Events, as an **[events]** list.
+If either directly, or indirectly within this execution, any Active Event not in this whitelisted **[events]** list is attempted to be raised,
+a security exception will be thrown. This is highly useful for evaluating code you are uncertain of whether or not is safe, for some reasons. 
+Example is given below.
 
 ```
-_x
+.x
   set:x:/..?value
     src:foo
   chokes
-eval-whitelist:x:/@_x
+eval-whitelist:x:/@.x
   events
     set
     src
 ```
 
-Notice in the above code, that regardless of that there actually doesn't exist a *[chokes]* Active Event in your vocabulary, it will still try
+Notice in the above code, that regardless of that there actually doesn't exist a **[chokes]** Active Event in your vocabulary, it will still try
 to raise this as an Active Event, and since it is not in the whitelist, it will literally choke.
 
 ## "Keywords" in p5.lambda
 
-p5.lambda contains several "keywords", which aren't really keywords as previously explained, but in fact
+p5.lambda contains several _"keywords"_, which aren't really keywords as previously explained, but in fact
 Active Events, creating an extremely extendible environment for your programming needs. But the core
-"keywords", that should exist in a default installation of Phosphorus Five are as following.
+keywords, that should exist in a default installation of Phosphorus Five are as following.
 
 ### [eval-x], forward evaluating expressions
 
@@ -367,7 +345,6 @@ create code that modifies itself, before it evaluates the parts it notified/adde
 ```
 _x
   create-widget
-    parent:content
     element:h1
     innerValue:Original, static widget
   add:x:/..
@@ -375,7 +352,6 @@ _x
 eval:x:/@_x
   argument
     create-widget
-      parent:content
       element:h1
       innerValue:Dynamically injected into lambda object
 ```
@@ -403,7 +379,6 @@ though. However, let's create the simplest if lambda object we possibly can, to 
 ```
 if:bool:true
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -415,7 +390,6 @@ you would see something different.
 ```
 if:false
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -427,7 +401,6 @@ do this with any other types you wish, for instance integer numbers too.
 ```
 if:int:1
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -438,7 +411,6 @@ Notice though, that if you remove the ":int:1" part above, and exchange it with 
 ```
 if
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -451,7 +423,6 @@ invocations, as the conditions to conditional events. To understand how this wor
 if
   foo
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -469,7 +440,6 @@ an expression, yielding the results of some node-set, such as the following.
 _x:bool:true
 if:x:/../*/_x?value
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -485,7 +455,6 @@ _x:int:5
 if:x:/../*/_x?value
   =:int:5
   p5.web.widgets.create-literal
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -501,7 +470,6 @@ _x:int:5
 if:x:/../*/_x?value
   =:5
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -513,7 +481,6 @@ _x:int:5
 if:x:/../*/_x?value.string
   =:5
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -531,7 +498,6 @@ _x:thomas hansen
 if:x:/../*/_x?value
   ~:hans
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -556,7 +522,6 @@ if:x:/../*/_foo1?value
   and:x:/../*/_foo2?value
     =:bar2
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -587,7 +552,6 @@ if:x:/../*/_name?value
     and:x:/../*/_surname?value
       =:doe
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -638,7 +602,6 @@ _x:bool:false
 if:x:/../*/_x?value
   not
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -655,7 +618,6 @@ if:x:/../*/_x?value
   =:thomas
   not
   create-widget
-    parent:content
     element:h1
     innerValue:Yup, we branched!
 ```
@@ -721,7 +683,6 @@ _data
 for-each:x:/@_data/*?value
   eval-x:x:/+/*
   create-widget
-    parent:content
     element:h1
     innerValue:x:/@_dp?value
 ```
@@ -1141,7 +1102,6 @@ apply:x:/../*/create-widget/*/widgets
     literal
       {innerValue}:x:?name
 create-widget
-  parent:content
   widgets
 ```
 
@@ -1181,7 +1141,6 @@ apply:x:/../*/create-widget/*/widgets
     literal
       {innerValue}:x:/*/name?value
 create-widget
-  parent:content
   widgets
 ```
 
@@ -1224,7 +1183,6 @@ apply:x:/../*/create-widget/*/widgets
     {@eval}:x:/@_exe
     hr
 create-widget
-  parent:content
   widgets
 ```
 

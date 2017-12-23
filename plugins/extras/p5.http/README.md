@@ -257,7 +257,6 @@ p5.http.post:"http://localhost:8080/invisible-my-service"
       add:x:/../*/return
         src
           p5.web.widgets.create-literal
-            parent:content
             position:0
             element:h3
             innerValue:x:/@_dp?value
@@ -280,12 +279,10 @@ p5.http.post
 
     content
       p5.web.widgets.create-literal
-        parent:content
         position:0
         element:h3
         innerValue:Thomas
       p5.web.widgets.create-literal
-        parent:content
         position:0
         element:h3
         innerValue:John

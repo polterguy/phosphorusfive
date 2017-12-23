@@ -17,7 +17,6 @@ modifies the widget's text property when clicked.
 ```
 create-widget:my-widget
   element:h3
-  parent:content
   position:0
   innerValue:Click me!
   onclick
@@ -69,7 +68,6 @@ Below is an example of how to create a widget with a class attribute and a style
 ```
 create-widget:some-other-widget
   element:h3
-  parent:content
   position:0
   style:"background-color:LightBlue;"
   class:some-css-class
@@ -84,7 +82,6 @@ If you want to create an Ajax event instead, you could do this like the followin
 ```
 create-widget
   element:h3
-  parent:content
   position:0
   innerValue:Colors, hover your mouse over me!
   onmouseover
@@ -159,7 +156,6 @@ JavaScript hooks for DOM HTML events. Imagine something like this for instance.
 ```
 create-widget
   element:h3
-  parent:content
   position:0
   innerValue:JavaScript events - Hover your mouse over me!
   onmouseover:"alert ('foo');"
@@ -184,7 +180,6 @@ For instance, to create a value, which you can only access on the server, you co
 ```
 create-widget
   element:h3
-  parent:content
   position:0
   innerValue:Click me to see the server-side value of [_foo]
   _foo:foo value
@@ -207,7 +202,6 @@ If you prepend an event with underscore (\_), or a period (.) - The results are 
 ```
 create-widget:some-invisible-event
   element:h3
-  parent:content
   position:0
   innerValue:Click me to see the server-side value of [_foo]
   .onfoo
@@ -236,7 +230,6 @@ its *[innerValue]* property. However, a container widget, allows you to create a
 ```
 create-widget
   element:ul
-  parent:content
   position:0
   widgets
     literal
@@ -266,7 +259,6 @@ And of course, each widget above could also have its own set of events and attri
 ```
 create-widget
   element:ul
-  parent:content
   position:0
   style:"font-size:large"
   widgets
@@ -296,14 +288,12 @@ such as is given an example of below.
 ```
 create-widget:some-void-widget
   element:input
-  parent:content
   position:0
   style:"width:400px;"
   placeholder:Type something into me, and click the button ...
   class:form-control
 create-widget
   element:input
-  parent:content
   position:1
   type:button
   value:Click me!
@@ -331,7 +321,6 @@ that has one "p" element child, you could do something like the following.
 
 ```
 create-widget
-  parent:content
   widgets
     p
       innerValue:Some text
@@ -342,7 +331,6 @@ the following.
 
 ```
 create-widget
-  parent:content
   widgets
     literal
       element:p
@@ -376,7 +364,6 @@ create-event:foo.bar
       innerValue:Howdy world
 
 create-widget
-  parent:content
   position:0
   widgets
 
@@ -408,7 +395,6 @@ Imagine the following.
 
 ```
 create-widget
-  parent:content
   position:0
   widgets
     text:@"<style type=""text/css"">
@@ -440,7 +426,6 @@ of children nodes of the invocation, and P5 automatically fills out the values a
 
 ```
 create-widget
-  parent:content
   position:0
   element:h3
   innerValue:Foo
@@ -475,7 +460,6 @@ You can also retrieve multiple widget's properties in one invocation, by supplyi
 
 ```
 create-widget
-  parent:content
   position:0
   element:h3
   widgets
@@ -501,7 +485,6 @@ The *[set-widget-property]* works similarly, except of course, instead of retrie
 
 ```
 create-widget
-  parent:content
   position:0
   element:h3
   widgets
@@ -559,7 +542,6 @@ To do this, you would use the *[p5.web.widgets.ajax-events.get]* and the *[p5.we
 
 ```
 create-widget
-  parent:content
   position:0
   innerValue:Click me!
   onclick
@@ -576,7 +558,6 @@ The *[p5.web.widgets.ajax-events.get]* returns its existing lambda object. Try o
 
 ```
 create-widget
-  parent:content
   position:0
   innerValue:Click me!
   onclick
@@ -615,7 +596,6 @@ page, to communicate with other parts of your page, and create a more "object or
 
 ```
 create-widget
-  parent:content
   position:0
   events
     my-namespace.foo-event
@@ -659,7 +639,6 @@ Below is an example of *[oninit]* in action.
 
 ```
 create-widget
-  parent:content
   innerValue:This text will never show up on your page!
   oninit
     set-widget-property:x:/../*/_event?value
@@ -723,7 +702,6 @@ Returns the parent widget of one or more specified widget(s). Example given belo
 
 ```
 create-widget:foo
-  parent:content
   position:0
   widgets
     literal:bar1
@@ -757,7 +735,6 @@ Returns the children widgets of one or more specified widget(s). Example below.
 
 ```
 create-widget:foo
-  parent:content
   position:0
   widgets
     literal:bar1
@@ -797,7 +774,6 @@ Let's see an example.
 
 ```
 create-widget:foo
-  parent:content
   position:0
   widgets
     literal:bar1
@@ -836,7 +812,6 @@ These Active Events can also take expressions as their arguments.
 
 ```
 create-widget:foo1
-  parent:content
   position:0
   widgets
     literal:bar1
@@ -845,7 +820,6 @@ create-widget:foo1
     literal:bar2
       innerValue:bar2
 create-widget:foo2
-  parent:content
   position:0
   widgets
     literal:bar3
@@ -877,7 +851,6 @@ Example code given below.
 
 ```
 create-widget:foo1
-  parent:content
   position:0
   class:foo-class-1
   widgets
@@ -886,7 +859,6 @@ create-widget:foo1
         literal:starting-widget-1
           innerValue:Foo bar
 create-widget:foo2
-  parent:content
   position:0
   class:foo-class-2
   widgets
