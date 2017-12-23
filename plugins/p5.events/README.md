@@ -150,3 +150,17 @@ vocabulary:micro.widgets.modal
 
 The difference between the two above invocations is the `~` parts. The tilde checks for _"contains the string in its name"_, while without a tilde at
 the start of your filter, it expects an exact match. You can also supply an expression leading to multiple filters if you wish.
+
+```
+.events
+  micro.widgets.modal
+  micro.widgets.tree
+  micro.widgets.tab
+  non-existing
+
+  // "Like" comparison.
+  ~micro.page.
+
+// Uses the above [.events] names' as its filter.
+vocabulary:x:/-/*?name
+```

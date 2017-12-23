@@ -3,36 +3,50 @@
 
 The p5.io library, and its Active Events, allows you to easily load, create, modify, and delete files and folders in your system.
 It contains most methods necessary to handle your file system, for most problems you'd encounter, while using P5. Although mostly
-useful for text files, it also to some extent allows handling binary files.
+useful for text files, it also to some extent allows you to binary files.
 
-Notice, that all IO operations within Phosphorus Five, and its "p5.io" library, expects the path you supply to start with a "/". If
-what you are referring to is a folder, it also expects you to _end_ your path with a forwardslash (/). Unless you create your paths
-like this, exceptions will be thrown during evaluation of your code.
-
-Regardless of which platform you are using underneath, you'll have to use forwards slash "/" to separate folders. This is true for both
+Notice, that all IO operations within Phosphorus Five, and its p5.io library, expects the path you supply to start with a `/`. If
+what you are referring to is a folder, it also expects you to _end_ your path with a forward slash (/). Unless you create your paths
+like this, exceptions will be thrown during evaluation of your code. It also expects _only_ forward slashes when referenceing files and
+folders. This is explicitly implemented like this, to avoid the problems of backwards slashes versus forward slashes on Linux, xNix, etc.
+So basically, p5.io will throw an exception, if you construct paths that would normally only work on one specific type of platform.
+Regardless of which platform you are using underneath, you'll have to use forwards slash `/` to separate folders. This is true for both
 Windows, Linux and Mac OS.
 
 Also realize, that unless you are authorized to load, save, change, or delete a specific file, or folder, then a security exception will
 be thrown. For instance, a user does not by default have access to files belonging to another user, existing within 
-another user's "home" folder. (e.g. /users/username/some-folder/)
-
+another user's _"home"_ folder. (e.g. /users/username/some-folder/). If you have a user named _"foo"_, and you try to load a file from
+a folder called _"/users/bar/"_, an exception will be raised, unless your user is a _"root"_ user.
 These authorisation and authentication features of P5 are implemented in the [p5.io.authorization](/plugins/extras/p5.io.authorization/) project,
 but can easily be exchanged with your own logic, if you need more fine-grained access control.
 
-Notice also, that all file IO Active Events in p5.io, relies upon the type conversion, normally implemented in [p5.types](/plugins/p5.types/), 
-which in turn will use UTF8 exclusively, as its conversion encoding, when for instance saving files, and also loading files. This means that
-all files created, using p5.io, will be created as UTF8 files. In addition, all files loaded with p5.io, will be assumed to be encoded as
-UTF8. This is true for all text files. However, binary data can still be saved as such.
-
+Notice also, that all file IO Active Events in p5.io, relies upon the type conversion for loading Hyperlambda, normally implemented in [p5.types](/plugins/p5.types/).
+In addition, it will use UTF8 exclusively, as its encoding for files you save and load. This means that all files created, using p5.io, will be created 
+as UTF8 files. In addition, all files loaded with p5.io, will be assumed to be encoded as UTF8. This is true for all text files. However, binary 
+data can still be saved as such. If this does not fit your needs, creating your own loading and saving events, is easily achieved.
 In general, at the time of this writing, p5.io exclusively support UTF8 text files, in addition to some rudimentary support for binary files.
-Hyperlambda files, are considered text files.
+Hyperlambda files, are treated as text files.
 
 All Active Events in p5.io, will also automatically substitute a path, with "/users/logged-in-username" if it starts with `~`. For instance, 
-if you are logged in as username "root", then `~/documents/foo.txt` will unroll to "/users/root/documents/foo.txt". This allows you to
-transparently refer to files in a user's folder as `~/something.txt`. This is one of few exceptions to the rule of that any paths must start with 
-a forwardslash "/".
+if you are logged in as username _"root"_, then `~/documents/foo.txt` will unroll to _"/users/root/documents/foo.txt"_. This allows you to
+transparently refer to files in a user's folder as `~/something.txt`, while having p5.io unrolling the exact path automatically for you. This is 
+one of few exceptions to the rule of that any paths must start with a forwardslash "/". You can also create your own path events, which will
+be used by p5.io when unrolling its paths. Below is an example of creating a path event that unrolls to _"/foo/bar/"_.
 
-Also notice, that although you _can_ load and save binary data with p5.io - Hyperlambda and p5.lambda, is not in general terms, very adequate
+```
+create-event:p5.io.unroll-path.@FOO
+  return:/foo/bar
+```
+
+To use the above path substitutor, you could use something like the following.
+
+```
+load-file:@FOO/foo.txt
+```
+
+This allows you to create paths to files and folders that are treated as _"variables"_ in your system.
+
+**Warning** Also notice, that although you _can_ load and save binary data with p5.io - Hyperlambda and p5.lambda, is not in general terms, very adequate
 for manipulating binary data. This means that you can load binary data, but for the most parts, the only intelligent thing you can do
 with it, is to base64 encode this data, and/or, pass it into other Active Events, that knows how to handle your binary data.
 
@@ -42,59 +56,70 @@ Below you can find the documentation for how to handle files in your system.
 
 ### [load-file], loading files
 
-To load a file, simply use the *[load-file]* Active Event. An example of this event is shown below.
+To load a file, simply use the **[load-file]** Active Event. An example of this event is shown below.
 
 ```
-load-file:/application-startup.hl
+load-file:/startup.hl
 ```
 
-The above invocation will load P5's startup file for you. Notice that this is a Hyperlambda file, which the *[load-file]* Active
+The above invocation will load P5's startup file for you. Notice that this is a Hyperlambda file, which the **[load-file]** Active
 Event will automatically determine, and hence parse the file for you automatically, to become a lambda structure. If you do not wish to 
-automatically parse the file, but rather load the file "raw", as a piece of text, not transforming it into a lambda object, you must 
-add the argument *[convert]*, and set its value to "false". An example is shown below.
+automatically parse the file, but rather load the file _"raw"_, as a piece of text, not transforming it into a lambda object, you must 
+add the argument **[convert]**, and set its value to _"false"_. An example is shown below.
 
 ```
-load-file:/application-startup.hl
+load-file:/startup.hl
   convert:false
 ```
 
-If you run the above Hyperlambda through for instance your [System42](https://github.com/polterguy/system42) Executor, you will see that 
-it now contains simply a text string, preserving all comments
-for you, among other things. Unless you explicitly inform the *[load-file]* Active Event that you do not wish for any conversion to occur,
-then it will automatically convert all Hyperlambda for you, to lambda objects. This makes it very easy for you to load Hyperlambda, and 
-immediately execute your Hyperlambda, without having to convert it yourself.
+If you run the above Hyperlambda, you will see that it now contains simply a text string, preserving all comments
+for you, among other things. Unless you explicitly inform the **[load-file]** Active Event that you do not wish for any conversion to occur,
+then it will automatically convert all Hyperlambda for you to lambda objects. This makes it very easy for you to load Hyperlambda, and 
+immediately execute your Hyperlambda, without having to convert it yourself. Loading a Hyperlambda file, and evaluating it as a lambda
+object, can be done with two lines of code. Below is an example.
+
+```
+load-file:/startup.hl
+eval:x:/-/*
+```
 
 #### Loading multiple files at the same time
 
 Sometimes, you want to load multiple files at the same time. Often you might even want to treat them as "one aggregated" file result.
-For such cases, you can pass in an expression into your *[load-file]* invocation, such as the following is an example of.
+For such cases, you can pass in an expression into your **[load-file]** invocation, such as the following is an example of.
 
 ```
 _files
-  file1:/application-startup.hl
-  file2:/some-other-file.hl
-load-file:x:/-/*?value
+  /startup.hl
+  /some-other-file.hl
+load-file:x:/-/*?name
 ```
 
-The above code, will load both of the given files, and append them into a node, beneath *[load-file]*, having the name being the path of
+The above code, will load both of the given files, and append them into a node, beneath **[load-file]**, having the name being the path of
 the file loaded. The structure will look roughly like this.
 
 ```
-_files
-  file1:/application-startup.hl
-  file2:/some-other-file.hl
 load-file
-  /application-startup.hl
+  /startup.hl
      ... file 1 content, lambda nodes ...
   /some-other-file.hl
      ... file 2 content, lambda nodes ...
 ```
 
-Notice, if you try to load a file that does not exist, an exception will be thrown.
+To load all Hyperlambda files from a specific folder, and evaluate these files as lambda, the following code can be used.
+
+```
+list-files:/foo/
+  filter:.hl
+load-file:x:/-/*?name
+eval:x:/-/*
+```
+
+**Notice**, if you try to load a file that does not exist, an exception will be thrown.
 
 ### [save-file], saving files
 
-The *[save-file]* Active Event, does the exact opposite of the *[load-file]* event. Meaning, it saves a new file, or overwrites an existing on.
+The **[save-file]** Active Event, does the exact opposite of the **[load-file]** event. Meaning, it saves a new file, or overwrites an existing file.
 Try the following code.
 
 ```
@@ -105,13 +130,13 @@ save-file:~/foo.md
 I am a newly created markdown file!"
 ```
 
-After evaluating the above Hyperlambda, a new file will exist within your main `~/` user's folder, called "foo.md".
+After evaluating the above Hyperlambda, a new file will exist within your main `~/` user's folder, called _"foo.md"_.
 If the file already exists, it will be overwritten.
 
 ### [delete-file], deleting one or more files
 
-Just like *[load-file]*, *[delete-file]* can react upon several files at the same time. Its arguments work the same way as load-file, except of
-course, instead of loading the file(s), it deletes them. To delete the files created above in one of our *[save-file]* examples, you
+Just like **[load-file]**, **[delete-file]** can react upon several files at the same time. Its arguments work the same way as load-file, except of
+course, instead of loading the file(s), it deletes them. To delete the files created above in one of our **[save-file]** examples, you
 can use the following code.
 
 ```
@@ -119,21 +144,20 @@ delete-file:~/foo.txt
 ```
 
 Notice, if the above file does not exist, an exception will be thrown.
-
-The Active Event *[delete-file]*, does not take any arguments, besides a single constant value, or an expression leading to multiple file paths.
-However, just like the other file manipulation Active Events, it requires a fully qualified path, which must start with "/". To delete a file,
+The Active Event **[delete-file]**, does not take any arguments, besides a single constant value, or an expression leading to multiple file paths.
+However, just like the other file manipulation Active Events, it requires a fully qualified path, which must start with _"/"_. To delete a file,
 the user context object must be authorized to modifying the file. Otherwise, an exception will be thrown.
 
 ### [file-exists], checking if one or more files exist
 
-*[file-exists]* accepts its arguments the same way *[load-file]* does. However, *[file-exists]* will return true for each file that
+**[file-exists]** accepts its arguments the same way **[load-file]** does. However, **[file-exists]** will return true for each file that
 exists, instead of returning the content of the file. Example given below.
 
 ```
 _data
-  file1:/system42/application-startup.hl
-  file2:/does-not-exist/foo.txt
-file-exists:x:/-/*?value
+  /startup.hl
+  /does-not-exist.txt
+file-exists:x:/-/*?name
 ```
 
 Notice how the above example returns true for the first file, but false for the second file. You can of course also supply a simple static value,
@@ -145,8 +169,8 @@ file-exists:~/foo.txt
 
 ### [move-file], moving or renaming a file
 
-With *[move-file]*, you can either rename a file, or entirely move it into for instance a different folder. The Active Event takes the 
-"source file" as its value, and the "destinatin filepath/value", as the value of a *[dest]* child node. Let's show this with an example.
+With **[move-file]**, you can either rename a file, or entirely move it into for instance a different folder. The Active Event takes the 
+source file as its value, and the destinatin filepath/value, as the value of a **[dest]** child node. Let's show this with an example.
 
 ```
 save-file:~/foo.txt
@@ -156,13 +180,13 @@ move-file:~/foo.txt
 ```
 
 If the files you are trying to move or rename, does not exist, an exception will be thrown. If there exist a file from before, with the same path as the
-new destination filenames for your file(s), then an exception will also be thrown.
+new destination filenames for your file(s), then an exception will also be thrown, unless you provide an **[overwrite]** argument, and set its value to _"true"_.
 
 ### [copy-file], copying a file
 
-The *[copy-file]* Active Event, does exactly what you think it should do. It copies one source file, and creates a new copy of that file, into
-a destination file. Besides from that it actually copies the file(s), instead of moving them, it works 100% identically to *[move-file]*. 
-The arguments to *[copy-file]* are also the same as the arguments to *[move-file]*. Consider this code.
+The **[copy-file]** Active Event, does exactly what you think it should do. It copies one source file, and creates a new copy of that file, into
+a destination file. Besides from that it actually copies the file(s), instead of moving them, it works 100% identically to **[move-file]**. 
+The arguments to **[copy-file]** are also the same as the arguments to **[move-file]**. Consider this code.
 
 ```
 save-file:~/foo.txt
@@ -171,12 +195,12 @@ copy-file:~/foo.txt
   dest:~/foo-copy.txt
 ```
 
-The *[dest]* node argument above, which is the child node of *[copy-file]*, is of course the destination filepath for your copy.
+The **[dest]** node argument above, which is the child node of **[copy-file]**, is of course the destination filepath for your copy.
 
 ### Other file events
 
-In addition you also have [p5.io.file.get-length], [p5.io.file.read-only.get], [p5.io.file.read-only.set], [p5.io.file.read-only.delete],
-[p5.io.file.get-last-write-time] and [p5.io.file.get-last-access-time]. These events does exactly what you'd expect them to do.
+In addition you also have **[p5.io.file.get-length]**, **[p5.io.file.read-only.get]**, **[p5.io.file.read-only.set]**, **[p5.io.file.read-only.delete]**,
+**[p5.io.file.get-last-write-time]** and **[p5.io.file.get-last-access-time]**. These events does exactly what you'd expect them to do.
 
 ```
 p5.io.file.get-length:/web.config
@@ -200,60 +224,57 @@ p5.io.file.get-last-access-time
 
 ### Changing the read-only state of a file
 
-You can set one or more files to "read-only" with the *[p5.io.file.read-only.set]* Active Event. In addition, you can remove the "read-only" attribute,
-using the *[p5.io.file.read-only.delete]* Active Event. Both of these Active Events takes either a constant or an expression, leading to multiple files.
+You can set one or more files to read-only with the **[p5.io.file.read-only.set]** Active Event. In addition, you can remove the read-only attribute,
+using the **[p5.io.file.read-only.delete]** Active Event. Both of these Active Events takes either a constant or an expression, leading to multiple files.
 
 ## How to handle folders in your system
 
 The Active Events for handling folders, are almost identical to the events for handling files, with some smaller differences though.
-Among other things, there obviously does not exist a *[save-folder]* event, but instead you'll find a *[create-folder]* Active Event,
+Among other things, there obviously does not exist a **[save-folder]** event, but instead you'll find a **[create-folder]** Active Event,
 and so on.
 
 ### [create-folder]
 
-Creates a folder at the given path. Notice that the parent folder must exist, and that this Active Event does not "recursively" create folders.
+Creates a folder at the given path. Notice that the parent folder must exist, and that this Active Event does not recursively create folders.
 Also notice that if the folder exist from before, an exception will be thrown.
-
 This Active Event also handles expressions, and will create all folders your expressions yields as a result, the same way for instance 
-the *[load-file]* will load multiple files.
+the **[load-file]** will load multiple files.
 
-Every single Active Event that somehow takes a folder, requires the path to both start with a slash (/), in addition to ending with a slash (/).
-
-Below is some example code that creates two folders.
+**Important**, every single Active Event that somehow takes a folder, requires the path to both start with a slash (/), in addition to ending with a slash (/).
 
 ```
 _folders
-  folder1:~/foo/
-  folder2:~/bar/
-create-folder:x:/-/*?value
+  ~/foo/
+  ~/bar/
+create-folder:x:/-/*?name
 ```
 
 ### [delete-folder]
 
-Delete folder is implemented with the same semantics as *[create-folder]*, except of course, instead of creating folders, it deletes them.
+Delete folder is implemented with the same semantics as **[create-folder]**, except of course, instead of creating folders, it deletes them.
 Example code below.
 
 ```
 _folders
-  folder1:~/foo/
-  folder2:~/bar/
-delete-folder:x:/-/*?value
+  ~/foo/
+  ~/bar/
+delete-folder:x:/-/*?name
 ```
 
-The above code will delete the folders previously created in our *[create-folder]* example.
+The above code will delete the folders previously created in our **[create-folder]** example.
 
 ### [folder-exists]
 
-This Active Event is implemented with the same semantics as *[file-exists]*, which means if you pass in an expression as its value, and the 
+This Active Event is implemented with the same semantics as **[file-exists]**, which means if you pass in an expression as its value, and the 
 expression is leading to multiple folder paths, then it will return true only for the folders that actually exists.
 
 ```
-folder-exists:/system42/
+folder-exists:/modules/
 ```
 
 ### [copy-folder] and [move-folder]
 
-These two Active Events works exactly like their "file counterparts" ([copy-file] and [move-file]). Below is some sample code using them both.
+These two Active Events works exactly like their file counterparts (**[copy-file]** and **[move-file]**). Below is some sample code using them both.
 
 ```
 create-folder:~/foo-bar/
@@ -269,8 +290,7 @@ save-file:~/foo-bar/foo-bar-inner/foo2.txt
 copy-folder:~/foo-bar/
   dest:~/foo-bar-2/
 
-// Before finally, we move the original folder we created above
-// BTW, we could also have used [p5.io.folder.rename] here
+// Before finally, we move the original folder we created above.
 move-folder:~/foo-bar/
   dest:~/foo-bar-new-name/
 ```
@@ -284,97 +304,30 @@ These two Active Events, allows you to list files or folders in your system. Bot
 an expression, leading to multiple folder paths. An example is given below.
 
 ```
-list-files:/system42/
-list-folders:/system42/
+list-files:/modules/
+list-folders:/modules/
 ```
 
-If you evaluate the above Hyperlambda, you will see that these Active Events returns the files and folders, as the "name" part of their children
+If you evaluate the above Hyperlambda, you will see that these Active Events returns the files and folders, as their name part of their children
 nodes. This is a general rule in P5, which is that in general terms, Active Events that returns a list of strings, returns these as 
 the names of the children nodes of their main event node.
 
-Notice the *[list-files]* Active Event, can optionally be given a *[filter]*. This is a piece of string, that each filename must contain, to yield a match.
-For instance, to list only the Hyperlambda files in your System42 folder, you could do something like this.
+Notice the **[list-files]** Active Event, can optionally be given a **[filter]**. This is a piece of string, that each filename must contain, to yield a match.
+For instance, to list only the Hyperlambda files in your Micro folder, you could do something like this.
 
 ```
-list-files:/system42/
+list-files:/modules/micro/
   filter:.hl
 ```
 
-Notice, if you start your filter with a period ".", then *[list-files]* assumes that you wish to filter upon file extensions. Otherwise, it will simply
+**Notice**, if you start your filter with a period _"."_, then **[list-files]** assumes that you wish to filter upon file extensions. Otherwise, it will simply
 retrieve all files somehow containing your specified search term. Regardless of where this is found in the filename.
-
-#### Filtering files according to type
-
-When you invoke *[list-files]*, you can optionally supply a *[filter]* argument, to make sure you only retrieve files with a
-specific extension. The code below for instance, will only retrieve the ".aspx" files from your p5.webapp folder.
-
-```
-list-files:/
-  filter:.aspx
-```
-
-### Using path variables
-
-p5.io supports "unrolling paths". This feature allows you to instead of hard coding a path, you can create a variable Active Event, which is invoked
-if your path starts with an "@" character. If you defined an Active Event called for instance *[p5.io.unroll-path.@my-documents]*, then you can
-refer to your documents folder using _"@my-documents/"_. This gives you more flexibility in regards to your paths, and allows you to later change your
-mind, or even install your apps in a different folder, than what you originally decided upon when creating it.
-
-Below is some sample code that creates such a variable Active Event, for then to consume it when creating a file.
-
-```
-create-event:p5.io.unroll-path.@my-temp
-  return:~/temp
-save-file:@my-temp/foo.txt
-  src:Foo bar
-```
-
-After evaluating the above code, you should have a foo.txt file in your temp folder. Path variables are almost like symbolic links or shortcuts.
-
-### Executing every Hyperlambda file within a folder
-
-Combining *[list-files]* and *[eval]*, you can do some interesting things. One of these things, is that you can evaluate all Hyperlambda files within
-some specific folder, easily, with only 3-4 lines of code. Imagine the following code.
-
-```
-list-files:/some-hyperlambda-folder/
-  filter:.hl
-load-file:x:/-/*?name
-eval:x:/-/*
-```
-
-What the above code actually does, is first of all listing every Hyperlambda file with a specific folder. Then it loads all these files.
-As we previously said, *[load-file]* will automatically convert a Hyperlambda file to a lambda structure after loading it by default. Then we invoke
-the *[eval]* event, passing in an expression leading to all children nodes of *[load-file]*, which now should be the root node of all files 
-loaded this way. The end result, is that all files in some specific folder is automatically evaluated and executed.
-
-[System42](https://github.com/polterguy/system42) contains helper Active Events, both for evaluating single Hyperlambda files, 
-in addition to recursively evaluating all Hyperlambda files within some specified folder.
 
 ### Additional helper Active Events
 
-If you create your own file plugin in C#, that uses paths, you can use the *[.p5.io.unroll-path]* Active Event, to make sure for instance `~` is
-replaced with the user's home directory. This Active Event takes a path as its input, and returns the "unrolled path" back to caller.
+If you create your own file plugin in C#, that uses paths, you can use the **[.p5.io.unroll-path]** Active Event, to make sure for instance `~` is
+replaced with the user's home directory. This Active Event takes a path as its input, and returns the unrolled path back to caller.
 
 In addition, there exists a pure C# plugin Active Event called **[.p5.io.file.serialize-to-stream]**, which among other things is used when creating
 HTTP REST requests through [p5.http](/plugins/extras/p5.http) to allow serializing files directly into the HTTP request stream, without loading them
 into memory first. See the documentation for [p5.http](/plugins/extras/p5.http) to understand how this works.
-
-## Warning! WRITE PORTABLE CODE!
-
-The underlaying filesystem on Windows and Linux/Mac OS, have huge differences. I have tried to accommodate for most of these differences, to create a
-uniform and common way of typing out paths and such. One example is that I consistently replace backslash with forwardslash, and P5 doesn't 
-even accept backslash as a part of a path. However, a filename in Windows called "FOO.txt" points to the same file as "foo.TXT". Windows does not 
-differentiate between CAPS in filenames. Linux and Mac OS does however discriminate between CAPS!
-
-This means that you can read the FILENAME.TXT as the same file called "filename.txt" on Windows. When you later port your code to your Linux server,
-your code will no longer work, because "FILENAME.TXT" is no longer the same as "filename.txt".
-
-Therefor I highly encourage you to use the _correct_ CAPS of your filenames when developing your apps. Regardless of whether or not it works on Windows.
-Otherwise your code will not be portable to run on Linux servers.
-
-I could have verified that filenames had the right CAPS, but this would blow up the code, and use additional resources on your system. Therefor I have
-chosen to (for now) allow the underlaying filesystem take care of usage of CAPS. Have this in mind though as you create your own apps!
-
-Notice, I might even impose the correct usage of caps later, which might make your code that works on Windows today, possibly stop working in the 
-future on Windows!
