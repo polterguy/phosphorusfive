@@ -13,6 +13,11 @@ allows you to orchestrate your apps together, almost as if they were made out of
 running its code version through e.g. Visual Studio, or installing the binary release on for instance a Linux/Ubuntu server.
 The default source installation has no dependencies besides .Net/Mono, unless you want to install additional _"apps"_ through its Bazar.
 
+### Cloning Phosphorus Five
+
+Phosphorus Five has several _"submodules"_. The most important one being [Micro](https://github.com/polterguy/micro). If you get weird 
+styling issues as you clone Phosphorus Five, make your you have Micro inside of your _"/core/p5.webapp/modules/"_ folder.
+
 ## Creating your own apps
 
 Phosphorus Five is created in C#, but relies upon _"Hyperlambda"_. Hyperlambda is a modularised web application programming language, for
