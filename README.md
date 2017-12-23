@@ -21,6 +21,11 @@ Phosphorus Five _"recursively"_, it will pull in all of its submodules, includin
 [Hyper IDE](https://github.com/polterguy/hyper-ide), [Sephia Five](https://github.com/polterguy/sephia-five), etc. This is the easiest
 way to test **everything** in Phosphorus Five during cloning, including Hyper IDE.
 
+However, some of these modules are **dependent upon MySQL**, which means you'll have to install MySQL, in **addition to GnuPG**. If you get
+the _"bluescreen of death"_ during startup, make sure you have both MySQL and GnuPG installed on your system. The 
+[default zip file installation](https://github.com/polterguy/phosphorusfive/releases) does not have these dependencies, and is probably
+easier to get started with.
+
 ### Downloading app through the Bazar
 
 Phosphorus Five contains an integrated _"App Store"_. This allows you to install lots of apps on your server, while it is running, without
