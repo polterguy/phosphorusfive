@@ -38,10 +38,6 @@ refer to these links.
 * [modules](core/p5.webapp/modules/), how the modularized parts of Phosphorus Five works
 * [The Bazar](core/p5.webapp/modules/bazar/), the integrated _"AppStore"_ that comes with P5 out of the box
 
-I recommend you start out with ["The Guide"](https://github.com/polterguy/phosphorusfive-dox), for then to refer back to the reference documentation
-for the [plugins](plugins/), as the need surface. Most of the examples in the core and plugin documentation, assumes you are 
-using [System42](https://github.com/polterguy/system42), and either its Executor or CMS apps.
-
 ## 3 basic innovations
 
 Phosphorus Five consists of three basic innovations.
