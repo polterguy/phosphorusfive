@@ -26,7 +26,7 @@ the _"bluescreen of death"_ during startup, make sure you have both MySQL and Gn
 [default zip file installation](https://github.com/polterguy/phosphorusfive/releases) does not have these dependencies, and is probably
 easier to get started with.
 
-### Downloading app through the Bazar
+### Downloading apps through the Bazar
 
 Phosphorus Five contains an integrated _"App Store"_. This allows you to install lots of apps on your server, while it is running, without
 having to interrupt normal usage. This is the preferred way to fill Phosphorus Five with apps, but it is **dependent upon GnuPG**. In a Linux
@@ -80,13 +80,12 @@ You can read an MSDN article about Active Events [here](https://msdn.microsoft.c
 
 Hyperlambda, and lambda, is the natural bi-product of Active Events; A Turing complete execution engine, for orchestrating your apps 
 together, as shown above in the Hello World example. By combining Active Events together with Managed Ajax and Hyperlambda - Your apps truly
-_"comes alive"_, and creating rich web apps, becomes ridiculously easy. You can read an MSDN article about 
-Hyperlambda [here](https://msdn.microsoft.com/en-us/magazine/mt809119).
+_"comes alive"_, and creating rich web apps, becomes ridiculously easy.
 
 ### C#, a dynamic programming language!
 
-These three innovations combined, makes C# become a _"dynamic"_ programming language. In fact, much more dynamic than any other dynamic programming
-languages you have ever used.
+These three innovations combined, makes C# become a _"dynamic"_ programming language. In fact, much more dynamic probably, than any other dynamic programming
+language you have ever used.
 
 ## Encapsulation and polymorphism without OOP
 
@@ -102,7 +101,8 @@ top of the CLR, making the act of orchestrating CLR modules, loosely coupled tog
 ## C# samples
 
 For those only interested in using e.g. the Ajax library, and/or the Active Event implementation, there are some examples of this in 
-the [samples folder](/samples/).
+the [samples folder](/samples/). Although Phosphorus Five is massively huge, and contains of more than 30 projects - You can still pick¨
+out any single module you want to use (almost), and only use this part of the project.
 
 ## More dox
 
@@ -157,4 +157,5 @@ before you dive into Hyperlambda.
 
 Phosphorus Five is free and open source software, and licensed under the terms
 of the Gnu Public License, version 3, in addition to that commercially license are available for a fee. Read more about
-our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/).
+our Quid Pro Quo license terms at [my website](https://gaiasoul.com/license/). The easiest way to obtain a license,
+is to simply purchase one through Phosphorus Five's _"Bazar"_.
