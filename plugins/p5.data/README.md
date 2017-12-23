@@ -17,13 +17,13 @@ to other users, besides the user himself, and any _"root user accounts"_. Check 
 
 ### Lambda "query language"
 
-The query language you use to access items within it, is called lambda expressions, which is documented in the [p5.exp](/core/p5.exp/) project.
+The query language you use to access items with, is called lambda expressions, which is documented in the [p5.exp](/core/p5.exp/) project.
 You can conceptualize p5.data in comparison to relational database systems (often SQL based), in that where a relational database is normally based upon "sets" or
 "tables" (2 dimensional matrixes with "rows" and "columns") - p5.data is based upon tree-structures, graph objects, or "nodes". In such a regard, the p5.data database,
 consists of "3 dimensions", where traditional databases rarely have more than "2 dimensions".
 
 **Warning**, the p5.data database is **not** for big data, but rather for settings types of data. If you need a more scalable database, feel free to check out
-the [MySQL adapter](../extras/p5.mysql/), or roll your own data adapter.
+the [MySQL adapter](../extras/p5.mysql/), or roll your own data adapter to access for instance MS SQL or MongoDB.
 
 ## Inserting data [insert-data]
 
@@ -57,10 +57,11 @@ select-data
 
 The ID (the ":guid:xxx" parts) will of course be different for your system.
 
-Internally, the database creates its own file-structure, which by default should exist within your "/core/p5.webapp/db/" folder on disc. Though the exact
+Internally, the database creates its own file-structure, which by default should exist within your _"/core/p5.webapp/db/"_ folder on disc. Though the exact
 folder, can be overridden in your web.config. If you open your db folder, you will see that it contains one or more folders, named "/db0/", "/db1/", etc. These folders 
 again, contains one or more files, named "db0.hl", "db1.hl", etc. By default, your database will serialize maximum 32 objects into each file, and a maximum of 256
-files into each folder. So as your database grows, it will start creating more and more folders and files.
+files into each folder. So as your database grows, it will start creating more and more folders and files. This makes it very fast to serialise items, since
+it allows the implementation to serialise only a small fraction of its content, as updates and changes occur. p5.data is thread safe.
 
 Each file is in fact a simple Hyperlambda file, and can (in theory) be edited with Notepad or TextEdit if you wish. This simple trait of p5.data, makes it extremely
 easily understood, robust, and easy to fix, if corruption should occur somehow. However, as a general rule, you should not edit these files yourself, unless you stop
@@ -72,9 +73,8 @@ structure, using multiple files for its data, it rarely have to update (save) mo
 you change in it.
 
 This makes it extremely fast for "settings types of data", while not very scalable for huge documents, images (although possible), other binary data, or huge 
-datasets. Use it with _care_!
-
-P5 contains a MySQL plugin, which you can use for datasets that requires more data than that which p5.data allows you to store.
+datasets. Use it with _care_. Phosphorus Five contains a MySQL plugin, which you can use for data that requires more space than that which is feasible to 
+expect for p5.data.
 
 ### Inserting multiple items at once
 
@@ -102,15 +102,8 @@ through its [p5.types](/plugins/p5.types/) project, or your own type conversion 
 in fact, the above *[insert-data]* invocation, will only create one lock, so if you can, you should insert all "related items" at once, to get away with as 
 few database locks as you can.
 
-If you wish, you can also supply an "explicit" ID to *[insert-data]*, by adding it as the "value" of each node inserted. Your ID can also be
-any type P5 supports. However, the ID must be unique for your server. In fact, the CMS in [System42](https://github.com/polterguy/system42), 
-uses the URL as the ID of its *[p5.page]* items, which you can see in your database, if you have System42 installed, and run the following Hyperlambda.
-
-```
-select-data:x:/*/*/p5.page
-```
-
-Below is an example of inserting items with an explicit ID.
+If you wish, you can also supply an explicit ID to **[insert-data]**, by adding it as the value of each node inserted. Your ID can also be
+any type P5 supports. However, the ID must be unique for your server. Below is an example of inserting items with an explicit ID.
 
 ```
 insert-data
@@ -122,22 +115,21 @@ insert-data
 
 ## [select-data] dissected
 
-To understand *[select-data]*, is to understand the internal structure for how items are stored in memory. Your database has one "root node", in addition to several 
-"file nodes". These nodes _should_ be ignored, which is why all expressions starts out with two "children iterators" (`:x:/*/*`).
-
-Notice also, that expressions supplied to the database Active Events, does not use the database Active Event invocation nodes, as the "identity node", but rather
-the database "root node", which is actually just a huge tree, or p5.lambda/Node object, containing all your database items.
-
-After the two initial children iterators, you can supply any combination of iterators you wish. For instance, to select two of the three items we inserted above, you
-could use something like this.
+To understand **[select-data]**, is to understand the internal structure for how items are stored in memory. Your database has one root node, in addition to several 
+file nodes. These nodes _should_ be ignored, which is why all expressions starts out with two children iterators (`:x:/*/*`). Internally, the database
+is simply a huge graph object, or tree structure, with all items from your p5.data files, internally stored within memory as graph objects. The selectors
+above hence, are lambda expressions, referencing one or more items inside of this tree structure. Lambda expressions are kind of Phosphorus' version of XPath.
+Notice also, that expressions supplied to the database Active Events, does not use the database Active Event invocation nodes, as their identity node, but rather
+the database root node. After the two initial children iterators, you can supply any combination of iterators you wish. For instance, to select two of the three 
+items we inserted above, you could use something like this.
 
 ```
 select-data:x:/*/*/foo.my-type|/*/*/foo.some-third-type
 ```
 
-The above code, assumes some basic knowledge about boolean algebraic expressions. But basically, it selects all items having the name of "foo.my-type"
-and all items having the name of "foo.some-other-type". Assuming you evaluated the insert-data example that inserted three items at once, your result will look
-something like this.
+The above code, assumes some basic knowledge about boolean algebraic expressions. But basically, it selects all items having the name of _"foo.my-type"_
+and all items having the name of _"foo.some-third-type"_, ignoring everything else. Assuming you evaluated the insert-data example that inserted three items 
+at once above, your result will look something like this.
 
 ```
 select-data
