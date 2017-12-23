@@ -210,11 +210,11 @@ update-data:x:/*/*/foo.test-update/*/name?value
 select-data:x:/*/*/foo.test-update
 ```
 
-In the above lambda, we first insert an item, with a name node, having the value of "John Doe". Afterwards, we update _only_ the name, of our inserted items, 
-such that it becomes "Jane Smith". To show our change, we invoke *[select-data]*, at the end of our lambda.
+In the above lambda, we first insert an item, with a name node, having the value of _"John Doe"_. Afterwards, we update __only__ the **[name]**, of our inserted items, 
+such that it becomes _"Jane Smith"_. To show our change, we invoke **[select-data]**, at the end of our lambda.
 
-If you had multiple items in your database, with the root node's name being *[foo.test-update]*, then all items would be updated with the 
-above *[update-data]* invocation.
+**Warning**, if you had multiple items in your database, with the root node's name being **[foo.test-update]**, then all items would be updated with the 
+above **[update-data]** invocation.
 
 To update the entire item, we could use something like this.
 
@@ -230,7 +230,7 @@ select-data:x:/*/*/foo.test-update
 Or, if you wish to ensure that only one item is updated, you could pass in its ID as a part of your expression, as is shown below.
 
 ```
-update-data:x:"/*/*/\"=:guid:f89e6955-8dee-41ec-aa05-e8f2e450c073\""
+update-data:x:"/*/*/=:guid:f89e6955-8dee-41ec-aa05-e8f2e450c073"
   src
     foo.test-update
       first-name:Peter
@@ -239,47 +239,11 @@ select-data:x:/*/*/foo.test-update
 ```
 
 The above code, uses the automatically generated ID for the item from my database. The guid needs to be replaced with the guid generated 
-by your system, for one of your items, if you wish to test this for yourself.
-
-You can also update multiple items, relatively, according to their previous values, by using an Active Event source for your *[update-data]* invocations.
-Imagine the following.
-
-```
-insert-data
-  foo.av-update-test
-    name:Thomas Hansen
-  foo.av-update-test
-    name:John Doe
-update-data:x:/*/*/foo.av-update-test
-  eval
-    p5.string.split:x:/../*/_dn/#/*/name?value
-      =:" "
-    eval-x:x:/+/*/*
-    return
-      foo.av-update-test
-        first-name:x:/../*/p5.string.split/0?name
-        surname:x:/../*/p5.string.split/1?name
-select-data:x:/*/*/foo.av-update-test
-```
-
-The above lambda, will first insert two items into our database, with a single *[name]* child node, containing the entire name for our objects. Then it will
-update these items, relatively, with an Active Event source invocation, using *[eval]* as our source. Our *[eval]* lambda object, will use *[p5.string.split]* to p5.string.split
-the *[name]* into both *[first-name]* and *[surname]*, which it then returns as children nodes of our new and updated *[foo.av-update-test]* node.
-
-The result becoming that the items are still the same, but their names is splitted into first-names and surnames in our database.
-
-Notice that when you use *[update-data]*, the IDs of your items are unchanged, unless you choose to give them a new "explicit" ID in your update invocations.
-So the old database ID is kept, unless you choose to explicitly give it a new ID somehow. Notice also, that if you give your items a new ID, and this ID exists
-for another item in your database from before - Then an exception will be thrown, and the update will be rejected.
-
-If an exception occurs, during both insert, delete and update, then the entire batch of change will be rejected!
+by your system, for one of your items, if you wish to test this for yourself. If an exception occurs, during both insert, delete and update, 
+then the entire batch of change will be rejected. Transactions are **implicit** in p5.data.
 
 ## Big data sets
 
-p5.data is _not_ for humongous data sets. If you wish to handle huge data sets, you will have to use something else. There does however exist
-a MySQL plugin for P5, and more data adapters are considered.
-
+p5.data is **not** for humongously large data. If you wish to handle huge data sets, you will have to use something else. There does however exist
+a MySQL plugin for P5, and more data adapters are considered on an ongoing basis.
 See an example of how you could create your own plugin [here](/samples/p5.active-event-sample-plugin/) if you wish to create your own data adapters.
-
-
-
