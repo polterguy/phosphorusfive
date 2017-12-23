@@ -166,7 +166,7 @@ Which will return the number of items in your database, having a root node, cont
 
 ## Deleting data with [delete-data]
 
-The *[delete-data]* Active Event, takes similar types of expressions as *[select-data]*. However, instead of selecting items, it deletes items from your database.
+The **[delete-data]** Active Event, takes similar types of expressions as **[select-data]**. However, instead of selecting items, it deletes items from your database.
 To delete one of the items we inserted above, you could use something like this.
 
 ```
@@ -175,10 +175,8 @@ delete-data:x:/*/*/foo.some-third-type
 
 If you evaluate the above p5.lambda, you will see that it returns the number of items that was actually deleted for us. Which for the above lambda, should be no more
 than one item of course. You can also of course delete items by their IDs, or use any other legal expressions, with boolean algebraic expressions, and any amount of 
-complexity you choose.
-
-You can also delete multiple items using *[delete-data]*, which of course will only create one lock on your database for you. Whatever expressions you
-can legally create through [p5.exp](/core/p5.exp/), you can use to delete data using *[delete-data]*. Example given below.
+complexity you choose. You can also delete multiple items using **[delete-data]**, which of course will only create one lock on your database for you. Whatever 
+expressions you can legally create through [p5.exp](/core/p5.exp/), you can use to delete data using **[delete-data]**. Example given below.
 
 ```
 delete-data:x:/*/*/~foo.
@@ -190,13 +188,13 @@ You can also delete only parts of your graph objects, such as for instance.
 delete-data:x:/*/*/~foo./*/name
 ```
 
-Which will delete all "name" children nodes of objects having _"foo." as their type declaration.
+Which will delete all **[name]** children nodes of objects having _"foo"_ in their type declaration.
 
 ## Updating data with [update-data]
 
-The *[update-data]* Active Event is probably the most complex of all data events. This is because it allows to update any parts of your tree, 
-any ways you see fit, including values of nodes, names of nodes, and even the nodes themselves. It takes a *[src]* argument, which can be replaced 
-with any Active Event invocation you wish. Let's first take a look at a traditional *[src]* invocation.
+The **[update-data]** Active Event is probably the most complex of all data events. This is because it allows to update any parts of your tree, 
+any ways you see fit, including values of nodes, names of nodes, and even the nodes themselves. It takes a **[src]** argument, which can be replaced 
+with any Active Event invocation you wish. Let's first take a look at a traditional **[src]** invocation.
 
 ```
 // Inserting item to have something to update
