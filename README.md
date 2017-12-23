@@ -16,7 +16,18 @@ The default source installation has no dependencies besides .Net/Mono, unless yo
 ### Cloning Phosphorus Five
 
 Phosphorus Five has several _"submodules"_. The most important one being [Micro](https://github.com/polterguy/micro). If you get weird 
-styling issues as you clone Phosphorus Five, make your you have Micro inside of your _"/core/p5.webapp/modules/"_ folder.
+styling issues as you clone Phosphorus Five, make your you have Micro inside of your _"/core/p5.webapp/modules/"_ folder. If you clone
+Phosphorus Five _"recursively"_, it will pull in all of its submodules, including [Micro](https://github.com/polterguy/micro), 
+[Hyper IDE](https://github.com/polterguy/hyper-ide), [Sephia Five](https://github.com/polterguy/sephia-five), etc. This is the easiest
+way to test **everything** in Phosphorus Five during cloning, including Hyper IDE.
+
+### Downloading app through the Bazar
+
+Phosphorus Five contains an integrated _"App Store"_. This allows you to install lots of apps on your server, while it is running, without
+having to interrupt normal usage. This is the preferred way to fill Phosphorus Five with apps, but it is **dependent upon GnuPG**. In a Linux
+system, simply make sure you install gnu pg with e.g. `sudo apt-get install gnupg`. On Mac OSX, you can use for instance _"GPG Keychain"_.
+You can probably find some sort of GnuPG system, also for Windows. GnuPG makes sure only cryptographically signed packages are installed on 
+your system.
 
 ## Creating your own apps
 
