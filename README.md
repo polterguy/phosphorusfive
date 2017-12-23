@@ -9,7 +9,7 @@ allows you to orchestrate your apps together, almost as if they were made out of
 
 ## Installation
 
-[]Read about installation here](https://github.com/polterguy/phosphorusfive/releases). Basically, it allows you to install it either locally,
+[Read about installation here](https://github.com/polterguy/phosphorusfive/releases). Basically, it allows you to install it either locally,
 running its code version through e.g. Visual Studio, or installing the binary release on for instance a Linux/Ubuntu server.
 The default source installation has no dependencies besides .Net/Mono, unless you want to install additional _"apps"_ through its Bazar.
 
