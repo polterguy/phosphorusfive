@@ -134,13 +134,14 @@ if you know some C# from before.
 * [p5.imaging](/plugins/extras/p5.imaging) - Managing and manipulating images from P5
 * [p5.authorization](/plugins/extras/p5.io.authorization) - Authorization features in P5
 * [p5.io.zip](/plugins/extras/p5.io.zip) - Zip'ing and unzip'ing files, also supports AES cryptography
+* [p5.json](/plugins/extras/p5.json) - Parsing and creating JSON
 * [p5.mail](/plugins/extras/p5.mail) - Complex and rich SMTP and POP3 support, which is far better than the internal .Net classes for accomplishing the same
+* [p5.markdown](/plugins/extras/p5.markdown) - Parsing Markdown snippets
 * [p5.mime](/plugins/extras/p5.mime) - MIME support, in addition to PGP, and handling your GnuPG database
 * [p5.mysql](/plugins/extras/p5.mysql) - MySQL data adapter
+* [p5.pdf](/plugins/extras/p5.pdf) - Creating PDF documents in P5
 * [p5.threading](/plugins/extras/p5.threading) - Threading support in P5
 * [p5.xml](/plugins/extras/p5.xml) - XML support in P5
-* [p5.markdown](/plugins/extras/p5.markdown) - Parsing Markdown snippets
-* [p5.json](/plugins/extras/p5.json) - Parsing and creating JSON. __NOT YET RELEASED!!__
 
 ## MSDN Magazine articles
 
