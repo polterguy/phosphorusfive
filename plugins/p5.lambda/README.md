@@ -275,62 +275,42 @@ code for instance
 
 ```
 _y:hello world
-_x
+.x
   return:x:/../*/_y?value
-eval:x:/../*/_x
+eval:x:/../*/.x
 ```
 
-At the point where *[_x]* is evaluated, it no longer has access to the *[_y]* node, since this
-node is outside the scope of the *[_x]* node. Now we could of course use *[eval-mutable]*, but this would create 
+At the point where **[.x]** is evaluated, it no longer has access to the **[_y]** node, since this
+node is outside the scope of our **[.x]** node. Now we could of course use **[eval-mutable]**, but this would create 
 potentially other problems. Among other things, having the evaluated code having access to the entire execution 
-tree.
-
-Instead we could choose to forward evaluate the expression inside of our *[_x]* node, in our *[return]* invocation, such
-as the following code does.
+tree. Instead we could choose to forward evaluate the expression inside of our **[.x]** node, in our **[return]** invocation, 
+such as the following code does.
 
 ```
 _y:hello world
-_x
+.x
   return:x:/../*/_y?value
 
-// Forward evaluating the expression inside of [_x] first
-eval-x:x:/../*/_x/*
+// Forward evaluating the expression inside of [.x] first
+eval-x:x:/../*/.x/*/return
 
-// THEN we evaluate [_x]
-eval:x:/../*/_x
+// THEN we evaluate [.x]
+eval:x:/../*/.x
 ```
 
-When we then invoke our *[eval]* Active Event, the value of *[return]*, is no longer an expression, but contains the constant value 
-of that expression, as evaluated during our invocation of our *[eval-x]* Active Event.
-
-Notice also that *[eval-x]* _always_ expects a Node result set in its expression, and not a "?value" or "?name". This is because *[eval-x]* can
-only evaluate expressions, which can only be found in values of nodes. Below is a more useful useful example that uses System42's modal confirmation window.
-
-```
-_header:This is the header
-_body:This is the body
-
-// Try removing the invocation below, and see the difference in result
-eval-x:x:/+/*
-
-sys42.windows.confirm
-  header:x:/@_header?value
-  body:x:/@_body?value
-```
-
-The above example, is an extremely useful feature, since within our *[sys42.windows.confirm]* event, we have no access to any nodes outside of the root
-node for our event invocation. Hence both *[_header]* and *[_body]* are inaccessible. However, by evaluating the expressions in these nodes before we
-invoke the Active Event, it is no longer necessary for the event to access anything outside of its event invocation node.
+When we then invoke our **[eval]** Active Event, the value of **[return]**, is no longer an expression, but contains the constant value 
+of that expression, as evaluated during our invocation of our **[eval-x]** Active Event.
+Notice also that **[eval-x]** _always_ expects a Node result set in its expression, and not a "?value" or "?name". This is because **[eval-x]** can
+only evaluate expressions, which can only be found in values of nodes.
 
 ### [add], adding nodes to your trees
 
-The *[add]* Active Event, allows you to dynamically add nodes into your lambda objects.
-
-This active event must be given an expression as its destination, and can optionally take many different forms of sources through its *[src]*.
-For instance, to add up a static source, into some node destination, you could accomplish that doing the following.
+The **[add]** Active Event, allows you to dynamically add nodes into your lambda objects. This active event must be given an expression as its destination,
+and can optionally take many different forms of sources through its **[src]**. For instance, to add up a static source, into some node destination, you 
+could accomplish that doing the following.
 
 ```
-_x
+.x
   foo1:bar1
 add:x:/-
   src
@@ -338,37 +318,35 @@ add:x:/-
 ```
 
 A static source, can be as complex as you wish, and contain any tree hierarchy you can possibly declare in your lambda objects.
-
 As previously explained at the top of this document, modifying the instruction pointer will work perfectly well, allowing you to
 create code that modifies itself, before it evaluates the parts it notified/added to itself. Imagine the following code.
 
 ```
-_x
+.x
   create-widget
     element:h1
     innerValue:Original, static widget
   add:x:/..
     src:x:/../*/argument/*
-eval:x:/@_x
+eval:x:/@.x
   argument
     create-widget
       element:h1
       innerValue:Dynamically injected into lambda object
 ```
 
-What happens in the above lambda object, is that the *[eval]* invocation, passes in an *[argument]* argument, which contains a *[create-widget]*
-invocation. After evaluating the first *[create-widget]* node, inside of our *[_x]* node, the *[add]* invocation appends the content of
-our *[_arg]* node, which was passed into *[eval]* into the "root node" for our tree, which during the evaluation of *[_x]* is actually *[_x]*
-itself. Then the instruction pointer moves on, realizing it has _ANOTHER_ (newly dynamically added) *[create-widget]* node, which
-is then evaluated finally, before the instruction pointer returns from *[_x]*.
-
+What happens in the above lambda object, is that the **[eval]** invocation, passes in an **[argument]** argument, which contains a **[create-widget]**
+invocation. After evaluating the first **[create-widget]** node, inside of our **[.x]** node, the **[add]** invocation appends the content of
+our **[argument]** node, which was passed into **[eval]** into the root node for our tree, which during the evaluation of **[.x]** is actually **[.x]**
+itself. Then the instruction pointer moves on, realizing it has **ANOTHER** (newly dynamically added) **[create-widget]** node, which
+is then evaluated finally, before the instruction pointer returns from **[.x]**.
 This feature of course, is true for all Active Events that modifies the execution tree somehow. In the above code, you also see how to create
-a "dynamic source" for your *[add]*, having an expression leading to the source, and not a constant hierarchy.
+a dynamic source for your **[add]**, having an expression leading to the source, and not a constant hierarchy.
 
 For the record, the above features I think is something completely unique to P5, allowing injection of additional code,
-into "methods and functions" (lambda objects), through modifying the execution tree it is currently executing directly, without any "parsing" 
-of "code" occurring. This dynamic nature of lambda objects, is as far as I know, completely unique to P5. Other languages can take anonymous delegates,
-and function lambda objects - But modifying an existing function object is completely unique to P5 as far as I know.
+into _"methods and functions"_ (lambda objects), through modifying the execution tree it is currently executing directly, without any parsing 
+of code occurring. This dynamic nature of lambda objects, is as far as I know, completely unique to P5. Other languages can take anonymous delegates,
+and function lambda objects - But modifying an existing function object, is completely unique to P5 as far as I know.
 
 ### [if], [else-if], [else] and [while]
 
@@ -383,7 +361,7 @@ if:bool:true
     innerValue:Yup, we branched!
 ```
 
-The above *[if]* will yield true, since it is given a constant, having the value of boolean true. If we exchanged the value to false, it would
+The above **[if]** will yield true, since it is given a constant, having the value of boolean true. If we exchanged the value to false, it would
 not create our widget. If you exchange the type declaration of your object though, to string, which is the implicit type, with the following code,
 you would see something different.
 
@@ -394,7 +372,7 @@ if:false
     innerValue:Yup, we branched!
 ```
 
-This is because all string literals, automatically converts to _true_ for your conditional Active Events. Think of this as implicit conversion
+This is because all string literals, implicitly converts to _true_ for your conditional Active Events. Think of this as implicit conversion
 to boolean values, according to _"does there exist something"_. Meaning, not equals null is the implicit logic of your conditional events. You could
 do this with any other types you wish, for instance integer numbers too.
 
@@ -405,8 +383,8 @@ if:int:1
     innerValue:Yup, we branched!
 ```
 
-The above code will even branch if you exchange the "1" with a "0", since there "exists something", which makes the condition yield true.
-Notice though, that if you remove the ":int:1" part above, and exchange it with a "null node value", the branch will still occur.
+The above code will even branch if you exchange the _"1"_ with a _"0"_, since there _"exists something"_, which makes the condition yield true.
+Notice though, that if you remove the `:int:1` part above, and exchange it with a _"null node value"_, the branch will still occur.
 
 ```
 if
@@ -427,14 +405,12 @@ if
     innerValue:Yup, we branched!
 ```
 
-In the above code, the *[foo]* node, will be evaluated as an Active Event, and if it returns true (or some sort of 'existence object'), the
-condition as a whole will yields true. If you created an Active Event named "foo", and you made sure it returned for instance "true", then
-the branch would occur, and we would have our widget created. Since *[foo]* above, is not an existing Active Event, it will not do anything,
-making its value still being "null" after evaluation of itself, meaning the condition for *[if]* yields false, and no widget is created, since
-the branch does not occur.
-
-To use constants as your conditions for your conditional events, often makes little or no sense. A more useful approach, would be to use
-an expression, yielding the results of some node-set, such as the following.
+In the above code, the **[foo]** node, will be evaluated as an Active Event, and if it returns true (or some sort of _'existence object'_), the
+condition as a whole will yields true. If you created an Active Event named **[foo]**, and you made sure it returned for instance _"true"_, then
+the branch would occur, and we would have our widget created. Since **[foo]** above, is not an existing Active Event, it will not do anything,
+making its value still being _"null"_ after evaluation of itself, meaning the condition for **[if]** yields false, and no widget is created, since
+the branch does not occur. To use constants as your conditions for your conditional events, often makes little or no sense. A more useful approach, 
+would be to use an expression, yielding the results of some node-set, such as the following.
 
 ```
 _x:bool:true
@@ -444,11 +420,9 @@ if:x:/../*/_x?value
     innerValue:Yup, we branched!
 ```
 
-If you change the value of the above *[_x]* node to false, or "null", the branch will not occur. If you change it to for instance the integer
-5, the branch will occur though, since the implicit conversion to boolean will yield true.
-
-Now a more useful approach, would be to compare it against, either some sort of constant value, or the results of another expression. Imagine 
-the following code.
+If you change the value of the above **[_x]** node to false, or _"null"_, the branch will not occur. If you change it to for instance the integer 5,
+the branch will occur though, since the implicit conversion to boolean will yield true. A more useful approach, would be to compare it against, either 
+some sort of constant value, or the results of another expression. Imagine the following code.
 
 ```
 _x:int:5
@@ -460,10 +434,8 @@ if:x:/../*/_x?value
 ```
 
 In the above code, the return value of the expression in our if, will be compared against the constant of the integer valur of 5, 
-and the result will yield a match. Hence, the branch occurs.
-
-Notice, that branching conditions in p5.lambda are type sensitive, which means if you run the following code, where you compare an integer to
-a string, it will _NOT_ yield true, since their types are different.
+and the result will yield a match. Hence, the branch occurs. Notice, that branching conditions in p5.lambda are type sensitive, 
+which means if you run the following code, where you compare an integer to a string, it will _NOT_ yield true, since their types are different.
 
 ```
 _x:int:5
@@ -471,7 +443,7 @@ if:x:/../*/_x?value
   =:5
   create-widget
     element:h1
-    innerValue:Yup, we branched!
+    innerValue:This won't show!
 ```
 
 You could however type cast the results of your expression above, to make them become equal, like the following code demonstrates.
@@ -485,29 +457,27 @@ if:x:/../*/_x?value.string
     innerValue:Yup, we branched!
 ```
 
-The ".string" parts at the end of our expression above, will convert the results of our expression, into a string, which of course will create 
-a match for our conditional statement, since this value of our expression, will equal the constant string value of "5" in our '=' condition.
-
-There exists 8 comparison "operators" in p5.lambda. "=", "!=", ">", "<", ">=", "<=", in addition to the two "like comparison" operators 
-"\~" and "!\~". The first 6 of these "operators", does what you'd expect them to do, and works the same way in most other programming 
-languages - While the two latter "like comparison" operators, works the same way as the tilde (\~) works in expressions, and are logically 
-the equivalent of asking "does this string exist in the condition". Imagine the following code as an illustration.
+The _".string"_ parts at the end of our expression above, will convert the results of our expression, into a string, which of course will create 
+a match for our conditional statement, since this value of our expression, will equal the constant string value of _"5"_ in our '=' condition.
+There exists 8 comparison "operators" in p5.lambda. "=", "!=", ">", "<", ">=", "<=", in addition to two like comparison operators 
+"\~" and "!\~". The first 6 of these _"operators"_, does what you'd expect them to do, and works the same way in most other programming 
+languages - While the two latter _"like comparison"_ operators, works the same way as the tilde (\~) works in expressions, and are logically 
+the equivalent of asking _"does this string exist in the condition"_. Imagine the following code as an illustration.
 
 ```
 _x:thomas hansen
 if:x:/../*/_x?value
-  ~:hans
+  ~:hansen
   create-widget
     element:h1
     innerValue:Yup, we branched!
 ```
 
-The above condition will yield "true", since the string of "hans" do exist in the return value of the initial expression. Notice, that this
+The above condition will yield true, since the string of _"hansen"_ do exist in the return value of the initial expression. Notice, that this
 is a case sensitive string comparison, and only works for string comparisons. Or to be more precise, the values of both the constant, and the 
-expression, will be automatically converted to "strings" before they're compared for a match.
-
-For the record, all "comparison operators" are actually Active Events, and you can easily create your own "extension comparison operators",
-creating your own Active Events, simply making sure you return "true" if they are supposed to evaluate to true.
+expression, will be automatically converted to strings before they're compared for a match. For the record, all comparison operators are actually 
+simply Active Events, and you can easily create your own extension comparison operators, creating your own Active Events, simply making sure you 
+return true if they are supposed to evaluate to true.
 
 ### More conditions, compound comparisons
 
