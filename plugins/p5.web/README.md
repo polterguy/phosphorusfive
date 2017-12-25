@@ -1,13 +1,21 @@
-Ajax widgets in Phosphorus Five
+Web and Ajax things in Phosphorus Five
 ===============
 
-p5.web is the Ajax web widget GUI library for Phosphorus Five and Hyperlambda. This is the part that makes it possible for you to use
-Active Events such as *[create-widget]* and *[set-widget-property]*. In addition, it contains helper Active Events which
+p5.web is the Ajax web widget GUI library for Phosphorus Five and Hyperlambda, in addition to that it takes care of everything
+related to the web in P5. This is the part that makes it possible for you to use
+Active Events such as **[create-widget]** and **[set-widget-property]**. In addition, it contains helper Active Events which
 allows you to modify stuff such as the response HTTP headers, access the session object, and even entirely take control
-over the returned response through events such as *[p5.web.echo]* and *[p5.web.echo-file]*. To a large extent, it wraps p5.ajax, 
+over the returned response through events such as **[p5.web.echo]** and **[p5.web.echo-file]**. To a large extent, it wraps p5.ajax, 
 allowing you to use Active Events to create, delete and manipulate Ajax widgets.
 
-However, to start out with the obvious, let's first take a look at how we create a basic Ajax widget.
+## Notice
+
+p5.web is built around ASP.NET WebForms, but it is also the only part of P5 which is referencing `System.Web`. This implies that
+you can very much use Phosphorus Five in for instance a Microsoft MVC application, and probably also in .Net Core if you want
+to. If you choose to do this, then p5.web is the only project you cannot use. This makes Phosphorus Five also highly useful
+for development in .Net Core or Microsoft MVC, since it allows you to use for instance Hyperlambda as a scripting language
+for your Microsoft MVC applications. So although Phosphorus Five is arguably created around WebForms, 99% of it can still
+be used in any other CLR type of application, due to its highly modular nature.
 
 ## Creating your first Ajax web widget
 
