@@ -20,7 +20,7 @@ _no:int:4
   _:int:1
 ```
 
-After evaluating the above code, the *[+]* node will contain the integer value of "5". Below is the resulting lambda object after having evaluated
+After evaluating the above code, the **[+]** node will contain 5. Below is the resulting lambda object after having evaluated
 the above code.
 
 ```
@@ -28,7 +28,7 @@ _no:int:4
 +:int:5
 ```
 
-Notice, you can also add up multiple arguments to each math operator invocation, such as the following illustrates.
+You can also add up multiple arguments to each math operator invocation, such as the following illustrates.
 
 ```
 _no:int:2
@@ -37,10 +37,8 @@ _no:int:2
   _:int:2
 ```
 
-Which will yield the same result as our first example.
-
-Each argument you supply to your math operator invocation, must have a name being *[_]*. The value can be a constant, or an expression, such as 
-the following illustrates.
+Which will yield the same result as our first example. Each argument you supply to your math operator invocation, must have a name 
+being **[_]**. The value can be a constant, or an expression, such as the following illustrates.
 
 ```
 _no1:int:5
@@ -60,8 +58,8 @@ _no2:int:3
     _:int:1
 ```
 
-The above code will first subtract the number 1 from *[_no2]*'s value, then add that result to *[_no1]*, and put the end result into the value of 
-our *[+]* node.
+The above code will first subtract the number 1 from **[_no2]**'s value, then add that result to **[_no1]**, and put the end result into the value of 
+our **[+]** node.
 
 ## Types and math
 
@@ -77,9 +75,8 @@ _bar:" hansen"
 
 However, for strings, such as our above example - Probably a more suitable solution would be to use formatting expressions, which you can read about
 in the [p5.exp](../../core/p5.exp#formatting-expressions) project. A more useful example, would be if you created your own type, wrapping for instance
-a System type from .Net such as BigInt, or something similar. Or if you added a TimeSpan to a DateTime object.
-
-Notice, the type of the value of whatever math operator Active Event you're using, become the _"driving type"_, and decides the type of your result. If
+a System type from .Net such as BigInt, or something similar - Or if you add a TimeSpan to a DateTime object.
+Notice, the type of the value of whatever math operator Active Event you're using, become the _"controlling type"_, and decides the type of your result. If
 you wish to make sure it has a specific type, you can use a type conversion in your expressions, referencing the value you're using as the main object.
 An example can be found below.
 
@@ -89,9 +86,9 @@ _str:4
   _:1
 ```
 
-Notice also in the above example, that the string value of "1", will be automatically converted into the type expected from the value of 
-our *[+]* invocation. Since the expression in our *[+]* is type converted into an _"int"_, this means that the string value of "1", is converted
-to an integer, and added to the integer converted value of the *[_str]* node's value. Try removing the type conversion, to see a very much different
+Notice also in the above example, that the string value of _"1"_, will be automatically converted into the type expected from the value of 
+our **[+]** invocation. Since the expression in our **[+]** is type converted into an _"int"_, this means that the string value of _"1"_, is converted
+into an integer, and added to the integer converted value of the **[_str]** node's value. Try removing the type conversion, to see a very much different
 result.
 
 ```
@@ -118,10 +115,10 @@ The math operators does not in any way discriminate between any Active Event and
 easily use an Active Event you create yourself, as the source for any parts of your math operators. The following illustrates an example.
 
 ```
-_x
+.x
   return:1
 +:int:4
-  eval:x:/@_x
+  eval:x:/@.x
 ```
 
 Of course, using your own Active Events here, is just was easily accomplished - As long as your event returns some simple value, convertible into
