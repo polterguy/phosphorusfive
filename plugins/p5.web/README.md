@@ -1181,51 +1181,48 @@ If you wish to directly save the request, without first putting it into memory, 
 body using the **[p5.web.request.save-body]** Active Event, which takes a constant or expression leading to a filename on your server. Notice, this event
 requires the currently logged in user context to be able to write to the path supplied. The latter event is quite useful if you are implementing some
 sort of REST web service, which is supposed to _"PUT"_ some file for instance. However, when dealing with more complex types of HTTP requests, 
-there also exists helper Active Events in the [p5.mime](../extras/p5.mime/) project.
+there also exists helper Active Events in the [p5.mime](../extras/p5.mime/) project for things such as parsing more complex MIME requests.
 
 ### Additional request helper events
 
-You can also get the HTTP method of your request, using the *[p5.web.request.get-method]* Active Event, in addition to that you can have P5 make its best guess
-of whether or not the request originated from a mobile device using the *[p5.web.request.is-mobile]* Active Event. The latter is not 100% perfect,
+You can also get the HTTP method of your request, using the **[p5.web.request.get-method]** Active Event, in addition to that you can have P5 make its best guess
+of whether or not the request originated from a mobile device using the **[p5.web.request.is-mobile]** Active Event. The latter is not 100% perfect,
 since a mobile device is not required to identify itself as such to your server. But it is good enough for most cases, and will do a decent job, 
-determining if the client is some sort of mobile device or not.
+determining if the client is some sort of mobile device or not, for most practical use cases.
 
 ### Modifying your HTTP status code and text
 
 You can modify the status message and the status code of your response using these two Active Events.
 
-* [p5.web.response.set-status-code] - Sets the status code, requires an integer, or an expression leading to an integer as its input
-* [p5.web.response.set-status-description] - Sets the status message, tolerates anything that is convertible into text
+* __[p5.web.response.set-status-code]__ - Sets the status code, requires an integer, or an expression leading to an integer as its input
+* __[p5.web.response.set-status-description]__ - Sets the status message, tolerates anything that is convertible into text
 
 ### Creating Web Services, lambda style
 
-One thing you should realize about *[p5.web.echo]* and *[p5.web.request.get-body]*, is that you can both pass in, and return Hyperlambda, which you then convert to 
+One thing you should realize about **[p5.web.echo]** and **[p5.web.request.get-body]**, is that you can both pass in, and return Hyperlambda, which you then convert to 
 lambda, for then to evaluate it as such. This feature of P5, allows you to pass code from your client, to a server, and have the server evaluate 
 your code, for then to return code back again, which the client evaluates on its side.
-
 This allows the client to decide what code is to be evaluated on your web-server endpoints, which at least in theory, makes it possible for you to
 create one single web service point, for all your web-service needs. In addition, it lets you massage the output from some web service endpoint,
 before it is returned, which can possibly reduce your response, and network traffic, significantly compared to a specialized web service endpoint,
 which possibly yields values back to the client, which the client is not interested in.
-
 This feature has some serious security issues, which you should consider before you go down this path though. But if you are 100% certain of that you
 trust the client that initiated the request (due to being a part of your own intranet for instance), then you can safely use this feature, and allow
 your clients to invoke code in your web service endpoints.
 
-Notice, to reduce the risks associated with this approach, please read up on the *[eval-whitelist]* Active Event.
-
-If you combine this feature, with the PGP cryptographic features of P5, requiring having your web service invocations cryptographically signed, before
+Notice, to reduce the risks associated with this approach, please read up on the **[eval-whitelist]** Active Event, which allows you to declare a sub-set
+of legal Active Events to your **[eval]** invocation.
+If you combine this feature, with the PGP cryptographic features of P5 from p5.mime, requiring having your web service invocations cryptographically signed, before
 you evaluate them as Hyperlambda, you can create an additional layer of protection, further safe-guarding you against malicious requests.
 This way you have a cryptographically secure context, giving
 your guarantees of that the invocation towards your web service, was created by some client, which you trust 100% - Since the signing process of
 an invocation, makes sure it has not beeen tampered with in any ways after leaving the client. And only the client owning the private key that was
-used to sign the invocation, can create a signature matching your expectations. Combined with *[eval-whitelist]*, this approach should allow you to 
-create a rock-solid lambda web service end-point.
+used to sign the invocation, can create a signature matching your expectations. Combined with **[eval-whitelist]**, this approach should allow you to 
+create a rock-solid secure lambda web service end-point.
 
 To use this feature, you would have to pass in your invocations as MIME messages, using the p5.mime library of P5. This would also allow you to
 encrypt your invocations, making it impossible for an adversary, to listen in on the conversation, between your client(s) and your server(s).
-
-If you encrypt your web service invocations, you can even use features such as the Active Event *[login]*, in your embedded Hyperlambda,
+If you encrypt your web service invocations, you can even securely use features such as the Active Event **[login]**, in your embedded Hyperlambda,
 to change the Application Context user ticket for your web service invocations, giving you further rights, having your invocation being evaluated 
 within an explicit user context.
 
@@ -1233,14 +1230,14 @@ within an explicit user context.
 
 In addition to the above mentioned Active Event, you also have the following events, which are fairly self-explaining in nature.
 
-* [p5.web.request.is-ajax-callback] - Returns true if this is an Ajax request
-* [p5.web.send-javascript] - Send a piece of JavaScript to the client
-* [p5.web.include-javascript] - Includes a piece of JavaScript snippet persistently on page
-* [p5.web.include-javascript-file] - Includes a JavaScript file persistently on the client
-* [p5.web.include-css-file] - Includes a CSS file persistently on the client
-* [p5.web.set-location] - Redirects the client to the specified location
-* [p5.web.get-location] - Returns the current location (URL)
-* [p5.web.get-location-url] - Returns only the main URL, without any GET parameters
-* [p5.web.get-root-location] - Returns the root URL of your web application
-* [p5.web.reload-location] - Refreshes the client
-* [p5.web.return-response-object] - Returns your own object as JSON back to caller, requires usage of JavaScript API of p5.ajax
+* __[p5.web.request.is-ajax-callback]__ - Returns true if this is an Ajax request
+* __[p5.web.send-javascript]__ - Send a piece of JavaScript to the client
+* __[p5.web.include-javascript]__ - Includes a piece of JavaScript snippet persistently on page
+* __[p5.web.include-javascript-file]__ - Includes a JavaScript file persistently on the client
+* __[p5.web.include-css-file]__ - Includes a CSS file persistently on the client
+* __[p5.web.set-location]__ - Redirects the client to the specified location
+* __[p5.web.get-location]__ - Returns the current location (URL)
+* __[p5.web.get-location-url]__ - Returns only the main URL, without any GET parameters
+* __[p5.web.get-root-location]__ - Returns the root URL of your web application
+* __[p5.web.reload-location]__ - Refreshes the client
+* __[p5.web.return-response-object]__ - Returns your own object as JSON back to caller. Requires usage of the JavaScript API of p5.ajax
