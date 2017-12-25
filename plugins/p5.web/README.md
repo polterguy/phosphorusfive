@@ -1,4 +1,4 @@
-﻿﻿﻿﻿Ajax widgets in Phosphorus Five
+Ajax widgets in Phosphorus Five
 ===============
 
 p5.web is the Ajax web widget GUI library for Phosphorus Five and Hyperlambda. This is the part that makes it possible for you to use
