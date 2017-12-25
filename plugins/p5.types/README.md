@@ -3,13 +3,11 @@ p5.types, types in Phosphorus Five
 
 This library's Active Events are rarely used directly, but rather used when converting from one type to another, indirectly.
 Among other things, the Hyperlambda parser is dependent upon this library, to convert from string representation, to object representation
-for your objects, and vice versa.
+for your objects, and vice versa. To extend the typing system, you will normally have to implement three different Active Events
 
-To extend the typing system, you will normally have to implement three different Active Events
-
-* .p5.hyperlambda.get-object-value.my-type
-* .p5.hyperlambda.get-string-value.MyTypeNamespace.MyTypeClassName
-* .p5.hyperlambda.get-type-name.MyTypeNamespace.MyTypeClassName
+* __[.p5.hyperlambda.get-object-value.my-type]__
+* __[.p5.hyperlambda.get-string-value.MyTypeNamespace.MyTypeClassName]__
+* __[.p5.hyperlambda.get-type-name.MyTypeNamespace.MyTypeClassName]__
 
 The first Active Event above, is supposed to convert a string representation to the object version of your type.
 
