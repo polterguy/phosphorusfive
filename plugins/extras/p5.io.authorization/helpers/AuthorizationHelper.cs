@@ -249,7 +249,7 @@ namespace p5.io.authorization.helpers
                                     // Hence, if this is not a [deny-folder], it won't be a match.
                                     if (path.StartsWithEx (idxAccessInner.GetChildValue ("deny-folder", context, "x"))) {
 
-                                        // Explicit override exists.
+                                        // Explicit override deny exists.
                                         return false;
                                     }
                                 }
