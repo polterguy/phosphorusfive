@@ -1,4 +1,4 @@
-The core ""keywords" in Phosphorus Five
+The core "keywords" in Phosphorus Five
 ===============
 
 This is the core of the _"non-programming language keywords"_ of Phosphorus Five. Although, programming language,
