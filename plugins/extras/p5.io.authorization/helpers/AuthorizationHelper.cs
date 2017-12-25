@@ -195,6 +195,18 @@ namespace p5.io.authorization.helpers
             // Verifying "auth" file is safe.
             if (filename == GetAuthFile (context).ToLower ())
                 return false;
+            
+            // Checking access right.
+            if (context.Ticket.Role != "root") {
+                var access = new Node ();
+                context.RaiseEvent ("p5.auth.access.list", access);
+                if (access [context.Ticket.Role] != null) {
+                    foreach (var idx in access [context.Ticket.Role].Children) {
+                        if (idx.Name == "read-folder-deny" && filename.StartsWithEx (idx.GetExValue (context, "")))
+                            return true;
+                    }
+                }
+            }
 
             // Success.
             return true;
@@ -215,12 +227,14 @@ namespace p5.io.authorization.helpers
                 return true;
 
             // Checking access right.
-            var access = new Node ();
-            context.RaiseEvent ("p5.auth.access.list", access);
-            if (access [context.Ticket.Role] != null) {
-                foreach (var idx in access [context.Ticket.Role].Children) {
-                    if (idx.Name == "write-folder" && filename.StartsWithEx (idx.GetExValue (context, "")))
-                        return true;
+            if (context.Ticket.Role != "root") {
+                var access = new Node ();
+                context.RaiseEvent ("p5.auth.access.list", access);
+                if (access [context.Ticket.Role] != null) {
+                    foreach (var idx in access [context.Ticket.Role].Children) {
+                        if (idx.Name == "write-folder" && filename.StartsWithEx (idx.GetExValue (context, "")))
+                            return true;
+                    }
                 }
             }
 
@@ -241,6 +255,18 @@ namespace p5.io.authorization.helpers
             var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
             if (foldername.StartsWithEx (dbPath))
                 return false;
+
+            // Checking access right.
+            if (context.Ticket.Role != "root") {
+                var access = new Node ();
+                context.RaiseEvent ("p5.auth.access.list", access);
+                if (access [context.Ticket.Role] != null) {
+                    foreach (var idx in access [context.Ticket.Role].Children) {
+                        if (idx.Name == "read-folder-deny" && foldername.StartsWithEx (idx.GetExValue (context, "")))
+                            return true;
+                    }
+                }
+            }
 
             // Success.
             return true;

@@ -52,6 +52,20 @@ developer:some-unique-string-id
 
 The above access right object for instance, would give all users belonging to the *"developer"* role, write access to the _"/modules/"_ folder.
 
+## Denying users read access to specific files
+
+You can also further restrict a user's access to reading files, by creating an access object like the following.
+
+```
+// Role name
+developer:some-other-unique-string-id
+  read-folder-deny:/modules/hyper-ide/
+```
+
+The above will deny all users belonging to the role _"developer"_ to read from any files beneath _"/modules/hyper-ide/"_, in addition to deny the
+user to list the files inside of the same folder. And in fact, when listing the children folders in the above folder, the _"/hyper-ide/"_ folder won't even show
+for users belonging to the _"developer"_ role.
+
 ## Rolling your own
 
 The authorisation logic in P5 is intentionally kept highly naive, to make it more eaily understood. If you wish to have more fine-grained authorisation,
