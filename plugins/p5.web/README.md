@@ -10,12 +10,13 @@ allowing you to use Active Events to create, delete and manipulate Ajax widgets.
 
 ## Notice
 
-p5.web is built around ASP.NET WebForms, but it is also the only part of P5 which is referencing `System.Web`. This implies that
+p5.web is built around ASP.NET WebForms, but it is also the _only part of P5_ which is referencing `System.Web`. This implies that
 you can very much use Phosphorus Five in for instance a Microsoft MVC application, and probably also in .Net Core if you want
-to. If you choose to do this, then p5.web is the only project you cannot use. This makes Phosphorus Five also highly useful
-for development in .Net Core or Microsoft MVC, since it allows you to use for instance Hyperlambda as a scripting language
-for your Microsoft MVC applications. So although Phosphorus Five is arguably created around WebForms, 99% of it can still
-be used in any other CLR type of application, due to its highly modular nature.
+to - Or for that matter a desktop application, or a mobile app with Xamarin Forms. If you choose to do this, then p5.web is the 
+only project you cannot use. This makes Phosphorus Five also highly useful for development in .Net Core or Microsoft MVC, since 
+it allows you to use for instance Hyperlambda as a scripting language for your Microsoft MVC applications. So although Phosphorus 
+Five is arguably created around WebForms, 99% of it can still be used in any other CLR type of application, due to its highly 
+modular architecture.
 
 ## Creating your first Ajax web widget
 
