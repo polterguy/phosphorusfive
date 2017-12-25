@@ -50,7 +50,7 @@ content of some specified folder. The structure of such an **[access]** object s
 /*
  * Role name is "developer".
  *
- * You can also use "*" as role name, to denote all roles (except root acounts)
+ * You can also use "*" as role name, to denote all roles (except root acounts).
  */
 developer:some-unique-string-id
   write-folder:/modules/
@@ -64,18 +64,43 @@ You can also further restrict a user's access to reading files and folders, by c
 
 ```
 *:some-other-unique-string-id
-  deny-folder:/foo/bar/
+  deny-folder:/foo/
 ```
 
 ## Deny/allow access precedence
 
-The above will deny all users to read (*and write*) from any files beneath _"/foo/bar/"_, in addition to deny the
+The above will deny all users to read (*and write*) from any files beneath _"/foo/"_, in addition to deny the
 user to list the files inside of the same folder. The **[deny-folder]** has precedence though, implying that it doesn't matter if you allow
-a role access to write to for instance _"/foo/bar/"_, if the user is denied access to _"/foo/"_. The user will still not be able to modify files inside
-of the _"/foo/bar/"_ folder, since he doesn't have access to _"/foo/"_.
+a role access to write to for instance _"/foo/bar/"_, if the user is denied access to _"/foo/"_ in general. The user will still not be able to modify files inside
+of the _"/foo/bar/"_ folder, as long as he doesn't have access to _"/foo/"_. You can however deny all roles, for then to allow a specific role access, doing something
+such as the following.
+
+```
+// Denies all roles by default (except root users)
+*:yet-another-unique-string-id
+  deny-folder:/foo/
+
+/*
+ * Allowing "developer" users access to the same folder we denied access to above.
+ *
+ * Below we are using [allow-folder], but we could also have used [write-folder]
+ * to also give write access to our "developer" role.
+ */
+developer:yet-another-again-unique-id
+  allow-folder:/foo/
+```
+
+In the above example, all roles except the _"developer"_ role are denied read access to the _"/foo/"_ folder, but the _"developer"_ role does not have write access, 
+only read. This will only work if the first **[deny-folder]** is using the asterix deny (*). This allows you to deny access by default to reading files in some 
+specific folder, for afterwards to open up explicitly for some specific roles in your system. There are three different access objects relevant to file IO operations
+in Phosphorus Five, these are as follows.
+
+* __[deny-folder]__ - Denies access to some folder
+* __[allow-folder]__ - Allows access again (undo above declaration for a specifically named role)
+* __[write-folder]__ - Gives write access for some specific role (or all roles)
 
 ## Rolling your own
 
-The authorisation logic in P5 is intentionally kept highly naive, to make it more eaily understood. If you wish to have more fine-grained authorisation,
+The authorisation logic in P5 is intentionally kept _naive_, to make it more eaily understood. If you wish to have more fine-grained authorisation,
 you might want to exchange this project, in addition to also probably the [p5.auth](/plugins/extras/p5.auth) plugin. By doing this correctly, you could 
 completely exchange the entire logic of authorisation as you see fit, and still retain compatibility with existing code.
