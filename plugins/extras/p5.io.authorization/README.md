@@ -21,9 +21,10 @@ To see an example of how to raise these Active Events yourself, you can check ou
 
 The logic of authorizating IO operations, is pretty simple to understand. Only root accounts can access and modify everything. Besides from that, a
 user can only write to his own files and folders, which are files inside of his personal _"/users/some-username/"_ folder. Any user can read from almost
-all other files, which (of course) is necessary to be able to execute Hyperlambda files in the system, except for these files.
+all other files, which (of course) is necessary to be able to execute Hyperlambda files in the system, except that any non-root user cannot in any ways
+read from these files.
 
-* The "auth" file or "users" database file
+* The _"auth.hl"_ file, or whatever it happens to be named in your system
 * The p5.data database files
 * web.config and app.config
 
@@ -35,7 +36,9 @@ is allowed to write to though, by adding an access right object to a role - Whic
 files in some specified folder of choice.
 
 Even if you created such a bug though, to access files and/or folders, or modify files and/or folders, the user is not authorized to read/modify,
-would still be prevented by this project, as long as it is included in your project as a plugin.
+would still be prevented by this project, as long as it is included in your project as a plugin - But only for the events distributed in Phosphorus Five
+by default. If you create your own events in C#, which reads and writes from disc, you'll either need to invoke these authorize events yourself, or create
+your own logic to make sure you don't accidentally give access to something a user shouldn't have access to.
 
 ## Creating explicit write access for users to some folder
 
