@@ -183,9 +183,13 @@ namespace p5.io.authorization.helpers
             var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
             if (filename.StartsWithEx (dbPath))
                 return false;
-
+            
             // Verify web.config is safe.
             if (filename == "/web.config")
+                return false;
+            
+            // Verify app.config is safe.
+            if (filename == "/app.config")
                 return false;
 
             // Verifying "auth" file is safe.
