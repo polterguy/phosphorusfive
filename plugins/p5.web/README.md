@@ -509,7 +509,7 @@ The above is actually a _"Ninja trick"_ to serialize all form elements from some
 ### Changing and retrieving a widget's Ajax events dynamically
 
 The same way you can update and change properties of widgets, you can also change their lambda object for what occurs when some Ajax event is raised.
-To do this, you would use the *[p5.web.widgets.ajax-events.get]* and the *[p5.web.widgets.ajax-events.set]* Active Events. Consider this code.
+To do this, you would use the **[p5.web.widgets.ajax-events.get]** and the **[p5.web.widgets.ajax-events.set]** Active Events. Consider this code.
 
 ```
 create-widget
@@ -521,11 +521,11 @@ create-widget
     p5.web.widgets.ajax-events.set:x:/../*/_event?value
       onclick
         set-widget-property:x:/../*/_event?value
-          innerValue:I was clicked one more time! Thank you!
+          innerValue:Thank you for tickling me!
 ```
 
 The above code dynamically changes the lambda that is evaluated as the widget is clicked, when you click it the first time.
-The *[p5.web.widgets.ajax-events.get]* returns its existing lambda object. Try out the following.
+The **[p5.web.widgets.ajax-events.get]** returns its existing lambda object. Try out the following.
 
 ```
 create-widget
@@ -534,25 +534,23 @@ create-widget
   onclick
     p5.web.widgets.ajax-events.get:x:/../*/_event?value
       onclick
-    sys42.windows.show-lambda:x:/..
+    create-widget
+      element:pre
+      innerValue:x:/..
 ```
 
 Hint!
-You can also explicitly raise a widget's Ajax events from your own p5.lambda objects, by invoking *[p5.web.widgets.ajax-events.raise]*. 
-To raise the *[onclick]* event on three widgets for instance, you could use code similar to this (which won't evaluate without throwing exceptions, 
-since these widgets does not exist).
+You can also explicitly raise a widget's Ajax events from your own lambda objects, by invoking **[p5.web.widgets.ajax-events.raise]**. 
+To raise the **[onclick]** event on a single widget for instance, you could do something such as the following.
 
 ```
-_widgets
-  no1-widget-id
-  no2-widget-id
-  no3-widget-id
-p5.web.widgets.ajax-events.raise:x:/-/*?name
+create-widget:foo-bar
+  innerValue:Click me!
   onclick
-
-// Or to raise the "onmouseover" for a single widget
-p5.web.widgets.ajax-events.raise:no4-widget-id
-  onmouseover
+    set-widget-property:x:/../*/_event?value
+      innerValue:I was clicked programmatically!
+p5.web.widgets.ajax-events.raise:foo-bar
+  onclick
 ```
 
 Phosphorus will not discriminate in any ways between events dynamically raised by the user clicking some object himself, or an event raised by your 
@@ -563,22 +561,14 @@ lambda in the manner shown above, except it won't (obviously) have to do an expl
 A widget can also have dynamically declared Active Events associated with it. These are Active Events which are accessible, for any
 context within your page - But only as long as the widget is existing on your page. This feature allows you to declare dynamically 
 created Active Events, which only exists, as long as your widget exist. Which again makes it easier for your separate parts of your
-page, to communicate with other parts of your page, and create a more "object oriented feel" to your widgets. Consider this code.
+page, to communicate with other parts of your page, and create a more _"object oriented feel"_ to your widgets. Consider this code.
 
 ```
 create-widget
-  position:0
   events
     my-namespace.foo-event
-      sys42.windows.confirm
-        header:Howdy foo world
-        body:Watch the other label as you click OK!
-        .onok
-          set-widget-property:the-other-guy
-            innerValue:The other guy was clicked!
+      micro.windows.info:Foo event raised
   widgets
-    literal:the-other-guy
-      innerValue:Initial value!
     literal
       innerValue:Click me!
       onclick
@@ -586,27 +576,24 @@ create-widget
 ```
 
 Such lamba events are working identically to any other dynamically created Active Events, or lambda objects, and can take arguments, and return values
-and nodes to the caller. They're simply Active Events, which only lives as long as your widget lives, and only for your page!
-
-Also these lambda events can be dynamically changed, the same way you could with Ajax events, using the *[p5.web.widgets.lambda-events.set]*, 
-and the *[p5.web.widgets.lambda-events.get]*. Both of these Active Events, works similarly to their Ajax events counterparts.
+and nodes to the caller. They're simply Active Events, which only lives as long as your widget lives, and only for your page.
+Also these lambda events can be dynamically changed, the same way you could with Ajax events, using the **[p5.web.widgets.lambda-events.set]**, 
+and the **[p5.web.widgets.lambda-events.get]**. Both of these Active Events, works similarly to their Ajax events counterparts.
 
 Hint!
-You can also use *[p5.web.widgets.lambda-events.list]* and *[p5.web.widgets.ajax-events.list]* to inspect which lambda or Ajax events are declared 
+You can also use **[p5.web.widgets.lambda-events.list]** and **[p5.web.widgets.ajax-events.list]** to inspect which lambda and/or Ajax events are declared 
 for a specific widget.
 
 ### [oninit], initializing your widgets
 
-The *[oninit]* is a special type of event, which is only raised when your widget is initially created. It is useful for initialization and such
+The **[oninit]** is a special type of event, which is only raised every time your widget is made visible. It is useful for initialization and such
 of your widget, but besides from its semantics, it works similarly to an Ajax event. Though none of its internals, not even its existence, is ever
-rendered back to the client in any ways.
-
-It can be useful for populating a "select" HTML widget, with "option" items, created dynamically from data in your database, for instance. But there
-are many other useful scenarios for this event. Semantically, it behaves similar to an Ajax event, but it cannot be raised from the client. And it 
-renders no additional data back to the client neither. When *[oninit]* fires, all other events and properties have already been created for your widget.
-This allows you to invoke widget lambda events associated with your widget, and retrieve their properties, from within your *[oninit]* lambda object.
-
-Below is an example of *[oninit]* in action.
+rendered back to the client in any ways. It can be useful for populating a _"select"_ HTML widget, with _"option"_ items, created dynamically from
+data in your database, for instance. But there are many other useful scenarios for this event. Semantically, it behaves similar to an Ajax event, 
+but it cannot be raised from the client. It renders no additional data back to the client. When **[oninit]** fires, all other events and properties 
+have already been created for your widget. This allows you to invoke widget lambda events associated with your widget, and retrieve their properties, 
+from within your **[oninit]** lambda object, after your widget has been created, but before it is rendered back to the client.
+Below is an example of **[oninit]** in action.
 
 ```
 create-widget
@@ -619,37 +606,24 @@ create-widget
 
 ### Deleting widgets and clearing widget collections
 
-In addition to the above mentioned events, you also have the *[delete-widget]* and *[clear-widget]* events. The first one entirely deletes
-a widget from your page, while the second one empties its children collection. If your run this through your System42/executor for instance, 
-then your entire page will go "blank".
-
-```
-clear-widget:cnt
-```
-
-If you wish to instead for instance delete the main menu, you could accomplish that with the following code.
-
-```
-delete-widget:main-navbar-wrapper
-```
-
-Yet again, don't panic, simply refresh your page, and your menu is back!
+In addition to the above mentioned events, you also have the **[delete-widget]** and **[clear-widget]**. The first one entirely deletes
+a widget from your page, while the second one empties its children collection.
 
 ### Retrieving widgets
 
 There are also several helper Active Events to retrieve widgets, according to some criteria. These are listed below.
 
-* [p5.web.widgets.get-parent] - Returns the parent widget(s) of the specified widget(s)
-* [p5.web.widgets.get-children] - Returns the children widgets of the specified widget(s)
-* [p5.web.widgets.find] - Returns the widgets that have the properties listed, with optionally, the values listed
-* [p5.web.widgets.find-like] - Same as above, but doesn't require an exact match, only that the widget's properties contains your value(s)
-* [p5.web.widgets.find-ancestor] - Returns all ancestor widgets with the specifed properties and values
-* [p5.web.widgets.find-ancestor-like] - Same as above, but is happy as long as the value contains the value(s) specified
-* [p5.web.widgets.find-first-ancestor] - Returns first ancestor widget with the specifed properties and values
-* [p5.web.widgets.find-first-ancestor-like] - Same as above, but is happy as long as the value contains the value(s) specified
-* [p5.web.widgets.list] - List all widgets that have IDs matching the specified string(s)
-* [p5.web.widgets.list-like] - Same as above, but is happy as long as the ID(s) contains the value(s) specified
-* [p5.web.widgets.exists] - Yields true for each widget that exists matching the specified ID(s)
+* __[p5.web.widgets.get-parent]__ - Returns the parent widget(s) of the specified widget(s)
+* __[p5.web.widgets.get-children]__ - Returns the children widgets of the specified widget(s)
+* __[p5.web.widgets.find]__ - Returns the widgets that have the properties listed, with optionally, the values listed
+* __[p5.web.widgets.find-like]__ - Same as above, but doesn't require an exact match, only that the widget's properties contains your value(s)
+* __[p5.web.widgets.find-ancestor]__ - Returns all ancestor widgets with the specifed properties and values
+* __[p5.web.widgets.find-ancestor-like]__ - Same as above, but is happy as long as the value contains the value(s) specified
+* __[p5.web.widgets.find-first-ancestor]__ - Returns first ancestor widget with the specifed properties and values
+* __[p5.web.widgets.find-first-ancestor-like]__ - Same as above, but is happy as long as the value contains the value(s) specified
+* __[p5.web.widgets.list]__ - List all widgets that have IDs matching the specified string(s)
+* __[p5.web.widgets.list-like]__ - Same as above, but is happy as long as the ID(s) contains the value(s) specified
+* __[p5.web.widgets.exists]__ - Yields true for each widget that exists matching the specified ID(s). This event has a __[widget-exists]__ alias.
 
 Almost all the above mentioned events, returns the same structure back to caller, which looks like the following;
 
@@ -661,11 +635,9 @@ some-widget-retrieval-event
     container:foo
 ```
 
-The first level of children, are the currently iterated criteria passedin as *[_arg]*. Then comes one or more children nodes, having a name defining
+The first level of children, are the currently iterated criteria passedin as **[_arg]**. Then comes one or more children nodes, having a name defining
 which type of widget this is, and a value being the ID of our widget. Have that in mind as we look at these Active Events and how they work.
-
-The exception to the above structure, is *[p5.web.widget.list]* and its *[-like]* counterpart, in addition to *[p5.web.widget.exists]*. The two former
-returns a collection of widgets matching the condition, and the latter returns a true/false value if the widget(s) exists.
+The exception to the above structure, is **[p5.web.widget.exists]**, which simply returns a true/false value if the widget(s) exists.
 
 #### [p5.web.widgets.get-parent]
 
@@ -673,7 +645,6 @@ Returns the parent widget of one or more specified widget(s). Example given belo
 
 ```
 create-widget:foo
-  position:0
   widgets
     literal:bar1
       innerValue:bar1
@@ -682,8 +653,8 @@ create-widget:foo
 p5.web.widgets.get-parent:x:/../*/create-widget/**/literal?value
 ```
 
-The above code, uses an expression leading to each value of each *[literal]* node within the *[widgets]* part of the *[create-widget]* 
-invocation. This means that it will return the parent widget for both the "bar1" widget and the "bar2" widget, which happens to be the same. 
+The above code, uses an expression leading to each value of each **[literal]** node within the **[widgets]** part of the **[create-widget]** 
+invocation. This means that it will return the parent widget for both the _"bar1"_ widget and the _"bar2"_ widget, which happens to be the same. 
 The output should look something like this, showing the type of widget as the name, and the ID of the parent widget as its value.
 
 ```
@@ -695,10 +666,10 @@ p5.web.widgets.get-parent
     container:foo
 ```
 
-Notice how *[p5.web.widgets.get-parent]* optionally can take an expression as its argument. This means we have to return an additional "layer" before returning
-the actual parent widget(s), since we need to return "parent widget to which widget" to the caller. If we had simply returned the parent as the first
-node of *[p5.web.widgets.get-parent]*, we would not know who this was a parent to, since we can supply multiple widgets as arguments. This is a general pattern
-for most of the widget retrieval events.
+Notice how **[p5.web.widgets.get-parent]** optionally can take an expression as its argument. This means we have to return an additional _"layer"_ before returning
+the actual parent widget(s), since we need to return parent widget to which widget to the caller. If we had simply returned the parent as the first
+node of **[p5.web.widgets.get-parent]**, we would not know who this was a parent to, since we can supply multiple widgets as arguments. This is a general pattern
+for all of our widget retrieval events.
 
 #### [p5.web.widgets.get-children]
 
@@ -706,7 +677,6 @@ Returns the children widgets of one or more specified widget(s). Example below.
 
 ```
 create-widget:foo
-  position:0
   widgets
     literal:bar1
       innerValue:bar1
@@ -726,26 +696,21 @@ p5.web.widgets.get-children
 ```
 
 Even though we do _not_ use an expression in the above example, we still return the children widgets in a similar structure as we did with our previous
-example of *[p5.web.widgets.get-parent]*, which used an expression. This is to make sure we always return data to the caller in the same format. If we had
-used an expression leading to multiple source widgets, instead of the constant of "foo", we would have had multiple return nodes beneath *[p5.web.widgets.get-children]*
-in our result.
-
-Notice!
-Most of these retrieval Active Events will actually throw an exception if the queried widget does not exist. If you supplied "does-not-exist" to 
-your *[p5.web.widgets.get-children]* invocation for instance, it would throw an exception.
+example of **[p5.web.widgets.get-parent]** which used an expression. This is to make sure we always return data to the caller in the same format. If we had
+used an expression leading to multiple source widgets, instead of the constant of _"foo"_, we would have had multiple return nodes 
+beneath **[p5.web.widgets.get-children]** in our result.
 
 #### [p5.web.widgets.find] and [p5.web.widgets.find-like]
 
-These events takes (optionally) the "root widget from where to start your search", and require you to parametrize them with children nodes, 
+These events takes (optionally) the root widget from where to start your search, and require you to parametrize them with children nodes, 
 having at least a name, and optionally a value. The name of the node, is some attribute that must exist on your widget, for it be returned as 
 a match. The value of the attribute to look for, is an optionally value for that attribute, which the widget must either have an exact match 
-of (*[p5.web.widgets.find]*), or contain (for the *[p5.web.widgets.find-like]* event).
+of (**[p5.web.widgets.find]**), or contain (for the **[p5.web.widgets.find-like]** event).
 
 Let's see an example.
 
 ```
 create-widget:foo
-  position:0
   widgets
     literal:bar1
       innerValue:bar1
@@ -761,11 +726,11 @@ p5.web.widgets.find-like:foo
   innerValue:bar
 ```
 
-The above code has two invocations to *[p5.web.widgets.find]* and one to *[p5.web.widgets.find-like]*. The first invocation, requires an exact match for 
-the *[innerValue]*, and the *[class]* attributes, being respectively "bar1", and "foo-class". This invocation will return only the "bar1" widget. 
-The second invocation won't yield any matches, since it requires an exact match and no widgets have the innerValue of exactly "bar", since they both have numbers
-behind their "bar" text. The third invocation will yield both widgets as its return value, since they both have an *[innerValue]* which _contains_ 
-the text "bar". The result will look something like this.
+The above code has two invocations to **[p5.web.widgets.find]** and one to **[p5.web.widgets.find-like]**. The first invocation, requires an exact match for 
+the **[innerValue]**, and the **[class]** attributes, being respectively _"bar1"_, and _"foo-class"_. This invocation will return only the _"bar1"_ widget. 
+The second invocation won't yield any matches, since it requires an exact match and no widgets have the innerValue of exactly _"bar"_, since they both have numbers
+behind their _"bar"_ text. The third invocation will yield both widgets as its return value, since they both have an **[innerValue]** which _contains_ 
+the text _"bar"_. The result will look something like this.
 
 ```
 /* ... rest of code ... */
@@ -783,7 +748,6 @@ These Active Events can also take expressions as their arguments.
 
 ```
 create-widget:foo1
-  position:0
   widgets
     literal:bar1
       innerValue:bar1
@@ -791,7 +755,6 @@ create-widget:foo1
     literal:bar2
       innerValue:bar2
 create-widget:foo2
-  position:0
   widgets
     literal:bar3
       innerValue:bar1
@@ -815,14 +778,13 @@ p5.web.widgets.find
 
 #### [p5.web.widgets.find-ancestor] and [p5.web.widgets.find-ancestor-like]
 
-These two Active Events are similar to the *[p5.web.widgets.find]* events, except of course, instead of searching downwards in the hierarchy from the root
+These two Active Events are similar to the **[p5.web.widgets.find]** events, except of course, instead of searching downwards in the hierarchy from the root
 widget supplied, they search upwards in the ancestor chain for a match, from the currently iterated widget. These Active Events requires (for obvious 
-reasons) the caller to actually supply a value, and will not tolerate a "default" value as our previously mentioned widget retrieval Active Events did.
+reasons) the caller to actually supply a value, and will not tolerate a default value as our previously mentioned widget retrieval Active Events did.
 Example code given below.
 
 ```
 create-widget:foo1
-  position:0
   class:foo-class-1
   widgets
     container:bar1
@@ -830,7 +792,6 @@ create-widget:foo1
         literal:starting-widget-1
           innerValue:Foo bar
 create-widget:foo2
-  position:0
   class:foo-class-2
   widgets
     container:bar2
@@ -854,7 +815,7 @@ p5.web.widgets.find-ancestor-like
 #### [p5.web.widgets.list] and [p5.web.widgets.list-like]
 
 These Active Events simply lists all widgets, with an ID matching some (optional) filter supplied. Notice, if you do not supply a filter, this Active
-Event will yield every single widget in your page, starting from the root "cnt" widget, declared in your Default.aspx markup. Example code is
+Event will yield every single widget in your page, starting from the root _"cnt"_ widget, declared in your Default.aspx markup. Example code is
 given below.
 
 ```
@@ -900,10 +861,9 @@ p5.web.widgets.list
   literal:test-bar2
 ```
 
-One point though, as in many of the other widget retrieval Active Events, is the fact that you are also getting the "type" of widget returned, as
+One point though, as in many of the other widget retrieval Active Events, is the fact that you are also getting the type of widget returned, as
 the name of the node - While you get the ID of the widget, returned as the value.
-
-Notice though that [p5.web.widgets.list] does not return an injected node for the widget you start out your search from, simply since there are no such
+Notice though that **[p5.web.widgets.list]** does not return an injected node for the widget you start out your search from - Simply since there are no such
 node(s) or criteria given to it. In addition, the same widget might match several criteria, making it impossible to put into one specific filter.
 This means it yields one level less than all other widget retrieval Active Events.
 
@@ -934,71 +894,63 @@ p5.web.widgets.exists
 
 In ASP.NET you have lots of different storage objects which you can use, such as the Session object, Application object, Cache, Cookies, 
 and so on. These same storage facilitates are mapped into Phosphorus Five, through the C# Active Events you can find in the [storage](storage/) 
-folder of this project.
-
-They all more or less obey by the same rules (Active Event syntax), which allows you to easily change between any one of them, later in your project,
-as you see fit. This gives you a flexible environment for development, where you can easily move your data storage around, from different objects, 
-as you see fit later.
+folder of this project. They all more or less obey by the same rules (Active Event syntax), which allows you to easily change between any one of them, 
+later in your project, as you see fit. This gives you a flexible environment for development, where you can easily move your data storage around,
+from different objects, as you see fit later.
 
 Below is a complete list of all of these Active Events.
 
-* [p5.web.session.set] - Has private (.) alias
-* [p5.web.session.get] - Has private (.) alias
-* [p5.web.session.list] - Has private (.) alias
-* [p5.web.application.set] - Has private (.) alias
-* [p5.web.application.get] - Has private (.) alias
-* [p5.web.application.list] - Has private (.) alias
-* [p5.web.context.set] - Has private (.) alias
-* [p5.web.context.get] - Has private (.) alias
-* [p5.web.context.list] - Has private (.) alias
-* [p5.web.cache.set] - Has private (.) alias
-* [p5.web.cache.get] - Has private (.) alias
-* [p5.web.cache.list] - Has private (.) alias
-* [p5.web.cookie.set] - Has private (.) alias
-* [p5.web.cookie.get] - Has private (.) alias
-* [p5.web.cookie.list] - Has private (.) alias
-* [p5.web.header.set]
-* [p5.web.header.get]
-* [p5.web.header.list]
-* [p5.web.params.get]
-* [p5.web.params.list]
+* __[p5.web.session.set]__ - Has private (.) alias
+* __[p5.web.session.get]__ - Has private (.) alias
+* __[p5.web.session.list]__ - Has private (.) alias
+* __[p5.web.application.set]__ - Has private (.) alias
+* __[p5.web.application.get]__ - Has private (.) alias
+* __[p5.web.application.list]__ - Has private (.) alias
+* __[p5.web.context.set]__ - Has private (.) alias
+* __[p5.web.context.get]__ - Has private (.) alias
+* __[p5.web.context.list]__ - Has private (.) alias
+* __[p5.web.cache.set]__ - Has private (.) alias
+* __[p5.web.cache.get]__ - Has private (.) alias
+* __[p5.web.cache.list]__ - Has private (.) alias
+* __[p5.web.cookie.set]__ - Has private (.) alias
+* __[p5.web.cookie.get]__ - Has private (.) alias
+* __[p5.web.cookie.list]__ - Has private (.) alias
+* __[p5.web.header.set]__
+* __[p5.web.header.get]__
+* __[p5.web.header.list]__
+* __[p5.web.params.get]__
+* __[p5.web.params.list]__
 
 Not all of them can be interchanged with each other, since for instance things like HTTP headers, cannot tolerate complete node structures and more
-complex objects, in addition to that storing stuff you'd normally store in your session, obviously does not at all make sense storing in an HTTP
+complex objects - In addition to that storing stuff you'd normally store in your session, obviously does not at all make sense storing in an HTTP
 header. But all of the above events, obeys by the same set of rules, and returns more or less similarly structured results.
-
 Most of the above Active Events also have native alias versions, which allows you to invoke them with a "." in front of their name. If you do,
 then you are allowed to retrieve, list and modify protected data, which is really just data starting with either an underscore (\_) or a period (.).
-
 This ensures that you can store things into these objects, which is only accessible through C#. Which is an additional security feature, for things
 you do not wish some random piece of lambda to access.
+Notice, there are also three Active Events defined in the [p5.webapp](/core/p5.webapp/) project, which allows you to store _"page values"_ (ViewState).
 
-Notice, there are also three Active Events defined in the [p5.webapp](/core/p5.webapp/) project, which allows you to store "page values" (ViewState).
-
-* [p5.web.viewstate.set] - Has private (.) alias
-* [p5.web.viewstate.get] - Has private (.) alias
-* [p5.web.viewstate.list] - Has private (.) alias
+* __[p5.web.viewstate.set]__ - Has private (.) alias
+* __[p5.web.viewstate.get]__ - Has private (.) alias
+* __[p5.web.viewstate.list]__ - Has private (.) alias
 
 The above three mentioned events, also obeys by the same structure as the once listed above.
 
 ### Accessing the ASP.NET Session object
 
-If we start out with the "Session" object from ASP.NET, there are three basic Active Events which allows you to use your session. 
+If we start out with the _"Session"_ object from ASP.NET, there are three basic Active Events which allows you to use your session. 
 
-* [p5.web.session.set]
-* [p5.web.session.get]
-* [p5.web.session.list]
+* __[p5.web.session.set]__
+* __[p5.web.session.get]__
+* __[p5.web.session.list]__
 
 For those not aquinted with how the session object works, it is often a memory based in-process storage, for objects you wish to associate with a
 single session (user), for as long as a user is actively using your web site. When the server is rebooted, the user leaves your website, 
 or some other disaster occurs, all session variables are discarded and lost.
-
 The session object _can_ (optionally, through configuring your web.config for instance), be stuffed into a database, making it cross-process enabled,
 and so on. But by default, it is in memory. All objects stored into the session, are only accessible for the currently visiting client, and only
-for the lifespan of his "session". Often it times out after some minutes (20 minutes by default) of inactivity, which means the user will loose
-all his session variables if he does not somehow, interact with your website for 20 minutes.
-
-To show you an example of it, imagine the following code.
+for the lifespan of his session. Often it times out after some minutes (20 minutes by default) of inactivity, which means the user will loose
+all his session variables if he does not somehow, interact with your website for 20 minutes. To show you an example of it, imagine the following code.
 
 ```
 p5.web.session.set:test.my-session-variable
@@ -1006,7 +958,7 @@ p5.web.session.set:test.my-session-variable
 p5.web.session.get:test.my-session-variable
 ```
 
-In the above code, we first set a session variable, name it "test.my-session-variable", and give it the static value of "Some piece of data goes here",
+In the above code, we first set a session variable, name it _"test.my-session-variable"_, and give it the static value of _"Some piece of data goes here"_,
 before we retrieve it again. The retrieval does not have to be in the same request though. As long as your session has not timed out, you can refresh
 your browser, and evaluate the following code, and your original value will still be returned back to you.
 
@@ -1014,8 +966,8 @@ your browser, and evaluate the following code, and your original value will stil
 p5.web.session.get:test.my-session-variable
 ```
 
-All of the object storage Active Events in p5.web, takes a source argument, the same way *[add]* and *[set]* does. Which allows you to create
-fairly complex sources, using Active Event sources, and so on. To store a slightly more complex object into your session, you could use something 
+All of the object storage Active Events in p5.web, takes a source argument, the same way **[add]** and **[set]** does. Which allows you to create
+fairly complex sources, using Active Event sources for instance. To store a slightly more complex object into your session, you could use something 
 like this.
 
 ```
@@ -1028,8 +980,7 @@ p5.web.session.get:test.my-session-variable
 ```
 
 Above we see an example of adding typed objects into the session, which of course is no problem.
-
-Like with *[set]* though, you can only have _one_ source. This means that if you have complex hierarchies of nodes, you have to make sure you have 
+Like with **[set]** though, you can only have _one_ source. This means that if you have complex hierarchies of nodes, you have to make sure you have 
 one root node. This is because you're setting _one item_ in your session. If you wish to put arrays into your session, you'll have to have them 
 as children of a single root node. The following code will raise an exception ...
 
@@ -1043,7 +994,7 @@ p5.web.session.set:test.my-session-variable
 
 #### Listing your session keys using [p5.web.session.list]
 
-Sometimes it can be useful to have a list of which session keys you have in your current session object. This is easily done using *[p5.web.session.list]*.
+Sometimes it can be useful to have a list of which session keys you have in your current session object. This is easily done using **[p5.web.session.list]**.
 An example of usage is shown below.
 
 ```
@@ -1064,7 +1015,7 @@ p5.web.session.list
   test.my-session-variable
 ```
 
-To retrieve all values, from all session objects, could easily be done combining this invocation with a *[p5.web.session.get]* invocation.
+To retrieve all values, from all session objects, could easily be done combining this invocation with a **[p5.web.session.get]** invocation.
 
 ```
 p5.web.session.list
@@ -1075,38 +1026,36 @@ p5.web.session.get:x:/-/*?name
 
 The application object has an API which is 100% identical to the session object, and consists of these three Active Events.
 
-* [p5.web.application.get]
-* [p5.web.application.set]
-* [p5.web.application.list]
+* __[p5.web.application.get]__
+* __[p5.web.application.set]__
+* __[p5.web.application.list]__
 
 The only difference is the underlaying implementation, which stores your values in the global application object instead of your session object.
 The application object is global for all users of your website. Besides from that, it is really quite similar to the session object, and only
 lives for the life time of your server process, being stored in memory, the same way as your session values.
-
-To see some examples of it in use, see the session examples, and simply replace "session" with "global".
+To see some examples of it in use, see the session examples, and simply replace _"session"_ with _"application"_.
 
 ### Accessing your context object
 
-The HttpContext object is also identical to both the session and the application ("global") object, except of course, it stores things in the 
-HttpContext object instead. To understand the difference, check out the documentation for the HttpContext class in .Net Framework. Replace 
-the parts "session" with "context" to use the HttpContext object instead.
+The HttpContext object is also identical to both the session and the application object, except of course, it stores things in the 
+HttpContext object instead. To understand the difference, check out the documentation for the HttpContext class in .Net Framework. However, 
+basically, it stores values only for the current request to your server. Replace the _"session"_ parts with _"context"_ to use the HttpContext 
+object instead in our above examples.
 
 ### Accessing your cache object
 
-Also this object is identical to both your session object, application object, and context object, except it uses the keyword "cache" instead of
-"session" and "application" etc. It carries one additional argument though, which is *[minutes]*, which defined for how many minutes the cache
-object you insert should be valid for. This argument is only applicable when invoking *[p5.web.cache.set]*, and has no relevance for any of the
-other cache Active Events.
+Also this object is identical to both your session object, application object, and context object, except it uses the keyword _"cache"_. 
+It carries one additional (optional) argument though, which is **[minutes]**, which defined for how many minutes the cache
+object you insert should be valid for. This argument is only applicable when invoking **[p5.web.cache.set]**, and has no relevance for any of the
+other cache Active Events. **[minutes]** defaults to 30 unless explicitly set to something else.
 
 ### Cookies in P5
 
 The cookies Active Events are similar to the session Active Events, except you cannot retrieve a cookie that you set in the same response. This is 
 because when you set a cookie, you are modifying the HTTP response object, while when you get a cookie, you are retrieving it from the 
 HTTP request. Hence after setting a new cookie value, then it won't be accessible before you return the response back to the client, and the client
-makes another request to your server.
-
-In addition, type information is partially lost when you set a cookie. To illustrate with an example, run these two piece of code in two different
-evaluations in your System42/executor.
+makes another request to your server. In addition, type information is partially lost when you set a cookie. To illustrate with an example, run these 
+two piece of code.
 
 ```
 p5.web.cookie.set:some-cookie
@@ -1122,83 +1071,79 @@ p5.web.cookie.get:some-cookie
 ```
 
 As you can see in your last piece of code, your cookie value is returned as a string. It is quite easily converted back into a node though, by
-running it through *[hyper2lambda]* with the following code.
+running it through **[hyper2lambda]** with the code below. However, since the cookie collection is a simple string storage, while the session and 
+application object in ASP.NET can contain any arbitrary objects, there is no way for us to intelligently store type information in the cookie collection,
+without bloating the HTTP requests/responses - Hence, we simply avoid adding type information.
 
 ```
 p5.web.cookie.get:some-cookie
 hyper2lambda:x:/-/*?value
 ```
 
-This is because although you can store "objects" in your session, application and cache objects, etc - The cookie collection of your browser, can
+This is because although you can store _"objects"_ in your session, application and cache objects, etc - The cookie collection of your browser, can
 only handle strings. However, your node(s) are converted correctly into Hyperlambda before stored into your cookie collection, which allows you to
-convert it easily back to lambda using *[hyper2lambda]*.
+convert it easily back to lambda using **[hyper2lambda]**.
 
 ### HTTP headers
 
 Now you could if you wanted to, store lambda code in your HTTP headers, however, doing such a thing, probably makes no sense what so ever.
 HTTP headers are for informing the browser, and/or potential proxies, about some state of your application. And using it as a general storage, would
-be like using a crocodile to hunt raindeers!
-
-However, setting an HTTP header obeys by the same API as all other storage events. To have your web app return a custom header to your client,
-you could do something like this.
+be like using a crocodile to hunt raindeers. However, setting an HTTP header obeys by the same API as all other storage events. To have your web 
+app return a custom header to your client, you could do something like this.
 
 ```
 p5.web.header.set:foo
   src:bar
 ```
 
-If you make sure you inspect your HTTP request, before you click evaluate in your System42/executor, you will see that the return value from your server,
-contains one additional HTTP header called "foo" having the value of "bar".
-
-HTTP headers "get" and "set" operations are sufffering from the same problem as cookies for the record, which is that "get" gets its data from the
-request, while "set" puts its data into the response. Which means that stuff you put into an HTTP header using a "set" operation, is not accessible
-for a consecutive "get" operation.
+If you make sure you inspect your HTTP request, before you evaluate the code above, you will see that the return value from your server,
+contains one additional HTTP header called _"foo"_ having the value of _"bar"_.
+HTTP headers get and set operations are sufffering from the same problem as cookies for the record, which is that get gets its data from the
+request, while set puts its data into the response - Which implies that stuff you put into an HTTP header using a set operation, is not accessible
+for a consecutive get operation.
 
 ### HTTP GET parameters
 
-To access your HTTP GET parameters, you can use *[p5.web.params.get]* or *[p5.web.params.list]*. Since the GET parameter of a request, is a read-only 
-type of collection, there exists no set. Try to add up the following string at the end of your URL; "&foo-key=bar-value". Then run the following code.
+To access your HTTP GET parameters, you can use **[p5.web.params.get]** or **[p5.web.params.list]**. Since the GET parameter of a request, is a read-only 
+type of collection, there exists no set. Try to add up the following string at the end of your URL; `&foo-key=bar-value`. Then run the following code.
 
 ```
 p5.web.params.get:foo-key
 ```
 
-Now of course, since modifying the HTTP GET parameter collection of a request, requires changing the URL of a request, there exists no "set".
-If you wish to "set" an HTTP GET parameter, you'll need to change the URL by doing a redirect of the client somehow.
-
+Now of course, since modifying the HTTP GET parameter collection of a request, requires changing the URL of a request, there exists no _"set"_.
+If you wish to _"set"_ an HTTP GET parameter, you'll need to change the URL by doing a redirect of the client somehow.
 In addition to retrieving the GET parameters of your HTTP request, you can also retrieve POST parameters, using the following Active Events.
 
-* [p5.web.post.get]
-* [p5.web.post.list]
+* __[p5.web.post.get]__
+* __[p5.web.post.list]__
 
 There are also a generic parameter collection, with the following events.
 
-* [p5.web.params.get]
-* [p5.web.params.list]
+* __[p5.web.params.get]__
+* __[p5.web.params.list]__
 
 The latter, will retrieve all parameters from within your context. This will include web server settings, etc, and is hence probably not that useful.
 
 ## Raw request and response
 
 If you wish, you can completely bypass the default HTTP serialization and deserialization, and instead, take complete control of every aspect of
-both the rendering and the parsing of both an HTTP request and response. This is useful if you are creating web services or returning files to the caller
-for instance. For such cases, you have the *[p5.web.echo]* and *[p5.web.echo-file]* Active Events for creating your own response. And you have 
-the *[p5.web.request.get-body]*, and the *[p5.web.request.get-method]* events. These Active Events allows you to access the "raw" HTTP request, as sent 
-by the client - And create your own response, exactly as you see fit.
-
-The default HTTP request/response model in P5, uses POST requests for each Ajax request, and returns JSON to the caller. However, if you wish, you
-can completely bypass this model, and create your own. Imagine if you wish to return a file to the caller for instance. This is easily achieved by
-creating a page, which contains logic like this.
+both the rendering and the parsing of both an HTTP request and response. This is useful if you are creating web services, and/or returning files to the caller
+for instance. For such cases, you have the **[p5.web.echo]** and **[p5.web.echo-file]** Active Events for creating your own response. And you have 
+the **[p5.web.request.get-body]**, and the **[p5.web.request.get-method]** events. These Active Events allows you to access the _"raw"_ HTTP request, as sent 
+by the client - And create your own response, exactly as you see fit. The default HTTP request/response model in P5, uses POST requests for each Ajax request, 
+and returns JSON to the caller. However, if you wish, you can completely bypass this model, and create your own. Imagine if you wish to return a file to the
+caller for instance. This is easily achieved by creating a page, which contains logic like this.
 
 ```
 p5.web.echo-file:~/documents/private/README.md
 ```
 
-If you evaluate the above code in for instance the System42/executor, it will throw a JavaScript exception, since the Ajax method invoked when
-you click the "Evaluate" button expects the server to return JSON. However, if you create a page, which during initial loading, instead of creating
-an Ajax web widget hierarchy, evaluates the above lambda - The you will download the above file to the client when  you load that page.
+If you evaluate the above code, it will throw a JavaScript exception, since the Ajax method invoked when
+you click the _"Evaluate"_ button expects the server to return JSON. However, if you create a page, which during initial loading, instead of creating
+an Ajax web widget hierarchy, evaluates the above lambda - The you will download the above file to the client when you load that page.
 
-To see an example, create a *[lambda]* page in the CMS of System42/executor with the URL of "/download-my-file". Then change its code to the following.
+To see an example, create a **[page]** page in for instance Hypereval with the URL of "/download-my-file". Then change its code to the following.
 
 ```
 p5.web.echo-file:~/documents/private/README.md
@@ -1206,7 +1151,7 @@ p5.web.header.set:Content-Type
   src:text/plain
 ```
 
-Then save your page and click "Preview", and you should see your file. If you change the code for your page to the following.
+Then save your page and click _"Preview"_, and you should see your file. If you change the code for your page to the following.
 
 ```
 p5.web.echo:@"This is foo calling!"
@@ -1214,36 +1159,29 @@ p5.web.header.set:Content-Type
   src:text/plain
 ```
 
-... then you will see some statically created text instead.
-
-Notice, once you invoke *[p5.web.echo]* or *[p5.web.echo-file]*, then you cannot invoke it again. This means that if you want to dynamically build up your content, 
-you have to build it first, and have *[p5.web.echo]* be the last piece of logic in your page. The *[p5.web.echo-file]* event will also throw an exception if the
-currently logged in user is not authorized to reading the file you supply to it.
-
-Both *[p5.web.echo]* and *[p5.web.echo-file]* can optionally take expressions, leading to either one or more pieces of text, or one file.
-
-Creating web services, using *[p5.web.echo]*, which instead of returning HTML to the client, or returns some other piece of data, is quite easy using this
+Uou will see some statically created text instead. Notice, once you invoke **[p5.web.echo]** or **[p5.web.echo-file]**, then you cannot invoke it again.
+This is because the implementation in .Net actually _"kills"_ the current thread. This means that if you want to dynamically build up your content, 
+you have to build it first, and have **[p5.web.echo]** be the last piece of logic in your page. The **[p5.web.echo-file]** event will also throw an 
+exception if the currently logged in user is not authorized to reading the file you supply to it. Both **[p5.web.echo]** and **[p5.web.echo-file]** 
+can optionally take expressions, leading to either one or more pieces of text, or one file.
+Creating web services, using **[p5.web.echo]**, which instead of returning HTML to the client, or returns some other piece of data, is quite easy using this
 technique.
 
 Hint!
-You can return Hyperlambda to the client using the *[p5.web.echo]* event, since it will automatically convert whatever expression it is given to text, which
+You can return Hyperlambda to the client using the **[p5.web.echo]** event, since it will automatically convert whatever expression it is given to text, which
 allows you to return some sub-set of your tree to the caller.
 
 ### Getting the raw HTTP request
 
-You can also retrieve the "raw" HTTP request, by using the *[p5.web.request.get-body]* Active Event. This Active Event will return the raw HTTP request sent
+You can also retrieve the raw HTTP request, by using the **[p5.web.request.get-body]** Active Event. This Active Event will return the raw HTTP request sent
 by the client, giving you complete access to it, to do whatever you wish with it.
-
-Hint!
 This is a quite useful feature of P5, since it allows you to create web service end-points, where you can for instance pass in Hyperlambda, or some
 other piece of machine readable type of request, which is intended to be used by machines and web services, instead of browser clients.
-
 If you wish to directly save the request, without first putting it into memory, you can save some memory and CPU cycles by directly saving the request
-body using the *[p5.web.request.save-body]* Active Event, which takes a constant or expression leading to a filename on your server. Notice, this event
-requires the currently logged in user context to be able to write to the path supplied.
-
-Hint!
-Use the *[login]* Active Event to change the current user context ticket if you wish to save your files to a restricted folder.
+body using the **[p5.web.request.save-body]** Active Event, which takes a constant or expression leading to a filename on your server. Notice, this event
+requires the currently logged in user context to be able to write to the path supplied. The latter event is quite useful if you are implementing some
+sort of REST web service, which is supposed to _"PUT"_ some file for instance. However, when dealing with more complex types of HTTP requests, 
+there also exists helper Active Events in the [p5.mime](/extras/p5.mime/) project.
 
 ### Additional request helper events
 
