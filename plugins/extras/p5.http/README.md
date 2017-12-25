@@ -3,15 +3,15 @@ HTTP REST from Hyperlambda
 
 This component contains the Active Events necessary to create HTTP REST requests. It contains full support for all four basic HTTP verbs.
 
-* [GET]
-* [POST]
-* [PUT]
-* [DELETE]
+* __[p5.http.get]__
+* __[p5.http.post]__
+* __[p5.http.put]__
+* __[p5.http.delete]__
 
 To retrieve a document, using HTTP GET for instance, you could do something like the following.
 
 ```
-p5.http.get:"http://google.com"
+p5.http.get:"https://google.com"
 ```
 
 The above will return something similar to this.
@@ -29,9 +29,8 @@ p5.http.get
     content:@"... document from google.com ..."
 ```
 
-The actual document, will be returned as *[content]*, inside the above *[result]* node.
-
-If you wish, you can retrieve multiple documents at the same time, by supplying an expression to your invocation. Example is given below.
+The actual document, will be returned as **[content]**, inside the above **[result]** node. While the HTTP headers returned, can be found just beneath
+the **[result]** node. If you wish, you can retrieve multiple documents at the same time, by supplying an expression to your invocation. Example is given below.
 
 ```
 _urls
@@ -42,8 +41,7 @@ p5.http.get:x:/-/*?value
 
 Notice, this will create your requests sequentially, and not in parallel. If you wish to create parallel requests, you'll have to dive into
 the [p5.threading](/plugins/extras/p5.threading) parts of P5.
-
-You will have one *[result]* node returned, for each URL you supply to it. You can also supply any HTTP headers you wish, as illustrated below.
+You will still end up with one **[result]** node above, for each URL you supply to it. You can also supply any HTTP headers you wish, as illustrated below.
 
 ```
 p5.http.get:"https://httpbin.org/get"
@@ -55,20 +53,16 @@ p5.http handles every argument to its events that are not **[result]**, **[.onre
 
 There are 4 basic Active Events in this project.
 
-* [p5.http.get] - HTTP GET - Returns document
-* [p5.http.post] - HTTP POST - Posts data
-* [p5.http.put] - HTTP PUT - Puts data
-* [p5.http.delete] - HTTP DELETE - Deletes data
-
-In addition to the above Active Events, there is also 1 additional public event.
-
-* [p5.http.get-file] - Retrieves a document, and saves it to a specified file, without loading it into memory
+* __[p5.http.get]__ - HTTP GET - Returns document
+* __[p5.http.post]__ - HTTP POST - Posts data
+* __[p5.http.put]__ - HTTP PUT - Puts data
+* __[p5.http.delete]__ - HTTP DELETE - Deletes data
 
 ## POST and PUT
 
 The POST and PUT events, automatically recognize Hyperlambda, and allows you to transmit a lambda node structure, 
-without first creating text from it. To transmit a piece of Hyperlambda to another server, you could use something like the 
-following for instance.
+without first converting it into text. To transmit a piece of Hyperlambda to another server, you could use something like the 
+following.
 
 ```
 p5.http.post:"https://httpbin.org/post"
@@ -111,14 +105,13 @@ p5.http.post:"https://httpbin.org/post"
 src:x:/../**/content?value.string
 ```
 
-Exchange the above invocation to *[p5.http.put]* if you wish to use PUT the file instead.
-
+Exchange the above invocation to **[p5.http.put]** if you wish to use PUT the file instead. However, a more useful alternative to the above, would probably
+be to use p5.mime to create a MIME message, which you transmit to some HTTP endpoint instead. See documentation further down in this document for an example.
 The above _"post"_ invocation, will not read the files into memory, before they're transmitted to your HTTP endpoint. But rather,
 copy the stream directly from disc to the request stream. This allows you to transfer huge files, without exhausting your server's resources. This will use
 a plugin from [p5.io](/plugins/p5.io), which takes a stream as an argument, allowing you to copy a file directly into the HTTP request stream, instead
 of loading the file into memory first. This is highly useful when you want to transfer large files, without exhausting your server's memory or resources 
 in any ways.
-
 Notice how we wrapped our invocation to **[.p5.io.file.serialize-to-stream]** inside of another node called **[.onrequest]**, to inform the p5.http component
 that it should use our custom serialization logic, instead of looking for a **[content]** node.
 
@@ -128,7 +121,7 @@ Instead of supplying a **[.p5.io.file.serialize-to-stream]** argument for your P
 MIME message automatically created for you, using the automatic plugin into [p5.mime](/plugins/extras/p5.mime), and POST or PUT a MIME message. 
 If you wish to use this feature, you would instead of supplying a **[.p5.io.file.serialize-to-stream]** argument, 
 supply a **[.p5.mime.serialize-to-stream]** node, containing one or more of the MIME types supported by p5.mime. 
-Below is an example of creating a multipart/mixed MIME message, with two leaf nodes.
+Below is an example of creating a multipart/mixed MIME message, with two text MIME nodes.
 
 ```
 p5.http.post:"https://httpbin.org/post"
@@ -180,10 +173,9 @@ src:x:/../**/content?value.string
 
 This is a pretty kick ass cool feature, allowing you to create PGP encrypted web services, in addition to cryptographically sign your web service
 invocations. Yet again, the MIME message is serialized directly into the stream, and never loaded into memory, which means you can create humongously
-large HTTP MIME REST requests, without exhausting your server's memory.
-
-Notice that all plugin serializer having supplied the **[.onrequest]** must have exactly one child node, having the name of the Active Event you wish to
-use for serializing your request.
+large HTTP MIME REST requests, without exhausting your server's memory. You can also create your own serialization plugins, using the **[.p5.mime.serialize-to-stream]**
+event as an example. Notice that all plugin serializer having supplied the **[.onrequest]** must have exactly one child node, having the name of the Active Event 
+you wish to use for serializing your request.
 
 ## Rolling your own serializer in C#
 
@@ -191,19 +183,17 @@ The above logic also allows you to create your own C# plugins entirely from scra
 stream your content one way or another. This is because the above **[.p5.mime.serialize-to-stream]** node and **[.p5.io.file.serialize-to-stream]**, becomes an 
 Active Event invocation, that passes in the HTTP request stream of the HTTP request and the entire **[.p5.mime.serialize-to-stream]** node directly as its 
 parameters to the event.
-
 If you wish to use the above construct to create your own plugin, realise that the arguments passed into your own Active Events becomes 
 a `Tuple<object, Stream>`, where you can find the old value of your `e.Args.Value` as the object in Item1, and the HTTP request stream as Item2.
 This is necessary to support Active Events that contains values in their main `Node` argument.
-
 This feature allows you to create your own serialization logic for the p5.http component, serializing any types of content you wish during your requests
 from C#. Notice, if you do, you do not gain ownership of the HTTP request stream, and you should hence not close 
-it or dispose of it any ways, but simply serialize into it, and let it pass out of your Active Event, being still alive and open.
+it or dispose of it any ways, but simply serialize into it, and let it pass out of your Active Event, being still active and open.
 
 ## GET'ing files
 
 If you instead want to retrieve a document using HTTP GET, and save it directly to disc, without loading it into memory, you can use 
-an *[.onresponse]* argument, similarly like you used an **[.onrequest]** argument in the above examples, and pass in the **[.p5.io.file.save-to-stream]**
+an **[.onresponse]** argument, similarly like you used an **[.onrequest]** argument in the above examples, and pass in the **[.p5.io.file.save-to-stream]**
 Active Event. Consider the following code.
 
 ```
@@ -219,7 +209,7 @@ server, but no **[result]** node will exist after invocation.
 
 Due to the extreme dynamic nature of Hyperlambda, you can easily transmit Hyperlambda, over for instance an HTTP POST request, to have it evaluated on 
 another server, and then return it to caller as Hyperlambda. Consider creating the following CMS/lambda page, that reads the body of your request, 
-and evaluates it as Hyperlambda, for then to return the result to caller. To create such a page, you could do something like the following.
+and evaluates it as Hyperlambda, for then to return the result to caller. To create such a web service endpoint, you could create something like the following.
 
 ```
 // Retrieves the HTTP POST request body.
@@ -240,13 +230,10 @@ p5.web.header.set
 p5.web.echo:x:/@lambda2hyper?value
 ```
 
-Make sure you set the page's _"Role"_ to _"guest"_ in its _"Settings"_, and that you set its URL to _"/invisible-my-service"_. By starting your page's URL
-with _"/invisible-"_, you make sure it doesn't show up in the navbar or menu.
-
 Then evaluate the following code, assuming your web server is listening on port 8080.
 
 ```
-p5.http.post:"http://localhost:8080/invisible-my-service"
+p5.http.post:"http://localhost:8080/url-to-above-page"
   Content-Type:application/x-hyperlambda
   content
     _data
@@ -270,7 +257,7 @@ something like the following.
 
 ```
 p5.http.post
-  result:"http://localhost:1176/invisible-my-service"
+  result:"http://localhost:1176/url-to-above-page"
     status:OK
     Status-Description:OK
     Content-Type:application/x-hyperlambda; charset=utf-8
@@ -295,17 +282,16 @@ In theory, this makes it possible for you to create _one single Web Service endp
 
 ### Warning!!
 
-The above construct, allows anyone to evaluate any piece of Hyperlambda on your server, which of course is an extremely dangerous security risk, effectively
+The above construct, allows anyone to evaluate any piece of Hyperlambda on your server, which of course is an extremely dangerous security issue, effectively
 opening up your server entirely for any arbitrary piece of code anyone wants to evaluate on it.
-
 If you combine the above construct, with the PGP cryptography from the [p5.mime](/plugins/extras/p5.mime/) project,
-you can require that the client invoking your web service is trusted, by only allowing requests from a list of pre-declared trustees, and requiring them
+you can require that the client invoking your web service is trusted, by only allowing requests from a list of pre-declared trustees, and require clients
 to cryptographically sign their MIME messages in a PGP MIME multipart message. Still, you would need to be 100% confident in that the client's private PGP key has
 not somehow been compromised, and that you can trust the client supplying the Hyperlambda.
 
 There are ways to further refine this, and increase the security, by requiring the client to only supply a sub-set of Active Events, through using 
-e.g. the *[eval-whitelist]* Active Event when evaluating the incoming and returned lambda. Please see the *[eval-whitelist]* Active Event for details
-about this. You can find the *[eval-whitelist]* event in the [p5.lambda](/plugins/p5.lambda) project.
+e.g. the **[eval-whitelist]** Active Event from p5.lambda, when evaluating the incoming and returned lambda. Please see the **[eval-whitelist]** Active Event 
+for details about this. You can find the **[eval-whitelist]** event in the [p5.lambda](/plugins/p5.lambda) project.
 
-If you setup such a web service end-point correctly, at least in theory, your web service should be 100% safe from intrusion and malicious code.
-
+If you setup such a web service end-point correctly, at least in theory, your web service should be 100% safe from intrusion and malicious code - Yet still,
+you would have a lambda web service, allowing the client to supply the code to evaluate for you.
