@@ -1,15 +1,15 @@
-﻿Math operations in P5
+﻿Math operations in Phosphorus Five
 ========
 
 This plugin contains all the math operators. There are 6 basic math operators, which does more or less what you'd expect them to
 do from other traditional programming languages.
 
-* [+], adds
-* [-], subtracts
-* [\*], multiplies
-* [/], divides
-* [\^], exponent
-* [%], modulo
+* __[+]__, adds
+* __[-]__, subtracts
+* __[\*]__, multiplies
+* __[/]__, divides
+* __[\^]__, exponent
+* __[%]__, modulo
 
 They all logically work the same way, which means that they're Active Events, taking one or more arguments. All of them can have both
 their primary value, and their arguments being expressions. An example of adding two numbers can be found below.

@@ -5,8 +5,7 @@ This is the core of the _"non-programming language keywords"_ of Phosphorus Five
 doesn't quite fit the description, since there is no programming language per se, but only an execution tree.
 However, for all practical concerns, it feels like a programming language. It allows you to create code 
 in Hyperlambda, that will be evaluated as computing instructions. It is also Turing complete in regards 
-to execution, and allows you to do everything you can do in any other programming languages, although it is not
-suited to solve all your needs.
+to execution, and allows you to do everything you can do in any other programming languages.
 
 ## [eval], the heart of p5.lambda
 
