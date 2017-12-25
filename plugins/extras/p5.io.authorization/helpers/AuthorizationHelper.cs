@@ -21,6 +21,8 @@
  * out our website at http://gaiasoul.com for more details.
  */
 
+using System.IO;
+using System.Linq;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -176,7 +178,7 @@ namespace p5.io.authorization.helpers
         private static bool UserHasReadAccessToFile (ApplicationContext context, string filename)
         {
             // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder.
-            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+            if (filename.StartsWithEx ("/users/") && !filename.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
                 return false;
 
             // Verify all database files are safe.
@@ -184,26 +186,25 @@ namespace p5.io.authorization.helpers
             if (filename.StartsWithEx (dbPath))
                 return false;
             
-            // Verify web.config is safe.
-            if (filename == "/web.config")
+            // Verify *.config is safe.
+            if (Path.GetExtension (filename) == ".config")
                 return false;
             
-            // Verify app.config is safe.
-            if (filename == "/app.config")
-                return false;
-
             // Verifying "auth" file is safe.
             if (filename == GetAuthFile (context).ToLower ())
                 return false;
-            
-            // Checking access right.
-            if (context.Ticket.Role != "root") {
-                var access = new Node ();
-                context.RaiseEvent ("p5.auth.access.list", access);
-                if (access [context.Ticket.Role] != null) {
-                    foreach (var idx in access [context.Ticket.Role].Children) {
-                        if (idx.Name == "read-folder-deny" && filename.StartsWithEx (idx.GetExValue (context, "")))
-                            return true;
+                
+            // Checking explicitly overridden deny rights.
+            var access = new Node ();
+            context.RaiseEvent ("p5.auth.access.list", access);
+            foreach (var idxAccess in access.Children.ToList ()) {
+                
+                // Checking currently iterated access right object.
+                if ((idxAccess.Name == "*" || idxAccess.Name == context.Ticket.Role) && idxAccess ["deny-folder"] != null) {
+
+                    // This is an access right relevant for the user, now checking if it's relevant for the current path.
+                    if (filename.StartsWithEx (idxAccess ["deny-folder"].Get<string> (context))) {
+                        return false;
                     }
                 }
             }
@@ -219,21 +220,39 @@ namespace p5.io.authorization.helpers
         private static bool UserHasWriteAccessToFile (ApplicationContext context, string filename)
         {
             // Checking if this is user's file.
-            if (filename.StartsWithEx ("/users/") && filename.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) == 0)
+            if (filename.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
                 return true;
 
             // Checking if this is a common folder.
             if (filename.StartsWithEx ("/common/"))
                 return true;
+            
+            // Checking explicitly overridden write access rights.
+            var access = new Node ();
+            context.RaiseEvent ("p5.auth.access.list", access);
+            foreach (var idxAccess in access.Children.ToList ()) {
 
-            // Checking access right.
-            if (context.Ticket.Role != "root") {
-                var access = new Node ();
-                context.RaiseEvent ("p5.auth.access.list", access);
-                if (access [context.Ticket.Role] != null) {
-                    foreach (var idx in access [context.Ticket.Role].Children) {
-                        if (idx.Name == "write-folder" && filename.StartsWithEx (idx.GetExValue (context, "")))
-                            return true;
+                // Checking currently iterated access right object.
+                if ((idxAccess.Name == "*" || idxAccess.Name == context.Ticket.Role) && idxAccess ["write-folder"] != null) {
+
+                    // This is an access right relevant for the user, now checking if it's relevant for the current path.
+                    if (filename.StartsWithEx (idxAccess ["write-folder"].Get<string> (context))) {
+                        
+                        // Checking explicitly overridden deny rights.
+                        access = new Node ();
+                        context.RaiseEvent ("p5.auth.access.list", access);
+                        foreach (var idxAccessInner in access.Children.ToList ()) {
+
+                            // Checking currently iterated access right object.
+                            if ((idxAccessInner.Name == "*" || idxAccessInner.Name == context.Ticket.Role) && idxAccessInner ["deny-folder"] != null) {
+
+                                // This is an access right relevant for the user, now checking if it's relevant for the current path.
+                                if (filename.StartsWithEx (idxAccessInner ["deny-folder"].Get<string> (context))) {
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
                     }
                 }
             }
@@ -248,22 +267,27 @@ namespace p5.io.authorization.helpers
         private static bool UserHasReadAccessToFolder (ApplicationContext context, string foldername)
         {
             // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder.
-            if (foldername.StartsWithEx ("/users/") && foldername.Length > "/users/".Length && foldername.IndexOfEx (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+            if (foldername.StartsWithEx ("/users/") && 
+                foldername.Length > "/users/".Length && 
+                !foldername.StartsWithEx (string.Format ("/users/{0}/", context.Ticket.Username)))
                 return false;
 
             // Verify all database files are safe.
             var dbPath = context.RaiseEvent (".p5.config.get", new Node (".p5.config.get", ".p5.data.path")) [0].Get (context, "/db/");
             if (foldername.StartsWithEx (dbPath))
                 return false;
+            
+            // Checking explicitly overridden read access rights.
+            var access = new Node ();
+            context.RaiseEvent ("p5.auth.access.list", access);
+            foreach (var idxAccess in access.Children.ToList ()) {
 
-            // Checking access right.
-            if (context.Ticket.Role != "root") {
-                var access = new Node ();
-                context.RaiseEvent ("p5.auth.access.list", access);
-                if (access [context.Ticket.Role] != null) {
-                    foreach (var idx in access [context.Ticket.Role].Children) {
-                        if (idx.Name == "read-folder-deny" && foldername.StartsWithEx (idx.GetExValue (context, "")))
-                            return true;
+                // Checking currently iterated access right object.
+                if ((idxAccess.Name == "*" || idxAccess.Name == context.Ticket.Role) && idxAccess ["deny-folder"] != null) {
+
+                    // This is an access right relevant for the user, now checking if it's relevant for the current path.
+                    if (foldername.StartsWithEx (idxAccess ["deny-folder"].Get<string> (context))) {
+                        return false;
                     }
                 }
             }
@@ -285,14 +309,33 @@ namespace p5.io.authorization.helpers
             if (foldername.StartsWithEx ("/common/"))
                 return true;
             
-            // Checking access right.
+            // Checking explicitly overridden write access rights.
             var access = new Node ();
             context.RaiseEvent ("p5.auth.access.list", access);
-            if (access [context.Ticket.Role] != null) {
-                foreach (var idx in access [context.Ticket.Role].Children) {
-                    var tmp = idx.GetExValue (context, "");
-                    if (idx.Name == "write-folder" && foldername.StartsWithEx (tmp) && foldername.Length > tmp.Length)
+            foreach (var idxAccess in access.Children.ToList ()) {
+
+                // Checking currently iterated access right object.
+                if ((idxAccess.Name == "*" || idxAccess.Name == context.Ticket.Role) && idxAccess ["write-folder"] != null) {
+
+                    // This is an access right relevant for the user, now checking if it's relevant for the current path.
+                    if (foldername.StartsWithEx (idxAccess ["write-folder"].Get<string> (context))) {
+                        
+                        // Checking explicitly overridden deny rights.
+                        access = new Node ();
+                        context.RaiseEvent ("p5.auth.access.list", access);
+                        foreach (var idxAccessInner in access.Children.ToList ()) {
+
+                            // Checking currently iterated access right object.
+                            if ((idxAccessInner.Name == "*" || idxAccessInner.Name == context.Ticket.Role) && idxAccessInner ["deny-folder"] != null) {
+
+                                // This is an access right relevant for the user, now checking if it's relevant for the current path.
+                                if (foldername.StartsWithEx (idxAccessInner ["deny-folder"].Get<string> (context))) {
+                                    return false;
+                                }
+                            }
+                        }
                         return true;
+                    }
                 }
             }
 

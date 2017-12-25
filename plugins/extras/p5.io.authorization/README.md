@@ -6,7 +6,7 @@ to access or modify a file or folder. If you create your own disc IO Active Even
 Active Events yourself, from within your own Active Events, to make sure the user is authorized to access or change your file(s)
 or folder(s).
 
-It contains 4 Active Events.
+This project contains 4 Active Events, which are invoked by other events, during file IO.
 
 * __[.p5.io.authorize.read-file]__, checking if the ApplicationContext's "Ticket" is authorized to reading/loading a file
 * __[.p5.io.authorize.modify-file]__, checking if the "Ticket" is authorized to modify/delete/overwrite a file
@@ -17,28 +17,27 @@ All Active Events above, requires as their argument, the file/folder name as the
 Active Events throws exception if the user _"ticket"_ is not legally allowed to access a folder, all Active Events takes the invocation node by reference,
 as an **[args]** child node. This is to keep contextual information, in case an exception is thrown, such that we can return the Hyperlambda stack trace
 back to the caller, and supply contextual information about what raised the exception.
-To see an example of how to raise these Active Events yourself, you can check out the code for [p5.io](/plugins/p5.io/).
+To see an example of how to invoke these Active Events yourself, you can check out the code for [p5.io](/plugins/p5.io/).
 
-The logic of authorizating IO operations, is pretty simple to understand. Only root accounts can access and modify everything. Besides from that, a
-user can only write to his own files and folders, which are files inside of his personal _"/users/some-username/"_ folder. Any user can read from almost
-all other files, which (of course) is necessary to be able to execute Hyperlambda files in the system, except that any non-root user cannot in any ways
-read from these files.
+The logic of authorizating IO operations, is pretty simple to understand. Root account can read and write to everything. All other accounts can only write
+to their own files, and the common files and folders. A normal user (non-root), can read from everything, excepth these files.
 
 * The _"auth.hl"_ file, or whatever it happens to be named in your system
-* The p5.data database files
-* web.config and app.config
+* The p5.data database files, or the _"/db/"_ folder, which is its default value
+* Any file ending with _".config"_
 
+Unless explicitly overridden, these are the default access rights for file IO in P5. 
 Now of course, this is the low level disc IO authorization features, and simply there as an additional layer of protection for disc IO. In addition
 to these authorization features, a user still needs some ways to evaluate some arbitrary piece of lambda in your system, to be able to invoke Active
 Events, that actually is able to read these files, and return them to the user. Which for most cases, would be impossible, unless you create some sort
-of bug in your system, allowing any normal user to gain access to for instance evaluating the **[eval]** event. You can explicitly override which files a user
-is allowed to write to though, by adding an access right object to a role - Which would allow all users belonging to that role, to write/overwrite
-files in some specified folder of choice.
+of bug in your system, allowing any normal user to gain access to for instance evaluating the **[eval]** event.
+Even if you created such a bug, to access files and/or folders, or modify files and/or folders the user is not authorized to read/modify -
+Would still for the most parts be prevented by this project, as long as it is included in your project as a plugin - But only for the events distributed 
+in Phosphorus Five by default out of the box. If you create your own events in C#, which reads and writes from disc, you'll either need to invoke these 
+authorize events yourself, or create your own logic to make sure you don't accidentally give access to something a user shouldn't have access to.
 
-Even if you created such a bug though, to access files and/or folders, or modify files and/or folders, the user is not authorized to read/modify,
-would still be prevented by this project, as long as it is included in your project as a plugin - But only for the events distributed in Phosphorus Five
-by default. If you create your own events in C#, which reads and writes from disc, you'll either need to invoke these authorize events yourself, or create
-your own logic to make sure you don't accidentally give access to something a user shouldn't have access to.
+You can explicitly override which files a user is allowed to write to, by adding an access right object to a role - Which would allow all users belonging 
+to that role, to write/overwrite files in some specified folder of choice.
 
 ## Creating explicit write access for users to some folder
 
@@ -48,26 +47,32 @@ access right for the role of the user trying to modify a file or folder - And on
 content of some specified folder. The structure of such an **[access]** object should look like the following.
 
 ```
-// Role name
+/*
+ * Role name is "developer".
+ *
+ * You can also use "*" as role name, to denote all roles (except root acounts)
+ */
 developer:some-unique-string-id
   write-folder:/modules/
 ```
 
 The above access right object for instance, would give all users belonging to the *"developer"* role, write access to the _"/modules/"_ folder.
 
-## Denying users read access to specific files
+## Denying users read access to specific folders
 
-You can also further restrict a user's access to reading files, by creating an access object like the following.
+You can also further restrict a user's access to reading files and folders, by creating an access object like the following.
 
 ```
-// Role name
-developer:some-other-unique-string-id
-  read-folder-deny:/modules/hyper-ide/
+*:some-other-unique-string-id
+  deny-folder:/foo/bar/
 ```
 
-The above will deny all users belonging to the role _"developer"_ to read from any files beneath _"/modules/hyper-ide/"_, in addition to deny the
-user to list the files inside of the same folder. And in fact, when listing the children folders in the above folder, the _"/hyper-ide/"_ folder won't even show
-for users belonging to the _"developer"_ role.
+## Deny/allow access precedence
+
+The above will deny all users to read (*and write*) from any files beneath _"/foo/bar/"_, in addition to deny the
+user to list the files inside of the same folder. The **[deny-folder]** has precedence though, implying that it doesn't matter if you allow
+a role access to write to for instance _"/foo/bar/"_, if the user is denied access to _"/foo/"_. The user will still not be able to modify files inside
+of the _"/foo/bar/"_ folder, since he doesn't have access to _"/foo/"_.
 
 ## Rolling your own
 

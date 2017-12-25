@@ -46,23 +46,6 @@ namespace p5.io.folder
             // Getting root folder
             var rootFolder = Common.GetRootFolder (context);
 
-            // Access rights invocation, to remove folders user doesn't have access to reading.
-            Node access = null;
-            if (context.Ticket.Role != "root") {
-                access = new Node ();
-                context.RaiseEvent ("p5.auth.access.list", access);
-
-                // Eclusing everything not relevant to our current operation.
-                foreach (var idx in access.Children.ToList ()) {
-                    if (idx.Name != context.Ticket.Role || idx ["read-folder-deny"] == null)
-                        idx.UnTie ();
-                }
-
-                // Checking if there's anything left in our access right object, and if not, deleting it entirely.
-                if (access.Count == 0)
-                    access = null;
-            }
-
             // Looping through each argument.
             ObjectIterator.Iterate (context, e.Args, true, "read-folder", delegate (string foldername, string fullpath) {
                 foreach (var idxFolder in Directory.GetDirectories (rootFolder + foldername)) {
@@ -71,18 +54,7 @@ namespace p5.io.folder
                     var folderName = idxFolder.Replace ("\\", "/");
                     folderName = folderName.Replace (rootFolder, "");
                     folderName = folderName.TrimEnd ('/') + "/";
-
-                    // Checking if user has read access to folder's content.
-                    var doAdd = true;
-                    if (access != null) {
-                        foreach (var idx in access [context.Ticket.Role].Children) {
-                            if (idx.Name == "read-folder-deny" && folderName.StartsWithEx (idx.Get<string> (context))) {
-                                doAdd = false;
-                            }
-                        }
-                    }
-                    if (doAdd)
-                        e.Args.Add (folderName);
+                    e.Args.Add (folderName);
                 }
             });
         }
