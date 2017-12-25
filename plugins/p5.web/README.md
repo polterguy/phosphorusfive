@@ -1181,7 +1181,7 @@ If you wish to directly save the request, without first putting it into memory, 
 body using the **[p5.web.request.save-body]** Active Event, which takes a constant or expression leading to a filename on your server. Notice, this event
 requires the currently logged in user context to be able to write to the path supplied. The latter event is quite useful if you are implementing some
 sort of REST web service, which is supposed to _"PUT"_ some file for instance. However, when dealing with more complex types of HTTP requests, 
-there also exists helper Active Events in the [p5.mime](/extras/p5.mime/) project.
+there also exists helper Active Events in the [p5.mime](../extras/p5.mime/) project.
 
 ### Additional request helper events
 
