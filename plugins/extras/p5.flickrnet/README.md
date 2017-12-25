@@ -1,7 +1,7 @@
 Flickr module
 ===============
 
-This folder contains an Active Event that allows you to search for images on Flickr. Its name is *[p5.flickr.search]*. To use it, you could
+This folder contains an Active Event that allows you to search for images on Flickr. Its name is **[p5.flickr.search]**. To use it, you could
 do something like the following.
 
 ```
@@ -36,21 +36,20 @@ p5.flickr.search
   /* ... etc ... */
 ```
 
-The *[p5.flickr.search]* takes the following arguments.
+The **[p5.flickr.search]** takes the following arguments.
 
-* [text] - Query to search for
-* [tags] - Tags to match
-* [username] - Username results must belong to
-* [per-page] - Number of return values (page size)
-* [page] - Page of return
-* [safety-level] - Safety level of return values. Legal values are 'None', 'Safe', 'Moderate' and 'Restricted'.
-* [sort-order] - How to sort the results. Legal values are 'None', 'DatePostedAscending', 'DatePostedDescending', 'DateTakenAscending', 'DateTakenDescending', 'InterestingnessAscending', 'InterestingnessDescending' and 'Relevance'.
-* [tag-mode] - Tag mode. Legal values are 'None', 'AnyTags', 'AllTags' and 'Boolean'.
+* __[text]__ - Query to search for
+* __[tags]__ - Tags to match
+* __[username]__ - Username results must belong to
+* __[per-page]__ - Number of return values (page size)
+* __[page]__ - Page of return
+* __[safety-level]__ - Safety level of return values. Legal values are 'None', 'Safe', 'Moderate' and 'Restricted'.
+* __[sort-order]__ - How to sort the results. Legal values are 'None', 'DatePostedAscending', 'DatePostedDescending', 'DateTakenAscending', 'DateTakenDescending', 'InterestingnessAscending', 'InterestingnessDescending' and 'Relevance'.
+* __[tag-mode]__ - Tag mode. Legal values are 'None', 'AnyTags', 'AllTags' and 'Boolean'.
 
-Internally *[p5.flickr.search]* is using [FlickrNet](https://github.com/samjudson/flickr-net), where you can find the documentation for what the different 
+Internally **[p5.flickr.search]** is using [FlickrNet](https://github.com/samjudson/flickr-net), where you can find the documentation for what the different 
 options and arguments signifies. FlickrNet is licensed under the Apache License, Version 2.0, and the copyright of Sam Judson.
-
-The Active Event *[p5.flickr.search]*, will by default, only return _"free"_ images, which are images under the following licenses.
+The Active Event **[p5.flickr.search]**, will by default, only return _"free"_ images, which are images under the following licenses.
 
 * Creative Commons Attribution
 * Creative Commons Attribution No Derivatives
@@ -64,3 +63,8 @@ The Active Event *[p5.flickr.search]*, will by default, only return _"free"_ ima
 * United states government work
 
 To use it, make sure you provide your own Flickr API key. You can get your own API key, by applying for one at [Flickr](https://www.flickr.com/).
+
+**Warning**, this module might become obsolete in the future, since it was created at a point in time when Phosphorus Five did not have a very
+strong network API itself, and needed to use C# to implement search towards Flickr, which was needed in a project I was implementing for
+a client of mine. Today replacing this module, with custom logic written in Hyperlambda, using e.g. **[p5.http.get]** or **[p5.http.post]** would 
+probably be quite easy. This module should be considered _"legacy code"_, and not used in new projects.
