@@ -100,15 +100,15 @@ p5.auth.my-settings.set
     value:bar
 ```
 
-The difference is that **[p5.auth.users.edit]** can only be invoked by root accountsn and can modify any user's settings - While **[p5.auth.my-settings.set]**
-can be invoked by all users, except guest users of course (which actually aren't real users, and hence have no settings).
+The difference is that **[p5.auth.users.edit]** can only be invoked by root accounts, and can modify any user's settings - While **[p5.auth.my-settings.set]**
+can be invoked by all users, except guest users of course (which actually aren't real users, and hence have no actual settings object).
 To get your user's settings, use the **[p5.auth.my-settings.get]** Active Event. To change the passsword of the currently logged in user, use the following code.
 
 ```
 p5.auth.misc.change-my-password:bar
 ```
 
-The above Hyperlambda will change the passsword for the currentlylogged in user to _"bar"_.
+The above Hyperlambda will change the passsword for the currently logged in user to _"bar"_.
 
 ## [whoami], figuring out who you are
 

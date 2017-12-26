@@ -3,14 +3,14 @@ Zipping and unzipping files in Phosphorus Five
 
 This project contains helper Active Events to zip and unzip files and folders in your system. It consists of two Active Events.
 
-* [zip]
-* [unzip]
+* __[zip]__
+* __[unzip]__
 
 ## Zipping files
 
-To create a zip file, you use the *[zip]* Active Event. *[zip]* takes the path to its destination zip file as its value, and a *[src]* node,
-which can be replaced with any Active Event source invocation if you wish. If you supply a *[src]* node, its value can be either one constant 
-filename, or an expression leading to multiple filenames. Example given below.
+To create a zip file, you can use the **[zip]** Active Event. **[zip]** takes the path to its destination zip file as its value, and one or
+more **[src]** nodes, which can be replaced with any Active Event source invocation if you wish. If you supply a **[src]** node, its value 
+can be either one constant folder or filename, or an expression leading to multiple filenames. Example given below.
 
 ```
 _files

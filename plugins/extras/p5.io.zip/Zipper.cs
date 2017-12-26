@@ -45,26 +45,26 @@ namespace p5.io.zip
         {
             using (new ArgsRemover (e.Args)) {
 
-                // Getting root folder
+                // Getting root folder.
                 var rootFolder = Helpers.GetBaseFolder (context);
 
-                // Getting destination file
+                // Getting destination file.
                 var destination = Helpers.GetSystemPath (context, e.Args.GetExValue<string> (context));
 
-                // Getting destination path, and verify path can be legally written to
+                // Getting destination path, and verify path can be legally written to.
                 var destinationFile = Helpers.GetLegalDestinationFilename (
                     context,
                     e.Args,
                     rootFolder,
                     destination);
 
-                // Getting source file(s)
+                // Getting source file(s).
                 var source = XUtil.Sources (context, e.Args, "compression-level", "password", "key-size");
 
-                // Making sure we are able to delete zip file, if an exception occurs
+                // Making sure we are able to delete zip file, if an exception occurs.
                 try {
 
-                    // Creating zip file, supplying FileStream as stream to store results into
+                    // Creating zip file, supplying FileStream as stream to store results into.
                     using (ZipCreator creator = new ZipCreator (
                         context,
                         File.Create (rootFolder + destinationFile),
@@ -72,12 +72,12 @@ namespace p5.io.zip
                         e.Args.GetExChildValue<string> ("password", context, null),
                         e.Args.GetExChildValue ("key-size", context, 256))) {
 
-                        // Looping through each input file/folder given
+                        // Looping through each input file/folder given.
                         foreach (var idxSourceFileFolder in source) {
 
                             var idxSource = Helpers.GetSystemPath (context, Utilities.Convert<string> (context, idxSourceFileFolder));
 
-                            // Verifies source folder can be read from
+                            // Verifies source folder can be read from.
                             Helpers.VerfifySourceFileFolderCanBeReadFrom (
                                 context,
                                 e.Args,
@@ -85,20 +85,22 @@ namespace p5.io.zip
                                 destinationFile,
                                 idxSource);
 
-                            // Adding currently iterated file/folder to zip file stream
+                            // Adding currently iterated file/folder to zip file stream.
                             creator.AddToArchive (rootFolder + idxSource,
                                                   e.Args,
-                                                  e.Args.Children.First (ix => idxSourceFileFolder.Name == (string)ix.Value).GetExChildValue<string> ("as", context, null));
+                                                  idxSourceFileFolder.GetExChildValue ("as", context, idxSource));
                         }
                     }
 
                     // Making sure we return actual destination to caller
                     e.Args.Value = destinationFile;
+
                 } catch {
 
-                    // Checking if destination file exist, and if so, delete it, before we rethrow exception
+                    // Checking if destination file exist, and if so, delete it, before we rethrow exception.
                     if (File.Exists (rootFolder + destinationFile))
                         File.Delete (rootFolder + destinationFile);
+
                     throw;
                 }
             }
