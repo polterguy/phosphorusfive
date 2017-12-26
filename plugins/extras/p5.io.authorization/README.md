@@ -28,6 +28,9 @@ Files in any of the _"/public/"_ folders (both common and private) are possible 
 visitor, having a direct link to the file. This is not true for files in the _"/common/documents/private/"_ folder, even though
 the files becomes both readable, and possible to edit, by any logged in user in the system.
 
+Notice, whether or not a file is accessible with a direct link, over HTTP, also depends upon the setup
+of your web server.
+
 ## Overriding file IO access
 
 One or multiple roles can explicitly be given write access, and/or denied read access,
