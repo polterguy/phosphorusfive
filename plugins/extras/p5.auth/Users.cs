@@ -69,6 +69,7 @@ namespace p5.auth
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.auth.users.edit")]
+        [ActiveEvent (Name = "p5.auth.users.edit-keep-settings")]
         public static void p5_auth_users_edit (ApplicationContext context, ActiveEventArgs e)
         {
             if (context.Ticket.Role != "root")

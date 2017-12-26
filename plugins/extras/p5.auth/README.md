@@ -1,9 +1,9 @@
 ﻿Users and roles
 ===============
 
-This folder contains the Active Events related to users and roles management. It allows you to create new users and associate roles with them.
-All users are stored in the _"auth.hl"_ file at the root of p5.webapp folder, but this can be overridden in your app/web.config.
-Passwords are stored in salted hashed values to increase security. To create a new user, you can use the following code.
+This folder contains the Active Events related to users and roles management. It allows you to create new users and edit existing users,
+and associate roles with them. All users are stored in the _"auth.hl"_ file at the root of p5.webapp folder, but this can be overridden 
+in your app/web.config file. Passwords are stored as salted hashed values to increase security. To create a new user, you can use the following code.
 
 ```
 p5.auth.users.create:john-doe
@@ -20,9 +20,18 @@ Also notice, that only the root account(s) can actually read or modify your _"au
 or **[save-file]** etc. Your _"auth.hl"_ file, or if you choose to use another filename for it, is in general terms, the by far best protected file
 in your file system, together with your app/web.config.
 
+## About passwords
+
+Passwords in Phosphorus Five is not validated in any ways in regards to strength, or usage of special characters, etc. This means that you can supply
+for instance _"x"_ or _"123"_ as your user's password. These are obviously not very good passwords. However, to avoid creating false security, by adding
+constraints, that new research has shown us are actually **decreasing entropy** of passwords - I have chosen to avoid all forms of _"password strength requirements"_, 
+since this according to new research, actually has shown us that that it results in passwords with **lower entropy**, than if we allow users to create any 
+passwords they want to create. You are of course free to add any constraints you wish in forms and such, where you ask your users to provide new passwords
+for their accounts though.
+
 ## Users and your filesystem
 
-When you create a new user, a new folder structure will automatically be created for your user, beneath the _"/p5.webapp/users/"_ folder. This is the user's
+When you create a new user, a new folder structure will automatically be created for your user, beneath the _"/core/p5.webapp/users/"_ folder. This is the user's
 personal files, and is in general terms, protected such that only that user, and root accounts, can modify or read these files. Each user has a
 _"public"_ and a _"private"_ folder. The public folder, is for files which the user doesn't care about is protected or not, and anyone with a direct URL
 to the file, can easily download it. The private folder, can only be accessed by the user himself, and/or a root account.
@@ -34,7 +43,7 @@ load-file:~/foo.txt
 ```
 
 The tilde above (\~), will be substituted with _"/users/john-doe"_, if the user attempting to evaluate the above code is our _"john-doe"_ user from the 
-above Hyperlambda. If your user is a _"guest"_ account (not loggedd in), the tilde "\~" will evaluate to the _"/common/"_ folder. The common folder, has a 
+above Hyperlambda. If your user is a _"guest"_ account (not logged in), the tilde "\~" will evaluate to the _"/common/"_ folder. The common folder, has a 
 similar file structure, as the _"/users/"_ folder, and this folder substitution can be used transparently if you wish, without caring who is logged in, 
 or whether or not any user is logged in at all. Tilde "~" basically means the _"home folder"_. The _"home folder"_ for guests, who are not logged in, is
 the _"/common/"_ folder.
@@ -42,7 +51,7 @@ the _"/common/"_ folder.
 Notice, the above **[load-file]** Hyperlambda, will throw an exception, unless you actually have a _"foo.txt"_ file in your user's home folder. 
 In general, you should put files you want for everyone to see, but that still belongs to a specific user, including guests visitors, into 
 the _"~/documents/public/"_ folder(s), while protected files, into the _"~/documents/private/"_ folder.
-If you wish to create files that are accessible to all users of your system, you should put these files in your _"/p5.webapp/common/"_ folder, which is
+If you wish to create files that are accessible to all users of your system, you should put these files in your _"/common/"_ folder, which is
 accessible to all users in your system.
 
 To understand the details of how different roles have access to, or is denied access to, specific files or folders, you might
@@ -147,9 +156,9 @@ Active Event will not destroy the session associated with the user though. Make 
 
 To log in, use **[login]**. The login Active Event takes 3 parameters;
 
-* [username]
-* [password]
-* [persist]
+* __[username]__
+* __[password]__
+* __[persist]__
 
 If you set **[persist]** to true, then a persistent cookie will be created if possible, with the duration of your web/app.config setting 
 called _"p5.auth.credential-cookie-valid"_ number of days, making sure the client you're using to login, don't have to login again, 
@@ -157,7 +166,7 @@ before that timespan has passed. To logout, simply invoke **[logout]**.
 
 ### Creating lambda callbacks for [login] and [logout]
 
-If you wish, you can create an **[.onlogin]** and/or an **[.onlogout]** lambda callback setting(s), which will be ivoked, when the user logs in our out. An 
+If you wish, you can create an **[.onlogin]** and/or an **[.onlogout]** lambda callback setting(s), which will be invoked, when the user logs in our out. An 
 example of a callback, creating a dummy textfile when your currently logged in account is logging out, can be found below.
 
 ```
@@ -202,7 +211,7 @@ role system in Phosphorus Five. If you wish, you can roll your own, much more co
 component out with your own. If you do, you will still probably want to at least provide all Active Events, following at least as close to as possible, 
 the same rough API as this project does, to make sure you don't break existing code. If you want a more advanced access right system, you might also want 
 to replace the [p5.io.authorization](../p5.io.authorization/) project. This project is also a part of the authentication/authorisation logic of P5, and
-contains helper events for allowing users access to things such as reading files, etc. It also allows to create access objects, for roles that somehow 
+contains helper events for allowing users access to things such as reading and modifying files, etc. It also allows to create access objects, for roles that somehow 
 should have extended rights, to doing some sort of operation in P5, such as saving and modifying files in some specific folder, etc.
 
 ### Explicitly granting or denying access to roles
@@ -253,9 +262,264 @@ passwords as salted hash values, etc - But it is not complex in nature, and does
 system, etc. If this does not fit your needs, and you need a more complex role based system for instance - Then it is probably easily replaced,
 by your own authorization/authentication system, which you can build any ways you see fit. For instance, in p5.auth a _"role"_ is actually
 just a simple string, and there doesn't exist any true _"roles"_ in Phosphorus Five, with referential integrity and such. To create a new
-role, implies just assigning some role string to a user, as you save it, and that will create a new _"role"_ in the system. If this doesn
-not fit your needs, creating your own _"auth"_ system, and pluging this into Phosphorus Five in general, should probably be easily achieved,
+role, implies just assigning some role string to a user, as you save it, and that will create a new _"role"_ in the system. If this does not
+fit your needs, creating your own _"auth"_ system, and pluging this into Phosphorus Five in general, should probably be easily achieved,
 as long as you simply create (at least) all the Active Events that exists in this project, with different implementations though.
 
-**Notice** - Even p5.auth is _"naive"_ and _"simple"_ in nature, it should still be considered **highly secure**!
+**Notice** - Even though p5.auth is _"naive"_ and _"simple"_ in nature, it should still be considered **highly secure**!
 
+
+## Active Events, and sample usage
+
+Below you can find some examples, and the extensive documentation, of all Active Events from the p5.auth project.
+
+### [p5.auth.users.create]
+
+Creates a new user. Can only be invoked by a root user, and requires the username to be the value of the root node, in addition to
+a **[role]** and **[password]** argument.
+
+```
+p5.auth.users.create:foo-bar
+  role:foo
+  password:bar
+```
+
+### [p5.auth.users.get]
+
+Returns the specified user's role and settings. Can only be invoked by a root user, and can take either a constant, or an expression as
+its value, to retrieve multiple users if needed.
+
+```
+.data
+  root
+p5.auth.users.get:x:/-/*?name
+```
+
+### [p5.auth.users.edit]
+
+Edits the specified user. Can only be invoked by a root user, and requires the username to be the value of the main node of the invocation.
+Optionally pass in **[password]** and **[role]**, which if given, will update the user's role and password. If you don't supply a new
+password, or a new role, the existing password and/or role will not be changed. Notice, this event will also change the user's settings,
+to whatever is supplied besides **[password]** and **[role]** - Which implies that unless you pass in the old settings to it, or some new 
+settings values, then all settings for the user will actually be deleted. You can though invoke it with the alias of **[p5.auth.users.edit-keep-settings]**, 
+which will not touch the user's settings in any ways.
+
+### [p5.auth.users.delete]
+
+Deletes one or more users. Can only be invoked by a root account. Pass in user(s) to delete, either as a constant, or as an expression leading
+to multiple usernames.
+
+```
+/*
+ * Creating two dummy users, which will be deleted immediately.
+ */
+p5.auth.users.create:foo
+  password:foo
+  role:user
+p5.auth.users.create:bar
+  password:bar
+  role:user
+
+/*
+ * Deleting both users created above.
+ */
+.users
+  foo
+  bar
+p5.auth.users.delete:x:/-/*?name
+```
+
+### [p5.auth.users.list]
+
+Lists all users in system, and their associated role. Can only be invoked by a root account.
+
+```
+p5.auth.users.list
+```
+
+### [p5.auth.my-settings.get]
+
+Retrieves the currently logged in user's settings. Can be invoked by any user, except the default _"guest"_ user.
+
+```
+p5.auth.my-settings.get
+```
+
+### [p5.auth.my-settings.set]
+
+Updates the currently logged in user's settings. Can be invoked by any user, except the default guest user. Notice, this will
+update all settings, which implies that you'll need to explicitly take care when invoking it, such that you don't accidentally
+delete settings for other applications besides the one(s) you're creating yourself. Normally, you'd invoke **[p5.auth.my-settings.get]**
+first, then delete your app's settings from its return value, add the updated settings for your app, and pass in all settings
+from your get invocation to your set invocation, to make sure you don't accidentally delete another app's settings.
+
+**Warning** - The next piece of code, will delete your user's settings. To understand why, read the previous paragraph.
+
+```
+p5.auth.my-settings.set
+  foo:bar
+  bar
+    howdy:world
+```
+
+### [p5.auth.roles.list]
+
+Lists all roles in the system, and the number of user's belonging to each role. Can only be invoked by a root account.
+
+```
+p5.auth.roles.list
+```
+
+### [p5.auth.misc.whoami]
+
+Returns the **[role]**, **[username]** and **[default]** value of the current logged in user. Can be invoked by anyone.
+Has an alias with the name of **[whoami]**. To determine if a user is logged in at all, check the **[default]**
+return value from this event, and verify it is _"false"_, at which point the current context ticket, is an actual logged in
+user. If **[default]** is _"true"_, it implies that the user is not logged in at all, but simply a _"guest"_ visitor.
+
+```
+whoami
+```
+
+### [p5.auth.misc.change-my-password]
+
+Changes the password for the currently logged in user. Can be invoked by anyone, as long as it is an actual logged in user.
+Pass in the new password as the value of the main invocation node.
+
+```
+p5.auth.misc.change-my-password:some-new-password-goes-here
+```
+
+### [p5.auth.misc.delete-my-user]
+
+Deletes the currently logged in user. Cannot be invoked for a root account. If you want to delete a root account, you'll have to
+first make it a non-root account, and then afterwards delete it. This is a security feature, to prevent accidental deletion of
+root accounts, such that the system becomes impossible to maintain and administer.
+
+```
+p5.auth.misc.delete-my-user
+```
+
+### [p5.auth.login]
+
+Logs in a user. Requires a **[username]**, **[password]**, and optionally a **[persist]** argument. Has a **[login]** alias.
+If **[persist]** is true, the user will be persistently logged in, implying he won't have to login again, from the same
+terminal, for a specific amount of days. See your app's config file to change the number of days a user becomes persistently 
+logged in, before he has to login again.
+
+```
+login
+  username:foo
+  password:bar
+
+  // Optional
+  persist:bool:true
+```
+
+### [p5.auth.logout]
+
+Logs out the currently logged in user. Has the **[logout]** alias. Requires no arguments.
+
+```
+logout
+```
+
+### [p5.auth.access.list]
+
+List all access objects in system. Notice, this will by default return all access objects if the user invoking
+the event is a root account, and only access objects relevant for the currently logged in user's role if the user
+is not a root user. If you are logged in as root, you can however supply an additional argument as **[role]**, and pass
+in the name of the role you want to retrieve access objects on behalf of - Effectively only returning access objects
+delevant for a user belonging to the specified **[role]**. The latter will throw an exception though, if you invoke
+it with a **[role]** argument, and your user is not a root user.
+
+```
+p5.auth.access.list
+```
+
+### [p5.auth.access.add]
+
+Creates a new access object. Can only be invoked by a root user. This event will create a new access object, whatever that
+implies, since the access object system of Phosphorus Five is extendible. Read further up in this document to understand what
+that implies. Each access object must have a unique ID, which becomes the value of the access object, and its name becomes
+the name of the role the access object is referencing. You can use an asterix (*) though, to imply _"all roles"_. Beneath
+the main access object's node, you must supply at the very least one argument, with a name being the _"action"_, and its
+value being some _"resource"_. See further up in this document, for an example of how for instance p5.io is using the
+access object(s), to allow or deny read/write access to files and folders.
+
+```
+p5.auth.access.add
+  user:some-unique-id
+    some-action:some-resource
+```
+
+### [p5.auth.access.delete]
+
+Deletes some named access object. Can only be invoked by a root account. To delete the access object we created above for instance,
+you could use something such as the following.
+
+```
+p5.auth.access.delete
+  user:some-unique-id
+```
+
+### [p5.auth.has-access-to-path]
+
+Determines if the currently logged in user has access to some _"path"_ or not. Can be invoked by any user. This is primarily
+used when determining access to files and folders on disc, but has been explicitly been made public, since similar use cases
+are quite useful, also for other types of scenarios, such as URLs, etc. It requires two arguments; **[filter]** and **[path]**.
+Filter is some sort of namespace, such as for the file system for instance _"p5.io.read-file"_ or _"p5.io.write-file"_.
+The **[path]** argument, is some sort of relational path type of argument, such as a URL or a filename, which both are
+in fact tree structures, allowing for access to objects of such types to actually _"cascade"_.
+
+This event will fetch all access objects relevant for the user's role, having either the value of _"your-filter.deny"_ 
+and _"your-filter.allow"_. For instance, for the above file IO example, it will retrieve _"p5.io.read-file.allow"_ access
+rights, in addition to _"p5.io.read-file.deny"_ access rights. Then it will sort these alphabetically according to their values,
+and then traverse them sequentially, to determine if a user has access to, or does not have access to, the **[path]** specified.
+
+To see an example of usage of this, feel free to check up the [p5.io.authorization](/plugins/extras/p5.io.authorization) project.
+Below is an example of usage.
+
+```
+p5.auth.has-access-to-path
+  filter:p5.url.has-access
+  path:/foo/bar
+```
+
+If you create two access objects with the following code.
+```
+p5.auth.access.add
+  *:its-unique-id
+    p5.url.has-access.deny:/foo/bar
+  developer:its-other-unique-id
+    p5.url.has-access.allow:/foo/bar
+```
+
+And you invoke **[p5.auth.has-access-to-path]** with the following example code.
+
+```
+p5.auth.has-access-to-path
+  filter:p5.url.has-access
+  path:/foo/bar
+```
+
+Then it will return true if the currently logged in user is in the role of _"developer"_, but return
+false for all other users. Notice though, it will always return true for a root account. This event
+is quite useful for a lot of your own extension scenarios, where you have some sort of relational object,
+which you need to give conditional access to, according to whatever role the user belongs to.
+
+
+## Warning
+
+Yet again, the authorization logic in p5.auth has a relatively _"naive"_ and simple to understand
+implementation. Among other things, it persists all of its access objects, users, and roles, in a single
+file on disc. If you have thousands of users, hundreds of roles, with dozens of access objects each,
+and each user having dozens of settings each - You might for all practical concerns risk to have the 
+system simply not scale, since it's based upon a single file, among other things. In addition, the 
+roles are simply strings, etc.
+
+So even though it is highly secure, it probably doesn't scale into _"infinity"_. If you want to however,
+replacing it with your own access system, is probably quite easy. Have this in mind as you
+extens your system. I'd probably use it by default if I were you, for later to replace it if
+the needs arrives - Which you can probably easily see, if as you start adding users, settings, 
+access, and role objects to the system, and it stops scaling as your _"auth.hl"_ file grows.

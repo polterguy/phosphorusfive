@@ -323,48 +323,54 @@ namespace p5.auth.helpers
          */
         public static void EditUser (ApplicationContext context, Node args)
         {
+            // Retrieving username, and sanity checking invocation.
             string username = args.GetExValue<string> (context);
-            string password = args.GetExChildValue<string> ("password", context);
-            string userRole = args.GetExChildValue<string> ("role", context);
             if (args ["username"] != null)
                 throw new LambdaSecurityException ("Cannot change username for user", args, context);
 
-            // Retrieving system salt before we enter write lock.
-            var serverSalt = context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
+            // Retrieving new password and role, defaulting to null, which will not update existing values.
+            string newPassword = args.GetExChildValue<string> ("password", context);
+            string newRole = args.GetExChildValue<string> ("role", context);
 
-            // Locking access to password file as we edit user object
+            // Retrieving system salt before we enter write lock. (important, since otherwise we'd have a deadlock condition here).
+            var serverSalt = newPassword == null ? null : context.RaiseEvent (".p5.auth.get-server-salt").Get<string> (context);
+
+            // Locking access to password file as we edit user object.
             AuthFile.ModifyAuthFile (
                 context,
                 delegate (Node authFile) {
 
-                    // Checking to see if user exist
+                    // Checking to see if user exist.
                     if (authFile ["users"] [username] == null)
                         throw new LambdaException (
                             "Sorry, that user does not exist",
                             args,
                             context);
 
-                    // Updating user's password, if a new one was given
-                    if (!string.IsNullOrEmpty (password)) {
+                    // Updating user's password, but only if a new password was supplied by caller.
+                    if (!string.IsNullOrEmpty (newPassword)) {
 
-                        // Changing user's password
-                        // Then salting password with user salt and system, before salting it with system salt
-                        var userPasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + password)).Get<string> (context);
+                        // Making sure we salt password with system salt, before we create our SHA256 value, which is what we actually store in our "auth" file.
+                        var userPasswordFingerprint = context.RaiseEvent ("p5.crypto.hash.create-sha256", new Node ("", serverSalt + newPassword)).Get<string> (context);
                         authFile ["users"] [username] ["password"].Value = userPasswordFingerprint;
                     }
 
-                    // Updating user's role
-                    if (userRole != null) {
-                        authFile ["users"] [username] ["role"].Value = userRole;
+                    // Updating user's role, if a new role was supplied by caller.
+                    if (newRole != null) {
+                        authFile ["users"] [username] ["role"].Value = newRole;
                     }
 
-                    // Removing old settings
-                    authFile ["users"] [username].RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
+                    // Checking if caller wants to edit settings.
+                    if (args.Name == "p5.auth.users.edit") {
 
-                    // Adding all other specified objects to user
-                    foreach (var idxNode in args.Children.Where (ix => ix.Name != "password" && ix.Name != "role")) {
+                        // Removing old settings.
+                        authFile ["users"] [username].RemoveAll (ix => ix.Name != "password" && ix.Name != "role");
 
-                        authFile ["users"] [username].Add (idxNode.Clone ());
+                        // Adding all other specified objects to user.
+                        foreach (var idxNode in args.Children.Where (ix => ix.Name != "password" && ix.Name != "role")) {
+
+                            authFile ["users"] [username].Add (idxNode.Clone ());
+                        }
                     }
                 });
         }
@@ -414,6 +420,7 @@ namespace p5.auth.helpers
          */
         public static void ChangePassword (ApplicationContext context, Node args)
         {
+            // Retrieving new password, and doing some basic sanity check.
             string password = args.GetExValue (context, "");
             if (string.IsNullOrEmpty (password))
                 throw new LambdaException ("No password supplied", args, context);
@@ -443,15 +450,15 @@ namespace p5.auth.helpers
             // Retrieving username to delete.
             string username = context.Ticket.Username;
 
-            // Deleting user's home directory
+            // Deleting user's home directory.
             context.RaiseEvent ("p5.io.folder.delete", new Node ("", "/users/" + username + "/"));
 
-            // Locking access to password file as we delete user object
+            // Locking access to password file as we delete user object.
             AuthFile.ModifyAuthFile (
                 context,
                 delegate (Node authFile) {
 
-                    // Removing user
+                    // Removing user.
                     authFile ["users"] [username].UnTie ();
                 });
 
@@ -503,11 +510,36 @@ namespace p5.auth.helpers
             if (pwdFile ["access"] == null)
                 return;
 
+            // Checking which role caller requests access objects on behalf.
+            string roles = null;
+            if (context.Ticket.Role == "root") {
+
+                // Checking if caller requested a particular role.
+                roles = args.GetExChildValue<string> ("role", context, null);
+
+            } else {
+
+                // A non-root user is not allowed to request anything besides his own access objects.
+                if (args ["role"] != null)
+                    throw new LambdaException ("A non-root user cannot request access objects for anything but his own role", args, context);
+                roles = context.Ticket.Role;
+            }
+
             // Looping through each user object in password file, retrieving all roles
             foreach (var idxUserNode in pwdFile ["access"].Children) {
 
-                // Adding currently iterated access to return args,
-                args.Add (idxUserNode.Clone ());
+                // Adding currently iterated access to return args.
+                if (roles == null) {
+
+                    // Adding everything.
+                    args.Add (idxUserNode.Clone ());
+
+                } else {
+
+                    // Adding only access objects requested by caller.
+                    if (idxUserNode.Name == "*" || idxUserNode.Name == roles)
+                        args.Add (idxUserNode.Clone ());
+                }
             }
         }
         

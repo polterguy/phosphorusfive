@@ -202,6 +202,8 @@ namespace p5.io.authorization.helpers
             // Verify web.config is safe.
             if (path == "/web.config")
                 return false;
+            if (path == "/app.config")
+                return false;
             
             // Verifying "auth" file is safe.
             if (path == GetAuthFile (context).ToLower ())

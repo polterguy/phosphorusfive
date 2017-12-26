@@ -86,6 +86,12 @@ namespace p5.auth
         [ActiveEvent (Name = "p5.auth.has-access-to-path")]
         public static void p5_auth_has_access_to_path (ApplicationContext context, ActiveEventArgs e)
         {
+            // Checking is user is root, at which he has access to everything.
+            if (context.Ticket.Role == "root") {
+                e.Args.Value = true;
+                return;
+            }
+
             // Retrieving [filter] argument.
             var filter = e.Args.GetExChildValue<string> ("filter", context);
             if (string.IsNullOrEmpty (filter))
