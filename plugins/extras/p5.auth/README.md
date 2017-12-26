@@ -224,3 +224,17 @@ with the same _"tree/graph"_ semantics as URLs and file/folder paths.
 
 The access objects is in such a regards extendible, and allows you to create your own access objects, necessary to implement
 authorization for your own applications. To see an example of how to do this, check out for instance the p5.io.authorization project, and its code.
+
+## Rolling your own authorization/authentication system
+
+The p5.auth project is explicitly implemented as a _"naive"_ and simple project. It is highly secure though, and for instance stores
+passwords as salted hash values, etc - But it is not complex in nature, and does not feature advanced things, such as a tree based role
+system, etc. If this does not fit your need, and you need a more complex role based system for instance - Then it is probably easily replaced,
+by your own authorization/authentication system, which you can build any ways you see fit. For instance, in p5.auth a _"role"_ is actually
+just a simple string, and there doesn't exist any true _"roles"_ in Phosphorus Five, with referential integrity and such. To create a new
+role, implies just assigning some role string to a user, as you save it, and that will create a new _"role"_ in the system. If this doesn
+not fit your needs, creating your own _"auth"_ system, and pluging this into Phosphorus Five in general, should probably be easily achieved,
+as long as you simply create (at least) all the Active Events that exists in this project, with different implementations though.
+
+**Notice** - Even p5.auth is _"naive"_ and _"simple"_ in nature, it should still be considered highly **secure**!
+
